@@ -11,6 +11,25 @@
 
 namespace ssd {
 
+VoiceHandle::VoiceHandle()
+    : Object(ObjectType::VOICE_HANDLE), unknown31(false), unknown32(false), unknown33(false), unknown34(false), unknown35(false), unknown36(false), unknown37(false), unknown38(false),
+      unknown3b(false), unknown3c(false), unknown3d(true), unknown44(0), unknown48(0), unknown4c(0), unknown50(-1), unknown54(0), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr),
+      unknown70(nullptr), unknown78(&VoiceHandle::NullBufferProcess), unknown88(0), unknown6b0(false), unknown6b1(false), unknown6b4(1.0f), unknown6b8(1.0f), unknown6bc(0.0f), unknown6c0(1.0f),
+      unknown6f0(1.0f) {
+  unknown668 = false;
+  unknown669 = 0;
+  unknown688 = 0;
+  unknown690 = 0;
+  unknown6a0.unknown00 = 0;
+  unknown6a8 = 0;
+  for (int i = 0; i < 8; i++) {
+    unknown90[i].unknown00 = nn::audio::VoiceType();
+    for (int j = 0; j < 3; j++) {
+      unknown90[i].unknown98[j] = nullptr;
+    }
+  }
+}
+
 VoiceHandle::~VoiceHandle() {}
 
 void VoiceHandle::AllocAdpcmSplitBuffer() {
@@ -29,6 +48,35 @@ void VoiceHandle::FreeAdpcmSplitBuffer() {
     allocator->DeleteBufferImpl(block);
     adpcmSplitBuffer_ = nullptr;
   }
+}
+
+void VoiceHandle::Init(int number) {
+  unknown44 = 0;
+  unknown670 = 24000;
+  unknown4c = 0;
+  unknown50 = number;
+  unknown658 = nullptr;
+  unknown678 = 12000;
+  for (int i = 0; i < 8; i++) {
+    unknown90[i].unknown00 = nn::audio::VoiceType();
+    unknown90[i].unknown98[0] = nullptr;
+    unknown90[i].unknownb0 = 0;
+  }
+  unknown660 = 0;
+  unknown48 = 0;
+  unknown54 = 0;
+  unknown58 = nullptr;
+  unknown60 = nullptr;
+  unknown78 = &VoiceHandle::NullBufferProcess;
+  unknown669 = 0;
+  unknown6a8 = 0;
+  unknown6a0.unknown00 = 0;
+  unknown698 = 0;
+  unknown690 = 0;
+  unknown688 = 0;
+  unknown680 = 0;
+  unknown6d0.Reset(0.0f);
+  unknown70 = nullptr;
 }
 
 void VoiceHandle::Quit() {
@@ -147,6 +195,26 @@ Result VoiceHandle::GetPlaySample(unsigned long long *sample) const {
   }
   *sample = value;
   return result;
+}
+
+Result VoiceHandle::Start(f32 fadeTime, bool pregap) {
+  if (SoundCore::instance_->unknown11) {
+    unknown44 = 4;
+    return static_cast<Result>(0);
+  }
+  if (unknown70 != nullptr && unknown44 == 2) {
+    SetPlayPosition(0);
+    unknown70->ResetStream();
+    unknown44 = 6;
+  }
+  unknown6d0.Set(1.0f, fadeTime);
+  unknown35 = false;
+  unknown36 = false;
+  unknown37 = false;
+  unknown38 = false;
+  unknown39 = pregap;
+  unknown31 = true;
+  return static_cast<Result>(0);
 }
 
 Result VoiceHandle::SetPlayPosition(u64 position) {

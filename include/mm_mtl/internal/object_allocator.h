@@ -1,6 +1,8 @@
 #pragma once
+#include <new>
 #include <stddef.h>
 
+#include "mm/mm_std_base.h"
 #include "mm_mtl/array.h"
 #include "mm_mtl/construct.h"
 #include "mm_mtl/reserved_bitflag.h"
@@ -8,9 +10,53 @@
 
 namespace mm {
 namespace mtl {
+class IAllocator;
 
 template <typename T> class ObjectAllocator {
 public:
+  // The assert lines of the game: their constants change the instruction encoding.
+#line 113
+  void reserve(IAllocator *allocator, u32 size) {
+    MM_ASSERT(size != 0);
+    MM_ASSERT(allocator != 0);
+    MM_ASSERT(m_capacity == 0 && "already reserved!!");
+    u32 bytes = size * sizeof(T);
+    m_capacity = size;
+    u32 count = (bytes + sizeof(u64) - 1) / sizeof(u64);
+    unknown00.setAllocator(allocator);
+    unknown00.reserve(count);
+    unknown18.initialize(allocator, size);
+  }
+
+#line 131
+  T *allocate() {
+    MM_ASSERT(m_allocated <= m_capacity);
+    if (m_allocated != m_capacity) {
+      for (u32 word = 0; word < unknown18.unknown0c; word++) {
+        if (unknown18.m_element[word] != 0xffffffff) {
+          u32 last = word * 32 + 32;
+          if (last > m_capacity) {
+            last = m_capacity;
+          }
+          for (u32 i = word * 32; i < last; i++) {
+            if (!unknown18.getLocal(i)) {
+              T *object = unknown001(i);
+              if (object != nullptr) {
+                new (object) T;
+                unknown18.setLocal(i, true);
+                m_allocated++;
+#line 220
+                MM_ASSERT(m_allocated <= m_capacity);
+                return object;
+              }
+            }
+          }
+        }
+      }
+    }
+    return nullptr;
+  }
+
   void destroy() {
     for (u32 i = 0; i < m_capacity; i++) {
       if (unknown18.getLocal(i)) {

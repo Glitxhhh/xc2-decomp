@@ -21,6 +21,14 @@ class SoundSsdDriver;
 
 namespace ssd {
 
+SoundHandle::SoundHandle()
+    : Object(ObjectType::SOUND_HANDLE), unknown30(nullptr), unknown38(nullptr), unknown40(0), unknown48(0, 0.0f), unknown58(false), unknown59(false), unknown5a(false), unknownf8(0) {
+  unknownc0[0].unknown00 = false;
+  unknownc0[0].unknown04.Reset(1.0f);
+  unknownc0[1].unknown00 = false;
+  unknownc0[1].unknown04.Reset(1.0f);
+}
+
 SoundHandle::~SoundHandle() {
   unknown58 = false;
   Delete();
@@ -29,12 +37,7 @@ SoundHandle::~SoundHandle() {
 void SoundHandle::Init() {
   unknown6c.Reset(1.0f);
   unknown68 = 0.0f;
-  unknown98 = 1.0f;
-  unknown94 = 1.0f;
-  unknown84 = 1.0f;
-  unknown90 = 0.0f;
-  unknown88 = 0.0f;
-  unknown8c = 0.0f;
+  unknown84.Reset(1.0f);
   unknown9c.Reset(0.0f);
   unknownb4 = 1.0f;
   unknownb8 = 1.0f;
@@ -195,36 +198,11 @@ void SoundHandle::SetCategoryId(int category) {
 
 void SoundHandle::SetPitch(f32 pitch, f32 fadeTime) { this->unknown6c.Set(pitch, fadeTime); }
 
-void SoundHandle::SetVolume(f32 volume, f32 fadeTime) {
-  f32 current = this->unknown84;
-  unknown8c = fadeTime;
-  f32 begin = fadeTime != 0.0f ? current : volume;
-  unknown98 = volume;
-  unknown94 = begin;
-  this->unknown84 = begin;
-  unknown90 = volume - begin;
-  unknown88 = 0.0f;
-}
+void SoundHandle::SetVolume(f32 volume, f32 fadeTime) { this->unknown84.Set(volume, fadeTime); }
 
 void SoundHandle::UpdateAudioFrame(f32 deltaTime) {
-  f32 time = unknown6c.unknown08;
-  if (unknown6c.unknown04 < time) {
-    f32 elapsed = unknown6c.unknown04 + deltaTime;
-    if (elapsed >= time) {
-      elapsed = time;
-    }
-    unknown6c.unknown00 = unknown6c.unknown10 + (elapsed * unknown6c.unknown0c) / time;
-    unknown6c.unknown04 = elapsed;
-  }
-  time = unknown8c;
-  if (unknown88 < time) {
-    f32 elapsed = unknown88 + deltaTime;
-    if (elapsed >= time) {
-      elapsed = time;
-    }
-    unknown84 = unknown94 + (elapsed * unknown90) / time;
-    unknown88 = elapsed;
-  }
+  unknown6c.unknown004(deltaTime);
+  unknown84.unknown004(deltaTime);
 }
 
 void SoundHandle::SetPan(f32 pan, f32 fadeTime) { this->unknown9c.Set(pan, fadeTime); }
@@ -547,3 +525,4 @@ template class Delegate::Object<fw::SoundSsdDriver, SoundHandle *, SoundHandle::
 } // namespace ssd
 
 template void mm::mtl::ObjectAllocator<ssd::SoundHandle>::destroy();
+template void mm::mtl::ObjectAllocator<ssd::SoundHandle>::reserve(mm::mtl::IAllocator *, u32);

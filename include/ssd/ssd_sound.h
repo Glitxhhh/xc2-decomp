@@ -198,9 +198,9 @@ public:
     f32 unknown04; // Inferred role: category volume; original member name unknown.
   };
 
-  SoundCategory() {
-    unknown08.unknown00 = 0;
-    unknown08.unknown04 = 1.0f;
+  SoundCategory(int id = 0, f32 volume = 1.0f) {
+    unknown08.unknown00 = id;
+    unknown08.unknown04 = volume;
   }
 
   virtual ~SoundCategory() {}
@@ -215,6 +215,8 @@ class SoundHandle : public Object, public List<SoundHandle>::Node {
 public:
   // Inferred role: fade; original type name unknown.
   struct unknown003 {
+    unknown003() { Reset(1.0f); }
+
     void Set(f32 target, f32 time) {
       f32 current = unknown00;
       this->unknown08 = time;
@@ -233,6 +235,19 @@ public:
       unknown0c = 0.0f;
       unknown04 = 0.0f;
       unknown08 = 0.0f;
+    }
+
+    // Inferred role: advance the fade by a frame; original name unknown.
+    void unknown004(f32 deltaTime) {
+      f32 time = unknown08;
+      if (unknown04 < time) {
+        f32 elapsed = unknown04 + deltaTime;
+        if (elapsed >= time) {
+          elapsed = time;
+        }
+        unknown00 = unknown10 + (elapsed * unknown0c) / time;
+        unknown04 = elapsed;
+      }
     }
 
     f32 unknown00; // Inferred role: value; original member name unknown.
@@ -258,6 +273,7 @@ public:
     f64 unknown08; // Inferred role: stream decode time in milliseconds; original member name unknown.
   };
 
+  SoundHandle();
   ~SoundHandle() override;
   bool IsValidHandle() const;
   long Stop(f32 fadeTime);
@@ -316,12 +332,7 @@ public:
   u64 unknown60;        // Inferred role: cleared by Init; original member name unknown.
   f32 unknown68;        // Inferred role: pregap time; original member name unknown.
   unknown003 unknown6c; // Inferred role: pitch; original member name unknown.
-  f32 unknown84;        // Inferred role: volume; original member name unknown.
-  f32 unknown88;        // Inferred role: volume elapsed; original member name unknown.
-  f32 unknown8c;        // Inferred role: volume time; original member name unknown.
-  f32 unknown90;        // Inferred role: volume delta; original member name unknown.
-  f32 unknown94;        // Inferred role: volume start; original member name unknown.
-  f32 unknown98;        // Inferred role: volume target; original member name unknown.
+  unknown003 unknown84; // Inferred role: volume; original member name unknown.
   unknown003 unknown9c; // Inferred role: pan; original member name unknown.
   f32 unknownb4;        // Inferred role: value set to 1.0 by Init; original member name unknown.
   f32 unknownb8;        // Inferred role: category volume; original member name unknown.

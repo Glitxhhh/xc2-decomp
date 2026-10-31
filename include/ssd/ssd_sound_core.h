@@ -163,9 +163,11 @@ public:
 
   Result unknown08; // Inferred role: last result; original member name unknown.
   bool m_init;
+  bool unknown11; // Inferred role: audio device error; original member name unknown.
 };
 
 static_assert(offsetof(SoundCore, m_init) == 0x10, "");
+static_assert(offsetof(SoundCore, unknown11) == 0x11, "");
 static_assert(sizeof(SoundCore::ThreadParam) == 0x18, "");
 static_assert(offsetof(SoundCore::InitParam, unknown18) == 0x18, "");
 static_assert(offsetof(SoundCore::InitParam, unknown30) == 0x30, "");

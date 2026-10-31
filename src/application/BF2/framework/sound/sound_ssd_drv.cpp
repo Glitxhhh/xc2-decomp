@@ -15,6 +15,7 @@
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/hash.h"
+#include "mm_mtl/internal/object_allocator.h"
 #include "mtl/mem_manager.h"
 #include "ssd/ssd_sound_core.h"
 #include "ssd/ssd_sound_listener.h"
@@ -432,7 +433,7 @@ f32 SoundSsdPlayer::getVolume(SoundVolumeType type) const {
   if (isValid()) {
     switch (type) {
     case SOUND_VOLUME_TYPE_HANDLE:
-      result = unknown88->unknown84;
+      result = unknown88->unknown84.unknown00;
       break;
     case SOUND_VOLUME_TYPE_DISTANCE:
       result = unknown88->GetDistanceVolume();
@@ -852,6 +853,9 @@ void SoundSsdBank::destroy() {
 template mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::iterator mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::erase(mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::iterator);
 
 template mm::mtl::PtrSingleton<fw::SoundSsdDriver>::~PtrSingleton();
+
+// Instantiated here, where the driver keeps its sound handle allocator: the game calls the out-of-line ssd::SoundHandle constructor, which sound_handle.cpp would inline.
+template ssd::SoundHandle *mm::mtl::ObjectAllocator<ssd::SoundHandle>::allocate();
 
 typedef mm::mtl::RedBlackTreeBase<mm::mtl::Map<ssd::SoundHandle *, fw::SoundSsdPlayer *>::MapTraits<ssd::SoundHandle *, fw::SoundSsdPlayer *>> unknown101;
 
