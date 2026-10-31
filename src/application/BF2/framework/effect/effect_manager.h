@@ -245,7 +245,9 @@ public:
   bool unknown2fd9; // Inferred role: destroy the effect system on tail; original member name unknown.
   u8 _2fda[0x353e0 - 0x2fda];
   KizunaWork unknown353e0[unknown002]; // Inferred role: kizuna lines; original member name unknown.
-  u8 _37760[0x37980 - 0x37760];
+  u8 _37760[0x37958 - 0x37760];
+  f32 unknown37958[8]; // Inferred role: speed of each effect category, passed to effect::SystemManager::setCategorySpd; original member name unknown.
+  u8 _37978[0x37980 - 0x37978];
 };
 
 static_assert(offsetof(EffectManager::KizunaWork, unknown10) == 0x10, "");
@@ -272,6 +274,7 @@ static_assert(offsetof(EffectManager, unknown2fd6) == 0x2fd6, "");
 static_assert(offsetof(EffectManager, unknown2fd8) == 0x2fd8, "");
 static_assert(offsetof(EffectManager, unknown2fd9) == 0x2fd9, "");
 static_assert(offsetof(EffectManager, unknown353e0) == 0x353e0, "");
+static_assert(offsetof(EffectManager, unknown37958) == 0x37958, "");
 static_assert(sizeof(EffectManager) == 0x37980, "");
 
 } // namespace fw

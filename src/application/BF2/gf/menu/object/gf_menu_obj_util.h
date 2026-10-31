@@ -7,6 +7,10 @@
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
 
+namespace fw {
+enum VibrationID : int;
+} // namespace fw
+
 namespace ui {
 class UICtrlCursorSelect;
 class UIListInfoBase;
@@ -152,6 +156,7 @@ public:
   static bool isValidSoundHandle(u32 handle);
   static void stopBGM(u32 handle, f32 time);
   static u32 playJingle(u32 id);
+  static void playVibration(fw::VibrationID id, f32 amplitude);
   static bool getBladeTeamName(u32 blade, ui::UIStr &name);
   static int getFaceIconID(const DataParamAcc &acc);
   static bool isInBattle(GF_OBJ_HANDLE *handle);

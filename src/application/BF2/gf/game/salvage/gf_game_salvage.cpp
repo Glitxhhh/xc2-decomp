@@ -1,5 +1,6 @@
 #include "gf/game/salvage/gf_game_salvage.h"
 
+#include "bdat.h"
 #include "fw/fw_camera.h"
 #include "gf/camera/gimmick/gf_camera_gimmick.h"
 #include "gf/data/gf_data_map.h"
@@ -9,6 +10,7 @@
 #include "gf/event/gf_evt_model.h"
 #include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_speed.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
@@ -17,6 +19,11 @@
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/request/gf_req_scom.h"
+#include "gmk/gmk_base.h"
+#include "gmk/gmk_form.h"
+#include "gmk/gmk_form_pc.h"
+#include "gmk/gmk_manager.h"
+#include "gmk/gmk_salvage.h"
 
 namespace gf {
 
@@ -229,6 +236,46 @@ bool GfGameSalvage::isCameraDive() {
   return true;
 }
 
+u8 *GfGameSalvage::getBindedBdatFp() const { return gmk::getBindedGmkInst(get()->unknowna8)->getBindedBdatFp(); }
+
+int GfGameSalvage::getBindedBdatId() const { return gmk::getBindedGmkInst(get()->unknowna8)->unknown20.unknown18; }
+
+bool GfGameSalvage::getEventOrigin(mm::Mat44 &matrix) const {
+  gmk::GmkSalvage *salvage = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->unknowna8));
+  if (salvage->unknowna8 != nullptr) {
+    salvage->unknowna8->getMatrix(matrix, true);
+    return true;
+  }
+  return false;
+}
+
+bool GfGameSalvage::getEventTbox(mm::Mat44 &matrix) const {
+  const gmk::GmkSalvage *salvage = static_cast<const gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->unknowna8));
+  gmk::GmkSalvageLocator *tbox = salvage->unknown88[0];
+  if (tbox != nullptr) {
+    tbox->getMatrix(matrix, true);
+    return true;
+  }
+  return false;
+}
+
+bool GfGameSalvage::applyPartyForm() const {
+  const gmk::GmkFormPc *formPc = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->unknowna8))->getGmkFormPc();
+  if (formPc == nullptr) {
+    return false;
+  }
+  gmk::GmkForm form(nullptr);
+  bool result;
+  if (form.create<gmk::GmkFormPc, gmk::GmkFormPcnpc>(*formPc)) {
+    form.apply(4.0f);
+    result = true;
+  } else {
+    result = false;
+  }
+  form.dispose();
+  return result;
+}
+
 void GfGameSalvage::createModel() {
   if (unknownc0 == nullptr) {
     unknownc0 = GfGameEvent::createSalvage();
@@ -273,6 +320,25 @@ GfComAsm *GfGameSalvage::getGfComAsm() const {
     return obj->getComponent<GfComAsm>();
   }
   return nullptr;
+}
+
+static const char *const unknown002[] = {"BtnChallenge0", "BtnChallenge1", "BtnChallenge2"}; // Inferred role: columns of the button challenges; original name unknown.
+
+u32 GfGameSalvage::getButtonChallengeId(int index) {
+  u8 *bdat = getBindedBdatFp();
+  int id = getBindedBdatId();
+  return static_cast<u16>(Bdat::getValCheck(bdat, unknown002[index], id, 2));
+}
+
+void GfGameSalvage::setPartyDisp(bool isDisp) {
+  if (!isDisp) {
+    GfGameParty::refreshPartyMemberPosition();
+  }
+  int max = GfGameParty::getHierarchyMax();
+  for (int i = 1; i <= max; i++) {
+    GfObjAcc acc(GfGameParty::getHandleByHierarchy(i));
+    acc.setAlphaEvent(isDisp ? 1.0f : 0.0f);
+  }
 }
 
 void GfGameSalvage::playAnimation(AnimationType animation) {
@@ -326,6 +392,12 @@ bool GfGameSalvage::isChaseKikuInSupervia() {
     return scenario >= SCENARIO_CHASE_KIKU_START && scenario <= SCENARIO_CHASE_KIKU_END;
   }
   return false;
+}
+
+u32 GfGameSalvage::getTBoxNum() {
+  RaffleRet ret;
+  getRaffleResult(ret);
+  return ret.unknown00;
 }
 
 void GfGameSalvage::createLog() {}

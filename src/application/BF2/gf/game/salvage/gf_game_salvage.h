@@ -13,8 +13,9 @@ class Camera;
 } // namespace fw
 
 namespace mm {
+struct Mat44;
 struct Vec3;
-}
+} // namespace mm
 
 namespace gf {
 
@@ -268,6 +269,15 @@ public:
     ANIMATION_RESULT_05,
   };
 
+  struct RaffleRet {
+    RaffleRet() : unknown00(0), unknown04(0), unknown08(false), unknown09(false) {}
+
+    u32 unknown00;  // Inferred role: number of treasure boxes; original member name unknown.
+    u32 unknown04;  // Inferred role: highest RSC_ID of the treasure boxes; original member name unknown.
+    bool unknown08; // Inferred role: enemies pop; original member name unknown.
+    bool unknown09; // Inferred role: a powerful enemy pops; original member name unknown.
+  };
+
   GfGameSalvage(const GfSetupParam &param);
   void initialize(const GfSetupParam &param);
   ~GfGameSalvage();
@@ -297,13 +307,20 @@ public:
   bool isCameraCut01End();
   bool isCameraDive();
   bool isTboxExist() const;
+  u8 *getBindedBdatFp() const;
+  int getBindedBdatId() const;
+  bool getEventOrigin(mm::Mat44 &matrix) const;
+  bool getEventTbox(mm::Mat44 &matrix) const;
+  bool applyPartyForm() const;
   void execPop();
+  bool getRaffleResult(RaffleRet &ret) const;
   void createModel();
   void destroyModel();
   bool isValidModel();
   GfComAsm *getGfComAsm() const;
   void playAnimation(AnimationType animation);
   bool isAnimationEnd() const;
+  u32 getButtonChallengeId(int index);
   void setModelTransform(const mm::Vec3 &position, f32 rotation);
   void setPartyDisp(bool isDisp);
   void playVoice(VoiceType voice);
@@ -320,6 +337,7 @@ public:
   static void clearLogButtonChallenge();
   static void setLogButtonChallengeResult(int result);
   static void setLogLapsedTime(int time);
+  u32 getTBoxNum();
 
   ai::Fsm unknown08;                           // Inferred role: fsm; original member name unknown.
   mm::mtl::IntrusivePtr<fw::Camera> unknown80; // Inferred role: camera dive start; original member name unknown.

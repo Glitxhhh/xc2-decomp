@@ -2,6 +2,7 @@
 
 #include "bdat.h"
 #include "framework/sound/sound_manager.h"
+#include "fw/fw_pad.h"
 #include "fw/fw_param_manager.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_character_id.h"
@@ -32,6 +33,7 @@
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/util/gf_util.h"
+#include "ml/dev_pad.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
@@ -713,6 +715,8 @@ void GfMenuObjUtil::stopBGM(u32 handle, f32 time) {
 }
 
 u32 GfMenuObjUtil::playJingle(u32 id) { return GfMenuSoundManager::playJingle(id); }
+
+void GfMenuObjUtil::playVibration(fw::VibrationID id, f32 amplitude) { fw::PadManager::playVibration(ml::PadVibrationInfo(id, amplitude)); }
 
 ui::UIStr GfMenuObjUtil::getElementComboName(u32 combo) {
   u8 *bdat = Bdat::getFP("BTL_ElementalCombo");

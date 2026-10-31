@@ -119,12 +119,14 @@ public:
   mm::mtl::FixedVector<unknown031, WEAPON_MAX> unknown98; // Inferred role: weapons; original member name unknown.
   u8 _1a0[0x1a1 - 0x1a0];
   bool m_allWeapon;
-  u8 _1a2[0x1a8 - 0x1a2];
+  bool unknown1a2; // Inferred role: Jiji display, set by GfGameEvent::createDriver outside GfGameManager::isInMetJIJI; original member name unknown.
+  u8 _1a3[0x1a8 - 0x1a3];
 };
 
 static_assert(sizeof(GfInitParamDriver::unknown031) == 0x08, "");
 static_assert(offsetof(GfInitParamDriver, unknown98) == 0x98, "");
 static_assert(offsetof(GfInitParamDriver, m_allWeapon) == 0x1a1, "");
+static_assert(offsetof(GfInitParamDriver, unknown1a2) == 0x1a2, "");
 static_assert(sizeof(GfInitParamDriver) == 0x1a8, "");
 
 class GfInitParamBlade : public GfInitParam {

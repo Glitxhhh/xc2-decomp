@@ -140,6 +140,7 @@ public:
   void bindToGameObj(gf::GF_OBJ_HANDLE *handle) const;
   void unbindToGameObj(gf::GF_OBJ_HANDLE *handle) const;
   int findBdatRowIndex() const;
+  mm::Mat44 &getMatrix(mm::Mat44 &matrix, bool isRotation) const;
   bool getPositionInShape(mm::Vec3 &position, bool isRandom) const;
   bool getYSnapPosInShape(mm::Vec3 &position) const;
   bool getPositionAppliedYSnap(mm::Vec3 &result, const mm::Vec3 &position, bool isXformY) const;

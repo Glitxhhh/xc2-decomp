@@ -8,7 +8,26 @@
 
 namespace ml {
 
-struct PadVibrationInfo;
+// Layout evidence: ml::DevPadNx::Impl::playVibration reads the id at 0x00, tests bits 0 and 1 of 0x04 and copies the four
+// floats at 0x08; every caller (GfGameSalvage::playDiveVibration, GfMenuObjUtil::playVibration) stores 3 at 0x04 and 1.0f
+// at 0x0c and 0x14.
+struct PadVibrationInfo {
+  explicit PadVibrationInfo(u32 id, f32 amplitude = 1.0f) : unknown00(id), unknown04(3) {
+    unknown0c = 1.0f;
+    unknown14 = 1.0f;
+    unknown08 = amplitude;
+    unknown10 = amplitude;
+  }
+
+  u32 unknown00; // Inferred role: vibration id; original member name unknown.
+  u32 unknown04; // Inferred role: motors (bit 0 left, bit 1 right); original member name unknown.
+  f32 unknown08; // Inferred role: left amplitude; original member name unknown.
+  f32 unknown0c; // Inferred role: left frequency scale; original member name unknown.
+  f32 unknown10; // Inferred role: right amplitude; original member name unknown.
+  f32 unknown14; // Inferred role: right frequency scale; original member name unknown.
+};
+
+static_assert(sizeof(PadVibrationInfo) == 0x18, "");
 
 // Inferred role: dev pad repeat; original type name unknown.
 struct unknown034 {

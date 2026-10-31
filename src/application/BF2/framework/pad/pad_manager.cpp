@@ -10,10 +10,6 @@
 #include "mm_mtl/fixed_queue.h"
 #include "types.h"
 
-namespace ml {
-struct PadVibrationInfo;
-} // namespace ml
-
 namespace fw {
 
 PadManager::~PadManager() {}

@@ -17,7 +17,11 @@ template <int LEN> class FixStr;
 
 namespace gf {
 
+class GfInitParamBlade;
+class GfInitParamDriver;
+class GfInitParamEnemy;
 class GfInitParamEventObj;
+class GfInitParamNpc;
 class GfInitParamWeapon;
 struct GF_OBJ_HANDLE;
 
@@ -83,6 +87,7 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  static GfEvtModelDriver *create(GfInitParamDriver &param);
   bool isAnimEnd() const;
   void setDispRexCoreCrystal(bool isDisp);
   void setDispJiji(bool isDisp);
@@ -120,6 +125,7 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  static GfEvtModelBlade *create(GfInitParamBlade &param);
   bool isAnimEnd() const;
   void playAnimWeaponRightCS(const char *name);
   bool isPlayEndAnimWeaponRightCS();
@@ -149,6 +155,7 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  static GfEvtModelEnemy *create(GfInitParamEnemy &param);
   bool isAnimEnd() const;
 };
 
@@ -168,6 +175,11 @@ public:
 class GfEvtModelEvent : public GfEvtModel {
 public:
   static GfEvtModelEvent *create(GfInitParamEventObj &param);
+};
+
+class GfEvtModelNpc : public GfEvtModel {
+public:
+  static GfEvtModelNpc *create(GfInitParamNpc &param);
 };
 
 } // namespace gf

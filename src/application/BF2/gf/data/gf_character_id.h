@@ -34,6 +34,7 @@ enum {
   BLADE_KOSMOS = 1039,
   BLADE_REAL_ALIAS = 1050,
   BLADE_UNKNOWN_1073 = 1073,
+  BLADE_UNKNOWN_1074 = 1074, // Inferred role: Homuri loaded when GfDataBlade::isHomuriNameHikari; original name unknown.
 };
 
 } // namespace gf

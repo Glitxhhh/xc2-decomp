@@ -1,7 +1,12 @@
 #include "gf/game/event/gf_game_event.h"
 
 #include "event/manager.h"
+#include "framework/effect/effect_manager.h"
+#include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_event.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/data/gf_object_type.h"
@@ -450,6 +455,18 @@ void GfGameEvent::clearWeather() {
   }
 }
 
+void GfGameEvent::gevPause(u32 resumeBits, u32 pauseBits) {
+  bool isPause = (pauseBits & PAUSE_BIT_UNKNOWN_7) != 0;
+  bool isResume = (resumeBits & PAUSE_BIT_UNKNOWN_7) != 0;
+  if (isPause || isResume) {
+    isPause = isPause & !isResume;
+    fw::EffectManager *manager = fw::EffectManager::get();
+    // Category 3: the event effects.
+    manager->unknown37958[3] = __builtin_fmaxf(isPause ? 0.0f : 1.0f, 0.00001f);
+    manager->setMasterPause(isPause);
+  }
+}
+
 void GfGameEvent::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
   if (event == GEV_MAPJUMP_FADEIN && event::Manager::get() != nullptr && event::Manager::get()->isPlay()) {
     GfGameObj::changeStopLayerIgnoreEventObj(3, true);
@@ -551,7 +568,43 @@ bool GfGameEvent::isLoadedSe() {
   return true;
 }
 
+GfEvtModel *GfGameEvent::createDriver(GfInitParamDriver &param) {
+  if (!param.unknown1a2 && !GfGameManager::isInMetJIJI()) {
+    param.unknown1a2 = true;
+  }
+  GfEvtModel *model = GfEvtModelDriver::create(param);
+  addEventObjUpdater(model);
+  return model;
+}
+
 void GfGameEvent::addEventObjUpdater(GfEvtModel *model) { get()->unknown1050.push_back(model); }
+
+GfEvtModel *GfGameEvent::createBlade(GfInitParamBlade &param) {
+  if (param.getBladeID() == BLADE_HOMURI && GfDataBlade::isHomuriNameHikari()) {
+    param.m_bladeID = BLADE_UNKNOWN_1074;
+  }
+  GfEvtModel *model = GfEvtModelBlade::create(param);
+  addEventObjUpdater(model);
+  return model;
+}
+
+GfEvtModel *GfGameEvent::createNpc(GfInitParamNpc &param) {
+  CBdatWrapper bdat = {GfDataBdat::getFP(BDAT_RSC_NPC_LIST)};
+  if (param.unknown18 == nullptr) {
+    param.unknown18 = &bdat;
+  }
+  return GfEvtModelNpc::create(param);
+}
+
+GfEvtModel *GfGameEvent::createEnemy(GfInitParamEnemy &param) {
+  CBdatWrapper bdat = {GfDataBdat::getFP(BDAT_RSC_EN)};
+  if (param.unknown18 == nullptr) {
+    param.unknown18 = &bdat;
+  }
+  GfEvtModel *model = GfEvtModelEnemy::create(param);
+  addEventObjUpdater(model);
+  return model;
+}
 
 GfEvtModelWeapon *GfGameEvent::createWeapon(GfInitParamWeapon &param) { return GfEvtModelWeapon::create(param); }
 

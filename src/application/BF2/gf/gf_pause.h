@@ -14,6 +14,7 @@ enum {
   PAUSE_BIT_FIELD_TIME = 1 << 4,
   PAUSE_BIT_EVENT = 1 << 5,
   PAUSE_BIT_MAIN_MENU = 1 << 6,
+  PAUSE_BIT_UNKNOWN_7 = 1 << 7, // Inferred role: pauses the effects (GfGameEvent::gevPause); original name unknown.
   PAUSE_BIT_EVENT_SKIP = 1 << 9,
 };
 
