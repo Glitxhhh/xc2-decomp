@@ -1,9 +1,12 @@
 #include "gf/game/gf_game_voice.h"
 
 #include "framework/lang_util.h"
+#include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixstr.h"
 
 namespace gf {
+
+class VoiceInfo; // IWYU pragma: keep
 
 bool GfGameVoice::isInitialized() {
   GfGameVoice *voice = get();
@@ -29,3 +32,4 @@ void GfGameVoice::applyHanaVoiceCondirtion(GfVoiceName &) {}
 } // namespace gf
 
 template mm::mtl::PtrSingleton<gf::GfGameVoice>::~PtrSingleton();
+template mm::mtl::FixedList<gf::VoiceInfo *, 6>::iterator mm::mtl::FixedList<gf::VoiceInfo *, 6>::erase(mm::mtl::FixedList<gf::VoiceInfo *, 6>::iterator it);

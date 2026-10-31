@@ -25,3 +25,5 @@ bool GfMenuSoundManager::isSpecOutJingle(u32 id) {
 }
 
 } // namespace gf
+
+template mm::mtl::PtrSingleton<gf::GfMenuSoundManager>::~PtrSingleton();

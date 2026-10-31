@@ -11,6 +11,8 @@ struct GfSetupParam;
 
 class GfGameVisible : public mm::mtl::PtrSingleton<GfGameVisible> {
 public:
+  struct Info;
+
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);

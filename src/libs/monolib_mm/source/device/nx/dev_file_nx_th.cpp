@@ -6,6 +6,8 @@
 
 namespace ml {
 
+class DevFileBlackListNxTh; // IWYU pragma: keep
+
 namespace dfn_detail {
 
 mm::mtl::HeapAllocator g_allocator;
@@ -42,3 +44,4 @@ bool DevFileNxTh::rfIsUsedChannel(u32 channel) { return (&*unknown20 + channel)-
 } // namespace ml
 
 template mm::mtl::PtrSingleton<ml::DevFileNxTh>::~PtrSingleton();
+template mm::mtl::PtrSingleton<ml::DevFileBlackListNxTh>::~PtrSingleton();

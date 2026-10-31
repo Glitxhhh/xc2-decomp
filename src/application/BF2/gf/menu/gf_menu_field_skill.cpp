@@ -15,3 +15,5 @@ void GfMenuFieldSkill::StateIdle::onLeave(void *owner, ai::State *next) {}
 void GfMenuFieldSkill::StateIdle::onStep(void *owner, const void *param) {}
 
 } // namespace gf
+
+template mm::mtl::PtrSingleton<gf::GfMenuFieldSkill>::~PtrSingleton();

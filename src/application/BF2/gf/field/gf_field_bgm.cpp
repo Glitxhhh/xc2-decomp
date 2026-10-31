@@ -14,6 +14,12 @@
 
 namespace gf {
 
+class BgmGimmick;    // IWYU pragma: keep
+class BgmBattle;     // IWYU pragma: keep
+class BgmBattleBoss; // IWYU pragma: keep
+class BgmEvent;      // IWYU pragma: keep
+class BgmField;      // IWYU pragma: keep
+
 BGMCOND::BGMCOND() : unknown00(0), unknown0c(0), unknown10(0), unknown11(0), unknown58(0) {}
 
 void BGMCOND::clear() {
@@ -253,3 +259,8 @@ bool GfFieldBgm::isStopBgmForDebug() { return _gffsn::s_bStopBGM; }
 
 template mm::mtl::PtrSingleton<gf::GfFieldBgm>::~PtrSingleton();
 template float mm::mtl::Delegate<float(gf::ExecFadeParam &)>::staticFuncInvoker(const mm::mtl::Delegate<float(gf::ExecFadeParam &)> *, gf::ExecFadeParam &);
+template mm::mtl::PtrSingleton<gf::BgmGimmick>::~PtrSingleton();
+template mm::mtl::PtrSingleton<gf::BgmBattle>::~PtrSingleton();
+template mm::mtl::PtrSingleton<gf::BgmBattleBoss>::~PtrSingleton();
+template mm::mtl::PtrSingleton<gf::BgmEvent>::~PtrSingleton();
+template mm::mtl::PtrSingleton<gf::BgmField>::~PtrSingleton();

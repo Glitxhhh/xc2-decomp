@@ -15,8 +15,8 @@ enum ERR_CALL {};
 
 class ErrViewer : public mm::mtl::PtrSingleton<ErrViewer>, public IWorkBackground {
 public:
-  // Inferred type: error entry; the original type name is unknown.
-  struct unknown001 {
+  // Name from the game symbol of mm::mtl::FixedList<ml::ErrViewer::ERRINFO*, 32>::erase.
+  struct ERRINFO {
     u8 _00[0x08];
     void *unknown08;        // Inferred role: callback; original member name unknown.
     CERR_STRUCT *unknown10; // Inferred role: error; original member name unknown.
@@ -43,9 +43,9 @@ public:
 
   static s32 s_nHandle;
 
-  CriticalSection *unknown10;                     // Inferred role: critical section; original member name unknown.
-  mm::mtl::FixedList<unknown001 *, 32> unknown18; // Inferred role: errors; original member name unknown.
-  s32 unknown258;                                 // Inferred role: state; original member name unknown.
+  CriticalSection *unknown10;                  // Inferred role: critical section; original member name unknown.
+  mm::mtl::FixedList<ERRINFO *, 32> unknown18; // Inferred role: errors; original member name unknown.
+  s32 unknown258;                              // Inferred role: state; original member name unknown.
   u8 _25c[0x260 - 0x25c];
   long unknown260; // Inferred role: clock; original member name unknown.
   bool unknown268; // Inferred role: render registered; original member name unknown.

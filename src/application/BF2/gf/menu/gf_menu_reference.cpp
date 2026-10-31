@@ -796,3 +796,5 @@ struct MENUREF_OBJ;
 template class ml::fixed_size_alloc_inside<gf::MENUREF_OBJ, 512>;
 
 template mm::mtl::PtrSingleton<gf::GfMenuReference>::~PtrSingleton();
+template mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::iterator
+mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::erase(mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::iterator it);

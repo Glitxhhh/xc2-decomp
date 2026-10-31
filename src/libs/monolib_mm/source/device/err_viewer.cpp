@@ -17,7 +17,7 @@ bool ErrViewer::isValid(CERR_STRUCT *error) {
     return false;
   }
   CS lock(*viewer->unknown10);
-  for (mm::mtl::FixedList<unknown001 *, 32>::iterator it = viewer->unknown18.begin(); it != viewer->unknown18.end(); ++it) {
+  for (mm::mtl::FixedList<ERRINFO *, 32>::iterator it = viewer->unknown18.begin(); it != viewer->unknown18.end(); ++it) {
     if ((*it)->unknown10 == error) {
       return true;
     }
@@ -29,7 +29,7 @@ void ErrViewer::reqCancel(CERR_STRUCT *error) {
   ErrViewer *viewer = get();
   if (viewer != nullptr) {
     CS lock(*viewer->unknown10);
-    for (mm::mtl::FixedList<unknown001 *, 32>::iterator it = viewer->unknown18.begin(); it != viewer->unknown18.end(); ++it) {
+    for (mm::mtl::FixedList<ERRINFO *, 32>::iterator it = viewer->unknown18.begin(); it != viewer->unknown18.end(); ++it) {
       if ((*it)->unknown10 == error) {
         (*it)->unknown08 = nullptr;
         break;
@@ -124,3 +124,4 @@ void ErrViewer::term() {
 } // namespace ml
 
 template mm::mtl::PtrSingleton<ml::ErrViewer>::~PtrSingleton();
+template mm::mtl::FixedList<ml::ErrViewer::ERRINFO *, 32>::iterator mm::mtl::FixedList<ml::ErrViewer::ERRINFO *, 32>::erase(mm::mtl::FixedList<ml::ErrViewer::ERRINFO *, 32>::iterator it);

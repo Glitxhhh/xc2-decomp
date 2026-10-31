@@ -24,6 +24,8 @@ public:
 
   enum HOMURA_MODE {};
 
+  struct REFLIST;
+
   struct FieldSkillInfo {
     u32 unknown00; // Inferred role: id; original member name unknown.
   };

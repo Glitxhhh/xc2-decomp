@@ -110,3 +110,5 @@ void SeManager::OnEventProc(MSG_TYPE type) {
 }
 
 } // namespace event
+
+template event::SeManager &mm::mtl::Singleton<event::SeManager>::get();

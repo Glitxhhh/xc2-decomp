@@ -102,3 +102,5 @@ void ShakeManager::OnEventProc(MSG_TYPE type) {
 }
 
 } // namespace event
+
+template event::ShakeManager &mm::mtl::Singleton<event::ShakeManager>::get();

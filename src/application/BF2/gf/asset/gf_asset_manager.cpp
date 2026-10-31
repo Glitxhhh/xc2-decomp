@@ -6,6 +6,8 @@
 
 namespace gf {
 
+class IGfAssetEvent; // IWYU pragma: keep
+
 GfSlotMapping *GfAssetManager::getSlotMapping() {
   GfAssetManager *manager = get();
   if (manager != nullptr) {
@@ -70,3 +72,5 @@ u32 GfAssetManager::getDestroyAssetPackInfo() {
 template mm::mtl::FixedList<gf::GF_ASSET_HANDLE *, 1024>::iterator mm::mtl::FixedList<gf::GF_ASSET_HANDLE *, 1024>::erase(mm::mtl::FixedList<gf::GF_ASSET_HANDLE *, 1024>::iterator);
 
 template mm::mtl::PtrSingleton<gf::GfAssetManager>::~PtrSingleton();
+
+template mm::mtl::FixedList<gf::IGfAssetEvent *, 32>::iterator mm::mtl::FixedList<gf::IGfAssetEvent *, 32>::erase(mm::mtl::FixedList<gf::IGfAssetEvent *, 32>::iterator it);

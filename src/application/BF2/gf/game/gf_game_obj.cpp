@@ -398,7 +398,7 @@ void GfGameObj::destroyGameObjWithAttribute(GF_OBJ_HANDLE *handle, f32 fadeTime,
   }
   GfGameObj *gameObj = get();
   if (attribute != 0) {
-    unknown004 destroyAttribute = {handle, attribute};
+    ObjMsg destroyAttribute = {handle, attribute};
     gameObj->unknown54240.push_back(destroyAttribute);
   }
   if (!gameObj->addOutObj(handle, fadeTime, true)) {
@@ -481,3 +481,5 @@ void GfGameObj::setupEnterGameObjMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f
 
 template mm::mtl::PtrSingleton<gf::GfGameObj>::~PtrSingleton();
 template mm::mtl::FixedList<gf::GfGameObj::INOUT, 1024>::iterator mm::mtl::FixedList<gf::GfGameObj::INOUT, 1024>::erase(mm::mtl::FixedList<gf::GfGameObj::INOUT, 1024>::iterator);
+template mm::mtl::PtrSingleton<gf::GfGameObjEnemy>::~PtrSingleton();
+template mm::mtl::FixedList<gf::ObjMsg, 256>::iterator mm::mtl::FixedList<gf::ObjMsg, 256>::erase(mm::mtl::FixedList<gf::ObjMsg, 256>::iterator it);

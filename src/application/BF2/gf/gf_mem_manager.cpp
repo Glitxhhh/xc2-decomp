@@ -9,3 +9,5 @@ void GfMemManager::initializeGame(mtl::ALLOC_HANDLE) {}
 void GfMemManager::finalizeGame() {}
 
 } // namespace gf
+
+template mm::mtl::PtrSingleton<gf::GfMemManager>::~PtrSingleton();

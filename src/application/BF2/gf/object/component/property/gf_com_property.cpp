@@ -1,5 +1,7 @@
 #include "gf/object/component/property/gf_com_property.h"
 
+#include "mm_mtl/unique_ptr.h" // IWYU pragma: keep
+
 namespace gf {
 
 GfComProperty::GfComProperty() : unknown10(nullptr), unknown18(nullptr), unknown20(nullptr), unknown28(nullptr), unknown30(nullptr) {}
@@ -51,3 +53,7 @@ void GfComProperty::procMsgObjectLimitHP(fw::MessageObject *object, MsgObjectLim
 }
 
 } // namespace gf
+
+template void mm::mtl::UniquePtr<gf::GfTargetProperty>::_safe_bool_helper::safe_bool_function() const;
+template void mm::mtl::UniquePtr<gf::GfAlphaProperty>::_safe_bool_helper::safe_bool_function() const;
+template void mm::mtl::UniquePtr<gf::GfDebugStatusProperty>::_safe_bool_helper::safe_bool_function() const;

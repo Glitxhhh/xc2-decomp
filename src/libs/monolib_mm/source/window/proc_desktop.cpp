@@ -212,3 +212,5 @@ void ProcDesktop::setBuildRevision(const char *revision) {
 } // namespace ml
 
 template mm::mtl::PtrSingleton<ml::ProcDesktop>::~PtrSingleton();
+template mm::mtl::PtrSingleton<ml::_dsk::ProcDesktopBackGround>::~PtrSingleton();
+template mm::mtl::PtrSingleton<ml::_dsk::ProcDesktopException>::~PtrSingleton();

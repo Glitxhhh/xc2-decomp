@@ -110,3 +110,5 @@ void VoiceManager::OnEventProc(MSG_TYPE type) {
 }
 
 } // namespace event
+
+template event::VoiceManager *mm::mtl::Singleton<event::VoiceManager>::getPtr();

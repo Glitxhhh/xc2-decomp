@@ -1,10 +1,13 @@
 #include <stddef.h>
 
 #include "device/dev_file_dic_allocator.h"
+#include "mm_mtl/singleton.h" // IWYU pragma: keep
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
+
+class DevFileArchiver; // IWYU pragma: keep
 
 DevFileDicAllocator::DevFileDicAllocator(mtl::ALLOC_HANDLE mem) : m_mem(mem) {}
 
@@ -22,3 +25,5 @@ void *DevFileDicAllocator::reallocate(void *pointer, size_t size) {
 }
 
 } // namespace ml
+
+template mm::mtl::PtrSingleton<ml::DevFileArchiver>::~PtrSingleton();

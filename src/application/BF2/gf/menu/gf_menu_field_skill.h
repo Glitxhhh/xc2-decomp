@@ -1,9 +1,10 @@
 #pragma once
 #include "ai/ai_state.h"
+#include "mm_mtl/singleton.h"
 
 namespace gf {
 
-class GfMenuFieldSkill {
+class GfMenuFieldSkill : public mm::mtl::PtrSingleton<GfMenuFieldSkill> {
 public:
   class StateIdle : public ai::State {
   public:
