@@ -1,5 +1,7 @@
 #include "grlib/cglib_gpu_counter.h"
 
+#include <string.h>
+
 #include "grlib/cglib_buff_fix_alloc.h"
 #include "grlib/cglib_buff_occlusion.h"
 #include "grlib/cglib_manager.h"
@@ -20,6 +22,36 @@ const u32 unknown004[5] = {2, 3, 4, 8, 15};
 
 CGLibGpuCounter::CGLibGpuCounter() : _00(), unknown10(), unknown30(), unknown50(), unknownf0() {}
 
+CGLibGpuCounter::~CGLibGpuCounter() { release(); }
+
+void CGLibGpuCounter::release() {
+  context::CGLibSystemContext *context = context::CGLibSystemContext::get();
+  if (context != nullptr) {
+    CGLibBuffFixAlloc &alloc = context->unknowne38;
+    for (int i = 0; i < 2; i++) {
+      if (unknown10[i].unknown00 != nullptr) {
+        alloc.freeID(unknown10[i].unknown08);
+      }
+      if (unknown30[i].unknown00 != nullptr) {
+        alloc.freeID(unknown30[i].unknown08);
+      }
+      for (int j = 0; j < 5; j++) {
+        int counterIndex = j * 2 + i;
+        if (unknown50[counterIndex].unknown00 != nullptr) {
+          alloc.freeID(unknown50[counterIndex].unknown08);
+        }
+        if (unknownf0[counterIndex].unknown00 != nullptr) {
+          alloc.freeID(unknownf0[counterIndex].unknown08);
+        }
+      }
+    }
+  }
+  memset(unknown10, 0, sizeof(unknown10));
+  memset(unknown30, 0, sizeof(unknown30));
+  memset(unknown50, 0, sizeof(unknown50));
+  memset(unknownf0, 0, sizeof(unknownf0));
+}
+
 void CGLibGpuCounter::begin() {
   context::CGLibSystemContext *context = context::CGLibSystemContext::get();
   CGLibBuffFixAlloc &alloc = context->unknowne38;
@@ -34,7 +66,7 @@ void CGLibGpuCounter::begin() {
     int counterIndex = i * 2 + CGLibManager::s_nDblNowIdx;
     if (unknown50[counterIndex].unknown00 == nullptr) {
       unknown50[counterIndex].unknown08 = alloc.allocID();
-      unknown50[counterIndex].unknown00 = reinterpret_cast<unknown003 *>(alloc.m_buffer + alloc.unknown10 * unknown50[counterIndex].unknown08);
+      unknown50[counterIndex].unknown00 = reinterpret_cast<NVNcounterData *>(alloc.m_buffer + alloc.unknown10 * unknown50[counterIndex].unknown08);
       unknown50[counterIndex].unknown0c = static_cast<u32>(reinterpret_cast<u64>(unknown50[counterIndex].unknown00)) - static_cast<u32>(reinterpret_cast<u64>(context->unknown2458.unknown18));
     }
     nvnCommandBufferReportCounter(
@@ -56,7 +88,7 @@ void CGLibGpuCounter::end() {
     int counterIndex = i * 2 + CGLibManager::s_nDblNowIdx;
     if (unknownf0[counterIndex].unknown00 == nullptr) {
       unknownf0[counterIndex].unknown08 = alloc.allocID();
-      unknownf0[counterIndex].unknown00 = reinterpret_cast<unknown003 *>(alloc.m_buffer + alloc.unknown10 * unknownf0[counterIndex].unknown08);
+      unknownf0[counterIndex].unknown00 = reinterpret_cast<NVNcounterData *>(alloc.m_buffer + alloc.unknown10 * unknownf0[counterIndex].unknown08);
       unknownf0[counterIndex].unknown0c = static_cast<u32>(reinterpret_cast<u64>(unknownf0[counterIndex].unknown00)) - static_cast<u32>(reinterpret_cast<u64>(context->unknown2458.unknown18));
     }
     nvnCommandBufferReportCounter(
@@ -79,7 +111,24 @@ int CGLibGpuCounter::getCntNum(u32 index) {
     return 0;
   }
   if (unknownf0[index].unknown00 != nullptr) {
-    return unknownf0[index].unknown00->unknown00[0] - unknown50[index].unknown00->unknown00[0];
+    return reinterpret_cast<const unknown002 *>(unknownf0[index].unknown00)->unknown00[0] - reinterpret_cast<const unknown002 *>(unknown50[index].unknown00)->unknown00[0];
+  }
+  return 0;
+}
+
+int CGLibGpuCounter::getZCullNum(u32 index, u32 type) {
+  if (unknown50[index].unknown00 == nullptr) {
+    return 0;
+  }
+  if (unknownf0[index].unknown00 != nullptr) {
+    const unknown002 *begin = reinterpret_cast<const unknown002 *>(unknown50[index].unknown00);
+    const unknown002 *end = reinterpret_cast<const unknown002 *>(unknownf0[index].unknown00);
+    if (type < 2) {
+      return end->unknown00[type] - begin->unknown00[type];
+    }
+    const int *beginValue = begin->unknown10;
+    const int *endValue = end->unknown10;
+    return endValue[type - 2] - beginValue[type - 2];
   }
   return 0;
 }
@@ -100,7 +149,7 @@ int CGLibGpuCounter::get4x2ZCullNum() {
     return 0;
   }
   if (unknownf0[index].unknown00 != nullptr) {
-    return unknownf0[index].unknown00->unknown00[1] - unknown50[index].unknown00->unknown00[1];
+    return reinterpret_cast<const unknown002 *>(unknownf0[index].unknown00)->unknown00[1] - reinterpret_cast<const unknown002 *>(unknown50[index].unknown00)->unknown00[1];
   }
   return 0;
 }
