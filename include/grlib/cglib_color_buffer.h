@@ -5,8 +5,6 @@
 #include "nvn/nvn.h"
 #include "types.h"
 
-struct NVNtexture;
-
 namespace grlib {
 
 class CGLibColorBuffer {
