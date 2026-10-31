@@ -96,6 +96,7 @@ public:
     };
 
     struct PopEnemyInfo {
+      ~PopEnemyInfo() { dispose(); }
       void dispose();
 
       // Inferred helper: number of game objects of this enemy; original name unknown.
@@ -123,6 +124,7 @@ public:
       u32 unknown24; // Role and original member name unknown.
     };
 
+    ~PopInfo() { dispose(); }
     void dispose();
     void create(const CreateInfo &info);
     int getGobInstNum() const;
@@ -145,6 +147,7 @@ public:
     unknown004_2 = 1 << 2, // Inferred role: depop distance condition matched; original name unknown.
   };
 
+  ~GmkEnemyInsts() { dispose(); }
   bool isPopFinished() const;
   void validateDisp(gf::GF_OBJ_HANDLE *handle) const;
   void validateDisp() const;
@@ -250,7 +253,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_ENEMY;
 
-  ~GmkEnemy() override;
+  ~GmkEnemy() override { dispose(); }
   GmkType getGmkType() const override;
   bool isValid() const override;
   void create(const CreateInfo &info) override;

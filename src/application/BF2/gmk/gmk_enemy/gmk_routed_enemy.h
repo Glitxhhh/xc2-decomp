@@ -39,6 +39,7 @@ public:
     bool isYSnap() const override;
     bool onPopGob(gf::GF_OBJ_HANDLE *handle) const override;
     void onCreateGobInsts(u32 num) const override;
+    bool getSquadMemberIndex(int &index, gf::GF_OBJ_HANDLE *handle) const;
 
     GmkRoutedEnemy *unknown08; // Inferred role: owner; original member name unknown.
   };

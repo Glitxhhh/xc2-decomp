@@ -39,7 +39,8 @@ public:
     InitResult *unknown20; // Inferred role: init result; original member name unknown.
   };
 
-  explicit GmkRouteNavi(const CreateInfo *info);
+  explicit GmkRouteNavi(const CreateInfo *info = nullptr);
+  ~GmkRouteNavi() { dispose(); }
 
   void create(const CreateInfo &info);
   void dispose();

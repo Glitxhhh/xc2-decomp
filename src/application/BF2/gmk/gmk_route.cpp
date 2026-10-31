@@ -74,6 +74,13 @@ bool GmkRouteNavi::CreateInfo::isValid() const {
   return unknown18 != 0;
 }
 
+GmkRouteNavi::GmkRouteNavi(const CreateInfo *info)
+    : unknown00(nullptr), unknown68(1.0f), unknown6c(2.0f), unknown70(nullptr), unknown80(false), unknown90(0.0f, 0.0f, 0.0f), unknowna0(0), unknowna4(false), unknowna8(0), unknownac(0.0f) {
+  if (info != nullptr) {
+    create(*info);
+  }
+}
+
 void GmkRouteNavi::create(const CreateInfo &info) {
   dispose();
   unknown00 = info;
@@ -372,3 +379,4 @@ template void mm::mtl::Vector<gmk::GmkRoutePoint::BdatInfo>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkRoutePoint>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkRoutePoint>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkRoutePoint>::resize(size_t);
+template void mm::mtl::Vector<std::pair<gf::GF_OBJ_HANDLE *, gmk::GmkRouteNavi>>::pop_back();

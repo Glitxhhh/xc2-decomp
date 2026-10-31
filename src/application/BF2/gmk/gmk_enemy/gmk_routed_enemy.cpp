@@ -1,8 +1,11 @@
 #include "gmk/gmk_enemy/gmk_routed_enemy.h"
 
 #include "gf/game/gf_game_manager.h"
+#include "gf/object/component/enemy/gf_behavior_enemy_field.h"
+#include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_base.h"
@@ -10,6 +13,7 @@
 #include "gmk/gmk_list_impl.h"               // IWYU pragma: keep
 #include "gmk/gmk_route_navi.h"
 #include "gmk/gmk_set.h"
+#include "gmk/gmk_squad.h"
 #include "mm_math/mm_vec3.h"
 
 namespace gf {
@@ -39,6 +43,32 @@ bool GmkRoutedEnemy::isValid() const {
 bool GmkRoutedEnemy::PopXformFinder::isYSnap() const { return false; }
 
 void GmkRoutedEnemy::PopXformFinder::onCreateGobInsts(u32 num) const { unknown08->createRouteNavis(num); }
+
+bool GmkRoutedEnemy::PopXformFinder::getSquadMemberIndex(int &index, gf::GF_OBJ_HANDLE *handle) const {
+  gf::GfObjAcc acc(handle);
+  gf::GfObj *obj = acc.getObj();
+  if (obj != nullptr) {
+    gf::GfComBehaviorEnemy *behavior = obj->getComponent<gf::GfComBehaviorEnemy>();
+    if (behavior != nullptr && behavior->unknown140.unknown50.unknown001()) {
+      index = behavior->unknown140.unknown50.unknown28;
+      return index != 0;
+    }
+  }
+  return false;
+}
+
+bool GmkRoutedEnemy::PopXformFinder::onPopGob(gf::GF_OBJ_HANDLE *handle) const {
+  int index;
+  if (getSquadMemberIndex(index, handle)) {
+    return true;
+  }
+  GmkRouteNavi *navi = unknown08->findFreeRouteNavi();
+  if (navi == nullptr) {
+    return false;
+  }
+  unknown08->bindRouteNavi(handle, *navi);
+  return true;
+}
 
 void GmkRoutedEnemy::update(f32 deltaTime) {
   debugUpdateMmf();
