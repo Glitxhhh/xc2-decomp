@@ -33,6 +33,8 @@ struct GF_OBJ_HANDLE;
 // The info offsets are the ones StateUtil::get*Info() add to the sensor, selected by a bit of the state word at +0x24.
 class EnviromentSensor {
 public:
+  enum Flag {};
+
   struct GroundInfo {
     mm::Vec3 unknown00;       // Inferred role: position; original member name unknown.
     mm::Plane unknown10;      // Inferred role: plane; original member name unknown.

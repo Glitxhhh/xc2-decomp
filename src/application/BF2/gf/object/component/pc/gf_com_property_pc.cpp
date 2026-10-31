@@ -1,11 +1,13 @@
 #include "gf/object/component/pc/gf_com_property_pc.h"
 
+#include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/pc/gf_pc_agent.h" // IWYU pragma: keep
-#include "mm_mtl/unique_ptr.h"                  // IWYU pragma: keep
+#include "mm_mtl/rtti.h"
+#include "mm_mtl/unique_ptr.h" // IWYU pragma: keep
 
 namespace fw {
 class MessageObject;
@@ -33,6 +35,11 @@ void GfComPropertyPc::setEnvSensorCheckFlags(u32 flags, bool isEnable) {
   } else {
     sensor->m_envSensorCheckFlags &= ~flags;
   }
+}
+
+bool GfComPropertyPc::testEnvSensorCheckFlags(EnviromentSensor::Flag flag) {
+  EnviromentSensor *sensor = &mm::mtl::dynamicCast<GfComEnvSensor>(unknown08->unknown38[GfComEnvSensor::COMPONENT_INDEX])->unknown10;
+  return (sensor->m_envSensorCheckFlags & flag) != 0;
 }
 
 void GfComPropertyPc::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}

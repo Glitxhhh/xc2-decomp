@@ -26,6 +26,9 @@ struct MsgPcFieldNotifyRiderEvent : fw::Message {
   VehicleEvent unknown08; // Inferred role: vehicle event; original member name unknown.
 };
 
+f32 calcInputDiffAngle(GfComPropertyPc &property);
+f32 calcInputDiffAngleVel(GfComPropertyPc &property);
+
 class StateUtilField {
 public:
   enum Timing {
@@ -51,6 +54,21 @@ public:
   static bool isTurnEndRangeCacheInput(GfComPropertyPc &property, const mm::Vec3 &direction);
   static bool isInputInverseDir(GfComPropertyPc &property);
   static bool isInputInverseDirAutoRun(GfComPropertyPc &property);
+  static bool isTurnEndRange(GfComPropertyPc &property);
+  static bool isBackRange(GfComPropertyPc &property);
+  static bool isBackRangeAir(GfComPropertyPc &property);
+  static bool ignoreOnGroundJump(GfComPropertyPc &property, f32 time);
+  static bool isSwimFromAir(GfComPropertyPc &property);
+  static bool isWallFall(GfComPropertyPc &property);
+  static bool ignoreSlideJump(GfComPropertyPc &property, f32 time);
+  static bool isFallFromSlideState(GfComPropertyPc &property);
+  static bool isSlideStop(GfComPropertyPc &property);
+  static void setChildFrameHeight(GfComponent &component, f32 height);
+  static bool isWallIdleMotion(GfComAsm &comAsm);
+  static void notifyTurn(GfComBehaviorPc &behavior);
+  static bool isEnableWallPrepare(GfComPropertyPc &property);
+  static bool isWallDetach(GfComPropertyPc &property);
+  static void setEnableDeadColCheck(GfComBehaviorPc &behavior, bool isEnable);
   static void setIdleStatus(GfComPropertyPc &property, bool isIdle);
   static void setAirStatus(GfComBehaviorPc &behavior, bool isAir);
   static void setSpecialActStatus(GfComBehaviorPc &behavior, bool isSpecialAct);

@@ -15,6 +15,8 @@ namespace gf {
 class GfComPropertyPc;
 
 namespace pc {
+struct FieldParam;
+struct WaterCommonParam;
 
 class GfPropertyField {
 public:
@@ -37,6 +39,11 @@ public:
   virtual bool recieveMessage(const GfComPropertyPc &property, fw::MessageObject *sender, fw::Message &message);
   void resetStatus(const GfComPropertyPc &property);
 
+  // Inferred role: field param of the param list entry 0 ("common"); original name unknown.
+  const FieldParam *unknown001() const { return static_cast<const FieldParam *>(unknown08->unknown10[0].param); }
+  // Inferred role: water param of the param list entry 9 ("water_common"); original name unknown.
+  const WaterCommonParam *unknown002() const { return static_cast<const WaterCommonParam *>(unknown08->unknown10[9].param); }
+
   mm::mtl::IntrusivePtr<fw::ParamList> unknown08; // Inferred role: param list; original member name unknown.
   u32 unknown10_0 : 1;                            // Inferred role: walk mode; original member name unknown.
   u32 : 1;
@@ -44,17 +51,21 @@ public:
   u32 unknown10_3 : 1; // Inferred role: pad control; original member name unknown.
   u32 : 4;
   u32 unknown11_0 : 1; // Inferred role: auto run; original member name unknown.
-  u32 : 2;
+  u32 unknown11_1 : 1; // Inferred role: air; original member name unknown.
+  u32 unknown11_2 : 1; // Inferred role: special action; original member name unknown.
   u32 unknown11_3 : 1; // Inferred role: slide; original member name unknown.
   u32 : 5;
   u32 unknown12_1 : 1; // Inferred role: field status reset; original member name unknown.
   u32 : 14;
   WALL_MOVE_MODE unknown14; // Inferred role: wall move mode; original member name unknown.
-  u8 _18[0x130 - 0x18];
+  u8 _18[0x38 - 0x18];
+  f32 unknown38; // Inferred role: wall detach distance; original member name unknown.
+  u8 _3c[0x130 - 0x3c];
 };
 
 static_assert(offsetof(GfPropertyField, unknown08) == 0x08, "");
 static_assert(offsetof(GfPropertyField, unknown14) == 0x14, "");
+static_assert(offsetof(GfPropertyField, unknown38) == 0x38, "");
 static_assert(sizeof(GfPropertyField) == 0x130, "");
 
 } // namespace pc

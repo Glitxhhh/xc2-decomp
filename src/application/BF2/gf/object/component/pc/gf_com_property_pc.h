@@ -1,11 +1,14 @@
 #pragma once
 #include <stddef.h>
 
+#include "fw/fw_param_manager.h"
+#include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
 namespace fw {
@@ -24,13 +27,13 @@ class RTTI;
 
 namespace gf {
 
-class EnviromentSensor;
 struct MsgDebugActivateComponentWindow;
 struct MsgObjectGetVelocity;
 struct MsgPcFieldNotifyChangePlayerID;
 struct MsgPcFieldWarpCancel;
 
 namespace pc {
+struct SlideParam;
 
 enum InputID {
   INPUT_ID_DECIDE = 0,
@@ -74,11 +77,15 @@ public:
   void setLocomotion(const anm::QsTransform &locomotion);
   void procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message);
   void setEnvSensorCheckFlags(u32 flags, bool isEnable);
+  bool testEnvSensorCheckFlags(EnviromentSensor::Flag flag);
   EnviromentSensor *getEnvSensor() const;
   void resetInput();
   void procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message);
   void procMsgPcFieldNotifyChangePlayerID(fw::MessageObject *object, MsgPcFieldNotifyChangePlayerID &message);
   void procMsgPcFieldWarpCancel(fw::MessageObject *object, MsgPcFieldWarpCancel &message);
+
+  // Inferred role: slide param of the pc param list entry 4 ("slide"); original name unknown.
+  const pc::SlideParam *unknown001() const { return static_cast<const pc::SlideParam *>(unknown300->unknown10[4].param); }
 
   u32 unknown38; // Inferred role: player id set by MsgPcFieldNotifyChangePlayerID; original member name unknown.
   u8 _3c[0x60 - 0x3c];
@@ -121,7 +128,9 @@ public:
   mm::Vec3 unknown2d0; // Inferred role: input X axis; original member name unknown.
   u8 _2e0[0x2f0 - 0x2e0];
   f32 unknown2f0; // Inferred role: water offset compared by StateUtilField::isInterruptionWater; original member name unknown.
-  u8 _2f4[0x310 - 0x2f4];
+  u8 _2f4[0x300 - 0x2f4];
+  mm::mtl::IntrusivePtr<fw::ParamList> unknown300; // Inferred role: pc param list; original member name unknown.
+  u8 _308[0x310 - 0x308];
   pc::GfPropertyField unknown310; // Inferred role: field; original member name unknown.
 };
 
@@ -140,6 +149,7 @@ static_assert(offsetof(GfComPropertyPc, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2d0) == 0x2d0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2f0) == 0x2f0, "");
+static_assert(offsetof(GfComPropertyPc, unknown300) == 0x300, "");
 static_assert(offsetof(GfComPropertyPc, unknown310) == 0x310, "");
 
 u32 getMode(GfComPropertyPc &property);

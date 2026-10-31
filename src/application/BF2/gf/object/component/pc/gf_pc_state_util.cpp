@@ -9,13 +9,21 @@
 #include "gf/game/gf_game_ride.h"
 #include "gf/game/gf_game_target.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
+#include "gf/object/component/behavior/plugin/gf_foot_ik_controller_plugin.h"
+#include "gf/object/component/behavior/plugin/gf_foot_step_plugin.h"
+#include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
+#include "gf/object/component/behavior/plugin/gf_plugin.h"
+#include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/plugin/gf_pc_fall_damage_plugin.h"
+#include "gf/object/component/pc/plugin/gf_pc_fall_distance_achiev_plugin.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "mm_mtl/rtti.h"
+#include "mm_mtl/vector.h"
 
 namespace gf {
 namespace pc {
@@ -49,6 +57,82 @@ void StateUtil::setEnableGravity(GfComBehaviorPc &behavior, bool isEnable) {
 bool StateUtil::testEnableGravity(GfComBehaviorPc &behavior) { return behavior.getProperty()->unknown110_3; }
 
 void StateUtil::setEnvSensor(GfComBehaviorPc &behavior, u32 flags, bool isEnable) { behavior.unknown08->getComponent<GfComPropertyPc>()->setEnvSensorCheckFlags(flags, isEnable); }
+
+bool StateUtil::testEnvSensor(GfComBehaviorPc &behavior, EnviromentSensor::Flag flag) { return behavior.unknown08->getComponent<GfComPropertyPc>()->testEnvSensorCheckFlags(flag); }
+
+void StateUtil::setEnableAttach(GfComBehaviorPc &behavior, bool isEnable) {
+  Plugin *plugin = behavior.unknown10.unknown28[12];
+  if (plugin != nullptr) {
+    plugin->setActivate(isEnable);
+  }
+}
+
+void StateUtil::setEnableTimer(GfComBehaviorPc &behavior, bool isEnable) {
+  Plugin *plugin = behavior.unknown10.unknown28[8];
+  if (plugin != nullptr) {
+    plugin->setActivate(isEnable);
+  }
+}
+
+void StateUtil::setFallDamageDisable(GfComBehaviorPc &behavior, bool isDisable) {
+  FallDamagePlugin *plugin = behavior.unknown10.unknown001<FallDamagePlugin>(7);
+  if (plugin != nullptr) {
+    plugin->unknown1c = isDisable;
+  }
+}
+
+void StateUtil::setEnableDownIK(GfComBehaviorPc &behavior, bool isEnable) {
+  FootIkControllerPlugin *plugin = behavior.unknown10.unknown001<FootIkControllerPlugin>(3);
+  if (plugin != nullptr) {
+    plugin->unknown1e = isEnable;
+  }
+}
+
+void StateUtil::switchPlacementIK(GfComBehaviorPc &behavior, bool isOn) {
+  FootIkControllerPlugin *plugin = behavior.unknown10.unknown001<FootIkControllerPlugin>(3);
+  if (plugin != nullptr) {
+    plugin->switchMode(isOn ? FootIkControllerPlugin::MODE_UNKNOWN_2 : FootIkControllerPlugin::MODE_UNKNOWN_1);
+  }
+}
+
+void StateUtil::setActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type, bool isActive) {
+  TimerPlugin *plugin = behavior.unknown10.unknown001<TimerPlugin>(8);
+  if (plugin != nullptr) {
+    plugin->setActivateTimer(type, isActive);
+  }
+}
+
+const f32 *StateUtil::getActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type) {
+  TimerPlugin *plugin = behavior.unknown10.unknown001<TimerPlugin>(8);
+  if (plugin == nullptr) {
+    return nullptr;
+  }
+  if (!plugin->unknown0c[type].unknown00) {
+    return nullptr;
+  }
+  return &plugin->unknown0c[type].unknown04;
+}
+
+void StateUtil::setLipSpeed(GfComBehaviorPc &behavior, f32 speed) {
+  LipSyncPlugin *plugin = behavior.unknown10.unknown001<LipSyncPlugin>(2);
+  if (plugin != nullptr) {
+    plugin->setSpeed(speed);
+  }
+}
+
+void StateUtil::setEnableFallDistChecker(GfComBehaviorPc &behavior, bool isEnable) {
+  FallDistanceAchievPlugin *plugin = behavior.unknown10.unknown001<FallDistanceAchievPlugin>(21);
+  if (plugin != nullptr) {
+    plugin->setActivate(isEnable);
+  }
+}
+
+void StateUtil::setEnableFootStep(GfComBehaviorPc &behavior, bool isEnable) {
+  FootStepPlugin *plugin = behavior.unknown10.unknown001<FootStepPlugin>(0);
+  if (plugin != nullptr) {
+    plugin->setActivate(isEnable);
+  }
+}
 
 EnviromentSensor::GroundInfo *StateUtil::getGroundInfo(GfComBehaviorPc &behavior) {
   EnviromentSensor *sensor = behavior.unknown08->getComponent<GfComPropertyPc>()->getEnvSensor();

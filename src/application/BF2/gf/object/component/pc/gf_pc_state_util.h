@@ -40,7 +40,14 @@ public:
   static void resetPlacementDownDist(GfComBehaviorPc &behavior);
   static void changeGroundAnglesForMotion(GfComBehaviorPc &behavior, const mm::Vec3 &angles);
   static void setEnvSensor(GfComBehaviorPc &behavior, u32 flags, bool isEnable);
+  static bool testEnvSensor(GfComBehaviorPc &behavior, EnviromentSensor::Flag flag);
+  static void setEnableAttach(GfComBehaviorPc &behavior, bool isEnable);
+  static void setEnableTimer(GfComBehaviorPc &behavior, bool isEnable);
   static void setActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type, bool isActive);
+  static const f32 *getActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type);
+  static void switchPlacementIK(GfComBehaviorPc &behavior, bool isOn);
+  static void setLipSpeed(GfComBehaviorPc &behavior, f32 speed);
+  static void setEnableFootStep(GfComBehaviorPc &behavior, bool isEnable);
   static void notifyDead(GfComBehaviorPc &behavior, MsgObjectNotifyDead &message, bool isBroadcast);
   static void setEnableFallDistChecker(GfComBehaviorPc &behavior, bool isEnable);
   static EnviromentSensor::GroundInfo *getGroundInfo(GfComBehaviorPc &behavior);
