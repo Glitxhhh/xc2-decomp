@@ -1,9 +1,6 @@
 #pragma once
 #include <stddef.h>
 
-#include "mm_math/mm_col3.h"
-#include "mm_math/mm_col4.h"
-#include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec3_na.h"
 #include "ptlib/emitter/particle_emitter_param.h"
@@ -189,6 +186,19 @@ struct unknown006 {
 
 static_assert(offsetof(unknown006, unknown0c) == 0x0c, "");
 
+// Inferred role: move function of an emitter, selected by EmitterObj::move_func; original name unknown.
+// Evidence: the assertion string "m_move_type < MOVE_TYPE_MAX" in EmitterObj::move_func.
+enum unknown010 {
+  MOVE_TYPE_UNKNOWN_0,
+  MOVE_TYPE_UNKNOWN_1, // Inferred role: move01_type0.
+  MOVE_TYPE_UNKNOWN_2, // Inferred role: move01_type1.
+  MOVE_TYPE_UNKNOWN_3, // Inferred role: move01_type9.
+  MOVE_TYPE_UNKNOWN_4, // Inferred role: move01_type_model.
+  MOVE_TYPE_UNKNOWN_5, // Inferred role: move01_type5.
+  MOVE_TYPE_UNKNOWN_6, // Inferred role: move01_type12.
+  MOVE_TYPE_MAX,
+};
+
 class EmitterObj : public IntrusiveListNode {
 public:
   bool isRenderCheck() const;
@@ -216,6 +226,13 @@ public:
   bool localUpdateParticleObj(ParticleObj *&particle, IntrusiveList<ParticleObj>::iterator &it, f32 speed, int isMove, int &count);
   bool localUpdateParticleObjLgt(ParticleObj *&particle, IntrusiveList<ParticleObj>::iterator &it, f32 speed, int isMove, int &count);
   bool localUpdateParticleObjMdl(ParticleObj *&particle, IntrusiveList<ParticleObj>::iterator &it, f32 speed, int isMove, int &count);
+  int move_func(f32 speed, int isMove);
+  int move01_type0(f32 speed, int isMove);
+  int move01_type1(f32 speed, int isMove);
+  void move01_type9(f32 speed, int isMove);
+  int move01_type_model(f32 speed, int isMove);
+  int move01_type5(f32 speed, int isMove);
+  int move01_type12(f32 speed, int isMove);
 
   u8 unknown10; // Inferred role: cleared when a dead emitter is queued for release; original member name unknown.
   u8 _011[0x040 - 0x011];
@@ -229,37 +246,15 @@ public:
   void *unknown90;       // Inferred role: group; original member name unknown.
   EmitterArg *unknown98; // Inferred role: p arg; original member name unknown.
   u8 _0a0[0x0c0 - 0x0a0];
-  unknown002 *unknownc0; // Inferred role: shared data; original member name unknown.
-  EmitterObj *unknownc8; // Inferred role: p next; original member name unknown.
-  u32 unknownd0;         // Inferred role: move type; original member name unknown.
-  u32 unknownd4;         // Inferred role: move flag; original member name unknown.
+  unknown002 *unknownc0;  // Inferred role: shared data; original member name unknown.
+  EmitterObj *unknownc8;  // Inferred role: p next; original member name unknown.
+  unknown010 m_move_type; // Evidence: name from the assertion string "m_move_type < MOVE_TYPE_MAX" in move_func.
+  u32 unknownd4;          // Inferred role: move flag; original member name unknown.
   u8 _0d8[0x0e0 - 0x0d8];
-  unknown001 unknowne0; // Inferred role: transform; original member name unknown.
-  mm::Col4 unknown120;  // Inferred role: color, the alpha is read by the draw sort; original member name unknown.
-  mm::Col3 unknown130;  // Inferred role: copied from the emitter parameter; original member name unknown.
-  u8 _13c[0x140 - 0x13c];
-  mm::Vec2 unknown140; // Inferred role: copied from the emitter parameter; original member name unknown.
-  u8 _148[0x14c - 0x148];
-  f32 unknown14c; // Inferred role: scale; original member name unknown.
-  s8 unknown150;  // Inferred role: priority offset; original member name unknown.
-  u8 unknown151;  // Inferred role: disp; original member name unknown.
-  u8 unknown152;  // Inferred role: no wait; original member name unknown.
-  u8 unknown153;  // Original member name unknown.
-  u16 unknown154; // Inferred role: copied from the emitter parameter; original member name unknown.
-  u8 unknown156;  // Inferred role: copied from the emitter parameter; original member name unknown.
-  u8 unknown157;  // Inferred role: copied from the emitter parameter; original member name unknown.
-  f32 unknown158; // Inferred role: speed; original member name unknown.
-  f32 unknown15c; // Inferred role: copied from the emitter parameter; original member name unknown.
-  f32 unknown160; // Inferred role: copied from the emitter parameter; original member name unknown.
-  f32 unknown164; // Inferred role: copied from the emitter parameter; original member name unknown.
-  f32 unknown168; // Inferred role: copied from the emitter parameter; original member name unknown.
-  f32 unknown16c; // Inferred role: copied from the emitter parameter; original member name unknown.
-  u32 unknown170; // Inferred role: category; original member name unknown.
-  u8 unknown174;  // Inferred role: copied from the emitter parameter; original member name unknown.
-  u8 _175[0x180 - 0x175];
-  u8 unknown180; // Inferred role: fadeout state; original member name unknown.
-  u8 unknown181; // Inferred role: fadeout count; original member name unknown.
-  u8 unknown182; // Inferred role: fadeout frame; original member name unknown.
+  EmitterParam m_param; // Evidence: name from the assertion string "math::isFinite(m_param.speed)" in update.
+  u8 unknown180;        // Inferred role: fadeout state; original member name unknown.
+  u8 unknown181;        // Inferred role: fadeout count; original member name unknown.
+  u8 unknown182;        // Inferred role: fadeout frame; original member name unknown.
   u8 _183[0x188 - 0x183];
   u32 unknown188; // Inferred role: dead value; original member name unknown.
   f32 unknown18c; // Inferred role: frame; original member name unknown.
@@ -304,24 +299,9 @@ static_assert(offsetof(EmitterObj, unknown90) == 0x90, "");
 static_assert(offsetof(EmitterObj, unknown98) == 0x98, "");
 static_assert(offsetof(EmitterObj, unknownc0) == 0xc0, "");
 static_assert(offsetof(EmitterObj, unknownc8) == 0xc8, "");
-static_assert(offsetof(EmitterObj, unknownd0) == 0xd0, "");
+static_assert(offsetof(EmitterObj, m_move_type) == 0xd0, "");
 static_assert(offsetof(EmitterObj, unknownd4) == 0xd4, "");
-static_assert(offsetof(EmitterObj, unknowne0) == 0xe0, "");
-static_assert(offsetof(EmitterObj, unknown120) == 0x120, "");
-static_assert(offsetof(EmitterObj, unknown130) == 0x130, "");
-static_assert(offsetof(EmitterObj, unknown140) == 0x140, "");
-static_assert(offsetof(EmitterObj, unknown14c) == 0x14c, "");
-static_assert(offsetof(EmitterObj, unknown150) == 0x150, "");
-static_assert(offsetof(EmitterObj, unknown151) == 0x151, "");
-static_assert(offsetof(EmitterObj, unknown152) == 0x152, "");
-static_assert(offsetof(EmitterObj, unknown153) == 0x153, "");
-static_assert(offsetof(EmitterObj, unknown158) == 0x158, "");
-static_assert(offsetof(EmitterObj, unknown154) == 0x154, "");
-static_assert(offsetof(EmitterObj, unknown15c) == 0x15c, "");
-static_assert(offsetof(EmitterObj, unknown160) == 0x160, "");
-static_assert(offsetof(EmitterObj, unknown16c) == 0x16c, "");
-static_assert(offsetof(EmitterObj, unknown170) == 0x170, "");
-static_assert(offsetof(EmitterObj, unknown174) == 0x174, "");
+static_assert(offsetof(EmitterObj, m_param) == 0xe0, "");
 static_assert(offsetof(EmitterObj, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(EmitterObj, unknown2b8) == 0x2b8, "");
 static_assert(offsetof(EmitterObj, unknown180) == 0x180, "");

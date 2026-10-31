@@ -67,11 +67,32 @@ void EmitterObj::emitter_dead(u8 value) {
 
 f32 EmitterObj::getCateSpd() {
   EmitterManager *manager = EmitterManager::getPtr();
-  return manager->unknown1700[unknown170];
+  return manager->unknown1700[m_param.unknown90];
+}
+
+int EmitterObj::move_func(f32 speed, int isMove) {
+#line 1933 "ptlib/emitter/particle_emitter.cpp"
+  MM_ASSERT(m_move_type < MOVE_TYPE_MAX);
+  switch (m_move_type) {
+  case MOVE_TYPE_UNKNOWN_1:
+    return move01_type0(speed, isMove);
+  case MOVE_TYPE_UNKNOWN_2:
+    return move01_type1(speed, isMove);
+  case MOVE_TYPE_UNKNOWN_3:
+    move01_type9(speed, isMove);
+    break;
+  case MOVE_TYPE_UNKNOWN_4:
+    return move01_type_model(speed, isMove);
+  case MOVE_TYPE_UNKNOWN_5:
+    return move01_type5(speed, isMove);
+  case MOVE_TYPE_UNKNOWN_6:
+    return move01_type12(speed, isMove);
+  }
+  return 0;
 }
 
 EmitterManager *EmitterManager::get() {
-#line 21
+#line 21 "ptlib/emitter/particle_emitter_manager.cpp"
   MM_ASSERT(getPtr());
   return getPtr();
 }
@@ -98,7 +119,7 @@ void EmitterObj::releaseParticleAll() {
 
 void EmitterObj::emitter_set_param_sub_pos_only2(EmitterParam *param) {
   if (unknown80 == nullptr) {
-    unknowne0.unknown30 = mm::Vec3(param->unknown00.unknown30);
+    m_param.unknown00.unknown30 = mm::Vec3(param->unknown00.unknown30);
   }
   ParticleManager::get()->update_model_spd(this, 1.0f);
 }
@@ -106,19 +127,19 @@ void EmitterObj::emitter_set_param_sub_pos_only2(EmitterParam *param) {
 void EmitterObj::emitter_set_param_sub(EmitterParam *param) {
   u32 type;
   if (unknown80 == nullptr) {
-    memcpy(&unknowne0, param, sizeof(unknown001));
+    memcpy(&m_param.unknown00, param, sizeof(unknown001));
     if (unknown98 == nullptr) {
       return;
     }
     type = unknown98->unknown109;
     if (type == 0xff) {
-      unknown120 = param->unknown40;
+      m_param.unknown40 = param->unknown40;
     } else if (type - 1 < 0xe) {
-      unknown140 = param->unknown60;
+      m_param.unknown60 = param->unknown60;
     }
-    unknown14c = param->unknown6c;
-    unknown130 = param->unknown50;
-    unknown150 = param->unknown70;
+    m_param.unknown6c = param->unknown6c;
+    m_param.unknown50 = param->unknown50;
+    m_param.unknown70 = param->unknown70;
     f32 radius = param->unknown68;
     if (radius > 0.0f && m_pGpuCheck == nullptr) {
       mm::Vec3NA start = unknown98->unknown14;
@@ -140,26 +161,26 @@ void EmitterObj::emitter_set_param_sub(EmitterParam *param) {
     type = unknown98->unknown109;
   }
   if (type == 0xff) {
-    unknown120 = param->unknown40;
+    m_param.unknown40 = param->unknown40;
   }
-  unknown151 = param->unknown71;
-  unknown152 = param->unknown72;
-  unknown153 = param->unknown73;
-  if (param->unknown78 >= 0.0f) {
-    unknown158 = param->unknown78;
+  m_param.unknown71 = param->unknown71;
+  m_param.unknown72 = param->unknown72;
+  m_param.unknown73 = param->unknown73;
+  if (param->speed >= 0.0f) {
+    m_param.speed = param->speed;
   }
   if (param->unknown90 != -1) {
-    unknown170 = param->unknown90;
+    m_param.unknown90 = param->unknown90;
   }
-  unknown15c = param->unknown7c;
-  unknown154 = param->unknown74;
-  unknown156 = param->unknown76;
-  unknown157 = param->unknown77;
-  unknown160 = param->unknown80;
-  unknown164 = param->unknown84;
-  unknown168 = param->unknown88;
-  unknown16c = param->unknown8c;
-  unknown174 = param->unknown94;
+  m_param.unknown7c = param->unknown7c;
+  m_param.unknown74 = param->unknown74;
+  m_param.unknown76 = param->unknown76;
+  m_param.unknown77 = param->unknown77;
+  m_param.unknown80 = param->unknown80;
+  m_param.unknown84 = param->unknown84;
+  m_param.unknown88 = param->unknown88;
+  m_param.unknown8c = param->unknown8c;
+  m_param.unknown94 = param->unknown94;
 }
 
 IntrusiveList<EmitterObj> &EmitterManager::getEmitterActiveList() { return unknown17a8; }
@@ -245,7 +266,7 @@ void EmitterManager::emitter_set_param_pos_only(u32 handle, EmitterParam *param)
   for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
     if (it->unknown264 == handle) {
       if (it->unknown80 == nullptr) {
-        memcpy(&it->unknowne0, param, sizeof(unknown001));
+        memcpy(&it->m_param.unknown00, param, sizeof(unknown001));
       }
       ParticleManager::get()->update_model_spd(it.get(), 1.0f);
     }
@@ -291,7 +312,7 @@ void EmitterManager::emitter_set_param(FxHeader *header, EmitterParam *param) {
 void EmitterManager::emitter_set_disp(u32 handle, int isDisp) {
   for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
     if (it->unknown264 == handle) {
-      it->unknown151 = isDisp;
+      it->m_param.unknown71 = isDisp;
     }
   }
 }
@@ -299,7 +320,7 @@ void EmitterManager::emitter_set_disp(u32 handle, int isDisp) {
 void EmitterManager::emitter_set_alpha(u32 handle, f32 alpha) {
   for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
     if (it->unknown264 == handle) {
-      it->unknown120.a = alpha;
+      it->m_param.unknown40.a = alpha;
     }
   }
 }
@@ -307,7 +328,7 @@ void EmitterManager::emitter_set_alpha(u32 handle, f32 alpha) {
 void EmitterManager::emitter_set_category(u32 handle, u32 category) {
   for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
     if (it->unknown264 == handle) {
-      it->unknown170 = category;
+      it->m_param.unknown90 = category;
     }
   }
 }
@@ -315,7 +336,7 @@ void EmitterManager::emitter_set_category(u32 handle, u32 category) {
 void EmitterManager::emitter_set_nowait(u32 handle, int isNoWait) {
   for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
     if (it->unknown264 == handle) {
-      it->unknown152 = isNoWait;
+      it->m_param.unknown72 = isNoWait;
     }
   }
 }
@@ -415,8 +436,8 @@ void EmitterManager::emitter_set_casname(u32 handle, const void *model, const ch
         it->unknownc0->unknown70[0] = 0;
       } else {
         it->unknownc0->unknown00 = model;
-        it->unknown14c = frame;
-        it->unknown153 = flags;
+        it->m_param.unknown6c = frame;
+        it->m_param.unknown73 = flags;
         if (name != nullptr) {
           strcpy(it->unknownc0->unknown70, name);
         }
@@ -469,7 +490,7 @@ void EmitterManager::emitter_update_sub(CamParam &camParam, mm::mtl::FixedVector
     if (handle != 0 ? emitter->unknown264 != handle : emitter->unknown264 == 0) {
       continue;
     }
-    if (isNoWait && emitter->unknown152 == 0) {
+    if (isNoWait && emitter->m_param.unknown72 == 0) {
       continue;
     }
     bool isWait;
@@ -491,7 +512,7 @@ void EmitterManager::emitter_update_sub(CamParam &camParam, mm::mtl::FixedVector
         break;
       }
     } while (isWait);
-    if (!emitter->unknown26c_0 && emitter->unknown158 * speed * emitter->getCateSpd() <= 0.0f) {
+    if (!emitter->unknown26c_0 && emitter->m_param.speed * speed * emitter->getCateSpd() <= 0.0f) {
       continue;
     }
     emitter->unknown268 = emitter->unknown268 * 0x41c64e6d + 0x3039;
@@ -561,7 +582,7 @@ void EmitterManager::move() {
     EmitterObj *emitter = it.get();
     EmitterArg *arg = emitter->unknown98;
     bool isRender = emitter->isRenderCheck();
-    if (arg != nullptr && isRender && ((arg->unknown00 & 0xfe) == 4 || (emitter->unknown151 != 0 && 0.0f < emitter->unknown120.a))) {
+    if (arg != nullptr && isRender && ((arg->unknown00 & 0xfe) == 4 || (emitter->m_param.unknown71 != 0 && 0.0f < emitter->m_param.unknown40.a))) {
       switch (arg->unknown00) {
       case 0:
       case 1:
@@ -622,7 +643,7 @@ void EmitterManager::move() {
 void EmitterManager::emitter_set_speed(u32 handle, f32 speed) {
   for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
     if (handle == 0 || it->unknown264 == handle) {
-      it->unknown158 = speed;
+      it->m_param.speed = speed;
     }
   }
 }

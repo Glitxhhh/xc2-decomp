@@ -21,7 +21,7 @@ static_assert(sizeof(unknown001) == 0x40, "");
 
 struct EmitterParam {
   unknown001 unknown00; // Inferred role: transform; original member name unknown.
-  mm::Col4 unknown40;   // Inferred role: color; original member name unknown.
+  mm::Col4 unknown40;   // Inferred role: color, the alpha of an emitter's is read by the draw sort; original member name unknown.
   mm::Col3 unknown50;   // Inferred role: copied to the emitter; original member name unknown.
   u8 _5c[0x60 - 0x5c];
   mm::Vec2 unknown60; // Inferred role: copied to the emitter; original member name unknown.
@@ -34,13 +34,13 @@ struct EmitterParam {
   u16 unknown74;      // Inferred role: copied to the emitter; original member name unknown.
   u8 unknown76;       // Inferred role: copied to the emitter; original member name unknown.
   u8 unknown77;       // Inferred role: copied to the emitter; original member name unknown.
-  f32 unknown78;      // Inferred role: speed, negative to keep; original member name unknown.
+  f32 speed;          // Inferred role: negative to keep. Evidence: name from the assertion string "math::isFinite(m_param.speed)" in EmitterObj::update.
   f32 unknown7c;      // Inferred role: skip frame; original member name unknown.
   f32 unknown80;      // Inferred role: copied to the emitter; original member name unknown.
   f32 unknown84;      // Inferred role: copied to the emitter; original member name unknown.
   f32 unknown88;      // Inferred role: copied to the emitter; original member name unknown.
   f32 unknown8c;      // Inferred role: copied to the emitter; original member name unknown.
-  s32 unknown90;      // Inferred role: category, -1 to keep; original member name unknown.
+  u32 unknown90;      // Inferred role: category, -1 to keep; original member name unknown.
   u8 unknown94;       // Inferred role: copied to the emitter; original member name unknown.
 };
 
@@ -50,12 +50,13 @@ static_assert(offsetof(EmitterParam, unknown60) == 0x60, "");
 static_assert(offsetof(EmitterParam, unknown68) == 0x68, "");
 static_assert(offsetof(EmitterParam, unknown70) == 0x70, "");
 static_assert(offsetof(EmitterParam, unknown74) == 0x74, "");
-static_assert(offsetof(EmitterParam, unknown78) == 0x78, "");
+static_assert(offsetof(EmitterParam, speed) == 0x78, "");
 static_assert(offsetof(EmitterParam, unknown80) == 0x80, "");
 static_assert(offsetof(EmitterParam, unknown90) == 0x90, "");
 static_assert(offsetof(EmitterParam, unknown94) == 0x94, "");
 
 static_assert(offsetof(EmitterParam, unknown7c) == 0x7c, "");
+static_assert(sizeof(EmitterParam) == 0xa0, "");
 
 } // namespace emitter
 } // namespace ptlib

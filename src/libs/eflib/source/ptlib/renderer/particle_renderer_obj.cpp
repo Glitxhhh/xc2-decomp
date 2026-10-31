@@ -529,7 +529,7 @@ void RenderGrObj::draw_common_uparam(f32 *uniform, u32 *flags, emitter::EmitterO
   uniform[1] = value128;
   uniform[2] = mode;
   uniform[3] = fade;
-  if (emitter->unknown157 != 0) {
+  if (emitter->m_param.unknown77 != 0) {
     *flags |= 1;
   }
   if (arg->unknown108 & 0x10) {
@@ -546,12 +546,12 @@ void RenderGrObj::prioritySort(emitter::EmitterManager &emitterManager, int prio
     return;
   }
   for (emitter::EmitterObj *emitter = emitterManager.unknown1750; emitter != nullptr; emitter = emitter->unknownc8) {
-    if (emitter->isRenderCheck() && emitter->unknown274 == prioIdx && emitter->unknown151 && emitter->unknown120.a > 0.0f && emitter->unknown98 != nullptr &&
+    if (emitter->isRenderCheck() && emitter->unknown274 == prioIdx && emitter->m_param.unknown71 && emitter->m_param.unknown40.a > 0.0f && emitter->unknown98 != nullptr &&
         emitter->unknown98->unknown100 != ARG_DRAW_TYPE_NONE) {
       const mm::Mat44 &view = camParam.m_viewMatrix;
       sort::EmitterSort entry;
       entry.unknown00 = emitter->unknown98->unknownfc == 0;
-      int priority = emitter->unknown260 + emitter->unknown150;
+      int priority = emitter->unknown260 + emitter->m_param.unknown70;
       if (priority < 0) {
         priority = 0;
       }
@@ -559,7 +559,8 @@ void RenderGrObj::prioritySort(emitter::EmitterManager &emitterManager, int prio
         priority = PRIORITY_MAX;
       }
       entry.unknown01 = priority;
-      entry.unknown04 = emitter->unknowne0.unknown30.x * view.rows[0][2] + emitter->unknowne0.unknown30.y * view.rows[1][2] + emitter->unknowne0.unknown30.z * view.rows[2][2] + view.rows[3][2];
+      entry.unknown04 = emitter->m_param.unknown00.unknown30.x * view.rows[0][2] + emitter->m_param.unknown00.unknown30.y * view.rows[1][2] + emitter->m_param.unknown00.unknown30.z * view.rows[2][2] +
+                        view.rows[3][2];
       entry.unknown08 = false;
       entry.unknown10 = emitter;
       sorts.push_back(entry);

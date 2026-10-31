@@ -5,6 +5,7 @@
 #include "mm_math/mm_vec3_na.h"
 #include "ptlib/emitter/particle_emitter.h"
 #include "ptlib/emitter/particle_emitter_ext.h"
+#include "ptlib/emitter/particle_emitter_param.h"
 #include "ptlib/emitter/particle_emitter_particle.h"
 #include "ptlib/math/particle_keyframe_ip.h"
 #include "ptlib/particle_intrusive_list.h"
@@ -38,7 +39,7 @@ f32 EmitterObj::getEmitterScale() {
       scale = 1.0f;
     }
   }
-  return scale * unknown14c;
+  return scale * m_param.unknown6c;
 }
 
 ParticleObj::ParticleObj() {

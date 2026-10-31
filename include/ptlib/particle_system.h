@@ -79,6 +79,31 @@ static_assert(offsetof(DrDrawWorkInfoEF, unknown554) == 0x554, "");
 static_assert(offsetof(DrDrawWorkInfoEF, unknown560) == 0x560, "");
 static_assert(offsetof(DrDrawWorkInfoEF, unknown570) == 0x570, "");
 
+namespace emitter {
+
+// Evidence: name from the game symbol of EmitterManager::emitter_alloc01; an entry of the emitter group table of an FxHeader.
+struct EmitterGroup {
+  u32 unknown00; // Inferred role: start delay copied to the emitter; original member name unknown.
+  s16 unknown04; // Original member name unknown.
+  u8 unknown06;  // Inferred role: priority copied to the emitter; original member name unknown.
+  u8 unknown07;  // Original member name unknown.
+  s32 unknown08; // Inferred role: offset of the parent group from this one, -1 for a top level group; original member name unknown.
+  u32 unknown0c; // Inferred role: offset of the emitter argument from this group, 0 at the end of the table; original member name unknown.
+};
+
+static_assert(offsetof(EmitterGroup, unknown08) == 0x08, "");
+static_assert(sizeof(EmitterGroup) == 0x10, "");
+
+// Inferred role: parent of an emitter group, null for a top level group; original name unknown.
+inline const EmitterGroup *unknown011(const EmitterGroup *group) {
+  if (group->unknown08 == -1) {
+    return nullptr;
+  }
+  return reinterpret_cast<const EmitterGroup *>(reinterpret_cast<const u8 *>(group) + group->unknown08);
+}
+
+} // namespace emitter
+
 struct FxHeader {
   u8 _00[0x09 - 0x00];
   u8 unknown09; // Inferred role: loop; original member name unknown.
@@ -86,12 +111,14 @@ struct FxHeader {
   u8 _0b[0x14 - 0x0b];
   char unknown14[0x20]; // Inferred role: name; original member name unknown.
   u8 _34[0x48 - 0x34];
-  u64 unknown48; // Inferred role: pack; original member name unknown.
+  u64 unknown48;                      // Inferred role: pack; original member name unknown.
+  emitter::EmitterGroup unknown50[1]; // Inferred role: emitter group table; original member name unknown.
 };
 
 static_assert(offsetof(FxHeader, unknown09) == 0x09, "");
 static_assert(offsetof(FxHeader, unknown14) == 0x14, "");
 static_assert(offsetof(FxHeader, unknown48) == 0x48, "");
+static_assert(offsetof(FxHeader, unknown50) == 0x50, "");
 
 struct FxParam {
   // Inferred role: sets the default values of the parameters; original name unknown.
@@ -258,6 +285,7 @@ public:
   int parseEfb(ParseEfbParam *param);
   u8 *parseEfb(u8 *data, const char *name, u64 pack);
   renderer::RenderManager &getRenderManager();
+  u32 emitter_set_create(FxHeader *header, emitter::EmitterParam *param, u32 key, bool option);
   bool emitter_set_check(FxHeader *header);
   void emitter_set_free_all(bool isForce);
   FxHeader *emitter_set_search(int type, const char *name, void *owner, u32 category);

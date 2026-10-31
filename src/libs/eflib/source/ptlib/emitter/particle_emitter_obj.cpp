@@ -102,7 +102,7 @@ void EmitterObj::check_ground_col(EmitterObj *emitter, const mm::Vec3 &pos, int 
   mm::Vec3 end(pos.x, pos.y - 10.0f, pos.z);
   mm::Col4 color;
   if (ParticleManager::getPtr()->testLineGroundColor(color, pos, end)) {
-    emitter->unknown120 = color;
+    emitter->m_param.unknown40 = color;
   }
 }
 
@@ -123,33 +123,33 @@ void EmitterObj::calc_scale(mm::Vec3 *result, math::Vec3r *range, f32 scale, u32
 
 void EmitterObj::emitter_set_param_sub_pos_only(EmitterParam *param) {
   if (unknown80 == nullptr) {
-    memcpy(&unknowne0, param, sizeof(unknown001));
+    memcpy(&m_param.unknown00, param, sizeof(unknown001));
   }
   ParticleManager::get()->update_model_spd(this, 1.0f);
 }
 
 void EmitterObj::emitter_alloc01_set_move(FxHeader *header, EmitterArg *arg) {
-  unknownd0 = 0;
+  m_move_type = MOVE_TYPE_UNKNOWN_0;
   unknownd4 = 1;
   switch (arg->unknown00) {
   case 1:
-    unknownd0 = 2;
+    m_move_type = MOVE_TYPE_UNKNOWN_2;
     break;
   case 4:
-    unknownd0 = 4;
+    m_move_type = MOVE_TYPE_UNKNOWN_4;
     break;
   case 5:
-    unknownd0 = 5;
+    m_move_type = MOVE_TYPE_UNKNOWN_5;
     break;
   case 9:
-    unknownd0 = 3;
+    m_move_type = MOVE_TYPE_UNKNOWN_3;
     break;
   case 0xc:
   case 0xd:
-    unknownd0 = 6;
+    m_move_type = MOVE_TYPE_UNKNOWN_6;
     break;
   default:
-    unknownd0 = 1;
+    m_move_type = MOVE_TYPE_UNKNOWN_1;
     break;
   }
 }

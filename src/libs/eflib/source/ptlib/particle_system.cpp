@@ -11,6 +11,7 @@
 #include "ptlib/emitter/particle_emitter.h"
 #include "ptlib/emitter/particle_emitter_ext.h"
 #include "ptlib/emitter/particle_emitter_manager.h"
+#include "ptlib/emitter/particle_emitter_param.h"
 #include "ptlib/emitter/particle_emitter_particle.h"
 #include "ptlib/material/particle_material_manager.h"
 #include "ptlib/particle_hash.h"
@@ -363,6 +364,34 @@ int ParticleManager::get_prio_idx(int priority) {
 
 renderer::RenderManager &ParticleManager::getRenderManager() { return *renderer::RenderManager::get(); }
 
+u32 ParticleManager::emitter_set_create(FxHeader *header, emitter::EmitterParam *param, u32 key, bool option) {
+  if (m_fxParam.unknown10) {
+    return -1;
+  }
+#line 586
+  MM_ASSERT(key);
+  if (!emitter::EmitterManager::get()->emitter_set_check(header)) {
+    efMsg("create miss");
+    return 0;
+  }
+  for (emitter::EmitterGroup *group = header->unknown50;; group++) {
+    emitter::EmitterArg *arg = unknown002<emitter::EmitterArg>(group, group->unknown0c);
+    if (arg == nullptr) {
+      break;
+    }
+    if (emitter::unknown011(group) == nullptr) {
+      emitter::EmitterManager::get()->emitter_alloc01(header, group, key, nullptr, 0, option, param, 1.0f, 1);
+      if ((arg->unknown00 | 8) == 9) {
+        u8 count = arg->unknown106 & 0xf;
+        for (u32 i = 1; i < count; i++) {
+          emitter::EmitterManager::get()->emitter_alloc01(header, group, key, nullptr, i, option, param, 1.0f, 1);
+        }
+      }
+    }
+  }
+  return key;
+}
+
 bool ParticleManager::emitter_set_check(FxHeader *header) { return emitter::EmitterManager::get()->emitter_set_check(header); }
 
 void ParticleManager::emitter_set_free_all(bool isForce) { emitter::EmitterManager::get()->emitter_set_free_all_sub(isForce); }
@@ -417,7 +446,7 @@ void ParticleManager::update_pause() {
   }
   emitter::EmitterManager *emitterManager = emitter::EmitterManager::getPtr();
   for (IntrusiveList<emitter::EmitterObj>::iterator emitterIt = emitterManager->getEmitterActiveList().begin(); emitterIt != emitterManager->getEmitterActiveList().end(); ++emitterIt) {
-    s_unknown001 = rate * emitterIt->unknown158;
+    s_unknown001 = rate * emitterIt->m_param.speed;
     for (IntrusiveList<emitter::ParticleObj>::iterator particleIt = emitterIt->unknown40.begin(); particleIt != emitterIt->unknown40.end(); ++particleIt) {
       if (particleIt->unknown13e != 0 && particleIt->m_extParam->unknown110 != nullptr) {
         setMdlSpd(particleIt->m_extParam->unknown110, &s_unknown001);
@@ -434,7 +463,7 @@ void ParticleManager::update_model_spd(emitter::EmitterObj *emitter, f32 speed) 
   if (emitter == nullptr) {
     emitter::EmitterManager *emitterManager = emitter::EmitterManager::getPtr();
     for (IntrusiveList<emitter::EmitterObj>::iterator emitterIt = emitterManager->getEmitterActiveList().begin(); emitterIt != emitterManager->getEmitterActiveList().end(); ++emitterIt) {
-      s_unknown001 = rate * emitterIt->unknown158;
+      s_unknown001 = rate * emitterIt->m_param.speed;
       for (IntrusiveList<emitter::ParticleObj>::iterator particleIt = emitterIt->unknown40.begin(); particleIt != emitterIt->unknown40.end(); ++particleIt) {
         if (particleIt->unknown13e != 0 && particleIt->m_extParam->unknown110 != nullptr) {
           setMdlSpd(particleIt->m_extParam->unknown110, &s_unknown001);
@@ -443,7 +472,7 @@ void ParticleManager::update_model_spd(emitter::EmitterObj *emitter, f32 speed) 
     }
   } else {
     for (IntrusiveList<emitter::ParticleObj>::iterator particleIt = emitter->unknown40.begin(); particleIt != emitter->unknown40.end(); ++particleIt) {
-      s_unknown001 = rate * emitter->unknown158;
+      s_unknown001 = rate * emitter->m_param.speed;
       if (particleIt->unknown13e != 0 && particleIt->m_extParam->unknown110 != nullptr) {
         setMdlSpd(particleIt->m_extParam->unknown110, &s_unknown001);
       }
