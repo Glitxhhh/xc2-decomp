@@ -23,9 +23,13 @@ enum GrlTexMagFilterType {
 enum GrlTexMinFilterType {
   GRL_TEX_MIN_FILTER_NEAREST,
   GRL_TEX_MIN_FILTER_LINEAR,
+  GRL_TEX_MIN_FILTER_UNKNOWN_2 = 2,
+  GRL_TEX_MIN_FILTER_UNKNOWN_5 = 5,
 };
 
-enum GrlTexTexAnisoRatio {};
+enum GrlTexTexAnisoRatio {
+  GRL_TEX_ANISO_RATIO_UNKNOWN_0 = 0,
+};
 
 enum GrlTexCompare {};
 

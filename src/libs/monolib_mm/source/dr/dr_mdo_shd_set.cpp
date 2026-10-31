@@ -11,6 +11,7 @@
 #include "dr/dr_mdo_setup.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_res_etc_uniform_obj.h"
+#include "dr/dr_res_mpf_sampler.h"
 #include "dr/dr_res_shd.h"
 #include "dr/dr_shd_data_list.h"
 #include "grlib/cglib_dbl_uniform_block.h"
@@ -125,7 +126,7 @@ inline void DrMdoShdSetMpf::unknown001(DrResShdMpf *shd, const MdsMpfMatInfoHead
   if (flags & 0x100) {
     (*unknown08->unknown90)[header->unknown12].setUniformBlock(shd->unknown08[5]);
   }
-  unknown00->m_drMan->unknown5c0->setTexture(*unknown08->unknowne8[header->unknown14], *sampler->unknown08, shd->unknown08[0]);
+  unknown00->m_drMan->unknown5c0->setTexture(*unknown08->unknowne8[header->unknown14], *sampler->unknown08[0], shd->unknown08[0]);
 }
 
 void DrMdoShdSetMpf::mpfshd_stm_bill(DrResShdMpf *shd, DrShdDataList *list, const MdsMpfMatInfoHeader *header, const DrResMpfSampler *sampler, bool isPre) {
@@ -183,7 +184,7 @@ void DrMdoShdSetMpf::mpfshd_pre_bill_nuki(DrResShdMpf *shd, DrShdDataList *list,
   unknown00->m_drMan->unknown580->unknown10->unknown900.setUniformBlock(shd->unknown08[6]);
   DrAPCache *cache = unknown00->m_drMan->unknown5c0;
   list->getAlphaTestUniform(header->unknown08)->setUniformBlock(shd->unknown08[7]);
-  cache->setTexture(*unknown08->unknowne8[header->unknown18], *sampler->unknown10, shd->unknown08[0]);
+  cache->setTexture(*unknown08->unknowne8[header->unknown18], *sampler->unknown08[1], shd->unknown08[0]);
   if (isPre) {
     setDitherTexShaderSet(shd->unknown08[2], 1);
   }
@@ -197,7 +198,7 @@ void DrMdoShdSetMpf::mpfshd_pre_mdl_nuki(DrResShdMpf *shd, DrShdDataList *list, 
   shd->setupShader(mode);
   unknown00->m_drMan->unknown580->unknown10->unknown900.setUniformBlock(shd->unknown08[6]);
   list->getAlphaTestUniform(header->unknown08)->setUniformBlock(shd->unknown08[7]);
-  unknown00->m_drMan->unknown5c0->setTexture(*unknown08->unknowne8[header->unknown18], *sampler->unknown10, shd->unknown08[0]);
+  unknown00->m_drMan->unknown5c0->setTexture(*unknown08->unknowne8[header->unknown18], *sampler->unknown08[1], shd->unknown08[0]);
   if (isPre) {
     setDitherTexShaderSet(shd->unknown08[2], 1);
   }
@@ -214,7 +215,7 @@ void DrMdoShdSetMpf::mpfshd_pre_Dithe_nuki(DrResShdMpf *shd, DrShdDataList *list
   shd->setupShader(0);
   list->getAlphaTestUniform(header->unknown08)->setUniformBlock(shd->unknown08[7]);
   unknown00->m_drMan->unknown580->unknown10->unknown900.setUniformBlock(shd->unknown08[6]);
-  unknown00->m_drMan->unknown5c0->setTexture(*unknown08->unknowne8[header->unknown18], *sampler->unknown10, shd->unknown08[0]);
+  unknown00->m_drMan->unknown5c0->setTexture(*unknown08->unknowne8[header->unknown18], *sampler->unknown08[1], shd->unknown08[0]);
   setDitherTexShaderSet(shd->unknown08[2], 1);
 }
 
@@ -236,8 +237,8 @@ void DrMdoShdSetMpf::mpfshd_drw_mdl_normalmap(DrResShdMpf *shd, DrShdDataList *l
     (*unknown08->unknown90)[header->unknown12].setUniformBlock(shd->unknown08[5]);
   }
   DrAPCache *cache = unknown00->m_drMan->unknown5c0;
-  cache->setTexture(*unknown08->unknowne8[header->unknown14], *sampler->unknown08, shd->unknown08[0]);
-  cache->setTexture(*unknown08->unknowne8[header->unknown1c], *sampler->unknown18, shd->unknown08[1]);
+  cache->setTexture(*unknown08->unknowne8[header->unknown14], *sampler->unknown08[0], shd->unknown08[0]);
+  cache->setTexture(*unknown08->unknowne8[header->unknown1c], *sampler->unknown08[2], shd->unknown08[1]);
 }
 
 void DrMdoShdSetMpf::mpfshd_cull_fade_mdl(DrResShdMpf *shd, DrShdDataList *list, const MdsMpfMatInfoHeader *header, const DrResMpfSampler *sampler, bool isPre) {}

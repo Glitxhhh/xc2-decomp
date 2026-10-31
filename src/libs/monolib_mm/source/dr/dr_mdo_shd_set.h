@@ -3,12 +3,9 @@
 
 #include "types.h"
 
-namespace grlib {
-class CGLibSampler;
-} // namespace grlib
-
 namespace ml {
 class DrMdoSetup;
+struct DrResMpfSampler;
 class DrResShdMpf;
 struct MdoWrkMatRes;
 class DrResShdShw;
@@ -22,25 +19,16 @@ struct MdsMpfMatInfoHeader {
   u8 _0c[0x12 - 0x0c];
   u16 unknown12; // Inferred role: uniform index; original member name unknown.
   u16 unknown14; // Inferred role: texture index; original member name unknown.
-  u8 _16[0x18 - 0x16];
+  u16 unknown16; // Inferred role: sampler flags of the texture; original member name unknown.
   u16 unknown18; // Inferred role: second texture index; original member name unknown.
-  u8 _1a[0x1c - 0x1a];
+  u16 unknown1a; // Inferred role: sampler flags of the second texture; original member name unknown.
   u16 unknown1c; // Inferred role: third texture index; original member name unknown.
+  u16 unknown1e; // Inferred role: sampler flags of the third texture; original member name unknown.
 };
 
 static_assert(offsetof(MdsMpfMatInfoHeader, unknown12) == 0x12, "");
 static_assert(offsetof(MdsMpfMatInfoHeader, unknown18) == 0x18, "");
 static_assert(offsetof(MdsMpfMatInfoHeader, unknown1c) == 0x1c, "");
-
-struct DrResMpfSampler {
-  u8 _00[0x08];
-  grlib::CGLibSampler *unknown08; // Inferred role: sampler; original member name unknown.
-  grlib::CGLibSampler *unknown10; // Inferred role: second sampler; original member name unknown.
-  grlib::CGLibSampler *unknown18; // Inferred role: third sampler; original member name unknown.
-};
-
-static_assert(offsetof(DrResMpfSampler, unknown08) == 0x08, "");
-static_assert(offsetof(DrResMpfSampler, unknown18) == 0x18, "");
 
 class DrMdoShdSet {
 public:

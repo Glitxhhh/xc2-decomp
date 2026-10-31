@@ -11,6 +11,7 @@ class DrLightObjDir;
 class DrLightObjPnt;
 class DrMan;
 class DrLightObjSpt;
+class DrShdLgtMan;
 
 class DrLightMan {
 public:
@@ -35,8 +36,8 @@ public:
   void releaseInstantSptLight(DrLightObjSpt *light);
 
   u8 _000[0xe0];
-  DrMan *unknowne0; // Inferred role: dr man; original member name unknown.
-  u8 _0e8[0xf0 - 0x0e8];
+  DrMan *unknowne0;          // Inferred role: dr man; original member name unknown.
+  DrShdLgtMan *unknowne8;    // Inferred role: shd light man; original member name unknown.
   DrLightObjAmb *unknown0f0; // Inferred role: fast ambient light; original member name unknown.
   DrLightObjDir *unknown0f8; // Inferred role: fast directional light; original member name unknown.
   s32 unknown100;            // Inferred role: ambient light count; original member name unknown.
@@ -56,6 +57,7 @@ public:
 };
 
 static_assert(offsetof(DrLightMan, unknowne0) == 0xe0, "");
+static_assert(offsetof(DrLightMan, unknowne8) == 0xe8, "");
 static_assert(offsetof(DrLightMan, unknown0f0) == 0xf0, "");
 static_assert(offsetof(DrLightMan, unknown100) == 0x100, "");
 static_assert(offsetof(DrLightMan, unknown108) == 0x108, "");

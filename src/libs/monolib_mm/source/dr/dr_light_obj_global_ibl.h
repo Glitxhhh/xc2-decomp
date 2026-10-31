@@ -26,6 +26,8 @@ public:
     u8 _118[0x1e0 - 0x118];
   };
 
+  ~DrLightObjGlobalIBL();
+  void update();
   int getPriority() const;
   void bindVertex(u32 index);
   void drawVertex();
