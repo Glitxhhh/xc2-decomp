@@ -195,6 +195,7 @@ public:
   static const u32 OBJECT_TYPE = OBJECT_TYPE_ENEMY;
 
   u32 getEnArrangeID() const override;
+  void validateBy_pop_act_type(u8 popActType);
 
   u32 unknown6c; // Inferred role: en param id; original member name unknown.
   u32 m_enArrangeID;

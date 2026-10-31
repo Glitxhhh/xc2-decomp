@@ -16,6 +16,8 @@
 #include "gmk/gmk_cond.h"
 #include "gmk/gmk_form_pc.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
+#include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
 
@@ -349,11 +351,54 @@ void GmkSalvageLocator::seqWaitPop(f32 deltaTime) {
   }
 }
 
+void GmkSalvageLocator::seqPop(f32 deltaTime) {
+  switch (getData()->unknown00) {
+  case 1:
+    if (!unknown58) {
+      createCollectDropitemEmitter();
+    }
+    unknown60.update(deltaTime);
+    break;
+  case 2: {
+    bool isWaitDepop = unknowne0 > 0.0f;
+    if (unknownc0 == gf::INVALID_HANDLE) {
+      if (!isWaitDepop) {
+        createTboxGobInst();
+      }
+    } else if (isWaitDepop) {
+      unknowne4 += deltaTime;
+      if (unknowne0 <= unknowne4) {
+        unknownc8 = false;
+        disposeGobInst(true);
+      }
+    }
+  } break;
+  case 4:
+    if (unknownc0 == gf::INVALID_HANDLE) {
+      createEnemyGobInst();
+    }
+    break;
+  }
+  unknown48 = nullptr;
+}
+
 void GmkSalvageLocator::update(f32 deltaTime) {
   debugUpdateMmf();
   if (unknown48) {
     (this->*unknown48)(deltaTime);
   }
+}
+
+void GmkSalvageLocator::dispose() {
+  unknownf0 = 0;
+  unknowne8 = -1;
+  unknownec = 0;
+  reqDisposeTboxGobInst(0.0f);
+  unknown58 = false;
+  unknown60.dispose();
+  unknownc8 = false;
+  disposeGobInst(false);
+  AGmkBase::dispose();
 }
 
 void GmkSalvageLocator::disposeGobInst(bool isFadeOut) {
@@ -368,6 +413,49 @@ void GmkSalvageLocator::disposeGobInst(bool isFadeOut) {
     gf::GfObjUtil::destroy(unknownc0);
     unknownc0 = gf::INVALID_HANDLE;
   }
+}
+
+void GmkSalvageLocator::createCollectDropitemEmitter() {
+  unknown58 = false;
+  unknown60.dispose();
+  gf::GfDropitemEmitter::CreateInfo info;
+  const Xform *xform = unknown08.unknown08;
+  info.unknown00 = xform->unknown00;
+  info.unknown00.y += 0.8f;
+  info.unknown10 = xform->unknown10.y;
+  info.unknown14 = 3.1415927f;
+  info.unknown28 = gf::GfDataBdat::getFP(gf::BDAT_FLD_SALVAGE_ITEM_SET);
+  info.unknown30 = unknowne8;
+  info.unknown20 = 0.25f;
+  unknown60.create(info);
+  unknown58 = true;
+}
+
+void GmkSalvageLocator::createTboxGobInst() {
+  unknownc8 = false;
+  disposeGobInst(false);
+  CBdatWrapper bdat = {gf::GfDataBdat::getFP(gf::BDAT_FLD_SALVAGE_ITEM_SET)};
+  unknownc0 = gf::GfObjFactory::createGmkTbox(bdat, unknowne8);
+  bindToGameObj(unknownc0);
+  setEventDisp(unknownc0, debugIsDispGmkType(getGmkType()));
+  gf::GfObjSetupGimmick *setup = gf::GfObjUtil::getObjSetup<gf::GfObjSetupGimmick>(unknownc0);
+  unknown003(setup, unknown08.unknown08);
+  setup->unknown70 = "S_drop";
+  setTargetable(true);
+}
+
+void GmkSalvageLocator::createEnemyGobInst() {
+  disposeGobInst(false);
+  const Xform *xform = unknown08.unknown08;
+  unknownc0 = gf::GfObjFactory::createGmkEnemy(unknownec, unknownf0, 2, xform->unknown00, xform->unknown10, true);
+  if (unknownc0 == gf::INVALID_HANDLE) {
+    return;
+  }
+  gf::GfObjSetupEnemy *setup = gf::GfObjUtil::getObjSetup<gf::GfObjSetupEnemy>(unknownc0);
+  setup->validateBy_pop_act_type(Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_SALVAGE_ENEMY_SET), "pop_act_type", unknowne8, BDAT_TYPE_U8));
+  bindToGameObj(unknownc0);
+  unknownf1 = false;
+  unknownf2 = false;
 }
 
 void GmkSalvageLocator::setTargetable(bool isTargetable) const {

@@ -260,6 +260,20 @@ int GmkEnemyInsts::getGobInstCapa() const {
   return capacity;
 }
 
+void GmkEnemyInsts::create(const CreateInfo &info) {
+  dispose();
+  unknown00 = info;
+  unknown38.create(info.unknown08, info.unknown10, *info.unknown00);
+  unknown88.unknown00 = info.unknown14 * info.unknown14;
+  unknown88.unknown04 = info.unknown18 * info.unknown18;
+  unknown90.unknown00 = info.unknown1c * info.unknown1c;
+  unknown90.unknown04 = info.unknown20 * info.unknown20;
+  u32 enemyNum = static_cast<u8>(info.unknown08.getValCheck("ene1num", info.unknown10, BDAT_TYPE_U8)) + static_cast<u8>(info.unknown08.getValCheck("ene2num", info.unknown10, BDAT_TYPE_U8)) +
+                 static_cast<u8>(info.unknown08.getValCheck("ene3num", info.unknown10, BDAT_TYPE_U8)) + static_cast<u8>(info.unknown08.getValCheck("ene4num", info.unknown10, BDAT_TYPE_U8));
+  createSquad(unknown38.unknown04, enemyNum, unknown38.unknown06 * 0.01f);
+  unknown160 = &GmkEnemyInsts::seqUpdatePopDepop;
+}
+
 void GmkEnemyInsts::disposeSquad() { mm::mtl::safeRelease(unknown150); }
 
 void GmkEnemyInsts::dispose() {
@@ -313,7 +327,7 @@ void GmkEnemyInsts::seqUpdateRepopCounter(const UpdateInfo &info) {
 void GmkEnemyInsts::createGobInsts() {
   disposeGobInsts(false, false);
   PopInfo::CreateInfo info;
-  info.unknown00 = unknown00.unknown08;
+  info.unknown00 = unknown00.unknown08.unknown00;
   info.unknown08 = unknown00.unknown10;
   info.unknown0c = unknown144.unknown00;
   unknown98.create(info);
@@ -374,6 +388,13 @@ bool GmkEnemy::isPointInsideRandomWalk(const mm::Vec3 &position) const {
   return x * x + y * y + z * z <= getData()->unknown00 * getData()->unknown00;
 }
 
+void GmkEnemy::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
+  AGmkBase::onGobEvent(event, handle);
+  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+    unknown48.removeGobInst(handle);
+  }
+}
+
 mm::Vec3 &GmkEnemy::getPositionInRandomWalk(mm::Vec3 &result, f32 angleMin, f32 angleMax, f32 distanceMin, f32 distanceMax) const {
   mm::Mat44 rotation;
   rotation.setRotY(ml::mtRandf1(angleMin, angleMax));
@@ -390,7 +411,7 @@ bool GmkEnemy::isValid() const {
   if (unknown08.unknown00 == nullptr || unknown20.unknown08 == nullptr || unknown20.unknown10 == nullptr) {
     return false;
   }
-  if (unknown48.unknown00.unknown00 == nullptr || unknown48.unknown00.unknown08 == nullptr) {
+  if (unknown48.unknown00.unknown00 == nullptr || unknown48.unknown00.unknown08.unknown00 == nullptr) {
     return false;
   }
   return unknown48.unknown00.unknown10 > 0;

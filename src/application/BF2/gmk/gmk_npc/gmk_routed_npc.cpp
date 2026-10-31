@@ -13,10 +13,32 @@
 #include "gmk/gmk_npc/gmk_npc_manager.h"
 #include "gmk/gmk_set.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/vector.h"
 
 namespace gmk {
 
 void GmkRoutedNpcList::create(const CreateInfo &info) { TGmkList::create(info); }
+
+void GmkRoutedNpcList::createGmk(void *data) {
+  TGmkList::createGmk(data);
+  GmkNpcManager *manager = &getCreateInfo().unknown08->unknown178;
+  u32 num = getInstNum();
+  for (u32 i = 0; i < num; i++) {
+    manager->addGmkNpc(&gmkInsts[i]);
+  }
+}
+
+void GmkRoutedNpcList::disposeGmk() {
+  GmkSet *set = getCreateInfo().unknown08;
+  if (set != nullptr) {
+    GmkNpcManager *manager = &set->unknown178;
+    u32 num = getInstNum();
+    for (u32 i = 0; i < num; i++) {
+      manager->removeGmkNpc(&gmkInsts[i]);
+    }
+  }
+  TGmkList::disposeGmk();
+}
 
 GmkType GmkRoutedNpc::getGmkType() const { return GMK_TYPE; }
 

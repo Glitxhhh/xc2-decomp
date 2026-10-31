@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_bdat_wrapper.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_cond.h"
@@ -10,7 +11,6 @@
 #include "mm_mtl/vector.h"
 #include "types.h"
 
-struct CBdatWrapper;
 namespace gf {
 struct GF_OBJ_HANDLE;
 } // namespace gf
@@ -45,18 +45,18 @@ public:
         : unknown00(nullptr), unknown08(nullptr), unknown10(-1), unknown14(100.0f), unknown18(50.0f), unknown1c(110.0f), unknown20(55.0f), unknown24(0.0f), unknown28(0), unknown2c(0), unknown30(0),
           unknown34(0) {}
 
-    AGmkBase *unknown00; // Inferred role: owner gimmick; original member name unknown.
-    u8 *unknown08;       // Inferred role: bdat; original member name unknown.
-    int unknown10;       // Inferred role: bdat id; original member name unknown.
-    f32 unknown14;       // Inferred role: display radius; original member name unknown.
-    f32 unknown18;       // Inferred role: display height; original member name unknown.
-    f32 unknown1c;       // Inferred role: release radius; original member name unknown.
-    f32 unknown20;       // Inferred role: release height; original member name unknown.
-    f32 unknown24;       // Inferred role: repop time in seconds; original member name unknown.
-    u32 unknown28;       // Role and original member name unknown.
-    u32 unknown2c;       // Role and original member name unknown.
-    u32 unknown30;       // Role and original member name unknown.
-    u32 unknown34;       // Role and original member name unknown.
+    AGmkBase *unknown00;    // Inferred role: owner gimmick; original member name unknown.
+    CBdatWrapper unknown08; // Inferred role: bdat; original member name unknown.
+    int unknown10;          // Inferred role: bdat id; original member name unknown.
+    f32 unknown14;          // Inferred role: display radius; original member name unknown.
+    f32 unknown18;          // Inferred role: display height; original member name unknown.
+    f32 unknown1c;          // Inferred role: release radius; original member name unknown.
+    f32 unknown20;          // Inferred role: release height; original member name unknown.
+    f32 unknown24;          // Inferred role: repop time in seconds; original member name unknown.
+    u32 unknown28;          // Role and original member name unknown.
+    u32 unknown2c;          // Role and original member name unknown.
+    u32 unknown30;          // Role and original member name unknown.
+    u32 unknown34;          // Role and original member name unknown.
   };
 
   struct UpdateInfo {
@@ -158,6 +158,8 @@ public:
   void disposeGobInsts(bool isFadeOut, bool isCheckBattle);
   void seqUpdateRepopCounter(const UpdateInfo &info);
   void createGobInsts();
+  void create(const CreateInfo &info);
+  void createSquad(u16 squadId, u32 memberNum, f32 scale);
   void onEnemyDead(gf::GF_OBJ_HANDLE *handle);
   void dispose();
   void disposeSquad();

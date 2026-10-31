@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/data/gf_bdat_wrapper.h"
+#include "gf/field/gf_fobj_dropitem.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_form_pc.h"
@@ -182,6 +183,9 @@ public:
   void onEnemyHomeToPlayerAccess(gf::GF_OBJ_HANDLE *handle);
   void setEnemyPopInfo(int, int, s8);
   void disposeGobInst(bool isFadeOut);
+  void createCollectDropitemEmitter();
+  void createTboxGobInst();
+  void createEnemyGobInst();
   void setTargetable(bool isTargetable) const;
   void reqDisposeTboxGobInst(f32 waitTime) const;
   void initWaitPopTime(f32 waitTime);
@@ -192,15 +196,16 @@ public:
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
 
   void (GmkSalvageLocator::*unknown48)(f32); // Inferred role: sequence; original member name unknown.
-  u8 _58[0xc0 - 0x58];
-  gf::GF_OBJ_HANDLE *unknownc0; // Inferred role: game object; original member name unknown.
-  u8 unknownc8;                 // Role and original member name unknown.
+  bool unknown58;                            // Inferred role: dropitem emitter created; original member name unknown.
+  gf::GfDropitemEmitter unknown60;           // Inferred role: dropitem emitter of the collect locator; original member name unknown.
+  gf::GF_OBJ_HANDLE *unknownc0;              // Inferred role: game object; original member name unknown.
+  u8 unknownc8;                              // Role and original member name unknown.
   u8 _c9[0xd0 - 0xc9];
   GmkSalvage *unknownd0; // Inferred role: owner salvage, set by GmkSalvage; original member name unknown.
   f32 unknownd8;         // Role and original member name unknown.
   f32 unknowndc;         // Role and original member name unknown.
   mutable f32 unknowne0; // Role and original member name unknown.
-  mutable u32 unknowne4; // Role and original member name unknown.
+  mutable f32 unknowne4; // Inferred role: elapsed time before the depop of the treasure box; original member name unknown.
   int unknowne8;         // Role and original member name unknown.
   int unknownec;         // Role and original member name unknown.
   s8 unknownf0;          // Role and original member name unknown.
@@ -210,6 +215,8 @@ public:
 };
 
 static_assert(offsetof(GmkSalvageLocator, unknown48) == 0x48, "");
+static_assert(offsetof(GmkSalvageLocator, unknown58) == 0x58, "");
+static_assert(offsetof(GmkSalvageLocator, unknown60) == 0x60, "");
 static_assert(offsetof(GmkSalvageLocator, unknownc0) == 0xc0, "");
 static_assert(offsetof(GmkSalvageLocator, unknownc8) == 0xc8, "");
 static_assert(offsetof(GmkSalvageLocator, unknownd0) == 0xd0, "");

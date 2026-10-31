@@ -61,6 +61,7 @@ public:
   GmkRouteNavi *findFreeRouteNavi() const;
   GmkRouteNavi *findRouteNavi(gf::GF_OBJ_HANDLE *handle) const;
   void createRouteNavis(u32 num);
+  void onEnemyDead(gf::GF_OBJ_HANDLE *handle);
 
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
 

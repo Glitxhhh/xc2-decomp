@@ -6,6 +6,7 @@
 
 struct CBdatWrapper;
 namespace mm {
+struct Vec3;
 namespace mtl {
 class RTTI;
 } // namespace mtl
@@ -39,6 +40,7 @@ class GfObjFactory {
 public:
   static GF_OBJ_HANDLE *createGmkMapObj(const CBdatWrapper &bdat, int id);
   static GF_OBJ_HANDLE *createGmkTbox(const CBdatWrapper &bdat, int id);
+  static GF_OBJ_HANDLE *createGmkEnemy(int id, s8 param2, u16 param3, const mm::Vec3 &position, const mm::Vec3 &rotation, bool param6);
   static GF_OBJ_HANDLE *createGmkNpc(const CBdatWrapper &bdat, int id);
   static GF_OBJ_HANDLE *createGmkBlade(const CBdatWrapper &bdat, int id, int param3);
   static GF_OBJ_HANDLE *createGmkCollection(const CBdatWrapper &bdat, int id);

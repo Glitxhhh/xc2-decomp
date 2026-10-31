@@ -33,7 +33,7 @@ bool GmkRoutedEnemy::isValid() const {
   if (list->getInstNum() == 0) {
     return false;
   }
-  return unknown50.unknown00.unknown00 != nullptr && unknown50.unknown00.unknown08 != nullptr && unknown50.unknown00.unknown10 > 0;
+  return unknown50.unknown00.unknown00 != nullptr && unknown50.unknown00.unknown08.unknown00 != nullptr && unknown50.unknown00.unknown10 > 0;
 }
 
 bool GmkRoutedEnemy::PopXformFinder::isYSnap() const { return false; }
@@ -160,6 +160,11 @@ GmkRouteNavi *GmkRoutedEnemy::findRouteNavi(gf::GF_OBJ_HANDLE *handle) const {
     }
   }
   return nullptr;
+}
+
+void GmkRoutedEnemy::onEnemyDead(gf::GF_OBJ_HANDLE *handle) {
+  unbindRouteNavi(handle, true);
+  unknown50.onEnemyDead(handle);
 }
 
 } // namespace gmk
