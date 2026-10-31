@@ -216,6 +216,37 @@ void IDColiManager::addList(ColiLinkList<IDColiObj> &list, ColiLinkList<IDColiOb
   source.m_tail = nullptr;
 }
 
+void IDColiManager::updateConsistentList(ColiLinkList<IDColiObj> &list) {
+  for (int i = 0; i < 4; i++) {
+    bool isUpdated = false;
+    for (IDColiObj *object = list.m_head; object != nullptr; object = object->unknown10) {
+      isUpdated |= object->SweepAndPruneUpdate();
+    }
+    if (!isUpdated) {
+      break;
+    }
+  }
+
+  IDColiObjBase *object = static_cast<IDColiObjBase *>(getUseObject(list));
+  for (int axis = 0; axis < 2; axis++) {
+    IDColiObjBase *last = object;
+    while (last != nullptr) {
+      IDColiObjBase *next = last->unknown198[axis];
+      if (next == nullptr) {
+        break;
+      }
+      last = next;
+    }
+    for (; last != nullptr; last = last->unknown188[axis]) {
+      last->sweepTreeMax(static_cast<IdSweepAxisType>(axis), static_cast<IdVectorAxisType>(axis));
+    }
+  }
+
+  for (IDColiObj *object = list.m_head; object != nullptr; object = object->unknown10) {
+    object->consistentUpdate();
+  }
+}
+
 IDColiObj *IDColiManager::getUseObject(ColiLinkList<IDColiObj> &list) {
   for (IDColiObj *object = list.m_head; object != nullptr; object = object->unknown10) {
     if (!object->isDeleteCall() && !(object->unknown18 & 4) && !(object->unknown1c & 0x80)) {

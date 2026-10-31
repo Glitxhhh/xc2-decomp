@@ -485,6 +485,16 @@ void IDColiPrimitive::createBaseBox(void *data, IDColiBaseType &type, const mm::
   type = IDColiBaseType_UNKNOWN_1;
 }
 
+void IDColiPrimitive::createBaseInBox(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size) {
+  CLBoxWork *box = static_cast<CLBoxWork *>(data);
+  calcBaseBoxSetup(box, matrix, size);
+  type = IDColiBaseType_UNKNOWN_6;
+  for (int i = 0; i < 3; i++) {
+    (&box->unknown80.x)[i] += 4.0f;
+    (&box->unknown90.x)[i] -= 4.0f;
+  }
+}
+
 void IDColiPrimitive::createBaseCharacter(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size) {
   f32 scale = unknown123(matrix) * IDColiObj::OBJ_CALC_RADIUS;
   f32 radius = size.x * scale;
@@ -511,6 +521,20 @@ void IDColiPrimitive::createBasePoli(void *data, IDColiBaseType &type, const mm:
   unknown085 *poli = static_cast<unknown010 *>(data)->unknown00;
   calcPosDataSetup(&poli->unknown00, matrix, poli->unknowna8[0], poli->unknowna8[1]);
   type = IDColiBaseType_UNKNOWN_5;
+}
+
+void IDColiPrimitive::createAaBbSphere(mm::Vec3 &max, mm::Vec3 &min, const void *data) {
+  const CLSphereWork *sphere = static_cast<const CLSphereWork *>(data);
+  for (int i = 0; i < 3; i++) {
+    f32 value = (&sphere->unknown00.x)[i] + sphere->unknown10;
+    if ((&max.x)[i] < value) {
+      (&max.x)[i] = value;
+    }
+    value = (&sphere->unknown00.x)[i] - sphere->unknown10;
+    if ((&min.x)[i] > value) {
+      (&min.x)[i] = value;
+    }
+  }
 }
 
 void IDColiPrimitive::createAaBbBox(mm::Vec3 &max, mm::Vec3 &min, const void *data) {

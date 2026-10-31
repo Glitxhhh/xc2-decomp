@@ -193,6 +193,7 @@ class IDColiPrimitive {
 public:
   static void createSphere(CLSphereWork &sphere, const IDColiInput &input);
   static void createSphere(CLSphereWork &sphere, const mm::Vec3 &center, f32 radius);
+  static void createAaBbSphere(mm::Vec3 &max, mm::Vec3 &min, const void *data);
   static void createAaBbBox(mm::Vec3 &max, mm::Vec3 &min, const void *data);
   static void createAaBbPoli(mm::Vec3 &max, mm::Vec3 &min, const void *data);
   static void createBaPosSphere(mm::Vec3 &position, mm::Vec3 &unknown, bool &isRotate, f32 &radius, f32 &length, const void *data);
@@ -210,6 +211,7 @@ public:
   static void calcBaseBoxSetup(CLBoxWork *box, const mm::Mat44 &matrix, const mm::Vec3 &size);
   static void calcPosDataSetup(IDCmfPosData *posData, const mm::Mat44 &matrix, const mm::Vec3 &max, const mm::Vec3 &min);
   static void createBaseBox(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size);
+  static void createBaseInBox(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size);
   static void createBaseCapsule(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size);
   static void createBaseCharacter(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size);
   static void createBasePoli(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size);
