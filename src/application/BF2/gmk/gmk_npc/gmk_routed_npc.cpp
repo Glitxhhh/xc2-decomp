@@ -130,3 +130,5 @@ const IGmkList *GmkRoutedNpc::getBindedRoutePointList() const { return GmkRoute:
 } // namespace gmk
 
 template void mm::mtl::Vector<gmk::GmkRoutedNpc>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkRoutedNpc>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkRoutedNpc>::resize(size_t);

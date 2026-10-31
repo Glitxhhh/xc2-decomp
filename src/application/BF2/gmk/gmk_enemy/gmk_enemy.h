@@ -182,7 +182,6 @@ public:
   u8 _174[0x178 - 0x174];
   u64 unknown178;  // Inferred role: matched condition flags; original member name unknown.
   bool unknown180; // Role and original member name unknown.
-  u8 _181[0x188 - 0x181];
 };
 
 static_assert(sizeof(GmkEnemyInsts::BdatInfo) == 0x50, "");

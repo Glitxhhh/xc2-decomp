@@ -24,6 +24,7 @@ class GmkNpcIdInfo;
 
 class AGmkNpc : public mm::mtl::IntrusiveListNode<AGmkNpc> {
 public:
+  AGmkNpc() : unknown18(nullptr) {}
   virtual ~AGmkNpc() {}
   virtual bool isPopCondMatched() const = 0;
   virtual bool isDepopCondMatched() const = 0;
@@ -63,6 +64,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_NPC;
 
+  GmkNpc() : unknown68(true) {}
   ~GmkNpc() override { dispose(); }
   GmkType getGmkType() const override;
   gf::GF_OBJ_HANDLE *getGobInst() const;

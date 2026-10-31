@@ -75,7 +75,11 @@ public:
   };
 
   struct CreateInfo {
-    CreateInfo() : unknown00(SHAPE_TYPE_NONE), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown40(nullptr), unknown48(false) { unknown30[0] = unknown30[1] = unknown30[2] = 0.0f; }
+    CreateInfo() : unknown00(SHAPE_TYPE_NONE), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown40(nullptr), unknown48(false) {
+      for (u32 i = 0; i < 3; i++) {
+        unknown30[i] = 0.0f;
+      }
+    }
 
     ShapeType unknown00;                 // Inferred role: shape type; original member name unknown.
     mm::Vec3 unknown10;                  // Inferred role: position; original member name unknown.

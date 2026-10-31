@@ -23,6 +23,7 @@ class GmkRoutedNpc : public GmkRoute, public AGmkNpc {
 public:
   static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_NPC;
 
+  GmkRoutedNpc() : unknown70(nullptr), unknown78(true), unknown79(true), unknown80(mm::Vec3::zero), unknown90(mm::Quat::zero) {}
   ~GmkRoutedNpc() override;
   GmkType getGmkType() const override;
   const IGmkList *getBindedRoutePointList() const override;

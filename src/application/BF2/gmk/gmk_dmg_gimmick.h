@@ -94,6 +94,7 @@ public:
   void (GmkDmgGimmick::*unknown68)(f32); // Inferred role: sequence; original member name unknown.
   GmkDmgGimmick *unknown78;              // Inferred role: self pointer; original member name unknown.
   bool unknown80;                        // Role and original member name unknown.
+  u8 _81[0x88 - 0x81];
 };
 
 static_assert(sizeof(GmkDmgGimmick::BdatInfo) == 0x28, "");

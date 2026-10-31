@@ -233,7 +233,7 @@ void GmkDmgGimmick::create(const CreateInfo &info) {
   unknown68 = &GmkDmgGimmick::seqWaitToCreateChild;
 }
 
-GmkDmgGimmick::GmkDmgGimmick() : unknown50(false), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr), unknown78(this), unknown80(true) {}
+GmkDmgGimmick::GmkDmgGimmick() : unknown50(false), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr), unknown80(true) { unknown78 = this; }
 
 void GmkDmgGimmick::dispose() {
   unknown58 = nullptr;
@@ -357,3 +357,6 @@ template void mm::mtl::Vector<gmk::GmkDmgEffect>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkDmgSe>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkDmgSe>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkDmgSe>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkDmgGimmick>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkDmgGimmick>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkDmgGimmick>::resize(size_t);

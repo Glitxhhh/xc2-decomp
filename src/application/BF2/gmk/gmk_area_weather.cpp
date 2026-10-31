@@ -43,3 +43,5 @@ template void mm::mtl::Vector<gmk::GmkAreaWeather::BdatInfo>::expand(size_t, siz
 template void mm::mtl::Vector<gmk::GmkAreaWeather::BdatInfo>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkAreaWeather::BdatInfo>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkAreaWeather>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkAreaWeather>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkAreaWeather>::resize(size_t);

@@ -1383,6 +1383,7 @@ void BootedGmkCond::dispose() { unknown00 = 0; }
 #include "gmk/gmk_mob/gmk_routed_mob.cpp"
 #include "gmk/gmk_landmark.cpp"
 #include "gmk/gmk_route.cpp"
+#include "gmk/gmk_form_pc.cpp"
 #include "gmk/gmk_collection.cpp"
 #include "gmk/gmk_area_bgm.cpp"
 #include "gmk/gmk_area_weather.cpp"

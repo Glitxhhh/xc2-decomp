@@ -32,6 +32,7 @@ public:
 
   static const GmkType GMK_TYPE = TYPE;
 
+  TGmkFormPcnpc() : _48() {}
   ~TGmkFormPcnpc() override;
   GmkType getGmkType() const override;
   bool isValid() const override;
@@ -65,6 +66,7 @@ public:
 
   static const GmkType GMK_TYPE = TYPE;
 
+  TGmkFormPc() : _48() {}
   ~TGmkFormPc() override;
   GmkType getGmkType() const override;
   bool isValid() const override;

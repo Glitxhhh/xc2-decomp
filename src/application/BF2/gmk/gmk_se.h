@@ -78,7 +78,6 @@ public:
   f32 unknownf8;   // Role and original member name unknown.
   f32 unknownfc;   // Role and original member name unknown.
   bool unknown100; // Role and original member name unknown.
-  u8 _101[0x110 - 0x101];
 };
 
 static_assert(sizeof(GmkSe::BdatInfo) == 0x40, "");

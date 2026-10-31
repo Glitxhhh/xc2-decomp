@@ -40,11 +40,9 @@ public:
 
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
-  u8 _48[0x50 - 0x48];
   GmkPhantom unknown50; // Inferred role: phantom; original member name unknown.
   bool unknowne0;       // Role and original member name unknown.
   bool unknowne1;       // Role and original member name unknown.
-  u8 _e2[0xf0 - 0xe2];
 };
 
 static_assert(sizeof(GmkMapJump::BdatInfo) == 0xc, "");

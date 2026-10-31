@@ -170,3 +170,4 @@ template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint::BdatInfo>::resize(size_t
 template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkRoutedEnemy>::expand(size_t, size_t);
