@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -8,13 +10,47 @@ namespace gf {
 class GfBdatUniqueMotion : public mm::mtl::PtrSingleton<GfBdatUniqueMotion> {
 public:
   struct Impl;
-  struct PresetInfo;
+
+  // Layout evidence: Impl::build (0x71002862c4) fills it from the bdat columns before
+  // Map<u16, CharaInfo>::insert (0x71002874a4), whose node copies the 0x18-byte MapPair (key at 0x00, value at 0x04).
+  struct CharaInfo {
+    u16 unknown00; // Inferred role: reference id ("RefID"); original member name unknown.
+    u16 unknown02; // Inferred role: probability ("Probability"); original member name unknown.
+    f32 unknown04; // Inferred role: minimum delay ("DelayMin"); original member name unknown.
+    f32 unknown08; // Inferred role: maximum delay ("DelayMax"); original member name unknown.
+    u16 unknown0c; // Inferred role: first frequency ("FrequencyA"); original member name unknown.
+    u16 unknown0e; // Inferred role: second frequency ("FrequencyB"); original member name unknown.
+    u16 unknown10; // Inferred role: third frequency ("FrequencyC"); original member name unknown.
+  };
 
   struct PresetKey {
     u16 ids[6];
   };
 
+  // Inferred role: motion of one character of a preset; original type name unknown.
+  struct unknown001 {
+    u16 unknown00; // Inferred role: character ("Chara0" to "Chara5"); original member name unknown.
+    u16 unknown02; // Inferred role: motion ("Motion0" to "Motion5"); original member name unknown.
+    f32 unknown04; // Inferred role: delay ("Delay0" to "Delay5"); original member name unknown.
+  };
+
+  // Layout evidence: Impl::build (0x71002862c4) fills it from the bdat columns, sorts a copy of the characters into the
+  // key at 0x34 and copies the 0x40 bytes into Vector<PresetInfo>, whose expand (0x7100287390) moves them with memcpy.
+  struct PresetInfo {
+    u16 unknown00;           // Inferred role: frequency ("Frequency"); original member name unknown.
+    unknown001 unknown04[6]; // Inferred role: character motions; original member name unknown.
+    PresetKey unknown34;     // Inferred role: sorted characters; original member name unknown.
+  };
+
   static void queryPreset(mm::mtl::FixedQueue<const PresetInfo *, 32> *presets, const PresetKey &key);
 };
+
+static_assert(offsetof(GfBdatUniqueMotion::CharaInfo, unknown04) == 0x04, "");
+static_assert(offsetof(GfBdatUniqueMotion::CharaInfo, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfBdatUniqueMotion::CharaInfo, unknown10) == 0x10, "");
+static_assert(sizeof(GfBdatUniqueMotion::CharaInfo) == 0x14, "");
+static_assert(offsetof(GfBdatUniqueMotion::PresetInfo, unknown04) == 0x04, "");
+static_assert(offsetof(GfBdatUniqueMotion::PresetInfo, unknown34) == 0x34, "");
+static_assert(sizeof(GfBdatUniqueMotion::PresetInfo) == 0x40, "");
 
 } // namespace gf

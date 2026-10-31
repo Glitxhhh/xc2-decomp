@@ -1,11 +1,13 @@
 #pragma once
 #include <stddef.h>
 
+#include "framework/reference_frame.h"
 #include "gf/object/component/gf_component.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
 namespace anm {
@@ -50,16 +52,54 @@ static_assert(offsetof(EffectMountSetupEv, unknown41) == 0x41, "");
 
 class GfComEffectCaster : public GfComponent {
 public:
+  // Layout evidence: effectStart (0x7100506604) builds it before its copy ctor (0x710050b090); the copy ctor and
+  // operator= (0x710050af14) copy the two FixStr, the IntrusivePtr at 0x60 and the Vec3 members one by one and the other
+  // members by blocks (0x24-0x34, 0x58, 0x68-0x74, 0xa0-0xc0).
   struct Param {
-    u8 _00[0x28];
-    f32 unknown28; // Inferred role: elapsed second; original member name unknown.
-    u8 _2c[0x30 - 0x2c];
-    f32 unknown30; // Inferred role: speed; original member name unknown.
-    u8 _34[0x58 - 0x34];
-    u32 unknown58; // Inferred role: effect identifier; original member name unknown.
-    u8 _5c[0xba - 0x5c];
-    bool unknownba; // Inferred role: effect ended; original member name unknown.
-    u8 _bb[0xc0 - 0xbb];
+    mm::mtl::FixStr<32> unknown00;                       // Inferred role: effect name; original member name unknown.
+    f32 unknown24;                                       // Inferred role: timer state, -1 without a life time; original member name unknown.
+    f32 unknown28;                                       // Inferred role: elapsed second; original member name unknown.
+    f32 unknown2c;                                       // Inferred role: life time; original member name unknown.
+    f32 unknown30;                                       // Inferred role: speed; original member name unknown.
+    mm::mtl::FixStr<32> unknown34;                       // Inferred role: point name; original member name unknown.
+    u32 unknown58;                                       // Inferred role: effect identifier; original member name unknown.
+    mm::mtl::IntrusivePtr<fw::ReferenceFrame> unknown60; // Inferred role: point reference frame; original member name unknown.
+    u16 unknown68;                                       // Inferred role: caster type; original member name unknown.
+    u16 unknown6a;                                       // Inferred role: setup value; original member name unknown.
+    u8 unknown6c;                                        // Inferred role: setup flag; original member name unknown.
+    u8 unknown6d;                                        // Inferred role: setup flag; original member name unknown.
+    bool unknown6e;                                      // Inferred role: point name bound; original member name unknown.
+    u8 unknown6f;                                        // Inferred role: setup flag; original member name unknown.
+    f32 unknown70;                                       // Inferred role: scale; original member name unknown.
+    mm::Vec3 unknown80;                                  // Inferred role: offset; original member name unknown.
+    mm::Vec3 unknown90;                                  // Inferred role: second setup vector; original member name unknown.
+    u8 unknowna0;                                        // Inferred role: setup flag; original member name unknown.
+    u8 unknowna1;                                        // Inferred role: setup flag; original member name unknown.
+    u8 unknowna2;                                        // Inferred role: setup flag; original member name unknown.
+    u8 unknowna3;                                        // Inferred role: setup flag; original member name unknown.
+    GF_OBJ_HANDLE *unknowna8;                            // Inferred role: target handle; original member name unknown.
+    GF_OBJ_HANDLE *unknownb0;                            // Inferred role: weapon handle; original member name unknown.
+    bool unknownb8;                                      // Inferred role: follow the caster; original member name unknown.
+    u8 unknownb9;                                        // Inferred role: ground type; original member name unknown.
+    bool unknownba;                                      // Inferred role: effect ended; original member name unknown.
+    bool unknownbb;                                      // Inferred role: state flag; original member name unknown.
+    bool unknownbc;                                      // Inferred role: state flag; original member name unknown.
+    bool unknownbd;                                      // Inferred role: state flag; original member name unknown.
+    bool unknownbe;                                      // Inferred role: state flag; original member name unknown.
+    bool unknownbf;                                      // Inferred role: state flag; original member name unknown.
+  };
+
+  // Layout evidence: addMountEffectEv (0x7100509768) builds it from an EffectMountSetupEv before pushing it into the
+  // FixedVector at 0xc3b0; operator= (0x710050b1bc) copies the FixStr, the u32 at 0x24, the IntrusivePtr at 0x28, the
+  // Vec3 and the three bytes at 0x40.
+  struct EventEfHandleTbl {
+    mm::mtl::FixStr<32> unknown00;                       // Inferred role: bone name; original member name unknown.
+    u32 unknown24;                                       // Inferred role: effect identifier; original member name unknown.
+    mm::mtl::IntrusivePtr<fw::ReferenceFrame> unknown28; // Inferred role: bone reference frame; original member name unknown.
+    mm::Vec3 unknown30;                                  // Inferred role: offset; original member name unknown.
+    u8 unknown40;                                        // Inferred role: setup byte; original member name unknown.
+    bool unknown41;                                      // Inferred role: rotation enabled; original member name unknown.
+    bool unknown42;                                      // Inferred role: follow enabled; original member name unknown.
   };
 
   static mm::mtl::RTTI m_rtti;
@@ -101,8 +141,9 @@ public:
   fw::EffectCasterBase *unknown388; // Inferred role: effect caster; original member name unknown.
   fw::EffectPoint *unknown390;      // Inferred role: effect point; original member name unknown.
   u8 _398[0x3a0 - 0x398];
-  mm::mtl::FixedVector<Param, 256> unknown3a0; // Inferred role: caster params; original member name unknown.
-  u8 _c3a8[0x113d0 - 0xc3a8];
+  mm::mtl::FixedVector<Param, 256> unknown3a0;             // Inferred role: caster params; original member name unknown.
+  mm::mtl::FixedVector<EventEfHandleTbl, 256> unknownc3b0; // Inferred role: mount effects; original member name unknown.
+  u8 _113c0[0x113d0 - 0x113c0];
   mm::Mat44 unknown113d0; // Inferred role: weapon matrix of the previous frame; original member name unknown.
   mm::Mat44 unknown11410; // Inferred role: second weapon matrix of the previous frame; original member name unknown.
 };
@@ -116,11 +157,33 @@ static_assert(offsetof(GfComEffectCaster, unknown28) == 0x28, "");
 static_assert(offsetof(GfComEffectCaster, unknown388) == 0x388, "");
 static_assert(offsetof(GfComEffectCaster, unknown390) == 0x390, "");
 static_assert(offsetof(GfComEffectCaster, unknown3a0) == 0x3a0, "");
+static_assert(offsetof(GfComEffectCaster, unknownc3b0) == 0xc3b0, "");
 static_assert(offsetof(GfComEffectCaster, unknown113d0) == 0x113d0, "");
 static_assert(offsetof(GfComEffectCaster, unknown11410) == 0x11410, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown24) == 0x24, "");
 static_assert(offsetof(GfComEffectCaster::Param, unknown28) == 0x28, "");
 static_assert(offsetof(GfComEffectCaster::Param, unknown30) == 0x30, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown34) == 0x34, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown58) == 0x58, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown60) == 0x60, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown68) == 0x68, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown6a) == 0x6a, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown6e) == 0x6e, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown70) == 0x70, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown80) == 0x80, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknown90) == 0x90, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknowna0) == 0xa0, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknowna8) == 0xa8, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknownb0) == 0xb0, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknownb8) == 0xb8, "");
 static_assert(offsetof(GfComEffectCaster::Param, unknownba) == 0xba, "");
+static_assert(offsetof(GfComEffectCaster::Param, unknownbf) == 0xbf, "");
 static_assert(sizeof(GfComEffectCaster::Param) == 0xc0, "");
+static_assert(offsetof(GfComEffectCaster::EventEfHandleTbl, unknown24) == 0x24, "");
+static_assert(offsetof(GfComEffectCaster::EventEfHandleTbl, unknown28) == 0x28, "");
+static_assert(offsetof(GfComEffectCaster::EventEfHandleTbl, unknown30) == 0x30, "");
+static_assert(offsetof(GfComEffectCaster::EventEfHandleTbl, unknown40) == 0x40, "");
+static_assert(offsetof(GfComEffectCaster::EventEfHandleTbl, unknown42) == 0x42, "");
+static_assert(sizeof(GfComEffectCaster::EventEfHandleTbl) == 0x50, "");
 
 } // namespace gf
