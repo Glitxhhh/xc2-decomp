@@ -83,7 +83,8 @@ static_assert(offsetof(GfFobjDropitem, unknown50) == 0x50, "");
 static_assert(offsetof(GfFobjDropitem, unknown54) == 0x54, "");
 
 // Layout from its constructor, create, dispose, update and seqWaitBeginDrop, and from GmkSalvageLocator,
-// which embeds it at 0x60 and fills its CreateInfo.
+// which embeds it at 0x60 and fills its CreateInfo. GfFieldTbox::isDropitemsEmitted reads m_dropitemsEmitted, and the
+// destructors of GfFieldTbox and GmkSalvageLocator call dispose on their emitter.
 class GfDropitemEmitter {
 public:
   struct CreateInfo {
@@ -101,12 +102,13 @@ public:
   };
 
   GfDropitemEmitter(const CreateInfo *info = nullptr);
+  ~GfDropitemEmitter() { dispose(); }
   void create(const CreateInfo &info);
   void dispose();
   void update(f32 deltaTime);
 
-  CreateInfo unknown00;                      // Inferred role: create info; original member name unknown.
-  bool unknown40;                            // Role and original member name unknown.
+  CreateInfo unknown00; // Inferred role: create info; original member name unknown.
+  bool m_dropitemsEmitted;
   f32 unknown44;                             // Inferred role: elapsed time; original member name unknown.
   f32 unknown48;                             // Role and original member name unknown.
   void (GfDropitemEmitter::*unknown50)(f32); // Inferred role: sequence; original member name unknown.
@@ -115,7 +117,7 @@ public:
 static_assert(offsetof(GfDropitemEmitter::CreateInfo, unknown10) == 0x10, "");
 static_assert(offsetof(GfDropitemEmitter::CreateInfo, unknown28) == 0x28, "");
 static_assert(offsetof(GfDropitemEmitter::CreateInfo, unknown30) == 0x30, "");
-static_assert(offsetof(GfDropitemEmitter, unknown40) == 0x40, "");
+static_assert(offsetof(GfDropitemEmitter, m_dropitemsEmitted) == 0x40, "");
 static_assert(offsetof(GfDropitemEmitter, unknown44) == 0x44, "");
 static_assert(offsetof(GfDropitemEmitter, unknown50) == 0x50, "");
 static_assert(sizeof(GfDropitemEmitter) == 0x60, "");

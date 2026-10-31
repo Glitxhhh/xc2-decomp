@@ -1,5 +1,6 @@
 #include "gf/object/component/effect/gf_com_effect_caster.h"
 
+#include "framework/effect/effect_clip.h"
 #include "framework/effect/effect_manager.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_weapon.h"
@@ -10,7 +11,15 @@ namespace fw {
 class MessageObject;
 } // namespace fw
 
+const char *ASM_CB_NAME_EFFECT = "asm_effect";
+
 namespace gf {
+
+void GfComEffectCaster::registerAsmCallbackEffect(GF_OBJ_HANDLE *handle, anm::ResASM *resAsm, fw::EffectResData *effectData) {
+  if (resAsm != nullptr && effectData != nullptr) {
+    effectData->registerAsmAnnotation(resAsm, 3, ASM_CB_NAME_EFFECT);
+  }
+}
 
 void GfComEffectCaster::procMsgObjectNotifyDamage(fw::MessageObject *object, MsgObjectNotifyDamage &message) {}
 
@@ -35,6 +44,24 @@ fw::EffectPoint *GfComEffectCaster::getEffectPoint() { return unknown390; }
 bool GfComEffectCaster::getValidEffectName(const char *name) const { return true; }
 
 bool GfComEffectCaster::isDynamicAnnotationEffect(u8 type) const { return type != 0 && type != 0xe; }
+
+bool GfComEffectCaster::getDynamicAnnotationEffectFileName(u8 type, const char *&fileName) const {
+  fileName = nullptr;
+  return GfEffectGround::getGroundEffectFileName(this, type, fileName);
+}
+
+u32 GfComEffectCaster::convertSwimEffectState(GfEffectGround::SwimEffectState state) {
+  switch (state) {
+  case GfEffectGround::SWIM_EFFECT_STATE_UNKNOWN_0:
+    return 0;
+  case GfEffectGround::SWIM_EFFECT_STATE_UNKNOWN_1:
+    return 1;
+  case GfEffectGround::SWIM_EFFECT_STATE_UNKNOWN_2:
+    return 2;
+  default:
+    return 0;
+  }
+}
 
 u32 GfComEffectCaster::calcWeaponID() const {
   DataParamAcc paramAcc(static_cast<GfObj *>(unknown08)->unknownf8);

@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "framework/reference_frame.h"
+#include "gf/object/component/effect/gf_effect_ground.h"
 #include "gf/object/component/gf_component.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
@@ -124,6 +125,8 @@ public:
   fw::EffectPoint *getEffectPoint();
   bool getValidEffectName(const char *name) const;
   bool isDynamicAnnotationEffect(u8 type) const;
+  bool getDynamicAnnotationEffectFileName(u8 type, const char *&fileName) const;
+  u32 convertSwimEffectState(GfEffectGround::SwimEffectState state);
   Param *findEffectCasterParam(u32 effect);
   GF_OBJ_HANDLE *getWeaponHandle(u16 weapon);
   void getWpnMatOld1(mm::Mat44 &matrix);

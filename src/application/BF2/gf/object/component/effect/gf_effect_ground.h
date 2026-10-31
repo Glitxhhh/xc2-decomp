@@ -11,7 +11,17 @@ struct GfCharaWaterInfo {
 
 class GfEffectGround {
 public:
+  // Inferred from GfComEffectCaster::convertSwimEffectState, which keeps the states below 3; original enumerator names
+  // unknown.
+  enum SwimEffectState {
+    SWIM_EFFECT_STATE_UNKNOWN_0 = 0,
+    SWIM_EFFECT_STATE_UNKNOWN_1 = 1,
+    SWIM_EFFECT_STATE_UNKNOWN_2 = 2,
+    SWIM_EFFECT_STATE_UNKNOWN_3 = 3,
+  };
+
   static u32 getWaterHeightState(const GfComEffectCaster *caster);
+  static bool getGroundEffectFileName(const GfComEffectCaster *caster, u32 type, const char *&fileName);
   static bool getGroundEffectFileNameImpl(u32 type, u32 effectType, u32 material, const char *&fileName);
   static bool tryGetWaterDepth(const GfComEffectCaster *caster, const GfCharaWaterInfo *waterInfo, f32 &depth);
   static bool isOnWaterSurface(const GfComEffectCaster *caster);

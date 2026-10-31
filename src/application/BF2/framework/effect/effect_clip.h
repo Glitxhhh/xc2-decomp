@@ -7,6 +7,10 @@
 #include "mm_mtl/vector.h"
 #include "types.h"
 
+namespace anm {
+class ResASM;
+} // namespace anm
+
 namespace mm {
 namespace mtl {
 class IAllocator;
@@ -78,6 +82,7 @@ public:
   static EffectResData *createEffectResData(const SetupInfo &info);
   void init(const SetupInfo &info);
   void term();
+  void registerAsmAnnotation(anm::ResASM *resAsm, u32 type, const char *name);
 
   mm::mtl::Vector<EffectAnnotationData> unknown10; // Inferred role: annotations; original member name unknown.
 };
