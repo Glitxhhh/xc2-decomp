@@ -68,6 +68,7 @@ public:
   virtual void applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color);
   void release() override;
   void baseRelease();
+  void updateDefSpace(grlib::CGLibDblUniformBlock *&uniform, LAYER_SPACE_TYPE space, const mm::Mat44 &matrix);
   void setInitPos(f32 x, f32 y);
   void setInitRot(f32 rot);
   void setInitScl(f32 x, f32 y);

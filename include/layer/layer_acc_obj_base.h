@@ -12,7 +12,11 @@ namespace layer {
 class LayerBase;
 class LayerObj;
 
-enum LAYER_SPACE_TYPE {};
+enum LAYER_SPACE_TYPE {
+  LAYER_SPACE_TYPE_UNKNOWN_0 = 0, // Inferred role: screen space (no depth); original enumerator name unknown.
+  LAYER_SPACE_TYPE_UNKNOWN_1 = 1, // Inferred role: depth from the matrix; original enumerator name unknown.
+  LAYER_SPACE_TYPE_UNKNOWN_2 = 2, // Inferred role: depth and world matrix uniform; original enumerator name unknown.
+};
 
 enum LayerCenterType {
   LAYER_CENTER_TYPE_TOP_LEFT = 0,

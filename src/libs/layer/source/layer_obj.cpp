@@ -185,6 +185,28 @@ void LayerObj::updateSecondTex() {
   }
 }
 
+void LayerObj::updateDefSpace(grlib::CGLibDblUniformBlock *&uniform, LAYER_SPACE_TYPE space, const mm::Mat44 &matrix) {
+  if (space == LAYER_SPACE_TYPE_UNKNOWN_2) {
+    LayerObjUtil::calcMatrixToZBuffPos(unknown200, unknown1fc, matrix);
+    unknowna8 |= 0xc00;
+    unknowna8 &= ~0x1000;
+    LayerObjUtil::createWorldMatrixUniform(uniform, matrix, unknownc0 * 0.0625f);
+    return;
+  }
+  if (space == LAYER_SPACE_TYPE_UNKNOWN_1) {
+    LayerObjUtil::calcMatrixToZBuffPos(unknown200, unknown1fc, matrix);
+    unknowna8 |= 0x400;
+  } else {
+    unknown1fc = 0.0f;
+  }
+  if (unknowna8 & 0x1000) {
+    unknowna8 &= ~0x1000;
+    LayerObjUtil::releaseWorldMatrixUniform(uniform);
+  } else if (uniform != nullptr) {
+    unknowna8 |= 0x1000;
+  }
+}
+
 void LayerObj::setPos(f32 x, f32 y) {
   LayerBasePos &pos = unknownc8[LayerManager::s_nStkIdx].unknown00;
   pos.unknown00 = x;

@@ -5,6 +5,7 @@
 #include "types.h"
 
 namespace mm {
+struct Mat44;
 struct Vec3;
 } // namespace mm
 
@@ -73,6 +74,8 @@ public:
   static void calcMdlPos_Center_Center(f32 *pos, f32 *size, const f32 *scl, const LayerBasePos &base);
   static void calcLayerMatrix(LayerResMatrix &result, const LayerResMatrix &base, const LayerResMatrix &parent);
   static void calcLayerScaleMatrix(LayerResMatrix &result, const LayerBasePos &base, f32 x, f32 y);
+  static void calcMatrixToZBuffPos(f32 &depth, f32 &param, const mm::Mat44 &matrix);
+  static void createWorldMatrixUniform(grlib::CGLibDblUniformBlock *&uniform, const mm::Mat44 &matrix, f32 depth);
   static u32 getUniformBlockSizeAlOff(LayerUniType type);
   static u32 getUniformBlockSize(LayerUniType type);
   static void calcPosData_Pixel_Up(f32 *info, const LyrLayoutPosData *data, LayerCenterType type, f32 x, f32 y);
