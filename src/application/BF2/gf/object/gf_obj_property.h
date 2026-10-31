@@ -5,6 +5,7 @@
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/fixed_vector.h"
 #include "types.h"
 
 namespace gf {
@@ -119,10 +120,17 @@ public:
   GfObjPropertyCharacter unknown88; // Inferred role: character, pointed to by unknown10; original member name unknown.
   u8 _bc[0x190 - 0xbc];
   mm::mtl::FixedArray<unknown109, 3> unknown190; // Inferred role: field skills copied from SDataBlade::unknownae by GfGameUtil::flushProperty; original member name unknown.
+  u8 _1a2[0x1a4 - 0x1a2];
+  int unknown1a4; // Inferred role: kizuna value, read by GfMenuGfObjAdapter::update_BL_Kizuna; original member name unknown.
+  u32 unknown1a8; // Inferred role: special level, read by GfMenuGfObjAdapter::update_BL_SpecialLv; original member name unknown.
+  f32 unknown1ac; // Inferred role: special gauge ratio; original member name unknown.
+  f32 unknown1b0; // Inferred role: blade change recast ratio; original member name unknown.
 };
 
 static_assert(offsetof(GfObjPropertyBlade, unknown88) == 0x88, "");
 static_assert(offsetof(GfObjPropertyBlade, unknown190) == 0x190, "");
+static_assert(offsetof(GfObjPropertyBlade, unknown1a4) == 0x1a4, "");
+static_assert(offsetof(GfObjPropertyBlade, unknown1b0) == 0x1b0, "");
 
 class GfObjPropertyPcWeapon : public GfObjProperty {};
 
@@ -130,21 +138,55 @@ class GfObjPropertyEnWeapon : public GfObjProperty {};
 
 class GfObjPropertyBelonging : public GfObjProperty {};
 
+// Inferred role: resistance state of one attribute of an enemy; original type name unknown.
+struct unknown138 {
+  enum {
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: resistance on; original name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: resistance targeted; original name unknown.
+    FLAG_UNKNOWN_2 = 1 << 2, // Inferred role: resistance burst; original name unknown.
+  };
+
+  u16 unknown00; // Inferred role: flags; original member name unknown.
+  u16 unknown02; // Inferred role: resistance level; original member name unknown.
+};
+
+static_assert(offsetof(unknown138, unknown02) == 0x02, "");
+static_assert(sizeof(unknown138) == 0x04, "");
+
 class GfObjPropertyEnemy : public GfObjProperty {
 public:
   u8 _40[0x88 - 0x40];
   GfObjPropertyCharacter unknown88; // Inferred role: character, pointed to by unknown10; original member name unknown.
-  u8 _bc[0xdc - 0xbc];
-  u32 unknowndc; // Inferred role: element combo id, read by GfMenuReference::getElementComboRootCurrent; original member name unknown.
-  u8 _e0[0xe8 - 0xe0];
-  u32 unknowne8; // Inferred role: element combo level, read by GfMenuElementComboAdapter::getTargetElementComboLv; original member name unknown.
-  u8 _ec[0x150 - 0xec];
-  int unknown150; // Inferred role: bdat index of the bound enemy gimmick, set by GfBehaviorEnemyField::create; original member name unknown.
+  u8 _bc[0xc2 - 0xbc];
+  bool unknownc2; // Inferred role: scouted; original member name unknown.
+  u8 _c3[0xc4 - 0xc3];
+  u32 unknownc4; // Inferred role: arts id; original member name unknown.
+  u8 _c8[0xd8 - 0xc8];
+  u32 unknownd8;  // Inferred role: weak attribute bits; original member name unknown.
+  u32 unknowndc;  // Inferred role: element combo id, read by GfMenuReference::getElementComboRootCurrent; original member name unknown.
+  f32 unknowne0;  // Inferred role: element combo time ratio; original member name unknown.
+  bool unknowne4; // Inferred role: element combo suspended; original member name unknown.
+  u8 _e5[0xe8 - 0xe5];
+  u32 unknowne8;  // Inferred role: element combo level, read by GfMenuElementComboAdapter::getTargetElementComboLv; original member name unknown.
+  u32 unknownec;  // Inferred role: fight combo; original member name unknown.
+  f32 unknownf0;  // Inferred role: fight combo time ratio; original member name unknown.
+  bool unknownf4; // Inferred role: fight combo suspended; original member name unknown.
+  u8 _f5[0xf8 - 0xf5];
+  u32 unknownf8;                            // Inferred role: element effect id; original member name unknown.
+  unknown138 unknownfc[9];                  // Inferred role: resistance of each attribute, indexed by attribute 1 to 8; original member name unknown.
+  mm::mtl::FixedVector<u32, 10> unknown120; // Inferred role: attributes shown in the resistance list; original member name unknown.
+  int unknown150;                           // Inferred role: bdat index of the bound enemy gimmick, set by GfBehaviorEnemyField::create; original member name unknown.
 };
 
 static_assert(offsetof(GfObjPropertyEnemy, unknown88) == 0x88, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownc2) == 0xc2, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownc4) == 0xc4, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownd8) == 0xd8, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknowndc) == 0xdc, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknowne8) == 0xe8, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownf8) == 0xf8, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownfc) == 0xfc, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknown120) == 0x120, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknown150) == 0x150, "");
 
 class GfObjPropertyNpc : public GfObjProperty {};

@@ -22,6 +22,7 @@ struct uiDateTime;
 
 namespace gf {
 
+struct GF_OBJ_HANDLE;
 struct ElapseTime;
 
 class GfMenuRewriteNumber : public mm::mtl::ReferenceObject {
@@ -119,5 +120,23 @@ static_assert(offsetof(GfMenuAdapter, unknown18) == 0x18, "");
 static_assert(offsetof(GfMenuAdapter, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuAdapter, unknown28) == 0x28, "");
 static_assert(sizeof(GfMenuAdapter) == 0x30, "");
+
+// Inferred role: receiver of the object an adapter shows, second base of GfMenuGfObjAdapter and GfMenuCharDataAdapter (thunk offset 0x30); original type name unknown.
+class unknown135 {
+public:
+  virtual void changeGfObj(GF_OBJ_HANDLE *handle) = 0;
+};
+
+// Inferred role: receiver of the party driver an adapter shows (thunk offset 0x38); original type name unknown.
+class unknown136 {
+public:
+  virtual void changePartyDriver(u8 partyId) = 0;
+};
+
+// Inferred role: receiver of the party blade an adapter shows (thunk offset 0x40); original type name unknown.
+class unknown137 {
+public:
+  virtual void changePartyBlade(u8 partyId, u8 slot) = 0;
+};
 
 } // namespace gf
