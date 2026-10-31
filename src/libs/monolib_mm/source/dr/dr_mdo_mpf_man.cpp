@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "dr/dr_mpf_work_auto_inf.h"
+#include "grlib/cglib_ctl_vertex.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -35,6 +36,8 @@ u32 DrMdoMpfMan::advanceInstanceBuffOsf(u32 size) {
   unknownd0 = offset;
   return offset;
 }
+
+void DrMdoMpfMan::bindInstanceBuffAsVertex(u32 stream, u32 offset, u32 stride, u32 divisor) { grlib::CGLibCtlVertex::setUniformVertex(unknown98, stride, offset, stream, divisor); }
 
 void DrMdoMpfMan::addMpfObj() { unknown08++; }
 

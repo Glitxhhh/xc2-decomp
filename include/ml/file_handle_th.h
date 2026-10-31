@@ -39,6 +39,8 @@ public:
   u64 unknown1c8; // Inferred role: file time; original member name unknown.
   u8 _1d0[0x1d4 - 0x1d0];
   s32 unknown1d4; // Inferred role: file channel; original member name unknown.
+  u8 _1d8[0x1e8 - 0x1d8];
+  s32 unknown1e8; // Inferred role: job state (2 loaded, 4 load failed); original member name unknown.
 };
 
 static_assert(offsetof(FileHandleTh, unknown08) == 0x08, "");
@@ -54,5 +56,6 @@ static_assert(offsetof(FileHandleTh, unknown98) == 0x98, "");
 static_assert(offsetof(FileHandleTh, m_time) == 0x1c0, "");
 static_assert(offsetof(FileHandleTh, unknown1c8) == 0x1c8, "");
 static_assert(offsetof(FileHandleTh, unknown1d4) == 0x1d4, "");
+static_assert(offsetof(FileHandleTh, unknown1e8) == 0x1e8, "");
 
 } // namespace ml

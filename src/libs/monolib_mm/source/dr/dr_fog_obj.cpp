@@ -9,6 +9,8 @@ DrFogObj::DrFogObj(DrMan *man)
 
 DrFogObjGbl::DrFogObjGbl(DrMan *man) : DrFogObj(man) {}
 
+DrFogObjGbl::~DrFogObjGbl() {}
+
 void DrFogObjGbl::update() {}
 
 } // namespace ml

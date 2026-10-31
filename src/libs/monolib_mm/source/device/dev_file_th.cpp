@@ -3,9 +3,11 @@
 #include "ml/dev_file_accessor.h"
 #include "ml/dev_file_job_th.h"
 #include "ml/file_handle_th.h"
+#include "ml/work_root.h"
 
 #include "device/nx/dev_file_nx_th.h"
 #include "mm_mtl/fixstr.h"
+#include "mtl/mem_manager.h"
 #include "nn/fs.h"
 
 namespace ml {
@@ -362,6 +364,39 @@ void DevFileTh::wkUpdate() {}
 bool DevFileTh::icbError(CERR_STRUCT *error) { return true; }
 
 void DevFileTh::icbDecide(CERR_STRUCT *error, ERR_DECIDE decide) {}
+
+bool DevFileReaderTh::asyncUpdate() {
+  void *buffer = mtl::MemManager::allocate(WorkRoot::getMemTMP(), 0x80000, 0x1000, false, "no name", 0);
+  bool isRead = false;
+  for (unknown001 *it = unknown20.begin(); it != unknown20.end(); ++it) {
+    unknown10->m_currentPtr = 0;
+    if (it->unknown10->readBlockSlice(unknown10, it->unknown08, buffer, 0x80000)) {
+      isRead = true;
+      break;
+    }
+    if (unknown18) {
+      break;
+    }
+  }
+  if (buffer != nullptr) {
+    mtl::MemManager::deallocate(buffer, 0, false);
+  }
+  if (unknown18) {
+    unknown10->unknown94 |= 0x10000;
+    unknown10->unknown1e8 = 4;
+    return false;
+  }
+  if (isRead) {
+    unknown10->unknown94 |= 0x40000;
+    unknown10->unknown1e8 = 2;
+    unknown08 = 2;
+    return true;
+  }
+  unknown10->unknown94 |= 0x20000;
+  unknown10->unknown1e8 = 4;
+  unknown08 = -1;
+  return false;
+}
 
 } // namespace ml
 

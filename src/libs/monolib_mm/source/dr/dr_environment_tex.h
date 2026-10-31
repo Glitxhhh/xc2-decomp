@@ -13,6 +13,7 @@ class DrEnvironmentTex {
 public:
   DrEnvironmentTex();
   static int getTextureWork(int count);
+  void setupTexture(void *work, int count, const u8 *table, const u8 *data);
   grlib::CGLibTextureBuffer *getTexture(int index);
   void releaseTexture();
 

@@ -7,6 +7,8 @@
 
 namespace ml {
 
+WinSplitFrame::~WinSplitFrame() {}
+
 s32 WinSplitFrame::getSplitLine() const { return unknown08 ? unknown10 : unknown0c; }
 
 void WinSplitFrame::setSplitLine(s16 line) {

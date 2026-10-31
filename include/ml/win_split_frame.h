@@ -9,6 +9,7 @@ class WinView;
 
 class WinSplitFrame {
 public:
+  ~WinSplitFrame();
   s32 getSplitLine() const;
   void setSplitLine(s16 line);
   WinView *getView1();

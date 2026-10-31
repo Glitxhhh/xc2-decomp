@@ -8,7 +8,7 @@ class DrMan;
 class DrFogObjGbl : public DrFogObj {
 public:
   DrFogObjGbl(DrMan *man);
-  ~DrFogObjGbl() override {}
+  ~DrFogObjGbl() override;
   void update() override;
 };
 
