@@ -16,19 +16,24 @@
 #include "framework/object/updatable_object.h"
 #include "framework/pointer_map.h"
 #include "framework/reference_frame.h"
+#include "fw/fw_transform.h"
 #include "gf/asset/gf_asset_def.h"
 #include "gf/asset/gf_asset_manager.h"
+#include "gf/asset/gf_extend_resource.h"
 #include "gf/data/gf_bdat_rsc.h"
 #include "gf/data/gf_data_npc.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/game/gf_game_player_formation.h"
+#include "gf/game/gf_game_player_picker.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/behavior/plugin/gf_eye_blink_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
+#include "gf/object/component/gf_com_dynamics.h"
 #include "gf/object/component/gf_com_ik.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/gf_component.h"
@@ -37,11 +42,13 @@
 #include "gf/object/gf_append_info.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_property.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/vector.h"
@@ -734,6 +741,17 @@ GF_OBJ_HANDLE *GfObjUtil::getOwner(GF_OBJ_HANDLE *handle) {
 
 void GfObjUtil::reload(GF_OBJ_HANDLE *handle) {}
 
+bool GfObjUtil::isExistAsm(GF_OBJ_HANDLE *handle) {
+  GfExtendResource *resource = GfAssetManager::getExtentResource(getAssetHandle(handle), 0);
+  if (resource == nullptr) {
+    return false;
+  }
+  if (!resource->getRTTI()->isKindOf(&GfExtendPacking::m_rtti)) {
+    return false;
+  }
+  return static_cast<GfExtendPacking *>(resource)->unknown10 != nullptr;
+}
+
 bool GfObjUtil::isEnemyBlade(GF_OBJ_HANDLE *handle) {
   GfObjAcc objAcc(handle);
   if (objAcc.getType() != OBJECT_TYPE_ENEMY) {
@@ -750,6 +768,16 @@ bool GfObjUtil::testFlag(GF_OBJ_HANDLE *handle, u32 flag) {
 }
 
 bool GfObjUtil::testFlag(const GfObj *obj, u32 flag) { return obj->unknown100 != nullptr && obj->unknown100->unknown38.test(flag); }
+
+void GfObjUtil::copyTransformToSetup(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *setupHandle) {
+  GfObjAcc acc(handle);
+  if (acc.isValidTransform()) {
+    GfObjSetup *setup = getObjSetup(setupHandle);
+    if (setup != nullptr) {
+      setup->setInitialTransform(acc.getWorldTransform());
+    }
+  }
+}
 
 void GfObjUtil::copyTransformToSetup(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
@@ -822,6 +850,22 @@ void GfObjUtil::setVolumeFadeUserFlag(GF_OBJ_HANDLE *handle, bool isForUser) {
   if (info != nullptr && info->unknown38.test(OBJ_FLAG_VOLUME_FADE_FOR_USER) != isForUser) {
     info->unknown38.set(OBJ_FLAG_VOLUME_FADE_FOR_USER, isForUser);
   }
+}
+
+bool GfObjUtil::isStanbyTalkingPlayer(GF_OBJ_HANDLE *handle) {
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  GfObjProperty *property = getProperty(handle);
+  if (formation == nullptr || property == nullptr) {
+    return false;
+  }
+  unknown070 *move = property->unknown18;
+  if (move == nullptr) {
+    return false;
+  }
+  if (move->unknown7f) {
+    return false;
+  }
+  return !formation->isFarRandomTalk(handle);
 }
 
 void GfObjUtil::setTalking(GF_OBJ_HANDLE *handle, bool isTalking) {
@@ -897,6 +941,30 @@ GfAssetResource *GfObjUtil::getResourceEfb(GF_OBJ_HANDLE *handle) {
   }
 }
 
+fw::SoundPack *GfObjUtil::getSePack(GF_OBJ_HANDLE *handle) {
+  u32 type = getObjType(handle);
+  GfFileIdx index = FILE_IDX_NONE;
+  switch (type) {
+  case OBJECT_TYPE_DRIVER:
+  case OBJECT_TYPE_BLADE:
+  case OBJECT_TYPE_ENEMY:
+  case OBJECT_TYPE_NPC:
+  case OBJECT_TYPE_MOB:
+    index = FILE_IDX_MODEL;
+    break;
+  default:
+    break;
+  }
+  if (type - OBJECT_TYPE_DRIVER < 5) {
+    GfAssetManager *assetManager = GfAssetManager::get();
+    if (assetManager != nullptr) {
+      return assetManager->getSePackByFileIdx(getAssetHandle(handle), index);
+    }
+  }
+
+  return nullptr;
+}
+
 fw::SoundPack *GfObjUtil::getSePackFoot1(GF_OBJ_HANDLE *handle) {
   if (getObjType(handle) - OBJECT_TYPE_DRIVER < 5) {
     GfAssetManager *assetManager = GfAssetManager::get();
@@ -917,6 +985,22 @@ fw::SoundPack *GfObjUtil::getSePackFoot2(GF_OBJ_HANDLE *handle) {
   }
 
   return nullptr;
+}
+
+bool GfObjUtil::getSePackAll(mm::mtl::FixedVector<fw::SoundPack *, 4> &packs, GF_OBJ_HANDLE *handle) {
+  fw::SoundPack *pack = getSePack(handle);
+  if (pack != nullptr) {
+    packs.push_back(pack);
+  }
+  pack = getSePackFoot1(handle);
+  if (pack != nullptr) {
+    packs.push_back(pack);
+  }
+  pack = getSePackFoot2(handle);
+  if (pack != nullptr) {
+    packs.push_back(pack);
+  }
+  return !packs.empty();
 }
 
 bool GfObjUtil::getMobSlotHandle(mm::mtl::FixedVector<GF_SLOT_HANDLE *, 88> &slots, GF_OBJ_HANDLE *handle) {
@@ -968,5 +1052,64 @@ bool GfObjUtil::isUpdateComponent(const GfObj *obj) {
 }
 
 void GfObjUtil::applyExecUpdate(GF_OBJ_HANDLE *handle) { applyExecUpdate(getObj(handle)); }
+
+void GfObjUtil::setWarpTransform(GF_OBJ_HANDLE *handle, const fw::Transform &transform, bool isResetState) {
+  GfObj *obj = getObj(handle);
+  if (obj == nullptr) {
+    return;
+  }
+  if (isResetState) {
+    MsgPcResetState message;
+    obj->sendMessage(obj, message);
+  }
+  GfComTransform *comTransform = obj->getComponent<GfComTransform>();
+  if (comTransform != nullptr) {
+    comTransform->setPosition(transform.unknown00);
+    comTransform->setRotation(transform.unknown10);
+  }
+  GfComDynamics *dynamics = obj->getComponent<GfComDynamics>();
+  if (dynamics != nullptr) {
+    dynamics->resetMovement();
+  }
+}
+
+// Inferred helper: number of enemies of the list with the given arrange id; original name unknown.
+static int unknown002(const mm::mtl::FixedList<GF_OBJ_HANDLE *, 4096> *list, u32 arrange) {
+  int count = 0;
+  for (GF_OBJ_HANDLE *handle : *list) {
+    DataParamAcc acc(handle);
+    if (acc.getObjType() == OBJECT_TYPE_ENEMY && acc.getValidBdatId() == arrange) {
+      count++;
+    }
+  }
+  return count;
+}
+
+u32 GfObjUtil::getSetupObjNumberByEnArrangeId(u32 arrange) {
+  GfObjManager *manager = GfObjManager::get();
+  if (manager == nullptr) {
+    return 0;
+  }
+  int loading = unknown002(manager->getLoadingObj(), arrange);
+  return loading + unknown002(manager->getDestroyObj(), arrange);
+}
+
+// Inferred helper: adds the objects of the list with the given object type; original name unknown.
+static void unknown003(mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> &objects, const mm::mtl::FixedList<GF_OBJ_HANDLE *, 4096> *list, u32 objectType) {
+  for (GF_OBJ_HANDLE *const &handle : *list) {
+    if (GfObjUtil::getObjType(handle) == objectType) {
+      objects.push_back(handle);
+    }
+  }
+}
+
+bool GfObjUtil::getSetupObj(mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> &objects, u32 objectType) {
+  GfObjManager *manager = GfObjManager::get();
+  if (manager != nullptr) {
+    unknown003(objects, manager->getLoadingObj(), objectType);
+    unknown003(objects, manager->getDestroyObj(), objectType);
+  }
+  return objects.size() != 0;
+}
 
 } // namespace gf

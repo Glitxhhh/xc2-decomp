@@ -9,6 +9,10 @@
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 
+namespace fw {
+class Transform;
+} // namespace fw
+
 namespace mm {
 namespace mtl {
 class RTTI;
@@ -34,6 +38,7 @@ public:
   virtual u32 getFootStepEffect() const;
   virtual u32 getEnArrangeID() const;
 
+  void setInitialTransform(const fw::Transform &transform);
   void setInitialScale(f32 scale);
   void setInitialScale(const mm::Vec3 &scale);
 

@@ -2,6 +2,7 @@
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_setup.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/rtti.h"
 #include "types.h"
@@ -13,7 +14,8 @@ struct Vec3;
 
 namespace fw {
 class SoundPack;
-}
+struct Transform;
+} // namespace fw
 
 namespace gf {
 
@@ -119,12 +121,15 @@ public:
   static void setOwner(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *owner);
   static GF_OBJ_HANDLE *getOwner(GF_OBJ_HANDLE *handle);
   static u32 getSetupObjNumberByEnArrangeId(u32 arrange);
+  static bool getSetupObj(mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> &objects, u32 objectType);
   static void reload(GF_OBJ_HANDLE *handle);
+  static bool isExistAsm(GF_OBJ_HANDLE *handle);
   static bool isEnemyBlade(GF_OBJ_HANDLE *handle);
   static bool setFlag(GF_OBJ_HANDLE *handle, u32 flag, bool value);
   static bool setFlag(GFOBJ_INFO *info, u32 flag, bool value);
   static bool testFlag(GF_OBJ_HANDLE *handle, u32 flag);
   static bool testFlag(const GFOBJ_INFO *info, u32 flag);
+  static void copyTransformToSetup(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *setupHandle);
   static void copyTransformToSetup(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation);
   static bool testFlag(const GfObj *obj, u32 flag);
   static const char *getModelBaseName(GF_OBJ_HANDLE *handle);
@@ -144,6 +149,7 @@ public:
   static bool isSearchEmptyResource(GF_OBJ_HANDLE *handle);
   static GfAssetResource *getResourceEab(GF_OBJ_HANDLE *handle);
   static GfAssetResource *getResourceEfb(GF_OBJ_HANDLE *handle);
+  static fw::SoundPack *getSePack(GF_OBJ_HANDLE *handle);
   static fw::SoundPack *getSePackFoot1(GF_OBJ_HANDLE *handle);
   static fw::SoundPack *getSePackFoot2(GF_OBJ_HANDLE *handle);
   static bool getSePackAll(mm::mtl::FixedVector<fw::SoundPack *, 4> &packs, GF_OBJ_HANDLE *handle);
@@ -152,6 +158,7 @@ public:
   static bool isUpdateComponent(const GfObj *obj);
   static void applyExecUpdate(GF_OBJ_HANDLE *handle);
   static bool isFollowObjNotReady(GF_OBJ_HANDLE *handle);
+  static void setWarpTransform(GF_OBJ_HANDLE *handle, const fw::Transform &transform, bool isResetState);
 
   template <typename T> static T *getObjSetup(GF_OBJ_HANDLE *handle) {
     GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);

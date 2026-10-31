@@ -1,11 +1,39 @@
 #pragma once
+#include <stddef.h>
+
+#include "gf/asset/gf_extend_resource.h"
+#include "types.h"
 
 struct CBdatWrapper;
+namespace mm {
+namespace mtl {
+class RTTI;
+} // namespace mtl
+} // namespace mm
+
+namespace anm {
+class ResASM;
+} // namespace anm
 
 namespace gf {
 
 struct GF_OBJ_HANDLE;
 class GfInitParamMap;
+
+// Layout from its constructor, destructor and registerSoundTrigger. The game's destructor is out of line
+// (D1/D2 at 0x710058464c); it is not declared here until it is decompiled.
+class GfExtendPacking : public GfExtendResource {
+public:
+  static mm::mtl::RTTI m_rtti;
+
+  const mm::mtl::RTTI *getRTTI() const override;
+
+  anm::ResASM *unknown10; // Inferred role: asm resource, released through its anmlib reference count by the destructor; original member name unknown.
+  u8 _18[0x70 - 0x18];
+};
+
+static_assert(offsetof(GfExtendPacking, unknown10) == 0x10, "");
+static_assert(sizeof(GfExtendPacking) == 0x70, "");
 
 class GfObjFactory {
 public:

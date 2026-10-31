@@ -52,7 +52,8 @@ struct unknown070 {
   f32 unknown34; // Inferred role: height; original member name unknown.
   u8 _38[0x7d - 0x38];
   bool unknown7d; // Inferred role: can start event; original member name unknown.
-  u8 _7e[0x80 - 0x7e];
+  u8 _7e[0x7f - 0x7e];
+  bool unknown7f; // Inferred role: blocks the standby talk of the player (GfObjUtil::isStanbyTalkingPlayer); original member name unknown.
   bool unknown80; // Inferred role: jump; original member name unknown.
   u8 _81[0xc0 - 0x81];
   GF_OBJ_HANDLE *unknownc0; // Inferred role: ground object; original member name unknown.
@@ -61,6 +62,7 @@ struct unknown070 {
 
 static_assert(offsetof(unknown070, unknown34) == 0x34, "");
 static_assert(offsetof(unknown070, unknown7d) == 0x7d, "");
+static_assert(offsetof(unknown070, unknown7f) == 0x7f, "");
 static_assert(offsetof(unknown070, unknown80) == 0x80, "");
 static_assert(offsetof(unknown070, unknownc0) == 0xc0, "");
 static_assert(offsetof(unknown070, unknownc8) == 0xc8, "");

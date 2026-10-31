@@ -26,6 +26,7 @@ struct GF_OBJ_HANDLE;
 struct GF_SLOT_HANDLE;
 class GfAssetPack;
 class GfAssetResource;
+class GfExtendResource;
 class GfSlotMapping;
 class GfInitParam;
 struct GfAssetFilesInfo;
@@ -40,6 +41,7 @@ public:
   static GfAssetPack *createAssetFiles(const GfAssetFilesInfo &info);
   static GF_ASSET_HANDLE *createAssetHandle(const GfInitParam &param);
   static bool isReload(GF_ASSET_HANDLE *handle);
+  static GfExtendResource *getExtentResource(GF_ASSET_HANDLE *handle, u32 index);
   static void getSlotHandle(mm::mtl::FixedVector<GF_SLOT_HANDLE *, 88> &slots, GF_ASSET_HANDLE *handle);
   static void setModelInfo(GF_ASSET_HANDLE *handle, const char *name);
   bool isFullResource(GF_ASSET_HANDLE *handle) const;
