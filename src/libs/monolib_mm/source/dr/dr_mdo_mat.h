@@ -22,13 +22,31 @@ class DrShdMdoExtTblObj;
 class DrMan;
 class DrMdoSmlShadowObj;
 struct MdsMatCharMkTexTbl;
+class DrResMdoSampler;
 class DrResMdoTexList;
 class DrResMdoVertex;
 class DrShdMdoDecExtTbl;
 
+struct MdsMatTopHeader {
+  u8 _00[0x3c - 0x00];
+  u32 unknown3c; // Inferred role: offset of the texture infos; original member name unknown.
+};
+
+static_assert(offsetof(MdsMatTopHeader, unknown3c) == 0x3c, "");
+
+struct MdsMatTextureInfo {
+  u16 unknown00; // Inferred role: texture index; original member name unknown.
+  u16 unknown02; // Inferred role: sampler index of a mipmapped texture; original member name unknown.
+  u16 unknown04; // Inferred role: sampler index of a texture without mipmap; original member name unknown.
+  u8 _06[0x08 - 0x06];
+};
+
+static_assert(sizeof(MdsMatTextureInfo) == 0x08, "");
+
 struct MdsMatInfoHeader {
   // Inferred role: material flag; original type name unknown.
   enum unknown015 {
+    unknown015_15 = 1 << 15, // Inferred role: seam material; original name unknown.
     unknown015_16 = 1 << 16, // Inferred role: uv animation; original name unknown.
     unknown015_18 = 1 << 18, // Inferred role: material animation; original name unknown.
   };
@@ -403,7 +421,8 @@ struct MdoWrkMatRes {
   DrResMdoMat *unknownc0;                                           // Inferred role: mat entries; original member name unknown.
   DrResMdoVertex *unknownc8;                                        // Inferred role: vertex; original member name unknown.
   DrResMdoTexList *unknownd0;                                       // Inferred role: texture list; original member name unknown.
-  u8 _0d8[0x0e8 - 0x0d8];
+  DrResMdoSampler *unknownd8;                                       // Inferred role: samplers; original member name unknown.
+  u8 _0e0[0x0e8 - 0x0e0];
   grlib::CGLibTextureBuffer **unknowne8; // Inferred role: textures; original member name unknown.
   s32 unknownf0;                         // Inferred role: texture count; original member name unknown.
   u8 _0f4[0x0f8 - 0x0f4];
@@ -445,6 +464,7 @@ static_assert(offsetof(MdoWrkMatRes, unknownb8) == 0x0b8, "");
 static_assert(offsetof(MdoWrkMatRes, unknownc0) == 0x0c0, "");
 static_assert(offsetof(MdoWrkMatRes, unknownc8) == 0x0c8, "");
 static_assert(offsetof(MdoWrkMatRes, unknownd0) == 0x0d0, "");
+static_assert(offsetof(MdoWrkMatRes, unknownd8) == 0x0d8, "");
 static_assert(offsetof(MdoWrkMatRes, unknowne8) == 0x0e8, "");
 static_assert(offsetof(MdoWrkMatRes, unknownf0) == 0x0f0, "");
 static_assert(offsetof(MdoWrkMatRes, unknownf8) == 0x0f8, "");

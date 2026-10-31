@@ -32,6 +32,7 @@ static_assert(offsetof(MdsMpfMatInfoHeader, unknown1c) == 0x1c, "");
 
 class DrMdoShdSet {
 public:
+  void setupMofFetchShader(const MdsMatInfoHeader *header);
   void setOneTexShaderSet(int index, u32 location);
   void setDitherTexShaderSet(u32 location, int index);
   void setDitherShaderSet(u32 location, u32 binding, int index);
@@ -79,9 +80,25 @@ public:
     PRE_PASS_TYPE_UNKNOWN_3,     // Inferred role: second thickness pass; original name unknown.
   };
 
+  void preshd_Obj(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_ObjT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_Obj_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_ObjT_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_Mot(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_MotT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_Mot_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_MotT_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
   void preshd_Inst(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
   void preshd_InstT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_InstT_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
   void preshd_Inst_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_Fw(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_FwT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_FwT_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_Fw_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_ObjT_Al_FS(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_MotT_Al_FS(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+  void preshd_FwT_Al_Fs(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
 
   static void (DrMdoShdSetPrePass::*const s_pPreMaterial[])(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
 
@@ -92,6 +109,10 @@ static_assert(offsetof(DrMdoShdSetPrePass, unknown08) == 0x08, "");
 
 class DrMdoShdSetShadow : public DrMdoShdSet {
 public:
+  void shwShd_Obj(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
+  void shwShd_ObjT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
+  void shwShd_Mot(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
+  void shwShd_MotT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
   void shwShd_Fw(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
   void shwShd_Spt_Inst(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
   void shwShd_Spt_InstT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
@@ -101,6 +122,7 @@ public:
   void shwShd_Inst(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
 
   void unknown001(int index, DrResShdShw *shw, DrShdDataList *list);
+  void unknown002(int index, DrResShdShw *shw, DrShdDataList *list);
 
   static void (DrMdoShdSetShadow::*const s_pShwMaterial[])(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
   static const u8 s_pShwUseShdader[];
