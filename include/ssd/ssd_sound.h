@@ -142,7 +142,15 @@ public:
   u16 unknown78; // Inferred role: sound number; original member name unknown.
   u8 _7a[0x7d - 0x7a];
   u8 unknown7d; // Inferred role: sound group id; original member name unknown.
-  u8 _7e[0xc8 - 0x7e];
+  u8 _7e[0x99 - 0x7e];
+  bool unknown99; // Inferred role: distance attenuation enabled; original member name unknown.
+  bool unknown9a; // Inferred role: panning enabled; original member name unknown.
+  bool unknown9b; // Inferred role: doppler enabled; original member name unknown.
+  u8 _9c[0xa0 - 0x9c];
+  f32 unknowna0; // Inferred role: minimum distance; original member name unknown.
+  u8 _a4[0xa8 - 0xa4];
+  f32 unknowna8; // Inferred role: maximum distance; original member name unknown.
+  u8 _ac[0xc8 - 0xac];
   WaveSource *unknownc8; // Inferred role: wave source; original member name unknown.
   SoundBank *unknownd0;  // Inferred role: sound bank; original member name unknown.
   bool unknownd8;        // Inferred role: allocated entry; original member name unknown.
@@ -152,6 +160,9 @@ public:
 static_assert(offsetof(SoundEntry, unknown70) == 0x70, "");
 static_assert(offsetof(SoundEntry, unknown78) == 0x78, "");
 static_assert(offsetof(SoundEntry, unknown7d) == 0x7d, "");
+static_assert(offsetof(SoundEntry, unknown99) == 0x99, "");
+static_assert(offsetof(SoundEntry, unknowna0) == 0xa0, "");
+static_assert(offsetof(SoundEntry, unknowna8) == 0xa8, "");
 static_assert(offsetof(SoundEntry, unknownc8) == 0xc8, "");
 static_assert(offsetof(SoundEntry, unknownd0) == 0xd0, "");
 static_assert(sizeof(SoundEntry) == 0xe0, "");
@@ -281,6 +292,7 @@ public:
   bool HasEnded() const;
   bool IsPlay() const;
   long Play(const SoundEntry *entry, SoundActor *actor, f32 volume, f32 fadeTime);
+  long PlayCommand(const SoundEntry *entry, SoundActor *actor, f32 volume, f32 fadeTime);
   long Prepare(const SoundEntry *entry);
   long Start(SoundActor *actor, f32 volume, f32 fadeTime);
   long Pause(bool isPause, f32 fadeTime);

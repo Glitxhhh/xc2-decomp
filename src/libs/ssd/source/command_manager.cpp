@@ -32,6 +32,17 @@ void CommandManager::Quit() {
   unknown00[1].Quit();
 }
 
+void CommandManager::SwitchBuffer() {
+  if (unknown20 != &unknown00[0]) {
+    unknown20 = &unknown00[0];
+    unknown28 = &unknown00[1];
+  } else {
+    unknown20 = &unknown00[1];
+    unknown28 = &unknown00[0];
+  }
+  unknown20->unknown08 = 0;
+}
+
 void CommandManager::ExecuteCommands() {
   for (int i = 0; i < unknown28->unknown08; i++) {
     unknown001 *command = unknown28->unknown00[i].unknown00;

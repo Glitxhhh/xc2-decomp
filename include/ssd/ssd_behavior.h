@@ -46,6 +46,9 @@ public:
   s32 count;
 };
 
+// Inferred role: linear interpolation of the value at x between (x0, y0) and (x1, y1); original name unknown.
+inline f32 unknown006(f32 x, f32 x0, f32 y0, f32 x1, f32 y1) { return y0 + (x - x0) * (y1 - y0) / (x1 - x0); }
+
 class BehaviorControl : public List<BehaviorControl>::Node {
 public:
   virtual void ExecBehaviorInstance(f32 value) = 0;

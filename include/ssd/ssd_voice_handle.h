@@ -66,6 +66,7 @@ public:
   Result GetVoiceQueueCount(int *count) const;
   Result IsEmptyVoiceQueue(bool *isEmpty);
   Result IsEmptyStreamBuffer(bool *isEmpty);
+  void UpdateGameFrame(f32 deltaTime);
   void UpdateAudioFrame(f32 deltaTime);
   void UpdateAudioInternal(f32 deltaTime);
   void UpdateAudioStream(f32 deltaTime);
@@ -133,15 +134,19 @@ public:
   bool unknown6b0; // Inferred role: cleared by the constructor; original member name unknown.
   bool unknown6b1; // Inferred role: cleared by the constructor; original member name unknown.
   u8 _6b2[0x6b4 - 0x6b2];
-  f32 unknown6b4; // Inferred role: output volume; original member name unknown.
-  f32 unknown6b8; // Inferred role: output pitch; original member name unknown.
-  f32 unknown6bc; // Inferred role: output pan; original member name unknown.
-  f32 unknown6c0; // Inferred role: set to 1.0 by the constructor; original member name unknown.
-  u8 _6c4[0x6d0 - 0x6c4];
+  f32 unknown6b4;                     // Inferred role: output volume; original member name unknown.
+  f32 unknown6b8;                     // Inferred role: output pitch; original member name unknown.
+  f32 unknown6bc;                     // Inferred role: output pan; original member name unknown.
+  f32 unknown6c0;                     // Inferred role: set to 1.0 by the constructor; original member name unknown.
+  f32 unknown6c4;                     // Inferred role: doppler pitch; original member name unknown.
+  f32 unknown6c8;                     // Inferred role: volume at the minimum distance; original member name unknown.
+  f32 unknown6cc;                     // Inferred role: volume at the maximum distance; original member name unknown.
   SoundHandle::unknown003 unknown6d0; // Inferred role: stop fade; original member name unknown.
   u8 _6e8[0x6f0 - 0x6e8];
   f32 unknown6f0; // Inferred role: distance volume; original member name unknown.
-  u8 _6f4[0x710 - 0x6f4];
+  f32 unknown6f4; // Inferred role: pan angle in degrees; original member name unknown.
+  u8 _6f8[0x704 - 0x6f8];
+  Vec3 unknown704; // Inferred role: position in listener space; original member name unknown.
 };
 
 static_assert(offsetof(VoiceHandle, unknown30) == 0x30, "");
@@ -163,6 +168,10 @@ static_assert(offsetof(VoiceHandle, unknown6a8) == 0x6a8, "");
 static_assert(offsetof(VoiceHandle, unknown6b0) == 0x6b0, "");
 static_assert(offsetof(VoiceHandle, unknown6b4) == 0x6b4, "");
 static_assert(offsetof(VoiceHandle, unknown6c0) == 0x6c0, "");
+static_assert(offsetof(VoiceHandle, unknown6c4) == 0x6c4, "");
+static_assert(offsetof(VoiceHandle, unknown6cc) == 0x6cc, "");
+static_assert(offsetof(VoiceHandle, unknown6f4) == 0x6f4, "");
+static_assert(offsetof(VoiceHandle, unknown704) == 0x704, "");
 static_assert(offsetof(VoiceHandle::unknown003, unknown98) == 0x98, "");
 static_assert(offsetof(VoiceHandle::unknown003, unknownb4) == 0xb4, "");
 static_assert(sizeof(VoiceHandle::unknown003) == 0xb8, "");

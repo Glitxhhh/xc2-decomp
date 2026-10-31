@@ -7,6 +7,7 @@
 #include "ssd/ssd_allocator.h"
 #include "ssd/ssd_array.h" // IWYU pragma: keep
 #include "ssd/ssd_behavior.h"
+#include "ssd/ssd_command_manager.h"
 #include "ssd/ssd_debug.h"
 #include "ssd/ssd_mutex.h"
 #include "ssd/ssd_result.h"
@@ -260,13 +261,35 @@ static_assert(sizeof(SystemCorePlatform) == 0x270, "");
 
 class SystemCore : public SystemCorePlatform {
 public:
-  struct DebugInfo;
+  struct DebugInfo {
+    f32 unknown00; // Inferred role: audio frame process time in milliseconds; original member name unknown.
+    f32 unknown04; // Inferred role: maximum audio frame process time; original member name unknown.
+    f32 unknown08; // Inferred role: game frame process time in milliseconds; original member name unknown.
+    f32 unknown0c; // Inferred role: maximum game frame process time; original member name unknown.
+  };
 
   // Inferred role: cpu load; original type name unknown.
   struct unknown002 {
     f64 unknown00; // Inferred role: process time; original member name unknown.
     f64 unknown08; // Inferred role: frame time; original member name unknown.
   };
+
+  // Inferred role: advance a behavior by the audio frame time; original name unknown.
+  void unknown003(BehaviorControl *behavior) {
+    f32 elapsed = behavior->unknown1c;
+    if (elapsed < behavior->unknown2c) {
+      f32 deltaTime = unknown2a0;
+      f32 value = unknown006(elapsed, behavior->unknown28, behavior->unknown20, behavior->unknown2c, behavior->unknown24);
+      elapsed += deltaTime;
+      if (elapsed > behavior->unknown2c) {
+        elapsed = behavior->unknown2c;
+      }
+      behavior->unknown1c = elapsed;
+      behavior->unknown18 = value;
+      // The game passes the frame time, not the new value, to the behavior.
+      behavior->ExecBehaviorInstance(deltaTime);
+    }
+  }
 
   SystemCore();
   ~SystemCore() override;
@@ -330,12 +353,13 @@ public:
   u64 unknown270; // Inferred role: game frame counter; original member name unknown.
   u64 unknown278; // Inferred role: audio frame counter; original member name unknown.
   f64 unknown280; // Inferred role: audio timer counter; original member name unknown.
-  u8 _288[0x290 - 0x288];
+  u64 unknown288; // Inferred role: processed audio frame count; original member name unknown.
   f64 unknown290; // Inferred role: audio frames per second; original member name unknown.
-  u8 _298[0x2a0 - 0x298];
+  f64 unknown298; // Inferred role: audio frame time; original member name unknown.
   f64 unknown2a0; // Inferred role: audio frame delta time; original member name unknown.
   f64 unknown2a8; // Inferred role: last audio frame time; original member name unknown.
-  u8 _2b0[0x300 - 0x2b0];
+  u8 _2b0[0x2c8 - 0x2b0];
+  CommandManager unknown2c8; // Inferred role: commands queued by the game thread; original member name unknown.
   OutputMode::Type m_outputMode;
   u8 _304[0x308 - 0x304];
   BehaviorInstance<SystemCore> unknown308; // Inferred role: master volume; original member name unknown.
@@ -345,15 +369,19 @@ public:
   List<VoiceHandle> unknown3a0; // Inferred role: playing voice handles; original member name unknown.
   List<VoiceHandle> unknown3c8; // Inferred role: free voice handles; original member name unknown.
   VoiceHandle *unknown3f0;      // Inferred role: voice handles; original member name unknown.
-  u8 _3f8[0x410 - 0x3f8];
-  int unknown410; // Inferred role: hw alloc voice count; original member name unknown.
+  int unknown3f8;               // Inferred role: active voice handle count; original member name unknown.
+  u8 _3fc[0x400 - 0x3fc];
+  VoiceHandle **unknown400; // Inferred role: active voice handles; original member name unknown.
+  VoiceHandle **unknown408; // Inferred role: voice handles to free; original member name unknown.
+  int unknown410;           // Inferred role: hw alloc voice count; original member name unknown.
   u8 _414[0x418 - 0x414];
   List<SoundBank> unknown418;      // Inferred role: sound banks; original member name unknown.
   List<SoundActor> unknown440;     // Inferred role: connected sound actors; original member name unknown.
   Array<SoundCategory> unknown468; // Inferred role: categories; original member name unknown.
   u8 _480[0x4e0 - 0x480];
   f32 m_speedOfSound;
-  u8 _4e4[0x4ea - 0x4e4];
+  bool unknown4e4; // Inferred role: doppler enabled; original member name unknown.
+  u8 _4e5[0x4ea - 0x4e5];
   bool unknown4ea; // Inferred role: audio thread exit request; original member name unknown.
   u8 _4eb[0x708 - 0x4eb];
   mutable Mutex unknown708; // Inferred role: audio mutex; original member name unknown.
@@ -368,6 +396,14 @@ public:
   static DebugInfo debugInfo_;
 };
 
+static_assert(sizeof(SystemCore::DebugInfo) == 0x10, "");
+static_assert(offsetof(SystemCore, unknown288) == 0x288, "");
+static_assert(offsetof(SystemCore, unknown298) == 0x298, "");
+static_assert(offsetof(SystemCore, unknown2c8) == 0x2c8, "");
+static_assert(offsetof(SystemCore, m_outputMode) == 0x300, "");
+static_assert(offsetof(SystemCore, unknown3f8) == 0x3f8, "");
+static_assert(offsetof(SystemCore, unknown400) == 0x400, "");
+static_assert(offsetof(SystemCore, unknown408) == 0x408, "");
 static_assert(offsetof(SystemCore, unknown270) == 0x270, "");
 static_assert(offsetof(SystemCore, unknown3a0) == 0x3a0, "");
 static_assert(offsetof(SystemCore, unknown3c8) == 0x3c8, "");
@@ -380,6 +416,7 @@ static_assert(offsetof(SystemCore, unknown308) == 0x308, "");
 static_assert(offsetof(SystemCore, unknown350) == 0x350, "");
 static_assert(offsetof(SystemCore, unknown468) == 0x468, "");
 static_assert(offsetof(SystemCore, m_speedOfSound) == 0x4e0, "");
+static_assert(offsetof(SystemCore, unknown4e4) == 0x4e4, "");
 static_assert(offsetof(SystemCore, unknown708) == 0x708, "");
 static_assert(offsetof(SystemCore, unknown978) == 0x978, "");
 static_assert(offsetof(SystemCore, unknown9f8) == 0x9f8, "");

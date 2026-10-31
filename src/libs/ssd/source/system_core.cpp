@@ -461,6 +461,41 @@ void SystemCore::AudioThreadImpl() {
   }
 }
 
+void SystemCore::AudioFrameProcess() {
+  unknown708.Lock();
+  f64 startTime = GetSystemTime();
+  f64 time = GetSystemTime();
+  f64 lastTime = unknown2a8;
+  unknown2a8 = time;
+  unknown2a0 = time - lastTime;
+  unknown9f8[unknowna20].unknown08 += time - unknowna18;
+  unknowna18 = time;
+  unknown003(&unknown308);
+  unknown003(&unknown350);
+  for (int i = 0; i < unknown3f8; i++) {
+    VoiceHandle *voice = unknown400[i];
+    if (voice->unknown30) {
+      voice->UpdateAudioFrame(unknown2a0);
+    }
+  }
+  f64 endTime = GetSystemTime();
+  unknown9f8[unknowna20].unknown00 += endTime - time;
+  unknown9f8[unknowna20].unknown08 += unknown298;
+  unknown288++;
+  f32 processTime = (GetSystemTime() - startTime) * 1000.0;
+  debugInfo_.unknown00 = processTime;
+  if (debugInfo_.unknown04 < processTime) {
+    debugInfo_.unknown04 = processTime;
+  }
+  UpdateDevice();
+  for (int i = 0; i < 2; i++) {
+    if (unknown1f0[i].unknown01) {
+      DeleteEffect(unknown1f0[i]);
+    }
+  }
+  unknown708.Unlock();
+}
+
 template class BehaviorInstance<SystemCore>;
 
 template List<BehaviorControl>::Node::~Node();

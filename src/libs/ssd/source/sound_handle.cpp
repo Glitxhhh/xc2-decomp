@@ -2,6 +2,7 @@
 #include "ssd/ssd_allocator.h"
 #include "ssd/ssd_array.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
+#include "ssd/ssd_command_manager.h"
 #include "ssd/ssd_debug.h"
 #include "ssd/ssd_delegate.h"
 #include "ssd/ssd_mutex.h"
@@ -133,6 +134,16 @@ bool SoundHandle::IsValidHandle() const {
     return false;
   }
   return core->GetVoiceHandle(unknownf8) != nullptr;
+}
+
+long SoundHandle::PlayCommand(const SoundEntry *entry, SoundActor *actor, f32 volume, f32 fadeTime) {
+  HandlePlay *command = static_cast<SystemCore *>(SoundCore::instance_)->unknown2c8.unknown003<HandlePlay>();
+  command->unknown08 = this;
+  command->unknown10 = entry;
+  command->unknown18 = actor;
+  command->unknown20 = volume;
+  command->unknown24 = fadeTime;
+  return 0;
 }
 
 long SoundHandle::Pause(bool isPause, f32 fadeTime) {

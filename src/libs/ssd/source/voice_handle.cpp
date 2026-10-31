@@ -1,9 +1,13 @@
+#include <math.h>
+
 #include "nn/audio.h"
 #include "ssd/ssd_allocator.h"
+#include "ssd/ssd_behavior.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
+#include "ssd/ssd_sound_listener.h"
 #include "ssd/ssd_stream_controller.h"
 #include "ssd/ssd_voice_handle.h"
 #include "ssd/ssd_wave_source.h"
@@ -297,6 +301,86 @@ Result VoiceHandle::IsEmptyStreamBuffer(bool *isEmpty) {
   *isEmpty = unknown3f;
   unknown3f = false;
   return static_cast<Result>(0);
+}
+
+void VoiceHandle::UpdateGameFrame(f32 deltaTime) {
+  if (unknown58 == nullptr) {
+    return;
+  }
+  SoundActor *actor = unknown58->unknown38;
+  if (actor == nullptr) {
+    return;
+  }
+  unknown6c4 = 1.0f;
+  if (!actor->unknown32) {
+    return;
+  }
+  SoundActor3D *actor3D = static_cast<SoundActor3D *>(actor);
+  // SoundListener::Vec3Transform is not const in the game, so the listener stored as const is cast back.
+  SoundListener *listener = const_cast<SoundListener *>(actor3D->m_listener);
+  if (listener == nullptr) {
+    return;
+  }
+  const SoundEntry *entry = unknown60;
+  if (entry->unknown9b) {
+    SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
+    if (listener->IsEnableDoppler() && core->unknown4e4) {
+      f32 x = actor3D->unknown5c.x - listener->unknown48.unknown00.x;
+      f32 y = actor3D->unknown5c.y - listener->unknown48.unknown00.y;
+      f32 z = actor3D->unknown5c.z - listener->unknown48.unknown00.z;
+      f32 distance = sqrtf(x * x + y * y + z * z);
+      if (distance != 0.0f) {
+        f32 listenerSpeed = (x * listener->unknown48.unknown24.x + y * listener->unknown48.unknown24.y + z * listener->unknown48.unknown24.z) / distance;
+        f32 sourceSpeed = (x * actor3D->unknown50.x + y * actor3D->unknown50.y + z * actor3D->unknown50.z) / distance;
+        f32 speedOfSound = core->GetSpeedOfSound() * deltaTime;
+        f32 limit = speedOfSound / unknown6c0;
+        listenerSpeed = listenerSpeed < limit ? listenerSpeed : limit;
+        sourceSpeed = sourceSpeed < limit ? sourceSpeed : limit;
+        f32 pitch = (speedOfSound - unknown6c0 * listenerSpeed) / (speedOfSound - unknown6c0 * sourceSpeed);
+        unknown6c4 = pitch;
+        // Original game bug: a pitch out of range returns before the distance volume and the pan are updated.
+        if (!(pitch <= 10000.0f && pitch >= 0.0001)) {
+          return;
+        }
+        f32 result;
+        if (pitch <= 0.0001f) {
+          result = 0.0001f;
+        } else if (pitch >= 10000.0f) {
+          result = 10000.0f;
+        } else {
+          result = pitch;
+        }
+        unknown6c4 = result;
+      }
+    }
+  }
+  if (entry->unknown99) {
+    Vec3 listenerPosition = actor3D->m_listener->unknown18.unknown00;
+    f32 x = actor3D->unknown5c.x - listenerPosition.x;
+    f32 y = actor3D->unknown5c.y - listenerPosition.y;
+    f32 z = actor3D->unknown5c.z - listenerPosition.z;
+    f32 distance = sqrtf(x * x + y * y + z * z);
+    f32 volume = unknown006(distance, entry->unknowna0, unknown6c8, entry->unknowna8, unknown6cc);
+    f32 result;
+    if (volume <= unknown6cc) {
+      result = unknown6cc;
+    } else if (volume >= unknown6c8) {
+      result = unknown6c8;
+    } else {
+      result = volume;
+    }
+    unknown6f0 = result;
+  }
+  if (entry->unknown9a) {
+    listener->Vec3Transform(&actor3D->unknown5c, &unknown704);
+    f32 x = unknown704.x;
+    f32 z = unknown704.z;
+    f32 angle = acosf(x / sqrtf(x * x + z * z)) * 180.0f / 3.1415927f;
+    if (z < 0.0f) {
+      angle = 360.0f - angle;
+    }
+    unknown6f4 = angle;
+  }
 }
 
 void VoiceHandle::UpdateAudioFrame(f32 deltaTime) {

@@ -1,4 +1,5 @@
 #pragma once
+#include <new>
 #include <stddef.h>
 
 #include "types.h"
@@ -33,7 +34,17 @@ public:
   };
 
   void Quit();
+  void SwitchBuffer();
   void ExecuteCommands();
+
+  // Inferred role: construct a command in the next slot of the receiving buffer; original name unknown.
+  template <typename T> T *unknown003() {
+    unknown002 *slot = &unknown20->unknown00[unknown20->unknown08];
+    T *command = new (slot->unknown08) T;
+    slot->unknown00 = command;
+    unknown20->unknown08++;
+    return command;
+  }
 
   CommandBuffer unknown00[2]; // Inferred role: double buffered commands; original member name unknown.
   CommandBuffer *unknown20;   // Inferred role: buffer receiving commands; original member name unknown.
@@ -49,6 +60,7 @@ static_assert(offsetof(CommandManager, unknown30) == 0x30, "");
 
 class HandlePlay : public CommandManager::unknown001 {
 public:
+  HandlePlay() : unknown08(nullptr) {}
   ~HandlePlay() override { unknown08 = nullptr; }
   void Exec() override;
 
