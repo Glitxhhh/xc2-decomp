@@ -530,6 +530,7 @@ public:
   void renderCircleFill(const mm::Vec3 &center, f32 radius, int division);
   void renderRealSphere(f32 radius, int division);
   void renderRealSphereFill(f32 radius, int division);
+  void renderCube(const mm::Vec3 &min, const mm::Vec3 &max);
   void setMatrix(const mm::Mat44 &matrix);
   void setZComp(bool isEnable);
   void setZWrite(bool isEnable);
@@ -560,6 +561,7 @@ public:
   void initialize();
   void release();
   void clrTex();
+  void setCol(const mm::Col3 &color, f32 alpha);
   void setAlpha(f32 alpha);
   void setAlphaBlend(bool isEnable);
   void setLineWidth(u32 width);

@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "mm_math/mm_aabb.h"
 #include "types.h"
 
 namespace ml {
@@ -13,7 +14,8 @@ struct SLightProbe {
 static_assert(sizeof(SLightProbe) == 0x50, "");
 
 struct SSectorInfo {
-  u8 _00[0x40];
+  mm::Aabb unknown00; // Inferred role: bounds, drawn by DrIrrVolResMan::drawDebugInfo; original member name unknown.
+  u8 _20[0x40 - 0x20];
   const SLightProbe *unknown40; // Inferred role: probes; original member name unknown.
 };
 

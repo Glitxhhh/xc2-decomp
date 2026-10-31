@@ -10,12 +10,15 @@ class IDrDrawWorkInfo;
 namespace cloud {
 
 class CloudCalcParams;
+class CloudMdlDataObj;
 
 class CloudObjMan {
 public:
   CloudObjMan();
   ~CloudObjMan();
   void creataFastSetup();
+  CloudMdlDataObj *createMdlData(const void *data);
+  void releaseMdlData(CloudMdlDataObj *mdlData);
   bool update(const ml::IDrDrawWorkInfo *workInfo);
   bool isRender() const;
   void alphaRender(const ml::IDrDrawWorkInfo *workInfo);

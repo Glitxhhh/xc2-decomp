@@ -71,6 +71,9 @@ public:
   int size() const { return m_size; }
   bool empty() const { return m_size == 0; }
 
+  // Inferred role: whether the list uses every reserved node; original name unknown.
+  bool unknown002() const { return m_size == (m_capacity > m_size ? m_capacity : m_size); }
+
   // Inferred role: remove every element but keep the reserved capacity; original name unknown.
   void unknown001() {
     Node *node = begin().m_node;
