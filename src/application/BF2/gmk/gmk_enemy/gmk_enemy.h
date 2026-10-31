@@ -156,6 +156,7 @@ public:
   void seqUpdatePopDepop(const UpdateInfo &info);
   void removeGobInst(gf::GF_OBJ_HANDLE *handle);
   void disposeGobInsts(bool isFadeOut, bool isCheckBattle);
+  bool reqClearRepopCounter() const;
   void seqUpdateRepopCounter(const UpdateInfo &info);
   void createGobInsts();
   void create(const CreateInfo &info);
@@ -174,10 +175,10 @@ public:
   u8 _142[0x144 - 0x142];
   mutable ForcePopEnemyInfo unknown144; // Inferred role: force pop request; original member name unknown.
   u8 _14c[0x150 - 0x14c];
-  GmkSquad *unknown150; // Inferred role: squad; original member name unknown.
-  bool unknown158;      // Inferred role: pop condition flag; original member name unknown.
-  bool unknown159;      // Inferred role: pop condition matched; original member name unknown.
-  bool unknown15a;      // Inferred role: request to clear the repop counter; original member name unknown.
+  GmkSquad *unknown150;    // Inferred role: squad; original member name unknown.
+  bool unknown158;         // Inferred role: pop condition flag; original member name unknown.
+  bool unknown159;         // Inferred role: pop condition matched; original member name unknown.
+  mutable bool unknown15a; // Inferred role: request to clear the repop counter; original member name unknown.
   u8 _15b[0x160 - 0x15b];
   void (GmkEnemyInsts::*unknown160)(const UpdateInfo &info); // Inferred role: seq; original member name unknown.
   f32 unknown170;                                            // Inferred role: repop counter; original member name unknown.

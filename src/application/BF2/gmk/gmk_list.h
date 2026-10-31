@@ -54,6 +54,9 @@ public:
   struct CreateInfo {
     CreateInfo() : unknown08(nullptr), unknown140(0.0f, 0.0f, 0.0f), unknown150(0.0f) {}
 
+    // Inferred helper: checks that the list was created with a memory and a file path; original name unknown.
+    bool unknown001() const { return unknown00.isValid() && !unknown10.empty(); }
+
     mtl::ALLOC_HANDLE unknown00;    // Inferred role: memory; original member name unknown.
     GmkSet *unknown08;              // Inferred role: set; original member name unknown.
     mm::mtl::FixStr<256> unknown10; // Inferred role: path; original member name unknown.

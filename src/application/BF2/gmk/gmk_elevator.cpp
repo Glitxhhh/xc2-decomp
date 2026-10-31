@@ -11,12 +11,14 @@
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/quest/gf_quest_util.h"
+#include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_command.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
@@ -257,6 +259,58 @@ const Xform *GmkElevator::getUpLiftSwitchPos() const {
   list->isValid();
   const Data *data = getData();
   return list->getInst(data->unknown00 + 2)->unknown08.unknown08;
+}
+
+bool GmkElevator::getPosForCompass(mm::Vec3 &position) const {
+  const BdatInfo *info = getBdatInfo();
+  if (info->unknown2c != 0) {
+    if (&GmkElevator::seqDownIdle == unknown4b8) {
+      const GmkElevatorLocator *locator = getBindedGmkElevatorLocator(1);
+      if (locator == nullptr) {
+        return false;
+      }
+      position = locator->unknown08.unknown08->unknown00;
+      return true;
+    }
+    if (&GmkElevator::seqUpIdle == unknown4b8) {
+      const GmkElevatorLocator *locator = getBindedGmkElevatorLocator(2);
+      if (locator == nullptr) {
+        return false;
+      }
+      position = locator->unknown08.unknown08->unknown00;
+      return true;
+    }
+    if (&GmkElevator::seqWaitToArriveDownFloor == unknown4b8) {
+      position = getDownLiftSwitchPos()->unknown00;
+      return true;
+    }
+    return false;
+  }
+  if (info->unknown2e != 0) {
+    if (&GmkElevator::seqUpIdle == unknown4b8) {
+      position = unknown08.unknown08->unknown00;
+      return true;
+    }
+    if (&GmkElevator::seqDownIdle == unknown4b8) {
+      const GmkElevatorLocator *locator = getBindedGmkElevatorLocator(0);
+      if (locator == nullptr) {
+        return false;
+      }
+      position = locator->unknown08.unknown08->unknown00;
+      return true;
+    }
+    if (&GmkElevator::seqWaitToArriveUpFloor == unknown4b8) {
+      position = getUpLiftSwitchPos()->unknown00;
+      return true;
+    }
+    return false;
+  }
+  if (info->unknown1c) {
+    position = getUpLiftSwitchPos()->unknown00;
+  } else {
+    position = getDownLiftSwitchPos()->unknown00;
+  }
+  return true;
 }
 
 void GmkElevator::clearSe() {
@@ -582,6 +636,35 @@ void GmkElevator::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
   const AGmkBase *gmk = getGmkBaseByItemType(type);
   if (gmk != nullptr) {
     createSe(SE_TYPE_UNKNOWN_0, gmk->unknown08.unknown08->unknown00);
+  }
+}
+
+void GmkElevator::onEnterPhantom(const IGmkPhantomEventListener::OnEnterInfo &info) {
+  const BdatInfo *bdatInfo = getBdatInfo();
+  if (bdatInfo->unknown00 != 0 && !gf::GfGameCond::isGameCond(bdatInfo->unknown00)) {
+    reqDrawCmnMsg(bdatInfo->unknown24);
+    return;
+  }
+  if (&unknown50[ITEM_TYPE_UNKNOWN_0] == info.phantom) {
+    unknown4c8 = true;
+  } else if (&unknown50[ITEM_TYPE_UNKNOWN_1] == info.phantom) {
+    if (bdatInfo->unknown2c != 0 && &GmkElevator::seqWaitToArriveDownFloor == unknown4b8) {
+      sendGfComQuest();
+      gf::GfMapjumpInfo mapjumpInfo(bdatInfo->unknown2c);
+      gf::GfPlayFactory::createMapjump(mapjumpInfo);
+    } else {
+      unknown4cb = true;
+    }
+  } else if (&unknown50[ITEM_TYPE_UNKNOWN_2] == info.phantom) {
+    unknown4c9 = true;
+  } else if (&unknown50[ITEM_TYPE_UNKNOWN_3] == info.phantom) {
+    if (bdatInfo->unknown2e != 0 && &GmkElevator::seqWaitToArriveUpFloor == unknown4b8) {
+      sendGfComQuest();
+      gf::GfMapjumpInfo mapjumpInfo(bdatInfo->unknown2e);
+      gf::GfPlayFactory::createMapjump(mapjumpInfo);
+    } else {
+      unknown4ca = true;
+    }
   }
 }
 

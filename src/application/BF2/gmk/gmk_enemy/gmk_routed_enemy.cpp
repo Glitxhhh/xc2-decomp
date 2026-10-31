@@ -167,6 +167,14 @@ void GmkRoutedEnemy::onEnemyDead(gf::GF_OBJ_HANDLE *handle) {
   unknown50.onEnemyDead(handle);
 }
 
+void GmkRoutedEnemy::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
+  AGmkBase::onGobEvent(event, handle);
+  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+    unbindRouteNavi(handle, false);
+    unknown50.removeGobInst(handle);
+  }
+}
+
 } // namespace gmk
 
 template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint::BdatInfo>::expand(size_t, size_t);

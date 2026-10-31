@@ -70,6 +70,7 @@ public:
   void create();
   void dispose();
   void update(f32 deltaTime);
+  void updateImmediate(f32 deltaTime);
   void addGmkNpc(AGmkNpc *npc);
   void removeGmkNpc(AGmkNpc *npc);
   GmkNpcIdInfo *getNpcIdInfoByNpcId(int npcId);

@@ -377,6 +377,13 @@ void GmkDoor::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *ha
   }
 }
 
+void GmkDoor::onEnterPhantom(const IGmkPhantomEventListener::OnEnterInfo &info) {
+  if (&GmkDoor::seqDoor_BeforeBoot != unknown2c8 && &GmkDoor::seqDoor_Booted != unknown2c8 && &GmkDoor::seqDoor_Shutdowned != unknown2c8) {
+    return;
+  }
+  pollBootGmk();
+}
+
 void GmkDoor::onLeavePhantom(const IGmkPhantomEventListener::OnLeaveInfo &info) {
   if ((getBdatInfo()->unknown02 & 0xfe) == 6 && getProgress() != PROGRESS_UNKNOWN_2) {
     const BdatInfo *bdatInfo = getBdatInfo();

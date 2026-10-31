@@ -309,6 +309,14 @@ void GmkEnemyInsts::removeGobInst(gf::GF_OBJ_HANDLE *handle) {
   }
 }
 
+bool GmkEnemyInsts::reqClearRepopCounter() const {
+  if (&GmkEnemyInsts::seqUpdateRepopCounter != unknown160) {
+    return false;
+  }
+  unknown15a = true;
+  return true;
+}
+
 void GmkEnemyInsts::seqUpdateRepopCounter(const UpdateInfo &info) {
   if (unknown15a) {
     unknown15a = false;

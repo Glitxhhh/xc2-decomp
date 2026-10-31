@@ -37,6 +37,7 @@ public:
   const AGmkBase *findFirstGmkInstByBdatId(GmkType type, int bdatId) const;
   const AGmkBase *findGmkInstByGmkInstIndex(GmkType type, u32 index) const;
   bool traverseGmkGameObj(IGmkGameObjTraverser &traverser) const;
+  bool isValidView() const;
   void update(f32 deltaTime);
   explicit GmkSet(const CreateInfo *info);
   void create(const CreateInfo &info);
@@ -47,6 +48,7 @@ public:
   void disposeGmkLists();
   void disposeMapBdat();
   void seqUpdate(f32 deltaTime);
+  static bool isGmkInstValidView(const AGmkBase &gmk);
   bool createMapBdat(int map);
   void seqCreateMapBdat(f32 deltaTime);
   void seqCreateMapGmk(f32 deltaTime);

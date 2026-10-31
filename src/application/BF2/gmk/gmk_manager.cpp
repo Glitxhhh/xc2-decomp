@@ -146,6 +146,45 @@ void GmkBdat::dispose() {
 
 bool GmkSet::isValid() const { return unknown10.unknown00.isValid() && unknown10.unknown04 > 0 && (!unknown40.unknown08.isValid() || unknown40.isValid()); }
 
+bool GmkSet::isValidView() const {
+  if (!isValid() || &GmkSet::seqUpdate != unknown388) {
+    return false;
+  }
+  for (const IGmkList *list : unknown1b8) {
+    if (list == nullptr || !list->getCreateInfo().unknown001()) {
+      continue;
+    }
+    if (!list->isValid()) {
+      return false;
+    }
+    if (!debugIsDispGmkType(list->getGmkType())) {
+      continue;
+    }
+    u32 num = list->getInstNum();
+    for (u32 i = 0; i < num; i++) {
+      const AGmkBase *gmk = list->getInst(i);
+      if (gmk != nullptr && gmk->isValid() && !isGmkInstValidView(*gmk)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool GmkSet::updateImmediate() {
+  if (!isValid() || &GmkSet::seqUpdate != unknown388) {
+    update(0.0f);
+    return false;
+  }
+  for (u32 type = 0; type < GMK_TYPE_NUM; type++) {
+    if (unknown1b8[type] != nullptr) {
+      unknown1b8[type]->updateImmediate();
+    }
+  }
+  unknown178.updateImmediate(0.0f);
+  return true;
+}
+
 void GmkBdat::update(f32 deltaTime) {
   if (unknown128) {
     (this->*unknown128)(deltaTime);
@@ -249,6 +288,33 @@ void GmkManager::update(f32 deltaTime) {
   if (unknownf380) {
     (this->*unknownf380)(deltaTime);
   }
+}
+
+bool GmkManager::updateImmediate() {
+  if (!isValid() || &GmkManager::seqUpdate != unknownf380) {
+    update(0.0f);
+    return false;
+  }
+  if (!unknownf358.empty()) {
+    for (GmkSet **it = unknownf358.begin(); it != unknownf358.end(); ++it) {
+      if (!(*it)->updateImmediate()) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool GmkManager::isValidView() const {
+  if (!isValid() || &GmkManager::seqUpdate != unknownf380) {
+    return false;
+  }
+  for (GmkSet *const *it = unknownf358.begin(); it != unknownf358.end(); ++it) {
+    if (!(*it)->isValid() || !(*it)->isValidView()) {
+      return false;
+    }
+  }
+  return true;
 }
 
 void GmkManager::seqWaitValidateResDefBdatFp(f32 deltaTime) {
@@ -484,6 +550,47 @@ void GmkSet::seqUpdate(f32 deltaTime) {
       unknown1b8[type]->update(deltaTime);
     }
   }
+}
+
+template <typename T> bool isGmkValidViewUnbound(const AGmkBase &gmk);
+
+// Inferred helper: checks the view of a game object that has a resource to wait for; original name unknown.
+static bool unknown005(gf::GF_OBJ_HANDLE *handle) {
+  if (handle == gf::INVALID_HANDLE || gf::GfObjUtil::isSearchEmptyResource(handle)) {
+    return true;
+  }
+  return isValidView(handle);
+}
+
+bool GmkSet::isGmkInstValidView(const AGmkBase &gmk) {
+  switch (gmk.getGmkType()) {
+  case GMK_TYPE_ENEMY:
+    return isGmkValidViewUnbound<GmkEnemy>(gmk);
+  case GMK_TYPE_ROUTED_ENEMY:
+    return isGmkValidViewUnbound<GmkRoutedEnemy>(gmk);
+  case GMK_TYPE_NPC:
+    return unknown005(static_cast<const GmkNpc &>(gmk).getGobInst());
+  case GMK_TYPE_ROUTED_NPC:
+    return unknown005(static_cast<const GmkRoutedNpc &>(gmk).getGobInst());
+  case GMK_TYPE_MAP_OBJ:
+    return unknown005(static_cast<const GmkMapObj &>(gmk).unknown48);
+  case GMK_TYPE_ROUTED_MAP_OBJ:
+    return unknown005(static_cast<const GmkRoutedMapObj &>(gmk).unknown50);
+  case GMK_TYPE_TBOX:
+    return unknown005(static_cast<const GmkTbox &>(gmk).unknown48);
+  case GMK_TYPE_MOB:
+    if (isInEvent()) {
+      return isGmkValidViewUnbound<GmkMob>(gmk);
+    }
+    return true;
+  case GMK_TYPE_ROUTED_MOB:
+    return isGmkValidViewUnbound<GmkRoutedMob>(gmk);
+  case GMK_TYPE_GRAVE:
+    return unknown005(static_cast<const GmkGrave &>(gmk).unknown50);
+  case GMK_TYPE_BLADE:
+    return unknown005(static_cast<const GmkBlade &>(gmk).unknown48);
+  }
+  return true;
 }
 
 bool GmkSet::createMapBdat(int map) {

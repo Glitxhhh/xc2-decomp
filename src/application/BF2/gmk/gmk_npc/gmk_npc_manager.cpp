@@ -143,17 +143,11 @@ void GmkNpcIdInfo::createGobInst() {
 }
 
 void GmkNpcManager::update(f32 deltaTime) {
-  bool isFadeout = gf::GfGameManager::isFadeout();
-  u32 num = unknown08.size();
-  if (isFadeout) {
-    for (u32 i = 0; i < num; i++) {
-      GmkNpcIdInfo &info = unknown08[i];
-      if (info.unknown002()) {
-        info.update(deltaTime, unknown3c);
-      }
-    }
+  if (gf::GfGameManager::isFadeout()) {
+    updateImmediate(deltaTime);
     return;
   }
+  u32 num = unknown08.size();
   if (num <= unknown38) {
     unknown38 = 0;
   }
@@ -164,6 +158,16 @@ void GmkNpcManager::update(f32 deltaTime) {
       return;
     }
     GmkNpcIdInfo &info = unknown08[unknown38];
+    if (info.unknown002()) {
+      info.update(deltaTime, unknown3c);
+    }
+  }
+}
+
+void GmkNpcManager::updateImmediate(f32 deltaTime) {
+  u32 num = unknown08.size();
+  for (u32 i = 0; i < num; i++) {
+    GmkNpcIdInfo &info = unknown08[i];
     if (info.unknown002()) {
       info.update(deltaTime, unknown3c);
     }
