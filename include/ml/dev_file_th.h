@@ -61,7 +61,7 @@ public:
   FileHandleTh *unknown08;     // Inferred role: file handle; original member name unknown.
   mtl::ALLOC_HANDLE unknown10; // Inferred role: mem handle; original member name unknown.
   void *unknown18;             // Inferred role: file size; original member name unknown.
-  const u8 *unknown20;         // Inferred role: path; original member name unknown.
+  const char *unknown20;       // Inferred role: path; original member name unknown.
   void *unknown28;             // Inferred role: file data; original member name unknown.
   s32 unknown30;               // Inferred role: read size; original member name unknown.
   void *unknown38;             // Inferred role: event; original member name unknown.

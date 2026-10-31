@@ -1,5 +1,6 @@
 #include "ml/dev_file_th.h"
 #include "ml/file_handle_th.h"
+#include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
 
 namespace ml {
@@ -8,7 +9,7 @@ EventFileTh::EventFileTh(CBM cbm, FileHandleTh *handle) : type(cbm), unknown08(h
   if (handle != nullptr) {
     unknown10 = handle->unknown2c;
     unknown18 = handle->unknown30;
-    unknown20 = &handle->unknown98;
+    unknown20 = handle->unknown98.c_str();
     unknown28 = handle->unknown08;
     unknown30 = handle->unknown18;
     unknown38 = handle->unknown68;

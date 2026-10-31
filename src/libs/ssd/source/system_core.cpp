@@ -257,7 +257,7 @@ Result SystemCore::GetSoundHandleListByCategoty(int category, Array<SoundHandle 
   } else {
     while (it != unknown3a0.unknown003()) {
       SoundHandle *handle = it->unknown58;
-      if (handle != nullptr && handle->unknown50.unknown00 == category) {
+      if (handle != nullptr && handle->unknown48.unknown08.unknown00 == category) {
         int count = handles->unknown08;
         if (handles->unknown0c <= count) {
           handles->SetArraySize(handles->unknown0c + 16);
@@ -424,8 +424,8 @@ void SystemCore::ChangeCategoryEvent(const SoundCategory &category) {
   VoiceHandle *it = unknown3a0.unknown002();
   while (it != unknown3a0.unknown003()) {
     SoundHandle *handle = it->unknown58;
-    if (handle != nullptr && handle->unknown50.unknown00 == category.unknown08.unknown00) {
-      handle->unknown50 = category.unknown08;
+    if (handle != nullptr && handle->unknown48.unknown08.unknown00 == category.unknown08.unknown00) {
+      handle->unknown48.unknown08 = category.unknown08;
     }
     it = List<VoiceHandle>::unknown004(it);
   }

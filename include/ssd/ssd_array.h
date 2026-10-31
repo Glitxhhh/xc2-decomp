@@ -9,7 +9,7 @@ template <typename T> class Array {
 public:
   Array() : unknown08(0), unknown0c(0), unknown10(nullptr) {}
 
-  virtual ~Array();
+  virtual ~Array() { unknown001(); }
   void SetArraySize(int size);
   void SetSize(int size);
   // Inferred role: release the element buffer and reset the counts; original name unknown.

@@ -28,6 +28,8 @@ public:
     mBits[wordIndex(index)] |= bit(index);
   }
 
+  // The assert line of the game (169): its constant changes the instruction encoding.
+#line 168
   void set(unsigned int index, bool value) {
     MM_ASSERT(index < Size);
     if (value) {
@@ -45,6 +47,9 @@ public:
 
     return (bit(index) & mBits[0]) != 0;
   }
+
+  // Inferred role: one word of the bits; original name unknown.
+  unsigned int unknown001(unsigned int word) const { return mBits[word]; }
 
 private:
   static const unsigned int WORD_COUNT = (Size + 31) / 32;

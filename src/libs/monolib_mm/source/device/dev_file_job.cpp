@@ -50,7 +50,7 @@ void DevFileJob::clearJob(IWorkEvent *event) {
   }
 }
 
-const char *DevFileJob::getFileName() const { return reinterpret_cast<const char *>(&unknown1a8->unknown98); }
+const char *DevFileJob::getFileName() const { return unknown1a8->unknown98.c_str(); }
 
 f32 DevFileJob::getTransferRatio() const {
   f32 ratio = 0.0f;

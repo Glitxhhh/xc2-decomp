@@ -4,8 +4,6 @@
 
 namespace ssd {
 
-template <typename T> Array<T>::~Array() { unknown001(); }
-
 template <typename T> void Array<T>::SetArraySize(int size) {
   if (unknown0c <= size) {
     T *old = unknown10;

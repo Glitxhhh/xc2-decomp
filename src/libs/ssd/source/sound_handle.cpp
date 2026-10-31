@@ -1,3 +1,4 @@
+#include "mm_mtl/internal/object_allocator.h"
 #include "ssd/ssd_allocator.h"
 #include "ssd/ssd_array.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
@@ -19,6 +20,11 @@ class SoundSsdDriver;
 } // namespace fw
 
 namespace ssd {
+
+SoundHandle::~SoundHandle() {
+  unknown58 = false;
+  Delete();
+}
 
 void SoundHandle::Init() {
   unknown6c.Reset(1.0f);
@@ -183,7 +189,7 @@ bool SoundHandle::IsPlay() const {
 
 void SoundHandle::SetCategoryId(int category) {
   if (SoundCore::instance_ != nullptr) {
-    unknown50 = static_cast<SystemCore *>(SoundCore::instance_)->GetCategory(category)->unknown08;
+    unknown48.unknown08 = static_cast<SystemCore *>(SoundCore::instance_)->GetCategory(category)->unknown08;
   }
 }
 
@@ -539,3 +545,5 @@ void SoundHandle::DisplayDebugVerbose() {
 template class Delegate::Object<fw::SoundSsdDriver, SoundHandle *, SoundHandle::Notify::Type>;
 
 } // namespace ssd
+
+template void mm::mtl::ObjectAllocator<ssd::SoundHandle>::destroy();

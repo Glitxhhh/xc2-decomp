@@ -13,6 +13,8 @@ public:
 
 class MultiCast {
 public:
+  ~MultiCast() { Clear(); }
+
   void Clear();
   Result AddDelegate(Handle *handle);
   Result RemoveDelegate(Handle *handle);

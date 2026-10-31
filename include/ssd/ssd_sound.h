@@ -211,7 +211,7 @@ public:
 static_assert(offsetof(SoundCategory, unknown08) == 0x8, "");
 static_assert(sizeof(SoundCategory) == 0x10, "");
 
-class SoundHandle {
+class SoundHandle : public Object, public List<SoundHandle>::Node {
 public:
   // Inferred role: fade; original type name unknown.
   struct unknown003 {
@@ -258,6 +258,7 @@ public:
     f64 unknown08; // Inferred role: stream decode time in milliseconds; original member name unknown.
   };
 
+  ~SoundHandle() override;
   bool IsValidHandle() const;
   long Stop(f32 fadeTime);
   int GetState() const;
@@ -304,13 +305,14 @@ public:
   void ClearDelegate();
   void ClearDelegateImpl();
 
-  u8 _00[0x30 - 0x00];
   const SoundEntry *unknown30; // Inferred role: sound entry; original member name unknown.
   SoundActor *unknown38;       // Inferred role: sound actor; original member name unknown.
-  u8 _40[0x50 - 0x40];
-  SoundCategory::unknown001 unknown50; // Inferred role: category parameters; original member name unknown.
-  bool unknown58;                      // Inferred role: valid; original member name unknown.
-  u8 _59[0x60 - 0x59];
+  u32 unknown40;               // Inferred role: cleared by the constructor; original member name unknown.
+  SoundCategory unknown48;     // Inferred role: category; original member name unknown.
+  bool unknown58;              // Inferred role: valid; original member name unknown.
+  bool unknown59;              // Inferred role: cleared by the constructor; original member name unknown.
+  bool unknown5a;              // Inferred role: cleared by the constructor; original member name unknown.
+  u8 _5b[0x60 - 0x5b];
   u64 unknown60;        // Inferred role: cleared by Init; original member name unknown.
   f32 unknown68;        // Inferred role: pregap time; original member name unknown.
   unknown003 unknown6c; // Inferred role: pitch; original member name unknown.
@@ -332,7 +334,9 @@ public:
 };
 
 static_assert(offsetof(SoundHandle, unknown38) == 0x38, "");
-static_assert(offsetof(SoundHandle, unknown50) == 0x50, "");
+static_assert(offsetof(SoundHandle, unknown30) == 0x30, "");
+static_assert(offsetof(SoundHandle, unknown48) == 0x48, "");
+static_assert(offsetof(SoundHandle, unknown58) == 0x58, "");
 static_assert(offsetof(SoundHandle, unknown68) == 0x68, "");
 static_assert(offsetof(SoundHandle, unknown9c) == 0x9c, "");
 static_assert(offsetof(SoundHandle, unknownc0) == 0xc0, "");

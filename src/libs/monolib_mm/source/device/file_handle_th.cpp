@@ -2,6 +2,7 @@
 
 #include "ml/dev_file_th.h"
 #include "ml/work_event.h"
+#include "mm_mtl/internal/fixed_object_allocator.h"
 
 namespace ml {
 
@@ -47,3 +48,5 @@ void FileHandleTh::setReadAdr(int size, void *buffer, int alignedSize) {
 void FileHandleTh::setTime(u64 time) { m_time = time; }
 
 } // namespace ml
+
+template void mm::mtl::FixedObjectAllocator<ml::FileHandleTh, 640>::deallocate(ml::FileHandleTh *p);
