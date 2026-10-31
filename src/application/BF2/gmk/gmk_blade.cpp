@@ -193,3 +193,8 @@ bool GmkBlade::canDepopGobInst() const {
 } // namespace gmk
 
 template void mm::mtl::Vector<gmk::GmkBlade::BdatInfo>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkBlade::BdatInfo>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkBlade::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkBlade>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkBlade>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkBlade>::resize(size_t);

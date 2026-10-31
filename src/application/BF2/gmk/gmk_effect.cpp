@@ -134,3 +134,6 @@ template void mm::mtl::Vector<gmk::GmkEffectLocator::BdatInfo>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkEffectLocator>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkEffectLocator>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkEffectLocator>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkEffect>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkEffect>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkEffect>::resize(size_t);

@@ -68,7 +68,6 @@ public:
   gf::GfMenuCallContext *unknown68; // Inferred role: menu icon; original member name unknown.
   DistCond unknown70;               // Inferred role: pop dist; original member name unknown.
   bool unknown74;                   // Inferred role: visible; original member name unknown.
-  u8 _75[0x78 - 0x75];
 };
 
 static_assert(sizeof(GmkPrecious::BdatInfo) == 0x30, "");

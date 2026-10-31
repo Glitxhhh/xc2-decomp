@@ -63,6 +63,12 @@ GmkType GmkElevatorLocator::getGmkType() const { return GMK_TYPE; }
 
 bool GmkElevatorLocator::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
 
+GmkElevator::GmkElevator() : unknown4b0(gf::INVALID_HANDLE), unknown4b8(nullptr), unknown4c8(false), unknown4c9(false), unknown4ca(false), unknown4cb(false), unknown4cc(0.0f) {
+  for (u32 i = 0; i < 4; i++) {
+    unknown290[i] = gf::INVALID_HANDLE;
+  }
+}
+
 GmkType GmkElevator::getGmkType() const { return GMK_TYPE; }
 
 int GmkElevator::getGameFlagId() const { return unknown20.unknown18 + 0xb248; }
@@ -591,3 +597,6 @@ template void mm::mtl::Vector<gmk::GmkElevator::BdatInfo>::extend(size_t, size_t
 template void mm::mtl::Vector<gmk::GmkElevator::BdatInfo>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkElevatorLocator>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkElevatorLocator>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkElevator>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkElevator>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkElevator>::resize(size_t);

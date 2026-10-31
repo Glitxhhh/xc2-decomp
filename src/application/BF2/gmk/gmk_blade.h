@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_cond.h"
@@ -24,6 +25,7 @@ class GmkBladeGob;
 class GmkBlade : public AGmkBase {
 public:
   struct BdatInfo {
+    BdatInfo() : unknown00(0), unknown02(0), unknown04(0), unknown20(), unknown28() {}
     void create(CBdatWrapper bdat, int id, const AGmkBase &gmk);
     bool isPopCondMatched(const mm::Vec3 &position) const;
     bool isPopCommonCondMatched() const;
@@ -40,6 +42,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_BLADE;
 
+  GmkBlade() : unknown48(gf::INVALID_HANDLE), unknown50(0), unknown54(false), unknown55(true) {}
   ~GmkBlade() override { dispose(); }
   GmkType getGmkType() const override;
   void dispose() override;
@@ -58,6 +61,7 @@ public:
   int unknown50;                // Inferred role: pop state; original member name unknown.
   bool unknown54;               // Inferred role: keep shown; original member name unknown.
   bool unknown55;               // Inferred role: visible; original member name unknown.
+  u8 _56[0x58 - 0x56];
 };
 
 static_assert(sizeof(GmkBlade::BdatInfo) == 0x30, "");

@@ -205,3 +205,6 @@ template void mm::mtl::Vector<gmk::GmkPrecious::BdatInfo>::expand(size_t, size_t
 
 template void mm::mtl::Vector<gmk::GmkPrecious::BdatInfo>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkPrecious::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkPrecious>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkPrecious>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkPrecious>::resize(size_t);

@@ -77,6 +77,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_ELEVATOR;
 
+  GmkElevator();
   ~GmkElevator() override { dispose(); }
   GmkType getGmkType() const override;
   int getGameFlagId() const;
@@ -125,16 +126,16 @@ public:
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
-  mm::mtl::FixedArray<GmkPhantom, 4> unknown50; // Inferred role: phantoms; original member name unknown.
-  gf::GF_OBJ_HANDLE *unknown290[4];             // Inferred role: switches, call switches at even indices and lift switches at odd ones; original member name unknown.
-  GmkCtrlVolSe unknown2b0[4];                   // Inferred role: se, indexed by SeType; original member name unknown.
-  gf::GF_OBJ_HANDLE *unknown4b0;                // Inferred role: lift game object followed by the lift se; original member name unknown.
-  void (GmkElevator::*unknown4b8)(f32);         // Inferred role: seq; original member name unknown.
-  bool unknown4c8;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_0; original member name unknown.
-  bool unknown4c9;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_2; original member name unknown.
-  bool unknown4ca;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_3; original member name unknown.
-  bool unknown4cb;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_1; original member name unknown.
-  f32 unknown4cc;                               // Role and original member name unknown.
+  mm::mtl::FixedArray<GmkPhantom, 4> unknown50;    // Inferred role: phantoms; original member name unknown.
+  gf::GF_OBJ_HANDLE *unknown290[4];                // Inferred role: switches, call switches at even indices and lift switches at odd ones; original member name unknown.
+  mm::mtl::FixedArray<GmkCtrlVolSe, 4> unknown2b0; // Inferred role: se, indexed by SeType; original member name unknown.
+  gf::GF_OBJ_HANDLE *unknown4b0;                   // Inferred role: lift game object followed by the lift se; original member name unknown.
+  void (GmkElevator::*unknown4b8)(f32);            // Inferred role: seq; original member name unknown.
+  bool unknown4c8;                                 // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_0; original member name unknown.
+  bool unknown4c9;                                 // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_2; original member name unknown.
+  bool unknown4ca;                                 // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_3; original member name unknown.
+  bool unknown4cb;                                 // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_1; original member name unknown.
+  f32 unknown4cc;                                  // Role and original member name unknown.
 };
 
 static_assert(sizeof(GmkElevator::BdatInfo) == 0x30, "");

@@ -68,7 +68,6 @@ public:
   u64 unknownB8_3 : 61; // Role and original member name unknown.
   bool unknownc0;       // Role and original member name unknown.
   bool unknownc1;       // Inferred role: fade out inst; original member name unknown.
-  u8 _c2[0xc8 - 0xc2];
 };
 
 static_assert(sizeof(GmkEffect::BdatInfo) == 0xa, "");
