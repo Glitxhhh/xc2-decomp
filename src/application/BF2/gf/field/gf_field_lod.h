@@ -20,7 +20,8 @@ struct GfSetupParam;
 class GfFieldLod : public mm::mtl::PtrSingleton<GfFieldLod> {
 public:
   struct unknown001 {
-    u8 _00[0x04];
+    u16 unknown00; // Inferred role: lod id; original member name unknown.
+    u8 _02[0x04 - 0x02];
     f32 unknown04; // Inferred role: fade in speed; original member name unknown.
     f32 unknown08; // Inferred role: fade out speed; original member name unknown.
   };
@@ -29,8 +30,10 @@ public:
   const unknown001 *findBdatInfo(int bdatId) const;
   bool isAnimReverse(int bdatId) const;
   bool isPlayAnimEnd(int bdatId) const;
+  f32 getAnimEndTime(int bdatId) const;
   void setFade(int bdatId, bool isFadeIn, bool isImmediate);
   void setLodSwitchId(int bdatId, u32 switchId);
+  void setPlaySpeed(int bdatId, f32 speed);
   bool setAnimReverse(int bdatId, bool isReverse, bool isSkip);
   bool isFadeOut(int bdatId) const;
   bool findTransform(mm::Mat44 &matrix, int bdatId) const;

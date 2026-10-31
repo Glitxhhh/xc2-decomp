@@ -5,6 +5,7 @@ namespace gf {
 enum {
   OBJECT_TYPE_NONE = 0,
   OBJECT_TYPE_MAP = 1,
+  OBJECT_TYPE_UNKNOWN_2 = 2, // Inferred role: map lod animation object (GfObjSetupMapLodAnim); original enumerator name unknown.
   OBJECT_TYPE_DRIVER = 3,
   OBJECT_TYPE_BLADE = 4,
   OBJECT_TYPE_ENEMY = 5,

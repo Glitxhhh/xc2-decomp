@@ -130,7 +130,10 @@ public:
   GmkCtrlVolSe unknown2b0[4];                   // Inferred role: se, indexed by SeType; original member name unknown.
   gf::GF_OBJ_HANDLE *unknown4b0;                // Inferred role: lift game object followed by the lift se; original member name unknown.
   void (GmkElevator::*unknown4b8)(f32);         // Inferred role: seq; original member name unknown.
-  u32 unknown4c8;                               // Role and original member name unknown.
+  bool unknown4c8;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_0; original member name unknown.
+  bool unknown4c9;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_2; original member name unknown.
+  bool unknown4ca;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_3; original member name unknown.
+  bool unknown4cb;                              // Inferred role: request from the switch of ITEM_TYPE_UNKNOWN_1; original member name unknown.
   f32 unknown4cc;                               // Role and original member name unknown.
 };
 
@@ -141,6 +144,9 @@ static_assert(offsetof(GmkElevator, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GmkElevator, unknown4b0) == 0x4b0, "");
 static_assert(offsetof(GmkElevator, unknown4b8) == 0x4b8, "");
 static_assert(offsetof(GmkElevator, unknown4c8) == 0x4c8, "");
+static_assert(offsetof(GmkElevator, unknown4c9) == 0x4c9, "");
+static_assert(offsetof(GmkElevator, unknown4ca) == 0x4ca, "");
+static_assert(offsetof(GmkElevator, unknown4cb) == 0x4cb, "");
 static_assert(offsetof(GmkElevator, unknown4cc) == 0x4cc, "");
 static_assert(sizeof(GmkElevator) == 0x4d0, "");
 

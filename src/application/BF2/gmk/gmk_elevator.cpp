@@ -4,13 +4,18 @@
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/data/gf_game_flag.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/field/gf_field_lod.h"
 #include "gf/field/gf_field_sound.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_obj.h"
 #include "gf/game/quest/gf_quest_util.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_manager.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "gmk/gmk_bdat.h"
@@ -18,6 +23,8 @@
 #include "gmk/gmk_set.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_list.h"
+#include "mm_mtl/rtti.h"
 
 namespace gf {
 struct GF_OBJ_HANDLE;
@@ -70,9 +77,73 @@ void GmkElevator::create(const CreateInfo &info) {
   }
 }
 
+void GmkElevator::seqWaitToValidate_GfFieldLod(f32 deltaTime) {
+  gf::GfFieldLod *lod = gf::GfFieldLod::get();
+  if (lod == nullptr || !lod->unknown80c || lod->unknown840 == nullptr || lod->unknown850 == nullptr) {
+    return;
+  }
+  const BdatInfo *info = getBdatInfo();
+  const gf::GfFieldLod::unknown001 *lodInfo = lod->findBdatInfo(info->unknown06);
+  if (lodInfo != nullptr) {
+    u16 lodId = lodInfo->unknown00;
+    for (gf::GF_OBJ_HANDLE *const &handle : *gf::GfGameObj::getList(gf::OBJECT_TYPE_UNKNOWN_2)) {
+      gf::GfObjSetupMapLodAnim *setup = mm::mtl::dynamicCast<gf::GfObjSetupMapLodAnim>(gf::GfObjManager::getObjInfo(handle)->unknown30);
+      if (setup->unknown6c == lodId) {
+        unknown4b0 = handle;
+      }
+    }
+  }
+  bool isDown = isLiftStateDown();
+  gf::GfFieldLod::get()->setAnimReverse(info->unknown06, isDown, true);
+  gf::GfFieldLod::get()->setPlaySpeed(info->unknown06, 1.0f);
+  if (info->unknown08 != 0) {
+    gf::GfFieldLod::get()->setAnimReverse(info->unknown08, !isDown, true);
+  }
+  if (info->unknown0a != 0) {
+    gf::GfFieldLod::get()->setAnimReverse(info->unknown0a, isDown, true);
+  }
+  unknown4b8 = &GmkElevator::seqInit;
+}
+
+void GmkElevator::seqInit(f32 deltaTime) {
+  if (!unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR]->isValid()) {
+    return;
+  }
+  if (canCreateGameEntity()) {
+    for (int i = 0; i < 4; i++) {
+      const AGmkBase *gmk = getGmkBaseByItemType(static_cast<ItemType>(i));
+      switch (gmk->unknown08.unknown10->unknown0c) {
+      case SHAPE_TYPE_SPHERE:
+      case SHAPE_TYPE_BOX:
+      case SHAPE_TYPE_CAPSULE:
+        unknown50[i].create(*gmk, this, false);
+        break;
+      default: {
+        gf::GF_OBJ_HANDLE *handle = gf::GfObjFactory::createGmkEvent(CBdatWrapper{getBindedBdatFp()}, unknown20.unknown18);
+        bindToGameObj(handle);
+        unknown003(gf::GfObjUtil::getObjSetup<gf::GfObjSetupGimmick>(handle), gmk->unknown08.unknown08);
+        unknown002(handle, true);
+        unknown290[i] = handle;
+        break;
+      }
+      }
+    }
+  }
+  if (isLiftStateDown()) {
+    initDownFloorState();
+  } else {
+    initUpFloorState();
+  }
+}
+
 void GmkElevator::onLeavePhantom(const IGmkPhantomEventListener::OnLeaveInfo &info) {}
 
-void GmkElevator::clearRequests() { unknown4c8 = 0; }
+void GmkElevator::clearRequests() {
+  unknown4c8 = false;
+  unknown4c9 = false;
+  unknown4ca = false;
+  unknown4cb = false;
+}
 
 bool GmkElevator::isCallSwitch(gf::GF_OBJ_HANDLE *handle) const {
   for (int i = 0; i < 4; i++) {
@@ -288,7 +359,7 @@ void GmkElevator::initDownFloorState() {
   setTargetableByItemType(ITEM_TYPE_UNKNOWN_1, true);
   setTargetableByItemType(ITEM_TYPE_UNKNOWN_2, true);
   setTargetableByItemType(ITEM_TYPE_UNKNOWN_3, false);
-  unknown4c8 = 0;
+  clearRequests();
   unknown4b8 = &GmkElevator::seqDownIdle;
 }
 
@@ -297,8 +368,105 @@ void GmkElevator::initUpFloorState() {
   setTargetableByItemType(ITEM_TYPE_UNKNOWN_1, false);
   setTargetableByItemType(ITEM_TYPE_UNKNOWN_2, false);
   setTargetableByItemType(ITEM_TYPE_UNKNOWN_3, true);
-  unknown4c8 = 0;
+  clearRequests();
   unknown4b8 = &GmkElevator::seqUpIdle;
+}
+
+void GmkElevator::seqDownIdle(f32 deltaTime) {
+  if (!unknown4c9 && !(unknown4cb && isElevatorMoveOK())) {
+    return;
+  }
+  const BdatInfo *info = getBdatInfo();
+  if (unknown4c9) {
+    gf::GfFieldLod::get()->setPlaySpeed(info->unknown06, info->unknown20);
+    unknown4c9 = false;
+  }
+  if (unknown4cb) {
+    unknown4cb = false;
+  }
+  setUntargetableOfAllItem();
+  if (info->unknown08 != 0) {
+    gf::GfFieldLod::get()->setAnimReverse(info->unknown08, true, false);
+    mm::Vec3 position;
+    if (getDownShutterPos(position)) {
+      createSe(SE_TYPE_UNKNOWN_1, position);
+    }
+    unknown4b8 = &GmkElevator::seqWaitToCloseDownShutter;
+  } else {
+    gf::GfFieldLod::get()->setAnimReverse(info->unknown06, false, false);
+    unknown4b8 = &GmkElevator::seqWaitToArriveUpFloor;
+    startLiftSe();
+  }
+}
+
+void GmkElevator::seqUpIdle(f32 deltaTime) {
+  if (!unknown4c8 && !(unknown4ca && isElevatorMoveOK())) {
+    return;
+  }
+  const BdatInfo *info = getBdatInfo();
+  if (unknown4c8) {
+    gf::GfFieldLod::get()->setPlaySpeed(info->unknown06, info->unknown20);
+    unknown4c8 = false;
+  }
+  if (unknown4ca) {
+    unknown4ca = false;
+  }
+  setUntargetableOfAllItem();
+  if (info->unknown0a != 0) {
+    gf::GfFieldLod::get()->setAnimReverse(info->unknown0a, true, false);
+    mm::Vec3 position;
+    if (getUpShutterPos(position)) {
+      createSe(SE_TYPE_UNKNOWN_1, position);
+    }
+    unknown4b8 = &GmkElevator::seqWaitToCloseUpShutter;
+  } else {
+    gf::GfFieldLod::get()->setAnimReverse(info->unknown06, true, false);
+    unknown4b8 = &GmkElevator::seqWaitToArriveDownFloor;
+    startLiftSe();
+  }
+}
+
+void GmkElevator::seqWaitToArriveDownFloor(f32 deltaTime) {
+  if (gf::GfFieldLod::get()->unknown840 != nullptr && gf::GfFieldLod::get()->unknown850 != nullptr) {
+    const BdatInfo *info = getBdatInfo();
+    if (gf::GfFieldLod::get()->isPlayAnimEnd(info->unknown06)) {
+      stopLiftSe();
+      gf::GfFieldLod::get()->setPlaySpeed(info->unknown06, 1.0f);
+      if (info->unknown08 != 0) {
+        gf::GfFieldLod::get()->setAnimReverse(info->unknown08, false, false);
+        mm::Vec3 position;
+        if (getDownShutterPos(position)) {
+          createSe(SE_TYPE_UNKNOWN_1, position);
+        }
+      }
+      initDownFloorState();
+      if (info->unknown2e == 0) {
+        sendGfComQuest();
+      }
+    }
+  }
+}
+
+void GmkElevator::seqWaitToArriveUpFloor(f32 deltaTime) {
+  if (gf::GfFieldLod::get()->unknown840 != nullptr && gf::GfFieldLod::get()->unknown850 != nullptr) {
+    const BdatInfo *info = getBdatInfo();
+    if (gf::GfFieldLod::get()->isPlayAnimEnd(info->unknown06)) {
+      stopLiftSe();
+      gf::GfFieldLod::get()->setPlaySpeed(info->unknown06, 1.0f);
+      if (info->unknown0a != 0) {
+        gf::GfFieldLod::get()->setAnimReverse(info->unknown0a, false, false);
+        mm::Vec3 position;
+        if (getUpShutterPos(position)) {
+          createSe(SE_TYPE_UNKNOWN_1, position);
+        }
+      }
+      initUpFloorState();
+      // The game tests the lift b map jump id here too, like seqWaitToArriveDownFloor.
+      if (info->unknown2e == 0) {
+        sendGfComQuest();
+      }
+    }
+  }
 }
 
 void GmkElevator::seqWaitToCloseDownShutter(f32 deltaTime) {
@@ -337,7 +505,7 @@ void GmkElevator::clearGobInsts() {
 }
 
 void GmkElevator::dispose() {
-  unknown4c8 = 0;
+  clearRequests();
   unknown4b0 = gf::INVALID_HANDLE;
   unknown4b8 = nullptr;
   clearGobInsts();
@@ -381,6 +549,34 @@ bool GmkElevator::isLiftStateDown() const {
     }
   }
   return isDown;
+}
+
+void GmkElevator::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
+  const BdatInfo *info = getBdatInfo();
+  if (info->unknown00 != 0 && !gf::GfGameCond::isGameCond(info->unknown00)) {
+    reqDrawCmnMsg(info->unknown24);
+    return;
+  }
+  ItemType type;
+  if (unknown290[ITEM_TYPE_UNKNOWN_0] == handle) {
+    type = ITEM_TYPE_UNKNOWN_0;
+    unknown4c8 = true;
+  } else if (unknown290[ITEM_TYPE_UNKNOWN_1] == handle) {
+    type = ITEM_TYPE_UNKNOWN_1;
+    unknown4cb = true;
+  } else if (unknown290[ITEM_TYPE_UNKNOWN_2] == handle) {
+    type = ITEM_TYPE_UNKNOWN_2;
+    unknown4c9 = true;
+  } else if (unknown290[ITEM_TYPE_UNKNOWN_3] == handle) {
+    type = ITEM_TYPE_UNKNOWN_3;
+    unknown4ca = true;
+  } else {
+    return;
+  }
+  const AGmkBase *gmk = getGmkBaseByItemType(type);
+  if (gmk != nullptr) {
+    createSe(SE_TYPE_UNKNOWN_0, gmk->unknown08.unknown08->unknown00);
+  }
 }
 
 } // namespace gmk

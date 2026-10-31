@@ -256,7 +256,11 @@ public:
   static mm::mtl::RTTI m_rtti;
 
   const mm::mtl::RTTI *getRTTI() const override;
+
+  u16 unknown6c; // Inferred role: lod id; original member name unknown.
 };
+
+static_assert(offsetof(GfObjSetupMapLodAnim, unknown6c) == 0x6c, "");
 
 class GfObjSetupMapObj : public GfObjSetup {
 public:

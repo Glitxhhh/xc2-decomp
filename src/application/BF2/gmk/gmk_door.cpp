@@ -8,15 +8,25 @@
 #include "gf/field/gf_field_lod.h"
 #include "gf/field/gf_field_sound.h"
 #include "gf/game/gf_game_cond.h"
+#include "gf/game/gf_game_manager.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/gf_com_transform.h"
+#include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_manager.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/scom/gf_scom_obj.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_phantom.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/rtti.h"
 #include "scn/scn_obj_acc.h"
 
 namespace ml {
@@ -167,6 +177,77 @@ u32 GmkDoorPhantomTargetInfo::getTargetType() const {
   }
 }
 
+void GmkDoor::setProgress(Progress progress) {
+  gf::GfGameFlag::setLocal(2, getGameFlagId(), progress);
+  switch (progress) {
+  case PROGRESS_UNKNOWN_0:
+    unknown2c8 = &GmkDoor::seqDoor_BeforeBoot;
+    break;
+  case PROGRESS_UNKNOWN_1:
+    unknown2c8 = &GmkDoor::seqDoor_Booted;
+    break;
+  case PROGRESS_UNKNOWN_2:
+    unknown2c8 = &GmkDoor::seqDoor_Shutdowned;
+    break;
+  case PROGRESS_UNKNOWN_3:
+    unknown2c8 = &GmkDoor::seqDoor_SpBooted;
+    break;
+  }
+  validateLocSwitchState();
+}
+
+void GmkDoor::validateLocSwitchState() {
+  LodSwitch lodSwitch = LOD_SWITCH_UNKNOWN_0;
+  switch (getProgress()) {
+  case PROGRESS_UNKNOWN_0:
+  case PROGRESS_UNKNOWN_2:
+    if (!isLocked()) {
+      lodSwitch = LOD_SWITCH_UNKNOWN_2;
+    }
+    break;
+  case PROGRESS_UNKNOWN_1:
+    lodSwitch = isSpLocked() ? LOD_SWITCH_UNKNOWN_1 : LOD_SWITCH_UNKNOWN_2;
+    break;
+  case PROGRESS_UNKNOWN_3:
+    lodSwitch = LOD_SWITCH_UNKNOWN_2;
+    break;
+  }
+  setLodSwitch(lodSwitch);
+}
+
+void GmkDoor::create(const CreateInfo &info) {
+  AGmkBase::create(info);
+  if (!isValid()) {
+    dispose();
+    return;
+  }
+  const BdatInfo *bdatInfo = getBdatInfo();
+  u32 progress = PROGRESS_UNKNOWN_0;
+  if (bdatInfo->isLoadSaveData()) {
+    progress = getProgress();
+  }
+  switch (progress) {
+  case PROGRESS_UNKNOWN_0:
+  case PROGRESS_UNKNOWN_2:
+    if (gf::GfFieldLod::isAnimReverseOfInit(bdatInfo->unknown06)) {
+      closeDoor(true);
+    } else {
+      openDoor(true);
+    }
+    setProgress(PROGRESS_UNKNOWN_0);
+    break;
+  case PROGRESS_UNKNOWN_1:
+    bootGmk(true, false);
+    setProgress(PROGRESS_UNKNOWN_1);
+    break;
+  case PROGRESS_UNKNOWN_3:
+    spBootGmk(true, false);
+    setProgress(PROGRESS_UNKNOWN_3);
+    break;
+  }
+  validateLocSwitchState();
+}
+
 void GmkDoor::dispose() {
   disposeGmkPhantom();
   disposeGmkCamera();
@@ -241,6 +322,20 @@ void GmkDoor::disposeGfObjHandle() {
     gf::GfObjUtil::destroy(unknown2b8);
     unknown2b8 = gf::INVALID_HANDLE;
   }
+}
+
+void GmkDoor::createGfObjHandle() {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  disposeGfObjHandle();
+  CBdatWrapper bdat = {getBindedBdatFp()};
+  unknown2b8 = gf::GfObjFactory::createGmkEvent(bdat, unknown20.unknown18);
+  bindToGameObj(unknown2b8);
+  gf::GfObjSetupGimmick *setup = mm::mtl::dynamicCast<gf::GfObjSetupGimmick>(gf::GfObjManager::getObjInfo(unknown2b8)->unknown30);
+  unknown003(setup, unknown08.unknown08);
+  bool isOpened = isDoorOpened();
+  unknown002(unknown2b8, !isOpened);
 }
 
 bool GmkDoor::isSpLocked() const {
@@ -327,14 +422,57 @@ void GmkDoor::createSe(bool isMapPack, u16 seId, u8 distance) {
   unknown2e0.create(info);
 }
 
-void GmkDoor::isSeLoop(bool isMapPack, u16 seId) const {
+bool GmkDoor::isSeLoop(bool isMapPack, u16 seId) const {
   fw::SoundPack *pack;
   if (isMapPack) {
     pack = gf::GfFieldSound::get()->getMapPack();
   } else {
     pack = gf::GfFieldSound::get()->getCommonPack();
   }
-  fw::SoundManager::get()->isLoop(seId, pack);
+  return fw::SoundManager::get()->isLoop(seId, pack);
+}
+
+void GmkDoor::openDoor(bool isImmediate) {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  const BdatInfo *info = getBdatInfo();
+  gf::GfFieldLod::get()->setAnimReverse(info->unknown06, false, isImmediate);
+  if (unknown2b8 != gf::INVALID_HANDLE) {
+    unknown002(unknown2b8, false);
+  }
+  if (info->unknown0c != 0) {
+    if (isImmediate && !isSeLoop(info->unknown0b, info->unknown0c)) {
+      return;
+    }
+    createSe(info->unknown0b, info->unknown0c, info->unknown0e);
+  }
+  if (!isImmediate) {
+    u32 gimmick = unknown20.unknown18;
+    f32 delay = 0.0f;
+    if (gf::GfQuestUtil::getGimmickTaskEndCheck(GMK_TYPE, gimmick) == 1) {
+      const BdatInfo *bdatInfo = getBdatInfo();
+      delay = gf::GfFieldLod::get()->getAnimEndTime(bdatInfo->unknown06) + bdatInfo->unknown2c;
+    }
+    gf::SCOM_QUEST_GIMMICK::createDoor(gimmick, delay);
+  }
+}
+
+void GmkDoor::closeDoor(bool isImmediate) {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  const BdatInfo *info = getBdatInfo();
+  gf::GfFieldLod::get()->setAnimReverse(info->unknown06, true, isImmediate);
+  if (unknown2b8 != gf::INVALID_HANDLE) {
+    unknown002(unknown2b8, true);
+  }
+  if (info->unknown1c != 0) {
+    if (isImmediate && !isSeLoop(info->unknown1a, info->unknown1c)) {
+      return;
+    }
+    createSe(info->unknown1a, info->unknown1c, info->unknown1e);
+  }
 }
 
 void GmkDoor::pollBootGmk() {
@@ -435,6 +573,30 @@ void GmkDoor::seqDoor_SpBooted(f32 deltaTime) {
   if (unknown2c0 < getBdatInfo()->unknown2c) {
     unknown2c0 += deltaTime;
   }
+}
+
+void GmkDoor::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
+  const BdatInfo *info = getBdatInfo();
+  if (info->unknown02 == 5) {
+    if (gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+      return;
+    }
+    const mm::Vec3 &position = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
+    const Xform *xform = unknown08.unknown08;
+    mm::Vec3 diff = position - xform->unknown00;
+    mm::Vec3 rotation = xform->unknown10;
+    mm::Mat44 matrix;
+    matrix.setRotXYZ(rotation);
+    if (diff.x * matrix.rows[2][0] + diff.y * matrix.rows[2][1] + diff.z * matrix.rows[2][2] < 0.0f) {
+      bootGmk(false, false);
+      setLodSwitch(LOD_SWITCH_UNKNOWN_2);
+      return;
+    }
+  } else if (!info->unknown3e.isEnable() || info->unknown3e.isMatch()) {
+    bootGmk(false, false);
+    return;
+  }
+  reqDrawCmnMsg(info->unknown08);
 }
 
 GmkDoorPhantomManager::GmkDoorPhantomManager() {
