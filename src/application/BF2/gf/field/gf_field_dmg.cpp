@@ -1,6 +1,7 @@
 #include "gf/field/gf_field_dmg.h"
 
 #include "framework/coli/coli_object.h"
+#include "mm_mtl/vector.h" // IWYU pragma: keep
 
 namespace gf {
 
@@ -39,3 +40,6 @@ s32 GfFieldDmg::calculateDamage(u32 maxHp, u8 rate, f32 reduction) {
 } // namespace gf
 
 template mm::mtl::PtrSingleton<gf::GfFieldDmgManager>::~PtrSingleton();
+template void mm::mtl::Vector<gf::GfFieldDmgManager::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gf::GfFieldDmgManager::BdatInfo>::expand(size_t, size_t);
+template void mm::mtl::Vector<gf::GfFieldDmgManager::BdatInfo>::extend(size_t, size_t);

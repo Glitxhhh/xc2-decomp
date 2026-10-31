@@ -11,6 +11,8 @@ namespace gf {
 
 class GfDropitemParam {
 public:
+  GfDropitemParam();
+
   f32 unknown00;  // Role and original member name unknown.
   f32 unknown04;  // Role and original member name unknown.
   f32 unknown08;  // Role and original member name unknown.
@@ -32,7 +34,7 @@ public:
   bool unknown48; // Role and original member name unknown.
   u8 _49[0x4c - 0x49];
   f32 unknown4c; // Role and original member name unknown.
-  f32 unknown50; // Role and original member name unknown.
+  u32 unknown50; // Role and original member name unknown. An integer: loadFromBdat stores a byte column in it.
   f32 unknown54; // Role and original member name unknown.
   u32 unknown58; // Role and original member name unknown.
 };

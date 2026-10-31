@@ -10,6 +10,7 @@
 #include "fw/fw_param_manager.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec4.h"
+#include "mm_mtl/fixed_vector.h" // IWYU pragma: keep
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
 
@@ -79,3 +80,5 @@ void buildDescFromParam(ParamAdapter &param, anm::FootPlacementIKSolver::Descrip
 const mm::mtl::RTTI *FootPlacementIKSolver::getRTTI() const { return &m_rtti; }
 
 } // namespace fw
+
+template void mm::mtl::FixedVector<mm::mtl::IntrusivePtr<fw::FootPlacementIKSolver>, 6>::resize(size_t, const mm::mtl::IntrusivePtr<fw::FootPlacementIKSolver> &);

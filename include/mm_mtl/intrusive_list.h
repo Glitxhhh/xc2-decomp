@@ -127,13 +127,17 @@ public:
     return next;
   }
 
-  // Named after ptlib::IntrusiveList<T>::clear, a game symbol whose code is the same loop.
-  void clear() {
-    iterator it = begin();
-    while (it != end()) {
-      it = erase(it);
+  // Inferred helper: erases the nodes from first to last with the asserts of erase on each one; clear only matches
+  // through it (end() passed as an argument). Original name unknown.
+  iterator unknown001(iterator first, iterator last) {
+    while (first != last) {
+      first = erase(first);
     }
+    return last;
   }
+
+  // Named after ptlib::IntrusiveList<T>::clear, a game symbol whose code is the same loop.
+  void clear() { unknown001(begin(), end()); }
 };
 
 } // namespace mtl

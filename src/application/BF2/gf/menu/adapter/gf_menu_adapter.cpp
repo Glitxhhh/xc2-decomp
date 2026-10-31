@@ -455,3 +455,5 @@ void GfMenuAdapter::setTextFacePattern(const char *name) {
 void GfMenuAdapter::update(const fw::UpdateInfo &info) { unknown20 &= ~FLAG_CHANGED; }
 
 } // namespace gf
+
+template void mm::mtl::IntrusiveList<gf::GfMenuAdapter>::clear();

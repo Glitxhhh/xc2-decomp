@@ -2,8 +2,14 @@
 
 #include "ml/rand.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/vector.h" // IWYU pragma: keep
 
 namespace gf {
+
+GfDropitemParam::GfDropitemParam()
+    : unknown00(2.0f), unknown04(0.0f), unknown08(1.0f), unknown0c(0.0f), unknown10(0.5f), unknown14(0.5f), unknown18(0.0f), unknown1c(5.0f), unknown20(9.0f), unknown24(0.5f), unknown28(0.5f),
+      unknown2c(0.2f), unknown30(0.05f), unknown34(0.1f), unknown38(0.0f), unknown3c(0.0f), unknown40(1.0f), unknown44(0.5f), unknown48(false), unknown4c(360.0f), unknown50(0), unknown54(1.0f),
+      unknown58(2) {}
 
 GfDropitemParamInst::GfDropitemParamInst(const GfDropitemParam *param, f32 height) : unknown00(nullptr), unknown08(0.0f), unknown0c(0.0f) {
   if (param != nullptr) {
@@ -31,3 +37,6 @@ mm::Vec3 &GfDropitemParamInst::getInitVelocity(mm::Vec3 &velocity) const {
 }
 
 } // namespace gf
+
+template void mm::mtl::Vector<gf::GfDropitemParam>::extend(size_t, size_t);
+template void mm::mtl::Vector<gf::GfDropitemParam>::resize(size_t);

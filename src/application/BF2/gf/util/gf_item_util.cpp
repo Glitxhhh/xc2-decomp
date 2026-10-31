@@ -511,5 +511,7 @@ void GfItemUtil::setupNewGameParam() {
 
 } // namespace gf
 
+template mm::mtl::FixedVector<gf::GfItem, 1024>::~FixedVector();
+
 #include "gf/util/gf_equip_util.cpp"
 #include "gf/util/gf_shop_util.cpp"

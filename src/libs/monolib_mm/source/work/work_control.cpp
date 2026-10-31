@@ -108,3 +108,4 @@ bool WorkControl::hasFlow() { return WorkFlowShutdownAll::get() != nullptr; }
 } // namespace ml
 
 template mm::mtl::PtrSingleton<ml::WorkControl>::~PtrSingleton();
+template ml::_wkcnt::PAUSEQ mm::mtl::FixedQueue<ml::_wkcnt::PAUSEQ, 16>::pop_front();

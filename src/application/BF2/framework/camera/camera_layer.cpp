@@ -51,3 +51,5 @@ void CameraLayer::popPlugin(mm::mtl::IntrusivePtr<CameraPlugin> &plugin) {
 }
 
 } // namespace fw
+
+template mm::mtl::IntrusivePtr<fw::CameraPlugin>::~IntrusivePtr();

@@ -10,11 +10,25 @@ struct GfSetupParam;
 
 class GfFieldDmgManager : public mm::mtl::PtrSingleton<GfFieldDmgManager> {
 public:
-  struct BdatInfo;
+  // Layout from GfFieldDmgManager::gevMapjump (1.0.0: 0x71002d77c0), which fills it from the bdat columns, and findBdatInfo (attribute id at +2).
+  struct BdatInfo {
+    // User-provided: Vector<BdatInfo>::resize stores the ten member bytes of each element instead of a memset.
+    BdatInfo() : unknown00(0), unknown02(0), unknown04(0.0f), unknown08(0), unknown09(0) {}
+
+    u16 unknown00; // Inferred role: condition; original member name unknown.
+    u16 unknown02; // Inferred role: attribute id; original member name unknown.
+    f32 unknown04; // Inferred role: damage interval; original member name unknown.
+    u8 unknown08;  // Inferred role: damage rate to the player characters; original member name unknown.
+    u8 unknown09;  // Inferred role: damage rate to the enemies; original member name unknown.
+  };
 
   static void build(const GfSetupParam &param);
   static void destroy();
 };
+
+static_assert(offsetof(GfFieldDmgManager::BdatInfo, unknown04) == 0x04, "");
+static_assert(offsetof(GfFieldDmgManager::BdatInfo, unknown09) == 0x09, "");
+static_assert(sizeof(GfFieldDmgManager::BdatInfo) == 0x0c, "");
 
 class GfFieldDmg {
 public:

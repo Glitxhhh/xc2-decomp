@@ -33,6 +33,7 @@ template <> struct FixedVectorUnit<16> {
 
 template <typename T, size_t N> class FixedVector {
   typedef typename FixedVectorUnit<alignof(T)>::type Unit;
+  typedef size_t size_type;
 
 public:
   FixedVector() : m_size(0) {}
@@ -75,6 +76,28 @@ public:
     MM_ASSERT(size() < capacity());
     construct(at(m_size), value);
     m_size++;
+  }
+
+  void pop_back() {
+#line 253
+    MM_ASSERT(m_size > size_type(0U));
+    if (m_size != 0) {
+      --m_size;
+      destroy(end());
+    }
+  }
+
+  void resize(size_t size, const T &value) {
+    long count = size - m_size;
+    if (count < 0) {
+      for (long i = -count; i > 0; i--) {
+        pop_back();
+      }
+    } else if (count != 0) {
+      for (long i = count; i > 0; i--) {
+        push_back(value);
+      }
+    }
   }
 
   bool validate_iterator(const T *it) const { return begin() <= it && it <= end(); }
