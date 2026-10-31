@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "anm/anm_string_ptr.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/set.h"
 #include "mm_mtl/vector.h"
 #include "types.h"
@@ -38,10 +39,17 @@ enum Layer {
 class Util {
 public:
   // Inferred name prefix of a bone to ignore when mirroring; original member names unknown.
+  // Layout evidence: the copy in Vector<IgnoreName>::push_back (0x710014e190) runs the FixStr<8> assignment (strlen, assert < 8, strcpy) and copies the word at 0x0c.
   struct IgnoreName {
-    char unknown00[8]; // Inferred role: name prefix; original member name unknown.
-    s32 unknown08;     // Inferred role: length of the prefix; original member name unknown.
-    u8 _0c[4];
+    mm::mtl::FixStr<8> unknown00; // Inferred role: name prefix; original member name unknown.
+    u32 unknown0c;                // Inferred role: unused in the matched code; original member name unknown.
+  };
+
+  // Pair of bone name prefixes read by computeBonePairFromName; original member names unknown.
+  // Layout evidence: the copy in Vector<PairName>::push_back (0x710014e544) runs the FixStr<8> assignment at 0x00 and at 0x0c, element size 0x18.
+  struct PairName {
+    mm::mtl::FixStr<8> unknown00; // Inferred role: first name prefix; original member name unknown.
+    mm::mtl::FixStr<8> unknown0c; // Inferred role: second name prefix; original member name unknown.
   };
 
   static const char *getName(const Binding &binding);
@@ -80,7 +88,9 @@ public:
   static void queryVariableInt(const ResASM &resAsm, mm::mtl::Set<StringPtr> *pDst);
 };
 
-static_assert(offsetof(Util::IgnoreName, unknown08) == 0x08, "");
+static_assert(offsetof(Util::IgnoreName, unknown0c) == 0x0c, "");
 static_assert(sizeof(Util::IgnoreName) == 0x10, "");
+static_assert(offsetof(Util::PairName, unknown0c) == 0x0c, "");
+static_assert(sizeof(Util::PairName) == 0x18, "");
 
 } // namespace anm

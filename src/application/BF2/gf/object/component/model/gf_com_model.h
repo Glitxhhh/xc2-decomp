@@ -31,6 +31,15 @@ public:
   static mm::mtl::RTTI m_rtti;
   static const u32 COMPONENT_INDEX = 1;
 
+  // Layout evidence: createBoneReferenceFrame (0x7100530db0) pushes the new bone frame, the bone index and a count of 1
+  // (and increments the count at 0x0c of an existing entry); the copy in Vector<BoneFrameInfo>::push_back
+  // (0x7100531814) takes a reference on the frame and copies the 8 bytes at 0x08.
+  struct BoneFrameInfo {
+    mm::mtl::IntrusivePtr<fw::ReferenceFrame> unknown00; // Inferred role: bone reference frame; original member name unknown.
+    u32 unknown08;                                       // Inferred role: bone index; original member name unknown.
+    u32 unknown0c;                                       // Inferred role: reference count; original member name unknown.
+  };
+
   bool isRender() const;
   bool isVolumeFadeForUser() const;
   void procMsgObjectNotifyDead(fw::MessageObject *sender, MsgObjectNotifyDead &message);

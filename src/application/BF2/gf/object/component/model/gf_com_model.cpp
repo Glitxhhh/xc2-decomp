@@ -27,3 +27,8 @@ void GfComModel::procMsgObjectNotifyDamage(fw::MessageObject *, MsgObjectNotifyD
 void GfComModel::procMsgActivateComponentDebugWindow(fw::MessageObject *, MsgDebugActivateComponentWindow &) {}
 
 } // namespace gf
+
+template void mm::mtl::Vector<gf::GfComModel::BoneFrameInfo>::destroy();
+template void mm::mtl::Vector<gf::GfComModel::BoneFrameInfo>::push_back(const gf::GfComModel::BoneFrameInfo &);
+template gf::GfComModel::BoneFrameInfo *mm::mtl::Vector<gf::GfComModel::BoneFrameInfo>::erase(gf::GfComModel::BoneFrameInfo *);
+template void mm::mtl::Vector<gf::GfComModel::BoneFrameInfo>::expand(size_t, size_t);

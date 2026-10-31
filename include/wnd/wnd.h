@@ -16,6 +16,7 @@ class IAllocator;
 // Only the members read by the framework are declared; the original member names are unknown.
 namespace wnd {
 
+class AreaWind;
 struct Query;
 
 struct Transform {
@@ -65,6 +66,19 @@ struct ProbeCreateInfo {
 };
 
 static_assert(sizeof(ProbeCreateInfo) == 0x18, "");
+
+// Local wind hit by a probe. Layout evidence: Dispatcher fills it (area wind, distance, then a Vec3) before
+// Vector<LocalWindHitCache>::push_back (0x71009885c4), whose copy moves the first 12 bytes raw and the Vec3 member by
+// member; WindProbe keeps the vector at 0x190.
+struct LocalWindHitCache {
+  AreaWind *unknown00; // Inferred role: wind; original member name unknown.
+  f32 unknown08;       // Inferred role: distance; original member name unknown.
+  mm::Vec3 unknown10;  // Inferred role: hit vector; original member name unknown.
+};
+
+static_assert(offsetof(LocalWindHitCache, unknown08) == 0x08, "");
+static_assert(offsetof(LocalWindHitCache, unknown10) == 0x10, "");
+static_assert(sizeof(LocalWindHitCache) == 0x20, "");
 
 class WindProbe : public mm::mtl::ReferenceObject {
 public:

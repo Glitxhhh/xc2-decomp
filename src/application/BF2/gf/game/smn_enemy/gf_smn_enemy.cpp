@@ -41,3 +41,6 @@ template mm::mtl::PtrSingleton<gf::GfSmnEnemyManager>::~PtrSingleton();
 template void mm::mtl::Vector<gf::GF_OBJ_HANDLE *>::expand(size_t, size_t);
 template gf::GfRelSmnEnemy **mm::mtl::Vector<gf::GfRelSmnEnemy *>::erase(gf::GfRelSmnEnemy **);
 template void mm::mtl::Vector<gf::GfRelSmnEnemy *>::expand(size_t, size_t);
+template void mm::mtl::Vector<gf::GfRelSmnEnemy::PopInfo>::push_back(const gf::GfRelSmnEnemy::PopInfo &);
+template void mm::mtl::Vector<gf::GfRelSmnEnemy::PopInfo>::expand(size_t, size_t);
+template void mm::mtl::Vector<std::pair<gf::GfRelSmnEnemy::PopInfo *, gf::GF_OBJ_HANDLE *>>::expand(size_t, size_t);

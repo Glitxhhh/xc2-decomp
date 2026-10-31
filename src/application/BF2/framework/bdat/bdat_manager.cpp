@@ -4,7 +4,9 @@
 #include "framework/lang_util.h"
 #include "fw/fw_bdat_manager.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/map.h"
 #include "mtl/alloc_handle.h"
+#include "types.h"
 
 namespace fw {
 
@@ -61,3 +63,11 @@ bool BdatManager::isEnableBdat(int id) { return get()->unknown18->isEnableBdat(i
 unsigned char *BdatManager::getFp(int table, int id) { return Bdat::getFP(table, id); }
 
 } // namespace fw
+
+typedef mm::mtl::Map<u32, fw::BdatManager::Impl::SheetFpInfo>::tree_type unknown101;
+
+template void unknown101::free_node(unknown101::node *, bool);
+template void unknown101::erase(unknown101::node *);
+template void unknown101::rebalance_after_erase(unknown101::node *);
+template unknown101::node *unknown101::insert(const mm::mtl::MapPair<u32, fw::BdatManager::Impl::SheetFpInfo> &);
+template void unknown101::rebalance(unknown101::node *);

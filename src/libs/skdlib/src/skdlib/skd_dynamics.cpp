@@ -5,3 +5,5 @@
 
 template void mm::mtl::Vector<skd::DynamicsSolver *>::extend(size_t, size_t);
 template void mm::mtl::Vector<skd::DynamicsSolver *>::resize(size_t);
+template void mm::mtl::Vector<skd::Node>::resize(size_t);
+template void mm::mtl::Vector<skd::Node>::extend(size_t, size_t);

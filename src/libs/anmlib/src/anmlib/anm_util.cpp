@@ -41,7 +41,7 @@ void Util::computeIgnoreMirrorFromName(const mm::mtl::Vector<IgnoreName> &names,
     for (u32 i = 0; i < boneCount; i++) {
       s8 value = 0;
       for (u32 j = 0; j < names.size(); j++) {
-        if (strncmp(skeleton->unknown001(i).unknown00, names[j].unknown00, names[j].unknown08) == 0) {
+        if (strncmp(skeleton->unknown001(i).unknown00, names[j].unknown00.c_str(), names[j].unknown00.length()) == 0) {
           value = -1;
           break;
         }
@@ -415,3 +415,8 @@ const ResState *Util::getFrozenStateResource(const ResASM &resAsm, const char *n
 }
 
 } // namespace anm
+
+template void mm::mtl::Vector<anm::Util::IgnoreName>::expand(size_t, size_t);
+template void mm::mtl::Vector<anm::Util::IgnoreName>::push_back(const anm::Util::IgnoreName &);
+template void mm::mtl::Vector<anm::Util::PairName>::expand(size_t, size_t);
+template void mm::mtl::Vector<anm::Util::PairName>::push_back(const anm::Util::PairName &);
