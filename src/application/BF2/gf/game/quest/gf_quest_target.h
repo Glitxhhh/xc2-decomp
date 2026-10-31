@@ -57,10 +57,13 @@ public:
   TargetCache *getTargetCache(GF_OBJ_HANDLE *handle);
   void entryTargetCache(GF_OBJ_HANDLE *handle, QuestID quest);
   static int getIconType(GF_OBJ_HANDLE *handle, QuestID quest);
-  static int getIconTypeTalk(u32 npcId, QuestID quest, u32 mapId, bool);
-  static int getIconTypeCollect(u32 type, u32 id, QuestID quest, u32 mapId, bool);
-  static int getIconTypeReachPlace(u32 category, u32 placeId, QuestID quest, u32 mapId, bool);
-  static int getIconTypeBattle(u32 type, u32 id, QuestID quest, GF_OBJ_HANDLE *handle, bool);
+  static int getIconTypeReachPlace(u32 category, u32 placeId, QuestID quest, u32 mapId, bool isCheckCurrent);
+  static int getIconTypeCollect(u32 type, u32 id, QuestID quest, u32 mapId, bool isCheckCurrent);
+  static int getIconTypeBattle(u32 type, u32 id, QuestID quest, GF_OBJ_HANDLE *handle, bool isCheckCurrent);
+  static int getIconTypeTalk(u32 npcId, QuestID quest, u32 mapId, bool isCheckCurrent);
+  static int getIconTypeTalk(GF_OBJ_HANDLE *handle, QuestID quest, u32 mapId, bool isCheckCurrent);
+  static int getIconTypeGimmick(GF_OBJ_HANDLE *handle, QuestID quest, u32 mapId, bool isCheckCurrent);
+  static int getIconTypeFieldObj(GF_OBJ_HANDLE *handle, QuestID quest, u32 mapId, bool isCheckCurrent);
 
   mm::mtl::FixedList<TargetCache, 512> unknown10; // Inferred role: target caches; original member name unknown.
 };
