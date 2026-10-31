@@ -203,6 +203,7 @@ public:
   static f32 check_ground(const mm::Vec3 &pos, f32 depth, f32 *rotate);
   static void check_ground_col(EmitterObj *emitter, const mm::Vec3 &pos, int index);
   static void calc_scale(mm::Vec3 *result, math::Vec3r *range, f32 scale, u32 &seed);
+  static void calc_start2goal01(EmitterObj *emitter, mm::Vec3 *start, mm::Vec3 *goal);
   f32 getEmitterScale();
   EmitterObj *emitter_free();
   void emitter_dead(u8 value);
@@ -216,7 +217,8 @@ public:
   bool localUpdateParticleObjLgt(ParticleObj *&particle, IntrusiveList<ParticleObj>::iterator &it, f32 speed, int isMove, int &count);
   bool localUpdateParticleObjMdl(ParticleObj *&particle, IntrusiveList<ParticleObj>::iterator &it, f32 speed, int isMove, int &count);
 
-  u8 _010[0x040 - 0x010];
+  u8 unknown10; // Inferred role: cleared when a dead emitter is queued for release; original member name unknown.
+  u8 _011[0x040 - 0x011];
   IntrusiveList<ParticleObj> unknown40; // Inferred role: particles; original member name unknown.
   FxHeader *unknown58;                  // Inferred role: effect header; original member name unknown.
   renderer::StreamObj *unknown60;       // Inferred role: render stream; original member name unknown.
@@ -268,11 +270,14 @@ public:
   u8 _1d8[0x1e0 - 0x1d8];
   mm::Vec3 unknown1e0; // Inferred role: newton center; original member name unknown.
   u8 _1f0[0x260 - 0x1f0];
-  u8 unknown260; // Inferred role: priority; original member name unknown.
-  u8 _261[0x264 - 0x261];
-  u32 unknown264; // Inferred role: handle; original member name unknown.
-  u32 unknown268; // Inferred role: random seed; original member name unknown.
-  u16 _26c_0 : 4;
+  u8 unknown260;       // Inferred role: priority; original member name unknown.
+  u8 unknown261_0 : 4; // Inferred role: particle insert order, 1 appends at the back; original member name unknown.
+  u8 unknown261_4 : 4; // Inferred role: child emitter that waits for its parent particle; original member name unknown.
+  u8 _262[0x264 - 0x262];
+  u32 unknown264;       // Inferred role: handle; original member name unknown.
+  u32 unknown268;       // Inferred role: random seed; original member name unknown.
+  u16 unknown26c_0 : 1; // Inferred role: updated even when its speed is zero; original member name unknown.
+  u16 _26c_1 : 3;
   u16 unknown26c_4 : 1; // Inferred role: dead; original member name unknown.
   u16 _26c_5 : 11;
   u8 _26e[0x274 - 0x26e];
@@ -289,6 +294,7 @@ public:
   f32 unknown31c; // Inferred role: gpu check bounding size; original member name unknown.
 };
 
+static_assert(offsetof(EmitterObj, unknown10) == 0x10, "");
 static_assert(offsetof(EmitterObj, unknown40) == 0x40, "");
 static_assert(offsetof(EmitterObj, unknown58) == 0x58, "");
 static_assert(offsetof(EmitterObj, unknown60) == 0x60, "");

@@ -43,6 +43,28 @@ namespace {
 EmitterManager *s_instance;
 } // namespace
 
+int EmitterObj::getParentParticleState() const {
+  if (unknown80 == nullptr) {
+    return 0;
+  }
+  if (unknown80->m_extParam->m_emParent != nullptr) {
+    if (unknown88 != unknown80->unknown138) {
+      return 2;
+    }
+    return 1;
+  }
+  return 2;
+}
+
+void EmitterObj::emitter_dead(u8 value) {
+  unknown188 = value;
+  for (IntrusiveList<ParticleObj>::iterator it = unknown40.begin(); it != unknown40.end(); ++it) {
+    if (it->unknownc0 == 0x7fff) {
+      it->unknownc0 = 0;
+    }
+  }
+}
+
 f32 EmitterObj::getCateSpd() {
   EmitterManager *manager = EmitterManager::getPtr();
   return manager->unknown1700[unknown170];
@@ -320,6 +342,30 @@ void EmitterManager::emitter_set_link(FxHeader *header) {
   unknown17f0.push_back(&node);
 }
 
+ParticleObj *EmitterManager::createCommon(EmitterObj *emitter) {
+  ParticleObj *particle;
+  if (emitter->unknown261_0 == 1) {
+    particle = particleAlloc(emitter, false);
+  } else {
+    particle = particleAlloc(emitter, true);
+  }
+  if (particle != nullptr) {
+    mm::Vec3 goal;
+    EmitterObj::calc_start2goal01(emitter, &particle->unknown10, &goal);
+    particle->unknown30 = goal;
+    particle->unknownc2 = 0;
+    particle->unknown20 = particle->unknown10;
+    particle->unknown40 = mm::Vec3::zero;
+    particle->unknown50 = mm::Vec3::zero;
+    particle->getExtParam().unknown108 = nullptr;
+    particle->getExtParam().unknown110 = nullptr;
+    particle->getExtParam().unknown118 = nullptr;
+    particle->getExtParam().unknown120 = nullptr;
+    particle->getExtParam().unknown110 = nullptr;
+  }
+  return particle;
+}
+
 void EmitterManager::emitter_create_local_common_life(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg) {
   u16 base = arg->unknown8e;
   u32 life;
@@ -405,6 +451,51 @@ void EmitterManager::emitter_pack_free(u64 pack) {
         }
       }
     } while (count > 0);
+  }
+}
+
+void EmitterManager::emitter_update_sub(CamParam &camParam, mm::mtl::FixedVector<EmitterObj *, 2001> &freeEmitters, u32 handle, bool isNoWait, f32 speed,
+                                        mm::mtl::FixedVector<EmitterObj *, 2001> &updateEmitters, bool isUnknown) {
+  for (IntrusiveList<EmitterObj>::iterator it = unknown17a8.begin(); it != unknown17a8.end(); ++it) {
+    EmitterObj *emitter = it.get();
+    if (emitter->unknown274 != camParam.unknown12c) {
+      continue;
+    }
+    if (emitter->unknown26c_4) {
+      emitter->unknown10 = 0;
+      freeEmitters.push_back(emitter);
+      continue;
+    }
+    if (handle != 0 ? emitter->unknown264 != handle : emitter->unknown264 == 0) {
+      continue;
+    }
+    if (isNoWait && emitter->unknown152 == 0) {
+      continue;
+    }
+    bool isWait;
+    do {
+      isWait = false;
+      switch (emitter->getParentParticleState()) {
+      case 2:
+        emitter->emitter_dead(0);
+        break;
+      case 1:
+        if (static_cast<s16>(emitter->unknown80->unknownc0) < 2) {
+          emitter->emitter_dead(0);
+        } else if (emitter->unknown261_4 != 0 && emitter->unknown80->unknown13f == 0) {
+          // Game bug, reproduced: the wait moves to the next emitter without testing the end of the list nor its view, free, handle and no-wait filters.
+          ++it;
+          emitter = it.get();
+          isWait = true;
+        }
+        break;
+      }
+    } while (isWait);
+    if (!emitter->unknown26c_0 && emitter->unknown158 * speed * emitter->getCateSpd() <= 0.0f) {
+      continue;
+    }
+    emitter->unknown268 = emitter->unknown268 * 0x41c64e6d + 0x3039;
+    updateEmitters.push_back(emitter);
   }
 }
 

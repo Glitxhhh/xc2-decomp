@@ -5,11 +5,8 @@
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
 #include "ptlib/emitter/particle_emitter.h"
-#include "ptlib/emitter/particle_emitter_ext.h"
 #include "ptlib/emitter/particle_emitter_param.h"
-#include "ptlib/emitter/particle_emitter_particle.h"
 #include "ptlib/math/particle_keyframe_ip.h"
-#include "ptlib/particle_intrusive_list.h"
 #include "ptlib/particle_math.h"
 #include "ptlib/particle_system.h"
 #include "ptlib/renderer/particle_renderer_stream.h"
@@ -78,19 +75,6 @@ void EmitterArg::get_kf(math::KeyFrameIP *ip, u16 offset, int num, f32 frame, s1
   ip->unknown10 = (t - *key) / (*next - *key);
 }
 
-int EmitterObj::getParentParticleState() const {
-  if (unknown80 == nullptr) {
-    return 0;
-  }
-  if (unknown80->m_extParam->m_emParent != nullptr) {
-    if (unknown88 != unknown80->unknown138) {
-      return 2;
-    }
-    return 1;
-  }
-  return 2;
-}
-
 f32 EmitterObj::check_ground(const mm::Vec3 &pos, f32 depth, f32 *rotate) {
   mm::Vec3 normal;
   mm::Vec3 outPos;
@@ -126,15 +110,6 @@ EmitterObj *EmitterObj::emitter_free() {
   unknown26c_4 = 1;
   unknownc0->unknown00 = nullptr;
   return static_cast<EmitterObj *>(unknown00);
-}
-
-void EmitterObj::emitter_dead(u8 value) {
-  unknown188 = value;
-  for (IntrusiveList<ParticleObj>::iterator it = unknown40.begin(); it != unknown40.end(); ++it) {
-    if (it->unknownc0 == 0x7fff) {
-      it->unknownc0 = 0;
-    }
-  }
 }
 
 void EmitterObj::calc_scale(mm::Vec3 *result, math::Vec3r *range, f32 scale, u32 &seed) {

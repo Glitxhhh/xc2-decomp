@@ -123,11 +123,25 @@ static_assert(sizeof(FxParam) == 0x18, "");
 
 // Inferred role: efb section header holding the offset of its data; original name unknown.
 struct unknown001 {
-  u8 _00[0x10 - 0x00];
+  u32 unknown00; // Inferred role: magic "efb0"; original member name unknown.
+  u8 _04[0x08 - 0x04];
+  u8 unknown08; // Inferred role: section type; original member name unknown.
+  u8 _09[0x0c - 0x09];
+  u32 unknown0c; // Inferred role: offset of the next section of a pack, from this header; original member name unknown.
   u32 unknown10;
 };
 
+static_assert(offsetof(unknown001, unknown08) == 0x08, "");
+static_assert(offsetof(unknown001, unknown0c) == 0x0c, "");
 static_assert(offsetof(unknown001, unknown10) == 0x10, "");
+
+struct ParseEfbParam {
+  u8 *unknown00;         // Inferred role: efb or efs data; original member name unknown.
+  const char *unknown08; // Inferred role: name, passed to parseEfb; original member name unknown.
+  u8 *unknown10;         // Inferred role: parsed data; original member name unknown.
+};
+
+static_assert(offsetof(ParseEfbParam, unknown10) == 0x10, "");
 
 // Inferred role: pointer at an offset from a base, null when the offset is 0; original name unknown.
 template <typename T> inline const T *unknown002(const void *base, u32 offset) {
@@ -146,7 +160,12 @@ template <typename T> inline T *unknown002(void *base, u32 offset) {
 
 struct CamParam {
   mm::Mat44 m_viewMatrix;
+  u8 _40[0x12c - 0x40];
+  u32 unknown12c; // Inferred role: view index the emitters are updated for; original member name unknown.
 };
+
+static_assert(offsetof(CamParam, unknown12c) == 0x12c, "");
+static_assert(sizeof(CamParam) == 0x130, "");
 
 class ParticleManager {
 public:
@@ -235,6 +254,9 @@ public:
   int convert_key_by_material_index(int key, FxHeader *header) const;
   void parse_efb_type0050(u8 *data);
   void parse_efb_type0051(u8 *data);
+  int parse_efb_type0001(u8 *data);
+  int parseEfb(ParseEfbParam *param);
+  u8 *parseEfb(u8 *data, const char *name, u64 pack);
   renderer::RenderManager &getRenderManager();
   bool emitter_set_check(FxHeader *header);
   void emitter_set_free_all(bool isForce);
@@ -269,7 +291,6 @@ public:
   bool testRayChara(mm::Vec3 &outNormal, mm::Vec3 &outPos, const mm::Vec3 &start, const mm::Vec3 &direction, f32 length, f32 backLength);
 
   CamParam m_camParam;
-  u8 _040[0x130 - 0x040];
   FxParam m_fxParam;
   f32 unknown148; // Inferred role: responsive aa; original member name unknown.
   f32 unknown14c; // Inferred role: spec scale; original member name unknown.

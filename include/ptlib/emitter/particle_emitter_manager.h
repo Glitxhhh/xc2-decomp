@@ -8,6 +8,7 @@
 
 namespace ptlib {
 
+struct CamParam;
 struct FxHeader;
 
 namespace emitter {
@@ -35,8 +36,11 @@ public:
   void addFreeParticleFront(ParticleObj *particle);
   void addFreeParticleBack(ParticleObj *particle);
   void emitter_update(u32 category, f32 speed, bool isSkipDraw);
+  void emitter_update_sub(CamParam &camParam, mm::mtl::FixedVector<EmitterObj *, 2001> &freeEmitters, u32 handle, bool isNoWait, f32 speed, mm::mtl::FixedVector<EmitterObj *, 2001> &updateEmitters,
+                          bool isUnknown);
   static void *createFunc(EmitterObj *emitter, ParticleObj *particle, f32 frame, int param);
   static void *create_local01(EmitterObj *emitter, ParticleObj *particle, f32 frame, int param);
+  ParticleObj *createCommon(EmitterObj *emitter);
   void emitter_set_param_pos_only(u32 handle, EmitterParam *param);
   void emitter_set_param_pos_only2(u32 handle, EmitterParam *param);
   void emitter_set_param(u32 handle, EmitterParam *param);

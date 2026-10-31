@@ -227,6 +227,47 @@ void ParticleManager::parse_efb_type0050(u8 *data) {
   }
 }
 
+int ParticleManager::parseEfb(ParseEfbParam *param) {
+  u8 *data = param->unknown00;
+  ParticleManager *manager = getPtr();
+  if (reinterpret_cast<const unknown001 *>(data)->unknown08 == 'a') {
+    param->unknown10 = data;
+    u8 *section = unknown002<u8>(data, reinterpret_cast<const unknown001 *>(data)->unknown0c);
+    do {
+      manager->parseEfb(section, param->unknown08, reinterpret_cast<u64>(data));
+      section = unknown002<u8>(section, reinterpret_cast<const unknown001 *>(section)->unknown0c);
+    } while (section != nullptr);
+  } else {
+    param->unknown10 = manager->parseEfb(data, param->unknown08, 0);
+  }
+  return 0;
+}
+
+u8 *ParticleManager::parseEfb(u8 *data, const char *name, u64 pack) {
+  const unknown001 *header = reinterpret_cast<const unknown001 *>(data);
+  if (header->unknown00 != 0x30626665) {
+    efMsg("corrupted data %10x-", data);
+    return nullptr;
+  }
+  switch (header->unknown08) {
+  case 0x01:
+    reinterpret_cast<FxHeader *>(data)->unknown48 = pack;
+    emitter::EmitterManager::get()->emitter_set_link(reinterpret_cast<FxHeader *>(data));
+    parse_efb_type0001(data);
+    break;
+  case 0x50:
+    parse_efb_type0050(data);
+    break;
+  case 0x51:
+    parse_efb_type0051(data);
+    break;
+  default:
+    efAstMsg("0", "illegal EFB format:%04x", header->unknown08);
+    break;
+  }
+  return data;
+}
+
 void *ParticleManager::getGrp(int index) {
   if (isValid() && static_cast<u32>(index) <= 3) {
     return getPtr()->unknown170[index];
