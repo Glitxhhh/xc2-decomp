@@ -33,7 +33,6 @@ public:
   long Tell(u64 *position) override;
   u64 CheckAccessSize(u64 size) override;
 
-  u64 unknown18;                // Inferred role: cleared by the constructor; original member name unknown.
   u64 unknown20;                // Inferred role: position; original member name unknown.
   u64 unknown28;                // Inferred role: size; original member name unknown.
   nn::fs::FileHandle unknown30; // Inferred role: file handle; original member name unknown.

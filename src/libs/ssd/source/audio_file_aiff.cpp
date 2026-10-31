@@ -12,12 +12,6 @@ struct unknown003 {
 
 static_assert(sizeof(unknown003) == 0x10, "");
 
-// Inferred role: 32 bit byte swap; original name unknown.
-static u32 unknown004(u32 value) {
-  value = (value & 0xff00ff00) >> 8 | (value & 0x00ff00ff) << 8;
-  return value >> 16 | value << 16;
-}
-
 Result AudioFileAiff::Open(IoStreamBase *stream) {
   unknown08 = stream;
   return static_cast<Result>(0);

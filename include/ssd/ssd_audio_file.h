@@ -41,6 +41,32 @@ public:
 
 static_assert(sizeof(AudioChunk) == 0x8, "");
 
+struct unknown002 {
+  u32 unknown00; // Inferred role: RIFF or FORM tag; original member name unknown.
+  u32 unknown04; // Inferred role: file size minus 8; original member name unknown.
+  u32 unknown08; // Inferred role: WAVE, AIFF or AIFC tag; original member name unknown.
+};
+
+static_assert(sizeof(unknown002) == 0xc, "");
+
+// Inferred role: 32 bit byte swap; original name unknown.
+inline u32 unknown004(u32 value) {
+  value = (value & 0xff00ff00) >> 8 | (value & 0x00ff00ff) << 8;
+  return value >> 16 | value << 16;
+}
+
+enum MediaFileType : u8 {
+  MEDIA_FILE_TYPE_UNKNOWN_0 = 0, // Inferred role: unknown format.
+  MEDIA_FILE_TYPE_UNKNOWN_1 = 1, // Inferred role: AIFF.
+  MEDIA_FILE_TYPE_UNKNOWN_2 = 2, // Inferred role: WAVE.
+  MEDIA_FILE_TYPE_UNKNOWN_3 = 3, // Inferred role: sadf.
+};
+
+class MediaContentsHeader {
+public:
+  static Result CheckFileType(IoStreamBase *stream, MediaFileType *fileType);
+};
+
 class AudioFileBase {
 public:
   AudioFileBase();
@@ -57,6 +83,7 @@ public:
   void NewReadBuffer(size_t size);
   int ReadBySamples(s16 *buffer, int count);
   int WriteBySamples(const s16 *buffer, int count);
+  static Result CloseFileBase(AudioFileBase **file);
 
   IoStreamBase *unknown08; // Inferred role: stream; original member name unknown.
   void *unknown10;         // Inferred role: read buffer; original member name unknown.

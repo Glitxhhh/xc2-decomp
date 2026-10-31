@@ -1,3 +1,4 @@
+#include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
 #include "ssd/ssd_text.h"
 #include "ssd/ssd_wave_source.h"
@@ -5,6 +6,13 @@
 
 namespace ssd {
 enum Result : long;
+
+WaveSource::WaveSource()
+    : Object(ObjectType::WAVE_SOURCE), unknown18(false), unknown19(false), unknown1a(0), unknown1c(0), unknown20(0), unknown24(0), unknown28(0), unknown2c(48000.0f), unknown30(0),
+      unknown34(static_cast<unknown001>(0)), unknown35(0), unknown38(0), unknown3c(0), unknown40(0), unknown44(0), unknown48(0), unknown4c(0), unknown4e(0), unknown50(false), unknown6c(0),
+      unknown70(nullptr), unknown78(0), unknown80(nullptr), unknown88(0), unknown90(nullptr), unknown98(nullptr) {}
+
+WaveSource::~WaveSource() { Quit(); }
 
 Result WaveSource::Quit() {
   unknown80 = nullptr;
@@ -17,6 +25,14 @@ Result WaveSource::Quit() {
   }
   unknowna0.FreeImpl();
   return static_cast<Result>(0);
+}
+
+u64 WaveSource::TimeToSample(f32 time) const {
+  f32 sample = unknown2c * time;
+  if (unknown34 == unknown001_3) {
+    sample = (sample * 8.0f) / 14.0f;
+  }
+  return static_cast<u64>(sample);
 }
 
 const WaveSource::unknown002 *WaveSource::GetAdpcmHeader(int index) const {
@@ -39,14 +55,6 @@ u32 WaveSource::GetDataSize() const {
     return unknown70->unknown34;
   }
   return unknown24;
-}
-
-u64 WaveSource::TimeToSample(f32 time) const {
-  f32 sample = unknown2c * time;
-  if (unknown34 == unknown001_3) {
-    sample = (sample * 8.0f) / 14.0f;
-  }
-  return static_cast<u64>(sample);
 }
 
 } // namespace ssd

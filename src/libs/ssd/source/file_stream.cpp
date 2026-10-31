@@ -10,7 +10,7 @@
 namespace ssd {
 enum Result : long;
 
-FileStream::FileStream() : unknown18(0), unknown20(0), unknown28(0), unknown30() {}
+FileStream::FileStream() : unknown20(0), unknown28(0), unknown30() {}
 
 void FileStream::Initialize() {}
 

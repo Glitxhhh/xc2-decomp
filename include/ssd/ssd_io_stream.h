@@ -10,7 +10,7 @@ class TextRef;
 
 class IoStreamBase : public Object {
 public:
-  IoStreamBase() : Object(ObjectType::FILE_STREAM) {}
+  IoStreamBase() : Object(ObjectType::FILE_STREAM), unknown18(0) {}
 
   enum OpenMode : u8 {
     OPEN_MODE_READ = 1,
@@ -34,10 +34,16 @@ public:
   virtual long Tell(u64 *position);
   virtual u64 CheckAccessSize(u64 size);
   long GetData(u64 offset, u64 size, void *buffer, u64 *readSize);
+
+  // Inferred role: seek to an absolute position, used to restore a saved position; original name unknown.
+  void unknown001(u64 position) { Seek(SEEK_MODE_BEGIN, position, nullptr); }
+
+  u64 unknown18; // Inferred role: cleared by the constructor; original member name unknown.
 };
 
 class MemoryStream : public IoStreamBase {
 public:
+  MemoryStream() : unknown20(nullptr), unknown28(0) {}
   bool IsOpen() const override;
   long Open(void *data, u64 size, OpenMode mode) override;
   long Close() override;
@@ -49,12 +55,12 @@ public:
   long GetPosition(u64 *position) const override;
   u64 CheckAccessSize(u64 size) override;
 
-  u8 _18[0x20 - 0x18];
   u8 *unknown20; // Inferred role: data; original member name unknown.
   u64 unknown28; // Inferred role: size; original member name unknown.
   u64 unknown30; // Inferred role: position; original member name unknown.
 };
 
+static_assert(offsetof(IoStreamBase, unknown18) == 0x18, "");
 static_assert(offsetof(MemoryStream, unknown20) == 0x20, "");
 static_assert(offsetof(MemoryStream, unknown30) == 0x30, "");
 

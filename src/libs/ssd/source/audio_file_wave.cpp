@@ -40,12 +40,6 @@ struct unknown005 {
 
 static_assert(sizeof(unknown005) == 0x18, "");
 
-struct unknown004 {
-  u32 unknown00; // Inferred role: RIFF tag; original member name unknown.
-  u32 unknown04; // Inferred role: file size minus 8; original member name unknown.
-  u32 unknown08; // Inferred role: WAVE tag; original member name unknown.
-};
-
 Result AudioFileWave::Open(IoStreamBase *stream) {
   unknown08 = stream;
   return static_cast<Result>(0);
@@ -56,7 +50,7 @@ Result AudioFileWave::Close() {
     u64 size;
     unknown08->GetSize(&size);
     unknown08->Seek(IoStreamBase::SEEK_MODE_BEGIN, 0, nullptr);
-    unknown004 header;
+    unknown002 header;
     header.unknown00 = 0x46464952;
     header.unknown04 = static_cast<u32>(size) - 8;
     header.unknown08 = 0x45564157;
@@ -98,7 +92,7 @@ void AudioFileWave::ReadWaveLoopPosition(AudioChunk *chunk) {
 }
 
 Result AudioFileWave::PreSave() {
-  unknown004 header;
+  unknown002 header;
   header.unknown00 = 0x46464952;
   header.unknown04 = 0;
   header.unknown08 = 0x45564157;
