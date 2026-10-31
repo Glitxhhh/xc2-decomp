@@ -14,10 +14,11 @@ struct LgtAnimInf {
   u32 unknown00; // Inferred role: key index; original member name unknown.
   f32 unknown04; // Inferred role: start frame; original member name unknown.
   f32 unknown08; // Inferred role: end frame; original member name unknown.
-  u8 _0c[0x0e - 0x0c];
+  u16 unknown0c; // Inferred role: callback index; original member name unknown.
   u16 unknown0e; // Inferred role: key num; original member name unknown.
 };
 
+static_assert(offsetof(LgtAnimInf, unknown0c) == 0x0c, "");
 static_assert(offsetof(LgtAnimInf, unknown0e) == 0x0e, "");
 static_assert(sizeof(LgtAnimInf) == 0x10, "");
 
@@ -40,10 +41,17 @@ struct LgtObjData {
 static_assert(offsetof(LgtObjData, unknown28) == 0x28, "");
 
 struct LgtGlbFogObj {
-  u8 _00[0x44];
+  f32 unknown00; // Inferred role: color; original member name unknown.
+  u8 _04[0x0c - 0x04];
+  f32 unknown0c; // Inferred role: side color; original member name unknown.
+  u8 _10[0x18 - 0x10];
+  f32 unknown18; // Inferred role: sun color; original member name unknown.
+  u8 _1c[0x44 - 0x1c];
   u16 unknown44; // Inferred role: animation index; original member name unknown.
 };
 
+static_assert(offsetof(LgtGlbFogObj, unknown0c) == 0x0c, "");
+static_assert(offsetof(LgtGlbFogObj, unknown18) == 0x18, "");
 static_assert(offsetof(LgtGlbFogObj, unknown44) == 0x44, "");
 
 // Inferred role: frame range of an environment animation; original type name unknown.
@@ -74,6 +82,7 @@ public:
   void calcFrameUpdate(const LgtObjData *obj, f32 frame);
   void calcFogFrameUpdate(const LgtGlbFogObj *obj, f32 frame);
   void setupAnmVal(const f32 *values);
+  void calcAnimFog(DrFogObjGbl *fog, const LgtGlbFogObj *obj);
   void envlgt_amb_color_R(const LgtAnimInf *inf, f32 frame);
   void envlgt_amb_color_G(const LgtAnimInf *inf, f32 frame);
   void envlgt_amb_color_B(const LgtAnimInf *inf, f32 frame);
@@ -137,11 +146,13 @@ public:
   void envfog_parm_color_sunB(DrFogObjGbl *fog, const LgtAnimInf *inf, f32 frame);
   u16 getBitAttr(const LgtAnimInf *inf, f32 frame);
 
+  static void (DrEnvironmentAnim::*s_pFogAnim[])(DrFogObjGbl *fog, const LgtAnimInf *inf, f32 frame);
+
   const unknown001 *unknown00; // Inferred role: animation ranges; original member name unknown.
-  const u8 *unknown08;         // Inferred role: animation commands; original member name unknown.
+  const LgtAnimInf *unknown08; // Inferred role: animation commands; original member name unknown.
   const unknown086 *unknown10; // Inferred role: hermite keys; original member name unknown.
   const unknown087 *unknown18; // Inferred role: bit keys; original member name unknown.
-  const u8 *unknown20;         // Inferred role: rotation values; original member name unknown.
+  const f32 *unknown20;        // Inferred role: rotation values; original member name unknown.
   int unknown28;               // Inferred role: anim num; original member name unknown.
   f32 *unknown30;              // Inferred role: frames; original member name unknown.
   mm::Col3 unknown38;          // Inferred role: color; original member name unknown.

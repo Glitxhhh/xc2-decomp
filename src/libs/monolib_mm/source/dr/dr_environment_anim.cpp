@@ -21,10 +21,10 @@ f32 DrEnvironmentAnim::setupAnim(void *frames, const u8 *data, u32 offset) {
   const u32 *header = reinterpret_cast<const u32 *>(data + offset);
   unknown30 = static_cast<f32 *>(frames);
   unknown00 = reinterpret_cast<const unknown001 *>(data + header[1]);
-  unknown08 = data + header[3];
+  unknown08 = reinterpret_cast<const LgtAnimInf *>(data + header[3]);
   unknown10 = reinterpret_cast<const unknown086 *>(data + header[5]);
   unknown18 = reinterpret_cast<const unknown087 *>(data + header[7]);
-  unknown20 = data + header[9];
+  unknown20 = reinterpret_cast<const f32 *>(data + header[9]);
   unknown28 = static_cast<int>(header[0]);
   f32 maxFrame = 0.0f;
   for (int i = 0; i < unknown28; i++) {
@@ -38,10 +38,10 @@ f32 DrEnvironmentAnim::setupAnim(void *frames, const u8 *data, u32 offset) {
 void DrEnvironmentAnim::changeMemAnim(const u8 *data, u32 offset) {
   const u32 *header = reinterpret_cast<const u32 *>(data + offset);
   unknown00 = reinterpret_cast<const unknown001 *>(data + header[1]);
-  unknown08 = data + header[3];
+  unknown08 = reinterpret_cast<const LgtAnimInf *>(data + header[3]);
   unknown10 = reinterpret_cast<const unknown086 *>(data + header[5]);
   unknown18 = reinterpret_cast<const unknown087 *>(data + header[7]);
-  unknown20 = data + header[9];
+  unknown20 = reinterpret_cast<const f32 *>(data + header[9]);
 }
 
 void DrEnvironmentAnim::setFrame(f32 frame) {
@@ -76,6 +76,25 @@ void DrEnvironmentAnim::setupAnmVal(const f32 *values) {
   unknown60[2] = values[0];
   unknown60[1] = values[1];
   unknown60[0] = values[2];
+}
+
+void DrEnvironmentAnim::calcAnimFog(DrFogObjGbl *fog, const LgtGlbFogObj *obj) {
+  unknown38 = mm::Col3(obj->unknown00, obj->unknown00, obj->unknown00);
+  unknown44 = mm::Col3(obj->unknown0c, obj->unknown0c, obj->unknown0c);
+  unknown50 = mm::Col3(obj->unknown18, obj->unknown18, obj->unknown18);
+  const unknown001 *range = unknown00 + obj->unknown44;
+  u64 index = obj->unknown44;
+  u32 num = range->unknown02;
+  if (num != 0) {
+    f32 *frames = unknown30;
+    const LgtAnimInf *inf = &unknown08[range->unknown00];
+    for (u32 i = 0; i < num; i++, inf++) {
+      (this->*s_pFogAnim[inf->unknown0c])(fog, inf, frames[index]);
+    }
+  }
+  fog->unknown20 = unknown38;
+  fog->unknown2c = unknown44;
+  fog->unknown38 = unknown50;
 }
 
 void DrEnvironmentAnim::envlgt_amb_color_R(const LgtAnimInf *inf, f32 frame) { unknown38.r = getHermiteAttr(inf, frame); }

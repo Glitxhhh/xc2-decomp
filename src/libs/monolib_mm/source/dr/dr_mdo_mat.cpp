@@ -68,6 +68,55 @@ void DrMdoMat::resetDispCallRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes
   matRes->unknown130->unknown10 = reinterpret_cast<const MdsMatDispCCData *>(data + table->unknown04);
 }
 
+void DrMdoMat::updateMatFstCallBack() {
+  const unknown010 *callBack = unknown30->unknown40;
+  if (callBack == nullptr) {
+    return;
+  }
+  s32 count = callBack->unknown14;
+  if (count == 0) {
+    return;
+  }
+  const unknown011 *calls = reinterpret_cast<const unknown011 *>(unknown30->unknown10 + callBack->unknown00);
+  const unknown012 *entry = reinterpret_cast<const unknown012 *>(unknown30->unknown10 + callBack->unknown10);
+  for (s32 i = 0; i < count; i++, entry++) {
+    const MdsMatInfoHeader *header = &unknown30->unknown28[entry->unknown00];
+    u32 num = entry->unknown04;
+    if (num != 0) {
+      const unknown011 *call = &calls[entry->unknown06];
+      for (u32 j = 0; j < num; j++, call++) {
+        (this->*s_pCallFstMatVal[call->unknown00])(header, call->unknown02, entry->unknown00);
+      }
+    }
+  }
+}
+
+void DrMdoMat::updateMatCallBack(const u32 *flags) {
+  const unknown010 *callBack = unknown30->unknown40;
+  if (callBack == nullptr) {
+    return;
+  }
+  s32 count = callBack->unknown0c;
+  if (count == 0) {
+    return;
+  }
+  const unknown011 *calls = reinterpret_cast<const unknown011 *>(unknown30->unknown10 + callBack->unknown00);
+  const u16 *matIndices = reinterpret_cast<const u16 *>(unknown30->unknown10 + callBack->unknown08);
+  for (s32 i = 0; i < count; i++) {
+    u16 matIndex = matIndices[i];
+    if (flags[matIndex >> 5] & (1 << (matIndex & 31))) {
+      const MdsMatInfoHeader *header = &unknown30->unknown28[matIndex];
+      u32 num = header->unknown5a;
+      if (num != 0) {
+        const unknown011 *call = &calls[unknown30->unknown28[matIndex].unknown58];
+        for (u32 j = 0; j < num; j++, call++) {
+          (this->*s_pCallMatVal[call->unknown00])(header, call->unknown02, matIndices[i]);
+        }
+      }
+    }
+  }
+}
+
 void DrMdoMat::updateDispCall() {
   unknown003 *dispCall = unknown30->unknown130;
   if (dispCall != nullptr && dispCall->unknown00 > 0) {
