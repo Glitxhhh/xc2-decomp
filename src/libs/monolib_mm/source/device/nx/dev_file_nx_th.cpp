@@ -2,6 +2,7 @@
 
 #include "ml/critical_section.h"
 #include "mm_mtl/internal/heap_allocator.h"
+#include "nn/account.h"
 #include "nn/fs.h"
 
 namespace ml {
@@ -14,7 +15,22 @@ mm::mtl::HeapAllocator g_allocator;
 
 } // namespace dfn_detail
 
+bool DevFileNxTh::m_mountRom;
 bool DevFileNxTh::m_mountSave;
+bool DevFileNxTh::m_validuser;
+nn::account::UserHandle DevFileNxTh::m_appuser;
+
+void DevFileNxTh::finalizeSDK() {
+  if (m_mountSave) {
+    nn::fs::Unmount("save");
+  }
+  if (m_mountRom) {
+    nn::fs::Unmount("rom");
+  }
+  if (m_validuser) {
+    nn::account::CloseUser(m_appuser);
+  }
+}
 
 void DevFileNxTh::flushSave() {
   if (m_mountSave) {

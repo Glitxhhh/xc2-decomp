@@ -6,6 +6,21 @@
 namespace ml {
 enum FONT_STYLE : int;
 
+FontLayer::FontLayer() : unknown08(DevFont::createLayer(this)) {}
+
+bool DevFont::isInitialized() {
+  DevFont *font = get();
+  if (font == nullptr) {
+    return true;
+  }
+
+  if (font->wkIsWaitException()) {
+    return false;
+  }
+
+  return font->wkIsActive();
+}
+
 DevFontLayer *DevFont::createLayer(const FontLayer *layer) {
   DevFont *font = get();
   if (font == nullptr) {
@@ -15,6 +30,24 @@ DevFontLayer *DevFont::createLayer(const FontLayer *layer) {
   fontLayer->unknown1c0 = layer;
   return fontLayer;
 }
+
+IDevFontInfo *DevFont::getFont(FONT_STYLE style) {
+  if (get() != nullptr) {
+    for (reslist<IDevFontInfo *>::Node *node = get()->unknown1c8.begin(); node != get()->unknown1c8.end(); node = node->getNext()) {
+      if (!node->value->unknown48() && node->value->unknown10() == style) {
+        return node->value;
+      }
+    }
+    for (reslist<IDevFontInfo *>::Node *node = get()->unknown1c8.begin(); node != get()->unknown1c8.end(); node = node->getNext()) {
+      if (!node->value->unknown48()) {
+        return node->value;
+      }
+    }
+  }
+  return nullptr;
+}
+
+bool DevFont::createFont(FONT_STYLE style, void *data) { return get() != nullptr; }
 
 void FontLayer::fontStyle(FONT_STYLE style) { DevFont::fontLayerStyle(this, style); }
 

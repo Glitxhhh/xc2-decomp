@@ -10,7 +10,10 @@ class CGLibEtcUniformBlock;
 
 namespace ml {
 class DrResMdoMat;
+struct DrResMpfSampler;
+class DrShdDataList;
 struct MdsMatInfoHeader;
+struct MdsMpfMatInfoHeader;
 
 struct MdsMatVariableTbl {
   u8 _00[0x02 - 0x00];
@@ -47,6 +50,10 @@ public:
   void changeSeamMatInfo();
   void changeShaderMat(bool isChange);
   void changeShaderPos();
+  void setupPrePassShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused);
+  void setupThicknessShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, bool isFirst);
+  void setupShadowShader(DrShdDataList *list, int index, const MdsMatInfoHeader *header, int uniformIndex, int unused);
+  void setupMpfShader(DrShdDataList *list, int index, const MdsMpfMatInfoHeader *header, const DrResMpfSampler *sampler, bool isPre);
   void setupCharAvatarUniform();
   void setupDollAvatarUniform();
   void uniformBlock_Static(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex);

@@ -7,6 +7,12 @@
 #include "mtl/alloc_handle.h"
 #include "types.h"
 
+namespace nn {
+namespace account {
+class UserHandle;
+} // namespace account
+} // namespace nn
+
 namespace ml {
 class CriticalSection;
 
@@ -19,11 +25,15 @@ public:
     u8 _10d[0x1d8 - 0x10d];
   };
 
+  static bool m_mountRom;
   static bool m_mountSave;
+  static bool m_validuser;
+  static nn::account::UserHandle m_appuser;
 
   bool initialize() override;
   u32 addressAlignment() override;
   static void flushSave();
+  static void finalizeSDK();
   static CriticalSection &getLocker();
   static void *allocate(size_t size);
   static void deallocate(void *pointer, size_t size);

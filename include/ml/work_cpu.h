@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "ml/critical_section.h"
+#include "ml/reslist.h"
 #include "ml/work_obj.h"
 #include "mm_math/mm_col3.h"
 #include "mm_mtl/fixed_list.h"
@@ -149,6 +150,7 @@ public:
   static void removeSystemInfoListener(IWorkInfomation *listener);
   static u32 thForeground(void *argument, void *userData);
   static u32 thBackground(void *argument, void *userData);
+  static u32 thSwap(void *argument, void *userData);
   static void setAfterUpdateRender(bool isAfterUpdateRender);
   static bool isHomeMenuEnable();
   static int reqHomeMenuDisable();
@@ -164,11 +166,12 @@ public:
 
   static bool s_bRenderSubCpu;
 
-  u32 unknown1b0;               // Inferred role: flags; original member name unknown.
-  mtl::ALLOC_HANDLE unknown1b4; // Inferred role: mem work; original member name unknown.
-  mtl::ALLOC_HANDLE unknown1b8; // Inferred role: mem stack; original member name unknown.
-  u32 unknown1bc;               // Inferred role: cpu num; original member name unknown.
-  u8 _1c0[0x1738 - 0x1c0];
+  u32 unknown1b0;                        // Inferred role: flags; original member name unknown.
+  mtl::ALLOC_HANDLE unknown1b4;          // Inferred role: mem work; original member name unknown.
+  mtl::ALLOC_HANDLE unknown1b8;          // Inferred role: mem stack; original member name unknown.
+  u32 unknown1bc;                        // Inferred role: cpu num; original member name unknown.
+  reslist<IThreadValue *> unknown1c0[3]; // Inferred role: thread values swapped per cpu; original member name unknown.
+  u8 _280[0x1738 - 0x280];
   DO_THREAD unknown1738;         // Inferred role: thread; original member name unknown.
   DO_THREAD unknown173c;         // Inferred role: next thread; original member name unknown.
   WorkCpuThread *unknown1740[3]; // Inferred role: cpu threads; original member name unknown.
@@ -200,6 +203,7 @@ public:
 
 static_assert(offsetof(WorkCpu, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(WorkCpu, unknown1bc) == 0x1bc, "");
+static_assert(offsetof(WorkCpu, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(WorkCpu, unknown1738) == 0x1738, "");
 static_assert(offsetof(WorkCpu, unknown1740) == 0x1740, "");
 static_assert(offsetof(WorkCpu, unknown1758) == 0x1758, "");

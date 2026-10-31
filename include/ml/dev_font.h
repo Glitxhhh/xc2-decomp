@@ -1,5 +1,8 @@
 #pragma once
+#include <stddef.h>
+
 #include "ml/dev_base.h"
+#include "ml/reslist.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -11,8 +14,23 @@ namespace ml {
 class DevFontLayer;
 enum FONT_STYLE : int;
 
+// Only the vtable slots called by DevFont are known.
+class IDevFontInfo {
+public:
+  virtual ~IDevFontInfo() {}
+  virtual FONT_STYLE unknown10() const = 0; // Inferred role: font style; original name unknown.
+  virtual void unknown18() = 0;             // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+  virtual void unknown20() = 0;             // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+  virtual void unknown28() = 0;             // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+  virtual void unknown30() = 0;             // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+  virtual void unknown38() = 0;             // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+  virtual void unknown40() = 0;             // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+  virtual bool unknown48() const = 0;       // Inferred role: font skipped by getFont when set; original name unknown.
+};
+
 class FontLayer {
 public:
+  FontLayer();
   virtual ~FontLayer();
   void font(int x, int y, const char *format, ...);
   void fontColor(const mm::Col4 &color);
@@ -23,7 +41,7 @@ public:
   void fontStyle(FONT_STYLE style);
   void fontZ(u32 z);
 
-  u8 _08[0x10 - 0x08];
+  DevFontLayer *unknown08; // Inferred role: layer work created by DevFont::createLayer; original member name unknown.
 };
 
 class DevFont : public FontLayer, public DevBase, public mm::mtl::PtrSingleton<DevFont> {
@@ -38,6 +56,13 @@ public:
   static void fontLayerScale(const FontLayer *layer, f32 x, f32 y);
   static void fontLayerStyle(const FontLayer *layer, FONT_STYLE style);
   static void fontLayerZ(const FontLayer *layer, u32 z);
+  static IDevFontInfo *getFont(FONT_STYLE style);
+  static bool createFont(FONT_STYLE style, void *data);
+
+  reslist<IDevFontInfo *> unknown1c8; // Inferred role: font infos; original member name unknown.
 };
+
+static_assert(offsetof(DevFont, unknown1c8) == 0x1c8, "");
+static_assert(sizeof(DevFont) == 0x208, "");
 
 } // namespace ml

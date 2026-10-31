@@ -6,6 +6,7 @@
 #include "dr/dr_ini_sys.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_mdo_shd_set.h"
 #include "dr/dr_pixl_deferred.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_man.h"
@@ -59,6 +60,41 @@ void DrMdoSetup::changeShaderMat(bool isChange) {
 }
 
 void DrMdoSetup::changeShaderPos() { unknown178 |= 2; }
+
+void DrMdoSetup::setupPrePassShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused) {
+  DrMdoShdSetPrePass shdSet;
+  shdSet.unknown00 = this;
+  shdSet.unknown08 = unknown30;
+  DrShdDataList *list = m_drMan->unknown80->unknown00;
+  (shdSet.*DrMdoShdSetPrePass::s_pPreMaterial[index])(index, header, uniformIndex, unused, list, DrMdoShdSetPrePass::PRE_PASS_TYPE_UNKNOWN_1);
+}
+
+void DrMdoSetup::setupThicknessShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, bool isFirst) {
+  DrMdoShdSetPrePass shdSet;
+  shdSet.unknown00 = this;
+  shdSet.unknown08 = unknown30;
+  DrShdDataList *list = m_drMan->unknown80->unknown00;
+  DrMdoShdSetPrePass::PrePassType type;
+  if (isFirst) {
+    type = DrMdoShdSetPrePass::PRE_PASS_TYPE_UNKNOWN_2;
+  } else {
+    type = DrMdoShdSetPrePass::PRE_PASS_TYPE_UNKNOWN_3;
+  }
+  (shdSet.*DrMdoShdSetPrePass::s_pPreMaterial[index])(index, header, uniformIndex, unused, list, type);
+}
+
+void DrMdoSetup::setupShadowShader(DrShdDataList *list, int index, const MdsMatInfoHeader *header, int uniformIndex, int unused) {
+  DrMdoShdSetShadow shdSet;
+  shdSet.unknown00 = this;
+  (shdSet.*DrMdoShdSetShadow::s_pShwMaterial[index])(index, header, uniformIndex, unused, list);
+}
+
+void DrMdoSetup::setupMpfShader(DrShdDataList *list, int index, const MdsMpfMatInfoHeader *header, const DrResMpfSampler *sampler, bool isPre) {
+  DrMdoShdSetMpf shdSet;
+  shdSet.unknown00 = this;
+  shdSet.unknown08 = unknown30;
+  (shdSet.*DrMdoShdSetMpf::s_pMpfMaterial[index])(list->getMpfObj(index), list, header, sampler, isPre);
+}
 
 void DrMdoSetup::setupCharAvatarUniform() {}
 

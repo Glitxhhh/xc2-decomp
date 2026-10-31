@@ -64,6 +64,8 @@ public:
 
   void unknown001(DrResShdMpf *shd, const MdsMpfMatInfoHeader *header, const DrResMpfSampler *sampler);
 
+  static void (DrMdoShdSetMpf::*const s_pMpfMaterial[])(DrResShdMpf *shd, DrShdDataList *list, const MdsMpfMatInfoHeader *header, const DrResMpfSampler *sampler, bool isPre);
+
   MdoWrkMatRes *unknown08; // Inferred role: material resource; original member name unknown.
 };
 
@@ -71,12 +73,22 @@ static_assert(offsetof(DrMdoShdSetMpf, unknown08) == 0x08, "");
 
 class DrMdoShdSetPrePass : public DrMdoShdSet {
 public:
-  enum PrePassType {};
+  enum PrePassType {
+    PRE_PASS_TYPE_UNKNOWN_1 = 1, // Inferred role: pre pass; original name unknown.
+    PRE_PASS_TYPE_UNKNOWN_2,     // Inferred role: first thickness pass; original name unknown.
+    PRE_PASS_TYPE_UNKNOWN_3,     // Inferred role: second thickness pass; original name unknown.
+  };
 
   void preshd_Inst(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
   void preshd_InstT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
   void preshd_Inst_Al(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+
+  static void (DrMdoShdSetPrePass::*const s_pPreMaterial[])(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type);
+
+  MdoWrkMatRes *unknown08; // Inferred role: material resource; original member name unknown.
 };
+
+static_assert(offsetof(DrMdoShdSetPrePass, unknown08) == 0x08, "");
 
 class DrMdoShdSetShadow : public DrMdoShdSet {
 public:
@@ -90,6 +102,7 @@ public:
 
   void unknown001(int index, DrResShdShw *shw, DrShdDataList *list);
 
+  static void (DrMdoShdSetShadow::*const s_pShwMaterial[])(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
   static const u8 s_pShwUseShdader[];
   static const u8 s_pShwFethcDef[];
   static const u8 s_pShwFethcMof[];

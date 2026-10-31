@@ -5,6 +5,7 @@
 #include "ml/fixed_size_alloc.h"
 #include "ml/reslist.h"
 #include "ml/thread_util.h"
+#include "ml/threadval.h"
 #include "ml/work_cpu_thread.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
@@ -276,6 +277,14 @@ void WorkCpu::backgroundProcess(CPUID cpu) {}
 u32 WorkCpu::thForeground(void *argument, void *userData) { return 0; }
 
 u32 WorkCpu::thBackground(void *argument, void *userData) { return 0; }
+
+u32 WorkCpu::thSwap(void *argument, void *userData) {
+  reslist<IThreadValue *> &list = get()->unknown1c0[reinterpret_cast<u64>(argument)];
+  for (reslist<IThreadValue *>::Node *node = list.begin(); node != list.end(); node = node->getNext()) {
+    node->value->tvSwap();
+  }
+  return 0;
+}
 
 void WorkCpu::setAfterUpdateRender(bool isAfterUpdateRender) {
   WorkCpu *cpu = get();
