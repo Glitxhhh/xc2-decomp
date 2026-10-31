@@ -20,6 +20,8 @@ LayerVertexObj::LayerVertexObj(const u8 *data, LayerManager *manager, LayerVerte
   setupVertex(data, manager);
 }
 
+LayerVertexObj::~LayerVertexObj() { vertexRelease(); }
+
 void LayerVertexObj::vertexRelease() {
   if (unknown20 != nullptr) {
     for (s32 i = 0; i < unknown28; i++) {
@@ -56,7 +58,6 @@ void LayerVertexObj::release() {
   unknown18 = count;
   if (count <= 0) {
     list->unknown001(this);
-    vertexRelease();
     delete this;
   }
 }
@@ -69,7 +70,6 @@ void LayerVertexMan::releaseVertexObj(LayerVertexObj *vertexObj) {
   vertexObj->unknown18 = count;
   if (count <= 0) {
     unknown001(vertexObj);
-    vertexObj->vertexRelease();
     delete vertexObj;
   }
 }
@@ -93,7 +93,6 @@ LayerVertexMan::~LayerVertexMan() {
   LayerVertexObj *vertexObj = unknown00;
   while (vertexObj != nullptr) {
     LayerVertexObj *next = vertexObj->unknown08;
-    vertexObj->vertexRelease();
     delete vertexObj;
     vertexObj = next;
   }

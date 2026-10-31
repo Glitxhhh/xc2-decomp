@@ -12,13 +12,15 @@ struct LyrActionData {
   u16 unknown06; // Inferred role: end type; original member name unknown.
   u32 unknown08; // Inferred role: id; original member name unknown.
   u32 unknown0c; // Inferred role: name offset; original member name unknown.
-  u8 _10[0x14 - 0x10];
+  s16 unknown10; // Inferred role: command count; original member name unknown.
+  u8 _12[0x14 - 0x12];
   u16 unknown14; // Inferred role: name idx; original member name unknown.
   u8 _16[0x18 - 0x16];
   f32 unknown18; // Inferred role: sec; original member name unknown.
   u8 _1c[0x2c - 0x1c];
 };
 
+static_assert(offsetof(LyrActionData, unknown10) == 0x10, "");
 static_assert(sizeof(LyrActionData) == 0x2c, "");
 
 // Inferred role: layer action header; original type name unknown.

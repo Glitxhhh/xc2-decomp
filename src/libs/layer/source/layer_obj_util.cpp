@@ -1,5 +1,7 @@
 #include "layer/layer_obj_util.h"
 
+#include <math.h>
+
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "layer/layer_acc_layout_binary.h"
 #include "layer/layer_manager.h"
@@ -205,5 +207,180 @@ u32 LayerObjUtil::getUniformBlockSizeAlOff(LayerUniType type) { return UNIFORM_B
 u32 LayerObjUtil::getUniformBlockSize(LayerUniType type) { return getUniformBlockAligment(UNIFORM_BLOCK_SIZE[type]); }
 
 void LayerObjUtil::getLayoutInfo(f32 *info, const LyrLayoutPosData *data, LayerCenterType type, f32 x, f32 y) { s_CallDataPos[LayerManager::get()->unknown9c](info, data, type, x, y); }
+
+void LayerObjUtil::calcLayer3DSpaceTransRotScaleMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 width = static_cast<f32>(info.unknown14 + info.unknown10) * LayerManager::get()->unknown98;
+  f32 height = static_cast<f32>(info.unknown16 + info.unknown12) * LayerManager::get()->unknown98;
+  f32 scl[2];
+  scl[0] = width * base.unknown0c;
+  scl[1] = base.unknown10 * height;
+  f32 pos[2];
+  pos[0] = base.unknown00 * LayerManager::get()->unknown98;
+  pos[1] = base.unknown04 * LayerManager::get()->unknown98;
+  f32 size[2];
+  s_CallMdl[info.unknown18](pos, size, scl, base);
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  result.unknown08 = cosRot * scl[0];
+  result.unknown14 = sinRot * scl[1];
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * scl[0]);
+  result.unknown0c = cosRot * scl[1];
+  result.unknown04 = y + pos[1];
+}
+
+void LayerObjUtil::calcLayerRotMatrix(LayerResMatrix &result, const LayerBasePos &base, f32 x, f32 y) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 anchorX = base.unknown14 * x;
+  f32 anchorY = base.unknown18 * y;
+  result.unknown08 = cosRot;
+  result.unknown14 = sinRot;
+  result.unknown10 = -sinRot;
+  result.unknown0c = cosRot;
+  result.unknown00 = anchorX + (cosRot * -anchorX + sinRot * -anchorY);
+  result.unknown04 = anchorY + (-sinRot * -anchorX + cosRot * -anchorY);
+}
+
+void LayerObjUtil::calcLayerTransRotScaleMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 scl[2];
+  s_CallScl[LayerManager::get()->unknown9c](scl, base, info);
+  f32 pos[2];
+  s_CallPos[LayerManager::get()->unknown9c](pos, base);
+  f32 width = static_cast<f32>(info.unknown14 + info.unknown10) * LayerManager::get()->getScreenCalcSclWidth();
+  f32 height = static_cast<f32>(info.unknown16 + info.unknown12) * LayerManager::get()->getScreenCalcSclHeight();
+  pos[0] -= scl[0] * base.unknown14 - width * base.unknown14;
+  pos[1] -= scl[1] * base.unknown18 - height * base.unknown18;
+  f32 size[2];
+  s_CallMdl[info.unknown18](pos, size, scl, base);
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  result.unknown08 = cosRot * scl[0];
+  result.unknown14 = sinRot * scl[1];
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * scl[0]);
+  result.unknown0c = cosRot * scl[1];
+  result.unknown04 = y + pos[1];
+}
+
+void LayerObjUtil::calcLayerTransRotScaleFontMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 scl[2];
+  s_CallScl[LayerManager::get()->unknown9c](scl, base, info);
+  f32 pos[2];
+  s_CallPos[LayerManager::get()->unknown9c](pos, base);
+  f32 width = static_cast<f32>(info.unknown14 + info.unknown10) * LayerManager::get()->getScreenCalcSclWidth();
+  f32 height = static_cast<f32>(info.unknown16 + info.unknown12) * LayerManager::get()->getScreenCalcSclHeight();
+  pos[0] -= scl[0] * base.unknown14 - width * base.unknown14;
+  pos[1] -= scl[1] * base.unknown18 - height * base.unknown18;
+  f32 size[2];
+  s_CallMdl[info.unknown18](pos, size, scl, base);
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  result.unknown08 = cosRot * scl[0];
+  result.unknown14 = sinRot * scl[1];
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * scl[0]);
+  result.unknown0c = cosRot * scl[1];
+  result.unknown04 = y + pos[1];
+}
+
+void LayerObjUtil::calcLayerTransRotScaleLaoutMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 scl[2];
+  s_CallScl[LayerManager::get()->unknown9c](scl, base, info);
+  f32 pos[2];
+  s_CallPos[LayerManager::get()->unknown9c](pos, base);
+  f32 width = static_cast<f32>(info.unknown14 + info.unknown10) * LayerManager::get()->getScreenCalcSclWidth();
+  f32 height = static_cast<f32>(info.unknown16 + info.unknown12) * LayerManager::get()->getScreenCalcSclHeight();
+  pos[0] -= scl[0] * base.unknown14 - width * base.unknown14;
+  pos[1] -= scl[1] * base.unknown18 - height * base.unknown18;
+  f32 size[2];
+  s_CallMdl[info.unknown18](pos, size, scl, base);
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  result.unknown08 = cosRot * base.unknown0c;
+  result.unknown14 = sinRot * base.unknown10;
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * base.unknown0c);
+  result.unknown0c = cosRot * base.unknown10;
+  result.unknown04 = y + pos[1];
+}
+
+void LayerObjUtil::calcLayerTransRotScaleSWFMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 scl[2];
+  s_CallSwfScl[LayerManager::get()->unknown9c](scl, base, info);
+  f32 pos[2];
+  s_CallPos[LayerManager::get()->unknown9c](pos, base);
+  f32 width = static_cast<f32>(info.unknown14 + info.unknown10) * LayerManager::get()->getScreenCalcSclWidth();
+  f32 height = static_cast<f32>(info.unknown16 + info.unknown12) * LayerManager::get()->getScreenCalcSclHeight();
+  pos[0] -= scl[0] * base.unknown14 - width * base.unknown14;
+  pos[1] -= scl[1] * base.unknown18 - height * base.unknown18;
+  f32 mdlScl[2];
+  s_CallScl[LayerManager::get()->unknown9c](mdlScl, base, info);
+  f32 size[2];
+  s_CallMdl[info.unknown18](pos, size, mdlScl, base);
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  result.unknown08 = cosRot * scl[0];
+  result.unknown14 = sinRot * scl[1];
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * scl[0]);
+  result.unknown0c = cosRot * scl[1];
+  result.unknown04 = y + pos[1];
+}
+
+void LayerObjUtil::calcLayer3DSpaceTransRotScaleFontMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 width = static_cast<f32>(info.unknown14 + info.unknown10) * LayerManager::get()->unknown98;
+  f32 height = static_cast<f32>(info.unknown16 + info.unknown12) * LayerManager::get()->unknown98;
+  // Inferred: the game fills four scale floats and only the first two reach the model position; the role of the copy is unknown.
+  f32 scl[4];
+  scl[0] = width * base.unknown0c;
+  scl[1] = base.unknown10 * height;
+  scl[2] = scl[0];
+  scl[3] = scl[1];
+  f32 pos[2];
+  pos[0] = base.unknown00 * LayerManager::get()->unknown98;
+  pos[1] = base.unknown04 * LayerManager::get()->unknown98;
+  f32 size[2];
+  s_CallMdl[info.unknown18](pos, size, scl, base);
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  result.unknown08 = cosRot * scl[0];
+  result.unknown14 = sinRot * scl[1];
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * scl[0]);
+  result.unknown0c = cosRot * scl[1];
+  result.unknown04 = y + pos[1];
+}
+
+void LayerObjUtil::calcLayer3DSpaceTransRotScaleMatrix(LayerResMatrix &result, const LayerBasePos &base) {
+  f32 sinRot = sinf(base.unknown08);
+  f32 cosRot = cosf(base.unknown08);
+  f32 size[2];
+  size[0] = base.unknown14 * base.unknown0c;
+  size[1] = base.unknown18 * base.unknown10;
+  f32 x = size[0] + (cosRot * -size[0] + sinRot * -size[1]);
+  f32 y = size[1] + (-sinRot * -size[0] + cosRot * -size[1]);
+  f32 pos[2];
+  pos[0] = base.unknown00 * LayerManager::get()->unknown98;
+  pos[1] = base.unknown04 * LayerManager::get()->unknown98;
+  result.unknown08 = cosRot * base.unknown0c;
+  result.unknown14 = sinRot * base.unknown10;
+  result.unknown00 = x + pos[0];
+  result.unknown10 = -(sinRot * base.unknown0c);
+  result.unknown0c = cosRot * base.unknown10;
+  result.unknown04 = y + pos[1];
+}
 
 } // namespace layer

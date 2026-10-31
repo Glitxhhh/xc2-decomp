@@ -20,7 +20,7 @@ extern const u16 s_nVertexSize[];
 class LayerVertexObj {
 public:
   LayerVertexObj(const u8 *data, LayerManager *manager, LayerVertexMan *vertexMan);
-  ~LayerVertexObj() {}
+  ~LayerVertexObj();
   void setupVertex(const u8 *data, LayerManager *manager);
   void vertexRelease();
   void release();

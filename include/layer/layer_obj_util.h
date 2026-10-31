@@ -46,10 +46,12 @@ struct LayerResRenderInfo {
   s16 unknown12; // Inferred role: pixel y; original member name unknown.
   s16 unknown14; // Inferred role: pixel width; original member name unknown.
   s16 unknown16; // Inferred role: pixel height; original member name unknown.
+  u8 unknown18;  // Inferred role: center type, index of LayerObjUtil::s_CallMdl; original member name unknown.
 };
 
 static_assert(offsetof(LayerResRenderInfo, unknown08) == 0x08, "");
 static_assert(offsetof(LayerResRenderInfo, unknown16) == 0x16, "");
+static_assert(offsetof(LayerResRenderInfo, unknown18) == 0x18, "");
 
 class LayerObjUtil {
 public:
@@ -81,9 +83,21 @@ public:
   static void calcPosData_Pixel_Up(f32 *info, const LyrLayoutPosData *data, LayerCenterType type, f32 x, f32 y);
   static void calcPosData_Correction_Up(f32 *info, const LyrLayoutPosData *data, LayerCenterType type, f32 x, f32 y);
   static void getLayoutInfo(f32 *info, const LyrLayoutPosData *data, LayerCenterType type, f32 x, f32 y);
+  static void calcLayer3DSpaceTransRotScaleMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void calcLayerRotMatrix(LayerResMatrix &result, const LayerBasePos &base, f32 x, f32 y);
+  static void calcLayerTransRotScaleMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void calcLayerTransRotScaleFontMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void calcLayerTransRotScaleLaoutMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void calcLayerTransRotScaleSWFMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void calcLayer3DSpaceTransRotScaleFontMatrix(LayerResMatrix &result, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void calcLayer3DSpaceTransRotScaleMatrix(LayerResMatrix &result, const LayerBasePos &base);
 
   static const u16 UNIFORM_BLOCK_SIZE[];
   static void (*s_CallDataPos[])(f32 *info, const LyrLayoutPosData *data, LayerCenterType type, f32 x, f32 y);
+  static void (*s_CallScl[])(f32 *scl, const LayerBasePos &base, const LayerResRenderInfo &info);
+  static void (*s_CallPos[])(f32 *pos, const LayerBasePos &base);
+  static void (*s_CallMdl[])(f32 *pos, f32 *size, const f32 *scl, const LayerBasePos &base);
+  static void (*s_CallSwfScl[])(f32 *scl, const LayerBasePos &base, const LayerResRenderInfo &info);
 };
 
 } // namespace layer

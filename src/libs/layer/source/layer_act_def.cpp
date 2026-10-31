@@ -32,6 +32,15 @@ static_assert(offsetof(unknown006, unknown06) == 0x06, "");
 
 LayerActDef::LayerActDef() {}
 
+void LayerActDef::updatePartsAction(const LyrActionData *action) {
+  const u8 *cmd = unknown250->unknown00 + action->unknown0c;
+  bool isCmdEnd = false;
+  for (s32 i = 0; i < action->unknown10; i++) {
+    isCmdEnd |= (this->*s_pCallActCmd[*reinterpret_cast<const u16 *>(cmd)])(cmd);
+  }
+  checkActionEnd(action, isCmdEnd);
+}
+
 u32 LayerActDef::calcDefActionWorkSize(const u8 *data) { return sizeof(unknown084) + reinterpret_cast<const unknown083 *>(data)->actionNum * sizeof(u32); }
 
 void LayerActDef::setupDefAction(u8 *work, const u8 *data) { setupAction(work, data); }
