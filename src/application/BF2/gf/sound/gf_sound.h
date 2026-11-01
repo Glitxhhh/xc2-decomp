@@ -70,6 +70,14 @@ struct SoundParam {
     unknown00 = 0;
   }
 
+  SoundParam(u32 id) : unknown00(0) {
+    clear();
+    unknown00 = id;
+    if (!unknown04.empty()) {
+      unknown04.clear();
+    }
+  }
+
   void clear();
   void setupTransformGlobal(const mm::Vec3 &position);
   void setupTransformObj(GF_OBJ_HANDLE *handle, const mm::Vec3 &offset);

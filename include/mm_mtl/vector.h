@@ -108,6 +108,13 @@ private:
   }
 
 public:
+  // __LINE__ must be 333 as in the original header: it is the line argument of the assert.
+  T &back() {
+#line 333
+    MM_ASSERT(0 < m_size);
+    return unknown002(m_size - 1);
+  }
+
   // __LINE__ must be 338 and 339 as in the original header: they are the line arguments of the asserts.
 #line 337
   T &operator[](size_t index) {
@@ -119,6 +126,15 @@ public:
   // __LINE__ must be 345 and 346 as in the original header: they are the line arguments of the asserts.
 #line 344
   const T &operator[](size_t index) const {
+    MM_ASSERT(m_buffer != 0);
+    MM_ASSERT(index < size());
+    return m_buffer[index];
+  }
+
+  // Inferred role: element access checked against the buffer and the size, as back() uses it; original name unknown.
+  // __LINE__ must be 352 and 353 as in the original header: they are the line arguments of the asserts.
+#line 351
+  T &unknown002(size_t index) {
     MM_ASSERT(m_buffer != 0);
     MM_ASSERT(index < size());
     return m_buffer[index];

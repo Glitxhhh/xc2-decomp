@@ -62,11 +62,15 @@ public:
   void dispEffPosForDebug();
   void postUpdate(const fw::UpdateInfo &info);
   void gevPause(u32 resumeBits, u32 pauseBits);
+  void update(const fw::UpdateInfo &info);
+  void updateSeObj(fw::UpdateInfo info);
   void gevGameMapModel(GF_OBJ_HANDLE *handle, bool isEnter);
   void createMapSe();
   void destroySeObj(SEOBJ *seObj);
   void updateSeObjDataForFindActivate(fw::UpdateInfo info, SEDATA &data, ml::ScnObjAccSeamEtcPos &acc);
+  void updateSeObjDataForActivate(fw::UpdateInfo info, SEDATA &data, ml::ScnObjAccSeamEtcPos &acc);
   SECOND getSeObjCond(int matrix, int object, ml::ScnObjAccSeamEtcPos &acc) const;
+  SEOBJ *createSeObj(const SECOND &cond, const SEDATA &data, ml::ScnObjAccSeamEtcPos &acc);
   f32 getVolume(const SEOBJ *seObj);
   bool isActivateMatrix(int matrix, const SEDATA &data) const;
 

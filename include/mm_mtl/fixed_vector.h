@@ -39,7 +39,22 @@ public:
   FixedVector() : m_size(0) {}
   ~FixedVector() { clear(); }
 
-  // __LINE__ must be 170, 181 and 227 as in the original header: they are the line arguments of the asserts.
+  T &front() { return *at(0); }
+  const T &front() const { return *at(0); }
+
+  // __LINE__ must be 165, 166, 170, 181, 192, 203 and 227 as in the original header: they are the line arguments of the asserts.
+  T &back() {
+#line 165
+    MM_ASSERT(0 < m_size);
+    return unknown001(m_size - 1);
+  }
+
+  const T &back() const {
+#line 166
+    MM_ASSERT(0 < m_size);
+    return unknown001(m_size - 1);
+  }
+
   T &operator[](size_t index) {
 #line 170
     MM_ASSERT(index < size());
@@ -52,10 +67,19 @@ public:
     return *at(index);
   }
 
-  T &front() { return *at(0); }
-  const T &front() const { return *at(0); }
-  T &back() { return *at(m_size - 1); }
-  const T &back() const { return *at(m_size - 1); }
+  // Inferred role: element access checked against the size, as back() uses it; original name unknown.
+  T &unknown001(size_t index) {
+#line 192
+    MM_ASSERT(index < size());
+    return *at(index);
+  }
+
+  // Inferred role: element access checked against the size, as back() const uses it; original name unknown.
+  const T &unknown001(size_t index) const {
+#line 203
+    MM_ASSERT(index < size());
+    return *at(index);
+  }
 
   size_t size() const { return m_size; }
   size_t capacity() const { return N; }
