@@ -68,12 +68,17 @@ public:
   ~GfMenuGfObjAdapter() override;
   bool update_NowHp(GF_OBJ_HANDLE *handle);
   bool update_Battle(GF_OBJ_HANDLE *handle);
+  bool update_InfoBody(GF_OBJ_HANDLE *handle);
+  bool update_InfoDisp(GF_OBJ_HANDLE *handle);
+  bool update_InfoIcon(GF_OBJ_HANDLE *handle);
   bool update_TargetDisp(GF_OBJ_HANDLE *handle);
   bool update_AccessDisp(GF_OBJ_HANDLE *handle);
   bool update_EN_Lv(GF_OBJ_HANDLE *handle);
   bool update_EN_ArtsName(GF_OBJ_HANDLE *handle);
   bool update_EN_ArtsID(GF_OBJ_HANDLE *handle);
   bool update_EN_ElemComboName(GF_OBJ_HANDLE *handle);
+  bool update_EN_Aggressive(GF_OBJ_HANDLE *handle);
+  bool update_EN_Link(GF_OBJ_HANDLE *handle);
   bool update_EN_Arts(GF_OBJ_HANDLE *handle);
   bool update_EN_FightComboIcon(GF_OBJ_HANDLE *handle);
   bool update_EN_FightComboName(GF_OBJ_HANDLE *handle);

@@ -1,6 +1,8 @@
 #include "gf/game/event/gf_game_event.h"
 
 #include "event/manager.h"
+#include "event/seq_info.h"
+#include "event/seq_manager.h"
 #include "framework/effect/effect_manager.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
@@ -24,6 +26,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/gf_pause.h"
+#include "gf/map/gf_map_manager.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_setup.h"
@@ -44,6 +47,19 @@ constexpr u32 EVENT_SPEED_LAYER = 1;
 constexpr u32 HOMURA_ORIGINAL_EVENT_FIRST = 10062;
 constexpr u32 HOMURA_ORIGINAL_EVENT_LAST = 10065;
 constexpr size_t EVENT_MEM_SIZE = 0x2300000;
+
+// Inferred table: gimmick type of each event display type; original name unknown.
+const u8 unknown001[EVTDISP_NUM] = {
+    gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,  gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,
+    gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,  gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,
+    gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_COLLECTION, gmk::GMK_TYPE_SALVAGE,    gmk::GMK_TYPE_PRECIOUS, gmk::GMK_TYPE_TBOX,    gmk::GMK_TYPE_EFFECT,
+    gmk::GMK_TYPE_SE,      gmk::GMK_TYPE_JUMP,    gmk::GMK_TYPE_WARP,       gmk::GMK_TYPE_DMG_EFFECT, gmk::GMK_TYPE_DMG_SE,
+};
+
+// Inferred role: cutscene sequence category ("CS " in the event category names); original name unknown.
+constexpr u32 unknown002 = 4;
+// Inferred role: fade time of the cutscene category mute; original name unknown.
+constexpr f32 unknown003 = 0.5f;
 
 } // namespace
 
@@ -171,6 +187,31 @@ void GfGameEvent::updateEventObj(const fw::UpdateInfo &info) {
   GfGameEvent *gameEvent = get();
   for (auto it = gameEvent->unknown1050.begin(); it != gameEvent->unknown1050.end(); ++it) {
     (*it)->update(info);
+  }
+}
+
+void GfGameEvent::updateCsEventCategoryVolume() {
+  GfSound *sound = GfSound::get();
+  if (sound == nullptr) {
+    return;
+  }
+  const event::SeqInfo &info = event::SeqManager::get().unknown001();
+  if (event::Manager::get() != nullptr) {
+    bool isCs = info.unknown54 == unknown002;
+    bool isPlay = event::Manager::get()->isPlay();
+    if (isCs && isPlay) {
+      if (!unknown1928) {
+        unknown1928 = true;
+        sound->setCategoryVolume(unknown1920, CATEGORY_CHARACTER_SE, 0.0f, unknown003);
+        sound->setCategoryVolume(unknown1920, CATEGORY_NO_SLOW_SE, 0.0f, unknown003);
+      }
+      return;
+    }
+  }
+  if (unknown1928) {
+    unknown1928 = false;
+    sound->setCategoryVolume(unknown1920, CATEGORY_CHARACTER_SE, 1.0f, unknown003);
+    sound->setCategoryVolume(unknown1920, CATEGORY_NO_SLOW_SE, 1.0f, unknown003);
   }
 }
 
@@ -306,6 +347,23 @@ void GfGameEvent::setDisp(EVTDISP type, bool isDisp) {
   if (get() != nullptr) {
     get()->unknown28[type] = isDisp;
     applySetDisp(type);
+  }
+}
+
+void GfGameEvent::applySetDisp(EVTDISP type) {
+  if (type == EVTDISP_MAP) {
+    applySetDispObject(GfMapManager::getGfObjHandle());
+    return;
+  }
+  if (type >= EVTDISP_COLLECTION) {
+    gmk::GmkType gmkType = static_cast<gmk::GmkType>(unknown001[type]);
+    if (gmkType != gmk::GMK_TYPE_INVALID) {
+      GfGameUtil::setDispByGmkType(gmkType, isDisp(type));
+    }
+  } else {
+    for (GF_OBJ_HANDLE *const &handle : *GfGameObj::getList(type)) {
+      applySetDispObject(handle);
+    }
   }
 }
 

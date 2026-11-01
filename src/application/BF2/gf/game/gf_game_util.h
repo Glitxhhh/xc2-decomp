@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "gf/data/gf_data_map.h"
 #include "gmk/gmk_manager.h"
 #include "mm_mtl/fixed_vector.h"
@@ -41,7 +43,18 @@ public:
     u32 unknown14;            // Role and original member name unknown.
   };
 
+  struct UiEnemyStatusIconInfo {
+    UiEnemyStatusIconInfo() : unknown00(false), unknown01(false) {}
+    void create(GF_OBJ_HANDLE *handle);
+
+    bool unknown00; // Inferred role: enemy detects the party (aggressive icon); original member name unknown.
+    bool unknown01; // Inferred role: enemy is linked to others (link icon); original member name unknown.
+  };
+
   static bool isUiGfObjHandleValid(GF_OBJ_HANDLE *handle);
+  static bool isUiNameDistMatch(GF_OBJ_HANDLE *handle);
+  static bool isUiInfoIconDistMatch(GF_OBJ_HANDLE *handle);
+  static int getUiInfoIconBdatId(GF_OBJ_HANDLE *handle);
   static bool enterPlayerBattle(bool isStart, GF_OBJ_HANDLE *target, bool isForce);
   static bool evalSumFs(int condition, u32 option);
   static bool getNameMsId(u32 &nameId, GF_OBJ_HANDLE *handle);
@@ -170,6 +183,9 @@ public:
   static bool setupSaveAchievementPopup(u32 blade, u32 achievement, u32 level);
   static void execSaveAchievementPopup(u32 blade);
 };
+
+static_assert(offsetof(GfGameUtil::UiEnemyStatusIconInfo, unknown01) == 0x01, "");
+static_assert(sizeof(GfGameUtil::UiEnemyStatusIconInfo) == 0x02, "");
 
 class GfGameUtilCloudSea {
 public:

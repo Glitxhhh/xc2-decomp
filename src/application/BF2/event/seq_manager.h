@@ -207,6 +207,8 @@ public:
   bool isSetupSceneEnd() const;
   void setDisp(bool isDisp);
   bool isDisp() const;
+  // Inferred role: info of the current sequence; original name unknown.
+  const SeqInfo &unknown001() const { return unknown2710; }
   virtual void OnEventProc(MSG_TYPE type);
 
 private:

@@ -9,6 +9,8 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/game/gf_game_visible.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -22,9 +24,12 @@
 
 namespace gf {
 
+constexpr u32 BATTLE_STATE_UNKNOWN_1 = 1;
 constexpr u32 BATTLE_STATE_UNKNOWN_3 = 3;
 constexpr u32 BATTLE_STATE_UNKNOWN_5 = 5;
 constexpr u32 PARTY_DRIVER_COUNT = 3;
+// Inferred role: object attribute bit that shows the info icon of a hidden object; original name unknown.
+constexpr u32 unknown002 = 1 << 3;
 
 GfMenuGfObjAdapter::GfMenuGfObjAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways, bool isUpdateAfter)
     : GfMenuAdapter(plugin, isUpdateAfter, isUpdateAlways), unknown48(INVALID_HANDLE), unknown70(0), unknown78(nullptr) {}
@@ -59,6 +64,55 @@ bool GfMenuGfObjAdapter::update_Battle(GF_OBJ_HANDLE *handle) {
     return false;
   }
   return property->unknown10 != nullptr ? property->unknown10->unknown30 : false;
+}
+
+bool GfMenuGfObjAdapter::update_InfoBody(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if ((acc.getAttribute() & unknown002) == 0 && !GfGameVisible::isVisible(handle)) {
+    return false;
+  }
+  if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_1) && acc.getType() == OBJECT_TYPE_ENEMY) {
+    GfObjProperty *property = GfObjUtil::getProperty(handle);
+    if (property == nullptr) {
+      return false;
+    }
+    GfObjPropertyCharacter *character = property->unknown10;
+    if (character == nullptr) {
+      return false;
+    }
+    if (GfMenuManager::getTargetObjHandle() == handle) {
+      if (character->unknown30) {
+        return false;
+      }
+    } else if (!character->unknown30) {
+      return false;
+    }
+  }
+  if (GfGameUtil::isUiNameDistMatch(handle)) {
+    return true;
+  }
+  return GfMenuManager::getTargetObjHandle() == handle;
+}
+
+bool GfMenuGfObjAdapter::update_InfoDisp(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if ((acc.getAttribute() & unknown002) == 0 && !GfGameVisible::isVisible(handle)) {
+    return false;
+  }
+  return GfGameUtil::isUiInfoIconDistMatch(handle);
+}
+
+bool GfMenuGfObjAdapter::update_InfoIcon(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if ((acc.getAttribute() & unknown002) == 0 && !GfGameVisible::isVisible(handle)) {
+    return false;
+  }
+  int icon = GfGameUtil::getUiInfoIconBdatId(handle);
+  if (icon == -1) {
+    return false;
+  }
+  setNumber(GfMenuBdat::getIconImageIndex(icon));
+  return GfGameUtil::isUiInfoIconDistMatch(handle);
 }
 
 bool GfMenuGfObjAdapter::update_TargetDisp(GF_OBJ_HANDLE *handle) { return GfMenuManager::getTargetObjHandle() == handle; }
@@ -126,6 +180,32 @@ bool GfMenuGfObjAdapter::update_EN_ElemComboName(GF_OBJ_HANDLE *handle) {
 
   setText(GfMenuObjUtil::getElementComboName(enemy->unknowndc));
   return true;
+}
+
+bool GfMenuGfObjAdapter::update_EN_Aggressive(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if (acc.getType() != OBJECT_TYPE_ENEMY) {
+    return false;
+  }
+  GF_OBJ_HANDLE *enemy = acc.getHandle();
+  GfGameUtil::UiEnemyStatusIconInfo info;
+  if (enemy != INVALID_HANDLE) {
+    info.create(enemy);
+  }
+  return info.unknown00;
+}
+
+bool GfMenuGfObjAdapter::update_EN_Link(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if (acc.getType() != OBJECT_TYPE_ENEMY) {
+    return false;
+  }
+  GF_OBJ_HANDLE *enemy = acc.getHandle();
+  GfGameUtil::UiEnemyStatusIconInfo info;
+  if (enemy != INVALID_HANDLE) {
+    info.create(enemy);
+  }
+  return info.unknown01;
 }
 
 bool GfMenuGfObjAdapter::update_EN_Arts(GF_OBJ_HANDLE *handle) {
