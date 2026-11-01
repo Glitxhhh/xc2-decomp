@@ -1,9 +1,11 @@
 #include "ssd/ssd_allocator.h"
+#include "ssd/ssd_buffer.h"
 #include "ssd/ssd_debug.h"
 #include "ssd/ssd_stream_buffer.h"
 #include "types.h"
 
 namespace ssd {
+enum Result : long;
 
 u32 StreamBuffer::GetDataSize() const { return m_dataSize; }
 
@@ -46,6 +48,127 @@ int StreamBuffer::Free() {
     unknown10 = nullptr;
   }
   return 0;
+}
+
+Result StreamBuffer::OutData8(void *buffer, u64 size, u64 *outSize, bool *isMark) {
+  u32 length = m_dataSize;
+  if (static_cast<u32>(size) <= length) {
+    length = size;
+  }
+  if (outSize != nullptr) {
+    *outSize = length;
+  }
+  m_dataSize -= length;
+  u8 *source = unknown10 + unknown24;
+  u32 space = m_bufferSize - unknown24;
+  if (length <= space) {
+    CopyMemory8(source, buffer, length);
+    unknown24 += length;
+    unknown24 = unknown24 >= m_bufferSize ? 0 : unknown24;
+  } else {
+    CopyMemory8(source, buffer, space);
+    CopyMemory8(unknown10, static_cast<u8 *>(buffer) + space, length - space);
+    unknown24 = length - space;
+  }
+  return static_cast<Result>(0);
+}
+
+Result StreamBuffer::OutData16(void *buffer, u64 size, u64 *outSize, bool *isMark) {
+  if (m_dataSize == 0) {
+    *outSize = 0;
+    return static_cast<Result>(0);
+  }
+  u32 length = m_dataSize;
+  if (static_cast<u32>(size) <= length) {
+    length = size;
+  }
+  if (outSize != nullptr) {
+    *outSize = length;
+  }
+  m_dataSize -= length;
+  u8 *source = unknown10 + unknown24;
+  u32 space = m_bufferSize - unknown24;
+  if (length <= space) {
+    CopyMemory16(source, buffer, length);
+    unknown24 += length;
+    if (unknown24 >= m_bufferSize) {
+      unknown24 = 0;
+    }
+  } else {
+    CopyMemory16(source, buffer, space);
+    CopyMemory16(unknown10, static_cast<u8 *>(buffer) + space, length - space);
+    unknown24 = length - space;
+  }
+  return static_cast<Result>(0);
+}
+
+Result StreamBuffer::OutData32(void *buffer, u64 size, u64 *outSize, bool *isMark) {
+  if (m_dataSize == 0) {
+    *outSize = 0;
+    return static_cast<Result>(0);
+  }
+  u32 length = m_dataSize;
+  if (static_cast<u32>(size) <= length) {
+    length = size;
+  }
+  if (outSize != nullptr) {
+    *outSize = length;
+  }
+  m_dataSize -= length;
+  u8 *source = unknown10 + unknown24;
+  u32 space = m_bufferSize - unknown24;
+  if (length <= space) {
+    CopyMemory32(source, buffer, length);
+    unknown24 += length;
+    if (unknown24 >= m_bufferSize) {
+      unknown24 = 0;
+    }
+  } else {
+    CopyMemory32(source, buffer, space);
+    CopyMemory32(unknown10, static_cast<u8 *>(buffer) + space, length - space);
+    unknown24 = length - space;
+  }
+  return static_cast<Result>(0);
+}
+
+Result StreamBuffer::OutData64(void *buffer, u64 size, u64 *outSize, bool *isMark) {
+  if (m_dataSize == 0) {
+    *outSize = 0;
+    return static_cast<Result>(0);
+  }
+  u32 length = m_dataSize;
+  if (static_cast<u32>(size) <= length) {
+    length = size;
+  }
+  *isMark = false;
+  if (unknown2c) {
+    if (unknown28 == 0) {
+      *isMark = true;
+    } else {
+      if (length > unknown28) {
+        length = unknown28;
+      }
+      unknown28 -= length;
+    }
+  }
+  if (outSize != nullptr) {
+    *outSize = length;
+  }
+  m_dataSize -= length;
+  u8 *source = unknown10 + unknown24;
+  u32 space = m_bufferSize - unknown24;
+  if (length <= space) {
+    CopyMemory64(source, buffer, length);
+    unknown24 += length;
+    if (unknown24 >= m_bufferSize) {
+      unknown24 = 0;
+    }
+  } else {
+    CopyMemory64(source, buffer, space);
+    CopyMemory64(unknown10, static_cast<u8 *>(buffer) + space, length - space);
+    unknown24 = length - space;
+  }
+  return static_cast<Result>(0);
 }
 
 } // namespace ssd
