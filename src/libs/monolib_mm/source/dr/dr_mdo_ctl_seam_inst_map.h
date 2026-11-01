@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dr/dr_mdo_ctl_seam.h"
+#include "types.h"
 
 namespace grlib {
 class CGLibVtxInstans;
@@ -16,6 +17,7 @@ struct MdoWrkMatRes;
 
 class DrMdoCtlSeamInstMap : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamInstMap(int viewNum);
   void releaseInstMap();
   void releaseFreeSeamInst(DrResMdoSeamWrkInst *inst);
   DrResMdoSeamWrkInst *createFreeSeamInst();
@@ -33,6 +35,8 @@ public:
   void createInstRenderDisplayList(const MdsMdlInfoHeader *header, int index, DrResMdoSeamWrkInst *wrk, _MdoInstanceWork *work, grlib::CGLibVtxInstans *instans, int count);
   void beginResAll(MdoWrkMatRes *matRes);
   void endResAll();
+  void callShadowCacheInstUpdate(u64 flags);
+  void occInstRender();
 };
 
 } // namespace ml

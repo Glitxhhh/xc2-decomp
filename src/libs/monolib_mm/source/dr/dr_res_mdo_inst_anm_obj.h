@@ -313,6 +313,7 @@ static_assert(offsetof(unknown045, unknown34) == 0x34, "");
 class DrResMdoInstAnmObj {
 public:
   DrResMdoInstAnmObj();
+  ~DrResMdoInstAnmObj() { release(); }
   static int getWorkSize(const u8 *data);
   void release();
   void update();

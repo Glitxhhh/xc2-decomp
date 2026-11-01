@@ -8,6 +8,7 @@ class DrResMdoSeamWrkEnv;
 
 class DrMdoCtlSeamEnvMap : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamEnvMap(int viewNum);
   void releaseEnvMap();
   void releaseFreeSeamEnvMap(DrResMdoSeamWrkEnv *env);
   DrResMdoSeamWrkEnv *createFreeSeamEnvMap();

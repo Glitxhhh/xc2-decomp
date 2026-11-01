@@ -3,21 +3,38 @@
 
 #include "dr/dr_mdl_obj.h"
 #include "dr/dr_res_mdo_inst_anm_obj.h"
+#include "dr/dr_res_mdo_seam_coli.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
+#include "dr/dr_res_mdo_seam_parm_read.h"
+#include "dr/dr_res_mdo_seam_read.h"
+#include "dr/dr_res_mdo_seam_res.h"
+#include "dr/dr_res_mdo_seam_wrk_base.h"
+#include "dr/dr_res_mdo_seam_wrk_env.h"
+#include "dr/dr_res_mdo_seam_wrk_inst.h"
+#include "dr/dr_res_mdo_seam_wrk_light.h"
+#include "dr/dr_res_mdo_seam_wrk_low.h"
+#include "dr/dr_res_mdo_seam_wrk_mpf.h"
+#include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
 #include "types.h"
 
+namespace cloud {
+class CloudMdlDataObj;
+} // namespace cloud
+
 namespace ml {
-class DrResMdoSeamColi;
-class DrResMdoSeamMemObj;
-class DrResMdoSeamTexList;
-class DrResMdoSeamTexture;
-class DrResMdoSeamVertex;
-class DrResMdoSeamWrkBase;
-class DrResMdoSeamWrkEnv;
-class DrResMdoSeamWrkInst;
-class DrResMdoSeamWrkLight;
-class DrResMdoSeamWrkLow;
-class DrResMdoSeamWrkMpf;
+class DrCalcClipMan;
+class DrCalcClipObj;
+class DrCalcCpPlaneObj;
+class DrEnvColiObj;
+class DrEnvironmentObj;
+class DrMan;
+class DrGlobalIBLPack;
+class DrResEtcTexList;
+class DrResMdoInstMdlInfo;
+class DrResMdoPosAddList;
+class DrResMdoSortSeamAll;
+class DrResMdoSortSeamEnvMap;
 struct MdoWrkMatRes;
 
 // Inferred role: model data seam etc pos data; original type name unknown.
@@ -47,6 +64,8 @@ static_assert(sizeof(unknown059) == 0x10, "");
 
 // Inferred role: seam etc pos list; original type name unknown.
 struct unknown060 {
+  unknown060() : unknown00(nullptr), unknown08(0) {}
+
   unknown059 *unknown00; // Inferred role: objs; original member name unknown.
   u32 unknown08;         // Inferred role: object max; original member name unknown.
 };
@@ -85,12 +104,17 @@ static_assert(offsetof(unknown061, m_seamMpfPosDataMax) == 0x74, "");
 
 // Inferred role: doubly linked list of seam objects (unknown08 next, unknown10 prev); original type name unknown.
 template <typename T> struct unknown093 {
+  unknown093() : unknown00(nullptr), unknown08(nullptr) {}
+
   T *unknown00; // Inferred role: first object; original member name unknown.
   T *unknown08; // Inferred role: last object; original member name unknown.
 };
 
 // Inferred role: seam object pool with a free list and a used list; original type name unknown.
 template <typename T> struct unknown094 {
+  unknown094() : unknown20(nullptr), unknown28(0), unknown2c(0), unknown30(0) {}
+  ~unknown094() { unknown003(); }
+
   // Inferred helper: moves the first free object to the end of the used list; original name unknown.
   T *unknown001() {
     T *obj = unknown00.unknown00;
@@ -155,12 +179,27 @@ template <typename T> struct unknown094 {
     unknown28--;
   }
 
+  // Inferred helper: destroys the objects and empties the pool, as the release of the seam data does; original name unknown.
+  void unknown003() {
+    for (int i = 0; i < unknown30; i++) {
+      unknown20[i].~T();
+    }
+    unknown30 = 0;
+    unknown20 = nullptr;
+    unknown28 = 0;
+    unknown2c = 0;
+    unknown10.unknown00 = nullptr;
+    unknown10.unknown08 = nullptr;
+    unknown00.unknown00 = nullptr;
+    unknown00.unknown08 = nullptr;
+  }
+
   unknown093<T> unknown00; // Inferred role: free objects; original member name unknown.
   unknown093<T> unknown10; // Inferred role: used objects; original member name unknown.
-  u8 _20[0x28 - 0x20];
-  s32 unknown28; // Inferred role: used object count; original member name unknown.
-  s32 unknown2c; // Inferred role: free object count; original member name unknown.
-  u8 _30[0x38 - 0x30];
+  T *unknown20;            // Inferred role: objects; original member name unknown.
+  s32 unknown28;           // Inferred role: used object count; original member name unknown.
+  s32 unknown2c;           // Inferred role: free object count; original member name unknown.
+  s32 unknown30;           // Inferred role: object count; original member name unknown.
 };
 
 static_assert(offsetof(unknown094<DrResMdoSeamTexture>, unknown10) == 0x10, "");
@@ -169,6 +208,7 @@ static_assert(sizeof(unknown094<DrResMdoSeamTexture>) == 0x38, "");
 
 class DrMdoCtlSeam : public DrMdlObj {
 public:
+  DrMdoCtlSeam(int viewNum);
   void *getColiListTbl();
   u32 getColiListMax();
   u32 isRead(int index) const;
@@ -188,30 +228,46 @@ public:
   DrResMdoSeamMemObj *createFreeSeamMemObj4K(u32 size);
   DrResMdoSeamMemObj *createFreeSeamMemObjBack4K(u32 size);
   DrResMdoSeamColi *createFreeSeamCollision();
+  void setupSeamMapHead(const void *data, const char *path);
+  void resourceRelease();
 
   u8 _190[0x1a8 - 0x190];
-  unknown061 *unknown1a8;                      // Inferred role: seam resource header; original member name unknown.
-  unknown094<DrResMdoSeamTexture> unknown1b0;  // Inferred role: texture pool; original member name unknown.
-  unknown094<DrResMdoSeamTexList> unknown1e8;  // Inferred role: texture list pool; original member name unknown.
-  unknown094<DrResMdoSeamVertex> unknown220;   // Inferred role: vertex pool; original member name unknown.
-  unknown094<DrResMdoSeamColi> unknown258;     // Inferred role: collision pool; original member name unknown.
-  unknown094<DrResMdoSeamWrkBase> unknown290;  // Inferred role: base map pool; original member name unknown.
-  unknown094<DrResMdoSeamWrkLow> unknown2c8;   // Inferred role: low map pool; original member name unknown.
-  unknown094<DrResMdoSeamWrkInst> unknown300;  // Inferred role: inst map pool; original member name unknown.
-  unknown094<DrResMdoSeamWrkMpf> unknown338;   // Inferred role: mpf map pool; original member name unknown.
-  unknown094<DrResMdoSeamWrkEnv> unknown370;   // Inferred role: env map pool; original member name unknown.
-  unknown094<DrResMdoSeamWrkLight> unknown3a8; // Inferred role: light pool; original member name unknown.
-  u8 _3e0[0x640 - 0x3e0];
-  void *unknown640[2]; // Inferred role: collision list tables per buffer; original member name unknown.
-  u32 unknown650[2];   // Inferred role: collision list max per buffer; original member name unknown.
-  u8 _658[0x698 - 0x658];
+  unknown061 *unknown1a8;                                  // Inferred role: seam resource header; original member name unknown.
+  unknown094<DrResMdoSeamTexture> unknown1b0;              // Inferred role: texture pool; original member name unknown.
+  unknown094<DrResMdoSeamTexList> unknown1e8;              // Inferred role: texture list pool; original member name unknown.
+  unknown094<DrResMdoSeamVertex> unknown220;               // Inferred role: vertex pool; original member name unknown.
+  unknown094<DrResMdoSeamColi> unknown258;                 // Inferred role: collision pool; original member name unknown.
+  unknown094<DrResMdoSeamWrkBase> unknown290;              // Inferred role: base map pool; original member name unknown.
+  unknown094<DrResMdoSeamWrkLow> unknown2c8;               // Inferred role: low map pool; original member name unknown.
+  unknown094<DrResMdoSeamWrkInst> unknown300;              // Inferred role: inst map pool; original member name unknown.
+  unknown094<DrResMdoSeamWrkMpf> unknown338;               // Inferred role: mpf map pool; original member name unknown.
+  unknown094<DrResMdoSeamWrkEnv> unknown370;               // Inferred role: env map pool; original member name unknown.
+  unknown094<DrResMdoSeamWrkLight> unknown3a8;             // Inferred role: light pool; original member name unknown.
+  void *unknown3e0;                                        // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  DrResMdoSortSeamAll *unknown3e8;                         // Inferred role: sort object of the maps; original member name unknown.
+  DrResMdoSortSeamEnvMap *unknown3f0;                      // Inferred role: sort object of the env maps; original member name unknown.
+  DrEnvironmentObj *unknown3f8;                            // Inferred role: environment object; original member name unknown.
+  DrEnvColiObj *unknown400;                                // Inferred role: environment collision object; original member name unknown.
+  DrCalcClipObj *unknown408;                               // Inferred role: clip object; original member name unknown.
+  DrCalcClipMan *unknown410;                               // Inferred role: clip manager; original member name unknown.
+  DrCalcCpPlaneObj *unknown418;                            // Inferred role: clip plane object; original member name unknown.
+  mm::mtl::FixedVector<DrGlobalIBLPack *, 32> unknown420;  // Inferred role: global IBL packs; original member name unknown.
+  mm::mtl::FixedVector<DrEnvironmentObj *, 32> unknown528; // Inferred role: environment objects; original member name unknown.
+  DrResMdoPosAddList *unknown630;                          // Inferred role: position add list; original member name unknown.
+  DrResMdoInstMdlInfo *unknown638;                         // Inferred role: instance model info; original member name unknown.
+  void *unknown640[2];                                     // Inferred role: collision list tables per buffer; original member name unknown.
+  u32 unknown650[2];                                       // Inferred role: collision list max per buffer; original member name unknown.
+  DrResEtcTexList *unknown658;                             // Inferred role: texture list; original member name unknown.
+  u8 _660[0x698 - 0x660];
   DrResMdoInstAnmObj unknown698; // Inferred role: inst anm object; original member name unknown.
   unknown060 unknown6c8;         // Inferred role: etc pos list; original member name unknown.
-  u8 _6d8[0x6e0 - 0x6d8];
+  const s32 *unknown6d8;         // Inferred role: etc pos data; original member name unknown.
   DrResMdoSeamMemMan unknown6e0; // Inferred role: seam memory manager; original member name unknown.
-  u8 _b28[0xb38 - 0xb28];
-  MdoWrkMatRes *unknownb38; // Inferred role: saved mat res; original member name unknown.
-  u8 _b40[0xb50 - 0xb40];
+  u8 _b28[0xb30 - 0xb28];
+  cloud::CloudMdlDataObj *unknownb30; // Inferred role: cloud model data; original member name unknown.
+  MdoWrkMatRes *unknownb38;           // Inferred role: saved mat res; original member name unknown.
+  void *unknownb40;                   // Inferred role: memory pool buffer; original member name unknown.
+  u8 _b48[0xb50 - 0xb48];
   u32 *unknownb50; // Inferred role: base map read bits; original member name unknown.
   u8 _b58[0xb60 - 0xb58];
   u32 *unknownb60; // Inferred role: base map render bits; original member name unknown.
@@ -237,25 +293,70 @@ public:
   s16 unknownc04; // Inferred role: inst map read count; original member name unknown.
   s16 unknownc06; // Inferred role: mpf map read count; original member name unknown.
   s16 unknownc08; // Inferred role: env map read count; original member name unknown.
-  u8 _c0a[0xc0c - 0xc0a];
+  s16 unknownc0a; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
   s16 unknownc0c; // Inferred role: light read count; original member name unknown.
-  u8 _c0e[0xc40 - 0xc0e];
+  s16 unknownc0e; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc10; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc12; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc14; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc16; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc18; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc1a; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc1c; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc1e; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc20; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc22; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc24; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc26; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc28; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  u8 _c2a[0xc2e - 0xc2a];
+  s8 unknownc2e;  // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s8 unknownc2f;  // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  s16 unknownc30; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
+  u8 _c32[0xc34 - 0xc32];
+  s32 unknownc34; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc38; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc3c; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
   s32 unknownc40; // Inferred role: base map object count; original member name unknown.
   s32 unknownc44; // Inferred role: low map object count; original member name unknown.
   s32 unknownc48; // Inferred role: inst map memory size; original member name unknown.
   s32 unknownc4c; // Inferred role: mpf map memory size; original member name unknown.
   s32 unknownc50; // Inferred role: env map object count; original member name unknown.
-  u8 _c54[0xc6c - 0xc54];
+  s32 unknownc54; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc58; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc5c; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc60; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc64; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc68; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
   s32 unknownc6c; // Inferred role: light memory size; original member name unknown.
-  u8 _c70[0xc7c - 0xc70];
+  s32 unknownc70; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  s32 unknownc74; // Inferred role: unknown size, cleared by the constructor; original member name unknown.
+  u32 unknownc78; // Inferred role: unknown flags, cleared by the constructor; original member name unknown.
   u32 unknownc7c; // Inferred role: seam flags; original member name unknown.
-  u8 _c80[0xcac - 0xc80];
+  u32 unknownc80; // Inferred role: unknown flags, cleared by the constructor; original member name unknown.
+  u32 unknownc84; // Inferred role: unknown flags, cleared by the constructor; original member name unknown.
+  u32 unknownc88; // Inferred role: unknown, 1 after construction; original member name unknown.
+  u64 unknownc90; // Inferred role: base map shadow cache mask; original member name unknown.
+  u64 unknownc98; // Inferred role: inst map shadow cache mask; original member name unknown.
+  s16 unknownca0; // Inferred role: base map counter; original member name unknown.
+  s16 unknownca2; // Inferred role: base map counter; original member name unknown.
+  s16 unknownca4; // Inferred role: inst map counter; original member name unknown.
+  s16 unknownca6; // Inferred role: inst map counter; original member name unknown.
+  u8 _ca8[0xcac - 0xca8];
   s16 unknowncac;    // Inferred role: error code write index; original member name unknown.
   s16 unknowncae[4]; // Inferred role: error codes; original member name unknown.
   u8 _cb6[0xcb8 - 0xcb6];
-  u32 unknowncb8[4]; // Inferred role: error parameters; original member name unknown.
-  u8 _cc8[0xd1a - 0xcc8];
-  u16 unknownd1a; // Inferred role: read bits; original member name unknown.
+  u32 unknowncb8[4];               // Inferred role: error parameters; original member name unknown.
+  bool unknowncc8;                 // Inferred role: unknown state, cleared by the constructor; original member name unknown.
+  DrResMdoSeamRead unknowncd0;     // Inferred role: seam reader; original member name unknown.
+  DrResMdoSeamParmRead unknownd30; // Inferred role: seam read parameters; original member name unknown.
+  u8 _1370[0x14b0 - 0x1370];
+  u32 unknown14b0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u8 _14b4[0x14c0 - 0x14b4];
+  u64 unknown14c0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u32 unknown14c8; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u8 _14cc[0x1550 - 0x14cc];
+  mm::mtl::FixStr<128> unknown1550; // Inferred role: seam file path; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoCtlSeam, unknown1a8) == 0x1a8, "");
@@ -283,7 +384,25 @@ static_assert(offsetof(DrMdoCtlSeam, unknown650) == 0x650, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncac) == 0xcac, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncae) == 0xcae, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncb8) == 0xcb8, "");
-static_assert(offsetof(DrMdoCtlSeam, unknownd1a) == 0xd1a, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown3e0) == 0x3e0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown420) == 0x420, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown528) == 0x528, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown630) == 0x630, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown658) == 0x658, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown6d8) == 0x6d8, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownb30) == 0xb30, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownb40) == 0xb40, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownc2e) == 0xc2e, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownc34) == 0xc34, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownc88) == 0xc88, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownc90) == 0xc90, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownca0) == 0xca0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknowncc8) == 0xcc8, "");
+static_assert(offsetof(DrMdoCtlSeam, unknowncd0) == 0xcd0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownd30) == 0xd30, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown14b0) == 0x14b0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown14c0) == 0x14c0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown1550) == 0x1550, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown698) == 0x698, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown6c8) == 0x6c8, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownb38) == 0xb38, "");
@@ -303,6 +422,20 @@ static_assert(offsetof(DrMdoCtlSeam, unknownc7c) == 0xc7c, "");
 
 class DrMdoCtlSeamAll : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamAll(const void *data, const char *path, DrMan *man, int viewNum);
+  ~DrMdoCtlSeamAll() override;
+  void update() override;
+  void dispOffUpdate() override;
+  void noOffScreenUpdate() override;
+  void resourceInit() override;
+  void shadowRender() override;
+  bool shadowCacheRender(DrPixlShadowCacheObj &cache) override;
+  void shadowCacheAddRender(int index) override;
+  void callShadowCacheUpdate(u64 flags) override;
+  void occRender() override;
+  void setDeleteCall(int deleteCall) override;
+  virtual void debugRender();
+  void releaseSeamAll();
   u32 getSeamBaseMdlMax() const;
   u32 getSeamInstMdlMax() const;
   u32 getSeamMpfMdlMax() const;
@@ -316,7 +449,6 @@ public:
   void setMdlReadOff(bool isOff);
   bool isReadSafe() const;
   bool isRenderSafe() const;
-  void debugRender();
   void setClearResource(bool isClear);
   void callZPrePassSeamAll();
   void callThicknessFirstSeamAll();

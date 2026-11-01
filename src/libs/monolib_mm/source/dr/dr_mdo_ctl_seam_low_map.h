@@ -7,6 +7,7 @@ class DrResMdoSeamWrkLow;
 
 class DrMdoCtlSeamLowMap : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamLowMap(int viewNum);
   void releaseLowMap();
   void releaseFreeSeamLow(DrResMdoSeamWrkLow *low);
   DrResMdoSeamWrkLow *createFreeSeamLow();

@@ -8,6 +8,12 @@
 
 namespace ml {
 
+DrResMdoSeamWrkBase::DrResMdoSeamWrkBase()
+    : unknown68(nullptr), unknown70(nullptr), unknown78(nullptr), unknown98(0), unknowna0(0), unknownb0(0), unknownb4(0), unknowne0(nullptr), unknowne8(nullptr), unknown158(nullptr),
+      unknown168(nullptr), unknown17a(0), unknown17c(0), unknown17e(0) {}
+
+DrResMdoSeamWrkBase::~DrResMdoSeamWrkBase() { release(); }
+
 void DrResMdoSeamWrkBase::beginBaseMapRenderList() {
   unknown94 = 0;
   unknown170 = 0;

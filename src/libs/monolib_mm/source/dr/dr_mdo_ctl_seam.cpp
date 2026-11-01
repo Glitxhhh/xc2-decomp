@@ -1,12 +1,32 @@
 #include "dr/dr_mdo_ctl_seam.h"
 
+#include "dr/dr_ap_cache.h"
+#include "dr/dr_man.h"
+#include "dr/dr_mdl_base.h"
 #include "dr/dr_res_mdo_seam_coli.h"
 #include "dr/dr_res_mdo_seam_res.h"
 
-#include "dr/dr_ap_cache.h"
-#include "dr/dr_man.h"
-
 namespace ml {
+
+DrMdoCtlSeam::DrMdoCtlSeam(int viewNum)
+    : DrMdlObj(viewNum), unknown3e0(nullptr), unknown3e8(nullptr), unknown3f0(nullptr), unknown3f8(nullptr), unknown400(nullptr), unknown408(nullptr), unknown410(nullptr), unknown418(nullptr),
+      unknown630(nullptr), unknown638(nullptr), unknown658(nullptr), unknown6d8(nullptr), unknownb30(nullptr), unknownb40(nullptr), unknownc00(0), unknownc02(0), unknownc04(0), unknownc06(0),
+      unknownc08(0), unknownc0a(0), unknownc0c(0), unknownc0e(0), unknownc10(0), unknownc12(0), unknownc14(0), unknownc16(0), unknownc18(0), unknownc1a(0), unknownc1c(0), unknownc1e(0), unknownc20(0),
+      unknownc22(0), unknownc24(0), unknownc26(0), unknownc28(0), unknownc2e(0), unknownc2f(0), unknownc30(0), unknownc34(0), unknownc38(0), unknownc3c(0), unknownc40(0), unknownc44(0), unknownc48(0),
+      unknownc4c(0), unknownc50(0), unknownc54(0), unknownc58(0), unknownc5c(0), unknownc60(0), unknownc64(0), unknownc68(0), unknownc6c(0), unknownc70(0), unknownc74(0), unknownc78(0), unknownc7c(0),
+      unknownc80(0), unknownc84(0), unknownc88(1), unknownc90(0), unknownc98(0), unknownca0(0), unknownca2(0), unknownca4(0), unknownca6(0), unknowncc8(false), unknown14b0(0), unknown14c0(0),
+      unknown14c8(0) {
+  unknown650[0] = 0;
+  unknown650[1] = 0;
+  unknowncac = 0;
+  for (int i = 0; i < 4; i++) {
+    unknowncae[i] = -1;
+    unknowncb8[i] = 0;
+  }
+  unknown1c = unknown037_3;
+  unknown420.clear();
+  unknown528.clear();
+}
 
 void *DrMdoCtlSeam::getColiListTbl() { return unknown640[DrMan::s_nDblIdx]; }
 
@@ -14,7 +34,7 @@ u32 DrMdoCtlSeam::getColiListMax() { return unknown650[DrMan::s_nDblIdx]; }
 
 u32 DrMdoCtlSeam::isRead(int index) const {
   if (((unknownc7c >> 28) & 1) == 0) {
-    return unknownd1a & (1 << index);
+    return unknowncd0.unknown4a & (1 << index);
   }
   return 0;
 }

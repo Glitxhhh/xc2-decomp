@@ -13,6 +13,16 @@ namespace ml {
 class DrResMdoSeamParmRead;
 class DrResMdoVertex;
 
+// Inferred role: list node of the seam work objects (next and previous object of the pool lists); original type name unknown.
+template <typename T> class unknown133 {
+public:
+  unknown133() : unknown08(nullptr), unknown10(nullptr) {}
+  virtual ~unknown133() {}
+
+  T *unknown08; // Inferred role: next object; original member name unknown.
+  T *unknown10; // Inferred role: previous object; original member name unknown.
+};
+
 class DrResMdoSeamMemObj {
 public:
   virtual ~DrResMdoSeamMemObj();

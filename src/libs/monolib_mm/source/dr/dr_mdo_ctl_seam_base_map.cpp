@@ -6,6 +6,8 @@
 namespace ml {
 class DrResMdoSeamMemObj;
 
+DrMdoCtlSeamBaseMap::DrMdoCtlSeamBaseMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+
 void DrMdoCtlSeamBaseMap::releaseBaseMap() {
   DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00;
   while (base != nullptr) {
@@ -62,6 +64,15 @@ void DrMdoCtlSeamBaseMap::updateBaseMap() {
   readBaseMapCheck();
   if (((unknownc7c >> 12) & 1) == 0) {
     updateBaseMapRenderList();
+  }
+}
+
+void DrMdoCtlSeamBaseMap::callShadowCacheBaseUpdate(u64 flags) {
+  unknownc90 &= ~flags;
+  for (DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00; base != nullptr; base = base->unknown08) {
+    if (base->unknown68 != nullptr) {
+      base->callShadowCacheBaseUpdate(flags);
+    }
   }
 }
 

@@ -6,6 +6,9 @@
 
 namespace ml {
 
+DrResMdoSeamWrkLow::DrResMdoSeamWrkLow()
+    : unknown28(nullptr), unknown30(nullptr), unknown40(nullptr), unknown88(nullptr), unknown9c(0), unknowna0(0), unknowna4(0), unknowna8(0), unknownac(0), unknownb0(0), unknownb4(0) {}
+
 DrResMdoSeamWrkLow::~DrResMdoSeamWrkLow() { release(); }
 
 void DrResMdoSeamWrkLow::release() {

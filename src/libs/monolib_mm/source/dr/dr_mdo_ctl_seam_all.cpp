@@ -1,8 +1,18 @@
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_shadow_cache_man.h"
+#include "dr/dr_res_mdo_seam_read.h"
 #include "types.h"
 
 namespace ml {
+
+DrMdoCtlSeamAll::DrMdoCtlSeamAll(const void *data, const char *path, DrMan *man, int viewNum) : DrMdoCtlSeam(viewNum) {
+  m_drMan = man;
+  setupSeamMapHead(data, path);
+}
+
+DrMdoCtlSeamAll::~DrMdoCtlSeamAll() { releaseSeamAll(); }
 
 u32 DrMdoCtlSeamAll::getSeamBaseMdlMax() const { return unknown1a8->m_seamBaseMdlMax; }
 
@@ -45,5 +55,27 @@ void DrMdoCtlSeamAll::setMdlReadOff(bool isOff) {
 void DrMdoCtlSeamAll::debugRender() {}
 
 void DrMdoCtlSeamAll::setClearResource(bool isClear) {}
+
+void DrMdoCtlSeamAll::noOffScreenUpdate() {
+  unknownc16++;
+  if (!unknowncd0.isRead()) {
+    unknowncd0.release();
+    if (unknownc16 > 3) {
+      unknown20 |= unknown038_3 | unknown038_3 << 1;
+    }
+  }
+  if (((unknownc7c >> 12) & 1) == 0) {
+    unknownc7c |= 0x1000;
+    if (unknown1a == 0) {
+      m_drMan->unknown78->unknown800->delShadowCacheUpdate();
+    }
+  }
+}
+
+void DrMdoCtlSeamAll::setDeleteCall(int deleteCall) {
+  unknownc7c |= 0x40000000 << deleteCall;
+  unknowncd0.readCancel();
+  resourceRelease();
+}
 
 } // namespace ml

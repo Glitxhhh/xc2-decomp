@@ -7,6 +7,8 @@
 namespace ml {
 class DrResMdoSeamMemObj;
 
+DrMdoCtlSeamLight::DrMdoCtlSeamLight(int viewNum) : DrMdoCtlSeam(viewNum) {}
+
 void DrMdoCtlSeamLight::releaseLight() {
   DrResMdoSeamWrkLight *light = unknown3a8.unknown10.unknown00;
   while (light != nullptr) {
@@ -41,5 +43,7 @@ bool DrMdoCtlSeamLight::readInstModelCheck(const mm::Vec3 &position, const f32 *
   }
   return false;
 }
+
+void DrMdoCtlSeamLight::updateLight() { readLightCheck(); }
 
 } // namespace ml

@@ -1,10 +1,14 @@
 #include "dr/dr_mdo_ctl_seam_mpf_map.h"
 
+#include "dr/dr_man.h"
+#include "dr/dr_pixl_tile_parm.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_mpf.h"
 
 namespace ml {
 class DrResMdoSeamMemObj;
+
+DrMdoCtlSeamMpfMap::DrMdoCtlSeamMpfMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
 
 void DrMdoCtlSeamMpfMap::releaseMpfMap() {
   DrResMdoSeamWrkMpf *mpf = unknown338.unknown10.unknown00;
@@ -44,5 +48,14 @@ void DrMdoCtlSeamMpfMap::updateMpfMap() {
 }
 
 DrResMdoSeamWrkMpf *DrMdoCtlSeamMpfMap::createFreeSeamMpf() { return unknown338.unknown001(); }
+
+void DrMdoCtlSeamMpfMap::callRenderSeamMpfMap() {
+  if (((unknownc7c >> 3) & 1) == 0) {
+    return;
+  }
+  DrMan::get()->unknown180->begin(DrPixlTileParm::TILE_TYPE_UNKNOWN_3);
+  createMpfMapDisplayList();
+  DrMan::get()->unknown180->end(DrPixlTileParm::TILE_TYPE_UNKNOWN_3);
+}
 
 } // namespace ml

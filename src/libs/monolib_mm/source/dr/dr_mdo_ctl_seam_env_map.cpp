@@ -6,6 +6,8 @@
 namespace ml {
 class DrResMdoSeamMemObj;
 
+DrMdoCtlSeamEnvMap::DrMdoCtlSeamEnvMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+
 void DrMdoCtlSeamEnvMap::releaseEnvMap() {
   DrResMdoSeamWrkEnv *env = unknown370.unknown10.unknown00;
   while (env != nullptr) {

@@ -1,10 +1,13 @@
 #include "dr/dr_mdo_ctl_seam_inst_map.h"
 
+#include "dr/dr_man.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 
 namespace ml {
 class DrResMdoSeamMemObj;
+
+DrMdoCtlSeamInstMap::DrMdoCtlSeamInstMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
 
 void DrMdoCtlSeamInstMap::releaseInstMap() {
   DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00;
@@ -63,6 +66,26 @@ void DrMdoCtlSeamInstMap::updateInstMap(MdoArgSeamUpdate &arg) {
   if (((unknownc7c >> 12) & 1) == 0) {
     updateInstMapRenderList(arg);
     createInstMapDisplayList();
+  }
+}
+
+void DrMdoCtlSeamInstMap::callShadowCacheInstUpdate(u64 flags) {
+  unknownc98 &= ~flags;
+  for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+    if (inst->unknown50 != nullptr) {
+      inst->callShadowCacheInstUpdate(flags);
+    }
+  }
+}
+
+void DrMdoCtlSeamInstMap::occInstRender() {
+  if (!m_drMan->unknown1d6a) {
+    for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+      unknown30 = inst->unknown50;
+      if (unknown30 != nullptr) {
+        inst->occRender();
+      }
+    }
   }
 }
 

@@ -7,6 +7,7 @@ class DrResMdoSeamWrkMpf;
 
 class DrMdoCtlSeamMpfMap : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamMpfMap(int viewNum);
   void releaseMpfMap();
   DrResMdoSeamWrkMpf *createFreeSeamMpf();
   void releaseFreeSeamMpf(DrResMdoSeamWrkMpf *mpf);
@@ -16,6 +17,7 @@ public:
   void createAllpfMapDisplayList();
   void renderMpfMapDisplayList();
   void createMpfMapDisplayList();
+  void callRenderSeamMpfMap();
 };
 
 } // namespace ml

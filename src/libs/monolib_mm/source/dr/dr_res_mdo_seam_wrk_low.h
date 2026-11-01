@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_res_mdo_seam_res.h"
 #include "types.h"
 
 namespace grlib {
@@ -8,18 +9,16 @@ class CGLibVtxInstans;
 } // namespace grlib
 
 namespace ml {
-class DrResMdoSeamMemObj;
 struct MdoWrkMatRes;
 struct MdsSeamLowMapHead;
 
-class DrResMdoSeamWrkLow {
+class DrResMdoSeamWrkLow : public unknown133<DrResMdoSeamWrkLow> {
 public:
+  DrResMdoSeamWrkLow();
   virtual ~DrResMdoSeamWrkLow();
   void release();
   void changeMemCall();
 
-  DrResMdoSeamWrkLow *unknown08;      // Inferred role: next object; original member name unknown.
-  DrResMdoSeamWrkLow *unknown10;      // Inferred role: previous object; original member name unknown.
   const MdsSeamLowMapHead *unknown18; // Inferred role: low map header; original member name unknown.
   u8 _20[0x28 - 0x20];
   MdoWrkMatRes *unknown28;       // Inferred role: material work; original member name unknown.
@@ -31,9 +30,11 @@ public:
   u8 _90[0x9c - 0x90];
   u32 unknown9c; // Inferred role: state flags; original member name unknown.
   u32 unknowna0; // Inferred role: low map index; original member name unknown.
-  u8 _a4[0xb0 - 0xa4];
+  u32 unknowna4; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u32 unknowna8; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u32 unknownac; // Inferred role: unknown, cleared by the constructor; original member name unknown.
   s32 unknownb0; // Inferred role: memory size; original member name unknown.
-  u8 _b4[0xb8 - 0xb4];
+  u32 unknownb4; // Inferred role: unknown, cleared by the constructor; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoSeamWrkLow, unknown18) == 0x18, "");

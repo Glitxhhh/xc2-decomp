@@ -6,6 +6,8 @@
 namespace ml {
 class DrResMdoSeamMemObj;
 
+DrMdoCtlSeamLowMap::DrMdoCtlSeamLowMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+
 void DrMdoCtlSeamLowMap::releaseLowMap() {
   DrResMdoSeamWrkLow *low = unknown2c8.unknown10.unknown00;
   while (low != nullptr) {

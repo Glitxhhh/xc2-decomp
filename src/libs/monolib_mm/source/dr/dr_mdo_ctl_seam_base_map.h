@@ -1,12 +1,14 @@
 #pragma once
 
 #include "dr/dr_mdo_ctl_seam.h"
+#include "types.h"
 
 namespace ml {
 class DrResMdoSeamWrkBase;
 
 class DrMdoCtlSeamBaseMap : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamBaseMap(int viewNum);
   void updateBaseMap();
   void readBaseMapCheck();
   void updateBaseMapRenderList();
@@ -22,6 +24,7 @@ public:
   DrResMdoSeamWrkBase *seachBaseIdx(int index);
   void releaseFreeSeamBase(DrResMdoSeamWrkBase *base);
   DrResMdoSeamWrkBase *createFreeSeamBase();
+  void callShadowCacheBaseUpdate(u64 flags);
 };
 
 } // namespace ml

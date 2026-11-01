@@ -12,10 +12,13 @@ class DrResMdoSeamWrkLight;
 
 class DrMdoCtlSeamLight : public DrMdoCtlSeam {
 public:
+  DrMdoCtlSeamLight(int viewNum);
   void releaseLight();
   DrResMdoSeamWrkLight *createFreeSeamLight();
   void releaseFreeSeamLight(DrResMdoSeamWrkLight *light);
   bool readInstModelCheck(const mm::Vec3 &position, const f32 *max, const f32 *min);
+  void readLightCheck();
+  void updateLight();
 };
 
 } // namespace ml
