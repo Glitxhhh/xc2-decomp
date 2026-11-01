@@ -17,6 +17,8 @@ public:
 
   static void registOpenParam(const OpenParam &param);
   static void sendEvent(u32 handle, u32 type, u32 param);
+  static int setFadeIn(u32 handle);
+  static int setFadeOut(u32 handle);
   void initialize() override;
   void finalize() override;
   static void setupBGLayout(ui::UIObjectAcc &, u32, bool);

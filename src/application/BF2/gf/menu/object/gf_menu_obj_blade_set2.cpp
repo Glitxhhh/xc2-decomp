@@ -2,6 +2,7 @@
 
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 
 namespace gf {
 
@@ -16,6 +17,26 @@ constexpr u32 unknown002 = 0x1e;
 void GfMenuObjBladeSet2::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjBladeSet2::sendEvent(u32 handle, u32 type, u32 param, f32 delay) { unknown140(handle, type, param, delay); }
+
+int GfMenuObjBladeSet2::setFadeIn(u32 handle) {
+  GfMenuObjUtil::PresetCtrlParam param;
+  param.unknown00 = 6;
+  param.unknown04 = 0;
+  param.unknown10 = 1;
+  int ctrl = GfMenuObjUtil::startPresetCtrl(handle, param);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
+
+int GfMenuObjBladeSet2::setFadeOut(u32 handle) {
+  GfMenuObjUtil::PresetCtrlParam param;
+  param.unknown00 = 6;
+  param.unknown04 = 1;
+  param.unknown10 = 2;
+  int ctrl = GfMenuObjUtil::startPresetCtrl(handle, param);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
 
 void GfMenuObjBladeSet2::setCloseToFSClose() {
   unknown001 value;

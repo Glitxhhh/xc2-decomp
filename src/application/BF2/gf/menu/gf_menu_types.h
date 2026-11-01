@@ -14,6 +14,7 @@ struct Param {
   Param() : unknown00() {}
 
   template <typename T> void set(const T &value) { *reinterpret_cast<T *>(unknown00) = value; }
+  template <typename T> T &get() { return *reinterpret_cast<T *>(unknown00); }
   template <typename T> const T &get() const { return *reinterpret_cast<const T *>(unknown00); }
 
   u64 unknown00[2]; // Inferred role: data; original member name unknown.

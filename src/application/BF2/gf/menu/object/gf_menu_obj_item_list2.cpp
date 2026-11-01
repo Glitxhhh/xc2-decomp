@@ -20,4 +20,16 @@ void GfMenuObjItemList2::sendEvent(u32 handle, u32 type, u32 param, u32 delay) {
   ui::UIManager::get()->requestObjectEvent(handle, event, static_cast<f32>(delay) * 0.033333335f);
 }
 
+int GfMenuObjItemList2::setFadeIn(u32 handle) {
+  int ctrl = GfMenuObjUtil::setCommonFadeIn(handle, 1, 0);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
+
+int GfMenuObjItemList2::setFadeOut(u32 handle) {
+  int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 2, 0);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
+
 } // namespace gf

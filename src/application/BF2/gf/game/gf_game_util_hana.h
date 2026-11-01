@@ -24,6 +24,7 @@ public:
   static u32 openArtsCircuit(u32 blade, u32 circuit);
   static u32 isOpenArtsCircuit(u32 blade, u32 circuit);
   static u32 getConvertToEther(u32 parts);
+  static u32 getEmptyParts(u32 parts);
   static u32 getEtherForOpenArtsCircuit(u32 blade, u32 circuit);
   static u32 openCondenserCircuit(u32 blade, u32 circuit);
   static u32 isOpenCondenserCircuit(u32 blade, u32 circuit);

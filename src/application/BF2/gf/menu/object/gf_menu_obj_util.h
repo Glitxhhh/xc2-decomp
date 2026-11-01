@@ -55,10 +55,27 @@ public:
     f32 unknown04; // Inferred role: preset control time of preset 6; original member name unknown.
   };
 
+  struct PresetCtrlParam {
+    PresetCtrlParam() : unknown00(0), unknown04(0), unknown08(-1), unknown10(0), unknown18(nullptr) {
+      unknown0c = false;
+      unknown0d = false;
+    }
+
+    u32 unknown00;         // Inferred role: preset; original member name unknown.
+    u32 unknown04;         // Inferred role: direction, 0 in and 1 out; original member name unknown.
+    int unknown08;         // Inferred role: control parameter; original member name unknown.
+    bool unknown0c;        // Inferred role: control flag; original member name unknown.
+    bool unknown0d;        // Inferred role: control flag; original member name unknown.
+    u32 unknown10;         // Inferred role: control type; original member name unknown.
+    const char *unknown18; // Inferred role: animation name; original member name unknown.
+  };
+
   static u32 getBtnIconNumber(u32 button);
   static u32 getPadSelectIconNumber(u32 select);
   static u32 getPointerSelectIconNumber();
-  static void setCommonFadeOut(u32 handle, u32 fade, u8 unknown);
+  static int setCommonFadeIn(u32 handle, u32 fade, u8 unknown);
+  static int setCommonFadeOut(u32 handle, u32 fade, u8 unknown);
+  static int startPresetCtrl(u32 handle, const PresetCtrlParam &param);
   static void setChildDisp(u32 handle, const char *name, bool disp);
   static void setChildMulColor(u32 handle, const char *name, const char *color);
   static void setChildAddColor(u32 handle, const char *name, const char *color);
@@ -187,5 +204,11 @@ static_assert(offsetof(GfMenuObjUtil::DockingOption, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjUtil::DockingOption, unknown08) == 0x08, "");
 static_assert(sizeof(GfMenuObjUtil::DockingOption) == 0x10, "");
 static_assert(offsetof(GfMenuObjUtil::unknown001, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown0d) == 0x0d, "");
+static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown18) == 0x18, "");
+static_assert(sizeof(GfMenuObjUtil::PresetCtrlParam) == 0x20, "");
 
 } // namespace gf

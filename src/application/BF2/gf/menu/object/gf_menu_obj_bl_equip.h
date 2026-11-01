@@ -7,6 +7,8 @@ namespace gf {
 class GfMenuObjBlEquip : public GfMenuObject {
 public:
   static void sendEvent(u32 handle, u32 type, u32 param);
+  static int setFadeIn(u32 handle);
+  static int setFadeOut(u32 handle);
   void initialize() override;
   void finalize() override;
   void update() override;

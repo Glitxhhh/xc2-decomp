@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_hana_submenu.h"
 
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 
 namespace gf {
@@ -14,6 +15,18 @@ void GfMenuObjHanaSubmenu::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjHanaSubmenu::update() { GfMenuObject::update(); }
 
 void GfMenuObjHanaSubmenu::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
+
+int GfMenuObjHanaSubmenu::setFadeIn(u32 handle) {
+  int ctrl = GfMenuObjUtil::setCommonFadeIn(handle, 1, 0);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
+
+int GfMenuObjHanaSubmenu::setFadeOut(u32 handle) {
+  int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 2, 0);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
 
 void GfMenuObjHanaSubmenu::returnHanaSubMenu() { unknown142(unknown001, unknown002); }
 
