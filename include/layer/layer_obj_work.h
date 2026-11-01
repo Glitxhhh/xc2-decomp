@@ -4,6 +4,7 @@
 #include "grlib/cglib_uniform_array.h"
 #include "layer/layer_act_base.h"
 #include "layer/layer_obj_res_tex.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 
@@ -15,6 +16,7 @@ class CGLibVtxInstans;
 
 namespace layer {
 
+struct LayerResViewPortInfo;
 class LayerTextureObj;
 class LayerVertexObj;
 
@@ -35,7 +37,12 @@ public:
   void calcFrmParm(s32 count);
 
   struct unknown001 {
-    u8 _00[0x18];
+    u8 _00[0x04];
+    u32 unknown04; // Inferred role: pixel width; original member name unknown.
+    u8 _08[0x0c - 0x08];
+    u32 unknown0c; // Inferred role: pixel height; original member name unknown.
+    f32 unknown10; // Inferred role: scale x; original member name unknown.
+    f32 unknown14; // Inferred role: scale y; original member name unknown.
     u32 unknown18; // Inferred role: frame count; original member name unknown.
     f32 unknown1c; // Inferred role: frame time; original member name unknown.
   };
@@ -45,23 +52,93 @@ public:
     u32 unknown08;                     // Inferred role: instance count; original member name unknown.
   };
 
+  // Inferred layout of the per draw entry work set up by LayerObjTopDef::workIconCreate; original type and member names unknown.
+  struct unknown009 {
+    mm::Pnt<f32> unknown00; // Inferred role: cleared to 0; original member name unknown.
+    mm::Pnt<f32> unknown08; // Inferred role: set to 1; original member name unknown.
+    mm::Pnt<f32> unknown10; // Inferred role: cleared to 0; original member name unknown.
+    mm::Pnt<f32> unknown18; // Inferred role: set to 1; original member name unknown.
+    mm::Pnt<f32> unknown20; // Inferred role: set to 1; original member name unknown.
+    mm::Pnt<f32> unknown28; // Inferred role: cleared to 0; original member name unknown.
+    mm::Pnt<f32> unknown30; // Inferred role: cleared to 0; original member name unknown.
+  };
+
   struct unknown002 {
     const unknown001 *unknown00; // Inferred role: animation data; original member name unknown.
     const u8 *unknown08;         // Inferred role: texture table of the draw data; original member name unknown.
     const u8 *unknown10;         // Inferred role: draw table; original member name unknown.
-    u8 _18[0x20 - 0x18];
-    const u8 *unknown20; // Inferred role: place resource data; original member name unknown.
-    u8 _28[0x68 - 0x28];
+    const u8 *unknown18;         // Inferred role: mesh table; original member name unknown.
+    const u8 *unknown20;         // Inferred role: place resource data; original member name unknown.
+    const u8 *unknown28;         // Inferred role: place table; original member name unknown.
+    const u8 *unknown30;         // Inferred role: draw resource data; original member name unknown.
+    const u8 *unknown38;         // Inferred role: draw entry table; original member name unknown.
+    u32 unknown40;               // Inferred role: draw entry count; original member name unknown.
+    u8 _44[0x48 - 0x44];
+    const u8 *unknown48; // Inferred role: icon entry table; original member name unknown.
+    u32 unknown50;       // Inferred role: icon entry count; original member name unknown.
+    u8 _54[0x58 - 0x54];
+    LayerResViewPortInfo *unknown58;                                  // Inferred role: view port; original member name unknown.
+    u32 *unknown60;                                                   // Inferred role: icon entry states; original member name unknown.
     grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown68; // Inferred role: icon uniforms; original member name unknown.
-    u8 _70[0x78 - 0x70];
-    unknown008 *unknown78; // Inferred role: instance vertex info; original member name unknown.
-    f32 unknown80;         // Inferred role: frame count; original member name unknown.
-    f32 unknown84;         // Inferred role: start frame; original member name unknown.
+    unknown009 *unknown70;                                            // Inferred role: draw entry works; original member name unknown.
+    unknown008 *unknown78;                                            // Inferred role: instance vertex info; original member name unknown.
+    f32 unknown80;                                                    // Inferred role: frame count; original member name unknown.
+    f32 unknown84;                                                    // Inferred role: start frame; original member name unknown.
   };
 
   struct unknown003 {
     f32 unknown00; // Inferred role: second; original member name unknown.
     f32 unknown04; // Inferred role: cleared by calcFrmParm; original member name unknown.
+  };
+
+  // Inferred layout of the def object resource header; original type and member names unknown.
+  struct unknown013 {
+    u8 _00[0x08];
+    u32 unknown08; // Inferred role: flags; original member name unknown.
+    u32 unknown0c; // Inferred role: offset of the animation data; original member name unknown.
+    u32 unknown10; // Inferred role: offset of the vertex resource; original member name unknown.
+    u32 unknown14; // Inferred role: offset of the draw resource data; original member name unknown.
+    u32 unknown18; // Inferred role: offset of the place resource data; original member name unknown.
+    u32 unknown1c; // Inferred role: offset of the draw entry list; original member name unknown.
+    u32 unknown20; // Inferred role: offset of the icon entry list; original member name unknown.
+    u32 unknown24; // Inferred role: offset of the texture resource; original member name unknown.
+    s32 unknown28; // Inferred role: frame parm count; original member name unknown.
+    u32 unknown2c; // Inferred role: offset of the icon max; original member name unknown.
+    u32 unknown30; // Inferred role: mul color, one byte per channel; original member name unknown.
+    u32 unknown34; // Inferred role: offset of the action data; original member name unknown.
+    u32 unknown38; // Inferred role: data type; original member name unknown.
+  };
+
+  // Inferred layout of the draw resource data header, offsets relative to itself; original type and member names unknown.
+  struct unknown014 {
+    u32 unknown00; // Inferred role: offset of the mesh table; original member name unknown.
+    u8 _04[0x08 - 0x04];
+    u32 unknown08; // Inferred role: offset of the draw table; original member name unknown.
+    u8 _0c[0x10 - 0x0c];
+    u32 unknown10; // Inferred role: offset of the texture table; original member name unknown.
+  };
+
+  // Inferred layout of the place resource data header; original type and member names unknown.
+  struct unknown015 {
+    u8 _00[0x04];
+    u32 unknown04; // Inferred role: offset of the place table, relative to the header; original member name unknown.
+  };
+
+  // Inferred layout of an entry list header, offset relative to itself; original type and member names unknown.
+  struct unknown016 {
+    u32 unknown00; // Inferred role: offset of the entries; original member name unknown.
+    s32 unknown04; // Inferred role: entry count; original member name unknown.
+  };
+
+  // Inferred layout of an icon entry; original type and member names unknown.
+  struct unknown017 {
+    u16 unknown00; // Inferred role: mesh idx; original member name unknown.
+    u8 _02[0x04 - 0x02];
+  };
+
+  // Inferred layout of the icon max resource; original type and member names unknown.
+  struct unknown018 {
+    u32 unknown00; // Inferred role: icon max; original member name unknown.
   };
 
   // Evidence: LayerObjTopDef(const char *) inlines FixStr::operator= on it (fixstr.h asserts at lines 219 and 221).
@@ -101,5 +178,19 @@ static_assert(offsetof(LayerObjWork, unknown2ac) == 0x2ac, "");
 static_assert(offsetof(LayerObjWork, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(LayerObjWork, unknown2b8) == 0x2b8, "");
 static_assert(offsetof(LayerObjWork, unknown2c0) == 0x2c0, "");
+static_assert(offsetof(LayerObjWork::unknown001, unknown04) == 0x04, "");
+static_assert(offsetof(LayerObjWork::unknown001, unknown0c) == 0x0c, "");
+static_assert(offsetof(LayerObjWork::unknown001, unknown18) == 0x18, "");
+static_assert(sizeof(LayerObjWork::unknown009) == 0x38, "");
+static_assert(offsetof(LayerObjWork::unknown002, unknown40) == 0x40, "");
+static_assert(offsetof(LayerObjWork::unknown002, unknown48) == 0x48, "");
+static_assert(offsetof(LayerObjWork::unknown002, unknown58) == 0x58, "");
+static_assert(offsetof(LayerObjWork::unknown002, unknown68) == 0x68, "");
+static_assert(offsetof(LayerObjWork::unknown002, unknown78) == 0x78, "");
+static_assert(sizeof(LayerObjWork::unknown002) == 0x88, "");
+static_assert(offsetof(LayerObjWork::unknown013, unknown08) == 0x08, "");
+static_assert(offsetof(LayerObjWork::unknown013, unknown38) == 0x38, "");
+static_assert(offsetof(LayerObjWork::unknown014, unknown10) == 0x10, "");
+static_assert(sizeof(LayerObjWork::unknown017) == 0x04, "");
 
 } // namespace layer

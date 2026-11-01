@@ -16,6 +16,7 @@
 #include "layer/layer_res_add_tex_obj.h"
 #include "layer/layer_shd_manager.h"
 #include "layer/layer_sort_man.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace layer {
@@ -71,6 +72,35 @@ void LayerObjTopPolyObj::createWorkBuffer(u32 width, u32 height) {
   unknown280.setup(0x60);
   unknown005(width, height);
   memset(&unknown300, 0, sizeof(unknown300));
+}
+
+void LayerObjTopPolyObj::createVertex(u16 vertexNum, u16 indexNum, LayerPrimitiveType type) {
+  unknown300.unknown40 = vertexNum;
+  unknown300.unknown42 = indexNum;
+  unknown300.unknown50 = 1;
+  unknown300.unknown52 = 1;
+  unknown300.unknown44[0] = 0;
+  unknown300.unknown44[1] = 0;
+  unknown300.unknown4c = 0;
+  unknown300.unknown48[1] = indexNum;
+  unknown300.unknown48[0] = indexNum;
+  unknown300.unknown4e = indexNum;
+  u32 vertexSize = vertexNum * sizeof(LayerPolyVertex);
+  u32 indexSize = indexNum * sizeof(u16);
+  u8 *memory = static_cast<u8 *>(mtl::MemManager::allocate(LayerManager::get()->unknown2c, vertexSize * 2 + indexSize * 2, 0x10, false, "no name", 0));
+  for (s32 i = 0; i < 2; i++) {
+    unknown300.unknown00[i] = new (LayerManager::get()->unknown2c) grlib::CGLibVtxVertex();
+    unknown300.unknown10[i] = new (LayerManager::get()->unknown2c) grlib::CGLibVtxIndex();
+    unknown300.unknown00[i]->createVertexBuff(vertexSize, sizeof(LayerPolyVertex));
+    if (type == LAYER_PRIMITIVE_TYPE_UNKNOWN_0) {
+      unknown300.unknown10[i]->createIndexBuff(indexNum, GRL_PRIMITIVE_TRIANGLES, GRL_INDEX_FORMAT_U16);
+    } else {
+      unknown300.unknown10[i]->createIndexBuff(indexNum, GRL_PRIMITIVE_UNKNOWN_6, GRL_INDEX_FORMAT_U16);
+    }
+    unknown300.unknown20[i] = &memory[vertexSize * i];
+    unknown300.unknown30[i] = &memory[vertexSize * 2 + indexSize * i];
+  }
+  unknown368 = memory;
 }
 
 void LayerObjTopPolyObj::updateVertexBuffer() {

@@ -26,12 +26,16 @@ static_assert(sizeof(LyrDrawData) == 0x10, "");
 
 // Inferred layout of a mesh entry; original member names unknown.
 struct LyrMeshData {
-  u8 _00[0x18];
+  u8 _00[0x02];
+  u8 unknown02; // Inferred role: uniform type, a LayerUniType; original member name unknown.
+  u8 _03[0x18 - 0x03];
   u16 unknown18; // Inferred role: first draw entry; original member name unknown.
   u16 unknown1a; // Inferred role: draw entry count; original member name unknown.
 };
 
+static_assert(offsetof(LyrMeshData, unknown02) == 0x02, "");
 static_assert(offsetof(LyrMeshData, unknown1a) == 0x1a, "");
+static_assert(sizeof(LyrMeshData) == 0x1c, "");
 
 // Evidence: the vtable holds LayerActDef::updatePartsAction.
 class LayerObjDraw : public LayerActDef {

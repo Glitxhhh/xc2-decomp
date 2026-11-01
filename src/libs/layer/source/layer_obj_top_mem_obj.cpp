@@ -27,6 +27,45 @@ LayerObjTopMemObj::LayerObjTopMemObj(u32 width, u32 height, LayerMemType type) :
   createWorkBuffer();
 }
 
+void LayerObjTopMemObj::createWorkBuffer() {
+  unknown640.setup(0x80);
+  unknown180.unknown08 = 1.0f;
+  unknown180.unknown0c = static_cast<f32>(unknown744) / static_cast<f32>(unknown740);
+  if (unknown740 > unknown744) {
+    unknown180.unknown00 = 1.0f;
+    unknown180.unknown04 = static_cast<f32>(unknown744) / static_cast<f32>(unknown740);
+  } else {
+    unknown180.unknown00 = static_cast<f32>(unknown740) / static_cast<f32>(unknown744);
+    unknown180.unknown04 = 1.0f;
+  }
+  unknown180.unknown10 = 0;
+  unknown180.unknown12 = 0;
+  unknown180.unknown14 = unknown740;
+  unknown180.unknown16 = unknown744;
+  u32 size;
+  if (unknown750 == LAYER_MEM_TYPE_UNKNOWN_2) {
+    size = 2 * unknown740 * unknown744;
+  } else {
+    size = unknown740 * unknown744;
+    if (unknown750 == LAYER_MEM_TYPE_UNKNOWN_3) {
+      unknown748 = size + (0x100 - size % 0x100) % 0x100;
+      u32 secondSize = (unknown740 >> 1) * (unknown744 >> 1) * 2;
+      unknown74c = secondSize + (0x10 - secondSize % 0x10) % 0x10;
+      size = unknown748 + unknown74c;
+    } else {
+      size *= 3;
+    }
+  }
+  size += (0x10 - size % 0x10) % 0x10;
+  unknown6a0[0].setup(size);
+  unknown6a0[1].setup(size);
+  unknown678.setup(0x10);
+  unknown6f0[0].setup(0x10);
+  memset(unknown6f0[0].m_mapping, 0, 0x10);
+  unknown6f0[1].setup(0x10);
+  memset(unknown6f0[1].m_mapping, 0, 0x10);
+}
+
 LayerObjTopMemObj::~LayerObjTopMemObj() {
   baseRelease();
   releaseWorkBuffer();

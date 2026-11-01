@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "grlib/cglib_dbl_uniform_block.h"
+#include "layer/layer_acc_manager.h"
 #include "layer/layer_act_base.h"
 #include "layer/layer_anime_obj.h"
 #include "layer/layer_manager.h"
@@ -141,6 +142,32 @@ void LayerObj::setInitScl(f32 x, f32 y) {
   unknownc8[1].unknown00.unknown10 = y;
   unknownc8[0].unknown00.unknown10 = y;
   unknownc8[2].unknown00.unknown10 = y;
+}
+
+void LayerObj::setInitMulCol(const mm::Col4 &color) { unknownc8[2].unknown1c.unknown00 = unknownc8[0].unknown1c.unknown00 = unknownc8[1].unknown1c.unknown00 = color; }
+
+void LayerObj::setInitAddCol(const mm::Col3 &color) { unknownc8[2].unknown1c.unknown10 = unknownc8[0].unknown1c.unknown10 = unknownc8[1].unknown1c.unknown10 = color; }
+
+void LayerObj::setInitPosScl(f32 x, f32 y, f32 sclX, f32 sclY) {
+  if (unknown18 == LAYER_OBJ_TYPE_FONT) {
+    setInitPos(x, y);
+    return;
+  }
+  if (!(unknowna8 & 0x2)) {
+    setInitPos(x, y);
+    if (LayerManager::get()->unknown9c != LAYER_COORDINATE_PIXEL) {
+      setInitScl(sclX / unknown180.unknown08, sclY / unknown180.unknown0c);
+    } else {
+      setInitScl(sclX, sclY);
+    }
+  } else {
+    if (LayerManager::get()->unknown9c != LAYER_COORDINATE_PIXEL) {
+      setInitPos(x + sclX, y);
+    } else {
+      setInitPos(static_cast<u16>(unknown180.unknown14) * sclX + x, y);
+    }
+    setInitScl(sclY, sclY);
+  }
 }
 
 void LayerObj::updateCtrlSpd(f32 speed) {

@@ -48,15 +48,6 @@ void LayerObjWork::setAddTexture(grlib::CGLibTextureBuffer &texture, u32 index) 
 
 void LayerObjWork::resetAddAllTexutre() { unknown2c0.resetAddAllTexutre(); }
 
-namespace {
-
-struct unknown013 {
-  u8 _00[0x10];
-  u32 unknown10; // Inferred role: offset of the vertex resource; original member name unknown.
-};
-
-} // namespace
-
 void LayerObjWork::workCreate() {
   u32 offset = static_cast<const unknown013 *>(unknownb8)->unknown10;
   if (offset != 0) {

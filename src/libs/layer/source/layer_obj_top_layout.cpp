@@ -1,5 +1,6 @@
 #include "layer/layer_obj_top_layout.h"
 
+#include "dr/dr_draw_work_info.h"
 #include "layer/layer_acc_layout_binary.h"
 #include "layer/layer_acc_obj_base.h"
 #include "layer/layer_base.h"
@@ -60,6 +61,39 @@ LayerObjTopLayout::~LayerObjTopLayout() {
   baseRelease();
   workLayoutRelease();
   workListRelease();
+}
+
+void LayerObjTopLayout::setDrawList(LayerSortMan *sortMan, bool is3D) {
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  LayerSortMan *listSortMan = sortMan;
+  bool listIs3D = is3D;
+  if (unknown2a0.unknown30 != nullptr) {
+    listSortMan = unknown2a0.unknown30;
+    listIs3D = !(unknowna8 & 0x400) && is3D;
+    listSortMan->begin(LayerManager::get()->unknown60->unknown00->unknownb0);
+  }
+  LayerBase *node = unknown258.unknown00;
+  while (node != nullptr) {
+    LayerBase *next = node->unknown10;
+    static_cast<LayerObj *>(node)->setDrawList(listSortMan, listIs3D);
+    node = next;
+  }
+  if (unknown2a0.unknown30 != nullptr) {
+    listSortMan->end();
+    if (is3D && (unknowna8 & 0x400)) {
+      LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown400, unknown200);
+    } else {
+      sortMan->set2DSpace(&unknown400, unknownc0);
+    }
+  } else if (unknown2a0.unknown118.unknown00 & 0x4) {
+    if (is3D && (unknowna8 & 0x400)) {
+      LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown400, unknown200);
+    } else {
+      sortMan->set2DSpace(&unknown400, unknownc0);
+    }
+  }
 }
 
 void LayerObjTopLayout::finalRender() {
