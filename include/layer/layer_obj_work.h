@@ -4,6 +4,7 @@
 #include "grlib/cglib_uniform_array.h"
 #include "layer/layer_act_base.h"
 #include "layer/layer_obj_res_tex.h"
+#include "mm_mtl/fixstr.h"
 #include "types.h"
 
 namespace grlib {
@@ -63,9 +64,8 @@ public:
     f32 unknown04; // Inferred role: cleared by calcFrmParm; original member name unknown.
   };
 
-  u8 unknown258; // Inferred role: cleared by the constructor; original member name unknown.
-  u8 _259[0x268 - 0x259];
-  u32 unknown268; // Inferred role: cleared by the constructor; original member name unknown.
+  // Evidence: LayerObjTopDef(const char *) inlines FixStr::operator= on it (fixstr.h asserts at lines 219 and 221).
+  mm::mtl::FixStr<16> unknown258; // Inferred role: name; original member name unknown.
   u8 _26c[0x270 - 0x26c];
   LayerVertexObj *unknown270;             // Inferred role: vertex object; original member name unknown.
   LayerTextureObj *unknown278;            // Inferred role: texture object; original member name unknown.
@@ -89,7 +89,6 @@ public:
 };
 
 static_assert(offsetof(LayerObjWork, unknown258) == 0x258, "");
-static_assert(offsetof(LayerObjWork, unknown268) == 0x268, "");
 static_assert(offsetof(LayerObjWork, unknown270) == 0x270, "");
 static_assert(offsetof(LayerObjWork, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjWork, unknown280) == 0x280, "");

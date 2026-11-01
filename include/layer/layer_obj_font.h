@@ -16,6 +16,7 @@ class LayerFontResObj;
 class LayerFontStyleObj;
 class LayerSortObj;
 struct LayerRenderView;
+struct LayerResViewPortInfo;
 
 struct LayerResFontInfo {
   u8 _00[0x10];
@@ -36,6 +37,7 @@ static_assert(offsetof(LayerResFontInfo, unknown68) == 0x68, "");
 
 class LayerObjFont : public LayerObj {
 public:
+  LayerObjFont();
   void workPartsRelease(LayerResFontInfo *&info);
   void workRelease();
   bool isMsg(const LayerResFontInfo *info, const u8 *msg) const;
@@ -49,10 +51,10 @@ public:
   f32 getBorderWeight() const;
   f32 getSlopeRot() const;
 
-  LayerResFontInfo *unknown250;    // Inferred role: current font info; original member name unknown.
-  LayerResFontInfo *unknown258[2]; // Inferred role: font info per buffer; original member name unknown.
-  LayerResFontInfo *unknown268;    // Inferred role: font info to release; original member name unknown.
-  u8 _270[0x278 - 0x270];
+  LayerResFontInfo *unknown250;        // Inferred role: current font info; original member name unknown.
+  LayerResFontInfo *unknown258[2];     // Inferred role: font info per buffer; original member name unknown.
+  LayerResFontInfo *unknown268;        // Inferred role: font info to release; original member name unknown.
+  LayerResViewPortInfo *unknown270;    // Inferred role: view port; original member name unknown.
   const LayerFontResObj *unknown278;   // Inferred role: res; original member name unknown.
   const LayerFontStyleObj *unknown280; // Inferred role: style; original member name unknown.
   const LayerFontIconObj *unknown288;  // Inferred role: icon; original member name unknown.
@@ -76,6 +78,7 @@ public:
 static_assert(offsetof(LayerObjFont, unknown250) == 0x250, "");
 static_assert(offsetof(LayerObjFont, unknown258) == 0x258, "");
 static_assert(offsetof(LayerObjFont, unknown268) == 0x268, "");
+static_assert(offsetof(LayerObjFont, unknown270) == 0x270, "");
 static_assert(offsetof(LayerObjFont, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjFont, m_colorMap) == 0x290, "");
 static_assert(offsetof(LayerObjFont, unknown298) == 0x298, "");

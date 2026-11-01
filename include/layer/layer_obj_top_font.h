@@ -5,6 +5,7 @@ namespace layer {
 
 class LayerObjTopFont : public LayerObjFont {
 public:
+  LayerObjTopFont();
   ~LayerObjTopFont() override;
   void applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) override;
   void setDrawList(LayerSortMan *sortMan, bool is3D) override;

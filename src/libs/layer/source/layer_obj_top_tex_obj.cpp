@@ -1,6 +1,7 @@
 #include "layer/layer_obj_top_tex_obj.h"
 
 #include "grlib/cglib_texture_buffer.h"
+#include "layer/layer_base.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj_manager.h"
 #include "layer/layer_obj_util.h"
@@ -10,6 +11,15 @@
 #include "types.h"
 
 namespace layer {
+
+LayerObjTopTexObj::LayerObjTopTexObj(const grlib::CGLibTextureBuffer *texture) : unknown258(this) {
+  unknown270 = texture;
+  unknown18 = LAYER_OBJ_TYPE_TEX;
+  unknowna8 |= 0x20000;
+  unknown250 = nullptr;
+  unknown238 = nullptr;
+  createWorkBuffer();
+}
 
 void LayerObjTopTexObj::finalRender() {
   LayerShdManager *shader = LayerManager::get()->unknown58;

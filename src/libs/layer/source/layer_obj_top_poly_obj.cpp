@@ -7,6 +7,7 @@
 #include "grlib/cglib_vtx_index.h"
 #include "grlib/cglib_vtx_vertex.h"
 #include "layer/layer_acc_poly_obj.h"
+#include "layer/layer_base.h"
 #include "layer/layer_link_list.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj_manager.h"
@@ -18,6 +19,19 @@
 #include "mtl/mem_manager.h"
 
 namespace layer {
+
+LayerObjTopPolyObj::LayerObjTopPolyObj(u32 width, u32 height, u16 vertexNum, u16 indexNum, LayerPrimitiveType type) : unknown260(this) {
+  unknown18 = LAYER_OBJ_TYPE_POLY;
+  unknown278 = nullptr;
+  unknown358 = nullptr;
+  unknown250 = 0;
+  unknown368 = nullptr;
+  unknowna8 |= 0x20000;
+  unknown258 = nullptr;
+  unknown238 = nullptr;
+  createWorkBuffer(width, height);
+  createVertex(vertexNum, indexNum, type);
+}
 
 LayerObjTopPolyObj::~LayerObjTopPolyObj() {
   baseRelease();

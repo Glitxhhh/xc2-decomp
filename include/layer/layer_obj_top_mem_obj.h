@@ -15,7 +15,9 @@ struct LayerResViewPortInfo;
 
 class LayerObjTopMemObj : public LayerObj {
 public:
+  LayerObjTopMemObj(u32 width, u32 height, LayerMemType type);
   ~LayerObjTopMemObj() override;
+  void createWorkBuffer();
   void releaseWorkBuffer();
   void resourceInit() override;
   void *getBuffer();

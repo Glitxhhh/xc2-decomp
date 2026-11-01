@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "grlib/cglib_texture_buffer.h"
+#include "layer/layer_base.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj_util.h"
 #include "layer/layer_render_view.h"
@@ -11,6 +12,20 @@
 #include "mm_math/mm_col4.h"
 
 namespace layer {
+
+LayerObjTopMemObj::LayerObjTopMemObj(u32 width, u32 height, LayerMemType type) : unknown258(this) {
+  unknowna8 |= 0x20000;
+  unknown740 = width;
+  unknown744 = height;
+  unknown748 = 0;
+  unknown74c = 0;
+  unknown750 = type;
+  unknown18 = LAYER_OBJ_TYPE_MEM;
+  unknown250 = nullptr;
+  unknown238 = nullptr;
+  unknown270 = 0xc;
+  createWorkBuffer();
+}
 
 LayerObjTopMemObj::~LayerObjTopMemObj() {
   baseRelease();

@@ -3,8 +3,11 @@
 
 namespace layer {
 
+class LayerObj;
+
 class LayerObjSortTexObj : public LayerSortObj {
 public:
+  LayerObjSortTexObj(LayerObj *obj) : LayerSortObj(obj) {}
   void finalRender() override;
 };
 

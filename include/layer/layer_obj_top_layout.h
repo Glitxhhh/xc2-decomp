@@ -12,6 +12,7 @@ public:
   LayerObjTopLayout();
   ~LayerObjTopLayout() override;
   void workLayoutCreate(const void *data);
+  void setDrawList(LayerSortMan *sortMan, bool is3D) override;
   void finalRender();
 
   LayerObjSortLayout unknown400; // Inferred role: sort object; original member name unknown.

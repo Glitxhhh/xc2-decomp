@@ -2,7 +2,14 @@
 
 #include "layer/layer_manager.h"
 #include "layer/layer_obj.h"
+#include "layer/layer_obj_top_def.h"
+#include "layer/layer_obj_top_filter.h"
+#include "layer/layer_obj_top_font.h"
+#include "layer/layer_obj_top_layout.h"
 #include "layer/layer_obj_top_mask_obj.h"
+#include "layer/layer_obj_top_mem_obj.h"
+#include "layer/layer_obj_top_poly_obj.h"
+#include "layer/layer_obj_top_tex_obj.h"
 #include "layer/layer_sort_man.h"
 #include "ml/critical_section.h"
 #include "mtl/alloc_handle.h"
@@ -18,6 +25,8 @@ struct unknown001 {
 
 } // namespace
 
+LayerBase *LayerObjManager::createStaticTexObj(const grlib::CGLibTextureBuffer &texture) { return new (LayerManager::get()->unknown28) LayerObjTopTexObj(&texture); }
+
 ml::CriticalSection &LayerObjManager::getCriticalSection() {
   static ml::CriticalSection sect;
   return sect;
@@ -27,6 +36,17 @@ LayerBase *LayerObjManager::createStaticMaskObj(const void *data) {
   const unknown001 *header = static_cast<const unknown001 *>(data);
   if (header->unknown00 == 0x4448414c && header->unknown04 == 0x2711) {
     return new (LayerManager::get()->unknown28) LayerObjTopMaskObj(data);
+  }
+  return nullptr;
+}
+
+LayerBase *LayerObjManager::createStaticObj(const void *data) {
+  const unknown001 *header = static_cast<const unknown001 *>(data);
+  if (header->unknown00 == 0x4448414c && header->unknown04 == 0x2711) {
+    return new (LayerManager::get()->unknown28) LayerObjTopDef(data);
+  }
+  if (header->unknown00 == 0x5350414c && header->unknown04 == 0x2711) {
+    return new (LayerManager::get()->unknown28) LayerObjTopLayout(data);
   }
   return nullptr;
 }
@@ -44,6 +64,60 @@ LayerBase *LayerObjManager::createMaskObj(const void *data) {
   unknown30[LayerManager::s_nStkIdx].unknown002(object);
   return object;
 }
+
+LayerBase *LayerObjManager::createLayoutObj() {
+  ml::CS lock(getCriticalSection());
+  LayerBase *object = createStaticLayoutObj();
+  unknown30[LayerManager::s_nStkIdx].unknown002(object);
+  return object;
+}
+
+LayerBase *LayerObjManager::createStaticLayoutObj() { return new (LayerManager::get()->unknown28) LayerObjTopLayout(); }
+
+LayerBase *LayerObjManager::createFontObj() {
+  ml::CS lock(getCriticalSection());
+  LayerBase *object = createStaticFontObj();
+  unknown30[LayerManager::s_nStkIdx].unknown002(object);
+  return object;
+}
+
+LayerBase *LayerObjManager::createStaticFontObj() { return new (LayerManager::get()->unknown28) LayerObjTopFont(); }
+
+LayerBase *LayerObjManager::createTexObj(const grlib::CGLibTextureBuffer &texture) {
+  ml::CS lock(getCriticalSection());
+  LayerBase *object = createStaticTexObj(texture);
+  unknown30[LayerManager::s_nStkIdx].unknown002(object);
+  return object;
+}
+
+LayerBase *LayerObjManager::createMemObj(u32 width, u32 height, LayerMemType type) {
+  ml::CS lock(getCriticalSection());
+  LayerBase *object = createStaticMemObj(width, height, type);
+  unknown30[LayerManager::s_nStkIdx].unknown002(object);
+  return object;
+}
+
+LayerBase *LayerObjManager::createStaticMemObj(u32 width, u32 height, LayerMemType type) { return new (LayerManager::get()->unknown28) LayerObjTopMemObj(width, height, type); }
+
+LayerBase *LayerObjManager::createPolyObj(u32 width, u32 height, u16 vertexNum, u16 indexNum, LayerPrimitiveType type) {
+  ml::CS lock(getCriticalSection());
+  LayerBase *object = createStaticPolyObj(width, height, vertexNum, indexNum, type);
+  unknown30[LayerManager::s_nStkIdx].unknown002(object);
+  return object;
+}
+
+LayerBase *LayerObjManager::createStaticPolyObj(u32 width, u32 height, u16 vertexNum, u16 indexNum, LayerPrimitiveType type) {
+  return new (LayerManager::get()->unknown28) LayerObjTopPolyObj(width, height, vertexNum, indexNum, type);
+}
+
+LayerBase *LayerObjManager::createFilterObj() {
+  ml::CS lock(getCriticalSection());
+  LayerBase *object = createStaticFilterObj();
+  unknown30[LayerManager::s_nStkIdx].unknown002(object);
+  return object;
+}
+
+LayerBase *LayerObjManager::createStaticFilterObj() { return new (LayerManager::get()->unknown28) LayerObjTopFilter(); }
 
 void LayerObjManager::alphaRender(const ml::IDrDrawWorkInfo *info) {
   unknown00 = info;

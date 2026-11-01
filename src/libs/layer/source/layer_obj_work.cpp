@@ -10,7 +10,7 @@
 
 namespace layer {
 
-LayerObjWork::LayerObjWork() : unknown258(0), unknown268(0) {
+LayerObjWork::LayerObjWork() {
   unknown2ac = 0;
   unknown278 = nullptr;
   unknown270 = nullptr;

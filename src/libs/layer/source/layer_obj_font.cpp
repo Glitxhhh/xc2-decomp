@@ -7,6 +7,33 @@
 
 namespace layer {
 
+LayerObjFont::LayerObjFont() {
+  unknown250 = nullptr;
+  unknown258[0] = nullptr;
+  unknown258[1] = nullptr;
+  unknown268 = nullptr;
+  unknown270 = nullptr;
+  unknown278 = nullptr;
+  unknown280 = nullptr;
+  unknown288 = nullptr;
+  m_colorMap = nullptr;
+  unknown298 = 0;
+  unknown29c = 0;
+  unknown2a0 = 0;
+  unknown2a2 = 0;
+  unknown2a4 = 0;
+  unknown2a6 = 0;
+  unknown2a8 = 0;
+  unknown2ac = 0;
+  unknown2b0 = 0;
+  unknown2b4 = 0;
+  m_slopeRot = 0.0f;
+  unknown2bc = 0;
+  m_borderWeight = 0.0f;
+  unknown2c4[0] = 0.0f;
+  unknown2c4[1] = 0.0f;
+}
+
 void LayerObjFont::workPartsRelease(LayerResFontInfo *&info) {
   info->unknown60->~CGLibVtxOneInstans();
   info->unknown68->~CGLibDblUniformBlock();

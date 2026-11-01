@@ -3,12 +3,30 @@
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_texture_buffer.h"
 #include "grlib/cglib_uniform_array.h"
+#include "layer/layer_base.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj_manager.h"
 #include "layer/layer_obj_res_tex.h"
 #include "layer/layer_sort_man.h"
+#include "mm_mtl/fixstr.h"
 
 namespace layer {
+
+LayerObjTopDef::LayerObjTopDef(const char *name) : unknown308(this) {
+  unknownb8 = nullptr;
+  unknown18 = LAYER_OBJ_TYPE_OBJ;
+  unknown258 = name;
+  unknown290 = nullptr;
+  unknowna8 |= 0x60000;
+}
+
+LayerObjTopDef::LayerObjTopDef(const void *data) : unknown308(this) {
+  unknownb8 = data;
+  unknown18 = LAYER_OBJ_TYPE_OBJ;
+  unknowna8 |= 0x20000;
+  unknown290 = nullptr;
+  workIconCreate();
+}
 
 LayerObjTopDef::~LayerObjTopDef() {
   if (unknown290 != nullptr) {

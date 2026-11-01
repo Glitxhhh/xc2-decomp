@@ -1,5 +1,6 @@
 #include "layer/layer_obj_top_mask_obj.h"
 
+#include "layer/layer_base.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj_util.h"
 #include "layer/layer_shd_manager.h"
@@ -34,6 +35,14 @@ struct unknown012 {
 };
 
 } // namespace
+
+LayerObjTopMaskObj::LayerObjTopMaskObj(const void *data) {
+  unknown18 = LAYER_OBJ_TYPE_MASK;
+  unknowna8 |= 0x20000;
+  unknown250 = nullptr;
+  unknown238 = nullptr;
+  createWorkBuffer(data);
+}
 
 LayerObjTopMaskObj::~LayerObjTopMaskObj() {
   baseRelease();

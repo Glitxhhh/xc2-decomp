@@ -8,7 +8,10 @@ namespace layer {
 
 class LayerObjTopDef : public LayerObjWork {
 public:
+  LayerObjTopDef(const char *name);
+  LayerObjTopDef(const void *data);
   ~LayerObjTopDef() override;
+  void workIconCreate();
   void setDrawList(LayerSortMan *sortMan, bool is3D) override;
   void updateResCheck();
   void alphaRender();

@@ -9,6 +9,7 @@
 namespace layer {
 
 class LayerTextureObj;
+struct LayerResViewPortInfo;
 
 class LayerObjTopMaskObj : public LayerObj {
 public:
@@ -19,8 +20,8 @@ public:
   void resourceInit() override;
   void setDrawList(LayerSortMan *sortMan, bool is3D) override;
 
-  u8 _250[0x258 - 0x250];
-  mm::Rect<f32> unknown258; // Inferred role: view port; original member name unknown.
+  LayerResViewPortInfo *unknown250; // Inferred role: view port, cleared by the constructor like the other Top objects; original member name unknown.
+  mm::Rect<f32> unknown258;         // Inferred role: view port; original member name unknown.
   u8 _268[0x290 - 0x268];
   grlib::CGLibDblUniformBlock unknown290; // Inferred role: uniform block; original member name unknown.
   LayerTextureObj *unknown2c8;            // Inferred role: mask texture; original member name unknown.
@@ -28,6 +29,7 @@ public:
   u16 unknown2d2;                         // Inferred role: icon max; original member name unknown.
 };
 
+static_assert(offsetof(LayerObjTopMaskObj, unknown250) == 0x250, "");
 static_assert(offsetof(LayerObjTopMaskObj, unknown258) == 0x258, "");
 static_assert(offsetof(LayerObjTopMaskObj, unknown258.height) == 0x264, "");
 static_assert(offsetof(LayerObjTopMaskObj, unknown290) == 0x290, "");

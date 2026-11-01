@@ -13,6 +13,7 @@ struct LayerResViewPortInfo;
 
 class LayerObjTopFilter : public LayerObj {
 public:
+  LayerObjTopFilter();
   ~LayerObjTopFilter() override;
   LayerFilterObj *getFilterObj() const;
   u32 getFilterType() const;

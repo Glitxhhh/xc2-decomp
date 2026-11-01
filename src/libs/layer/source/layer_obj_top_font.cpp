@@ -1,10 +1,16 @@
 #include "layer/layer_obj_top_font.h"
 
+#include "layer/layer_base.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj_manager.h"
 #include "layer/layer_sort_man.h"
 
 namespace layer {
+
+LayerObjTopFont::LayerObjTopFont() {
+  unknown18 = LAYER_OBJ_TYPE_FONT;
+  unknowna8 |= 0x20000;
+}
 
 LayerObjTopFont::~LayerObjTopFont() {
   baseRelease();

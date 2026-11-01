@@ -15,6 +15,7 @@ struct LayerResViewPortInfo;
 
 class LayerObjTopTexObj : public LayerObj {
 public:
+  LayerObjTopTexObj(const grlib::CGLibTextureBuffer *texture);
   ~LayerObjTopTexObj() override;
   void createWorkBuffer();
   void releaseWorkBuffer();

@@ -3,6 +3,7 @@
 
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "layer/layer_obj.h"
+#include "layer/layer_obj_manager.h"
 #include "layer/layer_obj_res_tex.h"
 #include "layer/layer_obj_sort_poly_obj.h"
 #include "types.h"
@@ -36,10 +37,12 @@ public:
     u8 _54[0x58 - 0x54];
   };
 
+  LayerObjTopPolyObj(u32 width, u32 height, u16 vertexNum, u16 indexNum, LayerPrimitiveType type);
   ~LayerObjTopPolyObj() override;
   void releasePoly(layPolyWork &work);
   void releaseWorkBuffer();
   void createWorkBuffer(u32 width, u32 height);
+  void createVertex(u16 vertexNum, u16 indexNum, LayerPrimitiveType type);
   void updateVertexBuffer();
   void applyPartsSetup() override;
   void LockVertex();

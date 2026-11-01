@@ -3,8 +3,11 @@
 
 namespace layer {
 
+class LayerObj;
+
 class LayerObjSortDef : public LayerSortObj {
 public:
+  LayerObjSortDef(LayerObj *obj) : LayerSortObj(obj) {}
   void finalRender() override;
 };
 
