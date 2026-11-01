@@ -4,6 +4,10 @@
 #include "mm_math/mm_col3.h"
 #include "types.h"
 
+namespace mm {
+struct Vec3;
+}
+
 namespace ml {
 class DrFogObjGbl;
 class DrLightObjDir;
@@ -41,14 +45,17 @@ struct LgtObjData {
   f32 unknown18;    // Inferred role: intensity; original member name unknown.
   u8 _1c[0x22 - 0x1c];
   u16 unknown22; // Inferred role: group; original member name unknown.
-  u8 _24[0x28 - 0x24];
+  f32 unknown24; // Inferred role: light intensity scale, 1.0 when zero; original member name unknown.
   u16 unknown28; // Inferred role: animation index; original member name unknown.
+  u8 _2a[0x30 - 0x2a];
 };
 
 static_assert(offsetof(LgtObjData, unknown04) == 0x04, "");
 static_assert(offsetof(LgtObjData, unknown08) == 0x08, "");
 static_assert(offsetof(LgtObjData, unknown22) == 0x22, "");
 static_assert(offsetof(LgtObjData, unknown28) == 0x28, "");
+static_assert(offsetof(LgtObjData, unknown24) == 0x24, "");
+static_assert(sizeof(LgtObjData) == 0x30, "");
 
 struct LgtGlbFogObj {
   f32 unknown00[3]; // Inferred role: color; original member name unknown.
@@ -102,6 +109,8 @@ public:
   void calcFogFrameUpdate(const LgtGlbFogObj *obj, f32 frame);
   void setupAnmVal(const f32 *values);
   void calcAnimFog(DrFogObjGbl *fog, const LgtGlbFogObj *obj);
+  void calcAnimTransPnt(DrLightObjPnt *light, const LgtObjData *data, const mm::Vec3 &offset);
+  void calcAnimTransSpt(DrLightObjSpt *light, const LgtObjData *data, const mm::Vec3 &offset);
   void envlgt_amb_color_R(const LgtAnimInf *inf, f32 frame);
   void envlgt_amb_color_G(const LgtAnimInf *inf, f32 frame);
   void envlgt_amb_color_B(const LgtAnimInf *inf, f32 frame);

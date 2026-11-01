@@ -8,9 +8,9 @@ struct unknown004 {
   u32 unknown04; // Inferred role: offset of the keys from the block; original member name unknown.
 };
 
-DrEnvironmentTime::DrEnvironmentTime() : unknown00(nullptr), unknown08(nullptr), unknown10(0), unknown14(0), unknown18(0.06f), unknown1c(0.2f), unknown28(false), unknown29(0) {
+DrEnvironmentTime::DrEnvironmentTime() : unknown00(nullptr), unknown08(nullptr), unknown10(0), unknown14(0.0f), unknown18(0.06f), unknown1c(0.2f), unknown28(false), unknown29(0) {
   unknown2c = 0;
-  unknown20 = 0;
+  unknown20 = 0.0f;
   unknown24 = 0;
 }
 

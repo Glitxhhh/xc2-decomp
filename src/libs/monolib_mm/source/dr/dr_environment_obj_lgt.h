@@ -5,6 +5,8 @@
 #include "dr/dr_environment_obj.h"
 #include "dr/dr_environment_tex.h"
 #include "dr/dr_environment_time.h"
+#include "dr/dr_man.h"
+#include "mm_math/mm_col3.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
 
@@ -23,16 +25,33 @@ class DrShdLgtMan;
 
 struct LgtPosData {
   f32 unknown00[16]; // Inferred role: matrix, passed to the setMat of the lights; original member name unknown.
-  u8 _40[0x50 - 0x40];
+  u8 _40[0x4c - 0x40];
+  f32 unknown4c;    // Inferred role: light size; original member name unknown.
   f32 unknown50[3]; // Inferred role: range center; original member name unknown.
   f32 unknown5c;    // Inferred role: range radius; original member name unknown.
-  u8 _60[0x62 - 0x60];
-  u16 unknown62; // Inferred role: index in the DrMan global table that hides the light; original member name unknown.
+  u16 unknown60;    // Inferred role: 1-based index in the clip list, 0 when not clipped; original member name unknown.
+  u16 unknown62;    // Inferred role: index in the DrMan global table that hides the light; original member name unknown.
 };
 
+static_assert(offsetof(LgtPosData, unknown4c) == 0x4c, "");
 static_assert(offsetof(LgtPosData, unknown50) == 0x50, "");
 static_assert(offsetof(LgtPosData, unknown5c) == 0x5c, "");
+static_assert(offsetof(LgtPosData, unknown60) == 0x60, "");
 static_assert(offsetof(LgtPosData, unknown62) == 0x62, "");
+
+struct LgtPosTreeRange {
+  f32 unknown00[3]; // Inferred role: range max; original member name unknown.
+  f32 unknown0c[3]; // Inferred role: range min; original member name unknown.
+  u32 unknown18;    // Inferred role: offset of the child range indices; original member name unknown.
+  u32 unknown1c;    // Inferred role: offset of the light indices; original member name unknown.
+  u16 unknown20;    // Inferred role: child range count; original member name unknown.
+  u16 unknown22;    // Inferred role: light count; original member name unknown.
+};
+
+static_assert(offsetof(LgtPosTreeRange, unknown0c) == 0x0c, "");
+static_assert(offsetof(LgtPosTreeRange, unknown18) == 0x18, "");
+static_assert(offsetof(LgtPosTreeRange, unknown22) == 0x22, "");
+static_assert(sizeof(LgtPosTreeRange) == 0x24, "");
 
 // Layout from the constructor (1.0.0: 0x71007dff5c), releaseLgt (0x71007e0098) and the callbacks; the class is 0x240 bytes (DrEnvironmentMan::createObj).
 class DrEnvironmentObjLgt : public DrEnvironmentObj {
@@ -51,26 +70,86 @@ public:
     f32 unknown04; // Inferred role: intensity; original member name unknown.
   };
 
+  // Inferred type: ambient light data of the light file, at LgtObjData::unknown00; the original type name is unknown.
+  struct unknown003 {
+    f32 unknown00; // Inferred role: toon gradation value; original member name unknown.
+  };
+
+  // Inferred type: point light data of the light file, at LgtObjData::unknown00; the original type name is unknown.
+  struct unknown004 {
+    u16 unknown00; // Inferred role: soft shadow when 1; original member name unknown.
+    u8 _02[0x08 - 0x02];
+    f32 unknown08; // Inferred role: spe intensity; original member name unknown.
+    f32 unknown0c; // Inferred role: light value copied into DrLightObjPnt::unknownac; original member name unknown.
+  };
+
+  // Inferred type: spot light data of the light file, at LgtObjData::unknown00; the original type name is unknown.
+  struct unknown005 {
+    u16 unknown00; // Inferred role: soft shadow when 1; original member name unknown.
+    u8 _02[0x08 - 0x02];
+    f32 unknown08; // Inferred role: light value copied into DrLightObjSpt::unknowne0; original member name unknown.
+    f32 unknown0c; // Inferred role: light value copied into DrLightObjSpt::unknownd0; original member name unknown.
+    f32 unknown10; // Inferred role: angle; original member name unknown.
+    f32 unknown14; // Inferred role: light value copied into DrLightObjSpt::unknowne4; original member name unknown.
+    u8 _18[0x1c - 0x18];
+    f32 unknown1c; // Inferred role: light value copied into DrLightObjSpt::unknownd8, 4.0 when not positive; original member name unknown.
+    f32 unknown20; // Inferred role: light value copied into DrLightObjSpt::unknowndc; original member name unknown.
+  };
+
+  // Inferred role: tells whether the DrMan global table hides the light of index id (0 is never hidden); original name unknown.
+  bool unknown006(u32 id) const {
+    if (id != 0) {
+      u32 *table = unknown18->unknown1d20;
+      if (table[id >> 5] & (1 << (id & 31))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Inferred role: swaps the render list buffers and starts an empty frame list; original name unknown.
+  void unknown007() {
+    DrEnvironmentLgtList **lists = unknown1a0;
+    unknown1a0 = unknown1a8;
+    unknown1a8 = lists;
+    *unknown1a0 = nullptr;
+    unknown1e4 = unknown1e0;
+    unknown1e0 = 0;
+  }
+
   ~DrEnvironmentObjLgt() override;
   void releaseLgt();
   void resourceInit() override;
   void setupLgt(int screen);
   void setupFog(DrFogObjGbl *fog, const LgtGlbFogObj *data);
+  void setupAmbient(DrEnvironmentLgtList *list, DrLightObjAmb *light, const LgtObjData *data, int screen);
   void setupDirectinal(DrEnvironmentLgtList *list, DrLightObjDir *light, const LgtObjData *data, const LgtPosData *pos);
+  void setupPoint(DrEnvironmentLgtList *list, DrLightObjPnt *light, const LgtObjData *data, const LgtPosData *pos);
+  void setupSpot(DrEnvironmentLgtList *list, DrLightObjSpt *light, const LgtObjData *data, const LgtPosData *pos);
   void setupBox(DrEnvironmentLgtList *list, DrLightObjSpt *light, const LgtObjData *data, const LgtPosData *pos);
   void setupCapsule(DrEnvironmentLgtList *list, DrLightObjSpt *light, const LgtObjData *data, const LgtPosData *pos);
+  void setupOfsPos();
+  void setupCalcMatrix();
   void setFrame(f32 frame) override;
   void update() override;
+  void updatePosLgt();
   void updateFog();
   void calcLgtPos(DrCalcViewWork *viewWork);
+  void calcTreePos(const LgtPosTreeRange *range, DrCalcViewWork *viewWork);
   void calcLgtObj(int index, DrCalcViewWork *viewWork);
   void renderLgt() override;
   void debugRenderLgt() override;
   void debugRenderLgt2D() override;
   void changeMemCall(const void *data) override;
   bool callback_Chk_Ambinet_Directional(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data);
+  bool callback_Chk_Point(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data);
+  bool callback_Chk_Spot(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data);
   bool callback_Chk_non(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data);
   bool callback_Chk_LocalIBL(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data);
+  bool callback_Calc_Ambient(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
+  bool callback_Calc_Directional(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
+  bool callback_Calc_Point(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
+  bool callback_Calc_Spot(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
   bool callback_Calc_Non(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
   bool callback_Calc_LocalIBL(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
   void callback_Ren_Non(DrLightObj *light, DrShdLgtMan *shdLgtMan);
@@ -83,6 +162,9 @@ public:
   void callback_Relase_Spot(DrLightObj *light);
   void callback_Fog_Gbl(DrFogObjGbl *fog, DrCalcViewWork *viewWork, const LgtGlbFogObj *data);
 
+  static void (DrEnvironmentObjLgt::*s_pCallEnvRelase[])(DrLightObj *light);
+  static bool (DrEnvironmentObjLgt::*s_pCallEnvChk[])(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data);
+  static bool (DrEnvironmentObjLgt::*s_pCallCalcEnv[])(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork);
   static void (DrEnvironmentObjLgt::*s_pCallLgtRender[])(DrLightObj *light, DrShdLgtMan *shdLgtMan);
   static void (DrEnvironmentObjLgt::*s_pCallLgtRender2D[])(DrLightObj *light, DrShdLgtMan *shdLgtMan);
   static void (DrEnvironmentObjLgt::*s_pCallFogCall[])(DrFogObjGbl *fog, DrCalcViewWork *viewWork, const LgtGlbFogObj *data);
@@ -95,7 +177,7 @@ public:
   const LgtFileHeader *unknown158;   // Inferred role: light file data; original member name unknown.
   const LgtObjData *unknown160;      // Inferred role: light object data; original member name unknown.
   const void *unknown168;            // Inferred role: light file table set by setupLgt; original member name unknown.
-  const void *unknown170;            // Inferred role: position tree ranges; original member name unknown.
+  const LgtPosTreeRange *unknown170; // Inferred role: position tree ranges; original member name unknown.
   const void *unknown178;            // Inferred role: light file table set by setupLgt; original member name unknown.
   void *unknown180;                  // Inferred role: work memory of the lights, fogs and lists; original member name unknown.
   u32 *unknown188;                   // Inferred role: bits of the lights checked this frame; original member name unknown.
@@ -123,7 +205,7 @@ public:
   u8 _20c[0x210 - 0x20c];
   mm::Vec3 unknown210; // Inferred role: camera position in the object space; original member name unknown.
   mm::Vec3 unknown220; // Inferred role: previous camera position; original member name unknown.
-  f32 unknown230[3];   // Inferred role: values copied into the lights by update; original member name unknown.
+  mm::Col3 unknown230; // Inferred role: ambient color copied into DrLightMan::unknown12c by updatePosLgt; original member name unknown.
   u8 unknown23c;       // Inferred role: capture tool state; original member name unknown.
 };
 

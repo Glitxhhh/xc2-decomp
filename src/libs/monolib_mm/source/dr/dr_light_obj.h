@@ -180,17 +180,32 @@ public:
   void releaseSpt();
   void setDir(const mm::Vec3 &direction);
 
-  u8 _30[0xbc - 0x30];
-  f32 unknownbc; // Inferred role: angle; original member name unknown.
+  mm::Mat44 unknown30; // Inferred role: matrix; original member name unknown.
+  mm::Vec3 m_pos;
+  u8 _80[0xb0 - 0x80];
+  mm::Col3 unknownb0; // Inferred role: color; original member name unknown.
+  f32 unknownbc;      // Inferred role: angle; original member name unknown.
   f32 m_size;
-  u8 _c4[0xd4 - 0xc4];
+  u8 _c4[0xc8 - 0xc4];
+  f32 unknownc8; // Inferred role: color intensity; original member name unknown.
+  u8 _cc[0xd0 - 0xcc];
+  f32 unknownd0; // Inferred role: light value set from the spot data; original member name unknown.
   f32 unknownd4; // Inferred role: spe intensity; original member name unknown.
-  u8 _d8[0xf0 - 0xd8];
+  f32 unknownd8; // Inferred role: light value set from the spot data, 4.0 by default; original member name unknown.
+  f32 unknowndc; // Inferred role: light value set from the spot data; original member name unknown.
+  f32 unknowne0; // Inferred role: light value set from the spot data; original member name unknown.
+  f32 unknowne4; // Inferred role: light value set from the spot data; original member name unknown.
+  u8 _e8[0xf0 - 0xe8];
 };
 
+static_assert(offsetof(DrLightObjSpt, m_pos) == 0x70, "");
+static_assert(offsetof(DrLightObjSpt, unknownb0) == 0xb0, "");
 static_assert(offsetof(DrLightObjSpt, unknownbc) == 0xbc, "");
+static_assert(offsetof(DrLightObjSpt, unknownc8) == 0xc8, "");
+static_assert(offsetof(DrLightObjSpt, unknownd0) == 0xd0, "");
 static_assert(offsetof(DrLightObjSpt, m_size) == 0xc0, "");
 static_assert(offsetof(DrLightObjSpt, unknownd4) == 0xd4, "");
+static_assert(offsetof(DrLightObjSpt, unknowne4) == 0xe4, "");
 // Size from the spot light array stride of DrEnvironmentObjLgt::releaseLgt (1.0.0: 0x71007e0210).
 static_assert(sizeof(DrLightObjSpt) == 0xf0, "");
 

@@ -155,6 +155,15 @@ void DrLightObjPnt::setMat(const mm::Mat44 &matrix) {
   m_pos = mm::Vec3(unknown30.rows[3][0], unknown30.rows[3][1], unknown30.rows[3][2]);
 }
 
+void DrLightObjPnt::setMat(const f32 *matrix) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      unknown30.rows[i][j] = matrix[i * 4 + j];
+    }
+  }
+  m_pos = unknown30.unknown004();
+}
+
 void DrLightObjPnt::deletePntShadow() { releasePnt(); }
 
 DrLightObjPnt::~DrLightObjPnt() { releasePnt(); }

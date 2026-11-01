@@ -4,6 +4,7 @@
 #include "types.h"
 
 namespace ml {
+class DrMan;
 
 // Inferred role: light file header; original type name unknown.
 struct LgtFileHeader {
@@ -18,14 +19,15 @@ public:
   DrEnvironmentTime();
   bool setEnvTimeData(const LgtFileHeader *header, const u8 *data, bool isLoop);
   void changeMemEnvTimeData(const LgtFileHeader *header, const u8 *data);
+  void setWeatherNum(DrMan *drMan, bool isChange, int screen);
 
   const u8 *unknown00; // Inferred role: time data; original member name unknown.
   const u8 *unknown08; // Inferred role: time table; original member name unknown.
   s32 unknown10;       // Inferred role: time count; original member name unknown.
-  s32 unknown14;       // Inferred role: unknown value cleared by the constructor; original member name unknown.
-  f32 unknown18;       // Inferred role: unknown constant; original member name unknown.
+  f32 unknown14;       // Inferred role: time, copied from DrMan::unknown1cac by DrEnvironmentObjLgt::update; original member name unknown.
+  f32 unknown18;       // Inferred role: blend rate toward the time color; original member name unknown.
   f32 unknown1c;       // Inferred role: unknown constant; original member name unknown.
-  s32 unknown20;       // Inferred role: unknown value cleared by the constructor; original member name unknown.
+  f32 unknown20;       // Inferred role: blend frames left, the time color is blended while not zero; original member name unknown.
   s32 unknown24;       // Inferred role: unknown value cleared by the constructor; original member name unknown.
   bool unknown28;      // Inferred role: loop flag; original member name unknown.
   u8 unknown29;        // Inferred role: unknown value cleared by the constructor; original member name unknown.
