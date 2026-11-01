@@ -49,7 +49,9 @@ enum {
 // Inferred role: obj property move; original type name unknown.
 struct unknown070 {
   u32 unknown00; // Inferred role: type; original member name unknown.
-  u8 _04[0x34 - 0x04];
+  u8 _04[0x10 - 0x04];
+  mm::Vec3 unknown10; // Inferred role: position; original member name unknown.
+  u8 _20[0x34 - 0x20];
   f32 unknown34; // Inferred role: height; original member name unknown.
   u8 _38[0x7c - 0x38];
   bool unknown7c; // Inferred role: auto run, copied from the pc field property; original member name unknown.

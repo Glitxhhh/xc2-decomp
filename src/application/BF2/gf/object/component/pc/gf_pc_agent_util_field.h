@@ -13,6 +13,10 @@
 #include "mm_mtl/unique_ptr.h"
 #include "types.h"
 
+namespace mm {
+struct Vec3;
+} // namespace mm
+
 namespace navi {
 class NvmshAcObj;
 } // namespace navi
@@ -37,6 +41,9 @@ public:
   static void setIdleInput(GfComPropertyPc &property);
   static f32 setFollowInput(f32 distance, navi::NvmshAcObj *naviObject, GfComPropertyPc &property);
   static fw::ParamAdapter getAIParamAdapter(GfComPropertyPc &property, PARAM_ID_FIELD_AI id);
+  static bool calcParentPlayerPush(GfComPropertyPc &property, const mm::Vec3 &position, f32 range, mm::Vec3 *push);
+  static bool existNearChimbPlayer(GfComPropertyPc &property, const mm::Vec3 &position);
+  static bool isWallJumpAnyPlayer();
 
   // Inferred role: field AI param list of the AI agent of the player; original name unknown.
   static const mm::mtl::IntrusivePtr<fw::ParamList> &unknown001(GfComPropertyPc &property) {

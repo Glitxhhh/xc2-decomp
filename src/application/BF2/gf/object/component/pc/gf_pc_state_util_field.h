@@ -86,6 +86,11 @@ public:
   static bool isWallIdleMotion(GfComAsm &comAsm);
   static void notifyTurn(GfComBehaviorPc &behavior);
   static bool isEnableWallPrepare(GfComPropertyPc &property);
+  static mm::Vec3 calcWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position, const mm::Plane &plane);
+  static bool isWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position);
+  static bool isEnableWallAdsorptionStart(GfComPropertyPc &property, const mm::Vec3 &position, const mm::Vec3 &preparePosition);
+  static bool isNearPlayerWall(GfComPropertyPc &property, const mm::Vec3 &position, f32 range);
+  static bool isNearPlayer(GfComPropertyPc &property, const mm::Vec3 &position, f32 range);
   static bool isWallDetach(GfComPropertyPc &property);
   static void setEnableDeadColCheck(GfComBehaviorPc &behavior, bool isEnable);
   static void setIdleStatus(GfComPropertyPc &property, bool isIdle);

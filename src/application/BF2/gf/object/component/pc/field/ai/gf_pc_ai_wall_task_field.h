@@ -4,6 +4,7 @@
 
 #include "ai/ai_behavior_tree.h"
 #include "ai/ai_state_fsm.h"
+#include "gf/object/component/pc/field/ai/gf_pc_state_field_wall_ai.h"
 #include "gf/object/component/pc/gf_pc_ai_agent_field.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/unique_ptr.h"
@@ -20,15 +21,18 @@ namespace pc {
 
 // Layout evidence: BehaviorTree::createTask<TaskFieldWallPrepare> (0x7100540c74) allocates 0x48 bytes, passes flags 7
 // (activate, create and destroy events) and clears 0x38 and 0x40; onChangeActivate (0x7100545084) stores the black
-// board at 0x40 around Fsm::setState on the state machine at 0x38. onEvent is out of line, so the vtable is in
-// gf_pc_ai_wall_task_field.cpp.
+// board in the context at 0x40 around Fsm::setState on the state machine at 0x38. onEvent is out of line, so the vtable
+// is in gf_pc_ai_wall_task_field.cpp.
 class TaskFieldWallPrepare : public ai::TaskNode {
 public:
   static mm::mtl::RTTI m_rtti;
 
-  TaskFieldWallPrepare(const char *name) : ai::TaskNode(name, 7), unknown40(nullptr) {}
+  TaskFieldWallPrepare(const char *name) : ai::TaskNode(name, 7), unknown40() {}
   const mm::mtl::RTTI *getRTTI() const override { return &m_rtti; }
   void onEvent(ai::BlackBoard &blackBoard, const ai::Event &event) override;
+  void onChangeActivate(BlackBoardField &blackBoard, const ai::ActivateEvent &event);
+  void onCreate(BlackBoardField &blackBoard, const ai::CreateEvent &event);
+  void onDestroy(BlackBoardField &blackBoard, const ai::DestroyEvent &event);
   bool testCondition(const BlackBoardField &blackBoard);
   void update(BlackBoardField &blackBoard);
 
@@ -37,7 +41,7 @@ public:
   UNKNOWN001
 
   mm::mtl::UniquePtr<ai::Fsm> unknown38; // Inferred role: wall state machine; original member name unknown.
-  BlackBoardField *unknown40;            // Inferred role: black board during a state change; original member name unknown.
+  WallAiContextField unknown40;          // Inferred role: owner of the state machine; original member name unknown.
 };
 
 static_assert(offsetof(TaskFieldWallPrepare, unknown38) == 0x38, "");
@@ -72,6 +76,8 @@ public:
   TaskFieldWallFall(const char *name) : ai::TaskNode(name, 3) {}
   const mm::mtl::RTTI *getRTTI() const override { return &m_rtti; }
   void onEvent(ai::BlackBoard &blackBoard, const ai::Event &event) override;
+  void onChangeActivate(BlackBoardField &blackBoard, const ai::ActivateEvent &event);
+  void onCreate(BlackBoardField &blackBoard, const ai::CreateEvent &event);
   bool testCondition(const BlackBoardField &blackBoard);
   void update(BlackBoardField &blackBoard);
 

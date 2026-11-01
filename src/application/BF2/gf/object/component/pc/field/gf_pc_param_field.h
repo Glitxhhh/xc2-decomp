@@ -120,5 +120,21 @@ static_assert(offsetof(FollowBuddyPcParam, powMinDist) == 0x04, "");
 static_assert(offsetof(FollowBuddyPcParam, walkDistStopFollower) == 0x0c, "");
 static_assert(sizeof(FollowBuddyPcParam) == 0x10, "");
 
+// Field names and offsets from the reflection built by gf::pc::WallAiParam::createReflection.
+struct WallAiParam {
+  f32 prepareRange;
+  f32 minDist;
+  f32 fallDelay;
+  f32 climbEndSafeRange;
+  f32 escapeRange;
+  f32 nearRange;
+  u32 delay;
+};
+
+static_assert(offsetof(WallAiParam, fallDelay) == 0x08, "");
+static_assert(offsetof(WallAiParam, escapeRange) == 0x10, "");
+static_assert(offsetof(WallAiParam, delay) == 0x18, "");
+static_assert(sizeof(WallAiParam) == 0x1c, "");
+
 } // namespace pc
 } // namespace gf

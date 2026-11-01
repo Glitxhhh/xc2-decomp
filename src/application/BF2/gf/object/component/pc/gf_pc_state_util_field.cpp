@@ -3,6 +3,7 @@
 #include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/reference_frame.h"
+#include "fw/fw_param_manager.h"
 #include "fw/fw_transform.h"
 #include "gf/camera/gf_camera_player.h"
 #include "gf/game/gf_game_player_camera.h"
@@ -15,6 +16,7 @@
 #include "gf/object/component/pc/field/gf_pc_param_field.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_agent_util_field.h"
 #include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/component/pc/param/gf_pc_param.h"
 #include "gf/object/component/pc/plugin/gf_pc_access_plugin.h"
@@ -202,6 +204,56 @@ bool StateUtilField::isEnableWallPrepare(GfComPropertyPc &property) {
     return false;
   }
   return GfObjUtil::getProperty(handle)->unknown18->unknown00 == PROPERTY_MOVE_CLIMB;
+}
+
+bool StateUtilField::isWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position) {
+  mm::Vec3 diff(property.unknown160.x - position.x, 0.0f, property.unknown160.z - position.z);
+  f32 lengthSq = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+  const WallAiParam *param = AgentUtilField::getAIParamAdapter(property, PARAM_ID_FIELD_AI_UNKNOWN_5).get<WallAiParam>();
+  return lengthSq <= param->prepareRange * param->prepareRange;
+}
+
+bool StateUtilField::isEnableWallAdsorptionStart(GfComPropertyPc &property, const mm::Vec3 &position, const mm::Vec3 &preparePosition) {
+  if (isNearPlayerWall(property, position, AgentUtilField::getAIParamAdapter(property, PARAM_ID_FIELD_AI_UNKNOWN_5).get<WallAiParam>()->minDist)) {
+    return false;
+  }
+  return isWallPreparePosition(property, preparePosition);
+}
+
+bool StateUtilField::isNearPlayerWall(GfComPropertyPc &property, const mm::Vec3 &position, f32 range) {
+  f32 rangeSq = range * range;
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  for (u64 i = 0; i < 6; i++) {
+    if (i == property.unknown38) {
+      continue;
+    }
+    GF_OBJ_HANDLE *handle = formation->unknown1a0[i].unknown08;
+    if (handle == INVALID_HANDLE) {
+      continue;
+    }
+    const GfObjProperty *other = GfObjUtil::getProperty(handle);
+    if (other->unknown18->unknown00 == PROPERTY_MOVE_CLIMB) {
+      mm::Vec3 diff = position - other->unknown18->unknown10;
+      if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= rangeSq) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool StateUtilField::isNearPlayer(GfComPropertyPc &property, const mm::Vec3 &position, f32 range) {
+  f32 rangeSq = range * range;
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  for (u64 i = 0; i < 6; i++) {
+    if (i != property.unknown38 && formation->unknown1a0[i].unknown08 != INVALID_HANDLE) {
+      mm::Vec3 diff = position - GfObjUtil::getProperty(formation->unknown1a0[i].unknown08)->unknown18->unknown10;
+      if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= rangeSq) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 bool StateUtilField::isWallDetach(GfComPropertyPc &property) {
