@@ -22,7 +22,9 @@ public:
   static void enterMoveSwim(GfComPropertyPc &property);
   static void updateMoveSwim(const fw::UpdateInfo &info, GfComPropertyPc &property);
   static void updateMoveWaterTurn(const fw::UpdateInfo &info, GfComPropertyPc &property, const mm::Vec3 &direction);
+  static void updateMoveWaterSink(const fw::UpdateInfo &info, GfComPropertyPc &property);
   static void updateMoveWaterRise(const fw::UpdateInfo &info, GfComPropertyPc &property);
+  static void updateMoveWall(const fw::UpdateInfo &info, GfComPropertyPc &property);
   static void updateMoveWaterHoleRise(const fw::UpdateInfo &info, GfComPropertyPc &property);
 };
 

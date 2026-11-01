@@ -1,12 +1,13 @@
 #pragma once
+#include <stddef.h>
+
 #include "framework/message/message_object.h"
 #include "gf/object/component/pc/gf_pc_asm_cmd_id_field.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
+#include "mm_math/mm_plane.h"
+#include "mm_math/mm_quat.h"
+#include "mm_math/mm_vec3.h"
 #include "types.h"
-
-namespace mm {
-struct Vec3;
-} // namespace mm
 
 namespace gf {
 
@@ -15,6 +16,20 @@ class GfComBehaviorPc;
 class GfComPropertyPc;
 class GfComponent;
 struct GF_OBJ_HANDLE;
+
+struct MsgPcFieldNotifyWall : fw::Message {
+  MsgPcFieldNotifyWall() : fw::Message(0x100000f, 0x40) {}
+
+  mm::Plane unknown10; // Inferred role: wall plane; original member name unknown.
+  mm::Vec3 unknown30;  // Inferred role: position; original member name unknown.
+  mm::Quat unknown40;  // Inferred role: rotation; original member name unknown.
+  u32 unknown50;       // Inferred role: notify type (0 enter, 1 leave, 2 jump, 3 move); original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldNotifyWall, unknown10) == 0x10, "");
+static_assert(offsetof(MsgPcFieldNotifyWall, unknown30) == 0x30, "");
+static_assert(offsetof(MsgPcFieldNotifyWall, unknown40) == 0x40, "");
+static_assert(offsetof(MsgPcFieldNotifyWall, unknown50) == 0x50, "");
 
 namespace pc {
 
@@ -72,13 +87,18 @@ public:
   static void setIdleStatus(GfComPropertyPc &property, bool isIdle);
   static void setAirStatus(GfComBehaviorPc &behavior, bool isAir);
   static void setSpecialActStatus(GfComBehaviorPc &behavior, bool isSpecialAct);
+  static void notifySkillAct(GfComBehaviorPc &behavior, bool isSkillAct);
   static void notifyJumpEnd(GfComBehaviorPc &behavior);
   static void setEnableWaterIn(GfComBehaviorPc &behavior, bool isEnable);
   static void setWaterMode(GfComBehaviorPc &behavior, bool isWater);
   static void setWaterDiveMove(GfComPropertyPc &property, bool isDive);
   static f32 getChildFrameHeight(GfComponent &component);
+  static GfPropertyField::WALL_MOVE_MODE decideWallMoveMode(GfComPropertyPc &property);
   static bool isWallUpMove(GfPropertyField::WALL_MOVE_MODE mode);
+  static bool isMovableWall(GfComPropertyPc &property, GfPropertyField::WALL_MOVE_MODE mode);
   static ASM_CMD_ID_FIELD getAsmID(GfPropertyField::WALL_MOVE_MODE mode);
+  static void sendMessageWallChilds(GfComPropertyPc &property, fw::Message &message);
+  static bool isWallClimbEnd(GfComPropertyPc &property);
   static void resetCameraForWall(GfComBehaviorPc &behavior, Timing timing);
   static void setAsmSpeedSlideBrake(GfComPropertyPc &property);
   static void notifyRiderEvent(GfComBehaviorPc &behavior, VehicleEvent event);

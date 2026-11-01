@@ -65,11 +65,12 @@ public:
 
   // Inferred role: climb wall info; original type name unknown.
   struct unknown003 {
-    u8 _00[0x24 - 0x00];
+    mm::Plane unknown00; // Inferred role: wall plane; original member name unknown.
+    u8 _20[0x24 - 0x20];
     u8 : 4;
     u8 unknown24_4 : 1; // Inferred role: valid; original member name unknown.
     u8 : 3;
-    u8 _25[0x40 - 0x25];
+    u8 _25[0x30 - 0x25];
   };
 
   // Inferred role: descend wall info; original type name unknown.
@@ -81,6 +82,7 @@ public:
     unknown001 unknown70;  // Inferred role: water info; original member name unknown.
     unknown002 unknownb0;  // Inferred role: dead plane info; original member name unknown.
     unknown003 unknown180; // Inferred role: climb wall info; original member name unknown.
+    u8 _1b0[0x1c0 - 0x1b0];
   };
 
   u8 _00[0x20 - 0x00];
@@ -109,7 +111,7 @@ static_assert(sizeof(EnviromentSensor::GroundInfo) == 0x70, "");
 static_assert(offsetof(EnviromentSensor::GroundInfo, unknown38) == 0x38, "");
 static_assert(sizeof(EnviromentSensor::unknown001) == 0x40, "");
 static_assert(sizeof(EnviromentSensor::unknown002) == 0xd0, "");
-static_assert(sizeof(EnviromentSensor::unknown003) == 0x40, "");
+static_assert(sizeof(EnviromentSensor::unknown003) == 0x30, "");
 static_assert(sizeof(EnviromentSensor::VerticalData) == 0x1c0, "");
 static_assert(offsetof(EnviromentSensor, m_envSensorCheckFlags) == 0x20, "");
 static_assert(offsetof(EnviromentSensor, unknown30) == 0x30, "");

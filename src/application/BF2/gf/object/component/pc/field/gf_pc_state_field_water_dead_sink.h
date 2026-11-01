@@ -23,7 +23,7 @@ class StateFieldWaterDeadSink : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
 
-  u8 _18[0x20 - 0x18];
+  f32 unknown18; // Inferred role: elapsed time; original member name unknown.
 };
 
 static_assert(sizeof(StateFieldWaterDeadSink) == 0x20, "");

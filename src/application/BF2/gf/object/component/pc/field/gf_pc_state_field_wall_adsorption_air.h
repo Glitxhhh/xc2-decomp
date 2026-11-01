@@ -23,7 +23,8 @@ class StateFieldWallAdsorptionAir : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
 
-  u8 _18[0x20 - 0x18];
+  f32 unknown18; // Inferred role: elapsed time; original member name unknown.
+  f32 unknown1c; // Inferred role: wall float at enter; original member name unknown.
 };
 
 static_assert(sizeof(StateFieldWallAdsorptionAir) == 0x20, "");

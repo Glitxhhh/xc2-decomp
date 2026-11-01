@@ -115,7 +115,7 @@ public:
   u32 : 5;
   u8 _114[0x118 - 0x114];
   f32 unknown118; // Inferred role: water height compared by StateUtilField::isInterruptionWater; original member name unknown.
-  u8 _11c[0x120 - 0x11c];
+  f32 unknown11c; // Inferred role: water depth; original member name unknown.
   s32 unknown120; // Inferred role: mode compared with 1 by StateFieldWaterDeadDive::enter; original member name unknown.
   u8 _124[0x160 - 0x124];
   mm::Vec3 unknown160; // Inferred role: position; original member name unknown.
@@ -128,7 +128,9 @@ public:
   mm::Vec3 unknown2d0; // Inferred role: input X axis; original member name unknown.
   u8 _2e0[0x2f0 - 0x2e0];
   f32 unknown2f0; // Inferred role: water offset compared by StateUtilField::isInterruptionWater; original member name unknown.
-  u8 _2f4[0x300 - 0x2f4];
+  u8 _2f4[0x2f8 - 0x2f4];
+  f32 unknown2f8; // Inferred role: landing height; original member name unknown.
+  u8 _2fc[0x300 - 0x2fc];
   mm::mtl::IntrusivePtr<fw::ParamList> unknown300; // Inferred role: pc param list; original member name unknown.
   u8 _308[0x310 - 0x308];
   pc::GfPropertyField unknown310; // Inferred role: field; original member name unknown.
@@ -142,6 +144,7 @@ static_assert(offsetof(GfComPropertyPc, unknown90) == 0x90, "");
 static_assert(offsetof(GfComPropertyPc, unknown94) == 0x94, "");
 static_assert(offsetof(GfComPropertyPc, unknownc0) == 0xc0, "");
 static_assert(offsetof(GfComPropertyPc, unknown118) == 0x118, "");
+static_assert(offsetof(GfComPropertyPc, unknown11c) == 0x11c, "");
 static_assert(offsetof(GfComPropertyPc, unknown120) == 0x120, "");
 static_assert(offsetof(GfComPropertyPc, unknown160) == 0x160, "");
 static_assert(offsetof(GfComPropertyPc, unknown170) == 0x170, "");
@@ -149,6 +152,7 @@ static_assert(offsetof(GfComPropertyPc, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2d0) == 0x2d0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2f0) == 0x2f0, "");
+static_assert(offsetof(GfComPropertyPc, unknown2f8) == 0x2f8, "");
 static_assert(offsetof(GfComPropertyPc, unknown300) == 0x300, "");
 static_assert(offsetof(GfComPropertyPc, unknown310) == 0x310, "");
 

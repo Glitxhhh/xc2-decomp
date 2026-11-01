@@ -44,5 +44,28 @@ struct WaterCommonParam {
 static_assert(offsetof(WaterCommonParam, waterDiveMinSpeed) == 0x20, "");
 static_assert(sizeof(WaterCommonParam) == 0x24, "");
 
+// Field names and offsets from the reflection built by gf::pc::WallCommonParam::createReflection.
+struct WallCommonParam {
+  f32 adsorptionAngle;
+  f32 adsorptionAngleUuderGround;
+  f32 adsorptionOffset;
+  f32 wallFloat;
+  f32 moveSearchLength;
+  f32 adsorptionTime;
+  f32 noAdsorptionTime;
+  f32 rotSpeedX;
+  f32 rotSpeedY;
+  f32 rotSpeedZ;
+  f32 rotThreasouldX;
+  f32 rotThreasouldY;
+  f32 rotThreasouldZ;
+  f32 jumpSpeed;
+  f32 wallHeightRatio;
+};
+
+static_assert(offsetof(WallCommonParam, adsorptionTime) == 0x14, "");
+static_assert(offsetof(WallCommonParam, wallHeightRatio) == 0x38, "");
+static_assert(sizeof(WallCommonParam) == 0x3c, "");
+
 } // namespace pc
 } // namespace gf
