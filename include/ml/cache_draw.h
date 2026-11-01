@@ -421,6 +421,8 @@ public:
   bool fontShadow(bool isEnable);
   bool begin(u32 primitive, u32 count);
   bool end();
+  bool add(const mm::Vec3 &first, const mm::Vec3 &second);
+  bool add(const mm::Vec3 &position);
 
   unknown003 unknown08[2];       // Inferred role: command buffers, indexed by frame parity; original member name unknown.
   mtl::ALLOC_HANDLE unknown6048; // Inferred role: memory handle; original member name unknown.
@@ -487,6 +489,7 @@ public:
   };
 
   DebDraw();
+  ~DebDraw() override;
   // The game vtable holds __cxa_pure_virtual in these slots and has no complete-object constructor symbol.
   virtual void fastSetup() = 0;
   virtual void restoreShader() = 0;

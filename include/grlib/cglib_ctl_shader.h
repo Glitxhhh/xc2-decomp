@@ -11,9 +11,14 @@ class CGLibSampler;
 class CGLibTriUniformBlock;
 class CGLibVtxFetch;
 
-enum GrlUtilVertFetch {};
+enum GrlUtilVertFetch {
+  GRL_UTIL_VERT_FETCH_UNKNOWN_0 = 0,
+  GRL_UTIL_VERT_FETCH_UNKNOWN_1 = 1,
+};
 
-enum GrlUtilSampler {};
+enum GrlUtilSampler {
+  GRL_UTIL_SAMPLER_UNKNOWN_1 = 1,
+};
 
 class CGLibCtlShader {
 public:

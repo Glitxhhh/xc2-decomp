@@ -2,15 +2,27 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "grlib/cglib_color_ctl.h"
+#include "grlib/cglib_ctl_shader.h"
+#include "grlib/cglib_ctl_texture.h"
+#include "grlib/cglib_ctl_vertex.h"
+#include "grlib/cglib_dec_shader.h"
 #include "grlib/cglib_depth_ctl.h"
+#include "grlib/cglib_etc_uniform_block.h"
 #include "grlib/cglib_polygon.h"
+#include "grlib/cglib_shader.h"
+#include "grlib/cglib_vtx_vertex.h"
+#include "grlib/shd_util.h"
 #include "ml/cache_draw.h"
+#include "ml/deb_draw_cmd.h"
 #include "ml/dev_font.h"
 #include "ml/dev_graph.h"
 #include "ml/fixed_size_alloc.h"
 #include "ml/ml_mem.h"
 #include "ml/reslist.h"
 #include "ml/work_cpu.h"
+#include "ml/work_util.h"
+#include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_cube.h"
 #include "mm_math/mm_line2.h"
@@ -36,6 +48,8 @@ mm::Vec3 unknown005[16];
 mm::Vec3 unknown006[16];
 // Inferred role: the DebDraw instance; original name unknown.
 DebDraw *unknown007;
+// Inferred role: vertex buffer handed to the render thread by the DebDrawCmd destructor; original name unknown.
+grlib::CGLibVtxVertex *unknown008;
 
 } // namespace
 
@@ -252,6 +266,360 @@ void DebDraw::flushPrio(int priority, const mm::Mat44 &projection, const mm::Mat
 void DebDraw::initialize() {}
 
 void DebDraw::release() {}
+
+void DebDrawCmd::initialize() {}
+
+void DebDrawCmd::release() {}
+
+DebDrawCmd::DebDrawCmd()
+    : unknown219(false), unknown21c(mm::Col4::white), unknown230(mm::Vec3::unitY), unknown240(mm::Col4::white), unknown250(mm::Col4::white), unknown260(mm::Col4::white), unknown270(false),
+      unknown2d0(nullptr), unknown2d8(0), unknown2e8(nullptr) {
+  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thInitialize, this, nullptr, nullptr, false, WKCPU_SYNC_NONE);
+}
+
+u32 DebDrawCmd::thInitialize(void *argument, void *userData) {
+  DebDrawCmd *draw = static_cast<DebDrawCmd *>(argument);
+  draw->unknown2e0 = 0xc00000;
+  draw->unknown2d0 = new (WorkUtil::getWorkMem()) grlib::CGLibVtxVertex();
+  draw->unknown2d0->createVertexBuff(draw->unknown2e0, sizeof(unknown001));
+  draw->unknown2f0 = false;
+  return 0;
+}
+
+DebDrawCmd::~DebDrawCmd() {
+  unknown008 = unknown2d0;
+  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thDestroy, &unknown008, nullptr, nullptr, false, WKCPU_SYNC_NONE);
+}
+
+u32 DebDrawCmd::thDestroy(void *argument, void *userData) {
+  grlib::CGLibVtxVertex **vertex = static_cast<grlib::CGLibVtxVertex **>(argument);
+  if (*vertex != nullptr) {
+    delete *vertex;
+    *vertex = nullptr;
+  }
+  return 0;
+}
+
+void DebDrawCmd::fastSetup() {
+  unknown156 = false;
+  if (unknown2f0) {
+    unknown2dc = unknown2d8 = unknown2e0 / 2;
+    unknown2f0 = false;
+  } else {
+    unknown2dc = unknown2d8 = 0;
+    unknown2f0 = true;
+  }
+}
+
+void DebDrawCmd::setVertex(const mm::Vec3 &position, const mm::Col4 &color, f32 u, f32 v) {
+  static_cast<unknown001 *>(unknown2e8)->unknown003(position);
+  static_cast<unknown001 *>(unknown2e8)->unknown004(color);
+  static_cast<unknown001 *>(unknown2e8)->unknown005(u, v);
+  unknown2dc += sizeof(unknown001);
+  unknown2e8 = static_cast<unknown001 *>(unknown2e8) + 1;
+}
+
+void DebDrawCmd::add(const mm::Pnt<int> &first, const mm::Pnt<int> &second) {
+  setVertex(mm::Vec3(first.x, first.y, unknown14c), unknown0c, 0.0f, 0.0f);
+  setVertex(mm::Vec3(second.x, second.y, unknown14c), unknown0c, 0.0f, 0.0f);
+  unknown140 += 2;
+}
+
+void DebDrawCmd::add(int x1, int y1, int x2, int y2) {
+  setVertex(mm::Vec3(x1, y1, unknown14c), unknown0c, 0.0f, 0.0f);
+  setVertex(mm::Vec3(x2, y2, unknown14c), unknown0c, 0.0f, 0.0f);
+  unknown140 += 2;
+}
+
+void DebDrawCmd::add(const mm::Pnt<int> &position) {
+  setVertex(mm::Vec3(position.x, position.y, unknown14c), unknown0c, 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(f32 x, f32 y, f32 z) { add(mm::Vec3(x, y, z)); }
+
+void DebDrawCmd::add(int x, int y, int z) {
+  setVertex(mm::Vec3(x, y, z), unknown0c, 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(int x, int y) {
+  setVertex(mm::Vec3(x, y, unknown14c), unknown0c, 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(int x, int y, const mm::Col4 &color) {
+  setVertex(mm::Vec3(x, y, unknown14c), color, 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(int x, int y, const mm::Col3 &color) {
+  setVertex(mm::Vec3(x, y, unknown14c), mm::Col4(color.r, color.g, color.b, unknown0c.a), 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(const mm::Vec3 &position, const mm::Vec3 &texCoord, const mm::Col4 &color) {
+  setVertex(position, color, texCoord.x, texCoord.y);
+  unknown140++;
+}
+
+void DebDrawCmd::begin(u32 primitive, u32 count) {
+  if (unknown210->begin(primitive, count)) {
+    return;
+  }
+  unknown08 &= ~0xffff0004;
+  unknown08 |= 0x200;
+  unknown150 = count;
+  unknown20 = primitive;
+  switch (primitive) {
+  case 1:
+    unknown28 = count;
+    unknown170 = GRL_PRIMITIVE_POINTS;
+    unknown08 |= 0x10000;
+    break;
+  case 2:
+    unknown28 = count * 2;
+    unknown170 = GRL_PRIMITIVE_UNKNOWN_1;
+    unknown08 |= 0x20000;
+    break;
+  case 3:
+    unknown28 = count;
+    unknown170 = GRL_PRIMITIVE_UNKNOWN_3;
+    unknown08 |= 0xa0000;
+    unknown150 = count - 1;
+    break;
+  case 4:
+    unknown28 = count;
+    unknown170 = GRL_PRIMITIVE_UNKNOWN_3;
+    unknown08 |= 0xe0000;
+    unknown150 = count - 1;
+    break;
+  case 5:
+    unknown28 = count * 3;
+    unknown170 = GRL_PRIMITIVE_TRIANGLES;
+    unknown08 |= 0x200000;
+    break;
+  case 6:
+    unknown28 = count;
+    unknown170 = GRL_PRIMITIVE_TRIANGLE_STRIP;
+    unknown08 |= 0x80000;
+    unknown150 = count - 2;
+    break;
+  case 7:
+    unknown28 = count;
+    unknown170 = GRL_PRIMITIVE_UNKNOWN_6;
+    unknown08 |= 0x80000;
+    unknown150 = count - 2;
+    break;
+  case 8:
+    unknown28 = count;
+    unknown170 = GRL_PRIMITIVE_TRIANGLE_STRIP;
+    unknown08 |= 0xc0000;
+    unknown150 = count - 2;
+    break;
+  case 9:
+    unknown28 = count * 4;
+    unknown170 = GRL_PRIMITIVE_TRIANGLE_STRIP;
+    unknown08 |= 0x100000;
+    unknown150 = 2;
+    break;
+  case 10:
+    unknown28 = count * 5;
+    unknown170 = GRL_PRIMITIVE_UNKNOWN_3;
+    unknown08 |= 0x1a0000;
+    unknown150 = 4;
+    break;
+  case 12:
+    unknown28 = count * 4;
+    unknown170 = GRL_PRIMITIVE_QUADS;
+    unknown08 |= 0x140002;
+    unknown150 = 2;
+    break;
+  case 11:
+    unknown28 = count * 4;
+    unknown170 = GRL_PRIMITIVE_TRIANGLE_STRIP;
+    unknown08 |= 0x180002;
+    unknown150 = 2;
+    break;
+  }
+  if (unknown08 & 8) {
+    unknown280.rows[0][0] =
+        unknown40.rows[0][0] * unknown100.rows[0][0] + unknown40.rows[0][1] * unknown100.rows[1][0] + unknown40.rows[0][2] * unknown100.rows[2][0] + unknown40.rows[0][3] * unknown100.rows[3][0];
+    unknown280.rows[0][1] =
+        unknown40.rows[0][0] * unknown100.rows[0][1] + unknown40.rows[0][1] * unknown100.rows[1][1] + unknown40.rows[0][2] * unknown100.rows[2][1] + unknown40.rows[0][3] * unknown100.rows[3][1];
+    unknown280.rows[0][2] =
+        unknown40.rows[0][0] * unknown100.rows[0][2] + unknown40.rows[0][1] * unknown100.rows[1][2] + unknown40.rows[0][2] * unknown100.rows[2][2] + unknown40.rows[0][3] * unknown100.rows[3][2];
+    unknown280.rows[0][3] =
+        unknown40.rows[0][0] * unknown100.rows[0][3] + unknown40.rows[0][1] * unknown100.rows[1][3] + unknown40.rows[0][2] * unknown100.rows[2][3] + unknown40.rows[0][3] * unknown100.rows[3][3];
+    unknown280.rows[1][0] =
+        unknown40.rows[1][0] * unknown100.rows[0][0] + unknown40.rows[1][1] * unknown100.rows[1][0] + unknown40.rows[1][2] * unknown100.rows[2][0] + unknown40.rows[1][3] * unknown100.rows[3][0];
+    unknown280.rows[1][1] =
+        unknown40.rows[1][0] * unknown100.rows[0][1] + unknown40.rows[1][1] * unknown100.rows[1][1] + unknown40.rows[1][2] * unknown100.rows[2][1] + unknown40.rows[1][3] * unknown100.rows[3][1];
+    unknown280.rows[1][2] =
+        unknown40.rows[1][0] * unknown100.rows[0][2] + unknown40.rows[1][1] * unknown100.rows[1][2] + unknown40.rows[1][2] * unknown100.rows[2][2] + unknown40.rows[1][3] * unknown100.rows[3][2];
+    unknown280.rows[1][3] =
+        unknown40.rows[1][0] * unknown100.rows[0][3] + unknown40.rows[1][1] * unknown100.rows[1][3] + unknown40.rows[1][2] * unknown100.rows[2][3] + unknown40.rows[1][3] * unknown100.rows[3][3];
+    unknown280.rows[2][0] =
+        unknown40.rows[2][0] * unknown100.rows[0][0] + unknown40.rows[2][1] * unknown100.rows[1][0] + unknown40.rows[2][2] * unknown100.rows[2][0] + unknown40.rows[2][3] * unknown100.rows[3][0];
+    unknown280.rows[2][1] =
+        unknown40.rows[2][0] * unknown100.rows[0][1] + unknown40.rows[2][1] * unknown100.rows[1][1] + unknown40.rows[2][2] * unknown100.rows[2][1] + unknown40.rows[2][3] * unknown100.rows[3][1];
+    unknown280.rows[2][2] =
+        unknown40.rows[2][0] * unknown100.rows[0][2] + unknown40.rows[2][1] * unknown100.rows[1][2] + unknown40.rows[2][2] * unknown100.rows[2][2] + unknown40.rows[2][3] * unknown100.rows[3][2];
+    unknown280.rows[2][3] =
+        unknown40.rows[2][0] * unknown100.rows[0][3] + unknown40.rows[2][1] * unknown100.rows[1][3] + unknown40.rows[2][2] * unknown100.rows[2][3] + unknown40.rows[2][3] * unknown100.rows[3][3];
+    unknown280.rows[3][0] =
+        unknown40.rows[3][0] * unknown100.rows[0][0] + unknown40.rows[3][1] * unknown100.rows[1][0] + unknown40.rows[3][2] * unknown100.rows[2][0] + unknown40.rows[3][3] * unknown100.rows[3][0];
+    unknown280.rows[3][1] =
+        unknown40.rows[3][0] * unknown100.rows[0][1] + unknown40.rows[3][1] * unknown100.rows[1][1] + unknown40.rows[3][2] * unknown100.rows[2][1] + unknown40.rows[3][3] * unknown100.rows[3][1];
+    unknown280.rows[3][2] =
+        unknown40.rows[3][0] * unknown100.rows[0][2] + unknown40.rows[3][1] * unknown100.rows[1][2] + unknown40.rows[3][2] * unknown100.rows[2][2] + unknown40.rows[3][3] * unknown100.rows[3][2];
+    unknown280.rows[3][3] =
+        unknown40.rows[3][0] * unknown100.rows[0][3] + unknown40.rows[3][1] * unknown100.rows[1][3] + unknown40.rows[3][2] * unknown100.rows[2][3] + unknown40.rows[3][3] * unknown100.rows[3][3];
+  } else {
+    DevGraph::get()->getOrthoSys(unknown280);
+  }
+  unknown2d0->lock(&unknown2e8, &unknown2e0);
+  unknown2e8 = static_cast<u8 *>(unknown2e8) + unknown2d8;
+  unknown2dc = unknown2d8;
+  if (DevGraph::get() != nullptr) {
+    if (unknown0c.a < 1.0f) {
+      grlib::CGLibColorCtl::setBlendControl(GRL_BLEND_FUNC_SRC_ALPHA, GRL_BLEND_FUNC_ONE_MINUS_SRC_ALPHA, GRL_BLEND_COMBINE_ADD, GRL_LOGIC_TYPE_COPY);
+    } else {
+      grlib::CGLibColorCtl::setBlendOffControl(GRL_LOGIC_TYPE_COPY);
+    }
+  }
+  grlib::CGLibPolygon::setLineWidth(unknown144);
+  unknown140 = 0;
+  unknown08 |= 4;
+}
+
+void DebDrawCmd::end() {
+  if (unknown210->end()) {
+    return;
+  }
+  if (unknown140 != 0 && unknown170 >= 0) {
+    if (!unknown156) {
+      grlib::CGLibColorCtl::setBlendControl(GRL_BLEND_FUNC_SRC_ALPHA, GRL_BLEND_FUNC_ONE_MINUS_SRC_ALPHA, GRL_BLEND_COMBINE_ADD, GRL_LOGIC_TYPE_COPY);
+      unknown156 = true;
+    }
+    u32 start = unknown2d8;
+    if (unknown2dc != start) {
+      unknown2d0->unlock(start, unknown2dc - start);
+      unknown2d8 = unknown2dc;
+    }
+    u32 mode = grlib::CGLibCtlShader::getDecShader()->getDeclarationOfs("DEBUG_MODE");
+    grlib::GrlUtilVertFetch fetch;
+    if (unknown08 & 2) {
+      grlib::CGLibCtlShader::getDecShader()->setDeclarationIdx(mode, 2);
+      fetch = grlib::GRL_UTIL_VERT_FETCH_UNKNOWN_0;
+    } else {
+      grlib::CGLibCtlShader::getDecShader()->setDeclarationIdx(mode, 1);
+      fetch = grlib::GRL_UTIL_VERT_FETCH_UNKNOWN_1;
+    }
+    grlib::CGLibCtlVertex::setVertex(*unknown2d0, start);
+    grlib::CGLibCtlShader::setShader(*grlib::CGLibCtlShader::getDecShader(), *grlib::CGLibCtlShader::getVtxFetch(fetch));
+    grlib::CGLibDecShader *shader = grlib::CGLibCtlShader::getDecShader();
+    u32 block = (shader->unknown38 + shader->unknown58)->getUniformBlockOfs("U_MDL");
+    grlib::CGLibEtcUniformBlock uniform;
+    grlib::ShdMat44TransposeMat44(reinterpret_cast<f32 *>(uniform.getBuff()), unknown280);
+    uniform.updateData(sizeof(mm::Mat44));
+    uniform.setUniformBlock(block);
+    if (unknown08 & 2) {
+      shader = grlib::CGLibCtlShader::getDecShader();
+      u32 location = (shader->unknown38 + shader->unknown58)->getTextureLocation("tex");
+      grlib::CGLibCtlTexture::setTexture(*unknown180, *grlib::CGLibCtlShader::getSampler(grlib::GRL_UTIL_SAMPLER_UNKNOWN_1), location);
+    }
+    grlib::CGLibCtlVertex::renderVertex(static_cast<GrlPrimitiveType>(unknown170), unknown140);
+    unknown140 = 0;
+  }
+  unknown08 &= ~0x200;
+}
+
+void DebDrawCmd::add(const mm::Vec3 &first, const mm::Vec3 &second) {
+  if (unknown210->add(first, second)) {
+    return;
+  }
+  u32 flags = unknown08;
+  const mm::Vec3 *start = &first;
+  const mm::Vec3 *end = &second;
+  mm::Vec3 localStart;
+  mm::Vec3 localEnd;
+  if (flags & 8) {
+    unknown002(localStart, first);
+    unknown002(localEnd, second);
+    start = &localStart;
+    end = &localEnd;
+  }
+  if (!(flags & 2)) {
+    if (flags & 0x20000) {
+      setVertex(*start, unknown0c, 0.0f, 0.0f);
+      setVertex(*end, unknown0c, 0.0f, 0.0f);
+    }
+    unknown140 += 2;
+  }
+}
+
+void DebDrawCmd::add(const mm::Vec3 &position) {
+  if (unknown210->add(position)) {
+    return;
+  }
+  const mm::Vec3 *vertex = &position;
+  mm::Vec3 local;
+  if (unknown08 & 8) {
+    unknown002(local, position);
+    vertex = &local;
+  }
+  setVertex(*vertex, unknown0c, 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(const mm::Vec3 &position, const mm::Col4 &color) {
+  const mm::Vec3 *vertex = &position;
+  mm::Vec3 local;
+  if (unknown08 & 8) {
+    unknown002(local, position);
+    vertex = &local;
+  }
+  setVertex(*vertex, color, 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(const mm::Vec3 &position, const mm::Col3 &color) {
+  const mm::Vec3 *vertex = &position;
+  mm::Vec3 local;
+  if (unknown08 & 8) {
+    unknown002(local, position);
+    vertex = &local;
+  }
+  setVertex(*vertex, mm::Col4(color.r, color.g, color.b, unknown0c.a), 0.0f, 0.0f);
+  unknown140++;
+}
+
+void DebDrawCmd::add(const mm::Rect<int> &rect) {
+  u32 flags = unknown08;
+  if (!(flags & 0x20000)) {
+    if (!(flags & 2)) {
+      setVertex(mm::Vec3(rect.x + rect.width, rect.y, unknown14c), unknown0c, 0.0f, 0.0f);
+      setVertex(mm::Vec3(rect.x, rect.y, unknown14c), unknown0c, 0.0f, 0.0f);
+      setVertex(mm::Vec3(rect.x + rect.width, rect.y + rect.height, unknown14c), unknown0c, 0.0f, 0.0f);
+      setVertex(mm::Vec3(rect.x, rect.y + rect.height, unknown14c), unknown0c, 0.0f, 0.0f);
+      unknown140 += 4;
+    } else {
+      setVertex(mm::Vec3(rect.x + rect.width, rect.y, unknown14c), unknown0c, 1.0f, 0.0f);
+      setVertex(mm::Vec3(rect.x, rect.y, unknown14c), unknown0c, 0.0f, 0.0f);
+      setVertex(mm::Vec3(rect.x + rect.width, rect.y + rect.height, unknown14c), unknown0c, 1.0f, 1.0f);
+      setVertex(mm::Vec3(rect.x, rect.y + rect.height, unknown14c), unknown0c, 0.0f, 1.0f);
+      unknown140 += 4;
+    }
+  } else {
+    setVertex(mm::Vec3(rect.x, rect.y, unknown14c), unknown0c, 0.0f, 0.0f);
+    setVertex(mm::Vec3(rect.x + rect.width, rect.y, unknown14c), unknown0c, 0.0f, 0.0f);
+    setVertex(mm::Vec3(rect.x + rect.width, rect.y + rect.height, unknown14c), unknown0c, 0.0f, 0.0f);
+    setVertex(mm::Vec3(rect.x, rect.y + rect.height, unknown14c), unknown0c, 0.0f, 0.0f);
+    setVertex(mm::Vec3(rect.x, rect.y, unknown14c), unknown0c, 0.0f, 0.0f);
+    unknown140 += 5;
+  }
+}
 
 void DebDraw::setOrtho() {
   if (!unknown210->setOrtho()) {
