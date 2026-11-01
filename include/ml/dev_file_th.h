@@ -40,8 +40,24 @@ namespace dvfl_detail {
 struct LoadMediaParam {
   MEDIA unknown00; // Inferred role: media; original member name unknown.
   u8 _04[0x08 - 0x04];
-  char unknown08; // Inferred role: archive name start; original member name unknown.
+  mm::mtl::FixStr<128> unknown08; // Inferred role: archive name; original member name unknown.
 };
+
+static_assert(offsetof(LoadMediaParam, unknown08) == 0x08, "");
+static_assert(sizeof(LoadMediaParam) == 0x8c, "");
+
+// Archive registered by DevFileTh::registArchive before the archiver exists.
+struct ReserveArchiveParam {
+  MEDIA unknown00;                 // Inferred role: media; original member name unknown.
+  mm::mtl::FixStr<128> unknown04;  // Inferred role: archive path; original member name unknown.
+  mm::mtl::FixStr<128> unknown88;  // Inferred role: second registArchive name; original member name unknown.
+  mm::mtl::FixStr<128> unknown10c; // Inferred role: third registArchive name; original member name unknown.
+};
+
+static_assert(offsetof(ReserveArchiveParam, unknown04) == 0x04, "");
+static_assert(offsetof(ReserveArchiveParam, unknown88) == 0x88, "");
+static_assert(offsetof(ReserveArchiveParam, unknown10c) == 0x10c, "");
+static_assert(sizeof(ReserveArchiveParam) == 0x190, "");
 
 void addMediaPath(MEDIA media, const char *path, int priority);
 } // namespace dvfl_detail

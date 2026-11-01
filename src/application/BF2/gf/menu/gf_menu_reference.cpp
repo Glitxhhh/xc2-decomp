@@ -3,6 +3,7 @@
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/menu/gf_menu_manager.h"
+#include "gf/menu/gf_menu_reference_number.h" // IWYU pragma: keep
 #include "gf/menu/list/gf_menu_enemy_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_party_status.h"
@@ -11,6 +12,8 @@
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
 #include "ml/fixed_size_alloc.h"
+#include "mm_mtl/fixed_array.h"   // IWYU pragma: keep
+#include "mm_mtl/intrusive_ptr.h" // IWYU pragma: keep
 #include "ui/list/ui_list_info.h"
 
 namespace gf {
@@ -798,3 +801,4 @@ template class ml::fixed_size_alloc_inside<gf::MENUREF_OBJ, 512>;
 template mm::mtl::PtrSingleton<gf::GfMenuReference>::~PtrSingleton();
 template mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::iterator
 mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::erase(mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::iterator it);
+template mm::mtl::FixedArray<mm::mtl::IntrusivePtr<gf::GfMenuReferenceNumber>, 7>::~FixedArray();

@@ -12,6 +12,8 @@
 
 namespace ml {
 
+class IDevFileEvent; // IWYU pragma: keep
+
 void DevFileTh::flushSave() {
   if (DevFileNxTh::m_mountSave) {
     nn::fs::CommitSaveData("save");
@@ -170,7 +172,7 @@ void DevFileTh::Impl::cancelRequest(FileHandleTh *handle) {
 int DevFileTh::Impl::getFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param) {
   DevFileAccessor *accessor = unknown588b0[param.unknown00];
   if (accessor != nullptr && accessor->isValid()) {
-    return accessor->getFileSize(path, size, &param.unknown08);
+    return accessor->getFileSize(path, size, param.unknown08.c_str());
   }
   return -1;
 }
@@ -403,3 +405,9 @@ bool DevFileReaderTh::asyncUpdate() {
 template mm::mtl::PtrSingleton<ml::DevFileTh>::~PtrSingleton();
 
 template void mm::mtl::UniquePtr<ml::DevFileTh::Impl>::_safe_bool_helper::safe_bool_function() const;
+
+template mm::mtl::FixedVector<ml::IDevFileEvent *, 8>::~FixedVector();
+
+template mm::mtl::FixedVector<ml::dvfl_detail::LoadMediaParam, 8>::~FixedVector();
+
+template mm::mtl::FixedVector<ml::dvfl_detail::ReserveArchiveParam, 8>::~FixedVector();

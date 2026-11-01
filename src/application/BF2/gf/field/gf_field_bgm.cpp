@@ -264,3 +264,4 @@ template mm::mtl::PtrSingleton<gf::BgmBattle>::~PtrSingleton();
 template mm::mtl::PtrSingleton<gf::BgmBattleBoss>::~PtrSingleton();
 template mm::mtl::PtrSingleton<gf::BgmEvent>::~PtrSingleton();
 template mm::mtl::PtrSingleton<gf::BgmField>::~PtrSingleton();
+template void mm::mtl::FixedArray<gf::BGMCOND, 4>::assign(const gf::BGMCOND &value);
