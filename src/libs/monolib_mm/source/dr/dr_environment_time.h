@@ -7,7 +7,9 @@ namespace ml {
 
 // Inferred role: light file header; original type name unknown.
 struct LgtFileHeader {
-  u8 _00[0x1c];
+  u8 _00[0x14];
+  u32 unknown14; // Inferred role: offset of the fog table; original member name unknown.
+  u8 _18[0x1c - 0x18];
   u32 unknown1c; // Inferred role: offset of the time data; original member name unknown.
 };
 

@@ -4,6 +4,7 @@
 #include "dr/dr_creator.h"
 #include "dr/dr_env_coli_obj.h"
 #include "dr/dr_environment_obj.h"
+#include "dr/dr_environment_obj_lgt.h"
 #include "dr/dr_global_ibl_man.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
@@ -221,7 +222,7 @@ void ScnObjLightDrSys::setDeugDisp2D(bool isDisp) {
   }
 }
 
-void ScnObjLightDrSys::setFromCaptureTool() { unknown320->unknown23c = 2; }
+void ScnObjLightDrSys::setFromCaptureTool() { static_cast<DrEnvironmentObjLgt *>(unknown320)->unknown23c = 2; }
 
 void ScnObjLightDrSys::setLocalIBLName(const char *name) {}
 

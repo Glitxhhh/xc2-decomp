@@ -10,7 +10,7 @@ namespace ml {
 namespace {
 
 // Inferred role: texture table entry of the environment resource; original name unknown.
-struct unknown001 {
+struct unknown003 {
   u32 unknown00; // Inferred role: image offset; original member name unknown.
   u32 unknown04; // Inferred role: image size; original member name unknown.
 };
@@ -24,7 +24,7 @@ int DrEnvironmentTex::getTextureWork(int count) { return count * sizeof(grlib::C
 void DrEnvironmentTex::setupTexture(void *work, int count, const u8 *table, const u8 *data) {
   unknown00 = static_cast<grlib::CGLibTextureBuffer *>(work);
   unknown08 = count;
-  const unknown001 *entry = reinterpret_cast<const unknown001 *>(table);
+  const unknown003 *entry = reinterpret_cast<const unknown003 *>(table);
   for (int i = 0; i < unknown08; i++) {
     new (&unknown00[i]) grlib::CGLibTextureBuffer();
     grlib::CGLibTexture::createTextureImagePtrs(unknown00[i], data + entry->unknown00, entry->unknown04, false, nullptr, true);

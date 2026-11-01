@@ -13,6 +13,7 @@ struct Vec3;
 
 namespace ml {
 class DrLightObjPnt;
+class DrLightObjSpt;
 class DrMan;
 class FileResTh;
 class DrShdLgtClustered;
@@ -34,6 +35,7 @@ public:
   DrShdLgtMan(DrMan *drMan);
   ~DrShdLgtMan();
   void renderDebugPnt(DrLightObjPnt *light);
+  void renderDebugSpt(DrLightObjSpt *light);
   void renderDebug(RENDER_DEBUG_TYPE type, const mm::Vec3 &position, const mm::Quat &rotation, const mm::Vec3 &scale, const mm::Col3 &color);
   DrShdLgtHybrid *getHybridLight();
   void releaseLightShader();

@@ -79,9 +79,9 @@ void DrEnvironmentAnim::setupAnmVal(const f32 *values) {
 }
 
 void DrEnvironmentAnim::calcAnimFog(DrFogObjGbl *fog, const LgtGlbFogObj *obj) {
-  unknown38 = mm::Col3(obj->unknown00, obj->unknown00, obj->unknown00);
-  unknown44 = mm::Col3(obj->unknown0c, obj->unknown0c, obj->unknown0c);
-  unknown50 = mm::Col3(obj->unknown18, obj->unknown18, obj->unknown18);
+  unknown38 = mm::Col3(obj->unknown00[0], obj->unknown00[0], obj->unknown00[0]);
+  unknown44 = mm::Col3(obj->unknown0c[0], obj->unknown0c[0], obj->unknown0c[0]);
+  unknown50 = mm::Col3(obj->unknown18[0], obj->unknown18[0], obj->unknown18[0]);
   const unknown001 *range = unknown00 + obj->unknown44;
   u64 index = obj->unknown44;
   u32 num = range->unknown02;

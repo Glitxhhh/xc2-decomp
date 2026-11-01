@@ -50,8 +50,6 @@ public:
   f32 m_maxFrame;
   u32 unknown8c; // Inferred role: flags; original member name unknown.
   int unknown90; // Inferred role: group; original member name unknown.
-  u8 _94[0x23c - 0x94];
-  u8 unknown23c; // Inferred role: capture tool state; original member name unknown.
 };
 
 static_assert(offsetof(DrEnvironmentObj, unknown18) == 0x18, "");
@@ -59,6 +57,5 @@ static_assert(offsetof(DrEnvironmentObj, unknown30) == 0x30, "");
 static_assert(offsetof(DrEnvironmentObj, unknown70) == 0x70, "");
 static_assert(offsetof(DrEnvironmentObj, m_frame) == 0x80, "");
 static_assert(offsetof(DrEnvironmentObj, unknown8c) == 0x8c, "");
-static_assert(offsetof(DrEnvironmentObj, unknown23c) == 0x23c, "");
 
 } // namespace ml

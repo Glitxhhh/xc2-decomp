@@ -185,10 +185,13 @@ public:
   f32 m_size;
   u8 _c4[0xd4 - 0xc4];
   f32 unknownd4; // Inferred role: spe intensity; original member name unknown.
+  u8 _d8[0xf0 - 0xd8];
 };
 
 static_assert(offsetof(DrLightObjSpt, unknownbc) == 0xbc, "");
 static_assert(offsetof(DrLightObjSpt, m_size) == 0xc0, "");
 static_assert(offsetof(DrLightObjSpt, unknownd4) == 0xd4, "");
+// Size from the spot light array stride of DrEnvironmentObjLgt::releaseLgt (1.0.0: 0x71007e0210).
+static_assert(sizeof(DrLightObjSpt) == 0xf0, "");
 
 } // namespace ml

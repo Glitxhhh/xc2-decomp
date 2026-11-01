@@ -34,37 +34,47 @@ struct unknown086 {
 static_assert(sizeof(unknown086) == 0x10, "");
 
 struct LgtObjData {
-  u8 _00[0x28];
+  u32 unknown00;    // Inferred role: offset of the type specific data from the light file; original member name unknown.
+  s32 unknown04;    // Inferred role: light type, index of the DrEnvironmentObjLgt callback tables; original member name unknown.
+  u32 unknown08;    // Inferred role: flags, bit 0 enables the range check; original member name unknown.
+  f32 unknown0c[3]; // Inferred role: color; original member name unknown.
+  f32 unknown18;    // Inferred role: intensity; original member name unknown.
+  u8 _1c[0x22 - 0x1c];
+  u16 unknown22; // Inferred role: group; original member name unknown.
+  u8 _24[0x28 - 0x24];
   u16 unknown28; // Inferred role: animation index; original member name unknown.
 };
 
+static_assert(offsetof(LgtObjData, unknown04) == 0x04, "");
+static_assert(offsetof(LgtObjData, unknown08) == 0x08, "");
+static_assert(offsetof(LgtObjData, unknown22) == 0x22, "");
 static_assert(offsetof(LgtObjData, unknown28) == 0x28, "");
 
 struct LgtGlbFogObj {
-  f32 unknown00; // Inferred role: color; original member name unknown.
-  u8 _04[0x0c - 0x04];
-  f32 unknown0c; // Inferred role: side color; original member name unknown.
-  u8 _10[0x18 - 0x10];
-  f32 unknown18; // Inferred role: sun color; original member name unknown.
-  u8 _1c[0x44 - 0x1c];
-  u16 unknown44; // Inferred role: animation index; original member name unknown.
+  f32 unknown00[3]; // Inferred role: color; original member name unknown.
+  f32 unknown0c[3]; // Inferred role: side color; original member name unknown.
+  f32 unknown18[3]; // Inferred role: sun color; original member name unknown.
+  f32 unknown24;    // Inferred role: near; original member name unknown.
+  f32 unknown28;    // Inferred role: far; original member name unknown.
+  f32 unknown2c;    // Inferred role: str; original member name unknown.
+  f32 unknown30;    // Inferred role: pow; original member name unknown.
+  f32 unknown34;    // Inferred role: fog value copied by setupFog; original member name unknown.
+  f32 unknown38;    // Inferred role: fog value copied by setupFog; original member name unknown.
+  f32 unknown3c;    // Inferred role: fog value copied by setupFog; original member name unknown.
+  f32 unknown40;    // Inferred role: fog value copied by setupFog; original member name unknown.
+  u16 unknown44;    // Inferred role: animation index; original member name unknown.
+  u8 _46[0x4a - 0x46];
+  u16 unknown4a; // Inferred role: index of DrEnvironmentObjLgt::s_pCallFogCall; original member name unknown.
+  u8 _4c[0x50 - 0x4c];
+  f32 unknown50; // Inferred role: fog value copied by setupFog; original member name unknown.
+  u8 _54[0x5c - 0x54];
 };
 
 static_assert(offsetof(LgtGlbFogObj, unknown0c) == 0x0c, "");
 static_assert(offsetof(LgtGlbFogObj, unknown18) == 0x18, "");
 static_assert(offsetof(LgtGlbFogObj, unknown44) == 0x44, "");
-
-// Inferred role: frame range of an environment animation; original type name unknown.
-struct unknown001 {
-  u16 unknown00; // Inferred role: first command; original member name unknown.
-  u16 unknown02; // Inferred role: command num; original member name unknown.
-  u8 _04[0x08 - 0x04];
-  f32 unknown08; // Inferred role: loop start frame; original member name unknown.
-  f32 unknown0c; // Inferred role: end frame; original member name unknown.
-};
-
-static_assert(offsetof(unknown001, unknown0c) == 0x0c, "");
-static_assert(sizeof(unknown001) == 0x10, "");
+static_assert(offsetof(LgtGlbFogObj, unknown4a) == 0x4a, "");
+static_assert(sizeof(LgtGlbFogObj) == 0x5c, "");
 
 // Inferred role: light bit key; original type name unknown.
 struct unknown087 {
@@ -74,6 +84,15 @@ struct unknown087 {
 
 class DrEnvironmentAnim {
 public:
+  // Inferred role: frame range of an environment animation; original type name unknown.
+  struct unknown001 {
+    u16 unknown00; // Inferred role: first command; original member name unknown.
+    u16 unknown02; // Inferred role: command num; original member name unknown.
+    u8 _04[0x08 - 0x04];
+    f32 unknown08; // Inferred role: loop start frame; original member name unknown.
+    f32 unknown0c; // Inferred role: end frame; original member name unknown.
+  };
+
   DrEnvironmentAnim();
   static u32 getAnimWork(const u8 *data, u32 offset);
   f32 setupAnim(void *frames, const u8 *data, u32 offset);
@@ -162,6 +181,8 @@ public:
   f32 unknown60[3];            // Inferred role: anm val; original member name unknown.
 };
 
+static_assert(offsetof(DrEnvironmentAnim::unknown001, unknown0c) == 0x0c, "");
+static_assert(sizeof(DrEnvironmentAnim::unknown001) == 0x10, "");
 static_assert(offsetof(DrEnvironmentAnim, unknown08) == 0x08, "");
 static_assert(offsetof(DrEnvironmentAnim, unknown20) == 0x20, "");
 static_assert(offsetof(DrEnvironmentAnim, unknown10) == 0x10, "");

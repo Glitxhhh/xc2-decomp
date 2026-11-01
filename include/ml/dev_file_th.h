@@ -34,7 +34,9 @@ enum CBM : int {
   CBM_UNKNOWN_5 = 5,
   CBM_UNKNOWN_6 = 6,
 };
-enum MEDIA {};
+enum MEDIA {
+  MEDIA_UNKNOWN_8 = 8, // Inferred role: media count, unset media of a DevFileArchiver list.
+};
 
 namespace dvfl_detail {
 // Inferred type: load media parameter; the original type name is unknown.
@@ -180,6 +182,7 @@ public:
   static const int INVALID_FILE_CHANNEL;
   static void normalizeDvdFileName(mm::mtl::FixStr<256> &fileName, const char *path);
   static FileHandleTh *checkValidFile(const char *path, IWorkEvent *event);
+  static const char *getDvdRoot();
   static MEDIA getMediaType(const char *path);
   static bool isInitialized();
   static bool writeFileBlock(const char *path, const void *data, u32 size, int priority);
