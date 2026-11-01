@@ -9,7 +9,10 @@ struct AsmAnnotetion {
   const char *unknown00; // Inferred role: name; original member name unknown.
   s32 unknown08;         // Inferred role: kind; original member name unknown.
   u8 _0c[0x10 - 0x0c];
-  const char *unknown10; // Inferred role: parameter; original member name unknown.
+  union {
+    const char *unknown10; // Inferred role: parameter; original member name unknown.
+    s32 unknown10_int;     // Inferred role: integer parameter, set by gf::pc::registerAsmCallbackField; original member name unknown.
+  };
 };
 
 struct AsmKeyframeAnnotation {

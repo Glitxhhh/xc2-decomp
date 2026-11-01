@@ -9,6 +9,7 @@
 namespace gf {
 
 struct GF_ASSET_HANDLE;
+struct GF_OBJ_HANDLE;
 struct GF_SLOT_HANDLE;
 class GfAssetPack;
 class GfExtendResource;
@@ -33,7 +34,7 @@ struct AssetPackInfo {
 
   GF_ASSET_HANDLE *unknown08;                        // Inferred role: handle; original member name unknown.
   mm::mtl::FixedVector<GfAssetPack *, 88> unknown10; // Inferred role: asset packs; original member name unknown.
-  s64 unknown2d8;                                    // Inferred role: invalid marker; original member name unknown.
+  GF_OBJ_HANDLE *unknown2d8;                         // Inferred role: object handle, read by GfAssetUtil::getObjHandle; original member name unknown.
   GfExtendResource *unknown2e0[4];                   // Inferred role: extend resources; original member name unknown.
   u32 unknown300;                                    // Inferred role: priority; original member name unknown.
   bool unknown304;                                   // Inferred role: destroy requested; original member name unknown.

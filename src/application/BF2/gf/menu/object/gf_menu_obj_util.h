@@ -29,6 +29,7 @@ struct SDataIdea;
 class GfMenuCallContext;
 struct QuestID;
 struct GF_OBJ_HANDLE;
+class SoundHandle;
 
 class GfMenuObjUtil {
 public:
@@ -155,7 +156,7 @@ public:
   static bool startBGM(u32 handle);
   static bool isValidSoundHandle(u32 handle);
   static void stopBGM(u32 handle, f32 time);
-  static u32 playJingle(u32 id);
+  static SoundHandle playJingle(u32 id);
   static void playVibration(fw::VibrationID id, f32 amplitude);
   static bool getBladeTeamName(u32 blade, ui::UIStr &name);
   static int getFaceIconID(const DataParamAcc &acc);

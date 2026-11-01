@@ -2,14 +2,22 @@
 
 #include "battle/battle_global.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/pc/gf_pc_asm_callback.h"
 #include "mm_mtl/bitflag.h"
 
+namespace anm {
+class ResASM;
+} // namespace anm
+
 namespace gf {
+struct GF_OBJ_HANDLE;
 
 namespace pc {
 
 constexpr int PAD_TYPE_BATTLE = 1;
 constexpr int PAD_TYPE_BATTLE_TARGET = 3;
+
+bool registerAsmCallbackBattle(GF_OBJ_HANDLE *handle, anm::ResASM *resAsm) { return false; }
 
 PadBattle::PadBattle() : unknown78(nullptr) {}
 

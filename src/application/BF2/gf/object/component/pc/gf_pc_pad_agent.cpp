@@ -1,11 +1,28 @@
 #include "gf/object/component/pc/gf_pc_pad_agent.h"
 
 #include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_asm_callback.h"
 #include "mm_mtl/bitflag.h"
 
+namespace anm {
+class ResASM;
+} // namespace anm
+
+namespace fw {
+struct EffectResData;
+} // namespace fw
+
 namespace gf {
+struct GF_OBJ_HANDLE;
 
 namespace pc {
+
+void registerAsmCallback(GF_OBJ_HANDLE *handle, anm::ResASM *resAsm, fw::EffectResData *effectData) {
+  if (resAsm != nullptr) {
+    registerAsmCallbackField(handle, resAsm);
+    registerAsmCallbackBattle(handle, resAsm);
+  }
+}
 
 PadAgent::PadAgent(u32 padNo) : unknown08(padNo) {}
 

@@ -36,6 +36,8 @@ enum ALLOCATOR {
   ALLOCATOR_SCRIPT = 2,
   ALLOCATOR_ASSET = 3,
   ALLOCATOR_BDAT = 4,
+  ALLOCATOR_UNKNOWN05 = 5, // Inferred role: font resources (GfMemManager::s_hMemFontRsc); original name unknown.
+  ALLOCATOR_UNKNOWN06 = 6, // Inferred role: menu (GfMemManager::s_hMemMenu); original name unknown.
   ALLOCATOR_ANIMATION = 7,
   ALLOCATOR_UNKNOWN08 = 8, // Inferred role: gimmick sets (GfFieldGimmick::createGmkSet); original name unknown.
   ALLOCATOR_UNKNOWN09 = 9, // Inferred role: gimmick manager (GfFieldGimmick::initialize); original name unknown.

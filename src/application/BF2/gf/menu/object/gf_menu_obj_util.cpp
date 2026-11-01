@@ -32,6 +32,7 @@
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/sound/gf_sound.h"
 #include "gf/util/gf_util.h"
 #include "ml/dev_pad.h"
 #include "mm_math/mm_pnt.h"
@@ -714,7 +715,7 @@ void GfMenuObjUtil::stopBGM(u32 handle, f32 time) {
   }
 }
 
-u32 GfMenuObjUtil::playJingle(u32 id) { return GfMenuSoundManager::playJingle(id); }
+SoundHandle GfMenuObjUtil::playJingle(u32 id) { return GfMenuSoundManager::playJingle(id); }
 
 void GfMenuObjUtil::playVibration(fw::VibrationID id, f32 amplitude) { fw::PadManager::playVibration(ml::PadVibrationInfo(id, amplitude)); }
 
