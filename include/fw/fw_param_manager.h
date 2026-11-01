@@ -43,9 +43,11 @@ public:
   mm::mtl::IntrusivePtr<ParamList> unknown468; // Inferred role: unique motion param list; original member name unknown.
   u8 _470[0x488 - 0x470];
   mm::mtl::IntrusivePtr<ParamList> unknown488; // Inferred role: field AI param list, read by AIAgentField::setup; original member name unknown.
-  u8 _490[0x4a8 - 0x490];
+  mm::mtl::IntrusivePtr<ParamList> unknown490; // Inferred role: pc collision param list, read by gf::getPcColiParameter; original member name unknown.
+  u8 _498[0x4a8 - 0x498];
   mm::mtl::IntrusivePtr<ParamList> unknown4a8; // Inferred role: menu param list; original member name unknown.
-  u8 _4b0[0x4c8 - 0x4b0];
+  mm::mtl::IntrusivePtr<ParamList> unknown4b0; // Inferred role: enemy move param list, read by gf::getEnemeyMoveParam; original member name unknown.
+  u8 _4b8[0x4c8 - 0x4b8];
   mm::mtl::IntrusivePtr<ParamList> unknown4c8; // Inferred role: effect param list; original member name unknown.
 };
 
@@ -56,7 +58,9 @@ static_assert(offsetof(ParamManager, unknown458) == 0x458, "");
 static_assert(offsetof(ParamManager, unknown460) == 0x460, "");
 static_assert(offsetof(ParamManager, unknown468) == 0x468, "");
 static_assert(offsetof(ParamManager, unknown488) == 0x488, "");
+static_assert(offsetof(ParamManager, unknown490) == 0x490, "");
 static_assert(offsetof(ParamManager, unknown4a8) == 0x4a8, "");
+static_assert(offsetof(ParamManager, unknown4b0) == 0x4b0, "");
 static_assert(offsetof(ParamManager, unknown4c8) == 0x4c8, "");
 
 } // namespace fw

@@ -10,6 +10,7 @@ struct UpdateInfo;
 
 namespace gf {
 
+struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
 class GfGameInsideBattleLock : public mm::mtl::PtrSingleton<GfGameInsideBattleLock> {
@@ -17,6 +18,7 @@ public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
+  static bool isInside(GF_OBJ_HANDLE *handle);
 
   u8 _08[0x20 - 0x08];
   bool unknown20; // Inferred role: player inside; original member name unknown.

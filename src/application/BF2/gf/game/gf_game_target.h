@@ -7,6 +7,7 @@ struct UpdateInfo;
 
 namespace gf {
 
+struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
 class GfGameTarget : public mm::mtl::PtrSingleton<GfGameTarget> {
@@ -17,5 +18,7 @@ public:
   static void lockTarget(bool isLock);
   void changeBattleTarget(bool isEnable);
 };
+
+bool isEnableTargetBattle(GF_OBJ_HANDLE *handle);
 
 } // namespace gf

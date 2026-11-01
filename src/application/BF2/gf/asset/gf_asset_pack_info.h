@@ -22,6 +22,12 @@ struct AssetPackInfo {
   void setExtendResource(u32 index, GfExtendResource *resource);
   void releaseExtResource();
   void setNoCache(bool noCache);
+  void setUsingGame(bool usingGame);
+  void releaseEmptySlot();
+  bool isCached() const;
+  void applyPreFileSize();
+  bool isPreSizeSizeValid() const;
+  void lockEnterRersource();
   bool isUseSameAsset(const AssetPackInfo *other) const;
   bool isFullResource() const;
   bool isExistAssetPack(const GfAssetPack *pack) const;

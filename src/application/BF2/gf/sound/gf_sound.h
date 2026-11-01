@@ -12,8 +12,13 @@
 #include "types.h"
 #include <stddef.h>
 
+namespace arc {
+class CArcData;
+} // namespace arc
+
 namespace fw {
 class SoundPack;
+class SoundResSourceManager;
 enum SoundCategory : int;
 struct UpdateInfo;
 } // namespace fw
@@ -242,7 +247,9 @@ extern const char *const SS_NAME_TABLE[];
 
 u32 getSoundSourceCount();
 const char *getSoundSourceFileName(u32 index);
+void registerSSPack(arc::CArcData &archive, fw::SoundResSourceManager *manager);
 void bindGFSoundSource();
 void unrbindGFSoundSource();
+void reloadGFSoundSource();
 
 } // namespace gf

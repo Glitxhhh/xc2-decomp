@@ -2,8 +2,11 @@
 
 #include <new>
 
+#include "arc/arc_data.h"
+#include "framework/resource/common_resource.h"
 #include "framework/sound/sound_manager.h"
 #include "framework/sound/sound_pack.h"
+#include "framework/sound/sound_res_source_manager.h"
 #include "gf/asset/gf_asset_resource.h"
 #include "gf/data/gf_bdat_bgm.h"
 #include "gf/data/gf_data_manager.h"
@@ -11,6 +14,7 @@
 #include "gf/field/gf_field_sound.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_pause.h"
+#include "gf/gf_static_res.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "ml/fixed_size_alloc.h"
@@ -32,9 +36,46 @@ u32 getCategoryIndex(GF_SE_CATEGORY_HANDLE *handle) { return reinterpret_cast<u6
 
 } // namespace
 
+const char *const SS_NAME_TABLE[] = {"/sound/tag/source/field.ssp", "/sound/tag/source/battle.ssp", "/sound/tag/source/event.ssp"};
+
 u32 getSoundSourceCount() { return 3; }
 
 const char *getSoundSourceFileName(u32 index) { return SS_NAME_TABLE[index]; }
+
+void registerSSPack(arc::CArcData &archive, fw::SoundResSourceManager *manager) {
+  u32 count = archive.getFiles();
+  for (u32 i = 0; i < count; i++) {
+    manager->pushResource(fw::SoundResSourceImporter::importBinary(archive.getFileAdr(i)));
+  }
+}
+
+void bindGFSoundSource() {
+  if (fw::SoundResSourceManager::get() != nullptr) {
+    fw::SoundResSourceManager::beginPush(getSoundSourceCount(), getAllocator(ALLOCATOR_DEFAULT));
+    for (u32 i = 0; i < getSoundSourceCount(); i++) {
+      fw::CommonResource *resource = GfStaticRes::search(getSoundSourceFileName(i));
+      if (resource != nullptr) {
+        arc::CArcData archive(resource->getAssetData());
+        registerSSPack(archive, fw::SoundResSourceManager::get());
+      }
+    }
+    fw::SoundResSourceManager::endPush();
+  }
+}
+
+void unrbindGFSoundSource() {
+  if (fw::SoundResSourceManager::get() != nullptr) {
+    fw::SoundResSourceManager::clearAll();
+  }
+}
+
+void reloadGFSoundSource() {
+  unrbindGFSoundSource();
+  for (u32 i = 0; i < getSoundSourceCount(); i++) {
+    GfStaticRes::reloadRequestForDebug(getSoundSourceFileName(i));
+  }
+  bindGFSoundSource();
+}
 
 void SoundParam::clear() {
   unknown28 = 1.0f;

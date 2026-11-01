@@ -14,6 +14,10 @@ class IAllocator;
 } // namespace mtl
 } // namespace mm
 
+namespace fw {
+class SoundPack;
+} // namespace fw
+
 namespace gf {
 
 class GfAssetResource;
@@ -55,6 +59,7 @@ public:
 
   ~GfAssetFiles();
   bool addResource(GfFileIdx index, const char *name);
+  void setInitializeParam(const GfAssetFilesInfo &info);
   void addResourceWithLockAsset(GfFileIdx index, const char *name);
   void replaceAssetType(GfAssetType type);
   void destroyFileSizeCache();
@@ -100,6 +105,12 @@ static_assert(sizeof(AssetPackValue) == 0x08, "");
 
 class GfAssetPack : public mm::mtl::ReferenceObject {
 public:
+  // Inferred role: loaded resource of one file, pushed by setResource; original name unknown.
+  struct unknown001 {
+    GfAssetResource *unknown00; // Inferred role: resource; original member name unknown.
+    u16 unknown08;              // Inferred role: file index; original member name unknown.
+  };
+
   GfAssetResource *getResource(GfFileIdx index) const;
   GfAssetType getAssetType() const;
   void dispAssetLogForDebug();
@@ -118,18 +129,29 @@ public:
   void releaseSlotHandle();
   bool isExistSameAsset(const GfAssetPack &other) const;
   void loadStart(mm::mtl::IAllocator *allocator);
+  void releaseResource();
+  void createSoundPack();
+  void destroySoundPack();
+  void releaseEmptySlot();
+  bool isCached() const;
+  void applyPreFileSize();
+  void calcAllFileSize();
+  s64 getAllFileSize();
+  void replaceAssetType(const GfAssetFilesInfo &info);
   static AssetPackValue calcAssetPackValue(const char *name, GfAssetType type);
 
   void setLoadSlotNum(u32 num) { unknown24c = num; }
 
-  u8 _0c[0x120 - 0x0c];
+  u8 _0c[0x18 - 0x0c];
+  mm::mtl::FixedVector<unknown001, 16> unknown18; // Inferred role: resources; original member name unknown.
   GfAssetFiles m_assetType;
   GF_SLOT_HANDLE *unknown230; // Inferred role: slot handle; original member name unknown.
   bool unknown238;            // Inferred role: force destroy flag; original member name unknown.
   bool unknown239;            // Inferred role: no cache flag; original member name unknown.
   bool unknown23a;            // Inferred role: waiting slot; original member name unknown.
   bool unknown23b;            // Inferred role: timeout flag; original member name unknown.
-  u8 _23c[0x248 - 0x23c];
+  u8 _23c[0x240 - 0x23c];
+  s64 unknown240; // Inferred role: total file size, -1 until computed; original member name unknown.
   u32 unknown248; // Inferred role: slot num; original member name unknown.
   u32 unknown24c; // Inferred role: load slot num; original member name unknown.
   u32 unknown250; // Inferred role: priority; original member name unknown.
@@ -137,15 +159,19 @@ public:
   u8 _258[0x27c - 0x258];
   u32 unknown27c; // Inferred role: cache count; original member name unknown.
   u32 unknown280; // Inferred role: reload count; original member name unknown.
-  u8 _284[0x2b0 - 0x284];
-  GfFileIdx unknown2b0; // Inferred role: se pack file index; original member name unknown.
-  u8 _2b4[0x2b8 - 0x2b4];
-  bool unknown2b8; // Inferred role: resource locked; original member name unknown.
+  u8 _284[0x2a8 - 0x284];
+  fw::SoundPack *unknown2a8; // Inferred role: se pack; original member name unknown.
+  GfFileIdx unknown2b0;      // Inferred role: se pack file index; original member name unknown.
+  int unknown2b4;            // Inferred role: se pack reference count; original member name unknown.
+  bool unknown2b8;           // Inferred role: resource locked; original member name unknown.
 };
 
+static_assert(sizeof(GfAssetPack::unknown001) == 0x10, "");
+static_assert(offsetof(GfAssetPack, unknown18) == 0x18, "");
 static_assert(offsetof(GfAssetPack, m_assetType) == 0x120, "");
 static_assert(offsetof(GfAssetPack, unknown230) == 0x230, "");
 static_assert(offsetof(GfAssetPack, unknown238) == 0x238, "");
+static_assert(offsetof(GfAssetPack, unknown240) == 0x240, "");
 static_assert(offsetof(GfAssetPack, unknown239) == 0x239, "");
 static_assert(offsetof(GfAssetPack, unknown23a) == 0x23a, "");
 static_assert(offsetof(GfAssetPack, unknown248) == 0x248, "");

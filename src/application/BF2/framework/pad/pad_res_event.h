@@ -22,6 +22,11 @@ public:
 static_assert(offsetof(PadResEvent, unknown18) == 0x18, "");
 static_assert(offsetof(PadResEvent, unknown20) == 0x20, "");
 
+class PadEventImporter {
+public:
+  static PadResEvent *create(void *data, const char *path);
+};
+
 const ResAction *findAction(const PadResEvent *event, const char *name);
 
 } // namespace fw

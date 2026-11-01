@@ -50,6 +50,11 @@ struct ResSoundSource {
 
 static_assert(offsetof(ResSoundSource, unknown10) == 0x10, "");
 
+class SoundResSourceImporter {
+public:
+  static const ResSoundSource *importBinary(void *data);
+};
+
 class SoundResSourceManager : public mm::mtl::PtrSingleton<SoundResSourceManager> {
 public:
   SoundResSourceManager();

@@ -29,6 +29,7 @@ public:
   static void finalize();
   static void loadStaticRes(const char *path);
   static fw::CommonResource *search(const char *path);
+  static void reloadRequestForDebug(const char *path);
 
   static mtl::ALLOC_HANDLE s_hMem;
   static mm::mtl::FixedList<ResourceInfo, 64> s_aResource;
