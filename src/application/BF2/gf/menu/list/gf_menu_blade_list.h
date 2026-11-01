@@ -1,4 +1,7 @@
 #pragma once
+#include <stddef.h>
+
+#include "mm_mtl/fixed_vector.h"
 #include "types.h"
 #include "ui/list/ui_list_info.h"
 
@@ -13,6 +16,11 @@ static_assert(sizeof(MenuBladeInfo) == 0x8, "");
 
 class GfMenuBladeList : public ui::UIListInfo<MenuBladeInfo> {
 public:
+  struct BladeListSetup {
+    SetupParam unknown00;                            // Inferred role: param; original member name unknown.
+    const mm::mtl::FixedVector<u16, 422> *unknown18; // Inferred role: blades; original member name unknown.
+  };
+
   GfMenuBladeList();
   ~GfMenuBladeList() override;
   static GfMenuBladeList *create();
@@ -32,8 +40,10 @@ public:
   static bool sortGenderDescending(const MenuBladeInfo &info, const MenuBladeInfo &other);
   static bool sortGenderAscending(const MenuBladeInfo &info, const MenuBladeInfo &other);
   void updateOwner();
+  void setupFromBladeList(const BladeListSetup &setup);
 };
 
+static_assert(offsetof(GfMenuBladeList::BladeListSetup, unknown18) == 0x18, "");
 static_assert(sizeof(GfMenuBladeList) == 0x70, "");
 
 } // namespace gf

@@ -86,6 +86,7 @@ public:
   void startWireWithClose(GF_OBJ_HANDLE *target, f32 time, f32 closeTime, f32 closeDistance);
   void startWireWithBone(GF_OBJ_HANDLE *target, const char *bone, f32 time);
   void update(const fw::UpdateInfo &info);
+  static GF_OBJ_HANDLE *getWireObject(GF_OBJ_HANDLE *handle);
 
   GF_OBJ_HANDLE *unknown00; // Inferred role: wire; original member name unknown.
   GF_OBJ_HANDLE *unknown08; // Inferred role: owner; original member name unknown.

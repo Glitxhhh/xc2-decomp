@@ -25,6 +25,7 @@ public:
   ~GfMenuMissionAdapter() override;
   bool update_MissionName();
   bool update_MissionCategoryIcon();
+  bool update_MissionRewardZone();
   bool update_MissionRewardIdeaPoint();
   bool update_MissionFieldSkill();
   bool update_MissionCondIcon();

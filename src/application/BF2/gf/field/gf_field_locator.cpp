@@ -58,6 +58,10 @@ void LocatorBat_EnemyID::dispose() {
   unknown14 = 0;
 }
 
+u32 LocatorBat_EnemyID::getPosNum() const { return m_pos.size(); }
+
+const mm::Vec3 *LocatorBat_EnemyID::getPos(u32 index) const { return &m_pos[index]; }
+
 LocatorBat_EnemyGroupID::LocatorBat_EnemyGroupID(QuestID quest, u16 enemyGroupId) : unknown14(0), unknown18(0) {
   if (!quest.empty() && enemyGroupId != 0) {
     create(quest, enemyGroupId);
@@ -103,6 +107,10 @@ void LocatorBat_EnemyGroupID::dispose() {
   unknown20.clear();
   unknown14 = 0;
 }
+
+u32 LocatorBat_EnemyGroupID::getPosNum() const { return m_pos.size(); }
+
+const mm::Vec3 *LocatorBat_EnemyGroupID::getPos(u32 index) const { return &m_pos[index]; }
 
 LocatorBat_EnemySpeciesID::LocatorBat_EnemySpeciesID(QuestID quest, u8 enemySpeciesId) : unknown14(0), unknown18(-1) {
   if (!quest.empty() && enemySpeciesId != 0) {
@@ -327,6 +335,10 @@ void LocatorPrecious::dispose() {
   unknown28.clear();
   unknown20 = 0;
 }
+
+u32 LocatorPrecious::getPosNum() const { return m_pos.size(); }
+
+const mm::Vec3 *LocatorPrecious::getPos(u32 index) const { return &m_pos[index]; }
 
 LocatorGimmick::LocatorGimmick(QuestID quest, u16 gimmickId) : unknown14(gmk::GMK_TYPE_INVALID), unknown18(0), m_posNum(0), m_pos(mm::Vec3::zero) {
   if (!quest.empty() && gimmickId != 0) {

@@ -13,6 +13,10 @@ class RTTI;
 } // namespace mtl
 } // namespace mm
 
+namespace ml {
+class ScnObjAccPartsPos;
+} // namespace ml
+
 namespace fw {
 struct UpdateInfo;
 } // namespace fw
@@ -22,21 +26,31 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
+enum GfFieldLodState {
+  FIELD_LOD_STATE_UNKNOWN_5 = 5, // Inferred role: no lod state, one past the five effect data; original enumerator name unknown.
+};
+
 // Layout evidence: ctor (0x71002e1c3c), createAsset (0x71002e1cd0) and disposeAsset (0x71002e1ec0); getAsset
 // (0x71002e1c58) indexes the five effect data by GfFieldLodState.
 class GfFieldLodEffect {
 public:
+  GfFieldLodEffect();
   ~GfFieldLodEffect() { disposeAsset(); }
+  void *getAsset(GfFieldLodState state) const;
+  bool isAssetExists() const;
+  bool isAssetLoop(GfFieldLodState state) const;
+  void createAsset(int bdatId);
   void disposeAsset();
   void disposeInst(bool isDead);
+  void update(const ml::ScnObjAccPartsPos &partsPos);
 
   // Inferred role: effect data per lod state ("effect_anime_normal", "effect_anime_reverse", "effect_visibleON",
   // "effect_visibleOFF", "effect_fadeOUT"); original member name unknown.
   void *unknown00[5];
-  u16 unknown28;  // Inferred role: skip frame ("effect_skipframe"); original member name unknown.
-  bool unknown2a; // Inferred role: assets created; original member name unknown.
-  u32 unknown2c;  // Inferred role: effect instance handle; original member name unknown.
-  u32 unknown30;  // Inferred role: lod state of the instance; original member name unknown.
+  u16 unknown28;             // Inferred role: skip frame ("effect_skipframe"); original member name unknown.
+  bool unknown2a;            // Inferred role: assets created; original member name unknown.
+  u32 unknown2c;             // Inferred role: effect instance handle; original member name unknown.
+  GfFieldLodState unknown30; // Inferred role: lod state of the instance; original member name unknown.
 };
 
 static_assert(offsetof(GfFieldLodEffect, unknown28) == 0x28, "");

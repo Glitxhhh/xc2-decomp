@@ -7,8 +7,11 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/list/gf_menu_sort_type.h"
+#include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
+#include "mm_mtl/vector.h"
 
 namespace gf {
 
@@ -274,6 +277,141 @@ u32 GfMenuItemList::getSortRarity(const MenuItemInfo &info) {
     return 0;
   }
   return GfDataItem::getRarity(info.unknown04);
+}
+
+void GfMenuItemList::filterRarity(const FiltertInfo &filter) {
+  for (u32 i = 0; i < getSize();) {
+    MenuItemInfo info = getContents(i);
+    if (GfDataItem::getRarity(info.unknown04) == filter.unknown04) {
+      i++;
+    } else {
+      decItem(info, false);
+    }
+  }
+}
+
+void GfMenuItemList::filterRarityMore(const FiltertInfo &filter) {
+  for (u32 i = 0; i < getSize();) {
+    MenuItemInfo info = getContents(i);
+    if (GfDataItem::getRarity(info.unknown04) < filter.unknown04) {
+      i++;
+    } else {
+      decItem(info, false);
+    }
+  }
+}
+
+void GfMenuItemList::filterCollectionType(const FiltertInfo &filter) {
+  for (u32 i = 0; i < getSize();) {
+    MenuItemInfo info = getContents(i);
+    ItemProperty property;
+    GfItemUtil::getProperty(property, info.unknown04, 0);
+    if (property.unknown08 == ItemType::COLLECTION_LIST && property.unknown4d == filter.unknown05) {
+      i++;
+    } else {
+      decItem(info, false);
+    }
+  }
+}
+
+void GfMenuItemList::filterFavoriteType(const FiltertInfo &filter) {
+  for (u32 i = 0; i < getSize();) {
+    MenuItemInfo info = getContents(i);
+    ItemProperty property;
+    GfItemUtil::getProperty(property, info.unknown04, 0);
+    if (property.unknown08 == ItemType::FAVORITE && property.unknown4e == filter.unknown06) {
+      i++;
+    } else {
+      decItem(info, false);
+    }
+  }
+}
+
+void GfMenuItemList::updateCount() {
+  for (u32 i = 0; i < getSize(); i++) {
+    MenuItemInfo &info = getContents(i);
+    if (GfMenuItemUtil::canCountStack(info.unknown00) && info.unknown04 != 0) {
+      info.unknown08 = GfItemUtil::getItemBoxCount(info.unknown04);
+    }
+  }
+}
+
+int GfMenuItemList::findItem(ItemType::Type type, u32 item) {
+  for (u32 i = 0; i < getSize(); i++) {
+    const MenuItemInfo &info = getContents(i);
+    if (info.unknown00 == type && info.unknown04 == item) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+void GfMenuItemList::setupFromHanaParts(const HanaPartsSetup &setup) {
+  SetupParam param = setup.unknown00;
+  UIListInfo<MenuItemInfo>::setup(getAllocator(ALLOCATOR_DEFAULT), param);
+  if (isValid() && setup.unknown14 >= ItemType::HANA_ROLE && setup.unknown14 <= ItemType::HANA_ASSIST) {
+    u8 *bdat = GfDataBdat::getFP(setup.unknown14 - ItemType::HANA_ROLE + BDAT_ITM_HANA_ROLE);
+    u32 top = Bdat::getIdTop(bdat);
+    u32 end = Bdat::getIdEnd(bdat);
+    for (u32 id = top; id <= end; id++) {
+      ItemProperty property;
+      GfItemUtil::getProperty(property, id, 0);
+      if (property.unknown68 != 0) {
+        MenuItemInfo info;
+        info.unknown00 = setup.unknown14;
+        info.unknown04 = id;
+        info.unknown08 = GfItemUtil::getItemBoxCount(id);
+        addContents(info);
+      }
+    }
+  }
+}
+
+void GfMenuItemList::addItem(const MenuItemInfo &info, bool isAddItemBox) {
+  int index = findItem(info.unknown00, info.unknown04);
+  if (index != -1) {
+    getContents(index).unknown08 += info.unknown08;
+  } else {
+    addContents(info);
+  }
+  if (isAddItemBox) {
+    SCOM_ADD_ITEM::create(info.unknown04, info.unknown08);
+  }
+}
+
+void GfMenuItemList::addItem(u32 index, u32 count, bool isAddItemBox) {
+  if (index < getSize()) {
+    MenuItemInfo &info = getContents(index);
+    info.unknown08 += count;
+    if (isAddItemBox) {
+      SCOM_ADD_ITEM::create(info.unknown04, count);
+    }
+  }
+}
+
+void GfMenuItemList::decItem(const MenuItemInfo &info, bool isAddItemBox) {
+  int index = findItem(info.unknown00, info.unknown04);
+  if (index != -1) {
+    decItem(index, info.unknown08, isAddItemBox);
+  }
+}
+
+void GfMenuItemList::decItem(u32 index, u32 count, bool isAddItemBox) {
+  if (index < getSize()) {
+    MenuItemInfo &info = getContents(index);
+    u32 item = info.unknown04;
+    int num = info.unknown08 - count;
+    if (num <= 0) {
+      contents.erase(contents.begin() + index);
+      subSize(1);
+      contentsChanged = true;
+    } else {
+      info.unknown08 = num;
+    }
+    if (isAddItemBox) {
+      SCOM_ADD_ITEM::create(item, -count);
+    }
+  }
 }
 
 } // namespace gf

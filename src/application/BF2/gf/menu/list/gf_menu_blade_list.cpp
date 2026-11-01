@@ -6,6 +6,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/menu/list/gf_menu_sort_type.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/fixed_vector.h"
 
 namespace gf {
 
@@ -172,6 +173,20 @@ void GfMenuBladeList::updateOwner() {
   for (u32 i = 0; i < getSize(); i++) {
     MenuBladeInfo &info = getContents(i);
     info.unknown04 = GfDataBlade::getCreator(info.unknown00);
+  }
+}
+
+void GfMenuBladeList::setupFromBladeList(const BladeListSetup &setup) {
+  SetupParam param = setup.unknown00;
+  const mm::mtl::FixedVector<u16, 422> *blades = setup.unknown18;
+  UIListInfo<MenuBladeInfo>::setup(getAllocator(ALLOCATOR_DEFAULT), param);
+  if (isValid()) {
+    MenuBladeInfo info = {};
+    for (u32 i = 0; i < blades->size(); i++) {
+      info.unknown00 = *blades->at(i);
+      info.unknown04 = GfDataBlade::getCreator(blades->unknown001(i));
+      addContents(info);
+    }
   }
 }
 

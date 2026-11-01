@@ -1,14 +1,15 @@
 #include "gf/object/gf_append.h"
 
 #include "framework/message/message_object.h"
+#include "gf/game/gf_game_mount.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/util/gf_util.h"
 
 namespace gf {
-enum OPTMNT : u32;
 
 void GfAppendHandles::sendMessage(fw::MessageObject *sender, fw::Message &message) const {
   for (u32 index = 0; index < 10; index++) {
@@ -84,6 +85,16 @@ u16 GfAppend::getMountIndex() const { return m_mountIndex; }
 
 u16 GfAppend::getRscID() const { return m_rscID; }
 
+GfAppendWire::~GfAppendWire() {}
+
 void GfAppendWire::startWire(GF_OBJ_HANDLE *target, f32 time) { startWireWithClose(target, time, 0.0f, 0.0f); }
+
+GF_OBJ_HANDLE *GfAppendWire::getWireObject(GF_OBJ_HANDLE *handle) {
+  GfWeapon *belonging = GfMountManager::getAppendHandles(handle, GFATTACH_BELONGING);
+  if (belonging != nullptr) {
+    return belonging->getCurrentHandles()[0];
+  }
+  return INVALID_HANDLE;
+}
 
 } // namespace gf

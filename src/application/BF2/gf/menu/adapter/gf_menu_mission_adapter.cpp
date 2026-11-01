@@ -43,6 +43,16 @@ bool GfMenuMissionAdapter::update_MissionCategoryIcon() {
   return true;
 }
 
+bool GfMenuMissionAdapter::update_MissionRewardZone() {
+  u8 *bdat;
+  u32 textId;
+  if (GfDataMercenaries::getMsgZoneName(bdat, textId, unknown58)) {
+    setText(ui::UIStr(bdat, textId));
+    return true;
+  }
+  return false;
+}
+
 bool GfMenuMissionAdapter::update_MissionRewardIdeaPoint() {
   setNumber(GfGameMercenaries::getRewardTrust(unknown58));
   return true;
