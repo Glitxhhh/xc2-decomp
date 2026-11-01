@@ -31,6 +31,7 @@
 #include "ml/critical_section.h"
 
 namespace ml {
+class DrPixlShadowCacheObj;
 
 DrMan *DrMan::getIns() { return s_pTop; }
 
@@ -170,6 +171,37 @@ int DrMdlMan::headerChek(const void *data) {
     return header->unknown04 == 0x2712 ? 5 : 0;
   }
   return 0;
+}
+
+bool DrMdlMan::getTextureStreamInfo(u32 &size, u32 &count, const void *data, bool isMiddle) {
+  size = 0;
+  count = 0;
+  const unknown005 *header = static_cast<const unknown005 *>(data);
+  if (header->unknown00 != 0x4d584d44 || header->unknown1c == 0) {
+    return false;
+  }
+  const unknown006 *info = reinterpret_cast<const unknown006 *>(static_cast<const u8 *>(data) + header->unknown24);
+  if (isMiddle) {
+    if (info->unknown24 == 0) {
+      return false;
+    }
+    size = info->unknown24;
+    count = info->unknown1c;
+    return true;
+  }
+  size = info->unknown20;
+  count = 0;
+  return true;
+}
+
+void DrMdlMan::delViewInfo(int cate) {
+  if (unknown050[cate] != nullptr) {
+    delete unknown050[cate];
+    unknown050[cate] = nullptr;
+  }
+  for (DrMdlBase *mdl = unknown0a8[cate].unknown00; mdl != nullptr; mdl = mdl->unknown10) {
+    mdl->unknown20 &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
+  }
 }
 
 void DrMdlMan::addMpfObj() {
@@ -317,6 +349,25 @@ void DrMdlMan::occRender(bool isFirst) {
     }
   }
   pixlMan->occRenderEnd();
+}
+
+bool DrMdlMan::shadowCacheRender(DrPixlShadowCacheObj &cache) {
+  for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
+    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+      if (!mdl->shadowCacheRender(cache)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+void DrMdlMan::shadowCacheAddRender(int index) {
+  for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
+    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+      mdl->shadowCacheAddRender(index);
+    }
+  }
 }
 
 void DrMdlMan::callShadowCacheUpdate(u64 flags) {

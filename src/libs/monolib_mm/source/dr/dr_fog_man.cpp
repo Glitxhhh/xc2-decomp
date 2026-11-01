@@ -1,6 +1,7 @@
 #include "dr/dr_fog_man.h"
 
 #include "dr/dr_fog_obj.h"
+#include "dr/dr_res_list.h"
 
 namespace ml {
 
@@ -22,25 +23,7 @@ void DrFogMan::releaseAll() {
 }
 
 void DrFogMan::releaseGblFog(DrFogObj *fog) {
-  DrFogObj *prev = fog->unknown08;
-  DrFogObj *next = fog->unknown10;
-  if (prev == nullptr) {
-    if (next == nullptr) {
-      unknown08 = nullptr;
-      unknown10 = nullptr;
-    } else {
-      unknown08 = next;
-      next->unknown08 = nullptr;
-    }
-  } else if (next == nullptr) {
-    unknown10 = prev;
-    prev->unknown10 = nullptr;
-  } else {
-    prev->unknown10 = next;
-    fog->unknown10->unknown08 = fog->unknown08;
-  }
-  fog->unknown08 = nullptr;
-  fog->unknown10 = nullptr;
+  unknown004(unknown08, unknown10, fog);
   delete fog;
 }
 

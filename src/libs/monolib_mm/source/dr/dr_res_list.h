@@ -36,4 +36,27 @@ template <typename T> inline T *unknown003(T *first, const void *key) {
   return nullptr;
 }
 
+// Inferred helper: unlinks a node linked through unknown08 and unknown10 from a doubly linked list and clears its links; original name unknown.
+template <typename T> inline void unknown004(T *&first, T *&last, T *node) {
+  T *previous = node->unknown08;
+  T *next = node->unknown10;
+  if (previous == nullptr) {
+    if (next == nullptr) {
+      first = nullptr;
+      last = nullptr;
+    } else {
+      first = next;
+      next->unknown08 = nullptr;
+    }
+  } else if (next == nullptr) {
+    last = previous;
+    previous->unknown10 = nullptr;
+  } else {
+    previous->unknown10 = next;
+    node->unknown10->unknown08 = node->unknown08;
+  }
+  node->unknown08 = nullptr;
+  node->unknown10 = nullptr;
+}
+
 } // namespace ml

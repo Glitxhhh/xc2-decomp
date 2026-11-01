@@ -6,6 +6,7 @@
 
 namespace ml {
 
+class DrLightObj;
 class DrLightObjAmb;
 class DrLightObjDir;
 class DrLightObjPnt;
@@ -34,16 +35,32 @@ public:
   DrLightObjSpt *createInstantSptLight();
   void releaseInstantPntLight(DrLightObjPnt *light);
   void releaseInstantSptLight(DrLightObjSpt *light);
+  void updateAmb();
+  void updatePnt();
+  void updateSpt();
 
-  u8 _000[0xe0];
-  DrMan *unknowne0;          // Inferred role: dr man; original member name unknown.
-  DrShdLgtMan *unknowne8;    // Inferred role: shd light man; original member name unknown.
-  DrLightObjAmb *unknown0f0; // Inferred role: fast ambient light; original member name unknown.
-  DrLightObjDir *unknown0f8; // Inferred role: fast directional light; original member name unknown.
-  s32 unknown100;            // Inferred role: ambient light count; original member name unknown.
-  s32 unknown104;            // Inferred role: directional light count; original member name unknown.
-  s32 unknown108;            // Inferred role: instant point light count; original member name unknown.
-  s32 unknown10c;            // Inferred role: instant spot light count; original member name unknown.
+  DrLightObj *unknown000;       // Inferred role: first ambient light; original member name unknown.
+  DrLightObj *unknown008;       // Inferred role: last ambient light; original member name unknown.
+  DrLightObj *unknown010;       // Inferred role: first directional light; original member name unknown.
+  DrLightObj *unknown018;       // Inferred role: last directional light; original member name unknown.
+  DrLightObj *unknown020;       // Inferred role: first point light; original member name unknown.
+  DrLightObj *unknown028;       // Inferred role: last point light; original member name unknown.
+  DrLightObj *unknown030;       // Inferred role: first spot light; original member name unknown.
+  DrLightObj *unknown038;       // Inferred role: last spot light; original member name unknown.
+  DrLightObj *unknown040[2][2]; // Inferred role: first and last requested ambient light per buffer; original member name unknown.
+  DrLightObj *unknown060[2][2]; // Inferred role: first and last requested directional light per buffer; original member name unknown.
+  DrLightObj *unknown080[2][2]; // Inferred role: first and last requested point light per buffer; original member name unknown.
+  DrLightObj *unknown0a0[2][2]; // Inferred role: first and last requested spot light per buffer; original member name unknown.
+  DrLightObj *unknown0c0[2];    // Inferred role: first and last requested instant point light; original member name unknown.
+  DrLightObj *unknown0d0[2];    // Inferred role: first and last requested instant spot light; original member name unknown.
+  DrMan *unknowne0;             // Inferred role: dr man; original member name unknown.
+  DrShdLgtMan *unknowne8;       // Inferred role: shd light man; original member name unknown.
+  DrLightObjAmb *unknown0f0;    // Inferred role: fast ambient light; original member name unknown.
+  DrLightObjDir *unknown0f8;    // Inferred role: fast directional light; original member name unknown.
+  s32 unknown100;               // Inferred role: ambient light count; original member name unknown.
+  s32 unknown104;               // Inferred role: directional light count; original member name unknown.
+  s32 unknown108;               // Inferred role: instant point light count; original member name unknown.
+  s32 unknown10c;               // Inferred role: instant spot light count; original member name unknown.
   u8 _110[0x120 - 0x110];
   mm::Col3 unknown120; // Inferred role: ambient color of the other buffer; original member name unknown.
   mm::Col3 unknown12c; // Inferred role: ambient color; original member name unknown.
@@ -56,6 +73,14 @@ public:
   bool unknown1b9; // Inferred role: sun shadow enable; original member name unknown.
 };
 
+static_assert(offsetof(DrLightMan, unknown000) == 0x00, "");
+static_assert(offsetof(DrLightMan, unknown020) == 0x20, "");
+static_assert(offsetof(DrLightMan, unknown030) == 0x30, "");
+static_assert(offsetof(DrLightMan, unknown040) == 0x40, "");
+static_assert(offsetof(DrLightMan, unknown080) == 0x80, "");
+static_assert(offsetof(DrLightMan, unknown0a0) == 0xa0, "");
+static_assert(offsetof(DrLightMan, unknown0c0) == 0xc0, "");
+static_assert(offsetof(DrLightMan, unknown0d0) == 0xd0, "");
 static_assert(offsetof(DrLightMan, unknowne0) == 0xe0, "");
 static_assert(offsetof(DrLightMan, unknowne8) == 0xe8, "");
 static_assert(offsetof(DrLightMan, unknown0f0) == 0xf0, "");

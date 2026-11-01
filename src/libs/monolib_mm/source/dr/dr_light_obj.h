@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
@@ -99,7 +100,11 @@ public:
   DrLightObjAmb(DrPixlMan *pixlMan);
   ~DrLightObjAmb() override;
   void releaseAmb();
+
+  mm::Col3 unknown30; // Inferred role: color; original member name unknown.
 };
+
+static_assert(offsetof(DrLightObjAmb, unknown30) == 0x30, "");
 
 class DrLightObjDir : public DrLightObj {
 public:

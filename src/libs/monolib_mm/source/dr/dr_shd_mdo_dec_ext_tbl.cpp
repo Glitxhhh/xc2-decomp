@@ -11,6 +11,13 @@ DrShdMdoDecExtTbl::DrShdMdoDecExtTbl() : CGLibDecShdExtTbl() {}
 
 DrShdMdoDecExtTbl::~DrShdMdoDecExtTbl() {}
 
+void DrShdMdoDecExtTbl::setTextureParam(int num) {
+  unknown36 = num;
+  for (int i = 0; i < num; i++) {
+    unknown20[i] = i;
+  }
+}
+
 void DrShdMdoDecExtTbl::bindShader() {
   DrAPCache *cache = DrAPCache::s_pIns;
   DrResFetch *fetch = &unknown18->m_fetch->unknown20;
