@@ -44,6 +44,7 @@ enum {
   PROPERTY_MOVE_SWIM_ON_CLOUD = 2,
   PROPERTY_MOVE_CLIMB = 3,
   PROPERTY_MOVE_ACTION = 4,
+  PROPERTY_MOVE_UNKNOWN_5 = 5, // Inferred role: blocks the follow warp like PROPERTY_MOVE_SWIM (TaskFieldCheckWarp::update); original name unknown.
 };
 
 // Inferred role: obj property move; original type name unknown.
