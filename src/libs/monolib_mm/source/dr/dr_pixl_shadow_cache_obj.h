@@ -14,6 +14,7 @@ namespace ml {
 
 class DrPixlShadowCacheObj : public grlib::CGLibDepthTarget {
 public:
+  void createShadow(int size, u32 resArea);
   void release();
   void begin();
   bool clipTest(const mm::Vec3 &position, f32 radius);
@@ -25,8 +26,8 @@ public:
   void depthClear();
 
   u8 _800[0x808 - 0x800];
-  u32 unknown808; // Inferred role: flags; original member name unknown.
-  u8 _80c[0x810 - 0x80c];
+  u32 unknown808;       // Inferred role: flags; original member name unknown.
+  s32 unknown80c;       // Inferred role: shadow size; original member name unknown.
   mm::Mat44 unknown810; // Inferred role: shadow matrix; original member name unknown.
   u8 _850[0x8e8 - 0x850];
   u64 unknown8e8; // Inferred role: id mask; original member name unknown.
@@ -37,6 +38,7 @@ public:
 };
 
 static_assert(offsetof(DrPixlShadowCacheObj, unknown808) == 0x808, "");
+static_assert(offsetof(DrPixlShadowCacheObj, unknown80c) == 0x80c, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown810) == 0x810, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown8e8) == 0x8e8, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown8f2) == 0x8f2, "");

@@ -5,7 +5,7 @@
 
 namespace ml {
 
-DrRequetIBL::DrRequetIBL(DrLightObjGlobalIBL *light) : unknown18(light), _20(light) {}
+DrRequetIBL::DrRequetIBL(DrLightObjGlobalIBL *light) : unknown18(light), unknown20(reinterpret_cast<u64>(light)) {}
 
 int DrRequetIBL::getTextureNum() const { return unknown18->unknown14; }
 

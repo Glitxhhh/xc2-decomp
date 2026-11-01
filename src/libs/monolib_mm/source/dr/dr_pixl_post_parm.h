@@ -226,7 +226,8 @@ public:
   f32 unknown240;  // Inferred role: dof focus ratio; original member name unknown.
   f32 unknown244;  // Inferred role: dof focus min; original member name unknown.
   bool unknown248; // Inferred role: disp global ibl tex; original member name unknown.
-  u8 _0249[0x026a - 0x0249];
+  u8 _0249[0x0269 - 0x0249];
+  bool unknown269; // Inferred role: global IBL relight request enable; original member name unknown.
   bool m_colTblOn;
   u8 _026b[0x026c - 0x026b];
   u32 unknown26c;  // Inferred role: color filter near first texture id; original member name unknown.
@@ -386,6 +387,7 @@ static_assert(offsetof(DrPixlPostParm, unknown23c) == 0x023c, "");
 static_assert(offsetof(DrPixlPostParm, unknown240) == 0x0240, "");
 static_assert(offsetof(DrPixlPostParm, unknown244) == 0x0244, "");
 static_assert(offsetof(DrPixlPostParm, unknown248) == 0x0248, "");
+static_assert(offsetof(DrPixlPostParm, unknown269) == 0x0269, "");
 static_assert(offsetof(DrPixlPostParm, m_colTblOn) == 0x026a, "");
 static_assert(offsetof(DrPixlPostParm, unknown26c) == 0x026c, "");
 static_assert(offsetof(DrPixlPostParm, unknown278) == 0x0278, "");

@@ -25,6 +25,7 @@ class DevFileAccessor;
 class DevFileJobTh;
 class DevFileJob;
 class FileHandleTh;
+class IDevFileEvent;
 class IWorkEvent;
 
 enum CBM : int {
@@ -59,6 +60,7 @@ static_assert(offsetof(ReserveArchiveParam, unknown88) == 0x88, "");
 static_assert(offsetof(ReserveArchiveParam, unknown10c) == 0x10c, "");
 static_assert(sizeof(ReserveArchiveParam) == 0x190, "");
 
+void clearLoadMedia();
 void addMediaPath(MEDIA media, const char *path, int priority);
 } // namespace dvfl_detail
 
@@ -138,6 +140,7 @@ public:
     void registArchiveAccessor(MEDIA media, DevFileAccessor *accessor);
     void removeArchiveAccessor(MEDIA media);
     int getFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param);
+    int getArchiveFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param);
     void rfCancel(FileHandleTh *handle);
     bool isBusy();
     bool isLoading(FileHandleTh *handle);
@@ -191,6 +194,8 @@ public:
   static bool isLapTimeForDebug();
   static bool entryCb(IWorkEvent *event);
   static bool removeCb(IWorkEvent *event);
+  static void addEventListener(IDevFileEvent *listener);
+  static void removeEventListener(IDevFileEvent *listener);
   static bool isSuspend();
   static bool setSuspend(bool suspend);
   static bool isNowSaving();

@@ -6,13 +6,21 @@
 #include "ml/work_root.h"
 
 #include "device/nx/dev_file_nx_th.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/mem_manager.h"
 #include "nn/fs.h"
 
 namespace ml {
 
-class IDevFileEvent; // IWYU pragma: keep
+namespace dvfl_detail {
+
+mm::mtl::FixedVector<LoadMediaParam, 8> g_loadMedia;
+mm::mtl::FixedVector<IDevFileEvent *, 8> g_FileEventListener;
+
+void clearLoadMedia() { g_loadMedia.clear(); }
+
+} // namespace dvfl_detail
 
 void DevFileTh::flushSave() {
   if (DevFileNxTh::m_mountSave) {
@@ -172,6 +180,14 @@ void DevFileTh::Impl::cancelRequest(FileHandleTh *handle) {
 int DevFileTh::Impl::getFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param) {
   DevFileAccessor *accessor = unknown588b0[param.unknown00];
   if (accessor != nullptr && accessor->isValid()) {
+    return accessor->getFileSize(path, size, param.unknown08.c_str());
+  }
+  return -1;
+}
+
+int DevFileTh::Impl::getArchiveFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param) {
+  DevFileAccessor *accessor = unknown588f0[param.unknown00];
+  if (accessor != nullptr) {
     return accessor->getFileSize(path, size, param.unknown08.c_str());
   }
   return -1;
@@ -340,6 +356,15 @@ bool DevFileTh::removeCb(IWorkEvent *event) {
   }
   file->unknown1c0->unknown5a348 = nullptr;
   return true;
+}
+
+void DevFileTh::addEventListener(IDevFileEvent *listener) { dvfl_detail::g_FileEventListener.push_back(listener); }
+
+void DevFileTh::removeEventListener(IDevFileEvent *listener) {
+  IDevFileEvent **it = mm::mtl::find(dvfl_detail::g_FileEventListener.begin(), dvfl_detail::g_FileEventListener.end(), listener);
+  if (it != dvfl_detail::g_FileEventListener.end()) {
+    dvfl_detail::g_FileEventListener.erase(it);
+  }
 }
 
 bool DevFileTh::isNowSaving() {

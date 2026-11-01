@@ -31,6 +31,16 @@ bool DrIniSys::chkOnOff(const char *value) { return strcmp("on", value) == 0; }
 
 f32 DrIniSys::getFloatWork(const char *value) { return atof(value); }
 
+int DrIniSys::getToonDirType(const char *value) {
+  const char *types[] = {"Sun", "Camera"};
+  for (const char **type = types; type != types + 2; type++) {
+    if (strcmp(*type, value) == 0) {
+      return type - types;
+    }
+  }
+  return 0;
+}
+
 int DrIniSys::getIntWork(const char *value) { return atoi(value); }
 
 void DrIniSys::setDefTexture(int index, void *data, int size) { grlib::CGLibTexture::createTextureImagePtrs(unknown98[index], data, size, false, nullptr, true); }
@@ -47,6 +57,8 @@ void DrIniSys::loadToonRimTexture() {
 void DrIniSys::loadVolumeTexture() { unknown001(this); }
 
 void DrIniSys::reloadVolumeTexture() { unknown001(this); }
+
+void DrIniSys::setIBLEnvTexturePath(const char *path) { unknown1a80 = path; }
 
 void DrIniSys::reloadToonGradTexture() { loadToonGradTexture(); }
 
@@ -80,6 +92,12 @@ void DrIniSys::setDispMirrorBall(bool isDisp) {
 bool DrIniSys::getUpdateMirrorBallPos() const { return m_updateMirrorBallPos; }
 
 void DrIniSys::setUpdateMirrorBallPos(bool isUpdate) { m_updateMirrorBallPos = isUpdate; }
+
+void DrIniSys::dispMirrorBallPerformanceMDL(WinProc *proc) {
+  if (unknown880 != nullptr) {
+    unknown880->dispDebugWindow(true, unknown880->getName(), proc);
+  }
+}
 
 void DrIniSys::setMirrorBallPosition(const mm::Vec3 &position) {
   if (unknown880 != nullptr && m_updateMirrorBallPos) {

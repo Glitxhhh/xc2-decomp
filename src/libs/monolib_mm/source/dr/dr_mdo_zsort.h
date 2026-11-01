@@ -39,6 +39,7 @@ static_assert(offsetof(DrMdoZSortObj, unknown18) == 0x18, "");
 
 class DrMdoZSortMan {
 public:
+  DrMdoZSortMan(DrMan *drMan);
   ~DrMdoZSortMan();
   void beginViewWorld();
   void endViewWorld();

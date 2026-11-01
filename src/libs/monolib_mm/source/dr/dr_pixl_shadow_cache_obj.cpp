@@ -3,6 +3,7 @@
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_format.h"
 #include "grlib/cglib_gpu_cache.h"
 
 namespace mm {
@@ -10,6 +11,13 @@ struct Vec3;
 } // namespace mm
 
 namespace ml {
+
+void DrPixlShadowCacheObj::createShadow(int size, u32 resArea) {
+  unknown80c = size;
+  release();
+  setClear();
+  setTextureInfo(unknown80c, unknown80c, DrPixlFormat::s_ShadowFormat, true, resArea);
+}
 
 void DrPixlShadowCacheObj::release() { CGLibDepthTarget::release(); }
 

@@ -5,9 +5,17 @@
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
+
+DrMdoZSortMan::DrMdoZSortMan(DrMan *drMan) : unknown00(drMan), unknown20(nullptr), unknown38(nullptr), unknown50(300.0f), unknown54(0.8f) {
+  unknown20 = mtl::MemManager::allocate(drMan->unknown0c, 0x2040, 0x20, false, "no name", 0);
+  unknown08 = static_cast<DrMdoZSortObj **>(unknown20);
+  unknown10 = unknown08 + 512;
+  unknown18 = reinterpret_cast<u32 *>(unknown10 + 512);
+}
 
 DrMdoZSortMan::~DrMdoZSortMan() {
   if (unknown20 != nullptr) {

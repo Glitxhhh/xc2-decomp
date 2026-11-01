@@ -20,7 +20,9 @@ public:
   ~DrGpuCheckRender();
   void beginUpdate();
   void endUpdate();
+  void beginRender(bool isDblDepth);
   void endRender();
+  void render(u32 offset, int mode);
 
   DrCalcViewWork *unknown00;             // Inferred role: view work; original member name unknown.
   DrShdDataList *unknown08;              // Inferred role: shader data list; original member name unknown.
