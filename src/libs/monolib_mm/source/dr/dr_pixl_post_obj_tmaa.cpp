@@ -3,6 +3,8 @@
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
+#include "grlib/cglib_render_target.h"
+#include "mm_math/mm_col4.h"
 #include "mm_mtl/fixed_array.h"
 
 namespace ml {
@@ -34,6 +36,43 @@ void DrPixlPostObjTMAA::releaseColorBuff() {
     u32 index = DrMan::s_nDblIdx;
     unknown20[index]->releaseTexture();
     m_bloomTexture[index]->releaseTexture();
+  }
+}
+
+void DrPixlPostObjTMAA::render() {
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  if (postParm->getTMAAOn()) {
+    if ((unknown18 & 2) != 0) {
+      for (s32 i = 0; i < 2; i++) {
+        unknown20[i]->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
+        m_bloomTexture[i]->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
+      }
+      unknown18 &= ~2;
+    }
+    if (postParm->unknown158) {
+      unknown18 |= 1;
+      unknown00->unknown120[unknown00->unknown1c98]->unknown158 = false;
+    }
+    if ((unknown18 & 1) != 0) {
+      unknown18 &= ~4;
+    } else {
+      unknown18 |= 4;
+    }
+    renderTMAA();
+    if ((unknown18 & 1) != 0) {
+      unknown18 &= ~1;
+    }
+  }
+}
+
+void DrPixlPostObjTMAA::renderSharpness() {
+  if (DrMan::getIns()->unknown1c60 == 0) {
+    if ((unknown18 & 4) != 0) {
+      renderSharpnessImpl(SHARPNESS_TYPE_UNKNOWN_1);
+    }
+    renderSharpnessImpl(SHARPNESS_TYPE_UNKNOWN_2);
+  } else {
+    renderSharpnessImpl(SHARPNESS_TYPE_UNKNOWN_4);
   }
 }
 

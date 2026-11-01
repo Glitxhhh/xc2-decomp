@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_pixl_post_obj.h"
 #include "types.h"
 
 namespace grlib {
@@ -10,19 +11,24 @@ class CGLibTextureBuffer;
 namespace ml {
 
 class DrMan;
+class DrPixlMan;
+class DrPixlPostMan;
 class DrPixlRenderTarget;
 
-class DrPixlPostObjSSR {
+class DrPixlPostObjSSR : public DrPixlPostObj {
 public:
+  DrPixlPostObjSSR(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan);
   ~DrPixlPostObjSSR();
   void setClear();
+  void resetColorBuff();
   void update();
   void render();
+  void raymarch2();
+  void temporalSuperSampling2();
+  void debugRender();
   void releaseColorBuff();
   grlib::CGLibTextureBuffer *getReflectionTexture() const;
 
-  DrMan *unknown00; // Inferred role: driver manager; original member name unknown.
-  u8 _08[0x18 - 0x08];
   u32 unknown18; // Inferred role: clear request; original member name unknown.
   u8 _1c[0x20 - 0x1c];
   DrPixlRenderTarget *unknown20; // Inferred role: render target; original member name unknown.
@@ -30,7 +36,6 @@ public:
   DrPixlRenderTarget *unknown38; // Inferred role: render target; original member name unknown.
 };
 
-static_assert(offsetof(DrPixlPostObjSSR, unknown00) == 0x00, "");
 static_assert(offsetof(DrPixlPostObjSSR, unknown18) == 0x18, "");
 static_assert(offsetof(DrPixlPostObjSSR, unknown20) == 0x20, "");
 static_assert(offsetof(DrPixlPostObjSSR, m_reflectionTexture) == 0x28, "");
