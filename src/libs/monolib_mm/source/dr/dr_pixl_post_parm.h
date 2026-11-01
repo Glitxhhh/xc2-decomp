@@ -210,7 +210,7 @@ public:
   bool unknown218; // Inferred role: dof; original member name unknown.
   bool unknown219; // Inferred role: dof override; original member name unknown.
   bool unknown21a; // Inferred role: dof h lv mode; original member name unknown.
-  u8 _021b[0x021c - 0x021b];
+  bool unknown21b; // Inferred role: dof down sec; original member name unknown.
   bool unknown21c; // Inferred role: dof auto focus; original member name unknown.
   u8 _021d[0x021e - 0x021d];
   bool unknown21e; // Inferred role: dof focus debug; original member name unknown.
@@ -374,6 +374,7 @@ static_assert(offsetof(DrPixlPostParm, m_motBlur2) == 0x01fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown218) == 0x0218, "");
 static_assert(offsetof(DrPixlPostParm, unknown219) == 0x0219, "");
 static_assert(offsetof(DrPixlPostParm, unknown21a) == 0x021a, "");
+static_assert(offsetof(DrPixlPostParm, unknown21b) == 0x021b, "");
 static_assert(offsetof(DrPixlPostParm, unknown21c) == 0x021c, "");
 static_assert(offsetof(DrPixlPostParm, unknown21e) == 0x021e, "");
 static_assert(offsetof(DrPixlPostParm, unknown220) == 0x0220, "");
