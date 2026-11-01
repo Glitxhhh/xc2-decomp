@@ -1,17 +1,35 @@
 #pragma once
+#include <stddef.h>
+
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
 
 namespace mm {
 struct Mat44;
-struct Vec3;
 } // namespace mm
 
 namespace fw {
 
 class SoundPack;
-struct SoundCategoryDebugInfo;
-struct SoundHandleDebugInfo;
+
+// Layout from SoundManager::disp3DPoint (1.0.0: 0x71001a0e98): elements of 0x80 bytes, the name at 0x00, a flag at 0x2c, the position at 0x40.
+struct SoundHandleDebugInfo {
+  u8 _00[0x40];
+  mm::Vec3 unknown40; // Inferred role: position; original member name unknown.
+  u8 _50[0x80 - 0x50];
+};
+
+static_assert(offsetof(SoundHandleDebugInfo, unknown40) == 0x40, "");
+static_assert(sizeof(SoundHandleDebugInfo) == 0x80, "");
+
+// Size from the SoundManager layout (1.0.0: 0x710019fafc): 18 elements between 0x4110 and the size at 0x4470.
+struct SoundCategoryDebugInfo {
+  u8 _00[0x30];
+};
+
+static_assert(sizeof(SoundCategoryDebugInfo) == 0x30, "");
+
 struct SoundPlayInfo;
 struct SoundResult;
 struct UpdateInfo;
@@ -34,7 +52,7 @@ class ISoundDriver {
 public:
   virtual ~ISoundDriver() {}
   virtual void update(const UpdateInfo &info) = 0;
-  virtual void finalize() = 0;
+  virtual bool finalize() = 0;
   virtual void updateDebugInfo(mm::mtl::FixedVector<SoundHandleDebugInfo, 128> &handles, mm::mtl::FixedVector<SoundCategoryDebugInfo, 18> &categories) = 0;
   virtual void setListeningPoint(const mm::Mat44 &matrix) = 0;
   virtual const mm::Mat44 &getListeningPoint() const = 0;

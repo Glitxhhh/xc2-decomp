@@ -164,7 +164,7 @@ public:
 
   Result unknown08; // Inferred role: last result; original member name unknown.
   bool m_init;
-  bool unknown11; // Inferred role: audio device error; original member name unknown.
+  bool unknown11; // Inferred role: set when the audio device failed to initialize (SystemCore::Init, read by fw::SoundSsdDriver::isDeviceEnable); original member name unknown.
 };
 
 static_assert(offsetof(SoundCore, m_init) == 0x10, "");

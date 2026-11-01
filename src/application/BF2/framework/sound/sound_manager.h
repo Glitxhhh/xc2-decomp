@@ -2,6 +2,9 @@
 #include <stddef.h>
 
 #include "framework/manager_object.h"
+#include "framework/sound/sound_driver.h"
+#include "framework/sound/sound_res_source_manager.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/list.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -19,11 +22,10 @@ namespace fw {
 
 class ResourceObject;
 class SoundPack;
+class SoundSsdBank;
 struct UpdateInfo;
-class ISoundDriver;
 enum SoundCategory : int;
 enum SoundOutputType : int;
-enum SoundVolumeType : int;
 
 // Inferred role: sound volume fade; original type name unknown.
 struct unknown129 {
@@ -62,6 +64,18 @@ class SoundManager : public ManagerObject, public mm::mtl::PtrSingleton<SoundMan
 public:
   // Inferred role: unique id; original type name unknown.
   struct unknown130 {
+    // Inferred role: advance to the next id, wrapping into [min, max]; original name unknown.
+    u32 unknown001() {
+      unknown00++;
+      if (unknown00 > unknown08) {
+        unknown00 = unknown04;
+      } else if (unknown00 < unknown04) {
+        unknown00 = unknown04;
+      }
+
+      return unknown00;
+    }
+
     u32 unknown00; // Inferred role: current; original member name unknown.
     u32 unknown04; // Inferred role: min; original member name unknown.
     u32 unknown08; // Inferred role: max; original member name unknown.
@@ -142,24 +156,34 @@ public:
   f32 getMasterVolumeOrg() const;
   void setMasterMute(bool isMute, f32 time);
 
-  ISoundDriver *unknown18; // Inferred role: driver; original member name unknown.
-  u8 _20[0x6c - 0x20];
+  ISoundDriver *unknown18;                           // Inferred role: driver; original member name unknown.
+  mm::mtl::FixedVector<SoundSsdBank *, 8> unknown20; // Inferred role: system banks; original member name unknown.
+  u32 unknown68;                                     // Inferred role: debug display flags; original member name unknown.
   unknown129 m_masterVolumeOrg;
   unknown129 unknown80; // Inferred role: mute fade; original member name unknown.
   int unknown94;        // Inferred role: pause count; original member name unknown.
   bool unknown98;       // Inferred role: sound enable; original member name unknown.
   u8 _99[0xa0 - 0x99];
-  mm::mtl::List<SoundPack *> unknowna0;           // Inferred role: packs; original member name unknown.
-  ResourceObject *unknowne0;                      // Inferred role: common resource; original member name unknown.
-  ResourceObject *unknowne8[BATTLE_RESOURCE_MAX]; // Inferred role: battle resources; original member name unknown.
+  mm::mtl::List<SoundPack *> unknowna0;                         // Inferred role: packs; original member name unknown.
+  ResourceObject *unknowne0;                                    // Inferred role: common resource; original member name unknown.
+  ResourceObject *unknowne8[BATTLE_RESOURCE_MAX];               // Inferred role: battle resources; original member name unknown.
+  mm::mtl::FixedVector<SoundHandleDebugInfo, 128> unknown100;   // Inferred role: handle debug infos; original member name unknown.
+  mm::mtl::FixedVector<SoundCategoryDebugInfo, 18> unknown4110; // Inferred role: category debug infos; original member name unknown.
+  SoundResSourceManager unknown4478;                            // Inferred role: resource sources; original member name unknown.
 };
 
 static_assert(offsetof(SoundManager, unknown18) == 0x18, "");
+static_assert(offsetof(SoundManager, unknown20) == 0x20, "");
+static_assert(offsetof(SoundManager, unknown68) == 0x68, "");
 static_assert(offsetof(SoundManager, m_masterVolumeOrg) == 0x6c, "");
 static_assert(offsetof(SoundManager, unknown80) == 0x80, "");
 static_assert(offsetof(SoundManager, unknown94) == 0x94, "");
 static_assert(offsetof(SoundManager, unknown98) == 0x98, "");
 static_assert(offsetof(SoundManager, unknowna0) == 0xa0, "");
 static_assert(offsetof(SoundManager, unknowne0) == 0xe0, "");
+static_assert(offsetof(SoundManager, unknown100) == 0x100, "");
+static_assert(offsetof(SoundManager, unknown4110) == 0x4110, "");
+static_assert(offsetof(SoundManager, unknown4478) == 0x4478, "");
+static_assert(sizeof(SoundManager) == 0x44d0, "");
 
 } // namespace fw

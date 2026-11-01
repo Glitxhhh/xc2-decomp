@@ -3,6 +3,7 @@
 
 #include "framework/pointer_map.h"
 #include "framework/sound/sound_driver.h"
+#include "framework/sound/sound_manager.h"
 #include "ml/critical_section.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_mtl/fixed_list.h"
@@ -34,17 +35,31 @@ class SoundSsdBank;
 class SoundSsdPlayer;
 class SoundSsdSource;
 enum SoundCategory : int;
-struct SoundCategoryDebugInfo;
-struct SoundHandleDebugInfo;
+
+// Layout from SoundSsdBank::create and the SoundSsdBank constructor (1.0.0: 0x71001a48e0, 0x71001a4bc8).
+struct SoundBankSetup {
+  SoundBankSetup() : unknown08(0), unknown10(""), unknown18(static_cast<SoundCategory>(0)), unknown1c(256) {}
+
+  mm::mtl::IAllocator *unknown00; // Inferred role: allocator; original member name unknown.
+  u32 unknown08;                  // Inferred role: id; original member name unknown.
+  const char *unknown10;          // Inferred role: name; original member name unknown.
+  SoundCategory unknown18;        // Inferred role: category; original member name unknown.
+  u32 unknown1c;                  // Inferred role: max sound; original member name unknown.
+};
+
+static_assert(offsetof(SoundBankSetup, unknown08) == 0x08, "");
+static_assert(offsetof(SoundBankSetup, unknown10) == 0x10, "");
+static_assert(offsetof(SoundBankSetup, unknown18) == 0x18, "");
+static_assert(offsetof(SoundBankSetup, unknown1c) == 0x1c, "");
+static_assert(sizeof(SoundBankSetup) == 0x20, "");
 
 // Inferred role: sound category data; original type name unknown.
-struct unknown126 {
-  u8 _00[8];
-  u32 unknown08; // Inferred role: category id; original member name unknown.
-  f32 unknown0c; // Inferred role: volume; original member name unknown.
-  u8 _10[0x14 - 0x10];
-  f32 unknown14; // Inferred role: current volume; original member name unknown.
-  u8 _18[0x40 - 0x18];
+// Layout from the SoundSsdDriver constructor and addCategory (1.0.0: 0x71001a587c, 0x71001a78c0).
+struct unknown126 : public ssd::SoundCategory {
+  f32 unknown10;                 // Inferred role: volume factor; original member name unknown.
+  unknown129 unknown14;          // Inferred role: volume fade; original member name unknown.
+  unknown129 unknown28;          // Inferred role: mute fade; original member name unknown.
+  f32 unknown3c;                 // Inferred role: volume factor; original member name unknown.
   u32 unknown40;                 // Inferred role: mute count; original member name unknown.
   f32 unknown44;                 // Inferred role: pitch; original member name unknown.
   u32 unknown48;                 // Inferred role: registered; original member name unknown.
@@ -52,7 +67,10 @@ struct unknown126 {
   u8 _60[0x68 - 0x60];
 };
 
-static_assert(offsetof(unknown126, unknown08) == 0x08, "");
+static_assert(offsetof(unknown126, unknown10) == 0x10, "");
+static_assert(offsetof(unknown126, unknown14) == 0x14, "");
+static_assert(offsetof(unknown126, unknown28) == 0x28, "");
+static_assert(offsetof(unknown126, unknown3c) == 0x3c, "");
 static_assert(offsetof(unknown126, unknown40) == 0x40, "");
 static_assert(offsetof(unknown126, unknown44) == 0x44, "");
 static_assert(offsetof(unknown126, unknown48) == 0x48, "");
@@ -95,7 +113,21 @@ public:
     SoundSsdPlayer *unknown08; // Inferred role: player of the handle; original member name unknown.
   };
 
+  SoundSsdDriver(mm::mtl::IAllocator *allocator, u32 capacity);
   ~SoundSsdDriver() override;
+  void update(const UpdateInfo &info) override;
+  bool finalize() override;
+  void setMasterVolume(f32 volume) override;
+  void setCategoryVolume(SoundCategory category, f32 volume, f32 time) override;
+  void setCategoryMute(SoundCategory category, bool isMute, f32 time) override;
+  void setOutputMode(SoundOutputType type) override;
+  void addCategory(SoundCategory category, f32 volume, const char *name) override;
+  u32 playBgm(const char *name, f32 volume, bool ignorePause, int loopCount, SoundCategory category) override;
+  u32 playVoice(const char *name, f32 volume, bool ignorePause, SoundCategory category) override;
+  u32 playSe(const char *name, SoundPack *pack, f32 volume, SoundCategory category) override;
+  u32 playSe(u32 id, SoundPack *pack, f32 volume, SoundCategory category) override;
+  u32 playSeEx(const SoundPlayInfo &info, SoundResult &result) override;
+  bool isDeviceEnable() const override;
   void updateBank();
   SoundSsdBank *findBank(u32 id);
   SoundSsdBank *findBank(u32 id) const;
@@ -103,6 +135,7 @@ public:
   SoundSsdPlayer *getPlayer(u32 id) const;
   SoundSsdBank *findBank(const char *name);
   SoundSsdBank *findBank(const char *name) const;
+  void registBank(const char *name, SoundSsdBank *bank);
   void applyCategoryVolume(SoundCategory category, f32 volume);
   bool isValid() const;
   void destroyResourceAll();
@@ -165,6 +198,7 @@ public:
   u8 _878[0x8b8 - 0x878];
   PointerMap unknown8b8;                                 // Inferred role: players; original member name unknown.
   mm::mtl::FixedList<SoundPoolMemory *, 256> unknown8f0; // Inferred role: pool memories; original member name unknown.
+  u8 _1b10[0x1b80 - 0x1b10];
 };
 
 static_assert(offsetof(SoundSsdDriver::SoundAllocator, unknown08) == 0x08, "");
@@ -181,6 +215,8 @@ static_assert(offsetof(SoundSsdDriver, unknown838) == 0x838, "");
 static_assert(offsetof(SoundSsdDriver, unknown8b8) == 0x8b8, "");
 static_assert(offsetof(SoundSsdDriver, unknown8f0) == 0x8f0, "");
 static_assert(sizeof(mm::mtl::FixedList<SoundPoolMemory *, 256>) == 0x1220, "");
+// Size from the allocation in SoundManager::initialize (1.0.0: 0x710019ff18).
+static_assert(sizeof(SoundSsdDriver) == 0x1b80, "");
 
 class SoundReferenceObject {
 public:
@@ -194,6 +230,10 @@ public:
 
 class SoundSsdBank : public SoundReferenceObject {
 public:
+  static SoundManager::unknown130 m_bankUniqueID;
+
+  static SoundSsdBank *create(const char *name, SoundCategory category, u32 maxSound);
+  SoundSsdBank(const SoundBankSetup &setup);
   void addEntry(ssd::SoundEntry *entry);
   void addSource(SoundSsdSource *source);
   void removeEntry(ssd::SoundEntry *entry);

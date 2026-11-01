@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "framework/memory/framework_memory.h"
 #include "framework/sound/sound_driver.h"
 #include "framework/sound/sound_pack.h"
 #include "ml/critical_section.h"
@@ -62,7 +63,7 @@ int SoundReferenceObject::release() {
 
 unknown126 *SoundSsdDriver::findCategory(SoundCategory category) {
   unknown126 *found = &unknowne8[static_cast<u32>(category)];
-  if (found->unknown08 != static_cast<u32>(category)) {
+  if (found->unknown08.unknown00 != static_cast<int>(category)) {
     found = &unknowne8[CATEGORY_COUNT];
   }
 
@@ -71,19 +72,31 @@ unknown126 *SoundSsdDriver::findCategory(SoundCategory category) {
 
 const unknown126 *SoundSsdDriver::findCategory(SoundCategory category) const {
   const unknown126 *found = &unknowne8[static_cast<u32>(category)];
-  if (found->unknown08 != static_cast<u32>(category)) {
+  if (found->unknown08.unknown00 != static_cast<int>(category)) {
     found = &unknowne8[CATEGORY_COUNT];
   }
 
   return found;
 }
 
+void SoundSsdDriver::addCategory(SoundCategory category, f32 volume, const char *name) {
+  unknown126 &data = unknowne8[static_cast<u32>(category)];
+  data.unknown10 = volume;
+  data.unknown48 = 1;
+  data.unknown4c = name;
+  data.unknown40 = 0;
+  data.unknown08.unknown00 = category;
+  data.unknown44 = 1.0f;
+  data.unknown08.unknown04 = volume;
+  unknown10->SetCategory(data);
+}
+
 void SoundSsdDriver::removeCategory(SoundCategory category) {
   unknown126 *found = findCategory(category);
   if (found != &unknowne8[CATEGORY_COUNT]) {
     unknown126 &data = unknowne8[static_cast<u32>(category)];
-    data.unknown08 = 0;
-    data.unknown0c = 1.0f;
+    data.unknown08.unknown00 = 0;
+    data.unknown08.unknown04 = 1.0f;
     data.unknown48 = 0;
     unknown10->ResetCategory(category);
   }
@@ -96,7 +109,7 @@ f32 SoundSsdDriver::getCategoryVolume(SoundCategory category) const {
   if (unknown10 != nullptr) {
     const unknown126 *found = findCategory(category);
     if (found != &unknowne8[CATEGORY_COUNT]) {
-      volume = found->unknown14;
+      volume = found->unknown14.unknown00;
     }
   }
 
@@ -226,6 +239,14 @@ void SoundSsdBank::removeEntry(ssd::SoundEntry *entry) {
 void SoundSsdDriver::applyCategoryVolume(SoundCategory category, f32 volume) {}
 
 bool SoundSsdDriver::isValid() const { return unknown10 != nullptr; }
+
+bool SoundSsdDriver::isDeviceEnable() const {
+  if (unknown10 != nullptr) {
+    return !unknown10->unknown11;
+  }
+
+  return false;
+}
 
 const mm::Mat44 &SoundSsdDriver::getListeningPoint() const { return unknown30; }
 
@@ -803,6 +824,38 @@ bool SoundSsdDriver::stopVoice(u32 handle, f32 time) {
 bool SoundSsdDriver::stopSe(u32 handle, f32 time) {
   ml::CS lock(unknown70);
   return stopSound(handle, time);
+}
+
+SoundSsdBank *SoundSsdBank::create(const char *name, SoundCategory category, u32 maxSound) {
+  SoundSsdBank *bank = SoundSsdDriver::get()->findBank(name);
+  if (bank != nullptr) {
+    bank->addRef();
+    return bank;
+  }
+
+  SoundBankSetup setup;
+  setup.unknown00 = FrameworkMemory::getAllocator(5);
+  setup.unknown08 = m_bankUniqueID.unknown001();
+  setup.unknown10 = name;
+  setup.unknown18 = category;
+  setup.unknown1c = maxSound;
+  // __LINE__ must be 1118 as in the original file: it is the line argument of operator new.
+#line 1118
+  bank = new (FrameworkMemory::getAllocator(5), 8, __FILE__, __LINE__) SoundSsdBank(setup);
+  bank->addRef();
+  SoundSsdDriver::get()->registBank(name, bank);
+  return bank;
+}
+
+void SoundSsdDriver::registBank(const char *name, SoundSsdBank *bank) {
+  for (mm::mtl::List<SoundSsdBank *>::iterator it = unknown838.begin(); it != unknown838.end(); ++it) {
+    if (*it == bank) {
+      return;
+    }
+  }
+
+  unknown838.push_back(bank);
+  bank->addRef();
 }
 
 void SoundSsdBank::setMaxSound(int maxSound) {

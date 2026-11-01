@@ -1,16 +1,68 @@
 #include "framework/sound/sound_manager.h"
 
+#include <strings.h>
+
+#include "framework/framework.h"
 #include "framework/memory/framework_memory.h"
 #include "framework/resource/resource_object.h"
 #include "framework/resource/sound_resource.h"
 #include "framework/sound/sound_driver.h"
+#include "framework/sound/sound_pack.h"
+#include "framework/sound/sound_ssd_drv.h"
 #include "fw/fw_update_info.h"
+#include "ml/path_util.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
+#include "mtl/alloc_handle.h"
+#include "mtl/mem_manager.h"
 
 namespace fw {
 enum SoundCategory : int;
+
+SoundManager::~SoundManager() {
+  mm::mtl::safeRelease(unknowne0);
+  mm::mtl::safeRelease(unknowne8[1]);
+  mm::mtl::safeRelease(unknowne8[2]);
+  mm::mtl::safeRelease(unknowne8[0]);
+  if (unknown18 != nullptr) {
+    delete unknown18;
+    unknown18 = nullptr;
+  }
+}
+
+bool SoundManager::finalize() {
+  mm::mtl::safeRelease(unknowne8[2]);
+  mm::mtl::safeRelease(unknowne8[1]);
+  mm::mtl::safeRelease(unknowne8[0]);
+  mm::mtl::safeRelease(unknowne0);
+  if (unknown18 != nullptr) {
+    if (unknown94 > 0) {
+      do {
+        pauseAll(false, 0.0f);
+      } while (unknown94 > 0);
+    }
+
+    for (size_t i = 0; i < unknown20.size(); i++) {
+      if (unknown20[i] != nullptr) {
+        unknown20[i]->release();
+        unknown20[i] = nullptr;
+      }
+    }
+    unknown20.clear();
+
+    if (!unknown18->finalize()) {
+      return false;
+    }
+
+    if (unknown18 != nullptr) {
+      delete unknown18;
+      unknown18 = nullptr;
+    }
+  }
+
+  return true;
+}
 
 void SoundManager::attachPoolMemory(void *memory, u32 size) {
   if (get() != nullptr && unknown18 != nullptr && unknown98) {
@@ -74,16 +126,7 @@ void SoundManager::tail(const UpdateInfo &info) {
 
 mm::mtl::IAllocator *SoundManager::getProcAllocator() { return FrameworkMemory::getAllocator(7); }
 
-u32 SoundManager::getUniqueID(SoundCategory category) {
-  m_uniqueID.unknown00++;
-  if (m_uniqueID.unknown00 > m_uniqueID.unknown08) {
-    m_uniqueID.unknown00 = m_uniqueID.unknown04;
-  } else if (m_uniqueID.unknown00 < m_uniqueID.unknown04) {
-    m_uniqueID.unknown00 = m_uniqueID.unknown04;
-  }
-
-  return m_uniqueID.unknown00 | category << 24;
-}
+u32 SoundManager::getUniqueID(SoundCategory category) { return m_uniqueID.unknown001() | category << 24; }
 
 void SoundManager::setListeningPoint(const mm::Mat44 &matrix) {
   if (unknown18 != nullptr) {
@@ -212,6 +255,28 @@ void SoundManager::stopVoice(u32 handle, f32 time) {
 }
 
 SoundPack *SoundManager::getCommonPack() { return findPack("common", nullptr); }
+
+SoundPack *SoundManager::findPack(const char *name, mm::mtl::IAllocator *allocator) {
+  mm::mtl::FixStr<256> path(name);
+  mm::mtl::FixStr<64> packName = ml::PathUtil::getNoPathExtName(path.c_str());
+  if (packName.length() == path.length()) {
+    for (mm::mtl::List<SoundPack *>::iterator it = unknowna0.begin(); it != unknowna0.end(); ++it) {
+      SoundPack *pack = *it;
+      if (strcasecmp(pack->unknown12c.c_str(), packName.c_str()) == 0 && (allocator == nullptr || pack->unknown10 == allocator)) {
+        return pack;
+      }
+    }
+  } else {
+    for (mm::mtl::List<SoundPack *>::iterator it = unknowna0.begin(); it != unknowna0.end(); ++it) {
+      SoundPack *pack = *it;
+      if (strcasecmp(pack->unknown24.c_str(), name) == 0 && (allocator == nullptr || pack->unknown10 == allocator)) {
+        return pack;
+      }
+    }
+  }
+
+  return nullptr;
+}
 
 u32 SoundManager::playSe(u32 id, SoundPack *pack, f32 volume, SoundCategory category) {
   if (!isSoundEbable()) {
@@ -513,3 +578,56 @@ const char *SoundManager::getName() const { return "SoundManager"; }
 } // namespace fw
 
 template mm::mtl::PtrSingleton<fw::SoundManager>::~PtrSingleton();
+
+namespace fw {
+
+bool SoundManager::initialize() {
+  if (unknown18 == nullptr) {
+    // __LINE__ must be 555 of sound_manager.h as in the original: it is the line argument of operator new.
+#line 555 "framework/sound/sound_manager.h"
+    unknown18 = new (Framework::getAllocator(), 16, __FILE__, __LINE__) SoundSsdDriver(FrameworkMemory::getAllocator(7), 0x400);
+    unknown98 = unknown18->isDeviceEnable();
+
+    {
+      mtl::ALLOC_HANDLE handle = FrameworkMemory::getMem(6);
+      attachPoolMemory(reinterpret_cast<void *>(mtl::MemManager::getTopAdr(handle)), mtl::MemManager::getTotalSize(handle));
+    }
+    {
+      mtl::ALLOC_HANDLE handle = FrameworkMemory::getMem(8);
+      attachPoolMemory(reinterpret_cast<void *>(mtl::MemManager::getTopAdr(handle)), mtl::MemManager::getTotalSize(handle));
+    }
+
+    m_uniqueID.unknown08 = 0xffffff;
+    unknowna0.setAllocator(FrameworkMemory::getAllocator(5));
+    unknowna0.reserve(0x400);
+
+    addCategory(static_cast<SoundCategory>(1), 1.0f, "BGM");
+    addCategory(static_cast<SoundCategory>(2), 1.0f, "VOICE");
+    addCategory(static_cast<SoundCategory>(3), 1.0f, "SYSTEM");
+    addCategory(static_cast<SoundCategory>(4), 1.0f, "BATTLE");
+    addCategory(static_cast<SoundCategory>(5), 1.0f, "FIELD");
+    addCategory(static_cast<SoundCategory>(6), 1.0f, "GIMMICK");
+    addCategory(static_cast<SoundCategory>(7), 1.0f, "ENV");
+    addCategory(static_cast<SoundCategory>(8), 1.0f, "WEATHER");
+    addCategory(static_cast<SoundCategory>(9), 1.0f, "EVT_CS");
+    addCategory(static_cast<SoundCategory>(10), 1.0f, "EVT_BGM");
+    addCategory(static_cast<SoundCategory>(11), 1.0f, "EVT_VOICE");
+    addCategory(static_cast<SoundCategory>(12), 1.0f, "EVT_SE");
+    addCategory(static_cast<SoundCategory>(13), 1.0f, "CH_SE");
+    addCategory(static_cast<SoundCategory>(14), 1.0f, "CH_SE NS");
+    addCategory(static_cast<SoundCategory>(15), 1.0f, "ENE_VO");
+    addCategory(static_cast<SoundCategory>(16), 1.0f, "NAREVO");
+    addCategory(static_cast<SoundCategory>(17), 1.0f, "MENU_BGM");
+
+    unknown20.clear();
+    unknown20.push_back(SoundSsdBank::create("SystemBgmBank", static_cast<SoundCategory>(1), 4));
+    unknown20.push_back(SoundSsdBank::create("SystemVoiceBank", static_cast<SoundCategory>(2), 8));
+    unknown20.push_back(SoundSsdBank::create("SystemSystemBank", static_cast<SoundCategory>(3), 0x40));
+    loadCommonSe();
+    loadBattleSe();
+  }
+
+  return true;
+}
+
+} // namespace fw

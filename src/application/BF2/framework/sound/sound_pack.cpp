@@ -2,10 +2,59 @@
 
 #include <string.h>
 
+#include "framework/memory/framework_memory.h"
+#include "framework/sound/sound_manager.h"
 #include "framework/sound/sound_ssd_drv.h"
+#include "ml/path_util.h"
 #include "mm_mtl/hash.h"
 
 namespace fw {
+
+SoundPack *SoundPack::createFromStream(mm::mtl::IAllocator *allocator, const SetupInfo &info) {
+  SoundPack *pack = SoundManager::get()->findPack(info.unknown00.c_str(), allocator);
+  if (pack != nullptr) {
+    pack->addRef();
+    return pack;
+  }
+
+  // __LINE__ must be 171 as in the original file: it is the line argument of operator new.
+#line 171
+  pack = new (FrameworkMemory::getAllocator(5), 8, __FILE__, __LINE__) SoundPack(info.unknown84, allocator, info.unknown00.c_str(), info.unknown88);
+  pack->addRef();
+  mm::mtl::FixStr<256> bankName;
+  bankName.format("%s_%p", info.unknown00.c_str(), allocator);
+  pack->unknown178 = SoundSsdBank::create(bankName.c_str(), info.unknown84, info.unknowna4);
+  pack->unknown178->setMaxSound(info.unknowna4);
+  pack->registSource(info.unknown98, info.unknowna0);
+  SoundManager::get()->registPack(pack);
+  return pack;
+}
+
+SoundPack *SoundPack::create(const SetupInfo &info) {
+  SoundPack *pack = SoundManager::get()->findPack(info.unknown00.c_str(), nullptr);
+  if (pack != nullptr) {
+    pack->addRef();
+    return pack;
+  }
+
+  // __LINE__ must be 210 as in the original file: it is the line argument of operator new.
+#line 210
+  pack = new (FrameworkMemory::getAllocator(5), 8, __FILE__, __LINE__) SoundPack(info.unknown84, nullptr, info.unknown00.c_str(), info.unknown88);
+  pack->addRef();
+  mm::mtl::FixStr<256> bankName;
+  bankName.format("%s_%p", info.unknown00.c_str(), nullptr);
+  pack->unknown178 = SoundSsdBank::create(bankName.c_str(), info.unknown84, info.unknowna4);
+  pack->unknown178->setMaxSound(info.unknowna4);
+  pack->registSource(info.unknown98, info.unknowna0);
+  SoundManager::get()->registPack(pack);
+  return pack;
+}
+
+SoundPack::SoundPack(SoundCategory category, mm::mtl::IAllocator *allocator, const char *name, SoundPriority priority) : unknown0c(category), unknown10(allocator), unknown170(priority) {
+  unknown24 = name;
+  unknown128 = mm::mtl::hashStrCrc(name);
+  unknown12c = ml::PathUtil::getNoPathExtName(name);
+}
 
 void SoundPack::stopAll() {
   if (unknown178 != nullptr) {
