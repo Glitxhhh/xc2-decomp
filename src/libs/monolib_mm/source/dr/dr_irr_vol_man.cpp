@@ -1,10 +1,35 @@
 #include "dr/dr_irr_vol_man.h"
 
+#include "bin/bin_binary_resolver.h"
 #include "dr/dr_irr_vol_cascade.h"
 #include "grlib/cglib_texture_buffer.h"
 #include "mm_math/mm_aabb.h"
 
 namespace ml {
+
+DrIrrVolMan::~DrIrrVolMan() { release(); }
+
+void DrIrrVolMan::release() {
+  if (unknown08 == nullptr) {
+    return;
+  }
+  for (u32 i = 0; i < unknown08->unknown20; i++) {
+    if (unknown98[i] != nullptr) {
+      delete unknown98[i];
+      unknown98[i] = nullptr;
+    }
+  }
+  if (unknown98 != nullptr) {
+    delete[] unknown98;
+    unknown98 = nullptr;
+  }
+  unknown08 = nullptr;
+}
+
+void DrIrrVolMan::create(void *data, const char *name) {
+  unknown08 = static_cast<unknown036 *>(bin::BinaryResolver::resolve(data));
+  unknown10 = name;
+}
 
 bool DrIrrVolMan::isValid() const {
   if (unknown08 == nullptr) {

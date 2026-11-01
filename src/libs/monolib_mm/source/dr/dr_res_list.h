@@ -25,4 +25,15 @@ template <typename T> inline void unknown001(T *&first, T *&last, T *node) {
   node->unknown08 = nullptr;
 }
 
+// Inferred helper: finds the node of a resource key in a list and adds a reference to it; original name unknown.
+template <typename T> inline T *unknown003(T *first, const void *key) {
+  for (T *node = first; node != nullptr; node = node->unknown08) {
+    if (node->unknown10 == key) {
+      node->unknown18++;
+      return node;
+    }
+  }
+  return nullptr;
+}
+
 } // namespace ml

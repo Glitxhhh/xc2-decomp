@@ -37,8 +37,48 @@ struct MdsMatValShaderCate {
 
 static_assert(offsetof(MdsMatValShaderCate, unknown03) == 0x03, "");
 
+struct MdsMpfMatExtData {
+  f32 unknown00[3]; // Inferred role: color; original member name unknown.
+  u32 unknown0c;    // Inferred role: flags; original member name unknown.
+  f32 unknown10;    // Inferred role: unknown value copied to the uniform; original member name unknown.
+  f32 unknown14;    // Inferred role: unknown value copied to the uniform; original member name unknown.
+  f32 unknown18;    // Inferred role: fade start distance; original member name unknown.
+  f32 unknown1c;    // Inferred role: fade end distance; original member name unknown.
+  f32 unknown20;    // Inferred role: fade ratio; original member name unknown.
+  u16 unknown24;    // Inferred role: flags shifted by 4 into the uniform flags; original member name unknown.
+  u8 _26[0x34 - 0x26];
+};
+
+static_assert(offsetof(MdsMpfMatExtData, unknown0c) == 0x0c, "");
+static_assert(offsetof(MdsMpfMatExtData, unknown10) == 0x10, "");
+static_assert(offsetof(MdsMpfMatExtData, unknown18) == 0x18, "");
+static_assert(offsetof(MdsMpfMatExtData, unknown20) == 0x20, "");
+static_assert(offsetof(MdsMpfMatExtData, unknown24) == 0x24, "");
+static_assert(sizeof(MdsMpfMatExtData) == 0x34, "");
+
 class DrMdoSetup : public DrMdoNode {
 public:
+  // Inferred role: mpf material uniform values; original type name unknown.
+  struct unknown002 {
+    f32 unknown00[3]; // Inferred role: color; original member name unknown.
+    u32 unknown0c;    // Inferred role: flags; original member name unknown.
+    f32 unknown10;    // Inferred role: unknown value; original member name unknown.
+    f32 unknown14;    // Inferred role: unknown value; original member name unknown.
+    f32 unknown18;    // Inferred role: unused; original member name unknown.
+    f32 unknown1c;    // Inferred role: unused; original member name unknown.
+    f32 unknown20;    // Inferred role: fade start distance; original member name unknown.
+    f32 unknown24;    // Inferred role: inverse fade range; original member name unknown.
+    f32 unknown28;    // Inferred role: fade ratio; original member name unknown.
+    f32 unknown2c;    // Inferred role: unused; original member name unknown.
+  };
+
+  // Inferred role: mpf model resource header; original type name unknown.
+  struct unknown003 {
+    u8 _00[0x10 - 0x00];
+    u32 unknown10; // Inferred role: material extension data offset; original member name unknown.
+    s32 unknown14; // Inferred role: material extension data count; original member name unknown.
+  };
+
   void changeShader(bool isChange);
   void beginMatInfo();
   // Inferred role: resets the material info state, the body of beginMatInfo inlined by callers; original name unknown.
@@ -51,6 +91,10 @@ public:
   void changeSeamMatInfo();
   void changeShaderMat(bool isChange);
   void changeShaderPos();
+  void createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat);
+  void updateUniformBlock(const u32 *flags);
+  void createMpfMatUniformBlock(const MdsMpfMatExtData *data, int index);
+  void updateMpfMatUniformBlock();
   void setupPrePassShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused);
   void setupThicknessShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, bool isFirst);
   void setupShadowShader(DrShdDataList *list, int index, const MdsMatInfoHeader *header, int uniformIndex, int unused);
@@ -78,7 +122,9 @@ public:
   void uniformBlock_ClusterAddressList(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex);
   void uniformBlock_RimBloomCalc(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex);
   void uniformBlock_Toon2(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex);
+  int unimate_matColor(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
   int unimate_alphaInfo(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
+  int unimate_AvatarMapWrk(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
   int unimate_texMatrix(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
   int unimate_workFloat4(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
   int unimate_workColor(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
@@ -106,6 +152,8 @@ public:
   void varStTex_GlobalIBLIndexTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_BackFaceDepthTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_DownDepthTex(const MdsMatInfoHeader *header, u32 location, u32 index);
+  void varStTex_DownBaseColorTex(const MdsMatInfoHeader *header, u32 location, u32 index);
+  void varStTex_SpecularIBLTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_ClusterIdxListTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_VelocityTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_RefractionAfterTex(const MdsMatInfoHeader *header, u32 location, u32 index);
@@ -127,6 +175,8 @@ public:
   void varStImg_Normal(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStImg_Velocity(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStImg_ZBuff(const MdsMatInfoHeader *header, u32 location, u32 index);
+
+  static int (DrMdoSetup::*s_pStockMaterial[])(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
 
   u8 _16c[0x170 - 0x16c];
   grlib::CGLibEtcUniformBlock *unknown170; // Inferred role: etc uniform; original member name unknown.

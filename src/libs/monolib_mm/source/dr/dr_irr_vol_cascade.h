@@ -8,12 +8,20 @@
 
 namespace ml {
 namespace irrvol {
+class DrIrrVolResMan;
+class DrIrrVolResObj;
+class DrIrrVolSector;
 
 class DrIrrVolCascade {
 public:
+  ~DrIrrVolCascade();
   void createSector(void *buffer, u32 index);
 
-  u8 _000[0x560];
+  u8 _000[0x018 - 0x000];
+  DrIrrVolResMan *unknown18;      // Inferred role: sector resource manager; original member name unknown.
+  DrIrrVolSector *unknown20[81];  // Inferred role: sector instances of the 9 x 9 grid; original member name unknown.
+  DrIrrVolResObj *unknown2a8[81]; // Inferred role: sector resources of the 9 x 9 grid; original member name unknown.
+  u8 _530[0x560 - 0x530];
   mm::Aabb unknown560[2]; // Inferred role: volume area per buffer; original member name unknown.
   u8 _5a0[0x5b0 - 0x5a0];
   mm::Vec3 unknown5b0; // Inferred role: uv per pixel; original member name unknown.
@@ -26,6 +34,10 @@ public:
   mm::Vec3 unknown8e0; // Inferred role: eye offset; original member name unknown.
   mm::Vec3 unknown8f0; // Inferred role: uv offset; original member name unknown.
 };
+
+static_assert(offsetof(DrIrrVolCascade, unknown18) == 0x18, "");
+static_assert(offsetof(DrIrrVolCascade, unknown20) == 0x20, "");
+static_assert(offsetof(DrIrrVolCascade, unknown2a8) == 0x2a8, "");
 
 static_assert(offsetof(DrIrrVolCascade, unknown560) == 0x560, "");
 static_assert(offsetof(DrIrrVolCascade, unknown5b0) == 0x5b0, "");

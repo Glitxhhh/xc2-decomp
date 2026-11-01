@@ -1,5 +1,6 @@
 #pragma once
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixstr.h"
 #include "types.h"
 #include <stddef.h>
 
@@ -47,6 +48,9 @@ static_assert(offsetof(unknown036, unknown20) == 0x20, "");
 
 class DrIrrVolMan {
 public:
+  ~DrIrrVolMan();
+  void release();
+  void create(void *data, const char *name);
   bool isValid() const;
   void tail();
   void update();
@@ -62,8 +66,9 @@ public:
   const mm::Vec3 &getIrrVolUVOffset(u32 cascade) const;
 
   u8 _000[0x008 - 0x000];
-  unknown036 *unknown08; // Inferred role: setting; original member name unknown.
-  u8 _010[0x098 - 0x010];
+  unknown036 *unknown08;          // Inferred role: setting; original member name unknown.
+  mm::mtl::FixStr<128> unknown10; // Inferred role: resource name; original member name unknown.
+  u8 _094[0x098 - 0x094];
   irrvol::DrIrrVolCascade **unknown98; // Inferred role: cascades; original member name unknown.
   u8 _0a0[0x0b4 - 0x0a0];
   u32 unknown0b4; // Inferred role: double buffer flag; original member name unknown.

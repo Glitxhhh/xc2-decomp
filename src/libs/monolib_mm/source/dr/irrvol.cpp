@@ -1,6 +1,7 @@
 #include "dr/irrvol.h"
 
 #include <stddef.h>
+#include <string.h>
 
 #include "bin/bin_binary_resolver.h"
 #include "dr/dr_irr_vol_allocator.h"
@@ -72,6 +73,20 @@ DrIrrVolSector::DrIrrVolSector(const SSectorInfo *sectorInfo, const SCascadeInfo
 DrIrrVolSector::~DrIrrVolSector() {}
 
 const SLightProbe *DrIrrVolSector::getProbe(int index) const { return unknown00->unknown40 + index; }
+
+DrIrrVolCascade::~DrIrrVolCascade() {
+  for (int i = 0; i < 81; i++) {
+    if (unknown20[i] != nullptr) {
+      delete unknown20[i];
+      unknown20[i] = nullptr;
+    }
+  }
+  memset(unknown2a8, 0, sizeof(unknown2a8));
+  if (unknown18 != nullptr) {
+    delete unknown18;
+    unknown18 = nullptr;
+  }
+}
 
 void DrIrrVolCascade::createSector(void *buffer, u32 index) {}
 

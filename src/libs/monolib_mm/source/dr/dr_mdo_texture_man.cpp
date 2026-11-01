@@ -2,6 +2,7 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_res_etc_tex_list.h"
+#include "dr/dr_res_list.h"
 #include "dr/dr_res_mdo_tex_list.h"
 #include "mtl/alloc_handle.h"
 
@@ -33,49 +34,66 @@ DrMdoTextureMan::~DrMdoTextureMan() {
 }
 
 DrResMdoTexList *DrMdoTextureMan::createTextureObj(const u8 *data) {
-  for (DrResMdoTexList *list = unknown08; list != nullptr; list = list->unknown08) {
-    if (list->unknown10 == data) {
-      list->unknown18++;
-      return list;
-    }
-  }
-  DrResMdoTexList *list = new (unknown00->unknown10) DrResMdoTexList(data);
+  DrResMdoTexList *list = unknown003(unknown08, data);
   if (list != nullptr) {
-    if (unknown10 == nullptr) {
-      unknown08 = list;
-      unknown10 = list;
-      list->unknown00 = nullptr;
-    } else {
-      unknown10->unknown08 = list;
-      list->unknown00 = unknown10;
-      unknown10 = list;
-    }
-    list->unknown08 = nullptr;
+    return list;
+  }
+  list = new (unknown00->unknown10) DrResMdoTexList(data);
+  if (list != nullptr) {
+    unknown001(list);
   }
   return list;
 }
 
 DrResMdoTexList *DrMdoTextureMan::createTextureObj(const u8 *header, const u8 *data) {
-  for (DrResMdoTexList *list = unknown08; list != nullptr; list = list->unknown08) {
-    if (list->unknown10 == header) {
-      list->unknown18++;
-      return list;
-    }
-  }
-  DrResMdoTexList *list = new (unknown00->unknown10) DrResMdoTexList(header, data);
+  DrResMdoTexList *list = unknown003(unknown08, header);
   if (list != nullptr) {
-    if (unknown10 == nullptr) {
-      unknown08 = list;
-      unknown10 = list;
-      list->unknown00 = nullptr;
-    } else {
-      unknown10->unknown08 = list;
-      list->unknown00 = unknown10;
-      unknown10 = list;
-    }
-    list->unknown08 = nullptr;
+    return list;
+  }
+  list = new (unknown00->unknown10) DrResMdoTexList(header, data);
+  if (list != nullptr) {
+    unknown001(list);
   }
   return list;
+}
+
+DrResMdoTexList *DrMdoTextureMan::createTextureObj(const u8 *header, DrCalcStmListObj *stmList, const u8 *data, const MdsTexHeader *stmHeader) {
+  DrResMdoTexList *list = unknown003(unknown08, stmList);
+  if (list != nullptr) {
+    return list;
+  }
+  list = new (unknown00->unknown10) DrResMdoTexList(header, stmList, data, stmHeader);
+  if (list != nullptr) {
+    unknown001(list);
+  }
+  return list;
+}
+
+DrResMdoTexList *DrMdoTextureMan::createTextureObj(const u8 *header, DrCalcStmListObj *stmList, const u8 *data, const u16 *stmTexIdx) {
+  DrResMdoTexList *list = unknown003(unknown08, stmList);
+  if (list != nullptr) {
+    return list;
+  }
+  list = new (unknown00->unknown10) DrResMdoTexList(header, stmList, data, stmTexIdx);
+  if (list != nullptr) {
+    unknown001(list);
+  }
+  return list;
+}
+
+void DrMdoTextureMan::update() {
+  for (DrResMdoTexList *list = unknown08; list != nullptr; list = list->unknown08) {
+    list->update();
+  }
+  DrResEtcTexList *list = unknown18;
+  while (list != nullptr) {
+    DrResEtcTexList *next = list->unknown08;
+    if (list->unknown30 & 1) {
+      ml::unknown001(unknown18, unknown20, list);
+      delete list;
+    }
+    list = next;
+  }
 }
 
 void DrMdoTextureMan::releaseTextureObj(DrResMdoTexList *list) {

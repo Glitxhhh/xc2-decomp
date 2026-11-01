@@ -24,6 +24,11 @@ void DrMdoMpfMan::begin() {
   unknownd0 = 0;
 }
 
+void DrMdoMpfMan::beginBitTbl(int num) {
+  int size = num + (0x20 - num % 0x20) % 0x20;
+  memset(unknown3d00, 0, size);
+}
+
 int DrMdoMpfMan::getMpfWindMax() { return 0x40; }
 
 void DrMdoMpfMan::updateInstanceBuff(u32 offset, u32 size) { unknown98.updateData(offset, size); }

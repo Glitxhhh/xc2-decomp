@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_res_mdo_tex_list.h"
 #include "types.h"
 
 namespace grlib {
@@ -9,17 +10,33 @@ class CGLibTextureBuffer;
 
 namespace ml {
 class DrMan;
+class DrCalcStmListObj;
 class DrResEtcTexList;
-class DrResMdoTexList;
 
 class DrMdoTextureMan {
 public:
   DrMdoTextureMan(DrMan *drMan);
   ~DrMdoTextureMan();
+  // Inferred role: appends a new model texture list; original name unknown.
+  void unknown001(DrResMdoTexList *list) {
+    if (unknown10 == nullptr) {
+      unknown08 = list;
+      unknown10 = list;
+      list->unknown00 = nullptr;
+    } else {
+      unknown10->unknown08 = list;
+      list->unknown00 = unknown10;
+      unknown10 = list;
+    }
+    list->unknown08 = nullptr;
+  }
   DrResMdoTexList *createTextureObj(const u8 *data);
   DrResMdoTexList *createTextureObj(const u8 *header, const u8 *data);
+  DrResMdoTexList *createTextureObj(const u8 *header, DrCalcStmListObj *stmList, const u8 *data, const MdsTexHeader *stmHeader);
+  DrResMdoTexList *createTextureObj(const u8 *header, DrCalcStmListObj *stmList, const u8 *data, const u16 *stmTexIdx);
   DrResEtcTexList *createEtxTexture(const u8 *data);
   void releaseTextureObj(DrResMdoTexList *list);
+  void update();
   grlib::CGLibTextureBuffer *getTextureID(u32 id);
   grlib::CGLibTextureBuffer *getTextureName(const char *name);
 

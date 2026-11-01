@@ -15,6 +15,7 @@ public:
   ~DrMdoMpfMan();
   void freeMemWork(_MPFWorkAutoInf *work);
   void begin();
+  void beginBitTbl(int num);
   void update();
   static int getMpfWindMax();
   void updateInstanceBuff(u32 offset, u32 size);
@@ -39,7 +40,9 @@ public:
   _MPFWorkAutoInf *unknowne0; // Inferred role: work list end; original member name unknown.
   _MPFWorkAutoInf *unknowne8; // Inferred role: first memory block; original member name unknown.
   _MPFWorkAutoInf *unknownf0; // Inferred role: smallest free work found by the last search; original member name unknown.
-  u8 _f8[0x3d10 - 0xf8];
+  u8 _f8[0x3d00 - 0xf8];
+  u8 *unknown3d00; // Inferred role: bit table cleared by beginBitTbl; original member name unknown.
+  u8 _3d08[0x3d10 - 0x3d08];
   u8 *unknown3d10; // Inferred role: temporary memory; original member name unknown.
   u8 _3d18[0x3d20 - 0x3d18];
   s32 unknown3d20;   // Inferred role: temporary memory used size; original member name unknown.
@@ -61,6 +64,7 @@ static_assert(offsetof(DrMdoMpfMan, unknown3d10) == 0x3d10, "");
 static_assert(offsetof(DrMdoMpfMan, unknown3d20) == 0x3d20, "");
 static_assert(offsetof(DrMdoMpfMan, unknown3d24) == 0x3d24, "");
 static_assert(offsetof(DrMdoMpfMan, unknowne8) == 0xe8, "");
+static_assert(offsetof(DrMdoMpfMan, unknown3d00) == 0x3d00, "");
 static_assert(offsetof(DrMdoMpfMan, unknownf0) == 0xf0, "");
 
 } // namespace ml

@@ -15,6 +15,7 @@ class DrCalcStmWork {
 public:
   DrCalcStmWork();
   static int getWorkSize(u32 count);
+  int createWork(u8 *work, u32 count);
   grlib::CGLibTextureBuffer *getTexObj(u32 index);
   void texRelease();
 

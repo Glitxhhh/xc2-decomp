@@ -47,7 +47,7 @@ public:
 
   DrResMdoTexList *unknown00;           // Inferred role: prev; original member name unknown.
   DrResMdoTexList *unknown08;           // Inferred role: next; original member name unknown.
-  const u8 *unknown10;                  // Inferred role: resource key; original member name unknown.
+  const void *unknown10;                // Inferred role: resource key; original member name unknown.
   s32 unknown18;                        // Inferred role: ref count; original member name unknown.
   grlib::CGLibTextureBuffer *unknown20; // Inferred role: textures; original member name unknown.
   grlib::CGLibVtlMemPool unknown28;     // Inferred role: mem pool; original member name unknown.
