@@ -1,6 +1,9 @@
 #include "ml/win_proc_root.h"
 
+#include "ml/lib_main.h"
+#include "ml/proc_desktop.h"
 #include "ml/reslist.h"
+#include "ml/win_view_root.h"
 #include "ml/work_root.h"
 #include "ml/work_util.h"
 #include "mtl/alloc_handle.h"
@@ -18,6 +21,17 @@ bool WinProcRoot::isInitialized() {
   }
 
   return root->wkIsActive();
+}
+
+bool WinProcRoot::wkStandbyLogin() {
+  if (wkIsShutdown()) {
+    return WorkObj::wkStandbyLogin();
+  }
+  if (LibMain::isInitialized() && WinViewRoot::isInitialized()) {
+    WorkUtil::createWork<ProcDesktop>("ProcDesktop", this, false);
+    return WorkObj::wkStandbyLogin();
+  }
+  return false;
 }
 
 bool WinProcRoot::wkStandbyLogout() {

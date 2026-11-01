@@ -8,6 +8,7 @@ namespace ml {
 class WinViewPort {
 public:
   WinViewPort();
+  void setSize(const mm::Pnt<int> &size);
   void setWorkSize(const mm::Pnt<int> &size);
 
   mm::Pnt<int> unknown00; // Inferred role: size; original member name unknown.

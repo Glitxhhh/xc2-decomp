@@ -68,6 +68,8 @@ public:
   const WinView *getSplitView1() const;
   const WinView *getSplitView2() const;
   void setDisp(bool isDisp, bool isInvalidCurrent);
+  void setCurrent();
+  void setFullScreen();
   void deleteSplitView();
   bool hasCurrent() const;
   mm::Pnt<int> getFrameAbsPos(bool isBack) const;
@@ -90,11 +92,11 @@ public:
   u32 unknown3bc;          // Inferred role: frame flags; original member name unknown.
   MsgParam<10> unknown3c0; // Inferred role: event messages; original member name unknown.
   u8 _4d0[0x514 - 0x4d0];
-  mm::Col4 unknown514; // Inferred role: back color, scaled by the transparency for the clear color; original member name unknown.
-  f32 unknown524;      // Inferred role: transparency; original member name unknown.
-  s32 unknown528;      // Inferred role: sort priority among the child views; original member name unknown.
-  u8 _52c[0x53c - 0x52c];
-  bool unknown53c; // Inferred role: copy the back render info to the front when the rect changes; original member name unknown.
+  mm::Col4 unknown514;      // Inferred role: back color, scaled by the transparency for the clear color; original member name unknown.
+  f32 unknown524;           // Inferred role: transparency; original member name unknown.
+  s32 unknown528;           // Inferred role: sort priority among the child views; original member name unknown.
+  mm::Rect<int> unknown52c; // Inferred role: rect saved while the view is full screen; original member name unknown.
+  bool unknown53c;          // Inferred role: copy the back render info to the front when the rect changes; original member name unknown.
   u8 _53d[0x590 - 0x53d];
 };
 
@@ -109,6 +111,7 @@ static_assert(offsetof(WinView, unknown3c0) == 0x3c0, "");
 static_assert(offsetof(WinView, unknown514) == 0x514, "");
 static_assert(offsetof(WinView, unknown524) == 0x524, "");
 static_assert(offsetof(WinView, unknown528) == 0x528, "");
+static_assert(offsetof(WinView, unknown52c) == 0x52c, "");
 static_assert(offsetof(WinView, unknown53c) == 0x53c, "");
 static_assert(sizeof(WinView) == 0x590, "");
 

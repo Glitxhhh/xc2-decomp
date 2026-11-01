@@ -117,6 +117,19 @@ void WinView::setDisp(bool isDisp, bool isInvalidCurrent) {
   }
 }
 
+void WinView::setCurrent() { unknown3c0.add(7); }
+
+void WinView::setFullScreen() {
+  if (!(unknown3b8 & 1)) {
+    unknown52c = getRect(false);
+    unknown3b8 |= 1;
+    setRect(mm::Rect<int>(0, 0, DevGraph::getRootWidth(), DevGraph::getRootHeight()));
+  } else {
+    unknown3b8 &= ~1u;
+    setRect(unknown52c);
+  }
+}
+
 mm::Pnt<int> WinViewFrame::getFrame2ViewOffset() const {
   mm::Pnt<int> offset(0, 0);
   u32 frameFlags = m_info->unknown3bc;

@@ -43,6 +43,14 @@ bool WinProc::pssAttachView(WinView *view) {
   return true;
 }
 
+void WinProc::pssSetFocus() {
+  WinView *view = pssGetView(0xffffffff);
+  if (view != nullptr) {
+    view->setDisp(true, false);
+    view->setCurrent();
+  }
+}
+
 WorkObj *WinProc::pssGetParentView() {
   WorkObj *parent = WorkRootState::getWork(unknown1e8);
   if (parent != nullptr) {
@@ -86,6 +94,24 @@ const WinView *WinProc::pssGetView(u32 wid) const {
     return nullptr;
   }
   return static_cast<WinView *>(WorkRootState::getWork(unknown1a8.begin()->value));
+}
+
+mm::Rect<int> WinProc::pssMakeClientRect() const {
+  if (unknown1a8.size() == 0) {
+    return mm::Rect<int>(0, 0, 0, 0);
+  }
+  const WinView *view = pssGetView(0xffffffff);
+  int childNum = view->wkGetChild()->size();
+  mm::Rect<int> rect = view->getRect(false);
+  rect.x += childNum * 20;
+  rect.y += childNum * 20;
+  int growX = (static_cast<int>(rect.width * 0.6f) - rect.width) / 2;
+  int growY = (static_cast<int>(rect.height * 0.6f) - rect.height) / 2;
+  rect.width += growX * 2;
+  rect.height += growY * 2;
+  rect.x -= growX;
+  rect.y -= growY;
+  return rect;
 }
 
 } // namespace ml
