@@ -84,6 +84,7 @@ public:
   void applyAlpha();
   void setFrameSpeed(f32 speed);
   void setCameraFade(bool isEnable);
+  void setRenderCameraFade(bool isEnable);
   bool setFlag(u32 flag, bool value);
   bool isCameraFadeEnable() const;
   bool testFlag(u32 flag) const;

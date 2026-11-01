@@ -11,6 +11,17 @@ namespace gf {
 // Evidence: layout read from the GfEnvProperty constructor (0x71005a30cc, 0x2e0 bytes allocated by GfObjFactory), the loop over eight samples of 0x50 bytes,
 // the water sample initialised at 0x280, and the accesses of GfEffectGround (flags at 0x2d0: bit 0 water sample, bit n + 1 ground sample n).
 struct GfEnvProperty {
+  // Values from gf::getFootGroundIndex: 1, 3, 5 for the "left", "left01", "left02" step names, 2, 4, 6 for the "right" ones.
+  enum GROUND_INDEX {
+    GROUND_INDEX_UNKNOWN_0,
+    GROUND_INDEX_UNKNOWN_1,
+    GROUND_INDEX_UNKNOWN_2,
+    GROUND_INDEX_UNKNOWN_3,
+    GROUND_INDEX_UNKNOWN_4,
+    GROUND_INDEX_UNKNOWN_5,
+    GROUND_INDEX_UNKNOWN_6,
+  };
+
   struct unknown001 {
     mm::Vec3 unknown00;  // Inferred role: sampled position; original member name unknown.
     mm::Plane unknown10; // Inferred role: sampled plane; original member name unknown.

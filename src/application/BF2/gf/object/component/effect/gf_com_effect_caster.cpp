@@ -7,10 +7,6 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/object/gf_obj.h"
 
-namespace fw {
-class MessageObject;
-} // namespace fw
-
 const char *ASM_CB_NAME_EFFECT = "asm_effect";
 
 namespace gf {

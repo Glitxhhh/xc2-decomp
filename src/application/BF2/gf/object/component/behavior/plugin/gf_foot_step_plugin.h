@@ -3,6 +3,8 @@
 
 #include "gf/object/component/behavior/gf_com_behavior.h" // IWYU pragma: keep
 #include "gf/object/component/behavior/plugin/gf_plugin.h"
+#include "gf/object/component/property/gf_env_property.h"
+#include "types.h"
 
 namespace mm {
 namespace mtl {
@@ -16,6 +18,18 @@ struct UpdateInfo;
 
 namespace gf {
 
+// Field names from the reflection of gf::FootStepParam::createReflection.
+struct FootStepParam {
+  f32 rapidSpeed;
+  u32 ankleHeight;
+};
+
+static_assert(offsetof(FootStepParam, ankleHeight) == 0x04, "");
+
+GfEnvProperty::GROUND_INDEX getFootGroundIndex(const char *name);
+bool isLeftFoot(GfEnvProperty::GROUND_INDEX ground);
+bool isBearFoot(GfEnvProperty::GROUND_INDEX ground);
+
 class FootStepPlugin : public Plugin {
   GF_PLUGIN(GfComBehavior)
 
@@ -28,6 +42,8 @@ public:
   void onActivate() override;
   void onDeactivate() override;
   virtual void update(GfComBehavior &behavior, const fw::UpdateInfo &info);
+  static const FootStepParam *getParam();
+  void emissionEffect(GfComBehavior &behavior, GfEnvProperty::GROUND_INDEX ground);
 
   bool unknown09; // Inferred role: running; original member name unknown.
 };

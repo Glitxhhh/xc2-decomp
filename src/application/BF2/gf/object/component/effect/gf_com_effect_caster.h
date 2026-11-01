@@ -1,9 +1,11 @@
 #pragma once
 #include <stddef.h>
 
+#include "framework/message/message_object.h"
 #include "framework/reference_frame.h"
 #include "gf/object/component/effect/gf_effect_ground.h"
 #include "gf/object/component/gf_component.h"
+#include "gf/object/component/property/gf_env_property.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_vector.h"
@@ -19,7 +21,6 @@ namespace fw {
 class EffectCasterBase;
 class EffectPoint;
 struct EffectResData;
-class MessageObject;
 } // namespace fw
 
 namespace mm {
@@ -50,6 +51,16 @@ struct EffectMountSetupEv {
 
 static_assert(offsetof(EffectMountSetupEv, unknown30) == 0x30, "");
 static_assert(offsetof(EffectMountSetupEv, unknown41) == 0x41, "");
+
+struct MsgFxFootPrint : fw::Message {
+  MsgFxFootPrint(GfEnvProperty::GROUND_INDEX ground) : fw::Message(0x1000049, 0x80), unknown08(ground) {}
+
+  GfEnvProperty::GROUND_INDEX unknown08; // Inferred role: foot ground index; original member name unknown.
+  bool unknown0c;                        // Inferred role: rapid step; original member name unknown.
+};
+
+static_assert(offsetof(MsgFxFootPrint, unknown08) == 0x08, "");
+static_assert(offsetof(MsgFxFootPrint, unknown0c) == 0x0c, "");
 
 class GfComEffectCaster : public GfComponent {
 public:

@@ -4,13 +4,19 @@
 #include "battle/character/battle_character.h"
 #include "battle/character/character_manager_battle.h"
 #include "battle/character/character_parameter_battle.h"
+#include "framework/coli/coli_object.h"
 #include "framework/framework.h"
 #include "framework/object/component_object.h"
+#include "framework/object/updatable_object.h"
+#include "framework/reference_frame.h"
 #include "fw/fw_model_object.h"
+#include "fw/fw_transform.h"
 #include "gf/asset/gf_asset_manager.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_mount.h"
+#include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/model/gf_com_model.h"
 #include "gf/object/component/property/gf_com_property.h"
@@ -21,9 +27,13 @@
 #include "gf/object/gf_obj_util.h"
 #include "ml/scn_obj_model.h"
 #include "mm_math/mm_aabb.h"
+#include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/intrusive_list.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
+#include "mm_mtl/vector.h"
 #include "scn/scn_obj_acc.h"
 
 namespace gf {
@@ -69,6 +79,34 @@ bool GfObjAcc::isValidTransform() const {
   }
 
   return m_obj->unknown38[GfComTransform::COMPONENT_INDEX]->getRTTI()->isKindOf(&GfComTransform::m_rtti);
+}
+
+const fw::Transform &GfObjAcc::getWorldTransform() const {
+  static fw::Transform transform;
+  if (m_obj != nullptr) {
+    GfComTransform *com = m_obj->getComponent<GfComTransform>();
+    if (com != nullptr) {
+      return com->unknown10->getSyncedWorldTransform();
+    }
+  }
+
+  transform.unknown00 = mm::Vec3::zero;
+  transform.unknown10 = mm::Quat::identity;
+  return transform;
+}
+
+const fw::Transform &GfObjAcc::getWorldTransformNoSync() const {
+  static fw::Transform transform;
+  if (m_obj != nullptr) {
+    GfComTransform *com = m_obj->getComponent<GfComTransform>();
+    if (com != nullptr) {
+      return com->unknown10->unknown40;
+    }
+  }
+
+  transform.unknown00 = mm::Vec3::zero;
+  transform.unknown10 = mm::Quat::identity;
+  return transform;
 }
 
 f32 GfObjAcc::getAlpha(OBJ_ALPHA type) const {
@@ -223,6 +261,19 @@ void GfObjAcc::setFrameSpeed(f32 speed) {
 
 void GfObjAcc::setCameraFade(bool isEnable) { GfObjUtil::setFlag(unknown00, OBJ_FLAG_CAMERA_FADE, isEnable); }
 
+void GfObjAcc::setRenderCameraFade(bool isEnable) {
+  ml::ScnObjModel *model = getScnModel();
+  if (model != nullptr) {
+    ml::ScnObjAccResMdlInfo modelInfo(model);
+    modelInfo.setSpAlphaMode(isEnable);
+  }
+
+  for (mm::mtl::IntrusiveList<fw::UpdatableObject>::iterator it = m_obj->unknownb8.begin(), last = m_obj->unknownb8.end(); it != last; ++it) {
+    GfObjAcc childAcc(mm::mtl::dynamicCast<GfObj>(it.operator->())->unknownf8);
+    childAcc.setRenderCameraFade(isEnable);
+  }
+}
+
 bool GfObjAcc::setFlag(u32 flag, bool value) { return GfObjUtil::setFlag(unknown00, flag, value); }
 
 bool GfObjAcc::isCameraFadeEnable() const { return GfObjUtil::testFlag(unknown00, OBJ_FLAG_CAMERA_FADE); }
@@ -236,6 +287,27 @@ void GfObjAcc::setCameraFadeDisableForEvent(bool isDisable) { GfObjUtil::setFlag
 bool GfObjAcc::isCameraFadeDisableForBattle() const { return GfObjUtil::testFlag(unknown00, OBJ_FLAG_CAMERA_FADE_DISABLE_FOR_BATTLE); }
 
 void GfObjAcc::setCameraFadeDisableForBattle(bool isDisable) { GfObjUtil::setFlag(unknown00, OBJ_FLAG_CAMERA_FADE_DISABLE_FOR_BATTLE, isDisable); }
+
+void GfObjAcc::setCollisionChar(bool isEnable) {
+  if (m_obj == nullptr) {
+    return;
+  }
+
+  GfComCollider *collider = m_obj->getComponent<GfComCollider>();
+  if (collider == nullptr) {
+    return;
+  }
+
+  for (u32 i = 0; i < collider->unknown18.size(); i++) {
+    if (collider->unknown18[i] != nullptr) {
+      if (isEnable) {
+        collider->unknown18[i]->setState(fw::COLI_STATE_ENABLE);
+      } else {
+        collider->unknown18[i]->clearState(fw::COLI_STATE_ENABLE);
+      }
+    }
+  }
+}
 
 bool GfObjAcc::hasParent() const { return m_obj != nullptr && GfObjUtil::getParentObj(m_obj) != nullptr; }
 
@@ -253,6 +325,38 @@ bool GfObjAcc::isDisp(OBJDISP disp) const {
   }
 
   return unknown00->unknown48 == 0;
+}
+
+void GfObjAcc::setDisp(OBJDISP disp, bool isDisp) {
+  if (m_obj == nullptr) {
+    return;
+  }
+
+  bool isHidden = (unknown00->unknown48 & disp) != 0;
+  if (isHidden == isDisp) {
+    u32 flags = unknown00->unknown48;
+    if (isDisp) {
+      flags &= ~disp;
+    } else {
+      flags |= disp;
+    }
+    unknown00->unknown48 = flags;
+    GfObjUtil::setFlag(unknown00, OBJ_FLAG_DISP_CHANGED, true);
+    for (mm::mtl::IntrusiveList<fw::UpdatableObject>::iterator it = m_obj->unknownb8.begin(), last = m_obj->unknownb8.end(); it != last; ++it) {
+      GfObjUtil::setFlag(GfObjManager::getObjInfo(mm::mtl::dynamicCast<GfObj>(it.operator->())->unknownf8), OBJ_FLAG_DISP_CHANGED, true);
+    }
+  }
+
+  GfWeapon *weapon = GfObjUtil::getExtraMountObject(getHandle());
+  if (weapon != nullptr) {
+    for (u32 index = 0; index < 10; index++) {
+      GF_OBJ_HANDLE *handle = weapon->getCurrentHandles()[index];
+      if (handle != INVALID_HANDLE && handle != getHandle()) {
+        GfObjAcc weaponAcc(handle);
+        weaponAcc.setDisp(OBJDISP_EVENT, isDisp);
+      }
+    }
+  }
 }
 
 bool GfObjAcc::isDispChanged() const {
@@ -298,6 +402,24 @@ void GfObjAcc::applyDisp() {
 void GfObjAcc::setClip(bool isClip) { GfObjUtil::setFlag(unknown00, OBJ_FLAG_CLIP, isClip); }
 
 void GfObjAcc::setGpuClip(bool isClip) { GfObjUtil::setFlag(unknown00, OBJ_FLAG_GPU_CLIP, isClip); }
+
+void GfObjAcc::setModelScaleForMenu(const mm::Vec3 &scale) {
+  if (m_obj == nullptr) {
+    return;
+  }
+
+  unknown00->unknowna0 = scale;
+  ml::ScnObjModel *model = getScnModel();
+  if (model != nullptr) {
+    f32 setupScale = GfObjUtil::getSetupScale(getHandle());
+    mm::Vec3 modelScale = scale * setupScale;
+    GfObj *parent = GfObjUtil::getParentObj(m_obj);
+    if (parent != nullptr) {
+      modelScale *= GfObjUtil::getSetupScale(parent->unknownf8);
+    }
+    model->setScl(modelScale);
+  }
+}
 
 void GfObjAcc::setModelScale(f32 scale) {
   if (m_obj == nullptr) {
@@ -651,6 +773,27 @@ void GfObjAcc::setEnableCollideModelClip(bool isEnable) {
   if (model != nullptr) {
     ml::ScnObjAccResMdlInfo modelInfo(model);
     modelInfo.setCamCheckMode(isEnable);
+  }
+}
+
+void GfObjAcc::setCollisionGround(bool isCollisionGround) {
+  if (m_obj == nullptr) {
+    return;
+  }
+
+  GfComCollider *collider = m_obj->getComponent<GfComCollider>();
+  if (collider == nullptr) {
+    return;
+  }
+
+  for (u32 i = 0; i < collider->unknown18.size(); i++) {
+    if (collider->unknown18[i] != nullptr) {
+      if (isCollisionGround) {
+        collider->unknown18[i]->setState(fw::COLI_STATE_UNKNOWN_0);
+      } else {
+        collider->unknown18[i]->clearState(fw::COLI_STATE_UNKNOWN_0);
+      }
+    }
   }
 }
 
