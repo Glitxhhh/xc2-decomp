@@ -5,8 +5,13 @@
 #include "layer/layer_filter_gs_blur_obj.h"
 #include "layer/layer_filter_obj.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_manager.h"
 #include "layer/layer_obj_util.h"
+#include "layer/layer_render_view.h"
+#include "layer/layer_res_view_port_info.h"
 #include "layer/layer_shd_manager.h"
+#include "layer/layer_sort_man.h"
+#include "mm_math/mm_col4.h"
 #include "mtl/alloc_handle.h"
 
 namespace layer {
@@ -76,6 +81,43 @@ void LayerObjTopFilter::applyPartsSetup() {
     unknown270 = unknown278[index];
     unknown278[index] = nullptr;
     unknown270->resourceInit();
+  }
+}
+
+void LayerObjTopFilter::applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) {
+  unknown250 = view->unknown08;
+  unknown170.unknown001();
+  LayerObjUtil::calcDispInfo(unknown170, matrix, unknown180);
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  if (unknown270 == nullptr) {
+    return;
+  }
+  const grlib::CGLibRenderTarget *target = nullptr;
+  if (view->unknown08 != nullptr) {
+    target = view->unknown08->unknown10;
+  }
+  if (target == nullptr) {
+    target = LayerManager::get()->unknown58->getDefRenderTarget();
+  }
+  updateDefUniformBlock(unknown290, matrix, color, target);
+  unknown270->update(matrix, color, view, unknown1f8);
+  unknown2c8 = color.unknown00.a < 1.0f;
+}
+
+void LayerObjTopFilter::setDrawList(LayerSortMan *sortMan, bool is3D) {
+  if ((unknowna8 & 0x90000) || unknown270 == nullptr) {
+    return;
+  }
+  if (is3D) {
+    if (unknowna8 & 0x400) {
+      LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown258, unknown200);
+    } else if (!isClip()) {
+      sortMan->set2DSpace(&unknown258, unknownc0);
+    }
+  } else if (!isClip()) {
+    sortMan->set2DSpace(&unknown258, unknownc0);
   }
 }
 

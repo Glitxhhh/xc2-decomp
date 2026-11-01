@@ -25,6 +25,8 @@ public:
   void releaseWorkBuffer();
   void resourceInit() override;
   void applyPartsSetup() override;
+  void applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) override;
+  void setDrawList(LayerSortMan *sortMan, bool is3D) override;
 
   LayerResViewPortInfo *unknown250;       // Inferred role: view port; original member name unknown.
   LayerObjSortFilter unknown258;          // Inferred role: sort object; original member name unknown.

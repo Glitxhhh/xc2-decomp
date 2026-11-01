@@ -6,6 +6,7 @@
 #include "grlib/cglib_render_target.h"
 #include "layer/layer_obj.h"
 #include "layer/layer_obj_manager.h"
+#include "layer/layer_obj_sort_mem_obj.h"
 #include "types.h"
 
 namespace layer {
@@ -21,13 +22,15 @@ public:
   void updateBufer();
   void setRender(bool render);
   bool isRender() const;
+  void applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) override;
+  void setDrawList(LayerSortMan *sortMan, bool is3D) override;
   void setupRender();
   void lastRender();
   void finalRender();
 
   LayerResViewPortInfo *unknown250; // Inferred role: view port; original member name unknown.
-  u8 _258[0x270 - 0x258];
-  u32 unknown270; // Inferred role: flags; original member name unknown.
+  LayerObjSortMemObj unknown258;    // Inferred role: sort object; original member name unknown.
+  u32 unknown270;                   // Inferred role: flags; original member name unknown.
   u8 _274[0x278 - 0x274];
   grlib::CGLibRenderTarget unknown278;       // Inferred role: render target; original member name unknown.
   grlib::CGLibDblUniformBlock unknown640;    // Inferred role: uniform block; original member name unknown.
@@ -42,6 +45,7 @@ public:
 };
 
 static_assert(offsetof(LayerObjTopMemObj, unknown250) == 0x250, "");
+static_assert(offsetof(LayerObjTopMemObj, unknown258) == 0x258, "");
 static_assert(offsetof(LayerObjTopMemObj, unknown270) == 0x270, "");
 static_assert(offsetof(LayerObjTopMemObj, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjTopMemObj, unknown640) == 0x640, "");

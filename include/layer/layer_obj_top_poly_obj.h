@@ -4,6 +4,7 @@
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "layer/layer_obj.h"
 #include "layer/layer_obj_res_tex.h"
+#include "layer/layer_obj_sort_poly_obj.h"
 #include "types.h"
 
 namespace grlib {
@@ -15,6 +16,7 @@ class CGLibVtxVertex;
 namespace layer {
 struct LayerPolyVertex;
 struct LayerResViewPortInfo;
+struct LayerRenderView;
 
 class LayerObjTopPolyObj : public LayerObj {
 public:
@@ -50,12 +52,15 @@ public:
   void setTexutre(grlib::CGLibTextureBuffer &texture);
   void resetTexutre();
   void setIndexInfo(u16 start, u16 num);
+  void applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) override;
+  void updateUniformBlock(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color);
+  void setDrawList(LayerSortMan *sortMan, bool is3D) override;
   void finalRender();
 
   u32 unknown250; // Inferred role: update flags; original member name unknown.
   u8 _254[0x258 - 0x254];
-  LayerResViewPortInfo *unknown258; // Inferred role: view port; original member name unknown.
-  u8 _260[0x278 - 0x260];
+  LayerResViewPortInfo *unknown258;       // Inferred role: view port; original member name unknown.
+  LayerObjSortPolyObj unknown260;         // Inferred role: sort object; original member name unknown.
   grlib::CGLibTextureBuffer *unknown278;  // Inferred role: first additional texture; original member name unknown.
   grlib::CGLibDblUniformBlock unknown280; // Inferred role: uniform block; original member name unknown.
   LayerObjResTex unknown2b8;              // Inferred role: textures; original member name unknown.
@@ -67,6 +72,7 @@ public:
 
 static_assert(offsetof(LayerObjTopPolyObj, unknown250) == 0x250, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown258) == 0x258, "");
+static_assert(offsetof(LayerObjTopPolyObj, unknown260) == 0x260, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown280) == 0x280, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown2b8) == 0x2b8, "");

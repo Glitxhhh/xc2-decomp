@@ -9,8 +9,12 @@
 #include "layer/layer_acc_poly_obj.h"
 #include "layer/layer_link_list.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_manager.h"
+#include "layer/layer_obj_util.h"
+#include "layer/layer_render_view.h"
 #include "layer/layer_res_add_tex_obj.h"
 #include "layer/layer_shd_manager.h"
+#include "layer/layer_sort_man.h"
 #include "mtl/mem_manager.h"
 
 namespace layer {
@@ -118,6 +122,33 @@ void LayerObjTopPolyObj::setIndexInfo(u16 start, u16 num) {
   unknown250 |= 0x40 << index;
   unknown300.unknown44[index] = start;
   unknown300.unknown48[index] = num;
+}
+
+void LayerObjTopPolyObj::applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) { updateUniformBlock(view, matrix, color); }
+
+void LayerObjTopPolyObj::updateUniformBlock(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) {
+  unknown258 = view->unknown08;
+  unknown170.unknown001();
+  LayerObjUtil::calcDispInfo(unknown170, matrix, unknown180);
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  updateDefUniformBlock(unknown280, matrix, color, nullptr);
+}
+
+void LayerObjTopPolyObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  if (is3D) {
+    if (unknowna8 & 0x400) {
+      LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown260, unknown200);
+    } else if (!isClip()) {
+      sortMan->set2DSpace(&unknown260, unknownc0);
+    }
+  } else if (!isClip()) {
+    sortMan->set2DSpace(&unknown260, unknownc0);
+  }
 }
 
 void LayerObjTopPolyObj::finalRender() {

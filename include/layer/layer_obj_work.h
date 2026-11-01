@@ -1,11 +1,13 @@
 #pragma once
 #include <stddef.h>
 
+#include "grlib/cglib_uniform_array.h"
 #include "layer/layer_act_base.h"
 #include "layer/layer_obj_res_tex.h"
 #include "types.h"
 
 namespace grlib {
+class CGLibDblUniformBlock;
 class CGLibTextureBuffer;
 class CGLibVtxInstans;
 } // namespace grlib
@@ -48,7 +50,9 @@ public:
     const u8 *unknown10;         // Inferred role: draw table; original member name unknown.
     u8 _18[0x20 - 0x18];
     const u8 *unknown20; // Inferred role: place resource data; original member name unknown.
-    u8 _28[0x78 - 0x28];
+    u8 _28[0x68 - 0x28];
+    grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown68; // Inferred role: icon uniforms; original member name unknown.
+    u8 _70[0x78 - 0x70];
     unknown008 *unknown78; // Inferred role: instance vertex info; original member name unknown.
     f32 unknown80;         // Inferred role: frame count; original member name unknown.
     f32 unknown84;         // Inferred role: start frame; original member name unknown.

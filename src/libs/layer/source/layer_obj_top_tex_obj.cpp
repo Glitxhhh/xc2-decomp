@@ -2,7 +2,11 @@
 
 #include "grlib/cglib_texture_buffer.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_manager.h"
+#include "layer/layer_obj_util.h"
+#include "layer/layer_render_view.h"
 #include "layer/layer_shd_manager.h"
+#include "layer/layer_sort_man.h"
 #include "types.h"
 
 namespace layer {
@@ -40,5 +44,30 @@ void LayerObjTopTexObj::createWorkBuffer() {
 }
 
 void LayerObjTopTexObj::releaseWorkBuffer() { unknown278.release(); }
+
+void LayerObjTopTexObj::applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) {
+  unknown250 = view->unknown08;
+  unknown170.unknown001();
+  LayerObjUtil::calcDispInfo(unknown170, matrix, unknown180);
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  updateDefUniformBlock(unknown278, matrix, color, nullptr);
+}
+
+void LayerObjTopTexObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  if (is3D) {
+    if (unknowna8 & 0x400) {
+      LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown258, unknown200);
+    } else if (!isClip()) {
+      sortMan->set2DSpace(&unknown258, unknownc0);
+    }
+  } else if (!isClip()) {
+    sortMan->set2DSpace(&unknown258, unknownc0);
+  }
+}
 
 } // namespace layer

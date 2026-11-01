@@ -13,6 +13,7 @@
 
 namespace grlib {
 class CGLibDblUniformBlock;
+class CGLibRenderTarget;
 } // namespace grlib
 
 namespace layer {
@@ -93,6 +94,7 @@ public:
   void release() override;
   void baseRelease();
   void updateDefSpace(grlib::CGLibDblUniformBlock *&uniform, LAYER_SPACE_TYPE space, const mm::Mat44 &matrix);
+  void updateDefUniformBlock(grlib::CGLibDblUniformBlock &uniform, const LayerResMatrix &matrix, const LayerResColor &color, const grlib::CGLibRenderTarget *target);
   void setInitPos(f32 x, f32 y);
   void setInitRot(f32 rot);
   void setInitScl(f32 x, f32 y);
@@ -174,9 +176,7 @@ public:
   u8 unknownc5;                  // Inferred role: render blend type, index of s_resDefBlend; original member name unknown.
   u8 unknownc6;                  // Inferred role: tex filter type; original member name unknown.
   LayerResParmInfo unknownc8[3]; // Inferred role: parms; original member name unknown.
-  f32 unknown170;                // Inferred role: clip value; original member name unknown.
-  f32 unknown174;                // Inferred role: clip value; original member name unknown.
-  mm::Pnt<f32> unknown178;       // Inferred role: clip values; original member name unknown.
+  LayerResDispInfo unknown170;   // Inferred role: display bounds, the clip values; original member name unknown.
   LayerResRenderInfo unknown180; // Inferred role: render info; original member name unknown.
   LayerResUvParam unknown19c[3]; // Inferred role: uv params; original member name unknown.
   u16 unknown1d8[2];             // Inferred role: action idx; original member name unknown.
@@ -206,7 +206,6 @@ static_assert(offsetof(LayerObj, unknownc5) == 0xc5, "");
 static_assert(offsetof(LayerObj, unknownc6) == 0xc6, "");
 static_assert(offsetof(LayerObj, unknownc8) == 0xc8, "");
 static_assert(offsetof(LayerObj, unknown170) == 0x170, "");
-static_assert(offsetof(LayerObj, unknown178) == 0x178, "");
 static_assert(offsetof(LayerObj, unknown180) == 0x180, "");
 static_assert(offsetof(LayerObj, unknown19c) == 0x19c, "");
 static_assert(offsetof(LayerObj, unknown1d8) == 0x1d8, "");

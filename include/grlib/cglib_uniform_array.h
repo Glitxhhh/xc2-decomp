@@ -15,6 +15,19 @@ template <typename T> class CGLibUniformArray {
 public:
   void setupArray(u32 count);
   T &operator[](u32 index) { return m_items[index]; }
+  // Inferred helper: releases the items and frees the array, as setupArray and LayerObjTopDef::~LayerObjTopDef do;
+  // original name unknown.
+  void unknown001() {
+    for (u32 i = 0; i < unknown08; i++) {
+      m_items[i].release();
+    }
+    unknown08 = 0;
+    if (m_items != nullptr) {
+      mtl::MemManager::deallocate(m_items, 0, false);
+      m_items = nullptr;
+    }
+    CGLibMemHandle::free(unknown18);
+  }
 
   T *m_items;
   u32 unknown08; // Inferred role: item count; original member name unknown.
@@ -23,15 +36,7 @@ public:
 };
 
 template <typename T> void CGLibUniformArray<T>::setupArray(u32 count) {
-  for (u32 i = 0; i < unknown08; i++) {
-    m_items[i].release();
-  }
-  unknown08 = 0;
-  if (m_items != nullptr) {
-    mtl::MemManager::deallocate(m_items, 0, false);
-    m_items = nullptr;
-  }
-  CGLibMemHandle::free(unknown18);
+  unknown001();
   unknown08 = count;
   m_items = static_cast<T *>(mtl::MemManager::allocate(CGLibMemHandle::s_hMemHandle, count * sizeof(T), 8, false, "no name", 0));
   for (u32 i = 0; i < unknown08; i++) {

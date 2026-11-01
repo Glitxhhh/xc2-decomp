@@ -74,9 +74,9 @@ LayerObj::LayerObj() {
   unknown180.unknown12 = 0;
   unknown180.unknown14 = unknown180.unknown16 = 1;
   unknown180.unknown18 = 0;
-  unknown170 = 1.0f;
-  unknown174 = 1.0f;
-  unknown178 = mm::Pnt<f32>(0.0f, 0.0f);
+  unknown170.unknown00 = 1.0f;
+  unknown170.unknown04 = 1.0f;
+  unknown170.unknown08 = mm::Pnt<f32>(0.0f, 0.0f);
   unknown20[0] = mm::Mat44::identity;
   unknown20[1] = mm::Mat44::identity;
   unknownc2 = 0;
@@ -379,16 +379,16 @@ void LayerObj::setDisp(bool disp) {
 }
 
 bool LayerObj::isClip() const {
-  if (unknown170 <= 0.0f) {
+  if (unknown170.unknown00 <= 0.0f) {
     return true;
   }
-  if (unknown174 <= 0.0f) {
+  if (unknown170.unknown04 <= 0.0f) {
     return true;
   }
-  if (unknown178.x >= 1.0f) {
+  if (unknown170.unknown08.x >= 1.0f) {
     return true;
   }
-  return unknown178.y >= 1.0f;
+  return unknown170.unknown08.y >= 1.0f;
 }
 
 bool LayerObj::isDisp() const { return (unknowna8 & 0x20000) != 0; }

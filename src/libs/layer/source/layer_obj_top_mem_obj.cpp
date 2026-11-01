@@ -4,7 +4,10 @@
 
 #include "grlib/cglib_texture_buffer.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_util.h"
+#include "layer/layer_render_view.h"
 #include "layer/layer_shd_manager.h"
+#include "layer/layer_sort_man.h"
 #include "mm_math/mm_col4.h"
 
 namespace layer {
@@ -61,6 +64,31 @@ void LayerObjTopMemObj::setRender(bool render) {
 }
 
 bool LayerObjTopMemObj::isRender() const { return (unknown270 >> 2) & 0x1; }
+
+void LayerObjTopMemObj::applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color) {
+  unknown250 = view->unknown08;
+  unknown170.unknown001();
+  LayerObjUtil::calcDispInfo(unknown170, matrix, unknown180);
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  updateDefUniformBlock(unknown640, matrix, color, nullptr);
+}
+
+void LayerObjTopMemObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  if (is3D) {
+    if (unknowna8 & 0x400) {
+      LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown258, unknown200);
+    } else if (!isClip()) {
+      sortMan->set2DSpace(&unknown258, unknownc0);
+    }
+  } else if (!isClip()) {
+    sortMan->set2DSpace(&unknown258, unknownc0);
+  }
+}
 
 void LayerObjTopMemObj::lastRender() {
   LayerShdManager *shader = LayerManager::get()->unknown58;

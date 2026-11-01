@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "layer/layer_acc_obj_base.h"
+#include "mm_math/mm_pnt.h"
 #include "types.h"
 
 namespace mm {
@@ -57,15 +58,21 @@ static_assert(offsetof(LayerResRenderInfo, unknown16) == 0x16, "");
 static_assert(offsetof(LayerResRenderInfo, unknown18) == 0x18, "");
 static_assert(sizeof(LayerResRenderInfo) == 0x1c, "");
 
-// Evidence: LayerObjUtil::calcDispInfo raises 0x00 and 0x04 and lowers 0x08 and 0x0c to the screen corners of an object.
+// Evidence: LayerObjUtil::calcDispInfo raises 0x00 and 0x04 and lowers 0x08 and 0x0c to the screen corners of an object;
+// LayerObj::LayerObj and the applyParams overrides write 0x08 as one 8-byte copy and 0x00 and 0x04 one by one.
 struct LayerResDispInfo {
-  f32 unknown00; // Inferred role: max x; original member name unknown.
-  f32 unknown04; // Inferred role: max y; original member name unknown.
-  f32 unknown08; // Inferred role: min x; original member name unknown.
-  f32 unknown0c; // Inferred role: min y; original member name unknown.
+  // Inferred helper: empties the bounds before calcDispInfo grows them; original name unknown.
+  void unknown001() {
+    unknown00 = unknown04 = -100000.0f;
+    unknown08 = mm::Pnt<f32>(100000.0f, 100000.0f);
+  }
+
+  f32 unknown00;          // Inferred role: max x; original member name unknown.
+  f32 unknown04;          // Inferred role: max y; original member name unknown.
+  mm::Pnt<f32> unknown08; // Inferred role: min x and y; original member name unknown.
 };
 
-static_assert(offsetof(LayerResDispInfo, unknown0c) == 0x0c, "");
+static_assert(offsetof(LayerResDispInfo, unknown08) == 0x08, "");
 static_assert(sizeof(LayerResDispInfo) == 0x10, "");
 
 class LayerObjUtil {

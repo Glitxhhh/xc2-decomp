@@ -14,18 +14,23 @@ namespace layer {
 class LayerFontIconObj;
 class LayerFontResObj;
 class LayerFontStyleObj;
+class LayerSortObj;
+struct LayerRenderView;
 
 struct LayerResFontInfo {
   u8 _00[0x10];
   const u8 *unknown10; // Inferred role: message; original member name unknown.
   u32 unknown18;       // Inferred role: message length; original member name unknown.
-  u8 _1c[0x60 - 0x1c];
+  u8 _1c[0x38 - 0x1c];
+  LayerSortObj *unknown38; // Inferred role: sort object; original member name unknown.
+  u8 _40[0x60 - 0x40];
   grlib::CGLibVtxOneInstans *unknown60;   // Inferred role: instance vertex; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown68; // Inferred role: uniform block; original member name unknown.
 };
 
 static_assert(offsetof(LayerResFontInfo, unknown10) == 0x10, "");
 static_assert(offsetof(LayerResFontInfo, unknown18) == 0x18, "");
+static_assert(offsetof(LayerResFontInfo, unknown38) == 0x38, "");
 static_assert(offsetof(LayerResFontInfo, unknown60) == 0x60, "");
 static_assert(offsetof(LayerResFontInfo, unknown68) == 0x68, "");
 
@@ -35,6 +40,7 @@ public:
   void workRelease();
   bool isMsg(const LayerResFontInfo *info, const u8 *msg) const;
   void updateAddDel();
+  void updateShaderParms(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color);
   void setMsg(const u8 *text, const LayerFontResObj *res, const LayerFontStyleObj *style, const LayerFontIconObj *icon, u32 flags);
   void setMsg(const wchar_t *text, const LayerFontResObj *res, const LayerFontStyleObj *style, const LayerFontIconObj *icon, u32 flags);
   void setColorMap(const LayerFontIconObj *colorMap, u32 index);
