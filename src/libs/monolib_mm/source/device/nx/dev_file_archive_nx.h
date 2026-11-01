@@ -52,6 +52,7 @@ public:
 
   bool initialize() override;
   u32 addressAlignment() override;
+  DevFileJobTh *createLoader(mtl::ALLOC_HANDLE handle) override;
   DevFileJobTh *createWriter(mtl::ALLOC_HANDLE handle) override;
   DevFileJobTh *createFileValid(mtl::ALLOC_HANDLE handle) override;
   bool rfClose(FileHandleTh *handle) override;

@@ -1,5 +1,6 @@
 #pragma once
 #include <stddef.h>
+#include <string.h>
 
 #include "ml/dev_font.h"
 #include "ml/msg_param.h"
@@ -36,7 +37,17 @@ public:
     WinViewFrame unknown48; // Inferred role: frame; original member name unknown.
   };
 
+  WinView(const char *name, WorkObj *parent);
   static WinView *getView(bool isResetShadow);
+  void updateViewPort(const mm::Rect<int> &rect);
+
+  void setRect(const mm::Rect<int> &rect) {
+    updateViewPort(rect);
+    if (unknown53c) {
+      memcpy(unknown1b8.m_front, unknown1b8.m_back, sizeof(RENDER_INFO));
+    }
+  }
+
   void setTitle(const char *title);
   void attachWorkEvent(IWorkEvent *event, bool isFront);
   const mm::Pnt<int> &getFramePos(bool isBack) const;
@@ -82,6 +93,9 @@ public:
   mm::Col4 unknown514; // Inferred role: back color, scaled by the transparency for the clear color; original member name unknown.
   f32 unknown524;      // Inferred role: transparency; original member name unknown.
   s32 unknown528;      // Inferred role: sort priority among the child views; original member name unknown.
+  u8 _52c[0x53c - 0x52c];
+  bool unknown53c; // Inferred role: copy the back render info to the front when the rect changes; original member name unknown.
+  u8 _53d[0x590 - 0x53d];
 };
 
 static_assert(sizeof(WinView::RENDER_INFO) == 0xb0, "");
@@ -95,5 +109,7 @@ static_assert(offsetof(WinView, unknown3c0) == 0x3c0, "");
 static_assert(offsetof(WinView, unknown514) == 0x514, "");
 static_assert(offsetof(WinView, unknown524) == 0x524, "");
 static_assert(offsetof(WinView, unknown528) == 0x528, "");
+static_assert(offsetof(WinView, unknown53c) == 0x53c, "");
+static_assert(sizeof(WinView) == 0x590, "");
 
 } // namespace ml

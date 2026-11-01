@@ -50,6 +50,8 @@ nn::fs::FileHandle *DevFileArchiveNx::Param::addThreadFilehandle(u64 threadId, c
 
 u32 DevFileArchiveNx::addressAlignment() { return 16; }
 
+DevFileJobTh *DevFileArchiveNx::createLoader(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobTh(); }
+
 DevFileJobTh *DevFileArchiveNx::createWriter(mtl::ALLOC_HANDLE handle) { return nullptr; }
 
 DevFileJobTh *DevFileArchiveNx::createFileValid(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobValidArcNxTh(); }

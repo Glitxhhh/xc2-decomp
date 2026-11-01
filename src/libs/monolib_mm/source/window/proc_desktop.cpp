@@ -12,6 +12,7 @@
 #include "ml/win_proc_root.h"
 #include "ml/win_view.h"
 #include "ml/win_view_root.h"
+#include "ml/work_cpu.h"
 #include "ml/work_flow_shutdown_all.h"
 #include "ml/work_obj.h"
 #include "ml/work_root.h"
@@ -20,6 +21,7 @@
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
@@ -47,6 +49,7 @@ void (*s_updateNotify)();
 void (*s_finalizeNotify)();
 mm::mtl::FixStr<128> s_selectAppName;
 mm::mtl::FixStr<128> s_revision;
+int s_nEnableHomeBtn;
 const char *s_szDesktop = "Desktop";
 
 class ProcDesktopBackGround : public WinProc, public mm::mtl::PtrSingleton<ProcDesktopBackGround> {
@@ -76,6 +79,17 @@ public:
 } // namespace _dsk
 
 void ProcDesktop::setSimpleCost(bool isSimpleCost) { _dsk::s_flg = !isSimpleCost ? _dsk::s_flg & ~_dsk::FLAG_SIMPLE_COST : _dsk::s_flg | _dsk::FLAG_SIMPLE_COST; }
+
+ProcDesktop::~ProcDesktop() {
+  unknown218 = 0;
+  if (unknown220.isValid() && unknown210 != nullptr) {
+    mtl::MemManager::deallocate(unknown210, 0, false);
+    unknown210 = nullptr;
+  }
+  unknown210 = nullptr;
+  unknown21c = 0;
+  unknown220 = mtl::ALLOC_HANDLE();
+}
 
 bool ProcDesktop::isSimpleCost() { return _dsk::s_flg & _dsk::FLAG_SIMPLE_COST; }
 
@@ -156,6 +170,24 @@ void ProcDesktop::setInfo(int x, int y, const char *info) {
   _dsk::s_nInfoX = x;
   _dsk::s_nInfoY = y;
   _dsk::s_pszInfo = info;
+}
+
+WinProc *ProcDesktop::getCurrentProc() {
+  WinView *current = WinViewRoot::getCurrent();
+  if (current == nullptr) {
+    return nullptr;
+  }
+  WinView *view = WinViewRoot::getRootView(current);
+  if (view == nullptr) {
+    return nullptr;
+  }
+  for (reslist<u32>::Node *node = view->unknown338.begin(); node != view->unknown338.end(); node = node->getNext()) {
+    WinProc *proc = WinProc::pssGetRoot(static_cast<WinProc *>(WorkRootState::getWork(node->value)));
+    if (proc != nullptr) {
+      return proc;
+    }
+  }
+  return nullptr;
 }
 
 bool ProcDesktop::isDeleteApp() {
@@ -326,6 +358,21 @@ void DesktopIcon::render(WinView *view) {
 }
 
 void ProcDesktop::wkStandby() { WorkObj::wkStandby(); }
+
+void ProcDesktop::wkTail() {
+  if (MicroThread::get() != nullptr) {
+    MicroThread::get()->tail();
+  }
+  if (wkIsWaitException()) {
+    return;
+  }
+  if (wkIsActive() && _dsk::s_nEnableHomeBtn < 30) {
+    _dsk::s_nEnableHomeBtn++;
+    if (_dsk::s_nEnableHomeBtn >= 30) {
+      WorkCpu::setEnableSystem();
+    }
+  }
+}
 
 void ProcDesktop::wkRender() {}
 

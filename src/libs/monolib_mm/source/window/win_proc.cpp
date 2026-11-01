@@ -5,6 +5,8 @@
 #include "ml/win_view.h"
 #include "ml/win_view_root.h"
 #include "ml/work_root.h"
+#include "ml/work_util.h"
+#include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
 
 namespace ml {
@@ -19,6 +21,19 @@ bool WinProc::wkStandbyLogout() {
   pssDetachView();
   WinViewRoot::destroyProc(this);
   return WorkObj::wkStandbyLogout();
+}
+
+WinView *WinProc::pssCreateView(const char *name, WorkObj *parent, s16 childNum) {
+  mm::mtl::FixStr<64> viewName("WinView");
+  viewName += name;
+  WinView *view = WorkUtil::createWork<WinView>(viewName.c_str(), parent, false);
+  view->wkReplaceHasChild(childNum);
+  pssAttachView(view);
+  unknown1e8 = parent->unknown50;
+  if (unknown58 != nullptr && unknown58 != WinProcRoot::get()) {
+    view->setRect(static_cast<WinProc *>(unknown58)->pssMakeClientRect());
+  }
+  return view;
 }
 
 bool WinProc::pssAttachView(WinView *view) {

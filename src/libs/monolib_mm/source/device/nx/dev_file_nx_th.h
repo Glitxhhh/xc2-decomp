@@ -46,6 +46,7 @@ public:
   u32 addressAlignment() override;
   bool readBlock(FileHandleTh *handle, const char *path) override;
   bool readBlockSlice(FileHandleTh *handle, const char *path, void *buffer, u32 size) override;
+  DevFileJobTh *createLoader(mtl::ALLOC_HANDLE handle) override;
   DevFileJobTh *createFileValid(mtl::ALLOC_HANDLE handle) override;
   static void setMediaRootPath(const char *path);
   static void flushSave();

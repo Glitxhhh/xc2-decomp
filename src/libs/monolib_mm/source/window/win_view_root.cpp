@@ -3,6 +3,7 @@
 #include "ml/dev_graph.h"
 #include "ml/device.h"
 #include "ml/lib_main.h"
+#include "ml/proc_desktop.h"
 #include "ml/reslist.h"
 #include "ml/win_proc_root.h"
 #include "ml/win_view.h"
@@ -32,6 +33,21 @@ WinView *WinViewRoot::getView(u32 wid) {
 WinView *WinViewRoot::getCurrent() {
   WinViewRoot *root = get();
   return root != nullptr ? root->unknown1f0 : nullptr;
+}
+
+WinView *WinViewRoot::getRootView(WinView *view) {
+  WinViewRoot *root = get();
+  if (root == nullptr) {
+    return nullptr;
+  }
+  WorkObj *parent = view->unknown58;
+  if (root == parent) {
+    return nullptr;
+  }
+  if (ProcDesktop::getView() == parent) {
+    return view;
+  }
+  return getRootView(static_cast<WinView *>(parent));
 }
 
 WinProc *WinViewRoot::getCurrentProc() {

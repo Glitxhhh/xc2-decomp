@@ -3,6 +3,7 @@
 
 #include "ml/reslist.h"
 #include "ml/work_obj.h"
+#include "mm_math/mm_rect.h"
 #include "types.h"
 
 namespace ml {
@@ -23,6 +24,7 @@ public:
   WorkObj *pssGetParentView();
   WinView *pssGetView(u32 wid);
   const WinView *pssGetView(u32 wid) const;
+  mm::Rect<int> pssMakeClientRect() const;
 
   reslist<u32> unknown1a8; // Inferred role: attached view wids; original member name unknown.
   u32 unknown1e8;          // Inferred role: parent view wid; original member name unknown.

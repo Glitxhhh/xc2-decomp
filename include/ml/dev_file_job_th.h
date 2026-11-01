@@ -13,6 +13,7 @@ class FileHandleTh;
 
 class DevFileJobTh {
 public:
+  DevFileJobTh() : unknown08(0), unknown10(nullptr), unknown18(false) {}
   virtual ~DevFileJobTh() {}
   virtual bool asyncUpdate();
   virtual int getJobType() const;
