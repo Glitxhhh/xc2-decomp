@@ -23,6 +23,8 @@ enum QUEST_REWARD {
   QUEST_REWARD_UNKNOWN_4 = 4, // Inferred role: development.
   QUEST_REWARD_UNKNOWN_5 = 5, // Inferred role: trust.
   QUEST_REWARD_UNKNOWN_6 = 6, // Inferred role: idea.
+  QUEST_REWARD_UNKNOWN_7 = 7, // Inferred role: mercenaries point.
+  QUEST_REWARD_UNKNOWN_8 = 8, // Inferred role: first item.
 };
 
 struct GfQuestReward {

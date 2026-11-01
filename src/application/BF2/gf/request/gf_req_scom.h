@@ -54,6 +54,11 @@ public:
   static void create();
 };
 
+class SCOM_ADD_EXP {
+public:
+  static GF_SCOM_HANDLE *createInnExp(u32 exp);
+};
+
 class SCOM_POPUP {
 public:
   static void createQuest(QuestID quest);
@@ -63,6 +68,7 @@ public:
   static void createIdea(u32 driver, u32 idea, u32 level);
   static void createArts(u32 driver, u32 arts);
   static void createCrystalOK(u32 item);
+  static void createMercenaryReturn(u32 map, u32 teamID);
 };
 
 class SCOM_TARGET_UI : public SCOM {

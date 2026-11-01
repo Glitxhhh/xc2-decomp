@@ -160,6 +160,7 @@ public:
   static void playVibration(fw::VibrationID id, f32 amplitude);
   static bool getBladeTeamName(u32 blade, ui::UIStr &name);
   static int getFaceIconID(const DataParamAcc &acc);
+  static ui::UIStr getName(const DataParamAcc &acc);
   static bool isInBattle(GF_OBJ_HANDLE *handle);
   static ui::UIStr getEnemyArtsName(u32 arts);
   static ui::UIStr getDriverClassName(u32 driver);

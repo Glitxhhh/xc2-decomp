@@ -1,5 +1,7 @@
 #include "gf/data/gf_data_mercenaries.h"
 
+#include <math.h>
+
 #include "gf/data/gf_bdat_btl.h"
 #include "gf/data/gf_bdat_cond.h"
 #include "gf/data/gf_bdat_msg.h"
@@ -145,9 +147,10 @@ bool GfDataMercenaries::getReserver(mm::mtl::FixedVector<u16, 422> &reservers) {
 bool GfDataMercenaries::isValidTeamID(u32 teamID) { return getTeamByTeamID(teamID) != nullptr; }
 
 unknown120 *GfDataMercenaries::getTeamByTeamID(u32 teamID) {
-  for (unknown120 &team : GfDataManager::getDataGame()->unknown1098c8.unknown00) {
-    if (team.unknown10 == teamID) {
-      return &team;
+  mm::mtl::FixedVector<unknown120, 3> &mercenariesTeams = GfDataManager::getDataGame()->unknown1098c8.unknown00;
+  for (unknown120 *team = mercenariesTeams.begin(); team != mercenariesTeams.end(); team++) {
+    if (team->unknown10 == teamID) {
+      return team;
     }
   }
 
@@ -166,6 +169,34 @@ u32 GfDataMercenaries::getTeamPower(u32 teamID) {
   }
 
   return power;
+}
+
+bool GfDataMercenaries::decTeamMissionTime(u32 teamID, f32 time) {
+  unknown120 *team = getTeamByTeamID(teamID);
+  if (team == nullptr) {
+    return false;
+  }
+  if (team->unknown1c.unknown00_0 == 0 && team->unknown1c.unknown00_6 == 0 && team->unknown1c.unknown01_4 == 0) {
+    return false;
+  }
+
+  team->unknown18 += time;
+  f32 elapsed = team->unknown18;
+  u32 hour = elapsed / 3600.0f;
+  elapsed = fmodf(elapsed, 3600.0f);
+  u32 minute = elapsed / 60.0f;
+  elapsed = fmodf(elapsed, 60.0f);
+  u32 second = elapsed;
+  team->unknown18 = fmodf(elapsed, 1.0f);
+  ElapseTime elapseTime;
+  elapseTime.unknown00_0 = second;
+  elapseTime.unknown00_6 = minute;
+  elapseTime.unknown01_4 = hour;
+  ElapseTime before = team->unknown1c;
+  team->unknown1c = team->unknown1c - elapseTime;
+  bool isEnd = team->unknown1c.unknown00_0 == 0 && team->unknown1c.unknown00_6 == 0 && team->unknown1c.unknown01_4 == 0;
+  bool isRemain = before.unknown00_0 != 0 || before.unknown00_6 != 0 || before.unknown01_4 != 0;
+  return isRemain && isEnd;
 }
 
 int GfDataMercenaries::getTeamMaleNum(u32 teamID) {
@@ -251,13 +282,13 @@ u32 GfDataMercenaries::getTeamIDByMissionID(u32 mission) {
 
 unknown120 *GfDataMercenaries::getTeamMember(u32 teamID) { return getTeamByTeamID(teamID); }
 
-u8 GfDataMercenaries::getTeamAnimalNum(u32 teamID) {
+int GfDataMercenaries::getTeamAnimalNum(u32 teamID) {
   unknown120 *team = getTeamByTeamID(teamID);
   if (team == nullptr) {
     return 0;
   }
 
-  u8 animalNum = 0;
+  int animalNum = 0;
   for (u32 i = 0; i < 6; i++) {
     if (team->unknown00[i] != 0 && GfDataBlade::getSDataBlade(team->unknown00[i])->unknown846 == QUEST_RACE_ANIMAL) {
       animalNum++;
@@ -329,6 +360,20 @@ bool GfDataMercenaries::isTeamStateReward(u32 teamID) {
   }
 
   return GfGameFlag::getLocal(4, FLAG_MERCENARIES_MISSION + team->unknown14) == MISSION_STATE_REWARD;
+}
+
+bool GfDataMercenaries::getTeamByZoneMissionComplete(mm::mtl::FixedVector<u16, 3> &teams, u32 zone) {
+  mm::mtl::FixedVector<unknown120, 3> &mercenariesTeams = GfDataManager::getDataGame()->unknown1098c8.unknown00;
+  for (unknown120 *team = mercenariesTeams.begin(); team != mercenariesTeams.end(); team++) {
+    if (isTeamStateReward(team->unknown10)) {
+      u32 map = getMissionMapID(team->unknown14);
+      if (map != 0 && GfDataMap::getZoneIdForGameMap(map) == zone) {
+        teams.push_back(team->unknown10);
+      }
+    }
+  }
+
+  return !teams.empty();
 }
 
 void GfDataMercenaries::setMissionFlag(u32 mission, u32 missionFlag) {
@@ -618,7 +663,7 @@ bool GfDataMercenaries::isEnableMissionBlade(u32 blade, u32 requestBlade) {
   return true;
 }
 
-u16 GfDataMercenaries::getTeamLeader(u32 teamID) {
+u32 GfDataMercenaries::getTeamLeader(u32 teamID) {
   if (teamID == 0) {
     return 0;
   }

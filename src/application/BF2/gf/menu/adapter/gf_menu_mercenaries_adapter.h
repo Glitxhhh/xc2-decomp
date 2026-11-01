@@ -7,6 +7,7 @@
 
 namespace ui {
 class UIObjectPlugin;
+class UIStr;
 } // namespace ui
 
 namespace gf {
@@ -75,6 +76,7 @@ public:
   static GfMenuMercenariesAdapter *createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways);
   void update(const fw::UpdateInfo &info) override;
   bool isOrder(u32 teamId);
+  static void getTeamName(u32 teamId, ui::UIStr &name);
 
   mm::mtl::Delegate<bool()> unknown30; // Inferred role: updater; original member name unknown.
   IConverter *unknown50;               // Inferred role: converter; original member name unknown.

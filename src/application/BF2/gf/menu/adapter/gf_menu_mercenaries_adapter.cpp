@@ -13,6 +13,7 @@
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/list/gf_menu_field_skill_list.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/ui_object_acc.h"
@@ -74,6 +75,40 @@ GfMenuMercenariesAdapter *GfMenuMercenariesAdapter::create(u32 handle, u32 type,
     }
   }
   return nullptr;
+}
+
+bool GfMenuMercenariesAdapter::update_TeamName() {
+  if (unknown58 == 0 || !GfDataMercenaries::isValidTeamID(unknown58)) {
+    return false;
+  }
+  ui::UIStr name;
+  u32 leader = GfDataMercenaries::getTeamLeader(unknown58);
+  if (leader == 0 || !GfMenuObjUtil::getBladeTeamName(leader, name) || !name.isValid()) {
+    return false;
+  }
+  setText(name);
+  return true;
+}
+
+bool GfMenuMercenariesAdapter::update_TeamBlFace() {
+  if (unknown58 == 0 || !GfDataMercenaries::isValidTeamID(unknown58)) {
+    return false;
+  }
+  ui::UIStr name;
+  u32 leader = GfDataMercenaries::getTeamLeader(unknown58);
+  if (leader == 0) {
+    return false;
+  }
+  DataParamAcc acc(OBJECT_TYPE_BLADE, leader, GIMMICK_TYPE_NONE);
+  if (!acc.isValid()) {
+    return false;
+  }
+  int icon = GfMenuObjUtil::getFaceIconID(acc);
+  if (icon == 0) {
+    return false;
+  }
+  setNumber(GfMenuBdat::getIconImageIndex(icon));
+  return true;
 }
 
 bool GfMenuMercenariesAdapter::update_TeamIcon() {
@@ -246,6 +281,23 @@ bool GfMenuMercenariesAdapter::update_TeamFemale() {
   return true;
 }
 
+bool GfMenuMercenariesAdapter::update_TeamAnimal() {
+  int count;
+  if (unknown60 != nullptr) {
+    count = 0;
+    for (u16 i = 0; i < unknown60->getSize(); i++) {
+      count += GfDataBlade::isAnimal(unknown60->getContents(i).unknown00);
+    }
+  } else {
+    if (!GfDataMercenaries::isValidTeamID(unknown58)) {
+      return false;
+    }
+    count = GfDataMercenaries::getTeamAnimalNum(unknown58);
+  }
+  setNumber(count);
+  return true;
+}
+
 bool GfMenuMercenariesAdapter::update_TeamStrengthDiffIcon() {
   if (unknown60 != nullptr) {
     u32 power = 0;
@@ -292,6 +344,32 @@ bool GfMenuMercenariesAdapter::update_TeamFieldSkillDiffIcon() {
     }
   }
   return false;
+}
+
+bool GfMenuMercenariesAdapter::update_TeamNameRes() {
+  if (unknown60 == nullptr) {
+    return false;
+  }
+  u32 offset = unknown60->getRowOffset();
+  u32 index = unknown70 + offset;
+  switch (GfMenuReference::getReferenceNumber(0)) {
+  case 0: {
+    DataParamAcc acc(OBJECT_TYPE_DRIVER, GfDataParty::getPartyMember(index)->unknown00, GIMMICK_TYPE_NONE);
+    if (!acc.isValid()) {
+      return false;
+    }
+    setText(GfMenuObjUtil::getName(acc));
+    break;
+  }
+  case 1: {
+    u32 name = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_MERCENARIES), "name", index + 1).valueU16;
+    setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), name));
+    break;
+  }
+  default:
+    return false;
+  }
+  return true;
 }
 
 bool GfMenuMercenariesAdapter::update_TeamIconRes() {
@@ -437,6 +515,13 @@ bool GfMenuMercenariesAdapter::isOrder(u32 teamId) {
     }
   }
   return false;
+}
+
+void GfMenuMercenariesAdapter::getTeamName(u32 teamId, ui::UIStr &name) {
+  u32 leader = GfDataMercenaries::getTeamLeader(teamId);
+  if (leader != 0) {
+    GfMenuObjUtil::getBladeTeamName(leader, name);
+  }
 }
 
 u32 GfMenuMercenariesAdapter::ReferenceTeamConverter::getTeamId() { return GfMenuReference::getReferenceTeamID(); }

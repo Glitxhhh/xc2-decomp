@@ -22,8 +22,8 @@ constexpr u32 MERCENARIES_LEVEL_MAX = 5;
 
 // Inferred role: save data mercenaries team; original type name unknown.
 struct unknown120 {
-  u16 unknown00[6]; // Inferred role: members; original member name unknown.
-  u8 _0c[0x10 - 0x0c];
+  u16 unknown00[6];     // Inferred role: members; original member name unknown.
+  QuestID unknown0c;    // Inferred role: mission quest; original member name unknown.
   u32 unknown10;        // Inferred role: team id; original member name unknown.
   u32 unknown14;        // Inferred role: mission; original member name unknown.
   f32 unknown18;        // Inferred role: mission elapsed time; original member name unknown.
@@ -32,6 +32,7 @@ struct unknown120 {
   bool _24;
 };
 
+static_assert(offsetof(unknown120, unknown0c) == 0x0c, "");
 static_assert(offsetof(unknown120, unknown10) == 0x10, "");
 static_assert(offsetof(unknown120, unknown14) == 0x14, "");
 static_assert(offsetof(unknown120, unknown1c) == 0x1c, "");
@@ -68,6 +69,8 @@ public:
   static void setPoint(u32 point);
   static u32 getTeamMax();
   static u32 getTeamNum();
+  static void addTeam();
+  static bool decTeamMissionTime(u32 teamID, f32 time);
   static bool getReserver(mm::mtl::FixedVector<u16, 422> &reservers);
   static bool isValidTeamID(u32 teamID);
   static unknown120 *getTeamByTeamID(u32 teamID);
@@ -78,7 +81,7 @@ public:
   static unknown120 *getTeamByMissionID(u32 mission);
   static u32 getTeamIDByMissionID(u32 mission);
   static unknown120 *getTeamMember(u32 teamID);
-  static u8 getTeamAnimalNum(u32 teamID);
+  static int getTeamAnimalNum(u32 teamID);
   static int getTeamMaleNum(u32 teamID);
   static int getTeamFemaleNum(u32 teamID);
   static bool getTeamByZoneMissionWorking(mm::mtl::FixedVector<u16, 3> &teams, u32 zone);
@@ -113,7 +116,7 @@ public:
   static u32 getMissionByQuestID(QuestID quest);
   static bool isMissionComplete(u32 mission);
   static bool isEnableMissionBlade(u32 blade, u32 requestBlade);
-  static u16 getTeamLeader(u32 teamID);
+  static u32 getTeamLeader(u32 teamID);
   static bool isEnableOrder(u32 mission);
   static bool isNewMission(u32 mission);
   static void clearNewMission(u32 mission);
