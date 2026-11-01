@@ -2,6 +2,8 @@
 
 #include "dr/dr_ibl_coli_acc.h"
 #include "grlib/cglib_texture_buffer.h"
+#include "ml/cache_draw.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 
 namespace ml {
@@ -61,6 +63,12 @@ grlib::CGLibTextureBuffer *DrIBLObj::debug_getNormalTexture(u32 index) const {
     return unknown50 + index;
   }
   return nullptr;
+}
+
+void DrIBLObj::render_sphere(const u8 *data) {
+  CacheDraw *cacheDraw = DebDraw::getCacheDraw();
+  const unknown003 *sphere = reinterpret_cast<const unknown003 *>(data);
+  cacheDraw->renderSphere(mm::Vec3(sphere->unknown00, sphere->unknown04, sphere->unknown08), sphere->unknown0c, 8);
 }
 
 } // namespace ml

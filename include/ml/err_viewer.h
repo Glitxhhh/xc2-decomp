@@ -13,14 +13,26 @@ struct CERR_STRUCT;
 
 enum ERR_CALL {};
 
+// Name from the game symbol of ml::ErrViewer::reqError.
+class ICBError {
+public:
+  virtual ~ICBError() {}
+  // Inferred role: error callback, returns true while the error is handled; original name unknown.
+  virtual bool unknown001(CERR_STRUCT *error) = 0;
+};
+
 class ErrViewer : public mm::mtl::PtrSingleton<ErrViewer>, public IWorkBackground {
 public:
   // Name from the game symbol of mm::mtl::FixedList<ml::ErrViewer::ERRINFO*, 32>::erase.
   struct ERRINFO {
-    u8 _00[0x08];
-    void *unknown08;        // Inferred role: callback; original member name unknown.
+    u8 _00[0x04];
+    ERR_CALL unknown04;     // Inferred role: callback call type; original member name unknown.
+    ICBError *unknown08;    // Inferred role: callback; original member name unknown.
     CERR_STRUCT *unknown10; // Inferred role: error; original member name unknown.
     void *unknown18;        // Inferred role: memory; original member name unknown.
+    u8 _20[0xac - 0x20];
+    s32 unknownac; // Inferred role: remaining wait; original member name unknown.
+    s32 unknownb0; // Inferred role: wait reset value; original member name unknown.
   };
 
   static bool standby();
@@ -28,11 +40,14 @@ public:
   static void reqCancel(CERR_STRUCT *error);
   bool isExistError() const;
   static void update();
+  ERRINFO *getError() const;
+  void deleteError();
   static bool isInitialized();
   static bool isErrorDisp();
   static void setup();
   static void upErrViewer();
   static void renderDRC();
+  static void fnRender();
   ErrViewer();
   static ErrViewer *create();
   static void tail();

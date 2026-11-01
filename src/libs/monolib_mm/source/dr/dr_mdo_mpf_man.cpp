@@ -75,6 +75,36 @@ void DrMdoMpfMan::releaseList(_MPFWorkAutoInf *work) {
   first->unknown30 = nullptr;
 }
 
+void DrMdoMpfMan::debugListCheck(_MPFWorkAutoInf *work, int type) {
+  switch (type) {
+  case 0:
+    for (_MPFWorkAutoInf *current = unknownd8; current != nullptr && current != work; current = current->unknown28) {
+    }
+    for (_MPFWorkAutoInf *current = unknowne0; current != nullptr && current != work; current = current->unknown30) {
+    }
+    break;
+  case 2:
+    for (_MPFWorkAutoInf *current = unknowne8; current != nullptr; current = current->unknown38) {
+      if (current == work) {
+        break;
+      }
+      if (current->unknown38 == work) {
+        break;
+      }
+    }
+    break;
+  case 3: {
+    _MPFWorkAutoInf *current = unknowne8;
+    if (current != nullptr) {
+      while (current->unknown38 != nullptr) {
+        current = current->unknown38;
+      }
+    }
+    break;
+  }
+  }
+}
+
 void DrMdoMpfMan::freeMemWork(_MPFWorkAutoInf *work) {
   bool isTail = true;
   _MPFWorkAutoInf *preceding = work->unknown40;

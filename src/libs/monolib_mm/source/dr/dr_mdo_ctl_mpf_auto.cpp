@@ -53,4 +53,27 @@ void DrMdoCtlMpfAuto::SeqListCount() {
   }
 }
 
+void DrMdoCtlMpfAuto::memChgMinWork(_MPFWorkAutoInf *&work) {
+  _MPFWorkAutoInf *minWork = unknown168->unknownf0;
+  if (minWork != nullptr) {
+    minWork->unknown00 = 0;
+    minWork->unknown1a = 0;
+    minWork->unknown18 = work->unknown18;
+    minWork->unknown14 = work->unknown14;
+    minWork->unknown16 = work->unknown16;
+    minWork->unknown04 = work->unknown04;
+    minWork->unknown08 = work->unknown08;
+    minWork->unknown0c = work->unknown0c;
+    minWork->unknown10 = work->unknown10;
+    work = minWork;
+  }
+}
+
+void DrMdoCtlMpfAuto::DebugUpdateMem(_MPFWorkAutoInf *work, int index) {
+  for (_MPFWorkAutoInf *current = *unknown158; current != nullptr && current != work; current = current->unknown28) {
+  }
+  for (_MPFWorkAutoInf *current = *unknown160; current != nullptr && current != work; current = current->unknown30) {
+  }
+}
+
 } // namespace ml

@@ -26,6 +26,15 @@ struct unknown002 { // Inferred role: IBL entry; original name unknown.
 static_assert(offsetof(unknown002, unknown0c) == 0x0c, "");
 static_assert(sizeof(unknown002) == 0x28, "");
 
+struct unknown003 { // Inferred role: sphere IBL primitive; original name unknown.
+  f32 unknown00;    // Inferred role: center x; original member name unknown.
+  f32 unknown04;    // Inferred role: center y; original member name unknown.
+  f32 unknown08;    // Inferred role: center z; original member name unknown.
+  f32 unknown0c;    // Inferred role: radius; original member name unknown.
+};
+
+static_assert(offsetof(unknown003, unknown0c) == 0x0c, "");
+
 class DrIBLObj {
 public:
   bool hasValidIBL() const;
@@ -36,6 +45,7 @@ public:
   const char *getIBLName(u32 index) const;
   grlib::CGLibTextureBuffer *debug_getAlbedoTexture(u32 index) const;
   grlib::CGLibTextureBuffer *debug_getNormalTexture(u32 index) const;
+  void render_sphere(const u8 *data);
 
   const unknown001 *unknown00; // Inferred role: IBL data; original member name unknown.
   const unknown002 *unknown08; // Inferred role: IBL entries; original member name unknown.

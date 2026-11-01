@@ -24,6 +24,7 @@ public:
   bool delMpfObj();
   u8 *getTempMemTbl(int size);
   void releaseList(_MPFWorkAutoInf *work);
+  void debugListCheck(_MPFWorkAutoInf *work, int type);
 
   u8 _00[0x08 - 0x00];
   s32 unknown08; // Inferred role: mpf object count; original member name unknown.
@@ -36,7 +37,9 @@ public:
   u8 _d4[0xd8 - 0xd4];
   _MPFWorkAutoInf *unknownd8; // Inferred role: work list end; original member name unknown.
   _MPFWorkAutoInf *unknowne0; // Inferred role: work list end; original member name unknown.
-  u8 _e8[0x3d10 - 0xe8];
+  _MPFWorkAutoInf *unknowne8; // Inferred role: first memory block; original member name unknown.
+  _MPFWorkAutoInf *unknownf0; // Inferred role: smallest free work found by the last search; original member name unknown.
+  u8 _f8[0x3d10 - 0xf8];
   u8 *unknown3d10; // Inferred role: temporary memory; original member name unknown.
   u8 _3d18[0x3d20 - 0x3d18];
   s32 unknown3d20;   // Inferred role: temporary memory used size; original member name unknown.
@@ -57,5 +60,7 @@ static_assert(offsetof(DrMdoMpfMan, unknowne0) == 0xe0, "");
 static_assert(offsetof(DrMdoMpfMan, unknown3d10) == 0x3d10, "");
 static_assert(offsetof(DrMdoMpfMan, unknown3d20) == 0x3d20, "");
 static_assert(offsetof(DrMdoMpfMan, unknown3d24) == 0x3d24, "");
+static_assert(offsetof(DrMdoMpfMan, unknowne8) == 0xe8, "");
+static_assert(offsetof(DrMdoMpfMan, unknownf0) == 0xf0, "");
 
 } // namespace ml

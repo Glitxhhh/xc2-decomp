@@ -28,6 +28,8 @@ public:
   void resetPrePos();
   void setBuffTbl(_wkMpfAutoBuff **table, int count);
   void SeqListCount();
+  void memChgMinWork(_MPFWorkAutoInf *&work);
+  void DebugUpdateMem(_MPFWorkAutoInf *work, int index);
 
   const unknown001 *unknown00; // Inferred role: resource header; original member name unknown.
   u8 _08[0x28 - 0x08];

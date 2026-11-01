@@ -46,6 +46,44 @@ bool ErrViewer::isExistError() const {
   return unknown18.begin() != unknown18.end();
 }
 
+ErrViewer::ERRINFO *ErrViewer::getError() const {
+  CS lock(*unknown10);
+  if (!isExistError()) {
+    return nullptr;
+  }
+  return *unknown18.begin();
+}
+
+void ErrViewer::deleteError() {
+  if (!isExistError()) {
+    return;
+  }
+  CS lock(*unknown10);
+  mm::mtl::FixedList<ERRINFO *, 32>::iterator it = unknown18.begin();
+  if (it != unknown18.end()) {
+    if ((*it)->unknown18 != nullptr) {
+      mtl::MemManager::deallocate((*it)->unknown18, 0, false);
+      (*it)->unknown18 = nullptr;
+    }
+    if (*it != nullptr) {
+      delete *it;
+      *it = nullptr;
+    }
+    unknown18.erase(it);
+  }
+}
+
+void ErrViewer::callbackError(ERR_CALL call) {
+  if (!isExistError()) {
+    return;
+  }
+  CS lock(*unknown10);
+  ERRINFO *info = *unknown18.begin();
+  if (info->unknown04 == call && info->unknown08 != nullptr && !info->unknown08->unknown001(info->unknown10) && info->unknownb0 > 0) {
+    info->unknownac = info->unknownb0;
+  }
+}
+
 bool ErrViewer::isInitialized() {
   ErrViewer *viewer = get();
   if (viewer != nullptr) {
@@ -118,6 +156,13 @@ void ErrViewer::term() {
   if (unknown278 != nullptr) {
     mtl::MemManager::deallocate(unknown278, 0, false);
     unknown278 = nullptr;
+  }
+}
+
+void ErrViewer::fnRender() {
+  ErrViewer *viewer = get();
+  if (viewer != nullptr && ((viewer->unknown268 && !viewer->unknown269) || viewer->unknown26c)) {
+    viewer->callbackError(static_cast<ERR_CALL>(3));
   }
 }
 
