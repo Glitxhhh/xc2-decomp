@@ -21,6 +21,24 @@ enum {
 
 constexpr u32 ENEMY_SUPPRESS_COUNT = 0x5db;
 constexpr u32 ENEMY_SUPPRESS_MAX = 0xffff;
+constexpr f32 PERMILLE = 0.001f;
+
+void GfDataEnemy::setupGameParamForLevel(SDataEnemy &dataEnemy, u32 level) {
+  GfBdatChrEnParam *bdat = GfBdatChrEnParam::get();
+  f32 hpMax = bdat->getChrEnParamTableHpMaxBase(level);
+  f32 strength = bdat->getChrEnParamTableStrengthBase(level);
+  f32 powerEther = bdat->getChrEnParamTablePowEtherBase(level);
+  f32 dex = bdat->getChrEnParamTableDexBase(level);
+  f32 agility = bdat->getChrEnParamTableAgilityBase(level);
+  f32 luck = bdat->getChrEnParamTableLuckBase(level);
+  dataEnemy.unknownac = static_cast<u32>(hpMax * (dataEnemy.unknown50 * PERMILLE));
+  dataEnemy.unknownb0 = static_cast<u32>(strength * (dataEnemy.unknown52 * PERMILLE));
+  dataEnemy.unknownb2 = static_cast<u32>(powerEther * (dataEnemy.unknown54 * PERMILLE));
+  dataEnemy.unknownb4 = static_cast<u32>(dex * (dataEnemy.unknown56 * PERMILLE));
+  dataEnemy.unknownb6 = static_cast<u32>(agility * (dataEnemy.unknown58 * PERMILLE));
+  dataEnemy.unknownb8 = static_cast<u32>(luck * (dataEnemy.unknown5a * PERMILLE));
+  dataEnemy.unknowna8 = level;
+}
 
 const char *GfDataEnemy::getName(u32 arrange) {
   u32 textId = GfBdatChrEnArrange::get()->getChrEnArrangeName(arrange);

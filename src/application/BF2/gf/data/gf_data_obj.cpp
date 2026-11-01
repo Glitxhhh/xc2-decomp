@@ -1201,6 +1201,12 @@ u32 DataObjPcWpn::getWeaponDamage(bool) const { return GfBdatItem::get()->getPcW
 
 u32 DataObjPcWpn::getWeaponStability(bool) const { return GfBdatItem::get()->getPcWpnStability(getBdatId()); }
 
+DataObjEnemy::DataObjEnemy(GF_OBJ_HANDLE *handle) : unknown08(handle), m_SDataEnemy(nullptr) {
+  m_SDataEnemy = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(handle)->unknown30)->unknowna0;
+}
+
+DataObjEnemy::DataObjEnemy(u32 id) : unknown08(INVALID_HANDLE), m_SDataEnemy(nullptr), unknown18(id, 1) { m_SDataEnemy = &unknown18; }
+
 DataObjEnemy::~DataObjEnemy() {}
 
 bool DataObjEnemy::isValid() const { return m_SDataEnemy != nullptr; }
@@ -1590,6 +1596,13 @@ u32 DataObjEnemy::getEyeRotControl() const { return GfBdatRsc::get()->getRscEnEy
 
 const char *DataObjEnemy::getRotateBone() const { return GfBdatRsc::get()->getRscEnRotateBone(getBdatIdEnRsc()); }
 
+DataObjEnemyBlade::DataObjEnemyBlade(GF_OBJ_HANDLE *handle) : DataObjEnemy(handle) {
+  unknownd8 = GfObjUtil::getObjSetup<GfObjSetupEnemy>(handle);
+  unknowne0 = unknownd8->unknownc0;
+}
+
+DataObjEnemyBlade::DataObjEnemyBlade(u32 id) : DataObjEnemy(id) {}
+
 DataObjEnemyBlade::~DataObjEnemyBlade() {}
 
 SDataBlade *DataObjEnemyBlade::get(bool) const { return unknowne0; }
@@ -1724,6 +1737,104 @@ u32 DataObjEnemyBlade::getBladeArtsEx2H(bool) const { return unknowne0->unknown9
 u32 DataObjEnemyBlade::getPersonality() const { return unknowne0->unknown824; }
 
 u32 DataObjEnemyBlade::getCoolTime() const { return unknowne0->unknown828; }
+
+SDataEnemy::SDataEnemy(u32 arrange, u32 level) : unknown04(0) {
+  clear();
+  GfDataEnemy::setupSDataEnemy(*this, arrange, level);
+}
+
+void SDataEnemy::clear() {
+  unknown44 = 0;
+  unknown00 = 0;
+  unknown08 = 0;
+  unknown0a = 0;
+  unknown0c = 0;
+  unknown0e = 0;
+  unknown10 = 0;
+  unknown12 = 0;
+  unknown14 = 0;
+  unknown16 = 0;
+  unknown18 = 0;
+  unknown1a = 0;
+  unknown1c = 0;
+  unknown1e = 1;
+  unknown1f = 10;
+  unknown20 = 0;
+  unknown22 = 10;
+  unknown24 = 0;
+  unknown26 = 0;
+  unknown27 = 0;
+  unknown28 = 0;
+  unknown29 = 0;
+  unknown2a = 0;
+  unknown2c = 0;
+  unknown2e = 0;
+  unknown34 = 0;
+  unknown36 = 0;
+  unknown38 = 0;
+  unknown3a = 0;
+  unknown3c = 0;
+  unknown3d = 0;
+  unknown3e = 0;
+  unknown3f = 0;
+  unknown40 = 0;
+  unknown41 = 0;
+  unknown42 = 0;
+  unknown46 = 0;
+  unknown48 = 0;
+  unknown49 = 0;
+  unknown4a = 0;
+  unknown4b = 0;
+  unknown4c = 0;
+  unknown4d = 0;
+  unknown4e = 0;
+  unknown4f = 0;
+  unknown50 = 0;
+  unknown52 = 0;
+  unknown54 = 0;
+  unknown56 = 0;
+  unknown58 = 0;
+  unknown5a = 0;
+  unknown5c = 0;
+  unknown5e = 0;
+  unknown60 = 0;
+  unknown61 = 0;
+  unknown62 = 0;
+  unknown63 = 0;
+  unknown64 = 0;
+  unknown65 = 0;
+  unknown66 = 0;
+  unknown68 = 0;
+  unknown6a = 0;
+  unknown6c = 0;
+  unknown6d = 0;
+  unknown6e = 0;
+  unknown6f = 0;
+  unknown70 = 0;
+  unknown74 = 0;
+  unknown98 = 0;
+  unknown99 = 0;
+  unknown9a = 0;
+  unknown9b = 0;
+  unknown9c = 1;
+  unknown30 = 0;
+  unknown32 = 0;
+  unknowna8 = 1;
+  for (u32 i = 0; i < 5; i++) {
+    unknown9e[i] = 0;
+  }
+  unknownac = 0;
+  unknownb0 = 0;
+  unknownb2 = 0;
+  unknownb4 = 0;
+  unknownb6 = 0;
+  unknownb8 = 0;
+  for (u32 i = 0; i < 16; i++) {
+    unknown78[i] = 0;
+  }
+}
+
+SDataEnemy::SDataEnemy() : unknown04(0) { clear(); }
 
 DataObjNpc::DataObjNpc(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupNpc>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
