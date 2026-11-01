@@ -69,6 +69,7 @@ public:
 
   GfComProperty();
   ~GfComProperty() override;
+  bool recieveMessage(fw::MessageObject *sender, fw::Message &message) override;
   void flush();
   void procMsgObjectMaxHp(fw::MessageObject *object, MsgObjectMaxHp &message);
   void procMsgObjectSetHp(fw::MessageObject *object, MsgObjectSetHp &message);

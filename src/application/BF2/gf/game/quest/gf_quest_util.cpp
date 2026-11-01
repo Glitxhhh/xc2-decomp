@@ -481,6 +481,50 @@ void GfQuestUtil::incFieldSkillTask(u32 blade, u32 fieldSkill) {
 
 void GfQuestUtil::completeCurrentQuestForAutoPilot() {}
 
+// Inferred role: tells whether next or a quest following it in the quest chain links to a blade quest; original name unknown.
+static bool unknown001(QuestID quest, QuestID next) {
+  if (next.empty()) {
+    return false;
+  }
+
+  QuestID linked;
+  u32 linkedQuest = QuestListAcc::get()->getListLinkedQuestID(next);
+  linked.unknown00 = linkedQuest;
+  linked.unknown02 = linkedQuest >> 16;
+  if (!linked.empty() && GfDataQuest::getListQuestCategory(linked) == QTYPE_BLADE) {
+    return true;
+  }
+
+  if (unknown001(quest, GfDataQuest::getListNextQuestA(next))) {
+    return true;
+  }
+  return unknown001(quest, GfDataQuest::getListNextQuestB(next));
+}
+
+// Inferred role: tells whether the quest chain following quest links to a blade quest; original name unknown.
+static bool unknown003(QuestID quest) {
+  if (unknown001(quest, GfDataQuest::getListNextQuestA(quest))) {
+    return true;
+  }
+  return unknown001(quest, GfDataQuest::getListNextQuestB(quest));
+}
+
+// Inferred role: resets the parent quests of a type whose chain links to no blade quest; original name unknown.
+static void unknown002(QTYPE type) {
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  for (qlist_iterator it = questListAcc->begin(type); it != questListAcc->end(type); ++it) {
+    if (GfQuestInfo::isParent(it.getQuestID()) && !unknown003(it.getQuestID())) {
+      GfQuestManager::resetQuest(it.getQuestID());
+    }
+  }
+}
+
+void GfQuestUtil::setupNewGameParam() {
+  unknown002(QTYPE_MAIN);
+  unknown002(QTYPE_NORMAL);
+  unknown002(QTYPE_BLADE);
+}
+
 } // namespace gf
 
 template mm::mtl::FixedQueue<gf::QuestData, 8000>::iterator mm::mtl::FixedQueue<gf::QuestData, 8000>::insert(mm::mtl::FixedQueue<gf::QuestData, 8000>::fixed_queue_iterator<gf::QuestData, 8000>,

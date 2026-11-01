@@ -88,6 +88,16 @@ static_assert(offsetof(GfAssetFiles::AssetFile, unknown94) == 0x94, "");
 static_assert(offsetof(GfAssetFiles::AssetFile, unknown98) == 0x98, "");
 static_assert(sizeof(GfAssetFiles::AssetFile) == 0xa0, "");
 
+// Layout evidence: GfAssetPack::calcAssetPackValue (0x71001bbbc8) and the GfAssetPack constructor build it from the asset type
+// in the low word and the name hash in the high word; AssetPackInfo::isExistAssetPack compares it as one 64-bit value.
+struct AssetPackValue {
+  GfAssetType unknown00; // Inferred role: asset type; original member name unknown.
+  u32 unknown04;         // Inferred role: asset name hash; original member name unknown.
+};
+
+static_assert(offsetof(AssetPackValue, unknown04) == 0x04, "");
+static_assert(sizeof(AssetPackValue) == 0x08, "");
+
 class GfAssetPack : public mm::mtl::ReferenceObject {
 public:
   GfAssetResource *getResource(GfFileIdx index) const;
@@ -108,6 +118,7 @@ public:
   void releaseSlotHandle();
   bool isExistSameAsset(const GfAssetPack &other) const;
   void loadStart(mm::mtl::IAllocator *allocator);
+  static AssetPackValue calcAssetPackValue(const char *name, GfAssetType type);
 
   void setLoadSlotNum(u32 num) { unknown24c = num; }
 

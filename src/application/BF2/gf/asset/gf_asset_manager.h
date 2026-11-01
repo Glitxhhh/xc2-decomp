@@ -62,6 +62,7 @@ public:
   static GF_OBJ_HANDLE *getObj(GF_ASSET_HANDLE *handle);
   fw::SoundPack *getSePackByFileIdx(GF_ASSET_HANDLE *handle, GfFileIdx index);
   static GfAssetPack *getAssetPack(GF_ASSET_HANDLE *handle, GfFileIdx index);
+  static bool isExist(GF_ASSET_HANDLE *handle, GfFileIdx index);
   static GfAssetResource *getResource(GF_ASSET_HANDLE *handle, GfFileIdx index, GfAssetType type);
   static void destroySlotCache(GfAssetType type);
   static bool isExistSameAsset(GfAssetPack *pack);

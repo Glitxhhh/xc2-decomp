@@ -27,6 +27,12 @@ u32 PlayerCamera::getSaveSide() const { return m_saveSide; }
 
 bool PlayerCamera::isSaveFreeMode() const { return m_manual; }
 
+void PlayerCamera::resetClimb(ResetCameraWallTiming timing) {
+  unknown124 = true;
+  unknown52c4 = timing;
+  unknownf0 = timing == RESET_CAMERA_WALL_TIMING_UNDER_GROUND ? 0.6666667f : 0.23333335f;
+}
+
 CameraPadData::CameraPadData() {
   reset();
   bind();

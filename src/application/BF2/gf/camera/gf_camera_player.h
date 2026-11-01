@@ -54,8 +54,14 @@ public:
   f32 m_saveHeight;
   u8 _e0[0xe8 - 0xe0];
   u8 m_saveSide;
-  u8 _e9[0x120 - 0xe9];
+  u8 _e9[0xf0 - 0xe9];
+  f32 unknownf0; // Inferred role: climb reset time; original member name unknown.
+  u8 _f4[0x120 - 0xf4];
   bool m_manual;
+  u8 _121[0x124 - 0x121];
+  bool unknown124; // Inferred role: climb reset requested; original member name unknown.
+  u8 _125[0x52c4 - 0x125];
+  ResetCameraWallTiming unknown52c4; // Inferred role: climb reset timing; original member name unknown.
 };
 
 static_assert(offsetof(PlayerCamera, m_saveYaw) == 0xbc, "");
@@ -63,7 +69,10 @@ static_assert(offsetof(PlayerCamera, m_savePitch) == 0xc4, "");
 static_assert(offsetof(PlayerCamera, m_saveDistance) == 0xd4, "");
 static_assert(offsetof(PlayerCamera, m_saveHeight) == 0xdc, "");
 static_assert(offsetof(PlayerCamera, m_saveSide) == 0xe8, "");
+static_assert(offsetof(PlayerCamera, unknownf0) == 0xf0, "");
 static_assert(offsetof(PlayerCamera, m_manual) == 0x120, "");
+static_assert(offsetof(PlayerCamera, unknown124) == 0x124, "");
+static_assert(offsetof(PlayerCamera, unknown52c4) == 0x52c4, "");
 
 class CameraPadData : public fw::PadRelay {
 public:

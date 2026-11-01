@@ -4,6 +4,10 @@
 #include "gf/object/component/property/gf_com_property.h"
 #include "types.h"
 
+namespace fw {
+class MessageObject;
+} // namespace fw
+
 namespace mm {
 namespace mtl {
 class RTTI;
@@ -11,6 +15,8 @@ class RTTI;
 } // namespace mm
 
 namespace gf {
+
+struct MsgObjectGetVelocity;
 
 class GfComPropertyEvent : public GfComProperty {
 public:
@@ -24,6 +30,8 @@ public:
   void setMoveSpeed(f32 speed);
   f32 getMoveSpeed() const;
   const mm::mtl::RTTI *getRTTI() const override;
+  bool recieveMessage(fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message);
 
   f32 m_moveSpeed;
 };

@@ -1,18 +1,29 @@
 #include "gf/object/component/behavior/gf_com_behavior_npc.h"
 
+#include "ai/ai_state.h"
 #include "bdat.h"
+#include "framework/coli/coli_object.h"
+#include "framework/navi/navi_manager.h"
 #include "framework/object/updatable_object.h"
+#include "framework/reference_frame.h"
+#include "fw/fw_transform.h"
+#include "gf/asset/gf_asset_def.h"
+#include "gf/asset/gf_asset_manager.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/gf_com_collider.h"
 #include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_blade.h"
 #include "gmk/gmk_manager.h"
+#include "mm_mtl/rtti.h"
+#include "mm_mtl/vector.h"
 
 namespace gf {
 
@@ -72,10 +83,62 @@ f32 GfComBehaviorNpc::BdatInfo::getDistYThreshold() { return 2.0f; }
 
 void GfComBehaviorNpc::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
 
+void GfComBehaviorNpc::procMsgPcGetLookPoint(fw::MessageObject *sender, MsgPcGetLookPoint &message) {
+  if (unknown1b8.get() != nullptr) {
+    message.unknown10 = unknown1b8->getSyncedWorldTransform().unknown00;
+    message.unknown20 = true;
+  }
+}
+
+void GfComBehaviorNpc::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message) { message.unknown10 = unknownf0; }
+
+void GfComBehaviorNpc::disposeNaviMeshObj() {
+  fw::NaviManager::get()->releaseObject(unknownb8);
+  unknownb8 = nullptr;
+}
+
 gmk::AGmkBase *GfComBehaviorNpc::getBindedGmkInst() const { return gmk::getBindedGmkInst(static_cast<GfObj *>(unknown08)->unknownf8); }
 
 void GfComBehaviorNpc::setGoalPos(const mm::Vec3 &position) { unknownc0 = position; }
 
 GfComAsm *GfComBehaviorNpc::getComAsm() const { return unknown08->getComponent<GfComAsm>(); }
+
+bool GfComBehaviorNpc::isNullNpc() const { return !GfAssetManager::isExist(GfObjUtil::getAssetHandle(static_cast<GfObj *>(unknown08)->unknownf8), static_cast<GfFileIdx>(6)); }
+
+fw::ColiMoveObject *GfComBehaviorNpc::getColiObject() const {
+  GfComCollider *collider = unknown08->getComponent<GfComCollider>();
+  if (collider != nullptr) {
+    fw::ColiObject *coli = collider->unknown18[0];
+    if (coli != nullptr) {
+      return mm::mtl::dynamicCast<fw::ColiMoveObject>(coli);
+    }
+  }
+
+  return nullptr;
+}
+
+void GfComBehaviorNpc::disposeFsm() {
+  if (!unknown190) {
+    unknown190 = true;
+    unknown108.cleanup();
+  }
+}
+
+u32 GfComBehaviorNpc::getStateId() const {
+  if (unknown108.m_pState != nullptr) {
+    return unknown108.m_pState->unknown08;
+  }
+
+  return ai::INVALID_STATE_ID;
+}
+
+void GfComBehaviorNpc::setActivateCollison(bool isActivate) {
+  fw::ColiMoveObject *coli = getColiObject();
+  if (coli != nullptr) {
+    coli->setActivate(isActivate);
+  }
+}
+
+void GfComBehaviorNpc::Listener::onWkStandbyLogout() { unknown08->unknown198 = nullptr; }
 
 } // namespace gf

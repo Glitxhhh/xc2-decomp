@@ -3,6 +3,7 @@
 #include "gf/asset/gf_asset_manager.h"
 #include "gf/asset/gf_file_size_pool.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
+#include "mm_mtl/hash.h"
 
 namespace gf {
 
@@ -151,6 +152,13 @@ s64 GfAssetFiles::calcFileSize(GfFileIdx index) const {
 void GfAssetPack::dispAssetLogForDebug() {}
 
 void GfAssetPack::setLoadComplete() {}
+
+AssetPackValue GfAssetPack::calcAssetPackValue(const char *name, GfAssetType type) {
+  AssetPackValue value;
+  value.unknown00 = type;
+  value.unknown04 = mm::mtl::hashStrCrc(name);
+  return value;
+}
 
 } // namespace gf
 
