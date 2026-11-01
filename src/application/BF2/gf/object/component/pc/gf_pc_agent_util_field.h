@@ -13,7 +13,12 @@
 #include "mm_mtl/unique_ptr.h"
 #include "types.h"
 
+namespace fw {
+struct Transform;
+} // namespace fw
+
 namespace mm {
+struct Vec2;
 struct Vec3;
 } // namespace mm
 
@@ -41,7 +46,11 @@ public:
   static void setIdleInput(GfComPropertyPc &property);
   static f32 setFollowInput(f32 distance, navi::NvmshAcObj *naviObject, GfComPropertyPc &property);
   static fw::ParamAdapter getAIParamAdapter(GfComPropertyPc &property, PARAM_ID_FIELD_AI id);
+  static void setFollowWallEndInput(const mm::Vec3 &position, GfComPropertyPc &property);
+  static bool getWallFollowTransform(const BlackBoardField &blackBoard, fw::Transform *transform);
+  static bool isWallEndMove(const BlackBoardField &blackBoard);
   static bool calcParentPlayerPush(GfComPropertyPc &property, const mm::Vec3 &position, f32 range, mm::Vec3 *push);
+  static bool isEnableWallMove(GfComPropertyPc &property, const mm::Vec2 &input);
   static bool existNearChimbPlayer(GfComPropertyPc &property, const mm::Vec3 &position);
   static bool isWallJumpAnyPlayer();
 

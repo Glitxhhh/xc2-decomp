@@ -147,9 +147,13 @@ public:
   mm::Vec3 unknown160; // Inferred role: position; original member name unknown.
   mm::Quat unknown170; // Inferred role: rotation; original member name unknown.
   mm::Vec3 unknown180; // Inferred role: previous position, compared with the position by gf::pc::isStack; original member name unknown.
-  u8 _190[0x1e0 - 0x190];
+  u8 _190[0x1c0 - 0x190];
+  mm::Vec3 unknown1c0; // Inferred role: up axis, unitY rotated by the rotation in syncDirection; original member name unknown.
+  u8 _1d0[0x1e0 - 0x1d0];
   mm::Vec3 unknown1e0; // Inferred role: default input direction; original member name unknown.
-  u8 _1f0[0x290 - 0x1f0];
+  u8 _1f0[0x200 - 0x1f0];
+  mm::Vec3 unknown200; // Inferred role: negated X axis, -unitX rotated by the rotation in syncDirection; original member name unknown.
+  u8 _210[0x290 - 0x210];
   mm::Vec3 unknown290; // Inferred role: input Y axis on the wall, read by TaskFieldWallEscape::update; original member name unknown.
   u8 _2a0[0x2b0 - 0x2a0];
   mm::Vec3 unknown2b0; // Inferred role: input Y axis; original member name unknown.
@@ -182,7 +186,9 @@ static_assert(offsetof(GfComPropertyPc, unknown150) == 0x150, "");
 static_assert(offsetof(GfComPropertyPc, unknown160) == 0x160, "");
 static_assert(offsetof(GfComPropertyPc, unknown170) == 0x170, "");
 static_assert(offsetof(GfComPropertyPc, unknown180) == 0x180, "");
+static_assert(offsetof(GfComPropertyPc, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(GfComPropertyPc, unknown1e0) == 0x1e0, "");
+static_assert(offsetof(GfComPropertyPc, unknown200) == 0x200, "");
 static_assert(offsetof(GfComPropertyPc, unknown290) == 0x290, "");
 static_assert(offsetof(GfComPropertyPc, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2d0) == 0x2d0, "");

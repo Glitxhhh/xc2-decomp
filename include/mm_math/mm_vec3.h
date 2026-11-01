@@ -72,6 +72,15 @@ struct alignas(16) Vec3 {
   bool isError() const { return !isValidFloat(x) || !isValidFloat(y) || !isValidFloat(z); }
   // Name from the assertion texts of anm::FootPlacementIKSolver (for example "m_desc.worldUpWS.isUnit()").
   bool isUnit() const { return fabsf(sqrtf(x * x + y * y + z * z) - 1.0f) <= 0.000001f; }
+  // Inferred role: normalizes, zero when shorter than 1e-6; original name unknown.
+  void unknown001() {
+    f32 length = sqrtf(x * x + y * y + z * z);
+    if (length <= 0.000001f) {
+      *this = zero;
+    } else {
+      *this *= 1.0f / length;
+    }
+  }
 
   f32 x;
   f32 y;

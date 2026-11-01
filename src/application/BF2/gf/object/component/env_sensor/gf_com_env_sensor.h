@@ -54,16 +54,14 @@ public:
     u32 unknown38;       // Inferred role: unknown; original member name unknown.
   };
 
-  // Inferred role: dead plane info; original type name unknown.
+  // Inferred role: dead plane info, written by searchVertical with the state bit 2; original type name unknown.
   struct unknown002 {
-    u8 _00[0x30 - 0x00];
-    u32 unknown30;       // Inferred role: unknown; original member name unknown.
-    mm::Plane unknown40; // Inferred role: plane; original member name unknown.
-    u32 unknown60;       // Inferred role: unknown; original member name unknown.
-    u8 _64[0xd0 - 0x64];
+    mm::Vec3 unknown00;  // Inferred role: position; original member name unknown.
+    mm::Plane unknown10; // Inferred role: plane; original member name unknown.
   };
 
-  // Inferred role: climb wall info; original type name unknown.
+  // Inferred role: horizontal wall info, written by searchHorizon with the state bits 4 (+0x150), 5 (+0x180) and 6 (+0x1b0,
+  // climb wall); original type name unknown.
   struct unknown003 {
     mm::Plane unknown00; // Inferred role: wall plane; original member name unknown.
     u8 _20[0x24 - 0x20];
@@ -78,11 +76,19 @@ public:
     u8 _00[0x30];
   };
 
+  // Inferred role: ceiling info, written by searchVertical with the state bit 3; original type name unknown.
+  struct unknown005 {
+    f32 unknown00;       // Inferred role: height; original member name unknown.
+    mm::Plane unknown10; // Inferred role: plane; original member name unknown.
+    u32 unknown30;       // Inferred role: unknown; original member name unknown.
+  };
+
+  // Layout evidence: VerticalData::VerticalData() initializes the water info at +0x70 and the ceiling info at +0xe0, and
+  // EnviromentSensor::check() passes +0x150, the end of the VerticalData, to searchHorizon.
   struct VerticalData : GroundInfo {
-    unknown001 unknown70;  // Inferred role: water info; original member name unknown.
-    unknown002 unknownb0;  // Inferred role: dead plane info; original member name unknown.
-    unknown003 unknown180; // Inferred role: climb wall info; original member name unknown.
-    u8 _1b0[0x1c0 - 0x1b0];
+    unknown001 unknown70; // Inferred role: water info; original member name unknown.
+    unknown002 unknownb0; // Inferred role: dead plane info; original member name unknown.
+    unknown005 unknowne0; // Inferred role: ceiling info; original member name unknown.
   };
 
   u8 _00[0x20 - 0x00];
@@ -93,7 +99,9 @@ public:
       u32 unknown24_0 : 1; // Inferred role: ground found; original member name unknown.
       u32 unknown24_1 : 1; // Inferred role: water found; original member name unknown.
       u32 unknown24_2 : 1; // Inferred role: dead plane found; original member name unknown.
-      u32 : 3;
+      u32 unknown24_3 : 1; // Inferred role: ceiling found; original member name unknown.
+      u32 unknown24_4 : 1; // Inferred role: horizontal wall found; original member name unknown.
+      u32 unknown24_5 : 1; // Inferred role: horizontal info of +0x180 found; original member name unknown.
       u32 unknown24_6 : 1; // Inferred role: climb wall found; original member name unknown.
       u32 unknown24_7 : 1; // Inferred role: descend wall found; original member name unknown.
       u32 unknown25_0 : 1; // Inferred role: climb end ground found; original member name unknown.
@@ -101,20 +109,27 @@ public:
     };
   };
   VerticalData unknown30; // Inferred role: vertical ground data; original member name unknown.
-  GroundInfo unknown1f0;  // Inferred role: climb end ground; original member name unknown.
-  unknown004 unknown260;  // Inferred role: descend wall info; original member name unknown.
-  f32 unknown290;         // Inferred role: unknown scale; original member name unknown.
+  unknown003 unknown150;  // Inferred role: horizontal wall info (state bit 4); original member name unknown.
+  unknown003 unknown180;  // Inferred role: horizontal info of the state bit 5; original member name unknown.
+  unknown003 unknown1b0;  // Inferred role: climb wall info (state bit 6); original member name unknown.
+  u8 _1e0[0x1f0 - 0x1e0];
+  GroundInfo unknown1f0; // Inferred role: climb end ground; original member name unknown.
+  unknown004 unknown260; // Inferred role: descend wall info; original member name unknown.
+  f32 unknown290;        // Inferred role: unknown scale; original member name unknown.
   u8 _294[0x2a0 - 0x294];
 };
 
 static_assert(sizeof(EnviromentSensor::GroundInfo) == 0x70, "");
 static_assert(offsetof(EnviromentSensor::GroundInfo, unknown38) == 0x38, "");
 static_assert(sizeof(EnviromentSensor::unknown001) == 0x40, "");
-static_assert(sizeof(EnviromentSensor::unknown002) == 0xd0, "");
+static_assert(sizeof(EnviromentSensor::unknown002) == 0x30, "");
 static_assert(sizeof(EnviromentSensor::unknown003) == 0x30, "");
-static_assert(sizeof(EnviromentSensor::VerticalData) == 0x1c0, "");
+static_assert(sizeof(EnviromentSensor::unknown005) == 0x40, "");
+static_assert(sizeof(EnviromentSensor::VerticalData) == 0x120, "");
 static_assert(offsetof(EnviromentSensor, m_envSensorCheckFlags) == 0x20, "");
 static_assert(offsetof(EnviromentSensor, unknown30) == 0x30, "");
+static_assert(offsetof(EnviromentSensor, unknown150) == 0x150, "");
+static_assert(offsetof(EnviromentSensor, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(EnviromentSensor, unknown1f0) == 0x1f0, "");
 static_assert(offsetof(EnviromentSensor, unknown260) == 0x260, "");
 static_assert(offsetof(EnviromentSensor, unknown290) == 0x290, "");

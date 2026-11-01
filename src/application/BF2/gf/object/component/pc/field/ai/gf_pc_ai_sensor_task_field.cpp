@@ -10,21 +10,15 @@
 namespace gf {
 namespace pc {
 
+void TaskFieldSensor::onChangeActivate(BlackBoardField &blackBoard, const ai::ActivateEvent &event) { blackBoard.unknown08->setEnvSensorCheckFlags(0x20, event.unknown04); }
+
 bool TaskFieldSensor::testCondition(const BlackBoardField &blackBoard) { return true; }
 
 bool isStack(const GfComPropertyPc &property, const SensorAIParam &param, f32 time) {
   mm::Vec3 direction = property.unknown80;
   f32 speed = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
   if (!(fabsf(direction.x) <= 0.000001f) || !(fabsf(direction.y) <= 0.000001f) || !(fabsf(direction.z) <= 0.000001f)) {
-    f32 length = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-    if (length <= 0.000001f) {
-      direction = mm::Vec3::zero;
-    } else {
-      f32 inverse = 1.0f / length;
-      direction.x = direction.x * inverse;
-      direction.y = direction.y * inverse;
-      direction.z = direction.z * inverse;
-    }
+    direction.unknown001();
   }
 
   mm::Vec3 move = property.unknown160 - property.unknown180;

@@ -25,6 +25,7 @@ public:
   TaskFieldSensor(const char *name) : ai::TaskNode(name, 1) {}
   const mm::mtl::RTTI *getRTTI() const override { return &m_rtti; }
   void onEvent(ai::BlackBoard &blackBoard, const ai::Event &event) override;
+  void onChangeActivate(BlackBoardField &blackBoard, const ai::ActivateEvent &event);
   bool testCondition(const BlackBoardField &blackBoard);
   void update(BlackBoardField &blackBoard);
 
