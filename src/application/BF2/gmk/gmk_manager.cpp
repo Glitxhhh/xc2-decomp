@@ -1166,6 +1166,69 @@ void GmkScript::update(f32 deltaTime) {
   }
 }
 
+namespace {
+
+// Inferred table: phantom shape type of each gimmick shape type; original name unknown.
+const GmkPhantom::ShapeType unknown006[] = {GmkPhantom::SHAPE_TYPE_NONE, GmkPhantom::SHAPE_TYPE_NONE, GmkPhantom::SHAPE_TYPE_SPHERE, GmkPhantom::SHAPE_TYPE_BOX, GmkPhantom::SHAPE_TYPE_CAPSULE};
+
+} // namespace
+
+void GmkPhantomSimple::CreateInfo::validateByAGmkBase(const AGmkBase &gmk) {
+  u32 shapeType = gmk.unknown08.unknown10->unknown0c;
+  if (shapeType == SHAPE_TYPE_POINT) {
+    // Inferred: a point shape has no phantom; the game only reads the list create info, likely for a stripped debug message.
+    gmk.unknown08.unknown00->getCreateInfo();
+    return;
+  }
+  unknown00 = unknown006[shapeType];
+  unknown10 = gmk.unknown08.unknown08->unknown00;
+  unknown20 = gmk.unknown08.unknown08->unknown10;
+  switch (unknown00) {
+  case GmkPhantom::SHAPE_TYPE_SPHERE:
+    unknown30[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
+    if (unknown30[0] < 0.0f) {
+      unknown30[0] = -unknown30[0];
+    }
+    break;
+  case GmkPhantom::SHAPE_TYPE_CAPSULE:
+    unknown30[0] = gmk.unknown08.unknown08->unknown20.y;
+    unknown30[1] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
+    for (u32 i = 0; i < 2; i++) {
+      if (unknown30[i] < 0.0f) {
+        unknown30[i] = -unknown30[i];
+      }
+    }
+    break;
+  case GmkPhantom::SHAPE_TYPE_BOX:
+    unknown30[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
+    unknown30[1] = gmk.unknown08.unknown08->unknown20.y * 0.5f;
+    unknown30[2] = gmk.unknown08.unknown08->unknown20.z * 0.5f;
+    for (u32 i = 0; i < 3; i++) {
+      if (unknown30[i] < 0.0f) {
+        unknown30[i] = -unknown30[i];
+      }
+    }
+    break;
+  default:
+    break;
+  }
+}
+
+GmkPhantomSimple::GmkPhantomSimple(const CreateInfo *info) : unknown50(nullptr) {
+  if (info != nullptr) {
+    create(*info);
+  }
+}
+
+void GmkPhantomSimple::dispose() {
+  if (unknown50 != nullptr) {
+    unknown50->setColiUserData(nullptr);
+    unknown50->setListener(nullptr);
+  }
+  mm::mtl::safeRelease(unknown50);
+  unknown10 = CreateInfo();
+}
+
 GmkPhantom::GmkPhantom(const CreateInfo *info) : unknown70(nullptr), unknown78(nullptr), unknown80(false), unknown81(false), unknown82(false), unknown83(false) {
   if (info != nullptr) {
     create(*info);

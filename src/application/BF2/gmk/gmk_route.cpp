@@ -302,6 +302,24 @@ f32 GmkRouteNavi::getWidthRatio() const {
   return width;
 }
 
+bool GmkRouteNavi::isRouteCurve(int index) const {
+  const GmkRoute *route = getRoute();
+  const GmkRoutePoint *point = route->getRoutePoint(index);
+  if (point != nullptr && (point->getData()->unknown1c & GmkRoutePoint::FLAG_LINE) != 0) {
+    return false;
+  }
+  if (!route->isClosed() && (index == static_cast<int>(route->getRoutePointNum()) - 1 || index == 0)) {
+    return false;
+  }
+  if (route->getRoutePointNum() < 3) {
+    return false;
+  }
+  if (route->getData()->unknown08 <= 0.0f) {
+    return false;
+  }
+  return true;
+}
+
 const GmkRoute *GmkRouteNavi::findGmkRouteByBdatId(GmkType type, int bdatId) {
   const AGmkBase *gmk = GmkManager::get()->findFirstGmkInstByBdatId(type, bdatId);
   if (gmk != nullptr) {

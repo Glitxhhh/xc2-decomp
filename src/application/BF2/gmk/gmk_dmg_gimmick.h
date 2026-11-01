@@ -115,14 +115,17 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_DMG_PHANTOM;
 
-  ~GmkDmgPhantom() override;
+  ~GmkDmgPhantom() override { dispose(); }
   GmkType getGmkType() const override;
   bool isValid() const override;
   void dispose() override;
+  void createGmkPhantom(fw::ColiUserData *userData) const;
+  void disposeGmkPhantom() const;
 
-  u8 _48[0xb0 - 0x48];
+  mutable GmkPhantomSimple unknown50; // Inferred role: phantom; original member name unknown.
 };
 
+static_assert(offsetof(GmkDmgPhantom, unknown50) == 0x50, "");
 static_assert(sizeof(GmkDmgPhantom) == 0xb0, "");
 
 class GmkDmgPhantomList : public TGmkList<GmkDmgPhantom, GmkDmgPhantom::BdatInfo, 0x48504d44, 2, GmkDmgPhantomGob> {

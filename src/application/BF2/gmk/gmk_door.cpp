@@ -177,6 +177,8 @@ u32 GmkDoorPhantomTargetInfo::getTargetType() const {
   }
 }
 
+GmkDoor::GmkDoor() : unknown60(nullptr), unknown2b0(false), unknown2b1(false), unknown2b8(gf::INVALID_HANDLE), unknown2c0(0.0f), unknown2c8(nullptr) {}
+
 void GmkDoor::setProgress(Progress progress) {
   gf::GfGameFlag::setLocal(2, getGameFlagId(), progress);
   switch (progress) {
@@ -280,12 +282,12 @@ void GmkDoor::update(f32 deltaTime) {
     if (unknown2b8 == gf::INVALID_HANDLE && info->isGfObjMustExist()) {
       createGfObjHandle();
     }
-    if (unknown238 == nullptr && unknown2a0 == nullptr && info->isPhantomMustExist()) {
+    if (unknown1c0.unknown78 == nullptr && unknown250.unknown50 == nullptr && info->isPhantomMustExist()) {
       createGmkPhantom();
     }
   } else {
     disposeGfObjHandle();
-    if (unknown238 != nullptr || unknown2a0 != nullptr) {
+    if (unknown1c0.unknown78 != nullptr || unknown250.unknown50 != nullptr) {
       disposeGmkPhantom();
     }
   }
@@ -312,6 +314,33 @@ bool GmkDoor::createGmkCamera(const char *name, u8 attribute, bool param3) {
 }
 
 void GmkDoor::disposeGmkCamera() { unknown60.dispose(); }
+
+void GmkDoor::createGmkPhantom() {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  switch (unknown08.unknown10->unknown0c) {
+  case SHAPE_TYPE_SPHERE:
+  case SHAPE_TYPE_BOX:
+  case SHAPE_TYPE_CAPSULE:
+    if ((getBdatInfo()->unknown03 & 2) == 0) {
+      unknown1c0.create(*this, this, true);
+    } else {
+      GmkPhantomSimple::CreateInfo info;
+      info.validateByAGmkBase(*this);
+      unknown250.create(info);
+      unknown250.unknown50->setColiUserData(this);
+    }
+    break;
+  default:
+    break;
+  }
+}
+
+void GmkDoor::disposeGmkPhantom() {
+  unknown250.dispose();
+  unknown1c0.dispose();
+}
 
 void GmkDoor::disposeGfObjHandle() {
   if (unknown2b8 != gf::INVALID_HANDLE) {
@@ -483,7 +512,7 @@ void GmkDoor::closeDoor(bool isImmediate) {
 }
 
 void GmkDoor::pollBootGmk() {
-  if (unknown2b1 || unknown243) {
+  if (unknown2b1 || unknown1c0.unknown83) {
     const BdatInfo *info = getBdatInfo();
     switch (info->unknown02) {
     case 3:

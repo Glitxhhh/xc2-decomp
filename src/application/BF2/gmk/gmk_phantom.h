@@ -116,6 +116,36 @@ static_assert(offsetof(GmkPhantom, unknown80) == 0x80, "");
 static_assert(offsetof(GmkPhantom, unknown83) == 0x83, "");
 static_assert(sizeof(GmkPhantom) == 0x90, "");
 
+class GmkPhantomSimple {
+public:
+  struct CreateInfo {
+    CreateInfo() : unknown00(GmkPhantom::SHAPE_TYPE_NONE), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f) {
+      for (u32 i = 0; i < 3; i++) {
+        unknown30[i] = 0.0f;
+      }
+    }
+    void validateByAGmkBase(const AGmkBase &gmk);
+
+    GmkPhantom::ShapeType unknown00; // Inferred role: shape type; original member name unknown.
+    mm::Vec3 unknown10;              // Inferred role: position; original member name unknown.
+    mm::Vec3 unknown20;              // Inferred role: rotation; original member name unknown.
+    f32 unknown30[3];                // Inferred role: size; original member name unknown.
+  };
+
+  explicit GmkPhantomSimple(const CreateInfo *info = nullptr);
+  virtual ~GmkPhantomSimple() { dispose(); }
+  void create(const CreateInfo &info);
+  void dispose();
+
+  CreateInfo unknown10;      // Inferred role: create info; original member name unknown.
+  fw::ColiObject *unknown50; // Inferred role: phantom; original member name unknown.
+};
+
+static_assert(sizeof(GmkPhantomSimple::CreateInfo) == 0x40, "");
+static_assert(offsetof(GmkPhantomSimple, unknown10) == 0x10, "");
+static_assert(offsetof(GmkPhantomSimple, unknown50) == 0x50, "");
+static_assert(sizeof(GmkPhantomSimple) == 0x60, "");
+
 class GmkPhantomManager : public mm::mtl::PtrSingleton<GmkPhantomManager> {
 public:
   void update(f32 deltaTime);

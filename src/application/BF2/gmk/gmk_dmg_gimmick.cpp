@@ -133,6 +133,24 @@ GmkType GmkDmgPhantom::getGmkType() const { return GMK_TYPE; }
 
 bool GmkDmgPhantom::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
 
+void GmkDmgPhantom::createGmkPhantom(fw::ColiUserData *userData) const {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  disposeGmkPhantom();
+  GmkPhantomSimple::CreateInfo info;
+  info.validateByAGmkBase(*this);
+  unknown50.create(info);
+  unknown50.unknown50->setColiUserData(userData);
+}
+
+void GmkDmgPhantom::disposeGmkPhantom() const { unknown50.dispose(); }
+
+void GmkDmgPhantom::dispose() {
+  disposeGmkPhantom();
+  AGmkBase::dispose();
+}
+
 GmkType GmkDmgEffect::getGmkType() const { return GMK_TYPE; }
 
 bool GmkDmgEffect::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }

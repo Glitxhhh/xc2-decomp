@@ -84,8 +84,8 @@ public:
   static const GmkType GMK_TYPE = GMK_TYPE_DOOR;
   static mm::mtl::RTTI m_rtti;
 
-  GmkDoor() : unknown60(nullptr) {}
-  ~GmkDoor() override;
+  GmkDoor();
+  ~GmkDoor() override { dispose(); }
   GmkType getGmkType() const override;
   int getGameFlagId() const;
   const mm::mtl::RTTI *getRTTI() const override;
@@ -126,16 +126,11 @@ public:
 
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
-  GmkCamera unknown60; // Inferred role: gimmick camera; original member name unknown.
-  u8 _1c0[0x238 - 0x1c0];
-  GmkPhantom *unknown238; // Inferred role: phantom; original member name unknown.
-  u8 _240[0x243 - 0x240];
-  bool unknown243; // Inferred role: player is inside the phantom; original member name unknown.
-  u8 _244[0x2a0 - 0x244];
-  GmkPhantom *unknown2a0; // Inferred role: phantom; original member name unknown.
-  u8 _2a8[0x2b0 - 0x2a8];
-  bool unknown2b0; // Inferred role: player entered the phantom this frame; original member name unknown.
-  bool unknown2b1; // Inferred role: unknown2b0 of the previous frame; original member name unknown.
+  GmkCamera unknown60;         // Inferred role: gimmick camera; original member name unknown.
+  GmkPhantom unknown1c0;       // Inferred role: phantom with enter and leave events; original member name unknown.
+  GmkPhantomSimple unknown250; // Inferred role: simple phantom; original member name unknown.
+  bool unknown2b0;             // Inferred role: player entered the phantom this frame; original member name unknown.
+  bool unknown2b1;             // Inferred role: unknown2b0 of the previous frame; original member name unknown.
   u8 _2b2[0x2b8 - 0x2b2];
   gf::GF_OBJ_HANDLE *unknown2b8; // Inferred role: door game object handle; original member name unknown.
   f32 unknown2c0;                // Role and original member name unknown.
@@ -147,9 +142,8 @@ public:
 
 static_assert(sizeof(GmkDoor::BdatInfo) == 0x48, "");
 static_assert(offsetof(GmkDoor, unknown60) == 0x60, "");
-static_assert(offsetof(GmkDoor, unknown238) == 0x238, "");
-static_assert(offsetof(GmkDoor, unknown243) == 0x243, "");
-static_assert(offsetof(GmkDoor, unknown2a0) == 0x2a0, "");
+static_assert(offsetof(GmkDoor, unknown1c0) == 0x1c0, "");
+static_assert(offsetof(GmkDoor, unknown250) == 0x250, "");
 static_assert(offsetof(GmkDoor, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GmkDoor, unknown2b8) == 0x2b8, "");
 static_assert(offsetof(GmkDoor, unknown2c0) == 0x2c0, "");

@@ -171,7 +171,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_SALVAGE_LOCATOR;
 
-  ~GmkSalvageLocator() override;
+  ~GmkSalvageLocator() override { dispose(); }
   GmkType getGmkType() const override;
   bool isValid() const override;
   void dispose() override;
