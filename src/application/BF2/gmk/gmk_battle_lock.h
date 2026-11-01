@@ -25,6 +25,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_BATTLE_LOCK;
 
+  GmkBattleLock();
   ~GmkBattleLock() override { dispose(); }
   GmkType getGmkType() const override;
   bool isValid() const override;
@@ -42,9 +43,8 @@ public:
 
   u8 _48[0x50 - 0x48];
   GmkCollision unknown50; // Inferred role: collision; original member name unknown.
-  u8 _b8[0xc0 - 0xb8];
-  u32 unknownc0;         // Inferred role: effect handle; original member name unknown.
-  mutable int unknownc4; // Inferred role: number of enemies that hold the battle lock; original member name unknown.
+  u32 unknownc0;          // Inferred role: effect handle; original member name unknown.
+  mutable int unknownc4;  // Inferred role: number of enemies that hold the battle lock; original member name unknown.
   u8 _c8[0xd0 - 0xc8];
 };
 

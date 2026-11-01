@@ -8,6 +8,7 @@
 #include "framework/debug/debug_draw.h"
 #include "framework/memory/framework_memory.h"
 #include "framework/navi/navi_util.h"
+#include "framework/reference_frame.h"
 #include "framework/resource/common_resource.h"
 #include "framework/script/script_manager.h"
 #include "fw/fw_bdat_manager.h"
@@ -102,6 +103,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_list.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/rtti.h"
 #include "mtl/alloc_handle.h"
@@ -1188,13 +1190,6 @@ void GmkScript::update(f32 deltaTime) {
   }
 }
 
-namespace {
-
-// Inferred table: phantom shape type of each gimmick shape type; original name unknown.
-const GmkPhantom::ShapeType unknown006[] = {GmkPhantom::SHAPE_TYPE_NONE, GmkPhantom::SHAPE_TYPE_NONE, GmkPhantom::SHAPE_TYPE_SPHERE, GmkPhantom::SHAPE_TYPE_BOX, GmkPhantom::SHAPE_TYPE_CAPSULE};
-
-} // namespace
-
 void GmkPhantomSimple::CreateInfo::validateByAGmkBase(const AGmkBase &gmk) {
   u32 shapeType = gmk.unknown08.unknown10->unknown0c;
   if (shapeType == SHAPE_TYPE_POINT) {
@@ -1242,6 +1237,45 @@ GmkPhantomSimple::GmkPhantomSimple(const CreateInfo *info) : unknown50(nullptr) 
   }
 }
 
+void GmkPhantomSimple::create(const CreateInfo &info) {
+  dispose();
+  unknown10 = info;
+  fw::ColiPhantomInfo coliInfo;
+  coliInfo.unknown04 = fw::COLI_TYPE_STATIC;
+  coliInfo.unknown14 = 0x100000;
+  switch (info.unknown00) {
+  case GmkPhantom::SHAPE_TYPE_SPHERE: {
+    fw::unknown131 shape(info.unknown30[0]);
+    coliInfo.unknown80 = &shape;
+    unknown50 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
+    break;
+  }
+  case GmkPhantom::SHAPE_TYPE_CAPSULE: {
+    fw::unknown132 shape(info.unknown30[0], info.unknown30[1]);
+    shape.unknown0c = false;
+    coliInfo.unknown80 = &shape;
+    unknown50 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
+    break;
+  }
+  case GmkPhantom::SHAPE_TYPE_BOX: {
+    fw::unknown133 shape(mm::Vec3(info.unknown30[0], info.unknown30[1], info.unknown30[2]));
+    shape.unknown20 = false;
+    coliInfo.unknown80 = &shape;
+    unknown50 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
+    break;
+  }
+  default:
+    break;
+  }
+  mm::Mat44 matrix;
+  unknown005(matrix, info.unknown20);
+  mm::Vec3 position = info.unknown10;
+  matrix.rows[3][0] += position.x;
+  matrix.rows[3][1] += position.y;
+  matrix.rows[3][2] += position.z;
+  unknown50->setMatrix(matrix);
+}
+
 void GmkPhantomSimple::dispose() {
   if (unknown50 != nullptr) {
     unknown50->setColiUserData(nullptr);
@@ -1256,6 +1290,46 @@ GmkPhantom::GmkPhantom(const CreateInfo *info) : unknown70(nullptr), unknown78(n
     create(*info);
   }
   GmkPhantomManager::get()->addGmkPhantom(this);
+}
+
+void GmkPhantom::create(const CreateInfo &info) {
+  dispose();
+  unknown20 = info;
+  fw::ColiPhantomInfo coliInfo;
+  coliInfo.unknown04 = fw::COLI_TYPE_STATIC;
+  coliInfo.unknown14 = 0x100000;
+  coliInfo.unknown20 = this;
+  switch (info.unknown00) {
+  case SHAPE_TYPE_SPHERE: {
+    fw::unknown131 shape(info.unknown30[0]);
+    coliInfo.unknown80 = &shape;
+    unknown78 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
+    break;
+  }
+  case SHAPE_TYPE_CAPSULE: {
+    fw::unknown132 shape(info.unknown30[0], info.unknown30[1]);
+    shape.unknown0c = false;
+    coliInfo.unknown80 = &shape;
+    unknown78 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
+    break;
+  }
+  case SHAPE_TYPE_BOX: {
+    fw::unknown133 shape(mm::Vec3(info.unknown30[0], info.unknown30[1], info.unknown30[2]));
+    shape.unknown20 = false;
+    coliInfo.unknown80 = &shape;
+    unknown78 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
+    break;
+  }
+  default:
+    break;
+  }
+  mm::Mat44 matrix;
+  unknown005(matrix, info.unknown20);
+  mm::Vec3 position = info.unknown10;
+  matrix.rows[3][0] += position.x;
+  matrix.rows[3][1] += position.y;
+  matrix.rows[3][2] += position.z;
+  unknown78->setMatrix(matrix);
 }
 
 GmkPhantom::~GmkPhantom() {

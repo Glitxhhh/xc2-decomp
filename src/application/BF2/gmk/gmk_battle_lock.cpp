@@ -13,6 +13,8 @@ namespace gmk {
 
 template bool TGmkList<GmkBattleLock, GmkBattleLock::BdatInfo, 1129075778u, 3u, GmkBattleLockGob>::initGmkBdatInfo(GmkBattleLock::BdatInfo &, int &, const AGmkBase &);
 
+GmkBattleLock::GmkBattleLock() : unknownc0(0), unknownc4(0) {}
+
 GmkType GmkBattleLock::getGmkType() const { return GMK_TYPE; }
 
 bool GmkBattleLock::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
@@ -41,6 +43,13 @@ void GmkBattleLock::disposeEffect(bool isFadeOut) {
     }
     unknownc0 = 0;
   }
+}
+
+void GmkBattleLock::createGmkCollision() {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  unknown50.create(*this, true);
 }
 
 void GmkBattleLock::createEffect() {

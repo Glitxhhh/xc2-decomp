@@ -6,7 +6,6 @@
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_list.h"
 #include "gmk/gmk_manager.h"
-#include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/reference_object.h"
@@ -119,13 +118,14 @@ class GmkSquadNavi : public mm::mtl::IntrusiveListNode<GmkSquadNavi> {
 public:
   struct CreateInfo {
     CreateInfo() : unknown00(nullptr), unknown08(gf::INVALID_HANDLE) {
-      unknown10.x = 0.1f;
-      unknown10.y = 1.0f;
+      unknown10 = 0.1f;
+      unknown14 = 1.0f;
     }
 
     GmkSquad *unknown00;          // Inferred role: squad; original member name unknown.
     gf::GF_OBJ_HANDLE *unknown08; // Inferred role: object handle; original member name unknown.
-    mm::Vec2 unknown10;           // Inferred role: arrival radius and height; original member name unknown.
+    f32 unknown10;                // Inferred role: arrival radius; original member name unknown.
+    f32 unknown14;                // Inferred role: arrival height; original member name unknown.
   };
 
   struct UpdateInfo {
@@ -134,9 +134,7 @@ public:
     mm::Vec3 position; // Inferred role: position of the member; original member name unknown.
   };
 
-  GmkSquadNavi() : unknown10(nullptr), unknown18(gf::INVALID_HANDLE) {
-    unknown20.x = 0.1f;
-    unknown20.y = 1.0f;
+  GmkSquadNavi() {
     unknown28 = -1;
     unknown30 = mm::Vec3::zero;
   }
@@ -151,8 +149,8 @@ public:
 
   // Inferred helper: whether the navi is bound to a member of its squad; original name unknown.
   bool unknown001() const {
-    if (unknown10 != nullptr && unknown18 != gf::INVALID_HANDLE && unknown28 >= 0) {
-      if (static_cast<u32>(unknown28) < static_cast<u32>(unknown10->unknown70)) {
+    if (unknown10.unknown00 != nullptr && unknown10.unknown08 != gf::INVALID_HANDLE && unknown28 >= 0) {
+      if (static_cast<u32>(unknown28) < static_cast<u32>(unknown10.unknown00->unknown70)) {
         return true;
       }
     }
@@ -162,24 +160,23 @@ public:
 
   // Inferred helper: unbinds the navi from its squad; original name unknown.
   void unknown002() {
-    unknown10 = nullptr;
-    unknown18 = gf::INVALID_HANDLE;
-    unknown20.x = 0.1f;
-    unknown20.y = 1.0f;
+    unknown10.unknown00 = nullptr;
+    unknown10.unknown08 = gf::INVALID_HANDLE;
+    unknown10.unknown10 = 0.1f;
+    unknown10.unknown14 = 1.0f;
   }
 
-  GmkSquad *unknown10;          // Inferred role: squad; original member name unknown.
-  gf::GF_OBJ_HANDLE *unknown18; // Inferred role: object handle; original member name unknown.
-  mm::Vec2 unknown20;           // Inferred role: arrival radius and height; original member name unknown.
-  int unknown28;                // Inferred role: member index; original member name unknown.
+  CreateInfo unknown10; // Inferred role: create info; original member name unknown.
+  int unknown28;        // Inferred role: member index; original member name unknown.
   u8 _2c[0x30 - 0x2c];
   mm::Vec3 unknown30; // Inferred role: position offset; original member name unknown.
 };
 
+static_assert(offsetof(GmkSquadNavi::CreateInfo, unknown08) == 0x08, "");
+static_assert(offsetof(GmkSquadNavi::CreateInfo, unknown10) == 0x10, "");
+static_assert(offsetof(GmkSquadNavi::CreateInfo, unknown14) == 0x14, "");
 static_assert(sizeof(GmkSquadNavi::CreateInfo) == 0x18, "");
 static_assert(offsetof(GmkSquadNavi, unknown10) == 0x10, "");
-static_assert(offsetof(GmkSquadNavi, unknown18) == 0x18, "");
-static_assert(offsetof(GmkSquadNavi, unknown20) == 0x20, "");
 static_assert(offsetof(GmkSquadNavi, unknown28) == 0x28, "");
 static_assert(offsetof(GmkSquadNavi, unknown30) == 0x30, "");
 static_assert(sizeof(GmkSquadNavi) == 0x40, "");

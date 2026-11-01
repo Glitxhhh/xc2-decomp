@@ -3,6 +3,7 @@
 
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/game/gf_game_cond.h"
+#include "gf/game/gf_game_manager.h"
 #include "gmk/gmk_bdat.h"
 
 namespace gmk {
@@ -37,7 +38,39 @@ bool GmkFieldLock::BdatInfo::isCondMatched() const {
   return true;
 }
 
+GmkFieldLock::GmkFieldLock() : unknownc0(1.0e12f) {}
+
 void GmkFieldLock::create(const CreateInfo &info) { AGmkBase::create(info); }
+
+void GmkFieldLock::update(f32 deltaTime) {
+  debugUpdateMmf();
+  if (!isValid()) {
+    return;
+  }
+  if (unknown50.unknown60 && unknownc0 > 2.0f && gf::GfGameManager::isFieldLockMsgOK()) {
+    reqDrawCmnMsg(getBdatInfo()->unknown04);
+  }
+  unknown50.update(deltaTime);
+  if (unknown50.unknown62) {
+    unknownc0 = 0.0f;
+  } else {
+    unknownc0 += deltaTime;
+  }
+  if (getBdatInfo()->isCondMatched()) {
+    if (unknown50.unknown58 == nullptr) {
+      createGmkCollision();
+    }
+  } else if (unknown50.unknown58 != nullptr) {
+    unknown50.dispose();
+  }
+}
+
+void GmkFieldLock::createGmkCollision() {
+  if (!canCreateGameEntity()) {
+    return;
+  }
+  unknown50.create(*this, getBdatInfo()->unknown02 == 0);
+}
 
 GmkType GmkFieldLock::getGmkType() const { return GMK_TYPE; }
 

@@ -99,6 +99,9 @@ enum ShapeType {
   SHAPE_TYPE_CAPSULE = 4,
 };
 
+// Inferred table: phantom shape type of each gimmick shape type; original name unknown.
+const GmkPhantom::ShapeType unknown006[] = {GmkPhantom::SHAPE_TYPE_NONE, GmkPhantom::SHAPE_TYPE_NONE, GmkPhantom::SHAPE_TYPE_SPHERE, GmkPhantom::SHAPE_TYPE_BOX, GmkPhantom::SHAPE_TYPE_CAPSULE};
+
 // Inferred role: interest type; original type name unknown.
 enum unknown080 {
   unknown080_0 = 0, // Inferred role: player; original name unknown.

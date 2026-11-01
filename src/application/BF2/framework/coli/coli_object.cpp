@@ -91,7 +91,7 @@ void ColiObject::resetSphere(f32 radius) {
     return;
   }
 
-  unknowne8->unknown04 = radius;
+  static_cast<unknown131 *>(unknowne8)->unknown04 = radius;
   if (m_coliObject == nullptr) {
     return;
   }
@@ -118,8 +118,8 @@ void ColiObject::resetCapsule(f32 radius, f32 height, bool flag) {
     return;
   }
 
-  coliShape->unknown04 = radius;
-  coliShape->unknown08 = height;
+  static_cast<unknown132 *>(coliShape)->unknown04 = radius;
+  static_cast<unknown132 *>(coliShape)->unknown08 = height;
   if (m_coliObject == nullptr) {
     return;
   }
@@ -145,7 +145,7 @@ void ColiObject::resetBox(const mm::Vec3 &size, bool flag) {
     return;
   }
 
-  unknowne8->unknown10 = size;
+  static_cast<unknown133 *>(unknowne8)->unknown10 = size;
   if (m_coliObject == nullptr) {
     return;
   }
@@ -172,8 +172,8 @@ void ColiObject::resetCharacter(f32 radius, f32 height) {
     return;
   }
 
-  coliShape->unknown04 = radius;
-  coliShape->unknown08 = height;
+  static_cast<unknown134 *>(coliShape)->unknown04 = radius;
+  static_cast<unknown134 *>(coliShape)->unknown08 = height;
   if (m_coliObject == nullptr) {
     return;
   }
