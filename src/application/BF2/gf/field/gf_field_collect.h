@@ -35,6 +35,8 @@ public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
+  void seqWaitUIEnd(f32 deltaTime);
+  void seqDo(f32 deltaTime);
   void seqWaitDrop(f32 deltaTime);
 
   Sequence unknown08;                                   // Inferred role: sequence; original member name unknown.

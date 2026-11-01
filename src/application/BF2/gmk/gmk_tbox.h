@@ -41,8 +41,8 @@ public:
   };
 
   struct Data {
-    u8 _00[0x4 - 0x0];
-    u8 unknown04; // Inferred role: scale; original member name unknown.
+    int unknown00; // Inferred role: dropitem direction; original member name unknown.
+    u8 unknown04;  // Inferred role: scale; original member name unknown.
   };
 
   enum Progress {

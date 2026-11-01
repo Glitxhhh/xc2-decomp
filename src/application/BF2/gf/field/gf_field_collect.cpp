@@ -1,13 +1,34 @@
 #include "gf/field/gf_field_collect.h"
 
+#include <math.h>
+
+#include "bdat.h"
+#include "framework/reference_frame.h"
 #include "fw/fw_update_info.h"
+#include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/gf_menu_field_skill.h"
+#include "gf/object/component/gf_com_transform.h"
+#include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/scom/gf_scom_achiev.h"
+#include "gmk/gmk_bdat.h"
 #include "gmk/gmk_collection.h"
 #include "gmk/gmk_manager.h"
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/delegate.h" // IWYU pragma: keep
+#include "mm_mtl/intrusive_ptr.h"
 
 namespace gf {
+
+// Inferred role: achievement statistics ids; original enum and enumerator names unknown.
+enum unknown001 {
+  unknown001_65 = 0x41,
+  unknown001_66 = 0x42,
+};
 
 GfFieldCollect::GfFieldCollect(const GfSetupParam &param) : unknown19(false), unknown20(INVALID_HANDLE), unknown1c0(0.0f), unknown1c4(0.0f), unknown1c8(0) { create(param); }
 
@@ -79,6 +100,49 @@ void GfFieldCollect::destroy() {
 void GfFieldCollect::update(const fw::UpdateInfo &info) {
   if (get() != nullptr && get()->unknown18) {
     get()->update(info.unknown04);
+  }
+}
+
+void GfFieldCollect::seqWaitUIEnd(f32) {
+  if (GfMenuFieldSkill::isRunning()) {
+    return;
+  }
+  unknown19 = true;
+  SCOM_ACHIEV_INC::addTotalCount(unknown001_65, 1);
+  SCOM_ACHIEV_INC::create(unknown001_65, 1, 0);
+  SCOM_ACHIEV_INC::create(unknown001_66, 1, 0);
+  unknown08 = &GfFieldCollect::seqDo;
+}
+
+void GfFieldCollect::seqDo(f32) {
+  unknown08 = &GfFieldCollect::seqWaitDrop;
+  GfDropitemEmitter::CreateInfo info;
+  gmk::GmkCollection *collection = static_cast<gmk::GmkCollection *>(gmk::getBindedGmkInst(unknown20));
+  if (collection != nullptr) {
+    GfObjAcc acc(get()->unknown20);
+    info.unknown00 = acc.getObj()->getComponent<GfComTransform>()->getPosition();
+    info.unknown00.y += collection->getData()->unknown04;
+    const mm::Mat44 &matrix = acc.getObj()->getComponent<GfComTransform>()->unknown001()->getSyncedWorldMatrix();
+    info.unknown10 = atan2f(matrix.rows[2][0], matrix.rows[2][2]);
+    if (collection->getData()->unknown00 == 1) {
+      info.unknown14 = 3.1415927f;
+    } else if (collection->getData()->unknown00 == 2) {
+      info.unknown14 = 1.5707964f;
+    }
+    u8 *collectionBdat = collection->getBindedBdatFp();
+    info.unknown28 = collectionBdat;
+    info.unknown30 = collection->unknown20.unknown18;
+    info.unknown20 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTime", info.unknown30, gmk::BDAT_TYPE_F32));
+    info.unknown24 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTimeRand", info.unknown30, gmk::BDAT_TYPE_F32));
+  }
+  createDropitemEmitter(info);
+  u8 *bdat = GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA);
+  f32 waitTime = Bdat::getValCheck(bdat, 0, 5, gmk::BDAT_TYPE_F32).valueF32;
+  f32 distance = Bdat::getValCheck(bdat, 0, 6, gmk::BDAT_TYPE_F32).valueF32;
+  for (u32 i = 0; i < unknown1d0.size(); i++) {
+    info.unknown1c += waitTime;
+    info.unknown18 = distance * (i + 1);
+    createDropitemEmitter(info);
   }
 }
 

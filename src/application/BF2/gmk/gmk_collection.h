@@ -32,6 +32,11 @@ public:
     DistCond unknown28;    // Inferred role: dist cond; original member name unknown.
   };
 
+  struct Data {
+    int unknown00; // Inferred role: dropitem direction; original member name unknown.
+    f32 unknown04; // Inferred role: dropitem height offset; original member name unknown.
+  };
+
   static const GmkType GMK_TYPE = GMK_TYPE_COLLECTION;
 
   GmkCollection();
@@ -56,6 +61,7 @@ public:
   void seqUpdateRepopCounter(f32 deltaTime);
   void setTargetable(bool isTargetable);
 
+  const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
   gf::GF_OBJ_HANDLE *unknown48;          // Inferred role: gob instance handle; original member name unknown.
@@ -67,6 +73,7 @@ public:
 };
 
 static_assert(sizeof(GmkCollection::BdatInfo) == 0x30, "");
+static_assert(offsetof(GmkCollection::Data, unknown04) == 0x4, "");
 static_assert(offsetof(GmkCollection, unknown48) == 0x48, "");
 static_assert(offsetof(GmkCollection, unknown50) == 0x50, "");
 static_assert(offsetof(GmkCollection, unknown54) == 0x54, "");

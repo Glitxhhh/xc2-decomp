@@ -3,6 +3,10 @@
 
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_fobj_dropitem.h"
+#include "gf/game/quest/gf_quest_util.h"
+#include "gf/scom/gf_scom_obj.h"
+#include "gmk/gmk_base.h"
+#include "gmk/gmk_manager.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -32,8 +36,22 @@ public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
+  void seqWaitUIEnd(f32 deltaTime);
+  void seqWaitOpenFieldTbox(f32 deltaTime);
   void seqWaitDigEnd(f32 deltaTime);
   void seqWaitDropBegin(f32 deltaTime);
+
+  // Inferred helper: creates the treasure quest command when the gimmick task end check of the bound gimmick returns check; original name unknown.
+  void unknown001(u32 check, f32 delay) {
+    gmk::AGmkBase *gmk = gmk::getBindedGmkInst(unknown18);
+    if (gmk != nullptr) {
+      gmk::GmkType type = gmk->getGmkType();
+      u32 gimmick = gmk->unknown20.unknown18;
+      if (GfQuestUtil::getGimmickTaskEndCheck(type, gimmick) == check) {
+        SCOM_QUEST_GIMMICK::createTresure(gimmick, delay);
+      }
+    }
+  }
 
   f32 unknown08;               // Inferred role: wait time before the field skill check; original member name unknown.
   f32 unknown0c;               // Inferred role: wait time before the opening; original member name unknown.
