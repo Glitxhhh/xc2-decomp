@@ -3,19 +3,28 @@
 
 #include "gf/menu/list/gf_menu_field_skill_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "ml/critical_section.h"
+#include "ml/fixed_size_alloc.h"
 #include "mm_mtl/bitflag.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/singleton.h"
-#include "mm_thread/mm_thread_csection.h"
 #include "types.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/ui_str.h"
 
 namespace gf {
 
+struct GF_SEARCH_OBJ;
+struct GfSearchParam;
 struct MenuEnemyInfo;
 struct MenuItemInfo;
+
+// Inferred role: element of the GfMenuReference object pool; the constructor clears 512 of them in 0x4000 bytes. Members unknown.
+struct MENUREF_OBJ {
+  u8 unknown00[0x20]; // Inferred role: object storage; original member name unknown.
+};
 
 class GfMenuReference : public mm::mtl::PtrSingleton<GfMenuReference> {
 public:
@@ -24,7 +33,10 @@ public:
 
   enum HOMURA_MODE {};
 
-  struct REFLIST;
+  struct REFLIST {
+    GF_SEARCH_OBJ *unknown00;                         // Inferred role: search object; original member name unknown.
+    mm::mtl::FixedList<MENUREF_OBJ *, 512> unknown08; // Inferred role: referenced objects; original member name unknown.
+  };
 
   struct FieldSkillInfo {
     u32 unknown00; // Inferred role: id; original member name unknown.
@@ -67,6 +79,7 @@ public:
     u32 unknown24;                         // Inferred role: disable flags; original member name unknown.
   };
 
+  void finalize();
   static bool isInitialized();
   static void initReferenceNumber(u32 index);
   static void resetDriverVirtual();
@@ -161,17 +174,24 @@ public:
   static u32 getBladeVirtualEquipOrb();
   static void setBladeVirtualEquipOrbSlot(u32 slot);
   static u32 getBladeVirtualEquipOrbSlot();
-  static mm::threading::CriticalSection &getCriticalSection();
+  GF_SEARCH_OBJ *createList(GF_SEARCH_OBJ *searchObj);
+  static GF_SEARCH_OBJ *createReference(const GfSearchParam &param);
+  static void destroyReference(GF_SEARCH_OBJ *searchObj);
+  static mm::mtl::FixedList<MENUREF_OBJ *, 512> *getList(GF_SEARCH_OBJ *searchObj);
+  static ml::CriticalSection &getCriticalSection();
   static ui::UIStr &getReferenceString(u16 index);
   static void setReferenceString(ui::UIStr &string, u16 index);
   static void setPartyStatusLock(u32 index, bool isLock);
   static void clearPartyStatusLock();
 
-  u8 _08[0x4ca18 - 0x08];
-  mm::threading::CriticalSection unknown4ca18;           // Inferred role: critical section; original member name unknown.
-  bool unknown4ca40;                                     // Inferred role: initialized; original member name unknown.
-  mm::mtl::FixedVector<FieldSkillInfo, 28> unknown4ca48; // Inferred role: field skills; original member name unknown.
-  unknown005 unknown4cac0[ARTS_PALETTE_COUNT];           // Inferred role: arts palettes; original member name unknown.
+  ml::fixed_size_alloc_inside<MENUREF_OBJ, 512> unknown08; // Inferred role: referenced object pool; original member name unknown.
+  ml::fixed_size_alloc_inside<REFLIST, 32> unknown4070;    // Inferred role: reference list pool; original member name unknown.
+  mm::mtl::FixedList<REFLIST *, 32> unknown4c598;          // Inferred role: reference lists; original member name unknown.
+  mm::mtl::FixedList<GF_SEARCH_OBJ *, 32> unknown4c7d8;    // Inferred role: search objects whose reference list is destroyed at the next update; original member name unknown.
+  ml::CriticalSection unknown4ca18;                        // Inferred role: critical section; original member name unknown.
+  bool unknown4ca40;                                       // Inferred role: initialized; original member name unknown.
+  mm::mtl::FixedVector<FieldSkillInfo, 28> unknown4ca48;   // Inferred role: field skills; original member name unknown.
+  unknown005 unknown4cac0[ARTS_PALETTE_COUNT];             // Inferred role: arts palettes; original member name unknown.
   u8 _4cb38[0x4cb3c - 0x4cb38];
   bool unknown4cb3c;   // Inferred role: just range; original member name unknown.
   f32 unknown4cb40;    // Inferred role: awakening rest time ratio; original member name unknown.
@@ -222,6 +242,11 @@ public:
   u8 _4cf0c[0x4cf10 - 0x4cf0c];
 };
 
+static_assert(sizeof(GfMenuReference::REFLIST) == 0x2428, "");
+static_assert(offsetof(GfMenuReference, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuReference, unknown4070) == 0x4070, "");
+static_assert(offsetof(GfMenuReference, unknown4c598) == 0x4c598, "");
+static_assert(offsetof(GfMenuReference, unknown4c7d8) == 0x4c7d8, "");
 static_assert(offsetof(GfMenuReference, unknown4ca18) == 0x4ca18, "");
 static_assert(offsetof(GfMenuReference, unknown4ca40) == 0x4ca40, "");
 static_assert(offsetof(GfMenuReference, unknown4ca48) == 0x4ca48, "");

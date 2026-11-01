@@ -1,5 +1,7 @@
 #include "gf/sound/gf_sound.h"
 
+#include <new>
+
 #include "framework/sound/sound_manager.h"
 #include "gf/data/gf_bdat_bgm.h"
 #include "gf/data/gf_data_manager.h"
@@ -80,12 +82,16 @@ SoundHandle::SoundHandle(u32 handle) : unknown00(handle), unknown04(INVALID_SE_P
 
 bool SoundHandle::isValid() const { return unknown00 != 0; }
 
+GfSound::GfSound(const GfSetupParam &param) : unknown10(false), unknown11(false), unknown18(0), unknown66d0(INVALID_CATEGORY_HANDLE) { initialize(param); }
+
 void GfSound::initialize(const GfSetupParam &) {
   GfEvent::addEventCallback(this);
   unknown6690.initialize();
   unknown66d0 = createCategoryHandle();
   unknown10 = true;
 }
+
+GfSound::~GfSound() {}
 
 void GfSound::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, 166, 8) GfSound(param); }
 
@@ -108,6 +114,24 @@ void GfMasterVolume::initialize() {
   }
 }
 
+GF_SE_CATEGORY_HANDLE *GfSound::createCategoryHandle() {
+  for (u32 i = 0; i < CATEGORY_VOLUME_NUM; i++) {
+    if (unknown20[i].unknown168 < 0) {
+      int index = i;
+      CategoryVolume &categoryVolume = unknown20[index];
+      for (CategoryVolume::Volume &volume : categoryVolume.unknown00) {
+        volume.clear();
+      }
+      categoryVolume.unknown16c = true;
+      categoryVolume.unknown168 = index;
+      GF_SE_CATEGORY_HANDLE *handle = reinterpret_cast<GF_SE_CATEGORY_HANDLE *>(i | unknown18 << 8);
+      unknown18++;
+      return handle;
+    }
+  }
+  return INVALID_CATEGORY_HANDLE;
+}
+
 void GfSound::releaseCategoryHandle(GF_SE_CATEGORY_HANDLE *&handle) {
   if (handle != INVALID_CATEGORY_HANDLE) {
     CategoryVolume &categoryVolume = unknown20[getCategoryIndex(handle)];
@@ -124,6 +148,21 @@ void GfSound::releaseCategoryHandle(GF_SE_CATEGORY_HANDLE *&handle) {
 void GfMasterVolume::finalize() {
   if (GfSound::get() != nullptr) {
     GfSound::get()->releaseCategoryHandle(unknown00);
+  }
+}
+
+void GfSound::updateSeParamList(const fw::UpdateInfo &) {
+  fw::SoundManager *soundManager = fw::SoundManager::get();
+  if (soundManager == nullptr) {
+    return;
+  }
+  for (mm::mtl::FixedList<u16, 512>::iterator it = unknown5278.begin(); it != unknown5278.end();) {
+    if (!soundManager->isValid(getSeParam(*it)->unknown10.unknown00)) {
+      deAllocateSeParam(*it);
+      it = unknown5278.erase(it);
+    } else {
+      ++it;
+    }
   }
 }
 
@@ -289,6 +328,44 @@ bool GfSound::getSePack(mm::mtl::FixedVector<fw::SoundPack *, 4> &packs, const S
   return !packs.empty();
 }
 
+SoundHandle GfSound::playSeWithPack(const SoundParam &param, mm::mtl::FixedVector<fw::SoundPack *, 4> &packs, SEINFO seInfo) {
+  fw::SoundManager *soundManager = fw::SoundManager::get();
+  u32 id = 0;
+  if (param.unknown04.empty()) {
+    for (fw::SoundPack *&pack : packs) {
+      id = soundManager->playSe(param.unknown00, pack, param.unknown28, static_cast<fw::SoundCategory>(param.unknown38));
+      if (id != 0) {
+        break;
+      }
+    }
+  } else {
+    for (fw::SoundPack *&pack : packs) {
+      id = soundManager->playSe(param.unknown04.c_str(), pack, param.unknown28, static_cast<fw::SoundCategory>(param.unknown38));
+      if (id != 0) {
+        break;
+      }
+    }
+  }
+  SoundHandle handle(id);
+  if (id != 0) {
+    handle.unknown04 = allocateSeParam();
+    SeParam *seParam = getSeParam(handle.unknown04);
+    if (seParam != nullptr) {
+      seParam->unknown00 = seInfo;
+      seParam->unknown10 = handle;
+      seParam->unknown02 = soundManager->isLoop(id);
+      seParam->unknown01 = param.unknown38;
+      seParam->unknown08 = param.unknown30;
+      seParam->unknown03 = 0;
+      unknown5278.push_back(handle.unknown04);
+    }
+    if (param.unknown39 == SOUND_TRANSFORM_GLOBAL) {
+      soundManager->setPos(id, param.unknown40);
+    }
+  }
+  return handle;
+}
+
 SoundHandle GfSound::playSe(const char *name, fw::SoundCategory category) {
   if (fw::SoundManager::get() == nullptr) {
     return SoundHandle();
@@ -304,6 +381,19 @@ SoundHandle GfSound::playSe(const char *name, fw::SoundCategory category) {
 void GfSound::stopSe(SoundHandle handle, f32 fadeTime) {
   if (fw::SoundManager::get() != nullptr) {
     fw::SoundManager::get()->stopSe(handle.unknown00, fadeTime);
+  }
+}
+
+void GfSound::destroyCategorySe(fw::SoundCategory category) {
+  fw::SoundManager *soundManager = fw::SoundManager::get();
+  if (soundManager == nullptr) {
+    return;
+  }
+  for (u16 id : unknown5278) {
+    SeParam *seParam = getSeParam(id);
+    if (seParam->unknown01 == category) {
+      soundManager->stopSe(seParam->unknown10.unknown00, 0.0f);
+    }
   }
 }
 
@@ -507,6 +597,15 @@ void GfSound::deAllocateSeParam(u16 id) {
   if (id != INVALID_SE_PARAM) {
     unknown2e20.unknown011(id);
   }
+}
+
+u16 GfSound::allocateSeParam() {
+  u32 index;
+  SeParam *param = new (unknown2e20.unknown003(&index)) SeParam;
+  if (param == nullptr) {
+    return INVALID_SE_PARAM;
+  }
+  return index;
 }
 
 GfSound::SeParam *GfSound::getSeParam(u16 id) {

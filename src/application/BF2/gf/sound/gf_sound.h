@@ -164,6 +164,7 @@ public:
   void finalize();
   GF_SE_CATEGORY_HANDLE *createCategoryHandle();
   void releaseCategoryHandle(GF_SE_CATEGORY_HANDLE *&handle);
+  u16 allocateSeParam();
   void deAllocateSeParam(u16 id);
   void update(const fw::UpdateInfo &info);
   SeParam *getSeParam(u16 id);
@@ -187,6 +188,7 @@ public:
   bool getSePack(mm::mtl::FixedVector<fw::SoundPack *, 4> &packs, const SoundParam &param);
   SoundHandle playSeWithPack(const SoundParam &param, mm::mtl::FixedVector<fw::SoundPack *, 4> &packs, SEINFO seInfo);
   SoundHandle playSe(const char *name, fw::SoundCategory category);
+  void destroyCategorySe(fw::SoundCategory category);
   void stopSe(SoundHandle handle, f32 fadeTime);
   void setCategory(SoundHandle handle, fw::SoundCategory category);
   void setPause(SoundHandle handle, bool isPause, f32 fadeTime);

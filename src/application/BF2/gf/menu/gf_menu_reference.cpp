@@ -1,7 +1,11 @@
 #include "gf/menu/gf_menu_reference.h"
 
+#include <new>
+
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_search_obj.h"
+#include "gf/gf_manager.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_reference_number.h" // IWYU pragma: keep
 #include "gf/menu/list/gf_menu_enemy_list.h"
@@ -18,6 +22,15 @@
 
 namespace gf {
 struct GF_OBJ_HANDLE;
+
+void GfMenuReference::finalize() {
+  mm::mtl::safeRelease(unknown4cb98);
+  mm::mtl::safeRelease(unknown4cba0);
+  while (unknown4c598.size() != 0) {
+    GfSleep(1);
+  }
+  unknown4ca40 = false;
+}
 
 bool GfMenuReference::isInitialized() {
   GfMenuReference *reference = get();
@@ -773,7 +786,46 @@ u32 GfMenuReference::getBladeVirtualEquipOrbSlot() {
   return 0;
 }
 
-mm::threading::CriticalSection &GfMenuReference::getCriticalSection() { return get()->unknown4ca18; }
+GF_SEARCH_OBJ *GfMenuReference::createList(GF_SEARCH_OBJ *searchObj) {
+  if (searchObj != INVALID_SEARCH_OBJ) {
+    REFLIST *list = new (unknown4070.unknown003()) REFLIST;
+    list->unknown00 = searchObj;
+    list->unknown08.clear();
+    unknown4c598.push_back(list);
+  }
+  return searchObj;
+}
+
+GF_SEARCH_OBJ *GfMenuReference::createReference(const GfSearchParam &param) {
+  GfMenuReference *reference = get();
+  if (reference != nullptr) {
+    return reference->createList(GfGameSearchObj::createObj(param));
+  }
+  return nullptr;
+}
+
+void GfMenuReference::destroyReference(GF_SEARCH_OBJ *searchObj) {
+  GfMenuReference *reference = get();
+  if (reference != nullptr) {
+    reference->unknown4c7d8.push_back(searchObj);
+  }
+}
+
+mm::mtl::FixedList<MENUREF_OBJ *, 512> *GfMenuReference::getList(GF_SEARCH_OBJ *searchObj) {
+  GfMenuReference *reference = get();
+  if (reference == nullptr) {
+    return nullptr;
+  }
+  ml::CS cs(reference->unknown4ca18);
+  for (mm::mtl::FixedList<REFLIST *, 32>::iterator it = reference->unknown4c598.begin(); it != reference->unknown4c598.end(); ++it) {
+    if ((*it)->unknown00 == searchObj) {
+      return &(*it)->unknown08;
+    }
+  }
+  return nullptr;
+}
+
+ml::CriticalSection &GfMenuReference::getCriticalSection() { return get()->unknown4ca18; }
 
 ui::UIStr &GfMenuReference::getReferenceString(u16 index) {
   GfMenuReference *reference = get();
@@ -792,14 +844,8 @@ void GfMenuReference::clearPartyStatusLock() {
 
 } // namespace gf
 
-namespace gf {
-// Inferred role: element of the GfMenuReference object pool; the constructor clears 512 of them in 0x4000 bytes. Members unknown.
-struct MENUREF_OBJ {
-  u8 unknown00[0x20]; // Inferred role: object storage; original member name unknown.
-};
-} // namespace gf
-
 template class ml::fixed_size_alloc_inside<gf::MENUREF_OBJ, 512>;
+template class ml::fixed_size_alloc_inside<gf::GfMenuReference::REFLIST, 32>;
 
 template mm::mtl::PtrSingleton<gf::GfMenuReference>::~PtrSingleton();
 template mm::mtl::FixedList<gf::GfMenuReference::REFLIST *, 32>::iterator
