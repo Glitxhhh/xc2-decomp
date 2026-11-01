@@ -1,8 +1,55 @@
 #include "dr/dr_res_mdo_lod_obj.h"
 
+#include "dr/dr_res_mdo_lod_grp.h"
+#include "dr/dr_res_mdo_lod_parts.h"
+
 namespace ml {
 
 DrResMdoLodObj::~DrResMdoLodObj() {}
+
+int DrResMdoLodObj::calcWorkSize(const u8 *resource) {
+  const unknown001 *header = reinterpret_cast<const unknown001 *>(resource);
+  const unknown002 *lod = nullptr;
+  if (header->unknown02 & 2) {
+    lod = reinterpret_cast<const unknown002 *>(resource + header->unknown8c);
+  }
+  int partsNum = 1;
+  int grpNum = 1;
+  if (lod != nullptr) {
+    partsNum = lod->unknown08 + 1;
+    grpNum = lod->unknown10 + 1;
+  }
+  return sizeof(DrResMdoLodObj) + partsNum * sizeof(DrResMdoLodParts) + grpNum * sizeof(DrResMdoLodGrp);
+}
+
+bool DrResMdoLodObj::update(DrResMdlLodArg &arg) {
+  unknown1c = 0;
+  if (unknown18 & 1) {
+    unknown18 &= ~1;
+    arg.unknown10 = true;
+  }
+  bool isUpdate = false;
+  for (u32 i = 0; i < unknown14; i++) {
+    isUpdate |= unknown08[i].update(arg, unknown1c);
+  }
+  if (unknown14 == 1) {
+    unknown1c |= 1;
+  }
+  bool isChange = false;
+  for (u32 i = 0; i < unknown14; i++) {
+    if (unknown08[i].unknown10_5) {
+      isChange = true;
+    }
+  }
+  if (isChange) {
+    unknown18 |= 2;
+  } else {
+    unknown18 &= ~2;
+  }
+  return isUpdate;
+}
+
+int DrResMdoLodObj::create(u8 *work, const u8 *resource) { return reinterpret_cast<DrResMdoLodObj *>(work)->setup(resource, work + sizeof(DrResMdoLodObj)); }
 
 void DrResMdoLodObj::release(DrResMdoLodObj *&lodObj) {
   if (lodObj != nullptr) {

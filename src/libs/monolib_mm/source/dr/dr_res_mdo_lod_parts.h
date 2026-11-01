@@ -11,10 +11,12 @@ struct MdsMdlLodData {
   f32 unknown10; // Inferred role: pixel size threshold; original member name unknown.
   u8 _14[0x15 - 0x14];
   u8 unknown15; // Inferred role: PIXEL_RATIO index; original member name unknown.
+  u8 unknown16; // Inferred role: lod mode, 0 position and 1 pixel ratio; original member name unknown.
 };
 
 static_assert(offsetof(MdsMdlLodData, unknown10) == 0x10, "");
 static_assert(offsetof(MdsMdlLodData, unknown15) == 0x15, "");
+static_assert(offsetof(MdsMdlLodData, unknown16) == 0x16, "");
 
 // Layout from DrResMdoLodParts::calcPixel and calcAutoPixel.
 struct DrResMdlLodArg {

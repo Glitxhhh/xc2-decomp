@@ -44,6 +44,16 @@ void DrPixlPostObjDepthofField::update() {
   }
 }
 
+void DrPixlPostObjDepthofField::render() {
+  if (unknown00->unknown120[unknown00->unknown1c98]->unknown21c) {
+    renderDepthSample();
+    renderDepthAllSample();
+  }
+  renderDofScaleDown();
+  renderDofPass();
+  renderCalc();
+}
+
 void DrPixlPostObjDepthofField::releaseColorBuff() {
   unknown18->releaseTexture();
   unknown20->releaseTexture();

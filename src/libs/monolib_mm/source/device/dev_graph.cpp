@@ -324,6 +324,13 @@ void DevGraph::renderSync() {
 
 DevGraphQue::~DevGraphQue() {}
 
+GraphQue *DevGraphQue::createQue(u32 size) {
+  GraphQue *que = new (WorkUtil::getWorkMem()) GraphQue(this);
+  que->unknown002(size);
+  entryQue(que);
+  return que;
+}
+
 bool DevGraphQue::entryQue(GraphQue *que) {
   unknown08.push_back(que);
   return true;
@@ -344,12 +351,7 @@ bool DevGraphQue::removeQue(GraphQue *que) {
 void DevGraphQue::swap() {
   unknown00 = unknown00 == 0;
   for (reslist<GraphQue *>::Node *node = unknown08.begin(); node != unknown08.end(); node = node->getNext()) {
-    GraphQue *que = node->value;
-    que->unknown28 = que->unknown10[que->unknown08->unknown00];
-    que->unknown30 = que->unknown28 + que->unknown20;
-    que->unknown38 = 0;
-    que->unknown40 = 0;
-    que->unknown48 = 0;
+    node->value->unknown001();
   }
 }
 

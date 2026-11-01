@@ -2,21 +2,19 @@
 #include <stddef.h>
 
 #include "ml/dev_base.h"
+#include "ml/ml_mem.h"
 #include "ml/reslist.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/singleton.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 #include "types.h"
 
 namespace mm {
 struct Mat44;
 } // namespace mm
-
-namespace mtl {
-class ALLOC_HANDLE;
-} // namespace mtl
 
 namespace ml {
 
@@ -194,12 +192,22 @@ static_assert(offsetof(DevGraph, unknown350) == 0x350, "");
 
 class GraphQue {
 public:
+  GraphQue(DevGraphQue *owner) : unknown08(owner), unknown20(0), unknown28(nullptr), unknown30(nullptr), unknown38(0), unknown40(0), unknown48(0) {
+    unknown10[0] = nullptr;
+    unknown10[1] = nullptr;
+  }
   virtual ~GraphQue() {
     if (unknown10[0] != nullptr) {
       mtl::MemManager::deallocate(unknown10[0], 0, false);
       unknown10[0] = nullptr;
     }
   }
+
+  // Inferred role: restarts writing at the start of the buffer of the current view; original name unknown.
+  void unknown001();
+
+  // Inferred role: allocates the double buffers of the given size; original name unknown.
+  void unknown002(u32 size);
 
   DevGraphQue *unknown08; // Inferred role: owner; original member name unknown.
   u8 *unknown10[2];       // Inferred role: double buffers; original member name unknown.
@@ -232,6 +240,7 @@ public:
   void popRect();
   mm::Rect<int> &getViewport();
   mm::Rect<int> &getRenderRect();
+  GraphQue *createQue(u32 size);
   bool entryQue(GraphQue *que);
   bool removeQue(GraphQue *que);
   void swap();
@@ -249,5 +258,20 @@ static_assert(offsetof(DevGraphQue, unknown08) == 0x08, "");
 static_assert(offsetof(DevGraphQue, unknown58) == 0x58, "");
 static_assert(offsetof(DevGraphQue, unknown268) == 0x268, "");
 static_assert(offsetof(DevGraphQue, unknown478) == 0x478, "");
+
+inline void GraphQue::unknown001() {
+  unknown28 = unknown10[unknown08->unknown00];
+  unknown30 = unknown28 + unknown20;
+  unknown38 = 0;
+  unknown40 = 0;
+  unknown48 = 0;
+}
+
+inline void GraphQue::unknown002(u32 size) {
+  unknown10[0] = static_cast<u8 *>(mtl::MemManager::allocate(MlMem::getProductMem(), size * 2, 0x20, false, "no name", 0));
+  unknown20 = size;
+  unknown10[1] = unknown10[0] + size;
+  unknown001();
+}
 
 } // namespace ml

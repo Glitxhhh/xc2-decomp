@@ -4,12 +4,17 @@
 #include "dr/dr_calc_clip_work.h"
 #include "types.h"
 
+namespace mm {
+struct Mat44;
+} // namespace mm
+
 namespace ml {
 
 class DrCalcClipWorkPlane : public DrCalcClipWork {
 public:
   DrCalcClipWorkPlane();
   ~DrCalcClipWorkPlane();
+  void setMatrix(const mm::Mat44 &matrix);
   bool clipTest(const mm::Vec3 &position, f32 radius) const override;
   int clipTypeTest(const mm::Vec3 &position, f32 radius) const override;
 

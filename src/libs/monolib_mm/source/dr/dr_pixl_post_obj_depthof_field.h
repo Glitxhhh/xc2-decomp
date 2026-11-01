@@ -18,6 +18,12 @@ public:
   DrPixlPostObjDepthofField(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan);
   ~DrPixlPostObjDepthofField();
   void update();
+  void render();
+  void renderDepthSample();
+  void renderDepthAllSample();
+  void renderDofScaleDown();
+  void renderDofPass();
+  void renderCalc();
   void resetColorBuff();
   void releaseColorBuff();
 
