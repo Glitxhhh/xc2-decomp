@@ -19,6 +19,7 @@ struct GfSetupParam;
 class GfObj;
 enum OPTMNT : u32;
 struct GF_MOUNT_HANDLE;
+struct MsgObjectNotifyDead;
 
 enum {
   GAME_OBJ_LIST_CAPACITY = 1024,
@@ -68,6 +69,7 @@ public:
   bool isEffectFadeEnd(const INOUT &inout, const GfObjAcc &acc) const;
   bool isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list) const;
   static void destroyGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime);
+  static void addCharDeadMessage(GF_OBJ_HANDLE *handle, const MsgObjectNotifyDead &message);
   bool addOutObj(GF_OBJ_HANDLE *handle, f32 fadeTime, bool isEffect);
   static bool isBattle();
   void flushEvent();

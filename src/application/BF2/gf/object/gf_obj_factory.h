@@ -20,6 +20,7 @@ namespace gf {
 
 struct GF_OBJ_HANDLE;
 class GfInitParamMap;
+class GfInitParamMapSeamless;
 
 // Layout from its constructor, destructor and registerSoundTrigger. The game's destructor is out of line
 // (D1/D2 at 0x710058464c); it is not declared here until it is decompiled.
@@ -46,6 +47,7 @@ public:
   static GF_OBJ_HANDLE *createGmkCollection(const CBdatWrapper &bdat, int id);
   static GF_OBJ_HANDLE *createGmkEvent(const CBdatWrapper &bdat, int id);
   static GF_OBJ_HANDLE *createGmkMapGimmick(const CBdatWrapper &bdat, int id);
+  static GF_OBJ_HANDLE *createMap(const GfInitParamMapSeamless &param);
   static GF_OBJ_HANDLE *createDebugMap(const GfInitParamMap &param);
   static void destroyObj(GF_OBJ_HANDLE *handle);
 };

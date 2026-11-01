@@ -8,6 +8,7 @@
 namespace gf {
 
 enum RELOAD_BDAT {
+  RELOAD_BDAT_UNKNOWN_0 = 0, // Inferred role: sent before the bdat files are reloaded; original name unknown.
   RELOAD_BDAT_ALL = 1,
 };
 
@@ -227,6 +228,13 @@ public:
     GfEvent *gfEvent = get();
     for (size_t i = 0; i < gfEvent->unknown08.size(); i++) {
       gfEvent->unknown08[i]->gevPause(resumeBits, pauseBits);
+    }
+  }
+
+  // Inferred role: calls gevReloadBdat on every callback (SCOM_RELOAD_BDAT, SCOM_RELOAD_TEXT); original name unknown.
+  void unknown002(RELOAD_BDAT reload, u32 value) {
+    for (size_t i = 0; i < unknown08.size(); i++) {
+      unknown08[i]->gevReloadBdat(reload, value);
     }
   }
 

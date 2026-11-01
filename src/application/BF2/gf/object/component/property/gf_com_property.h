@@ -139,12 +139,17 @@ static_assert(offsetof(MsgObjectDamage, unknown2e) == 0x2e, "");
 static_assert(offsetof(MsgObjectDamage, unknown38) == 0x38, "");
 static_assert(sizeof(MsgObjectDamage) == 0x40, "");
 
+// Layout evidence: SCOM_CHAR_DEAD::create builds it on the stack.
 struct MsgObjectNotifyDamage : fw::Message {
+  MsgObjectNotifyDamage(const MsgObjectDamage *damage) : fw::Message(MSG_OBJECT_NOTIFY_DAMAGE, 0x40), unknown08(damage), unknown18(0) {}
+
   const MsgObjectDamage *unknown08; // Inferred role: damage; original member name unknown.
   GF_OBJ_HANDLE *unknown10;         // Inferred role: attacker; original member name unknown.
+  u32 unknown18;                    // Role and original member name unknown.
 };
 
 static_assert(offsetof(MsgObjectNotifyDamage, unknown10) == 0x10, "");
+static_assert(offsetof(MsgObjectNotifyDamage, unknown18) == 0x18, "");
 
 // Layout evidence: GfComProperty::procMsgObjectDead and StateBattleDead::Update (0x710053dfec) build it on the stack.
 struct MsgObjectNotifyDead : fw::Message {

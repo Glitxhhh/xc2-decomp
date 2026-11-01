@@ -2,12 +2,16 @@
 
 #include <math.h>
 
+#include "framework/lang_util.h"
+#include "fw/fw_bdat_manager.h"
 #include "fw/fw_update_info.h"
 #include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_en_book.h"
 #include "gf/data/gf_data_map.h"
+#include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/data/gf_game_flag.h"
@@ -16,6 +20,7 @@
 #include "gf/field/gf_field_bgm.h"
 #include "gf/field/gf_field_gimmick.h"
 #include "gf/field/gf_field_manager.h"
+#include "gf/game/achiev/gf_achiev_manager.h"
 #include "gf/game/auto_talk/gf_auto_talk.h"
 #include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_camera.h"
@@ -29,26 +34,35 @@
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/game/quest/gf_quest_manager.h"
+#include "gf/game/quest/gf_quest_target.h"
 #include "gf/game/quest/gf_quest_task.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/game/salvage/gf_salvage_voice.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
 #include "gf/map/gf_map_manager.h"
 #include "gf/menu/gf_menu_fade.h"
 #include "gf/object/component/property/gf_com_property.h"
+#include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_scom.h"
+#include "gf/scom/gf_scom_achiev.h"
 #include "gf/scom/gf_scom_enbook.h"
+#include "gf/scom/gf_scom_fade.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "gmk/gmk_manager.h"
+#include "mm_math/mm_col4.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
+#include "ui/ui_manager.h"
+#include "ui/ui_util.h"
 
 namespace gf {
 
@@ -132,6 +146,35 @@ GF_SCOM_HANDLE *SCOM_ENBOOK_DEAD_PLAYER::create(GF_OBJ_HANDLE *handle) {
   return GfReqSmallCom::addRequestParallel(command);
 }
 
+bool SCOM_MISSION_COMPLETE::exec(const fw::UpdateInfo &) {
+  switch (GfGameMercenaries::getMissionFlag(unknown1c)) {
+  case 2: {
+    u32 team = GfDataMercenaries::getTeamIDByMissionID(unknown1c);
+    GfGameMercenaries::setMissionCompleteForce(unknown1c);
+    GfGameMercenaries::execMissionRewardAchievementBonusForBlade(unknown1c);
+    GfGameMercenaries::execMissionAchievementForBlade(unknown1c);
+    GfGameMercenaries::clearTeamMember(team);
+    return false;
+  }
+  case 3:
+    GfGameMercenaries::execMissionReward(unknown1c);
+    break;
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_MISSION_COMPLETE::create(u32 mission) {
+  switch (GfGameMercenaries::getMissionFlag(mission)) {
+  case 2:
+  case 3: {
+#line 505
+    SCOM_MISSION_COMPLETE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_MISSION_COMPLETE(GfReqSmallCom::get()->allocate(), mission);
+    return GfReqSmallCom::addRequest(command);
+  }
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
 bool SCOM_ADD_TRUST::exec(const fw::UpdateInfo &) {
   if (unknown20 == 0) {
     mm::mtl::FixedVector<u16, 422> blades;
@@ -150,6 +193,28 @@ GF_SCOM_HANDLE *SCOM_ADD_TRUST::create(u32 blade, u32 point) {
 #line 535
     SCOM_ADD_TRUST *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_TRUST(GfReqSmallCom::get()->allocate(), blade, point);
     return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+bool SCOM_SET_TRUST_FOR_DEBUG::exec(const fw::UpdateInfo &) {
+  if (unknown20 == 0) {
+    mm::mtl::FixedVector<u16, 422> blades;
+    GfDataBlade::getListParty(blades);
+    for (const u16 *it = blades.begin(); it != blades.end(); ++it) {
+      GfGameUtil::setTrustPointForDebug(*it, unknown1c);
+    }
+  } else {
+    GfGameUtil::setTrustPointForDebug(unknown20, unknown1c);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_SET_TRUST_FOR_DEBUG::create(u32 blade, u32 point) {
+  if (point != 0) {
+#line 562
+    SCOM_SET_TRUST_FOR_DEBUG *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_SET_TRUST_FOR_DEBUG(GfReqSmallCom::get()->allocate(), blade, point);
+    return GfReqSmallCom::addRequest(command);
   }
   return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
 }
@@ -843,6 +908,88 @@ GF_SCOM_HANDLE *SCOM_SET_FLAG::create(u32 size, u32 index, u32 value) {
   return GfReqSmallCom::addRequest(command);
 }
 
+SCOM_CHAR_DEAD::SCOM_CHAR_DEAD(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, const MsgObjectNotifyDead &message)
+    : SCOM(handle, SCOM_TYPE_UNKNOWN_50, SCOM_EXEC_UNKNOWN_0, 1), unknown28(DEAD_TYPE_UNKNOWN_1, nullptr) {
+  unknown20 = target;
+  unknown28 = message;
+  unknown28.unknown10 = nullptr;
+}
+
+bool SCOM_CHAR_DEAD::exec(const fw::UpdateInfo &) {
+  GfObjAcc acc(unknown20);
+  GfObjAcc killerAcc(unknown28.unknown18);
+  if (unknown20 != unknown28.unknown18) {
+    GfGameParty::getPartyId(unknown20);
+  }
+  if (acc.getType() == OBJECT_TYPE_ENEMY) {
+    if (!GfGameManager::isPlayerDeadSequence()) {
+      GfQuestTask::incSuppressEnemy(acc.getEnArrangeId());
+      GfGameUtil::incEnemySuppress(acc.getEnArrangeId());
+    }
+    if (GfGameScene::get() != nullptr) {
+      GfGameScene::get()->setEnemyDead(unknown20);
+    }
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_CHAR_DEAD::create(GF_OBJ_HANDLE *target, const MsgObjectNotifyDead &message) {
+  GfObjAcc acc(target);
+  if (acc.getType() == OBJECT_TYPE_ENEMY) {
+    if (message.unknown08 == DEAD_TYPE_EMERGENCY_ESCAPE) {
+      DataParamAcc paramAcc(target);
+      if (paramAcc.getHp() == 0) {
+        return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+      }
+      SCOM_DESTROY_GAME_OBJ::create(target, 0.5f, 0);
+    }
+    SCOM_ACHIEV_INC::createKillEnemy(message.unknown18);
+    QuestID quest = GfQuestUtil::getCurrentEnemyWithEvent(acc.getEnArrangeId());
+    if (!quest.empty()) {
+      GfPlayFactory::createEventWait(3.0f, target);
+      if (GfGameScene::get() != nullptr) {
+        GfGameScene::get()->setEraseQuestEnemyForEventStart(quest);
+      }
+    }
+  }
+  if (GfGameScene::get() != nullptr && message.unknown10 != nullptr) {
+    MsgObjectNotifyDamage damage(message.unknown10);
+    damage.unknown10 = message.unknown18;
+    GfGameScene::get()->addDamage(target, damage);
+  }
+  GfGameObj::addCharDeadMessage(target, message);
+#line 2163
+  SCOM_CHAR_DEAD *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_CHAR_DEAD(GfReqSmallCom::get()->allocate(), target, message);
+  return GfReqSmallCom::addRequest(command);
+}
+
+void SCOM_CHAR_DMG::create(GF_OBJ_HANDLE *target, const MsgObjectNotifyDamage &message) {
+  if (GfGameScene::get() != nullptr) {
+    GfGameScene::get()->addDamage(target, message);
+  }
+  GfAchievStats::checkFallLength(target, message);
+  if (GfObjUtil::getObjType(target) == OBJECT_TYPE_ENEMY && GfQuestTarget::getIconType(target, QuestID()) == 0) {
+    return;
+  }
+  mm::mtl::FixedVector<QuestID, 128> quests;
+  u32 orderMax = GfQuestManager::getOrderQuestMax();
+  for (u32 i = 0; i < orderMax; i++) {
+    QuestID quest = GfQuestManager::getOrderQuest(i);
+    if (quest.empty()) {
+      continue;
+    }
+    if (GfQuestTask::isReduceHpObj(quest, target)) {
+      if (!GfQuestTask::isReduceHpObj(quest, target) && GfGameScene::get() != nullptr) {
+        GfGameScene::get()->setEraseQuestEnemyForEventStart(quest);
+      }
+      quests.push_back(quest);
+    }
+  }
+  for (QuestID quest : quests) {
+    GfQuestManager::eventCheckTask(quest);
+  }
+}
+
 bool SCOM_GAME_SPEED::exec(const fw::UpdateInfo &) {
   GfGameSpeed::setLayerSpeed(unknown002, unknown1c);
   return true;
@@ -931,6 +1078,97 @@ GF_SCOM_HANDLE *SCOM_DESTROY_MAP_OBJ::create() {
   return GfReqSmallCom::addRequest(command);
 }
 
+bool SCOM_CREATE_MAP_OBJ::exec(const fw::UpdateInfo &) {
+  if (GfMapManager::getMapJumpID() == unknown1c) {
+    if (unknown20 != 0) {
+      GfInitParamMapSeamless param;
+      param.m_bladeID = unknown20;
+      param.unknown90 = true;
+      GfObjFactory::createMap(param);
+    }
+  } else {
+    GfInitParamMapSeamless param;
+    param.m_bladeID = unknown1c;
+    GfObjFactory::createMap(param);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_CREATE_MAP_OBJ::create(u32 mapJump, u32 map) {
+#line 939
+  SCOM_CREATE_MAP_OBJ *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_CREATE_MAP_OBJ(GfReqSmallCom::get()->allocate(), mapJump, map);
+  return GfReqSmallCom::addRequest(command);
+}
+
+SCOM_FADE::unknown001 SCOM_FADE::s_fades[GfMenuFade::FADE_COUNT];
+GF_SCOM_HANDLE *SCOM_FADE::s_hCreatedReq = reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+
+bool SCOM_FADE::exec(const fw::UpdateInfo &) {
+  if (!GfMenuFade::isInitialized()) {
+    return false;
+  }
+  for (u32 i = 0; i < GfMenuFade::FADE_COUNT; i++) {
+    if (s_fades[i].unknown00 != 0xffffffff) {
+      GfMenuFade::setFade(s_fades[i].unknown00, s_fades[i].unknown04, s_fades[i].unknown08);
+      s_fades[i].unknown00 = 0xffffffff;
+    }
+  }
+  s_hCreatedReq = reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  return true;
+}
+
+SCOM_FADE::SCOM_FADE(GF_SCOM_HANDLE *handle) : SCOM(handle, SCOM_TYPE_FADE, SCOM_EXEC_UNKNOWN_0, 1) {}
+
+GF_SCOM_HANDLE *SCOM_FADE::create(u32 channel, u32 frame, const mm::Col4 &color) {
+  s_fades[channel].unknown00 = channel;
+  s_fades[channel].unknown04 = frame;
+  s_fades[channel].unknown08 = color;
+  if (s_hCreatedReq == reinterpret_cast<GF_SCOM_HANDLE *>(-1)) {
+#line 973
+    SCOM_FADE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_FADE(GfReqSmallCom::get()->allocate());
+    s_hCreatedReq = GfReqSmallCom::addRequest(command);
+  }
+  return s_hCreatedReq;
+}
+
+bool SCOM_RELOAD_BDAT::exec(const fw::UpdateInfo &) {
+  GfEvent::get()->unknown002(RELOAD_BDAT_UNKNOWN_0, GfDataBdat::getReloadCount());
+  GfDataBdat::releaseBdatInfo();
+  fw::BdatManager::reloadBdat(0);
+  GfDataBdat::setupBdatInfo();
+  GfDataUtil::refreshBdatParam();
+  GfEvent::get()->unknown002(RELOAD_BDAT_ALL, GfDataBdat::getReloadCount());
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_RELOAD_BDAT::create() {
+#line 1078
+  SCOM_RELOAD_BDAT *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_RELOAD_BDAT(GfReqSmallCom::get()->allocate());
+  return GfReqSmallCom::addRequest(command);
+}
+
+bool SCOM_RELOAD_TEXT::exec(const fw::UpdateInfo &) {
+  GfEvent::get()->unknown002(RELOAD_BDAT_UNKNOWN_0, GfDataBdat::getReloadCount());
+  GfDataBdat::releaseBdatInfo();
+  fw::BdatManager::reloadBdat(1);
+  ui::UIUtil::initBdatFP();
+  GfDataBdat::setupBdatInfo();
+  GfDataUtil::refreshBdatParam();
+  ui::UIManager::get()->reloadText();
+  GfEvent::get()->unknown002(RELOAD_BDAT_ALL, GfDataBdat::getReloadCount());
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_RELOAD_TEXT::create(fw::LangType type) {
+  if (fw::LangUtil::getLangType() == type) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  fw::LangUtil::setLangType(type);
+#line 1120
+  SCOM_RELOAD_TEXT *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_RELOAD_TEXT(GfReqSmallCom::get()->allocate());
+  return GfReqSmallCom::addRequest(command);
+}
+
 bool SCOM_STOP_LAYER::exec(const fw::UpdateInfo &) {
   GfGameUtil::changeStopLayer(unknown20, unknown28);
   return true;
@@ -998,6 +1236,49 @@ GF_SCOM_HANDLE *SCOM_DESTROY_GMK_SET::create(u32 gimmickSet) {
 #line 1210
   SCOM_DESTROY_GMK_SET *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_DESTROY_GMK_SET(GfReqSmallCom::get()->allocate(), gimmickSet);
   return GfReqSmallCom::addRequest(command);
+}
+
+SCOM_FIELD_SKILL::SCOM_FIELD_SKILL(GF_SCOM_HANDLE *handle, u32 fieldSkill, u32 blade) : SCOM(handle, SCOM_TYPE_UNKNOWN_55, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(fieldSkill), unknown20(blade) {}
+
+bool SCOM_FIELD_SKILL::exec(const fw::UpdateInfo &) {
+  if (unknown20 == 0) {
+    if (!GfGameManager::isControlFree()) {
+      return false;
+    }
+    for (u32 partyId = 0; partyId < PARTY_MEMBER_NUM; partyId++) {
+      DataParamAcc acc(OBJECT_TYPE_DRIVER, GfGameParty::getDriverBdatId(partyId), GIMMICK_TYPE_NONE);
+      if (acc.isValid()) {
+        int setBladeNum = GfDataDriver::getMaxSetBladeNum(acc.getValidDriverId());
+        for (int slot = 0; slot < setBladeNum; slot++) {
+          u32 blade = acc.getBlade(slot, false);
+          if (blade != 0) {
+            GfQuestUtil::incFieldSkillTask(blade, unknown1c);
+          }
+        }
+      }
+    }
+  } else {
+    GfQuestUtil::incFieldSkillTask(unknown20, unknown1c);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_FIELD_SKILL::create(u32 fieldSkill) {
+  if (fieldSkill != 0) {
+#line 3324
+    SCOM_FIELD_SKILL *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_FIELD_SKILL(GfReqSmallCom::get()->allocate(), fieldSkill, 0);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_FIELD_SKILL::createWithBlade(u32 fieldSkill, u32 blade) {
+  if (fieldSkill != 0) {
+#line 3331
+    SCOM_FIELD_SKILL *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_FIELD_SKILL(GfReqSmallCom::get()->allocate(), fieldSkill, blade);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
 }
 
 bool SCOM_REBUILD::exec(const fw::UpdateInfo &) {

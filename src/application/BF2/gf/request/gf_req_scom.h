@@ -4,12 +4,17 @@
 #include "gf/data/gf_data_blade.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/quest/gf_quest_id.h"
+#include "gf/object/component/property/gf_com_property.h"
 #include "gf/request/gf_scom.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
+
+namespace fw {
+enum LangType : u32;
+} // namespace fw
 
 namespace gf {
 
@@ -29,10 +34,31 @@ public:
   u32 unknown20; // Inferred role: blade; original member name unknown.
 };
 
-class SCOM_MISSION_COMPLETE {
+class SCOM_SET_TRUST_FOR_DEBUG : public SCOM {
 public:
-  static void create(u32 mission);
+  SCOM_SET_TRUST_FOR_DEBUG(GF_SCOM_HANDLE *handle, u32 blade, u32 point) : SCOM(handle, SCOM_TYPE_UNKNOWN_65, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(point), unknown20(blade) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 blade, u32 point);
+
+  u32 unknown1c; // Inferred role: trust point; original member name unknown.
+  u32 unknown20; // Inferred role: blade; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_SET_TRUST_FOR_DEBUG, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_SET_TRUST_FOR_DEBUG, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_SET_TRUST_FOR_DEBUG) == 0x28, "");
+
+class SCOM_MISSION_COMPLETE : public SCOM {
+public:
+  SCOM_MISSION_COMPLETE(GF_SCOM_HANDLE *handle, u32 mission) : SCOM(handle, SCOM_TYPE_UNKNOWN_80, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(mission) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 mission);
+
+  u32 unknown1c; // Inferred role: mercenaries mission; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_MISSION_COMPLETE, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_MISSION_COMPLETE) == 0x20, "");
 
 class SCOM_ADD_ITEM {
 public:
@@ -468,6 +494,25 @@ static_assert(offsetof(SCOM_SET_FLAG, unknown20) == 0x20, "");
 static_assert(offsetof(SCOM_SET_FLAG, unknown24) == 0x24, "");
 static_assert(sizeof(SCOM_SET_FLAG) == 0x28, "");
 
+class SCOM_CHAR_DEAD : public SCOM {
+public:
+  SCOM_CHAR_DEAD(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, const MsgObjectNotifyDead &message);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *target, const MsgObjectNotifyDead &message);
+
+  GF_OBJ_HANDLE *unknown20;      // Inferred role: dead object; original member name unknown.
+  MsgObjectNotifyDead unknown28; // Inferred role: dead message, without its damage; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_CHAR_DEAD, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_CHAR_DEAD, unknown28) == 0x28, "");
+static_assert(sizeof(SCOM_CHAR_DEAD) == 0x58, "");
+
+class SCOM_CHAR_DMG {
+public:
+  static void create(GF_OBJ_HANDLE *target, const MsgObjectNotifyDamage &message);
+};
+
 class SCOM_GAME_SPEED : public SCOM {
 public:
   SCOM_GAME_SPEED(GF_SCOM_HANDLE *handle, f32 speed) : SCOM(handle, SCOM_TYPE_UNKNOWN_20, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(speed) {}
@@ -562,6 +607,38 @@ public:
 
 static_assert(sizeof(SCOM_DESTROY_MAP_OBJ) == 0x20, "");
 
+class SCOM_CREATE_MAP_OBJ : public SCOM {
+public:
+  SCOM_CREATE_MAP_OBJ(GF_SCOM_HANDLE *handle, u32 mapJump, u32 map) : SCOM(handle, SCOM_TYPE_CREATE_MAP_OBJ, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(mapJump), unknown20(map) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 mapJump, u32 map);
+
+  u32 unknown1c; // Inferred role: map jump; original member name unknown.
+  u32 unknown20; // Inferred role: map; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_CREATE_MAP_OBJ, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_CREATE_MAP_OBJ, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_CREATE_MAP_OBJ) == 0x28, "");
+
+class SCOM_RELOAD_BDAT : public SCOM {
+public:
+  SCOM_RELOAD_BDAT(GF_SCOM_HANDLE *handle) : SCOM(handle, SCOM_TYPE_UNKNOWN_30, SCOM_EXEC_UNKNOWN_0, 2) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create();
+};
+
+static_assert(sizeof(SCOM_RELOAD_BDAT) == 0x20, "");
+
+class SCOM_RELOAD_TEXT : public SCOM {
+public:
+  SCOM_RELOAD_TEXT(GF_SCOM_HANDLE *handle) : SCOM(handle, SCOM_TYPE_UNKNOWN_31, SCOM_EXEC_UNKNOWN_0, 2) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(fw::LangType type);
+};
+
+static_assert(sizeof(SCOM_RELOAD_TEXT) == 0x20, "");
+
 class SCOM_STOP_LAYER : public SCOM {
 public:
   SCOM_STOP_LAYER(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, bool stop) : SCOM(handle, SCOM_TYPE_UNKNOWN_32, SCOM_EXEC_UNKNOWN_0, 1), unknown20(target), unknown28(stop) {}
@@ -642,6 +719,21 @@ public:
 
 static_assert(offsetof(SCOM_DESTROY_GMK_SET, unknown1c) == 0x1c, "");
 static_assert(sizeof(SCOM_DESTROY_GMK_SET) == 0x20, "");
+
+class SCOM_FIELD_SKILL : public SCOM {
+public:
+  SCOM_FIELD_SKILL(GF_SCOM_HANDLE *handle, u32 fieldSkill, u32 blade);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 fieldSkill);
+  static GF_SCOM_HANDLE *createWithBlade(u32 fieldSkill, u32 blade);
+
+  u32 unknown1c; // Inferred role: field skill; original member name unknown.
+  u32 unknown20; // Inferred role: blade, 0 for every blade of the party; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_FIELD_SKILL, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_FIELD_SKILL, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_FIELD_SKILL) == 0x28, "");
 
 class SCOM_REBUILD : public SCOM {
 public:

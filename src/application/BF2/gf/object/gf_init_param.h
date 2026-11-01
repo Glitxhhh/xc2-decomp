@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/object/gf_append.h"
+#include "gf/object/gf_obj_handle.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -34,6 +35,10 @@ enum VIEWCAM {
 
 class GfInitParam {
 public:
+  GfInitParam()
+      : unknown08(0), unknown0c(1), m_bladeID(0), unknown18(nullptr), unknown20(0xffffffff), unknown24(VIEWCAM_UNKNOWN_0), unknown28(-1), unknown30(INVALID_HANDLE), unknown38(INVALID_HANDLE),
+        unknown40(0), unknown44(0), unknown48(0), unknown4c(1.0f), unknown50(1.0f), unknown80(false), unknown81(true), unknown82(false), unknown83(false), unknown84(false) {}
+
   virtual bool isAllWeapon() const { return false; }
   virtual u32 getBladeID() const { return m_bladeID; }
   virtual u32 getEnArrangeID() const;
@@ -62,40 +67,50 @@ public:
   }
 
   u32 unknown08; // Inferred role: character type; original member name unknown.
-  u8 _0c[0x10 - 0x0c];
+  u32 unknown0c; // Inferred role: object category, 1 by default; original member name unknown.
   u32 m_bladeID;
   u8 _14[0x18 - 0x14];
   const CBdatWrapper *unknown18; // Inferred role: bdat; original member name unknown.
   u32 unknown20;                 // Inferred role: party member; original member name unknown.
   VIEWCAM unknown24;             // Inferred role: view camera; original member name unknown.
-  u8 _28[0x38 - 0x28];
-  GF_OBJ_HANDLE *unknown38; // Inferred role: owner handle; original member name unknown.
-  u32 unknown40;            // Inferred role: layer; original member name unknown.
-  u16 unknown44;            // Inferred role: priority; original member name unknown.
+  int unknown28;                 // Inferred role: object index, negative to allocate one (GfObjManager::createGfObj); original member name unknown.
+  GF_OBJ_HANDLE *unknown30;      // Inferred role: source object (read by GfObjFactory through DataParamAcc); original member name unknown.
+  GF_OBJ_HANDLE *unknown38;      // Inferred role: owner handle; original member name unknown.
+  u32 unknown40;                 // Inferred role: layer; original member name unknown.
+  u16 unknown44;                 // Inferred role: priority; original member name unknown.
   u8 _46[0x48 - 0x46];
   u32 unknown48; // Inferred role: gimmick type; original member name unknown.
   f32 unknown4c; // Inferred role: scale; original member name unknown.
-  u8 _50[0x81 - 0x50];
+  f32 unknown50; // Inferred role: scale copied into the object setup; original member name unknown.
+  u8 _54[0x80 - 0x54];
+  bool unknown80; // Inferred role: flag; original member name unknown.
   bool unknown81; // Inferred role: flag; original member name unknown.
   bool unknown82; // Inferred role: flag; original member name unknown.
   bool unknown83; // Inferred role: death blow weapon; original member name unknown.
-  u8 _84[0x88 - 0x84];
+  bool unknown84; // Inferred role: flag; original member name unknown.
+  u8 _85[0x88 - 0x85];
   GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParam, unknown08) == 0x08, "");
+static_assert(offsetof(GfInitParam, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfInitParam, m_bladeID) == 0x10, "");
 static_assert(offsetof(GfInitParam, unknown18) == 0x18, "");
 static_assert(offsetof(GfInitParam, unknown20) == 0x20, "");
 static_assert(offsetof(GfInitParam, unknown24) == 0x24, "");
+static_assert(offsetof(GfInitParam, unknown28) == 0x28, "");
+static_assert(offsetof(GfInitParam, unknown30) == 0x30, "");
 static_assert(offsetof(GfInitParam, unknown38) == 0x38, "");
 static_assert(offsetof(GfInitParam, unknown40) == 0x40, "");
 static_assert(offsetof(GfInitParam, unknown4c) == 0x4c, "");
+static_assert(offsetof(GfInitParam, unknown50) == 0x50, "");
+static_assert(offsetof(GfInitParam, unknown80) == 0x80, "");
 static_assert(offsetof(GfInitParam, unknown81) == 0x81, "");
 static_assert(offsetof(GfInitParam, unknown82) == 0x82, "");
 static_assert(offsetof(GfInitParam, unknown44) == 0x44, "");
 static_assert(offsetof(GfInitParam, unknown48) == 0x48, "");
 static_assert(offsetof(GfInitParam, unknown83) == 0x83, "");
+static_assert(offsetof(GfInitParam, unknown84) == 0x84, "");
 static_assert(offsetof(GfInitParam, unknown88) == 0x88, "");
 static_assert(sizeof(GfInitParam) == 0x90, "");
 
@@ -228,6 +243,13 @@ static_assert(offsetof(GfInitParamExtra, unknown90) == 0x90, "");
 
 class GfInitParamMapSeamless : public GfInitParam {
 public:
+  // The game stores unknown88 after this class's vtable pointer, so it is set here and not by GfInitParam (SCOM_CREATE_MAP_OBJ::exec).
+  GfInitParamMapSeamless() {
+    unknown88 = nullptr;
+    unknown90 = false;
+    unknown98 = nullptr;
+  }
+
   bool unknown90;        // Inferred role: use map id; original member name unknown.
   const char *unknown98; // Inferred role: model path; original member name unknown.
 };

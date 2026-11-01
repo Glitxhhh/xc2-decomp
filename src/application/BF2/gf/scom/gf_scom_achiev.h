@@ -29,6 +29,7 @@ public:
   static void createCriticalHit(GF_OBJ_HANDLE *handle);
   static void createCriticalGet(GF_OBJ_HANDLE *handle);
   static void createKizuna(GF_OBJ_HANDLE *handle);
+  static void createKillEnemy(GF_OBJ_HANDLE *handle);
   static void createBattle();
   static void addTotalCount(u32 stats, u32 count);
   static void create(u32 stats, int count, u32 driver);

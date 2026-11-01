@@ -61,7 +61,7 @@ class GfQuestUtil {
 public:
   static void getScenarioTopic(GfQuestScinario &scenario);
   static bool getMsgQuestTaskLog(GfQuestTaskLogResult &result, const QuestTaskParam &param);
-  static u32 getCurrentEnemyWithEvent(u32 enemy);
+  static QuestID getCurrentEnemyWithEvent(u32 enemy);
   static bool isExtstActivateEnemy(const QuestTaskParam &param);
   static bool isEnemyGroup(u32 enemy, u32 group);
   static u32 getCurrentItemWithEvent(u32 item);
