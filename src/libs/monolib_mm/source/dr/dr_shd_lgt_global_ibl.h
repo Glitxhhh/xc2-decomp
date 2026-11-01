@@ -2,6 +2,8 @@
 #include <stddef.h>
 
 #include "mm_math/mm_mat44.h"
+#include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/list.h"
 #include "types.h"
 
 namespace grlib {
@@ -20,13 +22,24 @@ bool CompareByPriority(const DrLightObjGlobalIBL *a, const DrLightObjGlobalIBL *
 
 class DrShdLgtGlobalIBL {
 public:
-  // Inferred layout of the per view data; the original type name is unknown.
+  // Inferred layout of an IBL slot; the original type name is unknown. Evidence: DrShdLgtGlobalIBL::updateView and
+  // removeObj index the state bytes with (unknown08 + 2) % 3 and pass unknown10 to DrPixlPostObjCubeMapMultiIBL::cancelIBL.
+  struct unknown002 {
+    s32 unknown00;                  // Inferred role: sh matrix index; original member name unknown.
+    u8 unknown04[3];                // Inferred role: request states; original member name unknown.
+    u32 unknown08;                  // Inferred role: current request state index; original member name unknown.
+    DrLightObjGlobalIBL *unknown10; // Inferred role: light object; original member name unknown.
+  };
+
+  // Inferred layout of the per view data; the original type name is unknown. Evidence: the constructor stores the
+  // vtable of mm::mtl::List<DrLightObjGlobalIBL *> at 0x0, the destructor clears that list and the FixedVector size at
+  // 0x1f40 per view, and updateView asserts "size() < capacity()" (fixed_vector.h) while filling 128 pointers at 0x1b40.
   struct unknown001 {
-    u8 _0000[0x2c];
-    s32 unknown2c; // Inferred role: light object count; original member name unknown.
-    u8 _0030[0x340 - 0x30];
-    mm::Mat44 unknown340[0x60]; // Inferred role: sh matrices; original member name unknown.
-    u8 _1b40[0x2048 - 0x1b40];
+    mm::mtl::List<DrLightObjGlobalIBL *> unknown00;               // Inferred role: light objects; original member name unknown.
+    unknown002 unknown40[32];                                     // Inferred role: slots; original member name unknown.
+    mm::Mat44 unknown340[0x60];                                   // Inferred role: sh matrices; original member name unknown.
+    mm::mtl::FixedVector<DrLightObjGlobalIBL *, 128> unknown1b40; // Inferred role: sorted light objects; original member name unknown.
+    u8 _1f48[0x2048 - 0x1f48];
     grlib::CGLibDblUniformBlock *unknown2048; // Inferred role: uniform block; original member name unknown.
     bool unknown2050;                         // Inferred role: reset color buffer request; original member name unknown.
     u8 _2051[0x2060 - 0x2051];
@@ -54,8 +67,13 @@ public:
 };
 
 static_assert(offsetof(DrShdLgtGlobalIBL, unknown10) == 0x10, "");
-static_assert(offsetof(DrShdLgtGlobalIBL::unknown001, unknown2c) == 0x2c, "");
+static_assert(sizeof(DrShdLgtGlobalIBL::unknown002) == 0x18, "");
+static_assert(offsetof(DrShdLgtGlobalIBL::unknown002, unknown04) == 0x4, "");
+static_assert(offsetof(DrShdLgtGlobalIBL::unknown002, unknown08) == 0x8, "");
+static_assert(offsetof(DrShdLgtGlobalIBL::unknown002, unknown10) == 0x10, "");
+static_assert(offsetof(DrShdLgtGlobalIBL::unknown001, unknown40) == 0x40, "");
 static_assert(offsetof(DrShdLgtGlobalIBL::unknown001, unknown340) == 0x340, "");
+static_assert(offsetof(DrShdLgtGlobalIBL::unknown001, unknown1b40) == 0x1b40, "");
 static_assert(offsetof(DrShdLgtGlobalIBL::unknown001, unknown2048) == 0x2048, "");
 static_assert(offsetof(DrShdLgtGlobalIBL::unknown001, unknown2050) == 0x2050, "");
 static_assert(sizeof(DrShdLgtGlobalIBL::unknown001) == 0x2060, "");

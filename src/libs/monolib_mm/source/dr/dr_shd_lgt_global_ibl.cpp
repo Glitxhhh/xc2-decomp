@@ -20,6 +20,17 @@ bool CompareByPriority(const DrLightObjGlobalIBL *a, const DrLightObjGlobalIBL *
 
 } // namespace _dr_shd_lgt_glb_ibl
 
+DrShdLgtGlobalIBL::~DrShdLgtGlobalIBL() {
+  for (int i = 0; i < 4; i++) {
+    unknown001 &view = unknown10[i];
+    if (view.unknown2048 != nullptr) {
+      delete view.unknown2048;
+      view.unknown2048 = nullptr;
+    }
+    view.unknown00.unknown001();
+  }
+}
+
 void DrShdLgtGlobalIBL::delViewInfo(int viewNum) {}
 
 void DrShdLgtGlobalIBL::resetColorBuff(int index) {
@@ -28,7 +39,7 @@ void DrShdLgtGlobalIBL::resetColorBuff(int index) {
   }
 }
 
-bool DrShdLgtGlobalIBL::isEnable() const { return unknown10[unknown00->unknown1c98].unknown2c > 0; }
+bool DrShdLgtGlobalIBL::isEnable() const { return unknown10[unknown00->unknown1c98].unknown00.size() > 0; }
 
 void DrShdLgtGlobalIBL::setUniformBlock(u32 index) const { unknown10[unknown00->unknown1c98].unknown2048->setUniformBlock(index); }
 
@@ -48,5 +59,7 @@ void DrShdLgtGlobalIBL::update(int viewNum) {
 }
 
 void DrShdLgtGlobalIBL::updateUniformBlock(int viewNum) { updateUniformBlockImpl(viewNum); }
+
+void DrShdLgtGlobalIBL::addObj(DrLightObjGlobalIBL *obj, int viewNum) { unknown10[viewNum].unknown00.push_back(obj); }
 
 } // namespace ml

@@ -25,6 +25,8 @@ class DrResShdStreamOut;
 
 class DrShdDataList {
 public:
+  DrShdDataList(DrMan *drMan);
+  ~DrShdDataList();
   void createShader();
   void releaseShader();
   void reloadShader(int type);
@@ -86,36 +88,22 @@ public:
 
   static u8 s_etcNextVertex[];
 
-  FileResTh *unknown00;                                             // Inferred role: shader file resource; original member name unknown.
-  DrMan *unknown08;                                                 // Inferred role: dr man; original member name unknown.
-  void *unknown10;                                                  // Inferred role: shader object work memory; original member name unknown.
-  DrShdDataObj *unknown18[10];                                      // Inferred role: shd objs; original member name unknown.
-  DrResFetch unknown68[91];                                         // Inferred role: fetches; original member name unknown.
-  grlib::CGLibShdListBase<DrShdDataObj> *unknown618;                // Inferred role: shader list; original member name unknown.
-  DrResShdMpf *unknown620;                                          // Inferred role: mpf objs; original member name unknown.
-  DrResShdPrePass *unknown628;                                      // Inferred role: pre pass objs; original member name unknown.
-  DrResShdShw *unknown630;                                          // Inferred role: shw objs; original member name unknown.
-  grlib::CGLibVtxVertex unknown638;                                 // Inferred role: shd vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown660;                                 // Inferred role: quads tex vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown688;                                 // Inferred role: triangle vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown6b0;                                 // Inferred role: triangle tex vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown6d8;                                 // Inferred role: box vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown700;                                 // Inferred role: sphere vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown728;                                 // Inferred role: cylinder vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown750;                                 // Inferred role: spot vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown778;                                 // Inferred role: rain drop vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown7a0;                                 // Inferred role: eff vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown7c8;                                 // Inferred role: depth check vertex; original member name unknown.
-  grlib::CGLibVtxVertex unknown7f0;                                 // Inferred role: plane vertex; original member name unknown.
-  grlib::CGLibVtxIndex unknown818;                                  // Inferred role: quads index; original member name unknown.
-  grlib::CGLibVtxIndex unknown840;                                  // Inferred role: triangle index; original member name unknown.
-  grlib::CGLibVtxIndex unknown868;                                  // Inferred role: box index; original member name unknown.
-  grlib::CGLibVtxIndex unknown890;                                  // Inferred role: sphere index; original member name unknown.
-  grlib::CGLibVtxIndex unknown8b8;                                  // Inferred role: cylinder index; original member name unknown.
-  grlib::CGLibVtxIndex unknown8e0;                                  // Inferred role: spot index; original member name unknown.
-  grlib::CGLibVtxIndex unknown908;                                  // Inferred role: rain drop index; original member name unknown.
-  grlib::CGLibVtxIndex unknown930;                                  // Inferred role: eff index; original member name unknown.
-  grlib::CGLibVtxStmOut unknown958[2];                              // Inferred role: stm outs; original member name unknown.
+  FileResTh *unknown00;                              // Inferred role: shader file resource; original member name unknown.
+  DrMan *unknown08;                                  // Inferred role: dr man; original member name unknown.
+  void *unknown10;                                   // Inferred role: shader object work memory; original member name unknown.
+  DrShdDataObj *unknown18[10];                       // Inferred role: shd objs; original member name unknown.
+  DrResFetch unknown68[91];                          // Inferred role: fetches; original member name unknown.
+  grlib::CGLibShdListBase<DrShdDataObj> *unknown618; // Inferred role: shader list; original member name unknown.
+  DrResShdMpf *unknown620;                           // Inferred role: mpf objs; original member name unknown.
+  DrResShdPrePass *unknown628;                       // Inferred role: pre pass objs; original member name unknown.
+  DrResShdShw *unknown630;                           // Inferred role: shw objs; original member name unknown.
+  // Evidence for the arrays: ~DrShdDataList releases each vertex and index and destroys them with addresses recomputed
+  // per element (array destruction), while the two stream outputs are constructed, created and destroyed one by one.
+  grlib::CGLibVtxVertex
+      unknown638[12]; // Inferred role: vertices (shd, quads tex, triangle, triangle tex, box, sphere, cylinder, spot, rain drop, eff, depth check, plane); original member name unknown.
+  grlib::CGLibVtxIndex unknown818[8];                               // Inferred role: indices (quads, triangle, box, sphere, cylinder, spot, rain drop, eff); original member name unknown.
+  grlib::CGLibVtxStmOut unknown958;                                 // Inferred role: stm out; original member name unknown.
+  grlib::CGLibVtxStmOut unknown980;                                 // Inferred role: stm out; original member name unknown.
   grlib::CGLibUniformArray<grlib::CGLibOneUniformBlock> unknown9a8; // Inferred role: alpha test uniforms; original member name unknown.
   DrResShdStreamOut *unknown9d0;                                    // Inferred role: stm out objs; original member name unknown.
   DrResShdObjMot *unknown9d8;                                       // Inferred role: object mot blur objs; original member name unknown.
@@ -128,6 +116,7 @@ static_assert(offsetof(DrShdDataList, unknown620) == 0x620, "");
 static_assert(offsetof(DrShdDataList, unknown638) == 0x638, "");
 static_assert(offsetof(DrShdDataList, unknown818) == 0x818, "");
 static_assert(offsetof(DrShdDataList, unknown958) == 0x958, "");
+static_assert(offsetof(DrShdDataList, unknown980) == 0x980, "");
 static_assert(offsetof(DrShdDataList, unknown9a8) == 0x9a8, "");
 static_assert(offsetof(DrShdDataList, unknown9d0) == 0x9d0, "");
 static_assert(offsetof(DrShdDataList, unknown9d8) == 0x9d8, "");

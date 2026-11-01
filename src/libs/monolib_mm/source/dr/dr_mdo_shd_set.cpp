@@ -208,7 +208,7 @@ void DrMdoShdSetPrePass::preshd_Mot(int index, const MdsMatInfoHeader *header, i
   unknown00->unknown17c = index;
   prePass->setupShader(unknown00->unknown179, type);
   DrMan::get()->unknown580->unknown10->unknown7b0.setUniformBlock(prePass->unknown08[6]);
-  list->unknown958[0].setStorageBuffer(0);
+  list->unknown958.setStorageBuffer(0);
 }
 
 void DrMdoShdSetPrePass::preshd_MotT(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list, PrePassType type) {
@@ -219,7 +219,7 @@ void DrMdoShdSetPrePass::preshd_MotT(int index, const MdsMatInfoHeader *header, 
     prePass->setupShader(unknown00->unknown179, type);
     list->getAlphaTestUniform(header->unknown1c)->setUniformBlock(prePass->unknown08[8]);
     DrMan::get()->unknown580->unknown10->unknown7b0.setUniformBlock(prePass->unknown08[6]);
-    list->unknown958[0].setStorageBuffer(0);
+    list->unknown958.setStorageBuffer(0);
   }
   setOneTexShaderSet(header->unknown62, prePass->unknown08[0]);
 }
@@ -240,7 +240,7 @@ void DrMdoShdSetPrePass::preshd_Mot_Al(int index, const MdsMatInfoHeader *header
       setDitherShaderSet(prePass->unknown08[1], prePass->unknown08[9], 2);
       unknown00->unknownf8 &= ~0x40000000;
     }
-    list->unknown958[0].setStorageBuffer(0);
+    list->unknown958.setStorageBuffer(0);
   } else {
     list->getAlphaTestUniform(header->unknown1c)->setUniformBlock(prePass->unknown08[8]);
     if (unknown00->unknown17a != uniformIndex) {
@@ -278,7 +278,7 @@ void DrMdoShdSetPrePass::preshd_MotT_Al(int index, const MdsMatInfoHeader *heade
       setDitherShaderSet(prePass->unknown08[1], prePass->unknown08[9], 2);
       unknown00->unknownf8 &= ~0x40000000;
     }
-    list->unknown958[0].setStorageBuffer(0);
+    list->unknown958.setStorageBuffer(0);
     unknown00->unknown17a = uniformIndex;
     setOneTexShaderSet(header->unknown62, prePass->unknown08[0]);
     return;
@@ -584,7 +584,7 @@ void DrMdoShdSetPrePass::preshd_MotT_Al_FS(int index, const MdsMatInfoHeader *he
       setDitherShaderSet(prePass->unknown08[2], prePass->unknown08[9], 2);
       unknown00->unknownf8 &= ~0x40000000;
     }
-    list->unknown958[0].setStorageBuffer(0);
+    list->unknown958.setStorageBuffer(0);
     unknown00->unknown17a = uniformIndex;
     setOneTexShaderSet(header->unknown62, prePass->unknown08[0]);
     return;
@@ -893,7 +893,7 @@ void DrMdoShdSetShadow::shwShd_Mot(int index, const MdsMatInfoHeader *header, in
   if (unknown00->unknown17c != index) {
     unknown002(index, shw, list);
     unknown00->m_drMan->unknown78->unknown850->setUniformBlock(shw->unknown08[2]);
-    list->unknown958[0].setStorageBuffer(shw->unknown08[1]);
+    list->unknown958.setStorageBuffer(shw->unknown08[1]);
   }
 }
 
@@ -904,7 +904,7 @@ void DrMdoShdSetShadow::shwShd_MotT(int index, const MdsMatInfoHeader *header, i
     unknown002(index, shw, list);
     list->getAlphaTestUniform(header->unknown1c)->setUniformBlock(shw->unknown08[3]);
     unknown00->m_drMan->unknown78->unknown850->setUniformBlock(shw->unknown08[2]);
-    list->unknown958[0].setStorageBuffer(shw->unknown08[1]);
+    list->unknown958.setStorageBuffer(shw->unknown08[1]);
   }
   setOneTexShaderSet(header->unknown62, shw->unknown08[0]);
 }

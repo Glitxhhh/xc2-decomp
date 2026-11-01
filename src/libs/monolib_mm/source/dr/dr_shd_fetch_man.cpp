@@ -6,6 +6,17 @@ namespace ml {
 
 DrShdFetchMan::DrShdFetchMan(DrMan *drMan) : unknown00(nullptr), unknown08(nullptr), unknown10(drMan), unknown18(0) {}
 
+DrShdFetchMan::~DrShdFetchMan() {
+  DrShdFetchObj *obj = unknown00;
+  while (obj != nullptr) {
+    DrShdFetchObj *next = obj->unknown08;
+    delete obj;
+    obj = next;
+  }
+  unknown00 = nullptr;
+  unknown08 = nullptr;
+}
+
 void DrShdFetchMan::releaseFetchObj(DrShdFetchObj *obj) {
   obj->unknown1c--;
   if (obj->unknown1c < 0) {

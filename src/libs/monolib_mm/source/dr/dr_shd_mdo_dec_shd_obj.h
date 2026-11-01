@@ -11,6 +11,7 @@ struct MdsMatTechnique;
 
 class DrShdMdoDecShdObj {
 public:
+  ~DrShdMdoDecShdObj();
   void update();
   void changeMemShader(const u8 *data, const u8 *vertexData, const MdsMatTechnique *technique);
 

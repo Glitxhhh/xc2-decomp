@@ -20,6 +20,26 @@ void DrShdDataObj::createShader(DrShdDataList *list, int type, int index) {
   unknown68[1] = next == 0xff ? nullptr : &list->unknown68[next];
 }
 
+DrShdDataList::~DrShdDataList() {
+  releaseShader();
+  for (int i = 0; i < 12; i++) {
+    unknown638[i].release();
+  }
+  for (int i = 0; i < 8; i++) {
+    unknown818[i].release();
+  }
+  unknown958.release();
+  unknown980.release();
+  for (int i = 0; i < 91; i++) {
+    unknown68[i].clearWork();
+  }
+  unknown9a8.unknown001();
+  if (unknown618 != nullptr) {
+    delete unknown618;
+    unknown618 = nullptr;
+  }
+}
+
 void DrShdDataList::releaseShader() {
   if (unknown10 != nullptr) {
     unknown618->release();
@@ -64,47 +84,47 @@ DrResShdStreamOut *DrShdDataList::getStmOutObj(int index) { return &unknown9d0[i
 
 DrResShdObjMot *DrShdDataList::getObjMotBlurObj(int index) { return &unknown9d8[index]; }
 
-void DrShdDataList::bindShdVertex() { grlib::CGLibCtlVertex::setVertex(unknown638); }
+void DrShdDataList::bindShdVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[0]); }
 
-void DrShdDataList::bindShdSphereVertex() { grlib::CGLibCtlVertex::setVertex(unknown700); }
+void DrShdDataList::bindShdSphereVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[5]); }
 
-void DrShdDataList::bindShdSpotVertex() { grlib::CGLibCtlVertex::setVertex(unknown750); }
+void DrShdDataList::bindShdSpotVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[7]); }
 
-void DrShdDataList::bindQuadsTex() { grlib::CGLibCtlVertex::setVertex(unknown660); }
+void DrShdDataList::bindQuadsTex() { grlib::CGLibCtlVertex::setVertex(unknown638[1]); }
 
-void DrShdDataList::bindTriangle() { grlib::CGLibCtlVertex::setVertex(unknown688); }
+void DrShdDataList::bindTriangle() { grlib::CGLibCtlVertex::setVertex(unknown638[2]); }
 
-void DrShdDataList::bindTriangleTex() { grlib::CGLibCtlVertex::setVertex(unknown6b0); }
+void DrShdDataList::bindTriangleTex() { grlib::CGLibCtlVertex::setVertex(unknown638[3]); }
 
-void DrShdDataList::bindShdBoxVertex() { grlib::CGLibCtlVertex::setVertex(unknown6d8); }
+void DrShdDataList::bindShdBoxVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[4]); }
 
-void DrShdDataList::bindShdCylinderVertex() { grlib::CGLibCtlVertex::setVertex(unknown728); }
+void DrShdDataList::bindShdCylinderVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[6]); }
 
-void DrShdDataList::bindShdRainDropVertex() { grlib::CGLibCtlVertex::setVertex(unknown778); }
+void DrShdDataList::bindShdRainDropVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[8]); }
 
-void DrShdDataList::bindShdEffVtx() { grlib::CGLibCtlVertex::setVertex(unknown7a0); }
+void DrShdDataList::bindShdEffVtx() { grlib::CGLibCtlVertex::setVertex(unknown638[9]); }
 
-void DrShdDataList::bindShdDepthCheck() { grlib::CGLibCtlVertex::setVertex(unknown7c8); }
+void DrShdDataList::bindShdDepthCheck() { grlib::CGLibCtlVertex::setVertex(unknown638[10]); }
 
-void DrShdDataList::bindPlaneVertex() { grlib::CGLibCtlVertex::setVertex(unknown7f0); }
+void DrShdDataList::bindPlaneVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[11]); }
 
-void DrShdDataList::renderQuads() { unknown818.drawIndex(); }
+void DrShdDataList::renderQuads() { unknown818[0].drawIndex(); }
 
-void DrShdDataList::renderInstQuads(int instanceCount) { unknown818.drawInsIndex(instanceCount); }
+void DrShdDataList::renderInstQuads(int instanceCount) { unknown818[0].drawInsIndex(instanceCount); }
 
-void DrShdDataList::renderTriangle() { unknown840.drawIndex(); }
+void DrShdDataList::renderTriangle() { unknown818[1].drawIndex(); }
 
-void DrShdDataList::renderSphere() { unknown890.drawIndex(); }
+void DrShdDataList::renderSphere() { unknown818[3].drawIndex(); }
 
-void DrShdDataList::renderSpotMdl() { unknown8e0.drawIndex(); }
+void DrShdDataList::renderSpotMdl() { unknown818[5].drawIndex(); }
 
-void DrShdDataList::renderBox() { unknown868.drawIndex(); }
+void DrShdDataList::renderBox() { unknown818[2].drawIndex(); }
 
-void DrShdDataList::renderCylinder() { unknown8b8.drawIndex(); }
+void DrShdDataList::renderCylinder() { unknown818[4].drawIndex(); }
 
-void DrShdDataList::renderRainDrop() { unknown908.drawIndex(); }
+void DrShdDataList::renderRainDrop() { unknown818[6].drawIndex(); }
 
-void DrShdDataList::renderEffVtx(int instanceCount) { unknown930.drawInsIndex(instanceCount); }
+void DrShdDataList::renderEffVtx(int instanceCount) { unknown818[7].drawInsIndex(instanceCount); }
 
 void DrShdDataList::renderPoint(int count) { grlib::CGLibCtlVertex::renderVertex(GRL_PRIMITIVE_POINTS, count); }
 

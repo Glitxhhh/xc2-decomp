@@ -2,20 +2,20 @@
 #include <new>
 #include <stddef.h>
 
+#include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_mem_handle.h"
+#include "grlib/cglib_one_uniform_block.h"
+#include "grlib/cglib_tri_uniform_block.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 #include "types.h"
 
 namespace grlib {
 
-class CGLibDblUniformBlock;
-class CGLibOneUniformBlock;
-class CGLibTriUniformBlock;
-
 template <typename T> class CGLibUniformArray {
 public:
   CGLibUniformArray() : m_items(nullptr), unknown08(0), unknown0c(0), unknown10(0) {}
+  ~CGLibUniformArray() { unknown001(); }
   void setupArray(u32 count);
   T &operator[](u32 index) { return m_items[index]; }
   // Inferred helper: releases the items and frees the array, as setupArray and LayerObjTopDef::~LayerObjTopDef do;

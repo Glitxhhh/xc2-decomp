@@ -12,11 +12,24 @@ struct MdsMatTechnique;
 
 DrShdMdoMan::DrShdMdoMan() : unknown00(nullptr), unknown08(nullptr) {}
 
+DrShdMdoMan::~DrShdMdoMan() {
+  DrShdMdoDecShdObj *obj = unknown00;
+  while (obj != nullptr) {
+    DrShdMdoDecShdObj *next = obj->unknown08;
+    delete obj;
+    obj = next;
+  }
+  unknown00 = nullptr;
+  unknown08 = nullptr;
+}
+
 void DrShdMdoMan::update() {
   for (DrShdMdoDecShdObj *obj = unknown00; obj != nullptr; obj = obj->unknown08) {
     obj->update();
   }
 }
+
+DrShdMdoDecShdObj::~DrShdMdoDecShdObj() { unknown28.release(); }
 
 void DrShdMdoDecShdObj::update() {
   if (unknown20 == nullptr) {

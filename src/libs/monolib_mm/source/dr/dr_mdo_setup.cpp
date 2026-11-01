@@ -196,7 +196,7 @@ void DrMdoSetup::uniformBlock_Mdl(const MdsMatValShaderCate *cate, int paramInde
 }
 
 void DrMdoSetup::uniformBlock_Bone(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex) {
-  m_drMan->unknown80->unknown00->unknown958[0].setStorageBuffer(unknown38->getValGlobalParam(paramIndex));
+  m_drMan->unknown80->unknown00->unknown958.setStorageBuffer(unknown38->getValGlobalParam(paramIndex));
 }
 
 void DrMdoSetup::uniformBlock_OldMdl(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex) {
@@ -213,9 +213,9 @@ void DrMdoSetup::uniformBlock_OldBone(const MdsMatValShaderCate *cate, int param
   DrShdDataList *dataList = m_drMan->unknown80->unknown00;
   u32 index = unknown38->getValGlobalParam(paramIndex);
   if (unknown168 & 0x200) {
-    dataList->unknown958[0].setStorageBuffer(index);
+    dataList->unknown958.setStorageBuffer(index);
   } else {
-    dataList->unknown958[1].setStorageBuffer(index);
+    dataList->unknown980.setStorageBuffer(index);
   }
 }
 

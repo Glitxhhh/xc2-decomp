@@ -1,13 +1,10 @@
 #pragma once
 #include <stddef.h>
 
+#include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_depth_target.h"
 #include "grlib/cglib_uniform_array.h"
 #include "types.h"
-
-namespace grlib {
-class CGLibDblUniformBlock;
-} // namespace grlib
 
 namespace ml {
 class DrPixlMan;
