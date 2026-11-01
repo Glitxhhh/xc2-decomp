@@ -10,6 +10,7 @@
 #include "anm/anm_util.h"
 #include "framework/anim/anim_manager.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/gf_component.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 
@@ -18,7 +19,20 @@ class Binding;
 } // namespace anm
 
 namespace gf {
-struct MsgDebugActivateComponentWindow;
+
+bool GfComAsm::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
+  if (message.unknown00 == MSG_OBJECT_SET_ASM_PLAYBACK_SPEED) {
+    procMsgObjectSetAsmPlaybackSpeed(sender, static_cast<MsgObjectSetAsmPlaybackSpeed &>(message));
+    return true;
+  }
+
+  if (message.unknown00 == MSG_DEBUG_ACTIVATE_COMPONENT_WINDOW) {
+    procMsgActivateComponentDebugWindow(sender, static_cast<MsgDebugActivateComponentWindow &>(message));
+    return true;
+  }
+
+  return false;
+}
 
 void GfComAsm::procMsgObjectSetAsmPlaybackSpeed(fw::MessageObject *sender, MsgObjectSetAsmPlaybackSpeed &message) { setSpeed(message.unknown08, message.unknown0c); }
 

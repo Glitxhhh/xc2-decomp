@@ -1691,6 +1691,17 @@ const char *GfAssetSetupGimmick::getEfbFile(GfAssetType type) {
   return nullptr;
 }
 
+const char *GfAssetSetupGimmick::getStpFile(GfAssetType type) {
+  if (getAssetType() == type) {
+    const char *motion = reinterpret_cast<const char *>(unknown18->getValCheck("Motion", unknown08, BDAT_TYPE_STRING));
+    if (motion == nullptr || *motion == '\0') {
+      return nullptr;
+    }
+    return motion;
+  }
+  return nullptr;
+}
+
 const char *GfAssetSetupGimmick::getPath() const { return "/model/"; }
 
 GfAssetSetupMapObj::GfAssetSetupMapObj() {}

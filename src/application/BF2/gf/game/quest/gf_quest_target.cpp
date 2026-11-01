@@ -28,97 +28,6 @@ constexpr u16 TARGET_CACHE_LIFE_FRAMES = 300;
 // Inferred role: frames an empty quest target cache waits before it takes the progress quest again; original constant name unknown.
 constexpr u8 TARGET_CACHE_REFRESH_FRAMES = 31;
 
-// Inferred role: target matched against the quest tasks by the GfQuestTarget::getIconType* functions; original type name unknown.
-struct unknown001 {
-  unknown001() : unknown00(INVALID_HANDLE), unknown08(0), unknown0c(), unknown10(0), unknown14(false), unknown18(0), unknown1c(0), unknown20(0), unknown24(0), unknown28(gmk::GMK_TYPE_INVALID) {}
-
-  // Inferred helper: sets a reach place target; original name unknown.
-  void unknown008(u32 category, u32 placeId, QuestID quest, u32 mapId, bool isCheckCurrent) {
-    unknown18 = 2;
-    unknown08 = placeId;
-    unknown0c = quest;
-    unknown10 = mapId;
-    unknown20 = category;
-    unknown14 = isCheckCurrent;
-  }
-
-  // Inferred helper: sets a collect target; original name unknown.
-  void unknown009(u32 type, u32 id, QuestID quest, u32 mapId, bool isCheckCurrent) {
-    unknown18 = 1;
-    unknown08 = id;
-    unknown0c = quest;
-    unknown10 = mapId;
-    unknown1c = type;
-    unknown14 = isCheckCurrent;
-  }
-
-  // Inferred helper: sets a battle target; original name unknown.
-  void unknown010(u32 type, u32 id, QuestID quest, GF_OBJ_HANDLE *handle, bool isCheckCurrent) {
-    unknown18 = 3;
-    unknown24 = type;
-    unknown08 = id;
-    unknown0c = quest;
-    unknown00 = handle;
-    unknown14 = isCheckCurrent;
-  }
-
-  // Inferred helper: sets a talk target; original name unknown.
-  void unknown011(GF_OBJ_HANDLE *handle, u32 npcId, QuestID quest, u32 mapId, bool isCheckCurrent) {
-    unknown18 = 4;
-    unknown08 = npcId;
-    unknown0c = quest;
-    unknown10 = mapId;
-    unknown00 = handle;
-    unknown14 = isCheckCurrent;
-  }
-
-  // Inferred helper: sets a gimmick target when the object is bound to a gimmick; original name unknown.
-  void unknown012(GF_OBJ_HANDLE *handle, QuestID quest, u32 mapId, bool isCheckCurrent) {
-    gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
-    if (gmkInst != nullptr) {
-      unknown18 = 5;
-      unknown08 = gmkInst->unknown20.unknown18;
-      unknown0c = quest;
-      unknown10 = mapId;
-      unknown00 = handle;
-      unknown28 = gmkInst->getGmkType();
-      unknown14 = isCheckCurrent;
-    }
-  }
-
-  // Inferred helper: sets a field object target, collected as an item; original name unknown.
-  void unknown013(GF_OBJ_HANDLE *handle, QuestID quest, bool isCheckCurrent) {
-    gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
-    unknown18 = 1;
-    unknown08 = gmkInst->unknown20.unknown10->id;
-    unknown0c = quest;
-    unknown00 = handle;
-    unknown14 = isCheckCurrent;
-  }
-
-  GF_OBJ_HANDLE *unknown00; // Inferred role: object; original member name unknown.
-  u32 unknown08;            // Inferred role: id; original member name unknown.
-  QuestID unknown0c;        // Inferred role: quest; original member name unknown.
-  u32 unknown10;            // Inferred role: map id; original member name unknown.
-  bool unknown14;           // Inferred role: compare with the current quests; original member name unknown.
-  u32 unknown18;            // Inferred role: target type (1 collect, 2 reach, 3 battle, 4 talk, 5 gimmick); original member name unknown.
-  u32 unknown1c;            // Inferred role: collect type; original member name unknown.
-  u32 unknown20;            // Inferred role: reach category; original member name unknown.
-  u32 unknown24;            // Inferred role: battle type; original member name unknown.
-  gmk::GmkType unknown28;   // Inferred role: gimmick type; original member name unknown.
-};
-
-static_assert(offsetof(unknown001, unknown08) == 0x08, "");
-static_assert(offsetof(unknown001, unknown0c) == 0x0c, "");
-static_assert(offsetof(unknown001, unknown10) == 0x10, "");
-static_assert(offsetof(unknown001, unknown14) == 0x14, "");
-static_assert(offsetof(unknown001, unknown18) == 0x18, "");
-static_assert(offsetof(unknown001, unknown1c) == 0x1c, "");
-static_assert(offsetof(unknown001, unknown20) == 0x20, "");
-static_assert(offsetof(unknown001, unknown24) == 0x24, "");
-static_assert(offsetof(unknown001, unknown28) == 0x28, "");
-static_assert(sizeof(unknown001) == 0x30, "");
-
 // Inferred role: battle task data; original type name unknown.
 struct unknown002 {
   unknown002(u32 battle) {
@@ -142,7 +51,7 @@ struct unknown002 {
 };
 
 // Inferred role: collects the uncompleted tasks of the target quest matching the target type; original name unknown.
-bool unknown003(mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> &tasks, const unknown001 &target) {
+bool unknown003(mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> &tasks, const TargetInfo &target) {
   for (u32 taskIndex = 0; taskIndex < QUEST_TASK_COUNT; taskIndex++) {
     QuestTaskParam param(target.unknown0c, taskIndex, TASK_STATE_NONE);
     if (param.unknown10 == 0) {
@@ -183,7 +92,7 @@ bool unknown003(mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> &tasks, c
 }
 
 // Inferred role: icon type of a matched target quest (1 scenario, 3 current quest); original name unknown.
-int unknown004(const unknown001 &target) {
+int unknown004(const TargetInfo &target) {
   if (GfDataQuest::getQuestCategory(target.unknown0c) == QTYPE_MAIN) {
     return 1;
   }
@@ -198,14 +107,14 @@ int unknown004(const unknown001 &target) {
 }
 
 // Inferred role: icon type of a collect task for the target; original name unknown.
-int unknown005(u32 collect, const unknown001 &target) {
+int unknown005(u32 collect, const TargetInfo &target) {
   QuestListAcc *questListAcc = QuestListAcc::get();
   if (u32 tresure = questListAcc->getCollectTresureID(collect)) {
-    if (target.unknown1c == 1 && target.unknown08 == tresure) {
+    if (target.unknown1c == TargetInfo::COLLECT_CATEGORY_UNKNOWN_1 && target.unknown08 == tresure) {
       return unknown004(target);
     }
   } else if (u32 enemy = questListAcc->getCollectEnemyID(collect)) {
-    if (target.unknown1c == 3 && target.unknown08 == enemy) {
+    if (target.unknown1c == TargetInfo::COLLECT_CATEGORY_UNKNOWN_3 && target.unknown08 == enemy) {
       return unknown004(target);
     }
   } else if (u32 npc = questListAcc->getCollectNpcID(collect)) {
@@ -213,7 +122,7 @@ int unknown005(u32 collect, const unknown001 &target) {
       return unknown004(target);
     }
   } else if (u32 item = questListAcc->getCollectItemID(collect)) {
-    if (target.unknown1c != 3 && item == target.unknown08) {
+    if (target.unknown1c != TargetInfo::COLLECT_CATEGORY_UNKNOWN_3 && item == target.unknown08) {
       return unknown004(target);
     }
   }
@@ -221,7 +130,7 @@ int unknown005(u32 collect, const unknown001 &target) {
 }
 
 // Inferred role: icon type of a condition task for the target; original name unknown.
-int unknown014(u32 condition, const unknown001 &target) {
+int unknown014(u32 condition, const TargetInfo &target) {
   QuestListAcc *questListAcc = QuestListAcc::get();
   u32 mapId = questListAcc->getConditionMapID(condition);
   if (mapId != 0 && mapId != target.unknown10) {
@@ -243,7 +152,7 @@ int unknown014(u32 condition, const unknown001 &target) {
 }
 
 // Inferred role: icon type of a talk task for the target (2 when the quest can be ordered); original name unknown.
-int unknown015(u32 talk, const unknown001 &target) {
+int unknown015(u32 talk, const TargetInfo &target) {
   QuestListAcc *questListAcc = QuestListAcc::get();
   if (questListAcc->getTalkMapID(talk) == target.unknown10 && questListAcc->getTalkNpcID(talk) == target.unknown08) {
     QSTATE state = GfQuestInfo::getState(target.unknown0c);
@@ -266,7 +175,7 @@ int unknown015(u32 talk, const unknown001 &target) {
 }
 
 // Inferred role: icon type of a reach task for the target, per reach category; original name unknown.
-int unknown016(u32 reach, const unknown001 &target) {
+int unknown016(u32 reach, const TargetInfo &target) {
   if (target.unknown20 == 0) {
     return 0;
   }
@@ -297,7 +206,7 @@ int unknown016(u32 reach, const unknown001 &target) {
 }
 
 // Inferred role: icon type of a battle task for the target, per battle type (enemy, group, species); original name unknown.
-int unknown017(u32 battle, const unknown001 &target) {
+int unknown017(u32 battle, const TargetInfo &target) {
   unknown002 data(battle);
   u32 battleType = 1;
   if (data.unknown0c != 0) {
@@ -346,7 +255,7 @@ int unknown017(u32 battle, const unknown001 &target) {
 }
 
 // Inferred role: icon type of a gimmick task for the target, per gimmick type; original name unknown.
-int unknown018(u32 gimmick, const unknown001 &target) {
+int unknown018(u32 gimmick, const TargetInfo &target) {
   QuestListAcc *questListAcc = QuestListAcc::get();
   if (questListAcc->getGimmickMapID(gimmick) != target.unknown10) {
     return 0;
@@ -407,7 +316,7 @@ int unknown019(GF_OBJ_HANDLE *handle, QuestID quest) {
 }
 
 // Inferred role: icon type of a talk target; original name unknown.
-int unknown006(const unknown001 &target) {
+int unknown006(const TargetInfo &target) {
   mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> tasks;
   if (!unknown003(tasks, target)) {
     return 0;
@@ -472,6 +381,37 @@ int unknown007(GF_OBJ_HANDLE *handle, QuestID quest) {
 }
 
 } // namespace
+
+void TargetInfo::setupForFieldObj(QuestID quest, GF_OBJ_HANDLE *handle, bool isCheckCurrent) {
+  gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
+  unknown18 = 1;
+  unknown08 = gmkInst->unknown20.unknown10->id;
+  unknown0c = quest;
+  unknown00 = handle;
+  unknown14 = isCheckCurrent;
+}
+
+void TargetInfo::setupForGimmick(QuestID quest, u32 mapId, GF_OBJ_HANDLE *handle, bool isCheckCurrent) {
+  gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
+  if (gmkInst != nullptr) {
+    unknown18 = 5;
+    unknown08 = gmkInst->unknown20.unknown18;
+    unknown0c = quest;
+    unknown10 = mapId;
+    unknown00 = handle;
+    unknown28 = gmkInst->getGmkType();
+    unknown14 = isCheckCurrent;
+  }
+}
+
+void TargetInfo::setupForCollect(QuestID quest, COLLECT_CATEGORY category, u32 id, u32 mapId, bool isCheckCurrent) {
+  unknown18 = 1;
+  unknown08 = id;
+  unknown0c = quest;
+  unknown10 = mapId;
+  unknown1c = category;
+  unknown14 = isCheckCurrent;
+}
 
 GfQuestTarget::GfQuestTarget() { GfQuestManager::addEvent(this); }
 
@@ -538,7 +478,7 @@ void GfQuestTarget::entryTargetCache(GF_OBJ_HANDLE *handle, QuestID quest) {
 }
 
 int GfQuestTarget::getIconTypeReachPlace(u32 category, u32 placeId, QuestID quest, u32 mapId, bool isCheckCurrent) {
-  unknown001 target;
+  TargetInfo target;
   if (mapId == 0) {
     mapId = GfGameManager::getMapID();
   }
@@ -556,11 +496,11 @@ int GfQuestTarget::getIconTypeReachPlace(u32 category, u32 placeId, QuestID ques
 }
 
 int GfQuestTarget::getIconTypeCollect(u32 type, u32 id, QuestID quest, u32 mapId, bool isCheckCurrent) {
-  unknown001 target;
+  TargetInfo target;
   if (mapId == 0) {
     mapId = GfGameManager::getMapID();
   }
-  target.unknown009(type, id, quest, mapId, isCheckCurrent);
+  target.setupForCollect(quest, static_cast<TargetInfo::COLLECT_CATEGORY>(type), id, mapId, isCheckCurrent);
   mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> tasks;
   if (unknown003(tasks, target)) {
     for (const QuestTaskParam &task : tasks) {
@@ -574,7 +514,7 @@ int GfQuestTarget::getIconTypeCollect(u32 type, u32 id, QuestID quest, u32 mapId
 }
 
 int GfQuestTarget::getIconTypeBattle(u32 type, u32 id, QuestID quest, GF_OBJ_HANDLE *handle, bool isCheckCurrent) {
-  unknown001 target;
+  TargetInfo target;
   target.unknown010(type, id, quest, handle, isCheckCurrent);
   mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> tasks;
   if (unknown003(tasks, target)) {
@@ -588,7 +528,7 @@ int GfQuestTarget::getIconTypeBattle(u32 type, u32 id, QuestID quest, GF_OBJ_HAN
         break;
       }
       case TASK_TYPE_COLLECT: {
-        int iconType = getIconTypeCollect(3, target.unknown08, task.unknown04, 0, target.unknown14);
+        int iconType = getIconTypeCollect(TargetInfo::COLLECT_CATEGORY_UNKNOWN_3, target.unknown08, task.unknown04, 0, target.unknown14);
         if (iconType != 0) {
           return iconType;
         }
@@ -601,7 +541,7 @@ int GfQuestTarget::getIconTypeBattle(u32 type, u32 id, QuestID quest, GF_OBJ_HAN
 }
 
 int GfQuestTarget::getIconTypeTalk(u32 npcId, QuestID quest, u32 mapId, bool isCheckCurrent) {
-  unknown001 target;
+  TargetInfo target;
   if (mapId == 0) {
     mapId = GfGameManager::getMapID();
   }
@@ -611,7 +551,7 @@ int GfQuestTarget::getIconTypeTalk(u32 npcId, QuestID quest, u32 mapId, bool isC
 
 int GfQuestTarget::getIconTypeTalk(GF_OBJ_HANDLE *handle, QuestID quest, u32 mapId, bool isCheckCurrent) {
   DataParamAcc paramAcc(handle);
-  unknown001 target;
+  TargetInfo target;
   u32 npcId = paramAcc.getValidBdatId();
   if (mapId == 0) {
     mapId = GfGameManager::getMapID();
@@ -621,12 +561,12 @@ int GfQuestTarget::getIconTypeTalk(GF_OBJ_HANDLE *handle, QuestID quest, u32 map
 }
 
 int GfQuestTarget::getIconTypeGimmick(GF_OBJ_HANDLE *handle, QuestID quest, u32 mapId, bool isCheckCurrent) {
-  unknown001 target;
+  TargetInfo target;
   u32 currentMapId = mapId;
   if (currentMapId == 0) {
     currentMapId = GfGameManager::getMapID();
   }
-  target.unknown012(handle, quest, currentMapId, isCheckCurrent);
+  target.setupForGimmick(quest, currentMapId, handle, isCheckCurrent);
   mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> tasks;
   if (unknown003(tasks, target)) {
     for (const QuestTaskParam &task : tasks) {
@@ -641,16 +581,16 @@ int GfQuestTarget::getIconTypeGimmick(GF_OBJ_HANDLE *handle, QuestID quest, u32 
         break;
       case TASK_TYPE_COLLECT: {
         QuestListAcc *questListAcc = QuestListAcc::get();
-        u32 collectType;
+        TargetInfo::COLLECT_CATEGORY collectCategory;
         if (questListAcc->getCollectTresureID(task.unknown14) != 0) {
-          collectType = 1;
+          collectCategory = TargetInfo::COLLECT_CATEGORY_UNKNOWN_1;
         } else if (questListAcc->getCollectEnemyID(task.unknown14) != 0) {
-          collectType = 3;
+          collectCategory = TargetInfo::COLLECT_CATEGORY_UNKNOWN_3;
         } else {
-          collectType = 4;
+          collectCategory = TargetInfo::COLLECT_CATEGORY_UNKNOWN_4;
         }
-        unknown001 collect;
-        collect.unknown009(collectType, target.unknown08, quest, mapId, isCheckCurrent);
+        TargetInfo collect;
+        collect.setupForCollect(quest, collectCategory, target.unknown08, mapId, isCheckCurrent);
         int iconType = unknown005(task.unknown14, collect);
         if (iconType != 0) {
           return iconType;
@@ -664,8 +604,8 @@ int GfQuestTarget::getIconTypeGimmick(GF_OBJ_HANDLE *handle, QuestID quest, u32 
 }
 
 int GfQuestTarget::getIconTypeFieldObj(GF_OBJ_HANDLE *handle, QuestID quest, u32, bool isCheckCurrent) {
-  unknown001 target;
-  target.unknown013(handle, quest, isCheckCurrent);
+  TargetInfo target;
+  target.setupForFieldObj(quest, handle, isCheckCurrent);
   mm::mtl::FixedVector<QuestTaskParam, QUEST_TASK_COUNT> tasks;
   if (unknown003(tasks, target)) {
     for (const QuestTaskParam &task : tasks) {

@@ -3,6 +3,7 @@
 #include "fw/fw_camera.h"
 #include "gf/data/gf_data_event.h"
 #include "gf/event/gf_event.h"
+#include "gf/field/gf_field_tbox.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_scene.h"
@@ -182,6 +183,27 @@ bool GfPlayFactory::createCollect(GF_OBJ_HANDLE *handle) {
   GfSequentialPlay::addWaitBattleEnd(0);
   GfSequentialPlay::pushPause(PAUSE_BIT_FIELD_TIME);
   GfSequentialPlay::addCollect(handle);
+  GfSequentialPlay::popPause();
+  GfSequentialPlay::popState();
+  GfSequentialPlay::play();
+  return true;
+}
+
+bool GfPlayFactory::createFieldTbox(GF_OBJ_HANDLE *handle) {
+  if (GfFieldTbox::get()->unknown28) {
+    return false;
+  }
+  if (GfGameManager::isLeaveGameForDebug()) {
+    return false;
+  }
+  if (GfSequentialPlay::isInnerState(GF_STATE_MAPJUMP_SKIP_TRAVEL)) {
+    return false;
+  }
+  GfSequentialPlay::beginCommand(GfSequentialPlay::TYPE_NORMAL);
+  GfSequentialPlay::pushState(GF_STATE_FIELD_TBOX);
+  GfSequentialPlay::addWaitBattleEnd(0);
+  GfSequentialPlay::pushPause(PAUSE_BIT_FIELD_TIME);
+  GfSequentialPlay::addFieldTbox(handle);
   GfSequentialPlay::popPause();
   GfSequentialPlay::popState();
   GfSequentialPlay::play();
@@ -805,6 +827,21 @@ void GfPlayFactory::createMoverSwitch() {
     GfSequentialPlay::popState();
     GfSequentialPlay::play();
   }
+}
+
+bool GfPlayFactory::createMenuObjCommonText(GfMenuObjCommonText::OpenKizunaParam &param) {
+  if ((GfGameManager::isScenarioGame() || GfManager::isExecModeDebug()) && !GfGameManager::isLeaveGameForDebug()) {
+    GfSequentialPlay::beginCommand(GfSequentialPlay::TYPE_SEQUENCE);
+    GfSequentialPlay::pushPause(PAUSE_BITS_SYSTEM_MENU);
+    GfSequentialPlay::pushState(GF_STATE_MENU);
+    GfSequentialPlay::addEventFade();
+    GfSequentialPlay::addMenuObjCommonText(param);
+    GfSequentialPlay::popState();
+    GfSequentialPlay::popPause();
+    GfSequentialPlay::play();
+    return true;
+  }
+  return false;
 }
 
 void GfPlayFactory::createHoodHomuraBattou() {
