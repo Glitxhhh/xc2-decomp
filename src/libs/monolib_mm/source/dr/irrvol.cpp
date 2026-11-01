@@ -221,3 +221,7 @@ void DrIrrVolResMan::setupHeader(EventFileTh *event) {
 
 } // namespace irrvol
 } // namespace ml
+
+// clang-format off
+#include "dr_irr_vol_man.cpp"
+// clang-format on

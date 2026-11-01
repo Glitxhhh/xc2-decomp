@@ -1,4 +1,5 @@
 #pragma once
+#include "dr/dr_irr_vol_allocator.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -14,40 +15,16 @@ class CGLibTextureBuffer;
 
 namespace ml {
 
+class DrMan;
+
 namespace irrvol {
 class DrIrrVolCascade;
+struct SGlobalInfo;
 } // namespace irrvol
-
-// Inferred role: irr vol setting; original type name unknown.
-struct unknown036 {
-  // Inferred role: sector area; original type name unknown.
-  struct unknown001 {
-    f32 unknown00; // Inferred role: min x; original member name unknown.
-    u8 _04[0x08 - 0x04];
-    f32 unknown08; // Inferred role: min z; original member name unknown.
-    u8 _0c[0x10 - 0x0c];
-    f32 unknown10; // Inferred role: max x; original member name unknown.
-    u8 _14[0x18 - 0x14];
-    f32 unknown18; // Inferred role: max z; original member name unknown.
-    u8 _1c[0x24 - 0x1c];
-    f32 unknown24; // Inferred role: sector size; original member name unknown.
-    u8 _28[0x30 - 0x28];
-  };
-
-  u8 _00[0x20 - 0x00];
-  u32 unknown20; // Inferred role: cascade max; original member name unknown.
-  u8 _24[0x28 - 0x24];
-  unknown001 *unknown28; // Inferred role: sector areas; original member name unknown.
-};
-
-static_assert(sizeof(unknown036::unknown001) == 0x30, "");
-static_assert(offsetof(unknown036::unknown001, unknown24) == 0x24, "");
-static_assert(offsetof(unknown036, unknown28) == 0x28, "");
-
-static_assert(offsetof(unknown036, unknown20) == 0x20, "");
 
 class DrIrrVolMan {
 public:
+  DrIrrVolMan(DrMan *drMan);
   ~DrIrrVolMan();
   void release();
   void create(void *data, const char *name);
@@ -65,31 +42,39 @@ public:
   const mm::Vec3 &getIrrVolEyeOffset(u32 cascade) const;
   const mm::Vec3 &getIrrVolUVOffset(u32 cascade) const;
 
-  u8 _000[0x008 - 0x000];
-  unknown036 *unknown08;          // Inferred role: setting; original member name unknown.
+  DrMan *unknown00;               // Inferred role: dr man; original member name unknown.
+  irrvol::SGlobalInfo *unknown08; // Inferred role: setting; original member name unknown.
   mm::mtl::FixStr<128> unknown10; // Inferred role: resource name; original member name unknown.
   u8 _094[0x098 - 0x094];
-  irrvol::DrIrrVolCascade **unknown98; // Inferred role: cascades; original member name unknown.
-  u8 _0a0[0x0b4 - 0x0a0];
-  u32 unknown0b4; // Inferred role: double buffer flag; original member name unknown.
+  irrvol::DrIrrVolCascade **unknown98;       // Inferred role: cascades; original member name unknown.
+  irrvol::MemHandlebaseAllocator unknown0a0; // Inferred role: allocator; original member name unknown.
+  f32 unknown0b0;                            // Inferred role: update position along z; original member name unknown.
+  u32 unknown0b4;                            // Inferred role: double buffer flag; original member name unknown.
   u8 _0b8[0x190 - 0x0b8];
   mm::Vec3 unknown190; // Inferred role: request center pos; original member name unknown.
   mm::Vec3 unknown1a0; // Inferred role: center pos; original member name unknown.
-  u32 unknown1b0;      // Inferred role: request value; original member name unknown.
-  u32 unknown1b4;      // Inferred role: value; original member name unknown.
-  u32 unknown1b8;      // Inferred role: request value; original member name unknown.
-  u32 unknown1bc;      // Inferred role: value; original member name unknown.
+  f32 unknown1b0;      // Inferred role: request scale; original member name unknown.
+  f32 unknown1b4;      // Inferred role: scale; original member name unknown.
+  f32 unknown1b8;      // Inferred role: request offset; original member name unknown.
+  f32 unknown1bc;      // Inferred role: offset; original member name unknown.
   u32 unknown1c0;      // Inferred role: request cascade num; original member name unknown.
   u32 unknown1c4;      // Inferred role: cascade num; original member name unknown.
+  bool unknown1c8;     // Inferred role: flag; original member name unknown.
+  bool unknown1c9;     // Inferred role: debug draw flag; original member name unknown.
 };
 
+static_assert(offsetof(DrIrrVolMan, unknown00) == 0x000, "");
 static_assert(offsetof(DrIrrVolMan, unknown08) == 0x008, "");
 static_assert(offsetof(DrIrrVolMan, unknown98) == 0x098, "");
+static_assert(offsetof(DrIrrVolMan, unknown0a0) == 0x0a0, "");
+static_assert(offsetof(DrIrrVolMan, unknown0b0) == 0x0b0, "");
 static_assert(offsetof(DrIrrVolMan, unknown0b4) == 0x0b4, "");
 static_assert(offsetof(DrIrrVolMan, unknown190) == 0x190, "");
 static_assert(offsetof(DrIrrVolMan, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(DrIrrVolMan, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(DrIrrVolMan, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(DrIrrVolMan, unknown1c4) == 0x1c4, "");
+static_assert(offsetof(DrIrrVolMan, unknown1c8) == 0x1c8, "");
+static_assert(offsetof(DrIrrVolMan, unknown1c9) == 0x1c9, "");
 
 } // namespace ml

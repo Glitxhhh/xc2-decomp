@@ -2,10 +2,26 @@
 
 #include "bin/bin_binary_resolver.h"
 #include "dr/dr_irr_vol_cascade.h"
+#include "dr/dr_irr_vol_sector.h"
 #include "grlib/cglib_texture_buffer.h"
+#include "ml/ml_mem.h"
 #include "mm_math/mm_aabb.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
+
+DrIrrVolMan::DrIrrVolMan(DrMan *drMan)
+    : unknown00(drMan), unknown08(nullptr), unknown98(nullptr), unknown0a0(MlMem::getProductMem()), unknown0b0(0.0f), unknown0b4(0), unknown1c8(true), unknown1c9(false) {
+  mm::Vec3 pos = mm::Vec3::zero;
+  unknown190 = pos;
+  unknown1b0 = 1.0f;
+  unknown1b8 = 0.0f;
+  unknown1c0 = 2;
+  unknown1a0 = unknown190;
+  unknown1b4 = unknown1b0;
+  unknown1bc = unknown1b8;
+  unknown1c4 = unknown1c0;
+}
 
 DrIrrVolMan::~DrIrrVolMan() { release(); }
 
@@ -27,7 +43,7 @@ void DrIrrVolMan::release() {
 }
 
 void DrIrrVolMan::create(void *data, const char *name) {
-  unknown08 = static_cast<unknown036 *>(bin::BinaryResolver::resolve(data));
+  unknown08 = static_cast<irrvol::SGlobalInfo *>(bin::BinaryResolver::resolve(data));
   unknown10 = name;
 }
 
@@ -44,7 +60,7 @@ void DrIrrVolMan::getVolumeArea(u32 cascade, mm::Aabb &area) const {
 }
 
 int DrIrrVolMan::getSectorMax(u32 index) const {
-  const unknown036::unknown001 &area = unknown08->unknown28[index];
+  const irrvol::SCascadeInfo &area = unknown08->unknown28[index];
   f32 width = area.unknown10 - area.unknown00;
   f32 depth = area.unknown18 - area.unknown08;
   return static_cast<u32>(width / area.unknown24 + 0.5f) * static_cast<u32>(depth / area.unknown24 + 0.5f);
