@@ -12,51 +12,77 @@ class DrEnvColiObj;
 class DrMan;
 
 struct DrEnvColiResult {
-  s32 unknown00; // Inferred role: bgm id; original member name unknown.
-  s32 unknown04; // Inferred role: layer id; original member name unknown.
-  s32 unknown08; // Inferred role: reverb id; original member name unknown.
-  s32 unknown0c; // Inferred role: cave id; original member name unknown.
-  s32 unknown10; // Inferred role: area id; original member name unknown.
-  u8 _14[0x18 - 0x14];
-  s32 unknown18; // Inferred role: wind id; original member name unknown.
-  u8 : 2;
-  u8 unknown1c_2 : 1; // Inferred role: room; original member name unknown.
+  DrEnvColiResult() { unknown001(); }
+
+  // Inferred role: resets the result; original name unknown.
+  void unknown001() {
+    unknown00 = -1;
+    unknown24 = 0;
+    unknown04 = -1;
+    unknown08 = -1;
+    unknown0c = 0;
+    unknown10 = 0;
+    unknown14 = 0;
+    unknown18 = 0;
+    unknown1c = 0;
+    unknown20 = 0;
+  }
+
+  s32 unknown00; // Inferred role: priority; original member name unknown.
+  s32 unknown04; // Inferred role: sub priority; original member name unknown.
+  s32 unknown08; // Inferred role: bgm id; original member name unknown.
+  s32 unknown0c; // Inferred role: layer id; original member name unknown.
+  s32 unknown10; // Inferred role: reverb id; original member name unknown.
+  s32 unknown14; // Inferred role: cave id; original member name unknown.
+  s32 unknown18; // Inferred role: area id; original member name unknown.
+  s32 unknown1c; // Inferred role: post parameter index; original member name unknown.
+  s32 unknown20; // Inferred role: wind id; original member name unknown.
+  u32 unknown24; // Inferred role: flags (bit 2: room); original member name unknown.
 };
 
-static_assert(offsetof(DrEnvColiResult, unknown18) == 0x18, "");
+static_assert(offsetof(DrEnvColiResult, unknown08) == 0x08, "");
+static_assert(offsetof(DrEnvColiResult, unknown1c) == 0x1c, "");
+static_assert(offsetof(DrEnvColiResult, unknown24) == 0x24, "");
+static_assert(sizeof(DrEnvColiResult) == 0x28, "");
 
 class DrEnvColiMan {
 public:
   DrEnvColiObj *createObj(const void *data);
+  void update();
   bool testEnvColi(DrEnvColiResult *result, const mm::Vec3 &position, f32 radius);
   void clear();
   void updateTime(bool isReset);
   void updateCloudFade(bool isReset, bool isForce);
   void updateRainDropFade(bool isReset);
 
-  DrEnvColiObj *unknown00[2]; // Inferred role: object list (first and last); original member name unknown.
-  DrEnvColiObj *unknown10[2]; // Inferred role: object list (first and last); original member name unknown.
-  DrEnvColiObj *unknown20[2]; // Inferred role: object list (first and last); original member name unknown.
-  DrMan *unknown30;           // Inferred role: dr manager; original member name unknown.
-  u8 _38[0x48 - 0x38];
-  DrEnvColiResult unknown48; // Inferred role: result; original member name unknown.
-  f32 unknown68;             // Inferred role: time; original member name unknown.
-  f32 unknown6c;             // Inferred role: weather fade ratio; original member name unknown.
-  f32 unknown70;             // Inferred role: weather fade frame; original member name unknown.
-  u8 _74[0x78 - 0x74];
-  f32 unknown78; // Inferred role: rain drop fade ratio; original member name unknown.
-  f32 unknown7c; // Inferred role: rain drop fade frame; original member name unknown.
+  DrEnvColiObj *unknown00;       // Inferred role: first object of the list; original member name unknown.
+  DrEnvColiObj *unknown08;       // Inferred role: last object of the list; original member name unknown.
+  DrEnvColiObj *unknown10[2][2]; // Inferred role: stock object list (first and last) per buffer; original member name unknown.
+  DrMan *unknown30;              // Inferred role: dr manager; original member name unknown.
+  DrEnvColiObj *unknown38;       // Inferred role: current object; original member name unknown.
+  DrEnvColiResult unknown40;     // Inferred role: result; original member name unknown.
+  f32 unknown68;                 // Inferred role: time; original member name unknown.
+  f32 unknown6c;                 // Inferred role: weather fade ratio; original member name unknown.
+  f32 unknown70;                 // Inferred role: weather fade frame; original member name unknown.
+  s32 unknown74;                 // Inferred role: weather id; original member name unknown.
+  f32 unknown78;                 // Inferred role: rain drop fade ratio; original member name unknown.
+  f32 unknown7c;                 // Inferred role: rain drop fade frame; original member name unknown.
   u8 _80[0x84 - 0x80];
   f32 unknown84; // Inferred role: cloud fade frame; original member name unknown.
   f32 unknown88; // Inferred role: cloud fade ratio; original member name unknown.
+  s32 unknown8c; // Inferred role: current post parameter index; original member name unknown.
 };
 
+static_assert(offsetof(DrEnvColiMan, unknown08) == 0x08, "");
 static_assert(offsetof(DrEnvColiMan, unknown10) == 0x10, "");
-static_assert(offsetof(DrEnvColiMan, unknown20) == 0x20, "");
 static_assert(offsetof(DrEnvColiMan, unknown30) == 0x30, "");
-static_assert(offsetof(DrEnvColiMan, unknown48) == 0x48, "");
+static_assert(offsetof(DrEnvColiMan, unknown38) == 0x38, "");
+static_assert(offsetof(DrEnvColiMan, unknown40) == 0x40, "");
 static_assert(offsetof(DrEnvColiMan, unknown68) == 0x68, "");
+static_assert(offsetof(DrEnvColiMan, unknown74) == 0x74, "");
 static_assert(offsetof(DrEnvColiMan, unknown78) == 0x78, "");
 static_assert(offsetof(DrEnvColiMan, unknown84) == 0x84, "");
+static_assert(offsetof(DrEnvColiMan, unknown8c) == 0x8c, "");
+static_assert(sizeof(DrEnvColiMan) == 0x90, "");
 
 } // namespace ml

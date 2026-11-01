@@ -3,10 +3,13 @@
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_view_work.h"
 #include "dr/dr_env_coli_man.h"
+#include "dr/dr_env_coli_parameter.h"
+#include "dr/dr_environment_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -41,7 +44,276 @@ struct unknown004 {
   f32 unknown40[3]; // Inferred role: half extents; original member name unknown.
 };
 
+// Inferred role: env coli data header; original type name unknown.
+struct unknown006 {
+  u8 _00[0x04];
+  s32 unknown04; // Inferred role: post parameter index; original member name unknown.
+  u8 _08[0x18 - 0x08];
+  u32 unknown18; // Inferred role: post parameters offset; original member name unknown.
+};
+
+// Inferred role: post parameters header; original type name unknown.
+struct unknown007 {
+  u8 _00[0x04];
+  u32 unknown04; // Inferred role: post parameter index list offset; original member name unknown.
+  u8 _08[0x0c - 0x08];
+  u32 unknown0c; // Inferred role: post data list offset; original member name unknown.
+};
+
+// Inferred role: post parameter index; original type name unknown.
+struct unknown008 {
+  u8 _00[0x04];
+  u32 unknown04; // Inferred role: first post data index; original member name unknown.
+  s32 unknown08; // Inferred role: post data num; original member name unknown.
+  u8 _0c[0x18 - 0x0c];
+};
+
+// Inferred role: appends an object to the end of a list; original name unknown.
+void unknown009(DrEnvColiObj *&first, DrEnvColiObj *&last, DrEnvColiObj *object) {
+  if (last == nullptr) {
+    first = object;
+    last = object;
+    object->unknown00 = nullptr;
+  } else {
+    last->unknown08 = object;
+    object->unknown00 = last;
+    last = object;
+  }
+  object->unknown08 = nullptr;
+}
+
+// Inferred role: deletes every object of a list; original name unknown.
+void unknown010(DrEnvColiObj *&first, DrEnvColiObj *&last) {
+  DrEnvColiObj *object = first;
+  while (object != nullptr) {
+    DrEnvColiObj *next = object->unknown08;
+    delete object;
+    object = next;
+  }
+  first = nullptr;
+  last = nullptr;
+}
+
 } // namespace
+
+DrEnvColiObj::COLITEST DrEnvColiObj::s_pColiTest[5] = {
+    &DrEnvColiObj::envcoli_box,
+    &DrEnvColiObj::envcoli_sphere,
+    &DrEnvColiObj::envcoli_cylinder,
+    &DrEnvColiObj::envcoli_notrot_box,
+    &DrEnvColiObj::envcoli_notrot_cylinder,
+};
+
+DrEnvColiObj *DrEnvColiMan::createObj(const void *data) {
+  DrEnvColiObj *object = new (unknown30->unknown10) DrEnvColiObj(unknown30, data);
+  unknown009(unknown10[DrMan::s_nDblStockIdx][0], unknown10[DrMan::s_nDblStockIdx][1], object);
+  return object;
+}
+
+DrEnvColiObj::DrEnvColiObj(DrMan *man, const void *data) : unknown00(nullptr), unknown08(nullptr), unknown10(nullptr), unknown28(nullptr), unknown30(man), unknown38(0) { setDataAdd(data); }
+
+void DrEnvColiMan::update() {
+  bool isChanged = false;
+  DrEnvColiObj *object = unknown10[DrMan::s_nDblIdx][0];
+  while (object != nullptr) {
+    DrEnvColiObj *next = object->unknown08;
+    unknown009(unknown00, unknown08, object);
+    object = next;
+    isChanged = true;
+  }
+  unknown10[DrMan::s_nDblIdx][0] = nullptr;
+  unknown10[DrMan::s_nDblIdx][1] = nullptr;
+  object = unknown00;
+  while (object != nullptr) {
+    DrEnvColiObj *next = object->unknown08;
+    if (object->isDeleteCall()) {
+      if (object->unknown00 == nullptr) {
+        if (object->unknown08 == nullptr) {
+          unknown00 = nullptr;
+          unknown08 = nullptr;
+        } else {
+          unknown00 = object->unknown08;
+          unknown00->unknown00 = nullptr;
+        }
+      } else if (object->unknown08 == nullptr) {
+        unknown08 = object->unknown00;
+        unknown08->unknown08 = nullptr;
+      } else {
+        object->unknown00->unknown08 = object->unknown08;
+        object->unknown08->unknown00 = object->unknown00;
+      }
+      object->unknown00 = nullptr;
+      object->unknown08 = nullptr;
+      delete object;
+      isChanged = true;
+    }
+    object = next;
+  }
+  DrPixlPostParm *postParm = unknown30->unknown120[unknown30->unknown1c98];
+  postParm->unknown1104 = postParm->unknown1105[DrMan::s_nDblIdx];
+  postParm->unknown1105[DrMan::s_nDblIdx] = false;
+  if (!unknown30->unknown1d8e) {
+    DrEnvColiObj *selected = unknown00;
+    if (selected != nullptr) {
+      DrEnvColiResult result;
+      mm::Vec3 position(unknown30->unknown580->unknown10->unknown400);
+      DrEnvColiObj *hitObject = nullptr;
+      DrEnvColiObj *next = selected;
+      for (DrEnvColiObj *current = next; current != nullptr; current = next) {
+        next = current->unknown08;
+        if (!current->isDeleteAll() && current->testEnvColi(&result, position, 0.0f)) {
+          hitObject = current;
+        }
+      }
+      if (hitObject != nullptr) {
+        selected = hitObject;
+      }
+      if (unknown38 != selected || unknown8c != result.unknown1c) {
+        unknown70 = unknown30->unknown120[unknown30->unknown1c98]->getWeatherFrame();
+      }
+      DrPixlPostParm *currentParm = unknown30->unknown120[unknown30->unknown1c98];
+      s32 weather = currentParm->unknown1084;
+      bool isReset = unknown74 != weather;
+      updateTime(isReset);
+      updateCloudFade(isReset, isChanged);
+      unknown74 = weather;
+      DrEnvColiParameter parameter(selected, &result, unknown30, this);
+      parameter.calcPostEffectParams(isReset);
+      unknown38 = selected;
+      unknown8c = result.unknown1c;
+      return;
+    }
+    unknown38 = nullptr;
+    unknown8c = -1;
+  }
+  DrEnvColiParameter::updateBloomParams();
+}
+
+DrEnvColiParameter::DrEnvColiParameter(DrEnvColiObj *object, DrEnvColiResult *result, DrMan *man, DrEnvColiMan *coliMan) {
+  unknown10 = result;
+  unknown18 = object;
+  unknown00 = man;
+  unknown08 = coliMan;
+  unknown20 = object->getPostParams();
+  unknown28 = reinterpret_cast<const unknown006 *>(object->unknown10)->unknown04;
+}
+
+DrEnvColiParameter::~DrEnvColiParameter() {}
+
+void DrEnvColiParameter::calcPostEffectParams(bool isReset) {
+  const unknown008 *postIndexList = reinterpret_cast<const unknown008 *>(unknown20 + reinterpret_cast<const unknown007 *>(unknown20)->unknown04);
+  const unknown008 *postIndex = &postIndexList[unknown10->unknown1c];
+  calcParams(postIndex->unknown04, postIndex->unknown08, isReset);
+}
+
+bool DrEnvColiMan::testEnvColi(DrEnvColiResult *result, const mm::Vec3 &position, f32 radius) {
+  if (result == nullptr) {
+    result = &unknown40;
+    result->unknown001();
+  }
+  bool isHit = false;
+  DrEnvColiObj *next = unknown00;
+  for (DrEnvColiObj *object = next; object != nullptr; object = next) {
+    next = object->unknown08;
+    if (!object->isDeleteAll()) {
+      isHit |= object->testEnvColi(result, position, radius);
+    }
+  }
+  return isHit;
+}
+
+bool DrEnvColiObj::testEnvColi(DrEnvColiResult *result, const mm::Vec3 &position, f32 radius) {
+  if (!isPause() && unknown10 != nullptr) {
+    return testTreeColi(result, unknown20, position, radius);
+  }
+  return false;
+}
+
+const u8 *DrEnvColiObj::getPostParams() const { return unknown10 + reinterpret_cast<const unknown006 *>(unknown10)->unknown18; }
+
+bool DrEnvColiObj::testTreeColi(DrEnvColiResult *result, const EnvColiListTreeData *tree, const mm::Vec3 &position, f32 radius) {
+  bool isHit = false;
+  if (!(tree->unknown00[0] + radius < position.x || tree->unknown0c[0] - radius > position.x || tree->unknown00[2] + radius < position.z || tree->unknown0c[2] - radius > position.z ||
+        tree->unknown00[1] + radius < position.y || tree->unknown0c[1] - radius > position.y)) {
+    u32 childCount = tree->unknown20;
+    u32 primCount;
+    if (childCount != 0) {
+      u8 childHit = 0;
+      const u16 *children = reinterpret_cast<const u16 *>(unknown10 + tree->unknown18);
+      for (u32 i = 0; i < childCount; i++) {
+        const EnvColiListTreeData *base = unknown20;
+        childHit |= testTreeColi(result, base + children[i], position, radius) & 1;
+      }
+      primCount = tree->unknown22;
+      isHit = childHit != 0;
+    } else {
+      primCount = tree->unknown22;
+    }
+    if (primCount != 0) {
+      const u16 *primitives = reinterpret_cast<const u16 *>(unknown10 + tree->unknown1c);
+      for (u32 i = 0; i < primCount; i++, primitives++) {
+        const unknown005 *base = unknown18;
+        u16 index = *primitives;
+        const unknown005 *primitive = base + index;
+        if (result->unknown00 > primitive->unknown08 || (result->unknown00 == primitive->unknown08 && result->unknown04 > primitive->unknown0a)) {
+          continue;
+        }
+        u16 gblId = primitive->unknown0c;
+        if (gblId != 0) {
+          u32 *gblTbl = unknown30->unknown1d20;
+          if (gblTbl[gblId >> 5] & (1 << (gblId & 31))) {
+            continue;
+          }
+        }
+        if (!(this->*s_pColiTest[primitive->unknown04])(unknown10 + primitive->unknown00, position, radius, unknown28[index])) {
+          continue;
+        }
+        result->unknown00 = primitive->unknown08;
+        result->unknown04 = primitive->unknown0a;
+        result->unknown24 |= primitive->unknown06;
+        if (primitive->unknown06 & 2) {
+          result->unknown08 = primitive->unknown0e;
+        }
+        result->unknown0c = primitive->unknown10;
+        result->unknown10 = primitive->unknown11;
+        result->unknown14 = primitive->unknown12;
+        result->unknown18 = primitive->unknown14;
+        result->unknown1c = primitive->unknown16;
+        result->unknown20 = 0;
+        DrEnvColiMan *coliMan = unknown30->unknown100[0]->unknown18;
+        const u8 *postParams = getPostParams();
+        const unknown007 *header = reinterpret_cast<const unknown007 *>(postParams);
+        const unknown008 *postIndex = &reinterpret_cast<const unknown008 *>(postParams + header->unknown04)[result->unknown1c];
+        const EnvColiPostData *postData = &reinterpret_cast<const EnvColiPostData *>(postParams + header->unknown0c)[postIndex->unknown04];
+        u32 weatherBit = 1 << coliMan->unknown74;
+        u32 time = static_cast<s32>(coliMan->unknown68 * 1440.0f);
+        const EnvColiPostData *current = nullptr;
+        const EnvColiPostData *latest = nullptr;
+        s32 count = postIndex->unknown08;
+        for (s32 j = 0; j < count; j++, postData++) {
+          if (postData->unknown04 & weatherBit) {
+            if (latest == nullptr) {
+              latest = postData;
+            } else if (latest->unknown10 <= postData->unknown10) {
+              latest = postData;
+            }
+            if (postData->unknown10 < time) {
+              current = postData;
+            }
+          }
+        }
+        if (current != nullptr) {
+          latest = current;
+        }
+        if (latest != nullptr) {
+          result->unknown20 = latest->unknown26;
+        }
+        isHit = true;
+      }
+    }
+  }
+  return isHit;
+}
 
 DrEnvColiObj::DrEnvColiObj(DrMan *man) : unknown00(nullptr), unknown08(nullptr), unknown10(nullptr), unknown28(nullptr), unknown30(man), unknown38(0) {}
 
@@ -53,30 +325,10 @@ DrEnvColiObj::~DrEnvColiObj() {
 }
 
 void DrEnvColiMan::clear() {
-  DrEnvColiObj *object = unknown10[0];
-  while (object != nullptr) {
-    DrEnvColiObj *next = object->unknown08;
-    delete object;
-    object = next;
+  for (s32 i = 0; i < 2; i++) {
+    unknown010(unknown10[i][0], unknown10[i][1]);
   }
-  unknown10[0] = nullptr;
-  unknown10[1] = nullptr;
-  object = unknown20[0];
-  while (object != nullptr) {
-    DrEnvColiObj *next = object->unknown08;
-    delete object;
-    object = next;
-  }
-  unknown20[0] = nullptr;
-  unknown20[1] = nullptr;
-  object = unknown00[0];
-  while (object != nullptr) {
-    DrEnvColiObj *next = object->unknown08;
-    delete object;
-    object = next;
-  }
-  unknown00[0] = nullptr;
-  unknown00[1] = nullptr;
+  unknown010(unknown00, unknown08);
 }
 
 void DrEnvColiMan::updateTime(bool isReset) {

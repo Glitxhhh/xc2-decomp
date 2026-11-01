@@ -14,6 +14,9 @@ class DrEnvColiParameter {
 public:
   DrEnvColiParameter(DrEnvColiObj *object, DrEnvColiResult *result, DrMan *man, DrEnvColiMan *coliMan);
   ~DrEnvColiParameter();
+  static void updateBloomParams();
+  void calcPostEffectParams(bool isReset);
+  void calcParams(u32 index, s32 num, bool isReset);
 
   DrMan *unknown00;           // Inferred role: dr manager; original member name unknown.
   DrEnvColiMan *unknown08;    // Inferred role: env coli manager; original member name unknown.

@@ -274,7 +274,9 @@ public:
   bool unknown1d7b; // Inferred role: mdl dbl pause; original member name unknown.
   u8 _1d7c[0x1d80 - 0x1d7c];
   bool unknown1d80; // Inferred role: clip; original member name unknown.
-  u8 _1d81[0x1d94 - 0x1d81];
+  u8 _1d81[0x1d8e - 0x1d81];
+  bool unknown1d8e; // Inferred role: skips the env coli parameters; original member name unknown.
+  u8 _1d8f[0x1d94 - 0x1d8f];
   FILE_PRIO unknown1d94; // Inferred role: seam map pri mdl; original member name unknown.
   FILE_PRIO unknown1d98; // Inferred role: seam map pri coli; original member name unknown.
   bool unknown1d9c[2];   // Inferred role: all middel tex stm chks; original member name unknown.
@@ -359,6 +361,7 @@ static_assert(offsetof(DrMan, unknown1d75) == 0x1d75, "");
 static_assert(offsetof(DrMan, unknown1d7a) == 0x1d7a, "");
 static_assert(offsetof(DrMan, unknown1d7b) == 0x1d7b, "");
 static_assert(offsetof(DrMan, unknown1d80) == 0x1d80, "");
+static_assert(offsetof(DrMan, unknown1d8e) == 0x1d8e, "");
 static_assert(offsetof(DrMan, unknown1d94) == 0x1d94, "");
 static_assert(offsetof(DrMan, unknown1d98) == 0x1d98, "");
 static_assert(offsetof(DrMan, unknown1d9c) == 0x1d9c, "");
