@@ -154,6 +154,9 @@ public:
   static int getBladeSet(u32 driver);
   static bool isActivateReserver(u32 driver);
   static bool isActivateUnuse(u32 driver);
+  static bool setActivateUnuse(u32 driver);
+  static bool setActivateReserver(u32 driver, u32 partyId);
+  static void equipDriverBladeFromReserverBlade(u32 driver);
   static void setLevel(SDataDriver &dataDriver, u32 level);
   static void setLevel(u32 driver, u32 level);
   static void setExp(u32 driver, u32 exp);

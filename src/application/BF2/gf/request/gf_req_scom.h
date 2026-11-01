@@ -5,6 +5,7 @@
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/object/component/property/gf_com_property.h"
+#include "gf/request/gf_req_command.h"
 #include "gf/request/gf_scom.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_queue.h"
@@ -172,10 +173,43 @@ public:
 static_assert(offsetof(SCOM_CURRENT_BLADE, unknown1c) == 0x1c, "");
 static_assert(sizeof(SCOM_CURRENT_BLADE) == 0x20, "");
 
-class SCOM_PARTY_LEADER {
+class SCOM_PARTY_LEADER : public SCOM {
 public:
-  static void create(u32 objectType, u32 leader);
+  SCOM_PARTY_LEADER(GF_SCOM_HANDLE *handle, u32 objectType, u32 leader) : SCOM(handle, SCOM_TYPE_PARTY_LEADER, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(objectType), unknown20(leader) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 objectType, u32 leader);
+
+  u32 unknown1c; // Inferred role: leader object type; original member name unknown.
+  u32 unknown20; // Inferred role: leader; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_PARTY_LEADER, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_PARTY_LEADER, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_PARTY_LEADER) == 0x28, "");
+
+class SCOM_SET_BLADE : public SCOM {
+public:
+  SCOM_SET_BLADE(GF_SCOM_HANDLE *handle, const RQ_SETUP_BLADE &info) : SCOM(handle, SCOM_TYPE_SET_BLADE, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(info) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(const RQ_SETUP_BLADE &info);
+
+  RQ_SETUP_BLADE unknown1c; // Inferred role: blades to set; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_SET_BLADE, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_SET_BLADE) == 0x30, "");
+
+class SCOM_NIA_BLADE : public SCOM {
+public:
+  SCOM_NIA_BLADE(GF_SCOM_HANDLE *handle, bool isBlade) : SCOM(handle, SCOM_TYPE_NIA_BLADE, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(isBlade) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(bool isBlade);
+
+  bool unknown1c; // Inferred role: Nia joins as a blade instead of a driver; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_NIA_BLADE, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_NIA_BLADE) == 0x20, "");
 
 class SCOM_REFRESH_COMPASS : public SCOM, public mm::mtl::PtrSingleton<SCOM_REFRESH_COMPASS> {
 public:
@@ -588,6 +622,22 @@ public:
 static_assert(offsetof(SCOM_ITEM_USE, unknown1c) == 0x1c, "");
 static_assert(offsetof(SCOM_ITEM_USE, unknown20) == 0x20, "");
 static_assert(sizeof(SCOM_ITEM_USE) == 0x28, "");
+
+class SCOM_DESTROY_PARTY_OBJ : public SCOM {
+public:
+  SCOM_DESTROY_PARTY_OBJ(GF_SCOM_HANDLE *handle, const RQ_SETUP_PARTY &info) : SCOM(handle, SCOM_TYPE_DESTROY_PARTY_OBJ, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(false), unknown20(info) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(const RQ_SETUP_PARTY &info);
+
+  bool unknown1c;                                       // Inferred role: destroy requested; original member name unknown.
+  RQ_SETUP_PARTY unknown20;                             // Inferred role: party; original member name unknown.
+  mm::mtl::FixedVector<GF_OBJ_HANDLE *, 32> unknown1c0; // Inferred role: objects being destroyed; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_DESTROY_PARTY_OBJ, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_DESTROY_PARTY_OBJ, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_DESTROY_PARTY_OBJ, unknown1c0) == 0x1c0, "");
+static_assert(sizeof(SCOM_DESTROY_PARTY_OBJ) == 0x2d0, "");
 
 class SCOM_DESTROY_FIELD_OBJ : public SCOM {
 public:

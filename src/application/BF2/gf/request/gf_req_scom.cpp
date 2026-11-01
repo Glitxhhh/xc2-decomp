@@ -13,6 +13,7 @@
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_param_acc.h"
+#include "gf/data/gf_data_party.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/data/gf_object_type.h"
@@ -28,8 +29,10 @@
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/game/gf_game_ride.h"
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/gf_game_speed.h"
+#include "gf/game/gf_game_unit.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
@@ -58,6 +61,7 @@
 #include "gf/scom/gf_scom_obj.h"
 #include "gmk/gmk_manager.h"
 #include "mm_math/mm_col4.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
@@ -690,6 +694,209 @@ GF_SCOM_HANDLE *SCOM_EXEC_CURRENT_BLADE::create(u32 blade) {
   return GfReqSmallCom::addRequest(command);
 }
 
+bool SCOM_PARTY_LEADER::exec(const fw::UpdateInfo &) {
+  if (unknown1c == OBJECT_TYPE_BLADE) {
+    for (u32 partyId = 0; partyId < PARTY_MEMBER_NUM; partyId++) {
+      DataParamAcc acc(GfGameParty::getHandleDriver(partyId));
+      if (acc.isValid()) {
+        int setBladeNum = GfDataDriver::getMaxSetBladeNum(acc.getValidDriverId());
+        for (int slot = 0; slot < setBladeNum; slot++) {
+          if (acc.getBlade(slot, false) == unknown20 && slot != acc.getBladeSet(false)) {
+            GfPlayFactory::createResetBladeForBladeSwitch(partyId, slot);
+            break;
+          }
+        }
+      }
+    }
+  }
+  RQ_SETUP_PARTY info;
+  GfGameParty::getCurrentPartyInfo(info);
+  info.unknownc8 = unknown1c;
+  info.unknowncc = unknown20;
+  u32 partyId = GfGameParty::getPartyId(unknown1c, unknown20);
+  if (partyId != 0) {
+    RQ_SETUP_PARTY::Member member = info.unknown00[0];
+    info.unknown00[0] = info.unknown00[partyId];
+    info.unknown00[partyId] = member;
+  }
+  GfReqCommand::reqChangeParty(info);
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_PARTY_LEADER::create(u32 objectType, u32 leader) {
+#line 3388
+  SCOM_PARTY_LEADER *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_PARTY_LEADER(GfReqSmallCom::get()->allocate(), objectType, leader);
+  return GfReqSmallCom::addRequest(command);
+}
+
+bool SCOM_SET_BLADE::exec(const fw::UpdateInfo &) {
+  RQ_SETUP_PARTY info;
+  GfGameParty::getCurrentPartyInfo(info);
+  u32 partyId = GfDataParty::getDriverPartyID(unknown1c.unknown00);
+  RQ_SETUP_PARTY::Member &member = info.unknown00[partyId];
+  member.unknown12 = true;
+  member.unknown08 = unknown1c.unknown04;
+  member.unknown04 = -1;
+  u32 current = unknown1c.unknown02;
+  u32 blade = GfDataDriver::getBlade(member.unknown00, -1);
+  for (int slot = 0; slot < 5; slot++) {
+    if (unknown1c.unknown04[slot] == unknown1c.unknown02) {
+      member.unknown04 = slot;
+      break;
+    }
+  }
+  if (member.unknown04 < 0) {
+    for (int slot = 0; slot < 5; slot++) {
+      if (unknown1c.unknown04[slot] == blade) {
+        member.unknown04 = slot;
+        current = blade;
+        break;
+      }
+    }
+  }
+  if (member.unknown04 < 0) {
+    for (int slot = 0; slot < 5; slot++) {
+      if (member.unknown08[slot] != 0) {
+        member.unknown04 = slot;
+        current = member.unknown08[slot];
+        break;
+      }
+    }
+  }
+  if (partyId == 0 && info.unknownc8 == OBJECT_TYPE_BLADE) {
+    bool isExist = false;
+    for (u32 slot = 0; slot < 5; slot++) {
+      if (member.unknown08[slot] == info.unknowncc) {
+        isExist = true;
+      }
+    }
+    if (!isExist || current != info.unknowncc) {
+      info.unknownc8 = OBJECT_TYPE_DRIVER;
+      info.unknowncc = member.unknown00;
+    }
+  }
+  GfReqCommand::reqChangeParty(info);
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_SET_BLADE::create(const RQ_SETUP_BLADE &info) {
+  if (info.unknown00 == 0) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 2572
+  SCOM_SET_BLADE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_SET_BLADE(GfReqSmallCom::get()->allocate(), info);
+  return GfReqSmallCom::addRequest(command);
+}
+
+bool SCOM_NIA_BLADE::exec(const fw::UpdateInfo &) {
+  if (!unknown1c) {
+    RQ_SETUP_PARTY info;
+    GfGameParty::getCurrentPartyInfo(info);
+    if (GfDataBlade::getSetDriver(BLADE_UNKNOWN_1011) == DRIVER_REX) {
+      GfDataDriver::unsetBlade(BLADE_UNKNOWN_1011);
+    }
+    if (GfDataDriver::isActivateUnuse(DRIVER_NIA)) {
+      GfDataDriver::setActivateReserver(DRIVER_NIA, PARTY_ID_NONE);
+    }
+    if (GfDataBlade::isActivateUnuse(BLADE_UNKNOWN_1011)) {
+      return true;
+    }
+    GfDataDriver::equipDriverBladeFromReserverBlade(DRIVER_NIA);
+    u32 driver = GfDataBlade::getSetDriver(BLADE_UNKNOWN_1011);
+    GfDataBlade::setActivateUnuse(BLADE_UNKNOWN_1011);
+    GfGameParty::getCurrentPartyInfo(info);
+    for (u32 index = 0; index < 10; index++) {
+      RQ_SETUP_PARTY::Member &member = info.unknown00[index];
+      if (member.unknown00 == driver) {
+        for (u32 slot = 0; slot < 3; slot++) {
+          if (member.unknown08[slot] == BLADE_UNKNOWN_1011) {
+            member.unknown08[slot] = 0;
+            break;
+          }
+        }
+        break;
+      }
+    }
+    bool isSet = false;
+    for (u32 index = PARTY_MEMBER_NUM; index < 5; index++) {
+      RQ_SETUP_PARTY::Member &member = info.unknown00[index];
+      if (member.unknown00 == 0) {
+        member.unknown00 = DRIVER_NIA;
+        for (int slot = 0; slot < GfDataDriver::getMaxSetBladeNum(DRIVER_NIA); slot++) {
+          member.unknown08[slot] = GfDataDriver::getBlade(DRIVER_NIA, slot);
+        }
+        isSet = true;
+        break;
+      }
+    }
+    if (!isSet) {
+      for (u32 index = 0; index < PARTY_MEMBER_NUM; index++) {
+        RQ_SETUP_PARTY::Member &member = info.unknown00[index];
+        if (member.unknown00 == 0) {
+          member.unknown00 = DRIVER_NIA;
+          for (int slot = 0; slot < GfDataDriver::getMaxSetBladeNum(DRIVER_NIA); slot++) {
+            member.unknown08[slot] = GfDataDriver::getBlade(DRIVER_NIA, slot);
+          }
+          break;
+        }
+      }
+    }
+    info.unknowncc = 0;
+    GfReqCommand::reqChangeParty(info);
+  } else {
+    GfPartyPosInfo position;
+    GfGameParty::getPartyPosition(position);
+    if (GfGameRide::isRideOnPair()) {
+      GfGameRide::setRideOn(false);
+    }
+    RQ_SETUP_PARTY info;
+    GfGameParty::getCurrentPartyInfo(info);
+    if (GfDataBlade::isActivateUnuse(BLADE_UNKNOWN_1011)) {
+      GfDataBlade::setActivateReserver(BLADE_UNKNOWN_1011);
+    }
+    if (GfDataDriver::isActivateUnuse(DRIVER_NIA)) {
+      return true;
+    }
+    for (int slot = 0; slot < GfDataDriver::getMaxSetBladeNum(DRIVER_NIA); slot++) {
+      u32 blade = GfDataDriver::getBlade(DRIVER_NIA, slot);
+      if (blade != 0) {
+        GfDataDriver::unsetBlade(blade);
+      }
+    }
+    GfDataDriver::setActivateUnuse(DRIVER_NIA);
+    for (u32 index = 0; index < 10; index++) {
+      RQ_SETUP_PARTY::Member &member = info.unknown00[index];
+      if (member.unknown00 == DRIVER_NIA) {
+        member.unknown00 = 0;
+        for (u32 slot = 0; slot < SET_BLADE_NUM_MAX; slot++) {
+          member.unknown08[slot] = 0;
+        }
+      }
+      member.unknown12 = true;
+    }
+    if (info.unknown00[0].unknown00 == 0 && info.unknown00[1].unknown00 == 0 && info.unknown00[2].unknown00 == 0) {
+      for (u32 index = PARTY_MEMBER_NUM; index < 10; index++) {
+        if (info.unknown00[index].unknown00 == DRIVER_REX) {
+          info.unknown00[0] = info.unknown00[index];
+          info.unknown00[0].unknown12 = true;
+          info.unknown00[index].clear();
+        }
+      }
+    }
+    info.unknownc8 = OBJECT_TYPE_DRIVER;
+    info.unknowncc = 0;
+    info.unknowne0 = position;
+    GfReqCommand::reqChangeParty(info);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_NIA_BLADE::create(bool isBlade) {
+#line 2730
+  SCOM_NIA_BLADE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_NIA_BLADE(GfReqSmallCom::get()->allocate(), isBlade);
+  return GfReqSmallCom::addRequest(command);
+}
+
 bool SCOM_QUEST_REACH::checkEventScequence() const {
   if (!GfGameManager::isInnerState(GF_STATE_EVENT)) {
     return true;
@@ -1053,6 +1260,26 @@ bool SCOM_ITEM_USE::exec(const fw::UpdateInfo &) {
 GF_SCOM_HANDLE *SCOM_ITEM_USE::create(u32 item, u32 count) {
 #line 1751
   SCOM_ITEM_USE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ITEM_USE(GfReqSmallCom::get()->allocate(), item, count);
+  return GfReqSmallCom::addRequest(command);
+}
+
+bool SCOM_DESTROY_PARTY_OBJ::exec(const fw::UpdateInfo &) {
+  if (!unknown1c) {
+    unknown1c = true;
+    GfGameUnit::destroyParty(unknown20, &unknown1c0);
+  }
+  for (GF_OBJ_HANDLE **it = unknown1c0.begin(); it != unknown1c0.end(); it++) {
+    if (GfObjUtil::getObj(*it) != nullptr) {
+      return false;
+    }
+  }
+  GfEvent::callPartyChange();
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_DESTROY_PARTY_OBJ::create(const RQ_SETUP_PARTY &info) {
+#line 882
+  SCOM_DESTROY_PARTY_OBJ *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_DESTROY_PARTY_OBJ(GfReqSmallCom::get()->allocate(), info);
   return GfReqSmallCom::addRequest(command);
 }
 

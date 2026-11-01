@@ -14,6 +14,7 @@ public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static void setRideOn(bool isRide);
+  static bool isRideOnPair();
   static bool testRideOn();
   static bool isRider(GF_OBJ_HANDLE *handle);
   void resetHandles();

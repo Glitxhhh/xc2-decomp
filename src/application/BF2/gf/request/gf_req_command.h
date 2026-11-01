@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/game/gf_game_party.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 
@@ -13,6 +14,15 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 struct GfReqParam;
 
+struct RQ_SETUP_BLADE {
+  u16 unknown00;                         // Inferred role: driver; original member name unknown.
+  u16 unknown02;                         // Inferred role: current blade; original member name unknown.
+  mm::mtl::FixedArray<u16, 5> unknown04; // Inferred role: blades; original member name unknown.
+};
+
+static_assert(offsetof(RQ_SETUP_BLADE, unknown04) == 0x04, "");
+static_assert(sizeof(RQ_SETUP_BLADE) == 0x0e, "");
+
 struct RQ_SETUP_PARTY {
   struct Member {
     Member() { clear(); }
@@ -23,13 +33,13 @@ struct RQ_SETUP_PARTY {
       for (u32 slot = 0; slot < 5; slot++) {
         unknown08[slot] = 0;
       }
-      _12[0] = 0;
+      unknown12 = false;
     }
 
-    u32 unknown00;    // Inferred role: driver; original member name unknown.
-    int unknown04;    // Inferred role: blade set; original member name unknown.
-    u16 unknown08[5]; // Inferred role: blades; original member name unknown.
-    u8 _12[0x13 - 0x12];
+    u32 unknown00;                         // Inferred role: driver; original member name unknown.
+    int unknown04;                         // Inferred role: blade set; original member name unknown.
+    mm::mtl::FixedArray<u16, 5> unknown08; // Inferred role: blades; original member name unknown.
+    bool unknown12;                        // Inferred role: blades set by a blade request (SCOM_SET_BLADE); original member name unknown.
   };
 
   RQ_SETUP_PARTY() : unknownc8(0), unknowncc(0), unknownd0(0), unknownd4(0), _d8() {
