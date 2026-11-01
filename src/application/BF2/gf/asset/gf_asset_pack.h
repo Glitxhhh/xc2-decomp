@@ -69,6 +69,9 @@ public:
   s64 calcFileSize(GfFileIdx index) const;
   bool isExistSameAsset(const GfAssetFiles &other) const;
   const mm::mtl::FixStr<128> &getFileName(GfFileIdx index) const;
+  GfFileIdx getCommonResource(GfFileIdx index) const;
+  bool isExistFile(GfFileIdx index) const;
+  bool isNoFile(GfFileIdx index) const;
 
   GfAssetType unknown00;         // Inferred role: asset type; original member name unknown.
   u32 unknown04;                 // Inferred role: asset name hash; original member name unknown.
@@ -112,6 +115,16 @@ public:
   };
 
   GfAssetResource *getResource(GfFileIdx index) const;
+  bool isLoaded(mm::mtl::FixStr<128> *name) const;
+  void setupStreamObject();
+  bool isStopLoad() const;
+  fw::SoundPack *getSePackByFileIdx(GfFileIdx index);
+  const char *getLoadingFileForDebug();
+  bool isExistReferenceMemory() const;
+  u64 getTimeStamp(const char *name);
+  bool isNeedLoad() const;
+  bool releaseRefResource(void *data);
+  ~GfAssetPack() override;
   GfAssetType getAssetType() const;
   void dispAssetLogForDebug();
   void setLoadComplete();
@@ -159,11 +172,12 @@ public:
   u8 _258[0x27c - 0x258];
   u32 unknown27c; // Inferred role: cache count; original member name unknown.
   u32 unknown280; // Inferred role: reload count; original member name unknown.
-  u8 _284[0x2a8 - 0x284];
-  fw::SoundPack *unknown2a8; // Inferred role: se pack; original member name unknown.
-  GfFileIdx unknown2b0;      // Inferred role: se pack file index; original member name unknown.
-  int unknown2b4;            // Inferred role: se pack reference count; original member name unknown.
-  bool unknown2b8;           // Inferred role: resource locked; original member name unknown.
+  u8 _284[0x288 - 0x284];
+  mm::mtl::FixedQueue<GfAssetType, 4> unknown288; // Inferred role: backup asset types; original member name unknown.
+  fw::SoundPack *unknown2a8;                      // Inferred role: se pack; original member name unknown.
+  GfFileIdx unknown2b0;                           // Inferred role: se pack file index; original member name unknown.
+  int unknown2b4;                                 // Inferred role: se pack reference count; original member name unknown.
+  bool unknown2b8;                                // Inferred role: resource locked; original member name unknown.
 };
 
 static_assert(sizeof(GfAssetPack::unknown001) == 0x10, "");
@@ -177,6 +191,7 @@ static_assert(offsetof(GfAssetPack, unknown23a) == 0x23a, "");
 static_assert(offsetof(GfAssetPack, unknown248) == 0x248, "");
 static_assert(offsetof(GfAssetPack, unknown254) == 0x254, "");
 static_assert(offsetof(GfAssetPack, unknown280) == 0x280, "");
+static_assert(offsetof(GfAssetPack, unknown288) == 0x288, "");
 static_assert(offsetof(GfAssetPack, unknown2b8) == 0x2b8, "");
 static_assert(offsetof(GfAssetPack, unknown2b0) == 0x2b0, "");
 

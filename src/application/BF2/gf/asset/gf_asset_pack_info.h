@@ -2,9 +2,14 @@
 #include <stddef.h>
 
 #include "gf/asset/gf_asset_def.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
+
+namespace fw {
+class SoundPack;
+} // namespace fw
 
 namespace gf {
 
@@ -13,6 +18,7 @@ struct GF_OBJ_HANDLE;
 struct GF_SLOT_HANDLE;
 class GfAssetPack;
 class GfExtendResource;
+class GfAssetResource;
 
 struct AssetPackInfo {
   virtual ~AssetPackInfo();
@@ -37,6 +43,18 @@ struct AssetPackInfo {
   void setModelName(const char *name);
   void setMotionName(const char *name);
   bool getSlotHandle(mm::mtl::FixedVector<GF_SLOT_HANDLE *, 88> &slots) const;
+  GF_SLOT_HANDLE *getSlotHandle(GfFileIdx index) const;
+  GfAssetPack *getAssetPack(GfFileIdx index) const;
+  GfAssetResource *getResource(GfFileIdx index);
+  bool isExist(GfFileIdx index) const;
+  bool isLoaded(mm::mtl::FixStr<128> *name);
+  void setupStreamObject();
+  bool isStopLoad() const;
+  fw::SoundPack *getSePackByFileIdx(GfFileIdx index);
+  const char *getLoadingFileForDebug();
+  void execReload();
+  bool getReloadObjectByUsingAssetPack(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &objects, const AssetPackInfo *other) const;
+  void updateReloadCount();
 
   GF_ASSET_HANDLE *unknown08;                        // Inferred role: handle; original member name unknown.
   mm::mtl::FixedVector<GfAssetPack *, 88> unknown10; // Inferred role: asset packs; original member name unknown.
