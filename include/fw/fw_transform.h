@@ -19,7 +19,7 @@ struct Transform {
 
   // Inferred affine matrix conversion in AttachActorBase::render and the
   // AttachActorCS/Gf bone getters; original helper name unknown.
-  __attribute__((always_inline)) void unknown001(mm::Mat44 &matrix) const {
+  void unknown001(mm::Mat44 &matrix) const {
     mm::quatToMatrix(matrix, unknown10);
     matrix.rows[0][3] = 0.0f;
     matrix.rows[1][3] = 0.0f;

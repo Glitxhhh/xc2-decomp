@@ -1259,7 +1259,7 @@ void GmkPhantomSimple::create(const CreateInfo &info) {
   }
   case GmkPhantom::SHAPE_TYPE_BOX: {
     fw::unknown133 shape(mm::Vec3(info.unknown30[0], info.unknown30[1], info.unknown30[2]));
-    shape.unknown20 = false;
+    shape.unknown10.unknown10 = false;
     coliInfo.unknown80 = &shape;
     unknown50 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
@@ -1315,7 +1315,7 @@ void GmkPhantom::create(const CreateInfo &info) {
   }
   case SHAPE_TYPE_BOX: {
     fw::unknown133 shape(mm::Vec3(info.unknown30[0], info.unknown30[1], info.unknown30[2]));
-    shape.unknown20 = false;
+    shape.unknown10.unknown10 = false;
     coliInfo.unknown80 = &shape;
     unknown78 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;

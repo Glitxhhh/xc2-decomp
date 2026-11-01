@@ -3,7 +3,6 @@
 #include "framework/anim/anim_manager.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_obj.h"
-#include "mm_mtl/bitflag.h"
 #include "mm_mtl/rtti.h"
 
 namespace gf {
@@ -24,9 +23,8 @@ void GfComCollider::cleanup() {
   for (u32 i = 0; i < unknown18.size(); i++) {
     fw::ColiObject *coli = unknown18[i];
     if (coli != nullptr) {
-      coli->unknown48.clear();
-      coli->unknown50 = nullptr;
-      coli->unknown58 = nullptr;
+      coli->setListener(nullptr);
+      coli->setColiUserData(nullptr);
     }
     if (unknown18[i] != nullptr) {
       unknown18[i]->release();

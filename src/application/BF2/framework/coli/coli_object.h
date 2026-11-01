@@ -5,10 +5,10 @@
 #include "framework/reference_frame.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
-#include "mm_mtl/bitflag.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
+#include "mm_mtl/unique_ptr.h"
 #include "types.h"
 
 namespace mm {
@@ -33,6 +33,7 @@ enum ColiType : int {
 };
 
 enum ColiState : int {
+  COLI_STATE_UNKNOWN_0 = 0,
   COLI_STATE_ENABLE = 1,
   COLI_STATE_INACTIVE = 2,
 };
@@ -73,6 +74,7 @@ struct unknown031 {
     TYPE_CAPSULE = 1,
     TYPE_BOX = 2,
     TYPE_CHARACTER = 3,
+    TYPE_UNKNOWN_5 = 5,
   };
 
   explicit unknown031(Type type) : unknown00(type) {}
@@ -100,12 +102,18 @@ struct unknown132 : unknown031 {
   bool unknown0c; // Inferred role: flag passed to IDColiParmsCharacter::createCapsule; original member name unknown.
 };
 
+// Inferred role: size and flag of a box coli shape, copied as one member (setupColiCharacter reads the flag 0x10 bytes
+// after the size); original type name unknown.
+struct unknown137 {
+  mm::Vec3 unknown00; // Inferred role: size; original member name unknown.
+  bool unknown10;     // Inferred role: flag passed to IDColiParmsCharacter::createBox; original member name unknown.
+};
+
 // Inferred role: box coli shape; original type name unknown.
 struct unknown133 : unknown031 {
-  explicit unknown133(const mm::Vec3 &size) : unknown031(TYPE_BOX), unknown10(size) {}
+  explicit unknown133(const mm::Vec3 &size) : unknown031(TYPE_BOX) { unknown10.unknown00 = size; }
 
-  mm::Vec3 unknown10; // Inferred role: size; original member name unknown.
-  bool unknown20;     // Inferred role: flag passed to IDColiParmsCharacter::createBox; original member name unknown.
+  unknown137 unknown10; // Inferred role: size and flag; original member name unknown.
 };
 
 // Inferred role: character coli shape; original type name unknown.
@@ -114,15 +122,23 @@ struct unknown134 : unknown031 {
   f32 unknown08; // Inferred role: height; original member name unknown.
 };
 
+// Inferred role: coli shape built from collision binary data; original type name unknown.
+struct unknown135 : unknown031 {
+  const void *unknown08; // Inferred role: binary data; original member name unknown.
+};
+
 static_assert(offsetof(unknown131, unknown04) == 0x04, "");
 static_assert(sizeof(unknown131) == 0x8, "");
 static_assert(offsetof(unknown132, unknown0c) == 0x0c, "");
 static_assert(sizeof(unknown132) == 0x10, "");
 static_assert(offsetof(unknown133, unknown10) == 0x10, "");
-static_assert(offsetof(unknown133, unknown20) == 0x20, "");
+static_assert(offsetof(unknown137, unknown10) == 0x10, "");
+static_assert(sizeof(unknown137) == 0x20, "");
 static_assert(sizeof(unknown133) == 0x30, "");
 static_assert(offsetof(unknown134, unknown08) == 0x08, "");
 static_assert(sizeof(unknown134) == 0xc, "");
+static_assert(offsetof(unknown135, unknown08) == 0x08, "");
+static_assert(sizeof(unknown135) == 0x10, "");
 
 class ColiUserData {
 public:
@@ -142,24 +158,38 @@ public:
   u32 unknown08; // Inferred role: handle; original member name unknown.
 };
 
+// Inferred role: event flags and listener of a coli object; setupColiCharacter and setupColiPhantom copy it from the
+// create info as one 16-byte block. Original type name unknown.
+struct unknown136 {
+  unknown136() : unknown00(0), unknown08(nullptr) {}
+
+  // Inferred role: tests one event bit; original name unknown.
+  bool unknown001(u32 event) const { return ((1 << event) & unknown00) != 0; }
+
+  u32 unknown00;                 // Inferred role: event flags, one bit per ColiObject::EVENT_*; original member name unknown.
+  IColiEventListener *unknown08; // Inferred role: listener; original member name unknown.
+};
+
+static_assert(offsetof(unknown136, unknown08) == 0x08, "");
+static_assert(sizeof(unknown136) == 0x10, "");
+
 // Layout evidence: ColiObject::setupColiCharacter (1.0.0: 0x710015cd90) reads the coli type at 0x04, the priority at
 // 0x08, the state bits at 0x0c, the material masks at 0x10 and 0x14, the scale at 0x18, the user data at 0x20, the
-// event flags at 0x28, the listener at 0x30, the offset matrix at 0x40 and the shape at 0x80.
+// event flags and listener at 0x28, the offset matrix at 0x40 and the shape at 0x80.
 struct ColiCharacterInfo {
   ColiCharacterInfo() : unknown00(0), unknown10(0xfffffffa), unknown18(1.0f), unknown80(nullptr) { unknown40 = mm::Mat44::identity; }
 
-  u32 unknown00;                     // Role and original member name unknown.
-  ColiType unknown04;                // Inferred role: coli type; original member name unknown.
-  int unknown08;                     // Inferred role: priority; original member name unknown.
-  u32 unknown0c;                     // Inferred role: state bits; original member name unknown.
-  u32 unknown10;                     // Inferred role: hit material mask; original member name unknown.
-  u32 unknown14;                     // Inferred role: material mask; original member name unknown.
-  f32 unknown18;                     // Inferred role: scale; original member name unknown.
-  ColiUserData *unknown20;           // Inferred role: user data; original member name unknown.
-  mm::mtl::unknown027<32> unknown28; // Inferred role: event flags; original member name unknown.
-  IColiEventListener *unknown30;     // Inferred role: listener; original member name unknown.
-  mm::Mat44 unknown40;               // Inferred role: offset matrix; original member name unknown.
-  const unknown031 *unknown80;       // Inferred role: shape; original member name unknown.
+  u32 unknown00;               // Role and original member name unknown.
+  ColiType unknown04;          // Inferred role: coli type; original member name unknown.
+  int unknown08;               // Inferred role: priority; original member name unknown.
+  u32 unknown0c;               // Inferred role: state bits; original member name unknown.
+  u32 unknown10;               // Inferred role: hit material mask; original member name unknown.
+  u32 unknown14;               // Inferred role: material mask; original member name unknown.
+  f32 unknown18;               // Inferred role: scale; original member name unknown.
+  ColiUserData *unknown20;     // Inferred role: user data; original member name unknown.
+  unknown136 unknown28;        // Inferred role: event flags and listener; original member name unknown.
+  mm::Mat44 unknown40;         // Inferred role: offset matrix; original member name unknown.
+  const unknown031 *unknown80; // Inferred role: shape; original member name unknown.
 };
 
 static_assert(offsetof(ColiCharacterInfo, unknown04) == 0x04, "");
@@ -167,28 +197,24 @@ static_assert(offsetof(ColiCharacterInfo, unknown10) == 0x10, "");
 static_assert(offsetof(ColiCharacterInfo, unknown18) == 0x18, "");
 static_assert(offsetof(ColiCharacterInfo, unknown20) == 0x20, "");
 static_assert(offsetof(ColiCharacterInfo, unknown28) == 0x28, "");
-static_assert(offsetof(ColiCharacterInfo, unknown30) == 0x30, "");
 static_assert(offsetof(ColiCharacterInfo, unknown40) == 0x40, "");
 static_assert(offsetof(ColiCharacterInfo, unknown80) == 0x80, "");
 
 // Layout evidence: ColiObject::setupColiPhantom (1.0.0: 0x710015d66c) reads the same offsets as setupColiCharacter.
 struct ColiPhantomInfo {
-  ColiPhantomInfo() : unknown00(1), unknown08(100), unknown0c(3), unknown10(0xfffffffa), unknown18(1.0f), unknown20(nullptr), unknown30(nullptr), unknown80(nullptr) {
-    unknown40 = mm::Mat44::identity;
-  }
+  ColiPhantomInfo() : unknown00(1), unknown08(100), unknown0c(3), unknown10(0xfffffffa), unknown18(1.0f), unknown20(nullptr), unknown80(nullptr) { unknown40 = mm::Mat44::identity; }
 
-  u32 unknown00;                     // Role and original member name unknown.
-  ColiType unknown04;                // Inferred role: coli type; original member name unknown.
-  int unknown08;                     // Inferred role: priority; original member name unknown.
-  u32 unknown0c;                     // Inferred role: state bits; original member name unknown.
-  u32 unknown10;                     // Inferred role: hit material mask; original member name unknown.
-  u32 unknown14;                     // Inferred role: material mask; original member name unknown.
-  f32 unknown18;                     // Inferred role: scale; original member name unknown.
-  ColiUserData *unknown20;           // Inferred role: user data; original member name unknown.
-  mm::mtl::unknown027<32> unknown28; // Inferred role: event flags; original member name unknown.
-  IColiEventListener *unknown30;     // Inferred role: listener; original member name unknown.
-  mm::Mat44 unknown40;               // Inferred role: offset matrix; original member name unknown.
-  const unknown031 *unknown80;       // Inferred role: shape; original member name unknown.
+  u32 unknown00;               // Role and original member name unknown.
+  ColiType unknown04;          // Inferred role: coli type; original member name unknown.
+  int unknown08;               // Inferred role: priority; original member name unknown.
+  u32 unknown0c;               // Inferred role: state bits; original member name unknown.
+  u32 unknown10;               // Inferred role: hit material mask; original member name unknown.
+  u32 unknown14;               // Inferred role: material mask; original member name unknown.
+  f32 unknown18;               // Inferred role: scale; original member name unknown.
+  ColiUserData *unknown20;     // Inferred role: user data; original member name unknown.
+  unknown136 unknown28;        // Inferred role: event flags and listener; original member name unknown.
+  mm::Mat44 unknown40;         // Inferred role: offset matrix; original member name unknown.
+  const unknown031 *unknown80; // Inferred role: shape; original member name unknown.
 };
 
 static_assert(offsetof(ColiPhantomInfo, unknown20) == 0x20, "");
@@ -207,6 +233,8 @@ public:
   static ColiObject *createColiCharacter(const ColiCharacterInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame);
   static ColiObject *createColiGrand(const void *binary);
   static ColiObject *createColiPhantom(const ColiPhantomInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame);
+  static void setupColiCharacter(ColiObject *object, const ColiCharacterInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame);
+  static void setupColiPhantom(ColiObject *object, const ColiPhantomInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame);
   ColiObject();
   ~ColiObject();
   virtual const mm::mtl::RTTI *getRTTI() const { return &m_rtti; }
@@ -256,8 +284,8 @@ public:
   void setColiUserData(ColiUserData *data) { unknown58 = data; }
 
   void setListener(IColiEventListener *listener) {
-    unknown48.clear();
-    this->unknown50 = listener;
+    unknown48.unknown00 = 0;
+    unknown48.unknown08 = listener;
   }
 
   idcoli::IDColiObj *m_coliObject;
@@ -265,20 +293,19 @@ public:
   ColiType unknown30;                              // Inferred role: type; original member name unknown.
   u16 unknown34;                                   // Inferred role: flags; original member name unknown.
   HandlePtr<UpdatableObject> unknown38;            // Inferred role: owner; original member name unknown.
-  mm::mtl::unknown027<32> unknown48;               // Inferred role: event flags; original member name unknown.
-  IColiEventListener *unknown50;                   // Inferred role: listener; original member name unknown.
+  unknown136 unknown48;                            // Inferred role: event flags and listener; original member name unknown.
   ColiUserData *unknown58;                         // Inferred role: coli user data; original member name unknown.
   mm::Mat44 unknown60;                             // Inferred role: offset matrix; original member name unknown.
   mm::Mat44 m_matrix;
-  f32 unknowne0;             // Inferred role: scale; original member name unknown.
-  unknown031 *unknowne8;     // Inferred role: shape; original member name unknown.
-  ColiObjUserData unknownf0; // Inferred role: user data; original member name unknown.
+  f32 unknowne0;                            // Inferred role: scale; original member name unknown.
+  mm::mtl::UniquePtr<unknown031> unknowne8; // Inferred role: shape; original member name unknown.
+  ColiObjUserData unknownf0;                // Inferred role: user data; original member name unknown.
 };
 
 static_assert(offsetof(ColiObject, m_coliObject) == 0x20, "");
 static_assert(offsetof(ColiObject, unknown30) == 0x30, "");
 static_assert(offsetof(ColiObject, unknown38) == 0x38, "");
-static_assert(offsetof(ColiObject, unknown50) == 0x50, "");
+static_assert(offsetof(ColiObject, unknown48) == 0x48, "");
 static_assert(offsetof(ColiObject, unknown58) == 0x58, "");
 static_assert(offsetof(ColiObject, unknown60) == 0x60, "");
 static_assert(offsetof(ColiObject, m_matrix) == 0xa0, "");

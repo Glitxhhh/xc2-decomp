@@ -7,7 +7,6 @@
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_manager.h"
 #include "mm_math/mm_mat44.h"
-#include "mm_mtl/bitflag.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/rtti.h"
@@ -32,10 +31,10 @@ void GmkCollision::create(const CreateInfo &info) {
   coliInfo.unknown08 = 799;
   coliInfo.unknown14 = 0x200000;
   coliInfo.unknown0c = 2;
-  coliInfo.unknown30 = this;
+  coliInfo.unknown28.unknown08 = this;
   coliInfo.unknown20 = this;
-  coliInfo.unknown28.set(fw::ColiObject::EVENT_ENTER);
-  coliInfo.unknown28.set(fw::ColiObject::EVENT_LEAVE);
+  coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_ENTER;
+  coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_LEAVE;
   switch (info.unknown00) {
   case GmkPhantom::SHAPE_TYPE_SPHERE: {
     fw::unknown131 shape(info.unknown34[0]);
@@ -52,7 +51,7 @@ void GmkCollision::create(const CreateInfo &info) {
   }
   case GmkPhantom::SHAPE_TYPE_BOX: {
     fw::unknown133 shape(mm::Vec3(info.unknown34[0], info.unknown34[1], info.unknown34[2]));
-    shape.unknown20 = info.unknown30;
+    shape.unknown10.unknown10 = info.unknown30;
     coliInfo.unknown80 = &shape;
     unknown58 = fw::ColiObject::createColiCharacter(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;

@@ -43,7 +43,10 @@ public:
   }
   static void unlinkParent(ReferenceFrame &frame);
   static void unlinkChild(ReferenceFrame &frame);
-  const mm::Mat44 &getSyncedWorldMatrix();
+  const mm::Mat44 &getSyncedWorldMatrix() {
+    syncWorldMatrix();
+    return unknown60;
+  }
 
   Transform unknown20;                              // Inferred role: local transform; original member name unknown.
   Transform unknown40;                              // Inferred role: world transform; original member name unknown.
