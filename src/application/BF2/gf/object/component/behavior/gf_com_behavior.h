@@ -42,6 +42,22 @@ struct MsgObjectGetVelocity : fw::Message {
 
 static_assert(offsetof(MsgObjectGetVelocity, unknown10) == 0x10, "");
 
+struct MsgPcFieldNotifyAction : fw::Message {
+  u32 unknown08; // Inferred role: action, 0 when the player accesses the object, 1 when the access ends; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldNotifyAction, unknown08) == 0x08, "");
+
+struct MsgPcFieldGetAccessType : fw::Message {
+  u32 unknown08;  // Inferred role: access type; original member name unknown.
+  bool unknown0c; // Inferred role: access enabled; original member name unknown.
+  bool unknown0d; // Inferred role: set for a salvage point; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldGetAccessType, unknown08) == 0x08, "");
+static_assert(offsetof(MsgPcFieldGetAccessType, unknown0c) == 0x0c, "");
+static_assert(offsetof(MsgPcFieldGetAccessType, unknown0d) == 0x0d, "");
+
 class GfComBehavior : public GfComponent {
 public:
   static mm::mtl::RTTI m_rtti;

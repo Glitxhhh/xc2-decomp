@@ -162,7 +162,12 @@ public:
   static mm::mtl::RTTI m_rtti;
 
   const mm::mtl::RTTI *getRTTI() const override;
+
+  u8 _6c[0x90 - 0x6c];
+  u8 unknown90; // Inferred role: move speed rate in percent; original member name unknown.
 };
+
+static_assert(offsetof(GfObjSetupMob, unknown90) == 0x90, "");
 
 class GfObjSetupNpc : public GfObjSetup {
 public:

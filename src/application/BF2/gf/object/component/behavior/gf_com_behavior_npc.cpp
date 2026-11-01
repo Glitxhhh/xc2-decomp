@@ -14,14 +14,24 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_game_flag.h"
+#include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_message.h"
+#include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/object/gf_menu_obj_target_info.h"
 #include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
+#include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_com_collider.h"
+#include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_blade.h"
 #include "gmk/gmk_manager.h"
+#include "gmk/gmk_npc/gmk_npc.h"
+#include "gmk/gmk_npc/gmk_routed_npc.h"
+#include "mm_mtl/reference_object.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
 
@@ -81,7 +91,49 @@ void GfComBehaviorNpc::BdatInfo::setTalkBonusFlag() const { GfGameFlag::setLocal
 
 f32 GfComBehaviorNpc::BdatInfo::getDistYThreshold() { return 2.0f; }
 
+bool GfComBehaviorNpc::LocalSteerIsTargetNotPlayer::operator()(const GfFieldLocalSteer &steer, GF_OBJ_HANDLE *handle) const { return GfGameManager::getPartyLeader() != handle; }
+
+void GfComBehaviorNpc::procMsgPcFieldNotifyAction(fw::MessageObject *sender, MsgPcFieldNotifyAction &message) {
+  switch (message.unknown08) {
+  case 0:
+    if (!unknown100 && GfGameManager::isTalkOK() && getStateId() != npc::STATE_ID_UNKNOWN_6) {
+      unknown100 = true;
+      unknown240 = false;
+      setStateId(npc::STATE_ID_UNKNOWN_6);
+    }
+    break;
+  case 1:
+    if (unknown100) {
+      unknown100 = false;
+      unknown240 = true;
+    }
+    break;
+  }
+}
+
 void GfComBehaviorNpc::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
+
+void GfComBehaviorNpc::procMsgPcFieldGetAccessType(fw::MessageObject *sender, MsgPcFieldGetAccessType &message) {
+  message.unknown08 = 2;
+  message.unknown0c = false;
+  if (unknown100 || !GfGameManager::isTalkOK() || getStateId() == npc::STATE_ID_UNKNOWN_6) {
+    return;
+  }
+
+  gmk::AGmkBase *gmk = getBindedGmkInst();
+  if (gmk == nullptr) {
+    return;
+  }
+
+  gmk::GmkType type = gmk->getGmkType();
+  if (type == gmk::GMK_TYPE_NPC) {
+    message.unknown0c = static_cast<gmk::GmkNpc *>(gmk)->isPopCondMatchedExceptDist();
+  } else if (type == gmk::GMK_TYPE_ROUTED_NPC) {
+    message.unknown0c = static_cast<gmk::GmkRoutedNpc *>(gmk)->isPopCondMatchedExceptDist();
+  } else if (type == gmk::GMK_TYPE_BLADE) {
+    message.unknown0c = gmk->isValid() && static_cast<gmk::GmkBlade *>(gmk)->getBdatInfo()->isPopCommonCondMatched();
+  }
+}
 
 void GfComBehaviorNpc::procMsgPcGetLookPoint(fw::MessageObject *sender, MsgPcGetLookPoint &message) {
   if (unknown1b8.get() != nullptr) {
@@ -90,7 +142,46 @@ void GfComBehaviorNpc::procMsgPcGetLookPoint(fw::MessageObject *sender, MsgPcGet
   }
 }
 
+void GfComBehaviorNpc::procMsgGameLipAction(fw::MessageObject *sender, MsgGameLipAction &message) {
+  switch (message.action) {
+  case 0: {
+    LipSyncPlugin *plugin = unknown10.unknown001<LipSyncPlugin>(2);
+    if (plugin != nullptr) {
+      plugin->unknown21 = true;
+    }
+    break;
+  }
+  case 1: {
+    LipSyncPlugin *plugin = unknown10.unknown001<LipSyncPlugin>(2);
+    if (plugin != nullptr) {
+      plugin->unknown21 = false;
+    }
+    break;
+  }
+  }
+}
+
+void GfComBehaviorNpc::procMsgGameSetLipWeight(fw::MessageObject *sender, MsgGameSetLipWeight &message) {
+  LipSyncPlugin *plugin = unknown10.unknown001<LipSyncPlugin>(2);
+  if (plugin != nullptr) {
+    plugin->setWeight(message.unknown08);
+  }
+}
+
 void GfComBehaviorNpc::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message) { message.unknown10 = unknownf0; }
+
+gmk::GmkRouteNavi *GfComBehaviorNpc::getGmkRouteNavi() const {
+  gmk::AGmkBase *gmk = getBindedGmkInst();
+  if (gmk != nullptr && gmk->getGmkType() == gmk::GMK_TYPE_ROUTED_NPC) {
+    return static_cast<gmk::GmkRoutedNpc *>(gmk)->unknown70;
+  }
+
+  return nullptr;
+}
+
+const mm::Vec3 &GfComBehaviorNpc::getPos() const { return unknown08->getComponent<GfComTransform>()->unknown001()->getSyncedWorldTransform().unknown00; }
+
+const mm::Quat &GfComBehaviorNpc::getRot() const { return unknown08->getComponent<GfComTransform>()->unknown001()->getSyncedWorldTransform().unknown10; }
 
 void GfComBehaviorNpc::disposeNaviMeshObj() {
   fw::NaviManager::get()->releaseObject(unknownb8);
@@ -130,6 +221,35 @@ u32 GfComBehaviorNpc::getStateId() const {
   }
 
   return ai::INVALID_STATE_ID;
+}
+
+void GfComBehaviorNpc::setStateId(npc::STATE_ID stateId) {
+  if (getStateId() != stateId) {
+    initStateId(stateId);
+  }
+}
+
+void GfComBehaviorNpc::initStateId(npc::STATE_ID stateId) {
+  unknown108.setState(stateId);
+  validateLocalSteer(stateId);
+}
+
+void GfComBehaviorNpc::validateLocalSteer(npc::STATE_ID stateId) {
+  GfFieldLocalSteer::CreateInfo info;
+  info.unknown08 = 2.0f;
+  info.unknown0c = 1.0f;
+  info.unknown10 = 0.5f;
+  info.unknown14 = true;
+  info.unknown00 = static_cast<GfObj *>(unknown08)->unknownf8;
+  info.unknown18 = stateId == npc::STATE_ID_UNKNOWN_3 ? &unknown53b0 : nullptr;
+  unknown350.create(info);
+}
+
+void GfComBehaviorNpc::disposeMenuObj() {
+  if (unknown1b0 != nullptr) {
+    GfMenuObjTargetInfo::close(unknown1b0);
+    mm::mtl::safeRelease(unknown1b0);
+  }
 }
 
 void GfComBehaviorNpc::setActivateCollison(bool isActivate) {

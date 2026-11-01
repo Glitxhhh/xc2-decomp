@@ -4,9 +4,16 @@
 #include "framework/coli/coli_object.h"
 #include "framework/navi/navi_manager.h"
 #include "framework/object/updatable_object.h"
+#include "framework/reference_frame.h"
+#include "fw/fw_transform.h"
+#include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_com_collider.h"
+#include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_manager.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gmk/gmk_manager.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
 
@@ -15,6 +22,17 @@ namespace gf {
 void GfComBehaviorMob::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
 
 void GfComBehaviorMob::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message) { message.unknown10 = unknown100; }
+
+void GfComBehaviorMob::cleanup() {
+  unknownb8 = nullptr;
+  disposeNaviMeshObj();
+  disposeFsm();
+  unknown10.cleanup();
+}
+
+const mm::Vec3 &GfComBehaviorMob::getPos() const { return unknown08->getComponent<GfComTransform>()->unknown001()->getSyncedWorldTransform().unknown00; }
+
+const mm::Quat &GfComBehaviorMob::getRot() const { return unknown08->getComponent<GfComTransform>()->unknown001()->getSyncedWorldTransform().unknown10; }
 
 fw::ColiMoveObject *GfComBehaviorMob::getColiObject() const {
   GfComCollider *collider = unknown08->getComponent<GfComCollider>();
@@ -31,6 +49,12 @@ fw::ColiMoveObject *GfComBehaviorMob::getColiObject() const {
 gmk::AGmkBase *GfComBehaviorMob::getBindedGmkInst() const { return gmk::getBindedGmkInst(static_cast<GfObj *>(unknown08)->unknownf8); }
 
 bool GfComBehaviorMob::isSquadMember() const { return unknownc0.unknown001() && unknownc0.unknown28 != 0; }
+
+void GfComBehaviorMob::initMoveSpeed(f32 time) {
+  GfObjSetupMob *setup = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(static_cast<GfObj *>(unknown08)->unknownf8)->unknown30);
+  f32 rate = setup->unknown90 * 0.01f;
+  unknown1e0.setSpeedKmph(unknown1e0.unknown08 * rate, time);
+}
 
 void GfComBehaviorMob::setStateId(mob::STATE_ID stateId) {
   if (getStateId() != stateId) {

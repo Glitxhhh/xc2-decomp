@@ -43,6 +43,7 @@ public:
   static bool createMenuObjCommonText(GfMenuObjCommonText::OpenKizunaParam &param);
   static bool createSalvage(GF_OBJ_HANDLE *handle);
   static bool createCollect(GF_OBJ_HANDLE *handle);
+  static bool createFieldTbox(GF_OBJ_HANDLE *handle);
   static bool createMapGimmick(GF_OBJ_HANDLE *handle);
   static bool createGrave(GF_OBJ_HANDLE *handle);
   static bool createJump(GF_OBJ_HANDLE *handle);
