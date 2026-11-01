@@ -64,16 +64,22 @@ static_assert(sizeof(unknown049) == 0xc, "");
 
 // Inferred role: model data mof blend info; original type name unknown.
 struct unknown050 {
-  u8 _00[0x8 - 0x0];
+  u32 unknown00; // Inferred role: data offset; original member name unknown.
+  s32 unknown04; // Inferred role: count; original member name unknown.
   s32 unknown08; // Inferred role: stride; original member name unknown.
-  u8 _0c[0x10 - 0xc];
+  u8 _0c[0xe - 0xc];
+  u8 unknown0e; // Inferred role: flags, bit 0 is copied into uniform memory; original member name unknown.
+  u8 _0f;
 };
 
 static_assert(sizeof(unknown050) == 0x10, "");
+static_assert(offsetof(unknown050, unknown04) == 0x4, "");
+static_assert(offsetof(unknown050, unknown0e) == 0xe, "");
 
 // Inferred role: model data mof blend header; original type name unknown.
 struct unknown051 {
-  u8 _00[0xc - 0x0];
+  u8 _00[0x8 - 0x0];
+  s32 unknown08; // Inferred role: info count; original member name unknown.
   u32 infoOffset;
 };
 

@@ -74,7 +74,10 @@ struct MdsMatInfoHeader {
   u32 unknown38; // Inferred role: material animation category; original member name unknown.
   u8 _3c[0x40 - 0x3c];
   u32 unknown40; // Inferred role: value offset; original member name unknown.
-  u8 _44[0x58 - 0x44];
+  u8 _44[0x4c - 0x44];
+  u32 unknown4c; // Inferred role: shader table offset; original member name unknown.
+  s32 unknown50; // Inferred role: shader table count; original member name unknown.
+  u8 _54[0x58 - 0x54];
   u16 unknown58; // Inferred role: first material callback; original member name unknown.
   u16 unknown5a; // Inferred role: material callback count; original member name unknown.
   u8 _5c[0x62 - 0x5c];
@@ -93,12 +96,34 @@ static_assert(offsetof(MdsMatInfoHeader, unknown20) == 0x20, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown30) == 0x30, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown38) == 0x38, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown40) == 0x40, "");
+static_assert(offsetof(MdsMatInfoHeader, unknown4c) == 0x4c, "");
+static_assert(offsetof(MdsMatInfoHeader, unknown50) == 0x50, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown58) == 0x58, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown5a) == 0x5a, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown62) == 0x62, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown64) == 0x64, "");
 
 static_assert(sizeof(MdsMatInfoHeader) == 0x74, "");
+
+struct MdsMatShaderTbl {
+  u32 unknown00; // Inferred role: technique index; original member name unknown.
+  u8 _04[0x08 - 0x04];
+  u32 unknown08; // Inferred role: flags, bit 0 has uniform values; original member name unknown.
+};
+
+static_assert(offsetof(MdsMatShaderTbl, unknown08) == 0x08, "");
+static_assert(sizeof(MdsMatShaderTbl) == 0x0c, "");
+
+struct MdsMatTechnique {
+  u8 _00[0x10 - 0x00];
+  u32 unknown10; // Inferred role: variable table offset; original member name unknown.
+  s32 unknown14; // Inferred role: variable count; original member name unknown.
+  u8 _18[0x44 - 0x18];
+};
+
+static_assert(offsetof(MdsMatTechnique, unknown10) == 0x10, "");
+static_assert(offsetof(MdsMatTechnique, unknown14) == 0x14, "");
+static_assert(sizeof(MdsMatTechnique) == 0x44, "");
 
 struct unknown091;
 struct MdoWrkVanishEffect;

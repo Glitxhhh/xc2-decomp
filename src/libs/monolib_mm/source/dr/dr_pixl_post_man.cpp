@@ -5,14 +5,21 @@
 #include "dr/dr_pixl_post_obj_capture.h"
 #include "dr/dr_pixl_post_obj_cube_map_ibl.h"
 #include "dr/dr_pixl_post_obj_cube_map_multi_ibl.h"
+#include "dr/dr_pixl_post_obj_depthof_field.h"
+#include "dr/dr_pixl_post_obj_exp_stencil.h"
 #include "dr/dr_pixl_post_obj_glass_br.h"
 #include "dr/dr_pixl_post_obj_histgram.h"
+#include "dr/dr_pixl_post_obj_motion_blur.h"
+#include "dr/dr_pixl_post_obj_motion_blur2.h"
 #include "dr/dr_pixl_post_obj_rain_drop.h"
+#include "dr/dr_pixl_post_obj_ssr.h"
 #include "dr/dr_pixl_post_obj_tmaa.h"
 #include "dr/dr_pixl_post_obj_tone_map.h"
 #include "dr/dr_pixl_post_obj_tssao.h"
+#include "dr/dr_pixl_post_obj_unbranch_to_depth.h"
 #include "dr/dr_pixl_post_obj_volume.h"
 #include "dr/dr_pixl_post_parm.h"
+#include "dr/dr_pixl_shadow_raytrace.h"
 #include "dr/dr_pixl_sky_dome.h"
 #include "dr/dr_pixl_toon_grad.h"
 #include "dr/dr_res_use_query_obj.h"
@@ -95,6 +102,28 @@ void DrPixlPostMan::renderDeferredFast_AfterTemporal() {
   }
 }
 
+void DrPixlPostMan::renderDeferredFast() {
+  bool isTemporal = unknown00->isTemporalUPSToGlobalIBL() || unknown00->unknown120[unknown00->unknown1c98]->m_TMAAOn;
+  if (getDownDepth() != nullptr) {
+    renderDownDepth(true, isTemporal, true);
+  }
+  if (unknownb8 != nullptr) {
+    unknownb8->render();
+  }
+  if (unknown80 != nullptr) {
+    unknown80->render();
+  }
+  if (unknown78 != nullptr) {
+    unknown78->render_beforeTemporal();
+  }
+  if (unknown88 != nullptr) {
+    unknown88->render_beforeTemporal();
+  }
+  if (unknown70 != nullptr) {
+    unknown70->render();
+  }
+}
+
 void DrPixlPostMan::fastRender() {
   if (unknown40 != nullptr) {
     unknown40->render();
@@ -152,6 +181,40 @@ void DrPixlPostMan::setSSAO(bool isSSAO) {
     unknownf8 |= FLAG_SSAO;
   } else if (unknownf8 & FLAG_SSAO) {
     unknownf8 &= ~FLAG_SSAO;
+  }
+}
+
+void DrPixlPostMan::setBlur(bool isBlur) {
+  if (isBlur) {
+    unknownf8 |= FLAG_BLUR | FLAG_DEPTH_DOWN;
+    if (unknown58 == nullptr) {
+      unknown58 = new (unknown00->unknown0c) DrPixlPostObjMotionBlur2(unknown00, unknown08, this);
+    }
+  } else if (unknownf8 & FLAG_BLUR) {
+    if (unknown50 != nullptr) {
+      delete unknown50;
+      unknown50 = nullptr;
+    }
+    if (unknown58 != nullptr) {
+      delete unknown58;
+      unknown58 = nullptr;
+    }
+    unknownf8 &= ~FLAG_BLUR;
+  }
+}
+
+void DrPixlPostMan::setDepthField(bool isDepthField) {
+  if (isDepthField) {
+    unknownf8 |= FLAG_DEPTH_FIELD | FLAG_DEPTH_DOWN;
+    if (unknown30 == nullptr) {
+      unknown30 = new (unknown00->unknown0c) DrPixlPostObjDepthofField(unknown00, unknown08, this);
+    }
+  } else if (unknownf8 & FLAG_DEPTH_FIELD) {
+    unknownf8 &= ~FLAG_DEPTH_FIELD;
+    if (unknown30 != nullptr) {
+      delete unknown30;
+      unknown30 = nullptr;
+    }
   }
 }
 

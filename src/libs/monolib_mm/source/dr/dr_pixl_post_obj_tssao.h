@@ -18,6 +18,7 @@ class DrPixlPostMan;
 
 class DrPixlPostObjTSSAO {
 public:
+  void render_beforeTemporal();
   void render_afterTemporal();
   void passUpScaling();
   void passUpScaleToMiddle();

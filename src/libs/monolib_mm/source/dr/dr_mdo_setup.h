@@ -16,7 +16,7 @@ struct MdsMatInfoHeader;
 struct MdsMpfMatInfoHeader;
 
 struct MdsMatVariableTbl {
-  u8 _00[0x02 - 0x00];
+  u16 unknown00; // Inferred role: variable type; original member name unknown.
   u16 unknown02; // Inferred role: value index; original member name unknown.
   u8 _04[0x06 - 0x04];
   u16 unknown06; // Inferred role: count; original member name unknown.
@@ -24,6 +24,7 @@ struct MdsMatVariableTbl {
 
 static_assert(offsetof(MdsMatVariableTbl, unknown02) == 0x02, "");
 static_assert(offsetof(MdsMatVariableTbl, unknown06) == 0x06, "");
+static_assert(sizeof(MdsMatVariableTbl) == 0x08, "");
 
 struct MdsMatValShaderCate {
   enum Flag {

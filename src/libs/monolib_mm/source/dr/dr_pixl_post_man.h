@@ -71,12 +71,16 @@ public:
   void renderRainDrop();
   void renderTMAA();
   void renderDeferredFast_AfterTemporal();
+  void renderDeferredFast();
+  void renderDownDepth(bool isDepth, bool isTemporal, bool isEtc);
   void fastRender();
   void capRender();
   void setGlassBreak(bool isGlassBreak);
   void setCaputureMode(bool isCapture);
   void setBloom(bool isBloom);
   void setSSAO(bool isSSAO);
+  void setBlur(bool isBlur);
+  void setDepthField(bool isDepthField);
   DrPixlRenderTarget *getOldDownDepth();
   void setToneMaping(bool isToneMaping);
   void setVolume(bool isVolume);
