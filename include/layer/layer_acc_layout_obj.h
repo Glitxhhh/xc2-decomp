@@ -15,7 +15,10 @@ namespace layer {
 
 class LayerBase;
 
-enum LAYER_ANCHOR {};
+enum LAYER_ANCHOR {
+  LAYER_ANCHOR_UNKNOWN_1 = 1, // Inferred role: anchor at the display bounds minimum; original enumerator name unknown.
+  LAYER_ANCHOR_UNKNOWN_2 = 2, // Inferred role: anchor centered in the display bounds; original enumerator name unknown.
+};
 
 class LayerAccLayoutObj : public LayerAccObjBase {
 public:

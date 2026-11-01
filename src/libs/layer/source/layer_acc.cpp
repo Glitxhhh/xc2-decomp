@@ -32,6 +32,7 @@
 #include "layer/layer_obj_util.h"
 #include "layer/layer_obj_work.h"
 #include "layer/layer_shd_manager.h"
+#include "layer/layer_view_port.h"
 #include "ml/critical_section.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
@@ -820,10 +821,10 @@ void LayerAccLayoutObj::setViewPortMode(bool viewPortMode) {
 
 void LayerAccLayoutObj::setViewPort(f32 x, f32 y, f32 width, f32 height) {
   LayerObjLayout *layout = static_cast<LayerObjLayout *>(unknown00);
-  layout->unknown2a0.unknown10 = x;
-  layout->unknown2a0.unknown14 = y;
-  layout->unknown2a0.unknown18 = width;
-  layout->unknown2a0.unknown1c = height;
+  layout->unknown2a0.unknown10.unknown00 = x;
+  layout->unknown2a0.unknown10.unknown04 = y;
+  layout->unknown2a0.unknown10.unknown08 = width;
+  layout->unknown2a0.unknown10.unknown0c = height;
 }
 
 void LayerAccLayoutObj::createRenderTarget(f32 x, f32 y, f32 width, f32 height, mm::Col4 clearColor) { static_cast<LayerObjLayout *>(unknown00)->createRenderTarget(x, y, width, height, clearColor); }

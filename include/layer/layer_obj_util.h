@@ -16,8 +16,11 @@ class CGLibDblUniformBlock;
 
 namespace layer {
 
+struct LayerRenderView;
 struct LayerResMatrix;
 struct LayerResColor;
+struct LayerResViewPortInfo;
+struct LayerViewPort;
 struct LyrLayoutPosData;
 
 enum LayerUniType {
@@ -64,7 +67,7 @@ struct LayerResDispInfo {
   // Inferred helper: empties the bounds before calcDispInfo grows them; original name unknown.
   void unknown001() {
     unknown00 = unknown04 = -100000.0f;
-    unknown08 = mm::Pnt<f32>(100000.0f, 100000.0f);
+    unknown08.x = unknown08.y = 100000.0f;
   }
 
   f32 unknown00;          // Inferred role: max x; original member name unknown.
@@ -78,6 +81,9 @@ static_assert(sizeof(LayerResDispInfo) == 0x10, "");
 class LayerObjUtil {
 public:
   static void calcDispInfo(LayerResDispInfo &disp, const LayerResMatrix &matrix, const LayerResRenderInfo &info);
+  static void calcLayoutDispInfo(LayerResDispInfo &disp, const LayerResMatrix &matrix, const LayerResRenderInfo &info);
+  static void calcLayerRenderView(LayerRenderView &result, LayerResViewPortInfo &viewPort, grlib::CGLibDblUniformBlock *&uniform, const LayerViewPort &port, const LayerRenderView *view,
+                                  const LayerResMatrix *matrix);
   static void releaseWorldMatrixUniform(grlib::CGLibDblUniformBlock *&uniform);
   static void calcLayerColor(LayerResColor &result, const LayerResColor &base, const LayerResColor &parent);
   static void updateUnitUniformBlock(f32 *uniform);

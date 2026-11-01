@@ -32,6 +32,13 @@
 
 namespace layer {
 
+namespace {
+
+// Inferred role: blend index of s_resSwfBlend for each blend of a draw entry node; original name unknown.
+const u32 unknown019[] = {0, 1};
+
+} // namespace
+
 LayerObjTopDef::LayerObjTopDef(const char *name) : unknown308(this) {
   unknownb8 = nullptr;
   unknown18 = LAYER_OBJ_TYPE_OBJ;
@@ -327,5 +334,60 @@ void LayerObjTopDef::updateResCheck() {
 void LayerObjTopDef::alphaRender() {}
 
 void LayerObjTopDef::lastRender() {}
+
+void LayerObjTopDef::finalRender() {
+  if (unknown270 != nullptr) {
+    unknown270->begin();
+  }
+  LayerShdManager *shader = LayerManager::get()->unknown58;
+  const LayerObjTopMaskObj *mask = unknown248;
+  if (mask == nullptr || (mask->unknowna8 & 0x90000) != 0) {
+    if (unknown298->unknown58 == nullptr) {
+      shader->setShaderMaskOff();
+      shader->resetViewPort();
+    } else {
+      shader->setViewPort(unknown298->unknown58);
+    }
+  } else {
+    if (mask->isClip()) {
+      return;
+    }
+    shader->setShaderMaskMode(mask);
+  }
+  if (unknown2ac == 5) {
+    shader->unknown4f8 = 2;
+  } else {
+    shader->unknown003(LayerShdManager::s_resDefBlend[unknownc5]);
+    shader->unknown4f8 = 1;
+  }
+  if (unknown2a8 != 0) {
+    shader->unknown4f2 = 2;
+  } else {
+    shader->unknown4f2 = 1;
+  }
+  shader->setSecTexture(unknown220[2]);
+  shader->unknown004(this);
+  const unknown017 *icon = reinterpret_cast<const unknown017 *>(unknown298->unknown48);
+  const u32 *state = unknown298->unknown60;
+  if (unknown2ac == 5) {
+    for (s32 i = 0; i < unknown298->unknown50; i++, state++, icon++) {
+      if (*state & 0x1) {
+        const LayerResNode &node = unknown298->unknown70[icon->unknown02];
+        if (node.unknown36 & 0x2) {
+          shader->unknown003(LayerShdManager::s_resSwfBlend[unknown019[node.unknown37]]);
+        } else {
+          shader->unknown003(LayerShdManager::s_resSwfBlend[unknownc5]);
+        }
+        renderMesh(&(*unknown298->unknown68)[i], &reinterpret_cast<const LyrMeshData *>(unknown298->unknown18)[icon->unknown00]);
+      }
+    }
+  } else {
+    for (s32 i = 0; i < unknown298->unknown50; i++, state++, icon++) {
+      if (*state & 0x1) {
+        renderMesh(&(*unknown298->unknown68)[i], &reinterpret_cast<const LyrMeshData *>(unknown298->unknown18)[icon->unknown00]);
+      }
+    }
+  }
+}
 
 } // namespace layer

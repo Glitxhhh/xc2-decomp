@@ -13,8 +13,8 @@ namespace layer {
 
 LayerObjLayout::LayerObjLayout() {
   memset(&unknown2a0, 0, sizeof(unknown2a0));
-  unknown2a0.unknown18 = 1.0f;
-  unknown2a0.unknown1c = 1.0f;
+  unknown2a0.unknown10.unknown08 = 1.0f;
+  unknown2a0.unknown10.unknown0c = 1.0f;
   unknown2a0.unknown20 = 0;
   unknown3f8 = nullptr;
   unknown3f0 = nullptr;
@@ -70,10 +70,10 @@ void LayerObjLayout::workLayoutRelease() {
 void LayerObjLayout::createRenderTarget(f32 x, f32 y, f32 width, f32 height, mm::Col4 clearColor) {
   unknown001 &target = unknown2a0.unknown70[LayerManager::s_nStkIdx];
   target.unknown00 = 0x9;
-  target.unknown04 = x;
-  target.unknown08 = y;
-  target.unknown0c = width;
-  target.unknown10 = height;
+  target.unknown04.unknown00 = x;
+  target.unknown04.unknown04 = y;
+  target.unknown04.unknown08 = width;
+  target.unknown04.unknown0c = height;
   target.unknown28 = clearColor;
   unknown2a0.unknown70[LayerManager::s_nStkIdx].unknown18 = new (LayerManager::get()->unknown28) grlib::CGLibRenderTarget();
 }

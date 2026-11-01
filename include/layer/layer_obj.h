@@ -67,7 +67,7 @@ struct LayerResUpdateInfo {
   const LayerResColor *unknown48;      // Inferred role: parent color; original member name unknown.
   bool unknown50;                      // Inferred role: parent is applied; original member name unknown.
   LAYER_SPACE_TYPE unknown54;          // Inferred role: parent space; original member name unknown.
-  u8 unknown58;                        // Inferred role: parent blend type; original member name unknown.
+  u32 unknown58;                       // Inferred role: parent blend type; original member name unknown.
   LayerResDispInfo unknown5c;          // Inferred role: display bounds; original member name unknown.
   const LayerObjTopMaskObj *unknown70; // Inferred role: parent mask object; original member name unknown.
 };

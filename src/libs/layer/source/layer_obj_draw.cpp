@@ -12,8 +12,8 @@ void LayerObjDraw::renderMesh(grlib::CGLibDblUniformBlock *uniform, const LyrMes
   u32 count = mesh->unknown1a;
   if (count != 0) {
     const LyrDrawData *draw = reinterpret_cast<const LyrDrawData *>(unknown298->unknown10) + mesh->unknown18;
-    for (u32 i = 0; i < count; i++) {
-      (this->*s_pCallDraw[draw[i].unknown0d])(uniform, &draw[i]);
+    for (u32 i = 0; i < count; i++, draw++) {
+      (this->*s_pCallDraw[draw->unknown0d])(uniform, draw);
     }
   }
 }

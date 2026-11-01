@@ -106,6 +106,7 @@ public:
   static const u32 s_eFetchTbl[];
   static void (*s_CallBlend[])();
   static const u32 s_resDefBlend[];
+  static const u32 s_resSwfBlend[];
   void initColor(u32 index);
   void initTex(u32 index);
   void initFont(u32 index);
