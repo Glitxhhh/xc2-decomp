@@ -3,6 +3,8 @@
 #include <new>
 
 #include "framework/sound/sound_manager.h"
+#include "framework/sound/sound_pack.h"
+#include "gf/asset/gf_asset_resource.h"
 #include "gf/data/gf_bdat_bgm.h"
 #include "gf/data/gf_data_manager.h"
 #include "gf/data/gf_data_option.h"
@@ -455,6 +457,27 @@ bool GfSound::isPreparing(SoundHandle handle) const {
     return fw::SoundManager::get()->isPreparing(handle.unknown00);
   }
   return false;
+}
+
+fw::SoundPack *GfSound::createObjSePack(GfAssetResource *resource) {
+  if (resource == nullptr || !resource->isValidData()) {
+    return nullptr;
+  }
+  fw::SoundPack::SetupInfo info;
+  info.unknown84 = CATEGORY_CHARACTER_SE;
+  info.unknowna4 = 8;
+  info.unknown00 = resource->getAssetName();
+  info.unknown90 = resource->getAssetName();
+  info.unknown98 = resource->getAssetData();
+  info.unknowna0 = resource->getAssetSize();
+  return fw::SoundPack::create(info);
+}
+
+void GfSound::destroyObjSePack(fw::SoundPack *&pack) {
+  if (pack != nullptr) {
+    pack->release();
+    pack = nullptr;
+  }
 }
 
 void GfSound::gevPause(u32 resumeBits, u32 pauseBits) {

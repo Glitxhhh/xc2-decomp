@@ -39,6 +39,7 @@ public:
     u32 unknowna4;                  // Inferred role: max sound; original member name unknown.
   };
 
+  static SoundPack *create(const SetupInfo &info);
   static SoundPack *createFromStream(mm::mtl::IAllocator *allocator, const SetupInfo &info);
   ~SoundPack() override;
   void stopAll();

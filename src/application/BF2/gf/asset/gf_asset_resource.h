@@ -46,6 +46,7 @@ public:
   void destroyResource();
   void importSample();
   static void checkMemoryForDebug();
+  bool isValidData() const;
   void *getAssetData() const;
   u32 getAssetSize() const;
   const char *getAssetName() const;

@@ -7,6 +7,8 @@ namespace gf {
 class GfMenuObjCommonList : public GfMenuObject {
 public:
   static void close();
+  static void moveCursor(u32 handle, int index);
+  static void setupPlugin(u32 handle);
   GfMenuObjCommonList(u32 handle);
   ~GfMenuObjCommonList() override;
   void initialize() override;

@@ -24,6 +24,7 @@ class StateFieldLure : public GfStateBase {
   void enter(GfComBehaviorPc *behavior, ai::State *previous);
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
+  void notifyLure(GfComBehaviorPc *behavior);
 
   GF_OBJ_HANDLE *unknown18; // Inferred role: target; original member name unknown.
 };

@@ -46,7 +46,9 @@ enum {
   MSG_OBJECT_LURE = 0x1000041,
 };
 
-struct MsgObjectLure : fw::Message {};
+struct MsgObjectLure : fw::Message {
+  MsgObjectLure() : fw::Message(MSG_OBJECT_LURE, 0x40) {}
+};
 
 // Layout evidence: the constructor at 0x7100514074 initializes the members below in this order, the allocation in
 // GfObjFactory::createComponent is 0x5510 bytes with 16 byte alignment, and the vtable at 0x119bdd8 holds, after the

@@ -1,5 +1,7 @@
 #pragma once
 #include "gf/data/gf_data_blade.h"
+#include "gf/game/quest/gf_quest_id.h"
+#include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 #include <stddef.h>
@@ -12,7 +14,6 @@ namespace gf {
 
 struct GfSetupParam;
 struct AchievQuest;
-struct QuestID;
 struct GF_OBJ_HANDLE;
 struct MsgObjectNotifyDamage;
 
@@ -30,6 +31,12 @@ public:
 
 class GfAchievManager : public mm::mtl::PtrSingleton<GfAchievManager> {
 public:
+  struct IncQuest {
+    QuestID unknown00; // Inferred role: quest; original member name unknown.
+    u32 unknown04;     // Inferred role: count; original member name unknown.
+    u32 unknown08;     // Inferred role: added count; original member name unknown.
+  };
+
   GfAchievManager(const GfSetupParam &param);
   ~GfAchievManager();
   static void build(const GfSetupParam &param);
@@ -37,17 +44,17 @@ public:
   void initialize(const GfSetupParam &param);
   void finalize();
   void update(const fw::UpdateInfo &info);
+  void flushEventIncAchiev(const IncQuest &incQuest);
   void incleaseAchievCount(QuestID quest, u32 count, u32 add);
   void gevItemAdd(u32 item, int count);
   void gevBladeActivate(u32 blade, ActivateType activateType, ActivateType oldActivateType);
   void gevMercenariesMissionFlag(u32 mission, u32 flag, u32 value);
 
-  u8 _08[0x1808 - 0x08];
-  u64 unknown1808; // Inferred role: unknown; original member name unknown.
-  u64 unknown1810; // Inferred role: unknown; original member name unknown.
+  mm::mtl::FixedQueue<IncQuest, 512> unknown08; // Inferred role: pending achievement count increments; original member name unknown.
 };
 
-static_assert(offsetof(GfAchievManager, unknown1808) == 0x1808, "");
+static_assert(sizeof(GfAchievManager::IncQuest) == 0xc, "");
+static_assert(offsetof(GfAchievManager, unknown08) == 0x08, "");
 static_assert(sizeof(GfAchievManager) == 0x1818, "");
 
 } // namespace gf

@@ -22,6 +22,7 @@ namespace gf {
 
 struct GF_OBJ_HANDLE;
 struct GF_SE_CATEGORY_HANDLE;
+class GfAssetResource;
 struct GfSetupParam;
 
 GF_SE_CATEGORY_HANDLE *const INVALID_CATEGORY_HANDLE = reinterpret_cast<GF_SE_CATEGORY_HANDLE *>(-1);
@@ -209,6 +210,8 @@ public:
   f32 getVolume(SoundHandle handle);
   bool isPlaying(SoundHandle handle) const;
   bool isPreparing(SoundHandle handle) const;
+  fw::SoundPack *createObjSePack(GfAssetResource *resource);
+  void destroyObjSePack(fw::SoundPack *&pack);
   void gevPause(u32 resumeBits, u32 pauseBits) override;
   void gevLayerPause(u32 layer, bool isPause) override;
   void setPauseGameSe(bool isPause);
