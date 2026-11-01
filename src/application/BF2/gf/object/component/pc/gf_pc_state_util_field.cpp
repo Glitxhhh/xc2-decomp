@@ -229,6 +229,14 @@ void StateUtilField::setAccessFlag(GfComBehaviorPc &behavior, bool isEnable) {
   }
 }
 
+GfObj *StateUtilField::getAccessTarget(GfComBehaviorPc &behavior) {
+  AccessPlugin *plugin = behavior.unknown001<AccessPlugin>(4);
+  if (plugin != nullptr) {
+    return GfObjUtil::getObj(plugin->unknown10);
+  }
+  return nullptr;
+}
+
 void StateUtilField::setEnableLure(GfComBehaviorPc &behavior, bool isEnable) {
   LurePlugin *plugin = behavior.unknown001<LurePlugin>(15);
   if (plugin != nullptr) {

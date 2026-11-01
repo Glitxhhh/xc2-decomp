@@ -2,6 +2,7 @@
 
 #include "ai/ai_state.h"
 #include "framework/object/updatable_object.h"
+#include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/gf_pc_state_id.h"
@@ -28,6 +29,12 @@ void StateFieldWaterDive::leave(GfComBehaviorPc *behavior, ai::State *next) {
 }
 
 void StateFieldWaterDive::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info) {}
+
+void StateFieldWaterDive::onDead(GfComBehaviorPc *behavior, MsgObjectNotifyDead &message) {
+  StateUtil::notifyDead(*behavior, message, true);
+  behavior->unknown08->getComponent<GfComAsm>()->execCmd("C_waterdead", ANIM_LAYER_BASE);
+  reqState(STATE_ID_FIELD_WATER_DEAD_SINK);
+}
 
 } // namespace pc
 } // namespace gf

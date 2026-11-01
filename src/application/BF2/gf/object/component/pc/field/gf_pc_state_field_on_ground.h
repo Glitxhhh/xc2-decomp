@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "gf/gf_state.h"
 #include "gf/object/component/enemy/gf_enemy_state_battle.h"
 #include "types.h"
@@ -23,9 +25,13 @@ class StateFieldOnGround : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
 
-  u8 _18[0x20 - 0x18];
+  bool unknown18; // Inferred role: set when the next state keeps the access flag; original member name unknown.
+  bool unknown19; // Inferred role: set when the next state keeps the lure; original member name unknown.
+  u8 _1a[0x20 - 0x1a];
 };
 
+static_assert(offsetof(StateFieldOnGround, unknown18) == 0x18, "");
+static_assert(offsetof(StateFieldOnGround, unknown19) == 0x19, "");
 static_assert(sizeof(StateFieldOnGround) == 0x20, "");
 
 } // namespace pc

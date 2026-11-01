@@ -106,7 +106,8 @@ public:
   u32 unknown11_4 : 1; // Inferred role: big jump info valid; original member name unknown.
   u32 unknown11_5 : 1; // Inferred role: warp info valid; original member name unknown.
   u32 unknown11_6 : 1; // Inferred role: wall jump info valid; original member name unknown.
-  u32 : 2;
+  u32 : 1;
+  u32 unknown12_0 : 1; // Inferred role: under ground wall adsorption; original member name unknown.
   u32 unknown12_1 : 1; // Inferred role: field status reset; original member name unknown.
   u32 : 14;
   WALL_MOVE_MODE unknown14; // Inferred role: wall move mode; original member name unknown.

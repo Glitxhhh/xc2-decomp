@@ -36,6 +36,7 @@ public:
   static void setFallDamageDisable(GfComBehaviorPc &behavior, bool isDisable);
   static void setEnableDownIK(GfComBehaviorPc &behavior, bool isEnable);
   static void setEnableLookIK(GfComBehaviorPc &behavior, bool isEnable);
+  static void setEnableSpineIK(GfComBehaviorPc &behavior, bool isEnable);
   static void changePlacementDownDist(GfComBehaviorPc &behavior, f32 distance);
   static void resetPlacementDownDist(GfComBehaviorPc &behavior);
   static void changeGroundAnglesForMotion(GfComBehaviorPc &behavior, const mm::Vec3 &angles);
@@ -43,6 +44,7 @@ public:
   static bool testEnvSensor(GfComBehaviorPc &behavior, EnviromentSensor::Flag flag);
   static void setEnableAttach(GfComBehaviorPc &behavior, bool isEnable);
   static void setEnableTimer(GfComBehaviorPc &behavior, bool isEnable);
+  static void setEnableHeadDetectForSwitcher(GfComBehaviorPc &behavior, bool isEnable);
   static void setActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type, bool isActive);
   static const f32 *getActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type);
   static void switchPlacementIK(GfComBehaviorPc &behavior, bool isOn);

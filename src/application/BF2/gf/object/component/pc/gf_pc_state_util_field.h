@@ -15,6 +15,7 @@ class GfComAsm;
 class GfComBehaviorPc;
 class GfComPropertyPc;
 class GfComponent;
+class GfObj;
 struct GF_OBJ_HANDLE;
 
 struct MsgPcFieldNotifyWall : fw::Message {
@@ -57,7 +58,9 @@ public:
   static void setEnableFallIntoColi(GfComBehaviorPc &behavior, bool isEnable);
   static bool isWalkMode(GfComPropertyPc &property);
   static void setAccessFlag(GfComBehaviorPc &behavior, bool isEnable);
+  static GfObj *getAccessTarget(GfComBehaviorPc &behavior);
   static void setLookAtFlag(GfComBehaviorPc &behavior, bool isEnable);
+  static void setSlideDirForce(GfComPropertyPc &property);
   static void setEnableLure(GfComBehaviorPc &behavior, bool isEnable);
   static GF_OBJ_HANDLE *getLureTargetHandle(GfComBehaviorPc &behavior);
   static bool isStop(GfComPropertyPc &property, u32 noInputFrameCount);

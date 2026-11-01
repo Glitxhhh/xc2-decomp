@@ -13,6 +13,7 @@ struct UpdateInfo;
 namespace gf {
 
 class GfComBehaviorPc;
+struct MsgObjectNotifyDead;
 
 namespace pc {
 
@@ -21,6 +22,7 @@ class StateFieldWaterDive : public GfStateBase {
   void enter(GfComBehaviorPc *behavior, ai::State *previous);
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
+  void onDead(GfComBehaviorPc *behavior, MsgObjectNotifyDead &message);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
 };
 

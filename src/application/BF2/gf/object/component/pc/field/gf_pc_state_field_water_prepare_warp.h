@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "gf/gf_state.h"
 #include "gf/object/component/enemy/gf_enemy_state_battle.h"
 #include "types.h"
@@ -24,9 +26,11 @@ class StateFieldWaterPrepareWarp : public GfStateBase {
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
 
-  u8 _18[0x20 - 0x18];
+  bool unknown18; // Inferred role: water warp requested; original member name unknown.
+  u8 _19[0x20 - 0x19];
 };
 
+static_assert(offsetof(StateFieldWaterPrepareWarp, unknown18) == 0x18, "");
 static_assert(sizeof(StateFieldWaterPrepareWarp) == 0x20, "");
 
 } // namespace pc
