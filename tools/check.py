@@ -1041,7 +1041,19 @@ def check_all(demangled, scope=None, verbose=True):
     per_object = [entry for entry in per_object if entry[2]]
     unknown = unknown_functions(objects, demangled, scope)
     all_funcs = {f for _, _, funcs in per_object for f in funcs}
-    missing = sorted({demangled[m] for m in demangled if in_scope(demangled[m], scope) and m not in all_funcs}) if scope else []
+    # A game name sharing its address with a defined one (a C1/D1 alias of a C2/D2 body) is not left to decompile.
+    addresses = {}
+    if scope:
+        for line in defined_symbols(TARGET_ELF).splitlines():
+            parts = line.split()
+            if len(parts) == 3:
+                addresses[parts[2]] = parts[0]
+    defined_addresses = {addresses[f] for f in all_funcs if f in addresses}
+
+    def is_defined_alias(name, funcs):
+        return name in addresses and addresses[name] in defined_addresses
+
+    missing = sorted({demangled[m] for m in demangled if in_scope(demangled[m], scope) and m not in all_funcs and not is_defined_alias(m, all_funcs)}) if scope else []
     if not all_funcs and not scope:
         sys.exit("no game function defined under src/")
     rows = []
