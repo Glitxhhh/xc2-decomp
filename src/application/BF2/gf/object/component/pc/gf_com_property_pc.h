@@ -81,6 +81,7 @@ public:
   bool testEnvSensorCheckFlags(EnviromentSensor::Flag flag);
   EnviromentSensor *getEnvSensor() const;
   void resetInput();
+  void setInputDirPow(const mm::Vec3 &direction, f32 power);
   void procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message);
   void procMsgPcFieldNotifyChangePlayerID(fw::MessageObject *object, MsgPcFieldNotifyChangePlayerID &message);
   void procMsgPcFieldWarpCancel(fw::MessageObject *object, MsgPcFieldWarpCancel &message);

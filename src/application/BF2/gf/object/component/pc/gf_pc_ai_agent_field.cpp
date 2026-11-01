@@ -2,11 +2,19 @@
 
 #include <math.h>
 
+#include "framework/memory/allocator.h"
 #include "framework/message/message_object.h"
 #include "framework/navi/navi_manager.h"
 #include "framework/navi/navi_util.h"
 #include "fw/fw_param_manager.h"
 #include "gf/game/gf_game_player_formation.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_follow_task_field.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_idle_task_field.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_jump_task_field.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_retreat_task_field.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_sensor_task_field.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_wall_task_field.h"
+#include "gf/object/component/pc/field/ai/gf_pc_ai_warp_task_field.h"
 #include "gf/object/component/pc/field/gf_pc_param_field.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
@@ -17,12 +25,82 @@
 #include "mm_math/mm_quat.h"
 #include "navi/nvmsh_ac_obj.h"
 
+namespace mm {
+namespace mtl {
+class IAllocator;
+} // namespace mtl
+} // namespace mm
+
 namespace gf {
 namespace pc {
 
 AIAgentField::AIAgentField() : unknown00(nullptr) {}
 
 AIAgentField::~AIAgentField() {}
+
+void AIAgentField::setup(GfComPropertyPc &property) {
+  unknown00 = fw::NaviManager::get()->createObject();
+  unknown88 = fw::ParamManager::get()->unknown488;
+  mm::mtl::IAllocator *allocator = fw::Allocator::getProcAllocator();
+  unknown08.beginSetup(20, allocator);
+  unknown08.unknown003<BlackBoardField>();
+  unknown08.createComposite<ai::ParallelNode>(0, "root_sequence", 3);
+  unknown08.createTask<TaskFieldSensor>(1, "sensor_task");
+  unknown08.createComposite<ai::SelectorNode>(2, "check_warp_selector", 3);
+  unknown08.createTask<TaskFieldCheckWarp>(3, "check_warp_task");
+  unknown08.createTask<TaskFieldCheckWarpBattleWaterDead>(4, "check_warp_water_dead_task");
+  unknown08.createTask<TaskFieldCheckWarpFallDead>(5, "check_warp_fall_dead_task");
+  unknown08.createComposite<ai::SelectorNode>(6, "move_selector", 6);
+  unknown08.createTask<TaskFieldJump>(14, "jump_task");
+  unknown08.createComposite<ai::SequenceNode>(15, "follow_sequence", 2);
+  unknown08.createTask<TaskFieldFollowTarget>(16, "follow_target_task");
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  if (formation->unknown1a0[property.unknown38].unknown10) {
+    unknown08.createTask<TaskFieldFollowMainPc>(17, "follow_task");
+    unknown08.createComposite<ai::SelectorNode>(7, "wall_selector", 5);
+    unknown08.createTask<TaskFieldWallFall>(8, "fall_wall_task");
+    unknown08.createTask<TaskFieldWallJumpWait>(9, "wall_jump_wait_task");
+    unknown08.createTask<TaskFieldWallPrepare>(10, "prepare_wall_task");
+    unknown08.createTask<TaskFieldWallEscape>(11, "escape_wall_task");
+    unknown08.createTask<TaskFieldWallFollow>(12, "follow_wall_task");
+    unknown08.createTask<TaskFieldIdleTurn>(18, "idle_turn_task");
+    unknown08.createTask<TaskFieldIdle>(19, "idle_task");
+    unknown08.endSetup();
+    unknown08.attachRoot(0);
+    unknown08.attachComposite(0, 1, 0);
+    unknown08.attachComposite(0, 2, 1);
+    unknown08.attachComposite(2, 3, 0);
+    unknown08.attachComposite(2, 4, 1);
+    unknown08.attachComposite(2, 5, 2);
+    unknown08.attachComposite(0, 6, 2);
+    unknown08.attachComposite(6, 7, 0);
+    unknown08.attachComposite(7, 8, 0);
+    unknown08.attachComposite(7, 10, 1);
+    unknown08.attachComposite(7, 9, 2);
+    unknown08.attachComposite(7, 11, 3);
+    unknown08.attachComposite(7, 12, 4);
+  } else {
+    unknown08.createTask<TaskFieldFollowBuddyPc>(17, "follow_task");
+    unknown08.createTask<TaskFieldRetreat>(13, "retreat_task");
+    unknown08.createTask<TaskFieldIdleTurn>(18, "idle_turn_task");
+    unknown08.createTask<TaskFieldIdle>(19, "idle_task");
+    unknown08.endSetup();
+    unknown08.attachRoot(0);
+    unknown08.attachComposite(0, 1, 0);
+    unknown08.attachComposite(0, 2, 1);
+    unknown08.attachComposite(2, 3, 0);
+    unknown08.attachComposite(2, 4, 1);
+    unknown08.attachComposite(2, 5, 2);
+    unknown08.attachComposite(0, 6, 2);
+    unknown08.attachComposite(6, 13, 2);
+  }
+  unknown08.attachComposite(6, 14, 1);
+  unknown08.attachComposite(6, 15, 3);
+  unknown08.attachComposite(15, 16, 0);
+  unknown08.attachComposite(15, 17, 1);
+  unknown08.attachComposite(6, 18, 4);
+  unknown08.attachComposite(6, 19, 5);
+}
 
 void AIAgentField::cleanup(GfComPropertyPc &property) {
   unknown08.cleanup();

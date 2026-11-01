@@ -26,16 +26,18 @@ public:
     }
   }
 
+  // __LINE__ must be 131 as in the original header: it is the line argument of the assert (ai::BehaviorTree::createTask).
+#line 130
+  T &operator*() const {
+    MM_ASSERT(_ptr != 0);
+    return *_ptr;
+  }
+
   // __LINE__ must be 132 as in the original header: it is the line argument of the assert.
 #line 131
   T *operator->() const {
     MM_ASSERT(_ptr != 0);
     return _ptr;
-  }
-
-  T &operator*() const {
-    MM_ASSERT(_ptr != 0);
-    return *_ptr;
   }
 
   T *get() const { return _ptr; }

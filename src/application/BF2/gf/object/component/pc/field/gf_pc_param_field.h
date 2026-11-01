@@ -86,5 +86,12 @@ struct ForceWarpAiParam {
 static_assert(offsetof(ForceWarpAiParam, waitTimeRange) == 0x04, "");
 static_assert(sizeof(ForceWarpAiParam) == 0x08, "");
 
+// Field names and offsets from the reflection built by gf::pc::JumpAIParam::createReflection.
+struct JumpAIParam {
+  f32 minVel;
+};
+
+static_assert(sizeof(JumpAIParam) == 0x04, "");
+
 } // namespace pc
 } // namespace gf

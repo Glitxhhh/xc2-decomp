@@ -3,18 +3,14 @@
 
 #include "ai/ai_behavior_tree.h"
 #include "fw/fw_transform.h"
+#include "mm/mm_std_base.h"
 #include "mm_math/mm_plane.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/rtti.h" // IWYU pragma: keep
 #include "types.h"
-
-namespace mm {
-namespace mtl {
-class RTTI;
-} // namespace mtl
-} // namespace mm
 
 namespace fw {
 class MessageObject;
@@ -62,9 +58,9 @@ public:
   mm::Vec3 unknown90;                               // Inferred role: wall leave position; original member name unknown.
   mm::mtl::FixedQueue<fw::Transform, 10> unknowna0; // Inferred role: wall move history; original member name unknown.
   mm::Vec3 unknown1f0;                              // Inferred role: last position on the navi mesh; original member name unknown.
-  mm::mtl::unknown027<32>
-      unknown200; // Inferred role: flags (bit 4 on wall, 5 wall jump, 6 high jump, 7 water warp, 8 wall jump start, 9 water warp buddy, 10 leader moving); original member name unknown.
-  f32 unknown204; // Inferred role: wait time of the forced warp; original member name unknown.
+  mm::mtl::unknown027<32> unknown200; // Inferred role: flags (bit 3 idle turn request, 4 on wall, 5 wall jump, 6 high jump, 7 water warp, 8 wall jump start, 9 water warp buddy, 10 leader moving);
+                                      // original member name unknown.
+  f32 unknown204;                     // Inferred role: wait time of the forced warp; original member name unknown.
 };
 
 static_assert(offsetof(BlackBoardField, unknown08) == 0x08, "");
@@ -79,6 +75,22 @@ static_assert(offsetof(BlackBoardField, unknown1f0) == 0x1f0, "");
 static_assert(offsetof(BlackBoardField, unknown200) == 0x200, "");
 static_assert(offsetof(BlackBoardField, unknown204) == 0x204, "");
 static_assert(sizeof(BlackBoardField) == 0x210, "");
+
+// Inferred role: defines the checkCondition and execute overrides of a gf::pc::TaskField class from its testCondition and
+// update; original name unknown. Both overrides of a class assert "pBB" on the same header line, the line of the class
+// declaration that uses it (gf_pc_ai_idle_task_field.h line 23 for TaskFieldIdle).
+#define UNKNOWN001                                                                                                                                                                                     \
+  bool checkCondition(const ai::BlackBoard &blackBoard) override {                                                                                                                                     \
+    const BlackBoardField *pBB = mm::mtl::dynamicCast<const BlackBoardField>(&blackBoard);                                                                                                             \
+    MM_ASSERT(pBB);                                                                                                                                                                                    \
+    return testCondition(*pBB);                                                                                                                                                                        \
+  }                                                                                                                                                                                                    \
+  bool execute(ai::BlackBoard &blackBoard) override {                                                                                                                                                  \
+    BlackBoardField *pBB = mm::mtl::dynamicCast<BlackBoardField>(&blackBoard);                                                                                                                         \
+    MM_ASSERT(pBB);                                                                                                                                                                                    \
+    update(*pBB);                                                                                                                                                                                      \
+    return true;                                                                                                                                                                                       \
+  }
 
 class AIAgentField {
 public:
