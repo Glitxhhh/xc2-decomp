@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_object.h"
+#include "gf/object/gf_obj_handle.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
 
@@ -26,7 +27,7 @@ public:
   };
 
   struct OpenParam : NextParam {
-    OpenParam() : unknown10(nullptr), unknown18(0) {}
+    OpenParam() : unknown10(nullptr), unknown18(0), unknown20(INVALID_HANDLE) {}
 
     u8 *unknown10;            // Inferred role: name bdat; original member name unknown.
     u32 unknown18;            // Inferred role: name id; original member name unknown.
@@ -64,6 +65,7 @@ public:
   };
 
   static void openEvent(GfMenuCallContext *context, const OpenParam &param);
+  static void openAutoTalk(GfMenuCallContext *context, const OpenParam &param);
   static void openEventSelect(GfMenuCallContext *context, const OpenSelectParam &param);
   static void close(GfMenuCallContext *context, bool isImmediate);
   static void nextEvent(GfMenuCallContext *context, const NextParam &param);

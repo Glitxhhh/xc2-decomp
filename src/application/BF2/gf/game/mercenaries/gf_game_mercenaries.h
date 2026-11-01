@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/event/gf_event.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -30,6 +31,7 @@ public:
   void updateMercenariesTeam(const fw::UpdateInfo &info);
   void rebuildAutoStartList();
   static void findMemberForMission(u16 blade);
+  static bool getMission(mm::mtl::FixedVector<u16, 500> &missions, u32 missionFlag);
   static bool getZoneMission(mm::mtl::FixedVector<u16, 500> &missions, u32 zone);
   static void cancelMission(u32 mission);
   static void addPoint(u32 point);
@@ -48,6 +50,9 @@ public:
   static void applyDestroyMission();
   static void execMissionAchievementForBlade(u32 mission);
   void applyMercenariesLevel(const QuestCompleteParam &param);
+  static u32 getRewardGold(u32 mission, bool);
+  static u32 getRewardExp(u32 mission, bool);
+  static u32 getRewardDevelop(u32 mission, bool);
   static u32 getRewardDevelopZone(u32 mission);
   static u32 getRewardTrust(u32 mission);
   static u16 getRewardIdeaPoint(u32 mission);
@@ -58,6 +63,10 @@ public:
   static void setupNewGameParam();
   static void setMissionCompleteForce(u32 mission);
   static void setMissionTimeForDebug(u32 mission, u32 time);
+  static u32 getRewardGoldHosei(u32 mission, bool);
+  static u32 getRewardFSkillHosei(u32 mission);
+  static u32 getRewardDevelopHosei(u32 mission, bool);
+  static bool getRewardItem(u32 &item, u32 &number, u32 mission, QUEST_REWARD type);
   static bool isAddTeamMember(u32 team);
   static bool isCompleteMission();
   static bool orderMission(u32 mission);

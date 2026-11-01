@@ -16,6 +16,15 @@ struct GfQuestScinario;
 struct GfQuestTaskLogResult;
 struct QuestTaskParam;
 
+// Index of GfQuestReward::unknown00.
+enum QUEST_REWARD {
+  QUEST_REWARD_UNKNOWN_0 = 0, // Inferred role: gold.
+  QUEST_REWARD_UNKNOWN_3 = 3, // Inferred role: experience.
+  QUEST_REWARD_UNKNOWN_4 = 4, // Inferred role: development.
+  QUEST_REWARD_UNKNOWN_5 = 5, // Inferred role: trust.
+  QUEST_REWARD_UNKNOWN_6 = 6, // Inferred role: idea.
+};
+
 struct GfQuestReward {
   struct Param {
     Param() : _44() {}
@@ -31,6 +40,7 @@ struct GfQuestReward {
         u16 unknown44; // Role and original member name unknown.
         u16 m_developZone;
       };
+      u32 unknown44_u32; // Inferred role: whole value of gold and exp rewards; original member name unknown.
     };
   };
 
@@ -40,6 +50,7 @@ struct GfQuestReward {
 };
 
 static_assert(offsetof(GfQuestReward::Param, m_developZone) == 0x46, "");
+static_assert(offsetof(GfQuestReward::Param, unknown44_u32) == 0x44, "");
 static_assert(sizeof(GfQuestReward::Param) == 0x48, "");
 static_assert(offsetof(GfQuestReward, unknown360) == 0x360, "");
 static_assert(sizeof(GfQuestReward) == 0x368, "");

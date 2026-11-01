@@ -43,6 +43,24 @@ bool GfMenuMissionAdapter::update_MissionCategoryIcon() {
   return true;
 }
 
+bool GfMenuMissionAdapter::update_MissionRewardGold() {
+  bool isOrder = GfDataMercenaries::isMissionOrderTeam(unknown58);
+  setNumber(GfGameMercenaries::getRewardGold(unknown58, isOrder));
+  return true;
+}
+
+bool GfMenuMissionAdapter::update_MissionRewardGoldBonus() {
+  bool isOrder = GfDataMercenaries::isMissionOrderTeam(unknown58);
+  setNumber(GfGameMercenaries::getRewardGoldHosei(unknown58, isOrder));
+  return true;
+}
+
+bool GfMenuMissionAdapter::update_MissionRewardExp() {
+  bool isOrder = GfDataMercenaries::isMissionOrderTeam(unknown58);
+  setNumber(GfGameMercenaries::getRewardExp(unknown58, isOrder));
+  return true;
+}
+
 bool GfMenuMissionAdapter::update_MissionRewardZone() {
   u8 *bdat;
   u32 textId;
@@ -51,6 +69,18 @@ bool GfMenuMissionAdapter::update_MissionRewardZone() {
     return true;
   }
   return false;
+}
+
+bool GfMenuMissionAdapter::update_MissionRewardZonePoint() {
+  bool isOrder = GfDataMercenaries::isMissionOrderTeam(unknown58);
+  setNumber(GfGameMercenaries::getRewardDevelop(unknown58, isOrder) - GfGameMercenaries::getRewardDevelopHosei(unknown58, isOrder));
+  return true;
+}
+
+bool GfMenuMissionAdapter::update_MissionRewardZonePointBonus() {
+  bool isOrder = GfDataMercenaries::isMissionOrderTeam(unknown58);
+  setNumber(GfGameMercenaries::getRewardDevelopHosei(unknown58, isOrder));
+  return true;
 }
 
 bool GfMenuMissionAdapter::update_MissionRewardIdeaPoint() {
