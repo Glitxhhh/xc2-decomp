@@ -1,9 +1,14 @@
 #include "dr/dr_mdo_ctl_nom.h"
 
+#include "cloud/cloud_mdl_data_obj.h"
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_man.h"
+#include "dr/dr_mdl_base.h"
 #include "dr/dr_mdo_ctl.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_shadow_cache_man.h"
+#include "dr/dr_res_mdo_light.h"
 #include "dr/dr_res_mdo_lod_obj.h"
 #include "dr/dr_res_mdo_shd_obj.h"
 #include "dr/dr_res_mdo_vtx_mesh_obj.h"
@@ -14,6 +19,32 @@ namespace ml {
 
 // Inferred role: weight vertex render type of each render type; original name unknown.
 static const u8 unknown135[] = {0, 3, 2, 4, 1, 1};
+
+DrMdoCtlNom::~DrMdoCtlNom() {
+  if ((unknownfc & unknown027_8) && unknown1a == 0) {
+    m_drMan->unknown78->unknown800->delShadowCacheUpdate();
+  }
+  releaseNom();
+}
+
+void DrMdoCtlNom::setDeleteCall(int deleteCall) {
+  DrMdlBase::setDeleteCall(deleteCall);
+  if (unknown210 != nullptr) {
+    unknown210->setCallDisp(false);
+  }
+  if (unknown1e0 != nullptr) {
+    unknown1e0->setDisp(false);
+  }
+}
+
+void DrMdoCtlNom::setDisp(bool isDisp) {
+  DrMdlBase::setDisp(isDisp);
+  if (unknown1e0 != nullptr) {
+    unknown1e0->setDisp(isDisp);
+  }
+}
+
+void DrMdoCtlNom::callShadowCacheUpdate(u64 flags) { unknown230 &= ~flags; }
 
 void DrMdoCtlNom::updateRimBloomParams() {
   if (getRimBloomWrk(2) != nullptr) {

@@ -10,9 +10,14 @@ namespace mm {
 struct Col3;
 } // namespace mm
 
+namespace cloud {
+class CloudMdlDataObj;
+} // namespace cloud
+
 namespace ml {
 class DrResChkList;
 class DrResEtcPamObj;
+class DrResMdoLight;
 class DrResMdoMeshObj;
 class DrResMdoShdObj;
 class DrResMdoSortNomCldBackApha;
@@ -37,6 +42,19 @@ static_assert(offsetof(unknown099, unknown28) == 0x28, "");
 
 class DrMdoCtlNom : public DrMdlObj {
 public:
+  ~DrMdoCtlNom() override;
+  void update() override;
+  void dispOffUpdate() override;
+  void resourceInit() override;
+  void shadowRender() override;
+  bool shadowCacheRender(DrPixlShadowCacheObj &cache) override;
+  void shadowCacheOnlyRender() override;
+  void callShadowCacheUpdate(u64 flags) override;
+  void occRender() override;
+  bool cloneMdlObj(DrMdlObj *source) override;
+  void setDisp(bool isDisp) override;
+  void setDeleteCall(int deleteCall) override;
+  void releaseNom();
   void updateRimBloomParams();
   void updateShdMdl();
   void callNomSetupRender();
@@ -81,11 +99,15 @@ public:
   u8 _1c0[0x1d0 - 0x1c0];
   DrResMdoShdObj *unknown1d0;     // Inferred role: shd object; original member name unknown.
   DrResMdoVtxMeshObj *unknown1d8; // Inferred role: vtx mesh object; original member name unknown.
-  u8 _1e0[0x1e8 - 0x1e0];
-  DrResMdoMeshObj *unknown1e8; // Inferred role: mesh object; original member name unknown.
-  DrResMdoLodObj *unknown1f0;  // Inferred role: lod object; original member name unknown.
+  DrResMdoLight *unknown1e0;      // Inferred role: light; original member name unknown.
+  DrResMdoMeshObj *unknown1e8;    // Inferred role: mesh object; original member name unknown.
+  DrResMdoLodObj *unknown1f0;     // Inferred role: lod object; original member name unknown.
   u8 _1f8[0x200 - 0x1f8];
   DrResEtcPamObj *unknown200; // Inferred role: etc pam object; original member name unknown.
+  u8 _208[0x210 - 0x208];
+  cloud::CloudMdlDataObj *unknown210; // Inferred role: cloud model data; original member name unknown.
+  u8 _218[0x230 - 0x218];
+  u64 unknown230; // Inferred role: shadow cache mask; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoCtlNom, unknown190) == 0x190, "");
@@ -94,6 +116,9 @@ static_assert(offsetof(DrMdoCtlNom, unknown1d0) == 0x1d0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1d8) == 0x1d8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1e8) == 0x1e8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1f0) == 0x1f0, "");
+static_assert(offsetof(DrMdoCtlNom, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown200) == 0x200, "");
+static_assert(offsetof(DrMdoCtlNom, unknown210) == 0x210, "");
+static_assert(offsetof(DrMdoCtlNom, unknown230) == 0x230, "");
 
 } // namespace ml

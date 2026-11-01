@@ -539,6 +539,7 @@ public:
     unknown027_2 = 1 << 2,    // Inferred role: always tex stm; original name unknown.
     unknown027_4 = 1 << 4,    // Inferred role: write stencil; original name unknown.
     unknown027_6 = 1 << 6,    // Inferred role: flag wave; original name unknown.
+    unknown027_8 = 1 << 8,    // Inferred role: registered in the shadow cache update; original name unknown.
     unknown027_10 = 1 << 10,  // Inferred role: simple shadow; original name unknown.
     unknown027_14 = 1 << 14,  // Inferred role: sp alpha mode; original name unknown.
     unknown027_15 = 1 << 15,  // Inferred role: sp blur off; original name unknown.

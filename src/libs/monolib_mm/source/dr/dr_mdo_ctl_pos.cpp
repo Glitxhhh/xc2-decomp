@@ -1,15 +1,65 @@
 #include "dr/dr_mdo_ctl_pos.h"
 
+#include <string.h>
+
+#include "dr/dr_calc_clip_work_view_plane.h"
 #include "dr/dr_calc_cp_plane_obj.h"
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_view_work.h"
+#include "dr/dr_light_obj.h"
 #include "dr/dr_man.h"
+#include "dr/dr_mdl_base.h"
 #include "dr/dr_mdl_man.h"
+#include "dr/dr_mdo_mat.h"
+#include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_shadow_cache_man.h"
+#include "dr/dr_pixl_shadow_cache_obj.h"
+#include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_res_mdo_inst_mdl_info.h"
+#include "dr/dr_res_mdo_pnt_alpha.h"
+#include "dr/dr_res_mdo_pos.h"
+#include "dr/dr_res_mdo_pos_add_list.h"
+#include "dr/dr_res_mdo_sort.h"
+#include "dr/dr_res_mdo_vertex.h"
+#include "dr/dr_res_wrk_clip_list.h"
+#include "mm_math/mm_vec3.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
 DrMdoCtlPos::~DrMdoCtlPos() { releasePos(); }
+
+void DrMdoCtlPos::releasePos() {
+  m_drMan->unknown78->unknown800->delShadowCacheUpdate();
+  for (int i = 0; i < unknown1d8; i++) {
+    unknown1e0[i].~DrResMdoPos();
+  }
+  unknown1d8 = 0;
+  unknown1e8.release();
+  if (unknown250 != nullptr) {
+    unknown250->release();
+    unknown250 = nullptr;
+  }
+  if (unknown258 != nullptr) {
+    DrResMdoInstMdlInfo::release(unknown258);
+  }
+  unknown268->~DrResMdoSortPos();
+  for (int i = 0; i < unknown238; i++) {
+    if (unknown228[i] != nullptr) {
+      mtl::MemManager::deallocate(unknown228[i], 0, false);
+      unknown228[i] = nullptr;
+    }
+  }
+  if (unknown230 != nullptr) {
+    mtl::MemManager::deallocate(unknown230, 0, false);
+    unknown230 = nullptr;
+  }
+  if (unknown220 != nullptr) {
+    mtl::MemManager::deallocate(unknown220, 0, false);
+    unknown220 = nullptr;
+  }
+  releaseMat();
+}
 
 void DrMdoCtlPos::update() {
   updateAlphaCall();
@@ -42,7 +92,7 @@ void DrMdoCtlPos::update() {
 }
 
 void DrMdoCtlPos::setDeleteCall(int deleteCall) {
-  unknown20 |= unknown038_3 << deleteCall;
+  DrMdlBase::setDeleteCall(deleteCall);
   if (unknown258 != nullptr) {
     unknown258->releaseCall();
   }
@@ -57,6 +107,78 @@ void DrMdoCtlPos::callShadowCacheUpdate(u64 flags) {
   if (unknown370 & flags) {
     unknown370 = 0;
     unknown378 = 0;
+  }
+}
+
+void DrMdoCtlPos::beginRenderListPos() {
+  unknown1a0 = 0;
+  unknown360 = 0;
+  unknown2c0 = nullptr;
+  unknown260 = 0;
+  unknown262 = 0;
+  unknown250->begin();
+  unknown248 = DrMan::s_nDblIdx * INS_RENDERBUFF_SIZE;
+  unknown2d8 = 0;
+  for (int i = 0; i < 6; i++) {
+    unknown2e0[i] = 0;
+  }
+  unknown340 = 0;
+  int size = unknown30->unknown170 * 0x42u;
+  size += (32 - size % 32) % 32;
+  memset(unknown270, 0, size);
+  unknown2a8->update(m_drMan->unknown1c8c);
+  if (unknown218 != nullptr) {
+    unknown218->update(m_drMan->unknown580->unknown18);
+  }
+  if (unknown258 != nullptr) {
+    DrResMdlInstMdlArg arg;
+    arg.unknown00 = &unknown348->unknown400;
+    arg.unknown10 = true;
+    arg.unknown14 = unknown1a;
+    arg.unknown08 = nullptr;
+    arg.unknown18 = unknowndc;
+    unknown258->update(arg);
+  }
+}
+
+bool DrMdoCtlPos::chankRenderMdl(const MdsPosRangeTreeData *tree, MdoArgInst &arg) {
+  DrCalcViewWork *viewWork = unknown348;
+  f32 x = viewWork->unknown400.x - tree->unknown00[0];
+  f32 y = viewWork->unknown400.y - tree->unknown00[1];
+  f32 z = viewWork->unknown400.z - tree->unknown00[2];
+  if (x * x + y * y + z * z > tree->unknown10) {
+    return false;
+  }
+  if (!viewWork->unknown4e0.clipTest(*reinterpret_cast<const mm::Vec3 *>(tree->unknown00), tree->unknown0c)) {
+    return false;
+  }
+  bool isRender = false;
+  u32 count = tree->unknown1c;
+  if (count != 0) {
+    const u16 *child = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown1a8) + tree->unknown14);
+    for (u32 i = 0; i < count; i++) {
+      isRender |= chankRenderMdl(unknown1c8 + *child++, arg);
+    }
+  }
+  if (tree->unknown1e != 0) {
+    isRender |= clipRenderMdl(tree, arg);
+  }
+  return isRender;
+}
+
+void DrMdoCtlPos::chankShadowRenderMdl(const MdsPosRangeTreeData *tree, DrPixlShadowCacheObj &cache) {
+  if (!cache.clipTest(*reinterpret_cast<const mm::Vec3 *>(tree->unknown00), tree->unknown0c)) {
+    return;
+  }
+  u32 count = tree->unknown1c;
+  if (count != 0) {
+    const u16 *child = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown1a8) + tree->unknown14);
+    for (u32 i = 0; i < count; i++) {
+      chankShadowRenderMdl(unknown1c8 + *child++, cache);
+    }
+  }
+  if (tree->unknown1e != 0) {
+    clipShadowRenderMdl(tree, cache);
   }
 }
 
@@ -168,5 +290,21 @@ void DrMdoCtlPos::callSpAlphaRenderPosAll() {
 void DrMdoCtlPos::callDisplistRender(int param) {}
 
 void DrMdoCtlPos::callDisplistPrePsssRender(int param) {}
+
+void DrMdoCtlPos::shadowRender() {
+  unknownf4 = 6;
+  unknownf2 = 0;
+  DrPixlShadowObj *shadow = m_drMan->unknown78->unknown848;
+  if (!shadow->unknown198->isInstMapShadow()) {
+    return;
+  }
+  unknown348 = m_drMan->unknown580->unknown10;
+  unknown001();
+  unknown30->unknownc8->beginVertexSetup();
+  const unknown017 *header = unknown1a8;
+  for (int i = 0; i < header->unknown2c; i++) {
+    nomTreeShadowRenderMdl(&unknown1c8[i], shadow);
+  }
+}
 
 } // namespace ml

@@ -35,6 +35,7 @@ public:
   void setup(DrResMdoPntAlpha *unknown001, DrResMdoPntAlpha **unknown002, s32 unknown003);
   f32 getAlphaObj(const void *unknown001, bool unknown002);
   void setAlphaReset(const void *unknown001, bool unknown002);
+  void update(f32 speed);
 
   DrResMdoPntAlpha *unknown00;  // Inferred role: alpha objects; original member name unknown.
   DrResMdoPntAlpha **unknown08; // Inferred role: active alpha objects; original member name unknown.

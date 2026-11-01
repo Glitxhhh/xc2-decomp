@@ -5,6 +5,8 @@
 
 namespace ml {
 
+class DrCalcClipMan;
+
 class DrResWrkClipList {
 public:
   // Inferred role: clip list resource header; original type name unknown.
@@ -16,6 +18,7 @@ public:
   static int calcWorkSize(const u8 *data, u32 offset);
   void changeMemCall(const u8 *data, u32 offset);
   int setupWork(u8 *work, const u8 *data, u32 offset);
+  void update(DrCalcClipMan *clipMan);
 
   const u8 *unknown00; // Inferred role: resource data; original member name unknown.
   const u8 *unknown08; // Inferred role: clip list; original member name unknown.

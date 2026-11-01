@@ -42,8 +42,8 @@ public:
   virtual void occRender();
   virtual bool cloneMdlObj(DrMdlObj *source);
   virtual void chageShadowObject(DrMdoSmlShadowMan *shadowMan);
-  virtual void setDisp(bool isDisp);
-  virtual void setDeleteCall(int deleteCall);
+  virtual void setDisp(bool isDisp) { unknown20 = !isDisp ? unknown20 & ~unknown038_0 : unknown20 | unknown038_0; }
+  virtual void setDeleteCall(int deleteCall) { unknown20 |= unknown038_3 << deleteCall; }
 
   void setClip(bool isClip) {
     if (isClip) {
