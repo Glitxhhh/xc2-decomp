@@ -10,8 +10,6 @@
 
 namespace gf {
 
-constexpr s32 ANNOTATION_KIND_UNKNOWN_1 = 1;
-
 bool GfComBehaviorExtra::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
   if (message.unknown00 != MSG_PC_FIELD_NOTIFY_EXTRA) {
     if (message.unknown00 != MSG_OBJECT_NOTIFY_ASM_CALLBACK) {

@@ -75,35 +75,35 @@ void StateUtil::setEnableTimer(GfComBehaviorPc &behavior, bool isEnable) {
 }
 
 void StateUtil::setFallDamageDisable(GfComBehaviorPc &behavior, bool isDisable) {
-  FallDamagePlugin *plugin = behavior.unknown10.unknown001<FallDamagePlugin>(7);
+  FallDamagePlugin *plugin = behavior.unknown001<FallDamagePlugin>(7);
   if (plugin != nullptr) {
     plugin->unknown1c = isDisable;
   }
 }
 
 void StateUtil::setEnableDownIK(GfComBehaviorPc &behavior, bool isEnable) {
-  FootIkControllerPlugin *plugin = behavior.unknown10.unknown001<FootIkControllerPlugin>(3);
+  FootIkControllerPlugin *plugin = behavior.unknown001<FootIkControllerPlugin>(3);
   if (plugin != nullptr) {
     plugin->unknown1e = isEnable;
   }
 }
 
 void StateUtil::switchPlacementIK(GfComBehaviorPc &behavior, bool isOn) {
-  FootIkControllerPlugin *plugin = behavior.unknown10.unknown001<FootIkControllerPlugin>(3);
+  FootIkControllerPlugin *plugin = behavior.unknown001<FootIkControllerPlugin>(3);
   if (plugin != nullptr) {
     plugin->switchMode(isOn ? FootIkControllerPlugin::MODE_UNKNOWN_2 : FootIkControllerPlugin::MODE_UNKNOWN_1);
   }
 }
 
 void StateUtil::setActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type, bool isActive) {
-  TimerPlugin *plugin = behavior.unknown10.unknown001<TimerPlugin>(8);
+  TimerPlugin *plugin = behavior.unknown001<TimerPlugin>(8);
   if (plugin != nullptr) {
     plugin->setActivateTimer(type, isActive);
   }
 }
 
 const f32 *StateUtil::getActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::TYPE type) {
-  TimerPlugin *plugin = behavior.unknown10.unknown001<TimerPlugin>(8);
+  TimerPlugin *plugin = behavior.unknown001<TimerPlugin>(8);
   if (plugin == nullptr) {
     return nullptr;
   }
@@ -114,21 +114,21 @@ const f32 *StateUtil::getActivateTimer(GfComBehaviorPc &behavior, TimerPlugin::T
 }
 
 void StateUtil::setLipSpeed(GfComBehaviorPc &behavior, f32 speed) {
-  LipSyncPlugin *plugin = behavior.unknown10.unknown001<LipSyncPlugin>(2);
+  LipSyncPlugin *plugin = behavior.unknown001<LipSyncPlugin>(2);
   if (plugin != nullptr) {
     plugin->setSpeed(speed);
   }
 }
 
 void StateUtil::setEnableFallDistChecker(GfComBehaviorPc &behavior, bool isEnable) {
-  FallDistanceAchievPlugin *plugin = behavior.unknown10.unknown001<FallDistanceAchievPlugin>(21);
+  FallDistanceAchievPlugin *plugin = behavior.unknown001<FallDistanceAchievPlugin>(21);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }
 }
 
 void StateUtil::setEnableFootStep(GfComBehaviorPc &behavior, bool isEnable) {
-  FootStepPlugin *plugin = behavior.unknown10.unknown001<FootStepPlugin>(0);
+  FootStepPlugin *plugin = behavior.unknown001<FootStepPlugin>(0);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }

@@ -42,7 +42,7 @@ public:
   };
 
   EyeBlinkPlugin();
-  static EyeBlinkPlugin *create();
+  static Plugin *create();
   virtual bool setup(GfComBehavior &behavior);
   virtual void cleanup(GfComBehavior &behavior);
   void onActivate() override;

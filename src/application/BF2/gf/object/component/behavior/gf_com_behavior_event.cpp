@@ -28,7 +28,7 @@ void GfComBehaviorEvent::setFootIK(bool isEnable) {
 
   GfComEvtAnim *evtAnim = unknown08->getComponent<GfComEvtAnim>();
   if (evtAnim != nullptr && evtAnim->unknown10.unknown10 != nullptr) {
-    FootIkControllerPlugin *plugin = unknown10.unknown001<FootIkControllerPlugin>(3);
+    FootIkControllerPlugin *plugin = unknown001<FootIkControllerPlugin>(3);
     if (plugin != nullptr) {
       plugin->unknown1e = isEnable;
     }

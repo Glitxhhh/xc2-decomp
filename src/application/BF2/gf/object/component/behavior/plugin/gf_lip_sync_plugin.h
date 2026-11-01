@@ -22,7 +22,7 @@ class LipSyncPlugin : public Plugin {
 
 public:
   LipSyncPlugin();
-  static LipSyncPlugin *create();
+  static Plugin *create();
   virtual bool setup(GfComBehavior &behavior);
   virtual void cleanup(GfComBehavior &behavior);
   void onActivate() override;

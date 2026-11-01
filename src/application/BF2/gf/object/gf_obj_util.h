@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_setup.h"
@@ -57,6 +59,18 @@ enum {
   OBJ_FLAG_TOOL_MODE = 0x18,
   OBJ_FLAG_LOADED_WAIT_BLOCK = 0x1a,
 };
+
+// Layout from GfObjUtil::parseFadeParam (0x71005b3674), which parses "fadeout_<frames>" or "fadein_<frames>" and an
+// optional list of '-' separated values; GfComBehaviorWeapon::procMsgObjectNotifyAsmCallback zeroes the list size.
+struct GfFadeInfo {
+  u32 unknown00;                          // Inferred role: fade type, 0 fade in, 1 fade out; original member name unknown.
+  u32 unknown04;                          // Inferred role: fade frames; original member name unknown.
+  mm::mtl::FixedVector<int, 6> unknown08; // Inferred role: values of the parameter list, -1 when absent; original member name unknown.
+};
+
+static_assert(offsetof(GfFadeInfo, unknown04) == 0x04, "");
+static_assert(offsetof(GfFadeInfo, unknown08) == 0x08, "");
+static_assert(sizeof(GfFadeInfo) == 0x28, "");
 
 class GfObjUtil {
 public:
@@ -159,6 +173,7 @@ public:
   static void applyExecUpdate(GF_OBJ_HANDLE *handle);
   static bool isFollowObjNotReady(GF_OBJ_HANDLE *handle);
   static void setWarpTransform(GF_OBJ_HANDLE *handle, const fw::Transform &transform, bool isResetState);
+  static bool parseFadeParam(const char *param, GfFadeInfo *info);
 
   template <typename T> static T *getObjSetup(GF_OBJ_HANDLE *handle) {
     GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);

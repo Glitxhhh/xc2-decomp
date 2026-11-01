@@ -31,8 +31,8 @@ public:
   }
 
   template <typename T> void bind(T *object, R (T::*function)(Args...)) {
-    *reinterpret_cast<R (T::**)(Args...)>(m_function) = function;
     m_object = object;
+    *reinterpret_cast<R (T::**)(Args...)>(m_function) = function;
     m_invoker = &memberFuncInvoker<T>;
   }
 

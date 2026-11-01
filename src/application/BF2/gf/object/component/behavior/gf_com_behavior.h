@@ -6,22 +6,19 @@
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_component.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/rtti.h"
+#include "mm_mtl/vector.h"
 #include "types.h"
 
 namespace fw {
 struct UpdateInfo;
 } // namespace fw
 
-namespace mm {
-namespace mtl {
-class RTTI;
-} // namespace mtl
-} // namespace mm
-
 namespace gf {
 
 class GfComAsm;
 struct CallBackCache;
+class Plugin;
 
 enum {
   MSG_PC_GET_LOOK_POINT = 0x1000008,
@@ -68,6 +65,19 @@ public:
   void changeLayer(u32 oldLayer, u32 newLayer) override {}
   virtual void update(const fw::UpdateInfo &info) = 0;
   virtual void procAnimCallback(GfComAsm *comAsm, const CallBackCache &cache) {}
+
+  void callbackAnim(GfComAsm *comAsm, const CallBackCache &cache);
+
+  // Inferred helper: plugin at index when it has the type T; original name unknown.
+  template <typename T> T *unknown001(u32 index) const {
+    if (index < unknown10.unknown28.size()) {
+      Plugin *plugin = unknown10.unknown28[index];
+      if (plugin != nullptr) {
+        return mm::mtl::dynamicCast<T>(plugin);
+      }
+    }
+    return nullptr;
+  }
 
   PluginManager unknown10; // Inferred role: plugin manager; original member name unknown.
 };

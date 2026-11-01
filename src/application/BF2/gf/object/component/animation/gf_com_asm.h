@@ -41,6 +41,9 @@ enum {
   MSG_OBJECT_SET_ASM_PLAYBACK_SPEED = 0x1000047,
 };
 
+// Inferred role: kind of the asm annotations whose parameter is a string; original name unknown.
+constexpr s32 ANNOTATION_KIND_UNKNOWN_1 = 1;
+
 struct MsgObjectNotifyAsmCallback : fw::Message {
   MsgObjectNotifyAsmCallback(GfComAsm *comAsm, const anm::AsmAnnotetion *annotation) : fw::Message(MSG_OBJECT_NOTIFY_ASM_CALLBACK, 0x40), unknown08(comAsm), unknown10(annotation) {}
 

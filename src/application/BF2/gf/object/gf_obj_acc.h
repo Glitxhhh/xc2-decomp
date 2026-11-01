@@ -42,6 +42,7 @@ enum OBJDISP {
 
 enum GfObjUserData {
   OBJ_USER_DATA_GMK = 0,
+  OBJ_USER_DATA_UNKNOWN_1 = 1, // Inferred role: lod anim position info (GfFieldLodColiAnim::PosInfo); original enumerator name unknown.
   OBJ_USER_DATA_UNKNOWN_2 = 2,
 };
 

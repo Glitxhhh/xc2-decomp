@@ -63,6 +63,8 @@ public:
   // Vector<PosInfo>::expand (0x71002e6e18) is the inlined GfFieldLodEffect::disposeAsset of the member at 0x08; the
   // PosInfo methods (0x71002e2120 to 0x71002e2728) read the other members.
   struct PosInfo {
+    void update(const fw::UpdateInfo &info);
+
     GfFieldLodColiAnim *unknown00; // Inferred role: owner; original member name unknown.
     GfFieldLodEffect unknown08;    // Inferred role: pop/depop effects; original member name unknown.
     u32 unknown40;                 // Inferred role: parts id; original member name unknown.

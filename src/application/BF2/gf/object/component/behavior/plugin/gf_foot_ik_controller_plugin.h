@@ -29,7 +29,7 @@ public:
   };
 
   FootIkControllerPlugin();
-  static FootIkControllerPlugin *create();
+  static Plugin *create();
   virtual bool setup(GfComBehavior &behavior);
   u64 getASMStateAttribute(GfComBehavior &behavior) const;
   void setGroundPlacement(bool enable);

@@ -9,7 +9,6 @@
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/game/gf_game_ride.h"
 #include "gf/object/component/animation/gf_com_asm.h"
-#include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/gf_component.h"
@@ -217,35 +216,35 @@ bool StateUtilField::isWallDetach(GfComPropertyPc &property) {
 }
 
 void StateUtilField::setEnableFallIntoColi(GfComBehaviorPc &behavior, bool isEnable) {
-  FallIntoColiPlugin *plugin = behavior.unknown10.unknown001<FallIntoColiPlugin>(9);
+  FallIntoColiPlugin *plugin = behavior.unknown001<FallIntoColiPlugin>(9);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }
 }
 
 void StateUtilField::setAccessFlag(GfComBehaviorPc &behavior, bool isEnable) {
-  AccessPlugin *plugin = behavior.unknown10.unknown001<AccessPlugin>(4);
+  AccessPlugin *plugin = behavior.unknown001<AccessPlugin>(4);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }
 }
 
 void StateUtilField::setEnableLure(GfComBehaviorPc &behavior, bool isEnable) {
-  LurePlugin *plugin = behavior.unknown10.unknown001<LurePlugin>(15);
+  LurePlugin *plugin = behavior.unknown001<LurePlugin>(15);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }
 }
 
 void StateUtilField::setEnableDeadColCheck(GfComBehaviorPc &behavior, bool isEnable) {
-  DeadColCheckPlugin *plugin = behavior.unknown10.unknown001<DeadColCheckPlugin>(19);
+  DeadColCheckPlugin *plugin = behavior.unknown001<DeadColCheckPlugin>(19);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }
 }
 
 void StateUtilField::setEnableWaterIn(GfComBehaviorPc &behavior, bool isEnable) {
-  WaterInPlugin *plugin = behavior.unknown10.unknown001<WaterInPlugin>(18);
+  WaterInPlugin *plugin = behavior.unknown001<WaterInPlugin>(18);
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }

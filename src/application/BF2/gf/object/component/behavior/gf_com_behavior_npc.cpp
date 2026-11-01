@@ -20,7 +20,6 @@
 #include "gf/menu/object/gf_menu_obj_target_info.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
-#include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
@@ -77,7 +76,7 @@ void GfComBehaviorNpc::BdatInfo::create(const CBdatWrapper &bdat, int id, const 
 int GfComBehaviorNpc::BdatInfo::getTalkBonusFlagId() const {
   u8 *talk = GfDataBdat::getFP(BDAT_EVT_LIST_TLK01);
   u16 event = unknown18;
-  return event + unknown001 - Bdat::getIdTop(talk);
+  return event + gf::unknown001 - Bdat::getIdTop(talk);
 }
 
 bool GfComBehaviorNpc::BdatInfo::isIconTalkBonus() const {
@@ -145,14 +144,14 @@ void GfComBehaviorNpc::procMsgPcGetLookPoint(fw::MessageObject *sender, MsgPcGet
 void GfComBehaviorNpc::procMsgGameLipAction(fw::MessageObject *sender, MsgGameLipAction &message) {
   switch (message.action) {
   case 0: {
-    LipSyncPlugin *plugin = unknown10.unknown001<LipSyncPlugin>(2);
+    LipSyncPlugin *plugin = unknown001<LipSyncPlugin>(2);
     if (plugin != nullptr) {
       plugin->unknown21 = true;
     }
     break;
   }
   case 1: {
-    LipSyncPlugin *plugin = unknown10.unknown001<LipSyncPlugin>(2);
+    LipSyncPlugin *plugin = unknown001<LipSyncPlugin>(2);
     if (plugin != nullptr) {
       plugin->unknown21 = false;
     }
@@ -162,7 +161,7 @@ void GfComBehaviorNpc::procMsgGameLipAction(fw::MessageObject *sender, MsgGameLi
 }
 
 void GfComBehaviorNpc::procMsgGameSetLipWeight(fw::MessageObject *sender, MsgGameSetLipWeight &message) {
-  LipSyncPlugin *plugin = unknown10.unknown001<LipSyncPlugin>(2);
+  LipSyncPlugin *plugin = unknown001<LipSyncPlugin>(2);
   if (plugin != nullptr) {
     plugin->setWeight(message.unknown08);
   }
