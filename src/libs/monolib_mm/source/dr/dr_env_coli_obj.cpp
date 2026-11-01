@@ -1,7 +1,11 @@
 #include "dr/dr_env_coli_obj.h"
 
+#include "dr/dr_calc_man.h"
+#include "dr/dr_calc_view_work.h"
 #include "dr/dr_env_coli_man.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_post_parm.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/mem_manager.h"
 
@@ -73,6 +77,64 @@ void DrEnvColiMan::clear() {
   }
   unknown00[0] = nullptr;
   unknown00[1] = nullptr;
+}
+
+void DrEnvColiMan::updateTime(bool isReset) {
+  if (isReset) {
+    unknown70 = unknown30->unknown120[unknown30->unknown1c98]->getWeatherFrame();
+  } else {
+    unknown70 -= unknown30->unknown1c8c;
+    if (unknown70 < 0.0f) {
+      unknown70 = 0.0f;
+    }
+  }
+  if (unknown70 != 0.0f) {
+    unknown6c = 1.0f / unknown70;
+    if (unknown6c > 1.0f) {
+      unknown6c = 1.0f;
+    }
+  } else {
+    unknown6c = 1.0f;
+  }
+  unknown68 = unknown30->unknown1cac;
+}
+
+void DrEnvColiMan::updateCloudFade(bool isReset, bool isForce) {
+  unknown88 = 1.0f;
+  if (isReset) {
+    unknown84 = 600.0f;
+    unknown88 = 0.0f;
+  } else {
+    unknown84 -= unknown30->unknown1c8c;
+    if (unknown84 < 0.0f) {
+      unknown84 = 0.0f;
+    } else {
+      unknown88 = mm::clamp(1.0f / unknown84, 0.0f, 1.0f);
+    }
+  }
+  if (unknown30->unknown120[unknown30->unknown1c98]->unknown1104 || isForce || unknown30->unknown580->unknown10->unknown9ac) {
+    unknown84 = 0.0f;
+    unknown88 = 1.0f;
+  }
+}
+
+void DrEnvColiMan::updateRainDropFade(bool isReset) {
+  if (isReset) {
+    unknown7c = unknown30->unknown120[unknown30->unknown1c98]->unknown10c0;
+  } else {
+    unknown7c -= unknown30->unknown1c8c;
+    if (unknown7c < 0.0f) {
+      unknown7c = 0.0f;
+    }
+  }
+  if (unknown7c != 0.0f) {
+    unknown78 = 1.0f / unknown7c;
+    if (unknown78 > 1.0f) {
+      unknown78 = 1.0f;
+    }
+  } else {
+    unknown78 = 1.0f;
+  }
 }
 
 void DrEnvColiObj::release() { unknown38 |= 1 << DrMan::s_nDblStockIdx; }

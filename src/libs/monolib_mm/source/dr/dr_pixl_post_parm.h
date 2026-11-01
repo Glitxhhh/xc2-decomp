@@ -300,7 +300,9 @@ public:
   u8 _1081[0x1084 - 0x1081];
   s32 unknown1084;    // Inferred role: weather; original member name unknown.
   f32 unknown1088[2]; // Inferred role: weather frames; original member name unknown.
-  u8 _1090[0x10fc - 0x1090];
+  u8 _1090[0x10c0 - 0x1090];
+  u32 unknown10c0; // Inferred role: rain drop fade frames; original member name unknown.
+  u8 _10c4[0x10fc - 0x10c4];
   bool unknown10fc; // Inferred role: attri menu closed; original member name unknown.
   u8 _10fd[0x10fe - 0x10fd];
   bool unknown10fe; // Inferred role: disp reduction; original member name unknown.
@@ -423,6 +425,7 @@ static_assert(offsetof(DrPixlPostParm, unknown107c) == 0x107c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1080) == 0x1080, "");
 static_assert(offsetof(DrPixlPostParm, unknown1084) == 0x1084, "");
 static_assert(offsetof(DrPixlPostParm, unknown1088) == 0x1088, "");
+static_assert(offsetof(DrPixlPostParm, unknown10c0) == 0x10c0, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fc) == 0x10fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fe) == 0x10fe, "");
 static_assert(offsetof(DrPixlPostParm, unknown1105) == 0x1105, "");
