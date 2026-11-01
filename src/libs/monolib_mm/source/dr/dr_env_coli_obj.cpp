@@ -325,6 +325,8 @@ DrEnvColiObj::~DrEnvColiObj() {
   }
 }
 
+DrEnvColiMan::~DrEnvColiMan() { clear(); }
+
 void DrEnvColiMan::clear() {
   for (s32 i = 0; i < 2; i++) {
     unknown010(unknown10[i][0], unknown10[i][1]);

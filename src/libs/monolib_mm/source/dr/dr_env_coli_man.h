@@ -47,6 +47,8 @@ static_assert(sizeof(DrEnvColiResult) == 0x28, "");
 
 class DrEnvColiMan {
 public:
+  DrEnvColiMan(DrMan *drMan);
+  ~DrEnvColiMan();
   DrEnvColiObj *createObj(const void *data);
   void update();
   bool testEnvColi(DrEnvColiResult *result, const mm::Vec3 &position, f32 radius);

@@ -5,6 +5,7 @@
 
 namespace ml {
 class DrResMdoLodGrp;
+class DrResMdoLodParts;
 struct DrResMdlLodArg;
 
 class DrResMdoLodObj {
@@ -33,12 +34,12 @@ public:
   static void release(DrResMdoLodObj *&lodObj);
   bool update(DrResMdlLodArg &arg);
 
-  void *unknown00;           // Inferred role: lod parts; original member name unknown.
-  DrResMdoLodGrp *unknown08; // Inferred role: lod groups; original member name unknown.
-  s32 unknown10;             // Inferred role: lod parts count; original member name unknown.
-  u32 unknown14;             // Inferred role: lod group count; original member name unknown.
-  s32 unknown18;             // Inferred role: state; original member name unknown.
-  u32 unknown1c;             // Inferred role: lod flags; original member name unknown.
+  DrResMdoLodParts *unknown00; // Inferred role: lod parts; original member name unknown.
+  DrResMdoLodGrp *unknown08;   // Inferred role: lod groups; original member name unknown.
+  s32 unknown10;               // Inferred role: lod parts count; original member name unknown.
+  u32 unknown14;               // Inferred role: lod group count; original member name unknown.
+  s32 unknown18;               // Inferred role: state; original member name unknown.
+  u32 unknown1c;               // Inferred role: lod flags; original member name unknown.
   u8 _20[0x30 - 0x20];
 };
 

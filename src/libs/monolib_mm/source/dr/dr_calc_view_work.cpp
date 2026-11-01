@@ -6,6 +6,8 @@
 #include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_post_man.h"
+#include "dr/dr_pixl_post_obj_cube_map_multi_ibl.h"
 #include "dr/dr_pixl_render_target.h"
 #include "dr/dr_res_mdo_uniform_block.h"
 #include "grlib/cglib_texture_buffer.h"
@@ -138,6 +140,19 @@ int DrCalcViewWork::unistatic_diffuseIBL(f32 *work) {
   memset(matrices, 0, sizeof(matrices));
   grlib::ShdMat44TransposeMat44Array(work, matrices, 3);
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_58];
+}
+
+int DrCalcViewWork::unistatic_specularIBL(f32 *work) {
+  DrPixlPostObjCubeMapMultiIBL *ibl = unknown700->unknown78->unknown7f0->unknown180->unknown40;
+  if (ibl != nullptr) {
+    bool isSkip = unknown700->isIBLSkip();
+    mm::Vec4 value = mm::Vec4::zero;
+    if (!isSkip) {
+      value.x = ibl->getPremMipCount();
+    }
+    grlib::ShdF32SetVec4(work, &value.x);
+  }
+  return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_59];
 }
 
 int DrCalcViewWork::unistatic_dither_param(f32 *work) {

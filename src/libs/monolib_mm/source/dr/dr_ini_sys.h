@@ -62,7 +62,8 @@ public:
   u8 _878[0x880 - 0x878];
   ScnObjModel *unknown880; // Inferred role: mirror ball; original member name unknown.
   bool m_updateMirrorBallPos;
-  u8 _889[0x898 - 0x889];
+  u8 _889[0x890 - 0x889];
+  FileResTh *unknown890; // Inferred role: camera light res; original member name unknown.
   FileResTh *unknown898; // Inferred role: glass breakage res; original member name unknown.
   u8 _8a0[0xb6c - 0x8a0];
   bool unknownb6c; // Inferred role: mot blur default; original member name unknown.
@@ -73,6 +74,7 @@ public:
 static_assert(offsetof(DrIniSys, unknown38) == 0x38, "");
 static_assert(offsetof(DrIniSys, unknown98) == 0x98, "");
 static_assert(offsetof(DrIniSys, unknown880) == 0x880, "");
+static_assert(offsetof(DrIniSys, unknown890) == 0x890, "");
 static_assert(offsetof(DrIniSys, unknown898) == 0x898, "");
 static_assert(offsetof(DrIniSys, unknownb6c) == 0xb6c, "");
 static_assert(offsetof(DrIniSys, unknown1a80) == 0x1a80, "");

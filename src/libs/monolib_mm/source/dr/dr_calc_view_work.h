@@ -32,6 +32,7 @@ public:
   int unistatic_depth_change(f32 *work, bool isJitter);
   int unistatic_lightAmb(f32 *work);
   int unistatic_diffuseIBL(f32 *work);
+  int unistatic_specularIBL(f32 *work);
   int unistatic_dither_param(f32 *work);
   int unistatic_inv_dither_param(f32 *work);
   void renderEnd();

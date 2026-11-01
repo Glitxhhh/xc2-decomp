@@ -1,12 +1,14 @@
 #include "dr/dr_environment_man.h"
 
+#include "dr/dr_env_coli_man.h"
 #include "dr/dr_environment_obj.h"
+#include "dr/dr_ini_sys.h"
 #include "dr/dr_man.h"
+#include "ml/file_res_th.h"
 #include "mm_math/mm_mat44.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
-class DrFogMan;
-class DrLightMan;
 
 void DrEnvironmentObj::release() { unknown8c |= FLAG_RELEASE << DrMan::s_nDblStockIdx; }
 
@@ -39,6 +41,41 @@ void DrEnvironmentMan::releaseAll() {
   unknown001(unknown28[2], unknown28[3]);
   unknown001(unknown58, unknown60);
   unknown001(unknown48, unknown50);
+}
+
+DrEnvironmentMan::DrEnvironmentMan(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan, int screen)
+    : unknown00(drMan), unknown08(lightMan), unknown10(fogMan), unknown20(screen), unknown28(), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr) {
+  unknown18 = new (drMan->unknown0c) DrEnvColiMan(drMan);
+}
+
+DrEnvironmentMan::~DrEnvironmentMan() {
+  if (unknown68 != nullptr) {
+    FileResTh *res = unknown00->unknown70->unknown890;
+    if (res != nullptr) {
+      res->Release();
+    }
+  }
+  if (unknown18 != nullptr) {
+    delete unknown18;
+    unknown18 = nullptr;
+  }
+  releaseAll();
+}
+
+void DrEnvironmentMan::updateCameraLight() {
+  if (unknown20 != 0) {
+    return;
+  }
+  if (unknown00->unknown1da0) {
+    if (unknown68 == nullptr) {
+      FileResTh *res = unknown00->unknown70->unknown890;
+      res->AddRef();
+      unknown68 = createObj(res->unknownc8);
+    }
+    unknown68->unknown8c &= ~DrEnvironmentObj::FLAG_DISP_OFF;
+  } else if (unknown68 != nullptr) {
+    unknown68->unknown8c |= DrEnvironmentObj::FLAG_DISP_OFF;
+  }
 }
 
 void DrEnvironmentMan::renderLgt() {
