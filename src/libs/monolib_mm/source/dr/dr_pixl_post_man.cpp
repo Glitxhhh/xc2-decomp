@@ -72,6 +72,12 @@ void DrPixlPostMan::renderRefractionEnd() {
   }
 }
 
+void DrPixlPostMan::renderSkyLuminance() {
+  if (unknown90 != nullptr) {
+    unknown90->luminanceRender();
+  }
+}
+
 void DrPixlPostMan::renderSkyDome() {
   if (unknown90 != nullptr) {
     unknown90->baseRender();

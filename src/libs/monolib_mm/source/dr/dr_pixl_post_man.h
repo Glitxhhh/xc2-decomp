@@ -66,6 +66,7 @@ public:
   void renderRefractionMap(bool isRefractionMap, bool isHalfMap);
   bool renderRefractionBegin();
   void renderRefractionEnd();
+  void renderSkyLuminance();
   void renderSkyDome();
   void renderSkyGodRay();
   void renderRainDrop();

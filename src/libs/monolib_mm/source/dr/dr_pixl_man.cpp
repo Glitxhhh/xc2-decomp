@@ -11,7 +11,6 @@
 #include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_pixl_tile_parm.h"
-#include "dr/dr_res_use_query_obj.h"
 #include "dr/dr_shd_data_list.h"
 #include "dr/dr_shd_data_obj.h"
 #include "dr/dr_shd_man.h"
@@ -19,7 +18,6 @@
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_depth_ctl.h"
 #include "grlib/cglib_depth_target.h"
-#include "grlib/cglib_gpu_cache.h"
 #include "grlib/cglib_polygon.h"
 #include "grlib/cglib_render_target.h"
 #include "grlib/cglib_shader.h"
@@ -407,17 +405,22 @@ void DrPixlMan::renderRainDrop() { unknown7f0->unknown180->renderRainDrop(); }
 
 void DrPixlMan::renderTMAA() { unknown7f0->unknown180->renderTMAA(); }
 
-void DrPixlMan::renderRefractionEnd() {
-  DrPixlTileParm *tileParm = unknown08->unknown180;
-  if (!tileParm->unknown04[tileParm->unknown00][0].unknown00 && tileParm->unknown04[tileParm->unknown00][2].unknown00) {
-    grlib::CGLibGPUCache::setTiledCacheAction(GRL_TILED_CACHE_ACTION_UNKNOWN_3);
-    grlib::CGLibGPUCache::setTiledCacheAction(GRL_TILED_CACHE_ACTION_UNKNOWN_2);
-  }
-  DrResUseQueryObj *query = unknown7f0->unknown180->unknownf0;
-  if (query != nullptr) {
-    query->end();
-  }
+bool DrPixlMan::renderRefractionBegin() {
+  unknown08->unknown5c0->begin();
+  unknown858 = 5;
+  grlib::CGLibState::beginRegisterRenderTarget();
+  grlib::CGLibState::setRegisterDepthTarget(*unknown7f0->unknown1a0[DrMan::s_nDblIdx]->unknown120);
+  grlib::CGLibState::endRegisterRenderTarget();
+  unknown08->unknown180->begin(DrPixlTileParm::TILE_TYPE_UNKNOWN_2);
+  return unknown7f0->unknown180->renderRefractionBegin();
 }
+
+void DrPixlMan::renderRefractionEnd() {
+  unknown08->unknown180->end(DrPixlTileParm::TILE_TYPE_UNKNOWN_2);
+  unknown7f0->unknown180->renderRefractionEnd();
+}
+
+void DrPixlMan::renderSkyLuminance() { unknown7f0->unknown180->renderSkyLuminance(); }
 
 bool DrPixlMan::isRefractionMap() { return unknown7f0->unknown180->unknownd0 != nullptr; }
 

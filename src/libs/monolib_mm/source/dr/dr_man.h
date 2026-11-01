@@ -23,6 +23,7 @@ class DrCalcGpuCost;
 class DrCalcTexStreamMan;
 class DrIniSys;
 class DrEnvironmentMan;
+class DrFogMan;
 class DrGlobalIBLMan;
 class DrIrrVolMan;
 class DrLightMan;
@@ -209,9 +210,9 @@ public:
   DR_MODEL_TEXTURE unknown3b8[2][4]; // Inferred role: model textures; original member name unknown.
   u32 unknown438[2];                 // Inferred role: model texture update masks; original member name unknown.
   u8 _0440[0x0580 - 0x0440];
-  DrCalcMan *unknown580;  // Inferred role: calc man; original member name unknown.
-  DrLightMan *unknown588; // Inferred role: light man; original member name unknown.
-  u8 _0590[0x0598 - 0x0590];
+  DrCalcMan *unknown580;        // Inferred role: calc man; original member name unknown.
+  DrLightMan *unknown588;       // Inferred role: light man; original member name unknown.
+  DrFogMan *unknown590;         // Inferred role: fog man; original member name unknown.
   DrEnvironmentMan *unknown598; // Inferred role: environment man; original member name unknown.
   u8 _05a0[0x05b0 - 0x05a0];
   DrCalcTexStreamMan *unknown5b0; // Inferred role: tex stream man; original member name unknown.
@@ -318,6 +319,7 @@ static_assert(offsetof(DrMan, unknown3b8) == 0x03b8, "");
 static_assert(offsetof(DrMan, unknown438) == 0x0438, "");
 static_assert(offsetof(DrMan, unknown580) == 0x0580, "");
 static_assert(offsetof(DrMan, unknown588) == 0x0588, "");
+static_assert(offsetof(DrMan, unknown590) == 0x0590, "");
 static_assert(offsetof(DrMan, unknown598) == 0x0598, "");
 static_assert(offsetof(DrMan, unknown5b0) == 0x05b0, "");
 static_assert(offsetof(DrMan, unknown5b8) == 0x05b8, "");
