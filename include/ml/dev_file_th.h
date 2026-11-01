@@ -117,10 +117,14 @@ class DevFileTh : public DevBase, public mm::mtl::PtrSingleton<DevFileTh>, publi
 public:
   class Impl {
   public:
+    ~Impl();
     FileHandleTh *checkValidFile(const char *path, IWorkEvent *event);
     bool writeFileBlock(const char *path, const void *data, u32 size, int priority);
+    FileHandleTh *writeFile(const char *path, IWorkEvent *event, const void *data, int size, int priority);
     FileHandleTh *readFile(const DevFileParamTh &param);
     FileHandleTh *rfOpen(const DevFileParamTh &param);
+    bool rfRead(FileHandleTh *handle, const DevFileParamTh &param);
+    bool rfIsBusy(FileHandleTh *handle);
     bool rfClose(FileHandleTh *handle);
     bool rfIsBusy();
     void cancelRequest(FileHandleTh *handle);
@@ -141,11 +145,21 @@ public:
     void removeArchiveAccessor(MEDIA media);
     int getFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param);
     int getArchiveFileSize(const char *path, mm::VAL64 *size, const dvfl_detail::LoadMediaParam &param);
+    bool getFilesBlock(char *&files, int &num, mtl::ALLOC_HANDLE handle, const char *path, const char *extension);
+    bool deleteFileBlock(const char *path);
     void rfCancel(FileHandleTh *handle);
     bool isBusy();
     bool isLoading(FileHandleTh *handle);
     bool isLapTimeForDebug() { return false; }
     static void enableLapTimeForDebug(bool enable) {}
+
+    // Inferred role: accessor of the media of a file handle, the archive accessor first for media 0; original name unknown.
+    DevFileAccessor *unknown005(MEDIA media) const {
+      if (media == 0 && unknown588f0[0] != nullptr) {
+        return unknown588f0[0];
+      }
+      return unknown588b0[media];
+    }
 
     mm::mtl::FixedList<DevFileJobTh *, 640> unknown00000; // Inferred role: waiting jobs; original member name unknown.
     mm::mtl::FixedList<DevFileJobTh *, 640> unknown02d20; // Inferred role: loading jobs; original member name unknown.
@@ -161,9 +175,12 @@ public:
     CriticalSection unknown5a378; // Inferred role: read lock; original member name unknown.
   };
 
+  ~DevFileTh() override;
+
   static const int INVALID_FILE_CHANNEL;
   static void normalizeDvdFileName(mm::mtl::FixStr<256> &fileName, const char *path);
   static FileHandleTh *checkValidFile(const char *path, IWorkEvent *event);
+  static MEDIA getMediaType(const char *path);
   static bool isInitialized();
   static bool writeFileBlock(const char *path, const void *data, u32 size, int priority);
   static FileHandleTh *writeFile(const char *path, IWorkEvent *event, const void *data, int size, int priority);
@@ -179,6 +196,10 @@ public:
   static bool isLoading(FileHandleTh *handle);
   static bool rfIsBusy();
   static void registAccessor(MEDIA media, DevFileAccessor *accessor);
+  static bool isBusy();
+  static void rfCancel(FileHandleTh *handle);
+  static bool getFilesBlock(char *&files, int &num, mtl::ALLOC_HANDLE handle, const char *path, const char *extension);
+  static bool deleteFileBlock(const char *path);
   static void removeAccessor(MEDIA media);
   static void registArchiveAccessor(MEDIA media, DevFileAccessor *accessor);
   static void removeArchiveAccessor(MEDIA media);

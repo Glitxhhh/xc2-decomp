@@ -11,6 +11,7 @@
 namespace ml {
 
 class IWorkEvent;
+struct DevFileParamTh;
 enum CBM : int;
 
 class FileHandleTh {
@@ -20,6 +21,7 @@ public:
     FTYPE_UNKNOWN_2 = 2, // Inferred role: buffer allocated from an allocator.
   };
 
+  FileHandleTh(const DevFileParamTh &param);
   ~FileHandleTh() {
     releaseBuffer();
     unknown1f4 = false;
@@ -46,6 +48,8 @@ public:
       }
     }
   }
+
+  void setup(const DevFileParamTh &param);
 
   bool addCurrentPtr(int offset);
   bool setCurrentPtr(int offset);
@@ -78,7 +82,7 @@ public:
   u64 m_time;
   u64 unknown1c8;  // Inferred role: file time; original member name unknown.
   s32 unknown1d0;  // Role and original member name unknown.
-  s32 unknown1d4;  // Inferred role: file channel; original member name unknown.
+  u32 unknown1d4;  // Inferred role: file channel; original member name unknown.
   s32 unknown1d8;  // Role and original member name unknown.
   u64 unknown1e0;  // Role and original member name unknown.
   s32 unknown1e8;  // Inferred role: job state (2 loaded, 4 load failed); original member name unknown.

@@ -6,6 +6,8 @@
 
 namespace ml {
 
+FileHandleTh::FileHandleTh(const DevFileParamTh &param) : unknown94(0), unknown1ec(0), unknown1f0(0) { setup(param); }
+
 bool FileHandleTh::call(CBM cbm) {
   if (cbm == CBM_UNKNOWN_4 || cbm == CBM_UNKNOWN_6) {
     if (unknown70 != nullptr) {

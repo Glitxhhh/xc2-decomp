@@ -7,6 +7,7 @@
 
 #include "device/nx/dev_file_nx_th.h"
 #include "mm_mtl/algorithm.h"
+#include "mm_mtl/construct.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/mem_manager.h"
 #include "nn/fs.h"
@@ -21,6 +22,8 @@ mm::mtl::FixedVector<IDevFileEvent *, 8> g_FileEventListener;
 void clearLoadMedia() { g_loadMedia.clear(); }
 
 } // namespace dvfl_detail
+
+DevFileTh::~DevFileTh() {}
 
 void DevFileTh::flushSave() {
   if (DevFileNxTh::m_mountSave) {
@@ -58,6 +61,61 @@ FileHandleTh *DevFileTh::rfOpen(const DevFileParamTh &param) {
     return nullptr;
   }
   return file->unknown1c0->rfOpen(param);
+}
+
+FileHandleTh *DevFileTh::writeFile(const char *path, IWorkEvent *event, const void *data, int size, int priority) {
+  DevFileTh *file = get();
+  if (file == nullptr) {
+    return nullptr;
+  }
+  return file->unknown1c0->writeFile(path, event, data, size, priority);
+}
+
+void DevFileTh::rfCancel(FileHandleTh *handle) {
+  DevFileTh *file = get();
+  if (file != nullptr) {
+    file->unknown1c0->rfCancel(handle);
+  }
+}
+
+bool DevFileTh::rfRead(FileHandleTh *handle, const DevFileParamTh &param) {
+  DevFileTh *file = get();
+  if (file == nullptr) {
+    return false;
+  }
+  return file->unknown1c0->rfRead(handle, param);
+}
+
+bool DevFileTh::rfIsBusy(FileHandleTh *handle) {
+  DevFileTh *file = get();
+  if (file == nullptr) {
+    return false;
+  }
+  return file->unknown1c0->rfIsBusy(handle);
+}
+
+bool DevFileTh::isBusy() {
+  DevFileTh *file = get();
+  if (file == nullptr) {
+    return false;
+  }
+  return file->unknown1c0->isBusy();
+}
+
+bool DevFileTh::getFilesBlock(char *&files, int &num, mtl::ALLOC_HANDLE handle, const char *path, const char *extension) {
+  DevFileTh *file = get();
+  if (file == nullptr) {
+    return false;
+  }
+  return file->unknown1c0->getFilesBlock(files, num, handle, path, extension);
+}
+
+bool DevFileTh::deleteFileBlock(const char *path) {
+  DevFileTh *file = get();
+  if (file == nullptr) {
+    return false;
+  }
+  return file->unknown1c0->deleteFileBlock(path);
 }
 
 bool DevFileTh::rfClose(FileHandleTh *handle) {
@@ -216,6 +274,61 @@ bool DevFileTh::Impl::rfIsBusy() {
     if (accessor != nullptr && accessor->rfIsBusy(nullptr)) {
       return true;
     }
+  }
+  return false;
+}
+
+bool DevFileTh::Impl::rfClose(FileHandleTh *handle) {
+  CS cs(unknown5a378);
+  DevFileAccessor *accessor = unknown005(getMediaType(handle->unknown98.c_str()));
+  if (accessor != nullptr) {
+    accessor->rfClose(handle);
+    mm::mtl::destruct(handle);
+  }
+  return false;
+}
+
+bool DevFileTh::Impl::rfRead(FileHandleTh *handle, const DevFileParamTh &param) {
+  CS cs(unknown5a378);
+  s32 channel = handle->unknown1d4;
+  MEDIA media = getMediaType(handle->unknown98.c_str());
+  if (channel != INVALID_FILE_CHANNEL) {
+    DevFileAccessor *accessor = unknown005(media);
+    if (accessor != nullptr && handle->unknown1f4) {
+      return accessor->rfRead(handle, param);
+    }
+  }
+  return false;
+}
+
+bool DevFileTh::Impl::rfIsBusy(FileHandleTh *handle) {
+  bool isBusy = false;
+  if (handle != nullptr) {
+    CS cs(unknown5a378);
+    s32 channel = handle->unknown1d4;
+    MEDIA media = getMediaType(handle->unknown98.c_str());
+    if (channel != INVALID_FILE_CHANNEL) {
+      DevFileAccessor *accessor = unknown005(media);
+      if (accessor != nullptr) {
+        isBusy = accessor->rfIsBusy(handle);
+      }
+    }
+  }
+  return isBusy;
+}
+
+bool DevFileTh::Impl::getFilesBlock(char *&files, int &num, mtl::ALLOC_HANDLE handle, const char *path, const char *extension) {
+  DevFileAccessor *accessor = unknown588b0[getMediaType(path)];
+  if (accessor != nullptr && accessor->isValid()) {
+    return accessor->getFilesBlock(files, num, handle, path, extension);
+  }
+  return false;
+}
+
+bool DevFileTh::Impl::deleteFileBlock(const char *path) {
+  DevFileAccessor *accessor = unknown588b0[getMediaType(path)];
+  if (accessor != nullptr && accessor->isValid()) {
+    return accessor->deleteFileBlock(path);
   }
   return false;
 }

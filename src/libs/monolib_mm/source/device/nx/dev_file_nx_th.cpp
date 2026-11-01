@@ -1,7 +1,11 @@
 #include "device/nx/dev_file_nx_th.h"
 
 #include "ml/critical_section.h"
+#include "ml/file_handle_th.h"
+#include "ml/work_root.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/internal/heap_allocator.h"
+#include "mtl/mem_manager.h"
 #include "nn/account.h"
 #include "nn/fs.h"
 
@@ -19,6 +23,7 @@ bool DevFileNxTh::m_mountRom;
 bool DevFileNxTh::m_mountSave;
 bool DevFileNxTh::m_validuser;
 nn::account::UserHandle DevFileNxTh::m_appuser;
+mm::mtl::FixStr<256> DevFileNxTh::m_rootPath;
 
 void DevFileNxTh::finalizeSDK() {
   if (m_mountSave) {
@@ -56,6 +61,38 @@ void DevFileNxTh::deallocate(void *pointer, size_t size) {
 u32 DevFileNxTh::addressAlignment() { return 16; }
 
 bool DevFileNxTh::rfIsUsedChannel(u32 channel) { return (&*unknown20 + channel)->unknown10c; }
+
+void DevFileNxTh::setMediaRootPath(const char *path) { m_rootPath = path; }
+
+DevFileJobTh *DevFileNxTh::createFileValid(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobValidNxTh(); }
+
+bool DevFileNxTh::readBlock(FileHandleTh *handle, const char *path) {
+  void *buffer = mtl::MemManager::allocate(WorkRoot::getMemTMP(), 0x20000, 4, false, "no name", 0);
+  bool isRead = readBlockSlice(handle, path, buffer, 0x20000);
+  if (buffer != nullptr) {
+    mtl::MemManager::deallocate(buffer, 0, false);
+  }
+  return isRead;
+}
+
+bool DevFileNxTh::rfClose(FileHandleTh *handle) {
+  unknown001 *channel = &*get()->unknown20 + handle->unknown1d4;
+  mm::threading::WriteLockGuard guard(channel->unknown1a8);
+  bool isClosed = false;
+  if (channel->unknown10f) {
+    handle->unknown94 |= 0x10000;
+    handle->unknown60 = nullptr;
+    channel->unknown110 = true;
+  } else {
+    if (channel->unknown10d) {
+      channel->unknown10d = false;
+    }
+    nn::fs::CloseFile(channel->unknown00);
+    isClosed = true;
+    channel->unknown10c = false;
+  }
+  return isClosed;
+}
 
 } // namespace ml
 
