@@ -1,5 +1,9 @@
 #include "framework/coli/coli_object.h"
+#include "framework/effect/effect_lod_manager.h"
+#include "framework/effect/effect_manager.h"
+#include "framework/effect/effect_pack.h"
 #include "framework/navi/navi_manager.h"
+#include "fw/fw_update_info.h"
 #include "gf/asset/gf_asset_def.h"
 #include "gf/asset/gf_asset_manager.h"
 #include "gf/asset/gf_asset_resource.h"
@@ -10,12 +14,55 @@
 #include "mm_mtl/reference_object.h"
 #include "scn/scn_obj_model_dr_sys.h"
 
+namespace fw {
+class ModelObject;
+} // namespace fw
 namespace ml {
 class DrMdlObj;
 } // namespace ml
 
 namespace gf {
 struct GF_ASSET_HANDLE;
+
+MapEff::~MapEff() {}
+
+void MapEff::create(GF_ASSET_HANDLE *handle, fw::ModelObject *model) {
+  if (handle == INVALID_ASSET_HANDLE) {
+    return;
+  }
+
+  GfAssetResource *resource = GfAssetManager::getResource(handle, MAP_FILE_IDX_UNKNOWN_6, ASSET_TYPE_BASE);
+  if (resource != nullptr && unknown08 == nullptr) {
+    unknown08 = fw::EffectPack::createFromMemory(resource->getAssetData(), resource->getAssetSize(), resource->getAssetName(), false);
+  }
+
+  if (!unknown00) {
+    fw::EffectLodManager::get()->init(model, unknown08);
+    unknown00 = true;
+  }
+}
+
+void MapEff::destroy() {
+  destroyEffefct();
+  mm::mtl::safeRelease(unknown08);
+}
+
+void MapEff::destroyEffefct() {
+  if (unknown00) {
+    fw::EffectLodManager::get()->term();
+    unknown00 = false;
+  }
+}
+
+void MapEff::update(const fw::UpdateInfo &info) {
+  if (unknown00) {
+    fw::EffectLodManager::get()->update(info);
+  }
+
+  fw::EffectManager *manager = fw::EffectManager::get();
+  // Category 1: the map effects.
+  manager->unknown37958[1] = __builtin_fmaxf(info.unknown08, 0.00001f);
+}
 
 MapNavi::~MapNavi() {}
 

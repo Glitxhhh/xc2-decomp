@@ -1601,4 +1601,32 @@ bool GfGameUtilNanakoori::calcLevelAndFan() {
   return GfDataNanakoori::setFan((live * 12 + special * 16 + GfDataNanakoori::getClearMissionForLesson() * 3) * level);
 }
 
+u32 GfWeapon::getRscRight() const {
+  u32 rsc = 0;
+  GfAppendInfo *info = GfObjUtil::getAppendInfo(getCurrentHandles()[0], GFATTACH_WEAPON);
+  if (info != nullptr) {
+    const mm::mtl::FixedVector<GfAppend *, 10> &appends = info->unknown00[info->unknownb0];
+    u32 count = appends.size();
+    if (count != 0) {
+      rsc = appends[0]->getRscID();
+    }
+  }
+
+  return rsc;
+}
+
+u32 GfWeapon::getRscLeft() const {
+  u32 rsc = 0;
+  GfAppendInfo *info = GfObjUtil::getAppendInfo(getCurrentHandles()[1], GFATTACH_WEAPON);
+  if (info != nullptr) {
+    const mm::mtl::FixedVector<GfAppend *, 10> &appends = info->unknown00[info->unknownb0];
+    u32 count = appends.size();
+    if (count != 0) {
+      rsc = appends[0]->getRscID();
+    }
+  }
+
+  return rsc;
+}
+
 } // namespace gf

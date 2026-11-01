@@ -27,9 +27,10 @@ public:
   }
 
   // Evidence: GfAppendUtil::setupWeapon frees both vectors (sizes at 0x50 and 0xa8) and clears the u32 at 0xb0;
-  // GfObjUtil::getAppend reads vector [weapon alternate flag] element [GFOBJ_MOUNT index]; GfAppendInfo::operator= copies 0x58 bytes twice.
+  // GfObjUtil::getAppend reads vector [weapon alternate flag] element [GFOBJ_MOUNT index]; GfAppendInfo::operator= copies 0x58 bytes twice;
+  // GfWeapon::getRscRight sign-extends the u32 at 0xb0 as a vector index.
   mm::mtl::FixedVector<GfAppend *, 10> unknown00[2]; // Inferred role: append sets; original member name unknown.
-  u32 unknownb0;                                     // Inferred role: selected append set; original member name unknown.
+  int unknownb0;                                     // Inferred role: selected append set; original member name unknown.
 };
 
 static_assert(offsetof(GfAppendInfo, unknown00) == 0x00, "");

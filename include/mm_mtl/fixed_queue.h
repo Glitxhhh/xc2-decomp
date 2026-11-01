@@ -69,6 +69,18 @@ public:
 
   FixedQueue() : mSize(0), mFront(0) {}
 
+  FixedQueue(const FixedQueue &other) : mSize(0), mFront(0) { *this = other; }
+
+  FixedQueue &operator=(const FixedQueue &other) {
+    if (this != &other) {
+      clear();
+      for (size_t i = 0; i < other.size(); i++) {
+        push(other[i]);
+      }
+    }
+    return *this;
+  }
+
   size_t size() const { return mSize; }
   bool empty() const { return mSize == 0; }
   bool full() const { return mSize == N; }

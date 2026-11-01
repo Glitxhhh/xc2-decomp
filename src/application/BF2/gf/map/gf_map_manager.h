@@ -38,6 +38,7 @@ const GfFileIdx MAP_FILE_IDX_UNKNOWN_2 = static_cast<GfFileIdx>(2);
 const GfFileIdx MAP_FILE_IDX_UNKNOWN_3 = static_cast<GfFileIdx>(3);
 const GfFileIdx MAP_FILE_IDX_UNKNOWN_4 = static_cast<GfFileIdx>(4);
 const GfFileIdx MAP_FILE_IDX_UNKNOWN_5 = static_cast<GfFileIdx>(5);
+const GfFileIdx MAP_FILE_IDX_UNKNOWN_6 = static_cast<GfFileIdx>(6);
 const GfFileIdx MAP_FILE_IDX_UNKNOWN_7 = static_cast<GfFileIdx>(7);
 const GfFileIdx MAP_FILE_IDX_UNKNOWN_8 = static_cast<GfFileIdx>(8);
 const GfFileIdx MAP_FILE_IDX_UNKNOWN_9 = static_cast<GfFileIdx>(9);

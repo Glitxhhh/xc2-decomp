@@ -34,6 +34,7 @@ public:
   virtual ~GfWeapon();
 
   mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &getCurrentHandles() { return unknowna8 ? unknown58 : unknown08; }
+  const mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &getCurrentHandles() const { return unknowna8 ? unknown58 : unknown08; }
 
   GF_OBJ_HANDLE *getHandle(bool isAlternateSet, u16 index) const { return isAlternateSet ? unknown58[index] : unknown08[index]; }
 
@@ -47,8 +48,8 @@ public:
     return false;
   }
 
-  u16 getRscRight() const;
-  u16 getRscLeft() const;
+  u32 getRscRight() const;
+  u32 getRscLeft() const;
 
   mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> unknown08; // Inferred role: handles; original member name unknown.
   mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> unknown58; // Inferred role: alternate handles; original member name unknown.
