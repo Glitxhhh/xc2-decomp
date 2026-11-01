@@ -1041,6 +1041,27 @@ void DebDraw::renderCircleFill(const mm::Vec3 &center, f32 radius, int division)
   }
 }
 
+void DebDraw::renderFanFill(const mm::Vec3 &center, f32 radius, f32 direction, f32 angle) {
+  if (!unknown210->renderFanFill(center, radius, direction, angle)) {
+    u32 flags = unknown08;
+    int division = static_cast<int>(angle / 0.17453294f) + 1;
+    begin(7, division + 2);
+    add(center);
+    if (!(flags & 8)) {
+      for (int i = division; i >= 0; i--) {
+        f32 rot = (angle / division) * i - angle * 0.5f + direction;
+        add(center.x + sinf(rot) * radius, center.y + cosf(rot) * radius, 0.0f);
+      }
+    } else {
+      for (int i = division; i >= 0; i--) {
+        f32 rot = (angle / division) * i - angle * 0.5f + direction;
+        add(center.x + sinf(rot) * radius, center.y, center.z + cosf(rot) * radius);
+      }
+    }
+    end();
+  }
+}
+
 void DebDraw::renderConeFill(f32 radius, f32 height, u32 division) {
   if (!unknown210->renderConeFill(radius, height, division)) {
     mm::Vec3 apex(0.0f, radius, 0.0f);

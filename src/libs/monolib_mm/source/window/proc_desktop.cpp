@@ -5,8 +5,11 @@
 #include "ml/desktop_icon.h"
 #include "ml/dev_graph.h"
 #include "ml/reslist.h"
+#include "ml/win_view.h"
 #include "ml/work_obj.h"
 #include "ml/work_util.h"
+#include "mm_math/mm_col4.h"
+#include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
 
@@ -45,6 +48,12 @@ bool ProcDesktop::isSimpleCost() { return _dsk::s_flg & _dsk::FLAG_SIMPLE_COST; 
 void ProcDesktop::setScreenLog(bool isScreenLog) { _dsk::s_flg = !isScreenLog ? _dsk::s_flg & ~_dsk::FLAG_SCREEN_LOG : _dsk::s_flg | _dsk::FLAG_SCREEN_LOG; }
 
 bool ProcDesktop::isDispScreenLog() { return _dsk::s_flg & _dsk::FLAG_SCREEN_LOG; }
+
+void DesktopIcon::execute() {
+  if (unknown50 != nullptr) {
+    unknown50();
+  }
+}
 
 f32 ProcDesktop::setUpdateSec(f32 sec) { return setUpdateRatio(sec / DevGraph::getFrameSyncSec()); }
 
@@ -168,6 +177,30 @@ void ProcDesktop::debugEntryIcon() {
   for (; def->name != nullptr; def++) {
     unknown210[unknown218++] = DesktopIcon::create(WorkUtil::getWorkMem(), def->name, def->func);
   }
+}
+
+DesktopIcon *DesktopIcon::create(mtl::ALLOC_HANDLE handle, const char *name, void (*func)()) {
+  mm::mtl::FixStr<64> label("(ICON)");
+  label += name;
+  return new (handle) DesktopIcon(name, func);
+}
+
+DesktopIcon::DesktopIcon(const char *name, void (*func)()) : unknown08(name), unknown50(func) {
+  unknown68 = false;
+  unknown58 = mm::Rect<int>(0, 0, DevGraph::fontGetWidth(name, FONT_STYLE_NORMAL, 1.0f), 25);
+}
+
+void DesktopIcon::render(WinView *view) {
+  view->fontStyle(FONT_STYLE_NORMAL);
+  view->fontScale(1.0f, 1.0f);
+  view->fontColor(mm::Col4(1.0f, 1.0f, 1.0f, 1.0f));
+  if (unknown68) {
+    view->fontBack(mm::Col4(0.0f, 0.0f, 0.2f, 1.0f));
+  } else {
+    view->fontBack(mm::Col4::zero);
+  }
+  view->fontShadow(true);
+  view->font(unknown58.x, unknown58.y, unknown08.c_str());
 }
 
 void ProcDesktop::wkStandby() { WorkObj::wkStandby(); }

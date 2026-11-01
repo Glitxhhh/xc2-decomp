@@ -22,7 +22,7 @@ void finalCommandLauncherReciever();
 bool drawFont(int x, int y, const mm::Col4 &color, const char *format, ...);
 bool drawFont(int x, int y, const char *format, ...);
 bool drawFontColor(const mm::Col4 &color);
-f32 drawFontGetWidth(const char *format, ...);
+int drawFontGetWidth(const char *format, ...);
 f32 drawFontGetHeight();
 bool drawFontScale(f32 x, f32 y);
 bool drawLine(const mm::Vec3 &start, const mm::Vec3 &end, const mm::Col4 &color);

@@ -70,7 +70,7 @@ bool drawFont(int x, int y, const char *format, ...) {
 
 bool drawFontColor(const mm::Col4 &color) { return ml::DebDraw::getCacheDraw()->fontColor(color); }
 
-f32 drawFontGetWidth(const char *format, ...) {
+int drawFontGetWidth(const char *format, ...) {
   char text[FONT_BUFFER_SIZE];
   va_list arguments;
   va_start(arguments, format);

@@ -386,6 +386,7 @@ public:
   bool renderCircle2DFill(const mm::Vec3 &center, f32 radius, u32 division);
   bool renderCircle(const mm::Mat44 &matrix, f32 radius, u32 division);
   bool renderCircle(const mm::Vec3 &center, f32 radius, u32 division);
+  bool renderFanFill(const mm::Vec3 &center, f32 radius, f32 direction, f32 angle);
   bool renderAxis(f32 length);
   bool renderArrow(const mm::Vec3 &start, const mm::Vec3 &end);
   bool renderCubeFill(const mm::Vec3 &min, const mm::Vec3 &max);
@@ -536,6 +537,7 @@ public:
   void renderCircle(const mm::Mat44 &matrix, f32 radius, int division);
   void renderCircle(const mm::Vec3 &center, f32 radius, int division);
   void renderCircleFill(const mm::Vec3 &center, f32 radius, int division);
+  void renderFanFill(const mm::Vec3 &center, f32 radius, f32 direction, f32 angle);
   void renderRealSphere(f32 radius, int division);
   void renderRealSphereFill(f32 radius, int division);
   void renderCube(const mm::Vec3 &min, const mm::Vec3 &max);

@@ -56,7 +56,7 @@ class DevGraph : public DevBase, public mm::mtl::PtrSingleton<DevGraph> {
 public:
   ~DevGraph() override;
   static void fontDraw(s16 x, s16 y, f32 scaleX, f32 scaleY, const char *text, const mm::Col4 *color, const mm::Col4 *backColor, bool isShadow);
-  static f32 fontGetWidth(const char *text, FONT_STYLE style, f32 scale);
+  static int fontGetWidth(const char *text, FONT_STYLE style, f32 scale);
   static f32 fontGetHeight(FONT_STYLE style, f32 scale);
   static bool isIgnore();
   static void setIgnore(bool isIgnore);
@@ -138,7 +138,7 @@ public:
   virtual void renderSyncSys() = 0;
   virtual void resetSizeSys(s16 width, s16 height) = 0;
   virtual void fontDrawSys(s16 x, s16 y, f32 scaleX, f32 scaleY, const char *text, const mm::Col4 *color, bool isShadow) = 0;
-  virtual f32 fontGetWidthSys(const char *text, FONT_STYLE style, f32 scale) = 0;
+  virtual int fontGetWidthSys(const char *text, FONT_STYLE style, f32 scale) = 0;
   virtual f32 fontGetHeightSys(FONT_STYLE style, f32 scale) = 0;
   virtual f32 getCostSys() const = 0;
   virtual void cmdExecDisplayListSys();
