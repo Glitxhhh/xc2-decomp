@@ -1,9 +1,13 @@
 #include "gf/field/gf_gmk_locator_atlas.h"
 
+#include <string.h>
+
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_map.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/gf_menu_map_info.h"
 #include "gmk/gmk_bdat.h"
 
 namespace gf {
@@ -58,6 +62,59 @@ void GfGmkLocatorAtlas::update(f32 deltaTime) {
       (this->*unknown438)(deltaTime);
     }
   }
+}
+
+bool GfGmkLocatorAtlas::isBelongToCurMap(const mm::Vec3 &position) const {
+  if (unknown00 <= 0 || unknown04 <= 0) {
+    return false;
+  }
+  const BdatInfo *info = getBdatInfo(unknown04);
+  if (info == nullptr || GfMenuMapInfo::get() == nullptr) {
+    return false;
+  }
+  const char *mapName = GfDataMap::getMapResourceNameByMapID(unknown00);
+  if (mapName == nullptr) {
+    return false;
+  }
+  int mapIndex = GfMenuMapInfo::getMapInfoIndex(mapName);
+  const char *levelName = info->unknown00;
+  if (levelName == nullptr) {
+    return false;
+  }
+  const GfMenuMapInfo::MapAreaInfo *area = GfMenuMapInfo::getMapAreaFromName(mapIndex, levelName);
+  if (area == nullptr) {
+    return false;
+  }
+  u16 priority;
+  if (position.x < area->unknown20 || area->unknown2c <= position.x || position.y < area->unknown24 || area->unknown30 <= position.y || position.z < area->unknown28 || area->unknown34 <= position.z) {
+    priority = 0;
+  } else {
+    priority = info->unknown08;
+  }
+  u32 areaCount = GfMenuMapInfo::getMapAreaCount(mapIndex);
+  for (u32 i = 0; i < areaCount; i++) {
+    const GfMenuMapInfo::MapAreaInfo *other = GfMenuMapInfo::getMapArea(mapIndex, i);
+    if (other == nullptr || strncmp(other->unknown00, levelName, 0x1f) == 0) {
+      continue;
+    }
+    if (position.x < other->unknown20 || other->unknown2c <= position.x || position.y < other->unknown24 || other->unknown30 <= position.y || position.z < other->unknown28 ||
+        other->unknown34 <= position.z) {
+      continue;
+    }
+    u16 otherPriority = 0xffff;
+    u32 bdatInfoNum = unknown30.size();
+    for (u32 j = 0; j < bdatInfoNum; j++) {
+      const BdatInfo &bdatInfo = unknown30[j];
+      if (strcmp(bdatInfo.unknown00, other->unknown00) == 0) {
+        otherPriority = bdatInfo.unknown08;
+        break;
+      }
+    }
+    if (priority > otherPriority) {
+      return false;
+    }
+  }
+  return true;
 }
 
 } // namespace gf

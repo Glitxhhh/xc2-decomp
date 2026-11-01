@@ -41,6 +41,7 @@ public:
   void createBdatInfos();
   void disposeBdatInfos();
   void update(f32 deltaTime);
+  bool isBelongToCurMap(const mm::Vec3 &position) const;
 
   int unknown00;                              // Inferred role: map; original member name unknown.
   int unknown04;                              // Inferred role: map of the area; original member name unknown.
