@@ -27,5 +27,16 @@ static_assert(offsetof(SlideParam, fallDistance) == 0x24, "");
 static_assert(offsetof(SlideParam, ignoreLandTime) == 0x2c, "");
 static_assert(sizeof(SlideParam) == 0x30, "");
 
+// Field names and offsets from the reflection built by gf::pc::SensorAIParam::createReflection (gf_pc_param.cpp).
+struct SensorAIParam {
+  f32 stackThreashold;
+  f32 obstacleAngle;
+  f32 enableJumpOffset;
+  f32 enableJumpCeil;
+};
+
+static_assert(offsetof(SensorAIParam, enableJumpCeil) == 0x0c, "");
+static_assert(sizeof(SensorAIParam) == 0x10, "");
+
 } // namespace pc
 } // namespace gf

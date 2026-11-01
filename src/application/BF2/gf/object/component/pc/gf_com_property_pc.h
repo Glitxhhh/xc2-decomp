@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "fw/fw_param_manager.h"
+#include "fw/fw_transform.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/pc/gf_pc_property_battle.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
@@ -89,6 +90,23 @@ public:
   // Inferred role: slide param of the pc param list entry 4 ("slide"); original name unknown.
   const pc::SlideParam *unknown001() const { return static_cast<const pc::SlideParam *>(unknown300->unknown10[4].param); }
 
+  // Inferred role: moving, from the velocity or the value at 0xc0 (shared by gf::pc::isMainPcMove and isBuddyPcMove); original
+  // name unknown.
+  bool unknown002() const {
+    if (unknown80.x * unknown80.x + unknown80.y * unknown80.y + unknown80.z * unknown80.z > 0.0f) {
+      return true;
+    }
+
+    return unknownc0 > 0.0f;
+  }
+
+  // Inferred role: requests a warp of the given type to the transform (sets the warp requested flag); original name unknown.
+  void unknown003(const fw::Transform &transform, u32 type) {
+    unknown150 = type;
+    unknown130 = transform;
+    unknown113_2 = true;
+  }
+
   u32 unknown38; // Inferred role: player id set by MsgPcFieldNotifyChangePlayerID; original member name unknown.
   u8 _3c[0x60 - 0x3c];
   Input unknown60; // Inferred role: input; original member name unknown.
@@ -118,14 +136,18 @@ public:
   u32 : 10;
   u32 unknown113_2 : 1; // Inferred role: warp requested, cleared by MsgPcFieldWarpCancel; original member name unknown.
   u32 : 5;
-  u8 _114[0x118 - 0x114];
+  s32 unknown114; // Inferred role: ground type, 3 in water (the field AI then reads the water params); original member name unknown.
   f32 unknown118; // Inferred role: water height compared by StateUtilField::isInterruptionWater; original member name unknown.
   f32 unknown11c; // Inferred role: water depth; original member name unknown.
   s32 unknown120; // Inferred role: mode compared with 1 by StateFieldWaterDeadDive::enter; original member name unknown.
-  u8 _124[0x160 - 0x124];
+  u8 _124[0x130 - 0x124];
+  fw::Transform unknown130; // Inferred role: warp target transform; original member name unknown.
+  u32 unknown150;           // Inferred role: warp type; original member name unknown.
+  u8 _154[0x160 - 0x154];
   mm::Vec3 unknown160; // Inferred role: position; original member name unknown.
   mm::Quat unknown170; // Inferred role: rotation; original member name unknown.
-  u8 _180[0x1e0 - 0x180];
+  mm::Vec3 unknown180; // Inferred role: previous position, compared with the position by gf::pc::isStack; original member name unknown.
+  u8 _190[0x1e0 - 0x190];
   mm::Vec3 unknown1e0; // Inferred role: default input direction; original member name unknown.
   u8 _1f0[0x2b0 - 0x1f0];
   mm::Vec3 unknown2b0; // Inferred role: input Y axis; original member name unknown.
@@ -149,11 +171,15 @@ static_assert(offsetof(GfComPropertyPc, unknown80) == 0x80, "");
 static_assert(offsetof(GfComPropertyPc, unknown90) == 0x90, "");
 static_assert(offsetof(GfComPropertyPc, unknown94) == 0x94, "");
 static_assert(offsetof(GfComPropertyPc, unknownc0) == 0xc0, "");
+static_assert(offsetof(GfComPropertyPc, unknown114) == 0x114, "");
 static_assert(offsetof(GfComPropertyPc, unknown118) == 0x118, "");
 static_assert(offsetof(GfComPropertyPc, unknown11c) == 0x11c, "");
 static_assert(offsetof(GfComPropertyPc, unknown120) == 0x120, "");
+static_assert(offsetof(GfComPropertyPc, unknown130) == 0x130, "");
+static_assert(offsetof(GfComPropertyPc, unknown150) == 0x150, "");
 static_assert(offsetof(GfComPropertyPc, unknown160) == 0x160, "");
 static_assert(offsetof(GfComPropertyPc, unknown170) == 0x170, "");
+static_assert(offsetof(GfComPropertyPc, unknown180) == 0x180, "");
 static_assert(offsetof(GfComPropertyPc, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2d0) == 0x2d0, "");

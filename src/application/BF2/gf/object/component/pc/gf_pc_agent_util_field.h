@@ -1,5 +1,16 @@
 #pragma once
+#include "framework/object/component_object.h"
+#include "framework/object/updatable_object.h"
 #include "fw/fw_param_manager.h"
+#include "gf/object/component/behavior/gf_com_behavior.h"
+#include "gf/object/component/pc/gf_com_behavior_pc.h"
+#include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_agent.h"
+#include "gf/object/component/pc/gf_pc_ai_agent.h"
+#include "gf/object/component/pc/gf_pc_ai_agent_field.h"
+#include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/rtti.h"
+#include "mm_mtl/unique_ptr.h"
 #include "types.h"
 
 namespace navi {
@@ -7,9 +18,6 @@ class NvmshAcObj;
 } // namespace navi
 
 namespace gf {
-
-class GfComPropertyPc;
-
 namespace pc {
 
 // Entries of the field AI param list, in the order of gf::pc::createReflectionFieldAI; the enumerator names are unknown.
@@ -29,6 +37,13 @@ public:
   static void setIdleInput(GfComPropertyPc &property);
   static f32 setFollowInput(f32 distance, navi::NvmshAcObj *naviObject, GfComPropertyPc &property);
   static fw::ParamAdapter getAIParamAdapter(GfComPropertyPc &property, PARAM_ID_FIELD_AI id);
+
+  // Inferred role: field AI param list of the AI agent of the player; original name unknown.
+  static const mm::mtl::IntrusivePtr<fw::ParamList> &unknown001(GfComPropertyPc &property) {
+    GfComBehaviorPc *behavior = mm::mtl::dynamicCast<GfComBehaviorPc>(property.unknown08->unknown38[GfComBehavior::COMPONENT_INDEX]);
+    AIAgent *agent = mm::mtl::dynamicCast<AIAgent>(behavior->unknown98.get());
+    return agent->unknown10.unknown88;
+  }
 };
 
 } // namespace pc

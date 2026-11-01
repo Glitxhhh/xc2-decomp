@@ -93,5 +93,32 @@ struct JumpAIParam {
 
 static_assert(sizeof(JumpAIParam) == 0x04, "");
 
+// Field names and offsets from the reflection built by gf::pc::FollowMainPcParam::createReflection.
+struct FollowMainPcParam {
+  f32 followDist;
+  f32 stopDist;
+  f32 powMinDist;
+  f32 powMaxDist;
+  f32 adjustTime;
+  f32 adjustDist;
+  f32 walkDistStopFollower;
+};
+
+static_assert(offsetof(FollowMainPcParam, powMinDist) == 0x08, "");
+static_assert(offsetof(FollowMainPcParam, walkDistStopFollower) == 0x18, "");
+static_assert(sizeof(FollowMainPcParam) == 0x1c, "");
+
+// Field names and offsets from the reflection built by gf::pc::FollowBuddyPcParam::createReflection.
+struct FollowBuddyPcParam {
+  f32 stopDist;
+  f32 powMinDist;
+  f32 powMaxDist;
+  f32 walkDistStopFollower;
+};
+
+static_assert(offsetof(FollowBuddyPcParam, powMinDist) == 0x04, "");
+static_assert(offsetof(FollowBuddyPcParam, walkDistStopFollower) == 0x0c, "");
+static_assert(sizeof(FollowBuddyPcParam) == 0x10, "");
+
 } // namespace pc
 } // namespace gf

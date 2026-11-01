@@ -7,7 +7,9 @@
 #include "framework/object/updatable_object.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_agent.h"
 #include "mm_mtl/rtti.h"
+#include "mm_mtl/unique_ptr.h"
 #include "types.h"
 
 namespace gf {
@@ -37,6 +39,10 @@ public:
   void setEnableAgentBattle(bool isEnable);
 
   GfComPropertyPc *getProperty() const { return mm::mtl::dynamicCast<GfComPropertyPc>(unknown08->unknown38[GfComPropertyPc::COMPONENT_INDEX]); }
+
+  mm::mtl::UniquePtr<pc::Agent> unknown98; // Inferred role: agent, tested by setEnableAgentField; original member name unknown.
 };
+
+static_assert(offsetof(GfComBehaviorPc, unknown98) == 0x98, "");
 
 } // namespace gf
