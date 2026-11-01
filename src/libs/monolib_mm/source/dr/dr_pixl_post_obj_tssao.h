@@ -15,12 +15,24 @@ namespace ml {
 
 class DrMan;
 class DrPixlPostMan;
+class DrPixlRenderTarget;
 
 class DrPixlPostObjTSSAO {
 public:
+  enum BlurAxis {
+    BLUR_AXIS_UNKNOWN_1 = 1,
+    BLUR_AXIS_UNKNOWN_2 = 2,
+  };
+
   void render_beforeTemporal();
+  void passQuaterNormal();
+  void passSSAO();
+  void passPrevBlur();
+  void passTemporalFiltering();
   void render_afterTemporal();
+  void passPostBlur();
   void passUpScaling();
+  void passBlur_Sub(BlurAxis axis, f32 strength, DrPixlRenderTarget *source, DrPixlRenderTarget *destination, bool flag);
   void passUpScaleToMiddle();
   void update();
   void releaseColorBuff();
@@ -31,9 +43,9 @@ public:
   u8 _08[0x10 - 0x08];
   DrPixlPostMan *unknown10; // Inferred role: post man; original member name unknown.
   u8 _18[0x20 - 0x18];
-  grlib::CGLibRenderTarget *unknown20;    // Inferred role: render target; original member name unknown.
-  grlib::CGLibRenderTarget *unknown28[2]; // Inferred role: render targets per buffer; original member name unknown.
-  grlib::CGLibRenderTarget *unknown38;    // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown20;    // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown28[2]; // Inferred role: render targets per buffer; original member name unknown.
+  DrPixlRenderTarget *unknown38;    // Inferred role: render target; original member name unknown.
   u8 _40[0x48 - 0x40];
   grlib::CGLibRenderTarget *unknown48;    // Inferred role: render target; original member name unknown.
   grlib::CGLibRenderTarget *unknown50[2]; // Inferred role: render targets per buffer; original member name unknown.

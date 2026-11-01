@@ -1,7 +1,14 @@
 #include "dr/dr_pixl_post_obj_motion_blur2.h"
 
+#include "dr/dr_ap_gx_type.h"
+#include "dr/dr_calc_man.h"
+#include "dr/dr_calc_view_work.h"
+#include "dr/dr_man.h"
+#include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
+#include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_vtx_vertex.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 
@@ -36,6 +43,30 @@ void DrPixlPostObjMotionBlur2::releaseColorBuff() {
   unknown38->releaseTexture();
   unknown40->releaseTexture();
   unknown48->releaseTexture();
+}
+
+void DrPixlPostObjMotionBlur2::render() {
+  DrAPGxType::setupScreenQuads(false);
+  calcBlurWork();
+  calcObjMotionBlur();
+  grlib::CGLibCtlShader::setMemoryBarrierBit(3);
+  if (unknown64) {
+    renderCalcBlur();
+  }
+  grlib::CGLibCtlShader::setMemoryBarrierBit(2);
+  if (unknown64) {
+    lastRender();
+  }
+}
+
+void DrPixlPostObjMotionBlur2::calcObjMotionBlur() {
+  if (!unknown00->unknown580->unknown10->unknown9aa && unknown00->unknown120[unknown00->unknown1c98]->unknown1cd) {
+    calcVelocityBlur();
+  }
+  unknown00->blurCallBackRender();
+  calcMaxVelocityPerTile();
+  grlib::CGLibCtlShader::setMemoryBarrierBit(2);
+  calcBlurMask();
 }
 
 } // namespace ml

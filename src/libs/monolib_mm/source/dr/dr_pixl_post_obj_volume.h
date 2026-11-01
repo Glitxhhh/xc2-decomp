@@ -14,6 +14,7 @@ class DrMan;
 class DrPixlPostObjVolume {
 public:
   ~DrPixlPostObjVolume();
+  void volumeRender();
   void resetColorBuff();
   void calcColorBuff();
   void update();
@@ -21,6 +22,7 @@ public:
   void calculateSclDown();
   void calculateSclDown_Temporal();
   void calculateSclDown_NonTemporal();
+  void calculateVolume();
 
   DrMan *unknown00; // Inferred role: driver manager; original member name unknown.
   u8 _08[0x18 - 0x08];

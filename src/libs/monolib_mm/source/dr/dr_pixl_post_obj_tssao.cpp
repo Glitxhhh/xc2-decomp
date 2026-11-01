@@ -2,7 +2,10 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_man.h"
+#include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
+#include "dr/dr_pixl_render_target.h"
+#include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_render_target.h"
 #include "mm_math/mm_vec4.h"
 #include "mm_mtl/fixed_array.h"
@@ -21,6 +24,48 @@ void DrPixlPostObjTSSAO::calcFragCoordToScreen(mm::Vec4 &screen, f32 width, f32 
   screen.y = 2.0f / height;
   screen.z = (static_cast<f32>(unknown70) + static_cast<f32>(unknown70)) / width - 1.0f;
   screen.w = (static_cast<f32>(unknown70) + static_cast<f32>(unknown70)) / height - 1.0f;
+}
+
+void DrPixlPostObjTSSAO::render_beforeTemporal() {
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  if (!postParm->unknown174) {
+    return;
+  }
+  if (postParm->unknownfb1) {
+    passQuaterNormal();
+  }
+  passSSAO();
+  grlib::CGLibCtlShader::setMemoryBarrierBit(2);
+  passPrevBlur();
+  passTemporalFiltering();
+}
+
+void DrPixlPostObjTSSAO::passPrevBlur() {
+  f32 strength = unknown00->unknown120[unknown00->unknown1c98]->unknownf94;
+  passBlur_Sub(BLUR_AXIS_UNKNOWN_1, strength, unknown20, unknown38, false);
+  grlib::CGLibCtlShader::setMemoryBarrierBit(2);
+  passBlur_Sub(BLUR_AXIS_UNKNOWN_2, strength, unknown38, unknown20, false);
+}
+
+void DrPixlPostObjTSSAO::render_afterTemporal() {
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  if (!postParm->unknown174) {
+    return;
+  }
+  passPostBlur();
+  passUpScaleToMiddle();
+}
+
+void DrPixlPostObjTSSAO::passPostBlur() {
+  f32 strength = unknown00->unknown120[unknown00->unknown1c98]->unknown188;
+  DrPixlRenderTarget *source = unknown28[DrMan::s_nDblIdx];
+  f32 weight[4];
+  for (s32 i = 0; i < 4; i++) {
+    weight[i] = DrPixlPostObj::gaussianDistribution(static_cast<f32>(i), 0.0f, 1.0f);
+  }
+  passBlur_Sub(BLUR_AXIS_UNKNOWN_1, strength, source, unknown38, false);
+  grlib::CGLibCtlShader::setMemoryBarrierBit(2);
+  passBlur_Sub(BLUR_AXIS_UNKNOWN_2, strength, unknown38, source, false);
 }
 
 void DrPixlPostObjTSSAO::passUpScaling() { passUpScaleToMiddle(); }

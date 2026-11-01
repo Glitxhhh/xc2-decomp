@@ -89,7 +89,8 @@ public:
   grlib::CGLibDblUniformBlock unknown900; // Inferred role: mpf uniform; original member name unknown.
   grlib::CGLibDblUniformBlock unknown938; // Inferred role: dither uniform for the first tex; original member name unknown.
   grlib::CGLibDblUniformBlock unknown970; // Inferred role: dither uniform; original member name unknown.
-  u8 _9a8[0x9aa - 0x9a8];
+  u8 _9a8[0x9a9 - 0x9a8];
+  bool unknown9a9; // Inferred role: camera cut; original member name unknown.
   bool unknown9aa; // Inferred role: SSR skip; original member name unknown.
   u8 _9ab[0x9ac - 0x9ab];
   bool unknown9ac; // Inferred role: set when the value at 0x79c exceeds 128; original member name unknown.
@@ -128,6 +129,7 @@ static_assert(offsetof(DrCalcViewWork, unknown8c8) == 0x8c8, "");
 static_assert(offsetof(DrCalcViewWork, unknown900) == 0x900, "");
 static_assert(offsetof(DrCalcViewWork, unknown938) == 0x938, "");
 static_assert(offsetof(DrCalcViewWork, unknown970) == 0x970, "");
+static_assert(offsetof(DrCalcViewWork, unknown9a9) == 0x9a9, "");
 static_assert(offsetof(DrCalcViewWork, unknown9aa) == 0x9aa, "");
 static_assert(offsetof(DrCalcViewWork, unknown9ac) == 0x9ac, "");
 static_assert(offsetof(DrCalcViewWork, unknown9ad) == 0x9ad, "");

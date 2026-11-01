@@ -1,5 +1,6 @@
 #include "dr/dr_pixl_post_obj_bloom.h"
 
+#include "dr/dr_ap_gx_type.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
@@ -14,6 +15,10 @@ namespace _dppob {
 f32 lerp(f32 a, f32 b, f32 t) { return a * (1.0f - t) + b * t; }
 
 } // namespace _dppob
+
+const f32 DrPixlPostObjBloom::BLOOMTEX_SCALE_OLD = 0.5f;
+const f32 DrPixlPostObjBloom::BLOOMTEX_SCALE_NEW = 0.25f;
+f32 DrPixlPostObjBloom::BLOOMTEX_SCALE = DrPixlPostObjBloom::BLOOMTEX_SCALE_NEW;
 
 void DrPixlPostObjBloom::calculateDownScale() {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
@@ -52,6 +57,20 @@ void DrPixlPostObjBloom::releaseBloomTexture() {
 }
 
 void DrPixlPostObjBloom::update() { unknown90 = 0; }
+
+void DrPixlPostObjBloom::calcRender() {
+  s32 scaleType = unknown00->unknown120[unknown00->unknown1c98]->unknownf58;
+  if (unknowna8 != scaleType) {
+    BLOOMTEX_SCALE = scaleType == 1 ? BLOOMTEX_SCALE_NEW : BLOOMTEX_SCALE_OLD;
+    releaseColorBuff(true);
+    resetColorBuff(true);
+    unknown94 |= 1;
+    unknowna8 = scaleType;
+  }
+  DrAPGxType::setupScreenQuads(false);
+  calculateDownScale();
+  calculateGaussBlur();
+}
 
 void DrPixlPostObjBloom::releaseColorBuff(bool isForce) {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];

@@ -15,10 +15,16 @@ class DrPixlPostObjMotionBlur : public DrPixlPostObj {
 public:
   ~DrPixlPostObjMotionBlur();
   void update();
+  void render();
   void debugRender();
   void resetColorBuff();
   void calcBludBuffColorBuff();
   void releaseColorBuff();
+  void calcBlurWork();
+  void calcObjMotionBlur();
+  void renderCalcBlur();
+  void lastRender();
+  void calcVelocityBlur();
 
   u8 _18[0x20 - 0x18];
   grlib::CGLibRenderTarget *unknown20;   // Inferred role: render target; original member name unknown.

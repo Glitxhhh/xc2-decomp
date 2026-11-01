@@ -1,5 +1,7 @@
 #include "dr/dr_pixl_post_obj_depthof_field.h"
 
+#include <math.h>
+
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_ap_gx_type.h"
 #include "dr/dr_calc_man.h"
@@ -15,6 +17,8 @@
 #include "grlib/cglib_render_target.h"
 #include "grlib/cglib_shader.h"
 #include "grlib/cglib_uni_base_utility.h"
+#include "mm_math/mm_col4.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 
@@ -73,6 +77,94 @@ void DrPixlPostObjDepthofField::releaseColorBuff() {
   unknown30->releaseTexture();
   unknown38->releaseTexture();
   unknown48->releaseTexture();
+}
+
+void DrPixlPostObjDepthofField::renderDepthAllSample() {
+  DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
+  f32 blend;
+  if (unknown58) {
+    unknown40->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
+    unknown58 = false;
+    blend = 0.0f;
+  } else {
+    blend = viewWork->unknown9a9 ? 0.0f : 0.95f;
+  }
+  unknown40->setRenderTarget();
+  DrAPCache *apCache = unknown00->unknown5c0;
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  DrShdDataObj *shader;
+  if (postParm->unknown23c != 0) {
+    shader = shdList->getPostShdObj(0x20);
+  } else {
+    shader = shdList->getPostShdObj(0x1f);
+  }
+  {
+    shdList->bindTriangle();
+    shader->setupShader(0u);
+    grlib::CGLibUniformEtcUtility uniform(shader);
+    uniform.setUseUniformBlock("U_POST");
+    int depthLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("dep");
+    int oldLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("old");
+    if (postParm->unknown23c == 0) {
+      u32 offset = uniform.unknown001("pisu[0]");
+      f32 height = static_cast<f32>(unknown38->unknownc0);
+      f32 width = static_cast<f32>(unknown38->unknownbc);
+      f32 pisu[8];
+      pisu[0] = 1.0f / width;
+      pisu[1] = 1.0f / height;
+      pisu[2] = -1.0f / width;
+      pisu[3] = -1.0f / height;
+      pisu[4] = blend;
+      pisu[5] = 0.0f;
+      pisu[6] = 0.0f;
+      pisu[7] = 0.0f;
+      uniform.setF32SetF32Array(offset, pisu, 8);
+    } else {
+      u32 offset = uniform.unknown001("pisu");
+      s32 index = postParm->unknown23c - 1;
+      f32 pisu[4];
+      s32 block = index / 4;
+      s32 sub = index % 4;
+      s32 x = block % 2 * 2 + sub % 2;
+      s32 row = block / 2;
+      s32 y = sub / 2 + row * 2;
+      pisu[0] = static_cast<f32>(x) * 0.25f + 0.125f;
+      pisu[1] = 1.0f - (static_cast<f32>(y) * 0.25f + 0.125f);
+      pisu[2] = blend;
+      pisu[3] = 0.0f;
+      uniform.setF32SetVec4(offset, pisu);
+    }
+    apCache->beginTexSampling(2, 0);
+    apCache->setTexture(*unknown38->unknown70, depthLocation);
+    apCache->setTexture(*unknown40->unknown70, oldLocation);
+    uniform.updateData();
+    uniform.setUniformBlock();
+    shdList->renderTriangle();
+  }
+  unknown40->setColorInvalidate();
+  unknown48->setRenderTarget();
+  shader = shdList->getPostShdObj(0x23);
+  {
+    shdList->bindTriangle();
+    shader->setupShader(0u);
+    grlib::CGLibUniformEtcUtility uniform(shader);
+    uniform.setUseUniformBlock("U_POST");
+    u32 ratioOffset = uniform.unknown001("ratio");
+    f32 ratio[4];
+    ratio[0] = viewWork->unknown430.x;
+    ratio[1] = viewWork->unknown430.y;
+    ratio[2] = postParm->unknown244;
+    ratio[3] = postParm->unknown240;
+    uniform.setF32SetVec4(ratioOffset, ratio);
+    int calcLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("calc");
+    apCache->beginTexSampling(2, 0);
+    apCache->setTexture(*unknown40->unknown70, calcLocation);
+    uniform.updateData();
+    uniform.setUniformBlock();
+    shdList->renderTriangle();
+  }
+  unknown48->setColorInvalidate();
 }
 
 void DrPixlPostObjDepthofField::renderDofScaleDown() {
@@ -151,6 +243,104 @@ void DrPixlPostObjDepthofField::renderDofScaleDown() {
   uniform.setUniformBlock();
   shdList->renderTriangle();
   unknown18->setColorInvalidate();
+}
+
+void DrPixlPostObjDepthofField::renderDofPass() {
+  DrAPCache *apCache = unknown00->unknown5c0;
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  f32 pixlScale = postParm->unknown21a ? unknown54 * 0.5f : unknown54;
+  f32 width = static_cast<f32>(unknown18->unknownbc);
+  f32 height = static_cast<f32>(unknown18->unknownc0);
+  f32 scale[4];
+  scale[0] = (width - 1.0f) / width;
+  scale[1] = (height - 1.0f) / height;
+  scale[2] = 1.0f / (width + width);
+  scale[3] = 1.0f / (height + height);
+  if (postParm->unknownfb3) {
+    f32 reductionX = postParm->unknownfc0;
+    f32 reductionY = postParm->unknownfc4;
+    width /= reductionX;
+    height /= reductionY;
+  }
+  f32 ratio = postParm->unknown220;
+  f32 ofsU = 1.0f / width * ratio * 0.125f;
+  f32 stepU = pixlScale * ofsU;
+  f32 stepV = pixlScale * (1.0f / height * ratio * 0.125f);
+  s32 count = postParm->unknown21a ? 12 : 6;
+  f32 ofs[48];
+  f32 dofParam[4];
+  for (s32 i = 0; i < count; i++) {
+    ofs[i * 2] = 0.0f;
+    ofs[i * 2 + 1] = -(stepV * 0.5f + stepV * i);
+  }
+  f32 s = sinf(60.0f * mm::DEG_TO_RAD);
+  f32 c = cosf(60.0f * mm::DEG_TO_RAD);
+  for (s32 i = 0; i < count; i++) {
+    ofs[count * 2 + i * 2] = (stepU * 0.5f + stepU * i) * s;
+    ofs[count * 2 + i * 2 + 1] = (stepV * 0.5f + stepV * i) * c;
+  }
+  dofParam[0] = postParm->unknown230;
+  dofParam[1] = 0.0f;
+  dofParam[2] = 0.0f;
+  dofParam[3] = 0.0f;
+  unknown20->setRenderTarget(*unknown28);
+  DrShdDataObj *shader;
+  if (postParm->unknown21a) {
+    shader = shdList->getPostShdObj(0x16);
+  } else {
+    shader = shdList->getPostShdObj(0xf);
+  }
+  {
+    shdList->bindTriangleTex();
+    shader->setupShader(0u);
+    grlib::CGLibUniformEtcUtility uniform(shader);
+    uniform.setUseUniformBlock("U_POST");
+    int location = (shader->unknown38 + shader->unknown58)->getTextureLocation("s0");
+    u32 scaleOffset = uniform.unknown001("gScal");
+    u32 ofsOffset = uniform.unknown001("ofs[0]");
+    u32 ratioOffset = uniform.unknown001("ratio");
+    uniform.setF32SetVec4(scaleOffset, scale);
+    uniform.setF32SetVec4(ratioOffset, dofParam);
+    uniform.setF32SetF32Array(ofsOffset, ofs, count * 4);
+    apCache->beginTexSampling(2, 1);
+    apCache->setTexture(*unknown18->unknown70, location);
+    uniform.updateData();
+    uniform.setUniformBlock();
+    shdList->renderTriangle();
+    unknown20->setColorInvalidate();
+    unknown28->setColorInvalidate();
+  }
+  unknown30->setRenderTarget();
+  if (postParm->unknown21a) {
+    shader = shdList->getPostShdObj(0x17);
+  } else {
+    shader = shdList->getPostShdObj(0x10);
+  }
+  shdList->bindTriangleTex();
+  shader->setupShader(0u);
+  grlib::CGLibUniformEtcUtility uniform(shader);
+  uniform.setUseUniformBlock("U_POST");
+  int nearLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("s0");
+  int farLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("s1");
+  u32 scaleOffset = uniform.unknown001("gScal");
+  u32 ofsOffset = uniform.unknown001("ofs[0]");
+  u32 ratioOffset = uniform.unknown001("ratio");
+  int baseLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("s2");
+  uniform.setF32SetVec4(scaleOffset, scale);
+  for (s32 i = 0; i < count; i++) {
+    ofs[i * 2] = (stepU * 0.5f + stepU * i) * -s;
+    ofs[i * 2 + 1] = (stepV * 0.5f + stepV * i) * c;
+  }
+  uniform.setF32SetF32Array(ofsOffset, ofs, count * 4);
+  uniform.setF32SetVec4(ratioOffset, dofParam);
+  apCache->setTexture(*unknown20->unknown70, nearLocation);
+  apCache->setTexture(*unknown28->unknown70, farLocation);
+  apCache->setTexture(*unknown18->unknown70, baseLocation);
+  uniform.updateData();
+  uniform.setUniformBlock();
+  shdList->renderTriangle();
+  unknown30->setColorInvalidate();
 }
 
 void DrPixlPostObjDepthofField::renderCalc() {

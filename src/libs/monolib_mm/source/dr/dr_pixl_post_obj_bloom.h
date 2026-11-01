@@ -19,13 +19,20 @@ public:
     DOWN_SCALE_TYPE_UNKNOWN_2 = 2,
   };
 
+  static f32 BLOOMTEX_SCALE;
+  static const f32 BLOOMTEX_SCALE_OLD;
+  static const f32 BLOOMTEX_SCALE_NEW;
+
   ~DrPixlPostObjBloom();
+  void resetColorBuff(bool isForce);
   void releaseBloomTexture();
   void update();
+  void calcRender();
   void releaseColorBuff(bool isForce);
   grlib::CGLibRenderTarget *getLgtDownTarget();
   void calculateDownScale();
   void calculateDownScale_TwoPass();
+  void calculateGaussBlur();
   void calculateDownScaleImpl(DownScaleType type);
 
   DrMan *unknown00; // Inferred role: driver manager; original member name unknown.
@@ -45,14 +52,17 @@ public:
   grlib::CGLibRenderTarget *unknown78; // Inferred role: render target; original member name unknown.
   grlib::CGLibRenderTarget *unknown80; // Inferred role: render target; original member name unknown.
   u8 _88[0x90 - 0x88];
-  u32 unknown90; // Inferred role: update request; original member name unknown.
-  u8 _94[0x98 - 0x94];
+  u32 unknown90;                          // Inferred role: update request; original member name unknown.
+  u32 unknown94;                          // Inferred role: flags; original member name unknown.
   grlib::CGLibRenderTarget *unknown98[2]; // Inferred role: lgt down targets; original member name unknown.
+  s32 unknowna8;                          // Inferred role: bloom scale type; original member name unknown.
 };
 
 static_assert(offsetof(DrPixlPostObjBloom, unknown18) == 0x18, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknown80) == 0x80, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknown90) == 0x90, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknown98) == 0x98, "");
+static_assert(offsetof(DrPixlPostObjBloom, unknown94) == 0x94, "");
+static_assert(offsetof(DrPixlPostObjBloom, unknowna8) == 0xa8, "");
 
 } // namespace ml

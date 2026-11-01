@@ -189,20 +189,26 @@ public:
   bool m_TMAAOn;
   u8 _0112[0x0114 - 0x0112];
   f32 unknown114[6];  // Inferred role: tmaa sharpness; original member name unknown.
-  f32 unknown12c[26]; // Inferred role: tmaa sharpness; original member name unknown.
-  bool unknown194;    // Inferred role: ssao; original member name unknown.
+  f32 unknown12c[18]; // Inferred role: tmaa sharpness; original member name unknown.
+  bool unknown174;    // Inferred role: tssao; original member name unknown.
+  u8 _0175[0x0188 - 0x0175];
+  f32 unknown188; // Inferred role: tssao post blur strength; original member name unknown.
+  u8 _018c[0x0194 - 0x018c];
+  bool unknown194; // Inferred role: ssao; original member name unknown.
   u8 _0195[0x019c - 0x0195];
   f32 unknown19c; // Inferred role: ssao blur str; original member name unknown.
   u8 _01a0[0x01ca - 0x01a0];
   bool unknown1ca; // Inferred role: mot blur; original member name unknown.
-  u8 _01cb[0x01ce - 0x01cb];
+  u8 _01cb[0x01cd - 0x01cb];
+  bool unknown1cd; // Inferred role: obj mot blur; original member name unknown.
   bool unknown1ce; // Inferred role: app blur; original member name unknown.
   u8 _01cf[0x01d0 - 0x01cf];
   bool unknown1d0; // Inferred role: sp blur; original member name unknown.
   u8 _01d1[0x01d4 - 0x01d1];
   f32 unknown1d4; // Inferred role: mot blur strength; original member name unknown.
   f32 unknown1d8; // Inferred role: mot blur sub; original member name unknown.
-  u8 _01dc[0x01f0 - 0x01dc];
+  u8 _01dc[0x01ec - 0x01dc];
+  f32 unknown1ec; // Inferred role: obj mot blur strength; original member name unknown.
   f32 unknown1f0; // Inferred role: blur sp parm; original member name unknown.
   u8 _01f4[0x01fc - 0x01f4];
   bool m_motBlur2;
@@ -274,9 +280,14 @@ public:
   u8 _04d1[0x0514 - 0x04d1];
   unknown039 unknown514[2]; // Inferred role: dbl parms; original member name unknown.
   bool unknownf54;          // Inferred role: histgram reset; original member name unknown.
-  u8 _0f55[0x0f72 - 0x0f55];
+  u8 _0f55[0x0f58 - 0x0f55];
+  s32 unknownf58; // Inferred role: bloom scale type; original member name unknown.
+  u8 _0f5c[0x0f72 - 0x0f5c];
   bool unknownf72; // Inferred role: blm 2 pass; original member name unknown.
-  u8 _0f73[0x0fb2 - 0x0f73];
+  u8 _0f73[0x0f94 - 0x0f73];
+  f32 unknownf94; // Inferred role: tssao prev blur strength; original member name unknown.
+  u8 _0f98[0x0fb1 - 0x0f98];
+  bool unknownfb1; // Inferred role: tssao quarter normal; original member name unknown.
   bool unknownfb2; // Inferred role: reduction; original member name unknown.
   bool unknownfb3; // Inferred role: reduction buffer; original member name unknown.
   bool unknownfb4; // Inferred role: separate trans; original member name unknown.
@@ -358,6 +369,8 @@ static_assert(offsetof(DrPixlPostParm, m_AAOn) == 0x00fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown100) == 0x0100, "");
 static_assert(offsetof(DrPixlPostParm, unknown114) == 0x0114, "");
 static_assert(offsetof(DrPixlPostParm, unknown12c) == 0x012c, "");
+static_assert(offsetof(DrPixlPostParm, unknown174) == 0x0174, "");
+static_assert(offsetof(DrPixlPostParm, unknown188) == 0x0188, "");
 static_assert(offsetof(DrPixlPostParm, unknown104) == 0x0104, "");
 static_assert(offsetof(DrPixlPostParm, unknown108) == 0x0108, "");
 static_assert(offsetof(DrPixlPostParm, unknown10c) == 0x010c, "");
@@ -365,10 +378,12 @@ static_assert(offsetof(DrPixlPostParm, m_TMAAOn) == 0x0111, "");
 static_assert(offsetof(DrPixlPostParm, unknown194) == 0x0194, "");
 static_assert(offsetof(DrPixlPostParm, unknown19c) == 0x019c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ca) == 0x01ca, "");
+static_assert(offsetof(DrPixlPostParm, unknown1cd) == 0x01cd, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ce) == 0x01ce, "");
 static_assert(offsetof(DrPixlPostParm, unknown1d0) == 0x01d0, "");
 static_assert(offsetof(DrPixlPostParm, unknown1d4) == 0x01d4, "");
 static_assert(offsetof(DrPixlPostParm, unknown1d8) == 0x01d8, "");
+static_assert(offsetof(DrPixlPostParm, unknown1ec) == 0x01ec, "");
 static_assert(offsetof(DrPixlPostParm, unknown1f0) == 0x01f0, "");
 static_assert(offsetof(DrPixlPostParm, m_motBlur2) == 0x01fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown218) == 0x0218, "");
@@ -417,7 +432,10 @@ static_assert(offsetof(DrPixlPostParm, unknown488) == 0x0488, "");
 static_assert(offsetof(DrPixlPostParm, unknown4d0) == 0x04d0, "");
 static_assert(offsetof(DrPixlPostParm, unknown514) == 0x0514, "");
 static_assert(offsetof(DrPixlPostParm, unknownf54) == 0x0f54, "");
+static_assert(offsetof(DrPixlPostParm, unknownf58) == 0x0f58, "");
 static_assert(offsetof(DrPixlPostParm, unknownf72) == 0x0f72, "");
+static_assert(offsetof(DrPixlPostParm, unknownf94) == 0x0f94, "");
+static_assert(offsetof(DrPixlPostParm, unknownfb1) == 0x0fb1, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb2) == 0x0fb2, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb3) == 0x0fb3, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb4) == 0x0fb4, "");

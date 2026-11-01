@@ -1,8 +1,10 @@
 #include "dr/dr_pixl_post_obj_volume.h"
 
+#include "dr/dr_ap_gx_type.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
+#include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_render_target.h"
 #include "mm_mtl/fixed_array.h"
 
@@ -14,6 +16,13 @@ void DrPixlPostObjVolume::calculateSclDown() {
   } else {
     calculateSclDown_NonTemporal();
   }
+}
+
+void DrPixlPostObjVolume::volumeRender() {
+  DrAPGxType::setupScreenQuads(false);
+  calculateSclDown();
+  grlib::CGLibCtlShader::setMemoryBarrierBit(2);
+  calculateVolume();
 }
 
 DrPixlPostObjVolume::~DrPixlPostObjVolume() {
