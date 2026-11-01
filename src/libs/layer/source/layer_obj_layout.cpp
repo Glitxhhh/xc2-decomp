@@ -4,7 +4,9 @@
 
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_render_target.h"
+#include "grlib/cglib_texture_buffer.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_manager.h"
 #include "layer/layer_obj_top_tex_obj.h"
 #include "layer/layer_sort_man.h"
 #include "mtl/alloc_handle.h"
@@ -64,6 +66,62 @@ void LayerObjLayout::workLayoutRelease() {
   if (unknown3f8 != nullptr) {
     delete unknown3f8;
     unknown3f8 = nullptr;
+  }
+}
+
+void LayerObjLayout::updatePriTbl() {
+  if (!(getStateFlags(LayerManager::s_nDebIdx) & 0x800)) {
+    if (unknown2a0.unknown24[LayerManager::s_nDebIdx] != 0) {
+      if (unknown2a0.unknown30 != nullptr) {
+        delete unknown2a0.unknown30;
+        unknown2a0.unknown30 = nullptr;
+      }
+      u16 num = unknown2a0.unknown24[LayerManager::s_nDebIdx];
+      LayerSortMan *sortMan = new (LayerManager::get()->unknown28) LayerSortMan(LayerManager::get(), num, 0);
+      unknown2a0.unknown24[LayerManager::s_nDebIdx] = 0;
+      unknown2a0.unknown30 = sortMan;
+      unknown2a0.unknown28 = num;
+    }
+
+    if (unknown2a0.unknowne0.unknown00 & 0x2) {
+      if (unknown2a0.unknowne0.unknown18 != nullptr) {
+        delete unknown2a0.unknowne0.unknown18;
+        unknown2a0.unknowne0.unknown18 = nullptr;
+      }
+      if (unknown2a0.unknowne0.unknown20 != nullptr) {
+        delete unknown2a0.unknowne0.unknown20;
+        unknown2a0.unknowne0.unknown20 = nullptr;
+      }
+      memset(&unknown2a0.unknowne0, 0, sizeof(unknown2a0.unknowne0));
+    }
+
+    if (unknown2a0.unknown70[LayerManager::s_nDebIdx].unknown00 & 0x1) {
+      if (unknown2a0.unknown118.unknown00 & 0x4) {
+        unknown2a0.unknowne0 = unknown2a0.unknown118;
+        unknown2a0.unknowne0.unknown00 |= 0x2;
+      }
+      unknown2a0.unknown118 = unknown2a0.unknown70[LayerManager::s_nDebIdx];
+      unknown2a0.unknown118.unknown00 &= ~0x1;
+      grlib::CGLibRenderTarget *renderTarget = unknown2a0.unknown118.unknown18;
+      u32 width = unknown2a0.unknown118.unknown04.unknown08;
+      u32 height = unknown2a0.unknown118.unknown04.unknown0c;
+      unknown2a0.unknown118.unknown00 |= 0x4;
+      renderTarget->setTextureInfo(width, height, GRL_SURFACE_FORMAT_RGBA16F, false, 0);
+      unknown2a0.unknown118.unknown20 = static_cast<LayerObjTopTexObj *>(LayerObjManager::createStaticTexObj(*unknown2a0.unknown118.unknown18->unknown70));
+      memset(&unknown2a0.unknown70[LayerManager::s_nDebIdx], 0, sizeof(unknown001));
+    }
+
+    if (unknown2a0.unknown118.unknown00 & (0x20 << LayerManager::s_nDebIdx)) {
+      unknown2a0.unknowne0 = unknown2a0.unknown118;
+      memset(&unknown2a0.unknown118, 0, sizeof(unknown2a0.unknown118));
+    }
+  } else {
+    if (unknown2a0.unknown30 != nullptr) {
+      delete unknown2a0.unknown30;
+      unknown2a0.unknown30 = nullptr;
+    }
+    unknown2a0.unknown24[LayerManager::s_nDebIdx] = 0;
+    unknown2a0.unknown28 = 0;
   }
 }
 

@@ -3,10 +3,44 @@
 #include <math.h>
 #include <string.h>
 
+#include "layer/layer_manager.h"
 #include "layer/layer_sort_obj.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace layer {
+
+LayerSortMan::LayerSortMan(LayerManager *manager, u32 num2D, u32 num3D) {
+  unknown60 = 255.0f;
+  unknown64 = 300.0f;
+  unknown68 = 0.8f;
+  unknown6c = num2D;
+  unknown00 = manager;
+  unknown08 = nullptr;
+  unknown70 = num3D;
+
+  u32 bits2D = num2D / 32 * 4 + 1;
+  u32 bits3D = num3D / 32 * 4 + 1;
+  unknown74 = bits2D + (32 - bits2D % 32) % 32;
+  unknown78 = bits3D + (32 - bits3D % 32) % 32;
+  s32 objSize = (unknown6c + unknown70) * 16;
+  objSize += (32 - objSize % 32) % 32;
+  s32 size = unknown74 + unknown78 + objSize;
+  size += (32 - size % 32) % 32;
+  u8 *buffer = static_cast<u8 *>(mtl::MemManager::allocate(manager->unknown28, size, 0x20, false, "no name", 0));
+  unknown08 = buffer;
+
+  unknown10 = reinterpret_cast<LayerSortObj **>(buffer);
+  unknown18 = reinterpret_cast<LayerSortObj **>(buffer + unknown6c * sizeof(LayerSortObj *));
+  s32 offset = unknown6c * 16;
+  unknown20 = reinterpret_cast<LayerSortObj **>(buffer + offset);
+  unknown28 = reinterpret_cast<LayerSortObj **>(buffer + (offset + unknown70 * sizeof(LayerSortObj *)));
+  offset += unknown70 * 16;
+  offset += (32 - offset % 32) % 32;
+  unknown30 = reinterpret_cast<u32 *>(buffer + offset);
+  offset += unknown74;
+  unknown38 = reinterpret_cast<u32 *>(buffer + offset);
+}
 
 LayerSortMan::~LayerSortMan() {
   if (unknown08 != nullptr) {

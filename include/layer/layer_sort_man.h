@@ -11,6 +11,7 @@ class LayerSortObj;
 
 class LayerSortMan {
 public:
+  LayerSortMan(LayerManager *manager, u32 num2D, u32 num3D);
   ~LayerSortMan();
   void set2DSpace(LayerSortObj *object, u32 index);
   void stock2DObj(LayerSortObj *object, s32 index);

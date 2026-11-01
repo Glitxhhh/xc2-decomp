@@ -6,8 +6,14 @@
 #include "layer/layer_acc_layout_binary.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj.h"
+#include "layer/layer_render_view.h"
+#include "layer/layer_res_view_port_info.h"
+#include "layer/layer_shd_manager.h"
+#include "layer/layer_view_port.h"
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_rect.h"
+#include "mtl/alloc_handle.h"
 
 namespace layer {
 
@@ -16,6 +22,68 @@ void LayerObjUtil::releaseWorldMatrixUniform(grlib::CGLibDblUniformBlock *&unifo
     delete uniform;
     uniform = nullptr;
   }
+}
+
+void LayerObjUtil::calcLayoutDispInfo(LayerResDispInfo &disp, const LayerResMatrix &matrix, const LayerResRenderInfo &info) {
+  f32 right = info.unknown10 + info.unknown14;
+  f32 bottom = info.unknown12 + info.unknown16;
+  f32 left = info.unknown10;
+  f32 top = info.unknown12;
+  f32 rightX = right * matrix.unknown08 * LayerManager::get()->getScreenCalcSclWidth();
+  f32 bottomX = bottom * matrix.unknown14 * LayerManager::get()->getScreenCalcSclWidth();
+  f32 leftX = left * matrix.unknown08 * LayerManager::get()->getScreenCalcSclWidth();
+  f32 topX = top * matrix.unknown14 * LayerManager::get()->getScreenCalcSclWidth();
+  f32 rightY = right * matrix.unknown10 * LayerManager::get()->getScreenCalcSclHeight();
+  f32 bottomY = bottom * matrix.unknown0c * LayerManager::get()->getScreenCalcSclHeight();
+  f32 leftY = left * matrix.unknown10 * LayerManager::get()->getScreenCalcSclHeight();
+  f32 topY = top * matrix.unknown0c * LayerManager::get()->getScreenCalcSclHeight();
+  f32 x[4] = {rightX + bottomX + matrix.unknown00, leftX + topX + matrix.unknown00, bottomX + leftX + matrix.unknown00, rightX + topX + matrix.unknown00};
+  f32 y[4] = {rightY + bottomY + matrix.unknown04, leftY + topY + matrix.unknown04, bottomY + leftY + matrix.unknown04, rightY + topY + matrix.unknown04};
+  for (s32 i = 0; i < 4; i++) {
+    if (disp.unknown00 < x[i]) {
+      disp.unknown00 = x[i];
+    }
+    if (disp.unknown08.x > x[i]) {
+      disp.unknown08.x = x[i];
+    }
+  }
+  for (s32 i = 0; i < 4; i++) {
+    if (disp.unknown04 < y[i]) {
+      disp.unknown04 = y[i];
+    }
+    if (disp.unknown08.y > y[i]) {
+      disp.unknown08.y = y[i];
+    }
+  }
+}
+
+void LayerObjUtil::calcLayerRenderView(LayerRenderView &result, LayerResViewPortInfo &viewPort, grlib::CGLibDblUniformBlock *&uniform, const LayerViewPort &port, const LayerRenderView *view,
+                                       const LayerResMatrix *matrix) {
+  LayerShdManager *shader = LayerManager::get()->unknown58;
+  result = *view;
+  f32 posX = matrix->unknown00 * shader->unknown530;
+  f32 posY = matrix->unknown04 * shader->unknown534 * (1.0f / shader->unknown574);
+  viewPort.unknown00.x = posX + port.unknown00;
+  viewPort.unknown00.y = posY + port.unknown04;
+  viewPort.unknown00.height = port.unknown0c;
+  viewPort.unknown00.width = port.unknown08;
+  if (uniform == nullptr) {
+    uniform = new (LayerManager::get()->unknown2c) grlib::CGLibDblUniformBlock();
+    uniform->setup(0x40);
+  }
+
+  f32 *buff = static_cast<f32 *>(uniform->getBuff());
+  f32 x = viewPort.unknown00.x * shader->unknown558 / shader->unknown530;
+  f32 y = shader->unknown558 * viewPort.unknown00.y / shader->unknown534;
+  f32 sclX = 1.0f / (shader->unknown558 * viewPort.unknown00.width / shader->unknown530);
+  f32 sclY = 1.0f / (shader->unknown558 * viewPort.unknown00.height / shader->unknown534);
+  buff[0] = sclX;
+  buff[1] = sclY;
+  buff[2] = sclX - 1.0f - x * 2.0f * sclX;
+  buff[3] = -(sclY - 1.0f - y * 2.0f * sclY);
+  uniform->updateData();
+  viewPort.unknown18 = uniform;
+  result.unknown08 = &viewPort;
 }
 
 void LayerObjUtil::calcLayerColor(LayerResColor &result, const LayerResColor &base, const LayerResColor &parent) {
