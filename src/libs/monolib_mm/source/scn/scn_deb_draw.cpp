@@ -25,12 +25,16 @@
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_cube.h"
+#include "mm_math/mm_cylinder.h"
 #include "mm_math/mm_line2.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_obb.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_prim_base.h"
 #include "mm_math/mm_rect.h"
+#include "mm_math/mm_sphere.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 #include "types.h"
 
@@ -698,6 +702,213 @@ void DebDraw::renderPrimFill(const mm::PrimBase *prim) {
   }
 }
 
+void DebDraw::cubeFill(const mm::Cube *cube) {
+  mm::mtl::FixedArray<mm::Vec3, 8> vertices;
+  cube->getVertices(vertices);
+  begin(6, 10);
+  add(vertices[0]);
+  add(vertices[1]);
+  add(vertices[3]);
+  add(vertices[2]);
+  add(vertices[7]);
+  add(vertices[6]);
+  add(vertices[4]);
+  add(vertices[5]);
+  add(vertices[0]);
+  add(vertices[1]);
+  end();
+  begin(6, 4);
+  add(vertices[1]);
+  add(vertices[2]);
+  add(vertices[5]);
+  add(vertices[6]);
+  end();
+  begin(6, 4);
+  add(vertices[3]);
+  add(vertices[0]);
+  add(vertices[7]);
+  add(vertices[4]);
+  end();
+}
+
+void DebDraw::cube(const mm::Cube *cube) {
+  mm::mtl::FixedArray<mm::Vec3, 8> vertices;
+  cube->getVertices(vertices);
+  begin(3, 10);
+  add(vertices[0]);
+  add(vertices[1]);
+  add(vertices[2]);
+  add(vertices[3]);
+  add(vertices[0]);
+  add(vertices[4]);
+  add(vertices[5]);
+  add(vertices[6]);
+  add(vertices[7]);
+  add(vertices[4]);
+  end();
+  begin(2, 3);
+  add(vertices[5], vertices[1]);
+  add(vertices[6], vertices[2]);
+  add(vertices[7], vertices[3]);
+  end();
+}
+
+void DebDraw::cylinder(const mm::Cylinder *cylinder) {
+  mm::Mat44 matrix;
+  cylinder->getMat(matrix);
+  setMatrix(matrix);
+  begin(3, 34);
+  for (int i = 0; i < 17; i++) {
+    add(unknown005[i % 16]);
+  }
+  for (int i = 0; i < 17; i++) {
+    add(unknown006[i % 16]);
+  }
+  end();
+  begin(2, 15);
+  for (int i = 1; i < 16; i++) {
+    add(unknown005[i], unknown006[i]);
+  }
+  end();
+}
+
+void DebDraw::sphere(const mm::Sphere *sphere) { renderSphere(sphere->getPos(), sphere->scale.x, 8); }
+
+void DebDraw::renderSphere(const mm::Sphere &sphere, int division) { renderSphere(sphere.getPos(), sphere.scale.x, division); }
+
+void DebDraw::setCol(const mm::Col4 &color) {
+  if (!unknown210->setCol(color)) {
+    unknown0c = color;
+    unknown004(unknown0c);
+    unknown08 &= ~4;
+  }
+}
+
+void DebDraw::setCol(const mm::Col3 &color, f32 alpha) {
+  CacheDraw *cacheDraw = unknown210;
+  mm::Col4 opaque;
+  opaque.r = color.r;
+  opaque.g = color.g;
+  opaque.b = color.b;
+  opaque.a = 1.0f;
+  if (!cacheDraw->setCol(opaque)) {
+    unknown0c.r = color.r;
+    unknown0c.g = color.g;
+    unknown0c.b = color.b;
+    unknown0c.a = alpha;
+    unknown004(unknown0c);
+    unknown08 &= ~4;
+  }
+}
+
+void DebDraw::setCol(f32 r, f32 g, f32 b, f32 a) { setCol(mm::Col4(r, g, b, a)); }
+
+void DebDraw::renderAxis(f32 length) {
+  if (!unknown210->renderAxis(length)) {
+    mm::Col4 color = unknown0c;
+    setCol(mm::Col3::red, 1.0f);
+    renderLine(mm::Vec3::zero, mm::Vec3(length, 0.0f, 0.0f));
+    setCol(mm::Col3::green, 1.0f);
+    renderLine(mm::Vec3::zero, mm::Vec3(0.0f, length, 0.0f));
+    setCol(mm::Col3::blue, 1.0f);
+    renderLine(mm::Vec3::zero, mm::Vec3(0.0f, 0.0f, length));
+    setCol(color);
+  }
+}
+
+void DebDraw::renderOBB(const mm::Obb &obb) {
+  if (!unknown210->renderOBB(obb)) {
+    mm::Vec3 vertices[8];
+    obb.getVertices(vertices);
+    begin(3, 10);
+    add(vertices[0]);
+    add(vertices[1]);
+    add(vertices[2]);
+    add(vertices[3]);
+    add(vertices[0]);
+    add(vertices[4]);
+    add(vertices[5]);
+    add(vertices[6]);
+    add(vertices[7]);
+    add(vertices[4]);
+    end();
+    renderLine(vertices[1], vertices[5]);
+    renderLine(vertices[2], vertices[6]);
+    renderLine(vertices[3], vertices[7]);
+  }
+}
+
+void DebDraw::renderCube(const mm::Vec3 &min, const mm::Vec3 &max) {
+  if (!unknown210->renderCube(min, max)) {
+    unknown08 &= ~4;
+    begin(3, 10);
+    add(min);
+    add(mm::Vec3(max.x, min.y, min.z));
+    add(mm::Vec3(max.x, max.y, min.z));
+    add(mm::Vec3(min.x, max.y, min.z));
+    add(min);
+    add(mm::Vec3(min.x, min.y, max.z));
+    add(mm::Vec3(max.x, min.y, max.z));
+    add(mm::Vec3(max.x, max.y, max.z));
+    add(mm::Vec3(min.x, max.y, max.z));
+    add(mm::Vec3(min.x, min.y, max.z));
+    end();
+    begin(2, 3);
+    add(mm::Vec3(max.x, min.y, min.z), mm::Vec3(max.x, min.y, max.z));
+    add(mm::Vec3(max.x, max.y, min.z), mm::Vec3(max.x, max.y, max.z));
+    add(mm::Vec3(min.x, max.y, min.z), mm::Vec3(min.x, max.y, max.z));
+    end();
+  }
+}
+
+void DebDraw::renderCubeFill(const mm::Vec3 &min, const mm::Vec3 &max) {
+  if (!unknown210->renderCubeFill(min, max)) {
+    begin(6, 10);
+    add(min);
+    add(mm::Vec3(max.x, min.y, min.z));
+    add(mm::Vec3(min.x, max.y, min.z));
+    add(mm::Vec3(max.x, max.y, min.z));
+    add(mm::Vec3(min.x, max.y, max.z));
+    add(mm::Vec3(max.x, max.y, max.z));
+    add(mm::Vec3(min.x, min.y, max.z));
+    add(mm::Vec3(max.x, min.y, max.z));
+    add(min);
+    add(mm::Vec3(max.x, min.y, min.z));
+    end();
+    begin(6, 4);
+    add(min);
+    add(mm::Vec3(min.x, max.y, min.z));
+    add(mm::Vec3(min.x, min.y, max.z));
+    add(mm::Vec3(min.x, max.y, max.z));
+    end();
+    begin(6, 4);
+    add(mm::Vec3(max.x, max.y, min.z));
+    add(mm::Vec3(max.x, min.y, min.z));
+    add(mm::Vec3(max.x, max.y, max.z));
+    add(mm::Vec3(max.x, min.y, max.z));
+    end();
+  }
+}
+
+void DebDraw::renderPrim(const mm::PrimBase *prim) {
+  CacheDraw *cacheDraw = unknown210;
+  mm::Mat44 matrix;
+  prim->getMat(matrix);
+  if (!cacheDraw->renderPrim(matrix, prim->type)) {
+    switch (prim->type) {
+    case mm::PrimBase::PRIM_CUBE:
+      cube(static_cast<const mm::Cube *>(prim));
+      break;
+    case mm::PrimBase::PRIM_CYLINDER:
+      cylinder(static_cast<const mm::Cylinder *>(prim));
+      break;
+    case mm::PrimBase::PRIM_SPHERE:
+      sphere(static_cast<const mm::Sphere *>(prim));
+      break;
+    }
+  }
+}
+
 void DebDraw::renderRect(const mm::Rect<int> &rect) {
   if (!unknown210->renderRect(rect)) {
     unknown08 &= ~0xa;
@@ -852,6 +1063,48 @@ void DebDraw::renderConeFill(f32 radius, f32 height, u32 division) {
       mm::Vec3 first(firstSin * height, 0.0f, firstCos * height);
       mm::Vec3 second(secondSin * height, 0.0f, secondCos * height);
       add(apex, first, second);
+    }
+    end();
+  }
+}
+
+void DebDraw::renderCylinder(f32 radius, f32 height, u32 division) {
+  if (!unknown210->renderCylinder(radius, height, division)) {
+    u32 count = 8;
+    if (division >= 8) {
+      count = division;
+    }
+    begin(3, count + 1);
+    f32 step = 6.2831855f / count;
+    u32 i = 0;
+    do {
+      i++;
+      f32 angle = step * (i % count);
+      f32 angleSin = sinf(angle);
+      f32 angleCos = cosf(angle);
+      mm::Vec3 rim(angleSin * height, radius * 0.5f, angleCos * height);
+      add(rim);
+    } while (i <= count);
+    end();
+    begin(3, count + 1);
+    i = 0;
+    do {
+      i++;
+      f32 angle = step * (i % count);
+      f32 angleSin = sinf(angle);
+      f32 angleCos = cosf(angle);
+      mm::Vec3 rim(angleSin * height, radius * -0.5f, angleCos * height);
+      add(rim);
+    } while (i <= count);
+    end();
+    begin(2, count);
+    for (u32 j = 0; j < count; j++) {
+      f32 angle = step * j;
+      f32 angleSin = sinf(angle);
+      f32 angleCos = cosf(angle);
+      mm::Vec3 top(angleSin * height, radius * 0.5f, angleCos * height);
+      mm::Vec3 bottom(angleSin * height, radius * -0.5f, angleCos * height);
+      add(top, bottom);
     }
     end();
   }

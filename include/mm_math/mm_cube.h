@@ -1,5 +1,6 @@
 #pragma once
 #include "mm_math/mm_prim_base.h"
+#include "mm_mtl/fixed_array.h"
 #include "types.h"
 
 namespace mm {
@@ -16,6 +17,7 @@ public:
   static const Vec3 *getBaseVertices();
   static const Plane *getBasePlanes();
   static const Line2 *getBaseLines();
+  void getVertices(mtl::FixedArray<Vec3, 8> &vertices) const;
   void getOBB(Obb &obb) const override;
   void getAABB(Aabb &aabb) const override;
   bool isCollide(const PrimBase &prim) const override;

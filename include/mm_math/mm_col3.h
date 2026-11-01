@@ -5,6 +5,9 @@ namespace mm {
 
 struct Col3 {
   static const Col3 black;
+  static const Col3 red;
+  static const Col3 green;
+  static const Col3 blue;
   static const Col3 yellow;
 
   Col3() {}

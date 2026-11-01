@@ -9,6 +9,7 @@ namespace ml {
 
 class DrResMdoSeamMemMan {
 public:
+  DrResMdoSeamMemMan();
   ~DrResMdoSeamMemMan();
   void releaseMem();
   int getUseMax() const;
@@ -49,15 +50,18 @@ public:
 
   DrResChankList<DrResMdoSeamMemObj> unknown00; // Inferred role: object list; original member name unknown.
   DrResChankList<DrResMdoSeamMemObj> unknown10; // Inferred role: free object list; original member name unknown.
-  u8 _20[0x2c - 0x20];
-  u32 unknown2c;                 // Inferred role: flags; original member name unknown.
-  u32 unknown30;                 // Inferred role: object count; original member name unknown.
-  DrResMdoSeamMemObj *unknown38; // Inferred role: objects; original member name unknown.
+  s32 unknown20;                                // Inferred role: memory setup value; original member name unknown.
+  u32 unknown24;                                // Inferred role: memory setup value, cleared by the constructor; original member name unknown.
+  u32 unknown28;                                // Inferred role: memory setup value, cleared by the constructor; original member name unknown.
+  u32 unknown2c;                                // Inferred role: flags; original member name unknown.
+  u32 unknown30;                                // Inferred role: object count; original member name unknown.
+  DrResMdoSeamMemObj *unknown38;                // Inferred role: objects; original member name unknown.
   u8 _40[0x448 - 0x40];
 };
 
 static_assert(offsetof(DrResMdoSeamMemMan, unknown00) == 0x00, "");
 static_assert(offsetof(DrResMdoSeamMemMan, unknown10) == 0x10, "");
+static_assert(offsetof(DrResMdoSeamMemMan, unknown24) == 0x24, "");
 static_assert(offsetof(DrResMdoSeamMemMan, unknown2c) == 0x2c, "");
 static_assert(offsetof(DrResMdoSeamMemMan, unknown38) == 0x38, "");
 static_assert(sizeof(DrResMdoSeamMemMan) == 0x448, "");

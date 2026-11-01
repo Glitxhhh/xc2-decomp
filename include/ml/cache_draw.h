@@ -16,7 +16,9 @@
 
 namespace mm {
 class Cube;
+class Cylinder;
 class PrimBase;
+class Sphere;
 struct Col3;
 struct Line2;
 } // namespace mm
@@ -386,6 +388,9 @@ public:
   bool renderCircle(const mm::Vec3 &center, f32 radius, u32 division);
   bool renderAxis(f32 length);
   bool renderArrow(const mm::Vec3 &start, const mm::Vec3 &end);
+  bool renderCubeFill(const mm::Vec3 &min, const mm::Vec3 &max);
+  bool renderCube(const mm::Vec3 &min, const mm::Vec3 &max);
+  bool renderPrim(const mm::Mat44 &matrix, u32 type);
   bool renderSphereFill(const mm::Vec3 &center, f32 radius, u32 division);
   bool renderSphere(const mm::Vec3 &center, f32 radius, u32 division);
   bool renderRealSphereFill(f32 radius, u32 division);
@@ -534,6 +539,7 @@ public:
   void renderRealSphere(f32 radius, int division);
   void renderRealSphereFill(f32 radius, int division);
   void renderCube(const mm::Vec3 &min, const mm::Vec3 &max);
+  void renderCubeFill(const mm::Vec3 &min, const mm::Vec3 &max);
   void setMatrix(const mm::Mat44 &matrix);
   void setZComp(bool isEnable);
   void setZWrite(bool isEnable);
@@ -549,8 +555,15 @@ public:
   void renderRectFill(int x, int y, int width, int height);
   void renderRectFill(const mm::Rect<int> &first, const mm::Rect<int> &second);
   void renderDiamondFill(const mm::Rect<int> &rect);
+  void renderPrim(const mm::PrimBase *prim);
   void renderPrimFill(const mm::PrimBase *prim);
   void cubeFill(const mm::Cube *cube);
+  void cube(const mm::Cube *cube);
+  void cylinder(const mm::Cylinder *cylinder);
+  void sphere(const mm::Sphere *sphere);
+  void renderSphere(const mm::Vec3 &center, f32 radius, int division);
+  void renderSphere(const mm::Sphere &sphere, int division);
+  void setCol(const mm::Col4 &color);
   static DebDraw *get(u32 screen);
   static DebDraw *getOnly(u32 screen);
   static void setup();
@@ -575,6 +588,35 @@ public:
   void fontFlush(bool isEnable);
   void fontScale(f32 x, f32 y);
   void font(int x, int y, const char *text);
+  void setCol(f32 r, f32 g, f32 b, f32 a);
+
+  // Inferred helper: clamps the color components to [0, 1], shared by the setCol overloads; original name unknown.
+  static void unknown004(mm::Col4 &color) {
+    if (color.r < 0.0f) {
+      color.r = 0.0f;
+    }
+    if (color.g < 0.0f) {
+      color.g = 0.0f;
+    }
+    if (color.b < 0.0f) {
+      color.b = 0.0f;
+    }
+    if (color.a < 0.0f) {
+      color.a = 0.0f;
+    }
+    if (color.r > 1.0f) {
+      color.r = 1.0f;
+    }
+    if (color.g > 1.0f) {
+      color.g = 1.0f;
+    }
+    if (color.b > 1.0f) {
+      color.b = 1.0f;
+    }
+    if (color.a > 1.0f) {
+      color.a = 1.0f;
+    }
+  }
 
   u32 unknown08;      // Inferred role: state flags; original member name unknown.
   mm::Col4 unknown0c; // Inferred role: color; original member name unknown.

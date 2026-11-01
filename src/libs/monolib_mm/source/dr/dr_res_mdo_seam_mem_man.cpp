@@ -5,6 +5,13 @@
 
 namespace ml {
 
+DrResMdoSeamMemMan::DrResMdoSeamMemMan() : unknown24(0), unknown28(0), unknown2c(0), unknown30(0), unknown38(nullptr) {
+  unknown00.unknown00 = nullptr;
+  unknown00.unknown08 = nullptr;
+  unknown10.unknown00 = nullptr;
+  unknown10.unknown08 = nullptr;
+}
+
 DrResMdoSeamMemMan::~DrResMdoSeamMemMan() { releaseMem(); }
 
 void DrResMdoSeamMemMan::releaseMem() {
