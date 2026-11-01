@@ -222,6 +222,14 @@ public:
     }
   }
 
+  // Inferred role: calls gevPause on every callback; original name unknown.
+  static void unknown001(u32 resumeBits, u32 pauseBits) {
+    GfEvent *gfEvent = get();
+    for (size_t i = 0; i < gfEvent->unknown08.size(); i++) {
+      gfEvent->unknown08[i]->gevPause(resumeBits, pauseBits);
+    }
+  }
+
 private:
   mm::mtl::FixedQueue<IGfEvent *, CALLBACK_MAX> unknown08; // Inferred role: callbacks; original member name unknown.
   bool unknown118;                                         // Inferred role: initialized; original member name unknown.

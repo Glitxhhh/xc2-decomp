@@ -5,6 +5,7 @@
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
+#include "ml/fixed_size_alloc.h"
 
 namespace gf {
 
@@ -248,6 +249,7 @@ void GfObjManager::addHandle(GF_OBJ_HANDLE *handle) { setStateLoading(handle); }
 
 } // namespace gf
 
+template class ml::fixed_size_alloc_inside<gf::GFOBJ_INFO, 4096>;
 template mm::mtl::PtrSingleton<gf::GfObjManager>::~PtrSingleton();
 template mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 4096>::iterator mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 4096>::erase(mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 4096>::iterator);
 template mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 2048>::iterator mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 2048>::erase(mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 2048>::iterator);

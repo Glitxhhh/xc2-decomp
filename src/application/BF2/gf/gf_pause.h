@@ -1,6 +1,8 @@
 #pragma once
 #include <stddef.h>
 
+#include "ml/fixed_size_alloc.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -23,29 +25,39 @@ struct GfSetupParam;
 
 class GfPause : public mm::mtl::PtrSingleton<GfPause> {
 public:
+  GfPause(const GfSetupParam &param);
+  virtual ~GfPause();
   static void build(const GfSetupParam &param);
   static void destroy();
   void initialize(const GfSetupParam &param);
   void finalize();
+  static GF_PAUSE_HANDLE *createPauseHandle(u32 pauseBits);
+  void destroyPauseHandle(GF_PAUSE_HANDLE *handle);
   static GF_PAUSE_HANDLE *reqPause(u32 pauseBits);
+  u32 getPauseBit() const;
   static void destroyHandle(GF_PAUSE_HANDLE *handle);
   static void update();
   static bool isPause(u32 pauseBits);
   static bool isInitialized();
   u64 createPauseHandleByIndex(u32 index);
 
-  u8 _08[0x590 - 0x08];
-  s32 unknown590; // Inferred role: count of running pause update; original member name unknown.
-  u8 _594[0xe58 - 0x594];
-  u32 unknowne58; // Inferred role: current pause bits; original member name unknown.
-  u8 _e5c[0xe60 - 0xe5c];
-  u32 unknowne60;  // Inferred role: pause handle serial; original member name unknown.
-  bool unknowne64; // Inferred role: initialized; original member name unknown.
+  ml::fixed_size_alloc_inside<u32, 64> unknown08;       // Inferred role: pause bits of each handle; original member name unknown.
+  mm::mtl::FixedList<GF_PAUSE_HANDLE *, 64> unknown138; // Inferred role: active pause handles; original member name unknown.
+  mm::mtl::FixedList<GF_PAUSE_HANDLE *, 64> unknown598; // Inferred role: requested pause handles; original member name unknown.
+  mm::mtl::FixedList<GF_PAUSE_HANDLE *, 64> unknown9f8; // Inferred role: pause handles to destroy; original member name unknown.
+  u32 unknowne58;                                       // Inferred role: current pause bits; original member name unknown.
+  u32 unknowne5c;                                       // Inferred role: pause bits of the previous update; original member name unknown.
+  u32 unknowne60;                                       // Inferred role: pause handle serial; original member name unknown.
+  bool unknowne64;                                      // Inferred role: initialized; original member name unknown.
 };
 
-static_assert(offsetof(GfPause, unknown590) == 0x590, "");
+static_assert(offsetof(GfPause, unknown138) == 0x138, "");
+static_assert(offsetof(GfPause, unknown598) == 0x598, "");
+static_assert(offsetof(GfPause, unknown9f8) == 0x9f8, "");
 static_assert(offsetof(GfPause, unknowne58) == 0xe58, "");
+static_assert(offsetof(GfPause, unknowne5c) == 0xe5c, "");
 static_assert(offsetof(GfPause, unknowne60) == 0xe60, "");
 static_assert(offsetof(GfPause, unknowne64) == 0xe64, "");
+static_assert(sizeof(GfPause) == 0xe68, "");
 
 } // namespace gf

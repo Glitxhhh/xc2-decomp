@@ -503,11 +503,17 @@ void GfSound::setCategory(SoundHandle handle, fw::SoundCategory category) {
   }
 }
 
+void GfSound::deAllocateSeParam(u16 id) {
+  if (id != INVALID_SE_PARAM) {
+    unknown2e20.unknown011(id);
+  }
+}
+
 GfSound::SeParam *GfSound::getSeParam(u16 id) {
   if (id == 0xffff) {
     return nullptr;
   }
-  return &unknown5268[id];
+  return &unknown2e20.unknown007[id];
 }
 
 } // namespace gf

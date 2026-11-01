@@ -1,11 +1,16 @@
 #include "gf/data/gf_data_param_acc.h"
 
+#include <new>
+
 #include "gf/data/gf_bdat_blade.h"
 #include "gf/data/gf_data_idea.h"
 #include "gf/data/gf_data_obj.h"
 #include "gf/data/gf_data_weapon.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_setup.h"
+#include "gf/object/gf_obj_util.h"
+#include "ml/fixed_size_alloc.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/fixed_array.h"
 
@@ -28,6 +33,24 @@ enum {
   CREATE_CONFIG_RATIO_4 = 14,
 };
 
+namespace _gfdac {
+
+// Inferred role: storage of one data object of DataParamAcc; 128 of them fill the 0x4000 bytes of s_accbuf. Members unknown.
+struct ACCMEM {
+  u8 unknown00[0x80]; // Inferred role: object storage; original member name unknown.
+};
+
+ml::fixed_size_alloc_inside<ACCMEM, 128> s_accbuf;
+
+static_assert(__builtin_offsetof(ml::fixed_size_alloc_inside<ACCMEM, 128>, unknown005) == 0x4008, "");
+static_assert(__builtin_offsetof(ml::fixed_size_alloc_inside<ACCMEM, 128>, unknown006) == 0x4020, "");
+static_assert(__builtin_offsetof(ml::fixed_size_alloc_inside<ACCMEM, 128>, unknown007) == 0x4028, "");
+static_assert(__builtin_offsetof(ml::fixed_size_alloc_inside<ACCMEM, 128>, unknown008) == 0x4030, "");
+static_assert(__builtin_offsetof(ml::fixed_size_alloc_inside<ACCMEM, 128>, unknown009) == 0x4034, "");
+static_assert(sizeof(ml::fixed_size_alloc_inside<ACCMEM, 128>) == 0x4038, "");
+
+} // namespace _gfdac
+
 DataParamAcc::DataParamAcc(const ParamObj &paramObj) {
   if (paramObj.unknown00 != INVALID_HANDLE) {
     setupObjHandle(paramObj.unknown00);
@@ -36,9 +59,101 @@ DataParamAcc::DataParamAcc(const ParamObj &paramObj) {
   }
 }
 
+void DataParamAcc::setupObjHandle(GF_OBJ_HANDLE *handle) {
+  unknown08 = nullptr;
+  unknown10 = handle;
+  _gfdac::ACCMEM *mem = _gfdac::s_accbuf.unknown003();
+  IDataObj *obj;
+  switch (GfObjUtil::getObjType(handle)) {
+  case OBJECT_TYPE_MAP:
+    obj = new (mem) DataObjMap(handle);
+    break;
+  case OBJECT_TYPE_DRIVER:
+    obj = new (mem) DataObjDriver(handle);
+    break;
+  case OBJECT_TYPE_BLADE:
+    obj = new (mem) DataObjBlade(handle);
+    break;
+  case OBJECT_TYPE_ENEMY:
+    if (GfObjUtil::isEnemyBlade(handle)) {
+      GfObjSetupEnemy *setup = GfObjUtil::getObjSetup<GfObjSetupEnemy>(handle);
+      obj = new (mem) DataObjEnemyBlade(handle);
+    } else {
+      obj = new (mem) DataObjEnemy(handle);
+    }
+    break;
+  case OBJECT_TYPE_NPC:
+    obj = new (mem) DataObjNpc(handle);
+    break;
+  case OBJECT_TYPE_MOB:
+    obj = new (mem) DataObjMob(handle);
+    break;
+  case OBJECT_TYPE_GIMMICK:
+    obj = new (mem) DataObjGmk(handle);
+    break;
+  case OBJECT_TYPE_PC_WEAPON:
+    obj = new (mem) DataObjPcWpn(handle);
+    break;
+  case OBJECT_TYPE_BELONGING:
+    obj = new (mem) DataObjBelonging(handle);
+    break;
+  default:
+    _gfdac::s_accbuf.unknown004(mem);
+    return;
+  }
+  unknown08 = obj;
+}
+
+void DataParamAcc::setupObjId(u32 objectType, u32 id, GimmickType gimmickType) {
+  unknown08 = nullptr;
+  _gfdac::ACCMEM *mem = _gfdac::s_accbuf.unknown003();
+  IDataObj *obj;
+  switch (objectType) {
+  case OBJECT_TYPE_MAP:
+    obj = new (mem) DataObjMap(id);
+    break;
+  case OBJECT_TYPE_DRIVER:
+    obj = new (mem) DataObjDriver(id);
+    break;
+  case OBJECT_TYPE_BLADE:
+    obj = new (mem) DataObjBlade(id);
+    break;
+  case OBJECT_TYPE_ENEMY:
+    obj = new (mem) DataObjEnemy(id);
+    break;
+  case OBJECT_TYPE_NPC:
+    obj = new (mem) DataObjNpc(id);
+    break;
+  case OBJECT_TYPE_MOB:
+    obj = new (mem) DataObjMob(id);
+    break;
+  case OBJECT_TYPE_GIMMICK:
+    obj = new (mem) DataObjGmk(id, gimmickType);
+    break;
+  case OBJECT_TYPE_PC_WEAPON:
+    obj = new (mem) DataObjPcWpn(id);
+    break;
+  case OBJECT_TYPE_UI:
+    obj = new (mem) DataObjUiObj(id);
+    break;
+  default:
+    _gfdac::s_accbuf.unknown004(mem);
+    return;
+  }
+  unknown08 = obj;
+}
+
 DataParamAcc::DataParamAcc(GF_OBJ_HANDLE *handle) { setupObjHandle(handle); }
 
 DataParamAcc::DataParamAcc(u32 objectType, u32 id, GimmickType gimmickType) { setupObjId(objectType, id, gimmickType); }
+
+DataParamAcc::~DataParamAcc() {
+  if (unknown08 != nullptr) {
+    unknown08->~IDataObj();
+    _gfdac::s_accbuf.unknown004(unknown08);
+    unknown08 = nullptr;
+  }
+}
 
 bool DataParamAcc::isValid() const { return unknown08 != nullptr && unknown08->isValid(); }
 

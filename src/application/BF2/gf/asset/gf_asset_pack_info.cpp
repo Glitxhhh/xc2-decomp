@@ -5,6 +5,7 @@
 #include "gf/asset/gf_asset_util.h"
 #include "gf/asset/gf_slot.h"
 #include "gf/util/gf_util.h"
+#include "ml/fixed_size_alloc.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/reference_object.h"
 
@@ -122,3 +123,5 @@ bool AssetPackInfo::getSlotHandle(mm::mtl::FixedVector<GF_SLOT_HANDLE *, 88> &sl
 }
 
 } // namespace gf
+
+template class ml::fixed_size_alloc_inside<gf::AssetPackInfo, 1024>;

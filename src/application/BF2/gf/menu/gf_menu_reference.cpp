@@ -793,7 +793,10 @@ void GfMenuReference::clearPartyStatusLock() {
 } // namespace gf
 
 namespace gf {
-struct MENUREF_OBJ;
+// Inferred role: element of the GfMenuReference object pool; the constructor clears 512 of them in 0x4000 bytes. Members unknown.
+struct MENUREF_OBJ {
+  u8 unknown00[0x20]; // Inferred role: object storage; original member name unknown.
+};
 } // namespace gf
 
 template class ml::fixed_size_alloc_inside<gf::MENUREF_OBJ, 512>;

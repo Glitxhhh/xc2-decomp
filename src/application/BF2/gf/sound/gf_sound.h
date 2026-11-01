@@ -2,8 +2,10 @@
 #include "gf/event/gf_event.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/sound/gf_master_volume.h"
+#include "ml/fixed_size_alloc.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/singleton.h"
@@ -162,6 +164,7 @@ public:
   void finalize();
   GF_SE_CATEGORY_HANDLE *createCategoryHandle();
   void releaseCategoryHandle(GF_SE_CATEGORY_HANDLE *&handle);
+  void deAllocateSeParam(u16 id);
   void update(const fw::UpdateInfo &info);
   SeParam *getSeParam(u16 id);
   bool calcCategoryVolume(const fw::UpdateInfo &info);
@@ -206,18 +209,18 @@ public:
   bool unknown11;                                                     // Inferred role: released; original member name unknown.
   u64 unknown18;                                                      // Inferred role: handle serial; original member name unknown.
   mm::mtl::FixedArray<CategoryVolume, CATEGORY_VOLUME_NUM> unknown20; // Inferred role: category volumes; original member name unknown.
-  u8 _2e20[0x5268 - 0x2e20];
-  SeParam *unknown5268; // Inferred role: se params; original member name unknown.
-  u8 _5270[0x6690 - 0x5270];
-  GfMasterVolume unknown6690;         // Inferred role: master volume; original member name unknown.
-  GF_SE_CATEGORY_HANDLE *unknown66d0; // Inferred role: category handle; original member name unknown.
+  ml::fixed_size_alloc_inside<SeParam, 384> unknown2e20;              // Inferred role: se params; original member name unknown.
+  mm::mtl::FixedList<u16, 512> unknown5278;                           // Inferred role: playing se param indices; original member name unknown.
+  GfMasterVolume unknown6690;                                         // Inferred role: master volume; original member name unknown.
+  GF_SE_CATEGORY_HANDLE *unknown66d0;                                 // Inferred role: category handle; original member name unknown.
 };
 
 static_assert(sizeof(GfSound::SeParam) == 0x18, "");
 static_assert(sizeof(GfSound::CategoryVolume) == 0x170, "");
 static_assert(offsetof(GfSound, unknown10) == 0x10, "");
 static_assert(offsetof(GfSound, unknown20) == 0x20, "");
-static_assert(offsetof(GfSound, unknown5268) == 0x5268, "");
+static_assert(offsetof(GfSound, unknown2e20) == 0x2e20, "");
+static_assert(offsetof(GfSound, unknown5278) == 0x5278, "");
 static_assert(offsetof(GfSound, unknown6690) == 0x6690, "");
 static_assert(offsetof(GfSound, unknown66d0) == 0x66d0, "");
 static_assert(sizeof(GfSound) == 0x66d8, "");
