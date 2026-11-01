@@ -114,3 +114,9 @@ CSNC::CSNC(const CriticalSectionNC &sect) {
 CSNC::~CSNC() { CriticalSectionNC::leave(*sect); }
 
 } // namespace ml
+
+// Same order as in the game executable.
+// clang-format off
+#include "micro_thread.cpp"
+#include "thread.cpp"
+// clang-format on

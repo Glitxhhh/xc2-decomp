@@ -10,8 +10,36 @@ namespace ml {
 class EventView;
 class WinView;
 
+// Name from the game symbol ml::ProcMouse::setCursorResize(ml::MCURSOR). Inferred role: mouse cursor shape, 0 being
+// the arrow and 1 to 4 the resize cursors; original enumerator names unknown.
+enum MCURSOR {
+  MCURSOR_UNKNOWN_0,
+  MCURSOR_UNKNOWN_1,
+  MCURSOR_UNKNOWN_2,
+  MCURSOR_UNKNOWN_3,
+  MCURSOR_UNKNOWN_4,
+  MCURSOR_UNKNOWN_5,
+};
+
 class WinViewFrame {
 public:
+  // Name from the game symbol ml::WinViewFrame::getMove2MCursor(ml::WinViewFrame::FMOVE). Inferred role: frame part
+  // under the mouse, 8 being none; original enumerator names unknown.
+  enum FMOVE {
+    FMOVE_UNKNOWN_0,
+    FMOVE_UNKNOWN_1,
+    FMOVE_UNKNOWN_2,
+    FMOVE_UNKNOWN_3,
+    FMOVE_UNKNOWN_4,
+    FMOVE_UNKNOWN_5,
+    FMOVE_UNKNOWN_6,
+    FMOVE_UNKNOWN_7,
+    FMOVE_UNKNOWN_8,
+    FMOVE_UNKNOWN_9,
+    FMOVE_UNKNOWN_10,
+    FMOVE_UNKNOWN_11,
+  };
+
   void setInfo(WinView *info);
   bool evtFocusOn();
   bool evtFocusOff();
@@ -19,12 +47,16 @@ public:
   mm::Col4 getColorTransparency() const;
   mm::Pnt<int> getFrame2ViewOffset() const;
   mm::Pnt<int> getFrame2ViewSizeOffset() const;
+  MCURSOR getMove2MCursor(FMOVE move) const;
+  MCURSOR getFrameSelect(const mm::Pnt<int> &pos) const;
+  FMOVE getFramePick(const mm::Pnt<int> &pos) const;
+  MCURSOR evtMouseSelect(const mm::Pnt<int> &pos) const;
 
   WinView *m_info;
   mm::Col4 unknown08; // Inferred role: color; original member name unknown.
   mm::Col4 unknown18; // Inferred role: color; original member name unknown.
   mm::Col4 unknown28; // Inferred role: color; original member name unknown.
-  s32 unknown38;      // Inferred role: move state; original member name unknown.
+  FMOVE unknown38;    // Inferred role: move state; original member name unknown.
   u8 _3c[0x58 - 0x3c];
   mm::Pnt<int> unknown58; // Inferred role: frame position; original member name unknown.
   s16 unknown60;          // Inferred role: border width; original member name unknown.

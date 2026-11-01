@@ -116,6 +116,19 @@ const char *GetThreadNamePointer(const ThreadType *thread);
 void SetThreadCoreMask(ThreadType *thread, int idealCore, u64 affinityMask);
 u64 GetThreadAvailableCoreMask();
 
+// Public SDK names, as in the game's imported symbols (nn::os::InitializeFiber and the other fiber functions). The
+// size of FiberType is bounded by ml::MicroThreadNx::FiberParam, which keeps its stack pointer at 0x58.
+struct alignas(8) FiberType {
+  u8 _00[0x58];
+};
+
+typedef FiberType *(*FiberFunction)(void *argument);
+
+void InitializeFiber(FiberType *fiber, FiberFunction function, void *argument, void *stack, size_t stackSize, int option);
+void FinalizeFiber(FiberType *fiber);
+void SwitchToFiber(FiberType *fiber);
+FiberType *GetCurrentFiber();
+
 void FlushDataCache(const void *address, size_t size);
 
 } // namespace os
