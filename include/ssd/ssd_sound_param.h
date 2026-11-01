@@ -22,8 +22,8 @@ public:
     void Init();
 
     bool unknown00; // Inferred role: flag cleared by Init; original member name unknown.
-    bool unknown01; // Inferred role: flag set by Init; original member name unknown.
-    bool unknown02; // Inferred role: flag set by Init; original member name unknown.
+    u8 unknown01;   // Inferred role: sound group id, set to 1 by Init; original member name unknown.
+    u8 unknown02;   // Inferred role: category id, set to 1 by Init; original member name unknown.
     bool unknown03; // Inferred role: flag cleared by Init; original member name unknown.
     f32 unknown04;  // Inferred role: value set to 1.0 by Init; original member name unknown.
     f32 unknown08;  // Inferred role: value cleared by Init; original member name unknown.
@@ -46,13 +46,13 @@ public:
     bool unknown07; // Inferred role: flag cleared by Init; original member name unknown.
   };
 
-  // unknown00 and unknown0c are integers: Init stores them without merging them with the f32 stores.
+  // Layout from SoundParam::Surround::Init and ssd::VoiceHandle, which reads the distances.
   struct Surround {
     void Init();
 
-    int unknown00; // Inferred role: value cleared by Init; original member name unknown.
+    f32 unknown00; // Inferred role: minimum distance, cleared by Init; original member name unknown.
     f32 unknown04; // Inferred role: value set to 1.0 by Init; original member name unknown.
-    f32 unknown08; // Inferred role: value set to 100.0 by Init; original member name unknown.
+    f32 unknown08; // Inferred role: maximum distance, set to 100.0 by Init; original member name unknown.
     int unknown0c; // Inferred role: value cleared by Init; original member name unknown.
     f32 unknown10; // Inferred role: value set to 1.0 by Init; original member name unknown.
   };
@@ -64,14 +64,18 @@ public:
     f32 unknown04; // Inferred role: value set to 1.0 by Init; original member name unknown.
   };
 
+  void Init();
+
   Name unknown00; // Inferred role: name; original member name unknown.
-  u8 _48[0x4c - 0x48];
+  u16 unknown48;  // Inferred role: sound number; original member name unknown.
+  u8 _4a[0x4c - 0x4a];
   Base unknown4c;      // Inferred role: base; original member name unknown.
   State unknown68;     // Inferred role: state; original member name unknown.
   Surround unknown70;  // Inferred role: surround; original member name unknown.
   Effect unknown84[2]; // Inferred role: effects; original member name unknown.
 };
 
+static_assert(offsetof(SoundParam, unknown48) == 0x48, "");
 static_assert(offsetof(SoundParam, unknown4c) == 0x4c, "");
 static_assert(offsetof(SoundParam, unknown68) == 0x68, "");
 static_assert(offsetof(SoundParam, unknown70) == 0x70, "");

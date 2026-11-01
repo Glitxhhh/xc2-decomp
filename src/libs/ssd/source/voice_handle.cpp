@@ -8,6 +8,7 @@
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
 #include "ssd/ssd_sound_listener.h"
+#include "ssd/ssd_sound_param.h"
 #include "ssd/ssd_stream_controller.h"
 #include "ssd/ssd_voice_handle.h"
 #include "ssd/ssd_wave_source.h"
@@ -322,7 +323,7 @@ void VoiceHandle::UpdateGameFrame(f32 deltaTime) {
     return;
   }
   const SoundEntry *entry = unknown60;
-  if (entry->unknown9b) {
+  if (entry->unknown30.unknown68.unknown03) {
     SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
     if (listener->IsEnableDoppler() && core->unknown4e4) {
       f32 x = actor3D->unknown5c.x - listener->unknown48.unknown00.x;
@@ -354,13 +355,13 @@ void VoiceHandle::UpdateGameFrame(f32 deltaTime) {
       }
     }
   }
-  if (entry->unknown99) {
+  if (entry->unknown30.unknown68.unknown01) {
     Vec3 listenerPosition = actor3D->m_listener->unknown18.unknown00;
     f32 x = actor3D->unknown5c.x - listenerPosition.x;
     f32 y = actor3D->unknown5c.y - listenerPosition.y;
     f32 z = actor3D->unknown5c.z - listenerPosition.z;
     f32 distance = sqrtf(x * x + y * y + z * z);
-    f32 volume = unknown006(distance, entry->unknowna0, unknown6c8, entry->unknowna8, unknown6cc);
+    f32 volume = unknown006(distance, entry->unknown30.unknown70.unknown00, unknown6c8, entry->unknown30.unknown70.unknown08, unknown6cc);
     f32 result;
     if (volume <= unknown6cc) {
       result = unknown6cc;
@@ -371,7 +372,7 @@ void VoiceHandle::UpdateGameFrame(f32 deltaTime) {
     }
     unknown6f0 = result;
   }
-  if (entry->unknown9a) {
+  if (entry->unknown30.unknown68.unknown02) {
     listener->Vec3Transform(&actor3D->unknown5c, &unknown704);
     f32 x = unknown704.x;
     f32 z = unknown704.z;

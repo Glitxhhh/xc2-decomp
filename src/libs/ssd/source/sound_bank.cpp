@@ -6,6 +6,7 @@
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
+#include "ssd/ssd_sound_param.h"
 #include "ssd/ssd_text.h"
 #include "ssd/ssd_wave_source.h"
 #include "types.h"
@@ -119,7 +120,7 @@ SoundEntry *SoundBank::GetSoundEntryFromNumber(int number) const {
     return nullptr;
   }
   for (SoundEntry *it = begin(); it != end(); it = List<SoundEntry>::unknown004(it)) {
-    if (it->unknown78 == number) {
+    if (it->unknown30.unknown48 == number) {
       return it;
     }
   }
@@ -183,7 +184,7 @@ Result SoundBank::Stop(f32 fadeTime) {
   return static_cast<Result>(-14);
 }
 
-SoundEntry::SoundEntry() : Object(ObjectType::SOUND_ENTRY), unknown70(0), unknownc8(nullptr), unknownd0(nullptr), unknownd8(false) {}
+SoundEntry::SoundEntry() : Object(ObjectType::SOUND_ENTRY), unknownc8(nullptr), unknownd0(nullptr), unknownd8(false) {}
 
 SoundEntry::~SoundEntry() {}
 
@@ -191,7 +192,7 @@ SoundGroup *SoundEntry::GetSoundGroup() const {
   if (SoundCore::instance_ == nullptr) {
     return nullptr;
   }
-  return unknownd0->GetSoundGroup(unknown7d);
+  return unknownd0->GetSoundGroup(unknown30.unknown4c.unknown01);
 }
 
 template List<SoundBank> *List<SoundBank>::Delete();

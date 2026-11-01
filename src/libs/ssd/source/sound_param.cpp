@@ -22,8 +22,8 @@ SoundParam::Name &SoundParam::Name::operator=(const TextRef &text) {
 bool SoundParam::Name::operator==(const TextRef &text) { return text.unknown08 == unknown40; }
 
 void SoundParam::Base::Init() {
-  unknown01 = true;
-  unknown02 = true;
+  unknown01 = 1;
+  unknown02 = 1;
   unknown00 = false;
   unknown0c = 1.0f;
   unknown04 = 1.0f;
@@ -47,8 +47,8 @@ void SoundParam::State::Init() {
 
 void SoundParam::Surround::Init() {
   unknown04 = 1.0f;
-  unknown00 = 0;
   unknown0c = 0;
+  unknown00 = 0.0f;
   unknown08 = 100.0f;
   unknown10 = 1.0f;
 }

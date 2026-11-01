@@ -8,6 +8,11 @@ namespace ssd {
 class Hash {
 public:
   Hash() : unknown00(0), unknown04(0) {}
+  // Copies the hash and the size at once, like operator== compares them.
+  Hash &operator=(const Hash &hash) {
+    memcpy(this, &hash, sizeof(Hash));
+    return *this;
+  }
 
   void CalcDataHash(const void *data, u32 size);
   void CalcTextHash(const char *text);

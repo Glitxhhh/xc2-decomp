@@ -14,6 +14,8 @@ class IAllocator;
 
 template <typename T> class ObjectAllocator {
 public:
+  ~ObjectAllocator() { destroy(); }
+
   // The assert lines of the game: their constants change the instruction encoding.
 #line 113
   void reserve(IAllocator *allocator, u32 size) {

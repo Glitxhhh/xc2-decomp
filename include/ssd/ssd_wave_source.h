@@ -28,6 +28,7 @@ public:
 
   WaveSource();
   virtual ~WaveSource();
+  Result Init(void *data, size_t size);
   Result Quit();
   const unknown002 *GetAdpcmHeader(int index) const;
   u8 *GetDataAddress(int index) const;
