@@ -89,7 +89,7 @@ public:
 
   struct unknown003 {
     f32 unknown00; // Inferred role: second; original member name unknown.
-    f32 unknown04; // Inferred role: cleared by calcFrmParm; original member name unknown.
+    s32 unknown04; // Inferred role: whole frame, cleared by calcFrmParm; original member name unknown.
   };
 
   // Inferred layout of the def object resource header; original type and member names unknown.
@@ -161,7 +161,7 @@ public:
   u8 _2aa[0x2ac - 0x2aa];
   u32 unknown2ac;         // Inferred role: data type; original member name unknown.
   unknown003 *unknown2b0; // Inferred role: frame params; original member name unknown.
-  u32 unknown2b8;         // Inferred role: cleared by calcFrmParm; original member name unknown.
+  f32 unknown2b8;         // Inferred role: previous frame, cleared by calcFrmParm; original member name unknown.
   u8 _2bc[0x2c0 - 0x2bc];
   LayerObjResTex unknown2c0; // Inferred role: additional textures; original member name unknown.
 };

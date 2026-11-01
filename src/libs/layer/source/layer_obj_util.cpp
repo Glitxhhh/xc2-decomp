@@ -13,6 +13,7 @@
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_rect.h"
+#include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 
 namespace layer {
@@ -116,6 +117,18 @@ void LayerObjUtil::updateMatrixUniformBlock(f32 *uniform, const LayerResMatrix *
   uniform[6] = 0.0f;
   uniform[7] = y;
   uniform[2] = 0.0f;
+}
+
+void LayerObjUtil::calcLayerInvertMatrix(mm::Vec3 &pos, mm::Vec3 &scl, const LayerResMatrix &matrix) {
+  pos.x = matrix.unknown0c;
+  pos.y = -matrix.unknown14;
+  pos.z = matrix.unknown14 * matrix.unknown04 - matrix.unknown0c * matrix.unknown00;
+  f32 inv = 1.0f / (matrix.unknown08 * pos.x + matrix.unknown10 * pos.y);
+  scl.x = -matrix.unknown10;
+  scl.y = matrix.unknown08;
+  scl.z = -(matrix.unknown08 * matrix.unknown04 - matrix.unknown10 * matrix.unknown00);
+  pos *= inv;
+  scl *= inv;
 }
 
 void LayerObjUtil::updateColorUniformBlock(f32 *uniform, const LayerResColor &color) {

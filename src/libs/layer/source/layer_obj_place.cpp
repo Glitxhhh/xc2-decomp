@@ -1,5 +1,8 @@
 #include "layer/layer_obj_place.h"
 
+#include <math.h>
+
+#include "layer/layer_manager.h"
 #include "layer/layer_res_node.h"
 #include "mm_math/mm_vec2.h"
 
@@ -144,6 +147,36 @@ void LayerObjPlace::placeAnm_Blend(LayerResNode *node, const u8 *data, u32 index
 void LayerObjPlace::updatePlace() {
   f32 frame = updateGblFrm();
   calcNodePos(frame);
+}
+
+f32 LayerObjPlace::updateGblFrm() {
+  f32 add = unknown298->unknown00->unknown1c * LayerManager::get()->unknown80 * unknown1f8;
+  if (unknowna8 & 0x200) {
+    add = 0.0f;
+    unknown2b8 = unknown2b0->unknown00;
+  }
+  if (!(unknowna8 & 0x40)) {
+    unknown2b0->unknown00 += add;
+  }
+  f32 frame = unknown2b0->unknown00 - unknown2b8;
+  if (unknown1f8 >= 0.0f) {
+    if (unknown298->unknown80 < unknown2b0->unknown00) {
+      if (unknowna8 & 0x80) {
+        unknown2b0->unknown00 = unknown298->unknown84 + fmodf(unknown2b0->unknown00, unknown298->unknown80);
+      } else {
+        unknown2b0->unknown00 = unknown298->unknown80;
+      }
+    }
+  } else if (unknown2b0->unknown00 < 0.0f) {
+    if (unknowna8 & 0x80) {
+      unknown2b0->unknown00 = unknown298->unknown80 - unknown2b0->unknown00;
+    } else {
+      unknown2b0->unknown00 = unknown298->unknown84;
+    }
+  }
+  unknown2b8 = unknown2b0->unknown00;
+  unknown2b0->unknown04 = unknown2b0->unknown00;
+  return frame;
 }
 
 void LayerObjPlace::calcPartsNodePos(LayerResNode *node, const LyrPlaceData *data, s32 index) {

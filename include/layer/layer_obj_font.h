@@ -19,19 +19,28 @@ struct LayerRenderView;
 struct LayerResViewPortInfo;
 
 struct LayerResFontInfo {
-  u8 _00[0x10];
-  const u8 *unknown10; // Inferred role: message; original member name unknown.
-  u32 unknown18;       // Inferred role: message length; original member name unknown.
-  u8 _1c[0x38 - 0x1c];
+  u8 _00[0x08];
+  const LayerFontResObj *unknown08; // Inferred role: font resource; original member name unknown.
+  const u8 *unknown10;              // Inferred role: message; original member name unknown.
+  u32 unknown18;                    // Inferred role: message length; original member name unknown.
+  u8 _1c[0x2c - 0x1c];
+  u32 unknown2c; // Inferred role: first icon instance; original member name unknown.
+  u32 unknown30; // Inferred role: icon instance count; original member name unknown.
+  u8 _34[0x38 - 0x34];
   LayerSortObj *unknown38; // Inferred role: sort object; original member name unknown.
-  u8 _40[0x60 - 0x40];
+  u32 unknown40;           // Inferred role: character instance count; original member name unknown.
+  u8 _44[0x60 - 0x44];
   grlib::CGLibVtxOneInstans *unknown60;   // Inferred role: instance vertex; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown68; // Inferred role: uniform block; original member name unknown.
 };
 
+static_assert(offsetof(LayerResFontInfo, unknown08) == 0x08, "");
 static_assert(offsetof(LayerResFontInfo, unknown10) == 0x10, "");
 static_assert(offsetof(LayerResFontInfo, unknown18) == 0x18, "");
+static_assert(offsetof(LayerResFontInfo, unknown2c) == 0x2c, "");
+static_assert(offsetof(LayerResFontInfo, unknown30) == 0x30, "");
 static_assert(offsetof(LayerResFontInfo, unknown38) == 0x38, "");
+static_assert(offsetof(LayerResFontInfo, unknown40) == 0x40, "");
 static_assert(offsetof(LayerResFontInfo, unknown60) == 0x60, "");
 static_assert(offsetof(LayerResFontInfo, unknown68) == 0x68, "");
 

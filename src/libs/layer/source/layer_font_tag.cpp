@@ -2,6 +2,8 @@
 
 namespace layer {
 
+const u16 LayerFontTag::FONT_INSTANCE_SIZE = 0x24;
+
 void LayerFontTag::getWorkSize(LayerTagWork &work, const u8 *string) {
   unknown28 = false;
   unknown30 = &work;

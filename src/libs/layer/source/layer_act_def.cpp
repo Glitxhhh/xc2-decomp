@@ -55,11 +55,11 @@ bool LayerActDef::actcmd_animdef(const u8 *&cmd) {
   s32 count = reinterpret_cast<const unknown007 *>(unknownb8)->unknown28;
   for (s32 i = 0; i < count; i++) {
     unknown2b0[i].unknown00 = 0.0f;
-    unknown2b0[i].unknown04 = 0.0f;
+    unknown2b0[i].unknown04 = 0;
   }
   unknown298->unknown80 = unknown298->unknown00->unknown18;
   unknown298->unknown84 = 0.0f;
-  unknown2b8 = 0;
+  unknown2b8 = 0.0f;
   cmd += 4;
   return false;
 }

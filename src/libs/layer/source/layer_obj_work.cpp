@@ -20,7 +20,7 @@ LayerObjWork::LayerObjWork() {
   unknown2a4 = 0;
   unknown2a6 = 0;
   unknown2a8 = 0;
-  unknown2b8 = 0;
+  unknown2b8 = 0.0f;
   unknown280 = nullptr;
   unknown288 = 0;
   unknown2b0 = nullptr;
@@ -82,11 +82,11 @@ void LayerObjWork::updapteAddTexList() { unknown2c0.updateTexutre(unknown280, un
 void LayerObjWork::calcFrmParm(s32 count) {
   for (s32 i = 0; i < count; i++) {
     unknown2b0[i].unknown00 = 0.0f;
-    unknown2b0[i].unknown04 = 0.0f;
+    unknown2b0[i].unknown04 = 0;
   }
   unknown298->unknown80 = static_cast<f32>(unknown298->unknown00->unknown18);
   unknown298->unknown84 = 0;
-  unknown2b8 = 0;
+  unknown2b8 = 0.0f;
 }
 
 } // namespace layer

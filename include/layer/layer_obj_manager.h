@@ -21,6 +21,7 @@ class LayerObj;
 class LayerSortMan;
 
 enum LayerMemType {
+  LAYER_MEM_TYPE_UNKNOWN_1 = 1,
   LAYER_MEM_TYPE_UNKNOWN_2 = 2,
   LAYER_MEM_TYPE_UNKNOWN_3 = 3,
 };

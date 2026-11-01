@@ -21,7 +21,7 @@
 
 namespace layer {
 
-void LayerShdManager::setupShader() { (this->*s_CallSelect[unknown4f0])(); }
+grlib::CGLibDecShader *LayerShdManager::setupShader() { return (this->*s_CallSelect[unknown4f0])(); }
 
 grlib::CGLibDecShader *LayerShdManager::selectGamma() {
   s16 index = unknown4f0;

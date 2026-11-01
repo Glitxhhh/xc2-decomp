@@ -84,7 +84,7 @@ public:
   void initGamma(u32 index);
   void createResWork();
   void setSecTexture(LayerResSecTexture *secTexture);
-  void setupShader();
+  grlib::CGLibDecShader *setupShader();
   void setupShader(grlib::CGLibDblUniformBlock *uniform);
   void setShaderMaskMode(const LayerObjTopMaskObj *mask);
   void setViewPort(LayerResViewPortInfo *viewPort);

@@ -2,6 +2,10 @@
 
 #include <string.h>
 
+#include "grlib/cglib_ctl_shader.h"
+#include "grlib/cglib_ctl_vertex.h"
+#include "grlib/cglib_dec_shader.h"
+#include "grlib/cglib_shader.h"
 #include "grlib/cglib_texture_buffer.h"
 #include "layer/layer_base.h"
 #include "layer/layer_manager.h"
@@ -142,6 +146,33 @@ void LayerObjTopMemObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
   } else if (!isClip()) {
     sortMan->set2DSpace(&unknown258, unknownc0);
   }
+}
+
+void LayerObjTopMemObj::setupRender() {
+  u32 index = LayerManager::s_nDebIdx;
+  unknown270 &= ~(1 << index);
+  LayerShdManager *shader = LayerManager::get()->unknown58;
+  shader->unknown4f0 = 9;
+  shader->unknown4f8 = unknown750;
+  grlib::CGLibDecShader *decShader = shader->setupShader();
+  unknown278.setRenderTarget();
+  unknown678.setUniformBlock((decShader->unknown38 + decShader->unknown58)->getUniformBlockOfs("U_MENU"));
+  unknown6a0[index].setStorageBuffer(0);
+  if (unknown750 != LAYER_MEM_TYPE_UNKNOWN_1) {
+    unknown6a0[index].setStorageBuffer(1, unknown748, unknown74c);
+  }
+  unknown6f0[index].setStorageBuffer(2);
+  shader->setupVertex(static_cast<LayerDefVertType>(3));
+  shader->renderQuadsIndex();
+  grlib::CGLibCtlShader::setMemoryBarrierBit(0x25);
+  shader->unknown4f0 = 9;
+  shader->unknown4f8 = 4;
+  shader->setupShader();
+  unknown6f0[index].setStorageBuffer(2);
+  shader->setupVertex(static_cast<LayerDefVertType>(3));
+  grlib::CGLibCtlVertex::renderVertex(GRL_PRIMITIVE_POINTS, 1);
+  grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
+  shader->getDefRenderTarget()->setRenderTarget();
 }
 
 void LayerObjTopMemObj::lastRender() {

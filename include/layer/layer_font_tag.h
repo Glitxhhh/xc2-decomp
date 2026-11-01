@@ -30,6 +30,8 @@ public:
     f32 unknown00[9]; // Inferred role: font instance; original member name unknown.
   };
 
+  static const u16 FONT_INSTANCE_SIZE;
+
   void getWorkSize(LayerTagWork &work, const u8 *string);
   void getWorkSize(LayerTagWork &work, const wchar_t *string);
   void createWork(const u8 *string);
