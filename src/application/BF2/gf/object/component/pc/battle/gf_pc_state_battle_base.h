@@ -44,7 +44,7 @@ public:
   GfComPropertyPc *GetProperty();
   const GfComPropertyPc *GetPropertyConst() const;
   const GfPropertyBattle *GetBattlePropertyConst() const;
-  btl::PlayerParameter *GetPlayerParameter();
+  const btl::PlayerParameter *GetPlayerParameter();
   const btl::PlayerParameter *GetPlayerParameterConst() const;
   bool IsDriver() const;
   bool IsBlade() const;

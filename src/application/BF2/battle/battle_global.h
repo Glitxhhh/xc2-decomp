@@ -267,7 +267,9 @@ public:
   s8 unknown65dc;                                    // Inferred role: blade change type; original member name unknown.
   u8 unknown65dd;                                    // Inferred role: link join max level; original member name unknown.
   u64 unknown65de_0 : 1;                             // Inferred role: lock arts palette; original member name unknown.
-  u64 : 5;
+  u64 : 3;
+  u64 unknown65de_4 : 1; // Inferred role: leader has a target, written by the pc battle state; original member name unknown.
+  u64 : 1;
   u64 unknown65de_6 : 1; // Role and original member name unknown.
   u64 : 1;
   u64 unknown65df_0 : 1; // Role and original member name unknown.

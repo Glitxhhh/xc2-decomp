@@ -49,18 +49,24 @@ public:
   enum BLADE_TIMER_MODE {};
   enum RIMBLOOM_ID {};
   enum ACTION_ID : u8 {
+    ACTION_ID_UNKNOWN_0 = 0, // Inferred role: battle start, no action; original name unknown.
     ACTION_ID_IDLE = 1,
     ACTION_ID_UNKNOWN_2 = 2, // Inferred role: put out weapon; original name unknown.
     ACTION_ID_PUT_AWAY_WEAPON = 3,
     ACTION_ID_MOVE = 4,
+    ACTION_ID_UNKNOWN_5 = 5, // Inferred role: kizuna max, paired with STATE_ID_BATTLE_KIZUNA_MAX; original name unknown.
     ACTION_ID_ATTACK = 6,
     ACTION_ID_ARTS = 7,
     ACTION_ID_BLADE_ARTS = 8,
     ACTION_ID_BLADE_CHANGE = 9,
     ACTION_ID_SP_ATTACK = 10,
+    ACTION_ID_UNKNOWN_11 = 11, // Inferred role: support, paired with STATE_ID_BATTLE_SUPPORT; original name unknown.
     ACTION_ID_UNKNOWN_0E = 14, // Inferred role: lever gacha action; original name unknown.
     ACTION_ID_UNKNOWN_12 = 12, // Inferred role: set on a BLADE_GUARD action command; original name unknown.
     ACTION_ID_UNKNOWN_13 = 13, // Inferred role: set on an ATTACK_REPELLED action command; original name unknown.
+    ACTION_ID_UNKNOWN_15 = 15, // Inferred role: knock back, paired with STATE_ID_BATTLE_KNOCK_BACK; original name unknown.
+    ACTION_ID_UNKNOWN_16 = 16, // Inferred role: break, paired with STATE_ID_BATTLE_BREAK; original name unknown.
+    ACTION_ID_UNKNOWN_17 = 17, // Inferred role: dead, paired with STATE_ID_BATTLE_DEAD; original name unknown.
     ACTION_ID_RESCUE = 18,
   };
 

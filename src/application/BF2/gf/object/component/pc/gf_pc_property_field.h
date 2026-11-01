@@ -4,6 +4,7 @@
 #include "framework/message/message_object.h"
 #include "fw/fw_param_manager.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
+#include "gf/object/component/pc/gf_pc_property_pc_interface.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
@@ -58,7 +59,7 @@ namespace pc {
 struct FieldParam;
 struct WaterCommonParam;
 
-class GfPropertyField {
+class GfPropertyField : public GfPropertyPcInterface {
 public:
   enum WALL_MOVE_MODE {
     WALL_MOVE_MODE_INVALID = -1,
@@ -72,11 +73,11 @@ public:
     WALL_MOVE_MODE_UP_LEFT = 7,
   };
 
-  virtual void setup(const GfComPropertyPc &property);
-  virtual void cleanup(const GfComPropertyPc &property);
-  virtual void flush(const GfComPropertyPc &property);
-  virtual void flushOwner(GfComPropertyPc &property);
-  virtual bool recieveMessage(const GfComPropertyPc &property, fw::MessageObject *sender, fw::Message &message);
+  void setup(const GfComPropertyPc &property) override;
+  void cleanup(const GfComPropertyPc &property) override;
+  void flush(const GfComPropertyPc &property) override;
+  void flushOwner(GfComPropertyPc &property) override;
+  bool recieveMessage(const GfComPropertyPc &property, fw::MessageObject *sender, fw::Message &message) override;
   void resetStatus(const GfComPropertyPc &property);
   void setBigJumpInfo(const MsgPcFieldNotifyBigJump *message);
   const MsgPcFieldNotifyBigJump *getBigJumpInfo() const;

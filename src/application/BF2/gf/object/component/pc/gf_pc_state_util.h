@@ -1,16 +1,13 @@
 #pragma once
 #include "types.h"
 
+#include "framework/message/message_object.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/pc/plugin/gf_pc_timer_plugin.h"
 
 namespace mm {
 struct Vec3;
 } // namespace mm
-
-namespace fw {
-struct Message;
-} // namespace fw
 
 namespace gf {
 
@@ -19,6 +16,23 @@ struct GF_OBJ_HANDLE;
 struct MsgObjectNotifyDead;
 struct MsgObjectNotifyHealHp;
 
+enum {
+  MSG_PC_FIELD_RELAY_SURVIVE = 0x100001e,
+  MSG_PC_FIELD_REQ_FALL_DEAD_MOTION = 0x1000025,
+};
+
+// Layout evidence: the pc states build it on the stack (0x710053cbcc) with a MsgObjectNotifyHealHp or a MsgObjectNotifyDead,
+// and StateFieldDead::procMsgPcFieldRelaySurvive reads the member at 0x8.
+struct MsgPcFieldRelaySurvive : fw::Message {
+  explicit MsgPcFieldRelaySurvive(fw::Message *message) : fw::Message(MSG_PC_FIELD_RELAY_SURVIVE, 0x40), unknown08(message) {}
+
+  fw::Message *unknown08; // Inferred role: heal or dead notification relayed to the buddy; original member name unknown.
+};
+
+struct MsgPcFieldReqFallDeadMotion : fw::Message {
+  MsgPcFieldReqFallDeadMotion() : fw::Message(MSG_PC_FIELD_REQ_FALL_DEAD_MOTION, 0x40) {}
+};
+
 namespace pc {
 
 class StateUtil {
@@ -26,6 +40,7 @@ public:
   static u32 getFwPadKey(const char *name);
   static void resetCamera();
   static bool isManualCamera();
+  static GF_OBJ_HANDLE *getTarget(const GfComBehaviorPc &behavior);
   static void setTarget(GfComBehaviorPc &behavior, GF_OBJ_HANDLE *target);
   static void setTargetLock(bool isLock);
   static bool isBattle(GfComBehaviorPc &behavior);
@@ -37,6 +52,8 @@ public:
   static void setEnableDownIK(GfComBehaviorPc &behavior, bool isEnable);
   static void setEnableLookIK(GfComBehaviorPc &behavior, bool isEnable);
   static void setEnableSpineIK(GfComBehaviorPc &behavior, bool isEnable);
+  static void setEnableSpineRotate(GfComBehaviorPc &behavior, bool isEnable, f32 time);
+  static void setSpineRotateAngles(GfComBehaviorPc &behavior, f32 yaw, f32 pitch);
   static void changePlacementDownDist(GfComBehaviorPc &behavior, f32 distance);
   static void resetPlacementDownDist(GfComBehaviorPc &behavior);
   static void changeGroundAnglesForMotion(GfComBehaviorPc &behavior, const mm::Vec3 &angles);

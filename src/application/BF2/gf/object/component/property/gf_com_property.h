@@ -22,7 +22,7 @@ struct GfEnvProperty;
 
 class GfStatusProperty : public mm::mtl::ReferenceObject {
 public:
-  GfStatusProperty(u32 hp) : unknown0c(hp), unknown10(hp), unknown14(0), unknown18(false), _19(), unknown1a(false), _1b() {}
+  GfStatusProperty(u32 hp) : unknown0c(hp), unknown10(hp), unknown14(0), unknown18(false), _19(), unknown1a(false), unknown1b(false) {}
 
   u32 unknown0c;  // Inferred role: max hp; original member name unknown.
   u32 unknown10;  // Inferred role: hp; original member name unknown.
@@ -30,7 +30,7 @@ public:
   bool unknown18; // Inferred role: invincible; original member name unknown.
   u8 _19[0x1a - 0x19];
   bool unknown1a; // Inferred role: disable auto heal; original member name unknown.
-  u8 _1b[0x1c - 0x1b];
+  bool unknown1b; // Inferred role: battle special sequence running, written by the pc battle states; original member name unknown.
 };
 
 static_assert(offsetof(GfStatusProperty, unknown0c) == 0x0c, "");
@@ -38,6 +38,7 @@ static_assert(offsetof(GfStatusProperty, unknown10) == 0x10, "");
 static_assert(offsetof(GfStatusProperty, unknown14) == 0x14, "");
 static_assert(offsetof(GfStatusProperty, unknown18) == 0x18, "");
 static_assert(offsetof(GfStatusProperty, unknown1a) == 0x1a, "");
+static_assert(offsetof(GfStatusProperty, unknown1b) == 0x1b, "");
 
 struct GfTargetProperty {
   GF_OBJ_HANDLE *handle;
@@ -99,6 +100,7 @@ enum {
   MSG_OBJECT_DAMAGE = 0x1000032,
   MSG_OBJECT_NOTIFY_DAMAGE = 0x1000037,
   MSG_OBJECT_NOTIFY_DEAD = 0x1000038,
+  MSG_OBJECT_NOTIFY_HEAL_HP = 0x1000039,
 };
 
 // Layout evidence: GfComBehaviorEnemy::procMsgObjectLure (0x7100513fc4) and GfFieldDmg::update build it on the stack and the
@@ -143,12 +145,24 @@ struct MsgObjectNotifyDamage : fw::Message {
 
 static_assert(offsetof(MsgObjectNotifyDamage, unknown10) == 0x10, "");
 
+// Layout evidence: GfComProperty::procMsgObjectDead and StateBattleDead::Update (0x710053dfec) build it on the stack.
 struct MsgObjectNotifyDead : fw::Message {
+  MsgObjectNotifyDead(int deadType, const MsgObjectDamage *damage)
+      : fw::Message(MSG_OBJECT_NOTIFY_DEAD, 0x40), unknown08(deadType), unknown10(damage), unknown18(INVALID_HANDLE), unknown20(0), unknown24(90), unknown28(false) {}
+
   int unknown08;                    // Inferred role: dead type; original member name unknown.
   const MsgObjectDamage *unknown10; // Inferred role: damage; original member name unknown.
+  GF_OBJ_HANDLE *unknown18;         // Role and original member name unknown.
+  u32 unknown20;                    // Role and original member name unknown.
+  u32 unknown24;                    // Role and original member name unknown.
+  bool unknown28;                   // Role and original member name unknown.
 };
 
 static_assert(offsetof(MsgObjectNotifyDead, unknown10) == 0x10, "");
+static_assert(offsetof(MsgObjectNotifyDead, unknown18) == 0x18, "");
+static_assert(offsetof(MsgObjectNotifyDead, unknown24) == 0x24, "");
+static_assert(offsetof(MsgObjectNotifyDead, unknown28) == 0x28, "");
+static_assert(sizeof(MsgObjectNotifyDead) == 0x30, "");
 
 struct MsgObjectHealHp : fw::Message {
   MsgObjectHealHp(u32 hp, u32 healType)
@@ -169,6 +183,14 @@ static_assert(offsetof(MsgObjectHealHp, unknown10) == 0x10, "");
 static_assert(offsetof(MsgObjectHealHp, unknown18) == 0x18, "");
 static_assert(offsetof(MsgObjectHealHp, unknown21) == 0x21, "");
 static_assert(offsetof(MsgObjectHealHp, unknown23) == 0x23, "");
+
+// Layout evidence: GfComProperty sends it with the MsgObjectHealHp it handled (0x710057e288); the pc states test the member at 0x10.
+struct MsgObjectNotifyHealHp : fw::Message {
+  const MsgObjectHealHp *unknown08; // Inferred role: heal; original member name unknown.
+  u32 unknown10;                    // Inferred role: zero when the heal revives; original member name unknown.
+};
+
+static_assert(offsetof(MsgObjectNotifyHealHp, unknown10) == 0x10, "");
 
 struct MsgObjectAlpha : fw::Message {
   MsgObjectAlpha(OBJ_ALPHA type, f32 alpha) : fw::Message(0x100003a, 0x20), type(type), alpha(alpha) {}
@@ -203,6 +225,7 @@ struct MsgObjectNotifyChangeAttribute : fw::Message {
 };
 
 enum {
+  DEAD_TYPE_UNKNOWN_1 = 1, // Inferred role: game over of the controlled character, sent by StateBattleDead::Update; original name unknown.
   DEAD_TYPE_EMERGENCY_ESCAPE = 4,
 };
 

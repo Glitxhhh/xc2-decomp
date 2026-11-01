@@ -3,6 +3,7 @@
 
 #include "fw/fw_param_manager.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
+#include "gf/object/component/pc/gf_pc_property_battle.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "mm_math/mm_quat.h"
@@ -103,14 +104,17 @@ public:
   u32 : 1;
   u32 unknown110_3 : 1; // Inferred role: enable gravity; original member name unknown.
   u32 unknown110_4 : 1; // Inferred role: set by GfPropertyField::flushOwner while sliding; original member name unknown.
-  u32 : 2;
+  u32 : 1;
+  u32 unknown110_6 : 1; // Inferred role: battle action running, cleared by StateBattle::Leave; original member name unknown.
   u32 unknown110_7 : 1; // Inferred role: on slide; original member name unknown.
   u32 : 1;
   u32 unknown111_1 : 1; // Inferred role: selects mode 2 in getMode; original member name unknown.
   u32 unknown111_2 : 1; // Inferred role: pad control; original member name unknown.
   u32 unknown111_3 : 1; // Inferred role: dead; original member name unknown.
   u32 unknown111_4 : 1; // Inferred role: dead sequence requested; original member name unknown.
-  u32 : 13;
+  u32 : 2;
+  u32 unknown111_7 : 1; // Inferred role: cleared with the battle control flag by StateBattle::Leave; original member name unknown.
+  u32 : 10;
   u32 unknown113_2 : 1; // Inferred role: warp requested, cleared by MsgPcFieldWarpCancel; original member name unknown.
   u32 : 5;
   u8 _114[0x118 - 0x114];
@@ -133,7 +137,8 @@ public:
   u8 _2fc[0x300 - 0x2fc];
   mm::mtl::IntrusivePtr<fw::ParamList> unknown300; // Inferred role: pc param list; original member name unknown.
   u8 _308[0x310 - 0x308];
-  pc::GfPropertyField unknown310; // Inferred role: field; original member name unknown.
+  pc::GfPropertyField unknown310;  // Inferred role: field; original member name unknown.
+  pc::GfPropertyBattle unknown470; // Inferred role: battle; original member name unknown.
 };
 
 static_assert(offsetof(GfComPropertyPc, unknown38) == 0x38, "");
@@ -155,6 +160,7 @@ static_assert(offsetof(GfComPropertyPc, unknown2f0) == 0x2f0, "");
 static_assert(offsetof(GfComPropertyPc, unknown2f8) == 0x2f8, "");
 static_assert(offsetof(GfComPropertyPc, unknown300) == 0x300, "");
 static_assert(offsetof(GfComPropertyPc, unknown310) == 0x310, "");
+static_assert(offsetof(GfComPropertyPc, unknown470) == 0x470, "");
 
 u32 getMode(GfComPropertyPc &property);
 

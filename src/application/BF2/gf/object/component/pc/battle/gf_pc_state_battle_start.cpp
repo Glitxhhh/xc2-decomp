@@ -3,6 +3,8 @@
 #include "battle/character/battle_character.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
+#include "gf/object/component/pc/gf_pc_property_battle.h"
+#include "gf/object/component/pc/gf_pc_state_id.h"
 #include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_util.h"
@@ -24,6 +26,32 @@ bool StateBattleStart::Enter(GfComBehaviorPc *behavior, ai::State *previous) {
 }
 
 void StateBattleStart::Leave(GfComBehaviorPc *behavior, ai::State *next) {}
+
+void StateBattleStart::Update(btl::BattleCharacter *character, GfComBehaviorPc *behavior, const fw::UpdateInfo &info) {
+  StateBattleActionBase::Update(character, behavior, info);
+  if (unknown21) {
+    return;
+  }
+
+  const GfPropertyBattle *battle = GetBattlePropertyConst();
+  switch (battle->unknown14) {
+  case 0:
+    ChangeState(STATE_ID_BATTLE_PUT_OUT_WEAPON, 0);
+    break;
+  case 1:
+    ChangeState(STATE_ID_BATTLE_IDLE, 1);
+    break;
+  case 2:
+    ChangeState(STATE_ID_BATTLE_DEAD, 1);
+    break;
+  case 3:
+    ChangeState(STATE_ID_BATTLE_IDLE, battle->unknown15 << 16 | battle->unknown16);
+    break;
+  default:
+    ChangeState(STATE_ID_BATTLE_PUT_OUT_WEAPON, 0);
+    break;
+  }
+}
 
 } // namespace pc
 } // namespace gf
