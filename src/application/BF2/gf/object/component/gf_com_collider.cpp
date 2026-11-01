@@ -6,11 +6,6 @@
 #include "mm_mtl/bitflag.h"
 #include "mm_mtl/rtti.h"
 
-namespace fw {
-struct ColiCharacterInfo;
-struct ColiPhantomInfo;
-} // namespace fw
-
 namespace gf {
 
 GfComCollider::GfComCollider() : unknown18(getAllocator(ALLOCATOR_DEFAULT)) { unknown40.unknown08 = this; }

@@ -11,8 +11,6 @@
 
 namespace fw {
 class ReferenceFrame;
-struct ColiCharacterInfo;
-struct ColiPhantomInfo;
 } // namespace fw
 namespace mm {
 namespace mtl {
