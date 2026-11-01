@@ -1,6 +1,7 @@
 #include "ptlib/forcefield/particle_force_field.h"
 
 #include <math.h>
+#include <new>
 
 #include "mm/mm_std_base.h"
 #include "mm_math/mm_vec3.h"
@@ -41,6 +42,14 @@ inline void unknown006(emitter::ParticleObj *particle) {
   particle->getExtParam().unknown30 = mm::Vec3::zero;
 }
 } // namespace
+
+void FfManager::init() {
+#line 22
+  getPtr() = static_cast<FfManager *>(ParticleManager::sysAlloc(sizeof(FfManager), 0x10, __FILE__, __LINE__));
+  if (getPtr() != nullptr) {
+    new (getPtr()) FfManager;
+  }
+}
 
 FfManager *FfManager::get() {
 #line 52

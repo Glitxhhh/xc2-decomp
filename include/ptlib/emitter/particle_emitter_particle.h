@@ -74,6 +74,7 @@ public:
   void calcParRot(math::KeyFrameIP &keyFrame, f32 frame, EmitterObj *emitter, bool isCreate, f32 speed);
   void calcParPivot(math::KeyFrameIP &keyFrame, f32 frame, EmitterObj *emitter);
   void calcSpeed(EmitterObj *emitter, math::KeyFrameIP &keyFrame, f32 frame);
+  void calcTurb(mm::Vec3 &result, f32 frequency, f32 amplitude, int octaves);
   void move_common_keyframe_uv23(vec2f *uv0, vec2f *uv1, f32 *rotation, EmitterObj *emitter, int index, f32 frame);
   bool move_common_check_begin_end(EmitterObj *emitter, u16 begin, u16 end, int mode) {
     f32 frame;

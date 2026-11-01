@@ -57,6 +57,7 @@ static_assert(sizeof(unknown002) == 0x50, "");
 
 class FfManager {
 public:
+  static void init();
   static FfManager *get();
   static FfManager *&getPtr();
   static void term();

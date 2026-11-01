@@ -30,8 +30,10 @@ public:
   void get_ip2(vec2f *result, int index);
   void get_ip3(mm::Vec3NA *result, int index);
   void get_ip3(mm::Vec3 *result, int index);
+  void get_ip3_col(mm::Vec3 *result, int index);
   void mul_ip3(mm::Vec3NA *result, int index);
   void mul_ip3(mm::Vec3 *result, int index);
+  void mul_ip3_col(mm::Vec3 *result, int index);
   void setup_keyrand(EPkey *epkey, int count, u32 &rand);
   f32 keyrand_get_ip1(EPkey *epkey, u32 &rand);
   void keyrand_get_ip3(mm::Vec3NA *result, EPkey *epkey, u32 &rand);

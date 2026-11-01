@@ -9,6 +9,7 @@
 #include "ptlib/emitter/particle_emitter_particle.h"
 #include "ptlib/math/particle_keyframe_ip.h"
 #include "ptlib/particle_intrusive_list.h"
+#include "ptlib/particle_noise.h"
 #include "ptlib/particle_system.h"
 #include "types.h"
 
@@ -236,6 +237,8 @@ void ParticleObj::calcSpeed(EmitterObj *emitter, math::KeyFrameIP &keyFrame, f32
     unknownac.x = unknownac.y * emitter->getEmitterScale();
   }
 }
+
+void ParticleObj::calcTurb(mm::Vec3 &result, f32 frequency, f32 amplitude, int octaves) { TurbulenceN::turb3d(result, unknown10, frequency, amplitude, octaves); }
 
 void ParticleObj::calc_fit(f32 &pitch, f32 &yaw, const mm::Vec3 *direction) {
   f32 y = direction->y;

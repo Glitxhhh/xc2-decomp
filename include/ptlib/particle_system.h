@@ -343,6 +343,11 @@ static_assert(offsetof(ParticleManager, unknown160) == 0x160, "");
 static_assert(offsetof(ParticleManager, unknown170) == 0x170, "");
 static_assert(sizeof(ParticleManager::unknown003) == 0x80, "");
 
+class Utility {
+public:
+  static u32 conv_rgba(mm::Vec3 *color, f32 alpha);
+};
+
 void efAstMsg(const char *cond, const char *format, ...);
 void efMsg(const char *format, ...);
 void efWng(const char *format, ...);

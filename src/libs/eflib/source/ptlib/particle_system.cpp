@@ -606,6 +606,42 @@ void efWng(const char *format, ...) {
   ParticleManager::s_pOutputWarnStringFunc(s_messageBuffer);
 }
 
+u32 Utility::conv_rgba(mm::Vec3 *color, f32 alpha) {
+  f32 red = color->x;
+  f32 green = color->y;
+  f32 blue = color->z;
+  if (red < 0.0f) {
+    red = 0.0f;
+  }
+  if (green < 0.0f) {
+    green = 0.0f;
+  }
+  if (blue < 0.0f) {
+    blue = 0.0f;
+  }
+  if (red > 1.0f) {
+    red = 1.0f;
+  }
+  if (green > 1.0f) {
+    green = 1.0f;
+  }
+  if (blue > 1.0f) {
+    blue = 1.0f;
+  }
+  int r = red * 255.0f;
+  int g = green * 255.0f;
+  int b = blue * 255.0f;
+  f32 alpha255 = alpha * 255.0f;
+  if (alpha255 < 0.0f) {
+    alpha255 = 0.0f;
+  }
+  if (alpha255 > 255.0f) {
+    alpha255 = 255.0f;
+  }
+  int a = alpha255;
+  return a << 24 | (r & 0xff) | (g & 0xff) << 8 | (b & 0xff) << 16;
+}
+
 } // namespace ptlib
 
 #include "forcefield/particle_force_field.cpp"
