@@ -96,7 +96,7 @@ struct DevFileParamTh {
   const char *unknown00; // Inferred role: path; original member name unknown.
   mtl::ALLOC_HANDLE _08;
   mm::mtl::IAllocator *_10;
-  mm::mtl::FixedVector<u64, 4> _18;
+  mm::mtl::FixedVector<mtl::ALLOC_HANDLE, 8> _18;
   void *unknown40; // Inferred role: buffer; original member name unknown.
   u32 unknown48;   // Inferred role: size; original member name unknown.
   u32 unknown4c;   // Inferred role: offset; original member name unknown.

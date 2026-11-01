@@ -1,11 +1,9 @@
 #pragma once
 #include <stddef.h>
 
-#include "mm_mtl/allocator.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
-#include "mtl/mem_manager.h"
 #include "types.h"
 
 namespace ml {
@@ -17,42 +15,57 @@ enum CBM : int;
 class FileHandleTh {
 public:
   enum FTYPE {
+    FTYPE_UNKNOWN_0 = 0, // Inferred role: unused handle.
     FTYPE_UNKNOWN_1 = 1, // Inferred role: buffer allocated from the memory handle.
     FTYPE_UNKNOWN_2 = 2, // Inferred role: buffer allocated from an allocator.
+    FTYPE_UNKNOWN_3 = 3, // Inferred role: buffer given by the caller.
+    FTYPE_UNKNOWN_4 = 4, // Inferred role: write handle.
+    FTYPE_UNKNOWN_5 = 5, // Inferred role: buffer allocated from the memory handle without fallback.
+    FTYPE_UNKNOWN_6 = 6, // Inferred role: buffer allocated by the device.
+    FTYPE_UNKNOWN_7 = 7, // Inferred role: buffer allocated by the device, flag 4 of the parameter set.
   };
 
+  FileHandleTh();
   FileHandleTh(const DevFileParamTh &param);
-  ~FileHandleTh() {
-    releaseBuffer();
-    unknown1f4 = false;
-    unknown1e0 = 0;
-  }
+  ~FileHandleTh();
 
-  void releaseBuffer() {
-    if (unknown00 == FTYPE_UNKNOWN_1) {
-      if (unknown08 != nullptr && unknown70 == nullptr) {
-        if (mtl::MemManager::valid(unknown2c, true)) {
-          if (unknown08 == nullptr) {
-            return;
-          }
-          mtl::MemManager::deallocate(unknown08, 0, false);
-        }
-        unknown08 = nullptr;
-      }
-    } else if (unknown00 == FTYPE_UNKNOWN_2) {
-      if (unknown08 != nullptr && unknown70 == nullptr) {
-        if (unknown30 != nullptr) {
-          static_cast<mm::mtl::IAllocator *>(unknown30)->deallocate(unknown08);
-        }
-        unknown08 = nullptr;
-      }
+  void releaseBuffer();
+  void init(FTYPE type);
+  void setup(const DevFileParamTh &param);
+  void initWriter(const char *path, void *data, int size, int offset, IWorkEvent *event);
+
+  // Inferred role: sets the read offset and the default read size; original function name unknown.
+  void unknown001(int offset, int size) {
+    unknown14 = offset;
+    if (unknown18 == 0) {
+      unknown18 = size;
+    }
+    if (unknown14 > 0 || unknown18 > 0) {
+      unknown94 |= 1;
     }
   }
 
-  void setup(const DevFileParamTh &param);
+  // Inferred role: rounds an unsigned size up to a multiple of the block size; original function name unknown.
+  static u32 unknown002(u32 size, u32 blockSize) {
+    u32 rest = size % blockSize;
+    if (rest != 0) {
+      return size + blockSize - rest;
+    }
+    return size;
+  }
+
+  // Inferred role: rounds a signed size up to a multiple of the block size; original function name unknown.
+  static int unknown003(int size, int blockSize) {
+    int rest = size % blockSize;
+    if (rest != 0) {
+      return size + blockSize - rest;
+    }
+    return size;
+  }
 
   bool addCurrentPtr(int offset);
   bool setCurrentPtr(int offset);
+  bool setReadBuffer(int size, u32 alignment, u32 blockSize);
   void setReadAdr(int size, void *buffer, int alignedSize);
   void setTime(u64 time);
   bool call(CBM cbm);
@@ -66,19 +79,19 @@ public:
   s32 unknown20;   // Role and original member name unknown.
   s32 unknown24;   // Role and original member name unknown.
   s32 m_currentPtr;
-  mtl::ALLOC_HANDLE unknown2c;            // Inferred role: mem handle; original member name unknown.
-  void *unknown30;                        // Inferred role: file size, or the allocator of the buffer; original member name unknown.
-  mm::mtl::FixedVector<u32, 8> unknown38; // Role and original member name unknown.
-  IWorkEvent *unknown60;                  // Inferred role: event listener; original member name unknown.
-  void *unknown68;                        // Inferred role: event; original member name unknown.
-  void **unknown70;                       // Inferred role: loaded data output; original member name unknown.
-  s32 *unknown78;                         // Inferred role: loaded size output; original member name unknown.
-  s32 unknown80;                          // Role and original member name unknown.
-  u64 unknown88;                          // Role and original member name unknown.
-  u32 unknown90;                          // Role and original member name unknown.
-  u32 unknown94;                          // Inferred role: state flags; original member name unknown.
-  mm::mtl::FixStr<256> unknown98;         // Inferred role: path; original member name unknown.
-  mm::mtl::FixStr<32> unknown19c;         // Role and original member name unknown.
+  mtl::ALLOC_HANDLE unknown2c;                          // Inferred role: mem handle; original member name unknown.
+  void *unknown30;                                      // Inferred role: file size, or the allocator of the buffer; original member name unknown.
+  mm::mtl::FixedVector<mtl::ALLOC_HANDLE, 8> unknown38; // Inferred role: fallback mem handles; original member name unknown.
+  IWorkEvent *unknown60;                                // Inferred role: event listener; original member name unknown.
+  void *unknown68;                                      // Inferred role: event; original member name unknown.
+  void **unknown70;                                     // Inferred role: loaded data output; original member name unknown.
+  s32 *unknown78;                                       // Inferred role: loaded size output; original member name unknown.
+  s32 unknown80;                                        // Role and original member name unknown.
+  u64 unknown88;                                        // Role and original member name unknown.
+  u32 unknown90;                                        // Role and original member name unknown.
+  u32 unknown94;                                        // Inferred role: state flags; original member name unknown.
+  mm::mtl::FixStr<256> unknown98;                       // Inferred role: path; original member name unknown.
+  mm::mtl::FixStr<32> unknown19c;                       // Role and original member name unknown.
   u64 m_time;
   u64 unknown1c8;  // Inferred role: file time; original member name unknown.
   s32 unknown1d0;  // Role and original member name unknown.
