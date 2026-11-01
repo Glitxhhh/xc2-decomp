@@ -10,6 +10,7 @@ public:
   void initialize() override;
   void finalize() override;
   static void open(GfMenuCallContext *context);
+  static void pause(GfMenuCallContext *context);
   static void close();
 };
 

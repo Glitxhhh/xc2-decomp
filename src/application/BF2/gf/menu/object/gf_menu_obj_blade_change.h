@@ -13,6 +13,7 @@ public:
   void finalize() override;
   static void enableAwakening(bool);
   static void pushBladeChange(unsigned int blade);
+  static void dispInfo(bool isDisp);
 };
 
 } // namespace gf

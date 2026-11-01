@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_enemy_status.h"
 
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -8,9 +9,22 @@ namespace gf {
 constexpr u32 unknown001 = 0x10;
 // Inferred role: ui event type; original name unknown.
 constexpr u16 unknown002 = 0x101;
+// Inferred role: ui event type; original name unknown.
+constexpr u16 unknown003 = 0x100;
+// Inferred role: attached display call id; original name unknown.
+constexpr u32 unknown004 = 0x14;
 
 void GfMenuObjEnemyStatus::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjEnemyStatus::close() { unknown142(unknown001, unknown002); }
+
+void GfMenuObjEnemyStatus::open(const OpenParam &) { unknown142(unknown001, unknown003); }
+
+void GfMenuObjEnemyStatus::disp(bool isDisp) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown004));
+  if (acc.isValid() && !acc.isTerm()) {
+    acc.setDisp(isDisp);
+  }
+}
 
 } // namespace gf

@@ -5,6 +5,7 @@ namespace gf {
 
 class GfMenuObjPartyGauge : public GfMenuObject {
 public:
+  static void open();
   static void close();
   static void disp(bool isDisp);
   void initialize() override;

@@ -4,6 +4,7 @@
 #include "types.h"
 
 namespace gf {
+class GfMenuCallContext;
 
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x61;
@@ -25,5 +26,7 @@ bool GfMenuObjCharSelect::seqSpHomuraToHikari() {
 void GfMenuObjCharSelect::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 void GfMenuObjCharSelect::returnSubMenu() { unknown142(unknown001, unknown002); }
+
+bool GfMenuObjCharSelect::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
 
 } // namespace gf

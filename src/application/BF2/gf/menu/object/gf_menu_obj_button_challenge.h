@@ -4,6 +4,8 @@
 
 namespace gf {
 
+class GfMenuCallContext;
+
 class GfMenuObjButtonChallenge : public GfMenuObject {
 public:
   GfMenuObjButtonChallenge(u32 handle);
@@ -11,6 +13,7 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void cancel(GfMenuCallContext *context);
 };
 
 } // namespace gf

@@ -7,9 +7,11 @@ class UIObjectAcc;
 } // namespace ui
 
 namespace gf {
+class GfMenuCallContext;
 
 class GfMenuObjBlKizunaRing : public GfMenuObject {
 public:
+  static bool attach(GfMenuCallContext *context);
   static void sendEvent(u32 handle, u32 type, u32 param);
   void initialize() override;
   void finalize() override;

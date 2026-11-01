@@ -10,8 +10,10 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static bool attach(GfMenuCallContext *context);
   static void fadeout(GfMenuCallContext *context);
   static void fadein(GfMenuCallContext *context);
+  static void dispOffScreen(bool isDisp);
 };
 
 } // namespace gf

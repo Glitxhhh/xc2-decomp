@@ -4,6 +4,8 @@
 
 namespace gf {
 
+class GfMenuCallContext;
+
 class GfMenuObjQuestReward : public GfMenuObject {
 public:
   GfMenuObjQuestReward(u32 handle);
@@ -11,6 +13,7 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void open(GfMenuCallContext *context, bool isAnim);
 };
 
 } // namespace gf

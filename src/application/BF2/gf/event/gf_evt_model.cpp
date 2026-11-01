@@ -3,6 +3,7 @@
 #include <new>
 
 #include "gf/game/gf_game_mount.h"
+#include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/animation/gf_com_evt_anim.h"
@@ -11,6 +12,8 @@
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/scom/gf_scom_obj.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 
@@ -67,6 +70,14 @@ void GfEvtModel::setWeaponFieldState() {}
 void GfEvtModel::setWeaponBattleMount() {}
 
 void GfEvtModel::setWeaponFieldMount() {}
+
+bool GfEvtModelSalvage::isValid() const { return GfGameObj::isValidGameObj(unknown20, false, nullptr); }
+
+void GfEvtModelSalvage::setTransform(const mm::Vec3 &position, f32 rotation) {
+  if (GfGameObj::isValidGameObj(unknown20, false, nullptr)) {
+    SCOM_OBJ_WARP_POS::create(unknown20, position, mm::Vec3(0.0f, rotation * mm::DEG_TO_RAD, 0.0f), false);
+  }
+}
 
 void GfEvtModelDriver::playAnimWeaponRightCS(const char *name) {
   GfComPackAnim *anim = unknown002(unknown20, 0);

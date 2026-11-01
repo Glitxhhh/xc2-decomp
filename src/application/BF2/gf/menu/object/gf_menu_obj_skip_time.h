@@ -4,14 +4,18 @@
 
 namespace ui {
 class UIObjectAcc;
+class UIObjectTimePlugin;
 } // namespace ui
 
 namespace gf {
+
+struct GameTime;
 
 class GfMenuObjSkipTime : public GfMenuObject {
 public:
   static void rotHand(ui::UIObjectAcc &acc, u32 value);
   static void sendEvent(u32 handle, u32 type, u32 param);
+  static void setTime(ui::UIObjectTimePlugin *plugin, GameTime &time);
   void initialize() override;
   void finalize() override;
   void update() override;

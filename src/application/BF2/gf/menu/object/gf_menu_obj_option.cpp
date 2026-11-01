@@ -1,6 +1,10 @@
 #include "gf/menu/object/gf_menu_obj_option.h"
 
 namespace gf {
+class GfMenuCallContext;
+
+// Inferred role: attached call id; original name unknown.
+constexpr u32 unknown001 = 0x86;
 
 void GfMenuObjOption::finalize() { GfMenuObject::finalize(); }
 
@@ -22,5 +26,7 @@ u32 GfMenuObjOption::getGammaValue(u8 level, u8 levelMax) {
   }
   return value;
 }
+
+bool GfMenuObjOption::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
 
 } // namespace gf

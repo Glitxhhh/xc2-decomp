@@ -1,5 +1,8 @@
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
+
+#include "gf/menu/gf_menu_types.h"
 #include "types.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -29,4 +32,47 @@ void GfMenuObjCmnStatus::setInputEnable() {
   }
 }
 
+void GfMenuObjCmnStatus::openDrStatus(u32 driver, int page) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    event.unknown08 = driver;
+    event.unknown0c = page;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_status_dr"), event, 0.0f);
+    s_DispFlag[0] = true;
+  }
+}
+
+void GfMenuObjCmnStatus::closeDrStatus() {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_34;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_status_dr"), event, 0.0f);
+    s_DispFlag[0] = false;
+  }
+}
+
+void GfMenuObjCmnStatus::openBlStatus(u32 blade, int page) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    event.unknown08 = blade;
+    event.unknown0c = page;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_status_bl"), event, 0.0f);
+    s_DispFlag[1] = true;
+  }
+}
+
+void GfMenuObjCmnStatus::closeBlStatus() {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_34;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_status_bl"), event, 0.0f);
+    s_DispFlag[1] = false;
+  }
+}
 } // namespace gf

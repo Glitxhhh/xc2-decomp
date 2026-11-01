@@ -14,6 +14,7 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  bool isEnableSelect(u32 handle, int index);
 };
 
 } // namespace gf

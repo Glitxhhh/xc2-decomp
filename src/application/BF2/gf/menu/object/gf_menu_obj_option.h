@@ -5,9 +5,11 @@
 namespace gf {
 
 struct SDataOption;
+class GfMenuCallContext;
 
 class GfMenuObjOption : public GfMenuObject {
 public:
+  static bool attach(GfMenuCallContext *context);
   void initialize() override;
   void finalize() override;
 

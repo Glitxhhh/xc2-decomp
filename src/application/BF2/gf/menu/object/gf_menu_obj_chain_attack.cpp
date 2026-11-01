@@ -1,4 +1,8 @@
 #include "gf/menu/object/gf_menu_obj_chain_attack.h"
+
+#include <string.h>
+
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_arts_palette.h"
 #include "gf/menu/object/gf_menu_obj_blade_change.h"
@@ -34,6 +38,15 @@ void GfMenuObjChainAttack::closeStatus() {
     GfMenuObjArtsPalette::exitChainAttack();
     GfMenuObjBladeChange::exitChainAttack();
   }
+}
+
+bool GfMenuObjChainAttack::isEnableSelect(u32 handle, int index) {
+  ui::UIObjectAcc acc(handle);
+  if (strcmp(acc.getName(), "LAY_turn_sel") == 0) {
+    return GfMenuReference::getReferenceNumber(index) == 0;
+  }
+
+  return true;
 }
 
 } // namespace gf

@@ -7,6 +7,7 @@ class GfMenuObjBladeSwitch : public GfMenuObject {
 public:
   static void open();
   static void close();
+  static void setActive(bool isActive);
   void initialize() override;
   void finalize() override;
 };

@@ -1,6 +1,8 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/menu/call/gf_menu_call_manager.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/intrusive_list.h"
@@ -208,6 +210,60 @@ inline void unknown148(u32 call, const char *name, u16 type) {
     event.unknown00 = type;
     GfMenuObject::sendEvent(child.unknown10, event, 0.0f);
   }
+}
+
+// Inferred helper: sends an event with a parameter to the object attached to a call, parameter stored first; original name unknown.
+inline void unknown149(u32 call, u16 type, u32 param) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown08 = param;
+    event.unknown0c = 0;
+    event.unknown00 = type;
+    GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+  }
+}
+
+// Inferred helper: sends an event with a flag parameter to the object attached to a call; original name unknown.
+inline void unknown150(u32 call, u16 type, bool param) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = type;
+    event.unknown08 = param;
+    event.unknown0c = 0;
+    GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+  }
+}
+
+// Inferred helper: starts a call context on the object attached to a call, true when the object exists; original name unknown.
+inline bool unknown151(GfMenuCallContext *context, u32 call) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));
+  if (acc.isValid()) {
+    GfMenuObject::startCallContext(context, call, acc.unknown10);
+    return true;
+  }
+  return false;
+}
+
+// Inferred helper: starts a call context on the object attached to a call unless it is terminating; original name unknown.
+inline void unknown152(GfMenuCallContext *context, u32 call) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));
+  if (acc.isValid() && !acc.isTerm()) {
+    GfMenuObject::startCallContext(context, call, acc.unknown10);
+  }
+}
+
+// Inferred helper: starts a call context on the object attached to a call when the call can start, true when started; original name unknown.
+inline bool unknown153(GfMenuCallContext *context, u32 call) {
+  if (GfMenuObjUtil::checkCCStart(context) && GfMenuCallManager::get()->canCall(call)) {
+    ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));
+    if (acc.isValid()) {
+      GfMenuObject::startCallContext(context, call, acc.unknown10);
+      return true;
+    }
+  }
+  return false;
 }
 
 } // namespace gf

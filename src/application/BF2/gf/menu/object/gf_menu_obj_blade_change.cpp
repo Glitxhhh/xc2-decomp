@@ -2,6 +2,8 @@
 
 #include "gf/menu/gf_menu_types.h"
 #include "types.h"
+#include "ui/event/ui_event_data.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -23,5 +25,23 @@ void GfMenuObjBladeChange::exitChainAttack() { unknown146(unknown001, unknown002
 void GfMenuObjBladeChange::open() { unknown146(unknown001, GfMenuTypes::unknown003_33); }
 
 void GfMenuObjBladeChange::pushGroupUp() { unknown146(unknown001, unknown003); }
+
+void GfMenuObjBladeChange::dispInfo(bool isDisp) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid() && !acc.isTerm()) {
+    acc.setDispChild(isDisp, "LAY_info");
+  }
+}
+
+void GfMenuObjBladeChange::pushBladeChange(unsigned int blade) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid() && !acc.isTerm()) {
+    ui::EventData event;
+    event.unknown08 = blade;
+    event.unknown0c = 0;
+    event.unknown00 = 0x103;
+    GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+  }
+}
 
 } // namespace gf

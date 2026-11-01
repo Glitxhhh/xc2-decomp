@@ -14,4 +14,6 @@ void GfMenuObjBladeSwitch::open() { unknown144(unknown001, GfMenuTypes::unknown0
 
 void GfMenuObjBladeSwitch::close() { unknown144(unknown001, GfMenuTypes::unknown003_34); }
 
+void GfMenuObjBladeSwitch::setActive(bool isActive) { unknown150(unknown001, 0x100, isActive); }
+
 } // namespace gf
