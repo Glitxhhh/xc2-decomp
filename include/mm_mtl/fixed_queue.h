@@ -197,11 +197,11 @@ public:
     if (!empty()) {
       for (iterator it = end(); it != position; --it) {
         int index = it._index;
-        int previous = index - 1;
-        if (previous < 0) {
+        size_t previous = it._index - 1;
+        if (index - 1 < 0) {
           previous += N;
         }
-        T &source = element(previous % N);
+        T &source = element(static_cast<int>(previous) % N);
         element(index % N) = source;
       }
     }

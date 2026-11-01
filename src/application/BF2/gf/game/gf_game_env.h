@@ -33,18 +33,20 @@ struct ColorFilter {
 
 static_assert(sizeof(ColorFilter) == 0x14, "");
 
+// The first member has a default initializer: FixedQueue::insert stores it apart from the other zeroed members.
 struct CloudSea {
-  CLOUD_SEA unknown00;        // Inferred role: cloud sea; original member name unknown.
-  CLOUD_SEA_PRIO unknown04;   // Inferred role: priority; original member name unknown.
-  CLOUD_SEA_HANDLE unknown08; // Inferred role: handle; original member name unknown.
+  CLOUD_SEA unknown00 = CLOUD_SEA(0); // Inferred role: cloud sea; original member name unknown.
+  CLOUD_SEA_PRIO unknown04;           // Inferred role: priority; original member name unknown.
+  CLOUD_SEA_HANDLE unknown08;         // Inferred role: handle; original member name unknown.
 };
 
 static_assert(sizeof(CloudSea) == 0xc, "");
 
+// The first member has a default initializer: FixedQueue::insert stores it apart from the other zeroed members.
 struct WeatherSet {
-  WEATHERID unknown00;      // Inferred role: weather; original member name unknown.
-  WEATHER_PRIO unknown04;   // Inferred role: priority; original member name unknown.
-  WEATHER_HANDLE unknown08; // Inferred role: handle; original member name unknown.
+  WEATHERID unknown00 = WEATHER_NULL; // Inferred role: weather; original member name unknown.
+  WEATHER_PRIO unknown04;             // Inferred role: priority; original member name unknown.
+  WEATHER_HANDLE unknown08;           // Inferred role: handle; original member name unknown.
 };
 
 static_assert(sizeof(WeatherSet) == 0xc, "");

@@ -241,10 +241,18 @@ public:
   static void setRandom();
 };
 
-class SCOM_MAXIMUM_HEAL {
+class SCOM_MAXIMUM_HEAL : public SCOM {
 public:
+  SCOM_MAXIMUM_HEAL(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target) : SCOM(handle, SCOM_TYPE_UNKNOWN_8, SCOM_EXEC_UNKNOWN_0, 1), unknown20(target) {}
+  bool exec(const fw::UpdateInfo &info) override;
   static void create(GF_OBJ_HANDLE *handle);
+
+  u8 _1c[0x20 - 0x1c];
+  GF_OBJ_HANDLE *unknown20; // Inferred role: target; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_MAXIMUM_HEAL, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_MAXIMUM_HEAL) == 0x28, "");
 
 class SCOM_ADD_IDEA : public SCOM {
 public:
@@ -318,6 +326,42 @@ public:
 
 static_assert(offsetof(SCOM_OBJ_VFADE_OFF, unknown20) == 0x20, "");
 static_assert(sizeof(SCOM_OBJ_VFADE_OFF) == 0x28, "");
+
+class SCOM_ADD_WP : public SCOM {
+public:
+  // Inferred role: weapon point target (0 driver, 1 driver object, 2 reserve blades, 3 driver bdat id); original enum and enumerator names unknown.
+  enum unknown004 {
+    unknown004_0 = 0,
+    unknown004_1 = 1,
+    unknown004_2 = 2,
+    unknown004_3 = 3,
+  };
+
+  SCOM_ADD_WP(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *object, int weaponPoint, u32 weaponType, unknown004 target)
+      : SCOM(handle, SCOM_TYPE_UNKNOWN_7, SCOM_EXEC_UNKNOWN_0, 1), unknown20(object), unknown28(weaponPoint), unknown2c(weaponType), unknown30(target) {}
+  SCOM_ADD_WP(GF_SCOM_HANDLE *handle, int driver, int weaponPoint, u32 weaponType, unknown004 target)
+      : SCOM(handle, SCOM_TYPE_UNKNOWN_7, SCOM_EXEC_UNKNOWN_0, 1), unknown20_int(driver), unknown28(weaponPoint), unknown2c(weaponType), unknown30(target) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(int weaponPoint, u32 weaponType);
+  static GF_SCOM_HANDLE *createForReserve(int weaponPoint);
+  static GF_SCOM_HANDLE *createForObject(GF_OBJ_HANDLE *handle, int weaponPoint, u32 weaponType);
+  static GF_SCOM_HANDLE *createForBdatid(int driver, int weaponPoint, u32 weaponType);
+
+  u8 _1c[0x20 - 0x1c];
+  union {
+    GF_OBJ_HANDLE *unknown20; // Inferred role: driver object; original member name unknown.
+    int unknown20_int;        // Inferred role: driver bdat id, read when unknown30 is unknown004_3; original member name unknown.
+  };
+  int unknown28;        // Inferred role: weapon point; original member name unknown.
+  u32 unknown2c;        // Inferred role: weapon type; original member name unknown.
+  unknown004 unknown30; // Inferred role: target kind; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_ADD_WP, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_ADD_WP, unknown28) == 0x28, "");
+static_assert(offsetof(SCOM_ADD_WP, unknown2c) == 0x2c, "");
+static_assert(offsetof(SCOM_ADD_WP, unknown30) == 0x30, "");
+static_assert(sizeof(SCOM_ADD_WP) == 0x38, "");
 
 class SCOM_ADD_SP : public SCOM {
 public:
@@ -407,6 +451,22 @@ public:
 
 static_assert(offsetof(SCOM_ACCESS_TARGET, unknown20) == 0x20, "");
 static_assert(sizeof(SCOM_ACCESS_TARGET) == 0x28, "");
+
+class SCOM_SET_FLAG : public SCOM {
+public:
+  SCOM_SET_FLAG(GF_SCOM_HANDLE *handle, u32 size, u32 index, u32 value) : SCOM(handle, SCOM_TYPE_UNKNOWN_48, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(size), unknown20(index), unknown24(value) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 size, u32 index, u32 value);
+
+  u32 unknown1c; // Inferred role: flag size in bits; original member name unknown.
+  u32 unknown20; // Inferred role: flag index; original member name unknown.
+  u32 unknown24; // Inferred role: flag value; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_SET_FLAG, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_SET_FLAG, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_SET_FLAG, unknown24) == 0x24, "");
+static_assert(sizeof(SCOM_SET_FLAG) == 0x28, "");
 
 class SCOM_GAME_SPEED : public SCOM {
 public:
@@ -695,6 +755,7 @@ public:
   bool isValid(GF_SCOM_HANDLE *handle);
   static bool isExistCommand(SCOM_TYPE type);
   static bool isExistCommand();
+  static bool isExistCommandWithoutParallel();
 
   mm::mtl::FixedList<SCOM *, 1024> unknown08;   // Inferred role: commands; original member name unknown.
   mm::mtl::FixedList<SCOM *, 1024> unknown4828; // Inferred role: parallel commands; original member name unknown.

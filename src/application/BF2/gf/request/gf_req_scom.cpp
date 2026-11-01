@@ -10,6 +10,7 @@
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_util.h"
+#include "gf/data/gf_game_flag.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_field_bgm.h"
@@ -30,9 +31,12 @@
 #include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/quest/gf_quest_task.h"
 #include "gf/game/salvage/gf_salvage_voice.h"
+#include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
 #include "gf/map/gf_map_manager.h"
 #include "gf/menu/gf_menu_fade.h"
+#include "gf/object/component/property/gf_com_property.h"
+#include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
@@ -41,6 +45,7 @@
 #include "gf/request/gf_scom.h"
 #include "gf/scom/gf_scom_enbook.h"
 #include "gf/scom/gf_scom_obj.h"
+#include "gmk/gmk_manager.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
@@ -313,6 +318,63 @@ GF_SCOM_HANDLE *SCOM_OBJ_VFADE_OFF::create(GF_OBJ_HANDLE *handle) {
   if (handle != INVALID_HANDLE) {
 #line 1305
     SCOM_OBJ_VFADE_OFF *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_OBJ_VFADE_OFF(GfReqSmallCom::get()->allocate(), handle);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+bool SCOM_ADD_WP::exec(const fw::UpdateInfo &) {
+  if (unknown30 == unknown004_3) {
+    GfGameUtil::addWpForObject(unknown20_int, unknown2c, unknown28);
+    return true;
+  }
+  GfObjAcc acc(unknown20);
+  u32 driverId = acc.getType() == OBJECT_TYPE_DRIVER ? acc.getDriverId() : 0;
+  switch (unknown30) {
+  case unknown004_0:
+    GfGameUtil::addWp(driverId, unknown2c, unknown28);
+    break;
+  case unknown004_1:
+    GfGameUtil::addWpForObject(driverId, unknown2c, unknown28);
+    break;
+  case unknown004_2:
+    GfGameUtil::addWpForReserve(unknown28);
+    break;
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_WP::create(int weaponPoint, u32 weaponType) {
+  if (weaponPoint != 0) {
+#line 306
+    SCOM_ADD_WP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_WP(GfReqSmallCom::get()->allocate(), INVALID_HANDLE, weaponPoint, weaponType, unknown004_0);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_WP::createForReserve(int weaponPoint) {
+  if (weaponPoint != 0) {
+#line 313
+    SCOM_ADD_WP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_WP(GfReqSmallCom::get()->allocate(), INVALID_HANDLE, weaponPoint, 0, unknown004_2);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_WP::createForObject(GF_OBJ_HANDLE *handle, int weaponPoint, u32 weaponType) {
+  if (weaponPoint != 0) {
+#line 320
+    SCOM_ADD_WP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_WP(GfReqSmallCom::get()->allocate(), handle, weaponPoint, weaponType, unknown004_1);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_WP::createForBdatid(int driver, int weaponPoint, u32 weaponType) {
+  if (weaponPoint != 0) {
+#line 327
+    SCOM_ADD_WP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_WP(GfReqSmallCom::get()->allocate(), driver, weaponPoint, weaponType, unknown004_3);
     return GfReqSmallCom::addRequestParallel(command);
   }
   return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
@@ -600,6 +662,76 @@ void SCOM_QUEST_REACH::createArrivePlace(u32 place) {
   GfReqSmallCom::addRequestParallel(command);
 }
 
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createDoor(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_DOOR, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1780
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_DOOR, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createElevator(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_ELEVATOR, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1799
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_ELEVATOR, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createJump(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_JUMP, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1818
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_JUMP, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createMapGimmick(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_MAP_GIMMICK, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1837
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_MAP_GIMMICK, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createWarp(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_WARP, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1855
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_WARP, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createSalvage(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_SALVAGE, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1874
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_SALVAGE, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createTresure(u32 gimmick, f32 delay) {
+  if (delay > 0.0f) {
+    GfPlayFactory::createGimmickTaskComplete(gmk::GMK_TYPE_TBOX, gimmick, delay);
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 1893
+  SCOM_QUEST_GIMMICK *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_GIMMICK(GfReqSmallCom::get()->allocate(), gmk::GMK_TYPE_TBOX, gimmick, delay);
+  return GfReqSmallCom::addRequest(command);
+}
+
 void SCOM_SALVAGER_POINT::setPoint(u32 point) { GfDataUtil::setSalvagerPoint(point); }
 
 void SCOM_RANDOM_INN::setRandom() { GfDataUtil::setRandomInn(); }
@@ -632,6 +764,28 @@ GF_SCOM_HANDLE *SCOM_ADD_COIN::create(int coin) {
   return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
 }
 
+bool SCOM_MAXIMUM_HEAL::exec(const fw::UpdateInfo &) {
+  GfObj *obj = GfObjUtil::getObj(unknown20);
+  if (obj != nullptr) {
+    DataParamAcc acc(unknown20);
+    {
+      MsgObjectMaxHp message(acc.getHpMax(false));
+      obj->sendMessage(obj, message);
+    }
+    {
+      MsgObjectHealHp message(0, HEAL_TYPE_FULL);
+      obj->sendMessage(obj, message);
+    }
+  }
+  return true;
+}
+
+void SCOM_MAXIMUM_HEAL::create(GF_OBJ_HANDLE *handle) {
+#line 162
+  SCOM_MAXIMUM_HEAL *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_MAXIMUM_HEAL(GfReqSmallCom::get()->allocate(), handle);
+  GfReqSmallCom::addRequestParallel(command);
+}
+
 bool SCOM_ADD_DEVELOP::exec(const fw::UpdateInfo &) {
   GfGameUtil::addDevelopPoint(unknown20, unknown1c);
   return true;
@@ -656,6 +810,36 @@ bool SCOM_ACCESS_TARGET::exec(const fw::UpdateInfo &) {
 GF_SCOM_HANDLE *SCOM_ACCESS_TARGET::create(GF_OBJ_HANDLE *target) {
 #line 1925
   SCOM_ACCESS_TARGET *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ACCESS_TARGET(GfReqSmallCom::get()->allocate(), target);
+  return GfReqSmallCom::addRequest(command);
+}
+
+bool SCOM_SET_FLAG::exec(const fw::UpdateInfo &) {
+  switch (unknown1c) {
+  case 1:
+    GfGameFlag::setLocal(1, unknown20, unknown24);
+    break;
+  case 2:
+    GfGameFlag::setLocal(2, unknown20, unknown24);
+    break;
+  case 4:
+    GfGameFlag::setLocal(4, unknown20, unknown24);
+    break;
+  case 8:
+    GfGameFlag::setLocal(8, unknown20, unknown24);
+    break;
+  case 16:
+    GfGameFlag::setLocal(16, unknown20, unknown24);
+    break;
+  case 32:
+    GfGameFlag::setLocal(32, unknown20, unknown24);
+    break;
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_SET_FLAG::create(u32 size, u32 index, u32 value) {
+#line 1982
+  SCOM_SET_FLAG *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_SET_FLAG(GfReqSmallCom::get()->allocate(), size, index, value);
   return GfReqSmallCom::addRequest(command);
 }
 
@@ -936,6 +1120,22 @@ GAME_VOICE_HANDLE *SCOM_SALVAGE_VOICE::createResult(GF_OBJ_HANDLE *handle, CV_SA
 
 bool SCOM_SALVAGE_VOICE::isPlayEnd(GAME_VOICE_HANDLE *voice) { return GfGameVoice::getResult(voice) != VOICE_RESULT_PLAY; }
 
+bool GfReqSmallCom::isValid(GF_SCOM_HANDLE *handle) {
+  if (handle != reinterpret_cast<GF_SCOM_HANDLE *>(-1)) {
+    for (mm::mtl::FixedList<SCOM *, 1024>::iterator it = unknown08.begin(); it != unknown08.end(); ++it) {
+      if ((*it)->unknown08 == handle) {
+        return true;
+      }
+    }
+    for (mm::mtl::FixedList<SCOM *, 1024>::iterator it = unknown4828.begin(); it != unknown4828.end(); ++it) {
+      if ((*it)->unknown08 == handle) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool GfReqSmallCom::isExistCommand() {
   GfReqSmallCom *smallCom = get();
   if (smallCom->unknown08.size() != 0) {
@@ -943,6 +1143,18 @@ bool GfReqSmallCom::isExistCommand() {
   }
 
   return smallCom->unknown4828.size() != 0;
+}
+
+bool GfReqSmallCom::isExistCommandWithoutParallel() { return get()->unknown08.size() != 0; }
+
+bool GfReqSmallCom::isExistCommand(SCOM_TYPE type) {
+  GfReqSmallCom *smallCom = get();
+  for (mm::mtl::FixedList<SCOM *, 1024>::iterator it = smallCom->unknown08.begin(); it != smallCom->unknown08.end(); ++it) {
+    if ((*it)->unknown18 == type) {
+      return true;
+    }
+  }
+  return false;
 }
 
 } // namespace gf

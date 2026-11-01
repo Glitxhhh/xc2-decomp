@@ -378,6 +378,27 @@ void GfGameEnv::setMapID(u32 mapJump, u32 map) {
   gameEnv->unknown10 = mapJump;
 }
 
+CFILTER_HANDLE GfGameEnv::createColorFilter(const ColorFilter &filter) {
+  GfGameEnv *gameEnv = get();
+  ColorFilter newFilter = filter;
+  CFILTER_HANDLE handle = static_cast<CFILTER_HANDLE>((gameEnv->unknown18.size() + 1) | (gameEnv->unknown168 << 8));
+  gameEnv->unknown168++;
+  newFilter.unknown0c = handle;
+  bool inserted = false;
+  for (mm::mtl::FixedQueue<ColorFilter, FILTER_MAX>::iterator it = gameEnv->unknown18.begin(); it != gameEnv->unknown18.end(); ++it) {
+    if ((*it).unknown10 <= newFilter.unknown10) {
+      gameEnv->unknown18.insert(it, newFilter);
+      inserted = true;
+      break;
+    }
+  }
+  if (!inserted) {
+    gameEnv->unknown18.push_front(newFilter);
+  }
+  fw::RenderParam::setColorFilter(gameEnv->unknown18.front().unknown00, gameEnv->unknown18.front().unknown04, gameEnv->unknown18.front().unknown08, fw::CAMERA_TYPE_MAIN);
+  return newFilter.unknown0c;
+}
+
 void GfGameEnv::destroyColorFilter(CFILTER_HANDLE handle) {
   GfGameEnv *gameEnv = get();
   mm::mtl::FixedQueue<ColorFilter, FILTER_MAX>::iterator it =
@@ -409,6 +430,29 @@ void GfGameEnv::setColorFilter(CFILTER_HANDLE handle, const ColorFilter &filter)
   (*it).unknown04 = filter.unknown04;
   (*it).unknown00 = filter.unknown00;
   fw::RenderParam::setColorFilter(gameEnv->unknown18.back().unknown00, gameEnv->unknown18.back().unknown04, gameEnv->unknown18.back().unknown08, fw::CAMERA_TYPE_MAIN);
+}
+
+CLOUD_SEA_HANDLE GfGameEnv::createCloudSea(CLOUD_SEA cloudSea, CLOUD_SEA_PRIO prio) {
+  GfGameEnv *gameEnv = get();
+  CloudSea newCloudSea;
+  newCloudSea.unknown00 = cloudSea;
+  newCloudSea.unknown04 = prio;
+  CLOUD_SEA_HANDLE handle = static_cast<CLOUD_SEA_HANDLE>((gameEnv->unknown170.size() + 1) | (gameEnv->unknown240 << 8));
+  gameEnv->unknown240++;
+  newCloudSea.unknown08 = handle;
+  bool inserted = false;
+  for (mm::mtl::FixedQueue<CloudSea, FILTER_MAX>::iterator it = gameEnv->unknown170.begin(); it != gameEnv->unknown170.end(); ++it) {
+    if ((*it).unknown04 <= prio) {
+      gameEnv->unknown170.insert(it, newCloudSea);
+      inserted = true;
+      break;
+    }
+  }
+  if (!inserted) {
+    gameEnv->unknown170.push_front(newCloudSea);
+  }
+  fw::RenderParam::setCloudSea(cloudSea);
+  return newCloudSea.unknown08;
 }
 
 void GfGameEnv::destroyCloudSea(CLOUD_SEA_HANDLE handle) {
@@ -540,6 +584,24 @@ bool GfGameEnv::isRoom() { return get()->unknown320 > -3; }
 void GfGameEnv::sendPlayerPositionToRender(const mm::Vec3 &position) { fw::RenderParam::setPlayerPosition(position, fw::CAMERA_TYPE_MAIN); }
 
 void GfGameEnv::setWeather(WEATHERID weather) { GfFieldWeather::setMapWeatherID(weather); }
+
+WEATHER_HANDLE GfGameEnv::createTempWeather(WEATHERID weather, WEATHER_PRIO prio) {
+  GfGameEnv *gameEnv = get();
+  WeatherSet newWeather;
+  newWeather.unknown00 = weather;
+  newWeather.unknown04 = prio;
+  WEATHER_HANDLE handle = static_cast<WEATHER_HANDLE>((gameEnv->unknown248.size() + 1) | (gameEnv->unknown318 << 8));
+  gameEnv->unknown318++;
+  newWeather.unknown08 = handle;
+  for (mm::mtl::FixedQueue<WeatherSet, FILTER_MAX>::iterator it = gameEnv->unknown248.begin(); it != gameEnv->unknown248.end(); ++it) {
+    if ((*it).unknown04 <= prio) {
+      gameEnv->unknown248.insert(it, newWeather);
+      return newWeather.unknown08;
+    }
+  }
+  gameEnv->unknown248.push_front(newWeather);
+  return newWeather.unknown08;
+}
 
 void GfGameEnv::destroyTempWeather(WEATHER_HANDLE handle) {
   GfGameEnv *gameEnv = get();

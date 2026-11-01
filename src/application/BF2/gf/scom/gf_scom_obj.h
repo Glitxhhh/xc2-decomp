@@ -40,14 +40,16 @@ static_assert(sizeof(SCOM_QUEST_REACH) == 0x28, "");
 
 class SCOM_QUEST_GIMMICK : public SCOM {
 public:
+  SCOM_QUEST_GIMMICK(GF_SCOM_HANDLE *handle, gmk::GmkType type, u32 gimmick, f32 delay)
+      : SCOM(handle, SCOM_TYPE_UNKNOWN_43, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(type), unknown20(gimmick), unknown24(delay) {}
   bool exec(const fw::UpdateInfo &info) override;
-  static void createJump(u32 gimmick, f32 delay);
-  static void createWarp(u32 gimmick, f32 delay);
-  static void createDoor(u32 gimmick, f32 delay);
-  static void createTresure(u32 gimmick, f32 delay);
-  static void createMapGimmick(u32 gimmick, f32 delay);
-  static void createElevator(u32 gimmick, f32 delay);
-  static void createSalvage(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createDoor(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createElevator(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createJump(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createMapGimmick(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createWarp(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createSalvage(u32 gimmick, f32 delay);
+  static GF_SCOM_HANDLE *createTresure(u32 gimmick, f32 delay);
 
   gmk::GmkType unknown1c; // Inferred role: gimmick type; original member name unknown.
   u32 unknown20;          // Inferred role: gimmick; original member name unknown.
