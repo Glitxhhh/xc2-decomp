@@ -48,8 +48,10 @@
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/vector.h"
 
@@ -806,7 +808,7 @@ void GfObjUtil::rebuild(GF_OBJ_HANDLE *handle) {
 
 const char *GfObjUtil::getModelBaseName(GF_OBJ_HANDLE *handle) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  return info == nullptr ? "" : info->unknown404;
+  return info == nullptr ? "" : info->unknown404.c_str();
 }
 
 const char *GfObjUtil::getAssetModelName(GF_OBJ_HANDLE *handle) { return GfAssetManager::getModelInfo(getAssetHandle(handle)); }
@@ -1012,9 +1014,12 @@ bool GfObjUtil::getMobSlotHandle(mm::mtl::FixedVector<GF_SLOT_HANDLE *, 88> &slo
   return !slots.empty();
 }
 
+// Inferred helper: mount of an object info for an attach type; original name unknown.
+static GFOBJ_MOUNT *unknown004(GFOBJ_INFO *info, GFATTACH attach) { return info != nullptr ? &info->unknownb8[attach] : nullptr; }
+
 GfAppendInfo *GfObjUtil::getAppendInfo(GF_OBJ_HANDLE *handle, GFATTACH attach) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GFOBJ_MOUNT *mount = info != nullptr ? &info->unknownb8[attach] : nullptr;
+  GFOBJ_MOUNT *mount = unknown004(info, attach);
   return info == nullptr ? nullptr : &mount->unknown10;
 }
 
@@ -1025,7 +1030,7 @@ GfAppend *GfObjUtil::getAppend(GF_OBJ_HANDLE *handle, GFATTACH attach) {
     isAlternate = setup->unknown78;
   }
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GFOBJ_MOUNT *mount = info != nullptr ? &info->unknownb8[attach] : nullptr;
+  GFOBJ_MOUNT *mount = unknown004(info, attach);
   if (info == nullptr) {
     return nullptr;
   }

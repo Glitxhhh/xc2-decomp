@@ -25,6 +25,7 @@ struct SDataBlade;
 struct SDataEnemy;
 
 enum VFEFF : u32 {
+  VFEFF_UNKNOWN_0 = 0,
   VFEFF_UNKNOWN_4 = 4,
 };
 
