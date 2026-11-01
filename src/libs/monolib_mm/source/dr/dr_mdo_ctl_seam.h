@@ -42,7 +42,17 @@ class DrResMdoPosAddList;
 class DrResMdoSortSeamAll;
 class DrResMdoSortSeamEnvMap;
 struct MdoWrkMatRes;
-struct MdsSeamOfsTexTblData;
+
+struct MdsSeamOfsTexTblData {
+  u32 unknown00; // Inferred role: texture data offset; original member name unknown.
+  s32 unknown04; // Inferred role: texture size; original member name unknown.
+  u32 unknown08; // Inferred role: height data offset; original member name unknown.
+  u32 unknown0c; // Inferred role: height texture size; original member name unknown.
+  u32 unknown10; // Role and original member name unknown.
+};
+
+static_assert(offsetof(MdsSeamOfsTexTblData, unknown0c) == 0x0c, "");
+static_assert(sizeof(MdsSeamOfsTexTblData) == 0x14, "");
 
 // Inferred role: model data seam etc pos data; original type name unknown.
 struct unknown058 {
@@ -77,6 +87,14 @@ struct unknown060 {
   u32 unknown08;         // Inferred role: object max; original member name unknown.
 };
 
+// Inferred role: seam texture list table entry; original type name unknown.
+struct unknown136 {
+  u32 unknown00; // Inferred role: texture list data offset; original member name unknown.
+  s32 unknown04; // Inferred role: texture list data size; original member name unknown.
+};
+
+static_assert(sizeof(unknown136) == 0x8, "");
+
 // Inferred role: seam resource header; original type name unknown.
 struct unknown061 {
   u8 _00[0x18];
@@ -100,7 +118,9 @@ struct unknown061 {
   u32 m_seamMpfPosDataMax;
   u8 _78[0x84 - 0x78];
   u32 unknown84; // Inferred role: offset of the environment data; original member name unknown.
-  u8 _88[0xa8 - 0x88];
+  u8 _88[0x94 - 0x88];
+  u32 unknown94; // Inferred role: offset of the texture list table; original member name unknown.
+  u8 _98[0xa8 - 0x98];
   u32 unknowna8; // Inferred role: offset of the clip data; original member name unknown.
   u8 _ac[0xe8 - 0xac];
   u32 unknowne8; // Inferred role: offset of the cloud model data; original member name unknown.
@@ -115,6 +135,7 @@ static_assert(offsetof(unknown061, m_seamTextureMax) == 0x58, "");
 static_assert(offsetof(unknown061, m_seamMpfMdlMax) == 0x64, "");
 static_assert(offsetof(unknown061, m_seamEtcPosDataMax) == 0x6c, "");
 static_assert(offsetof(unknown061, m_seamMpfPosDataMax) == 0x74, "");
+static_assert(offsetof(unknown061, unknown94) == 0x94, "");
 static_assert(offsetof(unknown061, unknown5c) == 0x5c, "");
 static_assert(offsetof(unknown061, unknown84) == 0x84, "");
 static_assert(offsetof(unknown061, unknowna8) == 0xa8, "");
@@ -376,7 +397,8 @@ public:
   s16 unknownc24; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
   s16 unknownc26; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
   s16 unknownc28; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
-  u8 _c2a[0xc2e - 0xc2a];
+  s16 unknownc2a; // Inferred role: frame count set to 30 when calcEnd sees seam flag 0x200000; original member name unknown.
+  u8 _c2c[0xc2e - 0xc2c];
   s8 unknownc2e;  // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
   s8 unknownc2f;  // Inferred role: unknown counter, cleared by the constructor; original member name unknown.
   s16 unknownc30; // Inferred role: unknown counter, cleared by the constructor; original member name unknown.

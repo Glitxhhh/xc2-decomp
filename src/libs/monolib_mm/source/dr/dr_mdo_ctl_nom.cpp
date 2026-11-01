@@ -1,12 +1,19 @@
 #include "dr/dr_mdo_ctl_nom.h"
 
+#include "dr/dr_ap_cache.h"
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_ctl.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_res_mdo_lod_obj.h"
 #include "dr/dr_res_mdo_shd_obj.h"
 #include "dr/dr_res_mdo_vtx_mesh_obj.h"
+#include "grlib/cglib_ctl_shader.h"
 #include "mm_math/mm_col3.h"
 
 namespace ml {
+
+// Inferred role: weight vertex render type of each render type; original name unknown.
+static const u8 unknown135[] = {0, 3, 2, 4, 1, 1};
 
 void DrMdoCtlNom::updateRimBloomParams() {
   if (getRimBloomWrk(2) != nullptr) {
@@ -90,6 +97,74 @@ void DrMdoCtlNom::callCldBackAlphaNomRender() {
     return;
   }
   cldBackAlphaCallRender();
+}
+
+void DrMdoCtlNom::nomCallRender(int pass) {
+  if (m_nodeMax != 0) {
+    grlib::CGLibCtlShader::setMemoryBarrierBit(1);
+    if (pass == 0) {
+      u32 lodFlags = unknown1f0->unknown1c;
+      if (unknown1d8 != nullptr) {
+        lodFlags |= unknown1d8->isRender();
+      }
+      createWeightVtx(0, unknown100, lodFlags, false);
+      createWeightVtx(0, unknown100, lodFlags, true);
+    } else {
+      createWeightVtx(unknown135[pass], unknown100, unknown1f0->unknown1c, false);
+    }
+    grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
+  }
+  if (pass == 0 && (unknownf8 & unknown028_21) == 0) {
+    DrAPCache *cache = m_drMan->unknown5c0;
+    beginSetup();
+    cache->beginMdlZRender();
+    zPrePassRender();
+    cache->endMdlZRender();
+  }
+  unknownf4 = pass;
+  unknownf2 = unknown098[pass];
+  beginSetup();
+  const MdsMdlTopHeader *top = unknown30->unknown168;
+  for (int i = 0; i < unknown30->unknown170; i++, top++) {
+    DrResChkList **lists = unknown190[i];
+    DrResChkList *list = lists[unknownf4];
+    if (list != nullptr) {
+      nomRender(top, list);
+    }
+  }
+}
+
+void DrMdoCtlNom::lastAlphaCallRender() {
+  unknown002();
+  const MdsMdlTopHeader *top = unknown30->unknown168;
+  for (int i = 0; i < unknown30->unknown170; i++, top++) {
+    DrResChkList *list = unknown1b8->unknown20[i];
+    if (list != nullptr) {
+      nomRender(top, list);
+    }
+  }
+}
+
+void DrMdoCtlNom::fastAlphaCallRender() {
+  unknown002();
+  const MdsMdlTopHeader *top = unknown30->unknown168;
+  for (int i = 0; i < unknown30->unknown170; i++, top++) {
+    DrResChkList *list = unknown1b8->unknown18[i];
+    if (list != nullptr) {
+      nomRender(top, list);
+    }
+  }
+}
+
+void DrMdoCtlNom::cldBackAlphaCallRender() {
+  unknown002();
+  const MdsMdlTopHeader *top = unknown30->unknown168;
+  for (int i = 0; i < unknown30->unknown170; i++, top++) {
+    DrResChkList *list = unknown1b8->unknown28[i];
+    if (list != nullptr) {
+      nomRender(top, list);
+    }
+  }
 }
 
 } // namespace ml

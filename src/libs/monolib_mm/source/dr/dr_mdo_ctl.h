@@ -15,6 +15,9 @@ class MdoWrkMatRes;
 struct MdoInstancePrePassArg;
 struct MdsMdlInfoHeader;
 
+// Inferred role: render pass id of each render type, shared by the DrMdoCtl subclasses of the unit; original name unknown.
+static const u16 unknown098[] = {0, 7, 8, 4, 1, 1};
+
 class DrMdoCtl : public DrMdoSetup {
 public:
   DrMdoCtl(int viewNum);
@@ -30,6 +33,7 @@ public:
   const mm::Mat44 &getMatrix() const;
   void partsInstanceThicknessBillRender(const MdoInstancePrePassArg &arg);
   void createMaterialOneDisplayList(MdoWrkMatRes *matRes, int index);
+  void createWeightVtx(int renderType, u32 alphaFlags, u32 lodFlags, bool isPrePass);
   void setFrameSpd(f32 speed) { unknowndc = speed; }
   static void waitWeightVtx();
   static void waitBeginWeightVtx();

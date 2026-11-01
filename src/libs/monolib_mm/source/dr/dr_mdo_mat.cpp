@@ -16,7 +16,7 @@ void DrMdoMat::initMdlInfo(const u8 *data, MdoWrkMatRes *matRes) {
   matRes->unknown18 = data;
   matRes->unknown20 = header;
   matRes->unknown170 = header->unknown20;
-  matRes->unknown168 = reinterpret_cast<const unknown026 *>(data + header->unknown1c);
+  matRes->unknown168 = reinterpret_cast<const MdsMdlTopHeader *>(data + header->unknown1c);
   if (header->unknown34 != 0) {
     matRes->unknown178 = data + header->unknown30;
   }

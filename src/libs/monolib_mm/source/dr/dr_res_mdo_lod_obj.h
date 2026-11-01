@@ -14,7 +14,7 @@ public:
   void *unknown08; // Inferred role: lod parts; original member name unknown.
   void *unknown10; // Inferred role: lod work; original member name unknown.
   s32 unknown18;   // Inferred role: state; original member name unknown.
-  f32 unknown1c;   // Inferred role: ratio; original member name unknown.
+  u32 unknown1c;   // Inferred role: lod flags; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoLodObj, unknown08) == 0x08, "");

@@ -1,8 +1,5 @@
 #include "dr/dr_mdo_ctl_pos.h"
 
-#include "dr/dr_mdo_mat.h"
-#include "dr/dr_res_mdo_vertex.h"
-
 namespace ml {
 
 void DrMdoCtlPos::createRenderDisplayList(const MdsMdlInfoHeader *, int, _MdoInstanceWork *, grlib::CGLibVtxInstans *, int) {}
@@ -38,9 +35,18 @@ void DrMdoCtlPos::callGBuffRenderPosAll() {
   }
   unknownf4 = 1;
   unknownf2 = 7;
-  unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  beginSetup();
   callPosRender(8);
+}
+
+void DrMdoCtlPos::callRenderPosAll() {
+  if ((unknownf8 & unknown028_0) == 0) {
+    return;
+  }
+  unknownf4 = 0;
+  unknownf2 = 0;
+  beginSetup();
+  callPosRender(1);
 }
 
 void DrMdoCtlPos::callRefractionRenderPosAll() {
@@ -49,8 +55,7 @@ void DrMdoCtlPos::callRefractionRenderPosAll() {
   }
   unknownf4 = 2;
   unknownf2 = 8;
-  unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  beginSetup();
   callPosRender(4);
 }
 
@@ -60,8 +65,7 @@ void DrMdoCtlPos::callLightPrePassRenderPosAll() {
   }
   unknownf4 = 3;
   unknownf2 = 4;
-  unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  beginSetup();
   callPosRender(0x20);
 }
 
@@ -71,8 +75,7 @@ void DrMdoCtlPos::callAlphaRenderPosAll() {
   }
   unknownf4 = 4;
   unknownf2 = 1;
-  unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  beginSetup();
   callPosRender(2);
 }
 
@@ -82,8 +85,7 @@ void DrMdoCtlPos::callSpAlphaRenderPosAll() {
   }
   unknownf4 = 5;
   unknownf2 = 1;
-  unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  beginSetup();
   callPosRender(0x40);
 }
 

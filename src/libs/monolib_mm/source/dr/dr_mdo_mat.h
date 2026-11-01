@@ -342,8 +342,8 @@ static_assert(offsetof(MdsMdlInfoHeader, unknown0e) == 0x0e, "");
 
 static_assert(sizeof(MdsMdlInfoHeader) == 0x30, "");
 
-// Inferred role: model data mdl entry; original type name unknown.
-struct unknown026 {
+// Model data mdl entry, named from DrMdoCtlNom::nomRender(const MdsMdlTopHeader *, DrResChkList *).
+struct MdsMdlTopHeader {
   u32 unknown00; // Inferred role: info offset; original member name unknown.
   s32 unknown04; // Inferred role: info count; original member name unknown.
   u8 _08[0x0c - 0x08];
@@ -352,9 +352,9 @@ struct unknown026 {
   u8 _24[0x44 - 0x24];
 };
 
-static_assert(offsetof(unknown026, unknown0c) == 0x0c, "");
-static_assert(offsetof(unknown026, unknown18) == 0x18, "");
-static_assert(sizeof(unknown026) == 0x44, "");
+static_assert(offsetof(MdsMdlTopHeader, unknown0c) == 0x0c, "");
+static_assert(offsetof(MdsMdlTopHeader, unknown18) == 0x18, "");
+static_assert(sizeof(MdsMdlTopHeader) == 0x44, "");
 
 // Inferred role: flag wave uniform table; original type name unknown.
 struct unknown009 {
@@ -475,8 +475,8 @@ struct MdoWrkMatRes {
   MdoWrkVanishEffect *unknown150; // Inferred role: vanish effects; original member name unknown.
   unknown091 *unknown158;         // Inferred role: rim blooms; original member name unknown.
   u8 _160[0x168 - 0x160];
-  const unknown026 *unknown168; // Inferred role: mdl entries; original member name unknown.
-  s32 unknown170;               // Inferred role: mdl entry count; original member name unknown.
+  const MdsMdlTopHeader *unknown168; // Inferred role: mdl entries; original member name unknown.
+  s32 unknown170;                    // Inferred role: mdl entry count; original member name unknown.
   u8 _174[0x178 - 0x174];
   const u8 *unknown178; // Inferred role: second table; original member name unknown.
 };
@@ -564,6 +564,7 @@ public:
     unknown028_8 = 1 << 8,
     unknown028_9 = 1 << 9,
     unknown028_20 = 1 << 20,
+    unknown028_21 = 1 << 21, // Inferred role: no z pre pass before the opaque render; original name unknown.
     unknown028_15 = 1 << 15, // Inferred role: bloom; original name unknown.
     unknown028_16 = 1 << 16, // Inferred role: alpha bloom; original name unknown.
     unknown028_17 = 1 << 17, // Inferred role: volume; original name unknown.
@@ -658,7 +659,7 @@ public:
   bool m_gpuRender;
   u8 _f1;
   u16 unknownf2; // Inferred role: render pass id; original member name unknown.
-  u16 unknownf4; // Inferred role: render pass index; original member name unknown.
+  s16 unknownf4; // Inferred role: render pass index; original member name unknown.
   u8 _f6[0xf8 - 0xf6];
   u32 unknownf8;  // Inferred role: mdl flags; original member name unknown.
   u32 unknownfc;  // Inferred role: draw flags; original member name unknown.

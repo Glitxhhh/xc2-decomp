@@ -51,7 +51,7 @@ bool DrMdlObj::getModelInfoHeader(int index, const MdsMdlInfoHeader **header) {
   int infoIndex = 0;
   u32 i = 0;
   do {
-    const unknown026 &entry = res->unknown168[i];
+    const MdsMdlTopHeader &entry = res->unknown168[i];
     int j = 0;
     s64 offset = 0;
     while (j < entry.unknown04) {

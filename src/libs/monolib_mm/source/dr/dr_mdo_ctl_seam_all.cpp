@@ -31,7 +31,6 @@
 #include "types.h"
 
 namespace ml {
-struct MdsSeamOfsTexTblData;
 
 DrMdoCtlSeamAll::DrMdoCtlSeamAll(const void *data, const char *path, DrMan *man, int viewNum) : DrMdoCtlSeamRead(viewNum) {
   m_drMan = man;

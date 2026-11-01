@@ -46,4 +46,16 @@ void DrMdoCtlSeamEnvMap::updateEnvMap() {
   }
 }
 
+void DrMdoCtlSeamEnvMap::callRenderSeamEnvMap() { unknown002(1, 0, 1); }
+
+void DrMdoCtlSeamEnvMap::callGBuffRenderSeamEnvMap() { unknown002(2, 1, 8); }
+
+void DrMdoCtlSeamEnvMap::callLightPrePassRenderSeamEnvMap() { unknown002(8, 3, 0x20); }
+
+void DrMdoCtlSeamEnvMap::callAlphaRenderSeamEnvMap() { unknown002(0x10, 4, 2); }
+
+void DrMdoCtlSeamEnvMap::callSpAlphaRenderSeamEnvMap() { unknown002(0x20, 5, 0x40); }
+
+void DrMdoCtlSeamEnvMap::callRefractionRenderSeamEnvMap() { unknown002(4, 2, 4); }
+
 } // namespace ml

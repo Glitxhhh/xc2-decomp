@@ -3,6 +3,7 @@
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_base.h"
+#include "dr/dr_mdo_ctl.h"
 #include "dr/dr_mdo_mat.h"
 #include "dr/dr_res_mdo_mat.h"
 #include "dr/dr_res_mdo_seam_coli.h"
@@ -10,9 +11,6 @@
 #include "mm_math/mm_col4.h"
 
 namespace ml {
-
-// Inferred role: render pass id of each render type; original name unknown.
-static const u16 unknown098[] = {0, 7, 8, 4, 1, 1};
 
 DrMdoCtlSeam::DrMdoCtlSeam(int viewNum)
     : DrMdlObj(viewNum), unknown3e0(nullptr), unknown3e8(nullptr), unknown3f0(nullptr), unknown3f8(nullptr), unknown400(nullptr), unknown408(nullptr), unknown410(nullptr), unknown418(nullptr),
@@ -102,6 +100,158 @@ void DrMdoCtlSeam::releaseFreeSeamTexList(DrResMdoSeamTexList *texList, bool isA
   }
 }
 
+void DrMdoCtlSeam::calcEnd() {
+  bool isRenderSafe = false;
+  if (unknownc7c & 0x10000) {
+    unknownc7c &= ~0x8000;
+    unknownc12 = 0;
+  } else if (++unknownc12 > 4) {
+    unknownc12 = 4;
+    unknownc7c |= 0x8000;
+    isRenderSafe = true;
+  } else {
+    unknownc7c &= ~0x8000;
+  }
+  if (isRenderSafe) {
+    unknownc7c &= ~0x20000;
+    unknownc14 = 0;
+  } else {
+    unknownc14++;
+    if (unknownc14 >= 900) {
+      unknownc14 = 900;
+      unknownc7c |= 0x20000;
+    } else {
+      unknownc7c &= ~0x20000;
+    }
+  }
+  if (unknownc7c & 0x20000) {
+    unknownc7c |= 0x8000;
+    unknownc12 = 4;
+  }
+  if (unknownc7c & 0x200000) {
+    unknownc7c |= 0x400000;
+    unknownc2a = 30;
+  }
+  bool isReadSafe = false;
+  if (unknownc7c & 0x400) {
+    unknownc7c &= ~0x800;
+    unknownc0e = 0;
+  } else if (++unknownc0e > 4) {
+    unknownc0e = 4;
+    unknownc7c |= 0x800;
+    isReadSafe = true;
+  } else {
+    unknownc7c &= ~0x800;
+  }
+  if (isReadSafe) {
+    unknownc7c &= ~0x100000;
+    unknownc10 = 0;
+  } else {
+    unknownc10++;
+    if (unknownc10 >= 900) {
+      unknownc10 = 900;
+      unknownc7c |= 0x100000;
+    } else {
+      unknownc7c &= ~0x100000;
+    }
+  }
+  if (unknownc7c & 0x100000) {
+    unknownc7c |= 0x800;
+    unknownc0e = 4;
+  }
+  if (unknownc7c & 0x800) {
+    m_drMan->setSeamMapStmOk(false);
+  } else {
+    m_drMan->setSeamMapStmOk(true);
+  }
+}
+
+void DrMdoCtlSeam::updateTexutreSeam() {
+  if (unknowncc8) {
+    DrResMdoSeamTexture::SEAMRES_HEIGHT_CNTMAX = 3;
+    DrResMdoSeamTexture::SEAMRES_NOM_CNTMAX = 10;
+    DrResMdoSeamTexList::setListCnt(10);
+  } else {
+    if (unknownd30.unknown40 == 0) {
+      DrResMdoSeamTexList::setListCnt(60);
+      DrResMdoSeamTexture::SEAMRES_NOM_CNTMAX = 120;
+    } else {
+      DrResMdoSeamTexList::setListCnt(10);
+      DrResMdoSeamTexture::SEAMRES_NOM_CNTMAX = 10;
+    }
+    if (unknownc7c & 0x20) {
+      DrResMdoSeamTexture::SEAMRES_HEIGHT_CNTMAX = 3;
+    } else {
+      DrResMdoSeamTexture::SEAMRES_HEIGHT_CNTMAX = 60;
+    }
+  }
+  DrResMdoSeamTexture *texture = unknown1b0.unknown10.unknown00;
+  if (unknowncc8) {
+    while (texture != nullptr) {
+      DrResMdoSeamTexture *next = texture->unknown08;
+      releaseFreeSeamTexture(texture, false);
+      texture = next;
+    }
+    unknownc34 = 0;
+  } else {
+    while (texture != nullptr) {
+      DrResMdoSeamTexture *next;
+      if (texture->update()) {
+        next = texture->unknown08;
+        const MdsSeamOfsTexTblData *table = reinterpret_cast<const MdsSeamOfsTexTblData *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown5c);
+        unknownc34 -= table[texture->unknown9e].unknown04;
+        if (texture->unknowna3 == 1) {
+          unknownc34 -= table[texture->unknown9e].unknown0c;
+        }
+        releaseFreeSeamTexture(texture, false);
+      } else {
+        if (texture->unknowna1) {
+          const MdsSeamOfsTexTblData *table = reinterpret_cast<const MdsSeamOfsTexTblData *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown5c);
+          const MdsSeamOfsTexTblData *data = &table[texture->unknown9e];
+          if (texture->unknowna3 == 1) {
+            texture->changeMemTexture(calcSemaAlignment(data->unknown0c, 0x1000), data->unknown04);
+          } else {
+            texture->changeMemTexture(data->unknown04);
+          }
+        } else if (texture->unknowna3 == 1 && texture->updateHeight()) {
+          const MdsSeamOfsTexTblData *table = reinterpret_cast<const MdsSeamOfsTexTblData *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown5c);
+          texture->unknowna3 = 0;
+          const MdsSeamOfsTexTblData *data = &table[texture->unknown9e];
+          u32 heightSize = data->unknown0c;
+          int alignedSize = calcSemaAlignment(heightSize, 0x1000);
+          unknownc34 -= heightSize;
+          DrResMdoSeamMemObj *mem = texture->unknown88;
+          texture->unknown88 = unknown6e0.createParentFreeObj(mem, alignedSize);
+          texture->resetTexture(data->unknown04);
+          unknown6e0.releaseFreeObj(mem);
+        }
+        next = texture->unknown08;
+      }
+      texture = next;
+    }
+  }
+  DrResMdoSeamTexList *texList = unknown1e8.unknown10.unknown00;
+  if (unknowncc8) {
+    while (texList != nullptr) {
+      DrResMdoSeamTexList *next = texList->unknown08;
+      releaseFreeSeamTexList(texList, false);
+      texList = next;
+    }
+    unknownc34 = 0;
+  } else {
+    while (texList != nullptr) {
+      bool isEnd = texList->update(&unknownd30);
+      DrResMdoSeamTexList *next = texList->unknown08;
+      if (isEnd) {
+        const unknown136 *table = reinterpret_cast<const unknown136 *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown94);
+        unknownc34 -= table[texList->unknown3c].unknown04;
+        releaseFreeSeamTexList(texList, false);
+      }
+      texList = next;
+    }
+  }
+}
+
 void DrMdoCtlSeam::releaseFreeSeamVertex(DrResMdoSeamVertex *vertex, bool isAll) {
   if (isAll) {
     vertex->release();
@@ -162,7 +312,7 @@ void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
   unknownf2 = unknown098[renderType];
   beginSetup();
   const DrResMdoMat *mats = unknown30->unknownc0;
-  const unknown026 *entry = unknown30->unknown168;
+  const MdsMdlTopHeader *entry = unknown30->unknown168;
   for (int i = 0; i < unknown30->unknown170; i++, entry++) {
     const MdsMdlInfoHeader *header = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + entry->unknown00);
     int count = entry->unknown04;
@@ -182,6 +332,8 @@ void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
 #include "dr_mdo_setup.cpp"
 #include "dr_mdo_mat.cpp"
 #include "dr_mdo_zsort.cpp"
+#include "dr_mdo_ctl_nom.cpp"
+#include "dr_mdo_ctl_pos.cpp"
 #include "dr_mdo_ctl_seam_all.cpp"
 #include "dr_mdo_ctl_seam_base_map.cpp"
 #include "dr_mdo_ctl_seam_env_map.cpp"

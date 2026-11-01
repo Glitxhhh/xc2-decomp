@@ -275,7 +275,9 @@ public:
   bool unknown1d68; // Inferred role: shadow render skip; original member name unknown.
   bool unknown1d69; // Inferred role: seam base map shadow render skip; original member name unknown.
   bool unknown1d6a; // Inferred role: occlusion render skip; original member name unknown.
-  u8 _1d6b[0x1d70 - 0x1d6b];
+  u8 _1d6b;
+  bool unknown1d6c; // Inferred role: seam env map render skip; original member name unknown.
+  u8 _1d6d[0x1d70 - 0x1d6d];
   bool unknown1d70; // Inferred role: shadow light skip; original member name unknown.
   bool unknown1d71; // Inferred role: fog skip; original member name unknown.
   u8 _1d72[0x1d75 - 0x1d72];
@@ -373,6 +375,7 @@ static_assert(offsetof(DrMan, unknown1d64) == 0x1d64, "");
 static_assert(offsetof(DrMan, unknown1d65) == 0x1d65, "");
 static_assert(offsetof(DrMan, unknown1d66) == 0x1d66, "");
 static_assert(offsetof(DrMan, unknown1d67) == 0x1d67, "");
+static_assert(offsetof(DrMan, unknown1d6c) == 0x1d6c, "");
 static_assert(offsetof(DrMan, unknown1d71) == 0x1d71, "");
 static_assert(offsetof(DrMan, unknown1d75) == 0x1d75, "");
 static_assert(offsetof(DrMan, unknown1d7a) == 0x1d7a, "");
