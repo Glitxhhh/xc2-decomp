@@ -284,7 +284,7 @@ void GfMenuManager::applyGammaCorrectValue(f32 value) {
   renderParam.setGamma(gamma);
 }
 
-void GfMenuManager::applyOptionData(const SDataOption &option) { applyGammaCorrectValue(static_cast<f32>(option._66) / VOLUME_SCALE); }
+void GfMenuManager::applyOptionData(const SDataOption &option) { applyGammaCorrectValue(static_cast<f32>(option.unknown4c._1a) / VOLUME_SCALE); }
 
 void GfMenuManager::setupGame() {
   if (GfMenuFlag::get1(0x31) == 0) {

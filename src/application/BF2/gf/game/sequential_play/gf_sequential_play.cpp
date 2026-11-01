@@ -6,7 +6,10 @@
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/sequential_play/gf_play_command.h"
+#include "gf/gf_allocator.h"
+#include "gf/gf_manager.h"
 #include "gf/gf_pause.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/rtti.h"
 
 namespace gf {
@@ -18,9 +21,49 @@ constexpr f32 BATTLE_START_END_RIDE_WAIT_TIME = 0.6f;
 
 } // namespace
 
-bool GfSequentialPlay::isPlay() { return !get()->unknown08.empty() || !get()->unknown1850.empty(); }
+GfSequentialPlay::GfSequentialPlay(const GfSetupParam &) : unknown1228(false), unknown20f0(TYPE_NORMAL), unknown20f4(true) {}
 
 void GfSequentialPlay::initialize(const GfSetupParam &) { unknown20f4 = true; }
+
+GfSequentialPlay::~GfSequentialPlay() {}
+
+#line 52
+void GfSequentialPlay::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfSequentialPlay(param); }
+
+void GfSequentialPlay::destroy() {
+  GfSequentialPlay *sequentialPlay = get();
+  sequentialPlay->finalize();
+  delete sequentialPlay;
+}
+
+void GfSequentialPlay::finalize() {
+  while (isPlay()) {
+    GfSleep(1);
+  }
+  destroyCommand();
+  unknown20f4 = false;
+}
+
+bool GfSequentialPlay::isPlay() { return !get()->unknown08.empty() || !get()->unknown1850.empty(); }
+
+void GfSequentialPlay::destroyCommand() {
+  if (!isPlay()) {
+    for (GfPlayCom *&command : unknown08) {
+      if (command != nullptr) {
+        delete command;
+        command = nullptr;
+      }
+    }
+    unknown08.clear();
+    for (GfPlayCom *&command : unknown1850) {
+      if (command != nullptr) {
+        delete command;
+        command = nullptr;
+      }
+    }
+    unknown1850.clear();
+  }
+}
 
 bool GfSequentialPlay::isInitialized() {
   if (get() != nullptr) {
@@ -184,6 +227,30 @@ void GfSequentialPlay::addResetBlade(u32 partyId, int blade) { addCommand(GfPlay
 void GfSequentialPlay::addMoverSwitch() { addCommand(GfPlayComMoverSwitch::create()); }
 
 void GfSequentialPlay::addHoodHomuraBattou() { addCommand(GfPlayComHoodHomuraBattou::create()); }
+
+bool GfSequentialPlay::hasCommand(PCOMTYPE type, GfPlayCom *command) {
+  GfSequentialPlay *sequentialPlay = get();
+  mm::mtl::FixedList<GfPlayCom *, 256>::iterator it = mm::mtl::find(sequentialPlay->unknown08.begin(), sequentialPlay->unknown08.end(), command);
+  if (sequentialPlay->unknown08.end() != it) {
+    for (++it; it != sequentialPlay->unknown08.end(); ++it) {
+      if ((*it)->unknown08 && (*it)->unknown0c == type) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool GfSequentialPlay::isExistResetBladeParty(u32 partyId) {
+  for (GfPlayCom *command : get()->unknown08) {
+    if (command != nullptr && command->unknown0c == PCOMTYPE_RESET_BLADE) {
+      if (command->getRTTI()->isKindOf(&GfPlayComResetBlade::m_rtti) && static_cast<GfPlayComResetBlade *>(command)->unknown14 == partyId) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 void GfSequentialPlay::startSignal(GfSequentialPlaySignal *signal) { addCommand(GfPlayComExecuteSignal::create(true, signal)); }
 

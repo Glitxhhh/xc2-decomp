@@ -890,12 +890,27 @@ public:
 static_assert(sizeof(GfPlayComArtsMovie) == 0x58, "");
 
 class GfPlayComResetBlade : public GfPlayCom {
+  GF_PLAY_COM("ResetBlade")
+
 public:
   static GfPlayComResetBlade *create(u32 partyId, int blade);
   static bool isPlaying(u32 partyId);
 
-  static mm::mtl::FixedVector<u8, 8> s_execFlag;
+  u32 unknown10; // Inferred role: change blade request; original member name unknown.
+  u32 unknown14; // Inferred role: party id; original member name unknown.
+  int unknown18; // Inferred role: blade set; original member name unknown.
+  int unknown1c; // Inferred role: wait frames; original member name unknown.
+  int unknown20; // Inferred role: step; original member name unknown.
+
+  static mm::mtl::FixedVector<u8, 3> s_execFlag;
 };
+
+static_assert(offsetof(GfPlayComResetBlade, unknown10) == 0x10, "");
+static_assert(offsetof(GfPlayComResetBlade, unknown14) == 0x14, "");
+static_assert(offsetof(GfPlayComResetBlade, unknown18) == 0x18, "");
+static_assert(offsetof(GfPlayComResetBlade, unknown1c) == 0x1c, "");
+static_assert(offsetof(GfPlayComResetBlade, unknown20) == 0x20, "");
+static_assert(sizeof(GfPlayComResetBlade) == 0x28, "");
 
 class GfPlayComMoverSwitch : public GfPlayCom {
   GF_PLAY_COM("PlayComMoverSwitch")

@@ -142,11 +142,9 @@ static_assert(offsetof(SDataGame, unknown1171d8) == 0x1171d8, "");
 static_assert(offsetof(SDataGame, unknown117688) == 0x117688, "");
 static_assert(sizeof(SDataGame) == 0x117690, "");
 
-struct SDataSave {
-  SDataSave() : unknown00(SAVE_DATA_VERSION), unknown08(0) {}
+struct SDataSave : SDataSystem {
+  SDataSave() {}
 
-  u32 unknown00;       // Inferred role: version; original member name unknown.
-  u64 unknown08;       // Inferred role: flags; original member name unknown.
   SDataGame unknown10; // Inferred role: game data; original member name unknown.
 };
 

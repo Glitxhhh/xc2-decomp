@@ -51,7 +51,9 @@
 #include "gf/script/gf_script_manager.h"
 #include "gmk/gmk_manager.h"
 #include "mm_math/mm_col4.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_queue.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/reference_object.h"
 
 namespace gf {
@@ -1237,6 +1239,8 @@ GfPlayComFieldSeq *GfPlayComFieldSeq::create(IFieldSeq *sequence, GF_OBJ_HANDLE 
 #line 1972
   return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfPlayComFieldSeq(sequence, handle);
 }
+
+bool GfPlayComResetBlade::isPlaying(u32 partyId) { return mm::mtl::find(s_execFlag.begin(), s_execFlag.end(), static_cast<u8>(partyId)) != s_execFlag.end(); }
 
 void GfPlayComMoverSwitch::start() { unknown14 = 3; }
 

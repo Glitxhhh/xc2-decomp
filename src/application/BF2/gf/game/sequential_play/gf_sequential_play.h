@@ -1,6 +1,7 @@
 #pragma once
 #include "gf/event/gf_event.h"
 #include "gf/game/quest/gf_quest_info.h"
+#include "gf/game/sequential_play/gf_play_command.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gmk/gmk_manager.h"
@@ -25,9 +26,6 @@ struct GfSetupParam;
 struct GfSetupPfTalk;
 struct MenuCommonWindowParam;
 struct QuestID;
-class GfPlayCom;
-struct GfSequentialPlaySignal;
-struct ParamReturnTitle;
 
 class GfSequentialPlay : public mm::mtl::PtrSingleton<GfSequentialPlay> {
 public:
@@ -36,9 +34,13 @@ public:
     TYPE_SEQUENCE,
   };
 
+  GfSequentialPlay(const GfSetupParam &param);
+  ~GfSequentialPlay();
   static void build(const GfSetupParam &param);
   void initialize(const GfSetupParam &param);
   static void destroy();
+  void finalize();
+  void destroyCommand();
   static bool isPlay();
   static bool isInitialized();
   static void postUpdate(const fw::UpdateInfo &info);
@@ -104,6 +106,7 @@ public:
   static void addMoverSwitch();
   static void addHoodHomuraBattou();
   static bool isInnerState(GF_STATE state);
+  static bool hasCommand(PCOMTYPE type, GfPlayCom *command);
   static bool isExistResetBladeParty(u32 partyId);
   static bool isSequenceSpecialAction();
   static bool isInnerPause(u32 pauseBits);

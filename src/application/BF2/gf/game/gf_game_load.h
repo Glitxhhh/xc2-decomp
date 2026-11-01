@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/data/gf_data_save.h"
+#include "ml/dev_file_th.h"
 #include "ml/work_event.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -28,8 +29,23 @@ public:
   void phaseBinData();
   void startNonBlockBin(mm::mtl::FixStr<256> &path);
   void createGameLoadDataBin(SDataSave &saveData, mm::mtl::FixStr<256> &path);
+  void createOptionLoadDataBin(SDataOption &optionData, mm::mtl::FixStr<256> &path);
   void getGameFileNameBin(mm::mtl::FixStr<256> &path);
+  void getOptionFileNameBin(mm::mtl::FixStr<256> &path);
   void execGameLoadNonBlock(SDataSave &saveData);
+  void execOptionLoadNonBlock(SDataOption &optionData);
+  bool execGameLoadBlockForDebug(SDataSave &saveData);
+  bool execOptionLoadBlockForDebug(SDataOption &optionData);
+
+  // Inferred role: fills the read parameters of the load buffer, its size rounded up to 16 bytes; original name unknown.
+  void unknown001(ml::DevFileParamTh &param, mm::mtl::FixStr<256> &path) {
+    param.unknown00 = path.c_str();
+    param.unknown40 = unknown148;
+    param.unknown48 = unknown150;
+    if (param.unknown48 % 16 != 0) {
+      param.unknown48 = param.unknown48 + 16 - param.unknown48 % 16;
+    }
+  }
 
   SAVESLOT unknown08;             // Inferred role: save slot; original member name unknown.
   mm::mtl::FixStr<256> unknown0c; // Inferred role: file name to load instead of the slot; original member name unknown.
@@ -39,7 +55,7 @@ public:
   u8 _124[0x128 - 0x124];
   ml::FileHandleTh *unknown128; // Inferred role: pending file handle; original member name unknown.
   s32 unknown130;               // Inferred role: result of the file event; original member name unknown.
-  u32 unknown134;               // Inferred role: read size; original member name unknown.
+  s32 unknown134;               // Inferred role: read size; original member name unknown.
   SDataSave *unknown138;        // Inferred role: destination save data; original member name unknown.
   SDataOption *unknown140;      // Inferred role: destination option data; original member name unknown.
   void *unknown148;             // Inferred role: load buffer; original member name unknown.

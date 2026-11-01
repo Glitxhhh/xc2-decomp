@@ -6,19 +6,21 @@
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_option.h"
+#include "gf/data/gf_data_system.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "ml/dev_file_th.h"
+#include "ml/path_util.h"
 #include "mm_mtl/fixed_vector.h"
 
 namespace gf {
 
 GfGameLoad::GfGameLoad(SAVESLOT slot)
-    : unknown08(slot), unknown110(nullptr), unknown118(nullptr), unknown120(0), unknown128(nullptr), unknown130(0), unknown134(0xffffffff), unknown138(nullptr), unknown140(nullptr),
-      unknown148(nullptr), unknown150(0) {}
+    : unknown08(slot), unknown110(nullptr), unknown118(nullptr), unknown120(0), unknown128(nullptr), unknown130(0), unknown134(-1), unknown138(nullptr), unknown140(nullptr), unknown148(nullptr),
+      unknown150(0) {}
 
 GfGameLoad::GfGameLoad(const char *path)
-    : unknown08(SAVESLOT_NONE), unknown110(nullptr), unknown118(nullptr), unknown120(0), unknown128(nullptr), unknown130(0), unknown134(0xffffffff), unknown138(nullptr), unknown140(nullptr),
+    : unknown08(SAVESLOT_NONE), unknown110(nullptr), unknown118(nullptr), unknown120(0), unknown128(nullptr), unknown130(0), unknown134(-1), unknown138(nullptr), unknown140(nullptr),
       unknown148(nullptr), unknown150(0) {
   unknown0c = path;
 }
@@ -67,12 +69,7 @@ void GfGameLoad::phaseBinData() {
 
 void GfGameLoad::startNonBlockBin(mm::mtl::FixStr<256> &path) {
   ml::DevFileParamTh param;
-  param.unknown00 = path.c_str();
-  param.unknown40 = unknown148;
-  param.unknown48 = unknown150;
-  if (param.unknown48 % 16 != 0) {
-    param.unknown48 = param.unknown48 + 16 - param.unknown48 % 16;
-  }
+  unknown001(param, path);
   param.unknown60 = this;
   unknown128 = ml::DevFileTh::readFile(param);
 }
@@ -93,6 +90,70 @@ void GfGameLoad::execGameLoadNonBlock(SDataSave &saveData) {
   mm::mtl::FixStr<256> path;
   createGameLoadDataBin(saveData, path);
   startNonBlockBin(path);
+}
+
+void GfGameLoad::createOptionLoadDataBin(SDataOption &optionData, mm::mtl::FixStr<256> &path) {
+  unknown140 = &optionData;
+  optionData.unknown00 = 0;
+  void *buffer = getAllocator(ALLOCATOR_DEFAULT)->allocate((sizeof(SDataOption) + 15) & ~15, 16);
+  unknown118 = new (buffer) SDataOption();
+  unknown118->unknown00 = 0;
+  unknown148 = unknown118;
+  unknown150 = sizeof(SDataOption);
+  getOptionFileNameBin(path);
+}
+
+void GfGameLoad::execOptionLoadNonBlock(SDataOption &optionData) {
+  unknown120 = 2;
+  mm::mtl::FixStr<256> path;
+  createOptionLoadDataBin(optionData, path);
+  startNonBlockBin(path);
+}
+
+bool GfGameLoad::execGameLoadBlockForDebug(SDataSave &saveData) {
+  unknown120 = 3;
+  mm::mtl::FixStr<256> path;
+  createGameLoadDataBin(saveData, path);
+  {
+    ml::DevFileParamTh param;
+    unknown001(param, path);
+    ml::DevFileTh::readFileBlock(param, &unknown134, nullptr);
+    endNonBlockBin();
+  }
+  unknown120 = 0;
+  return saveData.unknown00 == SAVE_DATA_VERSION;
+}
+
+bool GfGameLoad::execOptionLoadBlockForDebug(SDataOption &optionData) {
+  unknown120 = 3;
+  mm::mtl::FixStr<256> path;
+  createOptionLoadDataBin(optionData, path);
+  {
+    ml::DevFileParamTh param;
+    unknown001(param, path);
+    ml::DevFileTh::readFileBlock(param, &unknown134, nullptr);
+    endNonBlockBin();
+  }
+  unknown120 = 0;
+  return optionData.unknown00 == SAVE_DATA_VERSION;
+}
+
+void GfGameLoad::getGameFileNameBin(mm::mtl::FixStr<256> &path) {
+  mm::mtl::FixStr<256> fileName;
+  if (unknown0c.empty()) {
+    GfDataSave::getFileNameForLoad(fileName, unknown08);
+  } else {
+    fileName = unknown0c;
+  }
+  ml::PathUtil::getNoExtName(path, fileName.c_str());
+  path += GfDataSave::getSaveDataExtNameForBin();
+}
+
+void GfGameLoad::getOptionFileNameBin(mm::mtl::FixStr<256> &path) {
+  mm::mtl::FixStr<256> fileName;
+  GfDataSave::getFileNameForOption(fileName);
+  ml::PathUtil::getNoExtName(path, fileName.c_str());
+  path += GfDataSave::getSaveDataExtNameForBin();
 }
 
 bool GfGameLoad::OnFileEvent(ml::EventFileTh *event) {

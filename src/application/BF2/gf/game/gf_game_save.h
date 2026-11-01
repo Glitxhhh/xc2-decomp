@@ -26,6 +26,9 @@ public:
   void execGameSaveNonBlock();
   void execOptionSaveNonBlock();
   void execGameSaveWithMicroThread();
+  void execOptionSaveWithMicroThread();
+  void execGameSaveBlockForDebug();
+  void execOptionSaveBlockForDebug();
   static void flushSaveData();
   void terminateNonBlock();
   void startNonBlockBin(mm::mtl::FixStr<256> &path);
@@ -34,6 +37,7 @@ public:
   bool isBusy() const;
   static SDataSave *getGameSaveData();
   static SDataOption *getGameOptionData();
+  static void makeNewGameSaveData();
 
   s32 unknown08;               // Inferred role: busy state; original member name unknown.
   SAVESLOT unknown0c;          // Inferred role: save slot; original member name unknown.

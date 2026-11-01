@@ -12,6 +12,7 @@
 #include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/gf_allocator.h"
+#include "gf/sound/gf_master_volume.h"
 #include "mm_mtl/fixed_array.h"
 #include "types.h"
 
@@ -122,6 +123,25 @@ void GfDataStore::setupOptionData(const SDataOption &dataOption) {
   if (dataStore != nullptr) {
     dataStore->mDataOption = dataOption;
   }
+}
+
+void SSoundUiOption::clear() {
+  GfMasterVolume masterVolume;
+  _1a = 0x80;
+  _1c = true;
+  unknown00 = masterVolume.getEventVoiceVolume() * VOLUME_SCALE;
+  unknown02 = masterVolume.getEventCsVolume() * VOLUME_SCALE;
+  unknown04 = masterVolume.getEventBgmVolume() * VOLUME_SCALE;
+  unknown06 = masterVolume.getEventSeVolume() * VOLUME_SCALE;
+  unknown08 = masterVolume.getGameBgmVolume() * VOLUME_SCALE;
+  unknown0a = masterVolume.getGameEnvVolume() * VOLUME_SCALE;
+  unknown0c = masterVolume.getGameWeatherVolume() * VOLUME_SCALE;
+  unknown0e = masterVolume.getGameSeVolume() * VOLUME_SCALE;
+  unknown10 = masterVolume.getPlayerVoiceVolume() * VOLUME_SCALE;
+  unknown12 = masterVolume.getEnemyVoiceVolume() * VOLUME_SCALE;
+  unknown14 = masterVolume.getNareVoiceVolume() * VOLUME_SCALE;
+  unknown16 = masterVolume.getSystemVolume() * VOLUME_SCALE;
+  unknown18 = masterVolume.getMenuBgmVolume() * VOLUME_SCALE;
 }
 
 } // namespace gf
