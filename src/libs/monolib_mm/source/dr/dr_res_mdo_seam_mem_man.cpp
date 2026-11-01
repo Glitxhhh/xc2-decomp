@@ -1,11 +1,30 @@
 #include "dr/dr_res_mdo_seam_mem_man.h"
 
 #include "dr/dr_res_mdo_seam_res.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
+DrResMdoSeamMemMan::~DrResMdoSeamMemMan() { releaseMem(); }
+
+void DrResMdoSeamMemMan::releaseMem() {
+  for (u32 i = 0; i < unknown30; i++) {
+    unknown38[i].~DrResMdoSeamMemObj();
+  }
+  unknown30 = 0;
+  if (unknown38 != nullptr) {
+    mtl::MemManager::deallocate(unknown38, 0, false);
+    unknown38 = nullptr;
+  }
+  unknown2c = 0;
+  unknown10.unknown00 = nullptr;
+  unknown10.unknown08 = nullptr;
+  unknown00.unknown00 = nullptr;
+  unknown00.unknown08 = nullptr;
+}
+
 int DrResMdoSeamMemMan::getUseMax() const {
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   if (obj != nullptr) {
     int count = 0;
     do {
@@ -18,7 +37,7 @@ int DrResMdoSeamMemMan::getUseMax() const {
 }
 
 int DrResMdoSeamMemMan::getFreeMax() const {
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   if (obj != nullptr) {
     int count = 0;
     do {
@@ -31,7 +50,7 @@ int DrResMdoSeamMemMan::getFreeMax() const {
 }
 
 int DrResMdoSeamMemMan::getAllFreeSize() const {
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   if (obj != nullptr) {
     int size = 0;
     do {
@@ -46,7 +65,7 @@ int DrResMdoSeamMemMan::getAllFreeSize() const {
 }
 
 int DrResMdoSeamMemMan::getAllUseSize() const {
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   if (obj != nullptr) {
     int size = 0;
     do {
@@ -61,7 +80,7 @@ int DrResMdoSeamMemMan::getAllUseSize() const {
 }
 
 u32 DrResMdoSeamMemMan::getFreeSize() {
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   if (obj == nullptr) {
     return 0;
   }
@@ -78,7 +97,7 @@ u32 DrResMdoSeamMemMan::getFreeSize() {
 u32 DrResMdoSeamMemMan::getFreeSize(int &freeCount, int &separatedCount) {
   separatedCount = 0;
   freeCount = 0;
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   u32 maxSize = 0;
   if (obj != nullptr) {
     int previous = -1;
@@ -104,7 +123,7 @@ u32 DrResMdoSeamMemMan::getFreeSize(int &freeCount, int &separatedCount) {
 void DrResMdoSeamMemMan::renderMemInfo() {}
 
 bool DrResMdoSeamMemMan::calcPieceMem(bool isCheck) {
-  const DrResMdoSeamMemObj *obj = unknown00;
+  const DrResMdoSeamMemObj *obj = unknown00.unknown00;
   if (obj != nullptr) {
     bool isUse = false;
     int pieceCount = 0;
@@ -120,6 +139,54 @@ bool DrResMdoSeamMemMan::calcPieceMem(bool isCheck) {
     return pieceCount > 19;
   }
   return false;
+}
+
+DrResMdoSeamMemObj *DrResMdoSeamMemMan::createFreeObj(u32 size) {
+  for (DrResMdoSeamMemObj *obj = unknown00.unknown00; obj != nullptr; obj = obj->unknown10) {
+    if ((obj->unknown24 & 1) == 0 && obj->m_size >= size) {
+      return unknown001(obj, size, unknown00);
+    }
+  }
+  return nullptr;
+}
+
+DrResMdoSeamMemObj *DrResMdoSeamMemMan::createFreeObj(u32 size, DrResChankList<DrResMdoSeamMemObj> &list, int index) {
+  for (DrResMdoSeamMemObj *obj = list.unknown00; obj != nullptr; obj = obj->unknown10) {
+    if ((obj->unknown24 & 1) == 0 && obj->m_size >= size) {
+      return unknown001(obj, size, list);
+    }
+  }
+  return nullptr;
+}
+
+DrResMdoSeamMemObj *DrResMdoSeamMemMan::createTopFreeObj(u32 size, DrResChankList<DrResMdoSeamMemObj> &list, int index) {
+  for (DrResMdoSeamMemObj *obj = list.unknown00; obj != nullptr; obj = obj->unknown10) {
+    if ((obj->unknown24 & 1) == 0) {
+      if (obj->m_size < size) {
+        return nullptr;
+      }
+      return unknown001(obj, size, list);
+    }
+  }
+  return nullptr;
+}
+
+DrResMdoSeamMemObj *DrResMdoSeamMemMan::createParentFreeObj(DrResMdoSeamMemObj *parent, u32 size) {
+  if (parent->m_size < size) {
+    return nullptr;
+  }
+  DrResMdoSeamMemObj *child = unknown10.unknown00;
+  if (child == nullptr) {
+    return nullptr;
+  }
+  unknown10.unknown001(child);
+  u32 parentSize = parent->m_size;
+  parent->m_size = size;
+  child->m_size = parentSize - size;
+  child->m_buffer = parent->m_buffer + size;
+  child->unknown24 = 1;
+  unknown00.unknown003(parent, child);
+  return child;
 }
 
 } // namespace ml

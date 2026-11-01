@@ -23,7 +23,7 @@ struct MdsInstObjPosData {
   };
 
   u32 unknown00; // Inferred role: name offset; original member name unknown.
-  u8 _04[0x08 - 0x04];
+  u32 unknown04; // Inferred role: position index; original member name unknown.
   u16 unknown08; // Inferred role: id; original member name unknown.
   union {
     u16 flags;
@@ -42,6 +42,7 @@ struct MdsInstObjPosData {
   u8 unknown0d; // Inferred role: frame scale; original member name unknown.
 };
 
+static_assert(offsetof(MdsInstObjPosData, unknown04) == 0x04, "");
 static_assert(offsetof(MdsInstObjPosData, unknown08) == 0x08, "");
 static_assert(offsetof(MdsInstObjPosData, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsInstObjPosData, unknown0d) == 0x0d, "");
@@ -57,6 +58,32 @@ struct MdsInstAnmParamInfo {
 static_assert(offsetof(MdsInstAnmParamInfo, unknown06) == 0x06, "");
 static_assert(offsetof(MdsInstAnmParamInfo, unknown08) == 0x08, "");
 static_assert(offsetof(MdsInstAnmParamInfo, unknown0a) == 0x0a, "");
+
+struct MdsInstAnmInf {
+  u32 unknown00; // Inferred role: key offset; original member name unknown.
+  u8 _04[0x06 - 0x04];
+  u16 unknown06; // Inferred role: key count; original member name unknown.
+  u16 unknown08; // Inferred role: start frame; original member name unknown.
+  u16 unknown0a; // Inferred role: end frame; original member name unknown.
+};
+
+static_assert(offsetof(MdsInstAnmInf, unknown06) == 0x06, "");
+static_assert(offsetof(MdsInstAnmInf, unknown08) == 0x08, "");
+static_assert(offsetof(MdsInstAnmInf, unknown0a) == 0x0a, "");
+
+// Inferred role: instance animation hermite key; original type name unknown.
+struct unknown095 {
+  f32 unknown00; // Inferred role: out slope; original member name unknown.
+  f32 unknown04; // Inferred role: in slope; original member name unknown.
+  f32 unknown08; // Inferred role: value; original member name unknown.
+  u16 unknown0c; // Inferred role: frame; original member name unknown.
+  u8 _0e;
+  u8 unknown0f; // Inferred role: flags, bit 0 is a step key; original member name unknown.
+};
+
+static_assert(offsetof(unknown095, unknown0c) == 0x0c, "");
+static_assert(offsetof(unknown095, unknown0f) == 0x0f, "");
+static_assert(sizeof(unknown095) == 0x10, "");
 
 struct MdsInstAnmNodeData {
   u8 _00[0x02 - 0x00];
@@ -98,6 +125,7 @@ public:
   DrResMdoPosInstAnm(const MdsInstAnmObj *anm, const u8 *data, const MdsPosKeepData *keep);
   void setup(f32 frame);
   void getAnmMatrix(mm::Mat44 *matrix, f32 frame) const;
+  f32 getHermiteAttr(const MdsInstAnmInf *inf, f32 frame) const;
   void update();
   void setMatrix(const mm::Mat44 &matrix);
   void getMatrix(mm::Mat44 &matrix) const;
@@ -253,6 +281,7 @@ static_assert(offsetof(DrResMdoInstPartsAnm, unknown60) == 0x60, "");
 static_assert(offsetof(DrResMdoInstPartsAnm, unknown68) == 0x68, "");
 static_assert(offsetof(DrResMdoInstPartsAnm, m_switchID) == 0x70, "");
 static_assert(offsetof(DrResMdoInstPartsAnm, m_switchMax) == 0x71, "");
+static_assert(sizeof(DrResMdoInstPartsAnm) == 0x78, "");
 
 class DrResMdoInstPartsGlbID : public DrResMdoInstPartsObj {
 public:
@@ -264,10 +293,11 @@ public:
 struct unknown045 {
   u8 _00[0x04 - 0x00];
   u32 unknown04; // Inferred role: object max; original member name unknown.
-  u32 unknown08; // Inferred role: anm max; original member name unknown.
+  s32 unknown08; // Inferred role: anm max; original member name unknown.
   u8 _0c[0x18 - 0x0c];
   s32 unknown18; // Inferred role: pos anm max; original member name unknown.
-  u8 _1c[0x28 - 0x1c];
+  s32 unknown1c; // Inferred role: pos anm object count; original member name unknown.
+  u8 _20[0x28 - 0x20];
   s32 unknown28; // Inferred role: switch max; original member name unknown.
   u8 _2c[0x34 - 0x2c];
   s32 unknown34; // Inferred role: node anm max; original member name unknown.
@@ -276,6 +306,7 @@ struct unknown045 {
 static_assert(offsetof(unknown045, unknown04) == 0x04, "");
 static_assert(offsetof(unknown045, unknown08) == 0x08, "");
 static_assert(offsetof(unknown045, unknown18) == 0x18, "");
+static_assert(offsetof(unknown045, unknown1c) == 0x1c, "");
 static_assert(offsetof(unknown045, unknown28) == 0x28, "");
 static_assert(offsetof(unknown045, unknown34) == 0x34, "");
 
@@ -284,6 +315,9 @@ public:
   DrResMdoInstAnmObj();
   static int getWorkSize(const u8 *data);
   void release();
+  void update();
+  void setupLink(DrResMdoPos *pos) const;
+  void setupLink(DrResMdoPos *pos, int posStart, int posCount, int switchStart, int switchCount) const;
   int getObjIdx(const char *name);
 
   DrResMdoInstPartsObj *getObj(u32 index) const {
@@ -295,7 +329,7 @@ public:
 
   const unknown045 *unknown00;      // Inferred role: header; original member name unknown.
   DrResMdoInstPartsObj **unknown08; // Inferred role: objs; original member name unknown.
-  void *unknown10;                  // Inferred role: data; original member name unknown.
+  DrResMdoInstPartsAnm *unknown10;  // Inferred role: anm objs; original member name unknown.
   void *unknown18;                  // Inferred role: data; original member name unknown.
   void *unknown20;                  // Inferred role: data; original member name unknown.
   void *unknown28;                  // Inferred role: data; original member name unknown.

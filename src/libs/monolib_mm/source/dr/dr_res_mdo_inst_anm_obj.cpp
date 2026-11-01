@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "dr/dr_man.h"
+#include "dr/dr_res_mdo_pos.h"
 #include "mm_math/mm_vec3.h"
 
 namespace ml {
@@ -35,6 +36,37 @@ void DrResMdoPosInstAnm::getMatrix(mm::Mat44 &matrix) const {
 void DrResMdoPosInstAnm::setAnmFrame(u16 startFrame, u16 maxFrame) {
   unknown154 = startFrame;
   unknown152 = maxFrame;
+}
+
+f32 DrResMdoPosInstAnm::getHermiteAttr(const MdsInstAnmInf *inf, f32 frame) const {
+  const unknown095 *keys = reinterpret_cast<const unknown095 *>(unknown08 + inf->unknown00);
+  if (frame <= inf->unknown08) {
+    return keys[0].unknown08;
+  }
+  if (frame >= inf->unknown0a) {
+    return keys[inf->unknown06 - 1].unknown08;
+  }
+  for (u32 i = 1; i < inf->unknown06; i++) {
+    const unknown095 *key = &keys[i];
+    f32 keyFrame = key->unknown0c;
+    if (frame < keyFrame) {
+      const unknown095 *prev = &keys[i - 1];
+      if (prev->unknown0f & 1) {
+        return prev->unknown08;
+      }
+      f32 prevFrame = prev->unknown0c;
+      f32 length = keyFrame - prevFrame;
+      f32 t = (frame - prevFrame) / length;
+      f32 t2 = t * t;
+      f32 t3 = t * t2;
+      f32 h00 = 2.0f * t3 - 3.0f * t2 + 1.0f;
+      f32 h10 = t3 - 2.0f * t2 + t;
+      f32 h01 = 3.0f * t2 - 2.0f * t3;
+      f32 h11 = t3 - t2;
+      return prev->unknown08 * h00 + prev->unknown00 * h10 + key->unknown08 * h01 + key->unknown04 * h11;
+    }
+  }
+  return 0.0f;
 }
 
 void DrResMdoPosInstAnm::anmInsPosParm_TranX(mm::Vec3 *transform, f32 value) { transform[0].x = value; }
@@ -251,6 +283,40 @@ void DrResMdoInstAnmObj::release() {
   unknown18 = nullptr;
   unknown00 = nullptr;
   unknown08 = nullptr;
+}
+
+void DrResMdoInstAnmObj::update() {
+  if (unknown00 != nullptr) {
+    for (int i = 0; i < unknown00->unknown08; i++) {
+      unknown10[i].update();
+    }
+  }
+}
+
+void DrResMdoInstAnmObj::setupLink(DrResMdoPos *pos) const {
+  if (unknown00 != nullptr) {
+    int index = unknown00->unknown18;
+    for (int i = 0; i < unknown00->unknown1c; i++, index++) {
+      pos[unknown08[index]->unknown18->unknown04].unknown18 = index;
+    }
+    index = unknown00->unknown08;
+    for (int i = 0; i < unknown00->unknown28; i++, index++) {
+      pos[unknown08[index]->unknown18->unknown04].unknown18 = index;
+    }
+  }
+}
+
+void DrResMdoInstAnmObj::setupLink(DrResMdoPos *pos, int posStart, int posCount, int switchStart, int switchCount) const {
+  if (unknown00 != nullptr) {
+    int index = unknown00->unknown18 + posStart;
+    for (int i = 0; i < posCount; i++, index++) {
+      pos[unknown08[index]->unknown18->unknown04].unknown18 = index;
+    }
+    index = unknown00->unknown08 + switchStart;
+    for (int i = 0; i < switchCount; i++, index++) {
+      pos[unknown08[index]->unknown18->unknown04].unknown18 = index;
+    }
+  }
 }
 
 } // namespace ml

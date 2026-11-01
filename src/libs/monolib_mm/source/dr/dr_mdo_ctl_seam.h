@@ -209,7 +209,7 @@ public:
   unknown060 unknown6c8;         // Inferred role: etc pos list; original member name unknown.
   u8 _6d8[0x6e0 - 0x6d8];
   DrResMdoSeamMemMan unknown6e0; // Inferred role: seam memory manager; original member name unknown.
-  u8 _6e8[0xb38 - 0x6e8];
+  u8 _b28[0xb38 - 0xb28];
   MdoWrkMatRes *unknownb38; // Inferred role: saved mat res; original member name unknown.
   u8 _b40[0xb50 - 0xb40];
   u32 *unknownb50; // Inferred role: base map read bits; original member name unknown.

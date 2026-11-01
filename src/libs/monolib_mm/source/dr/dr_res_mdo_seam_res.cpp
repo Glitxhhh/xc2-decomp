@@ -1,5 +1,6 @@
 #include "dr/dr_res_mdo_seam_res.h"
 
+#include "dr/dr_res_chank_list.h" // IWYU pragma: keep
 #include "dr/dr_res_mdo_vertex.h"
 #include "grlib/cglib_texture.h"
 #include "mtl/mem_manager.h"
@@ -129,3 +130,5 @@ void DrResMdoSeamVertex::changeMemVertex() {
 }
 
 } // namespace ml
+
+template void ml::DrResChankList<ml::DrResMdoSeamMemObj>::changeList(ml::DrResMdoSeamMemObj *first, ml::DrResMdoSeamMemObj *second);
