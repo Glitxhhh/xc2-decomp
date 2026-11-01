@@ -9,11 +9,13 @@ class State;
 
 namespace fw {
 struct UpdateInfo;
+class MessageObject;
 } // namespace fw
 
 namespace gf {
 
 class GfComBehaviorPc;
+struct MsgPcFieldWallJump;
 
 namespace pc {
 
@@ -23,6 +25,7 @@ class StateFieldOnWall : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgPcFieldWallJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldWallJump &message);
 
   u8 _18[0x50 - 0x18];
 };

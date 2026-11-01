@@ -41,5 +41,10 @@ void StateFieldIdle::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &inf
   }
 }
 
+void StateFieldIdle::procMsgPcFieldHighJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldHighJump &message) {
+  message.unknown08 = true;
+  reqState(STATE_ID_FIELD_BIG_JUMP);
+}
+
 } // namespace pc
 } // namespace gf

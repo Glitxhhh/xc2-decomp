@@ -2,7 +2,6 @@
 #include <stddef.h>
 
 #include "ai/ai_state_hfsm.h"
-#include "framework/message/message_object.h"
 #include "gf/field/gf_field_local_steer.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "mm_math/mm_vec3.h"
@@ -19,6 +18,7 @@ class RTTI;
 
 namespace fw {
 class ColiMoveObject;
+class MessageObject;
 class ReferenceFrame;
 } // namespace fw
 
@@ -39,12 +39,7 @@ class GfComAsm;
 class GfMenuCallContext;
 struct MsgDebugActivateComponentWindow;
 struct MsgGameLipAction;
-
-struct MsgGameSetLipWeight : fw::Message {
-  f32 unknown08; // Inferred role: lip sync weight; original member name unknown.
-};
-
-static_assert(offsetof(MsgGameSetLipWeight, unknown08) == 0x08, "");
+struct MsgGameSetLipWeight;
 
 namespace npc {
 

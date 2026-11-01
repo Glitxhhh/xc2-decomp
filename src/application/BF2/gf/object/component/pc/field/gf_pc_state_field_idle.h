@@ -8,11 +8,13 @@ class State;
 
 namespace fw {
 struct UpdateInfo;
+class MessageObject;
 } // namespace fw
 
 namespace gf {
 
 class GfComBehaviorPc;
+struct MsgPcFieldHighJump;
 
 namespace pc {
 
@@ -22,6 +24,7 @@ class StateFieldIdle : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgPcFieldHighJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldHighJump &message);
 };
 
 static_assert(sizeof(StateFieldIdle) == 0x18, "");

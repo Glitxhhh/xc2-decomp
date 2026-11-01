@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "types.h"
 
 #include "framework/message/message_object.h"
@@ -17,9 +19,53 @@ struct MsgObjectNotifyDead;
 struct MsgObjectNotifyHealHp;
 
 enum {
+  MSG_PC_FIELD_WALL_JUMP = 0x1000013,
+  MSG_PC_FIELD_HIGH_JUMP = 0x1000016,
+  MSG_PC_FIELD_WATER_WARP = 0x1000018,
   MSG_PC_FIELD_RELAY_SURVIVE = 0x100001e,
+  MSG_PC_FIELD_WATER_WARP_BUDDY = 0x1000020,
   MSG_PC_FIELD_REQ_FALL_DEAD_MOTION = 0x1000025,
 };
+
+// Layout evidence: TaskFieldWallJumpWait::update (0x7100545800) builds it on the stack and tests the member at 0x8 that
+// StateFieldOnWall::procMsgPcFieldWallJump sets.
+struct MsgPcFieldWallJump : fw::Message {
+  MsgPcFieldWallJump() : fw::Message(MSG_PC_FIELD_WALL_JUMP, 0x40), unknown08(false) {}
+
+  bool unknown08; // Inferred role: wall jump accepted; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldWallJump, unknown08) == 0x08, "");
+
+// Layout evidence: TaskFieldSensor::update (0x7100544988) builds it on the stack and tests the member at 0x8 that
+// StateFieldIdle::procMsgPcFieldHighJump sets.
+struct MsgPcFieldHighJump : fw::Message {
+  MsgPcFieldHighJump() : fw::Message(MSG_PC_FIELD_HIGH_JUMP, 0x40), unknown08(false) {}
+
+  bool unknown08; // Inferred role: high jump accepted; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldHighJump, unknown08) == 0x08, "");
+
+// Layout evidence: TaskFieldSensor::update (0x7100544988) builds it on the stack and tests the member at 0x8 that
+// StateFieldWaterNormal::procMsgPcFieldWaterWarp sets.
+struct MsgPcFieldWaterWarp : fw::Message {
+  MsgPcFieldWaterWarp() : fw::Message(MSG_PC_FIELD_WATER_WARP, 0x40), unknown08(false) {}
+
+  bool unknown08; // Inferred role: warp accepted; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldWaterWarp, unknown08) == 0x08, "");
+
+// Layout evidence: TaskFieldSensor::update (0x7100544988) builds it on the stack and tests the member at 0x8 that
+// StateFieldWaterNormal::procMsgPcFieldWaterWarpBuddy sets.
+struct MsgPcFieldWaterWarpBuddy : fw::Message {
+  MsgPcFieldWaterWarpBuddy() : fw::Message(MSG_PC_FIELD_WATER_WARP_BUDDY, 0x40), unknown08(false) {}
+
+  bool unknown08; // Inferred role: warp accepted; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldWaterWarpBuddy, unknown08) == 0x08, "");
 
 // Layout evidence: the pc states build it on the stack (0x710053cbcc) with a MsgObjectNotifyHealHp or a MsgObjectNotifyDead,
 // and StateFieldDead::procMsgPcFieldRelaySurvive reads the member at 0x8.

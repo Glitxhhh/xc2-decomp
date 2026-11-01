@@ -8,12 +8,14 @@ class State;
 
 namespace fw {
 struct UpdateInfo;
+class MessageObject;
 } // namespace fw
 
 namespace gf {
 
 class GfComBehaviorPc;
 struct MsgObjectNotifyDead;
+struct MsgPcFieldRelaySurvive;
 
 namespace pc {
 
@@ -24,6 +26,8 @@ class StateFieldWaterDive : public GfStateBase {
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   void onDead(GfComBehaviorPc *behavior, MsgObjectNotifyDead &message);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgObjectNotifyDead(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgObjectNotifyDead &message);
+  void procMsgPcFieldRelaySurvive(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldRelaySurvive &message);
 };
 
 static_assert(sizeof(StateFieldWaterDive) == 0x18, "");

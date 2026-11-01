@@ -1,5 +1,6 @@
 #include "gf/object/component/pc/field/gf_pc_state_field_prepare_big_jump.h"
 
+#include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/object/component/animation/gf_com_asm.h"
@@ -8,10 +9,13 @@
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/gf_pc_asm_cmd_id_field.h"
+#include "gf/object/component/pc/gf_pc_property_field.h"
 #include "gf/object/component/pc/gf_pc_state_id.h"
+#include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/component/pc/gf_pc_state_util_field.h"
 #include "gf/object/gf_obj.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/rtti.h"
 
 namespace gf {
 namespace pc {
@@ -43,6 +47,29 @@ void StateFieldPrepareBigJump::update(GfComBehaviorPc *behavior, const fw::Updat
   if (!GfGameManager::isPlayerPause()) {
     reqState(STATE_ID_FIELD_IDLE);
   }
+}
+
+bool StateFieldPrepareBigJump::recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) {
+  if (message.unknown00 == MSG_PC_FIELD_NOTIFY_BIG_JUMP) {
+    procMsgPcFieldNotifyBigJump(static_cast<GfComBehaviorPc *>(owner), sender, static_cast<MsgPcFieldNotifyBigJump &>(message));
+    return true;
+  }
+
+  return false;
+}
+
+void StateFieldPrepareBigJump::procMsgPcFieldNotifyBigJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldNotifyBigJump &message) {
+  GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
+  property->unknown310.setBigJumpInfo(&message);
+  MsgPcFieldNotifyHighJump notify(&message);
+  StateUtil::broadcastPlayer(*behavior, notify);
+  if (sender != nullptr) {
+    GfObj *object = mm::mtl::dynamicCast<GfObj>(sender);
+    if (object != nullptr) {
+      property->unknown310.unknown78 = object->unknownf8;
+    }
+  }
+  reqState(STATE_ID_FIELD_BIG_JUMP);
 }
 
 } // namespace pc

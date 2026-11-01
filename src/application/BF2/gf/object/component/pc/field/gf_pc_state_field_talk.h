@@ -10,12 +10,16 @@ class State;
 
 namespace fw {
 struct UpdateInfo;
+class MessageObject;
 } // namespace fw
 
 namespace gf {
 
 class GfComBehaviorPc;
 struct GF_OBJ_HANDLE;
+struct MsgGameLipAction;
+struct MsgGameSetLipWeight;
+struct MsgGameTalkAction;
 
 namespace pc {
 
@@ -25,6 +29,9 @@ class StateFieldTalk : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgGameTalkAction(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgGameTalkAction &message);
+  void procMsgGameLipAction(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgGameLipAction &message);
+  void procMsgGameSetLipWeight(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgGameSetLipWeight &message);
 
   GF_OBJ_HANDLE *unknown18; // Inferred role: talk target; original member name unknown.
 };

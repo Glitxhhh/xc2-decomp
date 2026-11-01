@@ -12,6 +12,14 @@
 namespace gf {
 
 class GfComPropertyPc;
+struct GF_OBJ_HANDLE;
+
+enum {
+  MSG_PC_FIELD_NOTIFY_WALL_JUMP = 0x1000010,
+  MSG_PC_FIELD_NOTIFY_BIG_JUMP = 0x1000011,
+  MSG_PC_FIELD_NOTIFY_WARP = 0x1000014,
+  MSG_PC_FIELD_NOTIFY_HIGH_JUMP = 0x1000015,
+};
 
 struct MsgPcFieldNotifyBigJump : fw::Message {
   mm::Vec3 unknown10;    // Inferred role: target position; original member name unknown.
@@ -28,6 +36,16 @@ static_assert(offsetof(MsgPcFieldNotifyBigJump, unknown20) == 0x20, "");
 static_assert(offsetof(MsgPcFieldNotifyBigJump, unknown30) == 0x30, "");
 static_assert(offsetof(MsgPcFieldNotifyBigJump, unknown3c) == 0x3c, "");
 static_assert(sizeof(MsgPcFieldNotifyBigJump) == 0x40, "");
+
+// Layout evidence: StateFieldPrepareBigJump::procMsgPcFieldNotifyBigJump (0x7100554760) broadcasts it with the big jump
+// info, and AIAgentField::procMsgPcFieldHighJump reads that info through the member at 0x8.
+struct MsgPcFieldNotifyHighJump : fw::Message {
+  explicit MsgPcFieldNotifyHighJump(const MsgPcFieldNotifyBigJump *info) : fw::Message(MSG_PC_FIELD_NOTIFY_HIGH_JUMP, 0x40), unknown08(info) {}
+
+  const MsgPcFieldNotifyBigJump *unknown08; // Inferred role: big jump info; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldNotifyHighJump, unknown08) == 0x08, "");
 
 struct MsgPcFieldNotifyWarp : fw::Message {
   mm::Vec3 unknown10;    // Inferred role: target position; original member name unknown.
@@ -117,7 +135,8 @@ public:
   f32 unknown28; // Inferred role: wall height; original member name unknown.
   u8 _2c[0x38 - 0x2c];
   f32 unknown38; // Inferred role: wall detach distance; original member name unknown.
-  u8 _3c[0x80 - 0x3c];
+  u8 _3c[0x78 - 0x3c];
+  GF_OBJ_HANDLE *unknown78;                // Inferred role: object that sent the jump or warp notification, told about the skill action; original member name unknown.
   MsgPcFieldNotifyBigJump unknown80;       // Inferred role: big jump info; original member name unknown.
   MsgPcFieldNotifyWarp unknownc0;          // Inferred role: warp info; original member name unknown.
   MsgPcFieldNotifyWallJump unknown100;     // Inferred role: wall jump info; original member name unknown.
@@ -129,6 +148,7 @@ static_assert(offsetof(GfPropertyField, unknown14) == 0x14, "");
 static_assert(offsetof(GfPropertyField, unknown18) == 0x18, "");
 static_assert(offsetof(GfPropertyField, unknown28) == 0x28, "");
 static_assert(offsetof(GfPropertyField, unknown38) == 0x38, "");
+static_assert(offsetof(GfPropertyField, unknown78) == 0x78, "");
 static_assert(offsetof(GfPropertyField, unknown80) == 0x80, "");
 static_assert(offsetof(GfPropertyField, unknownc0) == 0xc0, "");
 static_assert(offsetof(GfPropertyField, unknown100) == 0x100, "");

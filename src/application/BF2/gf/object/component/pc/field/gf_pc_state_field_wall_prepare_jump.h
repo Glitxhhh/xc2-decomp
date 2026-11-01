@@ -11,11 +11,13 @@ class State;
 
 namespace fw {
 struct UpdateInfo;
+class MessageObject;
 } // namespace fw
 
 namespace gf {
 
 class GfComBehaviorPc;
+struct MsgPcFieldNotifyWallJump;
 
 namespace pc {
 
@@ -25,6 +27,7 @@ class StateFieldWallPrepareJump : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgPcFieldNotifyWallJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldNotifyWallJump &message);
 
   bool unknown18; // Inferred role: wall jump requested; original member name unknown.
   u8 _19[0x20 - 0x19];

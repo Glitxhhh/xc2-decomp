@@ -1,15 +1,18 @@
 #include "gf/object/component/pc/field/gf_pc_state_field_water_normal.h"
 
 #include "ai/ai_state.h"
+#include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_asm_cmd_id_field.h"
 #include "gf/object/component/pc/gf_pc_state_id.h"
 #include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/component/pc/gf_pc_state_util_field.h"
 #include "gf/object/component/pc/plugin/gf_pc_access_plugin.h"
+#include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj.h"
 #include "mm_mtl/bitflag.h"
 
@@ -50,6 +53,58 @@ void StateFieldWaterNormal::onDead(GfComBehaviorPc *behavior, MsgObjectNotifyDea
   StateUtil::notifyDead(*behavior, message, true);
   behavior->unknown08->getComponent<GfComAsm>()->execCmd("C_waterdead", ANIM_LAYER_BASE);
   reqState(STATE_ID_FIELD_WATER_DEAD_SINK);
+}
+
+bool StateFieldWaterNormal::recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) {
+  switch (message.unknown00) {
+  case MSG_PC_FIELD_WATER_WARP:
+    procMsgPcFieldWaterWarp(static_cast<GfComBehaviorPc *>(owner), sender, static_cast<MsgPcFieldWaterWarp &>(message));
+    break;
+  case MSG_PC_FIELD_WATER_WARP_BUDDY:
+    procMsgPcFieldWaterWarpBuddy(static_cast<GfComBehaviorPc *>(owner), sender, static_cast<MsgPcFieldWaterWarpBuddy &>(message));
+    break;
+  case MSG_OBJECT_NOTIFY_DEAD:
+    procMsgObjectNotifyDead(static_cast<GfComBehaviorPc *>(owner), sender, static_cast<MsgObjectNotifyDead &>(message));
+    break;
+  case MSG_PC_FIELD_RELAY_SURVIVE:
+    procMsgPcFieldRelaySurvive(static_cast<GfComBehaviorPc *>(owner), sender, static_cast<MsgPcFieldRelaySurvive &>(message));
+    break;
+  default:
+    return false;
+  }
+
+  return true;
+}
+
+void StateFieldWaterNormal::procMsgPcFieldWaterWarp(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldWaterWarp &message) {
+  GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
+  MsgPcGetState getState;
+  behavior->recieveMessage(static_cast<GfObj *>(behavior->unknown08), getState);
+  if (getState.unknown08 == STATE_ID_FIELD_WATER_IDLE && StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_WATERHOLE_00)) {
+    message.unknown08 = true;
+    reqState(STATE_ID_FIELD_WATER_WARP_DIVE);
+  }
+}
+
+void StateFieldWaterNormal::procMsgPcFieldWaterWarpBuddy(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldWaterWarpBuddy &message) {
+  GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
+  message.unknown08 = true;
+  reqState(STATE_ID_FIELD_WATER_WARP_RISE_BUDDY);
+}
+
+void StateFieldWaterNormal::procMsgObjectNotifyDead(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgObjectNotifyDead &message) {
+  onDead(behavior, message);
+  if (message.unknown08 != DEAD_TYPE_UNKNOWN_3) {
+    MsgPcFieldRelaySurvive relay(&message);
+    StateUtil::sendMessageToBuddy(*behavior, relay);
+  }
+}
+
+void StateFieldWaterNormal::procMsgPcFieldRelaySurvive(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldRelaySurvive &message) {
+  fw::Message *relayed = message.unknown08;
+  if (relayed != nullptr && relayed->unknown00 == MSG_OBJECT_NOTIFY_DEAD) {
+    onDead(behavior, static_cast<MsgObjectNotifyDead &>(*relayed));
+  }
 }
 
 } // namespace pc
