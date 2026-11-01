@@ -147,9 +147,7 @@ public:
   mm::Mat44 unknown30; // Inferred role: matrix; original member name unknown.
   mm::Vec3 m_pos;
   u8 _80[0x90 - 0x80];
-  f32 unknown90; // Inferred role: color r; original member name unknown.
-  f32 unknown94; // Inferred role: color g; original member name unknown.
-  f32 unknown98; // Inferred role: color b; original member name unknown.
+  mm::Col3 unknown90; // Inferred role: color; original member name unknown.
   f32 m_size;
   bool unknowna0; // Inferred role: spe enable; original member name unknown.
   u8 _a1[0xa4 - 0xa1];

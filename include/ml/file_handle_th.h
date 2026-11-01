@@ -12,7 +12,7 @@ class IWorkEvent;
 struct DevFileParamTh;
 enum CBM : int;
 
-class FileHandleTh {
+class alignas(16) FileHandleTh {
 public:
   enum FTYPE {
     FTYPE_UNKNOWN_0 = 0, // Inferred role: unused handle.
@@ -102,7 +102,6 @@ public:
   s32 unknown1ec;  // Role and original member name unknown.
   s32 unknown1f0;  // Role and original member name unknown.
   bool unknown1f4; // Role and original member name unknown.
-  u8 _1f5[0x200 - 0x1f5];
 };
 
 static_assert(offsetof(FileHandleTh, unknown08) == 0x08, "");

@@ -11,6 +11,7 @@ class CCsvbData;
 } // namespace csvb
 
 namespace mm {
+struct Col3;
 struct Vec3;
 } // namespace mm
 
@@ -33,14 +34,23 @@ extern const char *GLASS_BREAKAGE;
 extern const char *CAM_LGT_FILE;
 extern const char *FLAG_WAVE0_FILE;
 extern const char *FLAG_WAVE1_FILE;
+extern const char *MIRROR_BALL_MDL_FILE;
 
 class DrIniSys {
 public:
+  struct WetSetting {
+    bool unknown00; // Inferred role: getting wet rather than drying; original member name unknown.
+    s32 unknown04;  // Inferred role: first fade frames; original member name unknown.
+    s32 unknown08;  // Inferred role: second fade frames; original member name unknown.
+    f32 unknown0c;  // Inferred role: wetness value; original member name unknown.
+  };
+
   DrIniSys(DrMan *drMan);
   ~DrIniSys();
   void dataWorkClear();
   bool chkOnOff(const char *value);
   f32 getFloatWork(const char *value);
+  void getdrColor3Work(mm::Col3 &color, const char *value);
   int getToonDirType(const char *value);
   int getIntWork(const char *value);
   FileResTh *readTextureMapFile(const char *name);
@@ -69,12 +79,14 @@ public:
   void dispMirrorBallPerformanceMDL(WinProc *proc);
   void setMirrorBallPosition(const mm::Vec3 &position);
   void setStrWork(char *dst, const char *src);
+  FileResTh *readWorkFile(const char *name);
   void setLutTexture(int index, void *data, int size);
   void setCubeTexture(int index, void *data, int size);
   void reloadMirrorBallModel();
   void reloadRainDropTexture();
   void reloadFlagWaveTexture();
   const void *getGlassBreakage() const;
+  void getWetnessSetting(u16 index, WetSetting &setting) const;
 
   DrMan *unknown00;                        // Inferred role: dr man; original member name unknown.
   FileResTh *unknown08[18];                // Inferred role: texture resources ([4, 5] toon grad, [6] toon rim, [7..11] volume, [12] IBL env, [13, 14] rain drop, [16, 17] flag
@@ -93,6 +105,9 @@ public:
   csvb::CCsvbData *unknown1b88;     // Inferred role: wetness csvb data; original member name unknown.
 };
 
+static_assert(offsetof(DrIniSys::WetSetting, unknown04) == 0x04, "");
+static_assert(offsetof(DrIniSys::WetSetting, unknown0c) == 0x0c, "");
+static_assert(sizeof(DrIniSys::WetSetting) == 0x10, "");
 static_assert(offsetof(DrIniSys, unknown08) == 0x08, "");
 static_assert(offsetof(DrIniSys, unknown98) == 0x98, "");
 static_assert(offsetof(DrIniSys, unknown878) == 0x878, "");

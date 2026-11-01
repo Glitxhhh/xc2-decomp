@@ -11,6 +11,7 @@
 #include "ml/scn.h"
 #include "ml/scn_obj_model.h"
 #include "ml/work_util.h"
+#include "mm_math/mm_col3.h"
 #include "mtl/alloc_handle.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,8 +34,8 @@ inline void unknown001(DrIniSys *self) {
 }
 
 // Inferred helper: takes the file from the scene entry resources, or loads it; original name unknown.
-// Evidence: the same block follows the path formatting in readTextureMapFile, loadFilterLutTexture, loadGlassBreakage and
-// loadCameraLight.
+// Evidence: the same block follows the path formatting in readTextureMapFile, loadFilterLutTexture, loadGlassBreakage,
+// loadCameraLight and loadMirrorBallModel.
 inline FileResTh *unknown003(const DrIniSys *self, const char *path) {
   Scn *scn = Scn::get();
   if (scn != nullptr) {
@@ -94,6 +95,35 @@ void DrIniSys::dataWorkClear() {
 bool DrIniSys::chkOnOff(const char *value) { return strcmp("on", value) == 0; }
 
 f32 DrIniSys::getFloatWork(const char *value) { return atof(value); }
+
+void DrIniSys::getdrColor3Work(mm::Col3 &color, const char *value) {
+  f32 rgb[3] = {0.5f, 0.5f, 0.5f};
+  int length = 0;
+  int count = 0;
+  for (int i = 0; i < 0x400; i++) {
+    char c = value[i];
+    if (c == ',') {
+      unknown002[length] = '\0';
+      rgb[count] = getFloatWork(unknown002);
+      count++;
+      if (count >= 3) {
+        break;
+      }
+      length = 0;
+    } else if (c == '\0') {
+      break;
+    } else {
+      unknown002[length++] = c;
+    }
+  }
+  if (length > 1 && count < 3) {
+    unknown002[length] = '\0';
+    rgb[count] = getFloatWork(unknown002);
+  }
+  color.r = rgb[0];
+  color.g = rgb[1];
+  color.b = rgb[2];
+}
 
 int DrIniSys::getToonDirType(const char *value) {
   const char *types[] = {"Sun", "Camera"};
@@ -233,6 +263,23 @@ void DrIniSys::setDispMirrorBall(bool isDisp) {
   }
 }
 
+void DrIniSys::loadMirrorBallModel() {
+  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/%s.wimdo", MIRROR_BALL_MDL_FILE);
+  FileResTh *res = unknown003(this, unknown002);
+  if (res == nullptr) {
+    return;
+  }
+  if (unknown880 != nullptr) {
+    unknown880->setDelete();
+  }
+  if (unknown878 != nullptr) {
+    unknown878->Release();
+    unknown878 = nullptr;
+  }
+  unknown878 = res;
+  unknown880 = Scn::get()->createMdl(res->unknownc8, unknown002, 0);
+}
+
 bool DrIniSys::getUpdateMirrorBallPos() const { return m_updateMirrorBallPos; }
 
 void DrIniSys::setUpdateMirrorBallPos(bool isUpdate) { m_updateMirrorBallPos = isUpdate; }
@@ -256,6 +303,13 @@ void DrIniSys::setStrWork(char *dst, const char *src) {
   *dst = '\0';
 }
 
+FileResTh *DrIniSys::readWorkFile(const char *name) {
+  snprintf(unknown002, sizeof(unknown002), "monolib/shader/%s.wilut", name);
+  FileResTh *res = new (WorkUtil::getWorkMem()) FileResTh();
+  res->loadBlock(unknown00->unknown1c, unknown002, 0x1000, 0);
+  return res;
+}
+
 void DrIniSys::setLutTexture(int index, void *data, int size) { grlib::CGLibTexture::createTextureImagePtrs(unknown98[index], data, size, false, nullptr, true); }
 
 void DrIniSys::setCubeTexture(int index, void *data, int size) { grlib::CGLibTexture::createTextureImagePtrs(unknown98[index], data, size, false, nullptr, true); }
@@ -265,6 +319,23 @@ void DrIniSys::reloadMirrorBallModel() { loadMirrorBallModel(); }
 void DrIniSys::reloadRainDropTexture() { loadRainDropTexture(); }
 
 void DrIniSys::reloadFlagWaveTexture() { loadFlagWaveTexture(); }
+
+void DrIniSys::getWetnessSetting(u16 index, WetSetting &setting) const {
+  if (unknown1b88->GetRowCount() == 0) {
+    setting.unknown00 = false;
+    setting.unknown04 = 0;
+    setting.unknown08 = 0;
+    setting.unknown0c = unknown970.unknown109c;
+  } else {
+    if (index != 0 && index >= unknown1b88->GetRowCount()) {
+      index = 0;
+    }
+    setting.unknown00 = unknown1b88->GetInt(index, 0) == 1;
+    setting.unknown04 = unknown1b88->GetInt(index, 1);
+    setting.unknown08 = unknown1b88->GetInt(index, 2);
+    setting.unknown0c = unknown1b88->GetColumCount(index) >= 4 ? unknown1b88->GetFloat(index, 3) : unknown970.unknown109c;
+  }
+}
 
 const void *DrIniSys::getGlassBreakage() const { return unknown898->unknownc8; }
 

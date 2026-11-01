@@ -1,6 +1,7 @@
 #include "dr/dr_shd_lgt_man.h"
 
 #include "dr/dr_ap_gx_type.h"
+#include "dr/dr_light_obj.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_shd_lgt_clustered.h"
@@ -12,6 +13,8 @@
 #include "ml/file_res_th.h"
 #include "ml/scn.h"
 #include "ml/work_util.h"
+#include "mm_math/mm_quat.h"
+#include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 
 namespace ml {
@@ -144,5 +147,7 @@ void DrShdLgtMan::setupLgtBuff() {
     unknown00->unknown78->selectLightRenderTarget();
   }
 }
+
+void DrShdLgtMan::renderDebugPnt(DrLightObjPnt *light) { renderDebug(RENDER_DEBUG_TYPE_UNKNOWN_0, light->m_pos, mm::Quat::identity, mm::Vec3::unit * light->unknownb4[0], light->unknown90); }
 
 } // namespace ml

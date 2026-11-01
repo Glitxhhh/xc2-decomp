@@ -75,4 +75,15 @@ public:
   bool asyncUpdate() override;
 };
 
+class DevFileBlackListNxTh : public mm::mtl::PtrSingleton<DevFileBlackListNxTh> {
+public:
+  DevFileBlackListNxTh(mtl::ALLOC_HANDLE handle);
+  ~DevFileBlackListNxTh() override;
+  bool check(const char *path);
+
+  char *unknown08; // Inferred role: list of NUL terminated path patterns ended by an empty one; original member name unknown.
+};
+
+static_assert(offsetof(DevFileBlackListNxTh, unknown08) == 0x08, "");
+
 } // namespace ml

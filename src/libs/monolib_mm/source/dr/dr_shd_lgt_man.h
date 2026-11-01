@@ -5,7 +5,14 @@
 #include "grlib/cglib_shd_list.h"
 #include "types.h"
 
+namespace mm {
+struct Col3;
+struct Quat;
+struct Vec3;
+} // namespace mm
+
 namespace ml {
+class DrLightObjPnt;
 class DrMan;
 class FileResTh;
 class DrShdLgtClustered;
@@ -18,11 +25,16 @@ public:
   enum COMP_SHADER_TYPE {};
   enum GIBL_SHADER_TYPE {};
   enum DECLARATION {};
+  enum RENDER_DEBUG_TYPE {
+    RENDER_DEBUG_TYPE_UNKNOWN_0 = 0, // Inferred role: point light.
+  };
 
   static const char *s_DeclarationNames[19];
 
   DrShdLgtMan(DrMan *drMan);
   ~DrShdLgtMan();
+  void renderDebugPnt(DrLightObjPnt *light);
+  void renderDebug(RENDER_DEBUG_TYPE type, const mm::Vec3 &position, const mm::Quat &rotation, const mm::Vec3 &scale, const mm::Col3 &color);
   DrShdLgtHybrid *getHybridLight();
   void releaseLightShader();
   void reloadShader(int);

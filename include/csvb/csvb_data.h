@@ -23,6 +23,8 @@ public:
   bool Copy(mtl::ALLOC_HANDLE handle, const CCsvbData *source);
   bool Copy(mm::mtl::IAllocator *allocator, const CCsvbData *source);
   u16 GetRowCount() const;
+  u16 GetColumCount(u16 row) const;
+  s32 GetInt(u16 row, u16 column) const;
   f32 GetFloat(u16 row, u16 column) const;
 
   u8 m_rowCount[0x38 - 0x00];

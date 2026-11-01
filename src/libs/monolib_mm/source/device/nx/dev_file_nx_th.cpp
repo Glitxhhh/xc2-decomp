@@ -11,8 +11,6 @@
 
 namespace ml {
 
-class DevFileBlackListNxTh; // IWYU pragma: keep
-
 namespace dfn_detail {
 
 mm::mtl::HeapAllocator g_allocator;
@@ -92,6 +90,82 @@ bool DevFileNxTh::rfClose(FileHandleTh *handle) {
     channel->unknown10c = false;
   }
   return isClosed;
+}
+
+bool DevFileBlackListNxTh::check(const char *path) {
+  const char *pattern = unknown08;
+  if (pattern == nullptr) {
+    return true;
+  }
+  while (*path == '/' || *path == '\\') {
+    path++;
+  }
+  while (*pattern != '\0') {
+    const char *src = path;
+    const char *dst = pattern;
+    // Inferred codes: 0 same character, 1 end of the pattern, 6 wildcard matched, 7 mismatch.
+    int result;
+    for (;;) {
+      char c = *src++;
+      char t = *dst++;
+      if (t == '\0') {
+        result = 1;
+      } else if (c == '\0') {
+        result = 7;
+      } else if (t == '*') {
+        t = *dst++;
+        while (t != c) {
+          c = *src++;
+          if (c == '\\') {
+            c = '/';
+          } else if (c == '\0') {
+            break;
+          } else if (c >= 'A' && c <= 'Z') {
+            c += 'a' - 'A';
+          }
+        }
+        if (t != c) {
+          result = 7;
+        } else if (t != '\0') {
+          result = 6;
+        } else {
+          result = 1;
+        }
+      } else {
+        if (c == '\\') {
+          c = '/';
+        }
+        if (c >= 'A' && c <= 'Z') {
+          c += 'a' - 'A';
+        }
+        result = t == c ? 0 : 7;
+      }
+      switch (result) {
+      case 0:
+      case 6:
+        continue;
+      case 7:
+        while (*pattern++ != '\0') {
+        }
+        result = 0;
+        break;
+      }
+      break;
+    }
+    if (result != 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+DevFileBlackListNxTh::DevFileBlackListNxTh(mtl::ALLOC_HANDLE handle) : unknown08(nullptr) {}
+
+DevFileBlackListNxTh::~DevFileBlackListNxTh() {
+  if (unknown08 != nullptr) {
+    mtl::MemManager::deallocate(unknown08, 0, false);
+    unknown08 = nullptr;
+  }
 }
 
 } // namespace ml

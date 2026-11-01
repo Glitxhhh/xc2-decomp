@@ -3,6 +3,7 @@
 #include "ml/dev_file_th.h"
 #include "ml/work_event.h"
 #include "mm_mtl/allocator.h"
+#include "mm_mtl/fixed_array.h" // IWYU pragma: keep
 #include "mm_mtl/internal/fixed_object_allocator.h"
 #include "mtl/mem_manager.h"
 
@@ -198,3 +199,4 @@ void FileHandleTh::setTime(u64 time) { m_time = time; }
 } // namespace ml
 
 template void mm::mtl::FixedObjectAllocator<ml::FileHandleTh, 640>::deallocate(ml::FileHandleTh *p);
+template void mm::mtl::FixedArray<ml::FileHandleTh, 13>::assign(const ml::FileHandleTh &value);
