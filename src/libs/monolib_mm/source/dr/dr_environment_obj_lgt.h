@@ -31,6 +31,7 @@ struct LgtPosData {
   f32 unknown5c;    // Inferred role: range radius; original member name unknown.
   u16 unknown60;    // Inferred role: 1-based index in the clip list, 0 when not clipped; original member name unknown.
   u16 unknown62;    // Inferred role: index in the DrMan global table that hides the light; original member name unknown.
+  u8 _64[0x70 - 0x64];
 };
 
 static_assert(offsetof(LgtPosData, unknown4c) == 0x4c, "");
@@ -38,6 +39,7 @@ static_assert(offsetof(LgtPosData, unknown50) == 0x50, "");
 static_assert(offsetof(LgtPosData, unknown5c) == 0x5c, "");
 static_assert(offsetof(LgtPosData, unknown60) == 0x60, "");
 static_assert(offsetof(LgtPosData, unknown62) == 0x62, "");
+static_assert(sizeof(LgtPosData) == 0x70, "");
 
 struct LgtPosTreeRange {
   f32 unknown00[3]; // Inferred role: range max; original member name unknown.
@@ -94,6 +96,43 @@ public:
     u8 _18[0x1c - 0x18];
     f32 unknown1c; // Inferred role: light value copied into DrLightObjSpt::unknownd8, 4.0 when not positive; original member name unknown.
     f32 unknown20; // Inferred role: light value copied into DrLightObjSpt::unknowndc; original member name unknown.
+  };
+
+  // Inferred type: weather variant list of a fog, at the table of LgtFileHeader offset 0x24; the original type name is unknown.
+  struct unknown008 {
+    s32 unknown00; // Inferred role: variant count; original member name unknown.
+    u32 unknown04; // Inferred role: offset of the variants, pairs of weather and LgtGlbFogObj index; original member name unknown.
+    s16 unknown08; // Inferred role: weather of the base fog; original member name unknown.
+    u8 _0a[0x14 - 0x0a];
+  };
+
+  // Inferred type: light object table of the light file, at LgtFileHeader::unknown08; the original type name is unknown.
+  struct unknown010 {
+    s32 unknown00; // Inferred role: light object count; original member name unknown.
+    s32 unknown04; // Inferred role: offset of the LgtObjData entries; original member name unknown.
+    u32 unknown08; // Inferred role: offset of the texture table; original member name unknown.
+    s32 unknown0c; // Inferred role: texture count; original member name unknown.
+    u32 unknown10; // Inferred role: ambient light count; original member name unknown.
+    u32 unknown14; // Inferred role: directional light count; original member name unknown.
+    u32 unknown18; // Inferred role: point light count; original member name unknown.
+    u32 unknown1c; // Inferred role: spot light count; original member name unknown.
+    u8 _20[0x28 - 0x20];
+    u32 unknown28; // Inferred role: offset of the animation data; original member name unknown.
+    u32 unknown2c; // Inferred role: local IBL light count; original member name unknown.
+  };
+
+  // Inferred type: light position table of the light file, at LgtFileHeader::unknown0c; the original type name is unknown.
+  struct unknown011 {
+    s32 unknown00; // Inferred role: light position count; original member name unknown.
+    s32 unknown04; // Inferred role: offset of the LgtPosData entries; original member name unknown.
+    u8 _08[0x0c - 0x08];
+    s32 unknown0c; // Inferred role: offset of the LgtPosTreeRange entries; original member name unknown.
+  };
+
+  // Inferred type: fog weather variant table of the light file, at LgtFileHeader::unknown24; the original type name is unknown.
+  struct unknown012 {
+    u8 _00[0x04];
+    u32 unknown04; // Inferred role: offset of the unknown008 entries; original member name unknown.
   };
 
   // Inferred role: tells whether the DrMan global table hides the light of index id (0 is never hidden); original name unknown.
@@ -176,9 +215,9 @@ public:
   int unknown150;                    // Inferred role: screen, passed to setupLgt; original member name unknown.
   const LgtFileHeader *unknown158;   // Inferred role: light file data; original member name unknown.
   const LgtObjData *unknown160;      // Inferred role: light object data; original member name unknown.
-  const void *unknown168;            // Inferred role: light file table set by setupLgt; original member name unknown.
+  const LgtGlbFogObj *unknown168;    // Inferred role: fogs of the light file; original member name unknown.
   const LgtPosTreeRange *unknown170; // Inferred role: position tree ranges; original member name unknown.
-  const void *unknown178;            // Inferred role: light file table set by setupLgt; original member name unknown.
+  const unknown008 *unknown178;      // Inferred role: weather variant lists of the fogs; original member name unknown.
   void *unknown180;                  // Inferred role: work memory of the lights, fogs and lists; original member name unknown.
   u32 *unknown188;                   // Inferred role: bits of the lights checked this frame; original member name unknown.
   DrResWrkClipList *unknown190;      // Inferred role: clip list; original member name unknown.
@@ -210,6 +249,11 @@ public:
 };
 
 static_assert(sizeof(DrEnvironmentObjLgt::unknown001) == 0x08, "");
+static_assert(offsetof(DrEnvironmentObjLgt::unknown010, unknown28) == 0x28, "");
+static_assert(offsetof(DrEnvironmentObjLgt::unknown011, unknown0c) == 0x0c, "");
+static_assert(offsetof(DrEnvironmentObjLgt::unknown012, unknown04) == 0x04, "");
+static_assert(sizeof(DrEnvironmentObjLgt::unknown008) == 0x14, "");
+static_assert(offsetof(DrEnvironmentObjLgt::unknown008, unknown08) == 0x08, "");
 static_assert(offsetof(DrEnvironmentObjLgt, unknown98) == 0x98, "");
 static_assert(offsetof(DrEnvironmentObjLgt, unknowna8) == 0xa8, "");
 static_assert(offsetof(DrEnvironmentObjLgt, unknowne0) == 0xe0, "");

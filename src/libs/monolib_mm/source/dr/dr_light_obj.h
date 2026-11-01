@@ -182,7 +182,9 @@ public:
 
   mm::Mat44 unknown30; // Inferred role: matrix; original member name unknown.
   mm::Vec3 m_pos;
-  u8 _80[0xb0 - 0x80];
+  u8 _80[0x90 - 0x80];
+  mm::Vec3 unknown90; // Inferred role: direction, the -z axis of the matrix; original member name unknown.
+  u8 _a0[0xb0 - 0xa0];
   mm::Col3 unknownb0; // Inferred role: color; original member name unknown.
   f32 unknownbc;      // Inferred role: angle; original member name unknown.
   f32 m_size;
@@ -199,6 +201,7 @@ public:
 };
 
 static_assert(offsetof(DrLightObjSpt, m_pos) == 0x70, "");
+static_assert(offsetof(DrLightObjSpt, unknown90) == 0x90, "");
 static_assert(offsetof(DrLightObjSpt, unknownb0) == 0xb0, "");
 static_assert(offsetof(DrLightObjSpt, unknownbc) == 0xbc, "");
 static_assert(offsetof(DrLightObjSpt, unknownc8) == 0xc8, "");

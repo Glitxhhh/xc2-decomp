@@ -177,6 +177,19 @@ void DrLightObjPnt::releasePnt() {
   }
 }
 
+void DrLightObjSpt::setMat(const f32 *matrix) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      unknown30.rows[i][j] = matrix[i * 4 + j];
+    }
+  }
+  unknown90 = mm::Vec3(unknown30.rows[0][0] * 0.0f + unknown30.rows[1][0] * 0.0f - unknown30.rows[2][0],
+                       unknown30.rows[0][1] * 0.0f + unknown30.rows[1][1] * 0.0f - unknown30.rows[2][1],
+                       unknown30.rows[0][2] * 0.0f + unknown30.rows[1][2] * 0.0f - unknown30.rows[2][2]);
+  unknown90.unknown001();
+  m_pos = unknown30.unknown004();
+}
+
 void DrLightObjSpt::deleteSptShadow() { releaseSpt(); }
 
 DrLightObjSpt::~DrLightObjSpt() { releaseSpt(); }

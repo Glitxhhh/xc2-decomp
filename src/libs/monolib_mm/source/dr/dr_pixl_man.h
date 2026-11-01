@@ -29,7 +29,8 @@ struct wkPixlManRes {
   DrPixlDeferred *unknown170;  // Inferred role: deferred; original member name unknown.
   DrPixlShadowMan *unknown178; // Inferred role: shadow man; original member name unknown.
   DrPixlPostMan *unknown180;   // Inferred role: post man; original member name unknown.
-  u8 _188[0x194 - 0x188];
+  f32 unknown188;              // Inferred role: tone strength, first value of setToneStr; original member name unknown.
+  u8 _18c[0x194 - 0x18c];
   f32 unknown194; // Inferred role: tone ave min; original member name unknown.
   f32 unknown198; // Inferred role: tone ave max; original member name unknown.
   u8 _19c[0x1a0 - 0x19c];
@@ -47,6 +48,7 @@ static_assert(offsetof(wkPixlManRes, unknown148) == 0x148, "");
 static_assert(offsetof(wkPixlManRes, unknown170) == 0x170, "");
 static_assert(offsetof(wkPixlManRes, unknown178) == 0x178, "");
 static_assert(offsetof(wkPixlManRes, unknown180) == 0x180, "");
+static_assert(offsetof(wkPixlManRes, unknown188) == 0x188, "");
 static_assert(offsetof(wkPixlManRes, unknown194) == 0x194, "");
 static_assert(offsetof(wkPixlManRes, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(wkPixlManRes, unknown1b0) == 0x1b0, "");
@@ -66,6 +68,7 @@ public:
 
   void debugRender(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, bool isAlpha, bool isDepth, f32 scale, bool isFlip);
   void debugRender(int type, int x, int y, int width, int height, bool isAlpha);
+  void debugRenderCube(const grlib::CGLibTextureBuffer &texture, u32 face, u32 level, bool isAlpha, int x, int y, int width, int height, bool isGamma, f32 scale);
   void captureMainFrameBuffer(grlib::CGLibTextureBuffer *buffer, u32 width, u32 height);
   void debugRenderCh(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, u32 channel);
   void setupGodRay();

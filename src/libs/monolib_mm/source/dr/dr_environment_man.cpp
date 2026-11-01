@@ -21,6 +21,7 @@
 #include "dr/dr_light_obj.h"
 #include "dr/dr_light_obj_local_ibl.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_res_wrk_clip_list.h"
 #include "dr/dr_shd_lgt_man.h"
@@ -33,6 +34,10 @@
 #include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
+
+namespace grlib {
+class CGLibTextureBuffer;
+} // namespace grlib
 
 namespace ml {
 
@@ -287,6 +292,42 @@ void DrEnvironmentObjLgt::setupSpot(DrEnvironmentLgtList *list, DrLightObjSpt *l
   light->unknowne0 = spt->unknown08;
   light->unknowne4 = spt->unknown14;
   list->unknown10 = light;
+}
+
+void DrEnvironmentObjLgt::changeMemCall(const void *data) {
+  unknown158 = static_cast<const LgtFileHeader *>(data);
+  const LgtFileHeader *header = static_cast<const LgtFileHeader *>(data);
+  const u8 *base = static_cast<const u8 *>(data);
+  if (header->unknown08 != 0) {
+    const unknown010 *objTable = reinterpret_cast<const unknown010 *>(base + header->unknown08);
+    const LgtObjData *obj = reinterpret_cast<const LgtObjData *>(base + objTable->unknown04);
+    unknown160 = obj;
+    if (header->unknown20 != 0) {
+      unknowne0.changeMemAnim(base, header->unknown20);
+    } else if (objTable->unknown28 != 0) {
+      unknowne0.changeMemAnim(base, objTable->unknown28);
+    }
+    const unknown011 *posTable = reinterpret_cast<const unknown011 *>(base + header->unknown0c);
+    const LgtPosData *pos = reinterpret_cast<const LgtPosData *>(base + posTable->unknown04);
+    unknown170 = reinterpret_cast<const LgtPosTreeRange *>(base + posTable->unknown0c);
+    int lightNum = posTable->unknown00;
+    for (int i = 0; i < lightNum; i++, obj++, pos++) {
+      unknown198[i].unknown00 = obj;
+      unknown198[i].unknown08 = pos;
+    }
+  }
+  if (header->unknown14 != 0) {
+    const u8 *file = reinterpret_cast<const u8 *>(unknown158);
+    unknown168 = reinterpret_cast<const LgtGlbFogObj *>(file + reinterpret_cast<const unknown001 *>(file + header->unknown14)->unknown00);
+  }
+  if (header->unknown28 & 0x10000) {
+    unknown190->changeMemCall(reinterpret_cast<const u8 *>(unknown158), header->unknown2c);
+  }
+  unknowna8.changeMemEnvTimeData(header, reinterpret_cast<const u8 *>(unknown158));
+  if (header->unknown24 != 0) {
+    const u8 *file = reinterpret_cast<const u8 *>(unknown158);
+    unknown178 = reinterpret_cast<const unknown008 *>(file + reinterpret_cast<const unknown012 *>(file + header->unknown24)->unknown04);
+  }
 }
 
 void DrEnvironmentObjLgt::setupBox(DrEnvironmentLgtList *list, DrLightObjSpt *light, const LgtObjData *data, const LgtPosData *pos) {}
@@ -589,6 +630,18 @@ void DrEnvironmentObjLgt::callback_Ren_Spot(DrLightObj *light, DrShdLgtMan *shdL
 }
 
 void DrEnvironmentObjLgt::callback_Ren2D_Non(DrLightObj *light, DrShdLgtMan *shdLgtMan) {}
+
+void DrEnvironmentObjLgt::callback_Ren2D_LocalIBL(DrLightObj *light, DrShdLgtMan *shdLgtMan) {
+  DrMan *drMan = unknown18;
+  int height = drMan->unknown5b8->unknown1c;
+  f32 scale = drMan->unknown120[drMan->unknown1c98]->getToneMapOn() ? unknown18->unknown78->unknown7f0->unknown188 : 1.0f;
+  const grlib::CGLibTextureBuffer *texture = static_cast<DrLightObjLocalIBL *>(light)->unknown40;
+  if (texture != nullptr) {
+    for (u32 face = 0; face < 6; face++) {
+      unknown18->unknown78->debugRenderCube(*texture, face, 0, false, 5 + face * 129, height - 133, 128, 128, false, scale);
+    }
+  }
+}
 
 void DrEnvironmentObjLgt::callback_Relase_Non(DrLightObj *light) {}
 

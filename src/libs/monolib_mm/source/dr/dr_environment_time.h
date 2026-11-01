@@ -6,13 +6,25 @@
 namespace ml {
 class DrMan;
 
-// Inferred role: light file header; original type name unknown.
+// Light file header; layout from DrEnvironmentObjLgt::setupLgt (1.0.0: 0x71007e0388) and changeMemCall (0x71007e1890).
 struct LgtFileHeader {
-  u8 _00[0x14];
+  u8 _00[0x04];
+  u32 unknown04; // Inferred role: version, 10008 makes the time data loop; original member name unknown.
+  u32 unknown08; // Inferred role: offset of the light object table; original member name unknown.
+  u32 unknown0c; // Inferred role: offset of the light position table; original member name unknown.
+  u8 _10[0x14 - 0x10];
   u32 unknown14; // Inferred role: offset of the fog table; original member name unknown.
   u8 _18[0x1c - 0x18];
   u32 unknown1c; // Inferred role: offset of the time data; original member name unknown.
+  u32 unknown20; // Inferred role: offset of the animation data, the light object table one when zero; original member name unknown.
+  u32 unknown24; // Inferred role: offset of the fog weather variant table; original member name unknown.
+  u32 unknown28; // Inferred role: flags, bit 7 local IBL lights, bit 16 clip list; original member name unknown.
+  u32 unknown2c; // Inferred role: clip list offset passed to DrResWrkClipList; original member name unknown.
 };
+
+static_assert(offsetof(LgtFileHeader, unknown14) == 0x14, "");
+static_assert(offsetof(LgtFileHeader, unknown1c) == 0x1c, "");
+static_assert(offsetof(LgtFileHeader, unknown2c) == 0x2c, "");
 
 class DrEnvironmentTime {
 public:

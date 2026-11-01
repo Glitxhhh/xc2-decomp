@@ -70,9 +70,11 @@ struct LgtGlbFogObj {
   f32 unknown3c;    // Inferred role: fog value copied by setupFog; original member name unknown.
   f32 unknown40;    // Inferred role: fog value copied by setupFog; original member name unknown.
   u16 unknown44;    // Inferred role: animation index; original member name unknown.
-  u8 _46[0x4a - 0x46];
-  u16 unknown4a; // Inferred role: index of DrEnvironmentObjLgt::s_pCallFogCall; original member name unknown.
-  u8 _4c[0x50 - 0x4c];
+  u16 unknown46;    // Inferred role: time index passed to DrEnvironmentTime::calcTimeInfo; original member name unknown.
+  u16 unknown48;    // Inferred role: flags, bit 0 animation, bit 1 time, bit 2 weather variants, bit 10 no time blend; original member name unknown.
+  u16 unknown4a;    // Inferred role: index of DrEnvironmentObjLgt::s_pCallFogCall; original member name unknown.
+  u16 unknown4c;    // Inferred role: index of the weather variant table; original member name unknown.
+  u8 _4e[0x50 - 0x4e];
   f32 unknown50; // Inferred role: fog value copied by setupFog; original member name unknown.
   u8 _54[0x5c - 0x54];
 };
@@ -80,7 +82,9 @@ struct LgtGlbFogObj {
 static_assert(offsetof(LgtGlbFogObj, unknown0c) == 0x0c, "");
 static_assert(offsetof(LgtGlbFogObj, unknown18) == 0x18, "");
 static_assert(offsetof(LgtGlbFogObj, unknown44) == 0x44, "");
+static_assert(offsetof(LgtGlbFogObj, unknown48) == 0x48, "");
 static_assert(offsetof(LgtGlbFogObj, unknown4a) == 0x4a, "");
+static_assert(offsetof(LgtGlbFogObj, unknown4c) == 0x4c, "");
 static_assert(sizeof(LgtGlbFogObj) == 0x5c, "");
 
 // Inferred role: light bit key; original type name unknown.
