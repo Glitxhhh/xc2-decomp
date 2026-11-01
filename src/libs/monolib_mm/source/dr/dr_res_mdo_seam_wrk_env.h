@@ -12,6 +12,7 @@ struct MdsSeamEnvMapHead;
 
 class DrResMdoSeamWrkEnv {
 public:
+  virtual ~DrResMdoSeamWrkEnv();
   void setDispState();
   u32 chkDispState();
   u8 *getDisplayWrk();
@@ -21,11 +22,12 @@ public:
   void setInfo(const mm::Vec3 &position, const mm::Vec3 &scale, bool isEnable, u32 flags);
   void release();
 
-  u8 _00[0x08];
   DrResMdoSeamWrkEnv *unknown08;      // Inferred role: next object; original member name unknown.
   DrResMdoSeamWrkEnv *unknown10;      // Inferred role: previous object; original member name unknown.
   const MdsSeamEnvMapHead *unknown18; // Inferred role: env map header; original member name unknown.
-  u8 _20[0x38 - 0x20];
+  u8 _20[0x28 - 0x20];
+  void *unknown28; // Inferred role: allocated bit table; original member name unknown.
+  u8 _30[0x38 - 0x30];
   u8 *unknown38[2]; // Inferred role: display work per buffer; original member name unknown.
   int unknown48[2]; // Inferred role: display work size per buffer; original member name unknown.
   u32 unknown50;    // Inferred role: env map index; original member name unknown.
@@ -40,6 +42,8 @@ public:
   mm::Vec3 unknown80; // Inferred role: position; original member name unknown.
   mm::Vec3 unknown90; // Inferred role: scale; original member name unknown.
 };
+
+static_assert(offsetof(DrResMdoSeamWrkEnv, unknown28) == 0x28, "");
 
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown18) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown38) == 0x38, "");

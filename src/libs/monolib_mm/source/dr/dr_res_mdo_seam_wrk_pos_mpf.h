@@ -8,6 +8,15 @@ class DrResMdoSeamMemObj;
 
 class DrResMdoSeamWrkPosMpf {
 public:
+  // Inferred role: header of the position data of an etc mpf; original type name unknown.
+  struct unknown001 {
+    u8 _00[0x04];
+    u32 unknown04; // Inferred role: first table offset; original member name unknown.
+    u8 _08[0x0c - 0x08];
+    u32 unknown0c; // Inferred role: second table offset; original member name unknown.
+    u32 unknown10; // Inferred role: position num; original member name unknown.
+  };
+
   DrResMdoSeamWrkPosMpf();
   u32 getDataSize() const;
   void setupMpfBasePos(const u8 *data);

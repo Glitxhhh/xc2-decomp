@@ -8,6 +8,7 @@
 
 namespace ml {
 class DrResMdoSeamColi;
+class DrResMdoSeamMemObj;
 class DrResMdoSeamTexList;
 class DrResMdoSeamTexture;
 class DrResMdoSeamVertex;
@@ -175,13 +176,17 @@ public:
   static int calcSemaAlignment(u32 size, u32 alignment);
   void seamZPrePassBegin();
   void seamZPrePassEnd();
+  void seamThicknessPassBegin(bool isFirst);
   void seamThicknessPassEnd(bool value);
   DrResMdoSeamTexture *createFreeSeamTexture();
   DrResMdoSeamTexList *createFreeSeamTexList();
   DrResMdoSeamVertex *createFreeSeamVertex();
   void releaseFreeSeamTexture(DrResMdoSeamTexture *texture, bool isAll);
+  void releaseFreeSeamMemObj(DrResMdoSeamMemObj *mem);
   void releaseFreeSeamTexList(DrResMdoSeamTexList *texList, bool isAll);
   void releaseFreeSeamVertex(DrResMdoSeamVertex *vertex, bool isAll);
+  DrResMdoSeamMemObj *createFreeSeamMemObj4K(u32 size);
+  DrResMdoSeamMemObj *createFreeSeamMemObjBack4K(u32 size);
   DrResMdoSeamColi *createFreeSeamCollision();
 
   u8 _190[0x1a8 - 0x190];

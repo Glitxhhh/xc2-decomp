@@ -13,6 +13,6 @@ int DrMdoCtlMpfWork::calcRenderListWork(int count, const MdsMpfObjData *data) {
 
 void DrMdoCtlMpfWork::changeMemWork(const MdsMpfObjData *data) { unknown38 = data; }
 
-u16 DrMdoCtlMpfWork::getObjChk(int index) { return unknown20[index].unknown20; }
+u32 DrMdoCtlMpfWork::getObjChk(int index) { return unknown20[index].unknown20; }
 
 } // namespace ml

@@ -17,11 +17,14 @@ public:
   // Inferred role: auto mpf resource header; original type name unknown.
   struct unknown001 {
     s32 unknown00; // Inferred role: object count; original member name unknown.
+    u8 _04[0x5c - 0x04];
+    u32 unknown5c; // Inferred role: polygon table offset; original member name unknown.
   };
 
   DrMdoCtlMpfAuto();
   ~DrMdoCtlMpfAuto();
   void autoMpfRelease();
+  void changeMemAutoMpf(const u8 *data, const u8 *autoData);
   void resetPrePos();
   void setBuffTbl(_wkMpfAutoBuff **table, int count);
   void SeqListCount();

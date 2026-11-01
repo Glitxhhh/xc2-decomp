@@ -58,6 +58,8 @@ int DrMdoCtlSeam::calcSemaAlignment(u32 size, u32 alignment) {
   return padding + size;
 }
 
+void DrMdoCtlSeam::releaseFreeSeamMemObj(DrResMdoSeamMemObj *mem) { unknown6e0.releaseFreeObj(mem); }
+
 void DrMdoCtlSeam::releaseFreeSeamTexList(DrResMdoSeamTexList *texList, bool isAll) {
   if (isAll) {
     texList->release();
@@ -90,6 +92,16 @@ void DrMdoCtlSeam::releaseFreeSeamVertex(DrResMdoSeamVertex *vertex, bool isAll)
   }
 }
 
+DrResMdoSeamMemObj *DrMdoCtlSeam::createFreeSeamMemObj4K(u32 size) {
+  u32 alignedSize = calcSemaAlignment(size, 0x1000);
+  return unknown6e0.createFreeObj(alignedSize);
+}
+
+DrResMdoSeamMemObj *DrMdoCtlSeam::createFreeSeamMemObjBack4K(u32 size) {
+  u32 alignedSize = calcSemaAlignment(size, 0x1000);
+  return unknown6e0.createBackFreeObj(alignedSize);
+}
+
 DrResMdoSeamTexture *DrMdoCtlSeam::createFreeSeamTexture() { return unknown1b0.unknown001(); }
 
 DrResMdoSeamTexList *DrMdoCtlSeam::createFreeSeamTexList() { return unknown1e8.unknown001(); }
@@ -105,6 +117,17 @@ void DrMdoCtlSeam::seamZPrePassBegin() {
 }
 
 void DrMdoCtlSeam::seamZPrePassEnd() {}
+
+void DrMdoCtlSeam::seamThicknessPassBegin(bool isFirst) {
+  unknownf2 = 0;
+  unknown001();
+  if (isFirst) {
+    m_drMan->unknown5c0->beginThicknessRenderFirst();
+  } else {
+    m_drMan->unknown5c0->beginThicknessRenderSecond();
+  }
+  m_drMan->unknown5c0->setupCulling(isFirst ? DR_AP_CULL_TYPE_FRONT : DR_AP_CULL_TYPE_BACK);
+}
 
 void DrMdoCtlSeam::seamThicknessPassEnd(bool value) {}
 

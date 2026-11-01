@@ -3,8 +3,22 @@
 
 #include "types.h"
 
+namespace grlib {
+class CGLibVtxInstans;
+} // namespace grlib
+
 namespace ml {
-struct MdsMpfObjData;
+class DrCalcViewWork;
+
+// Inferred layout from DrResMdoSeamWrkMpf::calcMpfMatSetup (0x18 byte stride); member names unknown.
+struct MdsMpfObjData {
+  u8 _00[0x06];
+  u16 unknown06; // Inferred role: object type; original member name unknown.
+  u8 _08[0x18 - 0x08];
+};
+
+static_assert(offsetof(MdsMpfObjData, unknown06) == 0x06, "");
+static_assert(sizeof(MdsMpfObjData) == 0x18, "");
 
 class DrMdoCtlMpfWork {
 public:
@@ -18,7 +32,9 @@ public:
   DrMdoCtlMpfWork();
   static int calcRenderListWork(int count, const MdsMpfObjData *data);
   void changeMemWork(const MdsMpfObjData *data);
-  u16 getObjChk(int index);
+  u32 getObjChk(int index);
+  void createAutoList(int index, DrCalcViewWork *view, grlib::CGLibVtxInstans *instans);
+  void createPosList(int index, grlib::CGLibVtxInstans *instans);
 
   u8 _00[0x20 - 0x00];
   unknown001 *unknown20; // Inferred role: object select buffers; original member name unknown.

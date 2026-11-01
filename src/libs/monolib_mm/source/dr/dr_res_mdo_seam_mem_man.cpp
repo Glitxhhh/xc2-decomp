@@ -103,4 +103,23 @@ u32 DrResMdoSeamMemMan::getFreeSize(int &freeCount, int &separatedCount) {
 
 void DrResMdoSeamMemMan::renderMemInfo() {}
 
+bool DrResMdoSeamMemMan::calcPieceMem(bool isCheck) {
+  const DrResMdoSeamMemObj *obj = unknown00;
+  if (obj != nullptr) {
+    bool isUse = false;
+    int pieceCount = 0;
+    do {
+      if ((obj->unknown24 & 1) == 0) {
+        pieceCount += isUse;
+      }
+      if ((obj->unknown24 & 1) != 0) {
+        isUse = true;
+      }
+      obj = obj->unknown10;
+    } while (obj != nullptr);
+    return pieceCount > 19;
+  }
+  return false;
+}
+
 } // namespace ml

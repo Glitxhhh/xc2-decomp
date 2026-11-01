@@ -1,8 +1,34 @@
 #include "dr/dr_res_mdo_seam_wrk_env.h"
 
 #include "dr/dr_man.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
+
+DrResMdoSeamWrkEnv::~DrResMdoSeamWrkEnv() { release(); }
+
+void DrResMdoSeamWrkEnv::release() {
+  if (unknown58 != nullptr) {
+    mtl::MemManager::deallocate(unknown58, 0, false);
+    unknown58 = nullptr;
+  }
+  if (unknown38[0] != nullptr) {
+    mtl::MemManager::deallocate(unknown38[0], 0, false);
+    unknown38[0] = nullptr;
+  }
+  if (unknown38[1] != nullptr) {
+    mtl::MemManager::deallocate(unknown38[1], 0, false);
+    unknown38[1] = nullptr;
+  }
+  if (unknown28 != nullptr) {
+    mtl::MemManager::deallocate(unknown28, 0, false);
+    unknown28 = nullptr;
+  }
+  unknown48[0] = 0;
+  unknown48[1] = 0;
+  unknown6c = 0;
+  unknown60 = nullptr;
+}
 
 void DrResMdoSeamWrkEnv::setDispState() { unknown6c |= 1 << DrMan::s_nDblNowIdx; }
 
