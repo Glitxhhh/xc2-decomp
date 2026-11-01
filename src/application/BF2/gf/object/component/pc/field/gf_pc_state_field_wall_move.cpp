@@ -1,6 +1,7 @@
 #include "gf/object/component/pc/field/gf_pc_state_field_wall_move.h"
 
 #include "framework/object/updatable_object.h"
+#include "fw/fw_transform.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
@@ -23,8 +24,8 @@ void StateFieldWallMove::leave(GfComBehaviorPc *behavior, ai::State *next) {
   if (property->unknown310.unknown10_6) {
     MsgPcFieldNotifyWall message;
     message.unknown10 = property->unknown310.unknown130.unknown00;
-    message.unknown30 = property->unknown160;
-    message.unknown40 = property->unknown170;
+    message.unknown30.unknown00 = property->unknown160;
+    message.unknown30.unknown10 = property->unknown170;
     message.unknown50 = 3;
     StateUtilField::sendMessageWallChilds(*property, message);
   }

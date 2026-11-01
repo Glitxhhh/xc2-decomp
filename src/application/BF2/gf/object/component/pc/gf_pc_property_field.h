@@ -18,8 +18,11 @@ struct MsgObjectFlushProperty;
 enum {
   MSG_PC_FIELD_NOTIFY_WALL_JUMP = 0x1000010,
   MSG_PC_FIELD_NOTIFY_BIG_JUMP = 0x1000011,
+  MSG_PC_FIELD_NOTIFY_WALL_JUMP_START = 0x1000012,
   MSG_PC_FIELD_NOTIFY_WARP = 0x1000014,
   MSG_PC_FIELD_NOTIFY_HIGH_JUMP = 0x1000015,
+  MSG_PC_FIELD_NOTIFY_WATER_WARP = 0x1000017,
+  MSG_PC_FIELD_NOTIFY_WATER_WARP_BUDDY = 0x100001f,
 };
 
 struct MsgPcFieldNotifyBigJump : fw::Message {
@@ -80,6 +83,30 @@ static_assert(offsetof(MsgPcFieldNotifyWallJump, unknown10) == 0x10, "");
 static_assert(offsetof(MsgPcFieldNotifyWallJump, unknown20) == 0x20, "");
 static_assert(offsetof(MsgPcFieldNotifyWallJump, unknown2c) == 0x2c, "");
 static_assert(sizeof(MsgPcFieldNotifyWallJump) == 0x30, "");
+
+// Layout evidence: StateFieldWallPrepareJump broadcasts it with the wall jump info of GfPropertyField::getWallJumpInfo,
+// and AIAgentField::recieveMessage reads that info through the member at 0x8.
+struct MsgPcFieldNotifyWallJumpStart : fw::Message {
+  const MsgPcFieldNotifyWallJump *unknown08; // Inferred role: wall jump info; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldNotifyWallJumpStart, unknown08) == 0x08, "");
+
+// Layout evidence: StateFieldWaterPrepareWarp broadcasts it with the warp info of GfPropertyField::getWarpInfo, and
+// AIAgentField::procMsgPcFieldNotifyWaterWarp reads that info through the member at 0x8.
+struct MsgPcFieldNotifyWaterWarp : fw::Message {
+  const MsgPcFieldNotifyWarp *unknown08; // Inferred role: warp info; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldNotifyWaterWarp, unknown08) == 0x08, "");
+
+// Layout evidence: StateFieldWaterWarpDive sends it to the buddies with the warp info of GfPropertyField::getWarpInfo,
+// and AIAgentField::procMsgPcFieldNotifyWaterWarpBuddy reads that info through the member at 0x8.
+struct MsgPcFieldNotifyWaterWarpBuddy : fw::Message {
+  const MsgPcFieldNotifyWarp *unknown08; // Inferred role: warp info; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldNotifyWaterWarpBuddy, unknown08) == 0x08, "");
 
 namespace pc {
 struct FieldParam;

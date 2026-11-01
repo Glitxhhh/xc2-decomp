@@ -12,6 +12,15 @@ AIAgentBattle::~AIAgentBattle() {}
 
 void AIAgentBattle::setup(GfComPropertyPc &property) { unknown00 = fw::NaviManager::get()->createObject(); }
 
+void AIAgentBattle::cleanup(GfComPropertyPc &property) {
+  fw::NaviManager *manager = fw::NaviManager::get();
+  navi::NvmshAcObj *object = unknown00;
+  if (manager != nullptr && object != nullptr) {
+    manager->releaseObject(object);
+    unknown00 = nullptr;
+  }
+}
+
 void AIAgentBattle::onActivate(GfComPropertyPc &property) {
   if (unknown00 != nullptr) {
     unknown00->unknown10 |= 2;

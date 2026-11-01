@@ -2,6 +2,7 @@
 
 #include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
+#include "fw/fw_transform.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
@@ -30,8 +31,8 @@ void StateFieldOnWall::enter(GfComBehaviorPc *behavior, ai::State *previous) {
   unknown20 = *property->unknown310.unknown003();
   MsgPcFieldNotifyWall message;
   message.unknown10 = unknown20.unknown00;
-  message.unknown30 = property->unknown160;
-  message.unknown40 = property->unknown170;
+  message.unknown30.unknown00 = property->unknown160;
+  message.unknown30.unknown10 = property->unknown170;
   message.unknown50 = 0;
   StateUtilField::sendMessageWallChilds(*property, message);
   AccessPlugin *plugin = behavior->unknown001<AccessPlugin>(4);

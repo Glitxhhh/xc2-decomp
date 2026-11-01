@@ -104,7 +104,7 @@ public:
   u32 : 1;
   u32 unknown110_3 : 1; // Inferred role: enable gravity; original member name unknown.
   u32 unknown110_4 : 1; // Inferred role: set by GfPropertyField::flushOwner while sliding; original member name unknown.
-  u32 : 1;
+  u32 unknown110_5 : 1; // Inferred role: water warp enabled, tested by AIAgentField::procMsgPcFieldNotifyWaterWarp; original member name unknown.
   u32 unknown110_6 : 1; // Inferred role: battle action running, cleared by StateBattle::Leave; original member name unknown.
   u32 unknown110_7 : 1; // Inferred role: on slide; original member name unknown.
   u32 : 1;

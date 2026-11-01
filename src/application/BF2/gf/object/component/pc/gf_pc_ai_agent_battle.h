@@ -19,6 +19,7 @@ public:
   AIAgentBattle();
   ~AIAgentBattle();
   void setup(GfComPropertyPc &property);
+  void cleanup(GfComPropertyPc &property);
   void onActivate(GfComPropertyPc &property);
   void onDeactivate(GfComPropertyPc &property);
   void update(const fw::UpdateInfo &info, GfComPropertyPc &property);

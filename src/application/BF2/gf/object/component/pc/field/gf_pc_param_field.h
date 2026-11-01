@@ -77,5 +77,14 @@ struct WallMoveParam {
 static_assert(offsetof(WallMoveParam, downSpeed) == 0x08, "");
 static_assert(sizeof(WallMoveParam) == 0x0c, "");
 
+// Field names and offsets from the reflection built by gf::pc::ForceWarpAiParam::createReflection.
+struct ForceWarpAiParam {
+  f32 baseWaitTime;
+  f32 waitTimeRange;
+};
+
+static_assert(offsetof(ForceWarpAiParam, waitTimeRange) == 0x04, "");
+static_assert(sizeof(ForceWarpAiParam) == 0x08, "");
+
 } // namespace pc
 } // namespace gf

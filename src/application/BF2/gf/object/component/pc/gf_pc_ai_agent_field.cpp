@@ -1,0 +1,244 @@
+#include "gf/object/component/pc/gf_pc_ai_agent_field.h"
+
+#include <math.h>
+
+#include "framework/message/message_object.h"
+#include "framework/navi/navi_manager.h"
+#include "framework/navi/navi_util.h"
+#include "fw/fw_param_manager.h"
+#include "gf/game/gf_game_player_formation.h"
+#include "gf/object/component/pc/field/gf_pc_param_field.h"
+#include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_property_field.h"
+#include "gf/object/component/pc/gf_pc_state_util_field.h"
+#include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_util.h"
+#include "ml/rand.h"
+#include "mm_math/mm_quat.h"
+#include "navi/nvmsh_ac_obj.h"
+
+namespace gf {
+namespace pc {
+
+AIAgentField::AIAgentField() : unknown00(nullptr) {}
+
+AIAgentField::~AIAgentField() {}
+
+void AIAgentField::cleanup(GfComPropertyPc &property) {
+  unknown08.cleanup();
+  fw::NaviManager *manager = fw::NaviManager::get();
+  navi::NvmshAcObj *object = unknown00;
+  if (manager != nullptr && object != nullptr) {
+    manager->releaseObject(object);
+    unknown00 = nullptr;
+  }
+}
+
+void AIAgentField::onActivate(GfComPropertyPc &property) {
+  if (unknown00 != nullptr) {
+    unknown00->unknown10 |= 2;
+  }
+}
+
+void AIAgentField::onDeactivate(GfComPropertyPc &property) {
+  if (unknown00 != nullptr) {
+    unknown00->unknown10 &= ~2;
+  }
+}
+
+void AIAgentField::update(const fw::UpdateInfo &info, GfComPropertyPc &property) {
+  property.unknown60.unknown00 = 0.0f;
+  property.unknown60.unknown04 = 0.0f;
+  property.unknown60.unknown08.clear();
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  blackBoard->unknown08 = &property;
+  blackBoard->unknown10 = unknown00;
+  blackBoard->unknown18 = &info;
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  u32 leaderId = formation->unknown1a0[property.unknown38].unknown00;
+  bool isLeaderMoving = false;
+  if (leaderId != PLAYER_ID_NONE) {
+    GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[leaderId].unknown08);
+    if (obj != nullptr) {
+      GfComPropertyPc *leader = obj->getComponent<GfComPropertyPc>();
+      if (leader != nullptr) {
+        const mm::Vec3 &velocity = leader->unknown80;
+        f32 lengthSq = velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z;
+        if (leader->unknownc0 > 0.0f || lengthSq > 0.0f) {
+          isLeaderMoving = true;
+        }
+      }
+    }
+  }
+  blackBoard->unknown200.set(10, isLeaderMoving);
+  if (blackBoard->unknown200.test(4)) {
+    // Inferred role: wall offsets of the buddies, one per player id pair; original name unknown.
+    static const mm::Vec3 unknown001[] = {mm::Vec3(-3.0f, 0.0f, -2.0f), mm::Vec3(3.0f, 0.0f, -3.0f), mm::Vec3(-3.0f, 0.0f, -4.0f)};
+    const mm::Vec3 &offset = unknown001[property.unknown38 / 2];
+    const mm::Vec3 &up = mm::Vec3::unitY;
+    mm::Vec3 front(-blackBoard->unknown70.normal.x, -blackBoard->unknown70.normal.y, -blackBoard->unknown70.normal.z);
+    mm::Vec3 side(up.y * front.z - up.z * front.y, up.z * front.x - up.x * front.z, up.x * front.y - up.y * front.x);
+    mm::Vec3 rotated(offset.x * side.x + offset.y * up.x + offset.z * front.x + 0.0f,
+                     offset.x * side.y + offset.y * up.y + offset.z * front.y + 0.0f,
+                     offset.x * side.z + offset.y * up.z + offset.z * front.z + 0.0f);
+    mm::Vec3 target = blackBoard->unknown60 + rotated;
+    if (fw::NaviUtil::testNaviStraightLine(blackBoard->unknown1f0, property.unknown160, target, 1.0f, 3.0f) == 0) {
+      blackBoard->unknown1f0 = property.unknown160;
+    }
+  }
+  unknown08.execute();
+  blackBoard->unknown10 = nullptr;
+  blackBoard->unknown18 = nullptr;
+  blackBoard->unknown08 = nullptr;
+}
+
+bool AIAgentField::recieveMessage(GfComPropertyPc &property, fw::MessageObject *sender, fw::Message &message) {
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  blackBoard->unknown08 = &property;
+  blackBoard->unknown10 = unknown00;
+  blackBoard->unknown18 = nullptr;
+  bool result = false;
+  switch (message.unknown00) {
+  case 0x100000f:
+    procMsgPcFieldNotifyWall(sender, static_cast<MsgPcFieldNotifyWall &>(message));
+    result = true;
+    break;
+  case MSG_PC_FIELD_NOTIFY_WALL_JUMP_START:
+    procMsgPcFieldNotifyWallJumpStart(sender, static_cast<MsgPcFieldNotifyWallJumpStart &>(message));
+    result = true;
+    break;
+  case MSG_PC_FIELD_NOTIFY_HIGH_JUMP:
+    procMsgPcFieldHighJump(sender, static_cast<MsgPcFieldNotifyHighJump &>(message));
+    result = true;
+    break;
+  case MSG_PC_FIELD_NOTIFY_WATER_WARP:
+    procMsgPcFieldNotifyWaterWarp(sender, static_cast<MsgPcFieldNotifyWaterWarp &>(message));
+    result = true;
+    break;
+  case MSG_PC_FIELD_NOTIFY_WATER_WARP_BUDDY:
+    procMsgPcFieldNotifyWaterWarpBuddy(sender, static_cast<MsgPcFieldNotifyWaterWarpBuddy &>(message));
+    result = true;
+    break;
+  }
+  blackBoard->unknown10 = nullptr;
+  blackBoard->unknown18 = nullptr;
+  blackBoard->unknown08 = nullptr;
+  return result;
+}
+
+void AIAgentField::procMsgPcFieldNotifyWall(fw::MessageObject *sender, MsgPcFieldNotifyWall &message) {
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  switch (message.unknown50) {
+  case 0:
+    blackBoard->unknown200.set(5, false);
+    blackBoard->unknown200.set(4, true);
+    if (!blackBoard->unknown08->unknown310.unknown10_4) {
+      blackBoard->unknown70 = message.unknown10;
+      blackBoard->unknown60 = message.unknown30.unknown00;
+    }
+    break;
+  case 1:
+    blackBoard->unknown200.set(4, false);
+    blackBoard->unknown90 = message.unknown30.unknown00;
+    blackBoard->unknowna0.clear();
+    break;
+  case 2:
+    blackBoard->unknown200.set(4, false);
+    blackBoard->unknown200.set(5, true);
+    blackBoard->unknowna0.clear();
+    break;
+  case 3:
+    if (blackBoard->unknowna0.full()) {
+      blackBoard->unknowna0.pop_back();
+    }
+    blackBoard->unknowna0.push_front(message.unknown30);
+    break;
+  }
+}
+
+void AIAgentField::procMsgPcFieldHighJump(fw::MessageObject *sender, MsgPcFieldNotifyHighJump &message) {
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  GfComPropertyPc *property = blackBoard->unknown08;
+  if (property->unknown310.unknown10_2) {
+    const MsgPcFieldNotifyBigJump *info = message.unknown08;
+    fw::Transform transform;
+    transform.unknown00 = info->unknown10;
+    f32 angle = info->unknown20 * 0.5f;
+    transform.unknown10.y = sinf(angle);
+    transform.unknown10.w = cosf(angle);
+    transform.unknown10.x = 0.0f;
+    transform.unknown10.z = 0.0f;
+    GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+    MsgPcFieldNotifyBigJump bigJump;
+    bigJump = *info;
+    formation->calcTargetTransform(transform, property->unknown38, &bigJump.unknown10);
+    property->unknown310.setBigJumpInfo(&bigJump);
+    const fw::ParamList *paramList = unknown88.operator->();
+    const ForceWarpAiParam *param = paramList->unknown0c > 6 ? static_cast<const ForceWarpAiParam *>(paramList->unknown10[6].param) : nullptr;
+    blackBoard->unknown200.set(6);
+    blackBoard->unknown204 = param->baseWaitTime + ml::mtRandf1() * param->waitTimeRange;
+  }
+}
+
+void AIAgentField::procMsgPcFieldNotifyWaterWarp(fw::MessageObject *sender, MsgPcFieldNotifyWaterWarp &message) {
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  GfComPropertyPc *property = blackBoard->unknown08;
+  GfPropertyField &field = property->unknown310;
+  if (property->unknown110_5) {
+    const MsgPcFieldNotifyWarp *info = message.unknown08;
+    fw::Transform transform;
+    transform.unknown00 = info->unknown10;
+    f32 angle = info->unknown20 * 0.5f;
+    transform.unknown10.y = sinf(angle);
+    transform.unknown10.w = cosf(angle);
+    transform.unknown10.x = 0.0f;
+    transform.unknown10.z = 0.0f;
+    GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+    MsgPcFieldNotifyWarp warp;
+    warp = *info;
+    formation->calcTargetTransform(transform, property->unknown38, &warp.unknown10);
+    field.setWarpInfo(&warp);
+    const fw::ParamList *paramList = unknown88.operator->();
+    const ForceWarpAiParam *param = paramList->unknown0c > 7 ? static_cast<const ForceWarpAiParam *>(paramList->unknown10[7].param) : nullptr;
+    blackBoard->unknown200.set(7);
+    blackBoard->unknown204 = param->baseWaitTime + ml::mtRandf1() * param->waitTimeRange;
+  }
+}
+
+void AIAgentField::procMsgPcFieldNotifyWaterWarpBuddy(fw::MessageObject *sender, MsgPcFieldNotifyWaterWarpBuddy &message) {
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  GfComPropertyPc *property = blackBoard->unknown08;
+  GfPropertyField &field = property->unknown310;
+  if (property->unknown110_5) {
+    const MsgPcFieldNotifyWarp *info = message.unknown08;
+    fw::Transform transform;
+    transform.unknown00 = info->unknown10;
+    f32 angle = info->unknown20 * 0.5f;
+    transform.unknown10.y = sinf(angle);
+    transform.unknown10.w = cosf(angle);
+    transform.unknown10.x = 0.0f;
+    transform.unknown10.z = 0.0f;
+    GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+    MsgPcFieldNotifyWarp warp;
+    warp = *info;
+    formation->calcTargetTransform(transform, property->unknown38, &warp.unknown10);
+    field.setWarpInfo(&warp);
+    const fw::ParamList *paramList = unknown88.operator->();
+    const ForceWarpAiParam *param = paramList->unknown0c > 7 ? static_cast<const ForceWarpAiParam *>(paramList->unknown10[7].param) : nullptr;
+    blackBoard->unknown200.set(9);
+    blackBoard->unknown204 = param->baseWaitTime + ml::mtRandf1() * param->waitTimeRange;
+  }
+}
+
+void AIAgentField::procMsgPcFieldNotifyWallJumpStart(fw::MessageObject *sender, MsgPcFieldNotifyWallJumpStart &message) {
+  BlackBoardField *blackBoard = unknown08.unknown001<BlackBoardField>();
+  if (blackBoard->unknown08->unknown310.unknown10_4) {
+    blackBoard->unknown08->unknown310.setWallJump(message.unknown08);
+    blackBoard->unknown200.set(8);
+  }
+}
+
+const mm::mtl::RTTI *BlackBoardField::getRTTI() const { return &m_rtti; }
+
+} // namespace pc
+} // namespace gf

@@ -8,7 +8,9 @@ namespace mm {
 
 struct Plane {
   Plane() {}
-  Plane(const Vec3 &normal, f32 distance) : normal(normal), distance(distance) {}
+  // Normalizes the normal: BlackBoardField::BlackBoardField (1.0.0: 0x7100542c94) normalizes Vec3::unitY in the
+  // member initialization of its wall plane, before the stores of the following members.
+  Plane(const Vec3 &direction, f32 offset) { unknown002(direction, offset); }
 
   // Inferred role: normalizes the normal, zero when it is too short; original name unknown.
   void unknown001() {

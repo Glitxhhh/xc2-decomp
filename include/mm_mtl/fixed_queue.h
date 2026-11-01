@@ -32,7 +32,7 @@ template <typename T, size_t N> class FixedQueue {
 #line 109
   T &at(size_t index) {
     MM_ASSERT(index < N);
-    return buffer()[index];
+    return element(index);
   }
 
 public:
@@ -150,6 +150,15 @@ public:
       }
     }
     return found;
+  }
+
+  // Evidence: the wall move history of AIAgentField::procMsgPcFieldNotifyWall (1.0.0: 0x7100542514), whose index assert
+  // is the one of at().
+  void push_front(const T &value) {
+    MM_ASSERT(!full());
+    mFront += static_cast<s64>(mFront) <= 0 ? N - 1 : -1;
+    at(mFront) = value;
+    mSize++;
   }
 
   void remove(const T &value);
