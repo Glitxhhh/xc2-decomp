@@ -1,5 +1,6 @@
 #include "gmk/gmk_dmg_gimmick.h"
 
+#include "eflib/effect_send_param.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/sound/sound_manager.h"
 #include "gf/data/gf_bdat_wrapper.h"
@@ -14,6 +15,8 @@
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_set.h"
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/vector.h"
 
 namespace gf {
@@ -24,9 +27,6 @@ namespace fw {
 enum SoundCategory : int;
 enum EF_CATEGORY : int;
 } // namespace fw
-namespace mm {
-struct Vec3;
-} // namespace mm
 
 namespace fw {
 class EffectPack;
@@ -196,6 +196,21 @@ void GmkDmgEffect::disposeEffectInst(bool isFadeOut) const {
     }
     unknown4c = 0;
   }
+}
+
+void GmkDmgEffect::applyEffectParam() const {
+  if (unknown4c == 0) {
+    return;
+  }
+  effect::SendParam param;
+  unknown005(param.unknown00, unknown08.unknown08->unknown10);
+  mm::Vec3 position = unknown08.unknown08->unknown00;
+  param.unknown00.rows[3][0] += position.x;
+  param.unknown00.rows[3][1] += position.y;
+  param.unknown00.rows[3][2] += position.z;
+  param.unknown60 = unknown08.unknown08->unknown20;
+  param.unknowna3 = unknown48 && debugIsDispGmkType(getGmkType());
+  fw::EffectManager::get()->setParam(unknown4c, &param);
 }
 
 const AGmkBase *GmkDmgPhantomList::getInst(u32 index) const { return &gmkInsts[index]; }

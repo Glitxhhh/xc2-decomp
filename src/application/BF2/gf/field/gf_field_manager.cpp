@@ -30,6 +30,7 @@
 #include "gf/script/gf_script_manager.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_landmark.h"
+#include "gmk/gmk_manager.h"
 #include "mm_math/mm_vec3.h"
 
 namespace gf {

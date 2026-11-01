@@ -6,7 +6,6 @@
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_phantom.h"
 #include "mm_mtl/intrusive_list.h"
-#include "mm_mtl/singleton.h"
 #include "types.h"
 
 struct CBdatWrapper;
@@ -62,20 +61,5 @@ static_assert(sizeof(GmkLandmark::BdatInfo) == 0x10, "");
 static_assert(sizeof(GmkLandmark) == 0x100, "");
 
 typedef TGmkList<GmkLandmark, GmkLandmark::BdatInfo, 0x4b4d444c, 2, GmkLandmarkGob> GmkLandmarkList;
-
-class GmkLandmarkManager : public mm::mtl::PtrSingleton<GmkLandmarkManager> {
-public:
-  GmkLandmarkManager();
-  ~GmkLandmarkManager() override { dispose(); }
-  void dispose();
-  static void addGmkLandmark(GmkLandmark *landmark);
-  static void removeGmkLandmark(GmkLandmark *landmark);
-  const GmkLandmark *findFirstAddedGmkLandmarkByCategory(u8 category) const;
-
-  mm::mtl::IntrusiveList<GmkLandmark> unknown08; // Inferred role: landmarks sorted by category; original member name unknown.
-  GmkLandmark *unknown20;                        // Inferred role: front landmark; original member name unknown.
-};
-
-static_assert(offsetof(GmkLandmarkManager, unknown20) == 0x20, "");
 
 } // namespace gmk

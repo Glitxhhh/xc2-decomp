@@ -192,6 +192,10 @@ void GmkBdat::update(f32 deltaTime) {
   }
 }
 
+GmkManager::GmkManager() : unknown58(nullptr), unknown190(nullptr), unknown198(unknown080_0), unknownf380(nullptr) {}
+
+GmkManager::~GmkManager() { dispose(); }
+
 const char *GmkManager::getFilenameByType(int gmkSetId, GmkType type) const {
   const char *column = s_gmkFileNames[type];
   if (column == nullptr) {
@@ -357,6 +361,23 @@ void GmkManager::clearGmkSets() {
     }
   }
   unknownf358.clear();
+}
+
+void GmkManager::createGmkSet(mtl::ALLOC_HANDLE memory, int gmkSetId, const mm::Vec3 &position, f32 rotation) {
+  if (!unknownf358.empty()) {
+    for (GmkSet **it = unknownf358.begin(); it != unknownf358.end(); ++it) {
+      if ((*it)->unknown10.unknown04 == gmkSetId) {
+        return;
+      }
+    }
+  }
+  GmkSet::CreateInfo info;
+  info.unknown00 = memory;
+  info.unknown04 = gmkSetId;
+  info.unknown10 = position;
+  info.unknown20 = rotation;
+  GmkSet *set = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkSet(&info);
+  unknownf358.push_back(set);
 }
 
 void GmkManager::disposeGmkSet(int gmkSetId) {

@@ -138,6 +138,21 @@ public:
 
   // Named after ptlib::IntrusiveList<T>::clear, a game symbol whose code is the same loop.
   void clear() { unknown001(begin(), end()); }
+
+  // Inferred helper: iterator to ptr between first and last, last when the range does not hold it; original name
+  // unknown. __LINE__ must be 317 as in the original header: it is the line argument of the assert
+  // (GmkSquadManager::addGmkSquad evaluates begin() before it).
+#line 316
+  iterator unknown002(iterator first, iterator last, T *ptr) {
+    MM_ASSERT(ptr);
+    while (first != last) {
+      if (first.get() == ptr) {
+        return first;
+      }
+      ++first;
+    }
+    return last;
+  }
 };
 
 } // namespace mtl

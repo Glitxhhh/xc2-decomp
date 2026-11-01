@@ -10,7 +10,6 @@
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/reference_object.h"
-#include "mm_mtl/singleton.h"
 #include "mm_mtl/vector.h"
 #include "types.h"
 
@@ -184,16 +183,5 @@ static_assert(offsetof(GmkSquadNavi, unknown20) == 0x20, "");
 static_assert(offsetof(GmkSquadNavi, unknown28) == 0x28, "");
 static_assert(offsetof(GmkSquadNavi, unknown30) == 0x30, "");
 static_assert(sizeof(GmkSquadNavi) == 0x40, "");
-
-class GmkSquadManager : public mm::mtl::PtrSingleton<GmkSquadManager> {
-public:
-  void update(f32 deltaTime);
-  void debugDraw() const;
-
-  mm::mtl::IntrusiveList<GmkSquad> unknown08; // Inferred role: squads; original member name unknown.
-};
-
-static_assert(offsetof(GmkSquadManager, unknown08) == 0x08, "");
-static_assert(sizeof(GmkSquadManager) == 0x20, "");
 
 } // namespace gmk

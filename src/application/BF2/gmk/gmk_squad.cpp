@@ -133,6 +133,19 @@ void GmkSquadManager::update(f32 deltaTime) {
   }
 }
 
+void GmkSquadManager::addGmkSquad(GmkSquad *squad) {
+  if (unknown08.end() == unknown08.unknown002(unknown08.begin(), unknown08.end(), squad)) {
+    unknown08.push_back(squad);
+  }
+}
+
+void GmkSquadManager::clearGmkSquads() {
+  for (mm::mtl::IntrusiveList<GmkSquad>::iterator it = unknown08.begin(); it != unknown08.end(); ++it) {
+    it->release();
+  }
+  unknown08.clear();
+}
+
 void GmkSquadManager::debugDraw() const {
   for (mm::mtl::IntrusiveList<GmkSquad>::iterator it = unknown08.begin(); it != unknown08.end(); ++it) {
     it->debugDraw();

@@ -6,7 +6,6 @@
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_phantom.h"
 #include "mm_mtl/intrusive_list.h"
-#include "mm_mtl/singleton.h"
 #include "types.h"
 
 struct CBdatWrapper;
@@ -33,21 +32,6 @@ static_assert(offsetof(GmkBgmCondInfo, unknown10) == 0x10, "");
 static_assert(offsetof(GmkBgmCondInfo, unknown18) == 0x18, "");
 static_assert(offsetof(GmkBgmCondInfo, unknown1a) == 0x1a, "");
 static_assert(sizeof(GmkBgmCondInfo) == 0x20, "");
-
-class GmkBgmCondInfoManager : public mm::mtl::PtrSingleton<GmkBgmCondInfoManager> {
-public:
-  ~GmkBgmCondInfoManager() override { dispose(); }
-  void dispose();
-  static void addGmkBgmCondInfo(GmkBgmCondInfo *info);
-  static void removeGmkBgmCondInfo(GmkBgmCondInfo *info);
-  void applyFieldBgm() const;
-
-  mm::mtl::IntrusiveList<GmkBgmCondInfo> unknown08; // Inferred role: active condition infos; original member name unknown.
-  GmkBgmCondInfo *unknown20;                        // Inferred role: front condition info; original member name unknown.
-};
-
-static_assert(offsetof(GmkBgmCondInfoManager, unknown08) == 0x08, "");
-static_assert(offsetof(GmkBgmCondInfoManager, unknown20) == 0x20, "");
 
 class GmkAreaBgm : public AGmkBase, public IGmkPhantomEventListener {
 public:

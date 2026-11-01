@@ -1,6 +1,9 @@
 #pragma once
+#include "gmk/gmk_active_list.h"
 #include "gmk/gmk_bdat.h"
+#include "gmk/gmk_phantom.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/singleton.h"
 #include "mm_mtl/vector.h"
 #include "mtl/alloc_handle.h"
@@ -103,12 +106,69 @@ enum unknown080 {
 };
 
 class AGmkBase;
+class GmkBgmCondInfo;
+class GmkEvent;
+class GmkLandmark;
+class GmkPrecious;
+class GmkSe;
+class GmkSeLine;
 class GmkSet;
+class GmkSquad;
+class GmkTutorial;
 class IGmkGameObjTraverser;
+
+class GmkLandmarkManager : public mm::mtl::PtrSingleton<GmkLandmarkManager> {
+public:
+  GmkLandmarkManager();
+  ~GmkLandmarkManager() override { dispose(); }
+  void dispose();
+  static void addGmkLandmark(GmkLandmark *landmark);
+  static void removeGmkLandmark(GmkLandmark *landmark);
+  const GmkLandmark *findFirstAddedGmkLandmarkByCategory(u8 category) const;
+
+  mm::mtl::IntrusiveList<GmkLandmark> unknown08; // Inferred role: landmarks sorted by category; original member name unknown.
+  GmkLandmark *unknown20;                        // Inferred role: front landmark; original member name unknown.
+};
+
+static_assert(offsetof(GmkLandmarkManager, unknown20) == 0x20, "");
+static_assert(sizeof(GmkLandmarkManager) == 0x28, "");
+
+class GmkBgmCondInfoManager : public mm::mtl::PtrSingleton<GmkBgmCondInfoManager> {
+public:
+  GmkBgmCondInfoManager() : unknown20(nullptr) {}
+  ~GmkBgmCondInfoManager() override { dispose(); }
+  void dispose();
+  static void addGmkBgmCondInfo(GmkBgmCondInfo *info);
+  static void removeGmkBgmCondInfo(GmkBgmCondInfo *info);
+  void applyFieldBgm() const;
+
+  mm::mtl::IntrusiveList<GmkBgmCondInfo> unknown08; // Inferred role: active condition infos; original member name unknown.
+  GmkBgmCondInfo *unknown20;                        // Inferred role: front condition info; original member name unknown.
+};
+
+static_assert(offsetof(GmkBgmCondInfoManager, unknown08) == 0x08, "");
+static_assert(offsetof(GmkBgmCondInfoManager, unknown20) == 0x20, "");
+static_assert(sizeof(GmkBgmCondInfoManager) == 0x28, "");
+
+class GmkSquadManager : public mm::mtl::PtrSingleton<GmkSquadManager> {
+public:
+  ~GmkSquadManager() override { clearGmkSquads(); }
+  void update(f32 deltaTime);
+  void addGmkSquad(GmkSquad *squad);
+  void clearGmkSquads();
+  void debugDraw() const;
+
+  mm::mtl::IntrusiveList<GmkSquad> unknown08; // Inferred role: squads; original member name unknown.
+};
+
+static_assert(offsetof(GmkSquadManager, unknown08) == 0x08, "");
+static_assert(sizeof(GmkSquadManager) == 0x20, "");
 
 class GmkManager : public mm::mtl::PtrSingleton<GmkManager> {
 public:
   struct CreateInfo {
+    CreateInfo() : unknown4c(2) {}
+
     mtl::ALLOC_HANDLE unknown00;   // Inferred role: memory; original member name unknown.
     mm::mtl::FixStr<32> unknown04; // Inferred role: res def bdat path; original member name unknown.
     mm::mtl::FixStr<32> unknown28; // Inferred role: gmk set list bdat name; original member name unknown.
@@ -142,13 +202,21 @@ public:
   int findFirstBdatId_RSC_GmkSetList(GmkType type, int bdatId) const;
   bool isBdatIdOfGmkInstExist(int gmkSetId, GmkType type, int bdatId) const;
 
-  CreateInfo unknown08;  // Inferred role: create info; original member name unknown.
-  GmkBdat unknown58;     // Inferred role: res def bdat; original member name unknown.
-  u8 *unknown190;        // Inferred role: gmk set list bdat; original member name unknown.
-  unknown080 unknown198; // Inferred role: interest type; original member name unknown.
-  u8 _19c[0xf358 - 0x19c];
-  mm::mtl::Vector<GmkSet *> unknownf358; // Inferred role: sets; original member name unknown.
-  void (GmkManager::*unknownf380)(f32);  // Inferred role: seq; original member name unknown.
+  CreateInfo unknown08;                    // Inferred role: create info; original member name unknown.
+  GmkBdat unknown58;                       // Inferred role: res def bdat; original member name unknown.
+  u8 *unknown190;                          // Inferred role: gmk set list bdat; original member name unknown.
+  unknown080 unknown198;                   // Inferred role: interest type; original member name unknown.
+  GmkPhantomManager unknown1a0;            // Inferred role: phantom manager; original member name unknown.
+  GmkLandmarkManager unknownf220;          // Inferred role: landmark manager; original member name unknown.
+  GmkBgmCondInfoManager unknownf248;       // Inferred role: bgm condition info manager; original member name unknown.
+  GmkSquadManager unknownf270;             // Inferred role: squad manager; original member name unknown.
+  TGmkActiveList<GmkPrecious> unknownf290; // Inferred role: active precious list; original member name unknown.
+  TGmkActiveList<GmkSe> unknownf2b8;       // Inferred role: active se list; original member name unknown.
+  TGmkActiveList<GmkSeLine> unknownf2e0;   // Inferred role: active se line list; original member name unknown.
+  TGmkActiveList<GmkEvent> unknownf308;    // Inferred role: active event list; original member name unknown.
+  TGmkActiveList<GmkTutorial> unknownf330; // Inferred role: active tutorial list; original member name unknown.
+  mm::mtl::Vector<GmkSet *> unknownf358;   // Inferred role: sets; original member name unknown.
+  void (GmkManager::*unknownf380)(f32);    // Inferred role: seq; original member name unknown.
 };
 
 static_assert(sizeof(GmkManager::CreateInfo) == 0x50, "");
@@ -156,6 +224,15 @@ static_assert(offsetof(GmkManager, unknown08) == 0x08, "");
 static_assert(offsetof(GmkManager, unknown58) == 0x58, "");
 static_assert(offsetof(GmkManager, unknown190) == 0x190, "");
 static_assert(offsetof(GmkManager, unknown198) == 0x198, "");
+static_assert(offsetof(GmkManager, unknown1a0) == 0x1a0, "");
+static_assert(offsetof(GmkManager, unknownf220) == 0xf220, "");
+static_assert(offsetof(GmkManager, unknownf248) == 0xf248, "");
+static_assert(offsetof(GmkManager, unknownf270) == 0xf270, "");
+static_assert(offsetof(GmkManager, unknownf290) == 0xf290, "");
+static_assert(offsetof(GmkManager, unknownf2b8) == 0xf2b8, "");
+static_assert(offsetof(GmkManager, unknownf2e0) == 0xf2e0, "");
+static_assert(offsetof(GmkManager, unknownf308) == 0xf308, "");
+static_assert(offsetof(GmkManager, unknownf330) == 0xf330, "");
 static_assert(offsetof(GmkManager, unknownf358) == 0xf358, "");
 static_assert(offsetof(GmkManager, unknownf380) == 0xf380, "");
 // The GfFieldGimmick constructor places the next member 0xf3b0 bytes after its start, with the manager at 0x20.

@@ -9,6 +9,7 @@
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/rtti.h"
 #include "types.h"
+#include <math.h>
 #include <stddef.h>
 
 namespace gf {
@@ -81,6 +82,33 @@ inline void unknown002(gf::GF_OBJ_HANDLE *handle, bool isTargetable) {
 inline void unknown003(gf::GfObjSetup *setup, const Xform *xform) {
   setup->unknown20 = xform->unknown00;
   setup->unknown30 = xform->unknown10;
+}
+
+// Inferred helper: rotation matrix of Euler angles, the 3x3 part written before the cleared last column and
+// row (store order of GmkDmgEffect::applyEffectParam); original name unknown.
+inline void unknown005(mm::Mat44 &matrix, mm::Vec3 rotation) {
+  f32 sinX = sinf(rotation.x);
+  f32 cosX = cosf(rotation.x);
+  f32 sinY = sinf(rotation.y);
+  f32 cosY = cosf(rotation.y);
+  f32 sinZ = sinf(rotation.z);
+  f32 cosZ = cosf(rotation.z);
+  matrix.rows[0][0] = cosY * cosZ;
+  matrix.rows[0][1] = cosY * sinZ;
+  matrix.rows[0][2] = -sinY;
+  matrix.rows[1][0] = sinX * sinY * cosZ - cosX * sinZ;
+  matrix.rows[1][1] = sinX * sinY * sinZ + cosX * cosZ;
+  matrix.rows[1][2] = sinX * cosY;
+  matrix.rows[2][0] = cosX * sinY * cosZ + sinX * sinZ;
+  matrix.rows[2][1] = cosX * sinY * sinZ - sinX * cosZ;
+  matrix.rows[2][2] = cosX * cosY;
+  matrix.rows[0][3] = 0.0f;
+  matrix.rows[1][3] = 0.0f;
+  matrix.rows[2][3] = 0.0f;
+  matrix.rows[3][0] = 0.0f;
+  matrix.rows[3][1] = 0.0f;
+  matrix.rows[3][2] = 0.0f;
+  matrix.rows[3][3] = 1.0f;
 }
 
 class AGmkBase {
