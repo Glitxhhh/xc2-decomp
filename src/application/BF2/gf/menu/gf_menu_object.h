@@ -266,4 +266,14 @@ inline bool unknown153(GfMenuCallContext *context, u32 call) {
   return false;
 }
 
+// Inferred helper: shows or hides the object attached to a call unless it is terminating; original name unknown.
+static inline void unknown154(u32 call, bool isDisp) {
+  u32 handle = GfMenuObject::getAttachedObject(call);
+  if (ui::UIObjectAcc(handle).isValid()) {
+    if (!ui::UIObjectAcc(handle).isTerm()) {
+      ui::UIObjectAcc(handle).setDisp(isDisp);
+    }
+  }
+}
+
 } // namespace gf

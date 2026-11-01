@@ -2,6 +2,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 
 namespace gf {
 
@@ -21,5 +22,21 @@ void GfMenuObjOpeningTelop::openLeft(u32 telop) { unknown141(unknown001, GfMenuT
 void GfMenuObjOpeningTelop::openRight(u32 telop) { unknown141(unknown001, GfMenuTypes::unknown003_33, unknown002_2, telop); }
 
 void GfMenuObjOpeningTelop::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjOpeningTelop::ctrlFadeIn(u32 handle, u32 type) {
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown08 = 1;
+  param.unknown00 = 0.5f;
+  param.unknown04 = type;
+  GfMenuObjUtil::startCtrl(handle, param, nullptr);
+}
+
+void GfMenuObjOpeningTelop::ctrlFadeOut(u32 handle, u32 type) {
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown08 = 2;
+  param.unknown00 = 0.5f;
+  param.unknown04 = type;
+  GfMenuObjUtil::startCtrl(handle, param, nullptr);
+}
 
 } // namespace gf

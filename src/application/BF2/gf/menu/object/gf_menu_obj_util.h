@@ -55,6 +55,40 @@ public:
     f32 unknown04; // Inferred role: preset control time of preset 6; original member name unknown.
   };
 
+  struct CtrlParam {
+    CtrlParam()
+        : unknown00(0.0f), unknown04(0), unknown08(0), unknown0c(0), unknown10(false), unknown11(false), unknown12(false), unknown14(0), unknown18(-1), unknown1c(0.0f), unknown20(8), unknown2c(0.0f),
+          unknown34(0.0f), unknown38(0.0f), unknown3c(0.0f) {}
+
+    // Inferred helper: plays a motion of the common left/right fade motion data; original name unknown.
+    void unknown004(const char *motion) {
+      unknown08 = 0x10000000;
+      unknown50 = "cmn_fade_motion_lr";
+      unknown58 = motion;
+    }
+
+    f32 unknown00;  // Inferred role: control time, 0 for the motion length; original member name unknown.
+    u32 unknown04;  // Inferred role: control direction, 1 in and 2 out; original member name unknown.
+    u32 unknown08;  // Inferred role: method flags; original member name unknown.
+    u32 unknown0c;  // Inferred role: curve; original member name unknown.
+    bool unknown10; // Inferred role: control slot reservation flag; original member name unknown.
+    bool unknown11; // Inferred role: set default flag; original member name unknown.
+    bool unknown12; // Inferred role: relative to default flag; original member name unknown.
+    u32 unknown14;  // Inferred role: loop flags; original member name unknown.
+    int unknown18;  // Inferred role: control slot, -1 to reserve one; original member name unknown.
+    f32 unknown1c;  // Inferred role: delay time; original member name unknown.
+    int unknown20;  // Inferred role: move distance; original member name unknown.
+    u8 _24[0x2c - 0x24];
+    f32 unknown2c; // Inferred role: scale; original member name unknown.
+    u8 _30[0x34 - 0x30];
+    f32 unknown34; // Inferred role: rotation; original member name unknown.
+    f32 unknown38; // Inferred role: brightness; original member name unknown.
+    f32 unknown3c; // Inferred role: alpha; original member name unknown.
+    u8 _40[0x50 - 0x40];
+    const char *unknown50; // Inferred role: motion data name; original member name unknown.
+    const char *unknown58; // Inferred role: motion name; original member name unknown.
+  };
+
   struct PresetCtrlParam {
     PresetCtrlParam() : unknown00(0), unknown04(0), unknown08(-1), unknown10(0), unknown18(nullptr) {
       unknown0c = false;
@@ -75,6 +109,9 @@ public:
   static u32 getPointerSelectIconNumber();
   static int setCommonFadeIn(u32 handle, u32 fade, u8 unknown);
   static int setCommonFadeOut(u32 handle, u32 fade, u8 unknown);
+  static int startCtrl(u32 handle, const CtrlParam &param, const char *child);
+  static void setPresetCtrl_Fadein(u32 preset, CtrlParam &param, int slot);
+  static void setPresetCtrl_Fadeout(u32 preset, CtrlParam &param, int slot);
   static int startPresetCtrl(u32 handle, const PresetCtrlParam &param);
   static void setChildDisp(u32 handle, const char *name, bool disp);
   static void setChildMulColor(u32 handle, const char *name, const char *color);
@@ -198,6 +235,24 @@ public:
   static u8 getDriverClassBuffLv(u32 driverClass, u32 index);
   static bool isBladeSelectable(u32 blade, const GfMenuBladeList *list);
   static bool isBladeReleasable(u32 blade, const GfMenuBladeList *list);
+
+  // Inferred helper: starts the preset 6 fade in control on a UI object; original name unknown.
+  static int unknown002(u32 handle) {
+    PresetCtrlParam param;
+    param.unknown00 = 6;
+    param.unknown04 = 0;
+    param.unknown10 = 1;
+    return startPresetCtrl(handle, param);
+  }
+
+  // Inferred helper: starts the preset 6 fade out control on a UI object; original name unknown.
+  static int unknown003(u32 handle) {
+    PresetCtrlParam param;
+    param.unknown00 = 6;
+    param.unknown04 = 1;
+    param.unknown10 = 2;
+    return startPresetCtrl(handle, param);
+  }
 };
 
 static_assert(offsetof(GfMenuObjUtil::DockingOption, unknown04) == 0x04, "");
@@ -210,5 +265,22 @@ static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown0d) == 0x0d, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown10) == 0x10, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown18) == 0x18, "");
 static_assert(sizeof(GfMenuObjUtil::PresetCtrlParam) == 0x20, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown11) == 0x11, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown12) == 0x12, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown14) == 0x14, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown18) == 0x18, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown1c) == 0x1c, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown2c) == 0x2c, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown34) == 0x34, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown38) == 0x38, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown3c) == 0x3c, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown50) == 0x50, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown58) == 0x58, "");
+static_assert(sizeof(GfMenuObjUtil::CtrlParam) == 0x60, "");
 
 } // namespace gf

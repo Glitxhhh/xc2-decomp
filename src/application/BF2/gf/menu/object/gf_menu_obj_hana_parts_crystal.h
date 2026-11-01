@@ -13,6 +13,7 @@ public:
   void finalize() override;
   void update() override;
   static u32 getCrystalItemCount(u32 item);
+  static u32 crystalParts(u32 type, u32 parts);
 };
 
 } // namespace gf

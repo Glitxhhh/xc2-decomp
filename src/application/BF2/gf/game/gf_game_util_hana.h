@@ -15,6 +15,7 @@ enum unknown003 {
   unknown003_5 = 5,
   unknown003_6 = 6,
   unknown003_7 = 7,
+  unknown003_8 = 8,
   unknown003_10 = 10,
 };
 
@@ -24,6 +25,7 @@ public:
   static u32 openArtsCircuit(u32 blade, u32 circuit);
   static u32 isOpenArtsCircuit(u32 blade, u32 circuit);
   static u32 getConvertToEther(u32 parts);
+  static u32 execConvertToEther(u32 parts);
   static u32 getEmptyParts(u32 parts);
   static u32 getEtherForOpenArtsCircuit(u32 blade, u32 circuit);
   static u32 openCondenserCircuit(u32 blade, u32 circuit);

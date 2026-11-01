@@ -7,6 +7,8 @@ namespace gf {
 class GfMenuObjQuestResult : public GfMenuObject {
 public:
   static void close();
+  static void fadeOut(u32 handle);
+  static void fadeIn(u32 handle);
   GfMenuObjQuestResult(u32 handle);
   ~GfMenuObjQuestResult() override;
   void initialize() override;

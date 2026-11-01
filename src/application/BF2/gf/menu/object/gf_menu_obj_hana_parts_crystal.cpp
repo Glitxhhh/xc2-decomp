@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_hana_parts_crystal.h"
 
+#include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/util/gf_item_util.h"
 
@@ -10,6 +11,19 @@ void GfMenuObjHanaPartsCrystal::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjHanaPartsCrystal::update() { GfMenuObject::update(); }
 
 u32 GfMenuObjHanaPartsCrystal::getCrystalItemCount(u32 item) { return GfItemUtil::getItemBoxCount(item); }
+
+u32 GfMenuObjHanaPartsCrystal::crystalParts(u32 type, u32 parts) {
+  switch (type) {
+  case 1:
+  case 2:
+  case 3:
+  case 6:
+  case 9:
+    GfGameUtilHana::execConvertToEther(parts);
+    break;
+  }
+  return unknown003_8;
+}
 
 void GfMenuObjHanaPartsCrystal::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 

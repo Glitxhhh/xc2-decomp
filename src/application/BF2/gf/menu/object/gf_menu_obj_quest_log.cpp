@@ -50,6 +50,37 @@ bool GfMenuObjQuestLog::seqOrderWait() {
   return !GfMenuObjUtil::isBusyCtrl(GfMenuObjUtil::getCtrlID(acc.unknown10));
 }
 
+bool GfMenuObjQuestLog::seqTitleFadeInScenario() {
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown00 = 0.2f;
+  param.unknown08 = 1;
+  GfMenuObjUtil::startCtrl(unknown18, param, "TXT_title_sub_scenario");
+  return true;
+}
+
+bool GfMenuObjQuestLog::seqTitleFadeOutScenario() {
+  unknown004("TXT_title_sub_scenario");
+  return true;
+}
+
+bool GfMenuObjQuestLog::seqTitleFadeInNormal() {
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown00 = 0.2f;
+  param.unknown08 = 1;
+  GfMenuObjUtil::startCtrl(unknown18, param, "TXT_title_sub_normal");
+  return true;
+}
+
+bool GfMenuObjQuestLog::seqTitleFadeOutNormal() {
+  unknown004("TXT_title_sub_normal");
+  return true;
+}
+
+bool GfMenuObjQuestLog::seqTitleFadeOutText() {
+  unknown004(nullptr);
+  return true;
+}
+
 void GfMenuObjQuestLog::changeActiveQuest() { unknown147(unknown001, "LAY_log", unknown002); }
 
 void GfMenuObjQuestLog::updateTask() { unknown147(unknown001, "LAY_log", unknown003); }

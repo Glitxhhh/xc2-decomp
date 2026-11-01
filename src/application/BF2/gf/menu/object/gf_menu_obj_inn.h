@@ -11,6 +11,8 @@ public:
   static int setFadeOut(u32 handle);
   void initialize() override;
   void finalize() override;
+  bool seqFadeOut();
+  bool seqFadeOutWait();
 };
 
 } // namespace gf

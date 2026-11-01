@@ -939,6 +939,144 @@ f32 GfMenuObjUtil::getPresetCtrlTime(u32 preset) {
   return 0.5f;
 }
 
+int GfMenuObjUtil::setCommonFadeIn(u32 handle, u32 fade, u8 type) {
+  if (handle == 0) {
+    return -1;
+  }
+  switch (type) {
+  case 0: {
+    CtrlParam param;
+    param.unknown08 = 1;
+    param.unknown00 = getPresetCtrlTime(6);
+    param.unknown04 = fade;
+    return startCtrl(handle, param, nullptr);
+  }
+  case 1: {
+    CtrlParam param;
+    param.unknown004("fade_in_l_early");
+    param.unknown04 = fade;
+    param.unknown11 = true;
+    return startCtrl(handle, param, nullptr);
+  }
+  case 2: {
+    CtrlParam param;
+    param.unknown004("fade_in_r_early");
+    param.unknown04 = fade;
+    param.unknown11 = true;
+    return startCtrl(handle, param, nullptr);
+  }
+  }
+  return -1;
+}
+
+int GfMenuObjUtil::setCommonFadeOut(u32 handle, u32 fade, u8 type) {
+  if (handle == 0) {
+    return -1;
+  }
+  switch (type) {
+  case 0: {
+    CtrlParam param;
+    param.unknown08 = 2;
+    param.unknown00 = getPresetCtrlTime(6);
+    param.unknown04 = fade;
+    return startCtrl(handle, param, nullptr);
+  }
+  case 1: {
+    CtrlParam param;
+    param.unknown004("fade_out_l_early");
+    param.unknown14 = 10;
+    param.unknown04 = fade;
+    param.unknown11 = true;
+    return startCtrl(handle, param, nullptr);
+  }
+  case 2: {
+    CtrlParam param;
+    param.unknown004("fade_out_r_early");
+    param.unknown14 = 10;
+    param.unknown04 = fade;
+    param.unknown11 = true;
+    return startCtrl(handle, param, nullptr);
+  }
+  }
+  return -1;
+}
+
+void GfMenuObjUtil::setPresetCtrl_Fadein(u32 preset, CtrlParam &param, int slot) {
+  param.unknown00 = getPresetCtrlTime(preset);
+  param.unknown08 |= 1;
+  switch (preset) {
+  case 0:
+    param.unknown08 |= 0x100;
+    break;
+  case 1:
+    param.unknown08 |= 0x200;
+    break;
+  case 2:
+    param.unknown08 |= 0x400;
+    break;
+  case 3:
+    param.unknown08 |= 0x800;
+    break;
+  case 5:
+    param.unknown08 = 0x200000 | 1;
+    // Falls through to case 6 in the original (the game stores the flags twice for preset 5).
+  case 6:
+    param.unknown08 |= 1;
+    break;
+  }
+  param.unknown0c = getPresetCtrlCurve(preset);
+  param.unknown11 = true;
+  param.unknown18 = slot;
+}
+
+void GfMenuObjUtil::setPresetCtrl_Fadeout(u32 preset, CtrlParam &param, int slot) {
+  param.unknown00 = getPresetCtrlTime(preset);
+  param.unknown08 |= 2;
+  switch (preset) {
+  case 0:
+    param.unknown08 |= 0x1000;
+    break;
+  case 1:
+    param.unknown08 |= 0x2000;
+    break;
+  case 2:
+    param.unknown08 |= 0x4000;
+    break;
+  case 3:
+    param.unknown08 |= 0x8000;
+    break;
+  case 5:
+    param.unknown08 = 0x400000 | 2;
+    break;
+  case 6:
+    param.unknown08 |= 2;
+    break;
+  }
+  param.unknown0c = getPresetCtrlCurve(preset);
+  param.unknown14 |= 2;
+  param.unknown18 = slot;
+}
+
+int GfMenuObjUtil::startPresetCtrl(u32 handle, const PresetCtrlParam &param) {
+  CtrlParam ctrl;
+  if (param.unknown04 == 0) {
+    setPresetCtrl_Fadein(param.unknown00, ctrl, param.unknown08);
+  } else if (param.unknown04 == 1) {
+    setPresetCtrl_Fadeout(param.unknown00, ctrl, param.unknown08);
+  } else {
+    return -1;
+  }
+  if (param.unknown0d) {
+    ctrl.unknown14 |= 4;
+  }
+  if (param.unknown0c) {
+    ctrl.unknown14 &= ~4;
+    ctrl.unknown14 |= 1;
+  }
+  ctrl.unknown04 = param.unknown10;
+  return startCtrl(handle, ctrl, param.unknown18);
+}
+
 f32 GfMenuObjUtil::getCtrlMotionTime(const char *name, const char *motion) {
   if (name != nullptr && motion != nullptr) {
     ui::UIMotionData *data = ui::UIMotionLibrary::get()->find(name);

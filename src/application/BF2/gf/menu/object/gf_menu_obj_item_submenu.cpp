@@ -17,11 +17,7 @@ void GfMenuObjItemSubmenu::update() { GfMenuObject::update(); }
 void GfMenuObjItemSubmenu::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjItemSubmenu::setFadeIn(u32 handle) {
-  GfMenuObjUtil::PresetCtrlParam param;
-  param.unknown00 = 6;
-  param.unknown04 = 0;
-  param.unknown10 = 1;
-  int ctrl = GfMenuObjUtil::startPresetCtrl(handle, param);
+  int ctrl = GfMenuObjUtil::unknown002(handle);
   GfMenuObject::hookCtrlEvent(handle, ctrl);
   return ctrl;
 }

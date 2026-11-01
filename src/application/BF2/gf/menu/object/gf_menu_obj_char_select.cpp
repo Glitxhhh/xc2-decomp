@@ -3,6 +3,7 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 
 namespace gf {
@@ -56,5 +57,31 @@ void GfMenuObjCharSelect::sendEvent(u32 handle, u32 type, u32 param) { unknown14
 void GfMenuObjCharSelect::returnSubMenu() { unknown142(unknown001, unknown002); }
 
 bool GfMenuObjCharSelect::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
+
+int GfMenuObjCharSelect::setFadeOut(u32 handle, u32 type) {
+  int ctrl = unknown005(handle, type);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
+
+void GfMenuObjCharSelect::setFadeOutSub(u32 handle, u32 type) { unknown005(handle, type); }
+
+int GfMenuObjCharSelect::setFadeIn(u32 handle, u32 type) {
+  GfMenuObjUtil::CtrlParam param;
+  if (type == 0) {
+    param.unknown08 = 1;
+    param.unknown00 = GfMenuObjUtil::getPresetCtrlTime(6);
+    param.unknown0c = 1;
+  } else {
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "cmn_fade_motion_lr";
+    param.unknown58 = type == 2 ? "fade_in_r_early" : "fade_in_l_early";
+    param.unknown11 = true;
+  }
+  param.unknown04 = 1;
+  int ctrl = GfMenuObjUtil::startCtrl(handle, param, nullptr);
+  GfMenuObject::hookCtrlEvent(handle, ctrl);
+  return ctrl;
+}
 
 } // namespace gf

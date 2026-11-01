@@ -30,6 +30,34 @@ u32 GfMenuObjHanaPartsMake::getMakeItemCount(u32 parts) {
   return mm::min(GfGameUtilHana::getEmptyParts(parts), count);
 }
 
+u32 GfMenuObjHanaPartsMake::makeParts(u32 type, u32 parts) {
+  switch (type) {
+  case 1:
+    return GfGameUtilHana::exchangeRoleParts(parts);
+  case 2:
+    return GfGameUtilHana::exchangeAttributeParts(parts);
+  case 3:
+    return GfGameUtilHana::exchangeNArtsParts(parts);
+  case 6:
+    return GfGameUtilHana::exchangeCondenserParts(parts);
+  case 9:
+    return GfGameUtilHana::exchangeArtsParts(parts);
+  }
+  return unknown003_6;
+}
+
+u32 GfMenuObjHanaPartsMake::crystalParts(u32 type, u32 parts) {
+  switch (type) {
+  case 1:
+  case 2:
+  case 3:
+  case 6:
+  case 9:
+    return GfGameUtilHana::execConvertToEther(parts);
+  }
+  return unknown003_8;
+}
+
 void GfMenuObjHanaPartsMake::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjHanaPartsMake::setFadeIn(u32 handle, u32 unknown) {

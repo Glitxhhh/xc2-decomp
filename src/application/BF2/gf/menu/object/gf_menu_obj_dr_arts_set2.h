@@ -13,6 +13,10 @@ public:
   static void moveRight(ui::UIObjectAcc &acc);
   static void moveLeft(ui::UIObjectAcc &acc);
   static void sendEvent(u32 handle, u32 type, u32 param);
+  static int setFadeIn(u32 handle, u32 dir, const char *child);
+  static int setFadeOut(u32 handle, u32 dir, const char *child);
+  static void setFadeInBG(u32 handle);
+  static void setFadeOutBG(u32 handle);
   void initialize() override;
   void finalize() override;
 };

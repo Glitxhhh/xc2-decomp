@@ -14,6 +14,8 @@ public:
   static void closeLeft();
   static void openRight(u32 telop);
   static void closeRight();
+  static void ctrlFadeIn(u32 handle, u32 type);
+  static void ctrlFadeOut(u32 handle, u32 type);
 };
 
 } // namespace gf

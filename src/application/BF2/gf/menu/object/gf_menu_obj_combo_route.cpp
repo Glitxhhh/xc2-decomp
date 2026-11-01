@@ -14,6 +14,8 @@ void GfMenuObjComboRoute::update() { GfMenuObject::update(); }
 
 void GfMenuObjComboRoute::close() { unknown142(unknown001, GfMenuTypes::unknown003_34); }
 
+void GfMenuObjComboRoute::disp(bool isDisp) { unknown154(unknown001, isDisp); }
+
 void GfMenuObjComboRoute::open() { unknown142(unknown001, GfMenuTypes::unknown003_33); }
 
 } // namespace gf

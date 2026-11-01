@@ -14,4 +14,6 @@ void GfMenuObjOperationInfo::update() { GfMenuObject::update(); }
 
 void GfMenuObjOperationInfo::close() { unknown142(unknown001, GfMenuTypes::unknown003_34); }
 
+void GfMenuObjOperationInfo::setDisp(bool isDisp) { unknown154(unknown001, isDisp); }
+
 } // namespace gf

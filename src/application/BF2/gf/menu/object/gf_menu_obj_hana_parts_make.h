@@ -15,6 +15,8 @@ public:
   static u32 getCrystalItemCount(u32 item);
   static u16 getFirstSortTableId(u32 type, u32 isEquip);
   static u32 getMakeItemCount(u32 parts);
+  static u32 makeParts(u32 type, u32 parts);
+  static u32 crystalParts(u32 type, u32 parts);
 };
 
 } // namespace gf
