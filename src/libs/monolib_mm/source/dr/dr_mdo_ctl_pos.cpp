@@ -1,6 +1,82 @@
 #include "dr/dr_mdo_ctl_pos.h"
 
+#include "dr/dr_calc_cp_plane_obj.h"
+#include "dr/dr_calc_man.h"
+#include "dr/dr_calc_view_work.h"
+#include "dr/dr_man.h"
+#include "dr/dr_mdl_man.h"
+#include "dr/dr_res_mdo_inst_mdl_info.h"
+
 namespace ml {
+
+DrMdoCtlPos::~DrMdoCtlPos() { releasePos(); }
+
+void DrMdoCtlPos::update() {
+  updateAlphaCall();
+  updatePos();
+  DrMdlMan *mdlMan = m_drMan->unknown88;
+  if (unknownf8 & unknown028_15) {
+    mdlMan->unknown230->unknown00 = true;
+  }
+  if (unknownf8 & unknown028_16) {
+    mdlMan->unknown230->unknown01 = true;
+  }
+  if (unknownf8 & unknown028_17) {
+    mdlMan->unknown230->unknown02 = true;
+  }
+  if (unknownf8 & unknown028_18) {
+    mdlMan->unknown230->unknown07 = true;
+  }
+  if (unknownf8 & unknown028_3) {
+    mdlMan->unknown230->unknown03 = true;
+  }
+  if (unknownf8 & unknown028_2) {
+    mdlMan->unknown230->unknown04 = true;
+  }
+  if (unknownf8 & unknown028_8) {
+    mdlMan->unknown230->unknown08 = true;
+  }
+  if (unknownf8 & unknown028_9) {
+    mdlMan->unknown230->unknown09 = true;
+  }
+}
+
+void DrMdoCtlPos::setDeleteCall(int deleteCall) {
+  unknown20 |= unknown038_3 << deleteCall;
+  if (unknown258 != nullptr) {
+    unknown258->releaseCall();
+  }
+  if (unknown358 != nullptr) {
+    unknown358->release();
+    unknown358 = nullptr;
+  }
+}
+
+void DrMdoCtlPos::callShadowCacheUpdate(u64 flags) {
+  unknown368 &= ~flags;
+  if (unknown370 & flags) {
+    unknown370 = 0;
+    unknown378 = 0;
+  }
+}
+
+void DrMdoCtlPos::updatePos() {
+  updateMdl();
+  createMdlList();
+}
+
+void DrMdoCtlPos::dispOffUpdate() {
+  if (unknown258 != nullptr) {
+    DrResMdlInstMdlArg arg;
+    unknown348 = m_drMan->unknown580->unknown10;
+    arg.unknown00 = &unknown348->unknown400;
+    arg.unknown10 = false;
+    arg.unknown14 = unknown1a;
+    arg.unknown08 = nullptr;
+    arg.unknown18 = unknowndc;
+    unknown258->update(arg);
+  }
+}
 
 void DrMdoCtlPos::createRenderDisplayList(const MdsMdlInfoHeader *, int, _MdoInstanceWork *, grlib::CGLibVtxInstans *, int) {}
 

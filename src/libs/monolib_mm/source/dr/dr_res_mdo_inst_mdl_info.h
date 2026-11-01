@@ -4,8 +4,27 @@
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 
+namespace mm {
+struct Vec3;
+} // namespace mm
+
 namespace ml {
 class DrResMdoInstMdlObj;
+
+struct DrResMdlInstMdlArg {
+  const mm::Vec3 *unknown00; // Inferred role: view pos; original member name unknown.
+  const mm::Vec3 *unknown08; // Inferred role: second view pos, nullptr when there is none; original member name unknown.
+  bool unknown10;            // Inferred role: disp; original member name unknown.
+  s32 unknown14;             // Inferred role: view num; original member name unknown.
+  f32 unknown18;             // Inferred role: frame spd; original member name unknown.
+  u8 _1c[0x58 - 0x1c];
+};
+
+static_assert(offsetof(DrResMdlInstMdlArg, unknown08) == 0x08, "");
+static_assert(offsetof(DrResMdlInstMdlArg, unknown10) == 0x10, "");
+static_assert(offsetof(DrResMdlInstMdlArg, unknown14) == 0x14, "");
+static_assert(offsetof(DrResMdlInstMdlArg, unknown18) == 0x18, "");
+static_assert(sizeof(DrResMdlInstMdlArg) == 0x58, "");
 
 class DrResMdoInstMdlInfo {
 public:
@@ -19,6 +38,7 @@ public:
   ~DrResMdoInstMdlInfo();
   void releaseWork();
   void releaseCall();
+  void update(DrResMdlInstMdlArg &arg);
   static int calcWorkSize(const u8 *resource);
   static void release(DrResMdoInstMdlInfo *&info);
 
