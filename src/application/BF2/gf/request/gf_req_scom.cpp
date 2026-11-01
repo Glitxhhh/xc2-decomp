@@ -3,22 +3,29 @@
 #include <math.h>
 
 #include "fw/fw_update_info.h"
+#include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_en_book.h"
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_util.h"
+#include "gf/data/gf_object_type.h"
+#include "gf/event/gf_event.h"
 #include "gf/field/gf_field_bgm.h"
 #include "gf/field/gf_field_gimmick.h"
 #include "gf/field/gf_field_manager.h"
 #include "gf/game/auto_talk/gf_auto_talk.h"
+#include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_camera.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/gf_game_speed.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/game/kizunaring/gf_kizunaring_manager.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/quest/gf_quest_task.h"
@@ -30,10 +37,12 @@
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_command.h"
 #include "gf/request/gf_scom.h"
 #include "gf/scom/gf_scom_enbook.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
+#include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
 
 namespace gf {
@@ -178,6 +187,74 @@ bool SCOM_BATTLE_TASK_RESET::exec(const fw::UpdateInfo &) {
   }
   GfQuestManager::resetBattleTaskForBattleEnd();
   return true;
+}
+
+SCOM_FSKILLMAX_FOR_DEBUG::SCOM_FSKILLMAX_FOR_DEBUG(GF_SCOM_HANDLE *handle) : SCOM(handle, SCOM_TYPE_UNKNOWN_74, SCOM_EXEC_UNKNOWN_0, 1) {
+  GfDataBlade::getListParty(unknown20);
+  GfDataBlade::getListReserver(unknown20);
+}
+
+bool SCOM_FSKILLMAX_FOR_DEBUG::exec(const fw::UpdateInfo &) {
+  if (unknown20.empty()) {
+    return true;
+  }
+  GfKizunaringBlade::completeAllAchievementForDebug(unknown20.back());
+  unknown20.pop_back();
+  return unknown20.empty();
+}
+
+void SCOM_FSKILLMAX_FOR_DEBUG::create() {
+#line 4345
+  SCOM_FSKILLMAX_FOR_DEBUG *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_FSKILLMAX_FOR_DEBUG(GfReqSmallCom::get()->allocate());
+  GfReqSmallCom::addRequestParallel(command);
+}
+
+SCOM_SOLO_REX::SCOM_SOLO_REX(GF_SCOM_HANDLE *handle, bool isSolo) : SCOM(handle, SCOM_TYPE_UNKNOWN_78, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(isSolo) {}
+
+bool SCOM_SOLO_REX::exec(const fw::UpdateInfo &) {
+  for (u32 i = 0; i < BLADE_COUNT; i++) {
+    u32 blade = GfDataBlade::getBladeID(i);
+    if (blade == 0) {
+      continue;
+    }
+    u32 creator = GfDataBlade::getCreator(blade);
+    if (creator == 0 || creator == DRIVER_REX) {
+      continue;
+    }
+    if (!GfDataBlade::isDummyBlade(blade)) {
+      GfDataBlade::setUnselect(blade, unknown1c);
+    }
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_SOLO_REX::create(bool isSolo) {
+#line 4901
+  SCOM_SOLO_REX *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_SOLO_REX(GfReqSmallCom::get()->allocate(), isSolo);
+  return GfReqSmallCom::addRequest(command);
+}
+
+SCOM_CURRENT_BLADE::SCOM_CURRENT_BLADE(GF_SCOM_HANDLE *handle, u32 blade) : SCOM(handle, SCOM_TYPE_UNKNOWN_78, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(blade) {}
+
+bool SCOM_CURRENT_BLADE::exec(const fw::UpdateInfo &) {
+  int slot = GfDataBlade::getDriverSetID(unknown1c);
+  u32 driver = GfDataBlade::getSetDriver(unknown1c);
+  if (slot >= 0 && slot < static_cast<int>(SET_BLADE_NUM_MAX) && driver != 0) {
+    GfDataDriver::setEquipBlade(driver, true, slot);
+  }
+  if (unknown1c == BLADE_HOMURA) {
+    GfDataBlade::setHikariCurrent(false);
+  } else if (unknown1c == BLADE_HIKARI) {
+    GfDataBlade::setHikariCurrent(true);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_CURRENT_BLADE::create(u32 blade) {
+  SCOM_PARTY_ADD::setCurrentBlade(blade);
+#line 4737
+  SCOM_CURRENT_BLADE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_CURRENT_BLADE(GfReqSmallCom::get()->allocate(), blade);
+  return GfReqSmallCom::addRequest(command);
 }
 
 bool SCOM_ZONE::exec(const fw::UpdateInfo &) {
@@ -389,6 +466,138 @@ GF_SCOM_HANDLE *SCOM_OBJ_ALPHA::create(GF_OBJ_HANDLE *handle, f32 time, f32 alph
     return GfReqSmallCom::addRequestParallel(command);
   }
   return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+mm::mtl::FixedQueue<SCOM_PARTY_ADD::unknown002, 16> SCOM_PARTY_ADD::s_info;
+
+void SCOM_PARTY_ADD::addBlade(u32 blade, u32 driver, int slot) {
+  if (blade == 0) {
+    return;
+  }
+  unknown002 info = {GfDataBlade::getActBlade2CommonBlade(blade), driver, slot, true, false, false, unknown001_1};
+  s_info.push(info);
+  create();
+}
+
+void SCOM_PARTY_ADD::removeBlade(u32 blade, bool isForce) {
+  if (blade == 0) {
+    return;
+  }
+  unknown002 info = {GfDataBlade::getActBlade2CommonBlade(blade), 0, -1, isForce, false, false, unknown001_2};
+  s_info.push_front(info);
+  create();
+}
+
+void SCOM_PARTY_ADD::removeBlade(u32 driver, int slot, bool isForce) {
+  DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+  if (acc.isValid()) {
+    u32 blade = acc.getBlade(slot, false);
+    if (blade != 0) {
+      removeBlade(blade, isForce);
+    }
+  }
+}
+
+void SCOM_PARTY_ADD::releaseBlade(u32 blade) {
+  if (blade == 0) {
+    return;
+  }
+  unknown002 info = {GfDataBlade::getActBlade2CommonBlade(blade), 0, -1, false, true, false, unknown001_2};
+  s_info.push(info);
+  create();
+}
+
+void SCOM_PARTY_ADD::addDriver(u32 driver, u32 partyId) {
+  unknown002 info = {0, driver, static_cast<int>(partyId), true, false, false, unknown001_3};
+  s_info.push(info);
+  if (driver == DRIVER_NIA) {
+    removeBlade(BLADE_UNKNOWN_1011, false);
+  }
+  create();
+}
+
+void SCOM_PARTY_ADD::removeDriver(u32 driver, bool isForce) {
+  unknown002 info = {0, driver, -1, isForce, false, false, unknown001_4};
+  s_info.push(info);
+  create();
+}
+
+void SCOM_PARTY_ADD::setCurrentBlade(u32 blade) {
+  for (mm::mtl::FixedQueue<unknown002, 16>::iterator it = s_info.begin(); it != s_info.end(); ++it) {
+    unknown002 &info = *it;
+    if (info.unknown10 == unknown001_1 && info.unknown00 == blade) {
+      info.unknown0e = true;
+      return;
+    }
+  }
+  SCOM_EXEC_CURRENT_BLADE::create(blade);
+}
+
+void SCOM_PARTY_ADD::initialize() { s_info.clear(); }
+
+SCOM_EXEC_CURRENT_BLADE::SCOM_EXEC_CURRENT_BLADE(GF_SCOM_HANDLE *handle, u32 blade) : SCOM(handle, SCOM_TYPE_UNKNOWN_78, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(blade) {}
+
+bool SCOM_EXEC_CURRENT_BLADE::exec(const fw::UpdateInfo &) {
+  u32 driver = GfDataBlade::getSetDriver(unknown1c);
+  if (driver != 0) {
+    int bladeSet = GfDataDriver::getSetIdByBlade(driver, unknown1c);
+    if (bladeSet >= 0) {
+      GF_OBJ_HANDLE *handle = GfGameParty::getHandleDriverByBdatID(driver);
+      if (!GfObjUtil::isValid(handle)) {
+        DataParamAcc paramAcc(OBJECT_TYPE_DRIVER, DRIVER_REX, GIMMICK_TYPE_NONE);
+        paramAcc.setBladeSet(bladeSet);
+      } else {
+        GfGameUtil::setBladeSelect(handle, bladeSet);
+        RQ_SETUP_PARTY info;
+        GfGameParty::getCurrentPartyInfo(info);
+        GfReqCommand::reqChangeParty(info);
+      }
+    }
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_EXEC_CURRENT_BLADE::create(u32 blade) {
+#line 4942
+  SCOM_EXEC_CURRENT_BLADE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_EXEC_CURRENT_BLADE(GfReqSmallCom::get()->allocate(), blade);
+  return GfReqSmallCom::addRequest(command);
+}
+
+bool SCOM_QUEST_REACH::checkEventScequence() const {
+  if (!GfGameManager::isInnerState(GF_STATE_EVENT)) {
+    return true;
+  }
+  if (GfGameEvent::get() != nullptr && GfGameEvent::get()->unknown1914 >= GfGameEvent::PLAY_STATE_PLAY) {
+    return true;
+  }
+  return false;
+}
+
+bool SCOM_QUEST_REACH::exec(const fw::UpdateInfo &) {
+  if (unknown1c == unknown001_3 && !checkEventScequence()) {
+    return false;
+  }
+  GfQuestTask::completeReachTask(unknown1c, unknown20);
+  return true;
+}
+
+void SCOM_QUEST_REACH::createDiscoverLandmark(u32 landmark) {
+#line 1723
+  SCOM_QUEST_REACH *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_REACH(GfReqSmallCom::get()->allocate(), unknown001_1, landmark);
+  GfReqSmallCom::addRequestParallel(command);
+  createArriveLandmark(landmark);
+}
+
+void SCOM_QUEST_REACH::createArriveLandmark(u32 landmark) {
+#line 1730
+  SCOM_QUEST_REACH *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_REACH(GfReqSmallCom::get()->allocate(), unknown001_2, landmark);
+  GfReqSmallCom::addRequestParallel(command);
+}
+
+void SCOM_QUEST_REACH::createArrivePlace(u32 place) {
+#line 1736
+  SCOM_QUEST_REACH *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_QUEST_REACH(GfReqSmallCom::get()->allocate(), unknown001_3, place);
+  GfReqSmallCom::addRequestParallel(command);
 }
 
 void SCOM_SALVAGER_POINT::setPoint(u32 point) { GfDataUtil::setSalvagerPoint(point); }

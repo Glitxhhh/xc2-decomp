@@ -14,10 +14,29 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 struct GF_SCOM_HANDLE;
 
-class SCOM_QUEST_REACH {
+class SCOM_QUEST_REACH : public SCOM {
 public:
-  static void createArrivePlace(u32 questId);
+  // Inferred role: kind of reach (1 discover landmark, 2 arrive landmark, 3 arrive place); original enum and enumerator names unknown.
+  enum unknown001 {
+    unknown001_1 = 1,
+    unknown001_2 = 2,
+    unknown001_3 = 3,
+  };
+
+  SCOM_QUEST_REACH(GF_SCOM_HANDLE *handle, unknown001 type, u32 id) : SCOM(handle, SCOM_TYPE_UNKNOWN_42, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(type), unknown20(id) {}
+  bool checkEventScequence() const;
+  bool exec(const fw::UpdateInfo &info) override;
+  static void createDiscoverLandmark(u32 landmark);
+  static void createArriveLandmark(u32 landmark);
+  static void createArrivePlace(u32 place);
+
+  unknown001 unknown1c; // Inferred role: reach kind; original member name unknown.
+  u32 unknown20;        // Inferred role: landmark or place; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_QUEST_REACH, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_QUEST_REACH, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_QUEST_REACH) == 0x28, "");
 
 class SCOM_QUEST_GIMMICK : public SCOM {
 public:

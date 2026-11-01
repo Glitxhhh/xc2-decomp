@@ -229,7 +229,7 @@ void AIAgentField::procMsgPcFieldNotifyWall(fw::MessageObject *sender, MsgPcFiel
     if (blackBoard->unknowna0.full()) {
       blackBoard->unknowna0.pop_back();
     }
-    blackBoard->unknowna0.push_front(message.unknown30);
+    blackBoard->unknowna0.unknown001(message.unknown30);
     break;
   }
 }

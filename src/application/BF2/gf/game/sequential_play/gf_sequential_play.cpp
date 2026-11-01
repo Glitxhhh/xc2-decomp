@@ -72,6 +72,37 @@ bool GfSequentialPlay::isInitialized() {
   return false;
 }
 
+void GfSequentialPlay::postUpdate(const fw::UpdateInfo &info) {
+  GfSequentialPlay *sequentialPlay = get();
+  if (sequentialPlay == nullptr || !sequentialPlay->unknown20f4) {
+    return;
+  }
+  if (sequentialPlay->unknown1850.size() > 0) {
+    for (mm::mtl::FixedList<GfPlayCom *, 128>::iterator it = sequentialPlay->unknown1850.begin(); it != sequentialPlay->unknown1850.end(); ++it) {
+      sequentialPlay->unknown08.push_front(*it);
+    }
+    sequentialPlay->unknown1850.clear();
+  }
+  while (!sequentialPlay->unknown08.empty()) {
+    mm::mtl::FixedList<GfPlayCom *, 256>::iterator it = sequentialPlay->unknown08.begin();
+    GfPlayCom *command = *it;
+    if (command->unknown08) {
+      command->unknown08 = false;
+      command->start();
+    }
+    if (!command->update(info, GfManager::isDestroyNow())) {
+      return;
+    }
+    command->end();
+    bool isContinue = command->unknown09;
+    delete command;
+    sequentialPlay->unknown08.erase(it);
+    if (!isContinue) {
+      break;
+    }
+  }
+}
+
 bool GfSequentialPlay::play() {
   get()->unknown20f0 = TYPE_NORMAL;
   return true;
@@ -80,6 +111,17 @@ bool GfSequentialPlay::play() {
 bool GfSequentialPlay::isCancel() { return get()->unknown1228; }
 
 void GfSequentialPlay::beginCommand(TYPE type) { get()->unknown20f0 = type; }
+
+void GfSequentialPlay::addCommand(GfPlayCom *command) {
+  if (command != nullptr) {
+    GfSequentialPlay *sequentialPlay = get();
+    if (sequentialPlay->unknown20f0 == TYPE_SEQUENCE) {
+      sequentialPlay->unknown1850.push_front(command);
+    } else {
+      sequentialPlay->unknown08.push_back(command);
+    }
+  }
+}
 
 void GfSequentialPlay::pauseOn(u32 pauseBits) {
   GfSequentialPlay *sequentialPlay = get();

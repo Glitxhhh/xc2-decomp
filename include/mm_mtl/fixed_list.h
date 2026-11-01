@@ -101,13 +101,35 @@ public:
     m_free_index_top = N;
   }
 
-  void push_back(const T &value) {
+  // __LINE__ must be 220 and 224 as in the original header: they are the line arguments of the asserts.
+  void push_front(const T &value) {
+#line 220
     MM_ASSERT(m_free_index_top > 0);
     Index index = mFreeIndices[m_free_index_top--];
     ListNode *added = node(index);
     new (&added->mValue) T(value);
     added->mIndex = index;
     m_num_nodes++;
+#line 224
+    MM_ASSERT(m_num_nodes <= N);
+    ListNode *first = node(head()->mNext);
+    Index prev = first->mPrev;
+    added->mPrev = prev;
+    node(prev)->mNext = added->mIndex;
+    first->mPrev = added->mIndex;
+    added->mNext = first->mIndex;
+  }
+
+  // __LINE__ must be 241 and 246 as in the original header: they are the line arguments of the asserts.
+  void push_back(const T &value) {
+#line 241
+    MM_ASSERT(m_free_index_top > 0);
+    Index index = mFreeIndices[m_free_index_top--];
+    ListNode *added = node(index);
+    new (&added->mValue) T(value);
+    added->mIndex = index;
+    m_num_nodes++;
+#line 246
     MM_ASSERT(m_num_nodes <= N + 1);
     Index last = head()->mPrev;
     added->mPrev = last;
@@ -116,7 +138,9 @@ public:
     added->mNext = head()->mIndex;
   }
 
+  // __LINE__ must be 274, 275 and 276 as in the original header: they are the line arguments of the asserts.
   iterator erase(iterator it) {
+#line 274
     MM_ASSERT(!empty());
     MM_ASSERT(it.node()->in_list());
     MM_ASSERT(it.list() == this);

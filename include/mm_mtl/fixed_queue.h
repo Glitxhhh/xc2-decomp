@@ -152,9 +152,18 @@ public:
     return found;
   }
 
-  // Evidence: the wall move history of AIAgentField::procMsgPcFieldNotifyWall (1.0.0: 0x7100542514), whose index assert
-  // is the one of at().
+  // __LINE__ must be 625 as in the original header: it is the line argument of the assert.
+#line 624
   void push_front(const T &value) {
+    MM_ASSERT(!full());
+    mFront = (mFront + N - 1) % N;
+    element(mFront) = value;
+    mSize++;
+  }
+
+  // Inferred role: push_front variant indexing through at(), as AIAgentField::procMsgPcFieldNotifyWall (1.0.0: 0x7100542514)
+  // uses it; original name unknown.
+  void unknown001(const T &value) {
     MM_ASSERT(!full());
     mFront += static_cast<s64>(mFront) <= 0 ? N - 1 : -1;
     at(mFront) = value;

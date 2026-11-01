@@ -1,10 +1,13 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_data_blade.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/request/gf_scom.h"
 #include "mm_mtl/fixed_list.h"
+#include "mm_mtl/fixed_queue.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -83,11 +86,65 @@ public:
 
 class SCOM_PARTY_ADD {
 public:
+  // Inferred role: kind of a queued party change (1 add blade, 2 remove blade, 3 add driver, 4 remove driver); original enum and enumerator names unknown.
+  enum unknown001 {
+    unknown001_1 = 1,
+    unknown001_2 = 2,
+    unknown001_3 = 3,
+    unknown001_4 = 4,
+  };
+
+  // Inferred role: queued party change; original type name unknown.
+  struct unknown002 {
+    u32 unknown00;        // Inferred role: blade; original member name unknown.
+    u32 unknown04;        // Inferred role: driver; original member name unknown.
+    int unknown08;        // Inferred role: slot or party id; original member name unknown.
+    bool unknown0c;       // Inferred role: keep as reserve; original member name unknown.
+    bool unknown0d;       // Inferred role: release; original member name unknown.
+    bool unknown0e;       // Inferred role: make current; original member name unknown.
+    unknown001 unknown10; // Inferred role: change kind; original member name unknown.
+  };
+
+  static void addBlade(u32 blade, u32 driver, int slot);
+  static GF_SCOM_HANDLE *create();
+  static void removeBlade(u32 blade, bool isForce);
+  static void removeBlade(u32 driver, int slot, bool isForce);
+  static void releaseBlade(u32 blade);
   static void addDriver(u32 driver, u32 partyId);
   static void removeDriver(u32 driver, bool isForce);
-  static void addBlade(u32 blade, u32 driver, int slot);
-  static void removeBlade(u32 blade, bool isForce);
+  static void setCurrentBlade(u32 blade);
+  static void initialize();
+
+  static mm::mtl::FixedQueue<unknown002, 16> s_info;
 };
+
+static_assert(offsetof(SCOM_PARTY_ADD::unknown002, unknown0c) == 0x0c, "");
+static_assert(offsetof(SCOM_PARTY_ADD::unknown002, unknown10) == 0x10, "");
+static_assert(sizeof(SCOM_PARTY_ADD::unknown002) == 0x14, "");
+
+class SCOM_EXEC_CURRENT_BLADE : public SCOM {
+public:
+  SCOM_EXEC_CURRENT_BLADE(GF_SCOM_HANDLE *handle, u32 blade);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 blade);
+
+  u32 unknown1c; // Inferred role: blade; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_EXEC_CURRENT_BLADE, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_EXEC_CURRENT_BLADE) == 0x20, "");
+
+class SCOM_CURRENT_BLADE : public SCOM {
+public:
+  SCOM_CURRENT_BLADE(GF_SCOM_HANDLE *handle, u32 blade);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(u32 blade);
+
+  u32 unknown1c; // Inferred role: blade; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_CURRENT_BLADE, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_CURRENT_BLADE) == 0x20, "");
 
 class SCOM_PARTY_LEADER {
 public:
@@ -117,6 +174,30 @@ public:
 
 static_assert(offsetof(SCOM_BATTLE_TASK_RESET, unknown28) == 0x28, "");
 static_assert(sizeof(SCOM_BATTLE_TASK_RESET) == 0x30, "");
+
+class SCOM_FSKILLMAX_FOR_DEBUG : public SCOM {
+public:
+  SCOM_FSKILLMAX_FOR_DEBUG(GF_SCOM_HANDLE *handle);
+  bool exec(const fw::UpdateInfo &info) override;
+  static void create();
+
+  mm::mtl::FixedVector<u16, BLADE_COUNT> unknown20; // Inferred role: blades left to complete; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_FSKILLMAX_FOR_DEBUG, unknown20) == 0x20, "");
+static_assert(sizeof(SCOM_FSKILLMAX_FOR_DEBUG) == 0x378, "");
+
+class SCOM_SOLO_REX : public SCOM {
+public:
+  SCOM_SOLO_REX(GF_SCOM_HANDLE *handle, bool isSolo);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(bool isSolo);
+
+  bool unknown1c; // Inferred role: solo flag; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_SOLO_REX, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_SOLO_REX) == 0x20, "");
 
 enum CV_SALVAGE {};
 enum CV_SALVAGE_RESULT {};
