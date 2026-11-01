@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/data/gf_data_blade.h"
+#include "mm_math/mm_plane.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
@@ -50,20 +51,26 @@ struct unknown070 {
   u32 unknown00; // Inferred role: type; original member name unknown.
   u8 _04[0x34 - 0x04];
   f32 unknown34; // Inferred role: height; original member name unknown.
-  u8 _38[0x7d - 0x38];
+  u8 _38[0x7c - 0x38];
+  bool unknown7c; // Inferred role: auto run, copied from the pc field property; original member name unknown.
   bool unknown7d; // Inferred role: can start event; original member name unknown.
-  u8 _7e[0x7f - 0x7e];
+  bool unknown7e; // Inferred role: climb wall plane valid; original member name unknown.
   bool unknown7f; // Inferred role: blocks the standby talk of the player (GfObjUtil::isStanbyTalkingPlayer); original member name unknown.
   bool unknown80; // Inferred role: jump; original member name unknown.
-  u8 _81[0xc0 - 0x81];
+  u8 _81[0x90 - 0x81];
+  mm::Plane unknown90; // Inferred role: climb wall plane, copied from the pc field property; original member name unknown.
+  u8 _b0[0xc0 - 0xb0];
   GF_OBJ_HANDLE *unknownc0; // Inferred role: ground object; original member name unknown.
   f32 unknownc8;            // Inferred role: float time; original member name unknown.
 };
 
 static_assert(offsetof(unknown070, unknown34) == 0x34, "");
+static_assert(offsetof(unknown070, unknown7c) == 0x7c, "");
 static_assert(offsetof(unknown070, unknown7d) == 0x7d, "");
+static_assert(offsetof(unknown070, unknown7e) == 0x7e, "");
 static_assert(offsetof(unknown070, unknown7f) == 0x7f, "");
 static_assert(offsetof(unknown070, unknown80) == 0x80, "");
+static_assert(offsetof(unknown070, unknown90) == 0x90, "");
 static_assert(offsetof(unknown070, unknownc0) == 0xc0, "");
 static_assert(offsetof(unknown070, unknownc8) == 0xc8, "");
 

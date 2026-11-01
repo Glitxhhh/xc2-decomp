@@ -101,6 +101,7 @@ enum {
   MSG_OBJECT_NOTIFY_DAMAGE = 0x1000037,
   MSG_OBJECT_NOTIFY_DEAD = 0x1000038,
   MSG_OBJECT_NOTIFY_HEAL_HP = 0x1000039,
+  MSG_OBJECT_FLUSH_PROPERTY = 0x100003b,
 };
 
 // Layout evidence: GfComBehaviorEnemy::procMsgObjectLure (0x7100513fc4) and GfFieldDmg::update build it on the stack and the
@@ -198,6 +199,8 @@ struct MsgObjectAlpha : fw::Message {
   OBJ_ALPHA type;
   f32 alpha;
 };
+
+struct MsgObjectFlushProperty : fw::Message {};
 
 struct MsgGameChangeTarget : fw::Message {
   GF_OBJ_HANDLE *unknown08; // Inferred role: target; original member name unknown.

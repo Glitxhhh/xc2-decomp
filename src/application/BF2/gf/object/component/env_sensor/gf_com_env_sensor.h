@@ -70,7 +70,7 @@ public:
     u8 : 4;
     u8 unknown24_4 : 1; // Inferred role: valid; original member name unknown.
     u8 : 3;
-    u8 _25[0x30 - 0x25];
+    u8 _25[0x28 - 0x25];
   };
 
   // Inferred role: descend wall info; original type name unknown.

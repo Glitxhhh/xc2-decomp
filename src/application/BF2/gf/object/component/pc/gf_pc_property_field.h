@@ -13,6 +13,7 @@ namespace gf {
 
 class GfComPropertyPc;
 struct GF_OBJ_HANDLE;
+struct MsgObjectFlushProperty;
 
 enum {
   MSG_PC_FIELD_NOTIFY_WALL_JUMP = 0x1000010,
@@ -22,6 +23,9 @@ enum {
 };
 
 struct MsgPcFieldNotifyBigJump : fw::Message {
+  MsgPcFieldNotifyBigJump()
+      : fw::Message(MSG_PC_FIELD_NOTIFY_BIG_JUMP, 0x40), unknown10(mm::Vec3::zero), unknown20(0.0f), unknown24(2.0f), unknown28(1.0f), unknown30(nullptr), unknown38(0), unknown3c(0) {}
+
   mm::Vec3 unknown10;    // Inferred role: target position; original member name unknown.
   f32 unknown20;         // Role and original member name unknown.
   f32 unknown24;         // Role and original member name unknown.
@@ -48,6 +52,8 @@ struct MsgPcFieldNotifyHighJump : fw::Message {
 static_assert(offsetof(MsgPcFieldNotifyHighJump, unknown08) == 0x08, "");
 
 struct MsgPcFieldNotifyWarp : fw::Message {
+  MsgPcFieldNotifyWarp() : fw::Message(MSG_PC_FIELD_NOTIFY_WARP, 0x40), unknown10(mm::Vec3::zero), unknown20(0.0f), unknown28(nullptr), unknown30(0), unknown34(0) {}
+
   mm::Vec3 unknown10;    // Inferred role: target position; original member name unknown.
   f32 unknown20;         // Role and original member name unknown.
   const void *unknown28; // Inferred role: gimmick bdat row; original member name unknown.
@@ -62,6 +68,8 @@ static_assert(offsetof(MsgPcFieldNotifyWarp, unknown34) == 0x34, "");
 static_assert(sizeof(MsgPcFieldNotifyWarp) == 0x40, "");
 
 struct MsgPcFieldNotifyWallJump : fw::Message {
+  MsgPcFieldNotifyWallJump() : fw::Message(MSG_PC_FIELD_NOTIFY_WALL_JUMP, 0x40), unknown10(mm::Vec3::zero), unknown20(nullptr), unknown28(0), unknown2c(0) {}
+
   mm::Vec3 unknown10;    // Inferred role: target position; original member name unknown.
   const void *unknown20; // Inferred role: gimmick bdat row; original member name unknown.
   u32 unknown28;         // Inferred role: gimmick id; original member name unknown.
@@ -91,11 +99,13 @@ public:
     WALL_MOVE_MODE_UP_LEFT = 7,
   };
 
+  GfPropertyField();
   void setup(const GfComPropertyPc &property) override;
   void cleanup(const GfComPropertyPc &property) override;
   void flush(const GfComPropertyPc &property) override;
   void flushOwner(GfComPropertyPc &property) override;
   bool recieveMessage(const GfComPropertyPc &property, fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgObjectFlushProperty(const GfComPropertyPc &property, fw::MessageObject *sender, MsgObjectFlushProperty &message);
   void resetStatus(const GfComPropertyPc &property);
   void setBigJumpInfo(const MsgPcFieldNotifyBigJump *message);
   const MsgPcFieldNotifyBigJump *getBigJumpInfo() const;
@@ -104,38 +114,56 @@ public:
   void setWallJump(const MsgPcFieldNotifyWallJump *message);
   const MsgPcFieldNotifyWallJump *getWallJumpInfo() const;
   f32 getWallHeightOffset() const;
+  void flashWallInfo(const GfComPropertyPc &property);
 
   // Inferred role: field param of the param list entry 0 ("common"); original name unknown.
   const FieldParam *unknown001() const { return static_cast<const FieldParam *>(unknown08->unknown10[0].param); }
   // Inferred role: water param of the param list entry 9 ("water_common"); original name unknown.
   const WaterCommonParam *unknown002() const { return static_cast<const WaterCommonParam *>(unknown08->unknown10[9].param); }
+  // Inferred role: climb wall info when it is valid; original name unknown.
+  const EnviromentSensor::unknown003 *unknown003() const { return unknown10_6 ? &unknown130 : nullptr; }
 
   mm::mtl::IntrusivePtr<fw::ParamList> unknown08; // Inferred role: param list; original member name unknown.
   u32 unknown10_0 : 1;                            // Inferred role: walk mode; original member name unknown.
-  u32 : 1;
-  u32 unknown10_2 : 1; // Inferred role: idle; original member name unknown.
-  u32 unknown10_3 : 1; // Inferred role: pad control; original member name unknown.
-  u32 : 2;
-  u32 unknown10_6 : 1; // Inferred role: climb wall info valid; original member name unknown.
-  u32 unknown10_7 : 1; // Inferred role: wall up move lock; original member name unknown.
-  u32 unknown11_0 : 1; // Inferred role: auto run; original member name unknown.
-  u32 unknown11_1 : 1; // Inferred role: air; original member name unknown.
-  u32 unknown11_2 : 1; // Inferred role: special action; original member name unknown.
-  u32 unknown11_3 : 1; // Inferred role: slide; original member name unknown.
-  u32 unknown11_4 : 1; // Inferred role: big jump info valid; original member name unknown.
-  u32 unknown11_5 : 1; // Inferred role: warp info valid; original member name unknown.
-  u32 unknown11_6 : 1; // Inferred role: wall jump info valid; original member name unknown.
-  u32 : 1;
-  u32 unknown12_0 : 1; // Inferred role: under ground wall adsorption; original member name unknown.
-  u32 unknown12_1 : 1; // Inferred role: field status reset; original member name unknown.
-  u32 : 14;
-  WALL_MOVE_MODE unknown14; // Inferred role: wall move mode; original member name unknown.
-  f32 unknown18;            // Inferred role: wall float; original member name unknown.
-  u8 _1c[0x28 - 0x1c];
-  f32 unknown28; // Inferred role: wall height; original member name unknown.
-  u8 _2c[0x38 - 0x2c];
-  f32 unknown38; // Inferred role: wall detach distance; original member name unknown.
-  u8 _3c[0x78 - 0x3c];
+  u32 unknown10_1 : 1;                            // Role and original member name unknown.
+  u32 unknown10_2 : 1;                            // Inferred role: idle; original member name unknown.
+  u32 unknown10_3 : 1;                            // Inferred role: pad control; original member name unknown.
+  u32 unknown10_4 : 1;                            // Role and original member name unknown.
+  u32 unknown10_5 : 1;                            // Inferred role: on wall, set by StateFieldOnWall; original member name unknown.
+  u32 unknown10_6 : 1;                            // Inferred role: climb wall info valid; original member name unknown.
+  u32 unknown10_7 : 1;                            // Inferred role: wall up move lock; original member name unknown.
+  u32 unknown11_0 : 1;                            // Inferred role: auto run; original member name unknown.
+  u32 unknown11_1 : 1;                            // Inferred role: air; original member name unknown.
+  u32 unknown11_2 : 1;                            // Inferred role: special action; original member name unknown.
+  u32 unknown11_3 : 1;                            // Inferred role: slide; original member name unknown.
+  u32 unknown11_4 : 1;                            // Inferred role: big jump info valid; original member name unknown.
+  u32 unknown11_5 : 1;                            // Inferred role: warp info valid; original member name unknown.
+  u32 unknown11_6 : 1;                            // Inferred role: wall jump info valid; original member name unknown.
+  u32 unknown11_7 : 1;                            // Role and original member name unknown.
+  u32 unknown12_0 : 1;                            // Inferred role: under ground wall adsorption; original member name unknown.
+  u32 unknown12_1 : 1;                            // Inferred role: field status reset; original member name unknown.
+  u32 unknown12_2 : 14;                           // Role and original member name unknown.
+  WALL_MOVE_MODE unknown14;                       // Inferred role: wall move mode; original member name unknown.
+  f32 unknown18;                                  // Inferred role: wall float; original member name unknown.
+  f32 unknown1c;                                  // Inferred role: horizontal distance of the S_uplanding_00 locomotion; original member name unknown.
+  f32 unknown20;                                  // Inferred role: height of the S_uplanding_00 locomotion; original member name unknown.
+  f32 unknown24;                                  // Inferred role: horizontal distance of the S_uplanding_01 locomotion; original member name unknown.
+  f32 unknown28;                                  // Inferred role: wall height; original member name unknown.
+  f32 unknown2c;                                  // Inferred role: horizontal distance of the S_downlanding_00 locomotion; original member name unknown.
+  f32 unknown30;                                  // Inferred role: height of the S_downlanding_00 locomotion; original member name unknown.
+  f32 unknown34;                                  // Inferred role: horizontal distance of the S_downlanding_01 locomotion; original member name unknown.
+  f32 unknown38;                                  // Inferred role: wall detach distance; original member name unknown.
+  f32 unknown3c;                                  // Inferred role: climb up motion distance; original member name unknown.
+  f32 unknown40;                                  // Inferred role: climb down motion distance; original member name unknown.
+  f32 unknown44;                                  // Inferred role: climb right motion distance; original member name unknown.
+  f32 unknown48;                                  // Inferred role: height of the S_climbjump_base_02 locomotion; original member name unknown.
+  f32 unknown4c;                                  // Inferred role: wall offset (asm appendix "wallOffset"); original member name unknown.
+  f32 unknown50;                                  // Inferred role: height of the S_waterhole_01 locomotion; original member name unknown.
+  f32 unknown54;                                  // Inferred role: unique idle space (asm appendix "uniqueIdleSpace"); original member name unknown.
+  u8 _58[0x60 - 0x58];
+  mm::Vec3 unknown60; // Role and original member name unknown.
+  u32 unknown70;      // Role and original member name unknown.
+  u8 _74[0x78 - 0x74];
   GF_OBJ_HANDLE *unknown78;                // Inferred role: object that sent the jump or warp notification, told about the skill action; original member name unknown.
   MsgPcFieldNotifyBigJump unknown80;       // Inferred role: big jump info; original member name unknown.
   MsgPcFieldNotifyWarp unknownc0;          // Inferred role: warp info; original member name unknown.

@@ -67,5 +67,15 @@ static_assert(offsetof(WallCommonParam, adsorptionTime) == 0x14, "");
 static_assert(offsetof(WallCommonParam, wallHeightRatio) == 0x38, "");
 static_assert(sizeof(WallCommonParam) == 0x3c, "");
 
+// Field names and offsets from the reflection built by gf::pc::WallMoveParam::createReflection.
+struct WallMoveParam {
+  f32 upSpeed;
+  f32 sideSpeed;
+  f32 downSpeed;
+};
+
+static_assert(offsetof(WallMoveParam, downSpeed) == 0x08, "");
+static_assert(sizeof(WallMoveParam) == 0x0c, "");
+
 } // namespace pc
 } // namespace gf
