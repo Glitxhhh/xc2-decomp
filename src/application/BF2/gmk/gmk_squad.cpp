@@ -1,7 +1,11 @@
 #include "gmk/gmk_squad.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 
+#include "framework/memory/framework_memory.h"
 #include "gmk/gmk_set.h"
+#include "ml/rand.h"
+#include "mm_math/mm_quat.h"
+#include <math.h>
 
 namespace gmk {
 
@@ -150,6 +154,75 @@ bool GmkSquadNavi::isArrived(const mm::Vec3 &position) const {
   f32 z = naviPosition.z - position.z;
   f32 distSq = x * x + z * z;
   return !(unknown10.unknown10 * unknown10.unknown10 < distSq);
+}
+
+void GmkSquad::updateMemberPosRotY_MemberDef_Circle(u32 index) {
+  const GmkSquadLeader::Data *data = m_bindedGmkSquadLeader->getData();
+  const mm::Vec3 &center = unknowna0[0];
+  f32 rotY = unknownc8[0];
+  f32 halfAngle = ml::mtRandf1() * 6.2831855f * 0.5f;
+  mm::Quat rotation;
+  rotation.x = 0.0f;
+  rotation.y = sinf(halfAngle);
+  rotation.z = 0.0f;
+  rotation.w = cosf(halfAngle);
+  f32 distance = ml::mtRandf1(0.5f, 1.0f) * data->unknown04;
+  mm::Vec3 offset = rotation.rotate(mm::Vec3::unitZ) * (distance * unknown2c);
+  unknowna0[index] = offset + center;
+  unknownc8[index] = rotY;
+}
+
+void GmkSquadNavi::update(const UpdateInfo &info) {
+  GmkSquad *squad = unknown10.unknown00;
+  if (!unknown001() || !squad->isValid()) {
+    return;
+  }
+  if (squad->m_bindedGmkSquadLeader != nullptr && squad->m_bindedGmkSquadLeader->getData()->unknown00 == 2 && unknown28 != 0 && isArrived(info.position)) {
+    unknown10.unknown00->updateMemberPosRotY_MemberDef_Circle(unknown28);
+  }
+}
+
+void GmkSquad::seqInit(f32 deltaTime) {
+  if (m_bindedGmkSquadLeader == nullptr || !m_bindedGmkSquadLeader->isValid()) {
+    return;
+  }
+  GmkSquadLeader *leader = m_bindedGmkSquadLeader;
+  if (leader == nullptr) {
+    return;
+  }
+  const IGmkList *list = leader->getBindedSquadMemberList();
+  if (list == nullptr || list->getInstNum() == 0) {
+    return;
+  }
+  const GmkSquadLeader::Data *data = leader->getData();
+  switch (data->unknown00) {
+  case 1:
+    unknown70 = data->unknown0c + 1 - data->unknown08;
+    break;
+  case 2:
+    unknown70 = unknown28;
+    break;
+  }
+  unknowna0.destroy();
+  unknowna0.setAllocator(fw::FrameworkMemory::getAllocator(5));
+  unknowna0.reserve(unknown70, 16);
+  for (u32 i = 0; i < unknown70; i++) {
+    unknowna0.push_back(mm::Vec3::zero);
+  }
+  unknownc8.destroy();
+  unknownc8.setAllocator(fw::FrameworkMemory::getAllocator(5));
+  unknownc8.reserve(unknown70);
+  for (u32 i = 0; i < unknown70; i++) {
+    unknownc8.push_back(0.0f);
+  }
+  updatePosRotY(false);
+  unknownf0.destroy();
+  unknownf0.setAllocator(fw::FrameworkMemory::getAllocator(5));
+  unknownf0.reserve(unknown70);
+  for (u32 i = 0; i < unknown70; i++) {
+    unknownf0.push_back(false);
+  }
+  unknown78 = &GmkSquad::seqUpdate;
 }
 
 void GmkSquad::seqUpdate(f32 deltaTime) {

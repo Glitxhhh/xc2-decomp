@@ -157,7 +157,7 @@ bool GmkMob::PopXformFinder::findPosRot(mm::Vec3 &position, mm::Vec3 &rotation) 
   if (squad != nullptr) {
     mm::mtl::Vector<gf::GF_OBJ_HANDLE *> *handles = unknown08->unknown48.unknowna8;
     u32 num = handles->size();
-    if (num != 0 && num < static_cast<u32>(squad->unknown70)) {
+    if (num != 0 && num < squad->unknown70) {
       gf::GfObjAcc acc((*handles)[0]);
       if (!acc.isValidTransform()) {
         return false;

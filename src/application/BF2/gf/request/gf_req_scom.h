@@ -31,6 +31,11 @@ public:
   static void create(u32 mission);
 };
 
+class SCOM_ADD_ITEM {
+public:
+  static GF_SCOM_HANDLE *create(u32 item, int num);
+};
+
 class SCOM_ADD_ETHER : public SCOM {
 public:
   bool exec(const fw::UpdateInfo &info) override;

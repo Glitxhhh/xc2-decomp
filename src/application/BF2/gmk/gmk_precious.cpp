@@ -3,19 +3,26 @@
 
 #include "bdat.h"
 #include "framework/effect/effect_manager.h"
+#include "fw/fw_param_manager.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/object/gf_menu_obj_field_icon.h"
+#include "gf/object/component/gf_com_transform.h"
+#include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
 #include "gmk/gmk_active_list.h"
 #include "gmk/gmk_bdat.h"
+#include "mm_math/mm_vec3.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
 
 namespace fw {
@@ -29,6 +36,13 @@ template bool TGmkList<GmkPrecious, GmkPrecious::BdatInfo, 1396920912u, 2u, GmkP
 template class TGmkActiveList<GmkPrecious>;
 
 GmkPrecious::GmkPrecious() : IntrusiveListNode(), unknown58(gf::INVALID_HANDLE), unknown60(0), unknown68(nullptr), unknown70{0.0f}, unknown74(true) {}
+
+// Inferred role: pick up area of the pc param list; original type name unknown.
+struct unknown091 {
+  f32 unknown00; // Inferred role: horizontal radius; original member name unknown.
+  f32 unknown04; // Inferred role: height above; original member name unknown.
+  f32 unknown08; // Inferred role: depth below; original member name unknown.
+};
 
 constexpr int WILDCARD_PRECIOUS_POP_DIST_ROW = 34;
 
@@ -177,6 +191,24 @@ void GmkPrecious::update(f32 deltaTime) {
     disposeGobInst(true);
     disposeEffectIcon(true);
     disposeMenuIcon();
+  }
+}
+
+void GmkPrecious::updateInActiveList(f32 deltaTime) {
+  if (gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE || isObtained() || gf::GfGameManager::isBattle() || !gf::GfGameManager::isEnableGetFieldPrecious()) {
+    return;
+  }
+  const mm::Vec3 &moverPosition = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
+  mm::Vec3 diff = AGmkBase::unknown08.unknown08->unknown00 - moverPosition;
+  const unknown091 *param = static_cast<const unknown091 *>(fw::ParamManager::get()->unknown430->unknown10[5].param);
+  if (-param->unknown08 <= diff.y && diff.y <= param->unknown04) {
+    diff.y = 0.0f;
+    if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= param->unknown00 * param->unknown00) {
+      gf::GfGameFlag::setLocal(1, getGameFlagId(), 1);
+      const BdatInfo *info = getBdatInfo();
+      gf::SCOM_ADD_ITEM::create(info->unknown00, 1);
+      gf::GfPlayFactory::createMenuPrecious(info->unknown00, true);
+    }
   }
 }
 

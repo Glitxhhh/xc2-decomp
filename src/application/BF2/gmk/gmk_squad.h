@@ -30,7 +30,9 @@ public:
 
   struct Data {
     u32 unknown00; // Inferred role: member definition type; original member name unknown.
-    f32 unknown04; // Inferred role: circle radius; original member name unknown. The size of this structure is unknown.
+    f32 unknown04; // Inferred role: circle radius; original member name unknown.
+    int unknown08; // Inferred role: first member index; original member name unknown.
+    int unknown0c; // Inferred role: last member index; original member name unknown. The size of this structure is unknown.
   };
 
   static const GmkType GMK_TYPE = GMK_TYPE_SQUAD_LEADER;
@@ -87,12 +89,16 @@ public:
   void removeGmkSquadNavi(GmkSquadNavi *navi);
   void seqInit(f32 deltaTime);
   void updatePosRotY(bool isImmediate);
+  void updateMemberPosRotY_MemberDef_Circle(u32 index);
   void seqUpdate(f32 deltaTime);
   void debugDraw() const;
 
-  u8 _20[0x68 - 0x20];
+  u8 _20[0x28 - 0x20];
+  int unknown28; // Inferred role: circle member count; original member name unknown.
+  f32 unknown2c; // Inferred role: member distance scale; original member name unknown.
+  u8 _30[0x68 - 0x30];
   GmkSquadLeader *m_bindedGmkSquadLeader;
-  int unknown70; // Inferred role: squad member count; original member name unknown.
+  u32 unknown70; // Inferred role: squad member count; original member name unknown.
   u8 _74[0x78 - 0x74];
   void (GmkSquad::*unknown78)(f32);               // Inferred role: seq; original member name unknown.
   mm::mtl::IntrusiveList<GmkSquadNavi> unknown88; // Inferred role: navis sorted by member index; original member name unknown.
@@ -101,6 +107,8 @@ public:
   mm::mtl::Vector<bool> unknownf0;                // Inferred role: member indices in use; original member name unknown.
 };
 
+static_assert(offsetof(GmkSquad, unknown28) == 0x28, "");
+static_assert(offsetof(GmkSquad, unknown2c) == 0x2c, "");
 static_assert(offsetof(GmkSquad, m_bindedGmkSquadLeader) == 0x68, "");
 static_assert(offsetof(GmkSquad, unknown70) == 0x70, "");
 static_assert(offsetof(GmkSquad, unknown78) == 0x78, "");
@@ -150,7 +158,7 @@ public:
   // Inferred helper: whether the navi is bound to a member of its squad; original name unknown.
   bool unknown001() const {
     if (unknown10.unknown00 != nullptr && unknown10.unknown08 != gf::INVALID_HANDLE && unknown28 >= 0) {
-      if (static_cast<u32>(unknown28) < static_cast<u32>(unknown10.unknown00->unknown70)) {
+      if (static_cast<u32>(unknown28) < unknown10.unknown00->unknown70) {
         return true;
       }
     }

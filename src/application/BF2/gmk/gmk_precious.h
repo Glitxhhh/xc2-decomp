@@ -51,6 +51,7 @@ public:
   void disposeMenuIcon();
   void disposeEffectIcon(bool isFadeOut);
   void update(f32 deltaTime) override;
+  void updateInActiveList(f32 deltaTime);
   void createGobInst();
   void disposeGobInst(bool isFadeOut);
   void createEffectIcon();
