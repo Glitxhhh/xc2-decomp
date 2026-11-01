@@ -6,6 +6,8 @@
 #include "grlib/cglib_ctl_vertex.h"
 #include "grlib/cglib_one_uniform_block.h"
 #include "grlib/cglib_shd_list.h"
+#include "ml/file_res_th.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
@@ -16,6 +18,20 @@ void DrShdDataObj::createShader(DrShdDataList *list, int type, int index) {
   unknown68[0] = &list->unknown68[index];
   u8 next = DrShdDataList::s_etcNextVertex[index];
   unknown68[1] = next == 0xff ? nullptr : &list->unknown68[next];
+}
+
+void DrShdDataList::releaseShader() {
+  if (unknown10 != nullptr) {
+    unknown618->release();
+    if (unknown10 != nullptr) {
+      mtl::MemManager::deallocate(unknown10, 0, false);
+      unknown10 = nullptr;
+    }
+  }
+  if (unknown00 != nullptr) {
+    unknown00->Release();
+    unknown00 = nullptr;
+  }
 }
 
 void DrShdDataList::reloadShader(int type) { createShader(); }

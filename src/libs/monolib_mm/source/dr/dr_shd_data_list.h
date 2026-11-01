@@ -3,6 +3,7 @@
 
 #include "dr/dr_res_fetch.h"
 #include "dr/dr_shd_data_obj.h"
+#include "grlib/cglib_shd_list.h"
 #include "grlib/cglib_uniform_array.h"
 #include "grlib/cglib_vtx_index.h"
 #include "grlib/cglib_vtx_stm_out.h"
@@ -15,6 +16,7 @@ class CGLibOneUniformBlock;
 
 namespace ml {
 class DrMan;
+class FileResTh;
 class DrResShdMpf;
 class DrResShdObjMot;
 class DrResShdPrePass;
@@ -24,6 +26,7 @@ class DrResShdStreamOut;
 class DrShdDataList {
 public:
   void createShader();
+  void releaseShader();
   void reloadShader(int type);
   DrShdDataObj *getDebugShdObj(int index);
   DrShdDataObj *getSelectShdObj(int index);
@@ -83,12 +86,12 @@ public:
 
   static u8 s_etcNextVertex[];
 
-  u8 _000[0x008 - 0x000];
-  DrMan *unknown08; // Inferred role: dr man; original member name unknown.
-  u8 _010[0x018 - 0x010];
-  DrShdDataObj *unknown18[10]; // Inferred role: shd objs; original member name unknown.
-  DrResFetch unknown68[91];    // Inferred role: fetches; original member name unknown.
-  u8 _618[0x620 - 0x618];
+  FileResTh *unknown00;                                             // Inferred role: shader file resource; original member name unknown.
+  DrMan *unknown08;                                                 // Inferred role: dr man; original member name unknown.
+  void *unknown10;                                                  // Inferred role: shader object work memory; original member name unknown.
+  DrShdDataObj *unknown18[10];                                      // Inferred role: shd objs; original member name unknown.
+  DrResFetch unknown68[91];                                         // Inferred role: fetches; original member name unknown.
+  grlib::CGLibShdListBase<DrShdDataObj> *unknown618;                // Inferred role: shader list; original member name unknown.
   DrResShdMpf *unknown620;                                          // Inferred role: mpf objs; original member name unknown.
   DrResShdPrePass *unknown628;                                      // Inferred role: pre pass objs; original member name unknown.
   DrResShdShw *unknown630;                                          // Inferred role: shw objs; original member name unknown.

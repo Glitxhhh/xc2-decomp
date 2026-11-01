@@ -44,6 +44,7 @@ public:
   void releaseWork();
   void renderSetup();
   bool renderEnd();
+  static void getScaleTranslateToFit(mm::Mat44 *mat, const mm::Vec3 &max, const mm::Vec3 &min);
 
   grlib::CGLibDblUniformBlock unknown08; // Inferred role: shadow uniform; original member name unknown.
   MdoShdPxlWrkTex *unknown40;            // Inferred role: shadow work texture; original member name unknown.

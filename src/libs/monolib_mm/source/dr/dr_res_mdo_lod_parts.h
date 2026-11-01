@@ -5,12 +5,36 @@
 
 namespace ml {
 
-struct MdsMdlLodData;
+// Layout from DrResMdoLodParts::calcPixel and calcAutoPixel.
+struct MdsMdlLodData {
+  u8 _00[0x10 - 0x00];
+  f32 unknown10; // Inferred role: pixel size threshold; original member name unknown.
+  u8 _14[0x15 - 0x14];
+  u8 unknown15; // Inferred role: PIXEL_RATIO index; original member name unknown.
+};
+
+static_assert(offsetof(MdsMdlLodData, unknown10) == 0x10, "");
+static_assert(offsetof(MdsMdlLodData, unknown15) == 0x15, "");
+
+// Layout from DrResMdoLodParts::calcPixel and calcAutoPixel.
+struct DrResMdlLodArg {
+  u8 _00[0x10 - 0x00];
+  bool unknown10; // Inferred role: lod state reset request; original member name unknown.
+  u8 _11[0x18 - 0x11];
+  f32 unknown18; // Inferred role: pixel size; original member name unknown.
+};
+
+static_assert(offsetof(DrResMdlLodArg, unknown10) == 0x10, "");
+static_assert(offsetof(DrResMdlLodArg, unknown18) == 0x18, "");
 
 class DrResMdoLodParts {
 public:
   DrResMdoLodParts();
   void setup(const MdsMdlLodData *lodData);
+  void calcPixel(const DrResMdlLodArg &arg, bool &isDisp);
+  void calcAutoPixel(const DrResMdlLodArg &arg, bool &isDisp);
+
+  static f32 PIXEL_RATIO[4];
 
   u64 unknown00; // Inferred role: state; original member name unknown.
   u32 unknown08; // Inferred role: state; original member name unknown.

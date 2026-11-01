@@ -8,6 +8,7 @@
 #include "dr/dr_mdo_shd_pxl_wrk_tex.h"
 #include "dr/dr_pixl_man.h"
 #include "grlib/cglib_gpu_cache.h"
+#include "mm_math/mm_vec3.h"
 
 namespace ml {
 
@@ -73,6 +74,25 @@ bool DrPixlShadowObj::renderEnd() {
     return true;
   }
   return false;
+}
+
+void DrPixlShadowObj::getScaleTranslateToFit(mm::Mat44 *mat, const mm::Vec3 &max, const mm::Vec3 &min) {
+  mat->rows[0][0] = 2.0f / (max.x - min.x);
+  mat->rows[1][0] = 0.0f;
+  mat->rows[2][0] = 0.0f;
+  mat->rows[3][0] = -(max.x + min.x) / (max.x - min.x);
+  mat->rows[0][1] = 0.0f;
+  mat->rows[1][1] = 2.0f / (max.y - min.y);
+  mat->rows[2][1] = 0.0f;
+  mat->rows[3][1] = -(max.y + min.y) / (max.y - min.y);
+  mat->rows[0][2] = 0.0f;
+  mat->rows[1][2] = 0.0f;
+  mat->rows[2][2] = 2.0f / (max.z - min.z);
+  mat->rows[3][2] = -(max.z + min.z) / (max.z - min.z);
+  mat->rows[0][3] = 0.0f;
+  mat->rows[1][3] = 0.0f;
+  mat->rows[2][3] = 0.0f;
+  mat->rows[3][3] = 1.0f;
 }
 
 } // namespace ml

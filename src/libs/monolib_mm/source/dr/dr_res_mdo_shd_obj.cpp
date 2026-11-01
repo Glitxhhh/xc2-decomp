@@ -1,6 +1,11 @@
 #include "dr/dr_res_mdo_shd_obj.h"
 
+#include <new>
 #include <string.h>
+
+#include "dr/dr_shd_mdo_dec_ext_tbl.h"
+#include "dr/dr_shd_mdo_ext_tbl_obj.h"
+#include "grlib/cglib_dec_shader.h"
 
 namespace ml {
 
@@ -11,6 +16,53 @@ static const unknown041 *getDecShdInfos(const unknown042 *header) { return reint
 DrResMdoShdObj::DrResMdoShdObj() : unknown00(nullptr), unknown08(nullptr), unknown10(0) {}
 
 DrResMdoShdObj::~DrResMdoShdObj() {}
+
+int DrResMdoShdObj::setup(const u8 *resource, u8 *work) {
+  const unknown042 *header = getDecShdHeader(resource);
+  unknown00 = header;
+  const unknown041 *info = getDecShdInfos(header);
+  unknown08 = reinterpret_cast<unknown043 *>(work);
+  unknown10 = header->num;
+  u8 *decl = work + header->num * sizeof(unknown043);
+  u32 size = 0;
+  for (int i = 0; i < header->num; i++, info++) {
+    unknown043 shd = {info, decl + size, 1, 1};
+    unknown08[i] = shd;
+    size += info->unknown10;
+  }
+  return size + (-size & 3) + header->num * sizeof(unknown043) + sizeof(DrResMdoShdObj);
+}
+
+void DrResMdoShdObj::bindShader(DrShdMdoExtTblObj *extTblObj) {
+  const unknown042 *header = unknown00;
+  const unknown041 *info = getDecShdInfos(header);
+  for (int i = 0; i < header->num; i++, info++) {
+    const char *name = reinterpret_cast<const char *>(unknown00) + info->unknown00;
+    u8 *decl = unknown08[i].unknown08;
+    const u16 *shaderIdx = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown00) + info->unknown0c);
+    for (int j = 0; j < info->unknown10; j++, shaderIdx++) {
+      decl[j] = (extTblObj->unknown08 + *shaderIdx)->unknown00->getDeclarationOfs(name);
+    }
+  }
+}
+
+bool DrResMdoShdObj::update(DrShdMdoExtTblObj *extTblObj) {
+  bool isUpdate = false;
+  const unknown041 *info = getDecShdInfos(unknown00);
+  for (u32 i = 0; i < unknown10; i++, info++) {
+    u32 parm = unknown08[i].unknown10;
+    if (parm != unknown08[i].unknown14) {
+      unknown08[i].unknown14 = parm;
+      const u8 *decl = unknown08[i].unknown08;
+      const u16 *shaderIdx = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown00) + info->unknown0c);
+      for (int j = 0; j < info->unknown10; j++, shaderIdx++) {
+        (extTblObj->unknown08 + *shaderIdx)->setDeclarationIdx(decl[j], parm);
+      }
+      isUpdate = true;
+    }
+  }
+  return isUpdate;
+}
 
 u32 DrResMdoShdObj::getDecShdID(u32 index) const {
   if (index < unknown10) {
@@ -65,6 +117,11 @@ int DrResMdoShdObj::calcWorkSize(const u8 *resource) {
     size += info->unknown10;
   }
   return size + (-size & 3) + header->num * sizeof(unknown043) + sizeof(DrResMdoShdObj);
+}
+
+int DrResMdoShdObj::create(u8 *work, const u8 *resource) {
+  DrResMdoShdObj *shdObj = new (work) DrResMdoShdObj();
+  return shdObj->setup(resource, work + sizeof(DrResMdoShdObj));
 }
 
 void DrResMdoShdObj::release(DrResMdoShdObj *&shdObj) {

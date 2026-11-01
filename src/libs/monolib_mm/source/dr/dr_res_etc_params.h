@@ -45,15 +45,19 @@ public:
 
   // Inferred role: params table header; original type name unknown.
   struct unknown002 {
-    u8 _00[0x04];
+    u32 unknown00; // Inferred role: offset of the name table; original member name unknown.
     s32 unknown04; // Inferred role: param count; original member name unknown.
+    u8 _08[0x10 - 0x08];
+    u32 unknown10; // Inferred role: offset of the initial values; original member name unknown.
   };
 
   ~DrResEtcPamObj();
-  static void release(DrResEtcPamObj *&obj);
+  int setup(const u8 *data, u8 *work);
+  void update();
   static int calcWorkSize(const u8 *data);
+  static void release(DrResEtcPamObj *&obj);
 
-  const char *unknown00;       // Inferred role: names; original member name unknown.
+  const unknown002 *unknown00; // Inferred role: params table header, base of the names; original member name unknown.
   const unknown040 *unknown08; // Inferred role: name table; original member name unknown.
   DrResEtcParams *unknown10;   // Inferred role: params; original member name unknown.
   u32 unknown18;               // Inferred role: params max; original member name unknown.
@@ -61,6 +65,7 @@ public:
 };
 
 static_assert(offsetof(DrResEtcPamObj::unknown001, unknown84) == 0x84, "");
+static_assert(offsetof(DrResEtcPamObj::unknown002, unknown10) == 0x10, "");
 static_assert(offsetof(DrResEtcPamObj::unknown002, unknown04) == 0x04, "");
 static_assert(offsetof(DrResEtcPamObj, unknown10) == 0x10, "");
 static_assert(offsetof(DrResEtcPamObj, unknown18) == 0x18, "");

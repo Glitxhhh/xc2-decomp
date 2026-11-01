@@ -188,13 +188,13 @@ const char *ScnObjAccEtcParams::getName(u32 index) const {
   if (index >= m_etcPamObj->unknown18) {
     return nullptr;
   }
-  return m_etcPamObj->unknown00 + m_etcPamObj->unknown08[index].unknown00;
+  return reinterpret_cast<const char *>(m_etcPamObj->unknown00) + m_etcPamObj->unknown08[index].unknown00;
 }
 
 int ScnObjAccEtcParams::getIndex(const char *name) const {
   if (m_etcPamObj != nullptr) {
     for (u64 i = 0; i < m_etcPamObj->unknown18; i++) {
-      if (strcmp(name, m_etcPamObj->unknown00 + m_etcPamObj->unknown08[i].unknown00) == 0) {
+      if (strcmp(name, reinterpret_cast<const char *>(m_etcPamObj->unknown00) + m_etcPamObj->unknown08[i].unknown00) == 0) {
         return i;
       }
     }

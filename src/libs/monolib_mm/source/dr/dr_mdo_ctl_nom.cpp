@@ -1,10 +1,32 @@
 #include "dr/dr_mdo_ctl_nom.h"
 
+#include "dr/dr_man.h"
 #include "dr/dr_mdo_mat.h"
 #include "dr/dr_res_mdo_shd_obj.h"
 #include "dr/dr_res_mdo_vtx_mesh_obj.h"
+#include "mm_math/mm_col3.h"
 
 namespace ml {
+
+void DrMdoCtlNom::updateRimBloomParams() {
+  if (getRimBloomWrk(2) != nullptr) {
+    unknown091 *dst = getRimBloomWrk(2);
+    unknown091 *src = getRimBloomWrk(DrMan::s_nDblStockIdx);
+    if (src->unknown1c & 1) {
+      dst->unknown00 = src->unknown00;
+    }
+    if (src->unknown1c & 2) {
+      dst->unknown0c = src->unknown0c;
+    }
+    if (src->unknown1c & 4) {
+      dst->unknown10 = src->unknown10;
+    }
+    if (src->unknown1c & 8) {
+      dst->unknown14 = src->unknown14;
+    }
+    src->unknown1c = 0;
+  }
+}
 
 void DrMdoCtlNom::updateShdMdl() {
   if (unknown1d0 != nullptr && unknown1d0->update(unknown30->unknown88)) {
