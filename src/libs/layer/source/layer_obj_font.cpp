@@ -93,6 +93,16 @@ void LayerObjFont::setBorderWeight(f32 weight) {
   unknown2bc |= 1 << index;
 }
 
+f32 LayerObjFont::getBorderWeight() const {
+  if (unknown2bc & (1 << LayerManager::s_nStkIdx)) {
+    return unknown2c4[LayerManager::s_nStkIdx];
+  }
+  if (unknown2bc & (1 << LayerManager::s_nDebIdx)) {
+    return unknown2c4[LayerManager::s_nDebIdx];
+  }
+  return m_borderWeight;
+}
+
 void LayerObjFont::setSlopeRot(f32 rot) { m_slopeRot = rot; }
 
 f32 LayerObjFont::getSlopeRot() const { return m_slopeRot; }

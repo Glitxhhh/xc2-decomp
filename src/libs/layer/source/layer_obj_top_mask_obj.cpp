@@ -81,6 +81,8 @@ void LayerObjTopMaskObj::releaseWorkBuffer() {
   }
 }
 
+const grlib::CGLibTextureBuffer &LayerObjTopMaskObj::getTexture() const { return *unknown2c8->getTexture(0); }
+
 void LayerObjTopMaskObj::resourceInit() {
   if (unknown2c8 != nullptr) {
     unknown2c8->setupResource();

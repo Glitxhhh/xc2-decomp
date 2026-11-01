@@ -49,6 +49,14 @@ void LayerAnimeObj::setSelectNumber(bool selectNumber) {
   }
 }
 
+void LayerAnimeObj::setSelectIdx(u32 idx) {
+  if (idx < static_cast<u32>(unknown18)) {
+    unknown08[LayerManager::s_nStkIdx] = idx + 1;
+  } else {
+    unknown08[LayerManager::s_nStkIdx] = unknown18;
+  }
+}
+
 void LayerAnimeObj::calcParm(LayerResParmInfo &parm, const LayerAnimeInfo &info, f32 rate) {
   if (info.unknown00 & 0x1) {
     parm.unknown00.unknown00 += (info.unknown08 - parm.unknown00.unknown00) * rate;

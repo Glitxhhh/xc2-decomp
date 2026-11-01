@@ -18,6 +18,7 @@ namespace layer {
 
 struct LayerResViewPortInfo;
 class LayerTextureObj;
+struct LayerResNode;
 class LayerVertexObj;
 
 class LayerObjWork : public LayerActBase {
@@ -52,7 +53,7 @@ public:
     u32 unknown08;                     // Inferred role: instance count; original member name unknown.
   };
 
-  // Inferred layout of the per draw entry work set up by LayerObjTopDef::workIconCreate; original type and member names unknown.
+  // Inferred layout of a LayerResNode as LayerObjTopDef::workIconCreate resets it, in 8 byte pairs; original type and member names unknown.
   struct unknown009 {
     mm::Pnt<f32> unknown00; // Inferred role: cleared to 0; original member name unknown.
     mm::Pnt<f32> unknown08; // Inferred role: set to 1; original member name unknown.
@@ -75,12 +76,12 @@ public:
     u32 unknown40;               // Inferred role: draw entry count; original member name unknown.
     u8 _44[0x48 - 0x44];
     const u8 *unknown48; // Inferred role: icon entry table; original member name unknown.
-    u32 unknown50;       // Inferred role: icon entry count; original member name unknown.
+    s32 unknown50;       // Inferred role: icon entry count; original member name unknown.
     u8 _54[0x58 - 0x54];
     LayerResViewPortInfo *unknown58;                                  // Inferred role: view port; original member name unknown.
     u32 *unknown60;                                                   // Inferred role: icon entry states; original member name unknown.
     grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown68; // Inferred role: icon uniforms; original member name unknown.
-    unknown009 *unknown70;                                            // Inferred role: draw entry works; original member name unknown.
+    LayerResNode *unknown70;                                          // Inferred role: draw entry nodes; original member name unknown.
     unknown008 *unknown78;                                            // Inferred role: instance vertex info; original member name unknown.
     f32 unknown80;                                                    // Inferred role: frame count; original member name unknown.
     f32 unknown84;                                                    // Inferred role: start frame; original member name unknown.
@@ -133,7 +134,7 @@ public:
   // Inferred layout of an icon entry; original type and member names unknown.
   struct unknown017 {
     u16 unknown00; // Inferred role: mesh idx; original member name unknown.
-    u8 _02[0x04 - 0x02];
+    u16 unknown02; // Inferred role: node idx; original member name unknown.
   };
 
   // Inferred layout of the icon max resource; original type and member names unknown.

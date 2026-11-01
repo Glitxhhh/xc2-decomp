@@ -6,6 +6,10 @@
 #include "mm_math/mm_rect.h"
 #include "types.h"
 
+namespace grlib {
+class CGLibTextureBuffer;
+} // namespace grlib
+
 namespace layer {
 
 class LayerTextureObj;
@@ -17,6 +21,7 @@ public:
   ~LayerObjTopMaskObj() override;
   void createWorkBuffer(const void *data);
   void releaseWorkBuffer();
+  const grlib::CGLibTextureBuffer &getTexture() const;
   void resourceInit() override;
   void setDrawList(LayerSortMan *sortMan, bool is3D) override;
 

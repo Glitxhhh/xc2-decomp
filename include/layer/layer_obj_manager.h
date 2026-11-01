@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "layer/layer_base.h"
+#include "layer/layer_render_view.h"
 #include "types.h"
 
 namespace grlib {
@@ -63,13 +64,14 @@ public:
   LayerBase::unknown001 unknown18;    // Inferred role: active objects; original member name unknown.
   LayerBase::unknown001 unknown30[2]; // Inferred role: objects to add per buffer; original member name unknown.
   LayerBase::unknown001 unknown60;    // Inferred role: objects to delete; original member name unknown.
-  u8 _78[0x90 - 0x78];
+  LayerRenderView unknown78;          // Inferred role: render view passed to the objects; original member name unknown.
 };
 
 static_assert(offsetof(LayerObjManager, unknown10) == 0x10, "");
 static_assert(offsetof(LayerObjManager, unknown18) == 0x18, "");
 static_assert(offsetof(LayerObjManager, unknown30) == 0x30, "");
 static_assert(offsetof(LayerObjManager, unknown60) == 0x60, "");
+static_assert(offsetof(LayerObjManager, unknown78) == 0x78, "");
 static_assert(sizeof(LayerObjManager) == 0x90, "");
 
 } // namespace layer

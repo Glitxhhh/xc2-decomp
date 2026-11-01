@@ -9,14 +9,21 @@
 #include "layer/layer_acc_obj_base.h"
 #include "layer/layer_base.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj.h"
 #include "layer/layer_obj_draw.h"
 #include "layer/layer_obj_manager.h"
+#include "layer/layer_obj_mesh.h"
 #include "layer/layer_obj_res_tex.h"
+#include "layer/layer_obj_top_mask_obj.h"
 #include "layer/layer_obj_util.h"
+#include "layer/layer_render_view.h"
+#include "layer/layer_res_node.h"
 #include "layer/layer_shd_manager.h"
 #include "layer/layer_sort_man.h"
 #include "layer/layer_texture_obj.h"
+#include "layer/layer_vertex_obj.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
@@ -96,7 +103,7 @@ void LayerObjTopDef::workIconCreate() {
   unknown298->unknown38 = drawEntries;
   unknown298->unknown48 = reinterpret_cast<const u8 *>(icons);
   unknown298->unknown60 = iconStates;
-  unknown298->unknown70 = drawWorks;
+  unknown298->unknown70 = reinterpret_cast<LayerResNode *>(drawWorks);
   u16 iconMax = 0;
   if (header->unknown08 & 0x2) {
     iconMax = reinterpret_cast<const unknown018 *>(static_cast<const u8 *>(unknownb8) + header->unknown2c)->unknown00;
@@ -169,6 +176,127 @@ LayerObjTopDef::~LayerObjTopDef() {
   }
   baseRelease();
   workRelease();
+}
+
+void LayerObjTopDef::resourceInit() {
+  if (!(unknowna8 & 0x1)) {
+    return;
+  }
+  const unknown013 *header = static_cast<const unknown013 *>(unknownb8);
+  if (header->unknown10 != 0) {
+    unknown270 = LayerManager::get()->unknown58->unknown38->createVertexObj(static_cast<const u8 *>(unknownb8) + header->unknown10);
+  }
+  if (unknown278 != nullptr) {
+    unknown278->setupResource();
+    if (unknown278->unknown2c != 0) {
+      GrlSurfaceFormat format = unknown278->getTexture(0)->getFormat();
+      if (format == GRL_SURFACE_FORMAT_BPTC_UNORM || format == GRL_SURFACE_FORMAT_BPTC_SIGNED_FLOAT || format == GRL_SURFACE_FORMAT_BPTC_UNSIGNED_FLOAT) {
+        unknowna8 |= 0x400000;
+      }
+    }
+  }
+  unknowna8 &= ~0x1;
+}
+
+void LayerObjTopDef::apply(LayerSortMan *sortMan, const LayerRenderView *view) {
+  updateFast();
+  if (unknownb8 == nullptr || (unknowna8 & 0x10000)) {
+    unknowna8 |= 0x10000;
+    return;
+  }
+  updatePlace();
+  updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(unknownc3), unknown20[unknownc2]);
+  LayerResMatrix matrix;
+  if (unknowna8 & 0x800) {
+    LayerObjUtil::calcLayer3DSpaceTransRotScaleMatrix(matrix, unknownc8[2].unknown00, unknown180);
+  } else if (unknown2ac == 5) {
+    LayerObjUtil::calcLayerTransRotScaleSWFMatrix(matrix, unknownc8[2].unknown00, unknown180);
+  } else {
+    LayerObjUtil::calcLayerTransRotScaleMatrix(matrix, unknownc8[2].unknown00, unknown180);
+  }
+  unknownc5 = unknownc4;
+  LayerArgMdlRenInf info;
+  info.unknown18 = &matrix;
+  info.unknown20 = &unknownc8[2].unknown1c;
+  updateParams(info, view);
+  unknown248 = static_cast<const LayerObjTopMaskObj *>(unknown240);
+  setDrawList(sortMan, true);
+}
+
+void LayerObjTopDef::updateFast() {
+  updateResCheck();
+  updateCtrlSpd(1.0f);
+  updateAction();
+  updateDefPos();
+  updateAnimObj();
+}
+
+void LayerObjTopDef::updateParams(LayerArgMdlRenInf &info, const LayerRenderView *view) {
+  unknown298->unknown58 = view->unknown08;
+  unknown170.unknown001();
+  LayerObjUtil::calcDispInfo(unknown170, *info.unknown18, unknown180);
+  if (unknowna8 & 0x90000) {
+    return;
+  }
+  info.unknown00 = unknown298->unknown60;
+  const unknown017 *icon = reinterpret_cast<const unknown017 *>(unknown298->unknown48);
+  for (s32 i = 0; i < unknown298->unknown50; i++) {
+    info.unknown10 = &unknown298->unknown70[icon->unknown02];
+    info.unknown28 = &reinterpret_cast<const LyrMeshData *>(unknown298->unknown18)[icon->unknown00];
+    info.unknown08 = &(*unknown298->unknown68)[i];
+    updateMeshUniformBlock(info);
+    info.unknown00++;
+    icon++;
+  }
+  updateSecondTex();
+}
+
+void LayerObjTopDef::applyBegin(LayerResUpdateInfo &info, const LayerRenderView *view) {
+  updateFast();
+  if (unknownb8 == nullptr || !info.unknown50 || (unknowna8 & 0x10000)) {
+    unknowna8 |= 0x10000;
+    return;
+  }
+  updatePlace();
+  if (info.unknown54 == LAYER_SPACE_TYPE_UNKNOWN_0) {
+    updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(unknownc3), unknown20[unknownc2]);
+  } else {
+    mm::Mat44 matrix;
+    matrix.unknown009(unknown20[unknownc2], info.unknown00);
+    updateDefSpace(unknown238, info.unknown54, matrix);
+  }
+  if (unknownc4 != 5) {
+    unknownc5 = unknownc4;
+  } else {
+    unknownc5 = info.unknown58;
+  }
+  if (unknowna8 & 0x800) {
+    LayerObjUtil::calcLayer3DSpaceTransRotScaleMatrix(unknown1dc, unknownc8[2].unknown00, unknown180);
+  } else if (unknown2ac == 5) {
+    LayerObjUtil::calcLayerTransRotScaleSWFMatrix(unknown1dc, unknownc8[2].unknown00, unknown180);
+  } else {
+    LayerObjUtil::calcLayerTransRotScaleMatrix(unknown1dc, unknownc8[2].unknown00, unknown180);
+  }
+  LayerObjUtil::calcDispInfo(info.unknown5c, unknown1dc, unknown180);
+}
+
+void LayerObjTopDef::applyEnd(LayerResUpdateInfo &info, const LayerRenderView *view) {
+  if (unknowna8 & 0x10000) {
+    return;
+  }
+  LayerResMatrix matrix;
+  LayerObjUtil::calcLayerMatrix(matrix, unknown1dc, *info.unknown40);
+  LayerResColor color;
+  LayerObjUtil::calcLayerColor(color, unknownc8[2].unknown1c, *info.unknown48);
+  LayerArgMdlRenInf arg;
+  arg.unknown18 = &matrix;
+  arg.unknown20 = &color;
+  updateParams(arg, view);
+  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(unknown240);
+  if (mask == nullptr) {
+    mask = info.unknown70;
+  }
+  unknown248 = mask;
 }
 
 void LayerObjTopDef::setDrawList(LayerSortMan *sortMan, bool is3D) {

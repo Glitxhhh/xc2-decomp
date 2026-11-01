@@ -1,5 +1,6 @@
 #include "layer/layer_obj_manager.h"
 
+#include "dr/dr_draw_work_info.h"
 #include "layer/layer_manager.h"
 #include "layer/layer_obj.h"
 #include "layer/layer_obj_top_def.h"
@@ -161,6 +162,20 @@ void LayerObjManager::begin() {
     }
     node = next;
   }
+}
+
+void LayerObjManager::apply(const ml::IDrDrawWorkInfo *info) {
+  unknown00 = info;
+  unknown78.unknown10 = 0;
+  unknown78.unknown08 = nullptr;
+  unknown10->begin(info->unknownb0);
+  LayerBase *node = unknown18.unknown00;
+  while (node != nullptr) {
+    LayerBase *next = node->unknown10;
+    static_cast<LayerObj *>(node)->apply(unknown10, &unknown78);
+    node = next;
+  }
+  unknown10->end();
 }
 
 void LayerObjManager::allRelease() {

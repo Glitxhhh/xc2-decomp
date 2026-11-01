@@ -39,6 +39,7 @@ public:
   void setAnimeLoop(bool loop);
   void setAnimeCorrection(bool correction);
   void setSelectNumber(bool selectNumber);
+  void setSelectIdx(u32 idx);
   bool update(LayerResParmInfo &parm, f32 frame);
   void calcParm(LayerResParmInfo &parm, const LayerAnimeInfo &info, f32 rate);
   static LayerAnimeObj *createAnimObj(int id);
