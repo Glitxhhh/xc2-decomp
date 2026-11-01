@@ -108,7 +108,8 @@ void LayerAccLayoutBinary::setLayoutPosData(f32 &x, f32 &y, f32 &width, f32 &hei
 void LayerAccLayoutBinary::setLayoutObj(LayerObj *object, u32 index, bool initScale) {
   if (index < unknown08) {
     f32 info[4];
-    LayerObjUtil::getLayoutInfo(info, &unknown10[index], static_cast<LayerCenterType>(object->unknown198), object->unknown194, object->unknown196);
+    LayerObjUtil::getLayoutInfo(
+        info, &unknown10[index], static_cast<LayerCenterType>(object->unknown180.unknown18), static_cast<u16>(object->unknown180.unknown14), static_cast<u16>(object->unknown180.unknown16));
     if (initScale) {
       object->setInitPosScl(info[0], info[1], info[2], info[3]);
     } else {

@@ -59,10 +59,34 @@ struct LayerResUvParam {
 
 static_assert(sizeof(LayerResUvParam) == 0x14, "");
 
+// Evidence: LayerObj::applyBegin and applyEnd read it; the layout parents fill it for their children.
+struct LayerResUpdateInfo {
+  mm::Mat44 unknown00;                 // Inferred role: parent matrix; original member name unknown.
+  const LayerResMatrix *unknown40;     // Inferred role: parent local matrix; original member name unknown.
+  const LayerResColor *unknown48;      // Inferred role: parent color; original member name unknown.
+  bool unknown50;                      // Inferred role: parent is applied; original member name unknown.
+  LAYER_SPACE_TYPE unknown54;          // Inferred role: parent space; original member name unknown.
+  u8 unknown58;                        // Inferred role: parent blend type; original member name unknown.
+  LayerResDispInfo unknown5c;          // Inferred role: display bounds; original member name unknown.
+  const LayerObjTopMaskObj *unknown70; // Inferred role: parent mask object; original member name unknown.
+};
+
+static_assert(offsetof(LayerResUpdateInfo, unknown40) == 0x40, "");
+static_assert(offsetof(LayerResUpdateInfo, unknown48) == 0x48, "");
+static_assert(offsetof(LayerResUpdateInfo, unknown50) == 0x50, "");
+static_assert(offsetof(LayerResUpdateInfo, unknown54) == 0x54, "");
+static_assert(offsetof(LayerResUpdateInfo, unknown58) == 0x58, "");
+static_assert(offsetof(LayerResUpdateInfo, unknown5c) == 0x5c, "");
+static_assert(offsetof(LayerResUpdateInfo, unknown70) == 0x70, "");
+static_assert(sizeof(LayerResUpdateInfo) == 0x80, "");
+
 class LayerObj : public LayerBase {
 public:
   LayerObj();
   virtual void resourceInit();
+  virtual void apply(LayerSortMan *sortMan, const LayerRenderView *view);
+  virtual void applyBegin(LayerResUpdateInfo &info, const LayerRenderView *view);
+  virtual void applyEnd(LayerResUpdateInfo &info, const LayerRenderView *view);
   virtual void setDrawList(LayerSortMan *sortMan, bool is3D) = 0;
   virtual void applyPartsSetup();
   virtual void applyParams(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color);
@@ -76,6 +100,7 @@ public:
   void setInitMulCol(const mm::Col4 &color);
   void setInitAddCol(const mm::Col3 &color);
   void updateCtrlSpd(f32 speed);
+  void updateDefPos();
   void updateAnimObj();
   void updateSecondTex();
   void setPos(f32 x, f32 y);
@@ -118,6 +143,23 @@ public:
     u32 index = LayerManager::s_nStkIdx;
     unknowna0[index] &= ~flags;
   }
+  // Inferred helper: sets the render info of a work buffer of width x height pixels; original name unknown.
+  void unknown005(u32 width, u32 height) {
+    f32 sclY = static_cast<f32>(height) / static_cast<f32>(width);
+    unknown180.unknown08 = 1.0f;
+    unknown180.unknown0c = sclY;
+    f32 sclX = 1.0f;
+    if (width <= height) {
+      sclY = 1.0f;
+      sclX = static_cast<f32>(width) / static_cast<f32>(height);
+    }
+    unknown180.unknown00 = sclX;
+    unknown180.unknown04 = sclY;
+    unknown180.unknown10 = 0;
+    unknown180.unknown12 = 0;
+    unknown180.unknown14 = width;
+    unknown180.unknown16 = height;
+  }
 
   mm::Mat44 unknown20[2]; // Inferred role: matrices; original member name unknown.
   u32 unknowna0[2];       // Inferred role: state flags; original member name unknown.
@@ -135,22 +177,14 @@ public:
   f32 unknown170;                // Inferred role: clip value; original member name unknown.
   f32 unknown174;                // Inferred role: clip value; original member name unknown.
   mm::Pnt<f32> unknown178;       // Inferred role: clip values; original member name unknown.
-  f32 unknown180;                // Inferred role: width; original member name unknown.
-  f32 unknown184;                // Inferred role: height; original member name unknown.
-  f32 unknown188;                // Inferred role: scale; original member name unknown.
-  f32 unknown18c;                // Inferred role: scale; original member name unknown.
-  u16 unknown190;                // Inferred role: pixel x; original member name unknown.
-  u16 unknown192;                // Inferred role: pixel y; original member name unknown.
-  u16 unknown194;                // Inferred role: pixel width; original member name unknown.
-  u16 unknown196;                // Inferred role: pixel height; original member name unknown.
-  u8 unknown198;                 // Inferred role: center type; original member name unknown.
+  LayerResRenderInfo unknown180; // Inferred role: render info; original member name unknown.
   LayerResUvParam unknown19c[3]; // Inferred role: uv params; original member name unknown.
   u16 unknown1d8[2];             // Inferred role: action idx; original member name unknown.
-  u8 _1dc[0x1f4 - 0x1dc];
-  f32 unknown1f4; // Inferred role: ctrl spd; original member name unknown.
-  f32 unknown1f8; // Inferred role: frame ctrl spd; original member name unknown.
-  f32 unknown1fc; // Inferred role: uniform block parameter; original member name unknown.
-  f32 unknown200; // Inferred role: 3d sort depth; original member name unknown.
+  LayerResMatrix unknown1dc;     // Inferred role: local matrix; original member name unknown.
+  f32 unknown1f4;                // Inferred role: ctrl spd; original member name unknown.
+  f32 unknown1f8;                // Inferred role: frame ctrl spd; original member name unknown.
+  f32 unknown1fc;                // Inferred role: uniform block parameter; original member name unknown.
+  f32 unknown200;                // Inferred role: 3d sort depth; original member name unknown.
   u8 _204[0x208 - 0x204];
   LayerAnimeObj *unknown208[3];            // Inferred role: anim objs; original member name unknown.
   LayerResSecTexture *unknown220[3];       // Inferred role: second texs; original member name unknown.
@@ -174,10 +208,9 @@ static_assert(offsetof(LayerObj, unknownc8) == 0xc8, "");
 static_assert(offsetof(LayerObj, unknown170) == 0x170, "");
 static_assert(offsetof(LayerObj, unknown178) == 0x178, "");
 static_assert(offsetof(LayerObj, unknown180) == 0x180, "");
-static_assert(offsetof(LayerObj, unknown188) == 0x188, "");
-static_assert(offsetof(LayerObj, unknown198) == 0x198, "");
 static_assert(offsetof(LayerObj, unknown19c) == 0x19c, "");
 static_assert(offsetof(LayerObj, unknown1d8) == 0x1d8, "");
+static_assert(offsetof(LayerObj, unknown1dc) == 0x1dc, "");
 static_assert(offsetof(LayerObj, unknown1f4) == 0x1f4, "");
 static_assert(offsetof(LayerObj, unknown1fc) == 0x1fc, "");
 static_assert(offsetof(LayerObj, unknown200) == 0x200, "");

@@ -5,6 +5,7 @@
 #include "layer/layer_filter_gs_blur_obj.h"
 #include "layer/layer_filter_obj.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_util.h"
 #include "layer/layer_shd_manager.h"
 #include "mtl/alloc_handle.h"
 
@@ -29,22 +30,7 @@ u32 LayerObjTopFilter::getFilterType() const {
   return filter->m_filterType;
 }
 
-void LayerObjTopFilter::setupWorkBuffer(u32 width, u32 height) {
-  f32 sclY = static_cast<f32>(height) / static_cast<f32>(width);
-  unknown188 = 1.0f;
-  unknown18c = sclY;
-  f32 sclX = 1.0f;
-  if (width <= height) {
-    sclY = 1.0f;
-    sclX = static_cast<f32>(width) / static_cast<f32>(height);
-  }
-  unknown180 = sclX;
-  unknown184 = sclY;
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = width;
-  unknown196 = height;
-}
+void LayerObjTopFilter::setupWorkBuffer(u32 width, u32 height) { unknown005(width, height); }
 
 void LayerObjTopFilter::releaseWorkBuffer() {
   if (unknown270 != nullptr) {
@@ -103,19 +89,19 @@ void LayerObjTopFilter::createGaussianBlur(u32 width, u32 height) {
     unknown270->releaseCall();
   }
   f32 sclY = static_cast<f32>(height) / static_cast<f32>(width);
-  unknown188 = 1.0f;
-  unknown18c = sclY;
+  unknown180.unknown08 = 1.0f;
+  unknown180.unknown0c = sclY;
   f32 sclX = 1.0f;
   if (width <= height) {
     sclY = 1.0f;
     sclX = static_cast<f32>(width) / static_cast<f32>(height);
   }
-  unknown180 = sclX;
-  unknown184 = sclY;
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = width;
-  unknown196 = height;
+  unknown180.unknown00 = sclX;
+  unknown180.unknown04 = sclY;
+  unknown180.unknown10 = 0;
+  unknown180.unknown12 = 0;
+  unknown180.unknown14 = width;
+  unknown180.unknown16 = height;
   LayerFilterGsBlurObj *filter = new (LayerManager::get()->unknown28) LayerFilterGsBlurObj(width, height);
   if (unknown270 == nullptr && unknown278[0] == nullptr && unknown278[1] == nullptr) {
     unknown270 = filter;
@@ -133,19 +119,19 @@ void LayerObjTopFilter::createFlowMap(u32 width, u32 height, const void *data) {
     unknown270->releaseCall();
   }
   f32 sclY = static_cast<f32>(height) / static_cast<f32>(width);
-  unknown188 = 1.0f;
-  unknown18c = sclY;
+  unknown180.unknown08 = 1.0f;
+  unknown180.unknown0c = sclY;
   f32 sclX = 1.0f;
   if (width <= height) {
     sclY = 1.0f;
     sclX = static_cast<f32>(width) / static_cast<f32>(height);
   }
-  unknown180 = sclX;
-  unknown184 = sclY;
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = width;
-  unknown196 = height;
+  unknown180.unknown00 = sclX;
+  unknown180.unknown04 = sclY;
+  unknown180.unknown10 = 0;
+  unknown180.unknown12 = 0;
+  unknown180.unknown14 = width;
+  unknown180.unknown16 = height;
   LayerFilterFlowMapObj *filter = new (LayerManager::get()->unknown28) LayerFilterFlowMapObj(width, height, data);
   if (unknown270 == nullptr && unknown278[0] == nullptr && unknown278[1] == nullptr) {
     unknown270 = filter;

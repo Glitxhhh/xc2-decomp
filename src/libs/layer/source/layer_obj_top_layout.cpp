@@ -35,19 +35,20 @@ void LayerObjTopLayout::workLayoutCreate(const void *data) {
       u32 resOffset = resTable[pos->unknown0c].unknown04;
       LayerObj *object = static_cast<LayerObj *>(LayerObjManager::createStaticObj(static_cast<const u8 *>(unknownb8) + resOffset));
       f32 info[4];
-      LayerObjUtil::getLayoutInfo(info, pos, static_cast<LayerCenterType>(object->unknown198), object->unknown194, object->unknown196);
+      LayerObjUtil::getLayoutInfo(
+          info, pos, static_cast<LayerCenterType>(object->unknown180.unknown18), static_cast<u16>(object->unknown180.unknown14), static_cast<u16>(object->unknown180.unknown16));
       object->setInitPosScl(info[0], info[1], info[2], info[3]);
       unknown258.unknown002(object);
     }
   }
-  unknown180 = 1.0f;
-  unknown184 = 1.0f;
-  unknown188 = 1.0f;
-  unknown18c = 1.0f;
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = 0;
-  unknown196 = 0;
+  unknown180.unknown00 = 1.0f;
+  unknown180.unknown04 = 1.0f;
+  unknown180.unknown08 = 1.0f;
+  unknown180.unknown0c = 1.0f;
+  unknown180.unknown10 = 0;
+  unknown180.unknown12 = 0;
+  unknown180.unknown14 = 0;
+  unknown180.unknown16 = 0;
 }
 
 LayerObjTopLayout::LayerObjTopLayout() : unknown400(this) {

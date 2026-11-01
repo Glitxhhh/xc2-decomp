@@ -128,6 +128,39 @@ struct alignas(16) Mat44 {
     return result.unknown002(*this, matrix);
   }
 
+  // Inferred helper: product a * b with the left operand first in every term; original name unknown.
+  // Evidence: the parent matrix product of LayerObj::applyBegin (1.0.0: 0x71008fd360, 498 matching instructions).
+  __attribute__((always_inline)) void unknown008(const Mat44 &a, const Mat44 &b) {
+    rows[0][0] = a.rows[0][0] * b.rows[0][0] + a.rows[0][1] * b.rows[1][0] + a.rows[0][2] * b.rows[2][0] + a.rows[0][3] * b.rows[3][0];
+    rows[0][1] = a.rows[0][0] * b.rows[0][1] + a.rows[0][1] * b.rows[1][1] + a.rows[0][2] * b.rows[2][1] + a.rows[0][3] * b.rows[3][1];
+    rows[0][2] = a.rows[0][0] * b.rows[0][2] + a.rows[0][1] * b.rows[1][2] + a.rows[0][2] * b.rows[2][2] + a.rows[0][3] * b.rows[3][2];
+    rows[0][3] = a.rows[0][0] * b.rows[0][3] + a.rows[0][1] * b.rows[1][3] + a.rows[0][2] * b.rows[2][3] + a.rows[0][3] * b.rows[3][3];
+    rows[1][0] = a.rows[1][0] * b.rows[0][0] + a.rows[1][1] * b.rows[1][0] + a.rows[1][2] * b.rows[2][0] + a.rows[1][3] * b.rows[3][0];
+    rows[1][1] = a.rows[1][0] * b.rows[0][1] + a.rows[1][1] * b.rows[1][1] + a.rows[1][2] * b.rows[2][1] + a.rows[1][3] * b.rows[3][1];
+    rows[1][2] = a.rows[1][0] * b.rows[0][2] + a.rows[1][1] * b.rows[1][2] + a.rows[1][2] * b.rows[2][2] + a.rows[1][3] * b.rows[3][2];
+    rows[1][3] = a.rows[1][0] * b.rows[0][3] + a.rows[1][1] * b.rows[1][3] + a.rows[1][2] * b.rows[2][3] + a.rows[1][3] * b.rows[3][3];
+    rows[2][0] = a.rows[2][0] * b.rows[0][0] + a.rows[2][1] * b.rows[1][0] + a.rows[2][2] * b.rows[2][0] + a.rows[2][3] * b.rows[3][0];
+    rows[2][1] = a.rows[2][0] * b.rows[0][1] + a.rows[2][1] * b.rows[1][1] + a.rows[2][2] * b.rows[2][1] + a.rows[2][3] * b.rows[3][1];
+    rows[2][2] = a.rows[2][0] * b.rows[0][2] + a.rows[2][1] * b.rows[1][2] + a.rows[2][2] * b.rows[2][2] + a.rows[2][3] * b.rows[3][2];
+    rows[2][3] = a.rows[2][0] * b.rows[0][3] + a.rows[2][1] * b.rows[1][3] + a.rows[2][2] * b.rows[2][3] + a.rows[2][3] * b.rows[3][3];
+    rows[3][0] = a.rows[3][0] * b.rows[0][0] + a.rows[3][1] * b.rows[1][0] + a.rows[3][2] * b.rows[2][0] + a.rows[3][3] * b.rows[3][0];
+    rows[3][1] = a.rows[3][0] * b.rows[0][1] + a.rows[3][1] * b.rows[1][1] + a.rows[3][2] * b.rows[2][1] + a.rows[3][3] * b.rows[3][1];
+    rows[3][2] = a.rows[3][0] * b.rows[0][2] + a.rows[3][1] * b.rows[1][2] + a.rows[3][2] * b.rows[2][2] + a.rows[3][3] * b.rows[3][2];
+    rows[3][3] = a.rows[3][0] * b.rows[0][3] + a.rows[3][1] * b.rows[1][3] + a.rows[3][2] * b.rows[2][3] + a.rows[3][3] * b.rows[3][3];
+  }
+
+  // Inferred helper: product a * b allowing an aliased destination, compared with the operand on the left; original name unknown.
+  __attribute__((always_inline)) Mat44 &unknown009(const Mat44 &a, const Mat44 &b) {
+    if (&a == this || &b == this) {
+      Mat44 result;
+      result.unknown008(a, b);
+      *this = result;
+    } else {
+      unknown008(a, b);
+    }
+    return *this;
+  }
+
   // Inferred adjugate/determinant inverse; original helper name unknown.
   // Matches AttachActorCS/Gf::getEfpMat (646 instructions) and getBoneMat
   // (688 instructions) in 1.0.0. Build the signed first column before the

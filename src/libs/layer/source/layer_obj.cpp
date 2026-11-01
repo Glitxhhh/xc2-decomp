@@ -6,6 +6,7 @@
 #include "layer/layer_act_base.h"
 #include "layer/layer_anime_obj.h"
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_top_mask_obj.h"
 #include "layer/layer_res_sec_texture.h"
 #include "mtl/alloc_handle.h"
 
@@ -68,11 +69,11 @@ LayerObj::LayerObj() {
   unknown1f4 = unknown1f8 = 1.0f;
   unknown1fc = 0.0f;
   unknown200 = 0.0f;
-  unknown180 = unknown184 = unknown188 = unknown18c = 1.0f;
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = unknown196 = 1;
-  unknown198 = 0;
+  unknown180.unknown00 = unknown180.unknown04 = unknown180.unknown08 = unknown180.unknown0c = 1.0f;
+  unknown180.unknown10 = 0;
+  unknown180.unknown12 = 0;
+  unknown180.unknown14 = unknown180.unknown16 = 1;
+  unknown180.unknown18 = 0;
   unknown170 = 1.0f;
   unknown174 = 1.0f;
   unknown178 = mm::Pnt<f32>(0.0f, 0.0f);
@@ -205,6 +206,72 @@ void LayerObj::updateDefSpace(grlib::CGLibDblUniformBlock *&uniform, LAYER_SPACE
   } else if (uniform != nullptr) {
     unknowna8 |= 0x1000;
   }
+}
+
+void LayerObj::apply(LayerSortMan *sortMan, const LayerRenderView *view) {
+  applyPartsSetup();
+  updateCtrlSpd(1.0f);
+  updateDefPos();
+  updateAnimObj();
+  if (unknowna8 & 0x10000) {
+    unknowna8 |= 0x10000;
+    return;
+  }
+  unknownc5 = unknownc4;
+  updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(unknownc3), unknown20[unknownc2]);
+  LayerResMatrix matrix;
+  if (unknowna8 & 0x800) {
+    LayerObjUtil::calcLayer3DSpaceTransRotScaleFontMatrix(matrix, unknownc8[2].unknown00, unknown180);
+  } else {
+    LayerObjUtil::calcLayerTransRotScaleFontMatrix(matrix, unknownc8[2].unknown00, unknown180);
+  }
+  applyParams(view, matrix, unknownc8[2].unknown1c);
+  setDrawList(sortMan, true);
+}
+
+void LayerObj::applyBegin(LayerResUpdateInfo &info, const LayerRenderView *view) {
+  applyPartsSetup();
+  updateCtrlSpd(1.0f);
+  updateDefPos();
+  updateAnimObj();
+  if (!info.unknown50 || (unknowna8 & 0x10000)) {
+    unknowna8 |= 0x10000;
+    return;
+  }
+  if (info.unknown54 == LAYER_SPACE_TYPE_UNKNOWN_0) {
+    updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(unknownc3), unknown20[unknownc2]);
+  } else {
+    mm::Mat44 matrix;
+    matrix.unknown009(unknown20[unknownc2], info.unknown00);
+    updateDefSpace(unknown238, info.unknown54, matrix);
+  }
+  if (unknownc4 != 5) {
+    unknownc5 = unknownc4;
+  } else {
+    unknownc5 = info.unknown58;
+  }
+  if (unknowna8 & 0x800) {
+    LayerObjUtil::calcLayer3DSpaceTransRotScaleFontMatrix(unknown1dc, unknownc8[2].unknown00, unknown180);
+  } else {
+    LayerObjUtil::calcLayerTransRotScaleFontMatrix(unknown1dc, unknownc8[2].unknown00, unknown180);
+  }
+  LayerObjUtil::calcDispInfo(info.unknown5c, unknown1dc, unknown180);
+}
+
+void LayerObj::applyEnd(LayerResUpdateInfo &info, const LayerRenderView *view) {
+  if (unknowna8 & 0x10000) {
+    return;
+  }
+  LayerResMatrix matrix;
+  LayerObjUtil::calcLayerMatrix(matrix, unknown1dc, *info.unknown40);
+  LayerResColor color;
+  LayerObjUtil::calcLayerColor(color, unknownc8[2].unknown1c, *info.unknown48);
+  applyParams(view, matrix, color);
+  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(unknown240);
+  if (mask == nullptr) {
+    mask = info.unknown70;
+  }
+  unknown248 = mask;
 }
 
 void LayerObj::setPos(f32 x, f32 y) {
@@ -413,6 +480,47 @@ f32 LayerObj::getSecondTexBlend() const {
 LayerActBase::LayerActBase() : unknown250(nullptr) {}
 
 void LayerActBase::updatePartsAction(const LyrActionData *action) {}
+
+void LayerActBase::updateAction() {
+  if (unknown250 == nullptr) {
+    return;
+  }
+  if (getStateFlags(LayerManager::s_nDebIdx) & 0x30000) {
+    if (getStateFlags(LayerManager::s_nDebIdx) & 0x10000) {
+      unknown250->unknown20 = unknown1d8[LayerManager::s_nDebIdx];
+      if (static_cast<s32>(unknown250->unknown20) >= unknown250->unknown10) {
+        unknowna8 &= ~0x40;
+        return;
+      }
+      startSetupAction();
+      unknowna8 |= 0x40;
+    } else if (getStateFlags(LayerManager::s_nDebIdx) & 0x20000) {
+      unknowna8 &= ~0x40;
+      return;
+    }
+  }
+  if (unknowna8 & 0x40) {
+    f32 delta = LayerManager::get()->unknown80 * unknown1f8;
+    if (unknowna8 & 0x200) {
+      delta = 0.0f;
+    }
+    const LyrActionData *action = unknown250->unknown08 + unknown250->unknown20;
+    unknown250->unknown18 = delta;
+    if (delta > 0.0001f) {
+      unknown250->unknown1c = 1.0f / delta;
+    } else {
+      unknown250->unknown1c = 0.0f;
+    }
+    updatePartsAction(action);
+    if (unknown250->unknown14 > action->unknown18) {
+      unknown250->unknown14 = action->unknown18;
+    }
+    if (unknown1f8 != 0.0f) {
+      unknown250->unknown14 = delta + unknown250->unknown14;
+    }
+    unknown250->unknown24 &= ~1;
+  }
+}
 
 void LayerActBase::setupAction(u8 *work, const u8 *data) {
   const unknown083 *header = reinterpret_cast<const unknown083 *>(data);

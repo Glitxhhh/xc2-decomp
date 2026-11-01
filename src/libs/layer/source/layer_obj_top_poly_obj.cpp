@@ -51,20 +51,7 @@ void LayerObjTopPolyObj::releaseWorkBuffer() {
 
 void LayerObjTopPolyObj::createWorkBuffer(u32 width, u32 height) {
   unknown280.setup(0x60);
-  f32 sclY = static_cast<f32>(height) / static_cast<f32>(width);
-  unknown188 = 1.0f;
-  unknown18c = sclY;
-  f32 sclX = 1.0f;
-  if (width <= height) {
-    sclY = 1.0f;
-    sclX = static_cast<f32>(width) / static_cast<f32>(height);
-  }
-  unknown180 = sclX;
-  unknown184 = sclY;
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = width;
-  unknown196 = height;
+  unknown005(width, height);
   memset(&unknown300, 0, sizeof(unknown300));
 }
 

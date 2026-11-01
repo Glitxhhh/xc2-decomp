@@ -1,6 +1,7 @@
 #include "layer/layer_obj_top_mask_obj.h"
 
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_util.h"
 #include "layer/layer_shd_manager.h"
 #include "layer/layer_texture_obj.h"
 
@@ -53,14 +54,14 @@ void LayerObjTopMaskObj::createWorkBuffer(const void *data) {
   unknown2d0 = 0;
   unknown290.setup(0x50);
   const unknown011 *info = reinterpret_cast<const unknown011 *>(static_cast<const u8 *>(unknownb8) + header->unknown0c);
-  unknown180 = info->unknown10;
-  unknown184 = info->unknown14;
-  unknown188 = 1.0f;
-  unknown18c = static_cast<f32>(info->unknown0c) / static_cast<f32>(info->unknown04);
-  unknown190 = 0;
-  unknown192 = 0;
-  unknown194 = info->unknown04;
-  unknown196 = info->unknown0c;
+  unknown180.unknown00 = info->unknown10;
+  unknown180.unknown04 = info->unknown14;
+  unknown180.unknown08 = 1.0f;
+  unknown180.unknown0c = static_cast<f32>(info->unknown0c) / static_cast<f32>(info->unknown04);
+  unknown180.unknown10 = 0;
+  unknown180.unknown12 = 0;
+  unknown180.unknown14 = info->unknown04;
+  unknown180.unknown16 = info->unknown0c;
 }
 
 void LayerObjTopMaskObj::releaseWorkBuffer() {

@@ -52,6 +52,7 @@ class LayerActBase : public LayerObj {
 public:
   LayerActBase();
   virtual void updatePartsAction(const LyrActionData *action);
+  void updateAction();
   void setupAction(u8 *work, const u8 *data);
   void startSetupAction();
   void checkActionEnd(const LyrActionData *action, bool isCmdEnd);

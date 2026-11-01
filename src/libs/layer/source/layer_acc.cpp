@@ -29,6 +29,7 @@
 #include "layer/layer_obj_top_mask_obj.h"
 #include "layer/layer_obj_top_mem_obj.h"
 #include "layer/layer_obj_top_poly_obj.h"
+#include "layer/layer_obj_util.h"
 #include "layer/layer_obj_work.h"
 #include "layer/layer_shd_manager.h"
 #include "ml/critical_section.h"
@@ -457,17 +458,17 @@ void LayerAccObjBase::setCtrlSpd(f32 speed) { unknown00->unknown1f4 = speed; }
 
 f32 LayerAccObjBase::getCtrlSpd() const { return unknown00->unknown1f4; }
 
-u16 LayerAccObjBase::getPixelX() const { return unknown00->unknown190; }
+u16 LayerAccObjBase::getPixelX() const { return unknown00->unknown180.unknown10; }
 
-u16 LayerAccObjBase::getPixelY() const { return unknown00->unknown192; }
+u16 LayerAccObjBase::getPixelY() const { return unknown00->unknown180.unknown12; }
 
-u16 LayerAccObjBase::getPixelWidth() const { return unknown00->unknown194; }
+u16 LayerAccObjBase::getPixelWidth() const { return unknown00->unknown180.unknown14; }
 
-u16 LayerAccObjBase::getPixelHeight() const { return unknown00->unknown196; }
+u16 LayerAccObjBase::getPixelHeight() const { return unknown00->unknown180.unknown16; }
 
-void LayerAccObjBase::setCenterType(LayerCenterType type) { unknown00->unknown198 = type; }
+void LayerAccObjBase::setCenterType(LayerCenterType type) { unknown00->unknown180.unknown18 = type; }
 
-LayerCenterType LayerAccObjBase::getCenterType() const { return static_cast<LayerCenterType>(unknown00->unknown198); }
+LayerCenterType LayerAccObjBase::getCenterType() const { return static_cast<LayerCenterType>(unknown00->unknown180.unknown18); }
 
 void LayerAccObjBase::setMaskObj(const LayerBase *mask) { unknown00->unknown240 = mask; }
 
