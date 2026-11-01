@@ -1,5 +1,8 @@
 #include "dr/dr_shd_data_list.h"
 
+#include <string.h>
+
+#include "dr/dr_man.h"
 #include "dr/dr_res_shd.h"
 #include "dr/dr_shd_data_obj.h"
 #include "grlib/cglib_ctl_shader.h"
@@ -7,6 +10,7 @@
 #include "grlib/cglib_one_uniform_block.h"
 #include "grlib/cglib_shd_list.h"
 #include "ml/file_res_th.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -18,6 +22,13 @@ void DrShdDataObj::createShader(DrShdDataList *list, int type, int index) {
   unknown68[0] = &list->unknown68[index];
   u8 next = DrShdDataList::s_etcNextVertex[index];
   unknown68[1] = next == 0xff ? nullptr : &list->unknown68[next];
+}
+
+DrShdDataList::DrShdDataList(DrMan *drMan) : unknown00(nullptr), unknown08(drMan), unknown10(nullptr), unknown620(nullptr) {
+  memset(unknown18, 0, sizeof(unknown18));
+  unknown618 = new (unknown08->unknown0c) grlib::CGLibShdListBase<DrShdDataObj>();
+  createWork();
+  createShader();
 }
 
 DrShdDataList::~DrShdDataList() {

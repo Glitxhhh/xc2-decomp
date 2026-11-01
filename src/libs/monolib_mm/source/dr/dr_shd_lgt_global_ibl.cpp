@@ -52,6 +52,15 @@ const mm::Mat44 &DrShdLgtGlobalIBL::getSHMatrix(u32 row, u32 column) const {
 
 void DrShdLgtGlobalIBL::updateUB_ShMatrixList(u8 *work, int viewNum) { grlib::ShdMat44TransposeMat44Array(reinterpret_cast<f32 *>(work), unknown10[viewNum].unknown340, 0x60); }
 
+void DrShdLgtGlobalIBL::updateUB_ToProxySpace(u8 *work, int viewNum) {
+  unknown001 &view = unknown10[viewNum];
+  for (int i = 0; i < 32; i++) {
+    const DrLightObjGlobalIBL *obj = view.unknown40[i].unknown10;
+    grlib::ShdMat44TransposeMat44(reinterpret_cast<f32 *>(work), obj == nullptr ? mm::Mat44::identity : obj->unknown3d0);
+    work += sizeof(mm::Mat44);
+  }
+}
+
 void DrShdLgtGlobalIBL::update(int viewNum) {
   if (viewNum == 0 || (viewNum > 0 && unknown00->unknown059(viewNum))) {
     updateView(viewNum);

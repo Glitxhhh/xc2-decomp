@@ -59,6 +59,7 @@ public:
   void setStorageBuffer(u32 index) const;
   const mm::Mat44 &getSHMatrix(u32 row, u32 column) const;
   void updateUB_ShMatrixList(u8 *work, int viewNum);
+  void updateUB_ToProxySpace(u8 *work, int viewNum);
   void addObj(DrLightObjGlobalIBL *obj, int viewNum);
   void removeObj(DrLightObjGlobalIBL *obj, int viewNum);
 

@@ -51,7 +51,8 @@ public:
   u8 _3ac[0x3b0 - 0x3ac];
   f32 unknown3b0; // Inferred role: sky intensity; original member name unknown.
   f32 unknown3b4; // Inferred role: dir light intensity; original member name unknown.
-  u8 _3b8[0x410 - 0x3b8];
+  u8 _3b8[0x3d0 - 0x3b8];
+  mm::Mat44 unknown3d0;                            // Inferred role: world to proxy space matrix (DrShdLgtGlobalIBL::updateUB_ToProxySpace); original member name unknown.
   f32 unknown410[16];                              // Inferred role: similarity values; original member name unknown.
   f32 unknown450[TEXTURE_MAX][SH_TERM_NUM][9];     // Inferred role: sh terms; original member name unknown.
   mm::Mat44 unknown840[TEXTURE_MAX * SH_TERM_NUM]; // Inferred role: sh matrices; original member name unknown.
@@ -69,6 +70,7 @@ static_assert(offsetof(DrLightObjGlobalIBL, unknown78) == 0x78, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown3a0) == 0x3a0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown3b0) == 0x3b0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown3b4) == 0x3b4, "");
+static_assert(offsetof(DrLightObjGlobalIBL, unknown3d0) == 0x3d0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown410) == 0x410, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown450) == 0x450, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown840) == 0x840, "");

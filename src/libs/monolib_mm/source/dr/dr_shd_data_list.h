@@ -27,6 +27,7 @@ class DrShdDataList {
 public:
   DrShdDataList(DrMan *drMan);
   ~DrShdDataList();
+  void createWork();
   void createShader();
   void releaseShader();
   void reloadShader(int type);
