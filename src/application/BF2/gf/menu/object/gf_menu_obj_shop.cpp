@@ -2,6 +2,7 @@
 
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -14,6 +15,10 @@ namespace gf {
 constexpr u32 unknown001 = 0x77;
 // Inferred role: active adapter category; original name unknown.
 constexpr u32 unknown002 = 1;
+// Inferred role: common window shown for orb error 1; original name unknown.
+constexpr u16 unknown003 = 0xaf;
+// Inferred role: common window shown for orb error 2; original name unknown.
+constexpr u16 unknown004 = 0xb0;
 
 u32 GfMenuObjShop::getSellItemTypeMax() { return 0xd; }
 
@@ -30,5 +35,18 @@ void GfMenuObjShop::close(GfMenuCallContext *context) {
 }
 
 void GfMenuObjShop::dispBlade(bool isDisp) { unknown150(unknown001, 0x46, isDisp); }
+
+void GfMenuObjShop::openOrbError(u32 error) {
+  switch (error) {
+  case 1:
+    GfMenuManager::openCommonWindow(unknown003);
+    break;
+  case 2:
+    GfMenuManager::openCommonWindow(unknown004);
+    break;
+  }
+}
+
+bool GfMenuObjShop::seqWaitFSClose() { return !GfMenuManager::isOpenFullScreen(); }
 
 } // namespace gf

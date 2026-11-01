@@ -13,6 +13,7 @@ public:
   static bool isInitialized();
   static void setOrder(int order, u32 handle, const ui::EventData &event);
   static void cancelOrder(int order);
+  static void finishOrder(int order);
 };
 
 } // namespace gf

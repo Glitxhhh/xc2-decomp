@@ -5,6 +5,9 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 
+namespace ui {
+class UIObjectAcc;
+} // namespace ui
 namespace gf {
 class GfMenuCallContext;
 
@@ -47,6 +50,8 @@ public:
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeOut(u32 handle, u32 type);
   static void setFadeOutSub(u32 handle, u32 type);
+  static void dispOnCopyChar(ui::UIObjectAcc &acc, u32 type);
+  static void dispOffCopyChar(ui::UIObjectAcc &acc, u32 type);
   static int setFadeIn(u32 handle, u32 type);
   void initialize() override;
   void finalize() override;

@@ -3,6 +3,7 @@
 #include "gf/menu/gf_menu_flag.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/sound/gf_sound.h"
 #include "types.h"
 #include "ui/ui_object_acc.h"
 
@@ -51,11 +52,37 @@ bool GfMenuObjQuestLog::seqOrderWait() {
 }
 
 bool GfMenuObjQuestLog::seqTitleFadeInScenario() {
-  GfMenuObjUtil::CtrlParam param;
-  param.unknown00 = 0.2f;
-  param.unknown08 = 1;
-  GfMenuObjUtil::startCtrl(unknown18, param, "TXT_title_sub_scenario");
+  unknown005("TXT_title_sub_scenario");
   return true;
+}
+
+bool GfMenuObjQuestLog::seqTitleFadeInText() {
+  unknown005("TXT_title");
+  if (!unknown818) {
+    GfMenuObjUtil::playJingle(7);
+  }
+  return true;
+}
+
+bool GfMenuObjQuestLog::seqLogOut() {
+  ui::UIObjectAcc acc(unknown18, "LAY_log");
+  bool isEnd;
+  if (!unknown810) {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown0d = true;
+    param.unknown08 = GfMenuObjUtil::getCtrlID(acc.unknown10);
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    isEnd = false;
+    unknown810 = true;
+  } else if (!GfMenuObjUtil::isBusyCtrl(GfMenuObjUtil::getCtrlID(acc.unknown10))) {
+    isEnd = true;
+    unknown810 = false;
+  } else {
+    isEnd = false;
+  }
+  return isEnd;
 }
 
 bool GfMenuObjQuestLog::seqTitleFadeOutScenario() {
@@ -64,10 +91,7 @@ bool GfMenuObjQuestLog::seqTitleFadeOutScenario() {
 }
 
 bool GfMenuObjQuestLog::seqTitleFadeInNormal() {
-  GfMenuObjUtil::CtrlParam param;
-  param.unknown00 = 0.2f;
-  param.unknown08 = 1;
-  GfMenuObjUtil::startCtrl(unknown18, param, "TXT_title_sub_normal");
+  unknown005("TXT_title_sub_normal");
   return true;
 }
 

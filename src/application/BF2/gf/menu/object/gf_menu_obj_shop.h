@@ -15,6 +15,8 @@ public:
   static void close(GfMenuCallContext *context);
   static u32 getSellItemTypeMax();
   static void dispBlade(bool isDisp);
+  void openOrbError(u32 error);
+  bool seqWaitFSClose();
 };
 
 } // namespace gf

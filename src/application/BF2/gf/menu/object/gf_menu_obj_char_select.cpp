@@ -3,8 +3,10 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 class GfMenuCallContext;
@@ -82,6 +84,42 @@ int GfMenuObjCharSelect::setFadeIn(u32 handle, u32 type) {
   int ctrl = GfMenuObjUtil::startCtrl(handle, param, nullptr);
   GfMenuObject::hookCtrlEvent(handle, ctrl);
   return ctrl;
+}
+
+void GfMenuObjCharSelect::dispOnCopyChar(ui::UIObjectAcc &acc, u32 type) {
+  GfMenuObjUtil::CtrlParam param;
+  if (type == 0) {
+    u32 handle = acc.searchChild("LAY_char_dr_move");
+    param.unknown004("fade_in_r");
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(handle, param, nullptr);
+    GfMenuObjCmnStatus::openDrStatus(1, -1);
+  } else {
+    u32 handle = acc.searchChild("LAY_char_bl_move");
+    param.unknown004("fade_in_r");
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(handle, param, nullptr);
+    GfMenuObjCmnStatus::openBlStatus(1, -1);
+  }
+}
+
+void GfMenuObjCharSelect::dispOffCopyChar(ui::UIObjectAcc &acc, u32 type) {
+  GfMenuObjUtil::CtrlParam param;
+  if (type == 0) {
+    u32 handle = acc.searchChild("LAY_char_dr_move");
+    param.unknown004("warp_r");
+    param.unknown11 = true;
+    param.unknown14 = 10;
+    GfMenuObjUtil::startCtrl(handle, param, nullptr);
+    GfMenuObjCmnStatus::closeDrStatus();
+  } else {
+    u32 handle = acc.searchChild("LAY_char_bl_move");
+    param.unknown004("warp_r");
+    param.unknown11 = true;
+    param.unknown14 = 10;
+    GfMenuObjUtil::startCtrl(handle, param, nullptr);
+    GfMenuObjCmnStatus::closeBlStatus();
+  }
 }
 
 } // namespace gf

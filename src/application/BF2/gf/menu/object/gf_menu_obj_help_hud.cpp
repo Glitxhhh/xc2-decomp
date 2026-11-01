@@ -2,6 +2,7 @@
 
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -33,4 +34,41 @@ void GfMenuObjHelpHud::ctrlFadeIn(u32 handle) {
   GfMenuObjUtil::startCtrl(handle, param, nullptr);
 }
 
+bool GfMenuObjHelpHud::seqPageFadeIn() {
+  ui::UIObjectAcc acc(unknown18, "IMG_help");
+  bool isEnd;
+  if (!unknown2c0) {
+    ctrlFadeIn(acc.unknown10);
+    isEnd = false;
+    unknown2c0 = true;
+  } else {
+    int ctrl = GfMenuObjUtil::getCtrlID(acc.unknown10);
+    if (ctrl == -1 || !GfMenuObjUtil::isBusyCtrl(ctrl)) {
+      isEnd = true;
+      unknown2c0 = false;
+    } else {
+      isEnd = false;
+    }
+  }
+  return isEnd;
+}
+
+bool GfMenuObjHelpHud::seqPageFadeOut() {
+  ui::UIObjectAcc acc(unknown18, "IMG_help");
+  bool isEnd;
+  if (!unknown2c0) {
+    ctrlFadeOut(acc.unknown10);
+    isEnd = false;
+    unknown2c0 = true;
+  } else {
+    int ctrl = GfMenuObjUtil::getCtrlID(acc.unknown10);
+    if (ctrl == -1 || !GfMenuObjUtil::isBusyCtrl(ctrl)) {
+      isEnd = true;
+      unknown2c0 = false;
+    } else {
+      isEnd = false;
+    }
+  }
+  return isEnd;
+}
 } // namespace gf

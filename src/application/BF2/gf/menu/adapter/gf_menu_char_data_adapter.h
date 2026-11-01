@@ -12,6 +12,7 @@ class GfMenuBladeList;
 
 class GfMenuCharDataAdapter : public GfMenuAdapter {
 public:
+  static GfMenuCharDataAdapter *createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways);
   bool update_HpMax(const DataParamAcc &acc);
   bool update_Lv(const DataParamAcc &acc);
   bool update_PhysDef(const DataParamAcc &acc);

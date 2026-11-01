@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
 
@@ -16,6 +18,18 @@ public:
 
   static void start(GfMenuCallContext *context, const StartParam &param);
   static void cancel(GfMenuCallContext *context);
+  bool seqInit();
+  bool seqLoop();
+  bool seqComboName();
+  bool seqClose();
+
+  u8 _24[0x2b8 - 0x24];
+  int unknown2b8; // Inferred role: control of the current step, -1 when idle; original member name unknown.
+  u8 _2bc[0x2c0 - 0x2bc];
+  int unknown2c0; // Inferred role: frames left before the combo name fades out; original member name unknown.
 };
+
+static_assert(offsetof(GfMenuObjElementEff, unknown2b8) == 0x2b8, "");
+static_assert(offsetof(GfMenuObjElementEff, unknown2c0) == 0x2c0, "");
 
 } // namespace gf
