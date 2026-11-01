@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "layer/layer_acc_font_obj.h"
 #include "layer/layer_tag.h"
 #include "mm_math/mm_col4.h"
 #include "types.h"
@@ -32,6 +33,7 @@ public:
 
   static const u16 FONT_INSTANCE_SIZE;
 
+  LayerFontTag(const LayerFontResObj *res, const LayerFontStyleObj *style, const LyrFontStyleData *styleData, const LayerFontIconObj *icon, LayerFontSetting setting);
   void getWorkSize(LayerTagWork &work, const u8 *string);
   void getWorkSize(LayerTagWork &work, const wchar_t *string);
   void createWork(const u8 *string);
@@ -69,7 +71,7 @@ public:
   s32 unknown488[2];     // Inferred role: ruby start positions; original member name unknown.
   s32 unknown490;        // Inferred role: ruby character count; original member name unknown.
   s32 unknown494[2];     // Inferred role: ruby end positions; original member name unknown.
-  s32 unknown49c;        // Inferred role: line count; original member name unknown.
+  u32 unknown49c;        // Inferred role: line count; original member name unknown.
 };
 
 static_assert(offsetof(LayerFontTag, unknown08) == 0x08, "");

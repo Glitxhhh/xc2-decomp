@@ -4,6 +4,23 @@ namespace layer {
 
 const u16 LayerFontTag::FONT_INSTANCE_SIZE = 0x24;
 
+LayerFontTag::LayerFontTag(const LayerFontResObj *res, const LayerFontStyleObj *style, const LyrFontStyleData *styleData, const LayerFontIconObj *icon, LayerFontSetting setting)
+    : unknown10(res), unknown18(icon), unknown20(styleData), unknown28(false), unknown29(false) {
+  unknown68 = mm::Col4(1.0f, 1.0f, 1.0f, 0.0f);
+  unknown78 = mm::Col4(1.0f, 1.0f, 1.0f, 0.0f);
+  unknown494[0] = 0;
+  unknown494[1] = 0;
+  unknown49c = 0;
+  unknown48 = 0;
+  unknown50 = nullptr;
+  unknown58 = 0;
+  unknown60 = 0;
+  unknown38 = setting;
+  unknown3c = setting != 0;
+  unknown08 = style;
+  unknown40 = setting == 0;
+}
+
 void LayerFontTag::getWorkSize(LayerTagWork &work, const u8 *string) {
   unknown28 = false;
   unknown30 = &work;

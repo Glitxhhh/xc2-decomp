@@ -122,15 +122,15 @@ void LayerObjUtil::updateMatrixUniformBlock(f32 *uniform, const LayerResMatrix *
 void LayerObjUtil::updateUvCalcUniformBlock(f32 *uniform, const LayerResUvParam &param, u32 flags) {
   const unknown023 &uv = param.unknown00[2];
   f32 sclU = uv.unknown08;
+  f32 sclV = uv.unknown0c;
   f32 offU = 0.0f;
   if (flags & 0x100000) {
-    sclU = -uv.unknown08;
+    sclU = -sclU;
     offU = 1.0f;
   }
-  f32 sclV = uv.unknown0c;
   f32 offV = 0.0f;
   if (flags & 0x200000) {
-    sclV = -uv.unknown0c;
+    sclV = -sclV;
     offV = 1.0f;
   }
   f32 u = offU + uv.unknown00.x;

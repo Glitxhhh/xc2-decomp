@@ -1,5 +1,7 @@
 #include "layer/layer_shd_manager.h"
 
+#include <string.h>
+
 #include "grlib/cglib_color_ctl.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_ctl_texture.h"
@@ -11,6 +13,7 @@
 #include "grlib/cglib_state.h"
 #include "grlib/cglib_texture.h"
 #include "layer/layer_handle_allocator.h"
+#include "layer/layer_manager.h"
 #include "layer/layer_obj_top_mask_obj.h"
 #include "layer/layer_res_sec_texture.h"
 #include "layer/layer_res_view_port_info.h"
@@ -25,7 +28,7 @@ grlib::CGLibDecShader *LayerShdManager::setupShader() { return (this->*s_CallSel
 
 grlib::CGLibDecShader *LayerShdManager::selectGamma() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   if (index != unknown4fe) {
     grlib::CGLibCtlShader::setShader(*shader, unknown70[s_eFetchTbl[index]]);
     unknown4fe = unknown4f0;
@@ -35,7 +38,7 @@ grlib::CGLibDecShader *LayerShdManager::selectGamma() {
 
 grlib::CGLibDecShader *LayerShdManager::selectFlowMap() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   if (index != unknown4fe) {
     grlib::CGLibCtlShader::setShader(*shader, unknown70[s_eFetchTbl[index]]);
     unknown4fe = unknown4f0;
@@ -45,7 +48,7 @@ grlib::CGLibDecShader *LayerShdManager::selectFlowMap() {
 
 grlib::CGLibDecShader *LayerShdManager::selectGsBlur() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   unknown001 &entry = unknown48[index];
   if (index != unknown4fe || unknown4f8 != unknown506) {
     shader->setDeclarationIdx(entry.unknown06, unknown4f8);
@@ -58,7 +61,7 @@ grlib::CGLibDecShader *LayerShdManager::selectGsBlur() {
 
 grlib::CGLibDecShader *LayerShdManager::selectTest() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   unknown001 &entry = unknown48[index];
   if (index == unknown4fe && unknown506 == unknown4f8) {
     return shader;
@@ -71,7 +74,7 @@ grlib::CGLibDecShader *LayerShdManager::selectTest() {
 
 grlib::CGLibDecShader *LayerShdManager::selectMemWrite() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   if (index == unknown4fe && unknown506 == unknown4f8) {
     return shader;
   }
@@ -83,7 +86,7 @@ grlib::CGLibDecShader *LayerShdManager::selectMemWrite() {
 }
 
 grlib::CGLibDecShader *LayerShdManager::selectDebug() {
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(unknown4f0);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(unknown4f0);
   unknown001 &entry = unknown48[unknown4f0];
   if (unknown4f0 != unknown4fe || unknown4f4 != unknown502 || unknown506 != unknown4f8) {
     shader->setDeclarationIdx(entry.unknown02, unknown4f4);
@@ -97,7 +100,7 @@ grlib::CGLibDecShader *LayerShdManager::selectDebug() {
 }
 
 grlib::CGLibDecShader *LayerShdManager::selectFont() {
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(unknown4f0);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(unknown4f0);
   unknown001 &entry = unknown48[unknown4f0];
   if (unknown4f0 != unknown4fe || unknown504 != unknown4f6 || unknown4f4 != unknown502 || unknown508 != unknown4fa) {
     shader->setDeclarationIdx(entry.unknown02, unknown4f4);
@@ -116,7 +119,7 @@ grlib::CGLibDecShader *LayerShdManager::selectFont() {
 }
 
 grlib::CGLibDecShader *LayerShdManager::selectNumber() {
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(unknown4f0);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(unknown4f0);
   unknown001 &entry = unknown48[unknown4f0];
   if (unknown4f0 != unknown4fe || unknown4f4 != unknown502 || unknown508 != unknown4fa || unknown50a != unknown4fc) {
     shader->setDeclarationIdx(entry.unknown02, unknown4f4);
@@ -135,7 +138,7 @@ grlib::CGLibDecShader *LayerShdManager::selectNumber() {
 }
 
 grlib::CGLibDecShader *LayerShdManager::selectPoly() {
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(unknown4f0);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(unknown4f0);
   unknown001 &entry = unknown48[unknown4f0];
   if (unknown4f0 == unknown4fe && unknown4f4 == unknown502 && unknown506 == unknown4f8 && unknown508 == unknown4fa && unknown50a == unknown4fc) {
     return shader;
@@ -155,7 +158,7 @@ grlib::CGLibDecShader *LayerShdManager::selectPoly() {
 
 grlib::CGLibDecShader *LayerShdManager::selectWin() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   unknown001 &entry = unknown48[index];
   if (index != unknown4fe || unknown500 != unknown4f2 || unknown4f4 != unknown502 || unknown508 != unknown4fa || unknown50a != unknown4fc) {
     shader->setDeclarationIdx(entry.unknown00, unknown4f2);
@@ -177,7 +180,7 @@ grlib::CGLibDecShader *LayerShdManager::selectWin() {
 
 grlib::CGLibDecShader *LayerShdManager::selectIcon() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   unknown001 &entry = unknown48[index];
   if (index != unknown4fe || unknown500 != unknown4f2 || unknown4f4 != unknown502 || unknown508 != unknown4fa || unknown50a != unknown4fc) {
     shader->setDeclarationIdx(entry.unknown00, unknown4f2);
@@ -199,7 +202,7 @@ grlib::CGLibDecShader *LayerShdManager::selectIcon() {
 
 grlib::CGLibDecShader *LayerShdManager::selectColor() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   unknown001 &entry = unknown48[index];
   if (index == unknown4fe && unknown500 == unknown4f2 && unknown4f4 == unknown502 && unknown508 == unknown4fa && unknown506 == unknown4f8 && unknown50a == unknown4fc) {
     return shader;
@@ -224,7 +227,7 @@ grlib::CGLibDecShader *LayerShdManager::selectColor() {
 
 grlib::CGLibDecShader *LayerShdManager::selectTex() {
   s16 index = unknown4f0;
-  grlib::CGLibDecShader *shader = unknown220 + static_cast<u32>(index);
+  grlib::CGLibDecShader *shader = unknown1e0.unknown40 + static_cast<u32>(index);
   unknown001 &entry = unknown48[index];
   if (index == unknown4fe && unknown500 == unknown4f2 && unknown4f4 == unknown502 && unknown508 == unknown4fa && unknown506 == unknown4f8 && unknown50a == unknown4fc) {
     return shader;
@@ -247,6 +250,70 @@ grlib::CGLibDecShader *LayerShdManager::selectTex() {
   return shader;
 }
 
+void LayerShdManager::shaderRelease() {
+  unknown1e0.release();
+  unknown368.release();
+  if (unknown08 != nullptr) {
+    mtl::MemManager::deallocate(unknown08, 0, false);
+    unknown08 = nullptr;
+  }
+  if (unknown10 != nullptr) {
+    mtl::MemManager::deallocate(unknown10, 0, false);
+    unknown10 = nullptr;
+  }
+  unknown18 = 0;
+  if (unknown48 != nullptr) {
+    mtl::MemManager::deallocate(unknown48, 0, false);
+    unknown48 = nullptr;
+  }
+  if (unknown28 != nullptr) {
+    ml::DevFileTh::cancel(unknown28, false);
+    unknown28 = nullptr;
+  }
+  if (unknown30 != nullptr) {
+    ml::DevFileTh::cancel(unknown30, false);
+    unknown30 = nullptr;
+  }
+}
+
+void LayerShdManager::readShader() {
+  shaderRelease();
+  ml::DevFileParamTh param;
+  param._08 = unknown20->unknown24;
+  param._54 = 0x1000;
+  param.unknown60 = this;
+  param._6d = false;
+  param.unknown00 = "/monolib/shader/shd_layout.wishp";
+  unknown28 = ml::DevFileTh::readFile(param);
+  param.unknown00 = "/monolib/shader/layer_lut.witx";
+  unknown30 = ml::DevFileTh::readFile(param);
+}
+
+void LayerShdManager::createShader() {
+  unknown1e0.createPacShader(unknown08, 0x3ea, true);
+  u32 size = unknown1e0.unknown50 * sizeof(unknown001);
+  unknown48 = static_cast<unknown001 *>(mtl::MemManager::allocate(unknown20->unknown2c, size, 0x10, false, "no name", 0));
+  memset(unknown48, 0xff, size);
+  s32 count = unknown1e0.unknown50;
+  for (s32 i = 0; i < count; i++) {
+    (this->*s_CallSetup[i])(i);
+  }
+}
+
+bool LayerShdManager::setupUpdate() {
+  if (unknown08 == nullptr || unknown10 == nullptr) {
+    return false;
+  }
+  if (unknown48 == nullptr) {
+    createShader();
+  }
+  if (!unknown68) {
+    createRenderWork();
+  }
+  createResWork();
+  return true;
+}
+
 void LayerShdManager::allRelease() { shaderRelease(); }
 
 void LayerShdManager::setupMainRenderTarget() { grlib::CGLibState::setMainFrameBuffer(); }
@@ -265,7 +332,7 @@ void LayerShdManager::setSecTexture(LayerResSecTexture *secTexture) {
 }
 
 void LayerShdManager::initColor(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown00 = shader.getDeclarationOfs("MENU_GAUGE_TYPE");
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
@@ -275,7 +342,7 @@ void LayerShdManager::initColor(u32 index) {
 }
 
 void LayerShdManager::initTex(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown00 = shader.getDeclarationOfs("MENU_GAUGE_TYPE");
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
@@ -285,7 +352,7 @@ void LayerShdManager::initTex(u32 index) {
 }
 
 void LayerShdManager::initFont(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
   entry.unknown04 = shader.getDeclarationOfs("MENU_ICON_TYPE");
@@ -293,7 +360,7 @@ void LayerShdManager::initFont(u32 index) {
 }
 
 void LayerShdManager::initWin(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown00 = shader.getDeclarationOfs("MENU_GAUGE_TYPE");
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
@@ -302,7 +369,7 @@ void LayerShdManager::initWin(u32 index) {
 }
 
 void LayerShdManager::initNumber(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
   entry.unknown08 = shader.getDeclarationOfs("MENU_MASKOBJ_TYPE");
@@ -310,7 +377,7 @@ void LayerShdManager::initNumber(u32 index) {
 }
 
 void LayerShdManager::initPoly(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
   entry.unknown06 = shader.getDeclarationOfs("MENU_USE_TEX");
@@ -320,11 +387,11 @@ void LayerShdManager::initPoly(u32 index) {
 
 void LayerShdManager::initMemWrite(u32 index) {
   unknown001 &entry = unknown48[index];
-  entry.unknown06 = unknown220[index].getDeclarationOfs("MENU_DECODE_TYPE");
+  entry.unknown06 = unknown1e0.unknown40[index].getDeclarationOfs("MENU_DECODE_TYPE");
 }
 
 void LayerShdManager::initDebug(u32 index) {
-  grlib::CGLibDecShader &shader = unknown220[index];
+  grlib::CGLibDecShader &shader = unknown1e0.unknown40[index];
   unknown001 &entry = unknown48[index];
   entry.unknown02 = shader.getDeclarationOfs("MENU_WORLD_TYPE");
   entry.unknown06 = shader.getDeclarationOfs("MENU_USE_TEX");
@@ -332,12 +399,12 @@ void LayerShdManager::initDebug(u32 index) {
 
 void LayerShdManager::initGsBlur(u32 index) {
   unknown001 &entry = unknown48[index];
-  entry.unknown06 = unknown220[index].getDeclarationOfs("MENU_USE_TEX");
+  entry.unknown06 = unknown1e0.unknown40[index].getDeclarationOfs("MENU_USE_TEX");
 }
 
 void LayerShdManager::initTest(u32 index) {
   unknown001 &entry = unknown48[index];
-  entry.unknown06 = unknown220[index].getDeclarationOfs("MENU_USE_TEX");
+  entry.unknown06 = unknown1e0.unknown40[index].getDeclarationOfs("MENU_USE_TEX");
 }
 
 void LayerShdManager::resetViewPort() {
@@ -538,6 +605,7 @@ void LayerHandleAllocator::deallocate(void *pointer) {
 
 // The game builds these files in one unit with this one, in this order.
 // clang-format off
+#include "layer_font_draw_buffer.cpp"
 #include "layer_font_manager.cpp"
 #include "layer_font_icon_obj.cpp"
 #include "layer_font_res_obj.cpp"

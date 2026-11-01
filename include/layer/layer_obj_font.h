@@ -18,6 +18,18 @@ class LayerSortObj;
 struct LayerRenderView;
 struct LayerResViewPortInfo;
 
+// Inferred layout of one line of a font info (stride 0x10 in LayerFontDrawBuffer::fontCnt); original type and member names unknown.
+struct unknown026 {
+  u32 unknown00; // Inferred role: line width; original member name unknown.
+  s16 unknown04; // Inferred role: first character instance; original member name unknown.
+  s16 unknown06; // Inferred role: last character instance; original member name unknown.
+  u8 _08[0x0c - 0x08];
+  s16 unknown0c; // Inferred role: first icon instance; original member name unknown.
+  s16 unknown0e; // Inferred role: last icon instance; original member name unknown.
+};
+
+static_assert(sizeof(unknown026) == 0x10, "");
+
 struct LayerResFontInfo {
   u8 _00[0x08];
   const LayerFontResObj *unknown08; // Inferred role: font resource; original member name unknown.
@@ -29,7 +41,9 @@ struct LayerResFontInfo {
   u8 _34[0x38 - 0x34];
   LayerSortObj *unknown38; // Inferred role: sort object; original member name unknown.
   u32 unknown40;           // Inferred role: character instance count; original member name unknown.
-  u8 _44[0x60 - 0x44];
+  u8 _44[0x48 - 0x44];
+  unknown026 *unknown48; // Inferred role: lines; original member name unknown.
+  u8 _50[0x60 - 0x50];
   grlib::CGLibVtxOneInstans *unknown60;   // Inferred role: instance vertex; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown68; // Inferred role: uniform block; original member name unknown.
 };
@@ -41,6 +55,7 @@ static_assert(offsetof(LayerResFontInfo, unknown2c) == 0x2c, "");
 static_assert(offsetof(LayerResFontInfo, unknown30) == 0x30, "");
 static_assert(offsetof(LayerResFontInfo, unknown38) == 0x38, "");
 static_assert(offsetof(LayerResFontInfo, unknown40) == 0x40, "");
+static_assert(offsetof(LayerResFontInfo, unknown48) == 0x48, "");
 static_assert(offsetof(LayerResFontInfo, unknown60) == 0x60, "");
 static_assert(offsetof(LayerResFontInfo, unknown68) == 0x68, "");
 

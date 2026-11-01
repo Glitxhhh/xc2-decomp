@@ -18,22 +18,31 @@ struct LyrFontStyleData;
 class LayerFontDrawBuffer : public LayerFontTag {
 public:
   LayerFontDrawBuffer(const LayerFontResObj *res, const LayerFontStyleObj *style, const LyrFontStyleData *styleData, const LayerFontIconObj *icon, LayerFontSetting setting, LayerObjFont *font);
+  void reset();
   LayerResFontInfo *createChar(const u8 *text);
+  void createWorkBuffer(const LayerTagWork &work, const u8 *text);
+  void endWorkSetup();
   LayerResFontInfo *createChar(const wchar_t *text);
   void createFontCode(u16 code) override;
   void createRubyFontCode(u16 code) override;
   void createFontIcon(u16 code) override;
+  void fontCnt();
   void createLineBreak() override;
 
   u32 unknown4a0;               // Inferred role: horizontal, copied by LayerObjFont::setMsg; original member name unknown.
   u32 unknown4a4;               // Inferred role: vertical, copied by LayerObjFont::setMsg; original member name unknown.
   LayerResFontInfo *unknown4a8; // Inferred role: created font info, returned by createChar; original member name unknown.
   LayerObjFont *unknown4b0;     // Inferred role: font object; original member name unknown.
-  u8 _4b8[0x4c8 - 0x4b8];
+  u32 unknown4b8;               // Inferred role: character instance count; original member name unknown.
+  u32 unknown4bc;               // Inferred role: icon instance count; original member name unknown.
+  s32 unknown4c0;               // Inferred role: text width; original member name unknown.
+  s32 unknown4c4;               // Inferred role: text height; original member name unknown.
 };
 
 static_assert(offsetof(LayerFontDrawBuffer, unknown4a0) == 0x4a0, "");
 static_assert(offsetof(LayerFontDrawBuffer, unknown4b0) == 0x4b0, "");
+static_assert(offsetof(LayerFontDrawBuffer, unknown4b8) == 0x4b8, "");
+static_assert(offsetof(LayerFontDrawBuffer, unknown4c0) == 0x4c0, "");
 static_assert(sizeof(LayerFontDrawBuffer) == 0x4c8, "");
 
 } // namespace layer

@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "grlib/cglib_sampler.h"
+#include "grlib/cglib_shd_list.h"
 #include "grlib/cglib_texture_buffer.h"
 #include "grlib/cglib_vtx_fetch.h"
 #include "grlib/cglib_vtx_index.h"
@@ -55,7 +56,9 @@ public:
   void allRelease();
   void shaderRelease();
   void readShader();
+  void createShader();
   bool setupUpdate();
+  void createRenderWork();
   void beginShader(const ml::IDrDrawWorkInfo *info);
   void endShader(const ml::IDrDrawWorkInfo *info);
   void setupMainRenderTarget();
@@ -102,6 +105,7 @@ public:
   grlib::CGLibDecShader *selectColor();
   grlib::CGLibDecShader *selectTex();
 
+  static void (LayerShdManager::*s_CallSetup[])(u32 index);
   static grlib::CGLibDecShader *(LayerShdManager::*s_CallSelect[])();
   static const u32 s_eFetchTbl[];
   static void (*s_CallBlend[])();
@@ -157,10 +161,11 @@ public:
     }
   }
 
-  void *unknown08;       // Inferred role: shader binary data; original member name unknown.
-  const void *unknown10; // Inferred role: shader resource data; original member name unknown.
-  u32 unknown18;         // Inferred role: shader resource size; original member name unknown.
-  u8 _01c[0x028 - 0x01c];
+  void *unknown08; // Inferred role: shader binary data; original member name unknown.
+  void *unknown10; // Inferred role: shader resource data; original member name unknown.
+  u32 unknown18;   // Inferred role: shader resource size; original member name unknown.
+  u8 _01c[0x020 - 0x01c];
+  LayerManager *unknown20;                // Inferred role: manager, the constructor argument; original member name unknown.
   ml::FileHandleTh *unknown28;            // Inferred role: pending shader binary file; original member name unknown.
   ml::FileHandleTh *unknown30;            // Inferred role: pending shader resource file; original member name unknown.
   LayerVertexMan *unknown38;              // Inferred role: vertex manager; original member name unknown.
@@ -169,11 +174,11 @@ public:
   const LayerObjTopMaskObj *unknown50;    // Inferred role: mask object; original member name unknown.
   grlib::CGLibTextureBuffer *unknown58;   // Inferred role: second texture; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown60; // Inferred role: second texture uniform; original member name unknown.
-  u8 _068[0x070 - 0x068];
+  bool unknown68;                         // Inferred role: render work created; original member name unknown.
+  u8 _069[0x070 - 0x069];
   grlib::CGLibVtxFetch unknown70[5];
-  grlib::CGLibSampler unknownc0[11]; // Inferred role: samplers; original member name unknown.
-  grlib::CGLibDecShader *unknown220; // Inferred role: shaders; original member name unknown.
-  u8 _228[0x238 - 0x228];
+  grlib::CGLibSampler unknownc0[9];        // Inferred role: samplers; original member name unknown.
+  grlib::CGLibShdListData unknown1e0;      // Inferred role: shaders; original member name unknown.
   grlib::CGLibVtxVertex unknown238[5];     // Inferred role: vertices; original member name unknown.
   grlib::CGLibVtxIndex unknown300;         // Inferred role: quads index; original member name unknown.
   grlib::CGLibVtxIndex unknown328;         // Inferred role: line quads index; original member name unknown.
@@ -234,6 +239,7 @@ static_assert(offsetof(LayerShdManager, unknown50) == 0x050, "");
 static_assert(offsetof(LayerShdManager, unknown58) == 0x058, "");
 static_assert(offsetof(LayerShdManager, unknown60) == 0x060, "");
 static_assert(offsetof(LayerShdManager, unknownc0) == 0x0c0, "");
+static_assert(offsetof(LayerShdManager, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(LayerShdManager, unknown238) == 0x238, "");
 static_assert(offsetof(LayerShdManager, unknown300) == 0x300, "");
 static_assert(offsetof(LayerShdManager, unknown328) == 0x328, "");
