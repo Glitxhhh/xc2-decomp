@@ -24,7 +24,7 @@ public:
   const u8 *unknown08; // Inferred role: clip list; original member name unknown.
   s32 unknown10;       // Inferred role: clip count; original member name unknown.
   s32 unknown14;       // Inferred role: work size; original member name unknown.
-  u8 *unknown18;       // Inferred role: work; original member name unknown.
+  u32 *unknown18;      // Inferred role: clipped flag bits; original member name unknown.
 };
 
 static_assert(offsetof(DrResWrkClipList, unknown08) == 0x08, "");

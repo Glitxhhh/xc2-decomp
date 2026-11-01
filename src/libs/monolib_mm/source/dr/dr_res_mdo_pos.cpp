@@ -9,9 +9,9 @@
 
 namespace ml {
 
-DrResMdoPos::DrResMdoPos() : unknown00(nullptr), unknown08(nullptr), unknown1e(0), unknown21(0), unknown22(0xff) {}
+DrResMdoPos::DrResMdoPos() : unknown00(nullptr), unknown08(nullptr), unknown1e(0), unknown21(0), unknown22(-1) {}
 
-DrResMdoPos::DrResMdoPos(const MdsPosKeepData *keepData) : unknown00(nullptr), unknown08(keepData), unknown1e(0), unknown21(0), unknown22(0xff) {}
+DrResMdoPos::DrResMdoPos(const MdsPosKeepData *keepData) : unknown00(nullptr), unknown08(keepData), unknown1e(0), unknown21(0), unknown22(-1) {}
 
 void DrResMdoPos::copy(DrResMdoPos *source) {
   unknown1e = 0;

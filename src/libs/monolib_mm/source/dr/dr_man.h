@@ -256,7 +256,10 @@ public:
   bool unknown1cc7; // Inferred role: seam map open mode; original member name unknown.
   bool unknown1cc8; // Inferred role: screen disp off; original member name unknown.
   bool unknown1cc9; // Inferred role: write z buffer; original member name unknown.
-  u8 _1cca[0x1cfc - 0x1cca];
+  u8 _1cca[0x1ccc - 0x1cca];
+  s32 unknown1ccc;    // Inferred role: operation mode index of the distance tables; original member name unknown.
+  f32 unknown1cd0[2]; // Inferred role: pos model far render distance per operation mode; original member name unknown.
+  u8 _1cd8[0x1cfc - 0x1cd8];
   s32 unknown1cfc; // Inferred role: seam read lv; original member name unknown.
   u8 _1d00[0x1d20 - 0x1d00];
   u32 *unknown1d20;           // Inferred role: gbl tbl; original member name unknown.
@@ -364,6 +367,8 @@ static_assert(offsetof(DrMan, unknown1cc6) == 0x1cc6, "");
 static_assert(offsetof(DrMan, unknown1cc7) == 0x1cc7, "");
 static_assert(offsetof(DrMan, unknown1cc8) == 0x1cc8, "");
 static_assert(offsetof(DrMan, unknown1cc9) == 0x1cc9, "");
+static_assert(offsetof(DrMan, unknown1ccc) == 0x1ccc, "");
+static_assert(offsetof(DrMan, unknown1cd0) == 0x1cd0, "");
 static_assert(offsetof(DrMan, unknown1cfc) == 0x1cfc, "");
 static_assert(offsetof(DrMan, unknown1d20) == 0x1d20, "");
 static_assert(offsetof(DrMan, unknown1d28) == 0x1d28, "");

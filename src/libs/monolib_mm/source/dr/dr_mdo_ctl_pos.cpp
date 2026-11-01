@@ -125,7 +125,7 @@ void DrMdoCtlPos::beginRenderListPos() {
   unknown340 = 0;
   int size = unknown30->unknown170 * 0x42u;
   size += (32 - size % 32) % 32;
-  memset(unknown270, 0, size);
+  memset(unknown270[0], 0, size);
   unknown2a8->update(m_drMan->unknown1c8c);
   if (unknown218 != nullptr) {
     unknown218->update(m_drMan->unknown580->unknown18);
@@ -162,6 +162,44 @@ bool DrMdoCtlPos::chankRenderMdl(const MdsPosRangeTreeData *tree, MdoArgInst &ar
   }
   if (tree->unknown1e != 0) {
     isRender |= clipRenderMdl(tree, arg);
+  }
+  return isRender;
+}
+
+bool DrMdoCtlPos::clipRenderMdl(const MdsPosRangeTreeData *tree, MdoArgInst &arg) {
+  bool isRender = false;
+  u32 count = tree->unknown1e;
+  const u32 *index = reinterpret_cast<const u32 *>(reinterpret_cast<const u8 *>(unknown1a8) + tree->unknown18);
+  for (u32 i = 0; i < count; i++, index++) {
+    const MdsPosKeepData *keep = unknown1d0 + *index;
+    if (keep->unknown66 != 0) {
+      u32 *clipTbl = unknown218->unknown18;
+      s32 clip = keep->unknown66 - 1;
+      if (clipTbl[clip >> 5] & (1 << (clip & 31))) {
+        continue;
+      }
+    }
+    u32 gbl = keep->unknown62;
+    if (gbl == 0) {
+      isRender |= objPartsRenderMdl(keep, &unknown1e0[*index], arg);
+      continue;
+    }
+    u32 *gblTbl = m_drMan->unknown1d20;
+    if ((gblTbl[gbl >> 5] & (1 << (gbl & 31))) == 0) {
+      DrResMdoPos *pos = &unknown1e0[*index];
+      f32 objAlpha = 1.0f;
+      if (unknown1e8.unknown00 != nullptr) {
+        objAlpha = unknown1e8.getObj(pos->unknown18)->unknown28;
+      }
+      if (objAlpha > 0.0f) {
+        s32 alpha = arg.unknown00;
+        if (objAlpha < 1.0f) {
+          arg.unknown00 = objAlpha * 255.0f;
+        }
+        isRender |= objPartsRenderMdl(keep, pos, arg);
+        arg.unknown00 = alpha;
+      }
+    }
   }
   return isRender;
 }

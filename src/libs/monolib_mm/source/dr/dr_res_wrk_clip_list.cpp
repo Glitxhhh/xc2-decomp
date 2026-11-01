@@ -18,7 +18,7 @@ int DrResWrkClipList::setupWork(u8 *work, const u8 *data, u32 offset) {
   unknown00 = data;
   unknown10 = header->unknown04;
   unknown08 = data + header->unknown00;
-  unknown18 = work;
+  unknown18 = reinterpret_cast<u32 *>(work);
   int size = unknown10 / 32 * 4 + 4;
   unknown14 = size + (32 - size % 32) % 32;
   return unknown14;
