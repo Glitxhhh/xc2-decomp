@@ -327,14 +327,18 @@ struct unknown016 {
 static_assert(sizeof(unknown016) == 0x04, "");
 
 struct MdsMdlInfoHeader {
-  u8 _00[0x08 - 0x00];
+  u8 _00[0x04 - 0x00];
+  u32 unknown04; // Inferred role: render pass flags; original member name unknown.
   u16 unknown08; // Inferred role: vertex bind index; original member name unknown.
   u16 unknown0a; // Inferred role: render index; original member name unknown.
-  u8 _0c[0x30 - 0x0c];
+  u8 _0c[0x0e - 0x0c];
+  u16 unknown0e; // Inferred role: material index; original member name unknown.
+  u8 _10[0x30 - 0x10];
 };
 
 static_assert(offsetof(MdsMdlInfoHeader, unknown08) == 0x08, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown0a) == 0x0a, "");
+static_assert(offsetof(MdsMdlInfoHeader, unknown0e) == 0x0e, "");
 
 static_assert(sizeof(MdsMdlInfoHeader) == 0x30, "");
 
@@ -472,7 +476,7 @@ struct MdoWrkMatRes {
   unknown091 *unknown158;         // Inferred role: rim blooms; original member name unknown.
   u8 _160[0x168 - 0x160];
   const unknown026 *unknown168; // Inferred role: mdl entries; original member name unknown.
-  u32 unknown170;               // Inferred role: mdl entry count; original member name unknown.
+  s32 unknown170;               // Inferred role: mdl entry count; original member name unknown.
   u8 _174[0x178 - 0x174];
   const u8 *unknown178; // Inferred role: second table; original member name unknown.
 };
@@ -557,6 +561,8 @@ public:
     unknown028_4 = 1 << 4,
     unknown028_5 = 1 << 5,
     unknown028_6 = 1 << 6,
+    unknown028_8 = 1 << 8,
+    unknown028_9 = 1 << 9,
     unknown028_20 = 1 << 20,
     unknown028_15 = 1 << 15, // Inferred role: bloom; original name unknown.
     unknown028_16 = 1 << 16, // Inferred role: alpha bloom; original name unknown.

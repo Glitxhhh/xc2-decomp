@@ -37,6 +37,13 @@ void DrMdoCtl::beginSetup() {
   unknown30->unknownc8->beginVertexSetup();
 }
 
+void DrMdoCtl::beginSeamSetup() { beginMatInfo(); }
+
+void DrMdoCtl::changeSeamBaseMapMdlInfo() {
+  changeSeamMatInfo();
+  unknown30->unknownc8->beginVertexSetup();
+}
+
 void DrMdoCtl::partsBaseMdlRender(const MdsMdlInfoHeader *header) {
   unknown30->unknownc8->setVertexBind(header->unknown08);
   unknown30->unknownc8->render(header->unknown0a);

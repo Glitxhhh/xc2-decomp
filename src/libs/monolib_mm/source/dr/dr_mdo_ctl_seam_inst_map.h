@@ -9,11 +9,13 @@ class CGLibVtxInstans;
 
 namespace ml {
 
+class DrPixlShadowCacheObj;
+class DrPixlShadowObj;
 class DrResMdoSeamWrkInst;
 struct MdsMdlInfoHeader;
-struct MdoArgSeamUpdate;
 struct _MdoInstanceWork;
 struct MdoWrkMatRes;
+struct MdoArgSeamUpdate;
 
 class DrMdoCtlSeamInstMap : public DrMdoCtlSeamLowMap {
 public:
@@ -40,6 +42,8 @@ public:
   void createInstZPrePassDisplayList();
   void createInstThicknessPassDisplayList(bool isFirst);
   void callInstShadowCacheAddRender(int index);
+  void callShadowMapRenderSeamInstMap(DrPixlShadowObj *shadow);
+  void callInstShadowCacheRender(DrPixlShadowCacheObj &cache);
 };
 
 } // namespace ml

@@ -20,8 +20,11 @@ public:
   DrMdoCtl(int viewNum);
   void bindShader(int index);
   void beginSetup();
+  void beginSeamSetup();
+  void changeSeamBaseMapMdlInfo();
   void updateMdl();
   void partsBaseMdlRender(const MdsMdlInfoHeader *header);
+  void partsDefRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, bool isDepthStencil);
   void setMatrix(const mm::Mat44 &matrix);
   void setOffsetPos(const mm::Vec3 &position);
   const mm::Mat44 &getMatrix() const;

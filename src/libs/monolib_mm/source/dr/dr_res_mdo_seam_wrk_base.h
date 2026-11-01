@@ -10,6 +10,8 @@ class CGLibVtxInstans;
 
 namespace ml {
 class DrMdoCtlSeamBaseMap;
+class DrPixlShadowCacheObj;
+class DrPixlShadowObj;
 class DrResMdoSeamWrkBaseVertex;
 struct MdoWrkMatRes;
 
@@ -24,6 +26,8 @@ public:
   void endRender();
   void selectVertex(int index);
   void releaseCache(DrMdoCtlSeamBaseMap *ctl);
+  bool seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl);
+  void seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamBaseMap *ctl);
 
   u8 _18[0x68 - 0x18];
   MdoWrkMatRes *unknown68;              // Inferred role: material work; original member name unknown.
@@ -36,7 +40,7 @@ public:
   u32 unknown90; // Inferred role: render count; original member name unknown.
   u32 unknown94; // Inferred role: render count; original member name unknown.
   u64 unknown98; // Inferred role: shadow cache update mask; original member name unknown.
-  s32 unknowna0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s32 unknowna0; // Inferred role: state flags, cleared by the constructor; original member name unknown.
   u8 _a4[0xb0 - 0xa4];
   s32 unknownb0; // Inferred role: allocated buffer count; original member name unknown.
   s32 unknownb4; // Inferred role: memory size; original member name unknown.

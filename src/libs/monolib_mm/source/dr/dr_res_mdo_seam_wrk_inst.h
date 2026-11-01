@@ -6,6 +6,8 @@
 
 namespace ml {
 class DrMdoCtlSeamInstMap;
+class DrPixlShadowCacheObj;
+class DrPixlShadowObj;
 class DrResMdoSeamWrkPosInst;
 struct MdoWrkMatRes;
 class DrResMdoVertex;
@@ -33,6 +35,8 @@ public:
   void releaseCache(DrMdoCtlSeamInstMap *ctl);
   void callShadowCacheInstUpdate(u64 mask);
   void occRender();
+  void seachDefShadowInstMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamInstMap *ctl);
+  bool seachShadowInstMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamInstMap *ctl);
   unknown002 *getMdlInfo();
 
   u8 _18[0x20 - 0x18];

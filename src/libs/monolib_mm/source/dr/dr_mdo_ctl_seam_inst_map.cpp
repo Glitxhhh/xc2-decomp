@@ -2,6 +2,7 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 
@@ -87,6 +88,41 @@ void DrMdoCtlSeamInstMap::occInstRender() {
         inst->occRender();
       }
     }
+  }
+}
+
+void DrMdoCtlSeamInstMap::callShadowMapRenderSeamInstMap(DrPixlShadowObj *shadow) {
+  if (!m_drMan->unknown1d6a) {
+    changeSeamMatInfo();
+    for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+      unknown30 = inst->unknown50;
+      if (unknown30 != nullptr && (inst->unknown8a & 0x10) != 0) {
+        inst->seachDefShadowInstMapRender(shadow, this);
+      }
+    }
+  }
+}
+
+void DrMdoCtlSeamInstMap::callInstShadowCacheRender(DrPixlShadowCacheObj &cache) {
+  if ((unknownc98 & cache.unknown8e8) != 0 || m_drMan->unknown1d6a) {
+    return;
+  }
+  changeSeamMatInfo();
+  bool isRetry = false;
+  for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+    unknown30 = inst->unknown50;
+    if (unknown30 != nullptr) {
+      if (inst->unknown8a & 0x10) {
+        isRetry |= inst->seachShadowInstMapRender(cache, this);
+      } else {
+        isRetry = true;
+      }
+    }
+  }
+  if (isRetry) {
+    unknownc98 &= ~cache.unknown8e8;
+  } else {
+    unknownc98 |= cache.unknown8e8;
   }
 }
 

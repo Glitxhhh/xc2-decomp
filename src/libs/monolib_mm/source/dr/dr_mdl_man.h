@@ -53,9 +53,17 @@ public:
 
   // Inferred role: per category render flags; original type name unknown.
   struct unknown004 {
-    u8 _00[0x04 - 0x00];
+    bool unknown00; // Inferred role: bloom model rendered; original member name unknown.
+    bool unknown01; // Inferred role: alpha bloom model rendered; original member name unknown.
+    bool unknown02; // Inferred role: volume model rendered; original member name unknown.
+    bool unknown03; // Inferred role: light pre pass model rendered; original member name unknown.
     bool unknown04; // Inferred role: refraction model rendered; original member name unknown.
-    u8 _05[0x0d - 0x05];
+    u8 _05[0x07 - 0x05];
+    bool unknown07; // Inferred role: full screen shadow model rendered; original member name unknown.
+    bool unknown08; // Inferred role: model flag 8 rendered; original member name unknown.
+    bool unknown09; // Inferred role: model flag 9 rendered; original member name unknown.
+    u8 _0a[0x0c - 0x0a];
+    bool unknown0c; // Inferred role: seam model updated; original member name unknown.
   };
 
   void addMpfObj();
@@ -141,5 +149,7 @@ static_assert(offsetof(DrMdlMan::unknown005, unknown24) == 0x24, "");
 static_assert(offsetof(DrMdlMan::unknown006, unknown1c) == 0x1c, "");
 static_assert(offsetof(DrMdlMan::unknown006, unknown24) == 0x24, "");
 static_assert(offsetof(DrMdlMan::unknown004, unknown04) == 0x04, "");
+static_assert(offsetof(DrMdlMan::unknown004, unknown07) == 0x07, "");
+static_assert(offsetof(DrMdlMan::unknown004, unknown0c) == 0x0c, "");
 
 } // namespace ml

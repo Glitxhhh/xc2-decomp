@@ -29,7 +29,8 @@ public:
   u32 unknown808;       // Inferred role: flags; original member name unknown.
   s32 unknown80c;       // Inferred role: shadow size; original member name unknown.
   mm::Mat44 unknown810; // Inferred role: shadow matrix; original member name unknown.
-  u8 _850[0x8e8 - 0x850];
+  mm::Mat44 unknown850; // Inferred role: shadow view projection matrix; original member name unknown.
+  u8 _890[0x8e8 - 0x890];
   u64 unknown8e8; // Inferred role: id mask; original member name unknown.
   u16 unknown8f0; // Inferred role: id; original member name unknown.
   u16 unknown8f2; // Inferred role: id; original member name unknown.
@@ -40,6 +41,7 @@ public:
 static_assert(offsetof(DrPixlShadowCacheObj, unknown808) == 0x808, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown80c) == 0x80c, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown810) == 0x810, "");
+static_assert(offsetof(DrPixlShadowCacheObj, unknown850) == 0x850, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown8e8) == 0x8e8, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown8f2) == 0x8f2, "");
 static_assert(offsetof(DrPixlShadowCacheObj, unknown900) == 0x900, "");

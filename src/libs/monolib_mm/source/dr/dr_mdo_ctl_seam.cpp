@@ -3,10 +3,16 @@
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_base.h"
+#include "dr/dr_mdo_mat.h"
+#include "dr/dr_res_mdo_mat.h"
 #include "dr/dr_res_mdo_seam_coli.h"
 #include "dr/dr_res_mdo_seam_res.h"
+#include "mm_math/mm_col4.h"
 
 namespace ml {
+
+// Inferred role: render pass id of each render type; original name unknown.
+static const u16 unknown098[] = {0, 7, 8, 4, 1, 1};
 
 DrMdoCtlSeam::DrMdoCtlSeam(int viewNum)
     : DrMdlObj(viewNum), unknown3e0(nullptr), unknown3e8(nullptr), unknown3f0(nullptr), unknown3f8(nullptr), unknown400(nullptr), unknown408(nullptr), unknown410(nullptr), unknown418(nullptr),
@@ -151,10 +157,31 @@ void DrMdoCtlSeam::seamThicknessPassBegin(bool isFirst) {
 
 void DrMdoCtlSeam::seamThicknessPassEnd(bool value) {}
 
+void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
+  unknownf4 = renderType;
+  unknownf2 = unknown098[renderType];
+  beginSetup();
+  const DrResMdoMat *mats = unknown30->unknownc0;
+  const unknown026 *entry = unknown30->unknown168;
+  for (int i = 0; i < unknown30->unknown170; i++, entry++) {
+    const MdsMdlInfoHeader *header = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + entry->unknown00);
+    int count = entry->unknown04;
+    for (int j = 0; j < count; j++, header++) {
+      if ((header->unknown04 & flags) != 0 && mats[header->unknown0e].unknown08.a > 0.0f) {
+        partsDefRender(header, 0, 0, false);
+      }
+    }
+  }
+}
+
 } // namespace ml
 
 // The game builds these files in one unit with this one, in this order.
 // clang-format off
+#include "dr_mdo_ctl.cpp"
+#include "dr_mdo_setup.cpp"
+#include "dr_mdo_mat.cpp"
+#include "dr_mdo_zsort.cpp"
 #include "dr_mdo_ctl_seam_all.cpp"
 #include "dr_mdo_ctl_seam_base_map.cpp"
 #include "dr_mdo_ctl_seam_env_map.cpp"

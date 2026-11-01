@@ -4,6 +4,8 @@
 #include "types.h"
 
 namespace ml {
+class DrPixlShadowCacheObj;
+class DrPixlShadowObj;
 class DrResMdoSeamWrkBase;
 
 class DrMdoCtlSeamBaseMap : public DrMdoCtlSeam {
@@ -27,6 +29,8 @@ public:
   void callShadowCacheBaseUpdate(u64 flags);
   void createBaseZPrePassDisplayList();
   void createBaseThicknesPassDisplayList(bool isFirst);
+  void callShadowMapRenderSeamBaseMap(DrPixlShadowObj *shadow);
+  void callBaseShadowCacheRender(DrPixlShadowCacheObj &cache);
 };
 
 } // namespace ml

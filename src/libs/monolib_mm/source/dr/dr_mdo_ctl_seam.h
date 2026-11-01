@@ -14,6 +14,7 @@
 #include "dr/dr_res_mdo_seam_wrk_light.h"
 #include "dr/dr_res_mdo_seam_wrk_low.h"
 #include "dr/dr_res_mdo_seam_wrk_mpf.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -22,19 +23,26 @@ namespace cloud {
 class CloudMdlDataObj;
 } // namespace cloud
 
+namespace grlib {
+class CGLibVtxInstans;
+} // namespace grlib
+
 namespace ml {
 class DrCalcClipMan;
 class DrCalcClipObj;
 class DrCalcCpPlaneObj;
+class DrCalcViewWork;
 class DrEnvColiObj;
 class DrEnvironmentObj;
 class DrGlobalIBLPack;
+class DrMdoCtlSeamInstMap;
 class DrResEtcTexList;
 class DrResMdoInstMdlInfo;
 class DrResMdoPosAddList;
 class DrResMdoSortSeamAll;
 class DrResMdoSortSeamEnvMap;
 struct MdoWrkMatRes;
+struct MdsSeamOfsTexTblData;
 
 // Inferred role: model data seam etc pos data; original type name unknown.
 struct unknown058 {
@@ -83,7 +91,8 @@ struct unknown061 {
   u32 m_seamVertexMax;
   u8 _54[0x58 - 0x54];
   u32 m_seamTextureMax;
-  u8 _5c[0x64 - 0x5c];
+  u32 unknown5c; // Inferred role: offset of the offset texture table; original member name unknown.
+  u8 _60[0x64 - 0x60];
   u32 m_seamMpfMdlMax;
   u8 _68[0x6c - 0x68];
   u32 m_seamEtcPosDataMax;
@@ -106,9 +115,32 @@ static_assert(offsetof(unknown061, m_seamTextureMax) == 0x58, "");
 static_assert(offsetof(unknown061, m_seamMpfMdlMax) == 0x64, "");
 static_assert(offsetof(unknown061, m_seamEtcPosDataMax) == 0x6c, "");
 static_assert(offsetof(unknown061, m_seamMpfPosDataMax) == 0x74, "");
+static_assert(offsetof(unknown061, unknown5c) == 0x5c, "");
 static_assert(offsetof(unknown061, unknown84) == 0x84, "");
 static_assert(offsetof(unknown061, unknowna8) == 0xa8, "");
 static_assert(offsetof(unknown061, unknowne8) == 0xe8, "");
+
+struct MdoArgSeamUpdate {
+  DrCalcViewWork *unknown00;             // Inferred role: view work; original member name unknown.
+  u16 *unknown08;                        // Inferred role: vertex use flags; original member name unknown.
+  DrResMdoSeamVertex *unknown10;         // Inferred role: vertices; original member name unknown.
+  u16 *unknown18;                        // Inferred role: texture use flags; original member name unknown.
+  DrResMdoSeamTexture *unknown20;        // Inferred role: textures; original member name unknown.
+  u16 *unknown28;                        // Inferred role: texture list use flags; original member name unknown.
+  DrResMdoSeamTexList *unknown30;        // Inferred role: texture lists; original member name unknown.
+  const MdsSeamOfsTexTblData *unknown38; // Inferred role: offset texture table; original member name unknown.
+  u32 unknown40;                         // Inferred role: seam flags; original member name unknown.
+  grlib::CGLibVtxInstans *unknown48;     // Inferred role: instance buffer; original member name unknown.
+  DrResMdoInstAnmObj *unknown50;         // Inferred role: inst anm object; original member name unknown.
+  DrCalcClipMan *unknown58;              // Inferred role: clip manager; original member name unknown.
+  DrMdoCtlSeamInstMap *unknown60;        // Inferred role: inst map controller, set by the inst map update; original member name unknown.
+};
+
+static_assert(offsetof(MdoArgSeamUpdate, unknown38) == 0x38, "");
+static_assert(offsetof(MdoArgSeamUpdate, unknown40) == 0x40, "");
+static_assert(offsetof(MdoArgSeamUpdate, unknown48) == 0x48, "");
+static_assert(offsetof(MdoArgSeamUpdate, unknown58) == 0x58, "");
+static_assert(sizeof(MdoArgSeamUpdate) == 0x68, "");
 
 // Inferred role: global IBL entry of the seam data; original type name unknown.
 struct unknown096 {
@@ -246,6 +278,7 @@ public:
   void seamZPrePassEnd();
   void seamThicknessPassBegin(bool isFirst);
   void seamThicknessPassEnd(bool value);
+  void calcSeamMapRender(int renderType, u32 flags);
   DrResMdoSeamTexture *createFreeSeamTexture();
   DrResMdoSeamTexList *createFreeSeamTexList();
   DrResMdoSeamVertex *createFreeSeamVertex();
@@ -259,6 +292,11 @@ public:
   void setupSeamMapHead(const void *data, const char *path);
   void releaseSeam();
   void resourceRelease();
+  bool calcBegin();
+  void calcEnd();
+  void calcFastUpdate();
+  void updateTexutreSeam();
+  void updateVertexSeam();
 
   u8 _190[0x1a8 - 0x190];
   unknown061 *unknown1a8;                                  // Inferred role: seam resource header; original member name unknown.
@@ -384,7 +422,9 @@ public:
   u8 _14b4[0x14c0 - 0x14b4];
   u64 unknown14c0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u32 unknown14c8; // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  u8 _14cc[0x1550 - 0x14cc];
+  u8 _14cc[0x14d0 - 0x14cc];
+  mm::Mat44 unknown14d0;            // Inferred role: world view projection matrix; original member name unknown.
+  mm::Mat44 unknown1510;            // Inferred role: world view matrix; original member name unknown.
   mm::mtl::FixStr<128> unknown1550; // Inferred role: seam file path; original member name unknown.
 };
 
@@ -431,6 +471,8 @@ static_assert(offsetof(DrMdoCtlSeam, unknowncd0) == 0xcd0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownd30) == 0xd30, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown14b0) == 0x14b0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown14c0) == 0x14c0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown14d0) == 0x14d0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown1510) == 0x1510, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown1550) == 0x1550, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown698) == 0x698, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown6c8) == 0x6c8, "");

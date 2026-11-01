@@ -273,7 +273,7 @@ public:
   bool unknown1d66; // Inferred role: alpha render skip; original member name unknown.
   bool unknown1d67; // Inferred role: sp alpha render skip; original member name unknown.
   bool unknown1d68; // Inferred role: shadow render skip; original member name unknown.
-  u8 _1d69[0x1d6a - 0x1d69];
+  bool unknown1d69; // Inferred role: seam base map shadow render skip; original member name unknown.
   bool unknown1d6a; // Inferred role: occlusion render skip; original member name unknown.
   u8 _1d6b[0x1d70 - 0x1d6b];
   bool unknown1d70; // Inferred role: shadow light skip; original member name unknown.

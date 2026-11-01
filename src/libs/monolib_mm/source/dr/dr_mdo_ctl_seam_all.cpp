@@ -5,22 +5,33 @@
 #include "cloud/cloud_obj_man.h"
 #include "dr/dr_calc_clip_man.h"
 #include "dr/dr_calc_man.h"
+#include "dr/dr_calc_view_work.h"
 #include "dr/dr_environment_man.h"
 #include "dr/dr_fog_man.h"
 #include "dr/dr_global_ibl_man.h"
 #include "dr/dr_light_man.h"
+#include "dr/dr_light_obj.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_mdo_ctl_seam_env_map.h"
+#include "dr/dr_mdo_vertex_man.h"
+#include "dr/dr_mdo_zsort.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
+#include "dr/dr_pixl_shadow_cache_obj.h"
+#include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_res_mdo_seam_read.h"
+#include "dr/dr_res_mdo_sort.h"
+#include "grlib/cglib_etc_uniform_block.h"
+#include "grlib/shd_util.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
 
 namespace ml {
+struct MdsSeamOfsTexTblData;
 
 DrMdoCtlSeamAll::DrMdoCtlSeamAll(const void *data, const char *path, DrMan *man, int viewNum) : DrMdoCtlSeamRead(viewNum) {
   m_drMan = man;
@@ -81,6 +92,81 @@ void DrMdoCtlSeamAll::resourceInit() {
 void DrMdoCtlSeamAll::callShadowCacheUpdate(u64 flags) {
   callShadowCacheBaseUpdate(flags);
   callShadowCacheInstUpdate(flags);
+}
+
+void DrMdoCtlSeamAll::update() {
+  updateAlphaCall();
+  if (!calcBegin()) {
+    return;
+  }
+  calcFastUpdate();
+  if (callDeleteUpdate()) {
+    MdoArgSeamUpdate arg;
+    arg.unknown00 = m_drMan->unknown580->unknown10;
+    arg.unknown48 = m_drMan->unknown88->unknown008->unknown10;
+    arg.unknown08 = unknownbd0;
+    arg.unknown10 = unknown220.unknown20;
+    arg.unknown18 = unknownbe0;
+    arg.unknown20 = unknown1b0.unknown20;
+    arg.unknown28 = unknownbf0;
+    arg.unknown30 = unknown1e8.unknown20;
+    arg.unknown38 = reinterpret_cast<const MdsSeamOfsTexTblData *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown5c);
+    arg.unknown40 = unknownc7c;
+    arg.unknown50 = &unknown698;
+    arg.unknown58 = unknown410;
+    updateReadList();
+    updateTexutreSeam();
+    updateVertexSeam();
+    updateEnvMap();
+    updateBaseMap();
+    updateInstMap(arg);
+    updateMpfMap();
+    updateLowMap();
+    updateLight();
+    if (unknownc7c & 1) {
+      unknownf8 |= unknown028_20;
+    }
+    updateReadCall();
+    unknown14d0 = m_matrix;
+    unknown14d0.unknown002(unknown14d0, m_drMan->unknown580->unknown10->unknown200);
+    unknown1510 = m_matrix;
+    unknown1510.unknown002(unknown1510, m_drMan->unknown580->unknown10->unknown40);
+    m_drMan->unknown88->unknown230->unknown0c = true;
+  } else {
+    updateTexutreSeam();
+    updateVertexSeam();
+  }
+  if (((unknownc7c >> 12) & 1) == 0) {
+    unknownf8 |= unknown028_0;
+    DrMdlMan *mdlMan = m_drMan->unknown88;
+    mdlMan->unknown218->setViewSeamLast(unknown3f0);
+    mdlMan->unknown218->setViewLast(unknown3e8);
+    if (unknownf8 & unknown028_15) {
+      mdlMan->unknown230->unknown00 = true;
+    }
+    if (unknownf8 & unknown028_16) {
+      mdlMan->unknown230->unknown01 = true;
+    }
+    if (unknownf8 & unknown028_17) {
+      mdlMan->unknown230->unknown02 = true;
+    }
+    if (unknownf8 & unknown028_18) {
+      mdlMan->unknown230->unknown07 = true;
+    }
+    if (unknownf8 & unknown028_3) {
+      mdlMan->unknown230->unknown03 = true;
+    }
+    if (unknownf8 & unknown028_2) {
+      mdlMan->unknown230->unknown04 = true;
+    }
+    if (unknownf8 & unknown028_8) {
+      mdlMan->unknown230->unknown08 = true;
+    }
+    if (unknownf8 & unknown028_9) {
+      mdlMan->unknown230->unknown09 = true;
+    }
+  }
+  calcEnd();
 }
 
 bool DrMdoCtlSeamAll::callDeleteUpdate() {
@@ -146,6 +232,14 @@ void DrMdoCtlSeamAll::setMdlReadOff(bool isOff) {
 void DrMdoCtlSeamAll::debugRender() {}
 
 void DrMdoCtlSeamAll::setClearResource(bool isClear) {}
+
+void DrMdoCtlSeamAll::dispOffUpdate() {
+  updateAlphaCall();
+  if (calcBegin()) {
+    callDeleteUpdate();
+  }
+  calcEnd();
+}
 
 void DrMdoCtlSeamAll::noOffScreenUpdate() {
   unknownc16++;
@@ -326,6 +420,47 @@ void DrMdoCtlSeamAll::callRefractionRenderSeamEnvMap() {
   unknownf2 = 8;
   unknown001();
   DrMdoCtlSeamEnvMap::callRefractionRenderSeamEnvMap();
+}
+
+void DrMdoCtlSeamAll::shadowRender() {
+  if (((unknownc7c >> 28) & 1) != 0) {
+    return;
+  }
+  unknownf4 = 6;
+  unknownf2 = 0;
+  unknown001();
+  DrPixlShadowObj *shadow = m_drMan->unknown78->unknown848;
+  if (shadow->unknown198->isInstMapShadow()) {
+    callShadowMapRenderSeamInstMap(shadow);
+  }
+  if (shadow->unknown198->isBaseMapShadow()) {
+    callShadowMapRenderSeamBaseMap(shadow);
+  }
+}
+
+bool DrMdoCtlSeamAll::shadowCacheRender(DrPixlShadowCacheObj &cache) {
+  if ((unknownc90 & cache.unknown8e8) != 0 && (unknownc98 & cache.unknown8e8) != 0) {
+    return true;
+  }
+  if (((unknownc7c >> 28) & 1) != 0) {
+    return true;
+  }
+  unknownf4 = 6;
+  unknownf2 = 0;
+  unknown001();
+  mm::Mat44 matrix;
+  matrix.unknown009(m_matrix, cache.unknown850);
+  grlib::CGLibEtcUniformBlock uniform;
+  grlib::ShdMat44TransposeMat44(reinterpret_cast<f32 *>(uniform.getBuff()), matrix);
+  uniform.updateData(sizeof(mm::Mat44));
+  unknown170 = &uniform;
+  if (cache.unknown808 & 0x10) {
+    unknown168 |= 0x80;
+  }
+  callBaseShadowCacheRender(cache);
+  callInstShadowCacheRender(cache);
+  unknown168 &= ~0x80;
+  return true;
 }
 
 void DrMdoCtlSeamAll::shadowCacheAddRender(int index) {
