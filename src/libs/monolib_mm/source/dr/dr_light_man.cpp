@@ -7,6 +7,7 @@
 #include "dr/dr_shd_lgt_man.h"
 #include "dr/dr_shd_man.h"
 #include "ml/critical_section.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

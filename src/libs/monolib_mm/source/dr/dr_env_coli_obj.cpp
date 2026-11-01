@@ -9,6 +9,7 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 

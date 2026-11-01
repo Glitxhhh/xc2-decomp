@@ -2,6 +2,6 @@
 
 namespace ml {
 
-DrMdoCtlSeamRead::DrMdoCtlSeamRead(int viewNum) : DrMdoCtlSeam(viewNum) {}
+DrMdoCtlSeamRead::DrMdoCtlSeamRead(int viewNum) : DrMdoCtlSeamLight(viewNum) {}
 
 } // namespace ml

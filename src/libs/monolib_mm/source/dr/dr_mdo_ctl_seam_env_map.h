@@ -1,12 +1,12 @@
 #pragma once
 
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_mpf_map.h"
 
 namespace ml {
 
 class DrResMdoSeamWrkEnv;
 
-class DrMdoCtlSeamEnvMap : public DrMdoCtlSeam {
+class DrMdoCtlSeamEnvMap : public DrMdoCtlSeamMpfMap {
 public:
   DrMdoCtlSeamEnvMap(int viewNum);
   void releaseEnvMap();
@@ -16,6 +16,12 @@ public:
   void readEnvMapCheck();
   void updateEnvMapRenderList();
   void createEnvDisplayList(DrResMdoSeamWrkEnv *wrk);
+  void callRenderSeamEnvMap();
+  void callGBuffRenderSeamEnvMap();
+  void callLightPrePassRenderSeamEnvMap();
+  void callAlphaRenderSeamEnvMap();
+  void callSpAlphaRenderSeamEnvMap();
+  void callRefractionRenderSeamEnvMap();
 };
 
 } // namespace ml

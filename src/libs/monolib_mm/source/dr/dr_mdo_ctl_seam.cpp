@@ -152,3 +152,15 @@ void DrMdoCtlSeam::seamThicknessPassBegin(bool isFirst) {
 void DrMdoCtlSeam::seamThicknessPassEnd(bool value) {}
 
 } // namespace ml
+
+// The game builds these files in one unit with this one, in this order.
+// clang-format off
+#include "dr_mdo_ctl_seam_all.cpp"
+#include "dr_mdo_ctl_seam_base_map.cpp"
+#include "dr_mdo_ctl_seam_env_map.cpp"
+#include "dr_mdo_ctl_seam_inst_map.cpp"
+#include "dr_mdo_ctl_seam_light.cpp"
+#include "dr_mdo_ctl_seam_low_map.cpp"
+#include "dr_mdo_ctl_seam_mpf_map.cpp"
+#include "dr_mdo_ctl_seam_read.cpp"
+// clang-format on

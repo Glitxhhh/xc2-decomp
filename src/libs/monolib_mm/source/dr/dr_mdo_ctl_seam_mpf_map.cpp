@@ -1,6 +1,7 @@
 #include "dr/dr_mdo_ctl_seam_mpf_map.h"
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_pixl_tile_parm.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_mpf.h"
@@ -8,7 +9,7 @@
 namespace ml {
 class DrResMdoSeamMemObj;
 
-DrMdoCtlSeamMpfMap::DrMdoCtlSeamMpfMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+DrMdoCtlSeamMpfMap::DrMdoCtlSeamMpfMap(int viewNum) : DrMdoCtlSeamInstMap(viewNum) {}
 
 void DrMdoCtlSeamMpfMap::releaseMpfMap() {
   DrResMdoSeamWrkMpf *mpf = unknown338.unknown10.unknown00;

@@ -11,6 +11,7 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 #include "scn/scn_render_dr_sys.h"
 
 namespace mm {

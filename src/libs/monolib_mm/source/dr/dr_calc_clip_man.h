@@ -15,6 +15,7 @@ class DrCalcCpPlaneObj;
 class DrCalcClipMan {
 public:
   void update();
+  DrCalcClipObj *createClipObj(const void *data);
   bool testObjectClip(const mm::Vec3 &position, f32 radius);
   bool testPlaneClip(const mm::Vec3 &position, f32 radius);
 

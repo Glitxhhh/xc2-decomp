@@ -14,6 +14,7 @@
 #include "grlib/cglib_uni_base_utility.h"
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_vec4.h"
+#include "mm_mtl/fixed_array.h"
 #include "types.h"
 
 namespace ml {

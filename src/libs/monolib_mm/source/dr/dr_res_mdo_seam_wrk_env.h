@@ -1,17 +1,18 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_res_mdo_seam_res.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
 
 namespace ml {
 
-class DrResMdoSeamMemObj;
 struct MdoWrkMatRes;
 struct MdsSeamEnvMapHead;
 
-class DrResMdoSeamWrkEnv {
+class DrResMdoSeamWrkEnv : public unknown133<DrResMdoSeamWrkEnv> {
 public:
+  DrResMdoSeamWrkEnv();
   virtual ~DrResMdoSeamWrkEnv();
   void setDispState();
   u32 chkDispState();
@@ -22,8 +23,6 @@ public:
   void setInfo(const mm::Vec3 &position, const mm::Vec3 &scale, bool isEnable, u32 flags);
   void release();
 
-  DrResMdoSeamWrkEnv *unknown08;      // Inferred role: next object; original member name unknown.
-  DrResMdoSeamWrkEnv *unknown10;      // Inferred role: previous object; original member name unknown.
   const MdsSeamEnvMapHead *unknown18; // Inferred role: env map header; original member name unknown.
   u8 _20[0x28 - 0x20];
   void *unknown28; // Inferred role: allocated bit table; original member name unknown.

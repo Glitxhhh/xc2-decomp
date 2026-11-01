@@ -1,11 +1,11 @@
 #pragma once
 
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_base_map.h"
 
 namespace ml {
 class DrResMdoSeamWrkLow;
 
-class DrMdoCtlSeamLowMap : public DrMdoCtlSeam {
+class DrMdoCtlSeamLowMap : public DrMdoCtlSeamBaseMap {
 public:
   DrMdoCtlSeamLowMap(int viewNum);
   void releaseLowMap();
@@ -22,6 +22,7 @@ public:
   void callSpAlphaRenderSeamLowMap();
   void renderSeamLowMap(int renderType);
   void createLowDisplayList();
+  void createLowZPrePassDisplayList();
 };
 
 } // namespace ml

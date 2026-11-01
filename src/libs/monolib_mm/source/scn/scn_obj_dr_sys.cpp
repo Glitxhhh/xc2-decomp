@@ -14,6 +14,7 @@
 #include "ml/scn_obj_model.h"
 #include "ml/scn_pool_obj.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 #include "scn/scn_render_dr_sys.h"
 

@@ -6,7 +6,7 @@
 #include "dr/dr_mdo_ctl_mpf.h"
 #include "dr/dr_mdo_ctl_nom.h"
 #include "dr/dr_mdo_ctl_pos.h"
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_all.h"
 #include "dr/dr_mdo_grp_obj.h"
 
 namespace ml {

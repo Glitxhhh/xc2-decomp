@@ -29,6 +29,7 @@
 #include "grlib/cglib_uni_base_utility.h"
 #include "grlib/cglib_uniform_array.h"
 #include "mm_math/mm_col4.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

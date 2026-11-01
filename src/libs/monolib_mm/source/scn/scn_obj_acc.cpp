@@ -11,6 +11,7 @@
 #include "dr/dr_mdo_ctl_nom.h"
 #include "dr/dr_mdo_ctl_pos.h"
 #include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_all.h"
 #include "dr/dr_mdo_mat.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_res_etc_params.h"

@@ -6,6 +6,7 @@
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

@@ -1,12 +1,13 @@
 #include "dr/dr_mdo_ctl_seam_low_map.h"
 
+#include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_low.h"
 
 namespace ml {
 class DrResMdoSeamMemObj;
 
-DrMdoCtlSeamLowMap::DrMdoCtlSeamLowMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+DrMdoCtlSeamLowMap::DrMdoCtlSeamLowMap(int viewNum) : DrMdoCtlSeamBaseMap(viewNum) {}
 
 void DrMdoCtlSeamLowMap::releaseLowMap() {
   DrResMdoSeamWrkLow *low = unknown2c8.unknown10.unknown00;

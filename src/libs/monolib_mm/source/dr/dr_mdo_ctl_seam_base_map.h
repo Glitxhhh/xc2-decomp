@@ -25,6 +25,8 @@ public:
   void releaseFreeSeamBase(DrResMdoSeamWrkBase *base);
   DrResMdoSeamWrkBase *createFreeSeamBase();
   void callShadowCacheBaseUpdate(u64 flags);
+  void createBaseZPrePassDisplayList();
+  void createBaseThicknesPassDisplayList(bool isFirst);
 };
 
 } // namespace ml

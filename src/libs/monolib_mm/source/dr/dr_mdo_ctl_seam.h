@@ -28,7 +28,6 @@ class DrCalcClipObj;
 class DrCalcCpPlaneObj;
 class DrEnvColiObj;
 class DrEnvironmentObj;
-class DrMan;
 class DrGlobalIBLPack;
 class DrResEtcTexList;
 class DrResMdoInstMdlInfo;
@@ -90,6 +89,12 @@ struct unknown061 {
   u32 m_seamEtcPosDataMax;
   u8 _70[0x74 - 0x70];
   u32 m_seamMpfPosDataMax;
+  u8 _78[0x84 - 0x78];
+  u32 unknown84; // Inferred role: offset of the environment data; original member name unknown.
+  u8 _88[0xa8 - 0x88];
+  u32 unknowna8; // Inferred role: offset of the clip data; original member name unknown.
+  u8 _ac[0xe8 - 0xac];
+  u32 unknowne8; // Inferred role: offset of the cloud model data; original member name unknown.
 };
 
 static_assert(offsetof(unknown061, m_seamBaseMdlMax) == 0x18, "");
@@ -101,6 +106,29 @@ static_assert(offsetof(unknown061, m_seamTextureMax) == 0x58, "");
 static_assert(offsetof(unknown061, m_seamMpfMdlMax) == 0x64, "");
 static_assert(offsetof(unknown061, m_seamEtcPosDataMax) == 0x6c, "");
 static_assert(offsetof(unknown061, m_seamMpfPosDataMax) == 0x74, "");
+static_assert(offsetof(unknown061, unknown84) == 0x84, "");
+static_assert(offsetof(unknown061, unknowna8) == 0xa8, "");
+static_assert(offsetof(unknown061, unknowne8) == 0xe8, "");
+
+// Inferred role: global IBL entry of the seam data; original type name unknown.
+struct unknown096 {
+  u8 _00[0x08];
+  u32 unknown08; // Inferred role: offset of the IBL data from the list; original member name unknown.
+  u32 unknown0c; // Inferred role: size of the IBL data; original member name unknown.
+  u8 _10[0x28 - 0x10];
+};
+
+static_assert(offsetof(unknown096, unknown08) == 0x08, "");
+static_assert(offsetof(unknown096, unknown0c) == 0x0c, "");
+static_assert(sizeof(unknown096) == 0x28, "");
+
+// Inferred role: global IBL list of the seam data; original type name unknown.
+struct unknown097 {
+  s32 unknown00; // Inferred role: entry count; original member name unknown.
+  u32 unknown04; // Inferred role: offset of the entries; original member name unknown.
+};
+
+static_assert(offsetof(unknown097, unknown04) == 0x04, "");
 
 // Inferred role: doubly linked list of seam objects (unknown08 next, unknown10 prev); original type name unknown.
 template <typename T> struct unknown093 {
@@ -229,6 +257,7 @@ public:
   DrResMdoSeamMemObj *createFreeSeamMemObjBack4K(u32 size);
   DrResMdoSeamColi *createFreeSeamCollision();
   void setupSeamMapHead(const void *data, const char *path);
+  void releaseSeam();
   void resourceRelease();
 
   u8 _190[0x1a8 - 0x190];
@@ -261,7 +290,7 @@ public:
   u8 _660[0x698 - 0x660];
   DrResMdoInstAnmObj unknown698; // Inferred role: inst anm object; original member name unknown.
   unknown060 unknown6c8;         // Inferred role: etc pos list; original member name unknown.
-  const s32 *unknown6d8;         // Inferred role: etc pos data; original member name unknown.
+  const unknown097 *unknown6d8;  // Inferred role: global IBL list; original member name unknown.
   DrResMdoSeamMemMan unknown6e0; // Inferred role: seam memory manager; original member name unknown.
   u8 _b28[0xb30 - 0xb28];
   cloud::CloudMdlDataObj *unknownb30; // Inferred role: cloud model data; original member name unknown.
@@ -419,52 +448,5 @@ static_assert(offsetof(DrMdoCtlSeam, unknownc00) == 0xc00, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownc08) == 0xc08, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownc48) == 0xc48, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownc7c) == 0xc7c, "");
-
-class DrMdoCtlSeamAll : public DrMdoCtlSeam {
-public:
-  DrMdoCtlSeamAll(const void *data, const char *path, DrMan *man, int viewNum);
-  ~DrMdoCtlSeamAll() override;
-  void update() override;
-  void dispOffUpdate() override;
-  void noOffScreenUpdate() override;
-  void resourceInit() override;
-  void shadowRender() override;
-  bool shadowCacheRender(DrPixlShadowCacheObj &cache) override;
-  void shadowCacheAddRender(int index) override;
-  void callShadowCacheUpdate(u64 flags) override;
-  void occRender() override;
-  void setDeleteCall(int deleteCall) override;
-  virtual void debugRender();
-  void releaseSeamAll();
-  u32 getSeamBaseMdlMax() const;
-  u32 getSeamInstMdlMax() const;
-  u32 getSeamMpfMdlMax() const;
-  u32 getSeamTextureMax() const;
-  u32 getSeamVertexMax() const;
-  u32 getSeamEtcPosDataMax() const;
-  u32 getSeamMpfPosDataMax() const;
-  u32 getSeamColiMax() const;
-  u32 getSeamShaderMax() const;
-  void setSelectIdDisp(int id, bool isOff);
-  void setMdlReadOff(bool isOff);
-  bool isReadSafe() const;
-  bool isRenderSafe() const;
-  void setClearResource(bool isClear);
-  void callZPrePassSeamAll();
-  void callThicknessFirstSeamAll();
-  void callThicknessSecondSeamAll();
-  void callRenderSeamAll();
-  void callGBuffRenderSeamAll();
-  void callLightPrePassRenderSeamAll();
-  void callAlphaRenderSeamAll();
-  void callSpAlphaRenderSeamAll();
-  void callRefractionRenderSeamAll();
-  void callRenderSeamEnvMap();
-  void callGBuffRenderSeamEnvMap();
-  void callLightPrePassRenderSeamEnvMap();
-  void callAlphaRenderSeamEnvMap();
-  void callSpAlphaRenderSeamEnvMap();
-  void callRefractionRenderSeamEnvMap();
-};
 
 } // namespace ml

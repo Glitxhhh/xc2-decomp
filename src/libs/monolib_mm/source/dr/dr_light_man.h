@@ -29,6 +29,8 @@ public:
   f32 getSkyLuminance() const;
   void releaseAmbLight(DrLightObjAmb *light);
   void releaseDirLight(DrLightObjDir *light);
+  void releaseAllAmbLight();
+  void releaseAllDirLight();
   void releasePntLight(DrLightObjPnt *light);
   void releaseSptLight(DrLightObjSpt *light);
   DrLightObjPnt *createInstantPntLight();

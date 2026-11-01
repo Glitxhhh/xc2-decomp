@@ -25,6 +25,7 @@
 #include "dr/dr_pixl_toon_grad.h"
 #include "dr/dr_res_use_query_obj.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 
 namespace ml {

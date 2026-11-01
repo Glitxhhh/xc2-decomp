@@ -9,6 +9,7 @@
 #include "dr/dr_res_use_query_obj.h"
 #include "grlib/cglib_render_target.h"
 #include "mm_math/mm_math.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

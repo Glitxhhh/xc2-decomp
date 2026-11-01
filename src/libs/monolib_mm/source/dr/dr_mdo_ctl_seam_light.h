@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_env_map.h"
 #include "types.h"
 
 namespace mm {
@@ -10,7 +10,7 @@ struct Vec3;
 namespace ml {
 class DrResMdoSeamWrkLight;
 
-class DrMdoCtlSeamLight : public DrMdoCtlSeam {
+class DrMdoCtlSeamLight : public DrMdoCtlSeamEnvMap {
 public:
   DrMdoCtlSeamLight(int viewNum);
   void releaseLight();

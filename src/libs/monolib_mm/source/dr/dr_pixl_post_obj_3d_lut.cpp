@@ -14,6 +14,7 @@
 #include "grlib/cglib_render_volume.h"
 #include "grlib/cglib_shader.h"
 #include "grlib/cglib_uni_base_utility.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace grlib {
 class CGLibTextureBuffer;

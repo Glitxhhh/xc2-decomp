@@ -5,6 +5,8 @@
 
 namespace ml {
 
+DrResMdoSeamWrkEnv::DrResMdoSeamWrkEnv() : unknown28(nullptr), unknown38(), unknown48(), unknown58(nullptr), unknown60(nullptr), unknown6c(0), unknown70(0) {}
+
 DrResMdoSeamWrkEnv::~DrResMdoSeamWrkEnv() { release(); }
 
 void DrResMdoSeamWrkEnv::release() {

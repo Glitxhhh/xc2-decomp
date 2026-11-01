@@ -1,5 +1,6 @@
 #include "dr/dr_mdo_ctl_seam_light.h"
 
+#include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_light.h"
 #include "mm_math/mm_vec3.h"
@@ -7,7 +8,7 @@
 namespace ml {
 class DrResMdoSeamMemObj;
 
-DrMdoCtlSeamLight::DrMdoCtlSeamLight(int viewNum) : DrMdoCtlSeam(viewNum) {}
+DrMdoCtlSeamLight::DrMdoCtlSeamLight(int viewNum) : DrMdoCtlSeamEnvMap(viewNum) {}
 
 void DrMdoCtlSeamLight::releaseLight() {
   DrResMdoSeamWrkLight *light = unknown3a8.unknown10.unknown00;

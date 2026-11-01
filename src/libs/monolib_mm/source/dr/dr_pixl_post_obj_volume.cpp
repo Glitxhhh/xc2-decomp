@@ -4,6 +4,7 @@
 #include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "grlib/cglib_render_target.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

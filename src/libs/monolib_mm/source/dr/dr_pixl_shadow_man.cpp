@@ -6,6 +6,7 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_pixl_shadow_obj_dir.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

@@ -2,6 +2,7 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_parm.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_light.h"
 
 namespace ml {
 
-class DrMdoCtlSeamRead : public DrMdoCtlSeam {
+class DrMdoCtlSeamRead : public DrMdoCtlSeamLight {
 public:
   DrMdoCtlSeamRead(int viewNum);
 };

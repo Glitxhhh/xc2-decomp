@@ -6,6 +6,7 @@
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_render_target.h"
 #include "mm_math/mm_col4.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

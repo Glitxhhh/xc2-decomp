@@ -4,6 +4,7 @@
 #include "dr/dr_environment_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

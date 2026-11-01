@@ -3,6 +3,7 @@
 #include "dr/dr_env_coli_man.h"
 #include "dr/dr_environment_man.h"
 #include "dr/dr_man.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace ml {
 

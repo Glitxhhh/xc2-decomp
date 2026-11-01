@@ -1,11 +1,11 @@
 #pragma once
 
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_inst_map.h"
 
 namespace ml {
 class DrResMdoSeamWrkMpf;
 
-class DrMdoCtlSeamMpfMap : public DrMdoCtlSeam {
+class DrMdoCtlSeamMpfMap : public DrMdoCtlSeamInstMap {
 public:
   DrMdoCtlSeamMpfMap(int viewNum);
   void releaseMpfMap();
@@ -18,6 +18,7 @@ public:
   void renderMpfMapDisplayList();
   void createMpfMapDisplayList();
   void callRenderSeamMpfMap();
+  void createMpfZPrePassDisplayList();
 };
 
 } // namespace ml

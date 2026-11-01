@@ -1,13 +1,14 @@
 #include "dr/dr_mdo_ctl_seam_inst_map.h"
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 
 namespace ml {
 class DrResMdoSeamMemObj;
 
-DrMdoCtlSeamInstMap::DrMdoCtlSeamInstMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+DrMdoCtlSeamInstMap::DrMdoCtlSeamInstMap(int viewNum) : DrMdoCtlSeamLowMap(viewNum) {}
 
 void DrMdoCtlSeamInstMap::releaseInstMap() {
   DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00;

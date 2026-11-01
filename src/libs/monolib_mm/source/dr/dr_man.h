@@ -4,6 +4,7 @@
 #include "dr/dr_draw_work_info.h"
 #include "ml/work_background.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 #include "types.h"
 
@@ -191,20 +192,20 @@ public:
   mtl::ALLOC_HANDLE unknown10; // Inferred role: mem class; original member name unknown.
   mtl::ALLOC_HANDLE unknown14; // Inferred role: mem work; original member name unknown.
   u8 _0018[0x0070 - 0x0018];
-  DrIniSys *unknown70;        // Inferred role: ini sys; original member name unknown.
-  DrPixlMan *unknown78;       // Inferred role: pixl man; original member name unknown.
-  DrShdMan *unknown80;        // Inferred role: shd man; original member name unknown.
-  DrMdlMan *unknown88;        // Inferred role: mdl man; original member name unknown.
-  DrIrrVolMan *unknown90;     // Inferred role: irr vol man; original member name unknown.
-  DrResFilterData *unknown98; // Inferred role: filter data; original member name unknown.
-  DrCalcMan *unknowna0[4];    // Inferred role: calc mans; original member name unknown.
-  DrLightMan *unknownc0[4];   // Inferred role: light mans; original member name unknown.
-  u8 _00e0[0x0100 - 0x00e0];
-  DrEnvironmentMan *unknown100[4]; // Inferred role: environment mans; original member name unknown.
-  DrPixlPostParm *unknown120[4];   // Inferred role: post parms; original member name unknown.
+  DrIniSys *unknown70;                                   // Inferred role: ini sys; original member name unknown.
+  DrPixlMan *unknown78;                                  // Inferred role: pixl man; original member name unknown.
+  DrShdMan *unknown80;                                   // Inferred role: shd man; original member name unknown.
+  DrMdlMan *unknown88;                                   // Inferred role: mdl man; original member name unknown.
+  DrIrrVolMan *unknown90;                                // Inferred role: irr vol man; original member name unknown.
+  DrResFilterData *unknown98;                            // Inferred role: filter data; original member name unknown.
+  mm::mtl::FixedArray<DrCalcMan *, 4> unknowna0;         // Inferred role: calc mans; original member name unknown.
+  mm::mtl::FixedArray<DrLightMan *, 4> unknownc0;        // Inferred role: light mans; original member name unknown.
+  mm::mtl::FixedArray<DrFogMan *, 4> unknowne0;          // Inferred role: fog mans; original member name unknown.
+  mm::mtl::FixedArray<DrEnvironmentMan *, 4> unknown100; // Inferred role: environment mans; original member name unknown.
+  mm::mtl::FixedArray<DrPixlPostParm *, 4> unknown120;   // Inferred role: post parms; original member name unknown.
   u8 _0140[0x0160 - 0x0140];
-  DrGlobalIBLMan *unknown160[4]; // Inferred role: global ibl mans; original member name unknown.
-  DrPixlTileParm *unknown180;    // Inferred role: tile parm; original member name unknown.
+  mm::mtl::FixedArray<DrGlobalIBLMan *, 4> unknown160; // Inferred role: global ibl mans; original member name unknown.
+  DrPixlTileParm *unknown180;                          // Inferred role: tile parm; original member name unknown.
   u8 _0188[0x0190 - 0x0188];
   DR_VIEW_PARAM unknown190[2][4]; // Inferred role: additional render system view params; original member name unknown.
   s32 unknown350[2];              // Inferred role: additional render system counts; original member name unknown.
@@ -264,7 +265,8 @@ public:
   mm::Vec3 unknown1d30[2]; // Inferred role: global winds; original member name unknown.
   u8 _1d50[0x1d60 - 0x1d50];
   bool unknown1d60; // Inferred role: chara disp off; original member name unknown.
-  u8 _1d61[0x1d63 - 0x1d61];
+  bool unknown1d61; // Inferred role: seam render skip; original member name unknown.
+  u8 _1d62;
   bool unknown1d63; // Inferred role: model render skip; original member name unknown.
   bool unknown1d64; // Inferred role: light pre pass and GBuff render skip; original member name unknown.
   bool unknown1d65; // Inferred role: refraction render skip; original member name unknown.
@@ -316,6 +318,7 @@ static_assert(offsetof(DrMan, unknown90) == 0x0090, "");
 static_assert(offsetof(DrMan, unknown98) == 0x0098, "");
 static_assert(offsetof(DrMan, unknowna0) == 0x00a0, "");
 static_assert(offsetof(DrMan, unknownc0) == 0x00c0, "");
+static_assert(offsetof(DrMan, unknowne0) == 0x00e0, "");
 static_assert(offsetof(DrMan, unknown100) == 0x0100, "");
 static_assert(offsetof(DrMan, unknown120) == 0x0120, "");
 static_assert(offsetof(DrMan, unknown160) == 0x0160, "");
@@ -364,6 +367,7 @@ static_assert(offsetof(DrMan, unknown1d20) == 0x1d20, "");
 static_assert(offsetof(DrMan, unknown1d28) == 0x1d28, "");
 static_assert(offsetof(DrMan, unknown1d30) == 0x1d30, "");
 static_assert(offsetof(DrMan, unknown1d60) == 0x1d60, "");
+static_assert(offsetof(DrMan, unknown1d61) == 0x1d61, "");
 static_assert(offsetof(DrMan, unknown1d63) == 0x1d63, "");
 static_assert(offsetof(DrMan, unknown1d64) == 0x1d64, "");
 static_assert(offsetof(DrMan, unknown1d65) == 0x1d65, "");

@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_res_mdo_seam_res.h"
 #include "types.h"
 
 namespace grlib {
@@ -14,7 +15,6 @@ class DrMdoCtlMpfInst;
 class DrMdoCtlMpfWork;
 class DrMdoCtlSeamMpfMap;
 class DrMdoMpfMan;
-class DrResMdoSeamMemObj;
 class DrResMdoSeamWrkPosMpf;
 struct MdoWrkMatRes;
 struct MdsMpfObjData;
@@ -33,7 +33,7 @@ static_assert(offsetof(MdsSeamMpfMapHead, unknown08) == 0x08, "");
 static_assert(offsetof(MdsSeamMpfMapHead, unknown1c) == 0x1c, "");
 static_assert(offsetof(MdsSeamMpfMapHead, unknown20) == 0x20, "");
 
-class DrResMdoSeamWrkMpf {
+class DrResMdoSeamWrkMpf : public unknown133<DrResMdoSeamWrkMpf> {
 public:
   // Inferred role: mpf data header; original type name unknown.
   struct unknown001 {
@@ -62,6 +62,7 @@ public:
     u8 _04[0x14 - 0x04];
   };
 
+  DrResMdoSeamWrkMpf();
   virtual ~DrResMdoSeamWrkMpf();
   void release();
   void changeMemCall();
@@ -73,8 +74,6 @@ public:
   void setMpfPoliCache(int id, DrResMdoSeamMemObj *memObj);
   void setupMpfPoliWork(int index);
 
-  DrResMdoSeamWrkMpf *unknown08; // Inferred role: next object; original member name unknown.
-  DrResMdoSeamWrkMpf *unknown10; // Inferred role: previous object; original member name unknown.
   DrResMdoSeamMemObj *unknown18; // Inferred role: memory object; original member name unknown.
   DrMdoMpfMan *unknown20;        // Inferred role: mpf manager; original member name unknown.
   u8 _28[0x30 - 0x28];

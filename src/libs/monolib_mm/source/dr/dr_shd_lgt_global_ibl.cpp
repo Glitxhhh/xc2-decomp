@@ -5,6 +5,7 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/shd_util.h"
+#include "mm_mtl/fixed_array.h"
 #include "types.h"
 
 namespace ml {

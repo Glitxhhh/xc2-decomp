@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_ctl_seam_low_map.h"
 #include "types.h"
 
 namespace grlib {
@@ -15,7 +15,7 @@ struct MdoArgSeamUpdate;
 struct _MdoInstanceWork;
 struct MdoWrkMatRes;
 
-class DrMdoCtlSeamInstMap : public DrMdoCtlSeam {
+class DrMdoCtlSeamInstMap : public DrMdoCtlSeamLowMap {
 public:
   DrMdoCtlSeamInstMap(int viewNum);
   void releaseInstMap();
@@ -37,6 +37,9 @@ public:
   void endResAll();
   void callShadowCacheInstUpdate(u64 flags);
   void occInstRender();
+  void createInstZPrePassDisplayList();
+  void createInstThicknessPassDisplayList(bool isFirst);
+  void callInstShadowCacheAddRender(int index);
 };
 
 } // namespace ml
