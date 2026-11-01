@@ -24,9 +24,18 @@ struct unknown007 {
   s32 unknown28; // Inferred role: frame param count; original member name unknown.
 };
 
+// Inferred layout of the animicon action command header, followed by its u16 icon numbers; original type and member names unknown.
+struct unknown024 {
+  u8 _00[0x02];
+  u16 unknown02; // Inferred role: icon count; original member name unknown.
+  f32 unknown04; // Inferred role: end sec; original member name unknown.
+  f32 unknown08; // Inferred role: icons per sec; original member name unknown.
+};
+
 static_assert(offsetof(unknown007, unknown28) == 0x28, "");
 static_assert(offsetof(unknown004, unknown02) == 0x02, "");
 static_assert(offsetof(unknown006, unknown06) == 0x06, "");
+static_assert(sizeof(unknown024) == 0x0c, "");
 
 } // namespace
 
@@ -49,6 +58,21 @@ bool LayerActDef::actcmd_iconnum(const u8 *&cmd) {
   unknown2a4 = reinterpret_cast<const unknown004 *>(cmd)->unknown02;
   cmd += 4;
   return false;
+}
+
+bool LayerActDef::actcmd_animicon(const u8 *&cmd) {
+  const unknown024 *data = reinterpret_cast<const unknown024 *>(cmd);
+  const u16 *icons = reinterpret_cast<const u16 *>(data + 1);
+  bool result;
+  if (data->unknown04 <= unknown250->unknown14) {
+    unknown2a4 = icons[data->unknown02 - 1];
+    result = false;
+  } else {
+    unknown2a4 = icons[static_cast<u32>(unknown250->unknown14 * data->unknown08)];
+    result = true;
+  }
+  cmd = cmd + sizeof(unknown024) + data->unknown02 * sizeof(u16);
+  return result;
 }
 
 bool LayerActDef::actcmd_animdef(const u8 *&cmd) {

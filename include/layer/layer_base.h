@@ -28,6 +28,8 @@ public:
 
   // Inferred layout of a list of objects linked through unknown08 and unknown10; original type name unknown.
   struct unknown001 {
+    unknown001() : unknown00(nullptr), unknown08(nullptr), unknown10(0) {}
+
     void unknown002(LayerBase *node) {
       if (unknown08 == nullptr) {
         unknown00 = node;

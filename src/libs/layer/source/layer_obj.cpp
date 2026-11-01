@@ -1,5 +1,6 @@
 #include "layer/layer_obj.h"
 
+#include <math.h>
 #include <string.h>
 
 #include "grlib/cglib_dbl_uniform_block.h"
@@ -38,6 +39,14 @@ const LayerResColor *getColorParm(const LayerObj *layer, u32 flag) {
 
   return &layer->unknownc8[2].unknown1c;
 }
+
+// Inferred layout of an action command header, followed by its f32 parameters; original type and member names unknown.
+struct unknown020 {
+  u16 unknown00; // Inferred role: command type; original member name unknown.
+  u16 unknown02; // Inferred role: argument; original member name unknown.
+};
+
+static_assert(sizeof(unknown020) == 0x04, "");
 
 } // namespace
 
@@ -645,6 +654,39 @@ void LayerActBase::actionEnd() { onStateFlags(0x20000); }
 bool LayerActBase::actcmd_no(const u8 *&cmd) {
   cmd += 4;
   return false;
+}
+
+bool LayerActBase::actcmd_rot(const u8 *&cmd) {
+  bool result = true;
+  if (unknown250->unknown18 != 0.0f) {
+    const f32 *parm = reinterpret_cast<const f32 *>(reinterpret_cast<const unknown020 *>(cmd) + 1);
+    f32 rot;
+    if (parm[1] <= unknown250->unknown14) {
+      rot = parm[0];
+      result = false;
+    } else {
+      f32 rate = 1.0f / ((parm[1] - unknown250->unknown14) * unknown250->unknown1c);
+      if (rate > 1.0f) {
+        rate = 1.0f;
+      }
+      rot = unknownc8[2].unknown00.unknown08 + (parm[0] - unknownc8[2].unknown00.unknown08) * rate;
+    }
+    setInitRot(rot);
+  }
+  cmd += sizeof(unknown020) + 2 * sizeof(f32);
+  return result;
+}
+
+bool LayerActBase::actcmd_numrot(const u8 *&cmd) {
+  bool result = true;
+  f32 delta = unknown250->unknown18;
+  if (delta != 0.0f) {
+    const f32 *parm = reinterpret_cast<const f32 *>(reinterpret_cast<const unknown020 *>(cmd) + 1);
+    result = !(parm[1] <= unknown250->unknown14);
+    setInitRot(fmodf(unknownc8[2].unknown00.unknown08 + delta * parm[0], 6.2831855f));
+  }
+  cmd += sizeof(unknown020) + 2 * sizeof(f32);
+  return result;
 }
 
 bool LayerActBase::actcmd_priority(const u8 *&cmd) {

@@ -60,14 +60,15 @@ public:
   static ml::CriticalSection &getCriticalSection();
 
   const ml::IDrDrawWorkInfo *unknown00; // Inferred role: work info; original member name unknown.
-  u8 _08[0x10 - 0x08];
-  LayerSortMan *unknown10;            // Inferred role: sort man; original member name unknown.
-  LayerBase::unknown001 unknown18;    // Inferred role: active objects; original member name unknown.
-  LayerBase::unknown001 unknown30[2]; // Inferred role: objects to add per buffer; original member name unknown.
-  LayerBase::unknown001 unknown60;    // Inferred role: objects to delete; original member name unknown.
-  LayerRenderView unknown78;          // Inferred role: render view passed to the objects; original member name unknown.
+  LayerManager *unknown08;              // Inferred role: layer manager; original member name unknown.
+  LayerSortMan *unknown10;              // Inferred role: sort man; original member name unknown.
+  LayerBase::unknown001 unknown18;      // Inferred role: active objects; original member name unknown.
+  LayerBase::unknown001 unknown30[2];   // Inferred role: objects to add per buffer; original member name unknown.
+  LayerBase::unknown001 unknown60;      // Inferred role: objects to delete; original member name unknown.
+  LayerRenderView unknown78;            // Inferred role: render view passed to the objects; original member name unknown.
 };
 
+static_assert(offsetof(LayerObjManager, unknown08) == 0x08, "");
 static_assert(offsetof(LayerObjManager, unknown10) == 0x10, "");
 static_assert(offsetof(LayerObjManager, unknown18) == 0x18, "");
 static_assert(offsetof(LayerObjManager, unknown30) == 0x30, "");

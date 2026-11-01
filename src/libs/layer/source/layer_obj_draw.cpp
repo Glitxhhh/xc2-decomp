@@ -6,6 +6,13 @@
 
 namespace layer {
 
+namespace {
+
+// Inferred role: sampler type of each draw entry sampler index from 1; original name unknown.
+const u32 unknown025[] = {3, 7, 8};
+
+} // namespace
+
 LayerObjDraw::LayerObjDraw() {}
 
 void LayerObjDraw::renderMesh(grlib::CGLibDblUniformBlock *uniform, const LyrMeshData *mesh) {
@@ -56,6 +63,50 @@ void LayerObjDraw::draw_call_res_tex(grlib::CGLibDblUniformBlock *uniform, const
   shader->unknown4f0 = 1;
   shader->setupShader(uniform);
   shader->setupTexture(*unknown280[*reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2)], static_cast<LayerSamplerType>(unknownc6), 0);
+  unknown270->render(draw->unknown06);
+}
+
+void LayerObjDraw::draw_call_win_def(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
+  LayerShdManager *shader = LayerManager::get()->unknown58;
+  shader->setupVertex(unknown270, draw->unknown04);
+  shader->unknown4f0 = 3;
+  shader->setupShader(uniform);
+  LayerSamplerType sampler;
+  if (draw->unknown0f != 0) {
+    sampler = static_cast<LayerSamplerType>(unknown025[draw->unknown0f - 1]);
+  } else {
+    sampler = static_cast<LayerSamplerType>(unknownc6);
+  }
+  u8 count = draw->unknown0c;
+  if (count != 0) {
+    const u16 *textures = reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2);
+    for (u32 i = 0; i != count; i++) {
+      shader->setupTexture(*unknown280[*textures], sampler, i);
+      textures += 3;
+    }
+  }
+  unknown270->render(draw->unknown06);
+}
+
+void LayerObjDraw::draw_call_win_tex(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
+  LayerShdManager *shader = LayerManager::get()->unknown58;
+  shader->setupVertex(unknown270, draw->unknown04);
+  shader->unknown4f0 = 3;
+  shader->setupShader(uniform);
+  LayerSamplerType sampler;
+  if (draw->unknown0f != 0) {
+    sampler = static_cast<LayerSamplerType>(unknown025[draw->unknown0f - 1]);
+  } else {
+    sampler = static_cast<LayerSamplerType>(unknownc6);
+  }
+  u8 count = draw->unknown0c;
+  if (count != 0) {
+    const u16 *textures = reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2);
+    for (u32 i = 0; i != count; i++) {
+      shader->setupTexture(*unknown280[*textures], sampler, i);
+      textures += 3;
+    }
+  }
   unknown270->render(draw->unknown06);
 }
 

@@ -21,6 +21,17 @@ LayerAnimeObj::LayerAnimeObj(int count) : unknown10(nullptr), unknown18(0), unkn
   unknown06 = 0;
 }
 
+LayerAnimeObj::~LayerAnimeObj() {
+  unknown18 = 0;
+  if (unknown20.isValid() && unknown10 != nullptr) {
+    mtl::MemManager::deallocate(unknown10, 0, false);
+    unknown10 = nullptr;
+  }
+  unknown1c = 0;
+  unknown10 = nullptr;
+  unknown20 = mtl::ALLOC_HANDLE();
+}
+
 LayerAnimeObj *LayerAnimeObj::createAnimObj(int id) { return new (LayerManager::get()->unknown28) LayerAnimeObj(id); }
 
 void LayerAnimeObj::release() { unknown06 |= 0x8000; }

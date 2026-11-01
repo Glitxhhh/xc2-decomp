@@ -2,6 +2,9 @@
 
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_vtx_one_instans.h"
+#include "layer/layer_acc_font_obj.h"
+#include "layer/layer_font_draw_buffer.h"
+#include "layer/layer_font_style_obj.h"
 #include "layer/layer_manager.h"
 #include "mtl/mem_manager.h"
 
@@ -58,11 +61,51 @@ void LayerObjFont::workRelease() {
   }
 }
 
+void LayerObjFont::setMsg(const u8 *text, const LayerFontResObj *res, const LayerFontStyleObj *style, const LayerFontIconObj *icon, u32 flags) {
+  if (unknown258[LayerManager::s_nStkIdx] != nullptr) {
+    workPartsRelease(unknown258[LayerManager::s_nStkIdx]);
+  }
+  unknown278 = res;
+  unknown280 = style;
+  unknown298 = flags;
+  unknown288 = icon;
+  LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(unknown2b4), this);
+  buffer.unknown4a0 = unknown2a8;
+  buffer.unknown4a4 = unknown2ac;
+  unknown258[LayerManager::s_nStkIdx] = buffer.createChar(text);
+}
+
+void LayerObjFont::setMsg(const wchar_t *text, const LayerFontResObj *res, const LayerFontStyleObj *style, const LayerFontIconObj *icon, u32 flags) {
+  if (unknown258[LayerManager::s_nStkIdx] != nullptr) {
+    workPartsRelease(unknown258[LayerManager::s_nStkIdx]);
+  }
+  unknown278 = res;
+  unknown280 = style;
+  unknown298 = flags;
+  unknown288 = icon;
+  LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(unknown2b4), this);
+  buffer.unknown4a0 = unknown2a8;
+  buffer.unknown4a4 = unknown2ac;
+  unknown258[LayerManager::s_nStkIdx] = buffer.createChar(text);
+}
+
 bool LayerObjFont::isMsg(const LayerResFontInfo *info, const u8 *msg) const {
   u32 length = info->unknown18;
   u32 i = 0;
   while (i < length && msg[i] != 0) {
     if (info->unknown10[i] != msg[i]) {
+      return false;
+    }
+    i++;
+  }
+  return i >= length && msg[i] == 0;
+}
+
+bool LayerObjFont::isMsg(const LayerResFontInfo *info, const wchar_t *msg) const {
+  u32 length = info->unknown18;
+  u32 i = 0;
+  while (i < length && msg[i] != 0) {
+    if (info->unknown10[i] != reinterpret_cast<const u8 *>(msg)[i]) {
       return false;
     }
     i++;

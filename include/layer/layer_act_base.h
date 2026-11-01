@@ -60,6 +60,8 @@ public:
   void actionIdx(u32 index);
   void actionEnd();
   bool actcmd_no(const u8 *&cmd);
+  bool actcmd_rot(const u8 *&cmd);
+  bool actcmd_numrot(const u8 *&cmd);
   bool actcmd_priority(const u8 *&cmd);
   bool actcmd_wait(const u8 *&cmd);
   bool actcmd_ctrlspd(const u8 *&cmd);

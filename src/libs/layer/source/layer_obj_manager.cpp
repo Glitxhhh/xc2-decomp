@@ -185,6 +185,18 @@ void LayerObjManager::allRelease() {
   unknown60.unknown003();
 }
 
+LayerObjManager::LayerObjManager(LayerManager *manager) {
+  unknown08 = manager;
+  unknown10 = nullptr;
+  unknown18.unknown10 = 0;
+  unknown60.unknown10 = 0;
+  unknown18.unknown00 = nullptr;
+  unknown18.unknown08 = nullptr;
+  unknown60.unknown00 = nullptr;
+  unknown60.unknown08 = nullptr;
+  unknown10 = new (manager->unknown28) LayerSortMan(unknown08, 0x200, 0x100);
+}
+
 LayerObjManager::~LayerObjManager() {
   allRelease();
   if (unknown10 != nullptr) {

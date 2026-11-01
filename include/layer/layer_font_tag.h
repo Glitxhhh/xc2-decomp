@@ -38,6 +38,7 @@ public:
   void createWork(const wchar_t *string);
   void beginParseString() override;
   void parseNotTag(const u8 *string, u32 &index) override;
+  void parseNotTag(const wchar_t *string, u32 &index) override;
   void calcTagColorEnd();
   void calcTagWide();
 

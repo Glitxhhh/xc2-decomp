@@ -50,6 +50,7 @@ public:
   void workPartsRelease(LayerResFontInfo *&info);
   void workRelease();
   bool isMsg(const LayerResFontInfo *info, const u8 *msg) const;
+  bool isMsg(const LayerResFontInfo *info, const wchar_t *msg) const;
   void updateAddDel();
   void updateShaderParms(const LayerRenderView *view, const LayerResMatrix &matrix, const LayerResColor &color);
   void setMsg(const u8 *text, const LayerFontResObj *res, const LayerFontStyleObj *style, const LayerFontIconObj *icon, u32 flags);
