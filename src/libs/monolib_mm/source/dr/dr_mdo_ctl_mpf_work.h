@@ -1,6 +1,8 @@
 #pragma once
 #include <stddef.h>
 
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_vec3.h"
 #include "types.h"
 
 namespace grlib {
@@ -46,5 +48,22 @@ static_assert(sizeof(DrMdoCtlMpfWork::unknown001) == 0x40, "");
 static_assert(offsetof(DrMdoCtlMpfWork::unknown001, unknown20) == 0x20, "");
 static_assert(offsetof(DrMdoCtlMpfWork, unknown20) == 0x20, "");
 static_assert(offsetof(DrMdoCtlMpfWork, unknown38) == 0x38, "");
+
+// Name from the symbols (DrMdoCtlMpfWindCalc::init, calcUpdate); layout from init and DrMdoMpfMan's ctor (0xf0 byte stride).
+class DrMdoCtlMpfWindCalc {
+public:
+  void init();
+
+  mm::Vec3 unknown00[3]; // Inferred role: joint positions; original member name unknown.
+  mm::Vec3 unknown30[3]; // Inferred role: joint velocities; original member name unknown.
+  mm::Vec3 unknown60;    // Inferred role: wind direction; original member name unknown.
+  mm::Mat44 unknown70;   // Inferred role: matrix; original member name unknown.
+  mm::Mat44 unknownb0;   // Inferred role: matrix; original member name unknown.
+};
+
+static_assert(offsetof(DrMdoCtlMpfWindCalc, unknown60) == 0x60, "");
+static_assert(offsetof(DrMdoCtlMpfWindCalc, unknown70) == 0x70, "");
+static_assert(offsetof(DrMdoCtlMpfWindCalc, unknownb0) == 0xb0, "");
+static_assert(sizeof(DrMdoCtlMpfWindCalc) == 0xf0, "");
 
 } // namespace ml

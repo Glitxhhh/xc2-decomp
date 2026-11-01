@@ -15,6 +15,12 @@ WinProc::~WinProc() {}
 
 bool WinProc::wkStandbyLogin() { return WorkObj::wkStandbyLogin(); }
 
+bool WinProc::wkStandbyLogout() {
+  pssDetachView();
+  WinViewRoot::destroyProc(this);
+  return WorkObj::wkStandbyLogout();
+}
+
 bool WinProc::pssAttachView(WinView *view) {
   view->attachRenderWork(this);
   u32 wid = view->unknown50;

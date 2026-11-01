@@ -17,7 +17,9 @@ public:
   bool wkStandbyLogout() override;
 
   static WinProc *pssGetRoot(WinProc *proc);
+  WinView *pssCreateView(const char *name, WorkObj *parent, s16 childNum);
   bool pssAttachView(WinView *view);
+  bool pssDetachView();
   WorkObj *pssGetParentView();
   WinView *pssGetView(u32 wid);
   const WinView *pssGetView(u32 wid) const;

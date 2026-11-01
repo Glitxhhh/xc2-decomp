@@ -7,6 +7,7 @@
 #include "ml/threadval.h"
 #include "ml/win_view_frame.h"
 #include "ml/work_obj.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "types.h"
@@ -36,6 +37,7 @@ public:
   };
 
   static WinView *getView(bool isResetShadow);
+  void setTitle(const char *title);
   void attachWorkEvent(IWorkEvent *event, bool isFront);
   const mm::Pnt<int> &getFramePos(bool isBack) const;
   void addFramePos(const mm::Pnt<int> &pos);
@@ -76,8 +78,10 @@ public:
   u32 unknown3b8;          // Inferred role: state flags; original member name unknown.
   u32 unknown3bc;          // Inferred role: frame flags; original member name unknown.
   MsgParam<10> unknown3c0; // Inferred role: event messages; original member name unknown.
-  u8 _4d0[0x524 - 0x4d0];
-  f32 unknown524; // Inferred role: transparency; original member name unknown.
+  u8 _4d0[0x514 - 0x4d0];
+  mm::Col4 unknown514; // Inferred role: back color, scaled by the transparency for the clear color; original member name unknown.
+  f32 unknown524;      // Inferred role: transparency; original member name unknown.
+  s32 unknown528;      // Inferred role: sort priority among the child views; original member name unknown.
 };
 
 static_assert(sizeof(WinView::RENDER_INFO) == 0xb0, "");
@@ -88,6 +92,8 @@ static_assert(offsetof(WinView, unknown1b8) == 0x1b8, "");
 static_assert(offsetof(WinView, unknown338) == 0x338, "");
 static_assert(offsetof(WinView, unknown3b8) == 0x3b8, "");
 static_assert(offsetof(WinView, unknown3c0) == 0x3c0, "");
+static_assert(offsetof(WinView, unknown514) == 0x514, "");
 static_assert(offsetof(WinView, unknown524) == 0x524, "");
+static_assert(offsetof(WinView, unknown528) == 0x528, "");
 
 } // namespace ml

@@ -29,6 +29,8 @@ public:
   static bool isSimpleCost();
   static void setScreenLog(bool isScreenLog);
   static bool isDispScreenLog();
+  static void executeApp(const char *name);
+  static void executeSelectApp();
   static f32 setUpdateSec(f32 sec);
   static f32 setUpdateRatio(f32 ratio);
   static f32 getUpdateSec();
@@ -77,13 +79,15 @@ public:
   u8 _250[0x25c - 0x250];
   f32 unknown25c; // Inferred role: update ratio; original member name unknown.
   f32 unknown260; // Inferred role: request update ratio; original member name unknown.
-  u8 _264[0x274 - 0x264];
+  u8 _264[0x270 - 0x264];
+  s32 unknown270;  // Inferred role: login step counter; original member name unknown.
   bool unknown274; // Inferred role: delete app; original member name unknown.
 };
 
 static_assert(offsetof(ProcDesktop, unknown1f8) == 0x1f8, "");
 static_assert(offsetof(ProcDesktop, unknown210) == 0x210, "");
 static_assert(offsetof(ProcDesktop, unknown248) == 0x248, "");
+static_assert(offsetof(ProcDesktop, unknown270) == 0x270, "");
 static_assert(offsetof(ProcDesktop, unknown25c) == 0x25c, "");
 static_assert(offsetof(ProcDesktop, unknown274) == 0x274, "");
 
