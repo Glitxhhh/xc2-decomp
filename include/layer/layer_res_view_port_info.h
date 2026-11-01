@@ -1,8 +1,8 @@
 #pragma once
 #include <stddef.h>
 
+#include "layer/layer_view_port.h"
 #include "mm_math/mm_col4.h"
-#include "mm_math/mm_rect.h"
 #include "types.h"
 
 namespace grlib {
@@ -13,7 +13,7 @@ class CGLibRenderTarget;
 namespace layer {
 
 struct LayerResViewPortInfo {
-  mm::Rect<f32> unknown00;                // Inferred role: view port; original member name unknown.
+  LayerViewPort unknown00;                // Inferred role: view port; original member name unknown.
   grlib::CGLibRenderTarget *unknown10;    // Inferred role: render target; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown18; // Inferred role: view port uniform; original member name unknown.
   mm::Col4 unknown20;                     // Inferred role: clear color; original member name unknown.

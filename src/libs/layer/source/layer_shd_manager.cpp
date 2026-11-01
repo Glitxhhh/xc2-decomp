@@ -17,12 +17,89 @@
 #include "layer/layer_obj_top_mask_obj.h"
 #include "layer/layer_res_sec_texture.h"
 #include "layer/layer_res_view_port_info.h"
+#include "layer/layer_texture_obj.h"
 #include "layer/layer_vertex_obj.h"
 #include "ml/dev_file_th.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace layer {
+namespace {
+
+// Inferred role: colored vertex of the default vertex buffers; original type name unknown.
+struct unknown006 {
+  f32 unknown00; // Inferred role: x; original member name unknown.
+  f32 unknown04; // Inferred role: y; original member name unknown.
+  u32 unknown08; // Inferred role: color; original member name unknown.
+};
+
+static_assert(sizeof(unknown006) == 0x0c, "");
+
+// Inferred role: colored and textured vertex of the default vertex buffers; original type name unknown.
+struct unknown007 {
+  f32 unknown00; // Inferred role: x; original member name unknown.
+  f32 unknown04; // Inferred role: y; original member name unknown.
+  u32 unknown08; // Inferred role: color; original member name unknown.
+  f32 unknown0c; // Inferred role: u; original member name unknown.
+  f32 unknown10; // Inferred role: v; original member name unknown.
+};
+
+static_assert(sizeof(unknown007) == 0x14, "");
+
+// Inferred role: textured vertex of the default vertex buffers; original type name unknown.
+struct unknown008 {
+  f32 unknown00; // Inferred role: x; original member name unknown.
+  f32 unknown04; // Inferred role: y; original member name unknown.
+  f32 unknown08; // Inferred role: u; original member name unknown.
+  f32 unknown0c; // Inferred role: v; original member name unknown.
+};
+
+static_assert(sizeof(unknown008) == 0x10, "");
+
+// Inferred role: unit quad with a color; original name unknown.
+const unknown006 unknown009[4] = {
+    {0.0f, 1.0f, 0xffffffff},
+    {1.0f, 1.0f, 0xffffffff},
+    {1.0f, 0.0f, 0xffffffff},
+    {0.0f, 0.0f, 0xffffffff},
+};
+
+// Inferred role: unit quad with a color and texture coordinates; original name unknown.
+const unknown007 unknown010[4] = {
+    {0.0f, 1.0f, 0xffffffff, 0.0f, 1.0f},
+    {1.0f, 1.0f, 0xffffffff, 1.0f, 1.0f},
+    {1.0f, 0.0f, 0xffffffff, 1.0f, 0.0f},
+    {0.0f, 0.0f, 0xffffffff, 0.0f, 0.0f},
+};
+
+// Inferred role: unit quad with texture coordinates; original name unknown.
+const unknown008 unknown011[4] = {
+    {0.0f, 1.0f, 0.0f, 1.0f},
+    {1.0f, 1.0f, 1.0f, 1.0f},
+    {1.0f, 0.0f, 1.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
+};
+
+// Inferred role: full screen quad with texture coordinates; original name unknown.
+const unknown008 unknown012[4] = {
+    {-1.0f, -1.0f, 0.0f, 1.0f},
+    {1.0f, -1.0f, 1.0f, 1.0f},
+    {1.0f, 1.0f, 1.0f, 0.0f},
+    {-1.0f, 1.0f, 0.0f, 0.0f},
+};
+
+// Inferred role: second unit quad with texture coordinates; original name unknown.
+const unknown008 unknown013[4] = {
+    {0.0f, 1.0f, 0.0f, 1.0f},
+    {1.0f, 1.0f, 1.0f, 1.0f},
+    {1.0f, 0.0f, 1.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
+};
+
+// Inferred role: quad indices, closed for the line quads; original name unknown.
+const u8 unknown014[5] = {0, 1, 2, 3, 0};
+
+} // namespace
 
 grlib::CGLibDecShader *LayerShdManager::setupShader() { return (this->*s_CallSelect[unknown4f0])(); }
 
@@ -314,6 +391,73 @@ bool LayerShdManager::setupUpdate() {
   return true;
 }
 
+void LayerShdManager::createRenderWork() {
+  grlib::CGLibVtxAttr attributes[5];
+  attributes[0] = {unknown073_22, 0, 0, 0};
+  attributes[1] = {unknown073_37, 1, 8, 0};
+  unknown70[0].createFetchObj(attributes, 2);
+  attributes[0] = {unknown073_22, 0, 0, 0};
+  attributes[1] = {unknown073_37, 1, 8, 0};
+  attributes[2] = {unknown073_22, 2, 12, 0};
+  unknown70[1].createFetchObj(attributes, 3);
+  attributes[0] = {unknown073_22, 0, 0, 0};
+  attributes[1] = {unknown073_22, 1, 8, 0};
+  attributes[2] = {unknown073_46, 2, 0, 1};
+  attributes[3] = {unknown073_46, 3, 16, 1};
+  attributes[4] = {unknown073_37, 4, 32, 1};
+  unknown70[2].createFetchObj(attributes, 5);
+  attributes[0] = {unknown073_34, 0, 0, 0};
+  attributes[1] = {unknown073_37, 1, 12, 0};
+  attributes[2] = {unknown073_22, 2, 16, 0};
+  unknown70[3].createFetchObj(attributes, 3);
+  attributes[0] = {unknown073_22, 0, 0, 0};
+  attributes[1] = {unknown073_22, 1, 8, 0};
+  unknown70[4].createFetchObj(attributes, 2);
+  unknownc0[0].initSampler(GRL_TEX_CLAMP_REPEAT, GRL_TEX_MAG_FILTER_NEAREST);
+  unknownc0[0].updateData();
+  unknownc0[1].initSampler(GRL_TEX_CLAMP_REPEAT, GRL_TEX_MAG_FILTER_LINEAR);
+  unknownc0[1].updateData();
+  unknownc0[3].initSampler(GRL_TEX_CLAMP_CLAMP, GRL_TEX_MAG_FILTER_LINEAR);
+  unknownc0[3].updateData();
+  unknownc0[2].initSampler(GRL_TEX_CLAMP_CLAMP, GRL_TEX_MAG_FILTER_NEAREST);
+  unknownc0[2].updateData();
+  unknownc0[5].initSampler(GRL_TEX_CLAMP_CLAMP, GRL_TEX_MAG_FILTER_LINEAR);
+  unknownc0[5].setFilter(GRL_TEX_MAG_FILTER_LINEAR, GRL_TEX_MIN_FILTER_UNKNOWN_5, GRL_TEX_ANISO_RATIO_UNKNOWN_0);
+  unknownc0[5].updateData();
+  unknownc0[4].initSampler(GRL_TEX_CLAMP_CLAMP, GRL_TEX_MAG_FILTER_NEAREST);
+  unknownc0[4].setFilter(GRL_TEX_MAG_FILTER_NEAREST, GRL_TEX_MIN_FILTER_UNKNOWN_2, GRL_TEX_ANISO_RATIO_UNKNOWN_0);
+  unknownc0[4].updateData();
+  unknownc0[6].initSampler(GRL_TEX_CLAMP_CLAMP_TO_BORDER, GRL_TEX_MAG_FILTER_LINEAR);
+  unknownc0[6].setBorderType(GRL_TEX_BORDER_TRANSPARENT_BLACK);
+  unknownc0[6].updateData();
+  unknownc0[7].initSampler(GRL_TEX_CLAMP_CLAMP, GRL_TEX_MAG_FILTER_LINEAR);
+  unknownc0[7].setClamp(GRL_TEX_CLAMP_REPEAT, GRL_TEX_CLAMP_CLAMP, GRL_TEX_CLAMP_CLAMP);
+  unknownc0[7].updateData();
+  unknownc0[8].initSampler(GRL_TEX_CLAMP_CLAMP, GRL_TEX_MAG_FILTER_LINEAR);
+  unknownc0[8].setClamp(GRL_TEX_CLAMP_CLAMP, GRL_TEX_CLAMP_REPEAT, GRL_TEX_CLAMP_CLAMP);
+  unknownc0[8].updateData();
+  unknown238[0].createCopyVertexBuff(unknown009, sizeof(unknown009), sizeof(unknown006));
+  unknown238[1].createCopyVertexBuff(unknown010, sizeof(unknown010), sizeof(unknown007));
+  unknown238[2].createCopyVertexBuff(unknown011, sizeof(unknown011), sizeof(unknown008));
+  unknown238[3].createCopyVertexBuff(unknown012, sizeof(unknown012), sizeof(unknown008));
+  unknown238[4].createCopyVertexBuff(unknown013, sizeof(unknown013), sizeof(unknown008));
+  unknown300.createCopyIndexBuff(unknown014, 4, GRL_PRIMITIVE_QUADS, GRL_INDEX_FORMAT_U8);
+  unknown328.createCopyIndexBuff(unknown014, 5, GRL_PRIMITIVE_UNKNOWN_3, GRL_INDEX_FORMAT_U8);
+  unknown68 = true;
+}
+
+LayerShdManager::~LayerShdManager() {
+  if (unknown38 != nullptr) {
+    delete unknown38;
+    unknown38 = nullptr;
+  }
+  if (unknown40 != nullptr) {
+    delete unknown40;
+    unknown40 = nullptr;
+  }
+  allRelease();
+}
+
 void LayerShdManager::allRelease() { shaderRelease(); }
 
 void LayerShdManager::setupMainRenderTarget() { grlib::CGLibState::setMainFrameBuffer(); }
@@ -412,10 +556,10 @@ void LayerShdManager::resetViewPort() {
     unknown360 = nullptr;
     unknown528 = false;
     unknown52a = false;
-    unknown50c.x = 0.0f;
-    unknown50c.y = 0.0f;
-    unknown50c.width = unknown550;
-    unknown50c.height = unknown554;
+    unknown50c.unknown00 = 0.0f;
+    unknown50c.unknown04 = 0.0f;
+    unknown50c.unknown08 = unknown550;
+    unknown50c.unknown0c = unknown554;
     grlib::CGLibState::setViewport(grlib::LibMainStateViewPort(0.0f, 0.0f, unknown550 * unknown55c, unknown554 * unknown560, 0.0f, 1.0f));
   }
 }
@@ -440,21 +584,25 @@ bool LayerShdManager::OnFileEvent(ml::EventFileTh *event) {
   return true;
 }
 
+void LayerShdManager::selectViewPort(const LayerViewPort &viewPort) {
+  if (unknown52a || unknown50c.unknown00 != viewPort.unknown00 || unknown50c.unknown04 != viewPort.unknown04 || unknown50c.unknown08 != viewPort.unknown08 ||
+      unknown50c.unknown0c != viewPort.unknown0c) {
+    unknown50c = viewPort;
+    unknown528 = true;
+    unknown52a = false;
+    f32 width = unknown558 * viewPort.unknown08;
+    f32 height = unknown558 * viewPort.unknown0c;
+    f32 x = unknown558 * viewPort.unknown00;
+    f32 y = unknown558 * viewPort.unknown04;
+    grlib::CGLibState::setViewport(grlib::LibMainStateViewPort(x, y, width, height, 0.0f, 1.0f));
+  }
+}
+
 void LayerShdManager::setViewPort(LayerResViewPortInfo *viewPort) {
   grlib::CGLibRenderTarget *target = viewPort->unknown10;
   if (target == nullptr) {
     unknown360 = nullptr;
-    const mm::Rect<f32> &rect = viewPort->unknown00;
-    if (unknown52a || unknown50c.x != rect.x || unknown50c.y != rect.y || unknown50c.width != rect.width || unknown50c.height != rect.height) {
-      unknown50c = rect;
-      unknown528 = true;
-      unknown52a = false;
-      f32 width = unknown558 * rect.width;
-      f32 height = unknown558 * rect.height;
-      f32 x = unknown558 * rect.x;
-      f32 y = unknown558 * rect.y;
-      grlib::CGLibState::setViewport(grlib::LibMainStateViewPort(x, y, width, height, 0.0f, 1.0f));
-    }
+    selectViewPort(viewPort->unknown00);
   } else if (unknown360 != target) {
     if (!(viewPort->unknown30 & 1)) {
       target->clearTexture(viewPort->unknown20, static_cast<GrlClaerMask>(0xf));
@@ -465,10 +613,10 @@ void LayerShdManager::setViewPort(LayerResViewPortInfo *viewPort) {
     unknown52a = true;
     unknown528 = true;
     unknown360 = viewPort->unknown10;
-    unknown50c.x = 0.0f;
-    unknown50c.y = 0.0f;
-    unknown50c.width = static_cast<f32>(viewPort->unknown10->unknownbc) / unknown558;
-    unknown50c.height = static_cast<f32>(viewPort->unknown10->unknownc0) / unknown558;
+    unknown50c.unknown00 = 0.0f;
+    unknown50c.unknown04 = 0.0f;
+    unknown50c.unknown08 = static_cast<f32>(viewPort->unknown10->unknownbc) / unknown558;
+    unknown50c.unknown0c = static_cast<f32>(viewPort->unknown10->unknownc0) / unknown558;
   }
   unknown358 = viewPort->unknown18;
   unknown4fa = 3;
@@ -478,17 +626,7 @@ void LayerShdManager::setShaderMaskMode(const LayerObjTopMaskObj *mask) {
   unknown50 = mask;
   unknown358 = nullptr;
   unknown4fa = 2;
-  const mm::Rect<f32> &rect = mask->unknown258;
-  if (unknown52a || unknown50c.x != rect.x || unknown50c.y != rect.y || unknown50c.width != rect.width || unknown50c.height != rect.height) {
-    unknown50c = rect;
-    unknown528 = true;
-    unknown52a = false;
-    f32 width = unknown558 * rect.width;
-    f32 height = unknown558 * rect.height;
-    f32 x = unknown558 * rect.x;
-    f32 y = unknown558 * rect.y;
-    grlib::CGLibState::setViewport(grlib::LibMainStateViewPort(x, y, width, height, 0.0f, 1.0f));
-  }
+  selectViewPort(mask->unknown258);
 }
 
 void LayerShdManager::setShaderMaskOff() {
@@ -522,6 +660,23 @@ void LayerShdManager::set3DSpaceMode(grlib::CGLibDblUniformBlock *uniform) {
   }
   unknown4f4 = 2;
   unknown350 = uniform;
+}
+
+grlib::CGLibDecShader *LayerShdManager::setupShader(grlib::CGLibDblUniformBlock *uniform) {
+  grlib::CGLibDecShader *shader = setupShader();
+  uniform->setUniformBlock(0);
+  const LayerObjTopMaskObj *mask = unknown50;
+  if (mask != nullptr) {
+    const_cast<LayerObjTopMaskObj *>(mask)->unknown290.setUniformBlock(2);
+    grlib::CGLibCtlTexture::setTexture(mask->getTexture(), unknownc0[6], 3);
+  } else if (unknown358 != nullptr) {
+    unknown358->setUniformBlock(2);
+  }
+  if (unknown58 != nullptr) {
+    unknown60->setUniformBlock(3);
+    grlib::CGLibCtlTexture::setTexture(*unknown58, unknownc0[3], 2);
+  }
+  return shader;
 }
 
 void LayerShdManager::setupTexture(const grlib::CGLibTextureBuffer &texture, LayerSamplerType type, u32 location) { grlib::CGLibCtlTexture::setTexture(texture, unknownc0[type], location); }

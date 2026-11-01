@@ -12,7 +12,6 @@
 #include "layer/layer_view_port.h"
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
-#include "mm_math/mm_rect.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 
@@ -64,20 +63,20 @@ void LayerObjUtil::calcLayerRenderView(LayerRenderView &result, LayerResViewPort
   result = *view;
   f32 posX = matrix->unknown00 * shader->unknown530;
   f32 posY = matrix->unknown04 * shader->unknown534 * (1.0f / shader->unknown574);
-  viewPort.unknown00.x = posX + port.unknown00;
-  viewPort.unknown00.y = posY + port.unknown04;
-  viewPort.unknown00.height = port.unknown0c;
-  viewPort.unknown00.width = port.unknown08;
+  viewPort.unknown00.unknown00 = posX + port.unknown00;
+  viewPort.unknown00.unknown04 = posY + port.unknown04;
+  viewPort.unknown00.unknown0c = port.unknown0c;
+  viewPort.unknown00.unknown08 = port.unknown08;
   if (uniform == nullptr) {
     uniform = new (LayerManager::get()->unknown2c) grlib::CGLibDblUniformBlock();
     uniform->setup(0x40);
   }
 
   f32 *buff = static_cast<f32 *>(uniform->getBuff());
-  f32 x = viewPort.unknown00.x * shader->unknown558 / shader->unknown530;
-  f32 y = shader->unknown558 * viewPort.unknown00.y / shader->unknown534;
-  f32 sclX = 1.0f / (shader->unknown558 * viewPort.unknown00.width / shader->unknown530);
-  f32 sclY = 1.0f / (shader->unknown558 * viewPort.unknown00.height / shader->unknown534);
+  f32 x = viewPort.unknown00.unknown00 * shader->unknown558 / shader->unknown530;
+  f32 y = shader->unknown558 * viewPort.unknown00.unknown04 / shader->unknown534;
+  f32 sclX = 1.0f / (shader->unknown558 * viewPort.unknown00.unknown08 / shader->unknown530);
+  f32 sclY = 1.0f / (shader->unknown558 * viewPort.unknown00.unknown0c / shader->unknown534);
   buff[0] = sclX;
   buff[1] = sclY;
   buff[2] = sclX - 1.0f - x * 2.0f * sclX;

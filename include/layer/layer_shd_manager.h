@@ -9,9 +9,9 @@
 #include "grlib/cglib_vtx_vertex.h"
 #include "layer/layer_obj.h"
 #include "layer/layer_obj_top_mask_obj.h"
+#include "layer/layer_view_port.h"
 #include "ml/work_event.h"
 #include "mm_math/mm_mat44.h"
-#include "mm_math/mm_rect.h"
 #include "types.h"
 
 namespace grlib {
@@ -88,8 +88,9 @@ public:
   void createResWork();
   void setSecTexture(LayerResSecTexture *secTexture);
   grlib::CGLibDecShader *setupShader();
-  void setupShader(grlib::CGLibDblUniformBlock *uniform);
+  grlib::CGLibDecShader *setupShader(grlib::CGLibDblUniformBlock *uniform);
   void setShaderMaskMode(const LayerObjTopMaskObj *mask);
+  void selectViewPort(const LayerViewPort &viewPort);
   void setViewPort(LayerResViewPortInfo *viewPort);
   grlib::CGLibDecShader *selectGamma();
   grlib::CGLibDecShader *selectFlowMap();
@@ -203,7 +204,7 @@ public:
   s16 unknown506;           // Inferred role: selected shader parameter; original member name unknown.
   s16 unknown508;           // Inferred role: selected mask mode; original member name unknown.
   s16 unknown50a;           // Inferred role: selected second texture mode; original member name unknown.
-  mm::Rect<f32> unknown50c; // Inferred role: view port; original member name unknown.
+  LayerViewPort unknown50c; // Inferred role: view port; original member name unknown.
   u8 _51c[0x528 - 0x51c];
   bool unknown528; // Inferred role: view port changed; original member name unknown.
   bool unknown529; // Inferred role: depth check; original member name unknown.

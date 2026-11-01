@@ -8,7 +8,7 @@
 #include "layer/layer_render_view.h"
 #include "layer/layer_res_view_port_info.h"
 #include "layer/layer_shd_manager.h"
-#include "mm_math/mm_rect.h"
+#include "layer/layer_view_port.h"
 #include "mm_math/mm_vec3.h"
 
 namespace layer {
@@ -24,14 +24,14 @@ u32 LayerFilterObj::isReleaseCall() const { return unknown08 & (1 << LayerManage
 void LayerFilterObj::calcFilterUvParam(f32 *param, const LayerRenderView *view) {
   const LayerResViewPortInfo *viewPort = view->unknown08;
   if (viewPort != nullptr && viewPort->unknown10 != nullptr) {
-    f32 x = viewPort->unknown00.x;
+    f32 x = viewPort->unknown00.unknown00;
     LayerShdManager *shader = LayerManager::get()->unknown58;
     f32 scale = shader->unknown558;
     f32 screenWidth = shader->unknown530;
     f32 scaledX = x * scale;
-    f32 scaledY = scale * viewPort->unknown00.y;
-    f32 scaledWidth = scale * viewPort->unknown00.width;
-    f32 scaledHeight = scale * viewPort->unknown00.height;
+    f32 scaledY = scale * viewPort->unknown00.unknown04;
+    f32 scaledWidth = scale * viewPort->unknown00.unknown08;
+    f32 scaledHeight = scale * viewPort->unknown00.unknown0c;
     f32 screenHeight = shader->unknown534;
     param[2] = scaledX / screenWidth;
     param[0] = screenWidth / scaledWidth;
