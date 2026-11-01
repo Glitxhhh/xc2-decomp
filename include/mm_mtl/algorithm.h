@@ -1,5 +1,6 @@
 #pragma once
 #include "mm/mm_std_base.h"
+#include "mm_mtl/type_traits.h"
 #include <stddef.h>
 
 namespace mm {
@@ -46,14 +47,43 @@ template <typename T> T *copy(const T *first, size_t n, T *result) {
   return result + n;
 }
 
+namespace mtl_detail {
+
+template <typename T> void copy_n(const T *first, size_t n, T *result, int_to_type<0>) {
+  const T *last = first + n;
+  // Unrolled by hand in the original (Duff's device: the game switches on n & 3 into a loop of four element copies).
+  switch (n & 3) {
+  case 0:
+    while (first != last) {
+      *result++ = *first++;
+    case 3:
+      *result++ = *first++;
+    case 2:
+      *result++ = *first++;
+    case 1:
+      *result++ = *first++;
+    }
+  }
+}
+
+template <typename T> void copy_n(const T *first, size_t n, T *result, int_to_type<1>) { copy(first, n, result); }
+
+} // namespace mtl_detail
+
 // __LINE__ must be 393 as in the original header: it is the line argument of the assert.
 #line 392
 template <typename T> void move(const T *from, size_t n, T *result) {
   MM_ASSERT(from != result || n == 0);
   if (from < result && result < from + n) {
-    __builtin_memmove(result, from, n * sizeof(T));
+    if (__has_trivial_assign(T)) {
+      __builtin_memmove(result, from, n * sizeof(T));
+    } else {
+      for (int i = n; i > 0; i--) {
+        result[i - 1] = from[i - 1];
+      }
+    }
   } else {
-    copy(from, n, result);
+    mtl_detail::copy_n(from, n, result, int_to_type<__has_trivial_assign(T)>());
   }
 }
 

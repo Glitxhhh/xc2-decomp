@@ -435,4 +435,6 @@ template mm::mtl::FixedVector<ml::IDevFileEvent *, 8>::~FixedVector();
 
 template mm::mtl::FixedVector<ml::dvfl_detail::LoadMediaParam, 8>::~FixedVector();
 
+template ml::dvfl_detail::LoadMediaParam *mm::mtl::FixedVector<ml::dvfl_detail::LoadMediaParam, 8>::insert(ml::dvfl_detail::LoadMediaParam *it, const ml::dvfl_detail::LoadMediaParam &value);
+
 template mm::mtl::FixedVector<ml::dvfl_detail::ReserveArchiveParam, 8>::~FixedVector();

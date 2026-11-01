@@ -1,5 +1,6 @@
 #pragma once
 #include "mm/mm_std_base.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/construct.h"
 #include "mm_mtl/type_traits.h"
 #include <new>
@@ -125,6 +126,26 @@ public:
   }
 
   bool validate_iterator(const T *it) const { return begin() <= it && it <= end(); }
+
+  // __LINE__ must be 307 and 311 as in the original header: they are the line arguments of the asserts.
+  T *insert(T *it, const T &value) {
+#line 307
+    MM_ASSERT(validate_iterator(it));
+    size_t prevSize = m_size;
+    size_t index = it - begin();
+#line 311
+    MM_ASSERT(prevSize < N);
+    T *position = end();
+    if (position != nullptr) {
+      construct_n(position, 1);
+    }
+    if (it != end()) {
+      move(it, prevSize - index, it + 1);
+    }
+    *it = value;
+    m_size++;
+    return it;
+  }
 
   T *erase(T *it) {
 #line 345

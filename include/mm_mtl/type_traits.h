@@ -4,6 +4,10 @@
 namespace mm {
 namespace mtl {
 
+template <int N> struct int_to_type {
+  enum { value = N };
+};
+
 template <typename T> struct is_pod {
   static const bool value = __is_pod(T);
 };

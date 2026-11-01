@@ -1,14 +1,11 @@
 #pragma once
 #include "mm_mtl/algorithm.h"
+#include "mm_mtl/type_traits.h"
 #include <new>
 #include <stddef.h>
 
 namespace mm {
 namespace mtl {
-
-template <int N> struct int_to_type {
-  enum { value = N };
-};
 
 namespace mtl_detail {
 
@@ -29,7 +26,7 @@ template <typename T> inline void copy_construct_n(const T *source, size_t count
   }
 }
 
-template <typename T> void copy_construct_n(const T *source, size_t count, T *destination, int_to_type<1>) { copy_n(source, count, destination); }
+template <typename T> void copy_construct_n(const T *source, size_t count, T *destination, int_to_type<1>) { mtl::copy_n(source, count, destination); }
 
 template <typename T> void destruct_n(T *buffer, size_t count, int_to_type<0>) {
   for (; count != 0; count--, buffer++) {
