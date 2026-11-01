@@ -26,6 +26,7 @@ struct LayerViewPort;
 struct LyrLayoutPosData;
 
 enum LayerUniType {
+  LAYER_UNI_TYPE_UNKNOWN_5 = 5,
   LAYER_UNI_TYPE_UNKNOWN_9 = 9,
   LAYER_UNI_TYPE_UNKNOWN_10 = 10,
 };

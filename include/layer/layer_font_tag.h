@@ -16,7 +16,7 @@ struct LyrFontStyleData;
 struct LayerTagWork {
   s32 unknown00; // Inferred role: character count; original member name unknown.
   s32 unknown04; // Inferred role: color tag string length; original member name unknown.
-  u8 _08[0x0c - 0x08];
+  s32 unknown08; // Inferred role: tag entry count; original member name unknown.
   s32 unknown0c; // Inferred role: icon tag count; original member name unknown.
   s32 unknown10; // Inferred role: string length; original member name unknown.
   s32 unknown14; // Inferred role: string byte size; original member name unknown.
@@ -28,7 +28,8 @@ static_assert(offsetof(LayerTagWork, unknown14) == 0x14, "");
 class LayerFontTag : public LayerTag {
 public:
   struct unknown001 {
-    f32 unknown00[9]; // Inferred role: font instance; original member name unknown.
+    f32 unknown00[8]; // Inferred role: font instance size, position and uv; original member name unknown.
+    u8 unknown20[4];  // Inferred role: font instance color; original member name unknown.
   };
 
   static const u16 FONT_INSTANCE_SIZE;
@@ -43,6 +44,13 @@ public:
   void parseNotTag(const wchar_t *string, u32 &index) override;
   void calcTagColorEnd();
   void calcTagWide();
+  // Inferred role: writes the current color into a font instance; original function name unknown.
+  void unknown002(unknown001 *instance) const {
+    instance->unknown20[0] = unknown68.r * 255.0f;
+    instance->unknown20[1] = unknown68.g * 255.0f;
+    instance->unknown20[2] = unknown68.b * 255.0f;
+    instance->unknown20[3] = unknown68.a * 255.0f;
+  }
 
   virtual void createFontCode(u16 code) = 0;
   virtual void createRubyFontCode(u16 code) = 0;
@@ -61,10 +69,10 @@ public:
   u32 unknown3c;           // Inferred role: setting is not default; original member name unknown.
   u32 unknown40;           // Inferred role: setting is default; original member name unknown.
   u8 _44[0x48 - 0x44];
-  u64 unknown48;         // Inferred role: unknown; original member name unknown.
+  unknown001 *unknown48; // Inferred role: first font instance; original member name unknown.
   unknown001 *unknown50; // Inferred role: font instances; original member name unknown.
-  u64 unknown58;         // Inferred role: unknown; original member name unknown.
-  u64 unknown60;         // Inferred role: unknown; original member name unknown.
+  unknown001 *unknown58; // Inferred role: first icon instance; original member name unknown.
+  unknown001 *unknown60; // Inferred role: icon instances; original member name unknown.
   mm::Col4 unknown68;    // Inferred role: current color; original member name unknown.
   mm::Col4 unknown78;    // Inferred role: saved color; original member name unknown.
   u16 unknown88[0x200];  // Inferred role: ruby character codes; original member name unknown.
@@ -74,6 +82,8 @@ public:
   u32 unknown49c;        // Inferred role: line count; original member name unknown.
 };
 
+static_assert(offsetof(LayerFontTag::unknown001, unknown20) == 0x20, "");
+static_assert(sizeof(LayerFontTag::unknown001) == 0x24, "");
 static_assert(offsetof(LayerFontTag, unknown08) == 0x08, "");
 static_assert(offsetof(LayerFontTag, unknown10) == 0x10, "");
 static_assert(offsetof(LayerFontTag, unknown18) == 0x18, "");

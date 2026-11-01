@@ -11,10 +11,10 @@ LayerFontTag::LayerFontTag(const LayerFontResObj *res, const LayerFontStyleObj *
   unknown494[0] = 0;
   unknown494[1] = 0;
   unknown49c = 0;
-  unknown48 = 0;
+  unknown48 = nullptr;
   unknown50 = nullptr;
-  unknown58 = 0;
-  unknown60 = 0;
+  unknown58 = nullptr;
+  unknown60 = nullptr;
   unknown38 = setting;
   unknown3c = setting != 0;
   unknown08 = style;

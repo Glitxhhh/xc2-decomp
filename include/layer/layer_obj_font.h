@@ -31,19 +31,24 @@ struct unknown026 {
 static_assert(sizeof(unknown026) == 0x10, "");
 
 struct LayerResFontInfo {
-  u8 _00[0x08];
+  u32 unknown00;                    // Inferred role: flags; original member name unknown.
+  u32 unknown04;                    // Inferred role: instance buffer size; original member name unknown.
   const LayerFontResObj *unknown08; // Inferred role: font resource; original member name unknown.
-  const u8 *unknown10;              // Inferred role: message; original member name unknown.
+  u8 *unknown10;                    // Inferred role: message; original member name unknown.
   u32 unknown18;                    // Inferred role: message length; original member name unknown.
-  u8 _1c[0x2c - 0x1c];
-  u32 unknown2c; // Inferred role: first icon instance; original member name unknown.
-  u32 unknown30; // Inferred role: icon instance count; original member name unknown.
+  u8 _1c[0x20 - 0x1c];
+  u32 *unknown20; // Inferred role: tag entries; original member name unknown.
+  u32 unknown28;  // Inferred role: tag entry count; original member name unknown.
+  u32 unknown2c;  // Inferred role: first icon instance; original member name unknown.
+  u32 unknown30;  // Inferred role: icon instance count; original member name unknown.
   u8 _34[0x38 - 0x34];
   LayerSortObj *unknown38; // Inferred role: sort object; original member name unknown.
   u32 unknown40;           // Inferred role: character instance count; original member name unknown.
   u8 _44[0x48 - 0x44];
   unknown026 *unknown48; // Inferred role: lines; original member name unknown.
-  u8 _50[0x60 - 0x50];
+  u32 unknown50;         // Inferred role: line count; original member name unknown.
+  u8 _54[0x58 - 0x54];
+  u64 unknown58;                          // Inferred role: cleared when the work is created; original member name unknown.
   grlib::CGLibVtxOneInstans *unknown60;   // Inferred role: instance vertex; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown68; // Inferred role: uniform block; original member name unknown.
 };

@@ -35,8 +35,7 @@ public:
   LayerObjFont *unknown4b0;     // Inferred role: font object; original member name unknown.
   u32 unknown4b8;               // Inferred role: character instance count; original member name unknown.
   u32 unknown4bc;               // Inferred role: icon instance count; original member name unknown.
-  s32 unknown4c0;               // Inferred role: text width; original member name unknown.
-  s32 unknown4c4;               // Inferred role: text height; original member name unknown.
+  s32 unknown4c0[2];            // Inferred role: text width and height; original member name unknown.
 };
 
 static_assert(offsetof(LayerFontDrawBuffer, unknown4a0) == 0x4a0, "");

@@ -15,11 +15,18 @@ struct LyrFontStyleData {
   u32 unknown08; // Inferred role: font name offset; original member name unknown.
   f32 unknown0c;
   f32 unknown10;
-  u8 _14[0x28 - 0x14];
+  u8 _14[0x18 - 0x14];
+  u16 unknown18; // Inferred role: line width limit; original member name unknown.
+  u16 unknown1a; // Inferred role: line count limit; original member name unknown.
+  u16 unknown1c; // Inferred role: line spacing; original member name unknown.
+  u16 unknown1e; // Inferred role: character spacing; original member name unknown.
+  u8 _20[0x28 - 0x20];
 };
 
 static_assert(offsetof(LyrFontStyleData, unknown04) == 0x04, "");
 static_assert(offsetof(LyrFontStyleData, unknown08) == 0x08, "");
+static_assert(offsetof(LyrFontStyleData, unknown18) == 0x18, "");
+static_assert(offsetof(LyrFontStyleData, unknown1e) == 0x1e, "");
 static_assert(sizeof(LyrFontStyleData) == 0x28, "");
 
 // Inferred role: pair returned by LayerAccFontStyle::getStyleInfo; original type name unknown.
