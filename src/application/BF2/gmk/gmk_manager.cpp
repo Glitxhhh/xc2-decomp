@@ -103,6 +103,7 @@
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/reference_object.h"
+#include "mm_mtl/rtti.h"
 #include "mtl/alloc_handle.h"
 
 namespace mm {
@@ -1251,6 +1252,59 @@ void GmkPhantom::dispose() {
   unknown83 = false;
   mm::mtl::safeRelease(unknown78);
   unknown70 = nullptr;
+}
+
+void GmkPhantom::update(const GmkPhantomCheckResults &results) {
+  if (unknown78 == nullptr) {
+    return;
+  }
+  unknown81 = false;
+  unknown82 = false;
+  size_t resultNum = unknown20.unknown48 ? results.size() : 1;
+  int resultIndex = -1;
+  int hitIndex = -1;
+  for (int i = 0; i < resultNum; i++) {
+    const fw::TColiCheckResult<256> &result = results[i];
+    u32 hitNum = result.getCount();
+    for (u32 j = 0; j < hitNum; j++) {
+      fw::ColiUserData *userData = result.hits[j].object->unknown58;
+      GmkPhantom *phantom = nullptr;
+      if (userData != nullptr && userData->getRTTI()->isKindOf(&m_rtti)) {
+        phantom = static_cast<GmkPhantom *>(userData);
+      }
+      if (phantom == this) {
+        resultIndex = i;
+        hitIndex = j;
+        break;
+      }
+    }
+    if (hitIndex >= 0) {
+      break;
+    }
+  }
+  bool isHit = hitIndex >= 0;
+  if (unknown80 != isHit) {
+    unknown80 = isHit;
+    if (isHit) {
+      unknown81 = true;
+    } else {
+      unknown82 = true;
+    }
+  }
+  if (unknown81) {
+    unknown83 = true;
+    if (unknown20.unknown40 != nullptr) {
+      IGmkPhantomEventListener::OnEnterInfo info = {this, &results[resultIndex], hitIndex};
+      unknown20.unknown40->onEnterPhantom(info);
+    }
+  }
+  if (unknown82) {
+    unknown83 = false;
+    if (unknown20.unknown40 != nullptr) {
+      IGmkPhantomEventListener::OnLeaveInfo info = {this};
+      unknown20.unknown40->onLeavePhantom(info);
+    }
+  }
 }
 
 void GmkPhantomManager::addGmkPhantom(GmkPhantom *phantom) { unknown08.push_back(phantom); }

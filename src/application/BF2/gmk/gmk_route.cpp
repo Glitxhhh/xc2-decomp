@@ -1,11 +1,13 @@
 #include "gmk/gmk_route.h"
-#include "gmk/gmk_list_impl.h" // IWYU pragma: keep
+
+#include <math.h>
 
 #include "framework/debug/debug_draw.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gmk/gmk_acc.h"
 #include "gmk/gmk_enemy/gmk_routed_enemy.h"
 #include "gmk/gmk_list.h"
+#include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_map_obj.h"
 #include "gmk/gmk_mob/gmk_routed_mob.h"
 #include "gmk/gmk_npc/gmk_routed_npc.h"
@@ -14,7 +16,7 @@
 #include "ml/rand.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
-#include <math.h>
+#include "mm_math/mm_math.h"
 
 namespace gmk {
 
@@ -121,6 +123,108 @@ void GmkRouteNavi::initIsReverse() {
     unknowna4 = false;
   } else if (flags & GmkRoute::FLAG_REVERSE) {
     unknowna4 = true;
+  }
+}
+
+void GmkRouteNavi::seqInit(const UpdateInfo &info) {
+  if (!isValid()) {
+    return;
+  }
+  initIsReverse();
+  unknown70 = isRouteCurve(unknowna0) ? &GmkRouteNavi::seqUpdateOnCurve : &GmkRouteNavi::seqUpdateOnLine;
+  (this->*unknown70)(info);
+}
+
+void GmkRouteNavi::seqUpdateOnLine(const UpdateInfo &info) {
+  const GmkRoute *route = getRoute();
+  unknown80 = false;
+  int index = unknowna0;
+  int prevIndex = validatePointIndex(unknowna4, index - getPointStep());
+  const GmkRoutePoint *prev = route->getRoutePoint(prevIndex);
+  const GmkRoutePoint *current = route->getRoutePoint(index);
+  if (prev == nullptr || current == nullptr) {
+    return;
+  }
+  unknownac = 0.0f;
+  unknown80 = true;
+  const GmkRoutePoint::Data &prevData = *prev->getData();
+  const GmkRoutePoint::Data &currentData = *current->getData();
+  f32 width = getWidthRatio();
+  mm::Vec3 start = getSidePos(prevData, width);
+  mm::Vec3 end = getSidePos(currentData, width);
+  unknown90 = end;
+  const GmkRoute::Data *routeData = route->getData();
+  if (isRouteCurve(unknowna0)) {
+    mm::Vec3 diff = start - end;
+    f32 length = sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+    f32 radius = routeData->unknown08 < length * 0.5 ? routeData->unknown08 : length * 0.5f;
+    if (radius > 0.0f) {
+      mm::Vec3 toTarget = info.position - unknown90;
+      f32 dist = sqrtf(toTarget.x * toTarget.x + toTarget.y * toTarget.y + toTarget.z * toTarget.z);
+      if (dist < radius + unknown00.unknown10) {
+        unknowna8 = 0;
+        unknown70 = &GmkRouteNavi::seqUpdateOnCurve;
+      }
+    }
+    return;
+  }
+  if (isArrived(unknown90, info.position)) {
+    updateNextPointIndx();
+  }
+}
+
+void GmkRouteNavi::seqUpdateOnCurve(const UpdateInfo &info) {
+  const GmkRoute *route = getRoute();
+  unknown80 = false;
+  int index = unknowna0;
+  int prevIndex = validatePointIndex(unknowna4, index - getPointStep());
+  int nextIndex = validatePointIndex(unknowna4, index + getPointStep());
+  const GmkRoutePoint *prev = route->getRoutePoint(prevIndex);
+  const GmkRoutePoint *current = route->getRoutePoint(index);
+  const GmkRoutePoint *next = route->getRoutePoint(nextIndex);
+  if (prev == nullptr || current == nullptr || next == nullptr) {
+    return;
+  }
+  unknown80 = true;
+  const GmkRoutePoint::Data &prevData = *prev->getData();
+  const GmkRoutePoint::Data &currentData = *current->getData();
+  const GmkRoutePoint::Data &nextData = *next->getData();
+  f32 width = getWidthRatio();
+  mm::Vec3 prevPos = getSidePos(prevData, width);
+  mm::Vec3 currentPos = getSidePos(currentData, width);
+  mm::Vec3 nextPos = getSidePos(nextData, width);
+  mm::Vec3 incoming = currentPos - prevPos;
+  mm::Vec3 outgoing = nextPos - currentPos;
+  f32 incomingLength = sqrtf(incoming.x * incoming.x + incoming.y * incoming.y + incoming.z * incoming.z);
+  f32 outgoingLength = sqrtf(outgoing.x * outgoing.x + outgoing.y * outgoing.y + outgoing.z * outgoing.z);
+  if (unknowna8 == 0) {
+    unknownac = 0.0f;
+  } else {
+    f32 cosAngle = (incoming.x * outgoing.x + incoming.y * outgoing.y + incoming.z * outgoing.z) / (incomingLength * outgoingLength);
+    f32 crossY = incoming.z * outgoing.x - incoming.x * outgoing.z;
+    f32 angle = mm::acos(cosAngle);
+    if (crossY > 0.0f) {
+      unknownac = angle;
+    } else {
+      unknownac = -angle;
+    }
+  }
+  f32 radius = route->getData()->unknown08;
+  f32 incomingRadius = radius < incomingLength * 0.5 ? radius : incomingLength * 0.5f;
+  f32 outgoingRadius = radius < outgoingLength * 0.5 ? radius : outgoingLength * 0.5f;
+  mm::Vec3 curveStart = currentPos - incoming * (incomingRadius / incomingLength);
+  mm::Vec3 curveEnd = currentPos + outgoing * (outgoingRadius / outgoingLength);
+  f32 ratio = static_cast<f32>(unknowna8) * (1.0f / static_cast<f32>(unknown00.unknown18));
+  mm::Vec3 from = curveStart + (currentPos - curveStart) * ratio;
+  mm::Vec3 to = currentPos + (curveEnd - currentPos) * ratio;
+  unknown90 = from + (to - from) * ratio;
+  if (isArrived(unknown90, info.position)) {
+    unknowna8++;
+    if (unknown00.unknown18 <= unknowna8) {
+      updateNextPointIndx();
+      unknowna8 = 0;
+      unknown70 = isRouteCurve(unknowna0) ? &GmkRouteNavi::seqUpdateOnCurve : &GmkRouteNavi::seqUpdateOnLine;
+    }
   }
 }
 

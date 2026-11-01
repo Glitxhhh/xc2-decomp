@@ -101,7 +101,7 @@ public:
   };
 
   AGmkBase();
-  virtual ~AGmkBase() { disposeBase(); }
+  virtual ~AGmkBase() { unknown08 = CreateBaseInfo(); }
   virtual GmkType getGmkType() const = 0;
   virtual bool isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr && unknown20.unknown10 != nullptr; }
 
@@ -122,11 +122,7 @@ public:
   virtual void onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {}
   virtual void debugUpdateMmf() {}
 
-  void disposeBase() {
-    unknown08.unknown00 = nullptr;
-    unknown08.unknown08 = nullptr;
-    unknown08.unknown10 = nullptr;
-  }
+  void disposeBase();
   u8 *getBindedBdatFp() const;
 
   // Inferred helper: wraps the bdat of the list; original name unknown.
