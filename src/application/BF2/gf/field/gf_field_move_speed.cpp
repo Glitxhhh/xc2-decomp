@@ -9,6 +9,12 @@ namespace gf {
 
 const char *GfEnemyFieldMoveSpeed::s_V_speed = "V_speed";
 
+GfFieldMoveSpeed::GfFieldMoveSpeed(const CreateInfo *info) {
+  if (info != nullptr) {
+    create(*info);
+  }
+}
+
 void GfFieldMoveSpeed::dispose() { unknown00 = INVALID_HANDLE; }
 
 GfComAsm *GfFieldMoveSpeed::getComAsm() const {
@@ -21,10 +27,16 @@ GfComAsm *GfFieldMoveSpeed::getComAsm() const {
 }
 
 void GfFieldMoveSpeed::setSpeedKmph(f32 speed, f32 time) {
-  unknown20 = unknown10;
-  unknown24 = speed;
-  unknown28 = time;
-  unknown2c = 0.0f;
+  unknown18.unknown08 = unknown10;
+  unknown18.unknown0c = speed;
+  unknown18.unknown10 = time;
+  unknown18.unknown14 = 0.0f;
+}
+
+GfEnemyFieldMoveSpeed::GfEnemyFieldMoveSpeed(const CreateInfo *info) {
+  if (info != nullptr) {
+    create(*info);
+  }
 }
 
 GfComAsm *GfEnemyFieldMoveSpeed::getComAsm() const {

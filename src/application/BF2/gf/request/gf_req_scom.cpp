@@ -725,6 +725,8 @@ GAME_VOICE_HANDLE *SCOM_SALVAGE_VOICE::create(GF_OBJ_HANDLE *handle, CV_SALVAGE 
 
 GAME_VOICE_HANDLE *SCOM_SALVAGE_VOICE::createResult(GF_OBJ_HANDLE *handle, CV_SALVAGE_RESULT voice) { return GfSalvageVoice::playResultVoice(handle, voice); }
 
+bool SCOM_SALVAGE_VOICE::isPlayEnd(GAME_VOICE_HANDLE *voice) { return GfGameVoice::getResult(voice) != VOICE_RESULT_PLAY; }
+
 bool GfReqSmallCom::isExistCommand() {
   GfReqSmallCom *smallCom = get();
   if (smallCom->unknown08.size() != 0) {

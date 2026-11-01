@@ -30,11 +30,16 @@ enum CV_FIELD {
   CV_FIELD_TIME_NIGHT = 32,
 };
 
+enum {
+  VOICE_RESULT_PLAY = 2,
+};
+
 class GfGameVoice : public mm::mtl::PtrSingleton<GfGameVoice> {
 public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
+  static u32 getResult(GAME_VOICE_HANDLE *voice);
   static u32 getResult(GF_OBJ_HANDLE *handle);
   static GAME_VOICE_HANDLE *playVoice(const ParamObj &object, const char *name, CV_PRIO priority);
   static GAME_VOICE_HANDLE *playVoice(GF_OBJ_HANDLE *handle, const char *name, CV_PRIO priority);

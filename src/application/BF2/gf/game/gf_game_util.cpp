@@ -102,10 +102,6 @@ enum {
 };
 
 enum {
-  VOICE_RESULT_PLAY = 2,
-};
-
-enum {
   BELONGING_FIRST = 1,
   BELONGING_SECOND = 2,
 };
