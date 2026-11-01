@@ -17,6 +17,7 @@ public:
   LayerResAddTexObj(grlib::CGLibTextureBuffer *texture, u32 index);
   ~LayerResAddTexObj();
   void release();
+  void setupResource();
   grlib::CGLibTextureBuffer *getTexObj(u32 index);
 
   LayerResAddTexObj *unknown00; // Inferred role: previous node; original member name unknown.

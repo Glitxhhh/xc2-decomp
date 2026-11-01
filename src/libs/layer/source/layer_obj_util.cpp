@@ -119,6 +119,51 @@ void LayerObjUtil::updateMatrixUniformBlock(f32 *uniform, const LayerResMatrix *
   uniform[2] = 0.0f;
 }
 
+void LayerObjUtil::updateUvCalcUniformBlock(f32 *uniform, const LayerResUvParam &param, u32 flags) {
+  const unknown023 &uv = param.unknown00[2];
+  f32 sclU = uv.unknown08;
+  f32 offU = 0.0f;
+  if (flags & 0x100000) {
+    sclU = -uv.unknown08;
+    offU = 1.0f;
+  }
+  f32 sclV = uv.unknown0c;
+  f32 offV = 0.0f;
+  if (flags & 0x200000) {
+    sclV = -uv.unknown0c;
+    offV = 1.0f;
+  }
+  f32 u = offU + uv.unknown00.x;
+  f32 v = offV + uv.unknown00.y;
+  if (uv.unknown10 == 0.0f) {
+    uniform[0] = sclU;
+    uniform[1] = 0.0f;
+    uniform[2] = 0.0f;
+    uniform[3] = u;
+    uniform[4] = 0.0f;
+    uniform[5] = sclV;
+    uniform[6] = 0.0f;
+    uniform[7] = v;
+  } else {
+    f32 sinRot = sinf(uv.unknown10);
+    f32 cosRot = cosf(uv.unknown10);
+    f32 anchorX = sclU * 0.5f + u;
+    f32 anchorY = sclV * 0.5f + v;
+    f32 rotX = anchorX + (cosRot * -anchorX + sinRot * -anchorY);
+    f32 rotY = anchorY + (-sinRot * -anchorX + cosRot * -anchorY);
+    f32 x = u * cosRot + v * sinRot;
+    f32 y = u * -sinRot + v * cosRot;
+    uniform[0] = sclU * cosRot;
+    uniform[1] = sclV * sinRot;
+    uniform[2] = 0.0f;
+    uniform[3] = x + rotX;
+    uniform[4] = sclU * -sinRot;
+    uniform[5] = sclV * cosRot;
+    uniform[6] = 0.0f;
+    uniform[7] = y + rotY;
+  }
+}
+
 void LayerObjUtil::calcLayerInvertMatrix(mm::Vec3 &pos, mm::Vec3 &scl, const LayerResMatrix &matrix) {
   pos.x = matrix.unknown0c;
   pos.y = -matrix.unknown14;

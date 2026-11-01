@@ -2,6 +2,7 @@
 
 #include "layer/layer_manager.h"
 #include "layer/layer_res_add_tex_obj.h"
+#include "layer/layer_texture_obj.h"
 #include "mtl/alloc_handle.h"
 
 namespace layer {
@@ -38,6 +39,43 @@ void LayerObjResTex::clear() {
   unknown00.unknown003();
   unknown18[0].unknown003();
   unknown18[1].unknown003();
+}
+
+bool LayerObjResTex::updateTexutre(grlib::CGLibTextureBuffer **textures, LayerTextureObj *textureObj) {
+  u32 index = LayerManager::s_nDebIdx;
+  LayerLinkList<LayerResAddTexObj> &pending = unknown18[index];
+  bool updated = false;
+  LayerResAddTexObj *texture = unknown00.unknown00;
+  while (texture != nullptr) {
+    LayerResAddTexObj *next = texture->unknown08;
+    if ((1 << LayerManager::s_nDebIdx) & texture->unknown22) {
+      if (textures != nullptr) {
+        textures[texture->unknown20] = textureObj->getTexture(texture->unknown20);
+        updated = true;
+      }
+      unknown00.unknown001(texture);
+      delete texture;
+    }
+    texture = next;
+  }
+  texture = pending.unknown00;
+  if (texture != nullptr) {
+    while (texture != nullptr) {
+      LayerResAddTexObj *next = texture->unknown08;
+      pending.unknown001(texture);
+      texture->setupResource();
+      if (textures != nullptr) {
+        textures[texture->unknown20] = texture->getTexObj(0);
+        updated = true;
+      }
+      unknown00.unknown002(texture);
+      texture = next;
+    }
+    pending.unknown10 = 0;
+    pending.unknown00 = nullptr;
+    pending.unknown08 = nullptr;
+  }
+  return updated;
 }
 
 } // namespace layer

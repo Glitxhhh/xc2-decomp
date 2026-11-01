@@ -51,14 +51,22 @@ struct LayerResParmInfo {
 
 static_assert(sizeof(LayerResParmInfo) == 0x38, "");
 
-struct LayerResUvParam {
+// Inferred layout of the uv parameters of one buffer; original type and member names unknown.
+struct unknown023 {
   mm::Pnt<f32> unknown00; // Inferred role: u and v; original member name unknown.
   f32 unknown08;          // Inferred role: scale u; original member name unknown.
   f32 unknown0c;          // Inferred role: scale v; original member name unknown.
   f32 unknown10;          // Inferred role: rot; original member name unknown.
 };
 
-static_assert(sizeof(LayerResUvParam) == 0x14, "");
+static_assert(sizeof(unknown023) == 0x14, "");
+
+// Evidence: LayerObjUtil::updateUvCalcUniformBlock takes it by reference and reads the third buffer at +0x28.
+struct LayerResUvParam {
+  unknown023 unknown00[3]; // Inferred role: uv params per buffer; original member name unknown.
+};
+
+static_assert(sizeof(LayerResUvParam) == 0x3c, "");
 
 // Evidence: LayerObj::applyBegin and applyEnd read it; the layout parents fill it for their children.
 struct LayerResUpdateInfo {
@@ -178,7 +186,7 @@ public:
   LayerResParmInfo unknownc8[3]; // Inferred role: parms; original member name unknown.
   LayerResDispInfo unknown170;   // Inferred role: display bounds, the clip values; original member name unknown.
   LayerResRenderInfo unknown180; // Inferred role: render info; original member name unknown.
-  LayerResUvParam unknown19c[3]; // Inferred role: uv params; original member name unknown.
+  LayerResUvParam unknown19c;    // Inferred role: uv params; original member name unknown.
   u16 unknown1d8[2];             // Inferred role: action idx; original member name unknown.
   LayerResMatrix unknown1dc;     // Inferred role: local matrix; original member name unknown.
   f32 unknown1f4;                // Inferred role: ctrl spd; original member name unknown.

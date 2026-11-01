@@ -137,9 +137,18 @@ public:
     u16 unknown02; // Inferred role: node idx; original member name unknown.
   };
 
-  // Inferred layout of the icon max resource; original type and member names unknown.
+  // Inferred layout of the icon resource header; original type and member names unknown.
   struct unknown018 {
     u32 unknown00; // Inferred role: icon max; original member name unknown.
+    u8 _04[0x18 - 0x04];
+    u32 unknown18; // Inferred role: offset of the icon uv table, relative to this header; original member name unknown.
+  };
+
+  // Inferred layout of an icon uv entry (stride 0x1c in LayerObjMesh::call_uniform_number); original type and member names unknown.
+  struct unknown021 {
+    f32 unknown00[2]; // Inferred role: size; original member name unknown.
+    f32 unknown08[4]; // Inferred role: uv rect; original member name unknown.
+    u8 _18[0x1c - 0x18];
   };
 
   // Evidence: LayerObjTopDef(const char *) inlines FixStr::operator= on it (fixstr.h asserts at lines 219 and 221).
@@ -193,5 +202,7 @@ static_assert(offsetof(LayerObjWork::unknown013, unknown08) == 0x08, "");
 static_assert(offsetof(LayerObjWork::unknown013, unknown38) == 0x38, "");
 static_assert(offsetof(LayerObjWork::unknown014, unknown10) == 0x10, "");
 static_assert(sizeof(LayerObjWork::unknown017) == 0x04, "");
+static_assert(offsetof(LayerObjWork::unknown018, unknown18) == 0x18, "");
+static_assert(sizeof(LayerObjWork::unknown021) == 0x1c, "");
 
 } // namespace layer

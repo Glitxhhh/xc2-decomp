@@ -19,6 +19,8 @@ namespace layer {
 struct LayerRenderView;
 struct LayerResMatrix;
 struct LayerResColor;
+struct LayerResUvParam;
+struct LayerResNode;
 struct LayerResViewPortInfo;
 struct LayerViewPort;
 struct LyrLayoutPosData;
@@ -88,6 +90,7 @@ public:
   static void calcLayerColor(LayerResColor &result, const LayerResColor &base, const LayerResColor &parent);
   static void updateUnitUniformBlock(f32 *uniform);
   static void updateMatrixUniformBlock(f32 *uniform, const LayerResMatrix *matrix);
+  static void updateUvCalcUniformBlock(f32 *uniform, const LayerResUvParam &param, u32 flags);
   static void updateColorUniformBlock(f32 *uniform, const LayerResColor &color);
   static u32 getUniformBlockAligment(u32 size);
   static void calcPos_Pixel_Up(f32 *pos, const LayerBasePos &base);
@@ -104,6 +107,7 @@ public:
   static void calcMdlPos_Center_Down(f32 *pos, f32 *size, const f32 *scl, const LayerBasePos &base);
   static void calcMdlPos_Center_Center(f32 *pos, f32 *size, const f32 *scl, const LayerBasePos &base);
   static void calcLayerMatrix(LayerResMatrix &result, const LayerResMatrix &base, const LayerResMatrix &parent);
+  static void calcPlaceNode(LayerResNode *node, const LayerResNode *parent);
   static void calcLayerScaleMatrix(LayerResMatrix &result, const LayerBasePos &base, f32 x, f32 y);
   static void calcMatrixToZBuffPos(f32 &depth, f32 &param, const mm::Mat44 &matrix);
   static void createWorldMatrixUniform(grlib::CGLibDblUniformBlock *&uniform, const mm::Mat44 &matrix, f32 depth);

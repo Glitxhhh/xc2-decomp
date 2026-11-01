@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "layer/layer_manager.h"
+#include "layer/layer_obj_util.h"
 #include "layer/layer_res_node.h"
 #include "mm_math/mm_vec2.h"
 
@@ -179,11 +180,109 @@ f32 LayerObjPlace::updateGblFrm() {
   return frame;
 }
 
+void LayerObjPlace::calcNodePos(f32 frame) {
+  s32 count = unknown298->unknown40;
+  const unknown087 *entry = reinterpret_cast<const unknown087 *>(unknown298->unknown38);
+  LayerResNode *node = unknown298->unknown70;
+  for (s32 i = 0; i < count; i++, entry++, node++) {
+    node->unknown36 &= ~1;
+    const LyrPlaceData *place = reinterpret_cast<const LyrPlaceData *>(unknown298->unknown28) + entry->unknown06;
+    const unknown086 *keys = reinterpret_cast<const unknown086 *>(unknown298->unknown20 + place->unknown04);
+    const LayerResNode *parent = nullptr;
+    if (entry->unknown04 != -1) {
+      parent = &unknown298->unknown70[entry->unknown04];
+      if (parent->unknown36 & 1) {
+        node->unknown36 |= 1;
+        if (entry->unknown00 & 1) {
+          unknown003 *param = unknown2b0 + entry->unknown02;
+          param->unknown00 = 0.0f;
+          node->unknown34 = 0;
+        }
+        continue;
+      }
+    }
+    if (place->unknown32 & 2) {
+      node->unknown34 = 0;
+    } else {
+      unknown003 *param = unknown2b0 + entry->unknown02;
+      if (entry->unknown00 & 1) {
+        param->unknown00 += frame;
+        param->unknown04 = param->unknown00;
+      }
+      if (place->unknown38 < param->unknown04) {
+        node->unknown34 = place->unknown00 - 1;
+        node->unknown36 |= 1;
+        continue;
+      }
+      if (place->unknown3a > param->unknown04) {
+        node->unknown34 = 0;
+        node->unknown36 |= 1;
+        continue;
+      }
+      if (entry->unknown00 & 1) {
+        if (unknown1f8 >= 0.0f) {
+          if (place->unknown3c < param->unknown00) {
+            param->unknown00 = fmodf(param->unknown00, place->unknown3c);
+            param->unknown04 = param->unknown00;
+          }
+        } else if (param->unknown00 < 0.0f) {
+          param->unknown00 = place->unknown3c - param->unknown00;
+          param->unknown04 = param->unknown00;
+        }
+      }
+      if (place->unknown32 & 1) {
+        node->unknown34 = 0;
+      } else if (place->unknown34 < param->unknown04) {
+        node->unknown34 = place->unknown00 - 1;
+      } else {
+        s32 keyCount = place->unknown00;
+        for (s32 k = 0; k < keyCount; k++) {
+          if (keys[k].unknown00 <= param->unknown04) {
+            node->unknown34 = k;
+          }
+        }
+      }
+    }
+    if (keys[node->unknown34].unknown02 & 1) {
+      node->unknown36 |= 1;
+    } else {
+      s_resCallPlaceReset[entry->unknown01](node);
+      calcPartsNodePos(node, place, node->unknown34);
+      if (parent != nullptr) {
+        LayerObjUtil::calcPlaceNode(node, parent);
+      }
+    }
+  }
+}
+
 void LayerObjPlace::calcPartsNodePos(LayerResNode *node, const LyrPlaceData *data, s32 index) {
   u32 count = data->unknown30;
   for (u32 i = 0; i != count; i++) {
     s_resCallPlaceFormat[data->unknown2c[i]](node, data->unknown28[i], unknown298->unknown20 + data->unknown08[i], unknown298->unknown20 + data->unknown18[i], index);
   }
+}
+
+// Evidence: the game places it between LayerObjPlace::calcPartsNodePos and placeReset_Off, and calcNodePos inlines it.
+void LayerObjUtil::calcPlaceNode(LayerResNode *node, const LayerResNode *parent) {
+  f32 m00 = node->unknown08.x * parent->unknown08.x + node->unknown10.x * parent->unknown10.y;
+  f32 m01 = parent->unknown08.x * node->unknown10.y + parent->unknown10.y * node->unknown08.y;
+  f32 x = parent->unknown00.x + (parent->unknown08.x * node->unknown00.x + parent->unknown10.y * node->unknown00.y);
+  f32 m10 = node->unknown08.x * parent->unknown10.x + node->unknown10.x * parent->unknown08.y;
+  f32 m11 = node->unknown10.y * parent->unknown10.x + node->unknown08.y * parent->unknown08.y;
+  f32 y = parent->unknown00.y + (node->unknown00.x * parent->unknown10.x + node->unknown00.y * parent->unknown08.y);
+  node->unknown10.x = m10;
+  node->unknown10.y = m01;
+  node->unknown00.x = x;
+  node->unknown00.y = y;
+  node->unknown08.x = m00;
+  node->unknown08.y = m11;
+  node->unknown28[0] = parent->unknown28[0] + node->unknown28[0];
+  node->unknown28[1] = parent->unknown28[1] + node->unknown28[1];
+  node->unknown28[2] = parent->unknown28[2] + node->unknown28[2];
+  node->unknown18[0] = parent->unknown18[0] * node->unknown18[0];
+  node->unknown18[1] = parent->unknown18[1] * node->unknown18[1];
+  node->unknown18[2] = parent->unknown18[2] * node->unknown18[2];
+  node->unknown18[3] = parent->unknown18[3] * node->unknown18[3];
 }
 
 } // namespace layer

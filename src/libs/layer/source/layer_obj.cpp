@@ -90,12 +90,12 @@ LayerObj::LayerObj() {
   unknown20[0] = mm::Mat44::identity;
   unknown20[1] = mm::Mat44::identity;
   unknownc2 = 0;
-  unknown19c[2].unknown00 = mm::Pnt<f32>(0.0f, 0.0f);
+  unknown19c.unknown00[2].unknown00 = mm::Pnt<f32>(0.0f, 0.0f);
   unknown248 = nullptr;
   unknown240 = nullptr;
   unknown238 = nullptr;
-  unknown19c[2].unknown08 = unknown19c[2].unknown0c = 1.0f;
-  unknown19c[2].unknown10 = 0.0f;
+  unknown19c.unknown00[2].unknown08 = unknown19c.unknown00[2].unknown0c = 1.0f;
+  unknown19c.unknown00[2].unknown10 = 0.0f;
 }
 
 void LayerObj::resourceInit() {}
@@ -357,7 +357,7 @@ void LayerObj::setMatrix(const mm::Mat44 &matrix) {
 }
 
 void LayerObj::setUVParams(f32 u, f32 v, f32 scaleU, f32 scaleV, f32 rot) {
-  LayerResUvParam &uvParam = unknown19c[LayerManager::s_nStkIdx];
+  unknown023 &uvParam = unknown19c.unknown00[LayerManager::s_nStkIdx];
   uvParam.unknown00.x = u;
   uvParam.unknown00.y = v;
   uvParam.unknown08 = scaleU;

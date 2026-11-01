@@ -40,6 +40,8 @@ public:
   void updateMeshUniformBlock(LayerArgMdlRenInf &info);
   f32 getWinSclW(const LayerResMatrix &matrix) const;
   f32 getWinSclH(const LayerResMatrix &matrix) const;
+  void call_uniform_icon(LayerArgMdlRenInf &info);
+  void call_uniform_number(LayerArgMdlRenInf &info);
   void call_uniform_noImage(LayerArgMdlRenInf &info);
   void call_uniform_win_ga_X(LayerArgMdlRenInf &info);
   void call_uniform_win_ga_Y(LayerArgMdlRenInf &info);
