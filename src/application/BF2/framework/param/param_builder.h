@@ -10,6 +10,7 @@ class Reflection;
 class ParamBuilder {
 public:
   static mm::mtl::IntrusivePtr<ParamList> importBinary(void *data, Reflection *reflection);
+  static bool restore(void *data);
 };
 
 } // namespace fw

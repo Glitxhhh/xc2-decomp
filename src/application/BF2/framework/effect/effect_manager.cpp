@@ -13,6 +13,11 @@
 #include "framework/effect/effect_data.h"
 #include "framework/effect/effect_pack.h"
 #include "framework/framework.h"
+#include "framework/memory/framework_memory.h"
+#include "fw/fw_render_resource.h"
+#include "grlib/cglib_tex_swizzle.h"
+#include "grlib/cglib_texture.h"
+#include "grlib/cglib_texture_buffer.h"
 #include "ml/dev_file_th.h"
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
@@ -21,6 +26,10 @@
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "mtl/mem_manager.h"
+
+namespace ml {
+class IDrDrawWorkInfo;
+} // namespace ml
 
 namespace ptlib {
 struct DrDrawWorkInfoEF;
@@ -55,6 +64,48 @@ bool EffectManager::isCommonLoaded() { return commonLoaded(); }
 void EffectManager::getNum(u32 &emitterNum, u32 &particleNum, u32 &drawNum) {
   if (effect::SystemManager::isValid()) {
     effect::SystemManager::getPtr()->getNum(emitterNum, particleNum, drawNum);
+  }
+}
+
+void EffectManager::es_clearall(bool isForce) {
+  if (isForce) {
+    for (u32 i = 0; i < unknown1fb8.size(); i++) {
+      if (unknown1fb8[i].unknown08 != nullptr) {
+        unknown1fb8[i].unknown08->release();
+        unknown1fb8[i].unknown08 = nullptr;
+      }
+      if (unknown1fb8[i].unknown00 != nullptr) {
+        unknown1fb8[i].unknown00->release();
+        unknown1fb8[i].unknown00 = nullptr;
+      }
+    }
+    unknown1fb8.clear();
+    PackMap::iterator it = unknown348->begin();
+    while (it != unknown348->end()) {
+      if (it->second != nullptr) {
+        it->second->release();
+      }
+      it = unknown348->erase(it);
+    }
+  } else {
+    PackMap::iterator it = unknown348->begin();
+    while (it != unknown348->end()) {
+      EffectPack *pack = it->second;
+      if (!pack->unknown54) {
+        if (pack != nullptr) {
+          pack->release();
+        }
+        it = unknown348->erase(it);
+      } else {
+        ++it;
+      }
+    }
+  }
+  if (effect::SystemManager::getPtr() != nullptr) {
+    effect::SystemManager::getPtr()->es_clearall(isForce);
+  }
+  if (isForce) {
+    unknown27c0 = 0;
   }
 }
 
@@ -278,6 +329,16 @@ u32 EffectManager::create(void *data, const mm::Mat44 &matrix, const mm::Vec3 &s
   param.unknown00 = matrix;
   param.unknown60 = scale;
   return effect::SystemManager::getPtr()->es_create(data, &param, isLoop);
+}
+
+EffectManager::KizunaWork::KizunaWork() : unknown00(0.005f) {
+  unknown440 = mm::Vec3(0.0f, 0.5f, 0.5f);
+  unknown45b = false;
+  unknown459 = 0;
+  unknown468 = nullptr;
+  for (u32 i = 0; i < unknown002; i++) {
+    unknown3f0[i] = 0;
+  }
 }
 
 EffectManager::KizunaWork::~KizunaWork() { term(); }
@@ -549,6 +610,17 @@ void *EffectManager::seachAssetEffectHandle(const char *name) {
   }
 
   return nullptr;
+}
+
+void EffectManager::efSystemStart(const ml::IDrDrawWorkInfo *info) {
+  if (!unknown2fd9 && effect::SystemManager::getPtr() == nullptr) {
+    effect::SystemManager::setUserAllocFunc(effectAllocSys, effectFreeSys, effectAllocRes, effectFreeRes, effectSysHandle, effectResHandle);
+    effect::SystemManager::setUserFileFunc(debugReadFile, debugReadFileEnd);
+    effect::SystemManager::setUserOutputString(debugOutputString, warnOutputString);
+    effect::SystemManager::setUserDrFunc(
+        createMdl, deleteMdl, createLgt, deleteLgt, setMdlPos, setMdlMatrix, setMdlColor, setMdlAlpha, setMdlSpeed, setLgtPos, setLgtMatrix, setLgtParam, debugRenderer, createGroup, destroyGroup);
+    effect::SystemManager::create(reinterpret_cast<const ptlib::DrDrawWorkInfoEF *>(info));
+  }
 }
 
 void *EffectManager::effectAllocSys(void *user, u32 size, u32 alignment, const char *name, u32 line) { return mtl::MemManager::allocate(get()->unknown2c, size, alignment, false, "no name", 0); }
@@ -837,6 +909,30 @@ void EffectManager::end() {
 
   if (effect::SystemManager::getPtr() != nullptr) {
     effect::SystemManager::getPtr()->end();
+  }
+}
+
+void EffectManager::apply(const ml::IDrDrawWorkInfo *info) {
+  efSystemStart(info);
+  if (unknown2fd0 == 2) {
+    unknown2fd0 = 3;
+    for (u32 i = 0; i < unknown27c8.size(); i++) {
+      unknown008 &texture = unknown27c8[i];
+      if (texture.unknown00 != nullptr && texture.unknown00->getAssetSize() != 0) {
+#line 2607
+        grlib::CGLibTextureBuffer *buffer = new (Framework::getAllocator(), 16, __FILE__, __LINE__) grlib::CGLibTextureBuffer();
+        grlib::CGLibTexSwizzle swizzle;
+        swizzle = {1, 1, 1, 2};
+        grlib::CGLibTexture::createTextureImagePtrs(*buffer, texture.unknown00->getAssetData(), texture.unknown00->getAssetSize(), false, &swizzle, false);
+        unknown37760.push_back(buffer);
+      }
+    }
+  }
+  if (effect::SystemManager::getPtr() != nullptr) {
+    for (u32 i = 0; i < 8; i++) {
+      effect::SystemManager::getPtr()->setCategorySpd(i, unknown37958[i]);
+    }
+    effect::SystemManager::getPtr()->apply(reinterpret_cast<const ptlib::DrDrawWorkInfoEF *>(info));
   }
 }
 

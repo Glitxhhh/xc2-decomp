@@ -1,4 +1,5 @@
 #pragma once
+#include "framework/reflection.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/singleton.h"
@@ -15,12 +16,30 @@ public:
     const void *param;
   };
 
-  u32 unknown0c;         // Inferred role: count; original member name unknown.
-  unknown005 *unknown10; // Inferred role: entries; original member name unknown.
+  // Inferred role: header of a resolved param binary; original type name unknown.
+  struct unknown006 {
+    u32 unknown00;         // Inferred role: entry count; original member name unknown.
+    unknown005 *unknown08; // Inferred role: entries; original member name unknown.
+  };
+
+  explicit ParamList(const unknown006 *binary) : unknown0c(0), unknown10(nullptr) {
+    if (binary != nullptr) {
+      unknown0c = binary->unknown00;
+      unknown10 = binary->unknown08;
+    }
+  }
+
+  u32 unknown0c;                               // Inferred role: count; original member name unknown.
+  unknown005 *unknown10;                       // Inferred role: entries; original member name unknown.
+  mm::mtl::IntrusivePtr<Reflection> unknown18; // Inferred role: reflection of the entries; original member name unknown.
 };
+
+static_assert(offsetof(ParamList::unknown006, unknown08) == 0x08, "");
 
 static_assert(offsetof(ParamList, unknown0c) == 0x0c, "");
 static_assert(offsetof(ParamList, unknown10) == 0x10, "");
+static_assert(offsetof(ParamList, unknown18) == 0x18, "");
+static_assert(sizeof(ParamList) == 0x20, "");
 
 class ParamAdapter {
 public:

@@ -32,8 +32,13 @@ class IAllocator;
 
 namespace ml {
 class DrMdlObj;
+class IDrDrawWorkInfo;
 class Scn;
 } // namespace ml
+
+namespace grlib {
+class CGLibTextureBuffer;
+} // namespace grlib
 
 namespace effect {
 struct SendParam;
@@ -53,7 +58,9 @@ class EffectManager : public mm::mtl::PtrSingleton<EffectManager>, public Manage
 public:
   static const u32 LAYER_MAX = 32;
   static const u32 COMMON_EFFECT_MAX = 128;
-  static const u32 unknown002 = 8; // Inferred role: kizuna line slot count, slot 0 is unused; original name unknown.
+  static const u32 unknown002 = 8;   // Inferred role: kizuna line slot count, slot 0 is unused; original name unknown.
+  static const u32 unknown003 = 128; // Inferred role: kizuna line texture resource capacity; original name unknown.
+  static const u32 unknown004 = 32;  // Inferred role: kizuna line texture capacity; original name unknown.
 
   struct CasterGroup {
     mm::mtl::IntrusiveList<EffectCasterSend> unknown00; // Inferred role: casters; original member name unknown.
@@ -70,6 +77,7 @@ public:
     static const u32 unknown001 = 20; // Inferred role: rope point count; original name unknown.
     static const u32 unknown002 = 8;  // Inferred role: effect handle count; original name unknown.
 
+    KizunaWork();
     ~KizunaWork();
     void term();
 
@@ -106,6 +114,7 @@ public:
   void updateLayerPost(const UpdateInfo &info, u32 layers);
   void tail(const UpdateInfo &info, bool flag);
   void getNum(u32 &emitterNum, u32 &particleNum, u32 &drawNum);
+  void es_clearall(bool isForce);
   static void efSystemEnd();
   void addPack(EffectPack *pack);
   void removePack(EffectPack *pack);
@@ -171,6 +180,7 @@ public:
   bool containsCamAxis(void *data) const;
   bool containsCamAxis(const char *name, EffectPack *pack) const;
   void *seachAssetEffectHandle(const char *name);
+  void efSystemStart(const ml::IDrDrawWorkInfo *info);
   static void *effectAllocSys(void *user, u32 size, u32 alignment, const char *name, u32 line);
   static void effectFreeSys(void *user, void *pointer);
   static void *effectAllocRes(void *user, u32 size, u32 alignment, const char *name, u32 line);
@@ -183,6 +193,7 @@ public:
   static void warnOutputString(const char *string);
   static void *createMdl(const void *data, const char *name, int index, const void *group, int groupIndex);
   static void deleteMdl(void *model);
+  static void *createLgt(u32 type, int index);
   static void deleteLgt(u32 type, void *light);
   static void setMdlPos(void *model, void *position);
   static void setMdlMatrix(void *model, void *matrix);
@@ -191,6 +202,8 @@ public:
   static void setMdlSpeed(void *model, void *speed);
   static void setLgtPos(u32 type, void *light, void *position);
   static void setLgtMatrix(u32 type, void *light, void *matrix);
+  static void setLgtParam(u32 type, void *light, void *param);
+  static void debugRenderer(void *work);
   static void *createGroup(int num, int flags);
   static void destroyGroup(void *group);
   static bool isEfSystemValid();
@@ -220,6 +233,7 @@ public:
   void setPerfLoggingCsv(bool isLogging);
   void begin() override;
   void end() override;
+  void apply(const ml::IDrDrawWorkInfo *info) override;
   void opacityRender(const ml::IDrDrawWorkInfo *info) override;
   void alphaRender(const ml::IDrDrawWorkInfo *info) override;
   void lastRender(const ml::IDrDrawWorkInfo *info) override;
@@ -237,15 +251,20 @@ public:
   DataMap *unknown350;                                   // Inferred role: data map; original member name unknown.
   u8 _358[0x1fb8 - 0x358];
   mm::mtl::FixedVector<unknown008, COMMON_EFFECT_MAX> unknown1fb8; // Inferred role: common effects; original member name unknown.
-  u8 _27c0[0x2fd5 - 0x27c0];
+  u32 unknown27c0;                                                 // Inferred role: common effect load step, switched on by commonLoaded; original member name unknown.
+  u8 _27c4[0x27c8 - 0x27c4];
+  mm::mtl::FixedVector<unknown008, unknown003> unknown27c8; // Inferred role: kizuna line texture resources; original member name unknown.
+  u32 unknown2fd0;                                          // Inferred role: kizuna line texture load step; original member name unknown.
+  u8 _2fd4[0x2fd5 - 0x2fd4];
   bool unknown2fd5; // Inferred role: master pause; original member name unknown.
   bool unknown2fd6; // Inferred role: finalizing; original member name unknown.
   u8 _2fd7[0x2fd8 - 0x2fd7];
   u8 unknown2fd8;   // Inferred role: caster buffer index flipped every tail; original member name unknown.
   bool unknown2fd9; // Inferred role: destroy the effect system on tail; original member name unknown.
   u8 _2fda[0x353e0 - 0x2fda];
-  KizunaWork unknown353e0[unknown002]; // Inferred role: kizuna lines; original member name unknown.
-  u8 _37760[0x37958 - 0x37760];
+  KizunaWork unknown353e0[unknown002];                                        // Inferred role: kizuna lines; original member name unknown.
+  mm::mtl::FixedVector<grlib::CGLibTextureBuffer *, unknown004> unknown37760; // Inferred role: kizuna line textures; original member name unknown.
+  u8 _37868[0x37958 - 0x37868];
   f32 unknown37958[8]; // Inferred role: speed of each effect category, passed to effect::SystemManager::setCategorySpd; original member name unknown.
   u8 _37978[0x37980 - 0x37978];
 };
@@ -269,11 +288,15 @@ static_assert(offsetof(EffectManager, unknown48) == 0x48, "");
 static_assert(offsetof(EffectManager, unknown348) == 0x348, "");
 static_assert(offsetof(EffectManager, unknown350) == 0x350, "");
 static_assert(offsetof(EffectManager, unknown1fb8) == 0x1fb8, "");
+static_assert(offsetof(EffectManager, unknown27c0) == 0x27c0, "");
+static_assert(offsetof(EffectManager, unknown27c8) == 0x27c8, "");
+static_assert(offsetof(EffectManager, unknown2fd0) == 0x2fd0, "");
 static_assert(offsetof(EffectManager, unknown2fd5) == 0x2fd5, "");
 static_assert(offsetof(EffectManager, unknown2fd6) == 0x2fd6, "");
 static_assert(offsetof(EffectManager, unknown2fd8) == 0x2fd8, "");
 static_assert(offsetof(EffectManager, unknown2fd9) == 0x2fd9, "");
 static_assert(offsetof(EffectManager, unknown353e0) == 0x353e0, "");
+static_assert(offsetof(EffectManager, unknown37760) == 0x37760, "");
 static_assert(offsetof(EffectManager, unknown37958) == 0x37958, "");
 static_assert(sizeof(EffectManager) == 0x37980, "");
 
