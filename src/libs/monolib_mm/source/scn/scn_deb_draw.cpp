@@ -443,38 +443,7 @@ void DebDrawCmd::begin(u32 primitive, u32 count) {
     break;
   }
   if (unknown08 & 8) {
-    unknown280.rows[0][0] =
-        unknown40.rows[0][0] * unknown100.rows[0][0] + unknown40.rows[0][1] * unknown100.rows[1][0] + unknown40.rows[0][2] * unknown100.rows[2][0] + unknown40.rows[0][3] * unknown100.rows[3][0];
-    unknown280.rows[0][1] =
-        unknown40.rows[0][0] * unknown100.rows[0][1] + unknown40.rows[0][1] * unknown100.rows[1][1] + unknown40.rows[0][2] * unknown100.rows[2][1] + unknown40.rows[0][3] * unknown100.rows[3][1];
-    unknown280.rows[0][2] =
-        unknown40.rows[0][0] * unknown100.rows[0][2] + unknown40.rows[0][1] * unknown100.rows[1][2] + unknown40.rows[0][2] * unknown100.rows[2][2] + unknown40.rows[0][3] * unknown100.rows[3][2];
-    unknown280.rows[0][3] =
-        unknown40.rows[0][0] * unknown100.rows[0][3] + unknown40.rows[0][1] * unknown100.rows[1][3] + unknown40.rows[0][2] * unknown100.rows[2][3] + unknown40.rows[0][3] * unknown100.rows[3][3];
-    unknown280.rows[1][0] =
-        unknown40.rows[1][0] * unknown100.rows[0][0] + unknown40.rows[1][1] * unknown100.rows[1][0] + unknown40.rows[1][2] * unknown100.rows[2][0] + unknown40.rows[1][3] * unknown100.rows[3][0];
-    unknown280.rows[1][1] =
-        unknown40.rows[1][0] * unknown100.rows[0][1] + unknown40.rows[1][1] * unknown100.rows[1][1] + unknown40.rows[1][2] * unknown100.rows[2][1] + unknown40.rows[1][3] * unknown100.rows[3][1];
-    unknown280.rows[1][2] =
-        unknown40.rows[1][0] * unknown100.rows[0][2] + unknown40.rows[1][1] * unknown100.rows[1][2] + unknown40.rows[1][2] * unknown100.rows[2][2] + unknown40.rows[1][3] * unknown100.rows[3][2];
-    unknown280.rows[1][3] =
-        unknown40.rows[1][0] * unknown100.rows[0][3] + unknown40.rows[1][1] * unknown100.rows[1][3] + unknown40.rows[1][2] * unknown100.rows[2][3] + unknown40.rows[1][3] * unknown100.rows[3][3];
-    unknown280.rows[2][0] =
-        unknown40.rows[2][0] * unknown100.rows[0][0] + unknown40.rows[2][1] * unknown100.rows[1][0] + unknown40.rows[2][2] * unknown100.rows[2][0] + unknown40.rows[2][3] * unknown100.rows[3][0];
-    unknown280.rows[2][1] =
-        unknown40.rows[2][0] * unknown100.rows[0][1] + unknown40.rows[2][1] * unknown100.rows[1][1] + unknown40.rows[2][2] * unknown100.rows[2][1] + unknown40.rows[2][3] * unknown100.rows[3][1];
-    unknown280.rows[2][2] =
-        unknown40.rows[2][0] * unknown100.rows[0][2] + unknown40.rows[2][1] * unknown100.rows[1][2] + unknown40.rows[2][2] * unknown100.rows[2][2] + unknown40.rows[2][3] * unknown100.rows[3][2];
-    unknown280.rows[2][3] =
-        unknown40.rows[2][0] * unknown100.rows[0][3] + unknown40.rows[2][1] * unknown100.rows[1][3] + unknown40.rows[2][2] * unknown100.rows[2][3] + unknown40.rows[2][3] * unknown100.rows[3][3];
-    unknown280.rows[3][0] =
-        unknown40.rows[3][0] * unknown100.rows[0][0] + unknown40.rows[3][1] * unknown100.rows[1][0] + unknown40.rows[3][2] * unknown100.rows[2][0] + unknown40.rows[3][3] * unknown100.rows[3][0];
-    unknown280.rows[3][1] =
-        unknown40.rows[3][0] * unknown100.rows[0][1] + unknown40.rows[3][1] * unknown100.rows[1][1] + unknown40.rows[3][2] * unknown100.rows[2][1] + unknown40.rows[3][3] * unknown100.rows[3][1];
-    unknown280.rows[3][2] =
-        unknown40.rows[3][0] * unknown100.rows[0][2] + unknown40.rows[3][1] * unknown100.rows[1][2] + unknown40.rows[3][2] * unknown100.rows[2][2] + unknown40.rows[3][3] * unknown100.rows[3][2];
-    unknown280.rows[3][3] =
-        unknown40.rows[3][0] * unknown100.rows[0][3] + unknown40.rows[3][1] * unknown100.rows[1][3] + unknown40.rows[3][2] * unknown100.rows[2][3] + unknown40.rows[3][3] * unknown100.rows[3][3];
+    unknown280.unknown009(unknown40, unknown100);
   } else {
     DevGraph::get()->getOrthoSys(unknown280);
   }

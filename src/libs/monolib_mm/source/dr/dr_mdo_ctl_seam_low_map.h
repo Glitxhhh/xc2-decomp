@@ -9,6 +9,7 @@ class DrMdoCtlSeamLowMap : public DrMdoCtlSeam {
 public:
   void releaseLowMap();
   void releaseFreeSeamLow(DrResMdoSeamWrkLow *low);
+  DrResMdoSeamWrkLow *createFreeSeamLow();
   void updateLowMap();
   void readLowMapCheck();
   void updateLowMapRenderList();

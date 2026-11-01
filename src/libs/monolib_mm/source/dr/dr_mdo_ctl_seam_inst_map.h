@@ -18,6 +18,7 @@ class DrMdoCtlSeamInstMap : public DrMdoCtlSeam {
 public:
   void releaseInstMap();
   void releaseFreeSeamInst(DrResMdoSeamWrkInst *inst);
+  DrResMdoSeamWrkInst *createFreeSeamInst();
   void updateInstMap(MdoArgSeamUpdate &arg);
   void readInstMapCheck();
   void updateInstMapRenderList(MdoArgSeamUpdate &arg);

@@ -4,6 +4,9 @@
 #include "types.h"
 
 namespace ml {
+class DrMdoCtlSeamInstMap;
+class DrResMdoSeamMemObj;
+struct MdoWrkMatRes;
 
 class DrResMdoSeamWrkInst {
 public:
@@ -17,22 +20,35 @@ public:
   void linkReadMdl();
   void linkReadMdl(u32 index);
   u32 isSubMdl(u32 index);
+  void releaseCache(DrMdoCtlSeamInstMap *ctl);
 
   u8 _00[0x08 - 0x00];
   DrResMdoSeamWrkInst *unknown08; // Inferred role: next object; original member name unknown.
-  u8 _10[0x20 - 0x10];
+  DrResMdoSeamWrkInst *unknown10; // Inferred role: previous object; original member name unknown.
+  u8 _18[0x20 - 0x18];
   const unknown001 *unknown20; // Inferred role: instance map header; original member name unknown.
-  u8 _28[0x88 - 0x28];
+  u8 _28[0x50 - 0x28];
+  MdoWrkMatRes *unknown50; // Inferred role: material work; original member name unknown.
+  u8 _58[0x68 - 0x58];
+  u32 unknown68; // Inferred role: inst map index; original member name unknown.
+  u8 _6c[0x84 - 0x6c];
+  s32 unknown84; // Inferred role: memory size; original member name unknown.
   s16 unknown88; // Inferred role: read count; original member name unknown.
   u8 _8a[0xc8 - 0x8a];
   u32 *unknownc8;       // Inferred role: read model bit table; original member name unknown.
   const u32 *unknownd0; // Inferred role: sub model bit table; original member name unknown.
-  u8 _d8[0x150 - 0xd8];
+  u8 _d8[0x108 - 0xd8];
+  DrResMdoSeamMemObj *unknown108; // Inferred role: memory object; original member name unknown.
+  u8 _110[0x150 - 0x110];
   u16 unknown150; // Inferred role: model info index; original member name unknown.
   u8 _152[0x1c0 - 0x152];
 };
 
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown20) == 0x20, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown50) == 0x50, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown68) == 0x68, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown84) == 0x84, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown108) == 0x108, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown88) == 0x88, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknownc8) == 0xc8, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknownd0) == 0xd0, "");

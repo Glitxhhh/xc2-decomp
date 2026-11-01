@@ -549,6 +549,9 @@ public:
   int getFurShaderRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes *matRes);
   void resetFurShaderRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes);
   void releaseMat();
+  void releaseBaseMapSeamMat(MdoWrkMatRes *matRes);
+  void releaseInstMapSeamMat(MdoWrkMatRes *matRes);
+  void releaseMpfMapSeamMat(MdoWrkMatRes *matRes);
   void setDrMan(DrMan *drMan);
   void updateAlphaCall();
   bool isBloomMdl() const;

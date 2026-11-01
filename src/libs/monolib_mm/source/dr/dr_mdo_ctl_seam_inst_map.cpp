@@ -1,14 +1,36 @@
 #include "dr/dr_mdo_ctl_seam_inst_map.h"
+
+#include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 
 namespace ml {
+class DrResMdoSeamMemObj;
 
 void DrMdoCtlSeamInstMap::releaseInstMap() {
-  DrResMdoSeamWrkInst *inst = unknown310;
+  DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00;
   while (inst != nullptr) {
     DrResMdoSeamWrkInst *next = inst->unknown08;
     releaseFreeSeamInst(inst);
     inst = next;
+  }
+}
+
+DrResMdoSeamWrkInst *DrMdoCtlSeamInstMap::createFreeSeamInst() { return unknown300.unknown001(); }
+
+void DrMdoCtlSeamInstMap::releaseFreeSeamInst(DrResMdoSeamWrkInst *inst) {
+  DrResMdoSeamMemObj *mem = nullptr;
+  if (inst->unknown50 != nullptr) {
+    mem = inst->unknown108;
+    unknownb80[inst->unknown68 >> 5] &= ~(1 << (inst->unknown68 & 0x1f));
+    unknownc48 -= inst->unknown84;
+    releaseInstMapSeamMat(inst->unknown50);
+    inst->releaseCache(this);
+    unknownc04--;
+  }
+  unknown300.unknown002(inst);
+  if (mem != nullptr) {
+    inst->unknown108 = nullptr;
+    unknown6e0.releaseFreeObj(mem);
   }
 }
 

@@ -21,6 +21,7 @@ public:
   void releaseBaseMap();
   DrResMdoSeamWrkBase *seachBaseIdx(int index);
   void releaseFreeSeamBase(DrResMdoSeamWrkBase *base);
+  DrResMdoSeamWrkBase *createFreeSeamBase();
 };
 
 } // namespace ml

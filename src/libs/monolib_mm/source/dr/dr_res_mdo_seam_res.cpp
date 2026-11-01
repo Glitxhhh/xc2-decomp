@@ -9,7 +9,8 @@ namespace ml {
 int DrResMdoSeamTexList::SEAMRES_TEXLIST_CNTMAX = 60;
 
 DrResMdoSeamTexList::DrResMdoSeamTexList(int index)
-    : unknown08(nullptr), _10(), unknown18(nullptr), unknown20(nullptr), unknown28(nullptr), m_buffer(nullptr), unknown38(index), unknown3a(0), unknown3b(false), unknown3c(0), unknown3e(0) {}
+    : unknown08(nullptr), unknown10(nullptr), unknown18(nullptr), unknown20(nullptr), unknown28(nullptr), m_buffer(nullptr), unknown38(index), unknown3a(0), unknown3b(false), unknown3c(0),
+      unknown3e(0) {}
 
 DrResMdoSeamTexList::~DrResMdoSeamTexList() {
   release();
@@ -37,7 +38,7 @@ int DrResMdoSeamTexture::SEAMRES_HEIGHT_CNTMAX = 60;
 int DrResMdoSeamVertex::SEAMRES_CNTMAX = 60;
 
 DrResMdoSeamTexture::DrResMdoSeamTexture(int index)
-    : unknown08(nullptr), _10(), unknown88(nullptr), unknown90(nullptr), unknown98(0), unknown9c(index), unknown9e(0), unknowna0(0), unknowna1(false), unknowna2(0), unknowna3(0) {}
+    : unknown08(nullptr), unknown10(nullptr), unknown88(nullptr), unknown90(nullptr), unknown98(0), unknown9c(index), unknown9e(0), unknowna0(0), unknowna1(false), unknowna2(0), unknowna3(0) {}
 
 DrResMdoSeamTexture::~DrResMdoSeamTexture() {
   unknown18.release();
@@ -96,7 +97,7 @@ void DrResMdoSeamTexture::changeMemTexture(int size) { grlib::CGLibTexture::chan
 
 void DrResMdoSeamTexture::changeMemTexture(int size, int heightSize) { grlib::CGLibTexture::changeMixTextureImagePtrs(unknown18, unknown88->m_buffer, size, heightSize); }
 
-DrResMdoSeamVertex::DrResMdoSeamVertex(int index) : unknown08(nullptr), _10(), unknown18(nullptr), unknown20(nullptr), unknown28(index), unknown2a(0), _2c(), unknown2e(false) {}
+DrResMdoSeamVertex::DrResMdoSeamVertex(int index) : unknown08(nullptr), unknown10(nullptr), unknown18(nullptr), unknown20(nullptr), unknown28(index), unknown2a(0), unknown2c(0), unknown2e(false) {}
 
 DrResMdoSeamVertex::~DrResMdoSeamVertex() { release(); }
 

@@ -15,6 +15,7 @@ public:
   u32 getFreeSize();
   u32 getFreeSize(int &freeCount, int &separatedCount);
   void renderMemInfo();
+  void releaseFreeObj(DrResMdoSeamMemObj *obj);
 
   DrResMdoSeamMemObj *unknown00; // Inferred role: first object of the list; original member name unknown.
 };

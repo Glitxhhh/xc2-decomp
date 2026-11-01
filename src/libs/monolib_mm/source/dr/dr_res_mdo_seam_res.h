@@ -40,8 +40,8 @@ public:
   void createTextureList(mtl::ALLOC_HANDLE handle);
   bool isTextureErrChk(const u16 *errors);
 
-  DrResMdoSeamTexList *unknown08; // Inferred role: next; original member name unknown.
-  u8 _10[0x18 - 0x10];
+  DrResMdoSeamTexList *unknown08;       // Inferred role: next; original member name unknown.
+  DrResMdoSeamTexList *unknown10;       // Inferred role: prev; original member name unknown.
   DrResMdoSeamMemObj *unknown18;        // Inferred role: mem object; original member name unknown.
   grlib::CGLibTextureBuffer *unknown20; // Inferred role: textures; original member name unknown.
   const u8 *unknown28;                  // Inferred role: header; original member name unknown.
@@ -75,8 +75,8 @@ public:
   void changeMemTexture(int size);
   void changeMemTexture(int size, int heightSize);
 
-  DrResMdoSeamTexture *unknown08; // Inferred role: next; original member name unknown.
-  u8 _10[0x18 - 0x10];
+  DrResMdoSeamTexture *unknown08;      // Inferred role: next; original member name unknown.
+  DrResMdoSeamTexture *unknown10;      // Inferred role: prev; original member name unknown.
   grlib::CGLibTextureBuffer unknown18; // Inferred role: texture; original member name unknown.
   DrResMdoSeamMemObj *unknown88;       // Inferred role: mem object; original member name unknown.
   DrResMdoSeamMemObj *unknown90;       // Inferred role: height mem object; original member name unknown.
@@ -107,13 +107,13 @@ public:
   void changeMemVertex();
 
   DrResMdoSeamVertex *unknown08; // Inferred role: next; original member name unknown.
-  u8 _10[0x18 - 0x10];
+  DrResMdoSeamVertex *unknown10; // Inferred role: prev; original member name unknown.
   DrResMdoSeamMemObj *unknown18; // Inferred role: mem object; original member name unknown.
   DrResMdoVertex *unknown20;     // Inferred role: vertex; original member name unknown.
   u16 unknown28;                 // Inferred role: index; original member name unknown.
   s16 unknown2a;                 // Inferred role: cnt; original member name unknown.
-  u8 _2c[0x2e - 0x2c];
-  u16 unknown2e; // Inferred role: is change mem; original member name unknown.
+  u16 unknown2c;                 // Inferred role: seam idx; original member name unknown.
+  u16 unknown2e;                 // Inferred role: is change mem; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoSeamVertex, unknown18) == 0x18, "");
