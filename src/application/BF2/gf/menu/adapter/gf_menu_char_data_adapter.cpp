@@ -906,4 +906,177 @@ bool GfMenuCharDataAdapter::update_EN_RewardGold(const DataParamAcc &acc) {
   return false;
 }
 
+bool GfMenuCharDataAdapter::update_DR_ExpProgress(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    if (acc.getLevel(false) < 99) {
+      f32 exp = acc.getBattleExp();
+      f32 next = GfDataDriver::getExpSetLevel(acc.getValidDriverId(), acc.getLevel(false) + 1);
+      u32 progress;
+      if (exp >= next) {
+        progress = 100;
+      } else {
+        progress = exp / next * 100.0f;
+      }
+      setNumber(progress);
+    } else {
+      setNumber(0);
+    }
+    setNumberMax(100);
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_DR_ExpProgressBonus(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    if (acc.getLevel(false) < 99) {
+      f32 exp = acc.getBattleExp() + acc.getExp();
+      f32 next = GfDataDriver::getExpSetLevel(acc.getValidDriverId(), acc.getLevel(false) + 1);
+      u32 progress;
+      if (exp >= next) {
+        progress = 100;
+      } else {
+        progress = exp / next * 100.0f;
+      }
+      setNumber(progress);
+    } else {
+      setNumber(0);
+    }
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_DR_ClassBuffName(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    u32 type = GfMenuObjUtil::getDriverClassBuffType(acc.getClass(unknown79 == 1), unknown80);
+    if (type != 0) {
+      ui::UIStr text(GfDataBdat::getFP(BDAT_MENU_CLASS), type);
+      setText(text);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_BL_DR_Name(const DataParamAcc &acc) {
+  u32 driver = GfDataBlade::getCreator(acc.getValidBdatId());
+  if (driver != 0) {
+    DataParamAcc driverAcc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+    setText(GfMenuObjUtil::getName(driverAcc));
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_BL_AffinityText(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    GfIdea rank = GfDataBlade::getTrustRank(acc.getValidBdatId());
+    setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_ST_CONGENIALITY), rank));
+    return rank != 0;
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_BL_CVName(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    u32 blade = acc.getValidBdatId();
+    if (GfMenuObjUtil::isValidBlade(blade)) {
+      u32 name = GfDataBlade::getMenuCastName(blade);
+      if (name != 0) {
+        ui::UIStr text(GfDataBdat::getFP(BDAT_MENU_CAST_NAME), name);
+        setText(text);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_BL_IlustName(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    u32 blade = acc.getValidBdatId();
+    if (GfMenuObjUtil::isValidBlade(blade)) {
+      u32 name = GfDataBlade::getMenuIlustName(blade);
+      if (name != 0) {
+        ui::UIStr text(GfDataBdat::getFP(BDAT_MENU_ILUST_NAME), name);
+        setText(text);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_EN_Family(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_ENEMY) {
+    GfBdatRsc *bdatRsc = GfBdatRsc::get();
+    if (bdatRsc != nullptr) {
+      u8 *bdat = GfDataBdat::getFP(BDAT_MNU_MSG_ENB_FAMILY);
+      if (bdat != nullptr) {
+        u32 rsc = GfDataEnemy::getRscIdByArrangeId(acc.getValidBdatId());
+        if (rsc != 0) {
+          u32 family = bdatRsc->getRscEnTypeFamily(rsc);
+          if (family == 0) {
+            return false;
+          }
+          u32 name = Bdat::getVal(bdat, "name", family - 1).valueU16;
+          ui::UIStr text(GfDataBdat::getFP(BDAT_MENU_ENEMY_CATEGORY), name);
+          setText(text);
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_BL_GenderText(const DataParamAcc &acc) {
+  if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    u32 gender;
+    if (GfDataBlade::isMale(acc.getValidBdatId())) {
+      gender = 0;
+    } else if (GfDataBlade::isFemale(acc.getValidBdatId())) {
+      gender = 1;
+    } else {
+      gender = 2;
+    }
+    u8 *bdat = GfDataBdat::getFP(BDAT_MNU_MSG_GENDER);
+    u32 top = Bdat::getIdTop(bdat);
+    u8 *msBdat = GfDataBdat::getFP(BDAT_MENU_MS);
+    u16 name = Bdat::getVal(bdat, "name", top + gender).valueU16;
+    ui::UIStr text(msBdat, name);
+    setText(text);
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuCharDataAdapter::update_BL_SkillDesc(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  u32 index = getBL_SkillIndex(acc);
+  if (index >= 3) {
+    return false;
+  }
+  u32 skill = acc.getBladeSkill(index, false);
+  if (skill == 0) {
+    return false;
+  }
+  if (acc.getBladeSkillLevel(index, false) == 0) {
+    return false;
+  }
+  u8 *bdat;
+  u32 textId;
+  if (!GfDataBladeSkill::getEnhanceCaption(bdat, textId, skill, acc.getBladeSkillLevel(index, false))) {
+    return false;
+  }
+  u16 enhance = GfDataBladeSkill::getEnhance(skill, acc.getBladeSkillLevel(index, false));
+  ui::UIStr text(bdat, textId);
+  text.unknown12 = enhance;
+  setText(text);
+  return true;
+}
+
 } // namespace gf

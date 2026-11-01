@@ -1,8 +1,15 @@
 #include "gf/menu/gf_menu_item_util.h"
 
+#include "gf/data/gf_bdat_item.h"
+#include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_util.h"
+#include "gf/game/gf_game_party.h"
+#include "gf/util/gf_equip_util.h"
 #include "gf/util/gf_item_util.h"
+#include "gf/util/gf_recipe_orb_util.h"
+#include "mm_mtl/fixed_vector.h"
 
 namespace gf {
 
@@ -106,12 +113,116 @@ bool GfMenuItemUtil::canSellItemType(u32 itemType) {
   }
 }
 
+u32 GfMenuItemUtil::canEquipAcc(u32 accessory, u32 driver, u32 slot) {
+  if (driver == 0) {
+    return 0;
+  }
+  if (GfEquipUtil::getEquipDriverAcce(driver, slot) == accessory) {
+    return 1;
+  }
+
+  switch (GfEquipUtil::getEquipAcceResult(driver, slot, accessory)) {
+  case EQUIP_RESULT_OK:
+    return 0;
+  case EQUIP_RESULT_INVALID_DRIVER:
+    return 3;
+  case EQUIP_RESULT_NO_ITEM:
+    return 2;
+  default:
+    return 4;
+  }
+}
+
+u32 GfMenuItemUtil::searchEquipAcc(u32 accessory, GfItemHandle handle, u32 *slot) {
+  mm::mtl::FixedVector<u16, 16> drivers;
+  GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_ACCESSORY, 0);
+  for (u32 i = 0; i < drivers.size(); i++) {
+    u32 driver = drivers[i];
+    if (driver == 0) {
+      continue;
+    }
+    for (u32 j = 0; j < 2; j++) {
+      u32 equip = GfEquipUtil::getEquipDriverAcce(driver, j);
+      if (equip != 0 && equip == accessory && GfDataDriver::getEquipAcceHandle(driver, j).value == handle.value) {
+        if (slot != nullptr) {
+          *slot = j;
+        }
+        return driver;
+      }
+    }
+  }
+  return 0;
+}
+
+u32 GfMenuItemUtil::canEquipOrb(u32 orb, u32 blade, u32 slot) {
+  if (blade == 0) {
+    return 0;
+  }
+  if (GfEquipUtil::getEquipBladeOrb(blade, slot) == orb) {
+    return 1;
+  }
+  if (GfEquipUtil::getEquipOrbResult(blade, orb, slot) == EQUIP_RESULT_SAME_CATEGORY) {
+    return 4;
+  }
+  return 0;
+}
+
+u32 GfMenuItemUtil::searchEquipOrb(u32 orb, GfItemHandle handle, u32 *slot) {
+  mm::mtl::FixedVector<u16, 422> blades;
+  GfDataBlade::getListRegular(blades);
+  GfDataBlade::getListRare(blades);
+  GfDataBlade::getlistCommon(blades);
+  for (u32 i = 0; i < blades.size(); i++) {
+    u16 blade = blades[i];
+    if (blade == 0) {
+      continue;
+    }
+    u32 equipOrbMax = GfEquipUtil::getEquipOrbMax(blade);
+    for (u32 j = 0; j < equipOrbMax; j++) {
+      u32 equip = GfEquipUtil::getEquipBladeOrb(blade, j);
+      if (equip != 0 && equip == orb && GfDataBlade::getEquipOrbHandle(blade, j).value == handle.value) {
+        if (slot != nullptr) {
+          *slot = j;
+        }
+        return blade;
+      }
+    }
+  }
+  return 0;
+}
+
+u32 GfMenuItemUtil::canCreateOrb(u32 item) {
+  u32 recipe = GfRecipeOrbUtil::getRecipeID(item);
+  if (recipe == 0) {
+    return 3;
+  }
+  if (!GfRecipeOrbUtil::isEnableRecipe(recipe)) {
+    return 2;
+  }
+
+  u64 count;
+  {
+    mm::mtl::FixedVector<GfItem, 1024> items;
+    GfItemUtil::getInfo(items, ItemType::EQUIP_ORB, false);
+    count = items.size() + 1;
+  }
+  return count > 500;
+}
+
 u32 GfMenuItemUtil::getEquipErrorCmnWindowID(u32 error) {
   if (error > 4) {
     return 0;
   }
 
   return unknown001[error];
+}
+
+bool GfMenuItemUtil::getItemCrystal(u32 item, CrystalInfo &info) {
+  if (item >= GfBdatItem::get()->getCrystalListStart() && item < GfBdatItem::get()->getCrystalListEnd()) {
+    info.unknown00 = 3;
+    info.unknown01 = 1;
+  }
+  return false;
 }
 
 u32 GfMenuItemUtil::getItemNum(u8 itemType, u32 itemId) { return GfItemUtil::getItemBoxCount(itemId); }

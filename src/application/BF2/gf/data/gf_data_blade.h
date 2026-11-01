@@ -275,6 +275,8 @@ class GfDataBlade {
 public:
   static void setCreator(u32 blade, u32 creator);
   static u32 getCreator(u32 blade);
+  static u32 getMenuCastName(u32 blade);
+  static u32 getMenuIlustName(u32 blade);
   static void setActivateDriver(u32 bladeId, int slot, u32 driverId, u32 option);
   static SDataBlade *getSDataBlade(u32 blade);
   static SDataIdea *getSDataIdea(u32 blade);

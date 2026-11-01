@@ -121,13 +121,6 @@ static_assert(sizeof(SCOM_BATTLE_TASK_RESET) == 0x30, "");
 enum CV_SALVAGE {};
 enum CV_SALVAGE_RESULT {};
 
-enum CV_FIELD {
-  CV_FIELD_UNKNOWN_3 = 3,
-  CV_FIELD_UNKNOWN_4 = 4,
-  CV_FIELD_TIME_MORNING = 31,
-  CV_FIELD_TIME_NIGHT = 32,
-};
-
 class SCOM_SALVAGE_VOICE {
 public:
   static GAME_VOICE_HANDLE *create(GF_OBJ_HANDLE *handle, CV_SALVAGE voice);

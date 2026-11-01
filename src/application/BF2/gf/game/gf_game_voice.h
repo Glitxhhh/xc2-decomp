@@ -16,10 +16,18 @@ struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 struct GfVoiceName;
 struct GAME_VOICE_HANDLE;
+struct ParamObj;
 
 enum CV_PRIO {
   CV_PRIO_UNKNOWN_1 = 1,
   CV_PRIO_UNKNOWN_2 = 2,
+};
+
+enum CV_FIELD {
+  CV_FIELD_UNKNOWN_3 = 3,
+  CV_FIELD_UNKNOWN_4 = 4,
+  CV_FIELD_TIME_MORNING = 31,
+  CV_FIELD_TIME_NIGHT = 32,
 };
 
 class GfGameVoice : public mm::mtl::PtrSingleton<GfGameVoice> {
@@ -28,7 +36,9 @@ public:
   static void destroy();
   static void update(const fw::UpdateInfo &info);
   static u32 getResult(GF_OBJ_HANDLE *handle);
+  static GAME_VOICE_HANDLE *playVoice(const ParamObj &object, const char *name, CV_PRIO priority);
   static GAME_VOICE_HANDLE *playVoice(GF_OBJ_HANDLE *handle, const char *name, CV_PRIO priority);
+  static GAME_VOICE_HANDLE *playVoice(u32 type, u32 id, const char *name, CV_PRIO priority);
   static void gevLayerPause(u32 layer, bool isPause);
   static void gevMapjump(GEV event, const MapjumpCallbackInfo &info);
   bool isPlayEnemyVoice() const;
@@ -45,5 +55,13 @@ public:
 };
 
 static_assert(offsetof(GfGameVoice, unknown110) == 0x110, "");
+
+class GfFieldVoice {
+public:
+  static GAME_VOICE_HANDLE *playVoice(GF_OBJ_HANDLE *handle, CV_FIELD voice, CV_PRIO priority);
+  static GAME_VOICE_HANDLE *playVoice(const ParamObj &object, CV_FIELD voice, CV_PRIO priority);
+  static GAME_VOICE_HANDLE *playVoice(const ParamObj &object, CV_FIELD voice, u32 middle, u32 variation, CV_PRIO priority);
+  static GAME_VOICE_HANDLE *playVoice(u32 type, u32 id, CV_FIELD voice, CV_PRIO priority);
+};
 
 } // namespace gf

@@ -177,6 +177,7 @@ public:
   static int convMenuDriverID(u32 driver);
   static int convMenuBladeID(u32 blade);
   static int getDriverClassBuffRatio(u32 driverClass, u32 index);
+  static u32 getDriverClassBuffType(u32 driverClass, u32 index);
   static u8 getDriverClassBuffLv(u32 driverClass, u32 index);
   static bool isBladeSelectable(u32 blade, const GfMenuBladeList *list);
   static bool isBladeReleasable(u32 blade, const GfMenuBladeList *list);

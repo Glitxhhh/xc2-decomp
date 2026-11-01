@@ -89,6 +89,16 @@ public:
   bool update_BL_ArtsDesc(const DataParamAcc &acc);
   bool update_BL_GenderIcon(const DataParamAcc &acc);
   bool update_BL_DR_Face(const DataParamAcc &acc);
+  bool update_DR_ExpProgress(const DataParamAcc &acc);
+  bool update_DR_ExpProgressBonus(const DataParamAcc &acc);
+  bool update_DR_ClassBuffName(const DataParamAcc &acc);
+  bool update_BL_DR_Name(const DataParamAcc &acc);
+  bool update_BL_AffinityText(const DataParamAcc &acc);
+  bool update_BL_CVName(const DataParamAcc &acc);
+  bool update_BL_IlustName(const DataParamAcc &acc);
+  bool update_EN_Family(const DataParamAcc &acc);
+  bool update_BL_GenderText(const DataParamAcc &acc);
+  bool update_BL_SkillDesc(const DataParamAcc &acc);
   u32 getBL_FieldSkillIndex(const DataParamAcc &acc);
   u32 getBL_SkillIndex(const DataParamAcc &acc);
 

@@ -38,6 +38,7 @@
 #include "gf/game/gf_game_state.h"
 #include "gf/game/gf_game_trinity_attack.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/game/gf_game_voice.h"
 #include "gf/game/gf_layer_pause.h"
 #include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/quest/gf_quest_target.h"

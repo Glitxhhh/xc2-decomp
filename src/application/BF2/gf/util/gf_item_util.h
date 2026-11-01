@@ -2,6 +2,7 @@
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_item_handle.h"
 #include "mm_mtl/bitflag.h"
+#include "mm_mtl/fixed_vector.h"
 #include "types.h"
 #include <stddef.h>
 
@@ -189,6 +190,7 @@ public:
   static u32 getEnableStock(u32 item);
   static void getPrice(ItemPrice &price, u32 item, u32 shop);
   static GfItem getInfo(u32 item);
+  static void getInfo(mm::mtl::FixedVector<GfItem, 1024> &items, ItemType::Type type, bool withoutEquip);
   static bool isPrecious(u32 item);
   static void getPropertyChip(ItemProperty &property);
   static void getPropertyAcce(ItemProperty &property);
