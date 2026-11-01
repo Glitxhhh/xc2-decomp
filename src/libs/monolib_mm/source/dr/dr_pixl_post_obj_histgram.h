@@ -10,6 +10,7 @@ class DrResUseQueryObj;
 class DrPixlPostObjHistgram {
 public:
   ~DrPixlPostObjHistgram();
+  void update();
   void render();
   f32 getMaxLuminance() const;
   int getSectionNum() const;

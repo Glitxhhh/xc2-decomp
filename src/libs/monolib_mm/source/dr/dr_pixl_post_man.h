@@ -52,6 +52,8 @@ public:
     FLAG_SSS = 0x200,
     FLAG_CALC_BLOOM = 0x8000,
     FLAG_CALC_VOLUME = 0x10000,
+    FLAG_UNKNOWN_17 = 0x20000, // Inferred role: reflection; original name unknown.
+    FLAG_UNKNOWN_18 = 0x40000, // Inferred role: high reflection; original name unknown.
     FLAG_DEPTH_DOWN = 0x80000,
     FLAG_REFRACTION_MAP = 0x200000,
   };
@@ -62,6 +64,7 @@ public:
   void renderDeferredLast();
   DrPixlRenderTarget *getDownDepth();
   bool isCalcVolume();
+  void update();
   void setRefRactionMap();
   void renderRefractionMap(bool isRefractionMap, bool isHalfMap);
   bool renderRefractionBegin();

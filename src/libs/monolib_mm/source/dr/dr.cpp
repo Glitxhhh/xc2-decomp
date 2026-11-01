@@ -1,5 +1,8 @@
 #include "dr_pixl_man.cpp"
 #include "dr_pixl_post_man.cpp"
+#include "dr_pixl_post_obj_bloom.cpp"
+#include "dr_pixl_post_obj_tone_map.cpp"
+#include "dr_pixl_post_parm.cpp"
 #include "dr_pixl_shadow_cache_man.cpp"
 #include "dr_pixl_shadow_man.cpp"
 #include "dr_pixl_sky_dome.cpp"

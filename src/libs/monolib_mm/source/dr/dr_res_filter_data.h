@@ -20,10 +20,10 @@ public:
     grlib::CGLibTextureBuffer *unknown08; // Inferred role: second texture; original member name unknown.
     grlib::CGLibTextureBuffer *unknown10; // Inferred role: previous first texture; original member name unknown.
     grlib::CGLibTextureBuffer *unknown18; // Inferred role: previous second texture; original member name unknown.
-    s16 unknown20;                        // Inferred role: requested first texture id; original member name unknown.
-    s16 unknown22;                        // Inferred role: requested second texture id; original member name unknown.
-    s16 unknown24;                        // Inferred role: current first texture id; original member name unknown.
-    s16 unknown26;                        // Inferred role: current second texture id; original member name unknown.
+    u16 unknown20;                        // Inferred role: requested first texture id; original member name unknown.
+    u16 unknown22;                        // Inferred role: requested second texture id; original member name unknown.
+    u16 unknown24;                        // Inferred role: current first texture id; original member name unknown.
+    u16 unknown26;                        // Inferred role: current second texture id; original member name unknown.
     u32 unknown28;                        // Inferred role: unknown; original member name unknown.
     f32 unknown2c;                        // Inferred role: transition time; original member name unknown.
     f32 unknown30;                        // Inferred role: transition duration; original member name unknown.

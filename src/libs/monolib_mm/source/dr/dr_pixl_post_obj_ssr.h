@@ -16,6 +16,7 @@ class DrPixlPostObjSSR {
 public:
   ~DrPixlPostObjSSR();
   void setClear();
+  void update();
   void render();
   void releaseColorBuff();
   grlib::CGLibTextureBuffer *getReflectionTexture() const;

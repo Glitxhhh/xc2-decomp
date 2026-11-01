@@ -2,6 +2,7 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_post_obj_bloom.h"
 #include "dr/dr_pixl_post_obj_capture.h"
 #include "dr/dr_pixl_post_obj_cube_map_ibl.h"
 #include "dr/dr_pixl_post_obj_cube_map_multi_ibl.h"
@@ -53,6 +54,50 @@ void DrPixlPostMan::renderDeferredLast() {
 DrPixlRenderTarget *DrPixlPostMan::getDownDepth() { return unknownc0[DrMan::s_nDblIdx]; }
 
 bool DrPixlPostMan::isCalcVolume() { return unknownf8 & FLAG_CALC_VOLUME; }
+
+void DrPixlPostMan::update() {
+  unknownf8 &= ~(FLAG_CHG_SHADER | FLAG_CALC_BLOOM | FLAG_CALC_VOLUME | FLAG_UNKNOWN_17 | FLAG_UNKNOWN_18 | FLAG_REFRACTION_MAP);
+  if (unknownf0 != nullptr) {
+    unknownf0->update();
+  }
+  if (unknown90 != nullptr) {
+    unknown90->update();
+  }
+  if (unknown20 != nullptr) {
+    unknown20->update();
+  }
+  if (unknown18 != nullptr) {
+    unknown18->update();
+  }
+  if (unknown30 != nullptr) {
+    unknown30->update();
+  }
+  if (unknown50 != nullptr) {
+    unknown50->update();
+  }
+  if (unknown58 != nullptr) {
+    unknown58->update();
+  }
+  if (unknown60 != nullptr) {
+    unknown60->update();
+  }
+  if (unknown78 != nullptr) {
+    unknown78->update();
+  }
+  unknown00->unknown120[unknown00->unknown1c98]->update();
+  if (unknowna0 != nullptr) {
+    unknowna0->update();
+  }
+  if (unknowna8 != nullptr) {
+    unknowna8->update();
+  }
+  if (unknownb0 != nullptr) {
+    unknownb0->update();
+  }
+  if (unknown70 != nullptr) {
+    unknown70->update();
+  }
+}
 
 void DrPixlPostMan::setRefRactionMap() { unknownf8 |= FLAG_REFRACTION_MAP; }
 

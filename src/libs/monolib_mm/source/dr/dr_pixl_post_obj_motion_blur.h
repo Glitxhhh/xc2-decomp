@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_pixl_post_obj.h"
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "types.h"
 
@@ -10,14 +11,16 @@ class CGLibRenderTarget;
 
 namespace ml {
 
-class DrPixlPostObjMotionBlur {
+class DrPixlPostObjMotionBlur : public DrPixlPostObj {
 public:
   ~DrPixlPostObjMotionBlur();
+  void update();
   void debugRender();
   void resetColorBuff();
   void calcBludBuffColorBuff();
   void releaseColorBuff();
-  u8 _00[0x20 - 0x00];
+
+  u8 _18[0x20 - 0x18];
   grlib::CGLibRenderTarget *unknown20;   // Inferred role: render target; original member name unknown.
   grlib::CGLibRenderTarget *unknown28;   // Inferred role: velocity map; original member name unknown.
   grlib::CGLibRenderTarget *unknown30;   // Inferred role: render target; original member name unknown.

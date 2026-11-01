@@ -1,5 +1,6 @@
 #pragma once
 
+#include "grlib/cglib_render_target.h"
 #include "types.h"
 
 namespace grlib {
@@ -14,6 +15,16 @@ class DrPixlMan;
 class DrPixlPostMan;
 class DrPixlRenderTarget;
 class DrShdDataObj;
+
+// Inferred role: releases and deletes a render target; original name unknown.
+inline void unknown001(grlib::CGLibRenderTarget *&target) {
+  grlib::CGLibRenderTarget *renderTarget = target;
+  if (renderTarget != nullptr) {
+    renderTarget->releaseWork();
+    delete renderTarget;
+    target = nullptr;
+  }
+}
 
 class DrPixlPostObj {
 public:

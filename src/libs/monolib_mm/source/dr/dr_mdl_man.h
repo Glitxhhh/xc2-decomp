@@ -32,6 +32,13 @@ public:
     u32 unknown04; // Inferred role: version; original member name unknown.
   };
 
+  // Inferred role: per category render flags; original type name unknown.
+  struct unknown004 {
+    u8 _00[0x04 - 0x00];
+    bool unknown04; // Inferred role: refraction model rendered; original member name unknown.
+    u8 _05[0x0d - 0x05];
+  };
+
   void addMpfObj();
   void delMpfObj();
   void renderBegin();
@@ -81,9 +88,10 @@ public:
   u8 _048[0x218 - 0x048];
   DrMdoZSortMan *unknown218; // Inferred role: z sort man; original member name unknown.
   unknown002 *unknown220;    // Inferred role: model list; original member name unknown.
-  u8 _228[0x238 - 0x228];
-  u32 unknown238; // Inferred role: cate; original member name unknown.
-  u32 unknown23c; // Inferred role: groups disp; original member name unknown.
+  u8 _228[0x230 - 0x228];
+  unknown004 *unknown230; // Inferred role: current category render flags; original member name unknown.
+  u32 unknown238;         // Inferred role: cate; original member name unknown.
+  u32 unknown23c;         // Inferred role: groups disp; original member name unknown.
 };
 
 static_assert(offsetof(DrMdlMan, unknown000) == 0x000, "");
@@ -95,7 +103,10 @@ static_assert(offsetof(DrMdlMan, unknown038) == 0x038, "");
 static_assert(offsetof(DrMdlMan, unknown040) == 0x040, "");
 static_assert(offsetof(DrMdlMan, unknown218) == 0x218, "");
 static_assert(offsetof(DrMdlMan, unknown220) == 0x220, "");
+static_assert(offsetof(DrMdlMan, unknown230) == 0x230, "");
 static_assert(offsetof(DrMdlMan, unknown238) == 0x238, "");
 static_assert(offsetof(DrMdlMan, unknown23c) == 0x23c, "");
+static_assert(sizeof(DrMdlMan::unknown004) == 0x0d, "");
+static_assert(offsetof(DrMdlMan::unknown004, unknown04) == 0x04, "");
 
 } // namespace ml

@@ -14,50 +14,52 @@ struct unknown038 {
 static_assert(sizeof(unknown038) == 0x8, "");
 
 // Inferred role: pixl post dbl parm; original type name unknown.
+// Evidence: the DrPixlPostParm constructor clears the two entries with one memset of 0xa40 bytes from 0x514.
 struct unknown039 {
-  bool unknown00; // Inferred role: override tone map; original member name unknown.
-  u8 _001[0x004 - 0x001];
-  f32 unknown04; // Inferred role: tone map; original member name unknown.
-  u8 _008[0x200 - 0x008];
-  bool unknown200; // Inferred role: override mot blur; original member name unknown.
-  bool unknown201; // Inferred role: mot blur2; original member name unknown.
-  u8 _202[0x21c - 0x202];
-  bool unknown21c; // Inferred role: override dof; original member name unknown.
-  bool unknown21d; // Inferred role: dof; original member name unknown.
-  u8 _21e[0x21f - 0x21e];
-  bool unknown21f; // Inferred role: dof hlv; original member name unknown.
-  bool unknown220; // Inferred role: dof down sec; original member name unknown.
-  bool unknown221; // Inferred role: dof auto focus; original member name unknown.
-  u8 _222[0x224 - 0x222];
-  f32 unknown224; // Inferred role: dof pixl ratio; original member name unknown.
-  f32 unknown228; // Inferred role: dof distance; original member name unknown.
-  f32 unknown22c; // Inferred role: dof range; original member name unknown.
-  f32 unknown230; // Inferred role: dof strength; original member name unknown.
-  f32 unknown234; // Inferred role: dof lens; original member name unknown.
-  f32 unknown238; // Inferred role: dof blend; original member name unknown.
-  s32 unknown23c; // Inferred role: dof pixl lv; original member name unknown.
-  s32 unknown240; // Inferred role: dof focus num; original member name unknown.
-  f32 unknown244; // Inferred role: dof focus ratio; original member name unknown.
-  f32 unknown248; // Inferred role: dof focus min; original member name unknown.
-  u8 _24c[0x26e - 0x24c];
-  bool unknown26e; // Inferred role: override color filter; original member name unknown.
-  u8 _26f[0x270 - 0x26f];
-  s32 unknown270; // Inferred role: color filter num; original member name unknown.
-  f32 unknown274; // Inferred role: color filter frm; original member name unknown.
-  u8 _278[0x27c - 0x278];
-  s32 unknown27c; // Inferred role: color filter far num; original member name unknown.
-  u8 _280[0x520 - 0x280];
+  u8 _000[0x004 - 0x000];
+  bool unknown04; // Inferred role: override tone map; original member name unknown.
+  u8 _005[0x008 - 0x005];
+  f32 unknown08; // Inferred role: tone map; original member name unknown.
+  u8 _00c[0x204 - 0x00c];
+  bool unknown204; // Inferred role: override mot blur; original member name unknown.
+  bool unknown205; // Inferred role: mot blur2; original member name unknown.
+  u8 _206[0x220 - 0x206];
+  bool unknown220; // Inferred role: override dof; original member name unknown.
+  bool unknown221; // Inferred role: dof; original member name unknown.
+  u8 _222[0x223 - 0x222];
+  bool unknown223; // Inferred role: dof hlv; original member name unknown.
+  bool unknown224; // Inferred role: dof down sec; original member name unknown.
+  bool unknown225; // Inferred role: dof auto focus; original member name unknown.
+  u8 _226[0x228 - 0x226];
+  f32 unknown228; // Inferred role: dof pixl ratio; original member name unknown.
+  f32 unknown22c; // Inferred role: dof distance; original member name unknown.
+  f32 unknown230; // Inferred role: dof range; original member name unknown.
+  f32 unknown234; // Inferred role: dof strength; original member name unknown.
+  f32 unknown238; // Inferred role: dof lens; original member name unknown.
+  f32 unknown23c; // Inferred role: dof blend; original member name unknown.
+  s32 unknown240; // Inferred role: dof pixl lv; original member name unknown.
+  s32 unknown244; // Inferred role: dof focus num; original member name unknown.
+  f32 unknown248; // Inferred role: dof focus ratio; original member name unknown.
+  f32 unknown24c; // Inferred role: dof focus min; original member name unknown.
+  u8 _250[0x272 - 0x250];
+  bool unknown272; // Inferred role: override color filter; original member name unknown.
+  u8 _273[0x274 - 0x273];
+  s32 unknown274; // Inferred role: color filter num; original member name unknown.
+  f32 unknown278; // Inferred role: color filter frm; original member name unknown.
+  u8 _27c[0x280 - 0x27c];
+  s32 unknown280; // Inferred role: color filter far num; original member name unknown.
+  u8 _284[0x520 - 0x284];
 };
 
-static_assert(offsetof(unknown039, unknown04) == 0x004, "");
-static_assert(offsetof(unknown039, unknown200) == 0x200, "");
-static_assert(offsetof(unknown039, unknown21c) == 0x21c, "");
-static_assert(offsetof(unknown039, unknown21f) == 0x21f, "");
-static_assert(offsetof(unknown039, unknown224) == 0x224, "");
-static_assert(offsetof(unknown039, unknown248) == 0x248, "");
-static_assert(offsetof(unknown039, unknown26e) == 0x26e, "");
-static_assert(offsetof(unknown039, unknown270) == 0x270, "");
-static_assert(offsetof(unknown039, unknown27c) == 0x27c, "");
+static_assert(offsetof(unknown039, unknown08) == 0x008, "");
+static_assert(offsetof(unknown039, unknown204) == 0x204, "");
+static_assert(offsetof(unknown039, unknown220) == 0x220, "");
+static_assert(offsetof(unknown039, unknown223) == 0x223, "");
+static_assert(offsetof(unknown039, unknown228) == 0x228, "");
+static_assert(offsetof(unknown039, unknown24c) == 0x24c, "");
+static_assert(offsetof(unknown039, unknown272) == 0x272, "");
+static_assert(offsetof(unknown039, unknown274) == 0x274, "");
+static_assert(offsetof(unknown039, unknown280) == 0x280, "");
 static_assert(sizeof(unknown039) == 0x520, "");
 
 class DrPixlPostParm {
@@ -266,9 +268,9 @@ public:
   bool unknown48a; // Inferred role: SSR; original member name unknown.
   u8 _048b[0x04d0 - 0x048b];
   bool unknown4d0; // Inferred role: glass br; original member name unknown.
-  u8 _04d1[0x0518 - 0x04d1];
-  unknown039 unknown518[2]; // Inferred role: dbl parms; original member name unknown.
-  u8 _0f58[0x0f72 - 0x0f58];
+  u8 _04d1[0x0514 - 0x04d1];
+  unknown039 unknown514[2]; // Inferred role: dbl parms; original member name unknown.
+  u8 _0f54[0x0f72 - 0x0f54];
   bool unknownf72; // Inferred role: blm 2 pass; original member name unknown.
   u8 _0f73[0x0fb2 - 0x0f73];
   bool unknownfb2; // Inferred role: reduction; original member name unknown.
@@ -405,7 +407,7 @@ static_assert(offsetof(DrPixlPostParm, unknown46c) == 0x046c, "");
 static_assert(offsetof(DrPixlPostParm, unknown470) == 0x0470, "");
 static_assert(offsetof(DrPixlPostParm, unknown488) == 0x0488, "");
 static_assert(offsetof(DrPixlPostParm, unknown4d0) == 0x04d0, "");
-static_assert(offsetof(DrPixlPostParm, unknown518) == 0x0518, "");
+static_assert(offsetof(DrPixlPostParm, unknown514) == 0x0514, "");
 static_assert(offsetof(DrPixlPostParm, unknownf72) == 0x0f72, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb2) == 0x0fb2, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb3) == 0x0fb3, "");

@@ -171,6 +171,12 @@ public:
   void captureRender(bool isDouble);
   void setModelTexture(DR_MODEL_TEXTURE *texture, u32 index);
 
+  // Inferred role: true when the renders of the current view are skipped; original name unknown.
+  bool unknown058() const {
+    s32 view = unknown1c98;
+    return (unknown1c9c & (1 << view)) != 0;
+  }
+
   static DrMan *s_pTop;
   static s32 s_nDblStockIdx;
   static s32 s_nDblIdx;

@@ -23,6 +23,7 @@ public:
 
   DrPixlPostObjGlassBr(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan);
   ~DrPixlPostObjGlassBr();
+  void update();
   void render();
   void release();
   void renderCaputre();

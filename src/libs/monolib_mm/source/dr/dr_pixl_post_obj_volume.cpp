@@ -1,20 +1,11 @@
 #include "dr/dr_pixl_post_obj_volume.h"
 
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "grlib/cglib_render_target.h"
 
 namespace ml {
-
-// Inferred role: releases and deletes a render target; original name unknown.
-inline void unknown001(grlib::CGLibRenderTarget *&target) {
-  grlib::CGLibRenderTarget *renderTarget = target;
-  if (renderTarget != nullptr) {
-    renderTarget->releaseWork();
-    delete renderTarget;
-    target = nullptr;
-  }
-}
 
 void DrPixlPostObjVolume::calculateSclDown() {
   if (unknown00->unknown120[unknown00->unknown1c98]->m_TMAAOn) {

@@ -18,6 +18,25 @@
 
 namespace ml {
 
+void DrPixlSkyDome::update() {
+  unknown08->update();
+  if (!unknown00->unknown580->unknown10->unknown9aa) {
+    if (unknown08->m_pixel == 0) {
+      unknown10 += (0.0f - unknown10) * 0.2f;
+    } else {
+      unknown10 += (1.0f - unknown10) * 0.5f;
+    }
+  } else {
+    unknown10 = 1.0f;
+    unknown14 = 3;
+  }
+  if (unknown14 > 0) {
+    unknown14--;
+    unknown10 = 1.0f;
+  }
+  updateUniform();
+}
+
 void DrPixlSkyDome::luminanceRender() {
   DrFogMan *fogMan = unknown00->unknown590;
   if (fogMan->isFogOn() && fogMan->unknownd1) {

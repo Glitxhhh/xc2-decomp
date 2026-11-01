@@ -3,12 +3,14 @@
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_ap_gx_type.h"
 #include "dr/dr_man.h"
+#include "dr/dr_mdl_man.h"
 #include "dr/dr_pixl_deferred.h"
 #include "dr/dr_pixl_occ_query.h"
 #include "dr/dr_pixl_post_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
+#include "dr/dr_pixl_shadow_man.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_pixl_tile_parm.h"
 #include "dr/dr_shd_data_list.h"
@@ -242,6 +244,17 @@ grlib::CGLibDepthTarget *DrPixlMan::getSeparateTransDepthObj() {
     return unknown7f0->unknown1b0;
   }
   return getDepthObj();
+}
+
+void DrPixlMan::afterUpdate(int loop) {
+  unknown7f0->unknown180->update();
+  if (loop == 0) {
+    unknown7f0->unknown180->setDownDepth();
+  }
+  if (unknown08->unknown88->unknown230->unknown04) {
+    unknown7f0->unknown180->setRefRactionMap();
+  }
+  unknown7f0->unknown178->afterUpdate();
 }
 
 void DrPixlMan::displayUpdate() { unknown7f0->unknown170->displayUpdate(); }

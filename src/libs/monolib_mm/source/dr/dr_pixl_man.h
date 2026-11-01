@@ -94,6 +94,7 @@ public:
   void updateShadowDisplayList();
   DrPixlRenderTarget *getResponsiveAAMask();
   grlib::CGLibDepthTarget *getSeparateTransDepthObj();
+  void afterUpdate(int loop);
   void displayUpdate();
   void renderEnd(int loop);
   void renderBegin(int loop);

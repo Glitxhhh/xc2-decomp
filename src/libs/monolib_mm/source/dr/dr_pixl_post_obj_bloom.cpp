@@ -1,6 +1,7 @@
 #include "dr/dr_pixl_post_obj_bloom.h"
 
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_render_target.h"
@@ -26,16 +27,6 @@ void DrPixlPostObjBloom::calculateDownScale_TwoPass() {
   calculateDownScaleImpl(DOWN_SCALE_TYPE_UNKNOWN_1);
   grlib::CGLibCtlShader::setMemoryBarrierBit(2);
   calculateDownScaleImpl(DOWN_SCALE_TYPE_UNKNOWN_2);
-}
-
-// Inferred role: releases and deletes a render target; original name unknown.
-inline void unknown001(grlib::CGLibRenderTarget *&target) {
-  grlib::CGLibRenderTarget *renderTarget = target;
-  if (renderTarget != nullptr) {
-    renderTarget->releaseWork();
-    delete renderTarget;
-    target = nullptr;
-  }
 }
 
 DrPixlPostObjBloom::~DrPixlPostObjBloom() { releaseBloomTexture(); }
