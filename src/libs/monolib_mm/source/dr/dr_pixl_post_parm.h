@@ -147,7 +147,9 @@ public:
   f32 unknown1c; // Inferred role: tone blm min; original member name unknown.
   f32 unknown20; // Inferred role: tone blm ratio; original member name unknown.
   f32 unknown24; // Inferred role: tone blm ratio last; original member name unknown.
-  u8 _0028[0x003c - 0x0028];
+  f32 unknown28; // Inferred role: tone ave min rate; original member name unknown.
+  f32 unknown2c; // Inferred role: tone ave max rate; original member name unknown.
+  u8 _0030[0x003c - 0x0030];
   bool m_bloomOn;
   u8 _003d[0x003e - 0x003d];
   bool unknown3e; // Inferred role: lens flare; original member name unknown.
@@ -270,7 +272,8 @@ public:
   bool unknown4d0; // Inferred role: glass br; original member name unknown.
   u8 _04d1[0x0514 - 0x04d1];
   unknown039 unknown514[2]; // Inferred role: dbl parms; original member name unknown.
-  u8 _0f54[0x0f72 - 0x0f54];
+  bool unknownf54;          // Inferred role: histgram reset; original member name unknown.
+  u8 _0f55[0x0f72 - 0x0f55];
   bool unknownf72; // Inferred role: blm 2 pass; original member name unknown.
   u8 _0f73[0x0fb2 - 0x0f73];
   bool unknownfb2; // Inferred role: reduction; original member name unknown.
@@ -325,6 +328,8 @@ static_assert(offsetof(DrPixlPostParm, unknown20) == 0x0020, "");
 static_assert(offsetof(DrPixlPostParm, unknown48a) == 0x048a, "");
 static_assert(offsetof(DrPixlPostParm, unknown1104) == 0x1104, "");
 static_assert(offsetof(DrPixlPostParm, unknown24) == 0x0024, "");
+static_assert(offsetof(DrPixlPostParm, unknown28) == 0x0028, "");
+static_assert(offsetof(DrPixlPostParm, unknown2c) == 0x002c, "");
 static_assert(offsetof(DrPixlPostParm, m_bloomOn) == 0x003c, "");
 static_assert(offsetof(DrPixlPostParm, unknown3e) == 0x003e, "");
 static_assert(offsetof(DrPixlPostParm, unknown40) == 0x0040, "");
@@ -408,6 +413,7 @@ static_assert(offsetof(DrPixlPostParm, unknown470) == 0x0470, "");
 static_assert(offsetof(DrPixlPostParm, unknown488) == 0x0488, "");
 static_assert(offsetof(DrPixlPostParm, unknown4d0) == 0x04d0, "");
 static_assert(offsetof(DrPixlPostParm, unknown514) == 0x0514, "");
+static_assert(offsetof(DrPixlPostParm, unknownf54) == 0x0f54, "");
 static_assert(offsetof(DrPixlPostParm, unknownf72) == 0x0f72, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb2) == 0x0fb2, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb3) == 0x0fb3, "");

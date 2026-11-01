@@ -13,6 +13,8 @@ const f32 DEG_TO_RAD = 0.017453292f;
 const f32 RAD_TO_DEG = 180.0f / 3.1415927f;
 
 template <typename T> T clamp(T value, T mi, T ma) {
+  // __LINE__ must be 819 as in the original header: it is the line argument of the assert.
+#line 819
   MM_ASSERT(mi <= ma);
   if (value < mi) {
     return mi;
@@ -22,6 +24,8 @@ template <typename T> T clamp(T value, T mi, T ma) {
 }
 
 inline f32 clamp(const f32 &value, const f32 &mi, const f32 &ma) {
+  // __LINE__ must be 819 as in the original header: it is the line argument of the assert.
+#line 819
   MM_ASSERT(mi <= ma);
   if (value < mi) {
     return mi;
@@ -35,6 +39,8 @@ template <typename T> const T &min(const T &a, const T &b) { return a < b ? a : 
 template <typename T> const T &max(const T &a, const T &b) { return a < b ? b : a; }
 
 template <typename T> void clampRef(T &value, const T &mi, const T &ma) {
+  // __LINE__ must be 801 as in the original header: it is the line argument of the assert.
+#line 801
   MM_ASSERT(mi <= ma);
   if (value < mi) {
     value = mi;

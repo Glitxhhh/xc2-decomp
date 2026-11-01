@@ -291,7 +291,10 @@ public:
   bool unknown1da0;      // Inferred role: camera light; original member name unknown.
   u8 _1da1[0x1da4 - 0x1da1];
   s32 unknown1da4; // Inferred role: dynamic light type; original member name unknown.
-  u8 _1da8[0x1e00 - 0x1da8];
+  u8 _1da8[0x1de4 - 0x1da8];
+  u32 unknown1de4;  // Inferred role: histgram size shift; original member name unknown.
+  bool unknown1de8; // Inferred role: histgram uses the tone map target; original member name unknown.
+  u8 _1de9[0x1e00 - 0x1de9];
   cloud::CloudMan *unknown1e00; // Inferred role: cloud man; original member name unknown.
   bool unknown1e08;             // Inferred role: toon dir light scale; original member name unknown.
   u8 _1e09[0x1e0c - 0x1e09];
@@ -376,6 +379,8 @@ static_assert(offsetof(DrMan, unknown1d9c) == 0x1d9c, "");
 static_assert(offsetof(DrMan, unknown1d9e) == 0x1d9e, "");
 static_assert(offsetof(DrMan, unknown1da0) == 0x1da0, "");
 static_assert(offsetof(DrMan, unknown1da4) == 0x1da4, "");
+static_assert(offsetof(DrMan, unknown1de4) == 0x1de4, "");
+static_assert(offsetof(DrMan, unknown1de8) == 0x1de8, "");
 static_assert(offsetof(DrMan, unknown1e00) == 0x1e00, "");
 static_assert(offsetof(DrMan, unknown1e08) == 0x1e08, "");
 static_assert(offsetof(DrMan, unknown1e0c) == 0x1e0c, "");
