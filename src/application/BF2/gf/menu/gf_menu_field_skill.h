@@ -15,6 +15,7 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  static bool isInitialized();
   static bool isRunning();
 };
 

@@ -17,15 +17,29 @@
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/call/gf_menu_call_manager.h"
+#include "gf/menu/gf_menu_equip.h"
 #include "gf/menu/gf_menu_fade.h"
+#include "gf/menu/gf_menu_field_skill.h"
 #include "gf/menu/gf_menu_flag.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_hud.h"
+#include "gf/menu/gf_menu_kizunaring.h"
 #include "gf/menu/gf_menu_location.h"
+#include "gf/menu/gf_menu_main.h"
+#include "gf/menu/gf_menu_many_objects.h"
 #include "gf/menu/gf_menu_map_info.h"
 #include "gf/menu/gf_menu_minimap.h"
+#include "gf/menu/gf_menu_order_mgr.h"
+#include "gf/menu/gf_menu_precious.h"
+#include "gf/menu/gf_menu_quest.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/gf_menu_script_manager.h"
+#include "gf/menu/gf_menu_shop.h"
+#include "gf/menu/gf_menu_sound_manager.h"
+#include "gf/menu/gf_menu_status.h"
 #include "gf/menu/object/gf_menu_obj_action_window.h"
+#include "gf/menu/object/gf_menu_obj_blade_change.h"
 #include "gf/menu/object/gf_menu_obj_blade_create.h"
 #include "gf/menu/object/gf_menu_obj_chain_attack.h"
 #include "gf/menu/object/gf_menu_obj_chapter_telop.h"
@@ -44,13 +58,18 @@
 #include "gf/menu/object/gf_menu_obj_party_gauge.h"
 #include "gf/menu/object/gf_menu_obj_party_status.h"
 #include "gf/menu/object/gf_menu_obj_party_status2.h"
+#include "gf/menu/object/gf_menu_obj_popup.h"
 #include "gf/menu/object/gf_menu_obj_quest_log.h"
 #include "gf/menu/object/gf_menu_obj_save_load2.h"
 #include "gf/menu/object/gf_menu_obj_tutorial.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_property.h"
+#include "gf/object/gf_obj_util.h"
+#include "gf/util/gf_item_util.h"
 #include "layer/layer_acc_manager.h"
+#include "mm_mtl/fixed_vector.h"
 #include "scn/scn_render_dr_sys_parm_acc.h"
 #include "ui/input/ui_input_manager.h"
 #include "ui/ui_manager.h"
@@ -174,11 +193,71 @@ void GfMenuManager::destroy() {
   delete manager;
 }
 
+bool GfMenuManager::isInitialized() {
+  GfMenuManager *manager = get();
+  if (manager == nullptr || !manager->unknown4090 || manager->unknown40b0) {
+    return false;
+  }
+  return GfMenuReference::isInitialized() && GfMenuCallManager::isInitialized() && GfMenuAdapterManager::isInitialized() && GfMenuFade::isInitialized() && GfMenuFullScreen::isInitialized() &&
+         GfMenuHUD::isInitialized() && GfMenuStatus::isInitialized() && GfMenuEquip::isInitialized() && GfMenuMain::isInitialized() && GfMenuShop::isInitialized() && GfMenuPrecious::isInitialized() &&
+         GfMenuKizunaring::isInitialized() && GfMenuQuest::isInitialized() && GfMenuMinimap::isInitialized() && GfMenuScriptManager::isInitialized() && GfMenuFieldSkill::isInitialized() &&
+         GfMenuManyObjects::isInitialized() && GfMenuOrderMgr::isInitialized() && GfMenuLocation::isInitialized() && GfMenuMapInfo::isInitialized() && GfMenuSoundManager::isInitialized();
+}
+
 bool GfMenuManager::isRegionJP() {
   if (get() != nullptr) {
     return get()->unknown4104 == REGION_JP;
   }
   return false;
+}
+
+void GfMenuManager::changeBattleState(u32 state, bool isEnable) {
+  switch (state) {
+  case 0:
+    if (isEnable) {
+      unknown40e4.set(0);
+      unknown40e4.set(2, false);
+      unknown40e4.set(3, false);
+    } else {
+      unknown40e4.set(0, false);
+      if (!unknown40dc.test(1) && unknown40ca) {
+        unknown40e4.set(2);
+        unknown40e4.set(3);
+      }
+    }
+    break;
+  case 1:
+    if (isEnable) {
+      unknown40e4.set(2, false);
+      unknown40e4.set(3, false);
+    } else if (!unknown40dc.test(0) && unknown40ca) {
+      unknown40e4.set(2);
+      unknown40e4.set(3);
+    }
+    break;
+  case 3:
+    unknown40e4.set(4, isEnable);
+    break;
+  case 4:
+    if (isEnable) {
+      GfMenuObjBladeChange::enableAwakening(true);
+    } else {
+      GfMenuObjBladeChange::enableAwakening(false);
+    }
+    break;
+  case 6:
+    if (isEnable) {
+      unknown40e4.set(0, false);
+    } else if (unknown40dc.test(0)) {
+      unknown40e4.set(0);
+    }
+    break;
+  case 7:
+    unknown40e4.set(5, isEnable);
+    break;
+  default:
+    break;
+  }
 }
 
 bool GfMenuManager::isFading(u32 fade) {
@@ -206,6 +285,29 @@ void GfMenuManager::applyGammaCorrectValue(f32 value) {
 }
 
 void GfMenuManager::applyOptionData(const SDataOption &option) { applyGammaCorrectValue(static_cast<f32>(option._66) / VOLUME_SCALE); }
+
+void GfMenuManager::setupGame() {
+  if (GfMenuFlag::get1(0x31) == 0) {
+    GfMenuFlag::set1(0x28, 1);
+    GfMenuFlag::set1(0x29, 1);
+    GfMenuFlag::set1(0x2a, 0);
+    GfMenuFlag::set1(0x2b, 1);
+    GfMenuFlag::set1(0x2c, 1);
+    GfMenuFlag::set1(0x2d, 0);
+    GfMenuFlag::set1(0x2e, 1);
+    GfMenuFlag::set1(0x2f, 1);
+    GfMenuFlag::set1(0x30, 1);
+    GfMenuFlag::set1(0x31, 1);
+  }
+  for (int flag = 0x3b; flag < 0x50; flag++) {
+    mm::mtl::FixedVector<GfItem, 1024> items;
+    GfItemUtil::getInfo(items, static_cast<ItemType::Type>(flag - 0x3a), false);
+    if (!items.empty()) {
+      GfMenuFlag::set1(flag, 1);
+    }
+  }
+  GfMenuObjPopup::closeAll();
+}
 
 f32 GfMenuManager::getUpdateDT() {
   GfMenuManager *manager = get();
@@ -314,6 +416,34 @@ void GfMenuManager::gevChangeTarget(GF_OBJ_HANDLE *handle) {
     unknown40c8 = true;
   }
   unknown40b8 = handle;
+}
+
+void GfMenuManager::checkElementCombo() {
+  GF_OBJ_HANDLE *handle = getTargetObjHandle();
+  if (handle == INVALID_HANDLE) {
+    return;
+  }
+  GfObjAcc acc(handle);
+  if (acc.getType() != OBJECT_TYPE_ENEMY) {
+    return;
+  }
+  GfObjProperty *property = GfObjUtil::getProperty(handle);
+  if (property == nullptr) {
+    return;
+  }
+  GfObjPropertyEnemy *enemy = property->getEnemy();
+  if (enemy == nullptr) {
+    return;
+  }
+  bool isCombo = enemy->unknowndc != 0;
+  if (unknown40fc != isCombo) {
+    if (isCombo) {
+      GfMenuObjComboRoute::open();
+    } else {
+      GfMenuObjComboRoute::close();
+    }
+    unknown40fc = isCombo;
+  }
 }
 
 void GfMenuManager::gevCameraControl(u32 type) { unknown40cc = type; }

@@ -42,6 +42,7 @@ public:
   static bool isInitialized();
   static bool isRegionJP();
   static void update(const fw::UpdateInfo &info);
+  void changeBattleState(u32 state, bool isEnable);
   static void initOptionData(SDataOption &option);
   static void setupGame();
   static bool isFading(u32 fade);
@@ -90,6 +91,7 @@ public:
   static bool isRegionUS();
   static bool isClearCheck();
   void postUpdate(const fw::UpdateInfo &info);
+  void checkElementCombo();
   void qevOrderQuest(const QuestOrderParam &param);
   void qevCompleteQuest(const QuestCompleteParam &param);
   void qevChangeTaskState(const QuestTaskParam &param);
@@ -125,7 +127,9 @@ public:
   u8 _08[0x4090 - 0x08];
   bool unknown4090; // Inferred role: initialized; original member name unknown.
   bool unknown4091; // Inferred role: finalized; original member name unknown.
-  u8 _4092[0x40b8 - 0x4092];
+  u8 _4092[0x40b0 - 0x4092];
+  bool unknown40b0; // Inferred role: UI event queued this frame, set by reciveEvent and cleared by postUpdate; original member name unknown.
+  u8 _40b1[0x40b8 - 0x40b1];
   GF_OBJ_HANDLE *unknown40b8; // Inferred role: target object; original member name unknown.
   GF_OBJ_HANDLE *unknown40c0; // Inferred role: access object; original member name unknown.
   bool unknown40c8;           // Inferred role: target object changed; original member name unknown.
@@ -140,8 +144,8 @@ public:
   mm::mtl::unknown027<32> unknown40e4; // Inferred role: hud state; original member name unknown.
   mm::mtl::unknown027<32> unknown40e8; // Inferred role: previous hud state; original member name unknown.
   u8 _40ec[0x40f8 - 0x40ec];
-  f32 unknown40f8; // Inferred role: update dt; original member name unknown.
-  u8 _40fc[0x40fd - 0x40fc];
+  f32 unknown40f8;    // Inferred role: update dt; original member name unknown.
+  bool unknown40fc;   // Inferred role: combo route open for the target enemy; original member name unknown.
   bool unknown40fd;   // Inferred role: btl model view open; original member name unknown.
   bool unknown40fe;   // Inferred role: name select open; original member name unknown.
   bool unknown40ff;   // Inferred role: opening telop open; original member name unknown.
@@ -154,6 +158,7 @@ public:
 
 static_assert(offsetof(GfMenuManager, unknown4090) == 0x4090, "");
 static_assert(offsetof(GfMenuManager, unknown4091) == 0x4091, "");
+static_assert(offsetof(GfMenuManager, unknown40b0) == 0x40b0, "");
 static_assert(offsetof(GfMenuManager, unknown40b8) == 0x40b8, "");
 static_assert(offsetof(GfMenuManager, unknown40ca) == 0x40ca, "");
 static_assert(offsetof(GfMenuManager, unknown40cc) == 0x40cc, "");
@@ -163,6 +168,7 @@ static_assert(offsetof(GfMenuManager, unknown40e0) == 0x40e0, "");
 static_assert(offsetof(GfMenuManager, unknown40e4) == 0x40e4, "");
 static_assert(offsetof(GfMenuManager, unknown40e8) == 0x40e8, "");
 static_assert(offsetof(GfMenuManager, unknown40f8) == 0x40f8, "");
+static_assert(offsetof(GfMenuManager, unknown40fc) == 0x40fc, "");
 static_assert(offsetof(GfMenuManager, unknown40fd) == 0x40fd, "");
 static_assert(offsetof(GfMenuManager, unknown4100) == 0x4100, "");
 static_assert(offsetof(GfMenuManager, unknown4104) == 0x4104, "");
