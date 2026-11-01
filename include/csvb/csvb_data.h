@@ -17,6 +17,7 @@ class CCsvbData {
 public:
   CCsvbData();
   ~CCsvbData();
+  bool Load(mtl::ALLOC_HANDLE handle, const char *path);
   bool Load(mtl::ALLOC_HANDLE handle, const void *data, u32 size);
   bool Load(mm::mtl::IAllocator *allocator, const void *data, u32 size);
   bool Copy(mtl::ALLOC_HANDLE handle, const CCsvbData *source);

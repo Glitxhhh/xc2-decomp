@@ -209,7 +209,7 @@ void ScnRenderDrSysParmAcc::setMotBlurOverride(bool motBlurOverride) { unknown08
 
 void ScnRenderDrSysParmAcc::setMotBlur(bool motBlur) { unknown08->unknown1ca = motBlur; }
 
-void ScnRenderDrSysParmAcc::setMotBlurDefault(bool motBlurDefault) { unknown00->unknown70->unknownb6c = motBlurDefault; }
+void ScnRenderDrSysParmAcc::setMotBlurDefault(bool motBlurDefault) { unknown00->unknown70->unknown970.m_motBlur2 = motBlurDefault; }
 
 void ScnRenderDrSysParmAcc::setAppBlur(bool appBlur) { unknown08->unknown1ce = appBlur; }
 

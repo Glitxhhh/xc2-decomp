@@ -1,11 +1,13 @@
 #pragma once
 #include <stddef.h>
 
-#include "grlib/cglib_vtx_fetch.h"
+#include "dr/dr_res_fetch.h"
+#include "grlib/cglib_shd_list.h"
 #include "types.h"
 
 namespace ml {
 class DrMan;
+class FileResTh;
 class DrShdLgtClustered;
 class DrShdLgtGlobalIBL;
 class DrShdLgtHybrid;
@@ -19,7 +21,12 @@ public:
 
   static const char *s_DeclarationNames[19];
 
+  DrShdLgtMan(DrMan *drMan);
+  ~DrShdLgtMan();
   DrShdLgtHybrid *getHybridLight();
+  void releaseLightShader();
+  void reloadShader(int);
+  bool createLightShader();
   const char *getDeclarationName(DECLARATION type) const;
   void renderBegin();
   DrShdLgtObj *getGlobalIBLShader(GIBL_SHADER_TYPE type);
@@ -36,14 +43,14 @@ public:
   void addViewInfo(int cate);
   void delViewInfo(int cate);
 
-  DrMan *unknown00; // Inferred role: dr man; original member name unknown.
-  u8 _08[0x20 - 0x08];
-  DrShdLgtObj *unknown20;         // Inferred role: global IBL shaders; original member name unknown.
-  DrShdLgtObj *unknown28;         // Inferred role: compute shaders; original member name unknown.
-  grlib::CGLibVtxFetch unknown30; // Inferred role: IBL vertex fetch; original member name unknown.
-  u16 unknown40;                  // Inferred role: light buffer count; original member name unknown.
-  u16 unknown42;                  // Inferred role: light buffer index; original member name unknown.
-  u16 unknown44;                  // Inferred role: light buffer previous index; original member name unknown.
+  DrMan *unknown00;                                // Inferred role: dr man; original member name unknown.
+  FileResTh *unknown08;                            // Inferred role: shader file resource; original member name unknown.
+  grlib::CGLibShdListBase<DrShdLgtObj> *unknown10; // Inferred role: shader list; original member name unknown.
+  DrShdLgtObj *unknown18[3];                       // Inferred role: first shader of each shader group ([1] global IBL, [2] compute); original member name unknown.
+  DrResFetch unknown30;                            // Inferred role: IBL vertex fetch; original member name unknown.
+  u16 unknown40;                                   // Inferred role: light buffer count; original member name unknown.
+  u16 unknown42;                                   // Inferred role: light buffer index; original member name unknown.
+  u16 unknown44;                                   // Inferred role: light buffer previous index; original member name unknown.
   u16 _46;
   u32 unknown48; // Inferred role: light buffer state; original member name unknown.
   u8 _4c[0x50 - 0x4c];
@@ -53,8 +60,9 @@ public:
 };
 
 static_assert(offsetof(DrShdLgtMan, unknown00) == 0x00, "");
-static_assert(offsetof(DrShdLgtMan, unknown20) == 0x20, "");
-static_assert(offsetof(DrShdLgtMan, unknown28) == 0x28, "");
+static_assert(offsetof(DrShdLgtMan, unknown08) == 0x08, "");
+static_assert(offsetof(DrShdLgtMan, unknown10) == 0x10, "");
+static_assert(offsetof(DrShdLgtMan, unknown18) == 0x18, "");
 static_assert(offsetof(DrShdLgtMan, unknown30) == 0x30, "");
 static_assert(offsetof(DrShdLgtMan, unknown40) == 0x40, "");
 static_assert(offsetof(DrShdLgtMan, unknown48) == 0x48, "");

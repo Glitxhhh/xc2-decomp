@@ -91,12 +91,17 @@ struct unknown057 {
   s32 unknown24; // Inferred role: render height; original member name unknown.
   s32 unknown28; // Inferred role: screen width; original member name unknown.
   s32 unknown2c; // Inferred role: screen height; original member name unknown.
+  u8 _30[0x38 - 0x30];
+  u32 unknown38; // Inferred role: view flags; original member name unknown.
+  u8 _3c[0x40 - 0x3c];
 };
 
 static_assert(offsetof(unknown057, unknown18) == 0x18, "");
 static_assert(offsetof(unknown057, unknown20) == 0x20, "");
 static_assert(offsetof(unknown057, unknown28) == 0x28, "");
 static_assert(offsetof(unknown057, unknown2c) == 0x2c, "");
+static_assert(offsetof(unknown057, unknown38) == 0x38, "");
+static_assert(sizeof(unknown057) == 0x40, "");
 
 class DrMan : public IWorkBackground {
 public:
@@ -178,6 +183,10 @@ public:
     return (unknown1c9c & (1 << view)) != 0;
   }
 
+  // Inferred role: true when the view is active; original name unknown.
+  // Evidence: the same bit test repeats in DrMan::beginSetup, DrMdoMat::checkCallBackParam and DrShdLgtGlobalIBL::update.
+  bool unknown059(int view) const { return (unknown440[view].unknown38 & 1) != 0; }
+
   static DrMan *s_pTop;
   static s32 s_nDblStockIdx;
   static s32 s_nDblIdx;
@@ -191,7 +200,9 @@ public:
   mtl::ALLOC_HANDLE unknown0c; // Inferred role: mem sys; original member name unknown.
   mtl::ALLOC_HANDLE unknown10; // Inferred role: mem class; original member name unknown.
   mtl::ALLOC_HANDLE unknown14; // Inferred role: mem work; original member name unknown.
-  u8 _0018[0x0070 - 0x0018];
+  u8 _0018[0x001c - 0x0018];
+  mtl::ALLOC_HANDLE unknown1c; // Inferred role: mem data ("DrData"); original member name unknown.
+  u8 _0020[0x0070 - 0x0020];
   DrIniSys *unknown70;                                   // Inferred role: ini sys; original member name unknown.
   DrPixlMan *unknown78;                                  // Inferred role: pixl man; original member name unknown.
   DrShdMan *unknown80;                                   // Inferred role: shd man; original member name unknown.
@@ -216,11 +227,11 @@ public:
   u8 _03b4[0x03b8 - 0x03b4];
   DR_MODEL_TEXTURE unknown3b8[2][4]; // Inferred role: model textures; original member name unknown.
   u32 unknown438[2];                 // Inferred role: model texture update masks; original member name unknown.
-  u8 _0440[0x0580 - 0x0440];
-  DrCalcMan *unknown580;        // Inferred role: calc man; original member name unknown.
-  DrLightMan *unknown588;       // Inferred role: light man; original member name unknown.
-  DrFogMan *unknown590;         // Inferred role: fog man; original member name unknown.
-  DrEnvironmentMan *unknown598; // Inferred role: environment man; original member name unknown.
+  unknown057 unknown440[5];          // Inferred role: screen info per view; original member name unknown.
+  DrCalcMan *unknown580;             // Inferred role: calc man; original member name unknown.
+  DrLightMan *unknown588;            // Inferred role: light man; original member name unknown.
+  DrFogMan *unknown590;              // Inferred role: fog man; original member name unknown.
+  DrEnvironmentMan *unknown598;      // Inferred role: environment man; original member name unknown.
   u8 _05a0[0x05b0 - 0x05a0];
   DrCalcTexStreamMan *unknown5b0; // Inferred role: tex stream man; original member name unknown.
   unknown057 *unknown5b8;         // Inferred role: screen info; original member name unknown.
@@ -315,6 +326,7 @@ public:
 static_assert(offsetof(DrMan, unknown0c) == 0x000c, "");
 static_assert(offsetof(DrMan, unknown10) == 0x0010, "");
 static_assert(offsetof(DrMan, unknown14) == 0x0014, "");
+static_assert(offsetof(DrMan, unknown1c) == 0x001c, "");
 static_assert(offsetof(DrMan, unknown70) == 0x0070, "");
 static_assert(offsetof(DrMan, unknown78) == 0x0078, "");
 static_assert(offsetof(DrMan, unknown80) == 0x0080, "");
@@ -336,6 +348,7 @@ static_assert(offsetof(DrMan, unknown380) == 0x0380, "");
 static_assert(offsetof(DrMan, unknown3b0) == 0x03b0, "");
 static_assert(offsetof(DrMan, unknown3b8) == 0x03b8, "");
 static_assert(offsetof(DrMan, unknown438) == 0x0438, "");
+static_assert(offsetof(DrMan, unknown440) == 0x0440, "");
 static_assert(offsetof(DrMan, unknown580) == 0x0580, "");
 static_assert(offsetof(DrMan, unknown588) == 0x0588, "");
 static_assert(offsetof(DrMan, unknown590) == 0x0590, "");

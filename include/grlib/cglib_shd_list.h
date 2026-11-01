@@ -20,7 +20,7 @@ public:
     u8 unknown00[0x8];
     u32 unknown08; // Inferred role: offset of the shader table; original member name unknown.
     s32 unknown0c; // Inferred role: shader num; original member name unknown.
-    u8 unknown10[0x4];
+    u32 unknown10; // Inferred role: offset of the shader group table (ml::DrShdLgtMan::createLightShader); original member name unknown.
     u32 unknown14; // Inferred role: shader mode; original member name unknown.
     u32 unknown18; // Inferred role: offset of the shader data; original member name unknown.
     u8 unknown1c[0x4];
@@ -33,6 +33,7 @@ public:
 
   static_assert(offsetof(unknown001, unknown08) == 0x8, "");
   static_assert(offsetof(unknown001, unknown0c) == 0xc, "");
+  static_assert(offsetof(unknown001, unknown10) == 0x10, "");
   static_assert(offsetof(unknown001, unknown14) == 0x14, "");
   static_assert(offsetof(unknown001, unknown18) == 0x18, "");
   static_assert(offsetof(unknown001, unknown20) == 0x20, "");
@@ -48,6 +49,17 @@ public:
   };
 
   static_assert(sizeof(unknown002) == 0x8, "");
+
+  // Inferred role: shader group table entry of a shader pack file; original type name unknown.
+  // Layout evidence: ml::DrShdLgtMan::createLightShader 0x710089d170.
+  struct unknown003 {
+    u8 unknown00[0x4];
+    u32 unknown04; // Inferred role: index of the first shader of the group; original member name unknown.
+    u8 unknown08[0x4];
+  };
+
+  static_assert(offsetof(unknown003, unknown04) == 0x4, "");
+  static_assert(sizeof(unknown003) == 0xc, "");
 
   CGLibShdListBase() : unknown40(nullptr), unknown48(nullptr), unknown50(0) {}
   virtual ~CGLibShdListBase() { release(); }
@@ -67,12 +79,21 @@ public:
     }
   }
 
+  // Inferred role: returns the first shader of a shader group; original function name unknown.
+  // Evidence: the group lookup (zero extended group index) repeats in ml::DrShdLgtMan::createLightShader 0x710089d170
+  // and ml::DrShdDataList::createShader.
+  T *unknown004(u32 group) {
+    const u8 *data = static_cast<const u8 *>(unknown08);
+    const unknown003 *groups = reinterpret_cast<const unknown003 *>(data + static_cast<const unknown001 *>(unknown08)->unknown10);
+    return unknown40 + groups[group].unknown04;
+  }
+
   const void *unknown08;     // Inferred role: shader pack data; original member name unknown.
   CGLibVtlMemPool unknown10; // Inferred role: mem pool; original member name unknown.
   T *unknown40;              // Inferred role: shaders; original member name unknown.
   void *unknown48;           // Inferred role: allocated buffer; original member name unknown.
   s32 unknown50;             // Inferred role: shader num; original member name unknown.
-  u32 unknown54;             // Inferred role: shader mode; original member name unknown.
+  s32 unknown54;             // Inferred role: shader group num (signed loop bound in ml::DrShdLgtMan::createLightShader); original member name unknown.
 };
 
 template <class T> bool CGLibShdListBase<T>::createPacShader(const void *data, u32 version, bool isCopy) {

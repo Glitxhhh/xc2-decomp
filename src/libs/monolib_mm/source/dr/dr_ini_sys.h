@@ -1,9 +1,14 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_pixl_post_parm.h"
 #include "grlib/cglib_texture_buffer.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
+
+namespace csvb {
+class CCsvbData;
+} // namespace csvb
 
 namespace mm {
 struct Vec3;
@@ -18,9 +23,22 @@ class WinProc;
 
 extern const char *TOON_RIM_FILE;
 extern const char *VOLUME_FILE;
+extern const char *DUMMY_CUBEMAP_FILE;
+extern const char *RAIN_DROP_FILE;
+extern const char *RAIN_DROP_DEPTH_FILE;
+extern const char *TOON_GRAD_FILE;
+extern const char *TOON_GRAD_NIGHT_FILE;
+extern const char *WETNESS_CSVB_FILE;
+extern const char *GLASS_BREAKAGE;
+extern const char *CAM_LGT_FILE;
+extern const char *FLAG_WAVE0_FILE;
+extern const char *FLAG_WAVE1_FILE;
 
 class DrIniSys {
 public:
+  DrIniSys(DrMan *drMan);
+  ~DrIniSys();
+  void dataWorkClear();
   bool chkOnOff(const char *value);
   f32 getFloatWork(const char *value);
   int getToonDirType(const char *value);
@@ -32,6 +50,11 @@ public:
   void loadToonRimTexture();
   void loadVolumeTexture();
   void loadIBLEnvTexture();
+  void loadWetnessCSVBFile();
+  void loadFilterLutTexture();
+  void loadGlassBreakage();
+  void loadCameraLight();
+  void loadTextureImpl(u32 index, const char *name);
   void loadFlagWaveTexture();
   void setIBLEnvTexturePath(const char *path);
   void reloadToonGradTexture();
@@ -53,30 +76,32 @@ public:
   void reloadFlagWaveTexture();
   const void *getGlassBreakage() const;
 
-  DrMan *unknown00; // Inferred role: dr man; original member name unknown.
-  u8 _08[0x38 - 0x08];
-  FileResTh *unknown38;    // Inferred role: toon rim res; original member name unknown.
-  FileResTh *unknown40[5]; // Inferred role: volume res; original member name unknown.
-  u8 _68[0x98 - 0x68];
+  DrMan *unknown00;                        // Inferred role: dr man; original member name unknown.
+  FileResTh *unknown08[18];                // Inferred role: texture resources ([4, 5] toon grad, [6] toon rim, [7..11] volume, [12] IBL env, [13, 14] rain drop, [16, 17] flag
+                                           // wave); original member name unknown.
   grlib::CGLibTextureBuffer unknown98[18]; // Inferred role: textures; original member name unknown.
-  u8 _878[0x880 - 0x878];
-  ScnObjModel *unknown880; // Inferred role: mirror ball; original member name unknown.
+  FileResTh *unknown878;                   // Inferred role: mirror ball model res; original member name unknown.
+  ScnObjModel *unknown880;                 // Inferred role: mirror ball; original member name unknown.
   bool m_updateMirrorBallPos;
   u8 _889[0x890 - 0x889];
   FileResTh *unknown890; // Inferred role: camera light res; original member name unknown.
   FileResTh *unknown898; // Inferred role: glass breakage res; original member name unknown.
-  u8 _8a0[0xb6c - 0x8a0];
-  bool unknownb6c; // Inferred role: mot blur default; original member name unknown.
-  u8 _b6d[0x1a80 - 0xb6d];
+  FileResTh *unknown8a0; // Inferred role: filter lut res; original member name unknown.
+  u8 _8a8[0x970 - 0x8a8];
+  DrPixlPostParm unknown970;        // Inferred role: default post parm; original member name unknown.
   mm::mtl::FixStr<256> unknown1a80; // Inferred role: IBL env texture path; original member name unknown.
+  csvb::CCsvbData *unknown1b88;     // Inferred role: wetness csvb data; original member name unknown.
 };
 
-static_assert(offsetof(DrIniSys, unknown38) == 0x38, "");
+static_assert(offsetof(DrIniSys, unknown08) == 0x08, "");
 static_assert(offsetof(DrIniSys, unknown98) == 0x98, "");
+static_assert(offsetof(DrIniSys, unknown878) == 0x878, "");
 static_assert(offsetof(DrIniSys, unknown880) == 0x880, "");
 static_assert(offsetof(DrIniSys, unknown890) == 0x890, "");
 static_assert(offsetof(DrIniSys, unknown898) == 0x898, "");
-static_assert(offsetof(DrIniSys, unknownb6c) == 0xb6c, "");
+static_assert(offsetof(DrIniSys, unknown8a0) == 0x8a0, "");
+static_assert(offsetof(DrIniSys, unknown970) == 0x970, "");
 static_assert(offsetof(DrIniSys, unknown1a80) == 0x1a80, "");
+static_assert(offsetof(DrIniSys, unknown1b88) == 0x1b88, "");
 
 } // namespace ml

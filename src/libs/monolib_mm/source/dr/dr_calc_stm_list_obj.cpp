@@ -137,6 +137,19 @@ void DrCalcStmListObj::update() {
   }
 }
 
+void DrCalcStmListObj::callUpdate(DrStmListAfterArg &arg) {
+  if (!(unknown80 & 2) && (unknowna6 == 0 || unknownc8 == 0) && arg.unknown01) {
+    if (unknown8c < 0x708) {
+      unknown8c = 0x707;
+    }
+    if (unknown8e < 0xe10) {
+      unknown8e = 0xe0f;
+    }
+    arg.unknown036(unknown98);
+    arg.unknown036(unknown94);
+  }
+}
+
 bool DrCalcStmListObj::texstm_defMidtexErrWait() {
   unknown88 = 10;
   DrCalcTexStreamMan *man = DrCalcTexStreamMan::get();
@@ -167,6 +180,7 @@ bool DrCalcStmListObj::texstm_defupdate() {
   unknown88 = 0x13;
   if (unknownc8 != 0) {
     unknown8c = 0;
+    unknown8e = 0;
   }
   if (!(unknown80 & 0x10)) {
     unknown1e0 = &DrCalcStmListObj::texstm_checkTexStm;

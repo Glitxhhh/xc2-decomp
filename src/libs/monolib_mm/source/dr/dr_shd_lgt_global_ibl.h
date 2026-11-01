@@ -32,7 +32,12 @@ public:
     u8 _2051[0x2060 - 0x2051];
   };
 
+  DrShdLgtGlobalIBL(DrMan *drMan);
+  ~DrShdLgtGlobalIBL();
   void update(int viewNum);
+  void updateView(int viewNum);
+  void updateUniformBlock(int viewNum);
+  void updateUniformBlockImpl(int viewNum);
   void render(DrShdLgtMan *man);
   void resetColorBuff(int index);
   void delViewInfo(int viewNum);

@@ -40,6 +40,7 @@ public:
 
   ~DrResFilterData();
   void clear();
+  void setFilterData(const void *data);
   void set2LayerFilterTex(int index, int first, int second, f32 time);
   void setFilterTex(int index, int texture, f32 time);
   grlib::CGLibTextureBuffer *findFilterTexture(u32 id) const;

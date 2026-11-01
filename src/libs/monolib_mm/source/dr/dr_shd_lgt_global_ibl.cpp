@@ -41,4 +41,12 @@ const mm::Mat44 &DrShdLgtGlobalIBL::getSHMatrix(u32 row, u32 column) const {
 
 void DrShdLgtGlobalIBL::updateUB_ShMatrixList(u8 *work, int viewNum) { grlib::ShdMat44TransposeMat44Array(reinterpret_cast<f32 *>(work), unknown10[viewNum].unknown340, 0x60); }
 
+void DrShdLgtGlobalIBL::update(int viewNum) {
+  if (viewNum == 0 || (viewNum > 0 && unknown00->unknown059(viewNum))) {
+    updateView(viewNum);
+  }
+}
+
+void DrShdLgtGlobalIBL::updateUniformBlock(int viewNum) { updateUniformBlockImpl(viewNum); }
+
 } // namespace ml

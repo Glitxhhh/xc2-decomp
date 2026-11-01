@@ -12,6 +12,28 @@ namespace ml {
 class DrCalcTexStmObj;
 class EventFileTh;
 
+// Original type name from the symbol _ZN2ml16DrCalcStmListObj10callUpdateERNS_17DrStmListAfterArgE.
+// Layout evidence: DrCalcTexStreamMan::afterUpdate 0x71008b2ac4, DrCalcStmListObj::callUpdate 0x71008b3f38.
+struct DrStmListAfterArg {
+  bool unknown00; // Role and original member name unknown.
+  bool unknown01; // Inferred role: memory budget check on; original member name unknown.
+  s32 unknown04;  // Inferred role: remaining memory budget; original member name unknown.
+
+  // Inferred role: subtracts a size from the remaining budget, clamped at zero; original function name unknown.
+  // Evidence: the same block repeats in DrCalcStmListObj::callUpdate, afterUpdate and memChkUpdate.
+  void unknown036(s32 size) {
+    s32 rest = unknown04 - size;
+    if (rest < 0) {
+      rest = 0;
+    }
+    unknown04 = rest;
+  }
+};
+
+static_assert(offsetof(DrStmListAfterArg, unknown01) == 0x01, "");
+static_assert(offsetof(DrStmListAfterArg, unknown04) == 0x04, "");
+static_assert(sizeof(DrStmListAfterArg) == 0x08, "");
+
 // Inferred role: calc stm res; original type name unknown.
 struct unknown035 {
   const u8 *unknown00; // Inferred role: data; original member name unknown.
@@ -61,6 +83,7 @@ public:
   bool texstm_defRead();
   void chacheDefClear();
   void update();
+  void callUpdate(DrStmListAfterArg &arg);
 
   u8 _00[0x28];
   DrCalcTexStmObj **unknown28; // Inferred role: tex stream objects; original member name unknown.
@@ -76,10 +99,11 @@ public:
   u32 unknown80; // Inferred role: state flags; original member name unknown.
   u32 unknown84; // Inferred role: error wait size; original member name unknown.
   u32 unknown88; // Inferred role: wait state; original member name unknown.
-  u32 unknown8c; // Inferred role: wait frames; original member name unknown.
+  s16 unknown8c; // Inferred role: wait frames; original member name unknown.
+  s16 unknown8e; // Inferred role: unused frames; original member name unknown.
   u8 _90[0x94 - 0x90];
   u32 unknown94; // Inferred role: tex stream count; original member name unknown.
-  u8 _98[0x9c - 0x98];
+  s32 unknown98; // Inferred role: resident size; original member name unknown.
   u8 _9c[0xa2 - 0x9c];
   s16 unknowna2; // Inferred role: tex stream object max; original member name unknown.
   u8 _a4[0xa6 - 0xa4];
@@ -100,6 +124,8 @@ public:
 static_assert(offsetof(DrCalcStmListObj, unknown28) == 0x28, "");
 static_assert(offsetof(DrCalcStmListObj, unknown40) == 0x40, "");
 static_assert(offsetof(DrCalcStmListObj, unknown8c) == 0x8c, "");
+static_assert(offsetof(DrCalcStmListObj, unknown8e) == 0x8e, "");
+static_assert(offsetof(DrCalcStmListObj, unknown98) == 0x98, "");
 static_assert(offsetof(DrCalcStmListObj, unknown30) == 0x30, "");
 static_assert(offsetof(DrCalcStmListObj, unknown50) == 0x50, "");
 static_assert(offsetof(DrCalcStmListObj, unknown84) == 0x84, "");
