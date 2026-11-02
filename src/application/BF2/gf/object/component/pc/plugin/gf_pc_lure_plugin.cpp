@@ -8,7 +8,7 @@ namespace pc {
 LurePlugin::LurePlugin() : unknown10(INVALID_HANDLE), unknown20(nullptr) {}
 
 bool LurePlugin::setup(GfComBehaviorPc &behavior) {
-  unknown18 = fw::ParamManager::get()->unknown440;
+  unknown18 = fw::ParamManager::get()->unknown408[7];
   this->unknown20 = &behavior;
   return true;
 }

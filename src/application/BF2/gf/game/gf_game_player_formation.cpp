@@ -22,13 +22,13 @@ static void notifyChangePlayerID(GfGamePlayerFormation *formation, u32 playerId)
 }
 
 const FormationParam *getFormationParam(u32 formation) {
-  const fw::ParamList *paramList = fw::ParamManager::get()->unknown438.operator->();
+  const fw::ParamList *paramList = fw::ParamManager::get()->unknown408[6].operator->();
   const fw::ParamList::unknown005 *entry = formation < paramList->unknown0c ? &paramList->unknown10[formation] : nullptr;
   return entry != nullptr ? static_cast<const FormationParam *>(entry->param) : nullptr;
 }
 
 const WarpForRandomTalkParam *getWarpForRandomTalkParam() {
-  const fw::ParamList *paramList = fw::ParamManager::get()->unknown438.operator->();
+  const fw::ParamList *paramList = fw::ParamManager::get()->unknown408[6].operator->();
   return paramList->unknown0c > PARAM_WARP_FOR_RANDOM_TALK ? static_cast<const WarpForRandomTalkParam *>(paramList->unknown10[PARAM_WARP_FOR_RANDOM_TALK].param) : nullptr;
 }
 

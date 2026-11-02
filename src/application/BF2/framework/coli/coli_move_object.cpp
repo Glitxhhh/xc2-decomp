@@ -1,4 +1,6 @@
+#include "framework/coli/coli_manager.h"
 #include "framework/coli/coli_object.h"
+#include "framework/memory/framework_memory.h"
 #include "framework/reference_frame.h"
 #include "fw/fw_transform.h"
 #include "idcoli/idcoli.h"
@@ -7,6 +9,37 @@
 #include "mm_mtl/intrusive_ptr.h"
 
 namespace fw {
+
+ColiObject *ColiMoveObject::createColiCharacter(const ColiCharacterInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame) {
+  idcoli::IDColiAccMan accMan;
+  idcoli::IDColiObj *coliObject = accMan.createColiCharacter();
+#line 29
+  ColiObject *object = new (FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) ColiMoveObject();
+  object->addRef();
+  object->setColiObject(coliObject);
+  object->setHitMaterialFlag(0xfffffffa);
+  ColiManager::get()->registObject(object);
+  if (object != nullptr) {
+    setupColiCharacter(object, info, frame);
+  }
+
+  return object;
+}
+
+ColiObject *ColiMoveObject::createColiPhantom(const ColiPhantomInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame) {
+  idcoli::IDColiAccMan accMan;
+  idcoli::IDColiObj *coliObject = accMan.createColiPhantom();
+#line 55
+  ColiObject *object = new (FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) ColiMoveObject();
+  object->addRef();
+  object->setColiObject(coliObject);
+  ColiManager::get()->registObject(object);
+  if (object != nullptr) {
+    setupColiPhantom(object, info, frame);
+  }
+
+  return object;
+}
 
 ColiMoveObject::ColiMoveObject() : unknown100(mm::Vec3::zero), unknown110(0) {}
 

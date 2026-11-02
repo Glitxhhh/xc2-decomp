@@ -913,7 +913,7 @@ void GfMenuObjUtil::createNumberPlugin(u32 handle, int number) {
 const GfMenuObjUtil::unknown001 *GfMenuObjUtil::getParamMenu() {
   fw::ParamManager *manager = fw::ParamManager::get();
   if (manager != nullptr) {
-    const fw::ParamList *list = manager->unknown4a8.operator->();
+    const fw::ParamList *list = manager->unknown408[20].operator->();
     if (list->unknown0c != 0 && list->unknown10 != nullptr) {
       return static_cast<const unknown001 *>(list->unknown10[0].param);
     }

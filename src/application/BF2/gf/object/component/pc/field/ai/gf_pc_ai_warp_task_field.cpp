@@ -129,7 +129,7 @@ void TaskFieldCheckWarpBattleWaterDead::onChangeActivate(BlackBoardField &blackB
 }
 
 void TaskFieldCheckWarpBattleWaterDead::onCreate(BlackBoardField &blackBoard, const ai::CreateEvent &event) {
-  mm::mtl::IntrusivePtr<fw::ParamList> paramList = fw::ParamManager::get()->unknown458;
+  mm::mtl::IntrusivePtr<fw::ParamList> paramList = fw::ParamManager::get()->unknown408[10];
   if (paramList.get() != nullptr) {
     unknown40.unknown00 = paramList->unknown0c > 0 ? &paramList->unknown10[0] : nullptr;
   }

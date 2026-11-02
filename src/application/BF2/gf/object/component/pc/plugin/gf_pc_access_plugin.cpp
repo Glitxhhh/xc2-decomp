@@ -9,7 +9,7 @@ namespace pc {
 AccessPlugin::AccessPlugin() : unknown10(INVALID_HANDLE), unknown20(nullptr), unknown28(-1) {}
 
 bool AccessPlugin::setup(GfComBehaviorPc &behavior) {
-  unknown18 = fw::ParamManager::get()->unknown430;
+  unknown18 = fw::ParamManager::get()->unknown408[5];
   this->unknown20 = &behavior;
   return true;
 }

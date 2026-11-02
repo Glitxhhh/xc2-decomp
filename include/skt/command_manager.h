@@ -1,8 +1,61 @@
 #pragma once
+#include <stddef.h>
+
+#include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
+#include "types.h"
 
 namespace skt {
 
-struct PortRegistInfo;
+// Inferred role: parsed argument of a command; original type name unknown.
+struct unknown001 {
+  const char *unknown00; // Inferred role: argument string, read by CommandParam::getArg; original member name unknown.
+  u8 _08[0x10 - 0x08];
+};
+
+class CommandParam {
+public:
+  void parseCommand(s8 separator);
+  bool getS32(int index, int &value) const;
+  bool getF32(int index, f32 &value) const;
+  mm::mtl::FixStr<128> getStr(int index) const;
+
+  char unknown000[0x400]; // Inferred role: command line parsed by parseCommand; original member name unknown.
+  u8 _400[0x800 - 0x400];
+  mm::mtl::FixedVector<unknown001, 32> unknown800; // Inferred role: arguments; original member name unknown.
+  u8 _a08[0xa18 - 0xa08];
+};
+
+static_assert(sizeof(unknown001) == 0x10, "");
+static_assert(offsetof(CommandParam, unknown800) == 0x800, "");
+static_assert(sizeof(CommandParam) == 0xa18, "");
+
+class ICommandCallback {
+public:
+  virtual void OnRecv(const CommandParam &param) = 0;
+  virtual void OnDisconnect(const char *name) {}
+};
+
+struct PortRegistInfo {
+  PortRegistInfo() : unknownb0(nullptr), unknownb8(-2), unknownbc(0), unknownc0(0x10000), unknownc4(' ') {}
+
+  u16 unknown00; // Inferred role: port number; original member name unknown.
+  u8 _02[0x04 - 0x02];
+  mm::mtl::FixStr<32> unknown04;  // Inferred role: server name; original member name unknown.
+  mm::mtl::FixStr<128> unknown28; // Role and original member name unknown.
+  ICommandCallback *unknownb0;    // Inferred role: receive callback; original member name unknown.
+  int unknownb8;                  // Role and original member name unknown.
+  u32 unknownbc;                  // Role and original member name unknown.
+  u32 unknownc0;                  // Inferred role: buffer size; original member name unknown.
+  char unknownc4;                 // Inferred role: argument separator; original member name unknown.
+};
+
+static_assert(offsetof(PortRegistInfo, unknown04) == 0x04, "");
+static_assert(offsetof(PortRegistInfo, unknown28) == 0x28, "");
+static_assert(offsetof(PortRegistInfo, unknownb0) == 0xb0, "");
+static_assert(offsetof(PortRegistInfo, unknownb8) == 0xb8, "");
+static_assert(offsetof(PortRegistInfo, unknownc4) == 0xc4, "");
+static_assert(sizeof(PortRegistInfo) == 0xc8, "");
 
 enum SERVER_OPTION : int;
 

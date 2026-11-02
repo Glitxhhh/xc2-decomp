@@ -9,6 +9,10 @@ struct Mat44;
 struct Vec3;
 } // namespace mm
 
+namespace skt {
+class ICommandCallback;
+} // namespace skt
+
 namespace fw {
 
 class PrimCapsule;
@@ -18,6 +22,7 @@ namespace debug {
 
 extern const char *CL_CONNECT_NAME;
 
+void initCommandLauncherReciever(skt::ICommandCallback *callback);
 void finalCommandLauncherReciever();
 bool drawFont(int x, int y, const mm::Col4 &color, const char *format, ...);
 bool drawFont(int x, int y, const char *format, ...);

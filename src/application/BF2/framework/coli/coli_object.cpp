@@ -36,6 +36,35 @@ void ColiObject::setHitMaterialFlag(u32 flag) {
   }
 }
 
+ColiObject *ColiObject::createColiGrand(const void *binary) {
+  idcoli::IDColiAccMan accMan;
+  idcoli::IDColiObj *coliObject = accMan.createColiGrand(binary);
+#line 44
+  ColiObject *object = new (FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) ColiObject();
+  object->addRef();
+  object->setColiObject(coliObject);
+#line 54
+  object->unknowne8.reset(new (FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) unknown135(unknown031::TYPE_UNKNOWN_4, binary));
+  ColiManager::get()->registObject(object);
+  return object;
+}
+
+ColiObject *ColiObject::createColiCharacter(const ColiCharacterInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame) {
+  idcoli::IDColiAccMan accMan;
+  idcoli::IDColiObj *coliObject = accMan.createColiCharacter();
+#line 71
+  ColiObject *object = new (FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) ColiObject();
+  object->addRef();
+  object->setColiObject(coliObject);
+  object->setHitMaterialFlag(0xfffffffa);
+  ColiManager::get()->registObject(object);
+  if (object != nullptr) {
+    setupColiCharacter(object, info, frame);
+  }
+
+  return object;
+}
+
 void ColiObject::setupColiCharacter(ColiObject *object, const ColiCharacterInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame) {
   if (object == nullptr) {
     return;
@@ -102,6 +131,21 @@ void ColiObject::setupColiCharacter(ColiObject *object, const ColiCharacterInfo 
   if (frame.get() != nullptr) {
     object->setInstantlyMatrix(frame->getSyncedWorldMatrix());
   }
+}
+
+ColiObject *ColiObject::createColiPhantom(const ColiPhantomInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame) {
+  idcoli::IDColiAccMan accMan;
+  idcoli::IDColiObj *coliObject = accMan.createColiPhantom();
+#line 100
+  ColiObject *object = new (FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) ColiObject();
+  object->addRef();
+  object->setColiObject(coliObject);
+  ColiManager::get()->registObject(object);
+  if (object != nullptr) {
+    setupColiPhantom(object, info, frame);
+  }
+
+  return object;
 }
 
 void ColiObject::setupColiPhantom(ColiObject *object, const ColiPhantomInfo &info, const mm::mtl::IntrusivePtr<ReferenceFrame> &frame) {

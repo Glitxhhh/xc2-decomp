@@ -12,16 +12,33 @@ template <typename T> struct Rect;
 namespace fw {
 namespace debug {
 
-class InputCallback;
+class InputCallback {
+public:
+  virtual ~InputCallback() {}
+  virtual void onEnter() = 0;
+  virtual void onLeave() = 0;
+  virtual void onDecide(const char *command) = 0;
+};
 
-class DebugInputKeyboard {
+class IDebugInput {
+public:
+  virtual ~IDebugInput() {}
+  // Inferred role: non-virtual update entry calling updateImpl; original name unknown.
+  void unknown001(InputCallback *callback) { updateImpl(callback); }
+  // Inferred role: non-virtual render entry calling renderImpl, which orders the argument before the vtable load; original name unknown.
+  void unknown002(const mm::Rect<int> &rect) { renderImpl(rect); }
+  virtual void updateImpl(InputCallback *callback) = 0;
+  virtual void renderImpl(const mm::Rect<int> &rect) = 0;
+};
+
+class DebugInputKeyboard : public IDebugInput {
 public:
   static const u32 HISTORY_MAX = 32;
 
   DebugInputKeyboard();
-  virtual ~DebugInputKeyboard();
-  virtual void updateImpl(InputCallback *callback);
-  virtual void renderImpl(const mm::Rect<int> &rect);
+  ~DebugInputKeyboard() override;
+  void updateImpl(InputCallback *callback) override;
+  void renderImpl(const mm::Rect<int> &rect) override;
 
   bool unknown08;                                                     // Inferred role: input active; original member name unknown.
   bool unknown09;                                                     // Inferred role: browsing history; original member name unknown.

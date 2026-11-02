@@ -75,6 +75,7 @@ struct unknown031 {
     TYPE_CAPSULE = 1,
     TYPE_BOX = 2,
     TYPE_CHARACTER = 3,
+    TYPE_UNKNOWN_4 = 4,
     TYPE_UNKNOWN_5 = 5,
   };
 
@@ -125,6 +126,8 @@ struct unknown134 : unknown031 {
 
 // Inferred role: coli shape built from collision binary data; original type name unknown.
 struct unknown135 : unknown031 {
+  unknown135(Type type, const void *binary) : unknown031(type), unknown08(binary) {}
+
   const void *unknown08; // Inferred role: binary data; original member name unknown.
 };
 

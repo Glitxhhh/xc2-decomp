@@ -200,7 +200,7 @@ void GmkPrecious::updateInActiveList(f32 deltaTime) {
   }
   const mm::Vec3 &moverPosition = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
   mm::Vec3 diff = AGmkBase::unknown08.unknown08->unknown00 - moverPosition;
-  const unknown091 *param = static_cast<const unknown091 *>(fw::ParamManager::get()->unknown430->unknown10[5].param);
+  const unknown091 *param = static_cast<const unknown091 *>(fw::ParamManager::get()->unknown408[5]->unknown10[5].param);
   if (-param->unknown08 <= diff.y && diff.y <= param->unknown04) {
     diff.y = 0.0f;
     if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= param->unknown00 * param->unknown00) {

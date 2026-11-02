@@ -12,11 +12,23 @@
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixstr.h"
+#include "skt/command_manager.h"
 
 namespace fw {
 namespace debug {
 
 const char *CL_CONNECT_NAME = "dev_cl";
+
+void initCommandLauncherReciever(skt::ICommandCallback *callback) {
+  skt::PortRegistInfo info;
+  info.unknown00 = 30000;
+  info.unknown04 = CL_CONNECT_NAME;
+  info.unknownb0 = callback;
+  info.unknownc4 = ',';
+  info.unknownbc = 0;
+  CommandManager::openServer(info);
+}
 
 void finalCommandLauncherReciever() { CommandManager::closeServer(CL_CONNECT_NAME); }
 

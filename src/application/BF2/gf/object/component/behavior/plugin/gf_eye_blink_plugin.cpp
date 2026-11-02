@@ -13,7 +13,7 @@ EyeBlinkPlugin::EyeBlinkPlugin() : unknown10(nullptr), unknown18(0.0f), unknown1
 
 bool EyeBlinkPlugin::setup(GfComBehavior &behavior) {
   unknown10 = &behavior;
-  unknown20 = fw::ParamManager::get()->unknown460;
+  unknown20 = fw::ParamManager::get()->unknown408[11];
   return true;
 }
 

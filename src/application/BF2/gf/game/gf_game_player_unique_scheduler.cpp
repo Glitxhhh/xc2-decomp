@@ -18,7 +18,7 @@ void GfGamePlayerUniqueScheduler::build(const GfSetupParam &) {
 
 void GfGamePlayerUniqueScheduler::setup() {
   GfEvent::addEventCallback(this);
-  unknown1d0 = fw::ParamManager::get()->unknown468;
+  unknown1d0 = fw::ParamManager::get()->unknown408[12];
 }
 
 void GfGamePlayerUniqueScheduler::destroy() {

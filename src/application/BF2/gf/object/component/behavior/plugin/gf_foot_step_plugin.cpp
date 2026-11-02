@@ -24,7 +24,7 @@ void FootStepPlugin::onActivate() { unknown09 = false; }
 void FootStepPlugin::onDeactivate() {}
 
 const FootStepParam *FootStepPlugin::getParam() {
-  mm::mtl::IntrusivePtr<fw::ParamList> paramList = fw::ParamManager::get()->unknown4c8;
+  mm::mtl::IntrusivePtr<fw::ParamList> paramList = fw::ParamManager::get()->unknown408[24];
   const fw::ParamList::unknown005 *entry = paramList->unknown0c > 0 ? &paramList->unknown10[0] : nullptr;
   return entry != nullptr ? static_cast<const FootStepParam *>(entry->param) : nullptr;
 }

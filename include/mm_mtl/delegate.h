@@ -36,6 +36,11 @@ public:
     m_invoker = &memberFuncInvoker<T>;
   }
 
+  void bind(R (*function)(Args...)) {
+    *reinterpret_cast<R (**)(Args...)>(m_function) = function;
+    m_invoker = &staticFuncInvoker;
+  }
+
   void *m_object;
   Invoker m_invoker;
   u8 m_function[0x10];

@@ -7,6 +7,14 @@
 
 namespace fw {
 
+mm::mtl::IntrusivePtr<ParamList> ParamBuilder::create(void *data, u32 index, const char *name) {
+  ParamManager *manager = ParamManager::get();
+  mm::mtl::IntrusivePtr<ParamList> list;
+  list = importBinary(data, nullptr);
+  manager->unknown408[index] = list;
+  return list;
+}
+
 mm::mtl::IntrusivePtr<ParamList> ParamBuilder::importBinary(void *data, Reflection *reflection) {
   const ParamList::unknown006 *binary = static_cast<const ParamList::unknown006 *>(bin::BinaryResolver::resolve(data));
 #line 90

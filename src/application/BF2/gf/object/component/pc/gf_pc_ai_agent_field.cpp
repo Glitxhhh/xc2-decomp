@@ -40,7 +40,7 @@ AIAgentField::~AIAgentField() {}
 
 void AIAgentField::setup(GfComPropertyPc &property) {
   unknown00 = fw::NaviManager::get()->createObject();
-  unknown88 = fw::ParamManager::get()->unknown488;
+  unknown88 = fw::ParamManager::get()->unknown408[16];
   mm::mtl::IAllocator *allocator = fw::Allocator::getProcAllocator();
   unknown08.beginSetup(20, allocator);
   unknown08.unknown003<BlackBoardField>();
