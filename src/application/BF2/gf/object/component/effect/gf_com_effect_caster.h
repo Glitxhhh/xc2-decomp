@@ -62,6 +62,30 @@ struct MsgFxFootPrint : fw::Message {
 static_assert(offsetof(MsgFxFootPrint, unknown08) == 0x08, "");
 static_assert(offsetof(MsgFxFootPrint, unknown0c) == 0x0c, "");
 
+// Message id from GfComEffectCaster::recieveMessage (0x7100503300), whose case 0x100004c is procMsgFxCombo inlined.
+struct MsgFxCombo : fw::Message {
+  MsgFxCombo() : fw::Message(0x100004c, 0x80), unknown08(0) {}
+
+  u32 unknown08;         // Role and original member name unknown.
+  const char *unknown10; // Inferred role: effect name; original member name unknown.
+  u32 unknown18;         // Inferred role: started effect handle; original member name unknown.
+};
+
+static_assert(offsetof(MsgFxCombo, unknown08) == 0x08, "");
+static_assert(offsetof(MsgFxCombo, unknown10) == 0x10, "");
+static_assert(offsetof(MsgFxCombo, unknown18) == 0x18, "");
+
+// Message id from GfComEffectCaster::recieveMessage (0x7100503300), whose case 0x100004d is procMsgFxComboBuff inlined.
+struct MsgFxComboBuff : fw::Message {
+  MsgFxComboBuff() : fw::Message(0x100004d, 0x80), unknown08(0) {}
+
+  u32 unknown08;         // Role and original member name unknown.
+  const char *unknown10; // Inferred role: effect name; original member name unknown.
+};
+
+static_assert(offsetof(MsgFxComboBuff, unknown08) == 0x08, "");
+static_assert(offsetof(MsgFxComboBuff, unknown10) == 0x10, "");
+
 class GfComEffectCaster : public GfComponent {
 public:
   // Layout evidence: effectStart (0x7100506604) builds it before its copy ctor (0x710050b090); the copy ctor and

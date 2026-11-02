@@ -514,7 +514,7 @@ bool BattleCharacter::IsBattle() const { return m_battle; }
 
 void BattleCharacter::ResetAnimationMoveDistance() {
   for (int i = 0; i < 20; i++) {
-    unknownce0[i].unknown04 = ANIMATION_INVALID;
+    unknownce4[i].unknown00 = ANIMATION_INVALID;
   }
 }
 
@@ -958,7 +958,7 @@ void BattleCharacter::CalcLocomotionMoveRate(f32 maxRate) {
     f32 distance = Misc::CalcLengthXZ(unknown10, position);
     f32 rate = (distance - unknown002(this)->unknown2c) / length;
     unknowncdc = mm::clamp(rate, 0.15f, maxRate < 0.0f ? 1.0f : maxRate);
-    unknownce0[0].unknown00 = 1.0f;
+    unknownce0 = 1.0f;
   }
 }
 
@@ -1873,6 +1873,26 @@ void BattleCharacter::GetMoveDataPerSec(mm::Vec3 &moveData) const {
 
 void BattleCharacter::SetAnimationSpeed(f32 speed) { m_animationSpeed = speed; }
 
+f32 BattleCharacter::GetAnimationMoveDistance() {
+  int param0 = unknowncb0;
+  int param1 = unknowncb4;
+  int animation = unknownf7c;
+  for (int i = 0; i < 20; i++) {
+    if (unknownce4[i].unknown00 == animation && unknownce4[i].unknown04 == param0 && unknownce4[i].unknown06 == param1) {
+      f32 distance = unknownce4[i].unknown02 * 0.01f;
+      if (i != 0) {
+        ANIMATION_MOVE_DISTANCE_DATA data = unknownce4[i];
+        for (int j = i; j > 0; j--) {
+          unknownce4[j] = unknownce4[j - 1];
+        }
+        unknownce4[0] = data;
+      }
+      return distance;
+    }
+  }
+  return -1.0f;
+}
+
 void BattleCharacter::SetIKData(const ARTS_DATA &data) {
   unknowndc0_7 = data.unknown15_0;
   unknowndc1_3 = data.unknown15_4;
@@ -2459,6 +2479,53 @@ f32 BattleCharacter::ApplyResistantAttr(f32 damage, int attribute) const {
 }
 
 f32 BattleCharacter::GetArtsDamageRate(const ARTS_DATA &data, int level) const { return GetArtsDamageRate(data.unknown90[level - 1]); }
+
+u32 BattleCharacter::CreateElementalComboEffect(int combo) {
+  u32 effect = 0;
+  if (combo != 0) {
+    gf::GfComEffectCaster *caster = GetEffectCaster();
+    if (caster != nullptr) {
+      gf::GfComProperty *property = GetComPropertyConst();
+      if (property != nullptr) {
+        u8 *bdat = gf::GfDataBdat::getFP(gf::BDAT_BTL_ELEMENTAL_COMBO);
+        gf::MsgFxCombo message;
+        message.unknown10 = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "Effect", combo, 7));
+        if (*message.unknown10 != '\0') {
+          gf::GfObj *obj = static_cast<gf::GfObj *>(property->unknown08);
+          caster->recieveMessage(obj, message);
+          BattleGlobal *global = BattleGlobal::get();
+          gf::GF_OBJ_HANDLE *handle = unknown118;
+          bool isTarget = global->unknown5af0 == handle;
+          if (message.unknown18 != 0) {
+            if (isTarget) {
+              global->RegisterElementalComboInvalidSlowEffect(1, message.unknown18, caster);
+            }
+            effect = message.unknown18;
+            caster->startTimer(effect);
+          }
+          PlaySE(BTL_SE_HIT, combo + 79, nullptr, isTarget);
+        }
+      }
+    }
+  }
+  return effect;
+}
+
+void BattleCharacter::CreateElementalEffect(int effect) {
+  gf::GfComEffectCaster *caster = GetEffectCaster();
+  if (caster != nullptr) {
+    u8 *bdat = gf::GfDataBdat::getFP(gf::BDAT_BTL_ELEMENTAL_EFFECT);
+    gf::MsgFxComboBuff message;
+    message.unknown10 = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "Effect", effect, 7));
+    if (*message.unknown10 != '\0') {
+      gf::GfComProperty *property = GetComPropertyConst();
+      if (property != nullptr) {
+        gf::GfObj *obj = static_cast<gf::GfObj *>(property->unknown08);
+        caster->recieveMessage(obj, message);
+      }
+    }
+  }
+}
 
 void BattleCharacter::StopAI(f32 time) { unknown11cc = unknown11cc > time ? unknown11cc : time; }
 

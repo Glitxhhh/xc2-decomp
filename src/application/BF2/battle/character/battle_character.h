@@ -104,9 +104,13 @@ public:
     EFFECT_ID_NUM = 13,
   };
 
+  // Layout evidence: SetAnimationMoveDistance (0x7100028cc4) fills the four halves of an 8-byte entry at 0xce4, and
+  // GetAnimationMoveDistance (0x7100028e14) matches the first, third and fourth ones and reads the second unsigned.
   struct ANIMATION_MOVE_DISTANCE_DATA {
-    f32 unknown00; // Inferred role: distance; original member name unknown.
-    u16 unknown04; // Inferred role: animation id; original member name unknown.
+    u16 unknown00; // Inferred role: animation id; original member name unknown.
+    u16 unknown02; // Inferred role: distance in hundredths; original member name unknown.
+    s16 unknown04; // Inferred role: first animation parameter; original member name unknown.
+    s16 unknown06; // Inferred role: second animation parameter; original member name unknown.
   };
 
   struct ALPHA_PROC_DATA {
@@ -380,6 +384,7 @@ public:
   int GetWeaponSeType() const;
   void GetMoveDataPerSec(mm::Vec3 &moveData) const;
   void SetAnimationSpeed(f32 speed);
+  f32 GetAnimationMoveDistance();
   void SetIKData(const ARTS_DATA &data);
   void NotifyStrikeDamage(int);
   void NotifyDirectDamage(const DIRECT_DAMAGE_DATA &data);
@@ -409,6 +414,8 @@ public:
   f32 GetArtsDamageRate(const ARTS_DATA::LEVEL_DATA &level) const;
   f32 ApplyResistantAttr(f32 damage, int attribute) const;
   f32 GetArtsDamageRate(const ARTS_DATA &data, int level) const;
+  u32 CreateElementalComboEffect(int combo);
+  void CreateElementalEffect(int effect);
   void EnhanceTimerProc();
   void StopAI(f32 time);
   bool CheckRandFriendEnhanceRate(int enhance) const;
@@ -524,7 +531,9 @@ public:
   ElementalComboManager unknown180; // Inferred role: elemental combo manager; original member name unknown.
   char unknownc30[0x28];            // Inferred role: default effect node name; original member name unknown.
   char unknownc58[0x10];            // Inferred role: voice code; original member name unknown.
-  u8 _c68[0xcb8 - 0xc68];
+  u8 _c68[0xcb0 - 0xc68];
+  int unknowncb0; // Inferred role: first animation parameter (SetAnimation); original member name unknown.
+  int unknowncb4; // Inferred role: second animation parameter (SetAnimation); original member name unknown.
   f32 m_animationSpeed;
   u8 _cbc[0xcc0 - 0xcbc];
   f32 unknowncc0; // Inferred role: delta time; original member name unknown.
@@ -535,8 +544,9 @@ public:
   f32 unknowncd4; // Inferred role: target lock arrow timer; original member name unknown.
   u8 _cd8[0xcdc - 0xcd8];
   f32 unknowncdc;                              // Role and original member name unknown.
-  ANIMATION_MOVE_DISTANCE_DATA unknownce0[20]; // Inferred role: animation move distances; original member name unknown.
-  u8 _d80[0xd98 - 0xd80];
+  f32 unknownce0;                              // Role and original member name unknown.
+  ANIMATION_MOVE_DISTANCE_DATA unknownce4[20]; // Inferred role: animation move distances; original member name unknown.
+  u8 _d84[0xd98 - 0xd84];
   f32 unknownd98; // Inferred role: blow time; original member name unknown.
   u8 _d9c[0xdb4 - 0xd9c];
   u8 : 7;
@@ -766,7 +776,11 @@ static_assert(offsetof(BattleCharacter, unknowncc8) == 0xcc8, "");
 static_assert(offsetof(BattleCharacter, unknownccc) == 0xccc, "");
 static_assert(offsetof(BattleCharacter, unknowncd4) == 0xcd4, "");
 static_assert(offsetof(BattleCharacter, unknowncdc) == 0xcdc, "");
+static_assert(offsetof(BattleCharacter, unknowncb0) == 0xcb0, "");
+static_assert(offsetof(BattleCharacter, unknowncb4) == 0xcb4, "");
 static_assert(offsetof(BattleCharacter, unknownce0) == 0xce0, "");
+static_assert(offsetof(BattleCharacter, unknownce4) == 0xce4, "");
+static_assert(sizeof(BattleCharacter::ANIMATION_MOVE_DISTANCE_DATA) == 0x8, "");
 static_assert(offsetof(BattleCharacter, unknownd98) == 0xd98, "");
 static_assert(offsetof(BattleCharacter, unknowndb8) == 0xdb8, "");
 static_assert(offsetof(BattleCharacter, unknowndc8) == 0xdc8, "");

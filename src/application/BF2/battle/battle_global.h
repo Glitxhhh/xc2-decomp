@@ -150,6 +150,7 @@ public:
   void AddChainCount(bool isControl);
   void InitializeElementalComboFlowData();
   void RegisterElementalComboSlow();
+  void RegisterElementalComboInvalidSlowEffect(int type, u32 effect, gf::GfComEffectCaster *caster);
   void FinalizeJingle();
   void SetElementalComboImmortal(gf::GF_OBJ_HANDLE *handle);
   bool IsGameOver() const;
