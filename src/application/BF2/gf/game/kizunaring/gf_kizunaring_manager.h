@@ -12,6 +12,8 @@ struct QuestID;
 class GfKizunaringBlade {
 public:
   static void orderAchievement(u32 blade);
+  static void orderAchievement(u32 blade, u32 line, u32 level);
+  static void releaseAchievement(u32 blade, u32 line, u32 level);
   static void removeAchievement(u32 blade);
   static u32 getReleaseAchievement(u32 blade, u32 line, u32 level);
   static u32 getAchievementCategory(u32 blade, u32 line, u32 level);

@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 
@@ -38,9 +39,21 @@ public:
   static void completeTask(const QuestTaskParam &param);
   static void closeLog();
   static void openLog();
+  void setupLogClear();
+  void setupLogItem();
   bool seqLogNextEnd();
   bool seqLogStart();
+  bool seqLogIn();
+  bool seqLogOpen();
+  bool seqLogClose();
+  bool seqLogCloseEnd();
+  bool seqLogTaskComplete();
+  bool seqOrderStart();
+  bool seqCompleteStart();
   bool seqOrderWait();
+  bool seqOrderWaitCtrl();
+  bool seqCompleteWait();
+  bool seqCompleteWaitCtrl();
   bool seqTitleEndWait();
   bool seqTitleFadeInScenario();
   bool seqTitleFadeInText();
@@ -56,12 +69,27 @@ public:
   static void lockLogOpen();
   static void unlockLogOpen();
 
-  u8 _24[0x810 - 0x24];
-  bool unknown810; // Inferred role: control started flag of the multi-step sequences; original member name unknown.
-  u8 _811[0x818 - 0x811];
+  u8 _24[0x59 - 0x24];
+  bool unknown59; // Inferred role: log open flag; original member name unknown.
+  bool unknown5a; // Inferred role: log out after close request flag; original member name unknown.
+  bool unknown5b; // Inferred role: detail link shown flag; original member name unknown.
+  u8 _5c[0x60 - 0x5c];
+  GfMenuSequence<GfMenuObjQuestLog, 8> unknown60;  // Inferred role: title steps; original member name unknown.
+  GfMenuSequence<GfMenuObjQuestLog, 8> unknown2f0; // Inferred role: log steps; original member name unknown.
+  GfMenuSequence<GfMenuObjQuestLog, 8> unknown580; // Inferred role: order and complete steps; original member name unknown.
+  bool unknown810;                                 // Inferred role: control started flag of the multi-step sequences; original member name unknown.
+  u8 _811[0x814 - 0x811];
+  int unknown814;  // Inferred role: control id of the log info; original member name unknown.
   bool unknown818; // Inferred role: order activation request flag; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjQuestLog, unknown59) == 0x59, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown5b) == 0x5b, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown60) == 0x60, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown2f0) == 0x2f0, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown580) == 0x580, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown580.unknown278) == 0x7f8, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown810) == 0x810, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown814) == 0x814, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown818) == 0x818, "");
 } // namespace gf

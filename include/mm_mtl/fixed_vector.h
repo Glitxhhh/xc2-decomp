@@ -20,7 +20,11 @@ template <> struct FixedVectorUnit<2> {
   };
 };
 template <> struct FixedVectorUnit<4> {
-  typedef unsigned int type;
+  // A struct unit makes the element pointers casts of the buffer address, so begin() and end() share their base and
+  // the game's index compares come out (gf::GfMenuSequence::wait erasing from a FixedVector<int>).
+  struct type {
+    unsigned int unknown00; // Inferred role: storage word; original member name unknown.
+  };
 };
 template <> struct FixedVectorUnit<8> {
   typedef unsigned long type;
