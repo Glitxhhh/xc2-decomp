@@ -51,6 +51,7 @@ public:
   MCURSOR getFrameSelect(const mm::Pnt<int> &pos) const;
   FMOVE getFramePick(const mm::Pnt<int> &pos) const;
   MCURSOR evtMouseSelect(const mm::Pnt<int> &pos) const;
+  void render(WinView *parent) const;
 
   WinView *m_info;
   mm::Col4 unknown08; // Inferred role: color; original member name unknown.

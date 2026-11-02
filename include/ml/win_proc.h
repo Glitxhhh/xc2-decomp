@@ -21,6 +21,7 @@ public:
   WinView *pssCreateView(const char *name, WorkObj *parent, s16 childNum);
   bool pssAttachView(WinView *view);
   bool pssDetachView();
+  bool pssDetachView(u32 wid);
   void pssSetFocus();
   WorkObj *pssGetParentView();
   WinView *pssGetView(u32 wid);

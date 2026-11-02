@@ -19,6 +19,7 @@ public:
   bool wkStandbyLogout() override;
   static WinViewRoot *create(WorkObj *parent);
   static WinView *getCurrent();
+  static WinView *getFullScreenView();
   static WinView *getRootView(WinView *view);
   static WinProc *getCurrentProc();
   static void destroyProc(const WinProc *proc);

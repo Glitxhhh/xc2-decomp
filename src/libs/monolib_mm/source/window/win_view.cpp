@@ -1,9 +1,30 @@
 #include "ml/win_view.h"
 
+#include "ml/cache_draw.h"
 #include "ml/dev_graph.h"
+#include "ml/lib_main.h"
+#include "ml/win_proc.h"
+#include "ml/win_proc_root.h"
 #include "ml/win_view_root.h"
+#include "ml/work_root.h"
+#include "mm_math/mm_mat44.h"
 
 namespace ml {
+
+namespace {
+
+// Inferred role: view being rendered, set by WinView::renderView and returned by WinView::getView; original name
+// unknown. Numbered after unknown001 of proc_mouse.cpp, which shares the window.cpp unit.
+WinView *unknown002;
+
+} // namespace
+
+WinView *WinView::getView(bool isResetShadow) {
+  if (unknown002 != nullptr && isResetShadow) {
+    unknown002->fontShadow(false);
+  }
+  return unknown002;
+}
 
 const mm::Pnt<int> &WinView::getFramePos(bool isBack) const {
   const RENDER_INFO *info = isBack ? unknown1b8.m_back : unknown1b8.m_front;
@@ -15,6 +36,8 @@ void WinView::addFramePos(const mm::Pnt<int> &pos) {
   info->unknown48.unknown58.x += pos.x;
   info->unknown48.unknown58.y += pos.y;
 }
+
+void WinView::addScroll(const mm::Pnt<int> &scroll) { unknown1b8.m_back->addScroll(scroll); }
 
 bool WinView::isSplitHolizon() const { return unknown1b8.m_back->unknown30; }
 
@@ -188,6 +211,136 @@ mm::Rect<int> WinView::getRealAbsRect(bool isBack) const {
   mm::Rect<int> rect = getAbsRect(isBack);
   normalizeAbsRect(rect, isBack);
   return rect;
+}
+
+void WinView::wkTail() {
+  applyRect();
+  updateMsg();
+  if (unknown60.size() == 0 && unknown338.size() == 0 && !isSplit(true)) {
+    wkSetEvent(static_cast<EVT>(0));
+  }
+  applyPrio();
+}
+
+void WinView::renderView() {
+  if (unknown3b8 & 0x40) {
+    return;
+  }
+  WinView *fullScreen = WinViewRoot::getFullScreenView();
+  bool isHide = false;
+  if (!(fullScreen->unknown3b8 & 2) && fullScreen != this) {
+    if (unknown338.size() != 0 && fullScreen->unknown338.size() != 0) {
+      WinProc *fullScreenRoot = WinProc::pssGetRoot(static_cast<WinProc *>(WorkRootState::getWork(fullScreen->unknown338.begin()->value)));
+      WinProc *root = WinProc::pssGetRoot(static_cast<WinProc *>(WorkRootState::getWork(unknown338.begin()->value)));
+      isHide = root != nullptr && fullScreenRoot != root && unknown528 >= fullScreen->unknown528;
+    }
+  }
+  bool isSkip = isHide;
+  if (WorkRoot::isErrorLog()) {
+    isSkip = !(unknown3b8 & 0x100);
+  }
+  mm::Rect<int> rect = getRealAbsRect(false);
+  if (fullScreen == this) {
+    DevGraph::grSetClearCol(mm::Col4(unknown524 * unknown514.r, unknown524 * unknown514.g, unknown524 * unknown514.b, unknown514.a));
+  }
+  mm::Pnt<int> size = getSize(false);
+  bool isEmpty = true;
+  if (size.x > 0 && size.y > 0 && rect.width > 0 && rect.height > 0) {
+    const WinViewPort *port = unknown1b8.m_front;
+    isEmpty = port->unknown08.x <= 0 && port->unknown08.y <= 0;
+  }
+  if (!isSkip) {
+    if (!isSplit(false) && !(unknown3b8 & 1) && !isEmpty) {
+      initializeClientScreen((unknown3b8 & 4) != 0);
+    }
+    mm::Rect<int> scissor = getClientScissorAbsRect(false);
+    normalizeAbsRect(scissor, false);
+    mm::Rect<int> viewport = getClientAbsRect(false);
+    // The viewport part of the render info, picking for each axis the larger of the view size and the work size.
+    const WinViewPort *port = unknown1b8.m_front;
+    const mm::Pnt<int> &widthSrc = port->unknown00.x > port->unknown08.x ? port->unknown00 : port->unknown08;
+    const mm::Pnt<int> &heightSrc = port->unknown00.y > port->unknown08.y ? port->unknown00 : port->unknown08;
+    mm::Rect<int> renderRect;
+    renderRect.x = port->unknown10.x;
+    renderRect.y = port->unknown10.y;
+    renderRect.width = widthSrc.x;
+    renderRect.height = heightSrc.y;
+    DevGraph::pushRect(viewport, scissor, renderRect, true);
+    unknown002 = this;
+    if (!isEmpty) {
+      wkRender();
+    }
+    for (reslist<u32>::Node *node = unknown338.begin(); node != unknown338.end(); node = node->getNext()) {
+      WorkObj *work = WorkRootState::getWork(node->value);
+      if (work != nullptr) {
+        unknown002 = this;
+        if (!isEmpty && work != this) {
+          work->wkRender();
+        }
+      }
+    }
+    if (DebDraw::getCacheDrawWID() == unknown50) {
+      DevGraph::cmdOpenDisplayList(0);
+      DebDraw::flushPrio(-1, mm::Mat44::identity, mm::Mat44::identity);
+      DevGraph::cmdCloseDisplayList();
+    }
+    DevGraph::grInitContext();
+    fontFlush(true);
+  }
+  if (!isEmpty) {
+    for (reslist<WorkObj *>::Node *node = wkGetChild()->begin(); node != wkGetChild()->end(); node = node->getNext()) {
+      static_cast<WinView *>(node->value)->renderView();
+    }
+    for (reslist<u32>::Node *node = unknown338.begin(); node != unknown338.end(); node = node->getNext()) {
+      WorkObj *work = WorkRootState::getWork(node->value);
+      if (work != nullptr) {
+        unknown002 = this;
+        if (work != this) {
+          work->wkRenderAfter();
+        }
+      }
+    }
+  }
+  unknown002 = nullptr;
+  DevGraph::grInitContext();
+  fontFlush(true);
+  if (!isSkip) {
+    DevGraph::popRect();
+  }
+  unknown002 = this;
+  if (!isSkip) {
+    unknown1b8.m_front->unknown48.render(getParentView());
+  }
+  unknown002 = nullptr;
+}
+
+bool WinView::wkStandbyLogin() {
+  if (LibMain::isInitialized() && WinViewRoot::isInitialized()) {
+    unknown53c = false;
+    if (!(unknown3b8 & 0x208)) {
+      setCurrent();
+    }
+    return WorkObj::wkStandbyLogin();
+  }
+  return false;
+}
+
+bool WinView::wkStandbyLogout() {
+  wkCheckTimeout(30000, unknown60.size() == 0 && unknown338.size() == 0 && !isSplit(true), "ログアウトに失敗しました");
+  if (unknown60.size() != 0 || (unknown338.size() != 0 && !(unknown3b8 & 0x80))) {
+    return false;
+  }
+  while (unknown338.begin() != unknown338.end()) {
+    reslist<u32>::Node *node = unknown338.begin();
+    u32 wid = node->value;
+    unknown338.erase(node);
+    WinProc *proc = static_cast<WinProc *>(WorkRootState::getWork(WinProcRoot::get(), wid));
+    if (proc != nullptr) {
+      proc->pssDetachView(unknown50);
+    }
+  }
+  WinViewRoot::invalidCurrent(this);
+  return WorkObj::wkStandbyLogout();
 }
 
 template class threadval<WinView::RENDER_INFO>;

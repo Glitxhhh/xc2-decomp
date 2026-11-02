@@ -1,5 +1,6 @@
 #include "ml/proc_mouse.h"
 
+#include "ml/cache_draw.h"
 #include "ml/dev_mouse.h"
 #include "ml/msg_param.h"
 #include "ml/proc_desktop.h"
@@ -9,11 +10,20 @@
 
 namespace ml {
 
+namespace {
+
+// Inferred role: draw the mouse cursor, set by ProcMouse::setDisp; original name unknown.
+bool unknown001 = true;
+
+} // namespace
+
 class WorkObj;
 
 ProcMouse::ProcMouse(const char *name, WorkObj *parent) : WinProc(name, parent, 10), unknown1f8(0, 0), unknown200(0, 0), unknown208(0, 0), unknown234(false) { unknown210 = "ARROW"; }
 
 ProcMouse::~ProcMouse() {}
+
+void ProcMouse::setDisp(bool isDisp) { unknown001 = isDisp; }
 
 mm::Pnt<int> *ProcMouse::getPos() { return &get()->unknown1f8; }
 
@@ -83,6 +93,25 @@ void ProcMouse::update(bool isUpdate) {
   if (clamped->y >= rect.y + rect.height - 1) {
     clamped->y = rect.y + rect.height - 1;
   }
+}
+
+void ProcMouse::wkRenderAfter() {
+  if (!unknown001 || unknown235 == 0) {
+    return;
+  }
+  unknown235--;
+  WinView::getView(true);
+  DebDraw *draw = DebDraw::get(0xffffffff);
+  draw->setZComp(false);
+  draw->setZWrite(false);
+  draw->setCol(1.0f, 1.0f, 1.0f, 1.0f);
+  draw->setAlphaBlend(true);
+  draw->begin(2, 2);
+  draw->add(unknown1f8.x, unknown1f8.y - 10, unknown1f8.x, unknown1f8.y + 10);
+  draw->add(unknown1f8.x - 10, unknown1f8.y, unknown1f8.x + 10, unknown1f8.y);
+  draw->end();
+  draw->setZComp(true);
+  draw->setZWrite(true);
 }
 
 bool ProcMouse::wkStandbyLogin() {

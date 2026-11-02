@@ -7,6 +7,7 @@
 #include "ml/reslist.h"
 #include "ml/threadval.h"
 #include "ml/win_view_frame.h"
+#include "ml/win_view_port.h"
 #include "ml/work_obj.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_pnt.h"
@@ -18,12 +19,8 @@ class IWorkEvent;
 
 class WinView : public WorkObj, public FontLayer {
 public:
-  struct RENDER_INFO {
-    mm::Pnt<int> unknown00; // Inferred role: size; original member name unknown.
-    mm::Pnt<int> unknown08; // Inferred role: work size; original member name unknown.
-    u8 _10[0x18 - 0x10];
-    mm::Pnt<int> unknown18; // Inferred role: client offset from the top left; original member name unknown.
-    mm::Pnt<int> unknown20; // Inferred role: client offset from the bottom right; original member name unknown.
+  // Inferred base: the constructor runs the WinViewPort constructor and updateViewPort inlines WinViewPort::setSize.
+  struct RENDER_INFO : public WinViewPort {
     u8 _28[0x30 - 0x28];
     bool unknown30; // Inferred role: split horizontal; original member name unknown.
     u8 _31[0x34 - 0x31];
@@ -40,6 +37,7 @@ public:
   WinView(const char *name, WorkObj *parent);
   static WinView *getView(bool isResetShadow);
   void updateViewPort(const mm::Rect<int> &rect);
+  void renderView();
 
   void setRect(const mm::Rect<int> &rect) {
     updateViewPort(rect);
@@ -52,6 +50,7 @@ public:
   void attachWorkEvent(IWorkEvent *event, bool isFront);
   const mm::Pnt<int> &getFramePos(bool isBack) const;
   void addFramePos(const mm::Pnt<int> &pos);
+  void addScroll(const mm::Pnt<int> &scroll);
   mm::Pnt<int> getFrame2ViewOffset(bool isBack) const;
   mm::Pnt<int> getPos(bool isBack) const;
   mm::Pnt<int> getSize(bool isBack) const;
@@ -77,13 +76,27 @@ public:
   mm::Rect<int> getAbsRect(bool isBack) const;
   mm::Rect<int> getRealAbsRect(bool isBack) const;
   void normalizeAbsRect(mm::Rect<int> &rect, bool isBack) const;
+  mm::Rect<int> getClientAbsRect(bool isBack) const;
+  mm::Rect<int> getClientScissorAbsRect(bool isBack) const;
+  bool isSplit(bool isBack) const;
+  void initializeClientScreen(bool isSkipClear);
   s32 getSplitLine(bool isBack) const;
   WinView *getParentView();
   const WinView *getParentView() const;
+  // evtFocusOn stays the first declared virtual: it is the key function, so the vtable and the implicit destructors are
+  // only emitted once it is defined.
   virtual void evtFocusOn();
   virtual void evtFocusOff();
   virtual void detachRenderWork(const WorkObj *work);
   virtual void detachWorkEvent(const IWorkEvent *event);
+  virtual void destroyCtrlMemory();
+  virtual void applyRect();
+  virtual void getViewOfs(mm::Rect<int> &rect, bool isBack);
+  void wkTail() override;
+  bool wkStandbyLogin() override;
+  bool wkStandbyLogout() override;
+  void updateMsg();
+  void applyPrio();
 
   threadval<RENDER_INFO> unknown1b8; // Inferred role: render info; original member name unknown.
   reslist<u32> unknown338;           // Inferred role: render work ids; original member name unknown.

@@ -16,11 +16,13 @@ class ProcMouse : public WinProc, public mm::mtl::PtrSingleton<ProcMouse> {
 public:
   ProcMouse(const char *name, WorkObj *parent);
   ~ProcMouse() override;
+  static void setDisp(bool isDisp);
   static mm::Pnt<int> *getPos();
   static mm::Pnt<int> *getMove();
   static void setPos(const mm::Pnt<int> &position);
   static void setCursorResize(MCURSOR cursor);
   static void update(bool isUpdate);
+  void wkRenderAfter() override;
   bool wkStandbyLogin() override;
   bool wkStandbyLogout() override;
 
