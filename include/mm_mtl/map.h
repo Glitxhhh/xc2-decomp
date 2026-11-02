@@ -26,6 +26,8 @@ public:
   typedef RedBlackTreeBase<MapTraits<Key, Value>> tree_type;
   typedef typename tree_type::iterator iterator;
 
+  explicit Map(IAllocator *allocator = nullptr) : unknown00(allocator) {}
+
   void setAllocator(IAllocator *allocator) { unknown00.setAllocator(allocator); }
   void clear() { unknown00.clear(); }
   iterator begin() { return unknown00.begin(); }

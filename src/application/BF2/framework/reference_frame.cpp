@@ -82,7 +82,7 @@ void ReferenceFrame::unlinkParent(ReferenceFrame &frame) {
 void TransformManager::update(u32 layerMask) {
   for (u32 layer = 0; layer < LAYER_MAX; layer++) {
     if ((1 << layer & layerMask) != 0) {
-      for (mm::mtl::IntrusiveList<TransformUpdater>::iterator it = unknown08[layer].begin(); it != unknown08[layer].end(); ++it) {
+      for (mm::mtl::IntrusiveList<TransformUpdater>::iterator it = unknown08[layer].unknown00.begin(); it != unknown08[layer].unknown00.end(); ++it) {
         (*it).resolveWorldTrasform();
       }
     }

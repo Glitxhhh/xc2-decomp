@@ -85,6 +85,7 @@ public:
 
   static unknown130 m_uniqueID;
 
+  explicit SoundManager(mm::mtl::IAllocator *allocator);
   ~SoundManager();
   bool initialize() override;
   bool finalize() override;

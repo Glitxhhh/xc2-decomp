@@ -3,6 +3,7 @@
 
 #include "framework/manager_object.h"
 #include "ml/work_background.h"
+#include "ml/work_cpu.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -22,6 +23,7 @@ namespace fw {
 
 class MovieManager : public ManagerObject, public mm::mtl::PtrSingleton<MovieManager>, public ml::IWorkBackground {
 public:
+  MovieManager() : unknown20(0), unknown28(nullptr), unknown30(nullptr), unknown38(false), unknown3c(3), unknown40(0) { ml::WorkCpu::addBackgroundListener(this); }
   ~MovieManager();
   const char *getName() const override;
   void open(mm::mtl::IAllocator *allocator, u32 layer);

@@ -25,11 +25,21 @@ class Applet;
 class IPauseTrigger;
 
 struct FrameworkConfig {
-  u8 _00[0x04 - 0x00];
+  u32 unknown00; // Inferred role: flags, 0x20 creates the CameraManager; original member name unknown.
   f32 unknown04; // Inferred role: frame rate; original member name unknown.
-  u8 _08[0x3c - 0x08];
+  u8 _08[0x20 - 0x08];
+  u32 unknown20; // Inferred role: asset capacity; original member name unknown.
+  u8 _24[0x28 - 0x24];
+  u32 unknown28; // Inferred role: effect count; original member name unknown.
+  u32 unknown2c; // Inferred role: resource capacity; original member name unknown.
+  u32 unknown30; // Inferred role: updatable object capacity; original member name unknown.
+  u32 unknown34; // Inferred role: script count; original member name unknown.
+  u8 _38[0x3c - 0x38];
 };
 
+static_assert(offsetof(FrameworkConfig, unknown20) == 0x20, "");
+static_assert(offsetof(FrameworkConfig, unknown28) == 0x28, "");
+static_assert(offsetof(FrameworkConfig, unknown34) == 0x34, "");
 static_assert(sizeof(FrameworkConfig) == 0x3c, "");
 
 struct UpdateState {
@@ -69,12 +79,14 @@ public:
 
   static const u32 LAYER_MAX = 32;
   static const u32 PAUSE_TRIGGER_MAX = 32;
+  static const u32 unknown001 = 14; // Inferred role: count of the layers run by update; original name unknown.
 
   ~Framework();
   void finalize();
   static mm::mtl::IAllocator *getAllocator();
   bool initializeManager();
-  void destroyManager();
+  void createManager();
+  static void destroyManager();
   bool finalizeManager();
   void prepareEnter();
   void prepareExit();
@@ -82,9 +94,12 @@ public:
   void pauseExit();
   void activate();
   void deactivate();
+  void beginFrame(const UpdateState &updateState);
   void endFrame(const UpdateState &updateState);
   void preUpdate();
+  void update();
   static bool canUpdate();
+  void tail(const UpdateState &updateState);
   void render();
   Applet *getApplet() const;
   bool isAppletClosed();
@@ -118,7 +133,9 @@ public:
   unknown076 *unknown70;       // Inferred role: launcher; original member name unknown.
   UpdateInfo unknown78;        // Inferred role: update info; original member name unknown.
   u32 unknown84;               // Inferred role: state; original member name unknown.
-  u8 _88[0x8c - 0x88];
+  u8 _88[0x8a - 0x88];
+  bool unknown8a; // Inferred role: updated this frame; original member name unknown.
+  u8 _8b[0x8c - 0x8b];
   f32 unknown8c; // Inferred role: update speed; original member name unknown.
   u8 _90[0x98 - 0x90];
   unknown077 unknown98[LAYER_MAX];                                     // Inferred role: layers; original member name unknown.

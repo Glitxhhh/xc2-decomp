@@ -101,6 +101,7 @@ public:
 
   static PadData m_nullPad;
 
+  PadManager();
   ~PadManager();
   bool initialize() override;
   bool finalize() override;
@@ -110,6 +111,7 @@ public:
   static void setFilter(int padNo, IPadFilter *filter);
   bool isInitialized() const override;
   const char *getName() const override;
+  static void initVibData();
   virtual void debugDraw(int x, int y);
   virtual void update(const UpdateInfo &info);
   void viBeginFrame() override;

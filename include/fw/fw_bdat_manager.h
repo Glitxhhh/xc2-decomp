@@ -70,6 +70,7 @@ public:
     BdatInfo unknown128[BDAT_MAX];             // Inferred role: infos; original member name unknown.
   };
 
+  explicit BdatManager(mm::mtl::IAllocator *allocator);
   bool initialize() override;
   bool finalize() override;
   const char *getName() const override { return "BdatManager"; }

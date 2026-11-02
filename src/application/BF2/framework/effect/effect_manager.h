@@ -107,12 +107,16 @@ public:
   typedef std::unordered_map<std::string, EffectPack *, std::hash<std::string>, std::equal_to<std::string>, ml::StlCustomAllocator<std::pair<const std::string, EffectPack *>>> PackMap;
   typedef std::unordered_map<std::string, EffectData *, std::hash<std::string>, std::equal_to<std::string>, ml::StlCustomAllocator<std::pair<const std::string, EffectData *>>> DataMap;
 
+  EffectManager(mm::mtl::IAllocator *allocator, u32 count, ml::Scn *scn);
   ~EffectManager() override;
   bool initialize() override;
+  bool finalize() override;
+  virtual void update(const UpdateInfo &info);
+  virtual void updateLayer(const UpdateInfo &info, u32 layer);
+  virtual void updateLayerPost(const UpdateInfo &info, u32 layers);
+  virtual void tail(const UpdateInfo &info, bool flag);
   bool isCommonLoaded();
   bool commonLoaded();
-  void updateLayerPost(const UpdateInfo &info, u32 layers);
-  void tail(const UpdateInfo &info, bool flag);
   void getNum(u32 &emitterNum, u32 &particleNum, u32 &drawNum);
   void es_clearall(bool isForce);
   static void efSystemEnd();

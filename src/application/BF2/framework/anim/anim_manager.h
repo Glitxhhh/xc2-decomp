@@ -130,6 +130,7 @@ public:
   ~AnimationManager() override;
   const char *getName() const override;
   virtual void update(const UpdateInfo &info);
+  void updateControls(const UpdateInfo &info, u32 layers);
   void samplePose(u32 layers);
   void applyPose(u32 layers);
   void applyAfterModifyPose(u32 layers);

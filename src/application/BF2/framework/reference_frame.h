@@ -3,6 +3,7 @@
 
 #include "fw/fw_transform.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/reference_object.h"
@@ -84,13 +85,19 @@ class TransformManager : public mm::mtl::PtrSingleton<TransformManager> {
 public:
   static const u32 LAYER_MAX = 32;
 
-  void update(u32 layerMask);
-  void addUpdater(u32 layer, TransformUpdater &updater) { unknown08[layer].push_back(&updater); }
-  void removeUpdater(u32 layer, TransformUpdater &updater) { unknown08[layer].erase(&updater); }
+  struct Group {
+    mm::mtl::IntrusiveList<TransformUpdater> unknown00; // Inferred role: updaters; original member name unknown.
+  };
 
-  mm::mtl::IntrusiveList<TransformUpdater> unknown08[LAYER_MAX]; // Inferred role: groups; original member name unknown.
+  void update(u32 layerMask);
+  void addUpdater(u32 layer, TransformUpdater &updater) { unknown08[layer].unknown00.push_back(&updater); }
+  void removeUpdater(u32 layer, TransformUpdater &updater) { unknown08[layer].unknown00.erase(&updater); }
+
+  mm::mtl::FixedArray<Group, LAYER_MAX> unknown08; // Inferred role: groups; original member name unknown.
 };
 
+static_assert(sizeof(TransformManager::Group) == 0x18, "");
 static_assert(offsetof(TransformManager, unknown08) == 0x08, "");
+static_assert(sizeof(TransformManager) == 0x308, "");
 
 } // namespace fw

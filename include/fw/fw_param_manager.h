@@ -1,6 +1,9 @@
 #pragma once
+#include "framework/memory/allocator.h"
 #include "framework/reflection.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/map.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -52,10 +55,32 @@ static_assert(sizeof(ParamAdapter) == 0x08, "");
 
 class ParamManager : public mm::mtl::PtrSingleton<ParamManager> {
 public:
-  u8 _08[0x408 - 0x08];
-  mm::mtl::IntrusivePtr<ParamList> unknown408[128]; // Inferred role: param lists indexed by the ParamBuilder::create id, released from 0x800 down by the destructor; original member name unknown.
+  // Layout from the node size (0xb8) and the node destructor that releases the pointer at the start of the value.
+  struct RefInfo {
+    mm::mtl::IntrusivePtr<Reflection> unknown00; // Inferred role: reflection; original member name unknown.
+    mm::mtl::FixStr<128> unknown08;              // Inferred role: file name; original member name unknown.
+  };
+
+  // Layout from the node size (0xb8) and the node destructor that releases the pointer at the start of the value.
+  struct ParamInfo {
+    mm::mtl::IntrusivePtr<ParamList> unknown00; // Inferred role: param list; original member name unknown.
+    mm::mtl::FixStr<128> unknown08;             // Inferred role: file name; original member name unknown.
+  };
+
+  ParamManager() : unknown808(Allocator::getDebAllocator()), unknown820(Allocator::getDebAllocator()) {}
+
+  mm::mtl::IntrusivePtr<Reflection> unknown08[128];      // Inferred role: reflections, released from 0x400 down by the destructor; element type and original member name unknown.
+  mm::mtl::IntrusivePtr<ParamList> unknown408[128];      // Inferred role: param lists indexed by the ParamBuilder::create id, released from 0x800 down by the destructor; original member name unknown.
+  mm::mtl::Map<const Reflection *, RefInfo> unknown808;  // Inferred role: reflection file names; original member name unknown.
+  mm::mtl::Map<const ParamList *, ParamInfo> unknown820; // Inferred role: param list file names; original member name unknown.
 };
 
+static_assert(sizeof(ParamManager::RefInfo) == 0x90, "");
+static_assert(sizeof(ParamManager::ParamInfo) == 0x90, "");
+static_assert(offsetof(ParamManager, unknown08) == 0x08, "");
 static_assert(offsetof(ParamManager, unknown408) == 0x408, "");
+static_assert(offsetof(ParamManager, unknown808) == 0x808, "");
+static_assert(offsetof(ParamManager, unknown820) == 0x820, "");
+static_assert(sizeof(ParamManager) == 0x838, "");
 
 } // namespace fw

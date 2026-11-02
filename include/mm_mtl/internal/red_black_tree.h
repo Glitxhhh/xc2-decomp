@@ -77,7 +77,7 @@ public:
     return iterator(this, nullptr);
   }
 
-  RedBlackTreeBase() : m_size(0), m_allocator(nullptr) { unknown003(); }
+  explicit RedBlackTreeBase(IAllocator *allocator = nullptr) : m_size(0), m_allocator(allocator) { unknown003(); }
   ~RedBlackTreeBase() {
     clear();
     m_allocator = nullptr;
