@@ -147,7 +147,37 @@ void GmkBdat::dispose() {
   unknown08 = CreateInfo();
 }
 
+bool GmkManager::isGmkSetsReady() const {
+  if (!isValid() || unknownf358.empty()) {
+    return false;
+  }
+  for (GmkSet *const *it = unknownf358.begin(); it != unknownf358.end(); ++it) {
+    if (!(*it)->isValid() || !(*it)->isGmkListsCreated()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool GmkSet::isValid() const { return unknown10.unknown00.isValid() && unknown10.unknown04 > 0 && (!unknown40.unknown08.isValid() || unknown40.isValid()); }
+
+bool GmkSet::isGmkListsCreated() const {
+  if (&GmkSet::seqUpdate != unknown388) {
+    return false;
+  }
+  int result = 2;
+  for (u32 type = 0; type < GMK_TYPE_NUM; type++) {
+    const IGmkList *list = unknown1b8[type];
+    if (list != nullptr && list->getCreateInfo().unknown001()) {
+      int invalid = !list->isValid();
+      if (invalid) {
+        result = invalid;
+        break;
+      }
+    }
+  }
+  return result == 2;
+}
 
 bool GmkSet::isValidView() const {
   if (!isValid() || &GmkSet::seqUpdate != unknown388) {
