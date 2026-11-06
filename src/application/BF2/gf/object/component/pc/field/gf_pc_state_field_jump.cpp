@@ -8,6 +8,7 @@
 #include "framework/object/updatable_object.h"
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
+#include "gf/data/gf_data_param_acc.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
@@ -16,11 +17,28 @@
 #include "gf/object/component/pc/gf_pc_state_id.h"
 #include "gf/object/component/pc/gf_pc_state_util_field.h"
 #include "gf/object/component/pc/param/gf_pc_param.h"
+#include "gf/object/gf_obj.h"
+#include "gf/request/gf_req_scom.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec4.h"
 
 namespace gf {
 namespace pc {
+
+void StateFieldJump::enter(GfComBehaviorPc *behavior, ai::State *previous) {
+  GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
+  property->unknown90 = 0.0f;
+  property->unknown94 = 0.0f;
+  unknown18 = 0.0f;
+  unknown20 = 0.0f;
+  unknown1c = false;
+  if (previous != nullptr && previous->unknown08 == STATE_ID_FIELD_SLIDE_MOVE) {
+    unknown1c = true;
+  }
+
+  ParamObj object = {static_cast<GfObj *>(behavior->unknown08)->unknownf8, 0, 0};
+  SCOM_FIELD_VOICE::createJump(object);
+}
 
 void StateFieldJump::leave(GfComBehaviorPc *behavior, ai::State *next) {
   if (next == nullptr || next->unknown08 == STATE_ID_FIELD_LAND || next->unknown08 == STATE_ID_FIELD_FALL) {

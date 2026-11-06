@@ -216,7 +216,7 @@ bool StateUtilField::isMovableWall(GfComPropertyPc &property, GfPropertyField::W
   if (!isMovable) {
     return false;
   }
-  if (!sensor->unknown24_1 || sensor->unknown1e0 == -1) {
+  if (!sensor->unknown24_1 || sensor->unknown150.unknown90 == -1) {
     return true;
   }
   if (isWallUpMove(mode) && sensor->unknown25_0) {
@@ -458,6 +458,50 @@ bool StateUtilField::isWallDetach(GfComPropertyPc &property) {
   const mm::Vec3 &position = property.unknown160;
   f32 dot = position.x * plane.normal.x + position.y * plane.normal.y + position.z * plane.normal.z;
   return plane.distance + dot < -property.unknown310.unknown38;
+}
+
+bool StateUtilField::isWallAdsorption(GfComPropertyPc &property) {
+  if (property.unknown310.unknown10_3) {
+    EnviromentSensor *sensor = property.getEnvSensor();
+    if (sensor->unknown24_4 && (sensor->unknown150.unknown00.unknown24 & 0x50) == 0x10) {
+      const EnviromentSensor::Parameter *sensorParam = property.unknown08->getComponent<GfComEnvSensor>()->unknown2e0.get<EnviromentSensor::Parameter>();
+      EnviromentSensor::HorizonPacket packet;
+      EnviromentSensor::unknown006 wall;
+      packet.unknown00 = 0x40;
+      const mm::Plane &sensorPlane = sensor->unknown150.unknown00.unknown00;
+      packet.unknown10 = mm::Vec3(-sensorPlane.normal.x, -sensorPlane.normal.y, -sensorPlane.normal.z);
+      packet.unknown20 = 0.0f;
+      packet.unknown24 = sensorParam->obstacleSearchLength;
+      packet.unknown30 = sensor->unknown290;
+      packet.unknown38 = &wall;
+      EnviromentSensor::searchHorizon(property.unknown160, &packet);
+      if (((packet.unknown34 >> 6) & 1) && wall.unknown60.unknown24_4) {
+        property.unknown310.unknown130 = wall.unknown60;
+        property.unknown310.unknown10_6 = true;
+        property.unknown310.flashWallInfo(property);
+        f32 limit = property.unknown310.unknown1c + property.unknown310.unknown4c;
+        if (!(wall.unknown60.unknown20 > limit)) {
+          mm::Vec3 input = property.unknown2b0 * property.unknown60.unknown04 + property.unknown2d0 * property.unknown60.unknown00;
+          if (!(fabsf(input.x) <= 0.000001f) || !(fabsf(input.y) <= 0.000001f) || !(fabsf(input.z) <= 0.000001f)) {
+            input.unknown001();
+          }
+
+          mm::Vec3 direction(wall.unknown60.unknown00.normal.x, 0.0f, wall.unknown60.unknown00.normal.z);
+          if (!(fabsf(direction.x) <= 0.000001f) || !(fabsf(direction.z) <= 0.000001f)) {
+            direction.unknown001();
+          }
+
+          const WallCommonParam *param = property.unknown310.unknown004(15).get<WallCommonParam>();
+          mm::Vec3 reverse(-direction.x, -direction.y, -direction.z);
+          f32 cosine = mm::clamp(input.x * reverse.x + input.y * reverse.y + input.z * reverse.z, -1.0f, 1.0f);
+          f32 angle = mm::acos(cosine);
+          return param->adsorptionAngle * mm::DEG_TO_RAD >= angle;
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 void StateUtilField::setEnableFallIntoColi(GfComBehaviorPc &behavior, bool isEnable) {

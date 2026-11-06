@@ -273,6 +273,8 @@ class SCOM_FIELD_VOICE {
 public:
   static void create(CV_FIELD voice, CV_PRIO priority);
   static void createLevelup(const ParamObj &paramObj);
+  static void createJump(const ParamObj &paramObj);
+  static void createHighLanding(const ParamObj &paramObj);
   static void createBadWeather();
   static void createTime(CV_FIELD voice);
   static void createExitInn();
