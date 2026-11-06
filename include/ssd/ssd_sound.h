@@ -39,6 +39,7 @@ enum Id {
   WAVE_SOURCE = 1,
   SOUND_ENTRY = 2,
   SOUND_BANK = 3,
+  SOUND_GROUP = 4,
   SOUND_LISTENER = 6,
   SOUND_HANDLE = 7,
   SOUND_ACTOR = 8,
@@ -124,6 +125,8 @@ static_assert(sizeof(SoundActor3D) == 0x78, "");
 
 class SoundGroup : public Object {
 public:
+  SoundGroup() : Object(ObjectType::SOUND_GROUP), unknown18(0), unknown1c(256) {}
+
   int unknown18; // Inferred role: id; original member name unknown.
   int unknown1c; // Inferred role: max sound; original member name unknown.
 };
@@ -153,6 +156,7 @@ static_assert(sizeof(SoundEntry) == 0xe0, "");
 
 class SoundBank : public Object, public List<SoundBank>::Node {
 public:
+  SoundBank();
   virtual ~SoundBank();
   SoundEntry *begin() const;
   const SoundEntry *end() const;

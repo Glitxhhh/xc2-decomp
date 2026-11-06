@@ -69,9 +69,9 @@ Result VoiceHandle::SetPlayPositionImpl() {
   if (stream == nullptr) {
     position = static_cast<u32>(unknown6a0.unknown00);
   } else {
-    WaveSource *source = stream;
+    WaveSource *source = &stream->unknown18;
     if (unknown669 == 3) {
-      position = source->TimeToSample(unknown6a0.unknown01) * stream->unknown40;
+      position = source->TimeToSample(unknown6a0.unknown01) * source->unknown40;
     } else if (unknown669 == 2) {
       position = source->SampleToPosition(static_cast<u32>(unknown6a0.unknown00));
     } else {

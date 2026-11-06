@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "nn/codec.h"
 #include "ssd/ssd_behavior.h"
 #include "ssd/ssd_file_stream.h"
 #include "ssd/ssd_memory_buffer.h"
@@ -11,8 +12,9 @@
 namespace ssd {
 enum Result : long;
 
-class StreamController : public List<StreamController>::Node, public WaveSource {
+class StreamController : public List<StreamController>::Node {
 public:
+  ~StreamController();
   s64 ResetStream();
   void ExecReadStream(Result (StreamBuffer::*read)(const void *data, u64 size, bool mark));
   int OutData(u8 *buffer, u64 size, u64 *outSize, bool *isMark);
@@ -28,8 +30,9 @@ public:
   u64 SizeToReadPosition(u64 size);
   u32 PlayTimeToPosition(f32 time);
 
-  int unknowne8;  // Inferred role: stream id; original member name unknown.
-  bool unknownec; // Inferred role: stream thread registered; original member name unknown.
+  WaveSource unknown18; // Inferred role: wave source; original member name unknown.
+  int unknowne8;        // Inferred role: stream id; original member name unknown.
+  bool unknownec;       // Inferred role: stream thread registered; original member name unknown.
   u8 _ed[0xee - 0xed];
   bool unknownee; // Inferred role: close request; original member name unknown.
   bool unknownef; // Inferred role: initialized; original member name unknown.
@@ -47,16 +50,16 @@ public:
   Result (StreamBuffer::*unknown138)(const void *data, u64 size, bool mark); // Inferred role: pending read function; original member name unknown.
   void (StreamController::*unknown148)();                                    // Inferred role: pending callback; original member name unknown.
   StreamBuffer unknown158;                                                   // Inferred role: stream buffer; original member name unknown.
-  u8 _188[0x1b8 - 0x188];
-  void *unknown1b8; // Inferred role: allocated buffer; original member name unknown.
-  u32 *unknown1c0;  // Inferred role: frame position table; original member name unknown.
-  u8 *unknown1c8;   // Inferred role: decode output buffer; original member name unknown.
-  u64 unknown1d0;   // Inferred role: decode output sample count; original member name unknown.
-  u64 unknown1d8;   // Inferred role: decoded size; original member name unknown.
-  f64 unknown1e0;   // Inferred role: stream decode info time; original member name unknown.
-  int unknown1e8;   // Inferred role: stream decode info second value; original member name unknown.
-  int unknown1ec;   // Inferred role: stream decode info first value; original member name unknown.
-  u32 unknown1f0;   // Inferred role: opus decode state; original member name unknown.
+  nn::codec::OpusDecoder unknown188;                                         // Inferred role: opus decoder; original member name unknown.
+  void *unknown1b8;                                                          // Inferred role: allocated buffer; original member name unknown.
+  u32 *unknown1c0;                                                           // Inferred role: frame position table; original member name unknown.
+  u8 *unknown1c8;                                                            // Inferred role: decode output buffer; original member name unknown.
+  u64 unknown1d0;                                                            // Inferred role: decode output sample count; original member name unknown.
+  u64 unknown1d8;                                                            // Inferred role: decoded size; original member name unknown.
+  f64 unknown1e0;                                                            // Inferred role: stream decode info time; original member name unknown.
+  int unknown1e8;                                                            // Inferred role: stream decode info second value; original member name unknown.
+  int unknown1ec;                                                            // Inferred role: stream decode info first value; original member name unknown.
+  u32 unknown1f0;                                                            // Inferred role: opus decode state; original member name unknown.
   u8 _1f4[0x1f8 - 0x1f4];
   void *unknown1f8; // Inferred role: allocated buffer; original member name unknown.
   u8 _200[0x208 - 0x200];
@@ -77,6 +80,7 @@ public:
 static_assert(sizeof(StreamController) == 0x278, "");
 
 static_assert(offsetof(StreamController, unknowne8) == 0xe8, "");
+static_assert(offsetof(StreamController, unknown188) == 0x188, "");
 static_assert(offsetof(StreamController, unknownee) == 0xee, "");
 static_assert(offsetof(StreamController, unknownf0) == 0xf0, "");
 static_assert(offsetof(StreamController, unknownf5) == 0xf5, "");

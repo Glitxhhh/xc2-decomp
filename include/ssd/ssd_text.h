@@ -18,6 +18,7 @@ struct MemoryBlock;
 class TextRef {
 public:
   TextRef() : unknown10(nullptr), unknown18(TEXT_ENCODE_UTF16) {}
+  TextRef(TextEncodeType type) : unknown10(nullptr), unknown18(type) {}
   TextRef(const TextRef &text);
   TextRef(const char *text);
   TextRef(const char16_t *text);
@@ -73,6 +74,8 @@ char16_t *SjisToUTF16(const char *source, unsigned long *length);
 
 class TextFixedBase : public TextRef {
 public:
+  TextFixedBase(unsigned long size) : TextRef(TEXT_ENCODE_NONE), unknown20(size) {}
+
   void Set(const TextRef &text) override;
   void Set(const char *text) override;
   void Set(const char16_t *text) override;
@@ -87,6 +90,11 @@ static_assert(offsetof(TextFixedBase, unknown20) == 0x20, "");
 
 template <int N> class TextFixed : public TextFixedBase {
 public:
+  TextFixed() : TextFixedBase(N) {
+    InitImpl(unknown28);
+    unknown28[0] = 0;
+  }
+
   char16_t unknown28[N]; // Inferred role: text buffer; original member name unknown.
 };
 

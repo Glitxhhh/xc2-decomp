@@ -13,9 +13,8 @@ class FileStream : public IoStreamBase {
 public:
   FileStream();
   ~FileStream() override {
-    if (unknown30.handle != nullptr) {
-      nn::fs::CloseFile(unknown30);
-      unknown30.handle = nullptr;
+    if (IsOpen()) {
+      Close();
     }
   }
   long Close() override;

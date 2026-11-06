@@ -10,12 +10,18 @@
 #include "ssd/ssd_command_manager.h"
 #include "ssd/ssd_debug.h"
 #include "ssd/ssd_mutex.h"
+#include "ssd/ssd_random.h"
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_text.h"
+#include "ssd/ssd_thread.h"
 #include "types.h"
 
 namespace ssd {
+namespace Delegate {
+class Handle;
+} // namespace Delegate
+
 class StreamController;
 class SoundListener;
 class VoiceHandle;
@@ -347,26 +353,31 @@ public:
   void AudioThreadImpl();
   void AudioFrameProcess();
 
-  u64 unknown270; // Inferred role: game frame counter; original member name unknown.
-  u64 unknown278; // Inferred role: audio frame counter; original member name unknown.
-  f64 unknown280; // Inferred role: audio timer counter; original member name unknown.
-  u64 unknown288; // Inferred role: processed audio frame count; original member name unknown.
-  f64 unknown290; // Inferred role: audio frames per second; original member name unknown.
-  f64 unknown298; // Inferred role: audio frame time; original member name unknown.
-  f64 unknown2a0; // Inferred role: audio frame delta time; original member name unknown.
-  f64 unknown2a8; // Inferred role: last audio frame time; original member name unknown.
-  u8 _2b0[0x2c8 - 0x2b0];
+  // Inferred role: counters and times of the frames; the game has an unnamed type before the voice handle one (SystemCore::{unnamed type#2}); original type name unknown.
+  struct {
+    u64 unknown270; // Inferred role: game frame counter; original member name unknown.
+    u64 unknown278; // Inferred role: audio frame counter; original member name unknown.
+    f64 unknown280; // Inferred role: audio timer counter; original member name unknown.
+    u64 unknown288; // Inferred role: processed audio frame count; original member name unknown.
+    f64 unknown290; // Inferred role: audio frames per second; original member name unknown.
+    f64 unknown298; // Inferred role: audio frame time; original member name unknown.
+    f64 unknown2a0; // Inferred role: audio frame delta time; original member name unknown.
+    f64 unknown2a8; // Inferred role: last audio frame time; original member name unknown.
+    u8 _2b0[0x2c8 - 0x2b0];
+  };
   CommandManager unknown2c8; // Inferred role: commands queued by the game thread; original member name unknown.
   OutputMode::Type m_outputMode;
   u8 _304[0x308 - 0x304];
   BehaviorInstance<SystemCore> unknown308; // Inferred role: master volume; original member name unknown.
   BehaviorInstance<SystemCore> unknown350; // Inferred role: master pitch; original member name unknown.
-  u8 _398[0x39c - 0x398];
-  int unknown39c;               // Inferred role: voice handle id counter; original member name unknown.
-  List<VoiceHandle> unknown3a0; // Inferred role: playing voice handles; original member name unknown.
-  List<VoiceHandle> unknown3c8; // Inferred role: free voice handles; original member name unknown.
-  VoiceHandle *unknown3f0;      // Inferred role: voice handles; original member name unknown.
-  int unknown3f8;               // Inferred role: active voice handle count; original member name unknown.
+  struct {
+    u8 _398[0x39c - 0x398];
+    int unknown39c;               // Inferred role: voice handle id counter; original member name unknown.
+    List<VoiceHandle> unknown3a0; // Inferred role: playing voice handles; original member name unknown.
+    List<VoiceHandle> unknown3c8; // Inferred role: free voice handles; original member name unknown.
+  };
+  VoiceHandle *unknown3f0; // Inferred role: voice handles; original member name unknown.
+  int unknown3f8;          // Inferred role: active voice handle count; original member name unknown.
   u8 _3fc[0x400 - 0x3fc];
   VoiceHandle **unknown400; // Inferred role: active voice handles; original member name unknown.
   VoiceHandle **unknown408; // Inferred role: voice handles to free; original member name unknown.
@@ -377,20 +388,23 @@ public:
   Array<SoundCategory> unknown468; // Inferred role: categories; original member name unknown.
   SoundGroup unknown480;           // Inferred role: default sound group; original member name unknown.
   SoundActor *unknown4a0;          // Inferred role: default sound actor; original member name unknown.
-  u8 _4a8[0x4e0 - 0x4a8];
+  u8 _4a8[0x4b0 - 0x4a8];
+  Array<SoundListener *> unknown4b0; // Inferred role: sound listeners; original member name unknown.
+  Array<SoundEffecter *> unknown4c8; // Inferred role: sound effecters; original member name unknown.
   f32 m_speedOfSound;
   bool unknown4e4; // Inferred role: doppler enabled; original member name unknown.
-  u8 _4e5[0x4ea - 0x4e5];
-  bool unknown4ea; // Inferred role: audio thread exit request; original member name unknown.
-  u8 _4eb[0x708 - 0x4eb];
-  mutable Mutex unknown708; // Inferred role: audio mutex; original member name unknown.
-  u8 _730[0x950 - 0x730];
-  List<StreamController> unknown950; // Inferred role: stream controllers; original member name unknown.
-  List<BehaviorControl> unknown978;  // Inferred role: behaviors; original member name unknown.
-  u8 _9a0[0x9f8 - 0x9a0];
-  unknown002 unknown9f8[2]; // Inferred role: cpu loads; original member name unknown.
-  f64 unknowna18;           // Inferred role: last cpu load time; original member name unknown.
-  s32 unknowna20;           // Inferred role: cpu load index; original member name unknown.
+  u8 _4e5[0x4e8 - 0x4e5];
+  Thread unknown4e8;                    // Inferred role: audio thread; original member name unknown.
+  mutable Mutex unknown708;             // Inferred role: audio mutex; original member name unknown.
+  Thread unknown730;                    // Inferred role: stream thread; original member name unknown.
+  List<StreamController> unknown950;    // Inferred role: stream controllers; original member name unknown.
+  List<BehaviorControl> unknown978;     // Inferred role: behaviors; original member name unknown.
+  XorShift128Random unknown9a0;         // Inferred role: random number generator; original member name unknown.
+  Mutex unknown9b8;                     // Inferred role: delegate mutex; original member name unknown.
+  Array<Delegate::Handle *> unknown9e0; // Inferred role: delegate handles; original member name unknown.
+  unknown002 unknown9f8[2];             // Inferred role: cpu loads; original member name unknown.
+  f64 unknowna18;                       // Inferred role: last cpu load time; original member name unknown.
+  s32 unknowna20;                       // Inferred role: cpu load index; original member name unknown.
 
   static DebugInfo debugInfo_;
 };

@@ -4,7 +4,8 @@
 #include "types.h"
 
 // Memory allocator of the SDK. The class and function names come from the imports of the game
-// (_ZN2nn3mem17StandardAllocator8AllocateEmm, _ZN2nn3mem17StandardAllocator4FreeEPv); the size, mIsInitialized and
+// (_ZN2nn3mem17StandardAllocatorC1Ev, _ZN2nn3mem17StandardAllocator8AllocateEmm, _ZN2nn3mem17StandardAllocator4FreeEPv);
+// the size, mIsInitialized and
 // the destructor are the ones of open-ead nnheaders include/nn/mem.h (https://github.com/open-ead/nnheaders). The other
 // members are unknown.
 
@@ -13,6 +14,8 @@ namespace mem {
 
 class StandardAllocator {
 public:
+  StandardAllocator();
+
   ~StandardAllocator() {
     if (mIsInitialized) {
       Finalize();

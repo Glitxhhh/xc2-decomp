@@ -1,15 +1,21 @@
 #include "nn/os.h"
 #include "ssd/ssd_array.h"
 #include "ssd/ssd_behavior.h"
+#include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
 #include "ssd/ssd_mutex.h"
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
 #include "ssd/ssd_stream_controller.h"
+#include "ssd/ssd_thread.h"
 #include "ssd/ssd_voice_handle.h"
 #include "types.h"
 
 namespace ssd {
+
+SystemCore::SystemCore() : unknown4a0(nullptr) {}
+
+SystemCore::~SystemCore() {}
 
 void SystemCore::AudioThreadEntry(SystemCore *core, void *argument) { core->AudioThreadImpl(); }
 
@@ -452,7 +458,7 @@ void SystemCore::AudioThreadImpl() {
   f64 time = GetSystemTime();
   unknown2a8 = time;
   unknowna18 = time;
-  while (!unknown4ea) {
+  while (!unknown4e8.unknown02) {
     nn::os::WaitSystemEvent(&unknown138.m_SystemEventType);
     unknown280 = unknown278 / unknown290;
     unknown2a0 = unknown290;

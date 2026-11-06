@@ -21,6 +21,7 @@ public:
     f32 unknown28;    // Inferred role: sleep time; original member name unknown.
   };
 
+  Thread();
   ~Thread();
   static void ThreadEntryProc(void *argument);
   Result CloseThread();

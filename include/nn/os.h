@@ -65,6 +65,9 @@ void DestroySystemEvent(SystemEventType *event);
 void WaitSystemEvent(SystemEventType *event);
 
 struct SystemEvent {
+  // The constructor is the code inlined in the constructor of ssd::SystemCore (0x710099210c).
+  SystemEvent() { m_SystemEventType.state = SystemEventType::State_NotInitialized; }
+
   ~SystemEvent() {
     if (m_SystemEventType.state != SystemEventType::State_NotInitialized) {
       DestroySystemEvent(&m_SystemEventType);

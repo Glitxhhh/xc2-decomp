@@ -17,6 +17,7 @@ public:
 
 class StreamBuffer : public StreamBufferBase {
 public:
+  ~StreamBuffer() { Free(); }
   u32 GetBufferSize() const override;
   u32 GetDataSize() const override;
   u64 GetFreeSize() const override;

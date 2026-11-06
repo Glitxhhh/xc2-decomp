@@ -13,6 +13,15 @@
 
 namespace ssd {
 
+SoundBank::SoundBank() : Object(ObjectType::SOUND_BANK), m_number(-1) {}
+
+SoundBank::~SoundBank() {
+  if (m_number >= 0) {
+    Quit();
+  }
+  m_number = -1;
+}
+
 int SoundBank::GetNumber() const { return m_number; }
 
 const TextRef &SoundBank::GetName() const { return unknown38; }

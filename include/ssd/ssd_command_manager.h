@@ -12,6 +12,8 @@ class SoundHandle;
 
 class CommandManager {
 public:
+  CommandManager() : unknown20(nullptr), unknown28(nullptr) {}
+
   // Inferred role: base of the queued commands; original name unknown.
   class unknown001 {
   public:

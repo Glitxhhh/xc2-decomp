@@ -37,7 +37,7 @@ public:
     if (unknown70 == nullptr) {
       return unknown68;
     }
-    return unknown70;
+    return &unknown70->unknown18;
   }
 
   static void AllocAdpcmSplitBuffer();

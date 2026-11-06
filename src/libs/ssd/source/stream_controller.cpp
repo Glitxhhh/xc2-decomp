@@ -10,6 +10,8 @@
 namespace ssd {
 enum Result : long;
 
+StreamController::~StreamController() {}
+
 s64 StreamController::ResetStream() {
   unknownf8 = 4;
   return 0;
@@ -42,11 +44,11 @@ void StreamController::ExecAdpcmDecode() {}
 void StreamController::ClearReadBuffer() { unknown158.Clear(); }
 
 int StreamController::OutData(u8 *buffer, u64 size, u64 *outSize, bool *isMark) {
-  switch (unknown1a) {
+  switch (unknown18.unknown1a) {
   case 4:
     if (unknown1f0 == 1) {
       unknown1c8 = buffer;
-      unknown1d0 = size >> (unknown35 == 1);
+      unknown1d0 = size >> (unknown18.unknown35 == 1);
       unknown1d8 = 0;
       unknown1f0 = 2;
       *outSize = 0;
@@ -114,24 +116,24 @@ void StreamController::ExecSetPosition() {
   unknownf1 = false;
   unknownf3 = false;
   unknownf4 = false;
-  u64 dataSize = unknown24;
+  u64 dataSize = unknown18.unknown24;
   u64 readPosition;
-  switch (unknown34) {
-  case unknown001_4: {
+  switch (unknown18.unknown34) {
+  case WaveSource::unknown001_4: {
     int frame = 0;
-    if (unknown40 != 0) {
-      frame = unknown208 / unknown40;
+    if (unknown18.unknown40 != 0) {
+      frame = unknown208 / unknown18.unknown40;
     }
-    int index = frame / unknown5c;
-    if (index >= unknown68) {
-      index = unknown68;
+    int index = frame / unknown18.unknown5c;
+    if (index >= unknown18.unknown68) {
+      index = unknown18.unknown68;
     }
     unknown1ec = index;
     readPosition = unknown1c0[index];
     break;
   }
-  case unknown001_3:
-    readPosition = (unknown208 & ~0xfULL) * unknown35;
+  case WaveSource::unknown001_3:
+    readPosition = (unknown208 & ~0xfULL) * unknown18.unknown35;
     if (readPosition >= dataSize) {
       readPosition = dataSize;
     }
@@ -161,7 +163,7 @@ s64 StreamController::QuitStream() {
   unknown258.Free();
   unknown158.Free();
   unknown100.Close();
-  WaveSource::Quit();
+  unknown18.Quit();
   return 0;
 }
 
@@ -217,15 +219,15 @@ void StreamController::ExecReadStream(Result (StreamBuffer::*read)(const void *d
 }
 
 u64 StreamController::SizeToReadPosition(u64 size) {
-  if (unknown34 == unknown001_3) {
-    return unknown35 * (size & ~0xfULL);
+  if (unknown18.unknown34 == WaveSource::unknown001_3) {
+    return unknown18.unknown35 * (size & ~0xfULL);
   }
-  if (unknown34 == unknown001_4) {
+  if (unknown18.unknown34 == WaveSource::unknown001_4) {
     int frame = 0;
-    if (unknown40 != 0) {
-      frame = size / unknown40;
+    if (unknown18.unknown40 != 0) {
+      frame = size / unknown18.unknown40;
     }
-    int index = frame / unknown5c;
+    int index = frame / unknown18.unknown5c;
     unknown1ec = index;
     size = unknown1c0[index];
   }
@@ -233,9 +235,9 @@ u64 StreamController::SizeToReadPosition(u64 size) {
 }
 
 u32 StreamController::PlayTimeToPosition(f32 time) {
-  int index = static_cast<int>(unknown2c * time) / unknown5c;
-  if (index > unknown68) {
-    index = unknown68;
+  int index = static_cast<int>(unknown18.unknown2c * time) / unknown18.unknown5c;
+  if (index > unknown18.unknown68) {
+    index = unknown18.unknown68;
   }
   return unknown1c0[index];
 }

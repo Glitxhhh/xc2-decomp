@@ -490,7 +490,7 @@ long SoundHandle::SetRemainLoopCount(int count) {
   if (voice->unknown70 == nullptr) {
     return -44;
   }
-  if (!voice->unknown70->unknown50) {
+  if (!voice->unknown70->unknown18.unknown50) {
     return -1;
   }
   return set_result(voice->SetRemainLoopCount(count));
