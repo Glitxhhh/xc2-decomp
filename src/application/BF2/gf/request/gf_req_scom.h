@@ -275,6 +275,7 @@ public:
   static void createLevelup(const ParamObj &paramObj);
   static void createBadWeather();
   static void createTime(CV_FIELD voice);
+  static void createExitInn();
 };
 
 class SCOM_ZONE : public SCOM {

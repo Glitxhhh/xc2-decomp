@@ -14,6 +14,7 @@ public:
   void finalize() override;
   void update() override;
   static void dispLoading(bool disp, u16 type);
+  static void dispSaving(bool disp, u16 type);
   static void getFadeColor(u8 type, mm::Col4 &color);
 };
 

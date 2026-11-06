@@ -2,6 +2,7 @@
 
 #include "gf/game/gf_game_util.h"
 #include "gf/menu/gf_menu_fullscreen.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -120,6 +121,46 @@ void GfMenuObjCharSelect::dispOffCopyChar(ui::UIObjectAcc &acc, u32 type) {
     GfMenuObjUtil::startCtrl(handle, param, nullptr);
     GfMenuObjCmnStatus::closeBlStatus();
   }
+}
+
+void GfMenuObjCharSelect::update() {
+  unknown430.unknown003();
+  GfMenuObject::update();
+}
+
+bool GfMenuObjCharSelect::seqStreamWaitStatDrBefore() {
+  ui::UIObjectAcc acc(unknown18);
+  ui::UIObjectAcc move(acc.searchChild("LAY_char_dr_move"));
+  int ctrl = GfMenuObjUtil::getCtrlID(move.unknown10);
+  if (ctrl != -1) {
+    GfMenuObjUtil::stopCtrl(ctrl);
+  }
+  return true;
+}
+
+bool GfMenuObjCharSelect::seqStreamWaitStatBlBefore() {
+  ui::UIObjectAcc acc(unknown18);
+  ui::UIObjectAcc move(acc.searchChild("LAY_char_bl_move"));
+  int ctrl = GfMenuObjUtil::getCtrlID(move.unknown10);
+  if (ctrl != -1) {
+    GfMenuObjUtil::stopCtrl(ctrl);
+  }
+  return true;
+}
+
+bool GfMenuObjCharSelect::seqConfSpecialWaitError() {
+  if (!GfMenuManager::isOpenCommonWindow()) {
+    unknown430.unknown002(&GfMenuObjCharSelect::seqReturn);
+    unknown6c0 = false;
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuObjCharSelect::seqReturn() {
+  ui::UIObjectAcc acc(unknown18, "LAY_char");
+  unknown140(acc.unknown10, 0x107, 0, 0.0f);
+  return true;
 }
 
 } // namespace gf

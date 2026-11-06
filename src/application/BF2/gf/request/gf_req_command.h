@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_data_save.h"
 #include "gf/game/gf_game_party.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixstr.h"
@@ -113,6 +114,7 @@ public:
   static void reqDestroyGf();
   static u32 reqMapjump(const GfMapjumpInfo &info);
   static u32 reqWaitEvent(f32 time, GF_OBJ_HANDLE *handle);
+  static u32 reqSave(SAVESLOT slot);
   static void execChangeAttributeForDebug(const GfReqParam *param);
   static u32 reqDebugPartyNum(u32 num);
   static void execPartyNumForDebug(const GfReqParam *param);

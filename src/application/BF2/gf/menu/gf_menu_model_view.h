@@ -3,6 +3,10 @@
 
 #include "types.h"
 
+namespace mm {
+struct Vec3;
+} // namespace mm
+
 namespace gf {
 
 struct GF_OBJ_HANDLE;
@@ -33,6 +37,10 @@ public:
     f32 m_moveRotY;
     f32 m_moveVanish;
   };
+
+  void update();
+  bool isLoading() const;
+  void playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle);
 };
 
 static_assert(offsetof(GfMenuModelView::CtrlParam, unknown08) == 0x08, "");

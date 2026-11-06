@@ -2,6 +2,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/object/gf_menu_obj_blade_change.h"
+#include "mm_mtl/fixstr.h"
 #include "types.h"
 #include "ui/ui_object_acc.h"
 
@@ -38,6 +39,27 @@ void GfMenuObjArtsPalette::dispInfo(bool isDisp) {
   if (acc.isValid() && !acc.isTerm()) {
     acc.setDispChild(isDisp, "LAY_arts_info");
     GfMenuObjBladeChange::dispInfo(isDisp);
+  }
+}
+
+GfMenuObjArtsPalette::~GfMenuObjArtsPalette() { ; }
+
+void GfMenuObjArtsPalette::update() {
+  unknown7f0->unknown003();
+  unknown7f8->unknown003();
+  unknown800->unknown003();
+  unknown808.unknown003();
+  GfMenuObject::update();
+}
+
+void GfMenuObjArtsPalette::updateArtsIconDisp(u32 slot) {
+  mm::mtl::FixStr<32> name;
+  name.format("LAY_arts_icon@%02d", slot + 1);
+  ui::UIObjectAcc icon(unknown18, name.c_str());
+  if ((unknown30[slot] & 3) == 3) {
+    icon.setMulColor("white");
+  } else {
+    icon.setMulColor("gray");
   }
 }
 

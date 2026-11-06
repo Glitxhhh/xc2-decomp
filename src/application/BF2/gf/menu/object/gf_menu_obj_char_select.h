@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 
@@ -57,11 +58,24 @@ public:
   void finalize() override;
   bool seqSpHikariToHomura();
   bool seqSpHomuraToHikari();
+  void update() override;
+  bool seqStreamWaitStatDrBefore();
+  bool seqStreamWaitStatBlBefore();
+  bool seqConfSpecialWaitError();
+  bool seqReturn();
+
+  u8 _24[0x430 - 0x24];
+  GfMenuSequence<GfMenuObjCharSelect, 8> unknown430; // Inferred role: character select steps; original member name unknown.
+  bool unknown6c0;                                   // Inferred role: character select steps request flag; original member name unknown.
+  u8 _6c1[0x770 - 0x6c1];
 };
 
 static_assert(offsetof(GfMenuObjCharSelect::OpenCustomizeParam, unknown04) == 0x04, "");
 static_assert(sizeof(GfMenuObjCharSelect::OpenCustomizeParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjCharSelect::unknown003, unknown04) == 0x04, "");
 static_assert(sizeof(GfMenuObjCharSelect::unknown003) == 0x08, "");
+static_assert(offsetof(GfMenuObjCharSelect, unknown430) == 0x430, "");
+static_assert(offsetof(GfMenuObjCharSelect, unknown6c0) == 0x6c0, "");
+static_assert(sizeof(GfMenuObjCharSelect) == 0x770, "");
 
 } // namespace gf
