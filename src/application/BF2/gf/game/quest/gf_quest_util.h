@@ -18,13 +18,16 @@ struct QuestTaskParam;
 
 // Index of GfQuestReward::unknown00.
 enum QUEST_REWARD {
-  QUEST_REWARD_UNKNOWN_0 = 0, // Inferred role: gold.
-  QUEST_REWARD_UNKNOWN_3 = 3, // Inferred role: experience.
-  QUEST_REWARD_UNKNOWN_4 = 4, // Inferred role: development.
-  QUEST_REWARD_UNKNOWN_5 = 5, // Inferred role: trust.
-  QUEST_REWARD_UNKNOWN_6 = 6, // Inferred role: idea.
-  QUEST_REWARD_UNKNOWN_7 = 7, // Inferred role: mercenaries point.
-  QUEST_REWARD_UNKNOWN_8 = 8, // Inferred role: first item.
+  QUEST_REWARD_UNKNOWN_0 = 0,   // Inferred role: gold.
+  QUEST_REWARD_UNKNOWN_3 = 3,   // Inferred role: experience.
+  QUEST_REWARD_UNKNOWN_4 = 4,   // Inferred role: development.
+  QUEST_REWARD_UNKNOWN_5 = 5,   // Inferred role: trust.
+  QUEST_REWARD_UNKNOWN_6 = 6,   // Inferred role: idea.
+  QUEST_REWARD_UNKNOWN_7 = 7,   // Inferred role: mercenaries point.
+  QUEST_REWARD_UNKNOWN_8 = 8,   // Inferred role: first item.
+  QUEST_REWARD_UNKNOWN_9 = 9,   // Inferred role: second item.
+  QUEST_REWARD_UNKNOWN_10 = 10, // Inferred role: third item.
+  QUEST_REWARD_UNKNOWN_11 = 11, // Inferred role: fourth item.
 };
 
 struct GfQuestReward {

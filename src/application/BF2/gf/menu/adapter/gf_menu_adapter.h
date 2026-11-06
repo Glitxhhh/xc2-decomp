@@ -139,4 +139,12 @@ public:
   virtual void changePartyBlade(u8 partyId, u8 slot) = 0;
 };
 
+struct MenuItemInfo;
+
+// Inferred role: receiver of the item an adapter shows, second base of GfMenuItemAdapter (thunk offset 0x30); original type name unknown.
+class unknown139 {
+public:
+  virtual void changeItem(const MenuItemInfo &info) = 0;
+};
+
 } // namespace gf

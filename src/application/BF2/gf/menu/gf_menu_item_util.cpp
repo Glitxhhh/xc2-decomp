@@ -1,15 +1,20 @@
 #include "gf/menu/gf_menu_item_util.h"
 
+#include "bdat.h"
+#include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_item.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/util/gf_equip_util.h"
 #include "gf/util/gf_item_util.h"
 #include "gf/util/gf_recipe_orb_util.h"
 #include "mm_mtl/fixed_vector.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
@@ -46,6 +51,25 @@ const unknown002 unknown003[] = {
 };
 
 } // namespace
+
+void GfMenuItemUtil::getItemName(u8 itemType, u32 item, ui::UIStr &name) {
+  u8 *bdat = GfMenuBdat::getItemDataFP(itemType, item);
+  u8 *textBdat = GfMenuBdat::getItemTextFP(itemType, item);
+  if (bdat != nullptr && textBdat != nullptr && Bdat::getMember(bdat, "Name") != nullptr && GfMenuBdat::isValidBdatID(bdat, item)) {
+    u16 nameId = Bdat::getVal(bdat, "Name", item).valueU16;
+    if (nameId != 0 && GfMenuBdat::isValidBdatID(textBdat, nameId)) {
+      name.copy(ui::UIStr(textBdat, nameId));
+    }
+  }
+}
+
+void GfMenuItemUtil::getItemTypeName(u8 itemType, ui::UIStr &name) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_MSG_ITEM_TYPE);
+  if (GfMenuBdat::isValidBdatID(bdat, itemType + 1)) {
+    u16 nameId = Bdat::getVal(bdat, "name", itemType + 1).valueU16;
+    name.copy(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), nameId));
+  }
+}
 
 bool GfMenuItemUtil::canCountStack(u32 itemType) {
   switch (itemType) {

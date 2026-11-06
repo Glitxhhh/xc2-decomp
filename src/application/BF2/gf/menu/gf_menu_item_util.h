@@ -4,6 +4,10 @@
 #include "types.h"
 #include <stddef.h>
 
+namespace ui {
+class UIStr;
+} // namespace ui
+
 namespace gf {
 
 class GfMenuItemUtil {
@@ -14,6 +18,8 @@ public:
     u8 unknown01; // Inferred role: display flag; original member name unknown.
   };
 
+  static void getItemName(u8 itemType, u32 item, ui::UIStr &name);
+  static void getItemTypeName(u8 itemType, ui::UIStr &name);
   static bool canCountStack(u32 itemType);
   static bool canBuyItem(u32 item, u32 shop);
   static bool canSellItem(u32 item, u32 shop);
@@ -28,6 +34,7 @@ public:
   static u32 getItemNum(u8 itemType, u32 itemId);
   static int getItemIconID(u8 itemType, u32 itemId);
   static bool convShopIcon(u32 icon, ItemType::Type &type, u32 &param);
+  static bool getIconNumber(ItemType::Type type, u32 param, u32 &number, bool unknown);
 };
 
 static_assert(offsetof(GfMenuItemUtil::CrystalInfo, unknown01) == 0x01, "");
