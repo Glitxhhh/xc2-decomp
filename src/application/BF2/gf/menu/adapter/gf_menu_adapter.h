@@ -121,19 +121,26 @@ static_assert(offsetof(GfMenuAdapter, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuAdapter, unknown28) == 0x28, "");
 static_assert(sizeof(GfMenuAdapter) == 0x30, "");
 
-// Inferred role: receiver of the object an adapter shows, second base of GfMenuGfObjAdapter and GfMenuCharDataAdapter (thunk offset 0x30); original type name unknown.
+// Inferred role: receiver of the character data an adapter shows, second base of GfMenuCharDataAdapter (thunk offset 0x30); original type name unknown.
+class unknown140 {
+public:
+  virtual void changeCharData(u8 type, u32 id) = 0;
+};
+
+// Inferred role: receiver of the object an adapter shows, second base of GfMenuGfObjAdapter (thunk offset 0x30) and third base of GfMenuCharDataAdapter (thunk offset 0x38); original type name
+// unknown.
 class unknown135 {
 public:
   virtual void changeGfObj(GF_OBJ_HANDLE *handle) = 0;
 };
 
-// Inferred role: receiver of the party driver an adapter shows (thunk offset 0x38); original type name unknown.
+// Inferred role: receiver of the party driver an adapter shows (thunk offset 0x38, 0x40 in GfMenuCharDataAdapter); original type name unknown.
 class unknown136 {
 public:
   virtual void changePartyDriver(u8 partyId) = 0;
 };
 
-// Inferred role: receiver of the party blade an adapter shows (thunk offset 0x40); original type name unknown.
+// Inferred role: receiver of the party blade an adapter shows (thunk offset 0x40, 0x48 in GfMenuCharDataAdapter); original type name unknown.
 class unknown137 {
 public:
   virtual void changePartyBlade(u8 partyId, u8 slot) = 0;

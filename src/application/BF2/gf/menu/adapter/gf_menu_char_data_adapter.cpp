@@ -1,7 +1,10 @@
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 
 #include "bdat.h"
+#include "gf/data/gf_bdat_chrbl.h"
+#include "gf/data/gf_bdat_chrenarrange.h"
 #include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_bdat_rsc.h"
 #include "gf/data/gf_data_battle.h"
 #include "gf/data/gf_data_bdat.h"
@@ -15,17 +18,478 @@
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_field_skill.h"
 #include "gf/data/gf_data_idea.h"
+#include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_party.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_bdat.h"
+#include "gf/menu/gf_menu_item_util.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/list/gf_menu_blade_list.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
+#include "gf/menu/list/gf_menu_enemy_list.h"
+#include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/util/gf_equip_util.h"
+#include "gf/util/gf_item_util.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/ui_object_acc.h"
+#include "ui/ui_object_plugin.h"
 #include "ui/ui_str.h"
 
 namespace gf {
+
+constexpr u32 BATTLE_STATE_UNKNOWN_3 = 3;
+constexpr u32 PARTY_DRIVER_MAX = 3;
+
+static GfMenuCharDataAdapter::TypeInfo TYPE_INFOS[] = {
+    {&GfMenuCharDataAdapter::update_HpMax, {GfMenuAdapter::unknown004_0, 0, 9999}},
+    {&GfMenuCharDataAdapter::update_Lv, {GfMenuAdapter::unknown004_0, 0, 99}},
+    {&GfMenuCharDataAdapter::update_Name, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_FaceIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_PhysDef, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_EtherDef, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_Guard, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_AutoAtkDmg, {GfMenuAdapter::unknown004_0, 0, 99999}},
+    {&GfMenuCharDataAdapter::update_Critical, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_HobbyName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_HobbyIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_FavoriteItemName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_FavoriteItemIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_Strength, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuCharDataAdapter::update_EtherPow, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuCharDataAdapter::update_Dex, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuCharDataAdapter::update_Agl, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuCharDataAdapter::update_Luck, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuCharDataAdapter::update_AttrName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_Exp, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuCharDataAdapter::update_DR_ExpNext, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuCharDataAdapter::update_DR_ExpBonus, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuCharDataAdapter::update_DR_ExpProgress, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_DR_ExpProgressBonus, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_DR_LevelUpEnable, {GfMenuAdapter::unknown004_3, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_Wp, {GfMenuAdapter::unknown004_0, 0, 99999}},
+    {&GfMenuCharDataAdapter::update_DR_Sp, {GfMenuAdapter::unknown004_0, 0, 99999}},
+    {&GfMenuCharDataAdapter::update_DR_SetBladeFace, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_Bustup, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_BustupPlate, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_BladeEnable, {GfMenuAdapter::unknown004_3, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_KizunaRingOpen, {GfMenuAdapter::unknown004_0, 0, 99}},
+    {&GfMenuCharDataAdapter::update_DR_KizunaRingMax, {GfMenuAdapter::unknown004_0, 0, 99}},
+    {&GfMenuCharDataAdapter::update_DR_IdeaPoint, {GfMenuAdapter::unknown004_0, 0, 10000}},
+    {&GfMenuCharDataAdapter::update_DR_IdeaLv, {GfMenuAdapter::unknown004_0, 0, 10}},
+    {&GfMenuCharDataAdapter::update_DR_ExpNextVirtual, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuCharDataAdapter::update_DR_ClassName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_ClassBuffName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_DR_ClassBuffVal, {GfMenuAdapter::unknown004_0, -99, 99}},
+    {&GfMenuCharDataAdapter::update_DR_ClassBuffLv, {GfMenuAdapter::unknown004_0, 0, 3}},
+    {&GfMenuCharDataAdapter::update_DR_BtlFace, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_WeaponIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_AttrIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_SpecialName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_SpecialDesc, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_ArtsName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_ArtsDesc, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_FieldSkillName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_FieldSkillDesc, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_FieldSkillLv, {GfMenuAdapter::unknown004_0, 0, 9}},
+    {&GfMenuCharDataAdapter::update_BL_SkillName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_SkillDesc, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_SkillLv, {GfMenuAdapter::unknown004_0, 0, 5}},
+    {&GfMenuCharDataAdapter::update_BL_RareIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Bustup, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Power, {GfMenuAdapter::unknown004_0, 0, 99}},
+    {&GfMenuCharDataAdapter::update_BL_Attr, {GfMenuAdapter::unknown004_0, 0, 9}},
+    {&GfMenuCharDataAdapter::update_BL_AttrCol, {GfMenuAdapter::unknown004_8, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_AttrCol2, {GfMenuAdapter::unknown004_8, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_GenderIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Enable, {GfMenuAdapter::unknown004_3, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_DR_Name, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_DR_Face, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_weaponTypeName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_GenderText, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_RoleName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_RoleIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_ChangeBtnIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_IdeaPoint, {GfMenuAdapter::unknown004_0, 0, 10000}},
+    {&GfMenuCharDataAdapter::update_BL_IdeaLv, {GfMenuAdapter::unknown004_0, 0, 10}},
+    {&GfMenuCharDataAdapter::update_BL_RecastLv, {GfMenuAdapter::unknown004_0, 0, 5}},
+    {&GfMenuCharDataAdapter::update_BL_BtlSkillIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_BtlSkillLv, {GfMenuAdapter::unknown004_0, 0, 5}},
+    {&GfMenuCharDataAdapter::update_BL_Selectable, {GfMenuAdapter::unknown004_8, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Selectable2, {GfMenuAdapter::unknown004_8, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Releasable, {GfMenuAdapter::unknown004_8, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_AffinityIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_AffinityText, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_KizunaRingOpen, {GfMenuAdapter::unknown004_0, 0, 99}},
+    {&GfMenuCharDataAdapter::update_BL_KizunaRingMax, {GfMenuAdapter::unknown004_0, 0, 99}},
+    {&GfMenuCharDataAdapter::update_BL_CorrectiveTypeName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_CorrectiveValue, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuCharDataAdapter::update_BL_OrbSlotEnable, {GfMenuAdapter::unknown004_3, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_InMercenry, {GfMenuAdapter::unknown004_3, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Rank, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_Rarity, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_CVName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_IlustName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_TeamName, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_BL_WpnImage, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuCharDataAdapter::update_EN_BookID, {GfMenuAdapter::unknown004_0, 0, 9999}},
+    {&GfMenuCharDataAdapter::update_EN_Family, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_EN_Genus, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuCharDataAdapter::update_EN_RewardExp, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuCharDataAdapter::update_EN_RewardGold, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+};
+
+GfMenuCharDataAdapter::GfObjConverter *GfMenuCharDataAdapter::IConverter::fromGfObj() { return nullptr; }
+
+GfMenuCharDataAdapter::PartyDriverConverter *GfMenuCharDataAdapter::IConverter::fromPartyDriver() { return nullptr; }
+
+GfMenuCharDataAdapter::PartyBladeConverter *GfMenuCharDataAdapter::IConverter::fromPartyBlade() { return nullptr; }
+
+void GfMenuCharDataAdapter::GfObjConverter::getCharData(u8 &type, u32 &id) {
+  GfObjAcc acc(unknown08);
+  type = acc.getType();
+  id = acc.getBdatId();
+}
+
+GfMenuCharDataAdapter::GfObjConverter *GfMenuCharDataAdapter::GfObjConverter::fromGfObj() { return this; }
+
+void GfMenuCharDataAdapter::PartyDriverConverter::getCharData(u8 &type, u32 &id) {
+  GfObjAcc acc(GfGameParty::getHandleDriver(unknown08));
+  type = acc.getType();
+  id = acc.getBdatId();
+}
+
+GfMenuCharDataAdapter::PartyDriverConverter *GfMenuCharDataAdapter::PartyDriverConverter::fromPartyDriver() { return this; }
+
+void GfMenuCharDataAdapter::PartyBladeConverter::getCharData(u8 &type, u32 &id) {
+  u32 partyId = unknown08;
+  if (partyId == 0) {
+    if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_3)) {
+      int chainPartyId = GfMenuReference::getChainAttackActionPartyID();
+      if (chainPartyId >= 0 && chainPartyId < PARTY_DRIVER_MAX) {
+        partyId = chainPartyId;
+      } else {
+        partyId = 0;
+      }
+    } else {
+      partyId = 0;
+    }
+  }
+  bool isBackSlot = unknown10;
+  type = OBJECT_TYPE_BLADE;
+  if (!isBackSlot) {
+    id = GfMenuObjUtil::getBladeIDFromPartySlot(partyId, unknown0c, unknown11);
+  } else {
+    id = GfMenuObjUtil::getBladeIDFromPartyBackSlot(partyId, unknown0c, unknown11);
+  }
+}
+
+GfMenuCharDataAdapter::PartyBladeConverter *GfMenuCharDataAdapter::PartyBladeConverter::fromPartyBlade() { return this; }
+
+void GfMenuCharDataAdapter::DriverListConverter::getCharData(u8 &type, u32 &id) {
+  u32 index = unknown10;
+  if (index == -1) {
+    index = unknown08->getIndex(true);
+    if (index == -1) {
+      return;
+    }
+  }
+  if (static_cast<int>(index) < static_cast<int>(unknown08->getSize())) {
+    type = OBJECT_TYPE_DRIVER;
+    id = unknown08->getContents(unknown08->getPageIndex(index)).unknown00;
+  }
+}
+
+void GfMenuCharDataAdapter::BladeListConverter::getCharData(u8 &type, u32 &id) {
+  u32 index = unknown10;
+  if (index == -1) {
+    index = unknown08->getIndex(true);
+    if (index == -1) {
+      return;
+    }
+  }
+  if (static_cast<int>(index) < static_cast<int>(unknown08->getSize())) {
+    type = OBJECT_TYPE_BLADE;
+    id = unknown08->getContents(unknown08->getPageIndex(index)).unknown00;
+  }
+}
+
+void GfMenuCharDataAdapter::EnemyListConverter::getCharData(u8 &type, u32 &id) {
+  u32 index = unknown10;
+  if (index == -1) {
+    index = unknown08->getIndex(true);
+    if (index == -1) {
+      return;
+    }
+  }
+  if (static_cast<int>(index) < static_cast<int>(unknown08->getSize())) {
+    type = OBJECT_TYPE_ENEMY;
+    id = unknown08->getContents(unknown08->getPageIndex(index)).unknown00;
+  }
+}
+
+void GfMenuCharDataAdapter::EnBookListConverter::getCharData(u8 &type, u32 &id) {
+  u32 index = unknown10;
+  if (index == -1) {
+    index = unknown08->getIndex(true);
+    if (index == -1) {
+      return;
+    }
+  }
+  if (static_cast<int>(index) < static_cast<int>(unknown08->getSize())) {
+    u32 book = unknown08->getContents(unknown08->getPageIndex(index)).unknown00;
+    type = OBJECT_TYPE_ENEMY;
+    id = GfBdatChrEnArrange::get()->getBTL_EnBookBaseEnemyID(book);
+  }
+}
+
+void GfMenuCharDataAdapter::ReferenceDriverConverter::getCharData(u8 &type, u32 &id) {
+  type = OBJECT_TYPE_DRIVER;
+  id = GfMenuReference::getReferenceDriverID(unknown08);
+}
+
+void GfMenuCharDataAdapter::ReferenceBladeConverter::getCharData(u8 &type, u32 &id) {
+  type = OBJECT_TYPE_BLADE;
+  id = GfMenuReference::getReferenceBladeID(unknown08);
+}
+
+void GfMenuCharDataAdapter::BladeSetConverter::getCharData(u8 &type, u32 &id) {
+  DataParamAcc acc(OBJECT_TYPE_DRIVER, unknown08, GIMMICK_TYPE_NONE);
+  if (acc.isValid()) {
+    u32 blade = GfMenuObjUtil::getBladeIDFromDriverSlot(acc.getValidDriverId(), unknown0c);
+    type = OBJECT_TYPE_BLADE;
+    id = blade;
+  }
+}
+
+void GfMenuCharDataAdapter::ReferenceBladeSetConverter::getCharData(u8 &type, u32 &id) {
+  DataParamAcc acc(OBJECT_TYPE_DRIVER, GfMenuReference::getReferenceDriverID(unknown08), GIMMICK_TYPE_NONE);
+  if (acc.isValid()) {
+    u32 blade = GfMenuObjUtil::getBladeIDFromDriverSlot(acc.getValidDriverId(), unknown0c);
+    type = OBJECT_TYPE_BLADE;
+    id = blade;
+  }
+}
+
+void GfMenuCharDataAdapter::ReferenceBladeOwnerDriverConverter::getCharData(u8 &type, u32 &id) {
+  type = OBJECT_TYPE_DRIVER;
+  id = GfDataBlade::getSetDriver(GfMenuReference::getReferenceBladeID(unknown08));
+}
+
+GfMenuCharDataAdapter::GfMenuCharDataAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways)
+    : GfMenuAdapter(plugin, false, isUpdateAlways), unknown70(nullptr), unknown78(0), unknown79(0), unknown7c(0), unknown80(0), unknown88(nullptr) {}
+
+GfMenuCharDataAdapter::~GfMenuCharDataAdapter() {
+  if (unknown70 != nullptr) {
+    delete unknown70;
+    unknown70 = nullptr;
+  }
+  mm::mtl::safeRelease(unknown88);
+}
+
+void GfMenuCharDataAdapter::setSlotList(GfMenuBladeList *list) {
+  mm::mtl::safeRelease(unknown88);
+  unknown88 = list;
+  unknown88->addRef();
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::create(u32 handle, u32 type, u8 objType, u32 id, bool isUpdateAlways) {
+  ui::UIObjectAcc acc(handle);
+  if (acc.isValid()) {
+    TypeInfo &info = TYPE_INFOS[type];
+    ui::UIObjectPlugin *plugin = createPlugin(handle, info.setup);
+    if (plugin != nullptr) {
+      // __LINE__ must be 614 as in the original source: it is the line argument of operator new.
+#line 614
+      GfMenuCharDataAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuCharDataAdapter(plugin, isUpdateAlways);
+      adapter->unknown50.bind(adapter, info.update);
+      adapter->unknown78 = objType;
+      adapter->unknown7c = id;
+      plugin->release();
+      return adapter;
+    }
+  }
+  return nullptr;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromCoverter(u32 handle, u32 type, IConverter *converter, bool isUpdateAlways) {
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromGfObj(u32 handle, u32 type, GF_OBJ_HANDLE *objHandle, bool isUpdateAlways) {
+  // __LINE__ must be 645 as in the original source: it is the line argument of operator new.
+#line 645
+  GfObjConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjConverter(objHandle);
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromPartyDriver(u32 handle, u32 type, u8 partyId, bool isUpdateAlways) {
+  // __LINE__ must be 652 as in the original source: it is the line argument of operator new.
+#line 652
+  PartyDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PartyDriverConverter(partyId);
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromPartyBlade(u32 handle, u32 type, u8 partyId, int slot, bool isUpdateAlways, bool isBackSlot, bool isVirtual) {
+  // __LINE__ must be 659 as in the original source: it is the line argument of operator new.
+#line 659
+  PartyBladeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PartyBladeConverter(partyId, slot, isBackSlot, isVirtual);
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
+  // __LINE__ must be 696 as in the original source: it is the line argument of operator new.
+#line 696
+  ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverConverter(index);
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
+  // __LINE__ must be 703 as in the original source: it is the line argument of operator new.
+#line 703
+  ReferenceBladeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceBladeConverter(index);
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceBladeOwnerDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
+  // __LINE__ must be 724 as in the original source: it is the line argument of operator new.
+#line 724
+  ReferenceBladeOwnerDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceBladeOwnerDriverConverter(index);
+  u8 objType;
+  u32 id;
+  converter->getCharData(objType, id);
+  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown70 = converter;
+  }
+  return adapter;
+}
+
+void GfMenuCharDataAdapter::update(const fw::UpdateInfo &info) {
+  if (unknown70 != nullptr) {
+    u8 type = 0;
+    u32 id = 0;
+    unknown70->getCharData(type, id);
+    changeCharData(type, id);
+  }
+  if ((unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) == 0) {
+    return;
+  }
+  if (!unknown50.isValid()) {
+    return;
+  }
+  DataParamAcc acc(unknown78, unknown7c, GIMMICK_TYPE_NONE);
+  bool isDisp = false;
+  if (acc.isValid()) {
+    acc.setMenuParam();
+    if (unknown79 != 0) {
+      if (unknown78 == OBJECT_TYPE_DRIVER) {
+        if (GfMenuReference::getDriverVirtualLevel() != 0) {
+          acc.setVirtualLevel(GfMenuReference::getDriverVirtualLevel());
+        }
+        if (GfMenuReference::getDriverVirtualBladeID() != 0) {
+          u32 blade = GfMenuReference::getDriverVirtualBladeID();
+          int slot = GfMenuReference::getDriverVirtualBladeSlot();
+          if (static_cast<int>(acc.getValidDriverId()) == static_cast<int>(GfDataBlade::getSetDriver(blade))) {
+            slot = GfDataBlade::getDriverSetID(blade);
+          }
+          acc.setVirtualSetBlade(GfMenuReference::getDriverVirtualBladeID(), slot);
+        }
+        if (GfMenuReference::getDriverVirtualEquipAcc() != 0) {
+          u32 slot = GfMenuReference::getDriverVirtualEquipAccSlot();
+          u32 accessory = GfMenuReference::getDriverVirtualEquipAcc();
+          acc.setVirtualEquipAcc(slot, accessory);
+        }
+      } else if (unknown78 == OBJECT_TYPE_BLADE) {
+        if (GfMenuReference::getBladeVirtualEquipWpnChip() != 0) {
+          acc.setVirtualEquipWpnChip(GfMenuReference::getBladeVirtualEquipWpnChip());
+        }
+        if (GfMenuReference::getBladeVirtualEquipOrb() != 0) {
+          u32 slot = GfMenuReference::getBladeVirtualEquipOrbSlot();
+          u32 orb = GfMenuReference::getBladeVirtualEquipOrb();
+          acc.setVirtualEquipOrb(orb, slot);
+        }
+      }
+    }
+    if (acc.getObjType() == OBJECT_TYPE_BLADE && !GfMenuObjUtil::isValidBlade(acc.getValidBdatId())) {
+      isDisp = false;
+    } else {
+      isDisp = unknown50(acc);
+    }
+  }
+  setDisp(isDisp);
+  unknown20 &= ~FLAG_CHANGED;
+}
+
+void GfMenuCharDataAdapter::changeGfObj(GF_OBJ_HANDLE *handle) {
+  if (unknown70 != nullptr && unknown70->fromGfObj() != nullptr) {
+    GfObjConverter *converter = unknown70->fromGfObj();
+    converter->unknown08 = handle;
+  }
+}
+
+void GfMenuCharDataAdapter::changePartyDriver(u8 partyId) {
+  if (unknown70 != nullptr && unknown70->fromPartyDriver() != nullptr) {
+    PartyDriverConverter *converter = unknown70->fromPartyDriver();
+    converter->unknown08 = partyId;
+  }
+}
+
+void GfMenuCharDataAdapter::changePartyBlade(u8 partyId, u8 slot) {
+  if (unknown70 != nullptr && unknown70->fromPartyBlade() != nullptr) {
+    PartyBladeConverter *converter = unknown70->fromPartyBlade();
+    converter->unknown08 = partyId;
+    converter->unknown0c = slot;
+  }
+}
 
 bool GfMenuCharDataAdapter::update_DR_Exp(const DataParamAcc &acc) {
   if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
@@ -510,7 +974,7 @@ bool GfMenuCharDataAdapter::update_BL_BtlSkillLv(const DataParamAcc &acc) {
 bool GfMenuCharDataAdapter::update_BL_Selectable(const DataParamAcc &acc) {
   if (acc.getObjType() == OBJECT_TYPE_BLADE) {
     const char *color = nullptr;
-    if (!GfMenuObjUtil::isBladeSelectable(acc.getValidBdatId(), unknown88.get())) {
+    if (!GfMenuObjUtil::isBladeSelectable(acc.getValidBdatId(), unknown88)) {
       color = "unuse";
     }
     setMulColor(color);
@@ -521,7 +985,7 @@ bool GfMenuCharDataAdapter::update_BL_Selectable(const DataParamAcc &acc) {
 bool GfMenuCharDataAdapter::update_BL_Releasable(const DataParamAcc &acc) {
   if (acc.getObjType() == OBJECT_TYPE_BLADE) {
     const char *color = nullptr;
-    if (!GfMenuObjUtil::isBladeReleasable(acc.getValidBdatId(), unknown88.get())) {
+    if (!GfMenuObjUtil::isBladeReleasable(acc.getValidBdatId(), unknown88)) {
       color = "unuse";
     }
     setMulColor(color);
@@ -1076,6 +1540,202 @@ bool GfMenuCharDataAdapter::update_BL_SkillDesc(const DataParamAcc &acc) {
   ui::UIStr text(bdat, textId);
   text.unknown12 = enhance;
   setText(text);
+  return true;
+}
+
+bool GfMenuCharDataAdapter::update_HobbyIcon(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_DRIVER && acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  u32 favorite = 0;
+  u32 id = 0;
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    id = acc.getValidDriverId();
+    favorite = GfDataDriver::getFavorite(id, static_cast<FAVORITE>(unknown80));
+    if (favorite == 0) {
+      return false;
+    }
+  } else if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    id = acc.getValidBdatId();
+    favorite = GfDataBlade::getFavorite(id, static_cast<FAVORITE>(unknown80));
+    if (favorite == 0) {
+      return false;
+    }
+  }
+  u32 stat = GfMenuObjUtil::getFavoriteStat(acc.getObjType(), id, unknown80 != 0 ? FAVORITE_CATEGORY_1 : FAVORITE_CATEGORY_0);
+  if (stat == 2) {
+    return false;
+  }
+  u32 icon = 0;
+  if (stat == 1) {
+    icon = 0x40;
+  } else if (!GfMenuItemUtil::getIconNumber(ItemType::FAVORITE, favorite, icon, false)) {
+    return false;
+  }
+  setNumber(icon);
+  return true;
+}
+
+bool GfMenuCharDataAdapter::update_HobbyName(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_DRIVER && acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  u32 favorite = 0;
+  u32 id = 0;
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    id = acc.getValidDriverId();
+    favorite = GfDataDriver::getFavorite(id, static_cast<FAVORITE>(unknown80));
+  } else if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    id = acc.getValidBdatId();
+    favorite = GfDataBlade::getFavorite(id, static_cast<FAVORITE>(unknown80));
+  }
+  u32 stat = GfMenuObjUtil::getFavoriteStat(acc.getObjType(), id, unknown80 != 0 ? FAVORITE_CATEGORY_1 : FAVORITE_CATEGORY_0);
+  u32 bdatId = BDAT_MENU_MS;
+  u32 textId;
+  if (stat == 1) {
+    textId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", 1).valueU16;
+  } else if (stat == 2) {
+    textId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", 2).valueU16;
+  } else {
+    if (favorite >= FAVORITE_CATEGORY_FOOD_FIRST) {
+      textId = favorite - (FAVORITE_CATEGORY_FOOD_FIRST - 1);
+      bdatId = BDAT_MENU_FAVORITE_CATEGORY;
+    } else {
+      return false;
+    }
+  }
+  ui::UIStr text(GfDataBdat::getFP(bdatId), textId);
+  setText(text);
+  return true;
+}
+
+bool GfMenuCharDataAdapter::update_FavoriteItemIcon(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_DRIVER && acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  u32 id = 0;
+  u32 favorite = 0;
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    id = acc.getValidDriverId();
+    favorite = GfDataDriver::getFavorite(id, static_cast<FAVORITE>(FAVORITE_ITEM_0 + unknown80));
+    if (favorite == 0) {
+      return false;
+    }
+  } else if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    id = acc.getValidBdatId();
+    favorite = GfDataBlade::getFavorite(id, static_cast<FAVORITE>(FAVORITE_ITEM_0 + unknown80));
+    if (favorite == 0) {
+      return false;
+    }
+  }
+  u32 stat = GfMenuObjUtil::getFavoriteStat(acc.getObjType(), id, unknown80 != 0 ? FAVORITE_ITEM_1 : FAVORITE_ITEM_0);
+  if (stat == 2) {
+    return false;
+  }
+  u32 icon = 0;
+  if (stat == 1) {
+    icon = 0x40;
+  } else {
+    ItemProperty property;
+    GfItemUtil::getProperty(property, favorite, 0);
+    if (property.unknown4e >= FAVORITE_CATEGORY_FOOD_FIRST) {
+      if (!GfMenuItemUtil::getIconNumber(ItemType::FAVORITE, property.unknown4e, icon, false)) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  setNumber(icon);
+  return true;
+}
+
+bool GfMenuCharDataAdapter::update_FavoriteItemName(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_DRIVER && acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  u32 favorite = 0;
+  u32 id = 0;
+  if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    id = acc.getValidDriverId();
+    favorite = GfDataDriver::getFavorite(id, static_cast<FAVORITE>(FAVORITE_ITEM_0 + unknown80));
+  } else if (acc.getObjType() == OBJECT_TYPE_BLADE) {
+    id = acc.getValidBdatId();
+    favorite = GfDataBlade::getFavorite(id, static_cast<FAVORITE>(FAVORITE_ITEM_0 + unknown80));
+  }
+  u32 stat = GfMenuObjUtil::getFavoriteStat(acc.getObjType(), id, unknown80 != 0 ? FAVORITE_ITEM_1 : FAVORITE_ITEM_0);
+  ui::UIStr name;
+  if (stat != 1) {
+    if (stat == 2) {
+      u32 textId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", 2).valueU16;
+      name.copy(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), textId));
+    } else {
+      GfMenuItemUtil::getItemName(ItemType::FAVORITE, favorite, name);
+    }
+    if (name.isValid()) {
+      setText(name);
+      return true;
+    }
+  }
+  return false;
+}
+
+// Inferred role: buttons assigned to the three blade slots of a driver; original name unknown.
+static const u32 unknown001[] = {0x1000, 0x2000, 0x4000};
+
+bool GfMenuCharDataAdapter::update_BL_ChangeBtnIcon(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  if (!GfDataBlade::isSetBlade(acc.getValidBdatId())) {
+    return false;
+  }
+  DataParamAcc driverAcc(OBJECT_TYPE_DRIVER, GfDataBlade::getSetDriver(acc.getValidBdatId()), GIMMICK_TYPE_NONE);
+  bool result = false;
+  if (driverAcc.isValid()) {
+    for (u32 slot = 0; slot < sizeof(unknown001) / sizeof(unknown001[0]); slot++) {
+      if (driverAcc.getBlade(slot, false) == acc.getValidBdatId()) {
+        s16 icon = GfMenuObjUtil::getBtnIconNumber(unknown001[slot]);
+        setNumber(GfMenuBdat::getIconImageIndex(icon));
+        result = true;
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+bool GfMenuCharDataAdapter::update_BL_WpnImage(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  GfBdatItem *bdatItem = GfBdatItem::get();
+  u32 weapon = acc.getEquipWeapon(0, unknown79 == 1);
+  if (weapon == 0) {
+    return false;
+  }
+  u32 rsc = 0;
+  if (!GfDataBlade::isCommonBlade(acc.getValidBdatId())) {
+    GfBdatChrBl *bdatChrBl = GfBdatChrBl::get();
+    if (bdatItem->isPcWpnFlagPrivate(weapon)) {
+      if (bdatChrBl->getChrBlPrivateWpnR_Driver(acc.getValidBdatId()) != 0) {
+        rsc = bdatChrBl->getChrBlPrivateWpnR_Driver(acc.getValidBdatId());
+      } else if (bdatChrBl->getChrBlPrivateWpnR(acc.getValidBdatId()) != 0) {
+        rsc = bdatChrBl->getChrBlPrivateWpnR(acc.getValidBdatId());
+      }
+    }
+  }
+  if (rsc == 0) {
+    rsc = bdatItem->getPcWpnRscR(weapon);
+    if (rsc == 0) {
+      return false;
+    }
+  }
+  int image = GfBdatRsc::get()->getRSC_PcWpnMenuImageID(rsc);
+  if (image == 0) {
+    return false;
+  }
+  setNumber(image);
   return true;
 }
 

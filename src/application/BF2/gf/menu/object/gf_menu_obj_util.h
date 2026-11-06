@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_data_driver.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixed_array.h"
@@ -111,6 +112,7 @@ public:
   };
 
   static u32 getBtnIconNumber(u32 button);
+  static u32 getFavoriteStat(u32 objType, u32 id, FAVORITE favorite);
   static u32 getPadSelectIconNumber(u32 select);
   static u32 getPointerSelectIconNumber();
   static int setCommonFadeIn(u32 handle, u32 fade, u8 unknown);
@@ -167,6 +169,7 @@ public:
   static GF_OBJ_HANDLE *getBladeHandleFromPartySlot(u32 partyId, int offset, bool isVirtual);
   static GF_OBJ_HANDLE *getBladeHandleFromPartyBackSlot(u32 partyId, int offset, bool isVirtual);
   static u32 getBladeIDFromPartyBackSlot(u32 partyId, int offset, bool isVirtual);
+  static u32 getBladeIDFromDriverSlot(u32 driver, int slot);
   static u32 getBladeIDFromPartySlot(u32 partyId, int offset, bool isVirtual);
   static GF_OBJ_HANDLE *getBladeHandleOffset(u32 partyId, int offset);
   static u32 getBladeSlotMax();
