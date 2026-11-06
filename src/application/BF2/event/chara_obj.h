@@ -88,7 +88,10 @@ public:
   enum {
     STATE_UNKNOWN_1 = 1, // Role and original name unknown.
     STATE_UNKNOWN_2 = 2, // Role and original name unknown.
+    STATE_UNKNOWN_3 = 3, // Role and original name unknown.
+    STATE_UNKNOWN_4 = 4, // Role and original name unknown.
     STATE_UNKNOWN_5 = 5, // Role and original name unknown.
+    STATE_UNKNOWN_6 = 6, // Role and original name unknown.
   };
 
   CharaObj(const char *name);
@@ -208,7 +211,7 @@ private:
   CHARA_TYPE unknowncec;          // Inferred role: type; original member name unknown.
   u32 unknowncf0;                 // Inferred role: id; original member name unknown.
   mm::mtl::FixStr<64> unknowncf4; // Inferred role: model name; original member name unknown.
-  u8 unknownd38[0xd3c - 0xd38];   // Inferred role: d38; original member name unknown.
+  u32 unknownd38;                 // Inferred role: createModel param2; original member name unknown.
   u32 unknownd3c;                 // Inferred role: offscr id; original member name unknown.
   gf::GF_OBJ_HANDLE *unknownd40;  // Inferred role: handle; original member name unknown.
   gf::GfEvtModel *unknownd48;     // Inferred role: model; original member name unknown.

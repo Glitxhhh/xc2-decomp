@@ -10,6 +10,9 @@
 #include "event/cmd_variable.h"
 #include "event/debug_manager.h"
 #include "event/group_manager.h"
+#include "event/light_manager.h"
+#include "event/model_manager.h"
+#include "event/offscr_manager.h"
 #include "event/skip_manager.h"
 #include "event/tar_axis.h"
 #include "gf/event/gf_evt_model.h"
@@ -22,6 +25,32 @@
 namespace event {
 
 const char *CharaObj::getName() const { return m_name.c_str(); }
+
+void CharaObj::createModel(const char *model, u32 param2, u32 param3) {
+  if (param3 != 0) {
+    mm::mtl::Singleton<OffscrManager>::getPtr()->createScreen(param3);
+    mm::mtl::Singleton<LightManager>::getPtr()->loadOffScrLight(param3);
+  }
+  if (mm::mtl::Singleton<CharaManager>::getPtr()->isOffscrMode()) {
+    param3 = mm::mtl::Singleton<CharaManager>::getPtr()->getOffscrID();
+  }
+  unknownd3c = param3;
+  unknowncf4 = model;
+  unknownd38 = param2;
+  if (!mm::mtl::Singleton<CharaManager>::getPtr()->isStreamMode()) {
+    unknownd50 = mm::mtl::Singleton<ModelManager>::getPtr()->createModel(model, false, unknownd3c, unknown3054);
+    unknownca4 = STATE_UNKNOWN_3;
+  } else {
+    unknownca4 = STATE_UNKNOWN_4;
+  }
+}
+
+void CharaObj::createGhost() {
+  if (!mm::mtl::Singleton<CharaManager>::getPtr()->isStreamMode()) {
+    unknownd50 = mm::mtl::Singleton<ModelManager>::getPtr()->createModel(unknown3054);
+  }
+  unknownca4 = STATE_UNKNOWN_6;
+}
 
 void CharaObj::clear() {
   unknown1738.eraseAll();

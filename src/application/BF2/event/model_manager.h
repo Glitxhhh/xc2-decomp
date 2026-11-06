@@ -16,6 +16,8 @@ public:
   virtual ~ModelManager() {}
   void update();
   void render();
+  ModelObj *createModel(int index);
+  ModelObj *createModel(const char *path, bool isPriority, u32 id, int index);
   ModelObj *searchModel(u32 index);
   ModelObj *searchModel(u32 index, const char *path, bool isPriority, u32 id);
   void destroyModel(ModelObj *model, int index);
