@@ -63,6 +63,7 @@ public:
   static f32 getInvFps(const Binding &binding);
   static f32 calcLocalTime(f32 time, f32 start, f32 end, PlayMode playMode);
   static void setKeyFrame(Control &control, f32 frame);
+  static bool calcDeltaExtractMotion(const Binding &binding, f32 previousTime, f32 time, f32 start, f32 length, QsTransform *transform);
   static bool getAsmPlaybackTime(const ResASM &resAsm, const char *state, u32 index, f32 *time);
   static const Binding *getAsmBinding(const ResASM &resAsm, const char *state, u32 index);
   static bool getAsmLocomotionReference(const ResASM &resAsm, const char *state, f32 time, u32 index, QsTransform *transform);
@@ -82,6 +83,7 @@ public:
   static void queryState(u32 mask, const ResASM &resAsm, mm::mtl::Set<StringPtr> *pDst);
   static void queryCmd(u32 mask, const ResASM &resAsm, mm::mtl::Set<StringPtr> *pDst);
   static void queryCmdFromStateSimple(u32 mask, const ResASM &resAsm, const StringPtr &state, mm::mtl::Set<StringPtr> *pDst);
+  static void queryCmdFromState(u32 mask, const ResASM &resAsm, const StringPtr &state, const mm::mtl::Vector<StringPtr> &path, mm::mtl::Set<StringPtr> *pDst);
   static bool queryStateAutoTrans(u32 mask, const ResASM &resAsm, const StringPtr &state, StringPtr *autoTrans);
   static void queryStateFromStateCmd(u32 mask, const ResASM &resAsm, const StringPtr &state, const StringPtr &cmd, mm::mtl::Set<StringPtr> *pDst);
   static void queryVariableFloat(const ResASM &resAsm, mm::mtl::Set<StringPtr> *pDst);
@@ -92,5 +94,7 @@ static_assert(offsetof(Util::IgnoreName, unknown0c) == 0x0c, "");
 static_assert(sizeof(Util::IgnoreName) == 0x10, "");
 static_assert(offsetof(Util::PairName, unknown0c) == 0x0c, "");
 static_assert(sizeof(Util::PairName) == 0x18, "");
+
+void collectCmdFromState(u32 mask, const ResASM &resAsm, const ResState *pResState, const StringPtr *pBegin, const StringPtr *pEnd, mm::mtl::Set<StringPtr> *pDst);
 
 } // namespace anm

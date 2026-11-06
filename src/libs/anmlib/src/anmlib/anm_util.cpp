@@ -13,10 +13,15 @@
 #include "anm/anm_binding.h"
 #include "anm/anm_control.h"
 #include "anm/anm_extra_truck.h"
+#include "anm/anm_locomotion.h"
+#include "anm/anm_mirror_animation.h"
+#include "anm/anm_mirror_mapper.h"
 #include "anm/anm_pose.h"
+#include "anm/anm_qs_transform.h"
 #include "anm/anm_res_asm.h"
 #include "anm/anm_res_clip_data.h"
 #include "anm/anm_res_state_data.h"
+#include "anm/anm_simple_retarget_animation.h"
 #include "anm/anm_skeleton.h"
 #include "anm/anm_space_resolve_util.h"
 #include "mm/mm_std_base.h"
@@ -150,6 +155,44 @@ void Util::clampLimitExtraTruck(const ExtraTruckSlot &slot, u32 count, f32 *valu
 
 void Util::setKeyFrame(Control &control, f32 frame) { control.setLocalTime(control.m_pBinding->m_pAnimation->unknown28 * frame); }
 
+bool Util::calcDeltaExtractMotion(const Binding &binding, f32 previousTime, f32 time, f32 start, f32 length, QsTransform *transform) {
+  if (length <= 0.0f) {
+    return false;
+  }
+  const Animation *pAnimation = binding.m_pAnimation;
+  MM_ASSERT(pAnimation);
+  const Locomotion *pLocomotion;
+  if (pAnimation->unknown20 == -1) {
+    const MirrorAnimation *pMirror = static_cast<const MirrorAnimation *>(pAnimation);
+    const Binding *pOriginalBinding = pMirror->unknown50;
+    MM_ASSERT(pOriginalBinding);
+    const Animation *pOriginalAnim = pOriginalBinding->m_pAnimation;
+    MM_ASSERT(pOriginalAnim);
+    pLocomotion = pOriginalAnim->unknown40;
+    if (pLocomotion == nullptr) {
+      return false;
+    }
+    QsTransform original;
+    bool looped = getPlayMode(*pOriginalBinding) == PLAY_MODE_LOOP;
+    pLocomotion->getDeltaReference(previousTime, time, start, start + length, looped, &original);
+    pMirror->unknown48->mirrorExtractMotion(original, transform);
+    return true;
+  } else if (pAnimation->unknown20 == -3) {
+    pLocomotion = static_cast<const SimpleRetargetAnimation *>(pAnimation)->m_pOriginal->m_pAnimation->unknown40;
+    if (pLocomotion == nullptr) {
+      return false;
+    }
+  } else {
+    pLocomotion = pAnimation->unknown40;
+    if (pLocomotion == nullptr) {
+      return false;
+    }
+  }
+  bool looped = getPlayMode(binding) == PLAY_MODE_LOOP;
+  pLocomotion->getDeltaReference(previousTime, time, start, start + length, looped, transform);
+  return true;
+}
+
 struct CompResState {
   bool operator()(const ResState *lhs, const char *rhs) const { return strcmp(lhs->name, rhs) < 0; }
 };
@@ -258,6 +301,25 @@ void Util::queryCmdFromStateSimple(u32 mask, const ResASM &resAsm, const StringP
   }
 }
 
+void Util::queryCmdFromState(u32 mask, const ResASM &resAsm, const StringPtr &state, const mm::mtl::Vector<StringPtr> &path, mm::mtl::Set<StringPtr> *pDst) {
+  const ResState *resState = searchState(mask, resAsm, state);
+  if (resState != nullptr) {
+    while (resState->loopCount != nullptr) {
+      resState = searchState(mask, resAsm, resState->loopCount->unknown00);
+    }
+    if (path.size() != 0) {
+      collectCmdFromState(mask, resAsm, resState, path.begin(), path.end(), pDst);
+      return;
+    }
+    for (ArrayIterartor<ResCmd *const> it = resState->unknown20.begin(), last = resState->unknown20.end(); it != last; ++it) {
+      const ResCmd *resCmd = *it;
+      if (resCmd != nullptr) {
+        pDst->insert(resCmd->unknown00);
+      }
+    }
+  }
+}
+
 void Util::queryStateFromStateCmd(u32 mask, const ResASM &resAsm, const StringPtr &state, const StringPtr &cmd, mm::mtl::Set<StringPtr> *pDst) {
   const ResState *resState = searchState(mask, resAsm, state);
   if (resState != nullptr) {
@@ -349,6 +411,16 @@ struct lessAppendix {
 };
 
 const char *Util::getLayerName(Layer layer) { return s_layerNames[layer]; }
+
+Layer Util::getLayer(const char *name) {
+  for (int i = 0; i < LAYER_NUM; i++) {
+    int result = strcmp(s_layerNames[i], name);
+    if (result == 0) {
+      return static_cast<Layer>(i);
+    }
+  }
+  return LAYER_INVALID;
+}
 
 const ResAppendix *Util::findAppendix(const ResASM &resAsm, const char *name) {
   const ResStateArray *states = resAsm.unknown20;
