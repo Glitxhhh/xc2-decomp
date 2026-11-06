@@ -95,4 +95,18 @@ bool DrResMdoSeamParmRead::isReadInfo(const _wkSeamReadWait &wait) {
   return true;
 }
 
+bool DrResMdoSeamParmRead::isReadAllInfo(const _wkSeamReadWait &wait) {
+  for (s32 i = 0; i < unknown618; i++) {
+    if (unknown610[i].unknown1e == wait.unknown0a && unknown610[i].unknown18 == wait.unknown08) {
+      return false;
+    }
+  }
+  for (s32 i = 0; i < unknown628; i++) {
+    if (unknown620[i].unknown0a == wait.unknown0a && unknown620[i].unknown08 == wait.unknown08) {
+      return false;
+    }
+  }
+  return true;
+}
+
 } // namespace ml

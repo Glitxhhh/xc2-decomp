@@ -15,9 +15,15 @@
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_vec4.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/alloc_handle.h"
 #include "types.h"
 
 namespace ml {
+
+DrPixlSkyDome::DrPixlSkyDome(DrMan *drMan)
+    : unknown00(drMan), unknown08(nullptr), unknown10(0.0f), unknown14(0), unknown20(1.0f, 1.0f, 1.0f), unknown30(0.5f, 0.5f, 0.5f), unknown40(0.0f), unknown44(0), unknown48(0) {
+  unknown08 = new (drMan->unknown0c) DrResUseQueryObj();
+}
 
 void DrPixlSkyDome::update() {
   unknown08->update();

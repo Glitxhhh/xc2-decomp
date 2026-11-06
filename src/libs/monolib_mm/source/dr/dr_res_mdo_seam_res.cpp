@@ -1,8 +1,11 @@
 #include "dr/dr_res_mdo_seam_res.h"
 
+#include <new>
+
 #include "dr/dr_res_chank_list.h" // IWYU pragma: keep
 #include "dr/dr_res_mdo_vertex.h"
 #include "grlib/cglib_texture.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -30,6 +33,45 @@ void DrResMdoSeamTexList::release() {
   }
   unknown28 = nullptr;
   unknown3e = 0;
+}
+
+bool DrResMdoSeamTexList::update(DrResMdoSeamParmRead *parmRead) {
+  unknown3a++;
+  if (unknown3a >= SEAMRES_TEXLIST_CNTMAX) {
+    return true;
+  }
+  unknown3b = false;
+  if (unknown28 != nullptr && (unknown18->unknown24 & 2)) {
+    changeMemTextureList();
+    unknown3b = true;
+  }
+  return false;
+}
+
+void DrResMdoSeamTexList::changeMemTextureList() {
+  unknown28 = unknown18->m_buffer;
+  if (unknown3e != 0) {
+    const unknown134 *entry = reinterpret_cast<const unknown134 *>(unknown28 + reinterpret_cast<const unknown135 *>(unknown28)->unknown04);
+    for (int i = 0; i < unknown3e; i++) {
+      grlib::CGLibTexture::changeTextureImagePtrs(unknown20[i], unknown28 + entry->unknown08, entry->unknown04);
+      entry++;
+    }
+  }
+}
+
+void DrResMdoSeamTexList::createTextureList(mtl::ALLOC_HANDLE handle) {
+  release();
+  const unknown135 *header = reinterpret_cast<const unknown135 *>(unknown18->m_buffer);
+  unknown28 = unknown18->m_buffer;
+  int size = header->unknown00 * 0x70;
+  m_buffer = mtl::MemManager::allocate(handle, size, 0x40, false, "no name", 0);
+  unknown20 = static_cast<grlib::CGLibTextureBuffer *>(m_buffer);
+  unknown3e = header->unknown00;
+  const unknown134 *entry = reinterpret_cast<const unknown134 *>(unknown28 + header->unknown04);
+  for (int i = 0; i < unknown3e; i++, entry++) {
+    new (&unknown20[i]) grlib::CGLibTextureBuffer();
+    grlib::CGLibTexture::createTextureImagePtrs(unknown20[i], unknown28 + entry->unknown08, entry->unknown04, false, nullptr, false);
+  }
 }
 
 void DrResMdoSeamTexList::setListCnt(int count) { SEAMRES_TEXLIST_CNTMAX = count; }

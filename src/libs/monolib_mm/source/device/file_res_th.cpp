@@ -9,6 +9,18 @@
 
 namespace ml {
 
+FileResTh::FileResTh() {
+  unknownd0 = -1;
+  unknownc0 = nullptr;
+  unknownc8 = nullptr;
+  unknownf0 = true;
+  unknownf4 = 0;
+  unknownf8 = nullptr;
+  unknowne0 = 0;
+}
+
+FileResTh::~FileResTh() { release(); }
+
 bool FileResTh::isExist() const { return unknownc8 != nullptr; }
 
 bool FileResTh::load(mtl::ALLOC_HANDLE handle, const char *path, u32 option, FILE_PRIO priority) {

@@ -37,6 +37,26 @@ public:
 static_assert(offsetof(DrResMdoSeamMemObj, m_buffer) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamMemObj, unknown24) == 0x24, "");
 
+// Inferred type: texture entry of the seam texture list data; the original type name is unknown.
+struct unknown134 {
+  u32 unknown00; // Inferred role: unknown; original member name unknown.
+  u32 unknown04; // Inferred role: texture size; original member name unknown.
+  u32 unknown08; // Inferred role: texture offset in the data; original member name unknown.
+  u32 unknown0c; // Inferred role: unknown; original member name unknown.
+};
+
+static_assert(offsetof(unknown134, unknown04) == 0x04, "");
+static_assert(offsetof(unknown134, unknown08) == 0x08, "");
+static_assert(sizeof(unknown134) == 0x10, "");
+
+// Inferred type: header of the seam texture list data; the original type name is unknown.
+struct unknown135 {
+  u32 unknown00; // Inferred role: texture number; original member name unknown.
+  u32 unknown04; // Inferred role: offset of the texture entries; original member name unknown.
+};
+
+static_assert(offsetof(unknown135, unknown04) == 0x04, "");
+
 class DrResMdoSeamTexList {
 public:
   static int SEAMRES_TEXLIST_CNTMAX;

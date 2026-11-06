@@ -70,6 +70,7 @@ public:
   void setStockVertex(f32 level, int index);
   void setStockTexture(f32 level, int index);
   bool isReadInfo(const _wkSeamReadWait &wait);
+  bool isReadAllInfo(const _wkSeamReadWait &wait);
 
   u32 unknown00; // Inferred role: flags; original member name unknown.
   u8 _04[0x10 - 0x04];
@@ -103,8 +104,10 @@ public:
   u8 _5f2[0x610 - 0x5f2];
   _wkSeamReadCall *unknown610; // Inferred role: read calls; original member name unknown.
   s32 unknown618;              // Inferred role: read call num; original member name unknown.
-  u8 _61c[0x62c - 0x61c];
-  u16 unknown62c; // Inferred role: cleared by the constructor; original member name unknown.
+  u8 _61c[0x620 - 0x61c];
+  _wkSeamReadWait *unknown620; // Inferred role: read waits; original member name unknown.
+  s32 unknown628;              // Inferred role: read wait num; original member name unknown.
+  u16 unknown62c;              // Inferred role: cleared by the constructor; original member name unknown.
   u8 _62e[0x630 - 0x62e];
   wkSeamReadPacDataInf *unknown630; // Inferred role: read packet; original member name unknown.
 };
@@ -127,6 +130,8 @@ static_assert(offsetof(DrResMdoSeamParmRead, unknown5ea) == 0x5ea, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown5f0) == 0x5f0, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown610) == 0x610, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown618) == 0x618, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown620) == 0x620, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown628) == 0x628, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown62c) == 0x62c, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown630) == 0x630, "");
 

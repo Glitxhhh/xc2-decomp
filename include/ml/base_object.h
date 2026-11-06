@@ -8,7 +8,8 @@ namespace ml {
 
 class BaseObjectM {
 public:
-  virtual ~BaseObjectM();
+  BaseObjectM() : unknown08(1) {}
+  virtual ~BaseObjectM() {}
   virtual int AddRef();
   virtual int Release();
   virtual void SetName(const char *name);
