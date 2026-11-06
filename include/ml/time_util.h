@@ -20,11 +20,21 @@ struct TimeInfo {
 
 static_assert(sizeof(TimeInfo) == 8, "");
 
+struct SteadyClockInfo {
+  s64 unknown00; // Inferred role: steady clock value; original member name unknown.
+  u64 unknown08; // Inferred role: steady clock source id, low word; original member name unknown.
+  u64 unknown10; // Inferred role: steady clock source id, high word; original member name unknown.
+};
+
+static_assert(sizeof(SteadyClockInfo) == 0x18, "");
+
 class TimeUtil {
 public:
   static bool getTime(TimeInfo &info);
   static bool getDateStr(mm::mtl::FixStr<64> &str);
   static bool getTimeStr(mm::mtl::FixStr<64> &str);
+  static bool getSteadyClock(SteadyClockInfo &info);
+  static bool getElapseSec(long &elapsed, const SteadyClockInfo &from, const SteadyClockInfo &to);
   static int aggregateNumberOfDays(int year, int month, int day);
 };
 

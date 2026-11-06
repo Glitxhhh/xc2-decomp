@@ -2,8 +2,10 @@
 
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
+#include "types.h"
 
 namespace ml {
 
@@ -25,6 +27,23 @@ mtl::ALLOC_HANDLE MlMem::getDebugMem() { return s_debugMem; }
 void MlMem::setGraphicMem(mtl::ALLOC_HANDLE handle) { s_graphicMem = handle; }
 
 mtl::ALLOC_HANDLE MlMem::getGraphicMem() { return s_graphicMem; }
+
+void MlMem::addExtMem(mtl::ALLOC_HANDLE handle) {
+  mtl::MemoryInfo info;
+  if (mtl::MemManager::getMemoryInfo(handle, &info)) {
+    mm::mtl::FixedVector<mtl::ALLOC_HANDLE, 8> handles;
+    handles.push_back(s_productMem);
+    handles.push_back(s_debugMem);
+    for (mm::mtl::FixedList<mtl::ALLOC_HANDLE, 64>::iterator it = s_extMems.begin(); it != s_extMems.end(); ++it) {
+      handles.push_back(*it);
+    }
+    mtl::MemoryInfo extInfo;
+    for (u32 i = 0; i < handles.size(); i++) {
+      mtl::MemManager::getMemoryInfo(handles[i], &extInfo);
+    }
+    s_extMems.push_back(handle);
+  }
+}
 
 void MlMem::removeExtMem(mtl::ALLOC_HANDLE handle) {
   mm::mtl::FixedList<mtl::ALLOC_HANDLE, 64>::iterator it = mm::mtl::find(s_extMems.begin(), s_extMems.end(), handle);

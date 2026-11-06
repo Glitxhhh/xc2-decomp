@@ -1,12 +1,27 @@
 #include "dr/dr_res_mdo_tex_list.h"
 
+#include <new>
+
 #include "dr/dr_calc_stm_list_obj.h"
 #include "dr/dr_man.h"
 #include "grlib/cglib_texture.h"
 #include "grlib/cglib_texture_buffer.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
+
+void DrResMdoTexList::createTexInfoList() {
+  release();
+  unknown70 = 0;
+  unknown68 = reinterpret_cast<const MdsTexHeader *>(unknown80)->texNum;
+  u32 size = reinterpret_cast<const MdsTexHeader *>(unknown80)->texNum * 0x70;
+  m_buffer = mtl::MemManager::allocate(DrMan::get()->unknown14, size, 0x10, false, "no name", 0);
+  unknown20 = static_cast<grlib::CGLibTextureBuffer *>(m_buffer);
+  for (int i = 0; i < unknown68; i++) {
+    new (&unknown20[i]) grlib::CGLibTextureBuffer();
+  }
+}
 
 void DrResMdoTexList::resetTexutre() {
   _90 = 0;
@@ -14,29 +29,29 @@ void DrResMdoTexList::resetTexutre() {
 }
 
 DrResMdoTexList::DrResMdoTexList(const u8 *texData)
-    : unknown00(nullptr), unknown08(nullptr), unknown10(texData), unknown18(1), unknown20(nullptr), unknown58(nullptr), m_buffer(nullptr), unknown68(0), unknown6c(0), _70(), unknown80(texData),
+    : unknown00(nullptr), unknown08(nullptr), unknown10(texData), unknown18(1), unknown20(nullptr), unknown58(nullptr), m_buffer(nullptr), unknown68(0), unknown6c(0), unknown70(0), unknown80(texData),
       unknown88(texData), _90(), _98() {
   createTexInfoList();
   createTexList(unknown80, unknown88);
 }
 
 DrResMdoTexList::DrResMdoTexList(const u8 *texHeader, DrCalcStmListObj *stmList, const u8 *texData, const MdsTexHeader *stmHeader)
-    : unknown00(nullptr), unknown08(nullptr), unknown10(texHeader), unknown18(1), unknown20(nullptr), unknown58(stmList), m_buffer(nullptr), unknown68(0), unknown6c(0), _70(), unknown80(texHeader),
-      unknown88(texData), _90(), _98() {
+    : unknown00(nullptr), unknown08(nullptr), unknown10(texHeader), unknown18(1), unknown20(nullptr), unknown58(stmList), m_buffer(nullptr), unknown68(0), unknown6c(0), unknown70(0),
+      unknown80(texHeader), unknown88(texData), _90(), _98() {
   createStmTexInfoList(stmList, reinterpret_cast<const u8 *>(stmHeader), true);
   createTexList(unknown80, unknown88);
 }
 
 DrResMdoTexList::DrResMdoTexList(const u8 *texHeader, DrCalcStmListObj *stmList, const u8 *texData, const u16 *stmTexIdx)
-    : unknown00(nullptr), unknown08(nullptr), unknown10(texHeader), unknown18(1), unknown20(nullptr), unknown58(stmList), m_buffer(nullptr), unknown68(0), unknown6c(0), _70(), unknown80(texHeader),
-      unknown88(texData), _90(), _98() {
+    : unknown00(nullptr), unknown08(nullptr), unknown10(texHeader), unknown18(1), unknown20(nullptr), unknown58(stmList), m_buffer(nullptr), unknown68(0), unknown6c(0), unknown70(0),
+      unknown80(texHeader), unknown88(texData), _90(), _98() {
   createStmTexInfoList(stmList, reinterpret_cast<const u8 *>(stmTexIdx), false);
   createTexList(unknown80, unknown88);
 }
 
 DrResMdoTexList::DrResMdoTexList(const u8 *texHeader, const u8 *texData)
-    : unknown00(nullptr), unknown08(nullptr), unknown10(texHeader), unknown18(1), unknown20(nullptr), unknown58(nullptr), m_buffer(nullptr), unknown68(0), unknown6c(0), _70(), unknown80(texHeader),
-      unknown88(texData), _90(), _98() {
+    : unknown00(nullptr), unknown08(nullptr), unknown10(texHeader), unknown18(1), unknown20(nullptr), unknown58(nullptr), m_buffer(nullptr), unknown68(0), unknown6c(0), unknown70(0),
+      unknown80(texHeader), unknown88(texData), _90(), _98() {
   createTexInfoList();
   createTexList(unknown80, unknown88);
 }
@@ -70,6 +85,21 @@ void DrResMdoTexList::callStmRead(int mode) {
     if (mode == 2) {
       unknown6c |= 0x20000;
     }
+  }
+}
+
+void DrResMdoTexList::changeCallTexMemTexList(const u8 *texHeader, const u8 *texData) {
+  unknown80 = texHeader;
+  unknown88 = texData;
+  const MdsTexHeader *header = reinterpret_cast<const MdsTexHeader *>(texHeader);
+  const unknown092 *infos = reinterpret_cast<const unknown092 *>(texHeader + header->infoOffset);
+  u32 firstOffset = infos[0].unknown08;
+  unknown6c |= 0x20;
+  u32 size = infos[unknown68 - 1].unknown08 - infos[0].unknown08 + infos[unknown68 - 1].unknown04;
+  size += -size & 0xfff;
+  unknown28.setupBuffer(const_cast<u8 *>(texData) + infos[0].unknown08, size);
+  for (int i = 0; i < unknown68; i++) {
+    grlib::CGLibTexture::changeTextureImagePtrs(unknown20[i], infos[i].unknown04, unknown28, infos[i].unknown08 - firstOffset);
   }
 }
 

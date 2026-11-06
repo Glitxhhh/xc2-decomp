@@ -15,7 +15,7 @@ extern mm::Vec2 s_initPos;
 
 } // namespace dev_touch_detail
 
-struct DevTouchInfo {
+struct alignas(16) DevTouchInfo {
   DevTouchInfo();
   void initialize();
 
@@ -71,6 +71,6 @@ public:
 };
 
 static_assert(offsetof(DevTouch, unknown1c0) == 0x1c0, "");
-static_assert(sizeof(DevTouch) == 0x7c8, "");
+static_assert(sizeof(DevTouch) == 0x7d0, "");
 
 } // namespace ml

@@ -11,7 +11,9 @@ class DrCalcStmListObj;
 
 // Inferred role: model data tex info; original type name unknown.
 struct unknown092 {
-  u8 _00[0x0c - 0x00];
+  u8 _00[0x04 - 0x00];
+  u32 unknown04; // Inferred role: image size; original member name unknown.
+  u32 unknown08; // Inferred role: image offset; original member name unknown.
   u32 unknown0c; // Inferred role: name offset; original member name unknown.
 };
 
@@ -55,11 +57,11 @@ public:
   void *m_buffer;
   s32 unknown68; // Inferred role: tex max; original member name unknown.
   u32 unknown6c; // Inferred role: flags; original member name unknown.
-  u8 _70[0x74 - 0x70];
+  u32 unknown70; // Inferred role: stream state; original member name unknown.
   u8 _74[0x78 - 0x74];
-  const u16 *unknown78; // Inferred role: stm tex idx; original member name unknown.
-  const u8 *unknown80;  // Inferred role: tex header; original member name unknown.
-  const u8 *unknown88;  // Inferred role: tex data; original member name unknown.
+  u16 *unknown78;      // Inferred role: stm tex idx; original member name unknown.
+  const u8 *unknown80; // Inferred role: tex header; original member name unknown.
+  const u8 *unknown88; // Inferred role: tex data; original member name unknown.
   u64 _90;
   u8 _98[0xa0 - 0x98];
 };

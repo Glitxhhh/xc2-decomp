@@ -17,6 +17,7 @@ public:
   static mtl::ALLOC_HANDLE getDebugMem();
   static void setGraphicMem(mtl::ALLOC_HANDLE handle);
   static mtl::ALLOC_HANDLE getGraphicMem();
+  static void addExtMem(mtl::ALLOC_HANDLE handle);
   static void removeExtMem(mtl::ALLOC_HANDLE handle);
   static int getExtMemNum();
   static bool isDebug(const void *pointer);
