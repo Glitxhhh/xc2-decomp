@@ -1,5 +1,6 @@
 #include "grlib/cglib_manager.h"
 
+#include "grlib/cglib_display.h"
 #include "grlib/cglib_gpu_time_stamp.h"
 #include "grlib/cglib_mem_handle.h"
 #include "grlib/cglib_system_context.h"
@@ -14,6 +15,22 @@ CGLibManager::~CGLibManager() {
     unknown5028 = nullptr;
   }
   s_nReleaseOk = true;
+}
+
+void CGLibManager::begin() {
+  unknown5028->unknown1110.updateSignaled();
+  context::CGLibSystemContext *context = unknown5028;
+  if (context->unknown1110.unknownfcb) {
+    int index = s_nDblNowIdx;
+    s_nDblNowIdx = index == 0;
+    s_nStkNowIdx = index != 0;
+    if (s_nTriNowIdx >= 2) {
+      s_nTriNowIdx = 0;
+    } else {
+      s_nTriNowIdx = s_nTriNowIdx + 1;
+    }
+  }
+  context->begin();
 }
 
 bool CGLibManager::deviceRelease() {

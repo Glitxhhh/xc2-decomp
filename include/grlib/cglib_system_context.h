@@ -54,6 +54,7 @@ public:
   CGLibSystemContext();
   ~CGLibSystemContext();
   static ml::CriticalSection &getCriticalSection();
+  void begin();
   void createMemPool(CGLibMemPool &memPool, mtl::ALLOC_HANDLE handle, u32 flags);
   bool isRelease();
   bool cleanup();
