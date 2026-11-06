@@ -208,6 +208,8 @@ struct MsgObjectAlpha : fw::Message {
 struct MsgObjectFlushProperty : fw::Message {};
 
 struct MsgGameChangeTarget : fw::Message {
+  MsgGameChangeTarget(GF_OBJ_HANDLE *target) : fw::Message(0x100002b, 0x20), unknown08(target) {}
+
   GF_OBJ_HANDLE *unknown08; // Inferred role: target; original member name unknown.
 };
 

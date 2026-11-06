@@ -19,16 +19,24 @@ struct GfSetupParam;
 
 static GF_SEARCH_OBJ *const INVALID_SEARCH_OBJ = reinterpret_cast<GF_SEARCH_OBJ *>(-1);
 
-// Size from the GfSearchInfo pool of GfGameSearchObj (1024 elements in 0xc000 bytes). Members unknown.
+// Size from the GfSearchInfo pool of GfGameSearchObj (1024 elements in 0xc000 bytes). Members from the consumers GfGameTarget::selectTarget
+// and GfGameSearchObj::updateObj, which fills them.
 struct GfSearchInfo {
-  u8 _00[0x30];
+  GF_OBJ_HANDLE *unknown00; // Inferred role: found object; original member name unknown.
+  u8 _08[0x24 - 0x08];
+  f32 unknown24;       // Inferred role: forward angle; original member name unknown.
+  f32 unknown28;       // Inferred role: sort key copied from the cached position; original member name unknown.
+  u32 unknown2c_0 : 1; // Inferred role: visible; original member name unknown.
+  u32 : 31;
 };
 
+static_assert(offsetof(GfSearchInfo, unknown24) == 0x24, "");
+static_assert(offsetof(GfSearchInfo, unknown28) == 0x28, "");
 static_assert(sizeof(GfSearchInfo) == 0x30, "");
 
 struct GfSearchParam {
-  GfSearchParam()
-      : unknown00(0), unknown04(0), unknown10(mm::Vec3::zero), unknown20(mm::Quat::identity), unknown30(0.0f), unknown34(0.0f), unknown38(0.0f), unknown3c(0.0f), unknown40(INVALID_HANDLE),
+  explicit GfSearchParam(u32 type = 0)
+      : unknown00(0), unknown04(type), unknown10(mm::Vec3::zero), unknown20(mm::Quat::identity), unknown30(0.0f), unknown34(0.0f), unknown38(0.0f), unknown3c(0.0f), unknown40(INVALID_HANDLE),
         unknown50(true), unknown58(0), unknown60(INVALID_HANDLE) {}
 
   u32 unknown00;                                       // Inferred role: search kind; original member name unknown.

@@ -33,7 +33,10 @@ namespace gf {
 
 struct GF_OBJ_HANDLE;
 struct MsgFxRimBloomEnd;
-struct MsgFxRimBloomTarget;
+struct MsgFxRimBloomTarget : fw::Message {
+  MsgFxRimBloomTarget() : fw::Message(0x1000054, 0x80) {}
+};
+
 struct MsgObjectNotifyDamage;
 struct MsgObjectNotifyDead;
 

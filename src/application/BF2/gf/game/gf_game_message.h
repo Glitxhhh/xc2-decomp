@@ -7,10 +7,14 @@
 namespace gf {
 
 enum {
+  MSG_GAME_CHANGE_TARGET = 0x100002b,
+  MSG_GAME_DEBUG_TARGET = 0x100002c,
   MSG_GAME_TALK_ACTION = 0x100002d,
   MSG_GAME_LIP_ACTION = 0x100002e,
   MSG_GAME_SET_LIP_WEIGHT = 0x100002f,
 };
+
+struct MsgGameDebugTarget : fw::Message {};
 
 struct MsgGameTalkAction : fw::Message {
   MsgGameTalkAction(u32 action, bool isDirect) : fw::Message(MSG_GAME_TALK_ACTION, 0x40), action(action), isDirect(isDirect), isSuccess(false) {}
