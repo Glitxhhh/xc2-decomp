@@ -4,7 +4,9 @@
 #include "gmk/gmk_acc.h"
 #include "gmk/gmk_gob_event_listener.h"
 #include "gmk/gmk_manager.h"
+#include "ml/attr_transform.h"
 #include "ml/scn.h"
+#include "ml/threadval.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
@@ -167,7 +169,7 @@ public:
     if (ml::Scn::sys() == nullptr || ml::Scn::sys()->getCam(-1) == nullptr) {
       return;
     }
-    const mm::Vec3 &cameraPosition = ml::Scn::sys()->getCam(-1)->renderInfo->position;
+    const mm::Vec3 &cameraPosition = ml::Scn::sys()->getCam(-1)->unknown70.m_front->unknown00.unknown10;
     for (T *gmk = gmkInsts.begin(); gmk != gmkInsts.end(); gmk++) {
       if (gmk->AGmkBase::unknown08.unknown08 == nullptr) {
         continue;
@@ -188,7 +190,7 @@ public:
     if (ml::Scn::sys() == nullptr || ml::Scn::sys()->getCam(-1) == nullptr) {
       return;
     }
-    const mm::Vec3 &cameraPosition = ml::Scn::sys()->getCam(-1)->renderInfo->position;
+    const mm::Vec3 &cameraPosition = ml::Scn::sys()->getCam(-1)->unknown70.m_front->unknown00.unknown10;
     for (const T *gmk = gmkInsts.begin(); gmk != gmkInsts.end(); gmk++) {
       if (gmk->AGmkBase::unknown08.unknown08 == nullptr) {
         continue;

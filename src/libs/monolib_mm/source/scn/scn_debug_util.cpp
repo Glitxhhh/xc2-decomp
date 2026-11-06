@@ -1,9 +1,11 @@
 #include "ml/scn_debug_util.h"
 
+#include "ml/attr_transform.h"
 #include "ml/cache_draw.h"
 #include "ml/scn.h"
 #include "ml/scn_cam_util.h"
 #include "ml/scn_util.h"
+#include "ml/threadval.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
@@ -33,7 +35,7 @@ bool ScnDebugUtil::renderGuide(DebDraw *debDraw, const ScnObjCam *cam, const mm:
 void ScnDebugUtil::renderCamera(DebDraw *debDraw, ScnObjCam *cam, const mm::Mat44 *matrix) {
   mm::Mat44 camMatrix;
   if (matrix == nullptr) {
-    camMatrix = cam->renderInfo->unknown70;
+    camMatrix = cam->unknown70.m_front->unknown00.unknown70;
     matrix = &camMatrix;
   }
   ScnUtil::setPerspective(cam->unknown08, debDraw, nullptr);

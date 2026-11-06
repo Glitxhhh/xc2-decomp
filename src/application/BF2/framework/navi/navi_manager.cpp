@@ -2,7 +2,9 @@
 
 #include "framework/framework.h"
 #include "framework/memory/framework_memory.h"
+#include "ml/attr_transform.h"
 #include "ml/scn.h"
+#include "ml/threadval.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 #include "navi/nvmsh_manager.h"
@@ -66,7 +68,7 @@ void NaviManager::update() {
     ml::ScnObjCam *camera = Framework::get()->unknown58->getCam(-1);
     if (camera != nullptr) {
       navi::NvmshManager *manager = unknown20;
-      const mm::Vec3 &position = camera->renderInfo->position;
+      const mm::Vec3 &position = camera->unknown70.m_front->unknown00.unknown10;
       manager->unknown20[manager->unknown64] = position;
     }
   }

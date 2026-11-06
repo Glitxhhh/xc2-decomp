@@ -93,8 +93,10 @@
 #include "gmk/gmk_tbox.h"
 #include "gmk/gmk_tutorial.h"
 #include "gmk/gmk_warp.h"
+#include "ml/attr_transform.h"
 #include "ml/scn.h"
 #include "ml/scn_cam_util.h"
+#include "ml/threadval.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec2.h"
@@ -832,7 +834,7 @@ const mm::Vec3 &getInterestPos() {
 
 const mm::Vec3 &getPlayerPos() { return gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition(); }
 
-const mm::Vec3 &getCameraPos() { return ml::Scn::sys()->getCam(-1)->renderInfo->position; }
+const mm::Vec3 &getCameraPos() { return ml::Scn::sys()->getCam(-1)->unknown70.m_front->unknown00.unknown10; }
 
 bool isPlayerInDoor() { return gf::GfGameManager::isRoom(); }
 

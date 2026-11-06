@@ -20,13 +20,13 @@ public:
   void update();
   void clear();
 
-  mm::Vec3 unknown00; // Inferred role: pos; original member name unknown.
-  mm::Vec3 _10;
+  mm::Vec3 unknown00;  // Inferred role: pos; original member name unknown.
+  mm::Vec3 unknown10;  // Inferred role: world position; original member name unknown.
   mm::Vec3 unknown20;  // Inferred role: scl; original member name unknown.
   mm::Mat44 unknown30; // Inferred role: matrix; original member name unknown.
   mm::Mat44 unknown70; // Inferred role: world matrix; original member name unknown.
-  mm::Mat44 _b0;
-  mm::Vec3 unknownf0; // Inferred role: rot; original member name unknown.
+  mm::Mat44 unknownb0; // Inferred role: inverse world matrix; original member name unknown.
+  mm::Vec3 unknownf0;  // Inferred role: rot; original member name unknown.
   mm::Vec3 _100;
   mm::Quat unknown110; // Inferred role: quat; original member name unknown.
   mm::Quat _120;

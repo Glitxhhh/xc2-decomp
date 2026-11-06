@@ -2,9 +2,11 @@
 
 #include <math.h>
 
+#include "ml/attr_transform.h"
 #include "ml/cam_util.h"
 #include "ml/dev_graph.h"
 #include "ml/scn.h"
+#include "ml/threadval.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_sphere.h"
@@ -19,8 +21,8 @@ bool ScnCamUtil::getScreenPos(mm::Vec3 &screen, const ScnObjCam *cam, bool isBac
   if (cam == nullptr) {
     return false;
   }
-  ScnObjCam::RENDER_INFO *const &info = isBack ? cam->unknown80 : cam->renderInfo;
-  const mm::Mat44 &view = info->unknownb0;
+  ScnObjCam::RENDER_INFO *const &info = isBack ? cam->unknown70.m_back : cam->unknown70.m_front;
+  const mm::Mat44 &view = info->unknown00.unknownb0;
   mm::Vec3 pos = position;
   f32 viewZ = pos.x * view.rows[0][2] + pos.y * view.rows[1][2] + pos.z * view.rows[2][2] + view.rows[3][2];
   if (fabsf(viewZ) < 0.000001f) {
@@ -49,8 +51,8 @@ void ScnCamUtil::getSphereScreenRadius(mm::Sphere &sphere, const ScnObjCam *cam,
   if (cam == nullptr) {
     return;
   }
-  const ScnObjCam::RENDER_INFO *info = cam->renderInfo;
-  const mm::Mat44 &view = info->unknownb0;
+  const ScnObjCam::RENDER_INFO *info = cam->unknown70.m_front;
+  const mm::Mat44 &view = info->unknown00.unknownb0;
   f32 vx = position.x * view.rows[0][0] + position.y * view.rows[1][0] + position.z * view.rows[2][0] + view.rows[3][0];
   f32 vy = position.x * view.rows[0][1] + position.y * view.rows[1][1] + position.z * view.rows[2][1] + view.rows[3][1];
   f32 vz = position.x * view.rows[0][2] + position.y * view.rows[1][2] + position.z * view.rows[2][2] + view.rows[3][2];
@@ -60,14 +62,14 @@ void ScnCamUtil::getSphereScreenRadius(mm::Sphere &sphere, const ScnObjCam *cam,
   viewLocal.x = vx;
   mm::Vec3 device;
   CamUtil::getViewLocalToDeviceCoord(device, info->unknown160, viewLocal);
-  info = cam->renderInfo;
+  info = cam->unknown70.m_front;
   f32 delta = radius / (static_cast<f32>(info->unknown1e0) * 0.5f);
   device.x = info->unknown1f0 * delta + device.x;
   device.y = device.y + 0.0f;
   device.z = device.z + 0.0f;
   CamUtil::getDeviceCoordToViewLocal(viewLocal, info->unknown160, device);
-  info = cam->renderInfo;
-  const mm::Mat44 &world = info->unknown70;
+  info = cam->unknown70.m_front;
+  const mm::Mat44 &world = info->unknown00.unknown70;
   f32 x = viewLocal.x * world.rows[0][0] + viewLocal.y * world.rows[1][0] + viewLocal.z * world.rows[2][0] + world.rows[3][0];
   f32 y = viewLocal.x * world.rows[0][1] + viewLocal.y * world.rows[1][1] + viewLocal.z * world.rows[2][1] + world.rows[3][1];
   f32 z = viewLocal.x * world.rows[0][2] + viewLocal.y * world.rows[1][2] + viewLocal.z * world.rows[2][2] + world.rows[3][2];
@@ -87,7 +89,7 @@ void ScnCamUtil::getPerspective(mm::Mat44 &matrix, const ScnObjCam *cam) {
   if (cam == nullptr) {
     return;
   }
-  const ScnObjCam::RENDER_INFO *info = cam->renderInfo;
+  const ScnObjCam::RENDER_INFO *info = cam->unknown70.m_front;
   f32 aspect = info->unknown1f0;
   f32 nearClip = info->unknown1f4;
   f32 farClip = info->unknown1f8;

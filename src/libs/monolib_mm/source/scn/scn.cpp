@@ -83,7 +83,7 @@ void Scn::callbackToListener(SCNCB type) {
         unknownb8[i].unknown00->cbRenderAfter(this, unknownb8[i].unknown08);
       }
       if (unknowne00[0].unknown00 == unknownb8[i].unknown08) {
-        DebDraw::flushPrio(-2, getCam(-1)->renderInfo->unknown1a0, getCam(-1)->renderInfo->unknown70);
+        DebDraw::flushPrio(-2, getCam(-1)->unknown70.m_front->unknown1a0, getCam(-1)->unknown70.m_front->unknown00.unknown70);
       }
       DevGraph::cmdCloseDisplayList();
       break;

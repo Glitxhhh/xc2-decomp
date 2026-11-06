@@ -1,6 +1,9 @@
 #pragma once
 #include <stddef.h>
 
+#include "ml/attr_transform.h"
+#include "ml/scn_obj.h"
+#include "ml/threadval.h"
 #include "ml/work_event.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_plane.h"
@@ -13,14 +16,16 @@
 #include "scn/scn_render_callback.h"
 #include "types.h"
 
+namespace mm {
+class Sphere;
+} // namespace mm
+
 namespace ml {
 
 class CriticalSection;
-class DebDraw;
 class FileResTh;
 class Scn;
 class ScnDebug;
-class ScnObj;
 class ScnObjModel;
 class ScnPoolObj;
 class ScnRenderDrSys;
@@ -36,16 +41,10 @@ enum SCNCB {
   SCNCB_UNKNOWN_4, // Inferred role: calls cbManipuPickMove; original name unknown.
 };
 
-class ScnObjCam {
+class ScnObjCam : public ScnObj {
 public:
   struct RENDER_INFO {
-    mm::Vec3 m_pos;
-    mm::Vec3 position;
-    u8 _20[0x70 - 0x20];
-    mm::Mat44 unknown70; // Inferred role: world matrix; original member name unknown.
-    mm::Mat44 unknownb0; // Inferred role: view matrix; original member name unknown.
-    mm::Vec3 unknownf0;  // Inferred role: rotation; original member name unknown.
-    u8 _100[0x140 - 0x100];
+    AttrTransform unknown00; // Inferred role: transform; original member name unknown.
     mm::Vec3 m_targetPos;
     f32 unknown150[4];    // Inferred role: frustum edges; original member name unknown.
     mm::Mat44 unknown160; // Inferred role: matrix converting view local to device coordinates; original member name unknown.
@@ -62,45 +61,62 @@ public:
     mm::Plane unknown2c0[6]; // Inferred role: global planes; original member name unknown.
   };
 
-  static void renderDebug(DebDraw *debDraw);
+  // Inferred type: object owned by the camera; the original type name is unknown.
+  class unknown001 {
+  public:
+    virtual ~unknown001() {}
+    virtual void unknown10() = 0; // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+    virtual void unknown18() = 0; // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+    virtual void unknown20() = 0; // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+    virtual void unknown28() = 0; // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+    virtual void unknown30() = 0; // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+    virtual void unknown38() = 0; // Inferred role: vtable slot not called by the matched code; original name and signature unknown.
+    virtual void unknown40() = 0; // Inferred role: called by update; original name unknown.
+  };
+
+  ScnObjCam(Scn *scn, const char *name);
+  ~ScnObjCam() override;
+  void update() override;
+  void renderDebug(DebDraw *debDraw) override;
+  void apply() override;
+  const char *getName() const override;
   static void setCopydataCam(bool isCopydata);
-  const char *getName() const;
   const mm::Plane *getPlaneLcl(u32 index, bool isBack) const;
   const mm::Plane *getPlaneGbl(u32 index, bool isBack) const;
   static ScnObjCam *create(Scn *scn, int screen);
+  static void infoInit(RENDER_INFO *info);
   void updateViewMatrix(bool isUpdate);
+  void setDefault();
+  void setInfo(int info);
+  void setLookAt(const mm::Vec3 &position, const mm::Vec3 &target, f32 roll);
   void setRot(const mm::Vec3 &rot);
   void updateFovNearFar();
   void setFovDefault();
   void setPos(const mm::Vec3 &pos);
   void setTargetPos(const mm::Vec3 &pos);
+  void calcFrameFit(const mm::Sphere &sphere);
   void addPosTarget(const mm::Vec3 &pos);
   void addTrack(const mm::Vec3 &pos);
   void addRotAtCam(const mm::Vec3 &rot);
   void setDist(const f32 &dist);
-  void apply();
 
-  u8 _00[0x08];
-  Scn *unknown08; // Inferred role: scn; original member name unknown.
-  u8 _10[0x18 - 0x10];
+  s32 m_info; // Inferred role: screen; original member name unknown.
   mm::mtl::FixStr<64> m_name;
-  u8 _5c[0x78 - 0x5c];
-  RENDER_INFO *renderInfo;
-  RENDER_INFO *unknown80; // Inferred role: back render info; original member name unknown.
+  bool unknown5c;                   // Inferred role: view matrix updated; original member name unknown.
+  unknown001 *unknown60;            // Inferred role: camera controller; original member name unknown.
+  threadval<RENDER_INFO> unknown70; // Inferred role: render info; original member name unknown.
 };
 
-static_assert(sizeof(ScnObjCam::RENDER_INFO) == 0x380, "");
-static_assert(offsetof(ScnObjCam, unknown08) == 0x08, "");
+static_assert(offsetof(ScnObjCam, m_info) == 0x14, "");
 static_assert(offsetof(ScnObjCam, m_name) == 0x18, "");
-static_assert(offsetof(ScnObjCam, renderInfo) == 0x78, "");
-static_assert(offsetof(ScnObjCam, unknown80) == 0x80, "");
-static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown70) == 0x70, "");
-static_assert(offsetof(ScnObjCam::RENDER_INFO, unknownb0) == 0xb0, "");
-static_assert(offsetof(ScnObjCam::RENDER_INFO, unknownf0) == 0xf0, "");
-static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1a0) == 0x1a0, "");
+static_assert(offsetof(ScnObjCam, unknown5c) == 0x5c, "");
+static_assert(offsetof(ScnObjCam, unknown60) == 0x60, "");
+static_assert(offsetof(ScnObjCam, unknown70) == 0x70, "");
+static_assert(sizeof(ScnObjCam::RENDER_INFO) == 0x380, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, m_targetPos) == 0x140, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown150) == 0x150, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown160) == 0x160, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1e4) == 0x1e4, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1e8) == 0x1e8, "");
