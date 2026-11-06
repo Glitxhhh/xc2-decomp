@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "ssd/ssd_array.h"
 #include "ssd/ssd_array_impl.h"    // IWYU pragma: keep
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
@@ -132,6 +134,18 @@ void SoundActor3D::SetVelocity(f32 x, f32 y, f32 z) {
   unknown50.y = y;
   unknown50.z = z;
   unknown6b = true;
+}
+
+void SoundActor3D::UpdateGameFrame(f32 deltaTime) {
+  if (unknown69) {
+    if (!unknown6b) {
+      Vec3 velocity(unknown5c.x - unknown44.x, unknown5c.y - unknown44.y, unknown5c.z - unknown44.z);
+      unknown50 = velocity;
+    }
+    memcpy(&unknown5c, &unknown44, sizeof(Vec3));
+    unknown6b = false;
+    unknown69 = false;
+  }
 }
 
 Result SoundActor3D::Quit() {

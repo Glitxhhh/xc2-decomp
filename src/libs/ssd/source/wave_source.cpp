@@ -57,4 +57,22 @@ u32 WaveSource::GetDataSize() const {
   return unknown24;
 }
 
+Result WaveSource::InitWithFile(const TextRef &name) {
+  unknown19 = true;
+  static_cast<TextRef &>(unknowna0).Set(name);
+  unknown70 = nullptr;
+  unknown78 = 0;
+  return static_cast<Result>(0);
+}
+
+u64 WaveSource::SampleToPosition(u32 sample) const {
+  u64 position = sample;
+  if (unknown34 == unknown001_3) {
+    return position * 16 / 28;
+  }
+  return unknown40 * position;
+}
+
+void WaveSource::SetName(const TextRef &text) { static_cast<TextRef &>(unknowna0).Set(text); }
+
 } // namespace ssd

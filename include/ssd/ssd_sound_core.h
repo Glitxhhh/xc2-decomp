@@ -11,14 +11,11 @@
 #include "ssd/ssd_debug.h"
 #include "ssd/ssd_mutex.h"
 #include "ssd/ssd_result.h"
+#include "ssd/ssd_sound.h"
 #include "ssd/ssd_text.h"
 #include "types.h"
 
 namespace ssd {
-class SoundBank;
-class SoundCategory;
-class SoundActor;
-class SoundHandle;
 class StreamController;
 class SoundListener;
 class VoiceHandle;
@@ -378,7 +375,9 @@ public:
   List<SoundBank> unknown418;      // Inferred role: sound banks; original member name unknown.
   List<SoundActor> unknown440;     // Inferred role: connected sound actors; original member name unknown.
   Array<SoundCategory> unknown468; // Inferred role: categories; original member name unknown.
-  u8 _480[0x4e0 - 0x480];
+  SoundGroup unknown480;           // Inferred role: default sound group; original member name unknown.
+  SoundActor *unknown4a0;          // Inferred role: default sound actor; original member name unknown.
+  u8 _4a8[0x4e0 - 0x4a8];
   f32 m_speedOfSound;
   bool unknown4e4; // Inferred role: doppler enabled; original member name unknown.
   u8 _4e5[0x4ea - 0x4e5];

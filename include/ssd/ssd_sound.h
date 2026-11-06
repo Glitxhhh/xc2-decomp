@@ -273,6 +273,7 @@ public:
   bool IsValidHandle() const;
   long Stop(f32 fadeTime);
   int GetState() const;
+  TextRef GetStateName() const;
   bool HasEnded() const;
   bool IsPlay() const;
   long Play(const SoundEntry *entry, SoundActor *actor, f32 volume, f32 fadeTime);
@@ -325,7 +326,7 @@ public:
   bool unknown59;              // Inferred role: cleared by the constructor; original member name unknown.
   bool unknown5a;              // Inferred role: cleared by the constructor; original member name unknown.
   u8 _5b[0x60 - 0x5b];
-  u64 unknown60;        // Inferred role: cleared by Init; original member name unknown.
+  f64 unknown60;        // Inferred role: time at the start; original member name unknown.
   f32 unknown68;        // Inferred role: pregap time; original member name unknown.
   unknown003 unknown6c; // Inferred role: pitch; original member name unknown.
   unknown003 unknown84; // Inferred role: volume; original member name unknown.

@@ -9,6 +9,7 @@
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
+#include "ssd/ssd_sound_param.h"
 #include "ssd/ssd_stream_buffer.h"
 #include "ssd/ssd_stream_controller.h"
 #include "ssd/ssd_text.h"
@@ -146,6 +147,78 @@ long SoundHandle::PlayCommand(const SoundEntry *entry, SoundActor *actor, f32 vo
   return 0;
 }
 
+long SoundHandle::Play(const SoundEntry *entry, SoundActor *actor, f32 volume, f32 fadeTime) {
+  if (!unknown58) {
+    Init();
+  } else if (unknown30 != nullptr) {
+    return -33;
+  }
+  SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
+  if (core == nullptr) {
+    return -12;
+  }
+  VoiceHandle *voice = core->GetVoiceHandle(unknownf8);
+  if (voice != nullptr) {
+    voice->Stop(0.0f);
+  }
+  long result = Prepare(entry);
+  if (result >= 0) {
+    result = Start(actor, volume, fadeTime);
+  }
+  return set_result(static_cast<Result>(result));
+}
+
+long SoundHandle::Prepare(const SoundEntry *entry) {
+  if (!unknown58) {
+    Init();
+  } else if (unknown30 != nullptr) {
+    return -33;
+  }
+  if (SoundCore::instance_ == nullptr) {
+    return -12;
+  }
+  VoiceHandle *voice;
+  static_cast<SystemCore *>(SoundCore::instance_)->AllocVoiceHandle(0, &voice);
+  if (voice == nullptr) {
+    return -50;
+  }
+  unknown30 = entry;
+  long result = voice->Prepare(entry, this, &unknownf8);
+  if (result < 0) {
+    static_cast<SystemCore *>(SoundCore::instance_)->FreeVoiceHandle(voice);
+  }
+  return set_result(static_cast<Result>(result));
+}
+
+long SoundHandle::Start(SoundActor *actor, f32 volume, f32 fadeTime) {
+  SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
+  if (core == nullptr) {
+    return -12;
+  }
+  if (unknown30 == nullptr) {
+    return -20;
+  }
+  VoiceHandle *voice = core->GetVoiceHandle(unknownf8);
+  if (voice == nullptr) {
+    return -29;
+  }
+  if (actor == nullptr) {
+    actor = core->unknown4a0;
+  }
+  unknown38 = actor;
+  SoundGroup *group = unknown30->GetSoundGroup();
+  if (group == nullptr) {
+    group = &core->unknown480;
+  }
+  unknown40 = group->unknown18;
+  unknown48.unknown08 = core->GetCategory(unknown30->unknown30.unknown4c.unknown02)->unknown08;
+  unknown6c.Reset(1.0f);
+  unknown9c.Reset(0.0f);
+  unknown84.Reset(volume);
+  unknown60 = SystemCorePlatform::GetSystemTime();
+  return set_result(voice->Start(fadeTime, unknown68 != 0.0f));
+}
+
 long SoundHandle::Pause(bool isPause, f32 fadeTime) {
   if (!unknown58 || unknown30 == nullptr) {
     return -5;
@@ -183,6 +256,21 @@ int SoundHandle::GetState() const {
     return 0;
   }
   return voice->unknown44;
+}
+
+TextRef SoundHandle::GetStateName() const {
+  static const char16_t *const names[] = {
+      u"FAILURE", u"NONE", u"RELEASED", u"WAITING", u"CLOSING", u"STOPPED", u"INIT", u"PREPARING", u"PREPARED", u"READY", u"STOPPING", u"PAUSED", u"PAUSING", u"RESUMING", u"PLAYING", u"MAX"};
+  SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
+  if (core == nullptr) {
+    return TextRef(TextRef::EmptyText);
+  }
+  VoiceHandle *voice = core->GetVoiceHandle(unknownf8);
+  int index = 0;
+  if (voice != nullptr) {
+    index = voice->unknown44 + 1;
+  }
+  return TextRef(names[index]);
 }
 
 bool SoundHandle::HasEnded() const {

@@ -33,6 +33,8 @@ public:
   const unknown002 *GetAdpcmHeader(int index) const;
   u8 *GetDataAddress(int index) const;
   u32 GetDataSize() const;
+  Result InitWithFile(const TextRef &name);
+  void SetName(const TextRef &text);
   u64 TimeToSample(f32 time) const;
   u64 SampleToPosition(u32 sample) const;
 

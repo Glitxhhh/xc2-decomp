@@ -46,6 +46,7 @@ public:
   void DeleteHWVoice();
   Result AllocHWVoice();
   Result Start(f32 fadeTime, bool pregap);
+  Result Prepare(const SoundEntry *entry, SoundHandle *handle, u32 *id);
   Result SetPlayPosition(u64 position);
   Result Stop(f32 fadeTime);
   Result Pause(bool isPause, f32 fadeTime);
