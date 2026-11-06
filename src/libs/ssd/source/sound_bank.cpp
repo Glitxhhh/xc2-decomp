@@ -1,7 +1,10 @@
+#include <new>
+
 #include "ssd/ssd_allocator.h"
 #include "ssd/ssd_array.h"
 #include "ssd/ssd_behavior.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
+#include "ssd/ssd_hash.h"
 #include "ssd/ssd_mutex.h"
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
@@ -35,6 +38,41 @@ Result SoundBank::Init(int number, const TextRef &name) {
   unknown38.Set(name);
   core->AddBank(this);
   return set_result(static_cast<Result>(0));
+}
+
+SoundEntry *SoundBank::AddWave(WaveSource *wave, const SoundParam &param) {
+  SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
+  if (core == nullptr || m_number < 0) {
+    return nullptr;
+  }
+  Allocator::Block *block = SoundMemory::allocator_->NewInstanceImpl(sizeof(SoundEntry), 1, 16);
+  SoundEntry *entry;
+  if (block != nullptr) {
+    entry = new (block->unknown08) SoundEntry();
+  } else {
+    entry = nullptr;
+  }
+  entry->unknownd8 = true;
+  entry->unknownc8 = wave;
+  entry->unknown30 = param;
+  entry->unknownd0 = this;
+  core->unknown708.Lock();
+  unknowne0.PushBack(entry);
+  core->unknown708.Unlock();
+  return entry;
+}
+
+SoundEntry *SoundBank::GetSoundEntryFromName(const TextRef &name) const {
+  for (SoundEntry *it = unknowne0.unknown002(); it != unknowne0.unknown003(); it = List<SoundEntry>::unknown004(it)) {
+    if (it->unknown30.unknown00.unknown40 == Hash()) {
+      if (it->unknownc8->unknowna0.unknown08 == name.unknown08) {
+        return it;
+      }
+    } else if (it->unknown30.unknown00 == name) {
+      return it;
+    }
+  }
+  return nullptr;
 }
 
 int SoundBank::NumSoundEntry() const { return unknowne0.count; }

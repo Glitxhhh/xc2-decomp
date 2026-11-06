@@ -1,6 +1,8 @@
 #include "nn/audio.h"
 #include "ssd/ssd_allocator.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
+#include "ssd/ssd_debug.h"
+#include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
 #include "ssd/ssd_stream_controller.h"
 #include "ssd/ssd_voice_handle.h"
@@ -34,6 +36,63 @@ void VoiceHandle::UpdateAudioInternal(f32 deltaTime) {
     unknown30 = false;
     unknown44 = 3;
     ReleaseBuffer();
+  }
+}
+
+void VoiceHandle::UpdateAudioVoice(f32 deltaTime) {
+  if (unknown44 == 9 || unknown44 == 11 || unknown44 == 13) {
+    if (!nn::audio::IsVoiceValid(&unknown90[0].unknown00)) {
+      unknown33 = false;
+      unknown34 = false;
+      unknown44 = 4;
+      unknown3e = false;
+      unknown88 = 0;
+      return;
+    }
+    SSD_ASSERT(unknown78 != nullptr, u"Assert : \"%s\" = nullptr, %s:%d", u"bufferProcess_", u"D:/ssd/ssd51/ssd/sources/voice_handle_proc.cpp", 0x1ba);
+    (this->*unknown78)();
+    u64 playedSample = nn::audio::GetVoicePlayedSampleCount(&unknown90[0].unknown00);
+    if (unknown68->unknown34 == WaveSource::unknown001_3) {
+      unknown680 = playedSample * 8 / 14;
+    } else {
+      unknown680 = unknown68->unknown40 * playedSample;
+    }
+    int waveBufferCount = nn::audio::GetWaveBufferCount(&unknown90[0].unknown00);
+    unknown3e = waveBufferCount != 0;
+    if (!unknown3d || (waveBufferCount != 0 && !unknown37)) {
+      if (unknown58 != nullptr) {
+        unknown58->UpdateAudioFrame(deltaTime);
+        UpdateOutputParam(deltaTime);
+      }
+    } else {
+      unknown33 = false;
+      unknown34 = false;
+      unknown44 = 4;
+      unknown3e = false;
+      unknown88 = 0;
+    }
+  }
+  if (unknown34 && unknown6d0.unknown00 == 0.0f) {
+    unknown33 = true;
+    unknown34 = false;
+    if (unknown32) {
+      for (int i = 0; i < unknown4c; i++) {
+        nn::audio::SetVoicePlayState(&unknown90[i].unknown00, nn::audio::VoiceType::PlayState_Pause);
+      }
+      unknown44 = 10;
+    }
+  }
+  if (unknown35) {
+    unknown35 = false;
+    unknown33 = false;
+    for (int i = 0; i < unknown4c; i++) {
+      nn::audio::SetVoicePlayState(&unknown90[i].unknown00, nn::audio::VoiceType::PlayState_Start);
+    }
+  }
+  if (unknown36 && (unknown6d0.unknown00 == 0.0f || !nn::audio::IsVoiceValid(&unknown90[0].unknown00))) {
+    unknown36 = false;
+    DisableBuffer();
+    unknown44 = 9;
   }
 }
 

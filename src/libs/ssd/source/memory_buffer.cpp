@@ -41,6 +41,52 @@ template <typename T> inline void unknown001(const void *source, void *destinati
   }
 }
 
+// Inferred role: clear size bytes in units of T, then the bytes left over; original name unknown. ClearMemory8 shares this body:
+// it only matches as this body optimized on its own, then inlined.
+template <typename T> inline void unknown002(void *buffer, unsigned long size) {
+  T *dst = static_cast<T *>(buffer);
+  // Unrolled by hand in the original (the game clears four units per iteration, then the bytes left over).
+  while (size >= sizeof(T) * 4) {
+    dst[0] = 0;
+    dst[1] = 0;
+    dst[2] = 0;
+    dst[3] = 0;
+    size -= sizeof(T) * 4;
+    dst += 4;
+  }
+  u8 *dstByte = reinterpret_cast<u8 *>(dst);
+  while (size > 0) {
+    *dstByte = 0;
+    size--;
+    dstByte++;
+  }
+}
+
+// Inferred role: fill size bytes in units of T with a repeated byte, then the bytes left over; original name unknown.
+// FillMemory8 shares this body: it only matches as this body optimized on its own, then inlined.
+template <typename T> inline void unknown003(void *buffer, unsigned long size, unsigned char value) {
+  T *dst = static_cast<T *>(buffer);
+  T pattern = static_cast<T>(value) * (static_cast<T>(~static_cast<T>(0)) / 0xff);
+  while (size >= sizeof(T) * 4) {
+    dst[0] = pattern;
+    dst[1] = pattern;
+    dst[2] = pattern;
+    dst[3] = pattern;
+    size -= sizeof(T) * 4;
+    dst += 4;
+  }
+  u8 *dstByte = reinterpret_cast<u8 *>(dst);
+  while (size > 0) {
+    *dstByte = static_cast<u8>(pattern);
+    size--;
+    dstByte++;
+  }
+}
+
+void FillMemory8(void *buffer, unsigned long size, unsigned char value) { unknown003<u8>(buffer, size, value); }
+
+void ClearMemory8(void *buffer, unsigned long size) { unknown002<u8>(buffer, size); }
+
 void CopyMemory8(const void *source, void *destination, unsigned long size) { unknown001<u8>(source, destination, size); }
 
 void CopyMemory16(const void *source, void *destination, unsigned long size) { unknown001<u16>(source, destination, size); }

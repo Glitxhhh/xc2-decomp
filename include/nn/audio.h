@@ -119,6 +119,9 @@ bool IsVoiceValid(const VoiceType *voice);
 void ReleaseVoiceSlot(AudioRendererConfig *config, VoiceType *voice);
 void SetVoicePlayState(VoiceType *voice, VoiceType::PlayState state);
 WaveBuffer *GetReleasedWaveBuffer(VoiceType *voice);
+u64 GetVoicePlayedSampleCount(const VoiceType *voice);
+// GetWaveBufferCount is an import of the game but is not in nnheaders: the return type is the one its caller uses.
+int GetWaveBufferCount(const VoiceType *voice);
 
 bool AcquireFinalMix(AudioRendererConfig *config, FinalMixType *mix, int bufferCount);
 

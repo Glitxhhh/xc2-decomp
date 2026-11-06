@@ -363,7 +363,10 @@ public:
     f64 unknown298; // Inferred role: audio frame time; original member name unknown.
     f64 unknown2a0; // Inferred role: audio frame delta time; original member name unknown.
     f64 unknown2a8; // Inferred role: last audio frame time; original member name unknown.
-    u8 _2b0[0x2c8 - 0x2b0];
+    f64 unknown2b0; // Inferred role: last game frame time; original member name unknown.
+    f64 unknown2b8; // Inferred role: game frame delta time; original member name unknown.
+    f32 unknown2c0; // Inferred role: game frame delta time passed to UpdateGameFrame; original member name unknown.
+    u8 _2c4[0x2c8 - 0x2c4];
   };
   CommandManager unknown2c8; // Inferred role: commands queued by the game thread; original member name unknown.
   OutputMode::Type m_outputMode;
@@ -371,7 +374,7 @@ public:
   BehaviorInstance<SystemCore> unknown308; // Inferred role: master volume; original member name unknown.
   BehaviorInstance<SystemCore> unknown350; // Inferred role: master pitch; original member name unknown.
   struct {
-    u8 _398[0x39c - 0x398];
+    int unknown398;               // Inferred role: voice count; original member name unknown.
     int unknown39c;               // Inferred role: voice handle id counter; original member name unknown.
     List<VoiceHandle> unknown3a0; // Inferred role: playing voice handles; original member name unknown.
     List<VoiceHandle> unknown3c8; // Inferred role: free voice handles; original member name unknown.

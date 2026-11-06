@@ -19,6 +19,7 @@ static_assert(offsetof(BufferBase, unknown10) == 0x10, "");
 
 void ClearMemory8(void *buffer, unsigned long size);
 void ClearMemory16(void *buffer, unsigned long size);
+void FillMemory8(void *buffer, unsigned long size, unsigned char value);
 void CopyMemory8(const void *source, void *destination, unsigned long size);
 void CopyMemory16(const void *source, void *destination, unsigned long size);
 void CopyMemory32(const void *source, void *destination, unsigned long size);

@@ -1,11 +1,15 @@
 #include "nn/os.h"
+#include "ssd/ssd_allocator.h"
 #include "ssd/ssd_array.h"
 #include "ssd/ssd_behavior.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
+#include "ssd/ssd_command_manager.h"
+#include "ssd/ssd_file_stream.h"
 #include "ssd/ssd_mutex.h"
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
+#include "ssd/ssd_sound_listener.h"
 #include "ssd/ssd_stream_controller.h"
 #include "ssd/ssd_thread.h"
 #include "ssd/ssd_voice_handle.h"
@@ -78,6 +82,58 @@ void SystemCore::AddBank(SoundBank *bank) {
   unknown418.PushBack(bank);
   set_result(static_cast<Result>(0));
   unknown708.Unlock();
+}
+
+Result SystemCore::Quit() {
+  if (unknown3a0.count == 0) {
+    StopSound(0.0f);
+    if (unknown418.count == 0) {
+      if (unknown4a0 != nullptr) {
+        unknown4a0->Quit();
+        SoundMemory::unknown001(unknown4a0);
+        unknown4a0 = nullptr;
+      }
+      unknown4e8.CloseThread();
+      unknown730.CloseThread();
+      VoiceHandle::FreeAdpcmSplitBuffer();
+      while (VoiceHandle *it = unknown3a0.unknown005()) {
+        it->ForceStop();
+        it->FreeVoice();
+        if (it->unknown70 != nullptr) {
+          it->DeleteStream();
+        }
+      }
+      for (int i = 0; i < unknown398; i++) {
+        unknown3f0[i].Quit();
+      }
+      unknown9e0.unknown001();
+      unknown9b8.unknown002();
+      for (VoiceHandle *it = unknown3a0.unknown002(); it != unknown3a0.unknown003();) {
+        VoiceHandle *next = List<VoiceHandle>::unknown004(it);
+        unknown3a0.unknown001(it);
+        it = next;
+      }
+      for (VoiceHandle *it = unknown3c8.unknown002(); it != unknown3c8.unknown003();) {
+        VoiceHandle *next = List<VoiceHandle>::unknown004(it);
+        unknown3c8.unknown001(it);
+        it = next;
+      }
+      SoundMemory::unknown001(unknown400);
+      SoundMemory::unknown001(unknown408);
+      SoundMemory::unknown001(unknown3f0);
+      unknown3f0 = nullptr;
+      unknown400 = nullptr;
+      unknown408 = nullptr;
+      unknown468.unknown001();
+      QuitAudioDevice();
+      unknown2c8.Quit();
+      FileStream::Finalize();
+      unknown708.unknown002();
+      return set_result(static_cast<Result>(0));
+    }
+    return static_cast<Result>(-121);
+  }
+  return static_cast<Result>(-120);
 }
 
 void SystemCore::StopSound(f32 fadeTime) {
@@ -453,6 +509,53 @@ Result SystemCore::RemoveSoundEffecter(SoundEffecter *effecter) {
 }
 
 const void *SystemCore::GetDebugInfo() const { return &debugInfo_; }
+
+void SystemCore::UpdateGameFrame(f32 deltaTime) {
+  unknown2c0 = deltaTime;
+  f64 time = GetSystemTime();
+  f64 lastTime = unknown2b0;
+  unknown2b8 = time - lastTime;
+  unknown2b0 = time;
+  f32 frameTime = unknown2b8;
+  f64 startTime = GetSystemTime();
+  unknown708.Lock();
+  unknown2c8.SwitchBuffer();
+  unknown2c8.ExecuteCommands();
+  SoundListener **listenerEnd = unknown4b0.unknown10 + unknown4b0.unknown08;
+  for (SoundListener **listener = unknown4b0.unknown10; listener != listenerEnd; listener++) {
+    (*listener)->UpdateGameFrame(frameTime);
+  }
+  for (SoundActor *actor = unknown440.unknown002(); actor != unknown440.unknown003(); actor = List<SoundActor>::unknown004(actor)) {
+    actor->UpdateGameFrame(frameTime);
+  }
+  int freeCount = 0;
+  for (VoiceHandle *voice = unknown3a0.unknown002(); voice != unknown3a0.unknown003(); voice = List<VoiceHandle>::unknown004(voice)) {
+    voice->UpdateGameFrame(frameTime);
+    if (!voice->unknown30) {
+      unknown408[freeCount] = voice;
+      freeCount++;
+    }
+  }
+  for (int i = 0; i < freeCount; i++) {
+    unknown408[i]->FreeVoice();
+  }
+  unknown3f8 = 0;
+  for (VoiceHandle *voice = unknown3a0.unknown002(); voice != unknown3a0.unknown003(); voice = List<VoiceHandle>::unknown004(voice)) {
+    unknown400[unknown3f8] = voice;
+    unknown3f8++;
+  }
+  unknown270++;
+  unknowna20 = 1 - unknowna20;
+  unknown9f8[unknowna20].unknown08 = 0;
+  unknown9f8[unknowna20].unknown00 = 0;
+  f32 processTime = (GetSystemTime() - startTime) * 1000.0;
+  debugInfo_.unknown08 = processTime;
+  if (debugInfo_.unknown0c < processTime) {
+    debugInfo_.unknown0c = processTime;
+  }
+  unknown708.Unlock();
+  set_result(static_cast<Result>(0));
+}
 
 void SystemCore::AudioThreadImpl() {
   f64 time = GetSystemTime();

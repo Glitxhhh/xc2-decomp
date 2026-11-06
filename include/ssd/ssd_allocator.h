@@ -64,6 +64,9 @@ static_assert(sizeof(Allocator::Block) == 0x28, "");
 
 class SoundMemory {
 public:
+  // Inferred role: destroy the elements of an instance array with the sound allocator; original name unknown.
+  template <typename T> static void unknown001(T *instance) { allocator_->unknown001(instance); }
+
   static Allocator *allocator_;
 };
 

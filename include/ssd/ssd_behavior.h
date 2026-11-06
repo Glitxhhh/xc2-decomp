@@ -45,6 +45,14 @@ public:
 
   static T *unknown004(T *element) { return static_cast<T *>(element->next); } // Inferred role: next element; original name unknown.
 
+  // Inferred role: first element, null when the list is empty; original name unknown.
+  T *unknown005() const {
+    if (head.next != &head && head.next != nullptr) {
+      return static_cast<T *>(head.next);
+    }
+    return nullptr;
+  }
+
   Node head;
   s32 count;
 };

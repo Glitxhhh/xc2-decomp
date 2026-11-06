@@ -162,10 +162,12 @@ public:
   const SoundEntry *end() const;
   bool empty() const;
   SoundEntry *AddSoundEntry(SoundEntry *entry);
+  SoundEntry *AddWave(WaveSource *wave, const SoundParam &param);
   Result RemoveSoundEntry(int number);
   Result RemoveSoundEntry(SoundEntry *entry);
   SoundEntry *GetSoundEntryFromNumber(int number) const;
   SoundEntry *GetSoundEntryFromIndex(int index) const;
+  SoundEntry *GetSoundEntryFromName(const TextRef &name) const;
   Result AddSoundGroup(SoundGroup *group);
   int GetReferenceCounter() const;
   int NumSoundEntry() const;
