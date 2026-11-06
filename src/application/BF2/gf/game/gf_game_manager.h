@@ -24,6 +24,7 @@ struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
 enum {
+  OWNER_BONUS_UNKNOWN_1 = 1, // Inferred role: movement speed bonus in percent, read by gf::pc::MoveUtilField::getSpeedEffect; original name unknown.
   OWNER_BONUS_FAVORITE_VALUE_MAX = 3,
   OWNER_BONUS_IDEA_POINT = 4,
   OWNER_BONUS_DEVELOP_POINT = 5,

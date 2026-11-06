@@ -20,6 +20,8 @@ public:
   };
 
   struct Packet {
+    Packet() : unknown08() {}
+
     f32 unknown00;              // Inferred role: vertical speed; original member name unknown.
     fw::ParamAdapter unknown08; // Inferred role: fall param; original member name unknown.
   };

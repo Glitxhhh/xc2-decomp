@@ -21,6 +21,8 @@ public:
   };
 
   struct Packet {
+    Packet() : unknown08() {}
+
     f32 unknown00;              // Inferred role: angular velocity; original member name unknown.
     fw::ParamAdapter unknown08; // Inferred role: turn param; original member name unknown.
     mm::Vec3 unknown10;         // Inferred role: target direction; original member name unknown.

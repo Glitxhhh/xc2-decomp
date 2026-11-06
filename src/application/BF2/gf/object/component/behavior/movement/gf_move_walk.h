@@ -7,6 +7,7 @@
 
 namespace fw {
 class Reflection;
+struct UpdateInfo;
 } // namespace fw
 
 namespace gf {
@@ -21,6 +22,8 @@ public:
   };
 
   struct Packet {
+    Packet() : unknown00(mm::Vec3::zero), unknown10(0.0f), unknown18(), unknown20(mm::Vec3::zero), unknown30(mm::Vec3::zero), unknown40(1.0f) {}
+
     mm::Vec3 unknown00;         // Inferred role: velocity; original member name unknown.
     f32 unknown10;              // Inferred role: angular velocity; original member name unknown.
     fw::ParamAdapter unknown18; // Inferred role: walk param; original member name unknown.
@@ -31,6 +34,7 @@ public:
 
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
   void enter(Packet &packet);
+  void update(const fw::UpdateInfo &info, Packet &packet);
 };
 
 static_assert(offsetof(GfMoveWalkControler::Param, angularVelMax) == 0x08, "");

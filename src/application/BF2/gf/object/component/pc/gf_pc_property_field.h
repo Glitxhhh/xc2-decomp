@@ -149,6 +149,18 @@ public:
   const WaterCommonParam *unknown002() const { return static_cast<const WaterCommonParam *>(unknown08->unknown10[9].param); }
   // Inferred role: climb wall info when it is valid; original name unknown.
   const EnviromentSensor::unknown003 *unknown003() const { return unknown10_6 ? &unknown130 : nullptr; }
+  // Inferred role: adapter of the field param list entry at the index, null when the list is shorter; original name unknown.
+  fw::ParamAdapter unknown004(u32 index) const {
+    const fw::ParamList *paramList = unknown08.operator->();
+    fw::ParamAdapter adapter;
+    adapter.unknown00 = index < paramList->unknown0c ? &paramList->unknown10[index] : nullptr;
+    return adapter;
+  }
+  // Inferred role: water param of the param list entry 9 ("water_common"), null when the list is shorter; original name unknown.
+  const WaterCommonParam *unknown005() const {
+    const fw::ParamList *paramList = unknown08.operator->();
+    return paramList->unknown0c > 9 ? static_cast<const WaterCommonParam *>(paramList->unknown10[9].param) : nullptr;
+  }
 
   mm::mtl::IntrusivePtr<fw::ParamList> unknown08; // Inferred role: param list; original member name unknown.
   u32 unknown10_0 : 1;                            // Inferred role: walk mode; original member name unknown.

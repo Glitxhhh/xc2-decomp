@@ -7,6 +7,7 @@
 
 namespace fw {
 class Reflection;
+struct UpdateInfo;
 } // namespace fw
 
 namespace gf {
@@ -22,6 +23,8 @@ public:
   };
 
   struct Packet {
+    Packet() : unknown18() {}
+
     mm::Vec3 unknown00;         // Inferred role: velocity; original member name unknown.
     f32 unknown10;              // Inferred role: angular velocity; original member name unknown.
     fw::ParamAdapter unknown18; // Inferred role: jump param; original member name unknown.
@@ -32,6 +35,7 @@ public:
 
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
   void calcVelocity(f32 deltaTime, Packet &packet);
+  void update(const fw::UpdateInfo &info, Packet &packet);
 };
 
 static_assert(offsetof(GfMoveJumpControler::Param, accel) == 0x04, "");

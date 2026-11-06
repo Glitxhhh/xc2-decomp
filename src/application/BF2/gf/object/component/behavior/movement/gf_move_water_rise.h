@@ -22,6 +22,8 @@ public:
   };
 
   struct Packet {
+    Packet() : unknown08(), unknown10(false) {}
+
     f32 unknown00;              // Inferred role: vertical speed; original member name unknown.
     fw::ParamAdapter unknown08; // Inferred role: water rise param; original member name unknown.
     bool unknown10;             // Inferred role: braking (within the rise brake height); original member name unknown.

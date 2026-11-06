@@ -21,6 +21,8 @@ public:
   };
 
   struct Packet {
+    Packet() : unknown10() {}
+
     mm::Vec3 unknown00;         // Inferred role: velocity; original member name unknown.
     fw::ParamAdapter unknown10; // Inferred role: jump back param; original member name unknown.
     f32 unknown18;              // Inferred role: velocity ratio; original member name unknown.
