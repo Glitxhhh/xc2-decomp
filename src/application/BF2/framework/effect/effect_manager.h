@@ -32,6 +32,7 @@ class IAllocator;
 
 namespace ml {
 class DrMdlObj;
+struct VolumeFadeParams;
 class IDrDrawWorkInfo;
 class Scn;
 } // namespace ml
@@ -138,6 +139,7 @@ public:
   void sendCasterStateName(EffectCasterBase *caster, const char *name);
   EffectCasterSend *getCasterCB(EffectCasterBase *caster);
   void addForce(const AddForceParam *param);
+  bool getVolumeFadeParam(u32 index, ml::VolumeFadeParams &params);
   void setIBLSaturation(f32 saturation);
   void setDirScale(f32 scale);
   void setSpecScale(f32 scale);

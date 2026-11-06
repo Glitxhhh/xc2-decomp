@@ -2,10 +2,13 @@
 
 #include "event/alpha_manager.h"
 #include "event/alpha_obj.h"
+#include "gf/game/gf_game_util.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/singleton.h"
 
 namespace event {
@@ -53,6 +56,23 @@ void OutsiderManager::update() {
     unknown20.update();
     if (unknown20.getRadius() > 0.0f) {
       update(true);
+    }
+  }
+}
+
+void OutsiderManager::updateSub(bool isHide, gmk::GmkType type) {
+  mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 1024> handles;
+  handles.clear();
+  if (gf::GfGameUtil::collectGfObjHandleByGmkType(handles, type)) {
+    for (mm::mtl::FixedList<gf::GF_OBJ_HANDLE *, 1024>::iterator it = handles.begin(); it != handles.end(); ++it) {
+      gf::GF_OBJ_HANDLE *handle = *it;
+      gf::GfObj *obj = gf::GfObjUtil::getObj(handle);
+      if (obj != nullptr && obj->getComponent<gf::GfComTransform>() != nullptr) {
+        gf::GfObjSetup *setup = gf::GfObjUtil::getObjSetup(handle);
+        if (setup == nullptr || !setup->isEvent()) {
+          updateSub(isHide, *it);
+        }
+      }
     }
   }
 }

@@ -3,6 +3,7 @@
 
 #include "gf/data/gf_data_map.h"
 #include "gmk/gmk_manager.h"
+#include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -85,6 +86,7 @@ public:
   static void setDispByGmkType(gmk::GmkType type, bool isDisp);
   static void setDispByGmkTypeAndBdatId(gmk::GmkType type, int bdatId, bool isDisp);
   static void setDispByGmkTypeAndGmkIdx(gmk::GmkType type, u32 index, bool isDisp);
+  static bool collectGfObjHandleByGmkType(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &handles, gmk::GmkType type);
   static int getAntiBladeAreaBdatId();
   static bool getGmkTargetPointPos(mm::Vec3 &position, u32 gimmick);
   static bool getGmkTargetPointPos(mm::Vec3 &position, GF_OBJ_HANDLE *handle);

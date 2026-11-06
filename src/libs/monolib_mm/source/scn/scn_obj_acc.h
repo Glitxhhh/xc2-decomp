@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "mm_math/mm_col3.h"
+#include "mm_math/mm_vec3.h"
 #include "types.h"
 
 namespace grlib {
@@ -11,7 +12,6 @@ class CGLibTextureBuffer;
 namespace mm {
 struct Col4;
 struct Mat44;
-struct Vec3;
 } // namespace mm
 
 namespace ml {
@@ -35,7 +35,22 @@ class DrResMdoMat;
 struct unknown024;
 struct unknown020;
 struct MdsMatInfoHeader;
-struct VolumeFadeParams;
+
+// Layout evidence: ScnObjAccVolumeFade::setParams (0x7107b42cc) copies 0x3c bytes then the members at 0x40, 0x50 and 0x9c to 0xa4.
+struct VolumeFadeParams {
+  u8 _00[0x40 - 0x00];
+  mm::Vec3 unknown40; // Inferred role: position; original member name unknown.
+  mm::Vec3 unknown50; // Inferred role: scale; original member name unknown.
+  u8 _60[0x9c - 0x60];
+  f32 unknown9c; // Inferred role: frame; original member name unknown.
+  f32 unknowna0; // Inferred role: rate; original member name unknown.
+  f32 unknowna4; // Role and original member name unknown.
+};
+
+static_assert(offsetof(VolumeFadeParams, unknown40) == 0x40, "");
+static_assert(offsetof(VolumeFadeParams, unknown50) == 0x50, "");
+static_assert(offsetof(VolumeFadeParams, unknown9c) == 0x9c, "");
+static_assert(offsetof(VolumeFadeParams, unknowna4) == 0xa4, "");
 
 struct DrMdlAfterImageParams {
   f32 unknown00;      // Inferred role: count; original member name unknown.
