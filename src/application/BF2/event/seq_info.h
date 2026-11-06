@@ -30,7 +30,7 @@ public:
   bool unknown70;                // Inferred role: clock stop; original member name unknown.
   u32 unknown74;                 // Inferred role: cloud; original member name unknown.
   bool unknown78;                // Inferred role: op fade out enable; original member name unknown.
-  u32 unknown7c;                 // Inferred role: op fade out; original member name unknown.
+  int unknown7c;                 // Inferred role: op fade out; original member name unknown.
   u32 unknown80;                 // Inferred role: op fade wait; original member name unknown.
   bool unknown84;                // Inferred role: op fade in enable; original member name unknown.
   u32 unknown88;                 // Inferred role: op fade in; original member name unknown.
@@ -38,7 +38,7 @@ public:
   u32 unknown90;                 // Inferred role: op fade col g; original member name unknown.
   u32 unknown94;                 // Inferred role: op fade col b; original member name unknown.
   bool unknown98;                // Inferred role: ed fade out enable; original member name unknown.
-  u32 unknown9c;                 // Inferred role: ed fade out; original member name unknown.
+  int unknown9c;                 // Inferred role: ed fade out; original member name unknown.
   u32 unknowna0;                 // Inferred role: ed fade wait; original member name unknown.
   bool unknowna4;                // Inferred role: ed fade in enable; original member name unknown.
   u32 unknowna8;                 // Inferred role: ed fade in; original member name unknown.

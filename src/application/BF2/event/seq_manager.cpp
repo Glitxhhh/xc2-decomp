@@ -3,17 +3,26 @@
 #include "event/cmd_param.h"
 #include "event/cmd_variable.h"
 #include "event/debug_manager.h"
+#include "event/effect_manager.h"
 #include "event/env_manager.h"
+#include "event/fade_ctrl.h"
 #include "event/fade_manager.h"
+#include "event/fade_planner.h"
 #include "event/frame_manager.h"
+#include "event/lipsync_manager.h"
 #include "event/manager.h"
 #include "event/memory_manager.h"
 #include "event/motstm_manager.h"
 #include "event/mstxt_manager.h"
 #include "event/object_manager.h"
+#include "event/res_manager.h"
+#include "event/se_manager.h"
 #include "event/skip_manager.h"
 #include "event/status_manager.h"
+#include "event/ui_manager.h"
+#include "event/volume_manager.h"
 #include "fw/fw_debug.h"
+#include "gf/data/gf_data_map.h"
 #include "gf/event/gf_event.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
@@ -66,6 +75,24 @@ ICmd::RESULT SeqManager::start_notice::update(const Param &param) {
   return RESULT_END;
 }
 
+ICmd::RESULT SeqManager::exec_fadeout::update(const Param &param) {
+  bool isSkip = param.val(1).getBool();
+  if (param.getFrame() <= 0) {
+    SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
+    mm::mtl::Singleton<FadeManager>::getPtr()->request(FadePlanner::TYPE_ED_FADE_OUT);
+    mm::mtl::Singleton<VolumeManager>::get().startSeamlessVolume(seq->unknown2710.unknown9c);
+    seq->unknown178 = "exec fadeout";
+  }
+  bool isFading = mm::mtl::Singleton<FadeManager>::getPtr()->isFading();
+  RESULT result = static_cast<RESULT>(!isFading);
+  if (isSkip && !isFading) {
+    mm::mtl::Singleton<FadeManager>::getPtr()->playEventSkip(false, 30);
+    mm::mtl::Singleton<SkipManager>::getPtr()->skip(false, 0.0f);
+    result = RESULT_END;
+  }
+  return result;
+}
+
 ICmd::RESULT SeqManager::start_change::update(const Param &param) {
   if (param.getFrame() <= 0) {
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start change";
@@ -113,6 +140,72 @@ ICmd::RESULT SeqManager::end_stream::update(const Param &param) {
     mm::mtl::Singleton<MotstmManager>::getPtr()->stop();
   }
   return static_cast<RESULT>(!mm::mtl::Singleton<MotstmManager>::getPtr()->isBusy());
+}
+
+ICmd::RESULT SeqManager::start_loading::update(const Param &param) {
+  if (param.getFrame() <= 0) {
+    SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
+    mm::mtl::Singleton<UIManager>::getPtr()->setDispNowLoading(static_cast<int>(seq->unknown2710.unknown54) >= 2);
+    seq->unknown178 = "start loading";
+  }
+  if (!unknown08) {
+    return RESULT_WAIT;
+  }
+  if (mm::mtl::Singleton<ResManager>::getPtr()->isLoading() || mm::mtl::Singleton<EffectManager>::getPtr()->isLoading() || mm::mtl::Singleton<SeManager>::get().isLoading() ||
+      mm::mtl::Singleton<LipsyncManager>::getPtr()->isLoading() || mm::mtl::Singleton<MstxtManager>::getPtr()->isLoading()) {
+    return RESULT_WAIT;
+  }
+  if (mm::mtl::Singleton<ObjectManager>::getPtr()->isLoading()) {
+    return RESULT_WAIT;
+  }
+  return RESULT_END;
+}
+
+ICmd::RESULT SeqManager::start_weather::update(const Param &param) {
+  if (param.getFrame() > 0) {
+    return RESULT_END;
+  }
+  const char *clock = param.val(1).getStr();
+  bool isClockStop = param.val(2).getBool();
+  int weather = param.val(3).getS32();
+  int cloud = param.val(4).getS32();
+  if (*clock != '\0') {
+    mm::mtl::Singleton<EnvManager>::getPtr()->setClock(clock);
+  }
+  if (isClockStop) {
+    mm::mtl::Singleton<EnvManager>::getPtr()->setClockStop(true);
+  }
+  if (weather > 0) {
+    mm::mtl::Singleton<EnvManager>::getPtr()->setMapWeatherID(static_cast<gf::WEATHERID>(weather), 0.0f);
+  }
+  if (cloud > 0) {
+    mm::mtl::Singleton<EnvManager>::getPtr()->setCloudSea(static_cast<EVT_cloudtype>(cloud));
+  }
+  static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start weather";
+  return RESULT_END;
+}
+
+ICmd::RESULT SeqManager::exec_grass::update(const Param &param) {
+  ml::ScnRenderDrSysParmAcc parmAcc(Manager::get()->getScn()->unknown38, 0);
+  if (param.getFrame() <= 0) {
+    SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
+    int type = param.val(1).getS32();
+    if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipVolume() || mm::mtl::Singleton<DebugManager>::getPtr()->isPlayCancel()) {
+      mm::mtl::Singleton<FadeManager>::getPtr()->play(true, 0, FadeCtrl::PRIO_LOW, 0);
+      return RESULT_END;
+    }
+    parmAcc.setGlassBr(true, type);
+    seq->unknown178 = "exec grass";
+  }
+  int endFrame = param.val(2).getS32();
+  if (param.getFrame() == endFrame) {
+    mm::mtl::Singleton<FadeManager>::getPtr()->play(true, 0, FadeCtrl::PRIO_LOW, 0);
+  }
+  if (param.getFrame() > endFrame + 1) {
+    parmAcc.setGlassBr(false, 0);
+    return RESULT_END;
+  }
+  return RESULT_WAIT;
 }
 
 ICmd::RESULT SeqManager::start_areajump::update(const Param &param) {
@@ -194,6 +287,8 @@ ICmd::RESULT SeqManager::end::update(const Param &param) {
   }
   return RESULT_END;
 }
+
+SeqManager::SeqManager() : unknown170(0), unknown174(0) {}
 
 void SeqManager::clear() {
   unknown170 = 0;

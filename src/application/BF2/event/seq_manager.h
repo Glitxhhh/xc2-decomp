@@ -5,11 +5,14 @@
 #include "event/i_cmd.h"
 #include "event/i_manager.h"
 #include "event/seq_info.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
 namespace event {
+
+class ObjectChara;
 
 class SeqManager : public IManager, public mm::mtl::Singleton<SeqManager> {
 public:
@@ -62,10 +65,11 @@ public:
 
   class start_loading : public ICmd {
   public:
+    start_loading() : unknown08(false) {}
     virtual RESULT update(const Param &param);
 
   private:
-    u8 _08[0x10 - 0x08];
+    bool unknown08; // Role and original member name unknown.
   };
 
   class start_other : public ICmd {
@@ -73,7 +77,7 @@ public:
     virtual RESULT update(const Param &param);
 
   private:
-    u8 _08[0x50 - 0x08];
+    mm::mtl::FixedVector<ObjectChara *, 8> unknown08; // Inferred role: created party characters; original member name unknown.
   };
 
   class start_form : public ICmd {
@@ -113,10 +117,16 @@ public:
 
   class exec : public ICmd {
   public:
+    exec() : unknown08(false), unknown09(false), unknown0a(false), unknown0c(0.0f), unknown14(0) {}
     virtual RESULT update(const Param &param);
 
   private:
-    u8 _08[0x18 - 0x08];
+    bool unknown08; // Role and original member name unknown.
+    bool unknown09; // Role and original member name unknown.
+    bool unknown0a; // Role and original member name unknown.
+    f32 unknown0c;  // Role and original member name unknown.
+    int unknown10;  // Role and original member name unknown.
+    int unknown14;  // Role and original member name unknown.
   };
 
   class exec_fadeout : public ICmd {
@@ -150,10 +160,11 @@ public:
 
   class end_wait : public ICmd {
   public:
+    end_wait() : unknown08(false) {}
     virtual RESULT update(const Param &param);
 
   private:
-    u8 _08[0x10 - 0x08];
+    bool unknown08; // Role and original member name unknown.
   };
 
   class end_areajump : public ICmd {

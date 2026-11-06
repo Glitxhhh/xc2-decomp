@@ -61,6 +61,29 @@ void BgmManager::render() {
   }
 }
 
+void BgmManager::stop() {
+  if (unknown10 & FLAG_PLAY) {
+    gf::EventBgmSetup setup;
+    setup.unknown00 = "";
+    setup.unknown44 = 1.0f;
+    setup.unknown48 = 0.0f;
+    setup.unknown4c = 0.0f;
+    setup.unknown50 = 0.0f;
+    setup.unknown54 = 0.0f;
+    setup.unknown58 = 0.0f;
+    setup.unknown5c = 0.0f;
+    setup.unknown60 = false;
+    setup.unknown62 = true;
+    setup.unknown63 = true;
+    setup.unknown64 = true;
+    setup.unknown65 = true;
+    gf::GfGameEvent::playBgm(setup);
+    setFlag(FLAG_PLAY, false);
+    setFlag(FLAG_SYNC, false);
+    setFlag(FLAG_STOP, true);
+  }
+}
+
 void BgmManager::setHandOver(bool isHandOver) { setFlag(FLAG_HAND_OVER, isHandOver); }
 
 void BgmManager::changeVolume(f32 volume, f32 frame) {
