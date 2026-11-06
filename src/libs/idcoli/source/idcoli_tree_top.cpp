@@ -1,3 +1,6 @@
+#include <math.h>
+#include <string.h>
+
 #include "idcoli/idcoli.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
@@ -12,6 +15,39 @@ IDColiTreeTop::IDColiTreeTop() {
   unknown30 = mm::Vec3(-64.0f, -64.0f, -64.0f);
   unknown164 = 0;
   updateTree();
+}
+
+void IDColiTreeTop::updateTree() {
+  memset(unknown130, 0, sizeof(unknown130));
+  unknown164 = 0;
+  f32 sizeX = unknown20.x - unknown30.x;
+  f32 sizeY = unknown20.y - unknown30.y;
+  f32 sizeZ = unknown20.z - unknown30.z;
+  f32 scale = 1.0f;
+  for (s64 level = 0; level < 5; level++) {
+    f32 inverse = 1.0f / scale;
+    unknown40[level].x = sizeX * inverse;
+    unknown40[level].y = sizeY * inverse;
+    unknown40[level].z = sizeZ * inverse;
+    unknowne0[level].x = unknown40[level].x * 0.2f;
+    unknowne0[level].y = unknown40[level].y * 0.2f;
+    unknowne0[level].z = unknown40[level].z * 0.2f;
+    if (fabsf(unknown40[level].x) <= 1.0f || fabsf(unknown40[level].y) <= 1.0f || fabsf(unknown40[level].z) <= 1.0f) {
+      unknown90[level].x = 1.0f;
+      unknown90[level].y = 1.0f;
+      unknown90[level].z = 1.0f;
+    } else {
+      unknown90[level].x = 1.0f / unknown40[level].x;
+      unknown90[level].y = 1.0f / unknown40[level].y;
+      unknown90[level].z = 1.0f / unknown40[level].z;
+      unknown164 |= 1 << level;
+    }
+    scale += scale;
+  }
+  for (int i = 0; i < 341; i++) {
+    unknown168[i].m_head = nullptr;
+    unknown168[i].m_tail = nullptr;
+  }
 }
 
 IDColiTreeTop::~IDColiTreeTop() {}
