@@ -13,12 +13,13 @@ namespace gf {
 struct AchievQuest;
 struct GF_OBJ_HANDLE;
 struct GfQuestScinario;
-struct GfQuestTaskLogResult;
 struct QuestTaskParam;
 
 // Index of GfQuestReward::unknown00.
 enum QUEST_REWARD {
   QUEST_REWARD_UNKNOWN_0 = 0,   // Inferred role: gold.
+  QUEST_REWARD_UNKNOWN_1 = 1,   // Role unknown.
+  QUEST_REWARD_UNKNOWN_2 = 2,   // Role unknown.
   QUEST_REWARD_UNKNOWN_3 = 3,   // Inferred role: experience.
   QUEST_REWARD_UNKNOWN_4 = 4,   // Inferred role: development.
   QUEST_REWARD_UNKNOWN_5 = 5,   // Inferred role: trust.
@@ -51,14 +52,39 @@ struct GfQuestReward {
 
   Param unknown00[12]; // Inferred role: params; original member name unknown.
   u16 unknown360;      // Inferred role: blade; original member name unknown.
-  u8 _362[0x368 - 0x362];
+  u8 _362[0x364 - 0x362];
 };
 
 static_assert(offsetof(GfQuestReward::Param, m_developZone) == 0x46, "");
 static_assert(offsetof(GfQuestReward::Param, unknown44_u32) == 0x44, "");
 static_assert(sizeof(GfQuestReward::Param) == 0x48, "");
 static_assert(offsetof(GfQuestReward, unknown360) == 0x360, "");
-static_assert(sizeof(GfQuestReward) == 0x368, "");
+static_assert(sizeof(GfQuestReward) == 0x364, "");
+
+struct GfQuestTaskLogResult {
+  GfQuestTaskLogResult() : unknown00(0), unknown08(nullptr), unknown10(0), unknown14(0), unknown18(0), unknown1c(0), unknown20(0), unknown24(false), unknown26() {}
+
+  u32 unknown00; // Inferred role: task log text id; original member name unknown.
+  u8 _04[0x08 - 0x04];
+  u8 *unknown08;     // Inferred role: quest message bdat; original member name unknown.
+  u32 unknown10;     // Role and original member name unknown.
+  u32 unknown14;     // Inferred role: count; original member name unknown.
+  u32 unknown18;     // Inferred role: displayed count; original member name unknown.
+  u32 unknown1c;     // Inferred role: item; original member name unknown.
+  u32 unknown20;     // Inferred role: item category; original member name unknown.
+  bool unknown24;    // Inferred role: task completed or npc target; original member name unknown.
+  QuestID unknown26; // Inferred role: quest of the task; original member name unknown.
+};
+
+static_assert(offsetof(GfQuestTaskLogResult, unknown08) == 0x08, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown10) == 0x10, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown14) == 0x14, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown18) == 0x18, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown1c) == 0x1c, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown20) == 0x20, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown24) == 0x24, "");
+static_assert(offsetof(GfQuestTaskLogResult, unknown26) == 0x26, "");
+static_assert(sizeof(GfQuestTaskLogResult) == 0x30, "");
 
 class GfQuestUtil {
 public:
@@ -100,7 +126,7 @@ public:
   static void incFieldSkillTask(u32 blade, u32 fieldSkill);
   static bool getTaskInfoForAutoPilot(mm::mtl::FixStr<256> &info);
   static void completeCurrentQuestForAutoPilot();
-  static QuestID getClearChildQuest(QuestID quest);
+  static u32 getClearChildQuest(QuestID quest);
   static u32 getEnemyPopRemainNumber(u32 enemy);
   static void setupNewGameParam();
   static bool isDispCompassQuest(QuestID quest);
