@@ -9,6 +9,7 @@
 #include "ml/win_view.h"
 #include "ml/work_root.h"
 #include "ml/work_util.h"
+#include "mm_math/mm_rect.h"
 #include "mtl/alloc_handle.h"
 
 namespace ml {
@@ -94,6 +95,29 @@ WinView *WinViewRoot::getView(const char *name) {
     }
   }
   return nullptr;
+}
+
+WinView *WinViewRoot::getFullScreenView() {
+  if (get() == nullptr) {
+    return nullptr;
+  }
+  WinView *desktop = ProcDesktop::getView();
+  if (desktop == nullptr) {
+    return nullptr;
+  }
+  for (reslist<WorkObj *>::Node *node = desktop->wkGetChild()->begin(); node != desktop->wkGetChild()->end(); node = node->getNext()) {
+    WinView *view = static_cast<WinView *>(node->value);
+    if (!view->wkIsShutdown()) {
+      if (view->unknown3b8 & 1) {
+        return view;
+      }
+      mm::Rect<int> rect = view->getRect(false);
+      if (!(view->unknown3b8 & 4) && rect.x == 0 && rect.y == 0 && rect.width == DevGraph::getRootWidth() && rect.height == DevGraph::getRootHeight()) {
+        return view;
+      }
+    }
+  }
+  return desktop;
 }
 
 bool WinViewRoot::isInitialized() {

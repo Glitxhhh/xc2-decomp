@@ -7,6 +7,8 @@
 
 namespace ml {
 
+class IException;
+
 enum EXCEPTION_PRIO {};
 
 class ProcException : public WinProc, public mm::mtl::PtrSingleton<ProcException> {
@@ -18,6 +20,8 @@ public:
   static void renderWide(const wchar_t *message);
   static void fatal(const wchar_t *message);
   static void setMessage(const wchar_t *message);
+  static void entry(IException *exception);
+  static void remove(IException *exception);
 
   u32 unknown1f8;            // Inferred role: work id; original member name unknown.
   const wchar_t *unknown200; // Inferred role: message; original member name unknown.

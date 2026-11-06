@@ -8,6 +8,7 @@
 #include "ml/win_view_root.h"
 #include "ml/work_root.h"
 #include "mm_math/mm_mat44.h"
+#include "window/window.h"
 
 namespace ml {
 
@@ -18,6 +19,12 @@ namespace {
 WinView *unknown002;
 
 } // namespace
+
+void WinView::setDefaultFrameColor(const mm::Col4 &color) { unknown004.m_defaultFrameColor = color; }
+
+void WinView::setInitialBackCol(const mm::Col4 &color) { unknown004.m_initialBackCol = color; }
+
+const mm::Col4 &WinView::getDefaultTitleBarColor() { return unknown004.m_defaultTitleBarColor; }
 
 WinView *WinView::getView(bool isResetShadow) {
   if (unknown002 != nullptr && isResetShadow) {
@@ -39,11 +46,11 @@ void WinView::addFramePos(const mm::Pnt<int> &pos) {
 
 void WinView::addScroll(const mm::Pnt<int> &scroll) { unknown1b8.m_back->addScroll(scroll); }
 
-bool WinView::isSplitHolizon() const { return unknown1b8.m_back->unknown30; }
+bool WinView::isSplitHolizon() const { return unknown1b8.m_back->unknown28.unknown08; }
 
 s32 WinView::getSplitLine(bool isBack) const {
   const RENDER_INFO *info = isBack ? unknown1b8.m_back : unknown1b8.m_front;
-  return info->unknown30 ? info->unknown38 : info->unknown34;
+  return info->unknown28.getSplitLine();
 }
 
 mm::Pnt<int> WinView::getFrame2ViewOffset(bool isBack) const { return (isBack ? unknown1b8.m_back : unknown1b8.m_front)->unknown48.getFrame2ViewOffset(); }
@@ -108,6 +115,17 @@ const WinView *WinView::getParentView() const {
   return nullptr;
 }
 
+void WinView::getViewOfs(mm::Rect<int> &rect, bool isBack) {
+  CS lock(unknown540);
+  rect = mm::Rect<int>(0, 0, 0, 0);
+}
+
+void WinView::destroyCtrlMemory() {
+  for (reslist<WorkObj *>::Node *node = wkGetChild()->begin(); node != wkGetChild()->end(); node = node->getNext()) {
+    static_cast<WinView *>(node->value)->destroyCtrlMemory();
+  }
+}
+
 bool WinView::isCurrent() const {
   WinViewRoot *root = WinViewRoot::get();
   if (root != nullptr) {
@@ -117,13 +135,37 @@ bool WinView::isCurrent() const {
   return false;
 }
 
-WinView *WinView::getSplitView1() { return WinViewRoot::getView(unknown1b8.m_back->unknown3c); }
+bool WinView::isSplit(bool isBack) const {
+  const RENDER_INFO *info = isBack ? unknown1b8.m_back : unknown1b8.m_front;
+  return WinViewRoot::getView(info->unknown28.unknown14) != nullptr && WinViewRoot::getView(info->unknown28.unknown18) != nullptr;
+}
 
-WinView *WinView::getSplitView2() { return WinViewRoot::getView(unknown1b8.m_back->unknown40); }
+mm::Rect<int> WinView::getClientScissorAbsRect(bool isBack) const {
+  mm::Rect<int> absRect = getClientAbsRect(isBack);
+  mm::Rect<int> scissor = getClientScissorRect(isBack);
+  mm::Rect<int> rect(absRect.x, absRect.y, scissor.width, scissor.height);
+  if (rect.x + rect.width >= DevGraph::getRootWidth()) {
+    rect.width = DevGraph::getRootWidth() - rect.x;
+  }
+  if (rect.width < 0) {
+    rect.width = 0;
+  }
+  if (rect.y + rect.height >= DevGraph::getRootHeight()) {
+    rect.height = DevGraph::getRootHeight() - rect.y;
+  }
+  if (rect.height < 0) {
+    rect.height = 0;
+  }
+  return rect;
+}
 
-const WinView *WinView::getSplitView1() const { return WinViewRoot::getView(unknown1b8.m_back->unknown3c); }
+WinView *WinView::getSplitView1() { return WinViewRoot::getView(unknown1b8.m_back->unknown28.unknown14); }
 
-const WinView *WinView::getSplitView2() const { return WinViewRoot::getView(unknown1b8.m_back->unknown40); }
+WinView *WinView::getSplitView2() { return WinViewRoot::getView(unknown1b8.m_back->unknown28.unknown18); }
+
+const WinView *WinView::getSplitView1() const { return WinViewRoot::getView(unknown1b8.m_back->unknown28.unknown14); }
+
+const WinView *WinView::getSplitView2() const { return WinViewRoot::getView(unknown1b8.m_back->unknown28.unknown18); }
 
 void WinView::setDisp(bool isDisp, bool isInvalidCurrent) {
   u32 flags = unknown3b8 & ~0x40u;
@@ -170,6 +212,20 @@ mm::Pnt<int> WinViewFrame::getFrame2ViewOffset() const {
 void WinView::deleteSplitView() {
   wkSetEventChild(static_cast<EVT>(0));
   unknown3bc &= ~0x38u;
+}
+
+void WinView::initializeClientScreen(bool isSkipClear) {
+  if (!isSkipClear) {
+    DebDraw *draw = DebDraw::get(0xffffffff);
+    draw->setZComp(false);
+    draw->setZWrite(true);
+    draw->unknown14c = 1.0f;
+    draw->setDoubleSide(true);
+    draw->setCol(mm::Col4(unknown514.r, unknown514.g, unknown514.b, unknown514.a * unknown524));
+    draw->begin(9, 1);
+    draw->add(getRect(false));
+    draw->end();
+  }
 }
 
 bool WinView::hasCurrent() const {

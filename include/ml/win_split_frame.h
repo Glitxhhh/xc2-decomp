@@ -10,7 +10,8 @@ class WinView;
 class WinSplitFrame {
 public:
   ~WinSplitFrame();
-  s32 getSplitLine() const;
+  // Returns s16: WinView::getSplitLine sign-extends the low half of the split line (ldrsh).
+  s16 getSplitLine() const;
   void setSplitLine(s16 line);
   WinView *getView1();
   WinView *getView2();

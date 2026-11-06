@@ -40,6 +40,7 @@ public:
     FMOVE_UNKNOWN_11,
   };
 
+  WinViewFrame();
   void setInfo(WinView *info);
   bool evtFocusOn();
   bool evtFocusOff();
@@ -54,11 +55,16 @@ public:
   void render(WinView *parent) const;
 
   WinView *m_info;
-  mm::Col4 unknown08; // Inferred role: color; original member name unknown.
-  mm::Col4 unknown18; // Inferred role: color; original member name unknown.
-  mm::Col4 unknown28; // Inferred role: color; original member name unknown.
-  FMOVE unknown38;    // Inferred role: move state; original member name unknown.
-  u8 _3c[0x58 - 0x3c];
+  mm::Col4 unknown08;     // Inferred role: color; original member name unknown.
+  mm::Col4 unknown18;     // Inferred role: color; original member name unknown.
+  mm::Col4 unknown28;     // Inferred role: color; original member name unknown.
+  FMOVE unknown38;        // Inferred role: move state; original member name unknown.
+  f32 unknown3c;          // Inferred role: pick offset; original member name unknown.
+  f32 unknown40;          // Inferred role: pick offset; original member name unknown.
+  f32 unknown44;          // Inferred role: pick offset; original member name unknown.
+  f32 unknown48;          // Inferred role: pick offset; original member name unknown.
+  f32 unknown4c;          // Inferred role: pick offset of the split line; original member name unknown.
+  mm::Pnt<int> unknown50; // Inferred role: pick position; original member name unknown.
   mm::Pnt<int> unknown58; // Inferred role: frame position; original member name unknown.
   s16 unknown60;          // Inferred role: border width; original member name unknown.
   u8 _62[0x68 - 0x62];
@@ -68,6 +74,8 @@ static_assert(offsetof(WinViewFrame, unknown08) == 0x08, "");
 static_assert(offsetof(WinViewFrame, unknown18) == 0x18, "");
 static_assert(offsetof(WinViewFrame, unknown28) == 0x28, "");
 static_assert(offsetof(WinViewFrame, unknown38) == 0x38, "");
+static_assert(offsetof(WinViewFrame, unknown3c) == 0x3c, "");
+static_assert(offsetof(WinViewFrame, unknown50) == 0x50, "");
 static_assert(offsetof(WinViewFrame, unknown58) == 0x58, "");
 static_assert(offsetof(WinViewFrame, unknown60) == 0x60, "");
 static_assert(sizeof(WinViewFrame) == 0x68, "");

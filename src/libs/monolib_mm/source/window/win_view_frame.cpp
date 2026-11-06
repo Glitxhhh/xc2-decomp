@@ -21,6 +21,14 @@ bool WinViewFrame::evtMousePickOff(EventView *event) {
   return true;
 }
 
+WinViewFrame::WinViewFrame() : m_info(nullptr), unknown38(FMOVE_UNKNOWN_8), unknown3c(0.0f), unknown40(0.0f), unknown44(0.0f), unknown48(0.0f), unknown4c(0.0f), unknown60(4) {
+  unknown08 = mm::Col4(0.5f, 0.5f, 0.5f, 1.0f);
+  unknown18 = mm::Col4(0.8f, 0.8f, 0.8f, 1.0f);
+  unknown28 = mm::Col4(0.4f, 0.5f, 0.6f, 1.0f);
+  unknown50 = mm::Pnt<int>(0, 0);
+  unknown58 = mm::Pnt<int>(0, 0);
+}
+
 mm::Col4 WinViewFrame::getColorTransparency() const {
   mm::Col4 color = unknown08;
   color.a *= m_info->unknown524;
