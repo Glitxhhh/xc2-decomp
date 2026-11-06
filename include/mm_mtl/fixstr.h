@@ -31,6 +31,16 @@ public:
     return *this;
   }
 
+  // Inferred role: copies len characters from position s into dest; no game symbol, original name unknown.
+  void unknown001(FixStr &dest, int s, int len) const {
+    // __LINE__ must be 462 as in the original header: it is the line argument of the assert.
+#line 462
+    MM_ASSERT(s < m_nLen && s + len <= m_nLen);
+    __builtin_strncpy(dest.mData, mData + s, len);
+    dest.mData[len] = 0;
+    dest.m_nLen = __builtin_strlen(dest.mData);
+  }
+
   FixStr &operator+=(const char *pszBack) {
     // __LINE__ must be 485 and 487 as in the original header: they are the line arguments of the asserts.
 #line 485
