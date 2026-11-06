@@ -112,7 +112,8 @@ public:
   unknown003 unknown150;  // Inferred role: horizontal wall info (state bit 4); original member name unknown.
   unknown003 unknown180;  // Inferred role: horizontal info of the state bit 5; original member name unknown.
   unknown003 unknown1b0;  // Inferred role: climb wall info (state bit 6); original member name unknown.
-  u8 _1e0[0x1f0 - 0x1e0];
+  u64 unknown1e0;         // Inferred role: climb end object handle, -1 when none; original member name unknown.
+  u8 _1e8[0x1f0 - 0x1e8];
   GroundInfo unknown1f0; // Inferred role: climb end ground; original member name unknown.
   unknown004 unknown260; // Inferred role: descend wall info; original member name unknown.
   f32 unknown290;        // Inferred role: unknown scale; original member name unknown.

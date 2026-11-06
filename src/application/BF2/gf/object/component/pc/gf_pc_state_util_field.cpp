@@ -112,6 +112,25 @@ ASM_CMD_ID_FIELD StateUtilField::getAsmID(GfPropertyField::WALL_MOVE_MODE mode) 
   }
 }
 
+bool StateUtilField::isMovableWall(GfComPropertyPc &property, GfPropertyField::WALL_MOVE_MODE mode) {
+  bool isMovable = mode >= GfPropertyField::WALL_MOVE_MODE_UP && mode <= GfPropertyField::WALL_MOVE_MODE_UP_LEFT;
+  if (property.unknown310.unknown10_7) {
+    isMovable &= !isWallUpMove(mode);
+  }
+  EnviromentSensor *sensor = property.getEnvSensor();
+  if (!isMovable) {
+    return false;
+  }
+  if (!sensor->unknown24_1 || sensor->unknown1e0 == -1) {
+    return true;
+  }
+  if (isWallUpMove(mode) && sensor->unknown25_0) {
+    f32 height = __builtin_fmaxf(property.unknown310.unknown3c + 1.3f, 0.0f);
+    return !(sensor->unknown1f0.unknown00.y - property.unknown160.y <= height);
+  }
+  return true;
+}
+
 void StateUtilField::resetCameraForWall(GfComBehaviorPc &behavior, Timing timing) {
   if (!behavior.getProperty()->unknown111_2) {
     return;

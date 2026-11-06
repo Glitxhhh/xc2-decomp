@@ -21,7 +21,14 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 class GfComPropertyPc;
 
+enum {
+  MSG_PC_FIELD_GET_FALL_MAX_HEIGHT = 0x1000029,
+  MSG_PC_FIELD_SET_FALL_MAX_HEIGHT = 0x100002a,
+};
+
 struct MsgPcFieldGetFallMaxHeight : fw::Message {
+  MsgPcFieldGetFallMaxHeight() : fw::Message(MSG_PC_FIELD_GET_FALL_MAX_HEIGHT, 0x40), unknown08(0.0f), unknown0c(false) {}
+
   f32 unknown08;  // Inferred role: max height; original member name unknown.
   bool unknown0c; // Inferred role: valid; original member name unknown.
 };
@@ -30,6 +37,8 @@ static_assert(offsetof(MsgPcFieldGetFallMaxHeight, unknown08) == 0x08, "");
 static_assert(offsetof(MsgPcFieldGetFallMaxHeight, unknown0c) == 0x0c, "");
 
 struct MsgPcFieldSetFallMaxHeight : fw::Message {
+  explicit MsgPcFieldSetFallMaxHeight(f32 height) : fw::Message(MSG_PC_FIELD_SET_FALL_MAX_HEIGHT, 0x40), unknown08(height) {}
+
   f32 unknown08; // Inferred role: max height; original member name unknown.
 };
 

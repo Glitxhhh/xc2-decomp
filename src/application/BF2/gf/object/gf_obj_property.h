@@ -52,9 +52,12 @@ struct unknown070 {
   u32 unknown00; // Inferred role: type; original member name unknown.
   u8 _04[0x10 - 0x04];
   mm::Vec3 unknown10; // Inferred role: position; original member name unknown.
-  u8 _20[0x34 - 0x20];
+  mm::Quat unknown20; // Inferred role: rotation; original member name unknown.
+  u8 _30[0x34 - 0x30];
   f32 unknown34; // Inferred role: height; original member name unknown.
-  u8 _38[0x7c - 0x38];
+  u8 _38[0x74 - 0x38];
+  f32 unknown74;  // Inferred role: unknown height; original member name unknown.
+  f32 unknown78;  // Inferred role: unknown height limit; original member name unknown.
   bool unknown7c; // Inferred role: auto run, copied from the pc field property; original member name unknown.
   bool unknown7d; // Inferred role: can start event; original member name unknown.
   bool unknown7e; // Inferred role: climb wall plane valid; original member name unknown.
@@ -62,12 +65,17 @@ struct unknown070 {
   bool unknown80; // Inferred role: jump; original member name unknown.
   u8 _81[0x90 - 0x81];
   mm::Plane unknown90; // Inferred role: climb wall plane, copied from the pc field property; original member name unknown.
-  u8 _b0[0xc0 - 0xb0];
+  u8 _b0[0xb8 - 0xb0];
+  f32 unknownb8; // Inferred role: unknown height; original member name unknown.
+  u8 _bc[0xc0 - 0xbc];
   GF_OBJ_HANDLE *unknownc0; // Inferred role: ground object; original member name unknown.
   f32 unknownc8;            // Inferred role: float time; original member name unknown.
 };
 
 static_assert(offsetof(unknown070, unknown34) == 0x34, "");
+static_assert(offsetof(unknown070, unknown74) == 0x74, "");
+static_assert(offsetof(unknown070, unknown78) == 0x78, "");
+static_assert(offsetof(unknown070, unknownb8) == 0xb8, "");
 static_assert(offsetof(unknown070, unknown7c) == 0x7c, "");
 static_assert(offsetof(unknown070, unknown7d) == 0x7d, "");
 static_assert(offsetof(unknown070, unknown7e) == 0x7e, "");
