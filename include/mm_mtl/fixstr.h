@@ -121,6 +121,7 @@ public:
   }
 
   const char *c_str() const { return mData; }
+  char &operator[](int index) { return mData[index]; }
   bool operator<(const FixStr &rhs) const { return strcmp(mData, rhs.mData) < 0; }
   bool empty() const { return m_nLen == 0; }
   int capacity() const { return LEN - 1; }

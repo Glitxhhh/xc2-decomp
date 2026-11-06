@@ -26,6 +26,7 @@ template <typename T, size_t N> class FixedQueue {
   typedef typename Storage<alignof(T)>::Unit Unit;
 
   T *buffer() { return reinterpret_cast<T *>(mBuffer); }
+  const T *buffer() const { return reinterpret_cast<const T *>(mBuffer); }
   T &element(size_t index) { return *reinterpret_cast<T *>(&mBuffer[index * (sizeof(T) / sizeof(Unit))]); }
 
   // __LINE__ must be 110 as in the original header: it is the line argument of the assert.
@@ -66,6 +67,7 @@ public:
   };
 
   typedef fixed_queue_iterator<T, N> iterator;
+  typedef fixed_queue_iterator<const T, N> const_iterator;
 
   FixedQueue() : mSize(0), mFront(0) {}
 
@@ -87,6 +89,8 @@ public:
 
   iterator begin() { return iterator(buffer(), mFront); }
   iterator end() { return iterator(buffer(), mFront + mSize); }
+  const_iterator begin() const { return const_iterator(buffer(), mFront); }
+  const_iterator end() const { return const_iterator(buffer(), mFront + mSize); }
 
   // __LINE__ must be 368 as in the original header: it is the line argument of the assert.
 #line 367
