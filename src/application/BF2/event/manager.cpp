@@ -60,6 +60,12 @@ void Manager::tail() {
 
 void Manager::post() {}
 
+bool Manager::setupScene(const char *name) {
+  unknown254 = name;
+  execMessage(MSG_TYPE_SETUP_SCENE);
+  return true;
+}
+
 void Manager::setLanguageMode(bool isEnable, LANGUAGE_MODE mode) { unknown298 = isEnable ? mode : LANGUAGE_MODE_NONE; }
 
 bool Manager::checkLanguageMode() const {

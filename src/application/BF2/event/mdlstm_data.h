@@ -21,6 +21,7 @@ public:
   virtual ~MdlstmData() {}
   void clear();
   void addReplaceInfo(const Info &info);
+  bool getReplaceInfo(Info &info, const char *name);
 
 private:
   mm::mtl::FixedVector<Info, INFO_COUNT> unknown08; // Inferred role: replace infos; original member name unknown.

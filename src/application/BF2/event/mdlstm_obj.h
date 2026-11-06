@@ -8,6 +8,10 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 } // namespace gf
 
+namespace ml {
+class DrStmReadObj;
+} // namespace ml
+
 namespace event {
 
 class MdlstmObj : public IResEvent {
@@ -29,6 +33,7 @@ public:
   virtual ~MdlstmObj();
   void destroy();
   void finishFree();
+  void init(f32 frame, const char *path, u32 value, bool isActive, int param);
   void init(f32 frame, MODEL_TYPE type, u32 id, u32 value, bool isActive, int param);
   void finishLoaded();
   void finishDelay();
@@ -61,7 +66,7 @@ private:
   void *_b8;
   void *_c0;
   void *_c8;
-  void *_d0;
+  ml::DrStmReadObj *_d0;
   ModelObj *unknownd8; // Inferred role: reuse model; original member name unknown.
   ModelObj *unknowne0; // Inferred role: model; original member name unknown.
   u32 unknowne8;       // Inferred role: dispose delay; original member name unknown.

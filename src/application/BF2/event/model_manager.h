@@ -18,6 +18,7 @@ public:
   void render();
   ModelObj *searchModel(u32 index);
   ModelObj *searchModel(u32 index, const char *path, bool isPriority, u32 id);
+  void destroyModel(ModelObj *model, int index);
   virtual void OnEventProc(MSG_TYPE type);
 
 private:
