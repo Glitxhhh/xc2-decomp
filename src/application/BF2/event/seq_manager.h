@@ -15,6 +15,8 @@ namespace event {
 class ObjectChara;
 
 class SeqManager : public IManager, public mm::mtl::Singleton<SeqManager> {
+  friend class Manager;
+
 public:
   static constexpr size_t QUEUE_COUNT = 32;
 

@@ -1,5 +1,6 @@
 #include "event/chara_effect_player.h"
 
+#include "event/curve.h"
 #include "fw/fw_model_object.h"
 #include "gf/object/component/model/gf_com_model.h"
 #include "gf/object/gf_obj.h"
@@ -61,5 +62,16 @@ void CharaEffectPlayer::update(f32 delta) {
 }
 
 void CharaEffectPlayer::render(const mm::Vec3 &position, f32 height) {}
+
+void CharaEffectPlayer::playVolumeFadeAnim(VF_TYPE type, f32 rate, f32 frame) {
+  u32 fadeFlag = type == VF_TYPE_SUB ? 1 << FLAG_VOLUME_FADE_SUB : 1 << FLAG_VOLUME_FADE_MAIN;
+  if ((unknown08.unknown001(0) & fadeFlag) == 0 || unknown10 == gf::INVALID_HANDLE) {
+    return;
+  }
+  unknown80[type].clear();
+  unknown80[type].append(0.0f, unknown78[type], CV_TYPE_LINEAR);
+  unknown80[type].append(frame, rate, CV_TYPE_LINEAR);
+  unknown08.set(type == VF_TYPE_SUB ? FLAG_VOLUME_FADE_ANIM_SUB : FLAG_VOLUME_FADE_ANIM_MAIN);
+}
 
 } // namespace event

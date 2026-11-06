@@ -1,5 +1,13 @@
 #include "event/outsider_manager.h"
 
+#include "event/alpha_manager.h"
+#include "event/alpha_obj.h"
+#include "gf/object/component/gf_com_transform.h"
+#include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_util.h"
+#include "mm_mtl/singleton.h"
+
 namespace event {
 
 OutsiderManager::OutsiderManager() : unknown10(), unknown14(0), unknown18(OBJ_TYPE_NONE) {}
@@ -47,6 +55,21 @@ void OutsiderManager::update() {
       update(true);
     }
   }
+}
+
+void OutsiderManager::updateSub(bool isHide, gf::GF_OBJ_HANDLE *handle) {
+  gf::GfComTransform *transform = gf::GfObjUtil::getObj(handle)->getComponent<gf::GfComTransform>();
+  if (!isHide) {
+    mm::mtl::Singleton<AlphaManager>::getPtr()->setAlpha(handle, ALPHA_ATTR_UNKNOWN_0, 1.0f, 1.0f);
+    return;
+  }
+  f32 alpha = gf::GfObjAcc(handle).getAlphaEvent();
+  if (unknown20.isInside(transform->getPosition())) {
+    alpha = __builtin_fmaxf(alpha - 0.1f, 0.0f);
+  } else {
+    alpha = __builtin_fminf(alpha + 0.1f, 1.0f);
+  }
+  mm::mtl::Singleton<AlphaManager>::getPtr()->setAlpha(handle, ALPHA_ATTR_UNKNOWN_0, alpha, 1.0f);
 }
 
 void OutsiderManager::render() {

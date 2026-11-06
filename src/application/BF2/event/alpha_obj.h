@@ -8,6 +8,7 @@ struct GF_OBJ_HANDLE;
 namespace event {
 
 enum ALPHA_ATTR {
+  ALPHA_ATTR_UNKNOWN_0 = 0, // Inferred role: attribute used by the outsider fade; original enumerator name unknown.
   ALPHA_ATTR_CHARA = 1,
   ALPHA_ATTR_MDLSTM = 2,
   ALPHA_ATTR_COUNT = 4,

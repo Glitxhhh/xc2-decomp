@@ -44,6 +44,7 @@ public:
     STATE_SETUP_SCENE_END = 1 << 1,
     STATE_START_SCENE = 1 << 2,
     STATE_START_PAGE = 1 << 3,
+    STATE_END_SCENE = 1 << 4,
     STATE_STOP = 1 << 5,
   };
 

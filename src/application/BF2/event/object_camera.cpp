@@ -4,6 +4,7 @@
 #include "event/cam_manager.h"
 #include "event/cam_motion.h"
 #include "event/cam_obj.h"
+#include "event/seq_manager.h"
 #include "mm_mtl/singleton.h"
 
 namespace event {
@@ -75,6 +76,10 @@ void ObjectCamera::followPos(bool isFollow) { unknown68->activateHands()->follow
 bool ObjectCamera::isFollowPos() const { return unknown68->activateHands()->isFollowPos(); }
 
 void ObjectCamera::followTar(bool isFollow) { unknown68->activateHands()->followTar(isFollow); }
+
+void ObjectCamera::render(const mm::Col4 &color) { mm::mtl::Singleton<SeqManager>::getPtr(); }
+
+void ObjectCamera::OnManiRender(IManiCallback::RenderParam &param) { mm::mtl::Singleton<SeqManager>::getPtr(); }
 
 bool ObjectCamera::isFollowTar() const { return unknown68->activateHands()->isFollowTar(); }
 

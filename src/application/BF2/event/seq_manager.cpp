@@ -274,7 +274,7 @@ ICmd::RESULT SeqManager::end_notice::update(const Param &param) {
   }
   int eventId = param.val(1).getS32();
   if (eventId != 0) {
-    gf::GfEvent::callEventPlay(static_cast<gf::GEV>(10), eventId);
+    gf::GfEvent::callEventPlay(gf::GEV_EVENT_PLAY_END, eventId);
   }
   return RESULT_END;
 }
