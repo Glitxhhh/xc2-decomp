@@ -3,9 +3,14 @@
 #include "arc/arc_data.h"
 #include "framework/pad/pad_res_event.h"
 #include "framework/pad/pad_res_event_manager.h"
+#include "framework/reflection.h"
 #include "framework/resource/common_resource.h"
+#include "fw/fw_param_manager.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_static_res.h"
+#include "mm_mtl/fixstr.h"
+#include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/map.h"
 #include "types.h"
 
 namespace gf {
@@ -54,3 +59,14 @@ void unbindPadResource() {
 }
 
 } // namespace gf
+
+namespace fw {
+
+void ParamManager::addReflectionFileName(Reflection &reflection, const char *name) {
+  RefInfo info;
+  info.unknown00 = &reflection;
+  info.unknown08 = name;
+  unknown808.insert(mm::mtl::MapPair<Reflection *, RefInfo>(&reflection, info));
+}
+
+} // namespace fw

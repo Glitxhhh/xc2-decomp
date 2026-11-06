@@ -29,10 +29,13 @@
 #include "fw/fw_camera.h"
 #include "fw/fw_pad.h"
 #include "fw/fw_param_manager.h"
+#include "ml/ml_mem.h"
 #include "ml/scn.h"
 #include "ml/work_cpu.h"
 #include "ml/work_root.h"
 #include "mm_mtl/algorithm.h"
+#include "mm_mtl/fixstr.h"
+#include "mtl/mem_manager.h"
 
 namespace mm {
 namespace mtl {
@@ -42,7 +45,49 @@ class IAllocator;
 
 namespace fw {
 
+Framework::Framework()
+    : m_applet(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown70(nullptr), unknown84(STATE_NONE), unknown88(false), unknown89(false), unknown8a(false), unknown8c(1.0f) {}
+
 Framework::~Framework() { destroyManager(); }
+
+void Framework::createMemorySection() {
+  MemorySectionInfo info;
+  info.unknown00 = 6;
+  info.unknown04 = ml::MlMem::getProductMem();
+  info.unknown08 = 0x2600000;
+  info.unknown10 = 0x1000;
+  info.unknown14 = true;
+  info.unknown18 = "fw::SoundCommon";
+  info.unknown5c = mtl::ALLOCATOR_TYPE_PROGRAM;
+  FrameworkMemory::get().createSection(info);
+
+  info.unknown00 = 8;
+  info.unknown04 = ml::MlMem::getProductMem();
+  info.unknown08 = 0x2800000;
+  info.unknown10 = 0x1000;
+  info.unknown14 = true;
+  info.unknown18 = "fw::SoundPool";
+  info.unknown5c = mtl::ALLOCATOR_TYPE_PROGRAM;
+  FrameworkMemory::get().createSection(info);
+
+  info.unknown00 = 7;
+  info.unknown04 = ml::MlMem::getProductMem();
+  info.unknown08 = 0x4900000;
+  info.unknown10 = 0x20;
+  info.unknown14 = true;
+  info.unknown18 = "fw::SoundProc";
+  info.unknown5c = mtl::ALLOCATOR_TYPE_PROGRAM;
+  FrameworkMemory::get().createSection(info);
+
+  info.unknown00 = 9;
+  info.unknown04 = ml::MlMem::getProductMem();
+  info.unknown08 = 0x4400000;
+  info.unknown10 = 0x1000;
+  info.unknown14 = false;
+  info.unknown18 = "fw::Movie";
+  info.unknown5c = mtl::ALLOCATOR_TYPE_PROGRAM;
+  FrameworkMemory::get().createSection(info);
+}
 
 void Framework::finalize() { destroyManager(); }
 

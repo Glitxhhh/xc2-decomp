@@ -25,22 +25,33 @@ class Applet;
 class IPauseTrigger;
 
 struct FrameworkConfig {
+  FrameworkConfig()
+      : unknown00(0xffffff), unknown04(30.0f), unknown08(0x400), unknown10(0x1d00000), unknown18(0x20), unknown1c(0x400), unknown20(0x400), unknown24(0x400), unknown28(0x800), unknown2c(0x600),
+        unknown30(0x1000), unknown34(0x48), unknown38(0) {}
+
   u32 unknown00; // Inferred role: flags, 0x20 creates the CameraManager; original member name unknown.
   f32 unknown04; // Inferred role: frame rate; original member name unknown.
-  u8 _08[0x20 - 0x08];
+  u32 unknown08; // Inferred role: capacity, 0x400 by default; original member name unknown.
+  u8 _0c[0x10 - 0x0c];
+  u64 unknown10; // Inferred role: size, 0x1d00000 by default; original member name unknown.
+  u32 unknown18; // Inferred role: count, 0x20 by default; original member name unknown.
+  u32 unknown1c; // Inferred role: capacity, 0x400 by default; original member name unknown.
   u32 unknown20; // Inferred role: asset capacity; original member name unknown.
-  u8 _24[0x28 - 0x24];
+  u32 unknown24; // Inferred role: capacity, 0x400 by default; original member name unknown.
   u32 unknown28; // Inferred role: effect count; original member name unknown.
   u32 unknown2c; // Inferred role: resource capacity; original member name unknown.
   u32 unknown30; // Inferred role: updatable object capacity; original member name unknown.
   u32 unknown34; // Inferred role: script count; original member name unknown.
-  u8 _38[0x3c - 0x38];
+  u32 unknown38; // Inferred role: language type passed to LangUtil::setLangType; original member name unknown.
 };
 
+static_assert(offsetof(FrameworkConfig, unknown10) == 0x10, "");
 static_assert(offsetof(FrameworkConfig, unknown20) == 0x20, "");
 static_assert(offsetof(FrameworkConfig, unknown28) == 0x28, "");
 static_assert(offsetof(FrameworkConfig, unknown34) == 0x34, "");
-static_assert(sizeof(FrameworkConfig) == 0x3c, "");
+static_assert(offsetof(FrameworkConfig, unknown38) == 0x38, "");
+// The user-provided constructor makes the struct non-POD: its copy leaves out the tail padding (0x3c bytes).
+static_assert(sizeof(FrameworkConfig) == 0x40, "");
 
 struct UpdateState {
   bool isPause;
@@ -57,6 +68,8 @@ public:
 
 // Inferred role: layer update info; original type name unknown.
 struct unknown077 {
+  unknown077() : unknown00(1.0f), unknown04(1.0f), unknown08(1.0f), unknown0c(false), unknown0d(false) {}
+
   f32 unknown00;  // Inferred role: speed; original member name unknown.
   f32 unknown04;  // Inferred role: scaled speed; original member name unknown.
   f32 unknown08;  // Inferred role: frame speed; original member name unknown.
@@ -81,7 +94,9 @@ public:
   static const u32 PAUSE_TRIGGER_MAX = 32;
   static const u32 unknown001 = 14; // Inferred role: count of the layers run by update; original name unknown.
 
+  Framework();
   ~Framework();
+  void createMemorySection();
   void finalize();
   static mm::mtl::IAllocator *getAllocator();
   bool initializeManager();
@@ -124,17 +139,17 @@ public:
   bool isUpdating() const { return unknown84 >= STATE_MANAGER_INITIALIZED && unknown84 <= STATE_FINALIZING; }
 
   Applet *m_applet;
-  FrameworkConfig unknown10; // Inferred role: config; original member name unknown.
-  u8 _4c[0x50 - 0x4c];
-  ml::WinProc *unknown50; // Inferred role: win proc; original member name unknown.
-  ml::Scn *unknown58;     // Inferred role: scn; original member name unknown.
-  u8 _60[0x68 - 0x60];
+  FrameworkConfig unknown10;   // Inferred role: config; original member name unknown.
+  ml::WinProc *unknown50;      // Inferred role: win proc; original member name unknown.
+  ml::Scn *unknown58;          // Inferred role: scn; original member name unknown.
+  void *unknown60;             // Inferred role: unknown pointer, 8 bytes at 0x60 cleared by the constructor; original member name and type unknown.
   mtl::ALLOC_HANDLE unknown68; // Inferred role: mem handle; original member name unknown.
   unknown076 *unknown70;       // Inferred role: launcher; original member name unknown.
   UpdateInfo unknown78;        // Inferred role: update info; original member name unknown.
   u32 unknown84;               // Inferred role: state; original member name unknown.
-  u8 _88[0x8a - 0x88];
-  bool unknown8a; // Inferred role: updated this frame; original member name unknown.
+  bool unknown88;              // Inferred role: unknown flag, cleared by the constructor; original member name unknown.
+  bool unknown89;              // Inferred role: unknown flag, cleared by the constructor; original member name unknown.
+  bool unknown8a;              // Inferred role: updated this frame; original member name unknown.
   u8 _8b[0x8c - 0x8b];
   f32 unknown8c; // Inferred role: update speed; original member name unknown.
   u8 _90[0x98 - 0x90];

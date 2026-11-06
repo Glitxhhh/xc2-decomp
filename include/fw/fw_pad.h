@@ -140,9 +140,11 @@ public:
   static void setConfigData(int padNo, const PadConfigData &data);
   void updateControlPadNo(int padNo);
 
-  IPadFilter *unknown20[PAD_MAX]; // Inferred role: filters; original member name unknown.
-  PadData unknown80[PAD_MAX];     // Inferred role: pads; original member name unknown.
-  u8 _3e0[0x2b40 - 0x3e0];
+  IPadFilter *unknown20[PAD_MAX];      // Inferred role: filters; original member name unknown.
+  PadData unknown80[PAD_MAX];          // Inferred role: pads; original member name unknown.
+  PadData unknown3e0[PAD_MAX];         // Inferred role: pads updated by the second updatePadData loop; original member name unknown.
+  PadWorkArray unknown740;             // Inferred role: button works of unknown80; original member name unknown.
+  PadWorkArray unknown1940;            // Inferred role: button works of unknown3e0; original member name unknown.
   PadData unknown2b40[PAD_MAX];        // Inferred role: control pad data; original member name unknown.
   PadData unknown2ea0[PAD_MAX];        // Inferred role: debug pad data; original member name unknown.
   PadConfigData unknown3200[PAD_MAX];  // Inferred role: configs; original member name unknown.
@@ -163,6 +165,9 @@ public:
 
 static_assert(offsetof(PadManager, unknown20) == 0x20, "");
 static_assert(offsetof(PadManager, unknown80) == 0x80, "");
+static_assert(offsetof(PadManager, unknown3e0) == 0x3e0, "");
+static_assert(offsetof(PadManager, unknown740) == 0x740, "");
+static_assert(offsetof(PadManager, unknown1940) == 0x1940, "");
 static_assert(offsetof(PadManager, unknown2b40) == 0x2b40, "");
 static_assert(offsetof(PadManager, unknown2ea0) == 0x2ea0, "");
 static_assert(offsetof(PadManager, unknown35f0) == 0x35f0, "");

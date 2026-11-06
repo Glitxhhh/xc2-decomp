@@ -69,6 +69,8 @@ public:
 
   ParamManager() : unknown808(Allocator::getDebAllocator()), unknown820(Allocator::getDebAllocator()) {}
 
+  void addReflectionFileName(Reflection &reflection, const char *name);
+
   mm::mtl::IntrusivePtr<Reflection> unknown08[128];      // Inferred role: reflections, released from 0x400 down by the destructor; element type and original member name unknown.
   mm::mtl::IntrusivePtr<ParamList> unknown408[128];      // Inferred role: param lists indexed by the ParamBuilder::create id, released from 0x800 down by the destructor; original member name unknown.
   mm::mtl::Map<const Reflection *, RefInfo> unknown808;  // Inferred role: reflection file names; original member name unknown.

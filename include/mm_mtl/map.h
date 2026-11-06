@@ -8,6 +8,7 @@ class IAllocator;
 template <typename Key, typename Value> struct MapPair {
   MapPair() {}
   template <typename K, typename V> MapPair(const K &key, const V &value) : first(key), second(value) {}
+  template <typename K, typename V> MapPair(const MapPair<K, V> &other) : first(other.first), second(other.second) {}
   // The user-provided destructor makes the pair non-POD: its copy then leaves out the tail padding.
   ~MapPair() {}
 
