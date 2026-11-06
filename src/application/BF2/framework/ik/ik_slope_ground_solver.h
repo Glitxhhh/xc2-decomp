@@ -17,6 +17,7 @@ class RTTI;
 
 namespace fw {
 class ParamAdapter;
+struct UpdateInfo;
 
 class SlopeGroundSolver : public IkSolver {
 public:
@@ -27,6 +28,8 @@ public:
   void setEnablePlacement(bool enable);
   void solve(const UpdateInfo &info) override;
   const mm::mtl::RTTI *getRTTI() const override;
+  void slopeBody(const UpdateInfo &info);
+  void solveFoot(const UpdateInfo &info);
 
   f32 unknown20;                                                                   // Inferred role: unknown; original member name unknown.
   f32 unknown24;                                                                   // Inferred role: unknown; original member name unknown.

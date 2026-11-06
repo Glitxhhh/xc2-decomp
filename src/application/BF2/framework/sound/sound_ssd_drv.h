@@ -247,7 +247,7 @@ static_assert(sizeof(SoundSsdDriver) == 0x1b80, "");
 class SoundReferenceObject {
 public:
   SoundReferenceObject() : m_RefCount(0) {}
-  virtual ~SoundReferenceObject();
+  virtual ~SoundReferenceObject() {}
 
   void addRef() { m_RefCount++; }
   int release();
@@ -280,6 +280,7 @@ public:
 
   static SoundSsdBank *create(const char *name, SoundCategory category, u32 maxSound);
   SoundSsdBank(const SoundBankSetup &setup);
+  ~SoundSsdBank() override;
   void addEntry(ssd::SoundEntry *entry);
   void addSource(SoundSsdSource *source);
   void removeEntry(ssd::SoundEntry *entry);

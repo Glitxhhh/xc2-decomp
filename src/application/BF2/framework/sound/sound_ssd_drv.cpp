@@ -1036,6 +1036,17 @@ void SoundSsdBank::destroy() {
   unknown10.Quit();
 }
 
+SoundSsdBank::~SoundSsdBank() {
+  // The game evaluates canRelease and traverses the sources here without using the results (1.0.0: 0x71001a4e10);
+  // the code that used them is unknown, perhaps compiled out.
+  canRelease();
+  for (mm::mtl::List<SoundSsdSource *>::iterator it = unknown270.begin(); it != unknown270.end(); ++it) {
+  }
+  unknown270.unknown001();
+  unknown270.clear();
+  unknown10.Quit();
+}
+
 } // namespace fw
 
 template mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::iterator mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::erase(mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::iterator);

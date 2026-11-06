@@ -26,6 +26,28 @@ ResourceManager::ResourceManager(mm::mtl::IAllocator *allocator, u32 capacity) :
   }
 }
 
+ResourceManager::~ResourceManager() {
+  unknown001 *end = unknown538.end();
+  for (unknown001 *it = unknown538.begin(); it != end; it++) {
+    mm::mtl::safeRelease(it->unknown00);
+  }
+  end = unknown4540.end();
+  for (unknown001 *it = unknown4540.begin(); it != end; it++) {
+    mm::mtl::safeRelease(it->unknown00);
+  }
+  unknown538.clear();
+  unknown4540.clear();
+  for (int type = 0; type < 32; type++) {
+    while (unknown18[type].size() != 0) {
+      ResourceObject *resource = unknown18[type][unknown18[type].size() - 1];
+      if (resource != nullptr) {
+        resource->release();
+      }
+    }
+    unknown18[type].clear();
+  }
+}
+
 void ResourceManager::enterFinalizeApplet() {
   unknown530 = true;
   unknown52c = 2;

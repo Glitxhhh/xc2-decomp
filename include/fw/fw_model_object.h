@@ -16,7 +16,7 @@ namespace fw {
 
 class ReferenceFrame;
 
-class ModelObject : public mm::mtl::ReferenceObject {
+class ModelObject : public mm::mtl::ReferenceObject, public mm::mtl::IntrusiveListNode<ModelObject> {
 public:
   ModelObject();
   virtual ~ModelObject();
@@ -30,9 +30,8 @@ public:
   void setAddOffsetPos(const mm::Vec3 &offset);
   void setScale(f32 scale);
 
-  mm::mtl::IntrusiveListNodeBase unknown10; // Inferred role: layer list node; original member name unknown.
-  u64 unknown20;                            // Role and original member name unknown.
-  ml::Scn *unknown28;                       // Inferred role: scn; original member name unknown.
+  u64 unknown20;      // Role and original member name unknown.
+  ml::Scn *unknown28; // Inferred role: scn; original member name unknown.
   ml::ScnObjModel *m_interface;
   u32 unknown38; // Inferred role: layer; original member name unknown.
   bool m_active;
@@ -44,7 +43,7 @@ public:
   f32 unknown60;      // Inferred role: scale; original member name unknown.
 };
 
-static_assert(offsetof(ModelObject, unknown10) == 0x10, "");
+static_assert(offsetof(ModelObject, unknown20) == 0x20, "");
 static_assert(offsetof(ModelObject, unknown28) == 0x28, "");
 static_assert(offsetof(ModelObject, m_interface) == 0x30, "");
 static_assert(offsetof(ModelObject, unknown38) == 0x38, "");

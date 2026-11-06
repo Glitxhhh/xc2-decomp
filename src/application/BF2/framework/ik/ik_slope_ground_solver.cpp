@@ -5,6 +5,7 @@
 
 namespace fw {
 class IKFootGroundInterface;
+struct UpdateInfo;
 
 SlopeGroundSolver::~SlopeGroundSolver() {}
 
@@ -29,6 +30,24 @@ void SlopeGroundSolver::setEnablePlacement(bool enable) {
   for (u32 i = 0; i < unknown50.size(); i++) {
     if (unknown50[i].get() != nullptr) {
       unknown50[i]->unknown003(enable);
+    }
+  }
+}
+
+void SlopeGroundSolver::solve(const UpdateInfo &info) {
+  if (unknown90 != nullptr) {
+    slopeBody(info);
+    if (unknown50.size() != 0) {
+      solveFoot(info);
+    }
+  }
+}
+
+void SlopeGroundSolver::solveFoot(const UpdateInfo &info) {
+  for (u32 i = 0; i < unknown50.size(); i++) {
+    if (unknown50[i].get() != nullptr) {
+      unknown50[i]->unknownc0 = unknown40;
+      unknown50[i]->solve(info);
     }
   }
 }
