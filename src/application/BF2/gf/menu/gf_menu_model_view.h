@@ -41,6 +41,11 @@ public:
   void update();
   bool isLoading() const;
   void playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle);
+  GF_OBJ_HANDLE *findGfObj(u32 type, u32 id);
+  void delGfObj(u32 type, u32 id);
+  void stopCameraMotion();
+  void sendObjectCommand(GF_OBJ_HANDLE *handle, const char *command);
+  const char *getObjectAnimationState(GF_OBJ_HANDLE *handle);
 };
 
 static_assert(offsetof(GfMenuModelView::CtrlParam, unknown08) == 0x08, "");

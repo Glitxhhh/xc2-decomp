@@ -46,6 +46,7 @@ public:
   static void initOptionData(SDataOption &option);
   static void setupGame();
   static bool isFading(u32 fade);
+  static bool isFading();
   static void getFadeColor(u32 fade, mm::Col4 &color);
   static void applyGammaCorrectValue(f32 value);
   static void applyOptionData(const SDataOption &option);

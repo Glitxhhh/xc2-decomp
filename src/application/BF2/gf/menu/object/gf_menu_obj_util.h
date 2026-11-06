@@ -89,6 +89,12 @@ public:
     const char *unknown58; // Inferred role: motion name; original member name unknown.
   };
 
+  struct ImageParam {
+    s16 unknown00; // Inferred role: offset x; original member name unknown.
+    s16 unknown02; // Inferred role: offset y; original member name unknown.
+    f32 unknown04; // Inferred role: scale; original member name unknown.
+  };
+
   struct PresetCtrlParam {
     PresetCtrlParam() : unknown00(0), unknown04(0), unknown08(-1), unknown10(0), unknown18(nullptr) {
       unknown0c = false;
@@ -235,6 +241,7 @@ public:
   static u8 getDriverClassBuffLv(u32 driverClass, u32 index);
   static bool isBladeSelectable(u32 blade, const GfMenuBladeList *list);
   static bool isBladeReleasable(u32 blade, const GfMenuBladeList *list);
+  static bool getImageParam(u32 type, u32 id, ImageParam &param, u32 index);
 
   // Inferred helper: starts the preset 6 fade in control on a UI object; original name unknown.
   static int unknown002(u32 handle) {
@@ -258,6 +265,8 @@ public:
 static_assert(offsetof(GfMenuObjUtil::DockingOption, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjUtil::DockingOption, unknown08) == 0x08, "");
 static_assert(sizeof(GfMenuObjUtil::DockingOption) == 0x10, "");
+static_assert(offsetof(GfMenuObjUtil::ImageParam, unknown04) == 0x04, "");
+static_assert(sizeof(GfMenuObjUtil::ImageParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjUtil::unknown001, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown08) == 0x08, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown0c) == 0x0c, "");

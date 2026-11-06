@@ -276,6 +276,9 @@ public:
   static void createBadWeather();
   static void createTime(CV_FIELD voice);
   static void createExitInn();
+  static GAME_VOICE_HANDLE *createMercenariesLeader(u32 blade);
+  static void createMercenariesIn(u32 blade);
+  static void createMercenariesStart(u32 blade);
 };
 
 class SCOM_ZONE : public SCOM {

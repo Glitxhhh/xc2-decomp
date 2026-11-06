@@ -59,13 +59,23 @@ public:
   bool seqCreatePlayJingle();
   bool seqCreatePlayBgmAfter();
   bool seqCreateWaitEvent();
+  bool seqCreateSetup();
+  bool seqCreateStartDriver();
+  bool seqCreateWaitDriver();
+  bool seqCreateWaitFade();
+  bool seqCreateBuildBlade();
+  bool isValidCrystal(u32 item);
+  u32 getInvalidCrystalMsgID(u32 item);
+  void dispGuideText(bool isDisp);
 
   u8 _24[0x28 - 0x24];
   PageContext unknown28;                               // Inferred role: page state; original member name unknown.
   GfMenuSequence<GfMenuObjBladeCreate, 20> unknownaf8; // Inferred role: creation steps; original member name unknown.
   bool *unknown1118;                                   // Inferred role: event finished flag; original member name unknown.
   bool unknown1120;                                    // Inferred role: result shown flag; original member name unknown.
-  u8 _1121[0x11b0 - 0x1121];
+  u8 _1121[0x1148 - 0x1121];
+  int unknown1148; // Inferred role: creation effect step; original member name unknown.
+  u8 _114c[0x11b0 - 0x114c];
   u32 unknown11b0; // Inferred role: save request; original member name unknown.
   u8 _11b4[0x11c0 - 0x11b4];
   u32 unknown11c0;    // Inferred role: bgm handle; original member name unknown.
@@ -84,6 +94,7 @@ static_assert(offsetof(GfMenuObjBladeCreate, unknownaf8) == 0xaf8, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown1118) == 0x1118, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown1120) == 0x1120, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown11b0) == 0x11b0, "");
+static_assert(offsetof(GfMenuObjBladeCreate, unknown1148) == 0x1148, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown11c0) == 0x11c0, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown11c4) == 0x11c4, "");
 static_assert(sizeof(GfMenuObjBladeCreate) == 0x11d0, "");

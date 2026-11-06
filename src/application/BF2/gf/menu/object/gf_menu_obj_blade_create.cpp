@@ -1,9 +1,13 @@
 #include "gf/menu/object/gf_menu_obj_blade_create.h"
 
+#include <string.h>
+
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_save.h"
+#include "gf/data/gf_item_id.h"
+#include "gf/menu/gf_menu_fade.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_model_view.h"
@@ -14,11 +18,15 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
+#include "gf/util/gf_item_util.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
 #include "scn/scn_render_dr_sys_parm_acc.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
+
+#include "gf/object/gf_obj_acc.h"
 
 namespace gf {
 struct GF_OBJ_HANDLE;
@@ -28,6 +36,9 @@ constexpr u32 unknown001 = 0x14;
 
 // Inferred role: names of the pages of the creation screen; original name unknown.
 const char *const unknown002[6] = {"LAY_dr_select", "LAY_core_select", "LAY_bst_select", "LAY_confirm", "LAY_create", "LAY_result"};
+
+// Inferred role: object type of the drivers in the model view; original name unknown.
+constexpr u32 unknown003 = 3;
 
 void GfMenuObjBladeCreate::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
@@ -234,5 +245,73 @@ void GfMenuObjBladeCreate::setGuideText(u32 id) {
 }
 
 bool GfMenuObjBladeCreate::seqCreatePlayBgmAfter() { return true; }
+
+bool GfMenuObjBladeCreate::isValidCrystal(u32 item) {
+  int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
+  return GfItemUtil::isValidCrystal(item) && (item != ITEM_CRYSTAL_WADATSUMI || driver == 6);
+}
+
+u32 GfMenuObjBladeCreate::getInvalidCrystalMsgID(u32 item) {
+  int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
+  u32 message;
+  if (item == ITEM_CRYSTAL_WADATSUMI && driver != 6) {
+    message = 0xd4;
+  } else {
+    message = 0;
+    if (!GfItemUtil::isValidCrystal(item)) {
+      message = 0xa9;
+    }
+  }
+  return message;
+}
+
+void GfMenuObjBladeCreate::dispGuideText(bool isDisp) {
+  ui::UIObjectAcc acc(unknown18, "LAY_guide");
+  acc.setDisp(isDisp);
+}
+
+bool GfMenuObjBladeCreate::seqCreateSetup() {
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateStartDriver);
+  unknownaf8.unknown004(120);
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateStartSE);
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitDriver);
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitFade);
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateBuildBlade);
+  unknown1148 = 0;
+  return true;
+}
+
+bool GfMenuObjBladeCreate::seqCreateStartDriver() {
+  GfMenuModelView *view = unknown28.unknownac8;
+  GF_OBJ_HANDLE *driver = view->findGfObj(unknown003, unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)));
+  view->sendObjectCommand(driver, "C_hold_00");
+  GfMenuObjUtil::playSE("se_fld_allmap_711");
+  return true;
+}
+
+bool GfMenuObjBladeCreate::seqCreateWaitDriver() {
+  u32 id = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
+  GfMenuModelView *view = unknown28.unknownac8;
+  GF_OBJ_HANDLE *driver = view->findGfObj(unknown003, id);
+  if (strcmp(view->getObjectAnimationState(driver), "S_hold_01") == 0) {
+    GfMenuFade::setFade(2, 30, mm::Col4(0.0f, 0.0f, 0.0f, 0.0f));
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuObjBladeCreate::seqCreateWaitFade() { return !GfMenuManager::isFading(); }
+
+bool GfMenuObjBladeCreate::seqResultEnd() {
+  u32 blade = unknown28.unknown28;
+  unknown28.unknownac8->delGfObj(4, blade);
+  unknown28.unknownac8->stopCameraMotion();
+  nextPage(unknown18, &unknown28, false);
+  for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
+    u32 id = unknown28.unknown40->getContents(i);
+    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_1, true);
+  }
+  return true;
+}
 
 } // namespace gf

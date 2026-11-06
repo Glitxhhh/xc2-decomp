@@ -41,7 +41,7 @@ static_assert(sizeof(unknown120) == 0x28, "");
 
 // Inferred role: save data mercenaries preset; original type name unknown.
 struct unknown121 {
-  u8 _00[0x0c - 0x00];
+  u16 unknown00[6]; // Inferred role: blades; original member name unknown.
 };
 
 static_assert(sizeof(unknown121) == 0x0c, "");
