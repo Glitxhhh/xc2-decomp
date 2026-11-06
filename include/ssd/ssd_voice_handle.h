@@ -44,6 +44,7 @@ public:
   static void FreeAdpcmSplitBuffer();
   void DisplayDebugVerbose();
   void DeleteHWVoice();
+  void FreeVoice();
   Result AllocHWVoice();
   Result Start(f32 fadeTime, bool pregap);
   Result Prepare(const SoundEntry *entry, SoundHandle *handle, u32 *id);
@@ -70,10 +71,12 @@ public:
   void UpdateGameFrame(f32 deltaTime);
   void UpdateAudioFrame(f32 deltaTime);
   void UpdateAudioInternal(f32 deltaTime);
+  void UpdateAudioVoice(f32 deltaTime);
   void UpdateAudioStream(f32 deltaTime);
   void NullBufferProcess();
   void LooppingBufferProcess();
   void AddLooppingBuffer();
+  Result AcquireBuffer();
   Result EnableBuffer();
   void UpdateOutputParam(f32 deltaTime);
   Result ReleaseBuffer();

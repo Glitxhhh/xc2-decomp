@@ -1,4 +1,5 @@
 #pragma once
+#include <stdarg.h>
 #include <stddef.h>
 
 #include "ssd/ssd_result.h"
@@ -64,11 +65,28 @@ extern Mutex OutStreamLock;
 void InitDebug();
 void QuitDebug();
 
+void get_log_time_stamp(LogTimeStamp::Type type, char *buffer, unsigned long size);
+void get_log_time_stamp(LogTimeStamp::Type type, char16_t *buffer, unsigned long size);
+void log_make_text(char *buffer, unsigned long size, const char *format, va_list args);
+void log_make_text(char16_t *buffer, unsigned long size, const char16_t *format, va_list args);
+void log_debug(Debug::LogFlag::Type flag, const char *format, ...);
+void log_debug(Debug::LogFlag::Type flag, const char16_t *format, ...);
 void log_message(const char *format, ...);
 void log_message(const char16_t *format, ...);
+void log_error(Result result, Debug::LogFlag::Type flag, const char *format, ...);
+void log_error(Result result, Debug::LogFlag::Type flag, const char16_t *format, ...);
+void log_warning(Result result, Debug::LogFlag::Type flag, const char *format, ...);
+void log_warning(Result result, Debug::LogFlag::Type flag, const char16_t *format, ...);
 const char16_t *get_logfilename(const char16_t *path);
 void abort();
-Result log_error(Result result, Debug::LogFlag::Type flag, const char *format, ...);
-Result log_error(Result result, Debug::LogFlag::Type flag, const char16_t *format, ...);
+
+template <typename T> T *vsprintf_impl(T *buffer, unsigned long size, const T *format, va_list args);
+
+int sprintf(char *buffer, unsigned long size, const char *format, ...);
+unsigned long sprintf(char16_t *buffer, unsigned long size, const char16_t *format, ...);
+int vsprintf(char *buffer, unsigned long size, const char *format, va_list args);
+unsigned long vsprintf(char16_t *buffer, unsigned long size, const char16_t *format, va_list args);
+void printf(const char *format, ...);
+void printf(const char16_t *format, ...);
 
 } // namespace ssd

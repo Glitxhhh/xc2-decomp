@@ -4,6 +4,7 @@
 #include "ssd/ssd_allocator.h"
 #include "ssd/ssd_behavior.h"
 #include "ssd/ssd_behavior_impl.h" // IWYU pragma: keep
+#include "ssd/ssd_delegate.h"
 #include "ssd/ssd_result.h"
 #include "ssd/ssd_sound.h"
 #include "ssd/ssd_sound_core.h"
@@ -91,44 +92,34 @@ void VoiceHandle::Quit() {
   }
 }
 
-void VoiceHandle::DeleteStream() {
-  if (unknown70 != nullptr) {
-    unknown70->QuitStream();
-    StreamController *stream = unknown70;
-    SoundMemory::allocator_->unknown001(stream);
-    unknown44 = 1;
-    unknown70 = nullptr;
-  }
-}
-
-Result VoiceHandle::SetPlayPositionImpl() {
-  StreamController *stream = unknown70;
-  u64 position;
-  if (stream == nullptr) {
-    position = static_cast<u32>(unknown6a0.unknown00);
-  } else {
-    WaveSource *source = stream;
-    if (unknown669 == 3) {
-      position = source->TimeToSample(unknown6a0.unknown01) * stream->unknown40;
-    } else if (unknown669 == 2) {
-      position = source->SampleToPosition(static_cast<u32>(unknown6a0.unknown00));
-    } else {
-      position = static_cast<u32>(unknown6a0.unknown00);
-    }
-  }
-  unknown44 = 6;
-  unknown88 = 0;
-  unknown669 = 0;
-  unknown668 = false;
-  unknown688 = position;
-  unknown690 = position;
-  if (unknown70 != nullptr) {
-    unknown70->SetReadPosition(position);
-  }
-  return static_cast<Result>(1);
-}
-
 void VoiceHandle::DeleteHWVoice() {}
+
+void VoiceHandle::FreeVoice() {
+  unknown78 = &VoiceHandle::NullBufferProcess;
+  unknown3a = true;
+  if (unknown58 != nullptr) {
+    unknown58->unknown59 = false;
+    unknown58->unknown5a = true;
+    unknown58->unknown100.ExecuteDelegateImpl(reinterpret_cast<unsigned long long>(unknown58), 1);
+    unknown58->unknown30 = nullptr;
+    unknown58->unknownf8 = 0;
+    unknown58 = nullptr;
+  }
+  if (unknown70 != nullptr) {
+    DeleteStream();
+  }
+  static_cast<SystemCore *>(SoundCore::instance_)->FreeVoiceHandle(this);
+  if (unknown3b) {
+    DeleteHWVoice();
+    unknown3b = false;
+  }
+  Quit();
+  if (unknown68 != nullptr) {
+    unknown68->unknown6c--;
+    unknown60 = nullptr;
+    unknown68 = nullptr;
+  }
+}
 
 Result VoiceHandle::AllocHWVoice() { return static_cast<Result>(0); }
 
@@ -202,6 +193,32 @@ Result VoiceHandle::GetPlaySample(unsigned long long *sample) const {
   return result;
 }
 
+Result VoiceHandle::GetPlayTime(f32 *time) const {
+  u64 position;
+  Result result = GetPlayPosition(&position);
+  if (result >= 0) {
+    WaveSource *source = unknown68;
+    f32 value = 0.0f;
+    if (source->unknown34 == WaveSource::unknown001_3) {
+      bool hasData = source->unknown18;
+      f32 sample = static_cast<f32>(position * 14 / 8);
+      if (hasData == false) {
+        sample = 0.0f;
+      }
+      value = sample / source->unknown2c;
+    } else if (source->unknown18) {
+      f32 sample = 0.0f;
+      if (source->unknown40 != 0) {
+        u64 count = static_cast<u32>(position / source->unknown40);
+        sample = count;
+      }
+      value = sample / source->unknown2c;
+    }
+    *time = value;
+  }
+  return set_result(static_cast<Result>(0));
+}
+
 Result VoiceHandle::Start(f32 fadeTime, bool pregap) {
   if (SoundCore::instance_->unknown11) {
     unknown44 = 4;
@@ -229,6 +246,22 @@ Result VoiceHandle::SetPlayPosition(u64 position) {
   unknown669 = 1;
   core->UnlockAudio();
   return set_result(static_cast<Result>(0));
+}
+
+Result VoiceHandle::Stop(f32 fadeTime) {
+  unknown6d0.Set(0.0f, fadeTime);
+  if (unknown70 != nullptr) {
+    unknown70->unknownf5 = false;
+  }
+  unknown44 = 9;
+  unknown36 = true;
+  unknown37 = false;
+  unknown32 = false;
+  unknown3d = true;
+  unknown33 = false;
+  unknown34 = false;
+  unknown35 = false;
+  return static_cast<Result>(0);
 }
 
 Result VoiceHandle::SetPlaySample(unsigned long long sample) {
@@ -383,86 +416,6 @@ void VoiceHandle::UpdateGameFrame(f32 deltaTime) {
     unknown6f4 = angle;
   }
 }
-
-void VoiceHandle::UpdateAudioFrame(f32 deltaTime) {
-  if (unknown70 != nullptr) {
-    UpdateAudioStream(deltaTime);
-  } else {
-    UpdateAudioInternal(deltaTime);
-  }
-}
-
-Result VoiceHandle::EnableBuffer() {
-  UpdateOutputParam(0.0f);
-  if (!unknown33) {
-    for (int i = 0; i < unknown4c; i++) {
-      if (nn::audio::IsVoiceValid(&unknown90[i].unknown00)) {
-        nn::audio::SetVoicePlayState(&unknown90[i].unknown00, nn::audio::VoiceType::PlayState_Start);
-      }
-    }
-  }
-  return static_cast<Result>(0);
-}
-
-Result VoiceHandle::ReleaseBuffer() {
-  if (nn::audio::IsVoiceValid(&unknown90[0].unknown00)) {
-    for (int i = 0; i < unknown4c; i++) {
-      if (nn::audio::IsVoiceValid(&unknown90[i].unknown00)) {
-        nn::audio::ReleaseVoiceSlot(&unknown650->unknown168, &unknown90[i].unknown00);
-        SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
-        core->unknown410 -= unknown90[i].unknownb4;
-        unknown90[i].unknownb4 = 0;
-      }
-    }
-  }
-  return static_cast<Result>(0);
-}
-
-Result VoiceHandle::DisableBuffer() {
-  if (nn::audio::IsVoiceValid(&unknown90[0].unknown00)) {
-    SetHWVoiceState(nn::audio::VoiceType::PlayState_Stop);
-    unknown37 = true;
-  }
-  unknown668 = false;
-  return static_cast<Result>(0);
-}
-
-void VoiceHandle::StreamingBufferProcess() {
-  for (int i = 0; i < unknown4c; i++) {
-    nn::audio::WaveBuffer *buffer = nn::audio::GetReleasedWaveBuffer(&unknown90[i].unknown00);
-    if (i == 0 && buffer != nullptr) {
-      unknown690 += buffer->bufferSize;
-      unknown680 = 0;
-      unknown8c++;
-      unknown88--;
-    }
-  }
-  if (unknown8c != 0) {
-    AddStreamingBuffer();
-  }
-  unknown40 |= unknown88 == 0;
-}
-
-void VoiceHandle::SetHWVoiceState(nn::audio::VoiceType::PlayState state) {
-  for (int i = 0; i < unknown4c; i++) {
-    if (nn::audio::IsVoiceValid(&unknown90[i].unknown00)) {
-      // Original game bug: the requested state is ignored and every voice is stopped.
-      nn::audio::SetVoicePlayState(&unknown90[i].unknown00, nn::audio::VoiceType::PlayState_Stop);
-    }
-  }
-}
-
-void VoiceHandle::NullBufferProcess() {}
-
-void VoiceHandle::OneShotBufferProcess() {
-  if (nn::audio::GetReleasedWaveBuffer(&unknown90[0].unknown00) != nullptr) {
-    unknown88--;
-  }
-}
-
-void VoiceHandle::LooppingBufferProcess() {}
-
-void VoiceHandle::AddLooppingBuffer() { unknown88++; }
 
 template List<VoiceHandle> *List<VoiceHandle>::Delete();
 template List<VoiceHandle>::Node::~Node();

@@ -21,6 +21,7 @@ public:
   Handle *FindDelegate(const Handle *handle);
   Result RemoveDelegateImpl(Handle *handle);
   Handle *FindDelegateImpl(const Handle *handle);
+  void ExecuteDelegateImpl(unsigned long long argument1, unsigned long long argument2) const;
 
   List<Handle> unknown00; // Inferred role: registered delegates; original member name unknown.
 };
