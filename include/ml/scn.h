@@ -43,19 +43,20 @@ public:
     mm::Vec3 position;
     u8 _20[0x70 - 0x20];
     mm::Mat44 unknown70; // Inferred role: world matrix; original member name unknown.
-    u8 _b0[0xf0 - 0xb0];
-    mm::Vec3 unknownf0; // Inferred role: rotation; original member name unknown.
+    mm::Mat44 unknownb0; // Inferred role: view matrix; original member name unknown.
+    mm::Vec3 unknownf0;  // Inferred role: rotation; original member name unknown.
     u8 _100[0x140 - 0x100];
     mm::Vec3 m_targetPos;
-    f32 unknown150[4]; // Inferred role: frustum edges; original member name unknown.
-    u8 _160[0x1a0 - 0x160];
+    f32 unknown150[4];    // Inferred role: frustum edges; original member name unknown.
+    mm::Mat44 unknown160; // Inferred role: matrix converting view local to device coordinates; original member name unknown.
     mm::Mat44 unknown1a0; // Inferred role: projection matrix; original member name unknown.
-    u8 _1e0[0x1e8 - 0x1e0];
-    f32 unknown1e8; // Inferred role: fov in degrees; original member name unknown.
-    f32 unknown1ec; // Inferred role: inverse tangent of half fov; original member name unknown.
-    f32 unknown1f0; // Inferred role: aspect ratio; original member name unknown.
-    f32 unknown1f4; // Inferred role: near clip; original member name unknown.
-    u8 _1f8[0x1fc - 0x1f8];
+    s32 unknown1e0;       // Inferred role: viewport width; original member name unknown.
+    s32 unknown1e4;       // Inferred role: viewport height; original member name unknown.
+    f32 unknown1e8;       // Inferred role: fov in degrees; original member name unknown.
+    f32 unknown1ec;       // Inferred role: inverse tangent of half fov; original member name unknown.
+    f32 unknown1f0;       // Inferred role: aspect ratio; original member name unknown.
+    f32 unknown1f4;       // Inferred role: near clip; original member name unknown.
+    f32 unknown1f8;       // Inferred role: far clip; original member name unknown.
     f32 m_targetDist;
     mm::Plane unknown200[6]; // Inferred role: local planes; original member name unknown.
     mm::Plane unknown2c0[6]; // Inferred role: global planes; original member name unknown.
@@ -94,12 +95,18 @@ static_assert(offsetof(ScnObjCam, m_name) == 0x18, "");
 static_assert(offsetof(ScnObjCam, renderInfo) == 0x78, "");
 static_assert(offsetof(ScnObjCam, unknown80) == 0x80, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown70) == 0x70, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknownb0) == 0xb0, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknownf0) == 0xf0, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, m_targetPos) == 0x140, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown150) == 0x150, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown160) == 0x160, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1e0) == 0x1e0, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1e4) == 0x1e4, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1e8) == 0x1e8, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1f0) == 0x1f0, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1f4) == 0x1f4, "");
+static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown1f8) == 0x1f8, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, m_targetDist) == 0x1fc, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown200) == 0x200, "");
 static_assert(offsetof(ScnObjCam::RENDER_INFO, unknown2c0) == 0x2c0, "");
