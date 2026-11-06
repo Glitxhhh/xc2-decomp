@@ -106,6 +106,17 @@ void DataManager::setOffsetSrc(const mm::Vec3 &pos, f32 rotY, bool isKeep) {
   }
 }
 
+void DataManager::setOffsetDes(const mm::Vec3 &pos, f32 rotY, bool isKeep) {
+  unknown120->unknown90.setRotY(rotY);
+  unknown120->unknown90.setTrans(mm::Vec3(pos));
+  unknown120->unknownd0 = unknown120->unknown50 * unknown120->unknown90;
+  unknown120->unknown110 = mm::Vec3(0.0f, rotY, 0.0f);
+  if (isKeep) {
+    unknown120->unknown120 = unknown120->unknownd0;
+    unknown120->unknown160 = unknown120->unknown110;
+  }
+}
+
 void DataManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
   case MSG_TYPE_INIT:
