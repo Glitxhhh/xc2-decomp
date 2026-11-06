@@ -17,6 +17,7 @@
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/gf_component.h"
+#include "gf/object/component/gimmick/gf_com_behavior_gmk.h"
 #include "gf/object/component/pc/field/gf_pc_param_field.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
@@ -27,7 +28,9 @@
 #include "gf/object/component/pc/plugin/gf_pc_access_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_dead_col_check_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_fade_plugin.h"
+#include "gf/object/component/pc/plugin/gf_pc_fall_distance_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_fall_into_coli_plugin.h"
+#include "gf/object/component/pc/plugin/gf_pc_look_at_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_lure_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_water_in_plugin.h"
 #include "gf/object/gf_obj.h"
@@ -231,9 +234,31 @@ void StateUtilField::resetCameraForWall(GfComBehaviorPc &behavior, Timing timing
   GfGamePlayerCamera::resetCameraClimb(CAMERA_TIMINGS[timing]);
 }
 
+void StateUtilField::notifySkillAct(GfComBehaviorPc &behavior, bool isSkillAct) {
+  GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+  if (property != nullptr) {
+    GfObj *obj = GfObjUtil::getObj(property->unknown310.unknown78);
+    if (obj != nullptr) {
+      MsgPcFieldNotifySkillEvent message(!isSkillAct);
+      static_cast<GfObj *>(behavior.unknown08)->sendMessage(obj, message);
+      if (!isSkillAct) {
+        property->unknown310.unknown78 = INVALID_HANDLE;
+      }
+    }
+  }
+}
+
 void StateUtilField::notifyRiderEvent(GfComBehaviorPc &behavior, VehicleEvent event) {
   MsgPcFieldNotifyRiderEvent message(event);
   StateUtil::sendMessageToRider(behavior, message);
+}
+
+void StateUtilField::requestGetOffRider(GfComBehaviorPc &behavior) {
+  GfGameRide *ride = GfGameRide::get();
+  if (ride != nullptr) {
+    MsgGameRideEvent message(RIDE_EVENT_GET_DOWN_FORCE);
+    static_cast<GfObj *>(behavior.unknown08)->sendMessage(ride, message);
+  }
 }
 
 bool StateUtilField::isBackMove(GfComPropertyPc &property) {
@@ -245,9 +270,39 @@ bool StateUtilField::isInterruptionWater(GfComPropertyPc &property) {
   return 0.2f <= property.unknown160.y - depth;
 }
 
+f32 StateUtilField::calcFallSpeed(GfComPropertyPc &property) {
+  const fw::Transform &locomotion = property.getLocomotion();
+  f32 speed = locomotion.unknown00.y + property.unknownc0 * property.unknownd0.y;
+  speed = property.unknown100.y + speed;
+  return property.unknown90 + speed;
+}
+
+bool StateUtilField::isBigSplashFallSpeed(GfComBehaviorPc &behavior) {
+  GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+  const MoveParam *param = property->unknown005();
+  return calcFallSpeed(*property) <= -param->bigSplashSpeed;
+}
+
+bool StateUtilField::isBigLandDistance(GfComBehaviorPc &behavior) {
+  FallDistancePlugin *plugin = behavior.unknown001<FallDistancePlugin>(17);
+  if (plugin != nullptr) {
+    GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+    const MoveParam *param = property->unknown005();
+    return plugin->calcDistance(property->unknown160) + 0.01f >= param->landBigDist;
+  }
+
+  return false;
+}
+
 bool StateUtilField::isSwimFromAir(GfComPropertyPc &property) {
   const WaterCommonParam *param = property.unknown310.unknown002();
   return property.unknown90 >= param->waterDiveMinSpeed;
+}
+
+bool StateUtilField::isSwimMoveFromAir(GfComPropertyPc &property) {
+  const WaterCommonParam *param = property.unknown310.unknown005();
+  f32 speed = sqrtf(property.unknown80.x * property.unknown80.x + property.unknown80.y * property.unknown80.y + property.unknown80.z * property.unknown80.z);
+  return property.existInputXY() && speed >= param->swimEnableSpeed;
 }
 
 bool StateUtilField::isWallFall(GfComPropertyPc &property) {
@@ -464,6 +519,22 @@ GF_OBJ_HANDLE *StateUtilField::getLureTargetHandle(GfComBehaviorPc &behavior) {
   }
 
   return INVALID_HANDLE;
+}
+
+void StateUtilField::setLookAtFlag(GfComBehaviorPc &behavior, bool isEnable) {
+  GfComPropertyPc *property = behavior.getProperty();
+  if (isEnable) {
+    property->unknown310.unknown10_1 = true;
+  } else {
+    property->unknown310.unknown10_1 = false;
+  }
+
+  if (StateUtil::getTarget(behavior) == INVALID_HANDLE) {
+    LookAtPlugin *plugin = behavior.unknown001<LookAtPlugin>(5);
+    if (plugin != nullptr) {
+      plugin->setActivate(isEnable);
+    }
+  }
 }
 
 void StateUtilField::startWaterWarpFade(GfComBehaviorPc &behavior) { behavior.unknown001<FadePlugin>(11)->setActivate(true); }
