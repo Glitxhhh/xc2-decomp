@@ -1,9 +1,16 @@
 #include "gf/game/smn_enemy/gf_smn_enemy.h"
+#include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_util.h"
 #include "mm_mtl/vector.h"
 
 #include <algorithm>
 
 namespace gf {
+
+bool GfRelSmnEnemy::isOwnerValid() const {
+  GfObjAcc acc(unknown10);
+  return !acc.isDestroy() && !acc.testFlag(OBJ_FLAG_UI_HIDDEN) && acc.getObj() != nullptr;
+}
 
 void GfRelSmnEnemy::removeEnemy(GF_OBJ_HANDLE *handle) {
   if (!unknown78.empty()) {

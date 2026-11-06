@@ -30,7 +30,11 @@ public:
   void removeEnemy(GF_OBJ_HANDLE *handle);
   void listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectType) override;
 
-  u8 _08[0x78 - 0x08];
+  bool isOwnerValid() const;
+
+  u8 _08[0x10 - 0x08];
+  GF_OBJ_HANDLE *unknown10; // Inferred role: owner object; original member name unknown.
+  u8 _18[0x78 - 0x18];
   mm::mtl::Vector<std::pair<PopInfo *, GF_OBJ_HANDLE *>> unknown78; // Inferred role: pop enemies; original member name unknown.
   mm::mtl::Vector<GF_OBJ_HANDLE *> unknowna0;                       // Inferred role: wait enemies; original member name unknown.
 };

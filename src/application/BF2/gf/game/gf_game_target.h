@@ -16,6 +16,7 @@ public:
   static void destroy();
   static void update(const fw::UpdateInfo &info);
   static void lockTarget(bool isLock);
+  static void disableTargetWithoutEnemy();
   void changeBattleTarget(bool isEnable);
 };
 

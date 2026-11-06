@@ -1,6 +1,8 @@
 #pragma once
 #include <stddef.h>
 
+#include "framework/message/message_object.h"
+#include "gf/event/gf_event.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -9,23 +11,36 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
-class GfGameRide : public mm::mtl::PtrSingleton<GfGameRide> {
+struct MsgGameRideEvent : fw::Message {
+  u32 unknown08; // Inferred role: ride event type; original member name unknown.
+};
+
+class GfGameRide : public mm::mtl::PtrSingleton<GfGameRide>, public IGfEvent, public fw::MessageObject {
 public:
+  GfGameRide();
+  ~GfGameRide();
   static void build(const GfSetupParam &param);
+  void setup();
   static void destroy();
+  void cleanup();
   static void setRideOn(bool isRide);
+  void rideOn();
+  void getDown(GF_OBJ_HANDLE *handle);
   static bool isRideOnPair();
   static bool testRideOn();
   static bool isRider(GF_OBJ_HANDLE *handle);
   void resetHandles();
   static bool isVehicle(GF_OBJ_HANDLE *handle);
+  void gevPartyReturnFieldState(u32 state) override;
+  bool recieveMessage(fw::MessageObject *sender, fw::Message &message) override;
+  void procMsgGameRideEvent(fw::MessageObject *sender, MsgGameRideEvent &message);
 
-  u8 _08[0x28 - 0x08];
   GF_OBJ_HANDLE *unknown28; // Inferred role: vehicle; original member name unknown.
   GF_OBJ_HANDLE *unknown30; // Inferred role: rider; original member name unknown.
 };
 
 static_assert(offsetof(GfGameRide, unknown28) == 0x28, "");
 static_assert(offsetof(GfGameRide, unknown30) == 0x30, "");
+static_assert(sizeof(GfGameRide) == 0x38, "");
 
 } // namespace gf
