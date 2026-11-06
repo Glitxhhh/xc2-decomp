@@ -106,7 +106,7 @@ public:
   s32 unknown98; // Inferred role: resident size; original member name unknown.
   u8 _9c[0xa2 - 0x9c];
   s16 unknowna2; // Inferred role: tex stream object max; original member name unknown.
-  u8 _a4[0xa6 - 0xa4];
+  s16 unknowna4; // Inferred role: tex stream count; original member name unknown.
   s16 unknowna6; // Inferred role: reference count; original member name unknown.
   s16 unknowna8; // Inferred role: error wait count; original member name unknown.
   s16 unknownaa; // Inferred role: request wait count; original member name unknown.
@@ -131,6 +131,7 @@ static_assert(offsetof(DrCalcStmListObj, unknown50) == 0x50, "");
 static_assert(offsetof(DrCalcStmListObj, unknown84) == 0x84, "");
 static_assert(offsetof(DrCalcStmListObj, unknown94) == 0x94, "");
 static_assert(offsetof(DrCalcStmListObj, unknowna2) == 0xa2, "");
+static_assert(offsetof(DrCalcStmListObj, unknowna4) == 0xa4, "");
 static_assert(offsetof(DrCalcStmListObj, unknowna6) == 0xa6, "");
 static_assert(offsetof(DrCalcStmListObj, unknowna8) == 0xa8, "");
 static_assert(offsetof(DrCalcStmListObj, unknownc8) == 0xc8, "");
