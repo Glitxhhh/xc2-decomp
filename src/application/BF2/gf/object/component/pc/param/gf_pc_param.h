@@ -6,6 +6,35 @@
 namespace gf {
 namespace pc {
 
+// Field name and offset from the reflection built by gf::pc::InputParam::createReflection (gf_pc_param.cpp).
+struct InputParam {
+  f32 threshold;
+};
+
+static_assert(sizeof(InputParam) == 0x04, "");
+
+// Field names and offsets from the reflection built by gf::pc::MoveParam::createReflection (gf_pc_param.cpp); the names are
+// the reflection strings of the game.
+struct MoveParam {
+  f32 gravity;
+  f32 adsorptionMin;
+  f32 adsorptionMax;
+  f32 adsorptionMaxAngle;
+  f32 colVelDamping;
+  f32 colVelLanchMax;
+  f32 landBigDist;
+  f32 bigSplashSpeed;
+  f32 jumpRatio;
+  f32 addMaxSpeedBuddy;
+  f32 addMaxSpeedBuddySwim;
+};
+
+static_assert(offsetof(MoveParam, landBigDist) == 0x18, "");
+static_assert(offsetof(MoveParam, bigSplashSpeed) == 0x1c, "");
+static_assert(offsetof(MoveParam, jumpRatio) == 0x20, "");
+static_assert(offsetof(MoveParam, addMaxSpeedBuddySwim) == 0x28, "");
+static_assert(sizeof(MoveParam) == 0x2c, "");
+
 // Field names and offsets from the reflection built by gf::pc::SlideParam::createReflection (gf_pc_param.cpp).
 struct SlideParam {
   f32 minAngle;

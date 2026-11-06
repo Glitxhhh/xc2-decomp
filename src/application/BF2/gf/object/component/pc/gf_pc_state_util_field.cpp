@@ -1,5 +1,8 @@
 #include "gf/object/component/pc/gf_pc_state_util_field.h"
 
+#include <float.h>
+#include <math.h>
+
 #include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/reference_frame.h"
@@ -10,6 +13,7 @@
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/game/gf_game_ride.h"
 #include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/behavior/movement/gf_move_run.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/gf_component.h"
@@ -17,10 +21,12 @@
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/gf_pc_agent_util_field.h"
+#include "gf/object/component/pc/gf_pc_move_util_field.h"
 #include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/component/pc/param/gf_pc_param.h"
 #include "gf/object/component/pc/plugin/gf_pc_access_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_dead_col_check_plugin.h"
+#include "gf/object/component/pc/plugin/gf_pc_fade_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_fall_into_coli_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_lure_plugin.h"
 #include "gf/object/component/pc/plugin/gf_pc_water_in_plugin.h"
@@ -28,6 +34,7 @@
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_plane.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
@@ -36,6 +43,35 @@
 
 namespace gf {
 namespace pc {
+
+f32 calcInputDiffAngle(GfComPropertyPc &property) {
+  mm::Vec3 input = property.unknown2b0 * property.unknown60.unknown04 + property.unknown2d0 * property.unknown60.unknown00;
+  if (!(fabsf(input.x) <= 0.000001f) || !(fabsf(input.y) <= 0.000001f) || !(fabsf(input.z) <= 0.000001f)) {
+    input.unknown001();
+    f32 cosine = mm::clamp(input.x * property.unknown1e0.x + input.y * property.unknown1e0.y + input.z * property.unknown1e0.z, -1.0f, 1.0f);
+    return mm::acos(cosine);
+  }
+
+  return 0.0f;
+}
+
+f32 calcInputDiffAngleVel(GfComPropertyPc &property) {
+  mm::Vec3 input = property.unknown2b0 * property.unknown60.unknown04 + property.unknown2d0 * property.unknown60.unknown00;
+  if (!(fabsf(input.x) <= 0.000001f) || !(fabsf(input.y) <= 0.000001f) || !(fabsf(input.z) <= 0.000001f)) {
+    input.unknown001();
+    mm::Vec3 direction = property.unknown80;
+    if (!(fabsf(direction.x) <= 0.000001f) || !(fabsf(direction.y) <= 0.000001f) || !(fabsf(direction.z) <= 0.000001f)) {
+      direction.unknown001();
+    } else {
+      direction = property.unknown1e0;
+    }
+
+    f32 cosine = mm::clamp(input.x * direction.x + input.y * direction.y + input.z * direction.z, -1.0f, 1.0f);
+    return mm::acos(cosine);
+  }
+
+  return 0.0f;
+}
 
 bool StateUtilField::execAsmCmd(GfComAsm &comAsm, ASM_CMD_ID_FIELD id) { return comAsm.execCmd(getASMCmdNameField(id), ANIM_LAYER_BASE); }
 
@@ -55,6 +91,62 @@ bool StateUtilField::isTurnEndRange(GfComPropertyPc &property) {
 bool StateUtilField::isInputInverseDir(GfComPropertyPc &property) {
   mm::Vec3 input = property.unknown2b0 * property.unknown60.unknown04 + property.unknown2d0 * property.unknown60.unknown00;
   return input.x * property.unknown1e0.x + input.y * property.unknown1e0.y + input.z * property.unknown1e0.z < 0.0f;
+}
+
+bool StateUtilField::isTurnEndRangeCacheInput(GfComPropertyPc &property, const mm::Vec3 &direction) {
+  f32 cosine = mm::clamp(direction.x * property.unknown1e0.x + direction.y * property.unknown1e0.y + direction.z * property.unknown1e0.z, -1.0f, 1.0f);
+  f32 angle = mm::acos(cosine);
+  return property.unknown310.unknown001()->turnEndAngle >= angle;
+}
+
+bool StateUtilField::isSlideGroundLanding(GfComPropertyPc &property) {
+  if (!property.unknown110_4) {
+    return false;
+  }
+
+  EnviromentSensor *sensor = property.getEnvSensor();
+  if (!sensor->unknown24_0) {
+    return false;
+  }
+
+  if (!((sensor->unknown30.unknown30 >> 5) & 1)) {
+    return false;
+  }
+
+  const SlideParam *param = property.unknown004();
+  const mm::Plane &plane = sensor->unknown30.unknown10;
+  f32 cosine = mm::clamp(plane.normal.x * mm::Vec3::unitY.x + plane.normal.y * mm::Vec3::unitY.y + plane.normal.z * mm::Vec3::unitY.z, -1.0f, 1.0f);
+  return mm::acos(cosine) * mm::RAD_TO_DEG > param->minAngle;
+}
+
+bool StateUtilField::isEndSlipPosuture(GfComBehaviorPc &behavior) {
+  GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+  const SlideParam *param = property->unknown004();
+  if (isSlideSlope(*property)) {
+    return false;
+  }
+
+  const mm::Vec3 &direction = property->unknownd0;
+  mm::Vec3 velocity = mm::Vec3::unitY * property->unknown90 + property->unknown80 + direction * property->unknownc0;
+  return direction.x * velocity.x + direction.y * velocity.y + direction.z * velocity.z <= param->endVel;
+}
+
+bool StateUtilField::isStartSlidePosuture(GfComBehaviorPc &behavior) {
+  GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+  const SlideParam *param = property->unknown004();
+  if (!StateUtil::isOnSlideGround(behavior)) {
+    return false;
+  }
+
+  if (!(property->unknownf0 >= param->startTime)) {
+    const mm::Vec3 &direction = property->unknownd0;
+    mm::Vec3 velocity = mm::Vec3::unitY * property->unknown90 + property->unknown80 + direction * property->unknownc0;
+    if (!(direction.x * velocity.x + direction.y * velocity.y + direction.z * velocity.z >= param->startVel)) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 bool StateUtilField::isBackRange(GfComPropertyPc &property) { return calcInputDiffAngle(property) >= property.unknown310.unknown001()->backAngle; }
@@ -176,6 +268,33 @@ bool StateUtilField::isFallFromSlideState(GfComPropertyPc &property) {
 }
 
 void StateUtilField::setAsmSpeedSlideBrake(GfComPropertyPc &property) { property.unknown08->getComponent<GfComAsm>()->setVariable("V_speed", property.unknownc0 * 60.0f * 60.0f / 1000.0f); }
+
+f32 StateUtilField::setAsmSpeedMove(GfComPropertyPc &property) {
+  GfComAsm *comAsm = property.unknown08->getComponent<GfComAsm>();
+  f32 speed = sqrtf(property.unknown80.x * property.unknown80.x + property.unknown80.y * property.unknown80.y + property.unknown80.z * property.unknown80.z);
+  if (property.unknown38 & 1) {
+    f32 effect = MoveUtilField::getSpeedEffect(property);
+    speed = speed / (effect + 1.0f);
+    f32 velocityMax = static_cast<const GfMoveRunControler::Param *>(property.unknown310.unknown08->unknown10[3].param)->velocityMax;
+    speed = speed < velocityMax ? speed : velocityMax;
+    speed = (effect + 1.0f) * speed;
+  }
+
+  speed = speed * 60.0f * 60.0f / 1000.0f;
+  comAsm->setVariable("V_speed", speed);
+  return speed;
+}
+
+void StateUtilField::setAsmSpeedSwim(GfComPropertyPc &property) {
+  const fw::ParamList *paramList = property.unknown310.unknown08.operator->();
+  const GfMoveRunControler::Param *param = paramList->unknown0c > 10 ? static_cast<const GfMoveRunControler::Param *>(paramList->unknown10[10].param) : nullptr;
+  f32 speed = sqrtf(property.unknown80.x * property.unknown80.x + property.unknown80.y * property.unknown80.y + property.unknown80.z * property.unknown80.z);
+  f32 range = param->velocityMax - param->velocityMin;
+  f32 ratio = mm::clamp(fabsf(range) > FLT_EPSILON ? (speed - param->velocityMin) / range : 0.0f, 0.0f, 1.0f);
+  const WaterCommonParam *waterParam = property.unknown310.unknown002();
+  f32 motionSpeed = ratio + (1.0f - ratio) * waterParam->swimMotionMin;
+  property.unknown08->getComponent<GfComAsm>()->setSpeed(motionSpeed, ANIM_LAYER_BASE);
+}
 
 bool StateUtilField::isSlideStop(GfComPropertyPc &property) {
   const SlideParam *param = property.unknown001();
@@ -327,6 +446,85 @@ void StateUtilField::setEnableWaterIn(GfComBehaviorPc &behavior, bool isEnable) 
   if (plugin != nullptr) {
     plugin->setActivate(isEnable);
   }
+}
+
+GfObj *StateUtilField::getLureTarget(GfComBehaviorPc &behavior) {
+  LurePlugin *plugin = behavior.unknown001<LurePlugin>(15);
+  if (plugin != nullptr) {
+    return GfObjUtil::getObj(plugin->unknown10);
+  }
+
+  return nullptr;
+}
+
+GF_OBJ_HANDLE *StateUtilField::getLureTargetHandle(GfComBehaviorPc &behavior) {
+  LurePlugin *plugin = behavior.unknown001<LurePlugin>(15);
+  if (plugin != nullptr) {
+    return plugin->unknown10;
+  }
+
+  return INVALID_HANDLE;
+}
+
+void StateUtilField::startWaterWarpFade(GfComBehaviorPc &behavior) { behavior.unknown001<FadePlugin>(11)->setActivate(true); }
+
+void StateUtilField::onLandSliding(GfComBehaviorPc &behavior) {
+  GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+  const SlideParam *param = property->unknown001();
+  f32 speed = property->unknownc0;
+  f32 endVel = param->endVel;
+  property->unknownc0 = speed < endVel ? speed : endVel;
+  property->unknown80 = mm::Vec3::zero;
+}
+
+// Inferred role: stores the auto run direction and power from the input, the facing direction when there is no input (shared by setAutoRun and flipAutoRun); original name unknown.
+static inline void unknown001(GfComPropertyPc &property) {
+  mm::Vec3 input = property.unknown2d0 * property.unknown60.unknown00 + property.unknown2b0 * property.unknown60.unknown04;
+  f32 power = 0.0f;
+  if (!(fabsf(input.x) <= 0.000001f) || !(fabsf(input.y) <= 0.000001f) || !(fabsf(input.z) <= 0.000001f)) {
+    power = sqrtf(input.x * input.x + input.y * input.y + input.z * input.z);
+    input.unknown001();
+  } else {
+    input = property.unknown1e0;
+  }
+
+  property.unknown310.unknown60 = input;
+  property.unknown310.unknown70 = power;
+}
+
+void StateUtilField::setAutoRun(GfComPropertyPc &property, bool isAutoRun) {
+  if (isAutoRun) {
+    property.unknown310.unknown11_0 = true;
+  } else {
+    property.unknown310.unknown11_0 = false;
+  }
+
+  if (isAutoRun) {
+    unknown001(property);
+  }
+}
+
+void StateUtilField::flipAutoRun(GfComPropertyPc &property) {
+  if (!property.unknown310.unknown11_0) {
+    if (!(fabsf(property.unknown80.x) <= 0.000001f) || !(fabsf(property.unknown80.y) <= 0.000001f) || !(fabsf(property.unknown80.z) <= 0.000001f)) {
+      property.unknown310.unknown11_0 = true;
+      unknown001(property);
+    }
+  } else {
+    property.unknown310.unknown11_0 = false;
+  }
+}
+
+void StateUtilField::setAutoRunInput(GfComPropertyPc &property) {
+  if (!property.existInputXY()) {
+    property.setInputDirPow(property.unknown310.unknown60, property.unknown310.unknown70);
+    return;
+  }
+
+  mm::Vec3 input = property.unknown2d0 * property.unknown60.unknown00 + property.unknown2b0 * property.unknown60.unknown04;
+  input.unknown001();
+  property.unknown310.unknown60 = input;
+  property.setInputDirPow(input, property.unknown310.unknown70);
 }
 
 } // namespace pc

@@ -201,7 +201,7 @@ public:
   f32 unknown54;                                  // Inferred role: unique idle space (asm appendix "uniqueIdleSpace"); original member name unknown.
   u8 _58[0x60 - 0x58];
   mm::Vec3 unknown60; // Role and original member name unknown.
-  u32 unknown70;      // Role and original member name unknown.
+  f32 unknown70;      // Inferred role: input power paired with the direction at 0x60 (auto run); original member name unknown.
   u8 _74[0x78 - 0x74];
   GF_OBJ_HANDLE *unknown78;                // Inferred role: object that sent the jump or warp notification, told about the skill action; original member name unknown.
   MsgPcFieldNotifyBigJump unknown80;       // Inferred role: big jump info; original member name unknown.

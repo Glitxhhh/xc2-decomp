@@ -1,11 +1,14 @@
 #include "gf/object/component/pc/gf_com_property_pc.h"
 
+#include <math.h>
+
 #include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/pc/gf_pc_agent.h" // IWYU pragma: keep
+#include "gf/object/component/pc/param/gf_pc_param.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/unique_ptr.h" // IWYU pragma: keep
 
@@ -14,6 +17,41 @@ class MessageObject;
 } // namespace fw
 
 namespace gf {
+
+bool GfComPropertyPc::existInputXY() const {
+  const pc::InputParam *param = static_cast<const pc::InputParam *>(unknown300->unknown10[0].param);
+  bool exist = false;
+  if (!(fabsf(unknown60.unknown00) < param->threshold) || !(fabsf(unknown60.unknown04) < param->threshold)) {
+    exist = true;
+  }
+
+  return exist;
+}
+
+f32 GfComPropertyPc::getGravity() const {
+  if (!unknown110_3) {
+    return 0.0f;
+  }
+
+  return -static_cast<const pc::MoveParam *>(unknown300->unknown10[1].param)->gravity;
+}
+
+const fw::Transform &GfComPropertyPc::getLocomotion() const {
+  static const fw::Transform identity = {mm::Vec3::zero, mm::Quat::identity};
+  const fw::Transform &locomotion = unknown110_2 ? m_locomotion : identity;
+  return locomotion;
+}
+
+void GfComPropertyPc::setPadControl(bool padControl) {
+  if (padControl) {
+    unknown111_2 = true;
+  } else {
+    unknown111_2 = false;
+  }
+
+  resetParams();
+  unknown310.resetStatus(*this);
+}
 
 void GfComPropertyPc::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message) { message.unknown10 = unknown80 + mm::Vec3::unitY * unknown90; }
 

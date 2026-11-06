@@ -76,6 +76,10 @@ public:
   static mm::mtl::RTTI m_rtti;
 
   bool existInputXY() const;
+  f32 getGravity() const;
+  const fw::Transform &getLocomotion() const;
+  void setPadControl(bool padControl);
+  void resetParams();
   void setLocomotion(const anm::QsTransform &locomotion);
   void procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message);
   void setEnvSensorCheckFlags(u32 flags, bool isEnable);
@@ -89,6 +93,11 @@ public:
 
   // Inferred role: slide param of the pc param list entry 4 ("slide"); original name unknown.
   const pc::SlideParam *unknown001() const { return static_cast<const pc::SlideParam *>(unknown300->unknown10[4].param); }
+  // Inferred role: slide param of the pc param list entry 4 ("slide"), null when the list is shorter; original name unknown.
+  const pc::SlideParam *unknown004() const {
+    const fw::ParamList *paramList = unknown300.operator->();
+    return paramList->unknown0c > 4 ? static_cast<const pc::SlideParam *>(paramList->unknown10[4].param) : nullptr;
+  }
 
   // Inferred role: moving, from the velocity or the value at 0xc0 (shared by gf::pc::isMainPcMove and isBuddyPcMove); original
   // name unknown.
@@ -115,12 +124,17 @@ public:
   mm::Vec3 unknown80; // Inferred role: velocity; original member name unknown.
   f32 unknown90;      // Inferred role: vertical speed; original member name unknown.
   f32 unknown94;      // Inferred role: horizontal speed; original member name unknown.
-  u8 _98[0xc0 - 0x98];
+  u8 _98[0xa0 - 0x98];
+  fw::Transform m_locomotion;
   f32 unknownc0; // Role and original member name unknown.
-  u8 _c4[0x110 - 0xc4];
+  u8 _c4[0xd0 - 0xc4];
+  mm::Vec3 unknownd0; // Inferred role: slide direction, written by StateUtilField::setSlideDirForce; original member name unknown.
+  u8 _e0[0xf0 - 0xe0];
+  f32 unknownf0; // Role and original member name unknown; compared with the start time of the slide param by StateUtilField::isStartSlidePosuture.
+  u8 _f4[0x110 - 0xf4];
   u32 unknown110_0 : 1; // Inferred role: field control; original member name unknown.
   u32 unknown110_1 : 1; // Inferred role: battle control; original member name unknown.
-  u32 : 1;
+  u32 unknown110_2 : 1; // Inferred role: locomotion set by setLocomotion; original member name unknown.
   u32 unknown110_3 : 1; // Inferred role: enable gravity; original member name unknown.
   u32 unknown110_4 : 1; // Inferred role: set by GfPropertyField::flushOwner while sliding; original member name unknown.
   u32 unknown110_5 : 1; // Inferred role: water warp enabled, tested by AIAgentField::procMsgPcFieldNotifyWaterWarp; original member name unknown.
@@ -177,7 +191,10 @@ static_assert(offsetof(GfComPropertyPc, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfComPropertyPc, unknown80) == 0x80, "");
 static_assert(offsetof(GfComPropertyPc, unknown90) == 0x90, "");
 static_assert(offsetof(GfComPropertyPc, unknown94) == 0x94, "");
+static_assert(offsetof(GfComPropertyPc, m_locomotion) == 0xa0, "");
 static_assert(offsetof(GfComPropertyPc, unknownc0) == 0xc0, "");
+static_assert(offsetof(GfComPropertyPc, unknownd0) == 0xd0, "");
+static_assert(offsetof(GfComPropertyPc, unknownf0) == 0xf0, "");
 static_assert(offsetof(GfComPropertyPc, unknown114) == 0x114, "");
 static_assert(offsetof(GfComPropertyPc, unknown118) == 0x118, "");
 static_assert(offsetof(GfComPropertyPc, unknown11c) == 0x11c, "");
