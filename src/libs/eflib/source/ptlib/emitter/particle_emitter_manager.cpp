@@ -27,6 +27,7 @@
 #include "ptlib/emitter/particle_emitter_particle.h"
 #include "ptlib/emitter/particle_emitter_set_node.h"
 #include "ptlib/forcefield/particle_force_field.h"
+#include "ptlib/math/particle_keyframe_ip.h"
 #include "ptlib/particle_math.h"
 #include "ptlib/particle_system.h"
 #include "ptlib/renderer/particle_renderer_eff_state.h"
@@ -387,6 +388,30 @@ ParticleObj *EmitterManager::createCommon(EmitterObj *emitter) {
   return particle;
 }
 
+void EmitterManager::createSpd(EmitterObj *emitter, EmitterArg *arg, math::KeyFrameIP &keyFrame, f32 frame, ParticleObj *particle, bool isKeyframe) {
+  unknown006 *speed = emitter->unknown1c0;
+  if (speed == nullptr) {
+    particle->unknownac.x = 0.0f;
+    particle->unknownac.y = 0.0f;
+    return;
+  }
+  f32 value = speed->unknown00 + speed->unknown04 * math::unknown001(emitter->unknown268);
+  if (isKeyframe && (speed->unknown08 != 0 || speed->unknown0a != 0)) {
+    u16 offset = speed->unknown08;
+    if (offset == 0) {
+      offset = speed->unknown0a;
+    }
+    arg->get_kf(&keyFrame, offset, 2, frame, emitter->unknown250[3], &emitter->unknown220[0], &particle->unknownd8[0], emitter->unknown2b8[0]);
+    f32 factor = keyFrame.keyrand_get_ip1(&emitter->unknown220[0], emitter->unknown268);
+    if (speed->unknown08 != 0) {
+      particle->unknownac.z = factor;
+    }
+    value = value * factor;
+  }
+  particle->unknownac.y = value;
+  particle->unknownac.x = value * emitter->getEmitterScale();
+}
+
 void EmitterManager::emitter_create_local_common_life(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg) {
   u16 base = arg->unknown8e;
   u32 life;
@@ -405,6 +430,37 @@ void EmitterManager::emitter_create_local_common_life(EmitterObj *emitter, Parti
   particle->unknownbc = rate;
   particle->unknownb8 = 1.0f;
   particle->unknownc3 = 0;
+}
+
+void EmitterManager::emitter_create_local_common_update_kfinit(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg) {
+  if (arg->unknown00 == 4) {
+    ParticleManager::get()->update_model(particle, emitter, arg);
+  }
+  if (arg->unknown00 == 5) {
+    ParticleManager::get()->update_plight(particle, emitter);
+  }
+  memset(particle->getExtParam().unknown190, 0xff, sizeof(particle->getExtParam().unknown190));
+  memset(particle->getExtParam().unknown214, 0, sizeof(particle->getExtParam().unknown214));
+}
+
+void EmitterManager::emitter_create_local_common_rgba(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg, mm::Vec3 &color, mm::Vec3 &color2, f32 &scale) {
+  f32 colorScale = arg->unknown200;
+  u8 hasColor2 = arg->unknown1fc;
+  if (arg->unknown204 != 0.0f) {
+    colorScale += arg->unknown204 * math::unknown001(emitter->unknown268);
+  }
+  particle->getExtParam().unknown170 = colorScale;
+  color.x = 1.0f;
+  color.y = 1.0f;
+  color.z = 1.0f;
+  color2.x = 1.0f;
+  color2.y = 1.0f;
+  color2.z = 1.0f;
+  EmitterObj::calc_scale_col(&color, &arg->unknown214, colorScale, emitter->unknown268);
+  scale = arg->unknown244 + arg->unknown248 * math::unknown001(emitter->unknown268);
+  if (hasColor2 != 0) {
+    EmitterObj::calc_scale_col(&color2, &arg->unknown22c, scale, emitter->unknown268);
+  }
 }
 
 void EmitterManager::emitter_set_casparam(u32 handle, const void *model, EmitterParam *param) {

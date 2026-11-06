@@ -1,10 +1,13 @@
 #pragma once
 #include <stddef.h>
 
+#include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec3_na.h"
 #include "ptlib/emitter/particle_emitter_param.h"
+#include "ptlib/math/particle_keyframe_ip.h"
 #include "ptlib/particle_intrusive_list.h"
+#include "ptlib/particle_math.h"
 #include "types.h"
 
 namespace ml {
@@ -20,12 +23,6 @@ namespace renderer {
 class RenderSet;
 class StreamObj;
 } // namespace renderer
-
-namespace math {
-struct Vec3r;
-class KeyFrameIP;
-struct EPkey;
-} // namespace math
 
 namespace emitter {
 
@@ -101,8 +98,16 @@ struct EmitterArg {
   f32 unknown138; // Inferred role: draw parameter; original member name unknown.
   u8 _13c[0x18c - 0x13c];
   unknown008 unknown18c[2]; // Inferred role: animation parameters of the second and third uv layers; original member name unknown.
-  u8 _1fc[0x24c - 0x1fc];
-  f32 unknown24c[1]; // Inferred role: keyframe data; original member name unknown.
+  u8 unknown1fc;            // Inferred role: second color enabled; original member name unknown.
+  u8 _1fd[0x200 - 0x1fd];
+  f32 unknown200; // Inferred role: color scale base; original member name unknown.
+  f32 unknown204; // Inferred role: color scale random range; original member name unknown.
+  u8 _208[0x214 - 0x208];
+  math::Vec3r unknown214; // Inferred role: first color in HSV with the random end; original member name unknown.
+  math::Vec3r unknown22c; // Inferred role: second color in HSV with the random end; original member name unknown.
+  f32 unknown244;         // Inferred role: second color scale base; original member name unknown.
+  f32 unknown248;         // Inferred role: second color scale random range; original member name unknown.
+  f32 unknown24c[1];      // Inferred role: keyframe data; original member name unknown.
 };
 
 static_assert(offsetof(EmitterArg, unknown00) == 0x00, "");
@@ -134,17 +139,25 @@ static_assert(offsetof(EmitterArg, unknown124) == 0x124, "");
 static_assert(offsetof(EmitterArg, unknown12c) == 0x12c, "");
 static_assert(offsetof(EmitterArg, unknown138) == 0x138, "");
 static_assert(offsetof(EmitterArg, unknown24c) == 0x24c, "");
+static_assert(offsetof(EmitterArg, unknown1fc) == 0x1fc, "");
+static_assert(offsetof(EmitterArg, unknown200) == 0x200, "");
+static_assert(offsetof(EmitterArg, unknown214) == 0x214, "");
+static_assert(offsetof(EmitterArg, unknown22c) == 0x22c, "");
+static_assert(offsetof(EmitterArg, unknown244) == 0x244, "");
 
 // Inferred role: shared data of an emitter; original name unknown.
 struct unknown002 {
   const void *unknown00; // Inferred role: owner; original member name unknown.
-  u8 _08[0x70 - 0x08];
+  u8 _08[0x10 - 0x08];
+  mm::Mat44 unknown10; // Inferred role: transform of the emitter; original member name unknown.
+  u8 _50[0x70 - 0x50];
   char unknown70[0x10]; // Inferred role: name; original member name unknown.
   u8 _80[0x88 - 0x80];
   f32 unknown88; // Inferred role: scale; original member name unknown.
   u8 _8c[0x90 - 0x8c];
 };
 
+static_assert(offsetof(unknown002, unknown10) == 0x10, "");
 static_assert(offsetof(unknown002, unknown70) == 0x70, "");
 static_assert(offsetof(unknown002, unknown88) == 0x88, "");
 static_assert(sizeof(unknown002) == 0x90, "");
@@ -158,10 +171,45 @@ struct unknown004 {
   f32 unknown08; // Inferred role: direction x; original member name unknown.
   f32 unknown0c; // Inferred role: direction y; original member name unknown.
   f32 unknown10; // Inferred role: direction z; original member name unknown.
+  f32 unknown14; // Inferred role: force rate base; original member name unknown.
+  f32 unknown18; // Inferred role: force rate random range; original member name unknown.
 };
 
 static_assert(offsetof(unknown004, unknown04) == 0x04, "");
 static_assert(offsetof(unknown004, unknown10) == 0x10, "");
+static_assert(offsetof(unknown004, unknown18) == 0x18, "");
+
+// Inferred role: wind parameters of an emitter; original name unknown.
+struct unknown012 {
+  u16 unknown00;        // Inferred role: first frame; original member name unknown.
+  u16 unknown02;        // Inferred role: last frame, 0 for no limit; original member name unknown.
+  u16 unknown04;        // Inferred role: frame source; original member name unknown.
+  u16 unknown06;        // Inferred role: direction mode, 0, 8, 10 and 11 keep the direction as is; original member name unknown.
+  u16 unknown08;        // Inferred role: fade in frames; original member name unknown.
+  u16 unknown0a;        // Inferred role: fade out frames; original member name unknown.
+  mm::Vec3NA unknown0c; // Inferred role: direction; original member name unknown.
+  f32 unknown18;        // Inferred role: strength; original member name unknown.
+};
+
+static_assert(offsetof(unknown012, unknown06) == 0x06, "");
+static_assert(offsetof(unknown012, unknown0a) == 0x0a, "");
+static_assert(offsetof(unknown012, unknown0c) == 0x0c, "");
+static_assert(offsetof(unknown012, unknown18) == 0x18, "");
+
+// Inferred role: noise parameters of an emitter; original name unknown.
+struct unknown013 {
+  u16 unknown00; // Inferred role: first frame; original member name unknown.
+  u16 unknown02; // Inferred role: last frame, 0 for no limit; original member name unknown.
+  u16 unknown04; // Inferred role: frame source; original member name unknown.
+  u16 unknown06; // Inferred role: octaves; original member name unknown.
+  u16 unknown08; // Inferred role: fade in frames; original member name unknown.
+  u16 unknown0a; // Inferred role: fade out frames; original member name unknown.
+  f32 unknown0c; // Inferred role: frequency; original member name unknown.
+  f32 unknown10; // Inferred role: amplitude; original member name unknown.
+};
+
+static_assert(offsetof(unknown013, unknown06) == 0x06, "");
+static_assert(offsetof(unknown013, unknown10) == 0x10, "");
 
 // Inferred role: newton force parameters of an emitter; original name unknown.
 struct unknown005 {
@@ -180,11 +228,15 @@ static_assert(offsetof(unknown005, unknown1c) == 0x1c, "");
 
 // Inferred role: speed parameters of an emitter; original name unknown.
 struct unknown006 {
-  u8 _00[0x0c - 0x00];
+  f32 unknown00; // Inferred role: speed base; original member name unknown.
+  f32 unknown04; // Inferred role: speed random range; original member name unknown.
+  u16 unknown08; // Inferred role: speed keyframe offset that also sets the keyframe factor; original member name unknown.
+  u16 unknown0a; // Inferred role: speed keyframe offset used when the one at 0x08 is 0; original member name unknown.
   u16 unknown0c; // Inferred role: speed keyframe offset; original member name unknown.
 };
 
 static_assert(offsetof(unknown006, unknown0c) == 0x0c, "");
+static_assert(offsetof(unknown006, unknown08) == 0x08, "");
 
 // Inferred role: move function of an emitter, selected by EmitterObj::move_func; original name unknown.
 // Evidence: the assertion string "m_move_type < MOVE_TYPE_MAX" in EmitterObj::move_func.
@@ -213,6 +265,7 @@ public:
   static f32 check_ground(const mm::Vec3 &pos, f32 depth, f32 *rotate);
   static void check_ground_col(EmitterObj *emitter, const mm::Vec3 &pos, int index);
   static void calc_scale(mm::Vec3 *result, math::Vec3r *range, f32 scale, u32 &seed);
+  static void calc_scale_col(mm::Vec3 *result, math::Vec3r *range, f32 scale, u32 &seed);
   static void calc_start2goal01(EmitterObj *emitter, mm::Vec3 *start, mm::Vec3 *goal);
   f32 getEmitterScale();
   EmitterObj *emitter_free();
@@ -263,8 +316,13 @@ public:
   unknown004 *unknown1c8; // Inferred role: gravity; original member name unknown.
   unknown005 *unknown1d0; // Inferred role: newton; original member name unknown.
   u8 _1d8[0x1e0 - 0x1d8];
-  mm::Vec3 unknown1e0; // Inferred role: newton center; original member name unknown.
-  u8 _1f0[0x260 - 0x1f0];
+  mm::Vec3 unknown1e0;    // Inferred role: newton center; original member name unknown.
+  unknown012 *unknown1f0; // Inferred role: wind; original member name unknown.
+  unknown013 *unknown1f8; // Inferred role: noise; original member name unknown.
+  u8 _200[0x220 - 0x200];
+  math::EPkey unknown220[4]; // Inferred role: random keys of the emitter keyframe channels; original member name unknown.
+  s16 unknown250[7];         // Inferred role: loop frame of the emitter keyframe channels; original member name unknown.
+  u8 _25e[0x260 - 0x25e];
   u8 unknown260;       // Inferred role: priority; original member name unknown.
   u8 unknown261_0 : 4; // Inferred role: particle insert order, 1 appends at the back; original member name unknown.
   u8 unknown261_4 : 4; // Inferred role: child emitter that waits for its parent particle; original member name unknown.
@@ -310,6 +368,10 @@ static_assert(offsetof(EmitterObj, unknown18c) == 0x18c, "");
 static_assert(offsetof(EmitterObj, unknown1c8) == 0x1c8, "");
 static_assert(offsetof(EmitterObj, unknown1d0) == 0x1d0, "");
 static_assert(offsetof(EmitterObj, unknown1e0) == 0x1e0, "");
+static_assert(offsetof(EmitterObj, unknown1f0) == 0x1f0, "");
+static_assert(offsetof(EmitterObj, unknown1f8) == 0x1f8, "");
+static_assert(offsetof(EmitterObj, unknown220) == 0x220, "");
+static_assert(offsetof(EmitterObj, unknown250) == 0x250, "");
 static_assert(offsetof(EmitterObj, unknown260) == 0x260, "");
 static_assert(offsetof(EmitterObj, unknown264) == 0x264, "");
 static_assert(offsetof(EmitterObj, unknown268) == 0x268, "");

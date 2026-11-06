@@ -70,11 +70,14 @@ public:
   void particle_clear_union();
   void addCalcTbl(mm::Vec3 &vector, f32 scale);
   void calcGravity(EmitterObj *emitter, f32 speed, mm::Vec3 &result);
+  void calcWind(EmitterObj *emitter, mm::Vec3 &result);
+  void calcNoise(EmitterObj *emitter, mm::Vec3 &result);
   void calcNewton(EmitterObj *emitter, mm::Vec3 &result);
   void calcParRot(math::KeyFrameIP &keyFrame, f32 frame, EmitterObj *emitter, bool isCreate, f32 speed);
   void calcParPivot(math::KeyFrameIP &keyFrame, f32 frame, EmitterObj *emitter);
   void calcSpeed(EmitterObj *emitter, math::KeyFrameIP &keyFrame, f32 frame);
   void calcTurb(mm::Vec3 &result, f32 frequency, f32 amplitude, int octaves);
+  void calcExternalColor(mm::Vec3 &color, EmitterObj *emitter, f32 &alpha, int isFirst, int isSecond);
   void move_common_keyframe_uv23(vec2f *uv0, vec2f *uv1, f32 *rotation, EmitterObj *emitter, int index, f32 frame);
   bool move_common_check_begin_end(EmitterObj *emitter, u16 begin, u16 end, int mode) {
     f32 frame;
@@ -98,6 +101,7 @@ public:
   bool move_common_wait(int isMove, f32 speed);
   bool move_common_life(int isMove, f32 speed);
   void move_common_check_begin_end_sub(EmitterObj *emitter, int mode, u16 &begin, u16 &end);
+  f32 move_common_check_begin_end_fin_fout(EmitterObj *emitter, u16 begin, u16 end, u16 fadeIn, u16 fadeOut, int mode);
   void moveFlowMap(EmitterObj *emitter, int isMove);
   f32 move_common_keyframe_life(EmitterObj *emitter);
 

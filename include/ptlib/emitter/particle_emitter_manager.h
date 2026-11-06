@@ -6,10 +6,17 @@
 #include "ptlib/particle_intrusive_list.h"
 #include "types.h"
 
+namespace mm {
+struct Vec3;
+} // namespace mm
+
 namespace ptlib {
 
 struct CamParam;
 struct FxHeader;
+namespace math {
+class KeyFrameIP;
+} // namespace math
 
 namespace emitter {
 
@@ -42,6 +49,7 @@ public:
   static void *createFunc(EmitterObj *emitter, ParticleObj *particle, f32 frame, int param);
   static void *create_local01(EmitterObj *emitter, ParticleObj *particle, f32 frame, int param);
   ParticleObj *createCommon(EmitterObj *emitter);
+  void createSpd(EmitterObj *emitter, EmitterArg *arg, math::KeyFrameIP &keyFrame, f32 frame, ParticleObj *particle, bool isKeyframe);
   void emitter_set_param_pos_only(u32 handle, EmitterParam *param);
   void emitter_set_param_pos_only2(u32 handle, EmitterParam *param);
   void emitter_set_param(u32 handle, EmitterParam *param);
@@ -57,6 +65,8 @@ public:
   void emitter_set_free_all_sub(bool isForce);
   void emitter_set_link(FxHeader *header);
   void emitter_create_local_common_life(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg);
+  void emitter_create_local_common_update_kfinit(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg);
+  void emitter_create_local_common_rgba(EmitterObj *emitter, ParticleObj *particle, EmitterArg *arg, mm::Vec3 &color, mm::Vec3 &color2, f32 &scale);
   void emitter_pack_free(u64 pack);
   EmitterObj *emitter_alloc01(FxHeader *header, EmitterGroup *group, u32 key, ParticleObj *parent, int index, bool option, EmitterParam *param, f32 scale, int flags);
   void emitter_set_free(FxHeader *header, int frame);

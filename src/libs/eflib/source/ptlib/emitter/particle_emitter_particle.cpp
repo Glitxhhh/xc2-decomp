@@ -1,6 +1,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec3_na.h"
 #include "ptlib/emitter/particle_emitter.h"
@@ -135,6 +136,35 @@ void ParticleObj::calcGravity(EmitterObj *emitter, f32 speed, mm::Vec3 &result) 
   }
 }
 
+void ParticleObj::calcWind(EmitterObj *emitter, mm::Vec3 &result) {
+  unknown012 *wind = emitter->unknown1f0;
+  if (wind != nullptr) {
+    f32 rate = move_common_check_begin_end_fin_fout(emitter, wind->unknown00, wind->unknown02, wind->unknown08, wind->unknown0a, wind->unknown04);
+    f32 force = rate * emitter->getEmitterScale();
+    if (force > 0.0f) {
+      result.x += force * m_extParam->unknown30.x;
+      result.y += force * m_extParam->unknown30.y;
+      result.z += force * m_extParam->unknown30.z;
+    }
+  }
+}
+
+void ParticleObj::calcNoise(EmitterObj *emitter, mm::Vec3 &result) {
+  unknown013 *noise = emitter->unknown1f8;
+  if (noise != nullptr) {
+    f32 rate = move_common_check_begin_end_fin_fout(emitter, noise->unknown00, noise->unknown02, noise->unknown08, noise->unknown0a, noise->unknown04);
+    f32 force = rate * emitter->getEmitterScale();
+    if (force > 0.0f) {
+      mm::Vec3 turbulence;
+      TurbulenceN::turb3d(turbulence, unknown10, noise->unknown0c, noise->unknown10, noise->unknown06);
+      m_extParam->unknown40 += turbulence;
+      result.x += force * m_extParam->unknown40.x;
+      result.y += force * m_extParam->unknown40.y;
+      result.z += force * m_extParam->unknown40.z;
+    }
+  }
+}
+
 void ParticleObj::calcParRot(math::KeyFrameIP &keyFrame, f32 frame, EmitterObj *emitter, bool isCreate, f32 speed) {
   EmitterArg *arg = emitter->unknown98;
   if (arg->unknownc6 == 0) {
@@ -239,6 +269,25 @@ void ParticleObj::calcSpeed(EmitterObj *emitter, math::KeyFrameIP &keyFrame, f32
 }
 
 void ParticleObj::calcTurb(mm::Vec3 &result, f32 frequency, f32 amplitude, int octaves) { TurbulenceN::turb3d(result, unknown10, frequency, amplitude, octaves); }
+
+void ParticleObj::calcExternalColor(mm::Vec3 &color, EmitterObj *emitter, f32 &alpha, int isFirst, int isSecond) {
+  if (emitter->unknown98->unknown109 != 0) {
+    color.x = m_extParam->unknown130.x * emitter->m_param.unknown40.r;
+    color.y = m_extParam->unknown130.y * emitter->m_param.unknown40.g;
+    color.z = m_extParam->unknown130.z * emitter->m_param.unknown40.b;
+    alpha = m_extParam->unknown174 * emitter->m_param.unknown40.a;
+    m_extParam->unknown17c_u32 = Utility::conv_rgba(&color, alpha);
+  } else if (isFirst != 0) {
+    m_extParam->unknown17c_u32 = Utility::conv_rgba(&m_extParam->unknown130, m_extParam->unknown174);
+  }
+  if (isSecond != 0) {
+    mm::Vec3 second;
+    second.x = m_extParam->unknown140.x * emitter->m_param.unknown40.r;
+    second.y = m_extParam->unknown140.y * emitter->m_param.unknown40.g;
+    second.z = m_extParam->unknown140.z * emitter->m_param.unknown40.b;
+    m_extParam->unknown180_u32 = Utility::conv_rgba(&second, m_extParam->unknown174 * emitter->m_param.unknown40.a);
+  }
+}
 
 void ParticleObj::calc_fit(f32 &pitch, f32 &yaw, const mm::Vec3 *direction) {
   f32 y = direction->y;

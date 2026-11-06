@@ -23,7 +23,7 @@ public:
   f32 unknown20;      // Inferred role: force rate; original member name unknown.
   u8 _24[0x30 - 0x24];
   mm::Vec3 unknown30; // Inferred role: cleared when a force field hits the particle; original member name unknown.
-  u8 _40[0x50 - 0x40];
+  mm::Vec3 unknown40; // Inferred role: third force, cleared by the emitter creation; original member name unknown.
   mm::Vec3 unknown50; // Inferred role: cleared when a force field hits the particle; original member name unknown.
   u8 _60[0x70 - 0x60];
   mm::Vec3 unknown70; // Inferred role: cleared when a force field hits the particle; original member name unknown.
@@ -59,9 +59,21 @@ public:
     // Inferred role: draw parameters of the draw types 10 and 15, sharing the storage of the light and the model (cleared by ParticleObj::particle_clear_union); original member name unknown.
     f32 unknown108_f32[8];
   };
-  u8 _128[0x17c - 0x128];
-  f32 unknown17c; // Inferred role: draw parameter passed to the shader; original member name unknown.
-  f32 unknown180; // Inferred role: draw parameter passed to the shader, cleared by the constructor; original member name unknown.
+  u8 _128[0x130 - 0x128];
+  mm::Vec3 unknown130; // Inferred role: first external color, red green blue; original member name unknown.
+  mm::Vec3 unknown140; // Inferred role: second external color, red green blue; original member name unknown.
+  u8 _150[0x170 - 0x150];
+  f32 unknown170; // Inferred role: color scale; original member name unknown.
+  f32 unknown174; // Inferred role: external color alpha; original member name unknown.
+  u8 _178[0x17c - 0x178];
+  union {
+    f32 unknown17c;     // Inferred role: draw parameter passed to the shader; original member name unknown.
+    u32 unknown17c_u32; // Inferred role: packed first external color; original member name unknown.
+  };
+  union {
+    f32 unknown180;     // Inferred role: draw parameter passed to the shader, cleared by the constructor; original member name unknown.
+    u32 unknown180_u32; // Inferred role: packed second external color; original member name unknown.
+  };
   u8 _184[0x190 - 0x184];
   math::EPkey unknown190[11]; // Inferred role: random keys of each keyframe channel; original member name unknown.
   s16 unknown214[12];         // Inferred role: loop frame of each keyframe channel; original member name unknown.
@@ -74,6 +86,7 @@ static_assert(offsetof(ExtObj, m_emParent) == 0x08, "");
 static_assert(offsetof(ExtObj, unknown10) == 0x10, "");
 static_assert(offsetof(ExtObj, unknown20) == 0x20, "");
 static_assert(offsetof(ExtObj, unknown30) == 0x30, "");
+static_assert(offsetof(ExtObj, unknown40) == 0x40, "");
 static_assert(offsetof(ExtObj, unknown50) == 0x50, "");
 static_assert(offsetof(ExtObj, unknown70) == 0x70, "");
 static_assert(offsetof(ExtObj, unknownb2) == 0xb2, "");
@@ -94,6 +107,10 @@ static_assert(offsetof(ExtObj, unknown110) == 0x110, "");
 static_assert(offsetof(ExtObj, unknown118) == 0x118, "");
 static_assert(offsetof(ExtObj, unknown120) == 0x120, "");
 static_assert(offsetof(ExtObj, unknown108_f32) == 0x108, "");
+static_assert(offsetof(ExtObj, unknown170) == 0x170, "");
+static_assert(offsetof(ExtObj, unknown130) == 0x130, "");
+static_assert(offsetof(ExtObj, unknown140) == 0x140, "");
+static_assert(offsetof(ExtObj, unknown174) == 0x174, "");
 static_assert(offsetof(ExtObj, unknown17c) == 0x17c, "");
 static_assert(offsetof(ExtObj, unknown180) == 0x180, "");
 static_assert(offsetof(ExtObj, unknown190) == 0x190, "");
