@@ -5,49 +5,55 @@ namespace gf {
 
 struct EquipHana;
 
-// Inferred role: result codes of the GfGameUtilHana circuit, rank and exchange functions; original enum and enumerator names unknown.
-enum unknown003 {
-  unknown003_0 = 0,
-  unknown003_1 = 1,
-  unknown003_2 = 2,
-  unknown003_3 = 3,
-  unknown003_4 = 4,
-  unknown003_5 = 5,
-  unknown003_6 = 6,
-  unknown003_7 = 7,
-  unknown003_8 = 8,
-  unknown003_10 = 10,
+// Result codes of the GfGameUtilHana circuit, rank and exchange functions and of the GfMenuHanaAdapter checks.
+enum RESULT_HANA {
+  RESULT_HANA_UNKNOWN_0 = 0,   // Inferred role: success; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_1 = 1,   // Inferred role: circuit already open; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_2 = 2,   // Inferred role: circuit has no open cost; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_3 = 3,   // Inferred role: not enough ether; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_4 = 4,   // Inferred role: invalid blade; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_5 = 5,   // Inferred role: power over capacity or condition not met; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_6 = 6,   // Inferred role: rank unreachable or unsupported type; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_7 = 7,   // Inferred role: stock full; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_8 = 8,   // Inferred role: no item owned; original enumerator name unknown.
+  RESULT_HANA_UNKNOWN_10 = 10, // Inferred role: circuit not open; original enumerator name unknown.
 };
 
 class GfGameUtilHana {
 public:
   static void setupDefaultParts(u32 blade);
-  static u32 openArtsCircuit(u32 blade, u32 circuit);
-  static u32 isOpenArtsCircuit(u32 blade, u32 circuit);
+  static RESULT_HANA openArtsCircuit(u32 blade, u32 circuit);
+  static RESULT_HANA isOpenArtsCircuit(u32 blade, u32 circuit);
   static u32 getConvertToEther(u32 parts);
-  static u32 execConvertToEther(u32 parts);
+  static RESULT_HANA execConvertToEther(u32 parts);
   static u32 getEmptyParts(u32 parts);
   static u32 getEtherForOpenArtsCircuit(u32 blade, u32 circuit);
-  static u32 openCondenserCircuit(u32 blade, u32 circuit);
-  static u32 isOpenCondenserCircuit(u32 blade, u32 circuit);
+  static RESULT_HANA openCondenserCircuit(u32 blade, u32 circuit);
+  static RESULT_HANA isOpenCondenserCircuit(u32 blade, u32 circuit);
   static u32 getEtherForOpenCondenserCircuit(u32 blade, u32 circuit);
-  static u32 checkEquip(u32 blade, const EquipHana &equipParts);
-  static u32 getEquip(EquipHana &equipParts, u32 blade);
-  static u32 setEquip(u32 blade, const EquipHana &equipParts);
-  static u32 execPowerRankup(u32 blade, u32 rank);
-  static u32 isExecPowerRankup(u32 blade, u32 rank);
+  static RESULT_HANA checkEquip(u32 blade, const EquipHana &equipParts);
+  static RESULT_HANA getEquip(EquipHana &equipParts, u32 blade);
+  static RESULT_HANA setEquip(u32 blade, const EquipHana &equipParts);
+  static RESULT_HANA execPowerRankup(u32 blade, u32 rank);
+  static RESULT_HANA isExecPowerRankup(u32 blade, u32 rank);
   static u32 getNeedEtherForExecPowerRankup(u32 blade, u32 rank);
   static u32 getPowerRank(u32 blade);
-  static u32 exchangeRoleParts(u32 parts);
-  static u32 isExchangeRoleParts(u32 parts);
-  static u32 exchangeAttributeParts(u32 parts);
-  static u32 isExchangeAttributeParts(u32 parts);
-  static u32 exchangeArtsParts(u32 parts);
-  static u32 isExchangeArtsParts(u32 parts);
-  static u32 exchangeNArtsParts(u32 parts);
-  static u32 isExchangeNArtsParts(u32 parts);
-  static u32 exchangeCondenserParts(u32 parts);
-  static u32 isExchangeCondenserParts(u32 parts);
+  static RESULT_HANA exchangeRoleParts(u32 parts);
+  static RESULT_HANA isExchangeRoleParts(u32 parts);
+  static RESULT_HANA exchangeAttributeParts(u32 parts);
+  static RESULT_HANA isExchangeAttributeParts(u32 parts);
+  static RESULT_HANA exchangeArtsParts(u32 parts);
+  static RESULT_HANA isExchangeArtsParts(u32 parts);
+  static RESULT_HANA exchangeNArtsParts(u32 parts);
+  static RESULT_HANA isExchangeNArtsParts(u32 parts);
+  static RESULT_HANA exchangeCondenserParts(u32 parts);
+  static RESULT_HANA isExchangeCondenserParts(u32 parts);
+  static RESULT_HANA isEnableEquipRoleParts(u32 blade, u32 parts);
+  static RESULT_HANA isEnableEquipAttributeParts(u32 blade, u32 parts);
+  static RESULT_HANA isEnableEquipNArtsParts(u32 blade, u32 parts, u32 slot);
+  static RESULT_HANA isEnableEquipCondenserParts(u32 blade, u32 parts, u32 slot);
+  static RESULT_HANA isEnableEquipArtsParts(u32 blade, u32 parts, u32 slot);
+  static RESULT_HANA isEnableEquipExtendCondenserParts(u32 blade, u32 parts, u32 slot);
 };
 
 } // namespace gf

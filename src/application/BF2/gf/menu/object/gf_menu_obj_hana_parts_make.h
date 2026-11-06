@@ -1,4 +1,5 @@
 #pragma once
+#include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
 
@@ -15,8 +16,8 @@ public:
   static u32 getCrystalItemCount(u32 item);
   static u16 getFirstSortTableId(u32 type, u32 isEquip);
   static u32 getMakeItemCount(u32 parts);
-  static u32 makeParts(u32 type, u32 parts);
-  static u32 crystalParts(u32 type, u32 parts);
+  static RESULT_HANA makeParts(u32 type, u32 parts);
+  static RESULT_HANA crystalParts(u32 type, u32 parts);
 };
 
 } // namespace gf

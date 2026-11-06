@@ -2,7 +2,9 @@
 #include <stddef.h>
 
 #include "gf/menu/adapter/gf_menu_adapter.h"
+#include "gf/menu/list/gf_menu_id_list.h"
 #include "mm_mtl/delegate.h"
+#include "mm_mtl/reference_object.h"
 #include "types.h"
 
 namespace ui {
@@ -24,6 +26,17 @@ public:
     virtual u32 getMapId() = 0;
   };
 
+  class ListConverter : public IConverter {
+  public:
+    ListConverter(GfMenuIDList *list, int listIndex, bool unknown14) : list(list), listIndex(listIndex), unknown14(unknown14) { list->addRef(); }
+    ~ListConverter() override { mm::mtl::safeRelease(list); }
+    u32 getMapId() override;
+
+    GfMenuIDList *list;
+    int listIndex;
+    bool unknown14; // Inferred role: index is a page index; original member name unknown.
+  };
+
   class ReferenceConverter : public IConverter {
   public:
     u32 getMapId() override;
@@ -37,6 +50,7 @@ public:
   bool update_DevelopLvIcon();
   bool update_CurrentDisp();
   static GfMenuWorldMapAdapter *createFromCoverter(u32 handle, u32 type, IConverter *converter, bool isUpdateAlways);
+  static GfMenuWorldMapAdapter *createFromList(u32 handle, u32 type, GfMenuIDList *list, int listIndex, bool unknown14, bool isUpdateAlways);
   static GfMenuWorldMapAdapter *createFromReference(u32 handle, u32 type, bool isUpdateAlways);
   void update(const fw::UpdateInfo &info) override;
   u32 convMap2Zone(u32 mapId);

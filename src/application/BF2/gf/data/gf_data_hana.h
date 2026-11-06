@@ -10,19 +10,34 @@ struct SDataBlade;
 
 // Inferred role: equip hana arts; original type name unknown.
 struct unknown066 {
+  unknown066() : unknown00(0), unknown02(100), unknown04(0), unknown06(0), unknown07(0), unknown08(1), unknown0a(0) {}
+
   u16 unknown00; // Inferred role: enhance; original member name unknown.
   u16 unknown02; // Inferred role: recast reverse of the n arts; original member name unknown.
   u16 unknown04; // Inferred role: parts; original member name unknown.
-  u8 _06[0x0a - 0x06];
+  u8 unknown06;  // Inferred role: cleared by the default constructor; original member name unknown.
+  u8 unknown07;  // Inferred role: cleared by the default constructor; original member name unknown.
+  u8 unknown08;  // Inferred role: set by the default constructor; original member name unknown.
+  u8 _09;
   u16 unknown0a; // Inferred role: handle; original member name unknown.
 };
 
 static_assert(offsetof(unknown066, unknown02) == 0x02, "");
 static_assert(offsetof(unknown066, unknown04) == 0x04, "");
+static_assert(offsetof(unknown066, unknown06) == 0x06, "");
+static_assert(offsetof(unknown066, unknown07) == 0x07, "");
+static_assert(offsetof(unknown066, unknown08) == 0x08, "");
 static_assert(offsetof(unknown066, unknown0a) == 0x0a, "");
 static_assert(sizeof(unknown066) == 0x0c, "");
 
 struct EquipHana {
+  EquipHana() : unknown00(0), unknown02(0), unknown4c(), unknown52(), unknown58(0), unknown5c(0) {
+    for (int i = 0; i < 3; i++) {
+      unknown60[i] = 0;
+      unknown6c[i] = 0;
+    }
+  }
+
   void setArtsParts(u32 parts, u32 handle, u32 index);
   void setNArtsParts(u32 parts, u32 handle, u32 index);
 

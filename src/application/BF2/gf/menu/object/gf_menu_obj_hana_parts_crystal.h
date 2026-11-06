@@ -1,4 +1,5 @@
 #pragma once
+#include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
 
@@ -13,7 +14,7 @@ public:
   void finalize() override;
   void update() override;
   static u32 getCrystalItemCount(u32 item);
-  static u32 crystalParts(u32 type, u32 parts);
+  static RESULT_HANA crystalParts(u32 type, u32 parts);
 };
 
 } // namespace gf

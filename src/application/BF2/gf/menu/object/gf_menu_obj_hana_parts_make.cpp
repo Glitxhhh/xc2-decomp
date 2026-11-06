@@ -30,7 +30,7 @@ u32 GfMenuObjHanaPartsMake::getMakeItemCount(u32 parts) {
   return mm::min(GfGameUtilHana::getEmptyParts(parts), count);
 }
 
-u32 GfMenuObjHanaPartsMake::makeParts(u32 type, u32 parts) {
+RESULT_HANA GfMenuObjHanaPartsMake::makeParts(u32 type, u32 parts) {
   switch (type) {
   case 1:
     return GfGameUtilHana::exchangeRoleParts(parts);
@@ -43,10 +43,10 @@ u32 GfMenuObjHanaPartsMake::makeParts(u32 type, u32 parts) {
   case 9:
     return GfGameUtilHana::exchangeArtsParts(parts);
   }
-  return unknown003_6;
+  return RESULT_HANA_UNKNOWN_6;
 }
 
-u32 GfMenuObjHanaPartsMake::crystalParts(u32 type, u32 parts) {
+RESULT_HANA GfMenuObjHanaPartsMake::crystalParts(u32 type, u32 parts) {
   switch (type) {
   case 1:
   case 2:
@@ -55,7 +55,7 @@ u32 GfMenuObjHanaPartsMake::crystalParts(u32 type, u32 parts) {
   case 9:
     return GfGameUtilHana::execConvertToEther(parts);
   }
-  return unknown003_8;
+  return RESULT_HANA_UNKNOWN_8;
 }
 
 void GfMenuObjHanaPartsMake::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }

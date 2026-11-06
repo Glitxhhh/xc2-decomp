@@ -63,7 +63,7 @@ bool GfMenuHanaPartsAdapter::update_needEther() {
     }
     u32 circuit = offset + unknown5c;
     ether = 0;
-    if (GfGameUtilHana::isOpenArtsCircuit(blade, circuit) == unknown003_10) {
+    if (GfGameUtilHana::isOpenArtsCircuit(blade, circuit) == RESULT_HANA_UNKNOWN_10) {
       ether = GfGameUtilHana::getEtherForOpenArtsCircuit(blade, circuit);
     }
     break;
@@ -80,7 +80,7 @@ bool GfMenuHanaPartsAdapter::update_needEther() {
     }
     u32 circuit = offset + unknown5c;
     ether = 0;
-    if (GfGameUtilHana::isOpenCondenserCircuit(blade, circuit) == unknown003_10) {
+    if (GfGameUtilHana::isOpenCondenserCircuit(blade, circuit) == RESULT_HANA_UNKNOWN_10) {
       ether = GfGameUtilHana::getEtherForOpenCondenserCircuit(blade, circuit);
     }
     break;
@@ -88,7 +88,7 @@ bool GfMenuHanaPartsAdapter::update_needEther() {
   case 15: {
     u32 rank = GfGameUtilHana::getPowerRank(blade) + 1;
     ether = 0;
-    if (GfGameUtilHana::isExecPowerRankup(blade, rank) != unknown003_6) {
+    if (GfGameUtilHana::isExecPowerRankup(blade, rank) != RESULT_HANA_UNKNOWN_6) {
       ether = GfGameUtilHana::getNeedEtherForExecPowerRankup(blade, rank);
     }
     break;

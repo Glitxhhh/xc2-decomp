@@ -101,6 +101,20 @@ GfMenuWorldMapAdapter *GfMenuWorldMapAdapter::createFromCoverter(u32 handle, u32
   return adapter;
 }
 
+GfMenuWorldMapAdapter *GfMenuWorldMapAdapter::createFromList(u32 handle, u32 type, GfMenuIDList *list, int listIndex, bool unknown14, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 197 as in the original source: it is the line argument of operator new.
+#line 197
+  ListConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListConverter(list, listIndex, unknown14);
+  GfMenuWorldMapAdapter *adapter = create(handle, type, converter->getMapId(), isUpdateAlways);
+  if (adapter != nullptr) {
+    adapter->unknown50 = converter;
+  }
+  return adapter;
+}
+
 GfMenuWorldMapAdapter *GfMenuWorldMapAdapter::createFromReference(u32 handle, u32 type, bool isUpdateAlways) {
   if (handle == 0) {
     return nullptr;

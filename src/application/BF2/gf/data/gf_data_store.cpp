@@ -144,4 +144,10 @@ void SSoundUiOption::clear() {
   unknown18 = masterVolume.getMenuBgmVolume() * VOLUME_SCALE;
 }
 
+bool SSoundUiOption::isDirty(const SSoundUiOption &other) {
+  return _1a != other._1a || unknown00 != other.unknown00 || unknown02 != other.unknown02 || unknown04 != other.unknown04 || unknown06 != other.unknown06 || unknown08 != other.unknown08 ||
+         unknown0a != other.unknown0a || unknown0c != other.unknown0c || unknown0e != other.unknown0e || unknown10 != other.unknown10 || unknown12 != other.unknown12 || unknown14 != other.unknown14 ||
+         unknown16 != other.unknown16 || unknown18 != other.unknown18 || _1c != other._1c || _1d != other._1d;
+}
+
 } // namespace gf

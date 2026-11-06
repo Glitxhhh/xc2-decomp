@@ -24,6 +24,7 @@ public:
   GfMenuBladeList();
   ~GfMenuBladeList() override;
   static GfMenuBladeList *create();
+  static void getBladeFromDriver(u32 driver, mm::mtl::FixedVector<u16, 422> &blades, bool option);
   void sort(u32 type, bool ascending);
   static bool sortTimeAscending(const MenuBladeInfo &info, const MenuBladeInfo &other);
   static bool sortTimeDescending(const MenuBladeInfo &info, const MenuBladeInfo &other);

@@ -10,6 +10,7 @@ constexpr float VOLUME_SCALE = 255.0f;
 struct SSoundUiOption {
   SSoundUiOption() { clear(); }
   void clear();
+  bool isDirty(const SSoundUiOption &other);
 
   u16 unknown00; // Inferred role: event voice volume; original member name unknown.
   u16 unknown02; // Inferred role: event cs volume; original member name unknown.

@@ -14,26 +14,26 @@ constexpr s32 ETHER_MAX = 999999999;
 namespace {
 
 // Inferred role: checks whether parts can be exchanged for ether; original name unknown.
-template <u32 (*getNeedEther)(u32)> u32 unknown001(u32 parts) {
+template <u32 (*getNeedEther)(u32)> RESULT_HANA unknown001(u32 parts) {
   u32 count = GfItemUtil::getItemBoxCount(parts);
   if (GfItemUtil::getEnableStock(parts) <= count) {
-    return unknown003_7;
+    return RESULT_HANA_UNKNOWN_7;
   }
 
   u32 needEther = getNeedEther(parts);
-  return GfDataHana::getEther() < needEther ? unknown003_3 : unknown003_0;
+  return GfDataHana::getEther() < needEther ? RESULT_HANA_UNKNOWN_3 : RESULT_HANA_UNKNOWN_0;
 }
 
 // Inferred role: exchanges ether for parts; original name unknown.
-template <u32 (*getNeedEther)(u32)> u32 unknown002(u32 parts) {
+template <u32 (*getNeedEther)(u32)> RESULT_HANA unknown002(u32 parts) {
   u32 count = GfItemUtil::getItemBoxCount(parts);
   if (GfItemUtil::getEnableStock(parts) <= count) {
-    return unknown003_7;
+    return RESULT_HANA_UNKNOWN_7;
   }
 
   u32 needEther = getNeedEther(parts);
   if (GfDataHana::getEther() < needEther) {
-    return unknown003_3;
+    return RESULT_HANA_UNKNOWN_3;
   }
 
   s32 rest = GfDataHana::getEther() - needEther;
@@ -48,40 +48,40 @@ template <u32 (*getNeedEther)(u32)> u32 unknown002(u32 parts) {
 
   GfDataHana::setEther(ether);
   GfItemUtil::addItemBox(parts, 1);
-  return unknown003_0;
+  return RESULT_HANA_UNKNOWN_0;
 }
 
 } // namespace
 
-u32 GfGameUtilHana::openArtsCircuit(u32 blade, u32 circuit) {
+RESULT_HANA GfGameUtilHana::openArtsCircuit(u32 blade, u32 circuit) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   if (GfDataHana::isOpenCircuit(blade, circuit)) {
-    return unknown003_1;
+    return RESULT_HANA_UNKNOWN_1;
   }
 
   u32 needEther = GfDataHana::getOpenCircuitEther(blade, circuit);
   if (needEther == 0) {
-    return unknown003_2;
+    return RESULT_HANA_UNKNOWN_2;
   }
 
   if (needEther > GfDataHana::getEther()) {
-    return unknown003_3;
+    return RESULT_HANA_UNKNOWN_3;
   }
 
   GfDataHana::setEther(GfDataHana::getEther() - needEther);
   GfDataHana::setOpenCircuit(blade, circuit, true);
-  return unknown003_0;
+  return RESULT_HANA_UNKNOWN_0;
 }
 
-u32 GfGameUtilHana::isOpenArtsCircuit(u32 blade, u32 circuit) {
+RESULT_HANA GfGameUtilHana::isOpenArtsCircuit(u32 blade, u32 circuit) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
-  return GfDataHana::isOpenCircuit(blade, circuit) ? unknown003_0 : unknown003_10;
+  return GfDataHana::isOpenCircuit(blade, circuit) ? RESULT_HANA_UNKNOWN_0 : RESULT_HANA_UNKNOWN_10;
 }
 
 u32 GfGameUtilHana::getEtherForOpenArtsCircuit(u32 blade, u32 circuit) {
@@ -92,36 +92,36 @@ u32 GfGameUtilHana::getEtherForOpenArtsCircuit(u32 blade, u32 circuit) {
   return 0;
 }
 
-u32 GfGameUtilHana::openCondenserCircuit(u32 blade, u32 circuit) {
+RESULT_HANA GfGameUtilHana::openCondenserCircuit(u32 blade, u32 circuit) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   u32 condenserCircuit = circuit + EXTEND_CIRCUIT_FIRST;
   if (GfDataHana::isOpenCircuit(blade, condenserCircuit)) {
-    return unknown003_1;
+    return RESULT_HANA_UNKNOWN_1;
   }
 
   u32 needEther = GfDataHana::getOpenCircuitEther(blade, condenserCircuit);
   if (needEther == 0) {
-    return unknown003_2;
+    return RESULT_HANA_UNKNOWN_2;
   }
 
   if (needEther > GfDataHana::getEther()) {
-    return unknown003_3;
+    return RESULT_HANA_UNKNOWN_3;
   }
 
   GfDataHana::setEther(GfDataHana::getEther() - needEther);
   GfDataHana::setOpenCircuit(blade, condenserCircuit, true);
-  return unknown003_0;
+  return RESULT_HANA_UNKNOWN_0;
 }
 
-u32 GfGameUtilHana::isOpenCondenserCircuit(u32 blade, u32 circuit) {
+RESULT_HANA GfGameUtilHana::isOpenCondenserCircuit(u32 blade, u32 circuit) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
-  return GfDataHana::isOpenCircuit(blade, circuit + EXTEND_CIRCUIT_FIRST) ? unknown003_0 : unknown003_10;
+  return GfDataHana::isOpenCircuit(blade, circuit + EXTEND_CIRCUIT_FIRST) ? RESULT_HANA_UNKNOWN_0 : RESULT_HANA_UNKNOWN_10;
 }
 
 u32 GfGameUtilHana::getEtherForOpenCondenserCircuit(u32 blade, u32 circuit) {
@@ -132,41 +132,41 @@ u32 GfGameUtilHana::getEtherForOpenCondenserCircuit(u32 blade, u32 circuit) {
   return 0;
 }
 
-u32 GfGameUtilHana::checkEquip(u32 blade, const EquipHana &equipParts) {
+RESULT_HANA GfGameUtilHana::checkEquip(u32 blade, const EquipHana &equipParts) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   u32 power = GfDataHana::getEquipPower(equipParts);
-  return GfDataHana::getPowerCapacity(blade) < power ? unknown003_5 : unknown003_0;
+  return GfDataHana::getPowerCapacity(blade) < power ? RESULT_HANA_UNKNOWN_5 : RESULT_HANA_UNKNOWN_0;
 }
 
-u32 GfGameUtilHana::getEquip(EquipHana &equipParts, u32 blade) {
+RESULT_HANA GfGameUtilHana::getEquip(EquipHana &equipParts, u32 blade) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   equipParts = *GfDataHana::getEquipParts(blade);
-  return unknown003_0;
+  return RESULT_HANA_UNKNOWN_0;
 }
 
-u32 GfGameUtilHana::setEquip(u32 blade, const EquipHana &equipParts) {
+RESULT_HANA GfGameUtilHana::setEquip(u32 blade, const EquipHana &equipParts) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   u32 power = GfDataHana::getEquipPower(equipParts);
   if (GfDataHana::getPowerCapacity(blade) < power) {
-    return unknown003_5;
+    return RESULT_HANA_UNKNOWN_5;
   }
 
   GfDataHana::setEquipParts(blade, equipParts);
-  return unknown003_0;
+  return RESULT_HANA_UNKNOWN_0;
 }
 
-u32 GfGameUtilHana::execPowerRankup(u32 blade, u32 rank) {
+RESULT_HANA GfGameUtilHana::execPowerRankup(u32 blade, u32 rank) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   u32 currentRank = GfDataHana::getEquipPowerRank(blade);
@@ -179,23 +179,23 @@ u32 GfGameUtilHana::execPowerRankup(u32 blade, u32 rank) {
       bool isShort = ether < needEther;
       ether -= needEther;
       if (isShort) {
-        return unknown003_3;
+        return RESULT_HANA_UNKNOWN_3;
       }
 
       if (rank == currentRank) {
         GfDataHana::setEquipPowerRank(blade, rank);
         GfDataHana::setEther(ether);
-        return unknown003_0;
+        return RESULT_HANA_UNKNOWN_0;
       }
     } while (currentRank < POWER_RANK_MAX);
   }
 
-  return unknown003_6;
+  return RESULT_HANA_UNKNOWN_6;
 }
 
-u32 GfGameUtilHana::isExecPowerRankup(u32 blade, u32 rank) {
+RESULT_HANA GfGameUtilHana::isExecPowerRankup(u32 blade, u32 rank) {
   if (!GfDataHana::isValid(blade)) {
-    return unknown003_4;
+    return RESULT_HANA_UNKNOWN_4;
   }
 
   u32 currentRank = GfDataHana::getEquipPowerRank(blade);
@@ -208,16 +208,16 @@ u32 GfGameUtilHana::isExecPowerRankup(u32 blade, u32 rank) {
       bool isShort = ether < needEther;
       ether -= needEther;
       if (isShort) {
-        return unknown003_3;
+        return RESULT_HANA_UNKNOWN_3;
       }
 
       if (rank == currentRank) {
-        return unknown003_0;
+        return RESULT_HANA_UNKNOWN_0;
       }
     } while (currentRank < POWER_RANK_MAX);
   }
 
-  return unknown003_6;
+  return RESULT_HANA_UNKNOWN_6;
 }
 
 u32 GfGameUtilHana::getNeedEtherForExecPowerRankup(u32 blade, u32 rank) {
@@ -235,24 +235,24 @@ u32 GfGameUtilHana::getNeedEtherForExecPowerRankup(u32 blade, u32 rank) {
 
 u32 GfGameUtilHana::getPowerRank(u32 blade) { return GfDataHana::getEquipPowerRank(blade); }
 
-u32 GfGameUtilHana::exchangeRoleParts(u32 parts) { return unknown002<GfDataHana::getNeedRolePartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::exchangeRoleParts(u32 parts) { return unknown002<GfDataHana::getNeedRolePartsEther>(parts); }
 
-u32 GfGameUtilHana::isExchangeRoleParts(u32 parts) { return unknown001<GfDataHana::getNeedRolePartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::isExchangeRoleParts(u32 parts) { return unknown001<GfDataHana::getNeedRolePartsEther>(parts); }
 
-u32 GfGameUtilHana::exchangeAttributeParts(u32 parts) { return unknown002<GfDataHana::getNeedAttributePartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::exchangeAttributeParts(u32 parts) { return unknown002<GfDataHana::getNeedAttributePartsEther>(parts); }
 
-u32 GfGameUtilHana::isExchangeAttributeParts(u32 parts) { return unknown001<GfDataHana::getNeedAttributePartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::isExchangeAttributeParts(u32 parts) { return unknown001<GfDataHana::getNeedAttributePartsEther>(parts); }
 
-u32 GfGameUtilHana::exchangeArtsParts(u32 parts) { return unknown002<GfDataHana::getNeedArtsPartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::exchangeArtsParts(u32 parts) { return unknown002<GfDataHana::getNeedArtsPartsEther>(parts); }
 
-u32 GfGameUtilHana::isExchangeArtsParts(u32 parts) { return unknown001<GfDataHana::getNeedArtsPartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::isExchangeArtsParts(u32 parts) { return unknown001<GfDataHana::getNeedArtsPartsEther>(parts); }
 
-u32 GfGameUtilHana::exchangeNArtsParts(u32 parts) { return unknown002<GfDataHana::getNeedNArtsPartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::exchangeNArtsParts(u32 parts) { return unknown002<GfDataHana::getNeedNArtsPartsEther>(parts); }
 
-u32 GfGameUtilHana::isExchangeNArtsParts(u32 parts) { return unknown001<GfDataHana::getNeedNArtsPartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::isExchangeNArtsParts(u32 parts) { return unknown001<GfDataHana::getNeedNArtsPartsEther>(parts); }
 
-u32 GfGameUtilHana::exchangeCondenserParts(u32 parts) { return unknown002<GfDataHana::getNeedCondenserPartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::exchangeCondenserParts(u32 parts) { return unknown002<GfDataHana::getNeedCondenserPartsEther>(parts); }
 
-u32 GfGameUtilHana::isExchangeCondenserParts(u32 parts) { return unknown001<GfDataHana::getNeedCondenserPartsEther>(parts); }
+RESULT_HANA GfGameUtilHana::isExchangeCondenserParts(u32 parts) { return unknown001<GfDataHana::getNeedCondenserPartsEther>(parts); }
 
 } // namespace gf
