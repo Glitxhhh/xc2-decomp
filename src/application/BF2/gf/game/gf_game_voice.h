@@ -31,6 +31,7 @@ enum CV_FIELD {
 };
 
 enum {
+  VOICE_RESULT_UNKNOWN_1 = 1, // Inferred role: waiting to play; original name unknown.
   VOICE_RESULT_PLAY = 2,
 };
 

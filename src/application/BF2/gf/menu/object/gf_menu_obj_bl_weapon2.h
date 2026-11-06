@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
 
 namespace gf {
@@ -30,11 +31,26 @@ public:
   static bool isDownWeapon(u32 blade, u32 chip);
   void initialize() override;
   void finalize() override;
+  void update() override;
+  void openCharChange();
+  bool seqStart();
+  bool seqSrcLeave();
+  bool seqSrcAppear();
+  bool seqDstResume();
+  bool seqEnd();
+
+  u8 _24[0x58 - 0x24];
+  GfMenuSequence<GfMenuObjBlWeapon2, 8> unknown58; // Inferred role: weapon change steps; original member name unknown.
+  bool unknown2e8;                                 // Inferred role: control started flag; original member name unknown.
+  u8 _2e9[0x308 - 0x2e9];
 };
 
 static_assert(offsetof(GfMenuObjBlWeapon2::OpenParam, unknown04) == 0x04, "");
 static_assert(sizeof(GfMenuObjBlWeapon2::OpenParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjBlWeapon2::unknown002, unknown02) == 0x02, "");
 static_assert(sizeof(GfMenuObjBlWeapon2::unknown002) == 0x04, "");
+static_assert(offsetof(GfMenuObjBlWeapon2, unknown58) == 0x58, "");
+static_assert(offsetof(GfMenuObjBlWeapon2, unknown2e8) == 0x2e8, "");
+static_assert(sizeof(GfMenuObjBlWeapon2) == 0x308, "");
 
 } // namespace gf

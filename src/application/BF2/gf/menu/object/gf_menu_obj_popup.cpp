@@ -12,6 +12,11 @@ constexpr u16 unknown002 = 0x101;
 
 void GfMenuObjPopup::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjPopup::update() {
+  unknown60.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjPopup::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjPopup::setFadeIn(u32 handle, u32 type) {

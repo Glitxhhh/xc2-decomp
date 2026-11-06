@@ -3,6 +3,7 @@
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 
 namespace gf {
 
@@ -15,6 +16,12 @@ struct unknown001 {
 constexpr u32 unknown002 = 0x1e;
 
 void GfMenuObjBladeSet2::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjBladeSet2::update() {
+  unknowna0.unknown003();
+  unknown338.unknown003();
+  GfMenuObject::update();
+}
 
 void GfMenuObjBladeSet2::sendEvent(u32 handle, u32 type, u32 param, f32 delay) { unknown140(handle, type, param, delay); }
 
@@ -45,5 +52,7 @@ void GfMenuObjBladeSet2::setCloseToReturn() {
   layerParam.set(value);
   GfMenuFullScreen::registLayerParam(getMenuLayerID(unknown002), layerParam);
 }
+
+bool GfMenuObjBladeSet2::seqWaitCommand() { return !GfReqSmallCom::get()->isValid(unknown330); }
 
 } // namespace gf

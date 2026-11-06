@@ -1,6 +1,8 @@
 #include "gf/menu/object/gf_menu_obj_blade_name.h"
 
+#include "gf/data/gf_data_blade.h"
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
@@ -12,9 +14,18 @@ namespace gf {
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x81;
 
+GfMenuObjBladeName::GfMenuObjBladeName(u32 handle) : GfMenuObject(handle), unknown28(this), unknown2b8(false) {}
+
+GfMenuObjBladeName::~GfMenuObjBladeName() {}
+
 void GfMenuObjBladeName::close() { unknown144(unknown001, GfMenuTypes::unknown003_34); }
 
 void GfMenuObjBladeName::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjBladeName::update() {
+  unknown28.unknown003();
+  GfMenuObject::update();
+}
 
 void GfMenuObjBladeName::open(GfMenuCallContext *context) {
   if (GfMenuObjUtil::checkCCStart(context)) {
@@ -73,6 +84,37 @@ bool GfMenuObjBladeName::seqLeave() {
     }
     acc.setDisp(false);
     GfMenuObject::termCallContext(acc.unknown10);
+    isEnd = true;
+  } else {
+    isEnd = false;
+  }
+  return isEnd;
+}
+
+bool GfMenuObjBladeName::seqStart() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  u32 blade = GfMenuReference::getReferenceBladeID(0);
+  if (blade == 0) {
+    termCallContext(main.unknown10);
+  }
+  if (GfDataBlade::isRareBlade(blade)) {
+    unknown28.unknown002(&GfMenuObjBladeName::seqApperRare);
+    unknown28.unknown004(25);
+    unknown28.unknown002(&GfMenuObjBladeName::seqApperWait);
+  } else {
+    unknown28.unknown002(&GfMenuObjBladeName::seqApperNormal);
+    unknown28.unknown002(&GfMenuObjBladeName::seqApperWait);
+  }
+  main.setDisp(true);
+  return true;
+}
+
+bool GfMenuObjBladeName::seqApperWait() {
+  ui::UIObjectAcc base(unknown18, "IMG_bl_name_base");
+  bool isEnd;
+  if (!base.isPlayingAnimation()) {
+    unknown28.unknown004(30);
+    unknown28.unknown002(&GfMenuObjBladeName::seqLeave);
     isEnd = true;
   } else {
     isEnd = false;

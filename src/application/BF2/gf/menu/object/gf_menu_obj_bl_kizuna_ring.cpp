@@ -1,8 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_bl_kizuna_ring.h"
 
+#include "gf/game/gf_game_voice.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 class GfMenuCallContext;
@@ -22,6 +25,11 @@ void GfMenuObjBlKizunaRing::registOpenParam(const OpenParam &param) {
 }
 
 void GfMenuObjBlKizunaRing::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjBlKizunaRing::update() {
+  unknown1a0.unknown003();
+  GfMenuObject::update();
+}
 
 void GfMenuObjBlKizunaRing::openForMercenary(u32 handle, u32 blade, u16 group) {
   OpenParam param;
@@ -52,5 +60,36 @@ int GfMenuObjBlKizunaRing::setFadeOut(u32 handle) {
 }
 
 bool GfMenuObjBlKizunaRing::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
+
+bool GfMenuObjBlKizunaRing::seqWait() {
+  ui::UIObjectAcc acc(unknown18);
+  ui::UIObjectAcc base(acc.searchChild("LAY_kizunaring_base"));
+  enableInput(base.unknown10);
+  return true;
+}
+
+bool GfMenuObjBlKizunaRing::seqEnd() {
+  ui::UIObjectAcc acc(unknown18);
+  refreshRing(acc);
+  ui::UIObjectAcc cursor(acc.searchChild("IMG_kizunacursor"));
+  cursor.setDisp(true);
+  cursor.startAnimation("loop", false);
+  enableInput(acc.searchChild("LAY_kizunaring_base"));
+  if (unknown438 == 0) {
+    GfMenuObjMainMenu2::setCloseKeyEnable(true);
+  }
+  unknown140(acc.searchChild("LAY_kizunaring"), GfMenuTypes::unknown003_33, 0, 0.0f);
+  return true;
+}
+
+bool GfMenuObjBlKizunaRing::seqWaitVoice() {
+  u32 result = GfGameVoice::getResult(unknown458);
+  if (result == VOICE_RESULT_UNKNOWN_1 || result == VOICE_RESULT_PLAY) {
+    return false;
+  }
+  ui::UIObjectAcc acc(unknown18);
+  unknown140(acc.searchChild("LAY_main"), GfMenuTypes::unknown003_33, 0, 0.0f);
+  return true;
+}
 
 } // namespace gf

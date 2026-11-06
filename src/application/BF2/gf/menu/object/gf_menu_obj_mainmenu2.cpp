@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_popup.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/ui_manager.h"
@@ -14,6 +15,10 @@ namespace gf {
 constexpr u32 unknown001 = 1;
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown002 = 0x5f;
+// Inferred role: no open menu; original name unknown.
+constexpr u32 unknown003 = 0x28;
+
+u32 GfMenuObjMainMenu2::s_openMenuID;
 
 void GfMenuObjMainMenu2::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
@@ -92,6 +97,26 @@ void GfMenuObjMainMenu2::execMapJump() {
   if (acc.isValid()) {
     sendEvent(acc.unknown10, 0x10e, 0);
   }
+}
+
+void GfMenuObjMainMenu2::update() {
+  if (unknown44 != unknown003) {
+    s_openMenuID = unknown44;
+  }
+  unknown90.unknown003();
+  GfMenuObject::update();
+}
+
+bool GfMenuObjMainMenu2::seqExecTerm() {
+  ui::UIObjectAcc acc(unknown18);
+  ui::UIObjectAcc main(acc.searchChild("LAY_main"));
+  if (!unknown320) {
+    GfMenuObjPopup::continuePickup(20);
+  } else {
+    unknown320 = false;
+  }
+  main.setTerm();
+  return true;
 }
 
 } // namespace gf

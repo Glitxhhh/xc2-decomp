@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 
@@ -22,20 +23,27 @@ public:
     GfMenuObjUtil::startCtrl(unknown18, param, "TXT_bl_name_shadow");
   }
 
+  GfMenuObjBladeName(u32 handle);
+  ~GfMenuObjBladeName() override;
   void initialize() override;
   void finalize() override;
+  void update() override;
   static void open(GfMenuCallContext *context);
   static void pause(GfMenuCallContext *context);
   static void close();
+  bool seqStart();
   bool seqApperNormal();
   bool seqApperRare();
   bool seqApperName();
+  bool seqApperWait();
   bool seqLeave();
 
-  u8 _24[0x2b8 - 0x24];
-  bool unknown2b8; // Inferred role: leave control started flag; original member name unknown.
+  GfMenuSequence<GfMenuObjBladeName, 8> unknown28; // Inferred role: appear and leave steps; original member name unknown.
+  bool unknown2b8;                                 // Inferred role: leave control started flag; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjBladeName, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjBladeName, unknown2b8) == 0x2b8, "");
+static_assert(sizeof(GfMenuObjBladeName) == 0x2c0, "");
 
 } // namespace gf
