@@ -3,6 +3,7 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -32,6 +33,17 @@ void GfMenuObjArtsPalette2::attachCallContext(GfMenuCallContext *context) {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
   if (acc.isValid() && !acc.isTerm() && GfMenuObjUtil::checkCCStart(context)) {
     GfMenuObject::startCallContext(context, unknown001, acc.unknown10);
+  }
+}
+
+void GfMenuObjArtsPalette2::setArtsSelection(GfMenuCallContext *context, bool isSelection) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid() && !acc.isTerm() && GfMenuObjUtil::checkCCNext(context, unknown001)) {
+    ui::EventData event;
+    event.unknown0c = 0;
+    event.unknown00 = 0x100;
+    event.unknown08 = isSelection;
+    GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
   }
 }
 

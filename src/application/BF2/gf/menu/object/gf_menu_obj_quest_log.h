@@ -4,11 +4,13 @@
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
 namespace gf {
 
 class GfMenuCallContext;
+class GfMenuReferenceQuest;
 struct QuestID;
 struct QuestTaskParam;
 
@@ -40,6 +42,7 @@ public:
   static void closeLog();
   static void openLog();
   void setupLogClear();
+  u32 nextTaskIndex(u32 index);
   void setupLogItem();
   bool seqLogNextEnd();
   bool seqLogNextWaitInfo();
@@ -70,7 +73,9 @@ public:
   static void lockLogOpen();
   static void unlockLogOpen();
 
-  u8 _24[0x59 - 0x24];
+  u8 _24[0x30 - 0x24];
+  mm::mtl::IntrusivePtr<GfMenuReferenceQuest> unknown30; // Inferred role: quest reference; original member name unknown.
+  u8 _38[0x59 - 0x38];
   bool unknown59; // Inferred role: log open flag; original member name unknown.
   bool unknown5a; // Inferred role: log out after close request flag; original member name unknown.
   bool unknown5b; // Inferred role: detail link shown flag; original member name unknown.
@@ -82,8 +87,11 @@ public:
   u8 _811[0x814 - 0x811];
   int unknown814;  // Inferred role: control id of the log info; original member name unknown.
   bool unknown818; // Inferred role: order activation request flag; original member name unknown.
+  u8 _819[0x828 - 0x819];
+  u32 unknown828; // Inferred role: task count of the quest; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjQuestLog, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown59) == 0x59, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown5b) == 0x5b, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown60) == 0x60, "");
@@ -93,4 +101,5 @@ static_assert(offsetof(GfMenuObjQuestLog, unknown580.unknown278) == 0x7f8, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown810) == 0x810, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown814) == 0x814, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown818) == 0x818, "");
+static_assert(offsetof(GfMenuObjQuestLog, unknown828) == 0x828, "");
 } // namespace gf

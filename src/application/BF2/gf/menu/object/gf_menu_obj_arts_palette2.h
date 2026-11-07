@@ -10,6 +10,7 @@ public:
   static void close();
   static void open();
   static void resetSelection();
+  static void setArtsSelection(GfMenuCallContext *context, bool isSelection);
   void initialize() override;
   void finalize() override;
   void update() override;

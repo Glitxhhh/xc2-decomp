@@ -7,6 +7,7 @@ class GfMenuObjSpecialGauge : public GfMenuObject {
 public:
   static void close();
   static void open();
+  static void reverse(bool isReverse);
   void initialize() override;
   void finalize() override;
   void update() override;
