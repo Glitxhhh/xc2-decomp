@@ -129,6 +129,20 @@ bool GfMenuItemAdapter::update_CategoryIcon(const MenuItemInfo &info) {
   return true;
 }
 
+bool GfMenuItemAdapter::update_SubCategoryText(const MenuItemInfo &info) {
+  if (unknown38.unknown04 != 0 && unknown38.unknown00 != ItemType::NONE && info.unknown00 == ItemType::FAVORITE) {
+    ItemProperty property;
+    GfItemUtil::getProperty(property, info.unknown04, 0);
+    int index = property.unknown4e - 11;
+    if (index > 0) {
+      ui::UIStr text(GfDataBdat::getFP(BDAT_MENU_FAVORITE_CATEGORY), index);
+      setText(text);
+      return true;
+    }
+  }
+  return false;
+}
+
 bool GfMenuItemAdapter::update_EffectTime(const MenuItemInfo &info) {
   if (unknown38.unknown04 == 0 || unknown38.unknown00 == ItemType::NONE || info.unknown00 != ItemType::FAVORITE) {
     return false;

@@ -121,7 +121,8 @@ public:
   fw::EffectPack *unknown9a0;                                    // Inferred role: effect pack; original member name unknown.
   unknown002 unknown9a8[16];                                     // Inferred role: effect slots; original member name unknown.
   bool unknownaa8;                                               // Inferred role: resources loaded; original member name unknown.
-  u8 _aa9[0xab8 - 0xaa9];
+  u8 _aa9[0xab0 - 0xaa9];
+  mm::mtl::IntrusivePtr<fw::Camera> unknownab0; // Inferred role: camera of the camera motion; original member name unknown.
 };
 
 static_assert(sizeof(GfMenuModelView::unknown001) == 0x90, "");

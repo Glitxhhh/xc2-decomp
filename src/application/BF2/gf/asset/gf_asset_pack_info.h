@@ -21,6 +21,7 @@ class GfExtendResource;
 class GfAssetResource;
 
 struct AssetPackInfo {
+  AssetPackInfo();
   virtual ~AssetPackInfo();
   void setLoadComplete();
   void setupLoadStart();

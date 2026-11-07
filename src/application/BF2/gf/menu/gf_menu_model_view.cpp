@@ -6,6 +6,7 @@
 #include "framework/reference_frame.h"
 #include "fw/fw_model_object.h"
 #include "fw/fw_transform.h"
+#include "gf/camera/gimmick/gf_camera_gimmick.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_object_type.h"
@@ -22,6 +23,7 @@
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/rtti.h"
 #include "scn/scn_obj_acc.h"
 
 namespace gf {
@@ -224,6 +226,15 @@ int GfMenuModelView::getCurrentCameraIndex() {
     return unknown958.back();
   }
   return -1;
+}
+
+void GfMenuModelView::stopCameraMotion() {
+  if (unknownab0.get() != nullptr) {
+    if (unknownab0.get()->getRTTI()->isKindOf(&GimmickCamera::m_rtti) && fw::CameraManager::get() != nullptr) {
+      fw::CameraManager::get()->unknown20[unknown10 + 1].pop(unknownab0, 0.5f);
+      unknownab0 = nullptr;
+    }
+  }
 }
 
 void GfMenuModelView::playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle) {

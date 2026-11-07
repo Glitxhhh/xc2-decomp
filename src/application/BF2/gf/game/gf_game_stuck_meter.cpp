@@ -115,6 +115,17 @@ void GfGameStuckMeter::CreateInfo::setColiObj(fw::ColiMoveObject *object) {
   }
 }
 
+void GfGameStuckMeter::CreateInfo::operator=(const CreateInfo &other) {
+  mm::mtl::safeRelease(unknown08);
+  unknown00 = other.unknown00;
+  unknown04 = other.unknown04;
+  unknown08 = other.unknown08;
+  if (unknown08 != nullptr) {
+    unknown08->addRef();
+  }
+  unknown10 = other.unknown10;
+}
+
 GfGameStuckMeter::GfGameStuckMeter(const CreateInfo *info)
     : unknown00(1.0f), unknown04(0.5f), unknown08(nullptr), unknown10(1.0f), unknown18(0.0f), unknown1c(0.0f), unknown20(1.0f), unknown30(mm::Vec3::zero), unknown40(mm::Vec3::zero), unknown50(0.0f),
       unknown54(0.0f) {

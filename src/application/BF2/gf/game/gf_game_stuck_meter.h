@@ -37,6 +37,7 @@ static_assert(sizeof(GfGameDepopMeter) == 0x50, "");
 class GfGameStuckMeter {
 public:
   struct CreateInfo {
+    void operator=(const CreateInfo &other);
     void dispose();
     void setColiObj(fw::ColiMoveObject *object);
 
