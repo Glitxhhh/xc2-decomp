@@ -11,6 +11,7 @@
 #include "gf/data/gf_bdat_chrdr.h"
 #include "gf/data/gf_bdat_chrenarrange.h"
 #include "gf/data/gf_bdat_chrenparam.h"
+#include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_bdat_maplist.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
@@ -22,6 +23,7 @@
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_hana.h"
+#include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_manager.h"
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_mercenaries.h"
@@ -115,6 +117,10 @@ CLOUD_SEA GfGameUtilCloudSea::getCloudSea() { return GfFieldWeather::getCurrentC
 
 enum {
   GAME_COND_METSU_WITHOUT_CRYSTAL = 2695,
+};
+
+enum {
+  PRECIOUS_CATEGORY_UNKNOWN_28 = 28, // Inferred role: precious category of the owner bonus items; original enumerator name unknown.
 };
 
 enum {
@@ -1122,6 +1128,30 @@ void GfGameUtil::makeStateBattleByBlade(mm::mtl::FixStr<32> &state, u32 blade, b
   DataParamAcc dataParamAcc(OBJECT_TYPE_BLADE, blade, static_cast<GimmickType>(0));
   state.format("S_%02d_", dataParamAcc.getWeaponType(-1, false));
   state += isStart ? "btstart" : "btend";
+}
+
+void GfGameUtil::getOwnerBonus(OwnerBonus &ownerBonus) {
+  ownerBonus = OwnerBonus();
+  GfBdatItem *bdatItem = GfBdatItem::get();
+  mm::mtl::FixedVector<GfItem, 1024> items;
+  GfItemUtil::getInfo(items, ItemType::PRECIOUS, false);
+  for (GfItem *item = items.begin(); item != items.end(); item++) {
+    if (bdatItem->getPreciousCategory(item->unknown00) == PRECIOUS_CATEGORY_UNKNOWN_28) {
+      u32 type = bdatItem->getPreciousType(item->unknown00);
+      if (type != 0) {
+        GfBdatItem *bdat = GfBdatItem::get();
+        u32 bonusType = bdat->getOwnerBonusType(type);
+        s16 value = bdat->getOwnerBonusValue(type);
+        s16 max = bdat->getOwnerBonusParamMax(bonusType);
+        s16 *bonus = ownerBonus.unknown00;
+        s16 total = bonus[bonusType] + value;
+        bonus[bonusType] = total;
+        if (total > max) {
+          ownerBonus.unknown00[bonusType] = max;
+        }
+      }
+    }
+  }
 }
 
 void GfGameUtil::requestFieldDamage(GF_OBJ_HANDLE *handle) {
