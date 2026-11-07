@@ -756,10 +756,10 @@ GF_SCOM_HANDLE *SCOM_POPUP::createIdea(u32 driver, u32 idea, u32 level) {
   return GfReqSmallCom::addRequestParallel(command);
 }
 
-GF_SCOM_HANDLE *SCOM_POPUP::createPouch(u32 item, u32 unknown2, u32 unknown3) {
+GF_SCOM_HANDLE *SCOM_POPUP::createPouch(u32 driver, u32 item, u32 unknown3) {
   bool isStart = GfGameManager::isStartGame();
-  if (item != 0 && !isStart) {
-    GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_2, item, unknown2, unknown3};
+  if (driver != 0 && !isStart) {
+    GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_2, driver, item, unknown3};
 #line 4503
     SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
     return GfReqSmallCom::addRequestParallel(command);

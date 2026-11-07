@@ -117,7 +117,7 @@ public:
   static GF_SCOM_HANDLE *createAffinity(u32 blade, u32 driver, u32 trustRank);
   static GF_SCOM_HANDLE *createAchievement(u32 blade, u32 achievement, u32 level);
   static GF_SCOM_HANDLE *createIdea(u32 driver, u32 idea, u32 level);
-  static GF_SCOM_HANDLE *createPouch(u32 item, u32 unknown2, u32 unknown3);
+  static GF_SCOM_HANDLE *createPouch(u32 driver, u32 item, u32 unknown3);
   static GF_SCOM_HANDLE *createArts(u32 driver, u32 arts);
   static GF_SCOM_HANDLE *createCrystalOK(u32 item);
 
