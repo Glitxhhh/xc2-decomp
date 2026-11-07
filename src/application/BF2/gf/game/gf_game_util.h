@@ -62,6 +62,8 @@ public:
   static u32 getFsLevelSum(u32 fieldSkill);
   static void changeStopLayer(GF_OBJ_HANDLE *handle, bool isStop);
   static void addMoney(int money);
+  static void addExpBattle(u32 driver, u32 exp);
+  static void addExpInn(u32 exp);
   static void addCoin(int coin);
   static void addEther(int ether);
   static void execLevelUp(u32 driver, u32 level);

@@ -174,6 +174,7 @@ public:
   static bool isFollowObjNotReady(GF_OBJ_HANDLE *handle);
   static void setWarpTransform(GF_OBJ_HANDLE *handle, const fw::Transform &transform, bool isResetState);
   static bool parseFadeParam(const char *param, GfFadeInfo *info);
+  static void setDeadParticle(GF_OBJ_HANDLE *handle, bool isActive, u32 attribute, f32 alpha);
 
   template <typename T> static T *getObjSetup(GF_OBJ_HANDLE *handle) {
     GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);

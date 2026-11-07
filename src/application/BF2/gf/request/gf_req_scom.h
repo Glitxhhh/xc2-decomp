@@ -5,6 +5,7 @@
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/quest/gf_quest_id.h"
+#include "gf/menu/object/gf_menu_obj_popup.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_scom.h"
@@ -84,22 +85,47 @@ public:
   static void create();
 };
 
-class SCOM_ADD_EXP {
+class SCOM_ADD_EXP : public SCOM {
 public:
+  SCOM_ADD_EXP(GF_SCOM_HANDLE *handle, u32 exp, u32 driver, GF_OBJ_HANDLE *target, bool isInn)
+      : SCOM(handle, SCOM_TYPE_UNKNOWN_4, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(exp), unknown20(driver), unknown28(target), unknown30(isInn) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *createBattleExp(u32 exp, GF_OBJ_HANDLE *handle);
+  static GF_SCOM_HANDLE *createBattleExp(u32 exp, u32 driver);
   static GF_SCOM_HANDLE *createInnExp(u32 exp);
+
+  u32 unknown1c;            // Inferred role: experience; original member name unknown.
+  u32 unknown20;            // Inferred role: driver; original member name unknown.
+  GF_OBJ_HANDLE *unknown28; // Inferred role: driver object; original member name unknown.
+  bool unknown30;           // Inferred role: is the experience for the inn; original member name unknown.
 };
 
-class SCOM_POPUP {
+static_assert(offsetof(SCOM_ADD_EXP, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_ADD_EXP, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_ADD_EXP, unknown28) == 0x28, "");
+static_assert(offsetof(SCOM_ADD_EXP, unknown30) == 0x30, "");
+static_assert(sizeof(SCOM_ADD_EXP) == 0x38, "");
+
+class SCOM_POPUP : public SCOM {
 public:
-  static void createQuest(QuestID quest);
-  static void createDevelop(u32 location, u32 level);
-  static void createAffinity(u32 blade, u32 driver, u32 trustRank);
-  static bool createAchievement(u32 blade, u32 achievement, u32 level);
-  static void createIdea(u32 driver, u32 idea, u32 level);
-  static void createArts(u32 driver, u32 arts);
-  static void createCrystalOK(u32 item);
-  static void createMercenaryReturn(u32 map, u32 teamID);
+  SCOM_POPUP(GF_SCOM_HANDLE *handle, GfMenuObjPopup::OpenParam &param);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *createQuest(QuestID quest);
+  static GF_SCOM_HANDLE *createMercenaryReturn(u32 map, u32 teamID);
+  static GF_SCOM_HANDLE *createMercenaryAdd(u32 mission);
+  static GF_SCOM_HANDLE *createDevelop(u32 location, u32 level);
+  static GF_SCOM_HANDLE *createAffinity(u32 blade, u32 driver, u32 trustRank);
+  static GF_SCOM_HANDLE *createAchievement(u32 blade, u32 achievement, u32 level);
+  static GF_SCOM_HANDLE *createIdea(u32 driver, u32 idea, u32 level);
+  static GF_SCOM_HANDLE *createPouch(u32 item, u32 unknown2, u32 unknown3);
+  static GF_SCOM_HANDLE *createArts(u32 driver, u32 arts);
+  static GF_SCOM_HANDLE *createCrystalOK(u32 item);
+
+  GfMenuObjPopup::OpenParam unknown1c; // Inferred role: popup parameter; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_POPUP, unknown1c) == 0x1c, "");
+static_assert(sizeof(SCOM_POPUP) == 0x30, "");
 
 class SCOM_TARGET_UI : public SCOM {
 public:
@@ -415,6 +441,7 @@ public:
   SCOM_OBJ_ALPHA(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, f32 time, f32 alpha);
   bool exec(const fw::UpdateInfo &info) override;
   static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *handle, f32 time, f32 alpha);
+  static void createWeapon(GF_OBJ_HANDLE *handle, f32 time, f32 alpha);
 
   u8 _1c[0x20 - 0x1c];
   GF_OBJ_HANDLE *unknown20; // Inferred role: target; original member name unknown.
@@ -430,6 +457,48 @@ static_assert(offsetof(SCOM_OBJ_ALPHA, unknown2c) == 0x2c, "");
 static_assert(offsetof(SCOM_OBJ_ALPHA, unknown30) == 0x30, "");
 static_assert(offsetof(SCOM_OBJ_ALPHA, unknown34) == 0x34, "");
 static_assert(sizeof(SCOM_OBJ_ALPHA) == 0x38, "");
+
+class SCOM_BC_PARTICLE : public SCOM {
+public:
+  SCOM_BC_PARTICLE(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, f32 time);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *handle, f32 time);
+
+  u8 _1c[0x20 - 0x1c];
+  GF_OBJ_HANDLE *unknown20; // Inferred role: target; original member name unknown.
+  int unknown28;            // Inferred role: state; original member name unknown.
+  u32 unknown2c;            // Inferred role: object attribute; original member name unknown.
+  f32 unknown30;            // Inferred role: remaining time; original member name unknown.
+  f32 unknown34;            // Inferred role: fade time; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_BC_PARTICLE, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_BC_PARTICLE, unknown28) == 0x28, "");
+static_assert(offsetof(SCOM_BC_PARTICLE, unknown2c) == 0x2c, "");
+static_assert(offsetof(SCOM_BC_PARTICLE, unknown30) == 0x30, "");
+static_assert(offsetof(SCOM_BC_PARTICLE, unknown34) == 0x34, "");
+static_assert(sizeof(SCOM_BC_PARTICLE) == 0x38, "");
+
+class SCOM_DEAD_PARTICLE : public SCOM {
+public:
+  SCOM_DEAD_PARTICLE(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, u32 attribute, f32 time);
+  bool exec(const fw::UpdateInfo &info) override;
+  static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *handle, u32 attribute, f32 time);
+
+  u8 _1c[0x20 - 0x1c];
+  GF_OBJ_HANDLE *unknown20; // Inferred role: target; original member name unknown.
+  int unknown28;            // Inferred role: state; original member name unknown.
+  u32 unknown2c;            // Inferred role: object attribute; original member name unknown.
+  f32 unknown30;            // Inferred role: remaining time; original member name unknown.
+  f32 unknown34;            // Inferred role: fade time; original member name unknown.
+};
+
+static_assert(offsetof(SCOM_DEAD_PARTICLE, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_DEAD_PARTICLE, unknown28) == 0x28, "");
+static_assert(offsetof(SCOM_DEAD_PARTICLE, unknown2c) == 0x2c, "");
+static_assert(offsetof(SCOM_DEAD_PARTICLE, unknown30) == 0x30, "");
+static_assert(offsetof(SCOM_DEAD_PARTICLE, unknown34) == 0x34, "");
+static_assert(sizeof(SCOM_DEAD_PARTICLE) == 0x38, "");
 
 class SCOM_OBJ_VFADE_OFF : public SCOM {
 public:

@@ -5,6 +5,7 @@
 #include "framework/lang_util.h"
 #include "fw/fw_bdat_manager.h"
 #include "fw/fw_update_info.h"
+#include "gf/data/gf_bdat_btl.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_achievement.h"
@@ -48,6 +49,9 @@
 #include "gf/gf_allocator.h"
 #include "gf/map/gf_map_manager.h"
 #include "gf/menu/gf_menu_fade.h"
+#include "gf/menu/object/gf_menu_obj_popup.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj.h"
@@ -602,6 +606,281 @@ GF_SCOM_HANDLE *SCOM_OBJ_ALPHA::create(GF_OBJ_HANDLE *handle, f32 time, f32 alph
     return GfReqSmallCom::addRequestParallel(command);
   }
   return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+void SCOM_OBJ_ALPHA::createWeapon(GF_OBJ_HANDLE *handle, f32 time, f32 alpha) {
+  if (handle != INVALID_HANDLE) {
+    GfWeapon *weapon = GfMountManager::getAppendHandles(handle, GFATTACH_WEAPON);
+    if (weapon != nullptr) {
+      for (u32 i = 0; i < 10; i++) {
+        GF_OBJ_HANDLE *target = weapon->getCurrentHandles()[i];
+        if (target != INVALID_HANDLE) {
+#line 1282
+          SCOM_OBJ_ALPHA *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_OBJ_ALPHA(GfReqSmallCom::get()->allocate(), target, time, alpha);
+          GfReqSmallCom::addRequestParallel(command);
+        }
+      }
+    }
+  }
+}
+
+bool SCOM_ADD_EXP::exec(const fw::UpdateInfo &) {
+  u32 driver = unknown20;
+  if (driver == 0) {
+    if (unknown28 == INVALID_HANDLE) {
+      driver = 0;
+    } else {
+      GfObjAcc acc(unknown28);
+      driver = acc.getDriverId();
+    }
+  }
+  if (!unknown30) {
+    GfGameUtil::addExpBattle(driver, unknown1c);
+  } else {
+    GfGameUtil::addExpInn(unknown1c);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_EXP::createBattleExp(u32 exp, GF_OBJ_HANDLE *handle) {
+  if (exp != 0) {
+#line 204
+    SCOM_ADD_EXP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_EXP(GfReqSmallCom::get()->allocate(), exp, 0, handle, false);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_EXP::createBattleExp(u32 exp, u32 driver) {
+  if (exp != 0) {
+#line 209
+    SCOM_ADD_EXP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_EXP(GfReqSmallCom::get()->allocate(), exp, driver, INVALID_HANDLE, false);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_EXP::createInnExp(u32 exp) {
+  if (exp != 0) {
+#line 214
+    SCOM_ADD_EXP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_ADD_EXP(GfReqSmallCom::get()->allocate(), exp, 0, INVALID_HANDLE, true);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+SCOM_POPUP::SCOM_POPUP(GF_SCOM_HANDLE *handle, GfMenuObjPopup::OpenParam &param) : SCOM(handle, SCOM_TYPE_UNKNOWN_75, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(param) {}
+
+bool SCOM_POPUP::exec(const fw::UpdateInfo &) {
+  if (unknown1c.unknown00 == GfMenuObjPopup::unknown005_7 && GfGameManager::isBusyBladeCreateEvent()) {
+    return false;
+  }
+  GfMenuObjPopup::open(unknown1c);
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createQuest(QuestID quest) {
+  if (!GfGameManager::isStartGame()) {
+    if (QuestListAcc::get()->getListVisible(quest) != 0) {
+      GfMenuObjPopup::OpenParam param = {};
+      param.unknown00 = GfMenuObjPopup::unknown005_9;
+      param.unknown04 = quest.unknown00;
+#line 4407
+      SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+      return GfReqSmallCom::addRequestParallel(command);
+    }
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createMercenaryReturn(u32 map, u32 teamID) {
+  if (GfGameManager::isStartGame()) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_8, map, teamID, GfDataMercenaries::getTeamLeader(teamID)};
+#line 4420
+  SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createMercenaryAdd(u32 mission) {
+  if (mission != 0 && !GfGameManager::isStartGame()) {
+    GfMenuObjPopup::OpenParam param = {};
+    param.unknown00 = GfMenuObjPopup::unknown005_7;
+    param.unknown04 = GfDataMercenaries::getMissionMapID(mission);
+#line 4433
+    SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createDevelop(u32 location, u32 level) {
+  if (GfGameManager::isStartGame()) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_6, location, level, 0};
+#line 4445
+  SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createAffinity(u32 blade, u32 driver, u32 trustRank) {
+  if (GfGameManager::isStartGame()) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_5, blade, driver, trustRank};
+#line 4458
+  SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createAchievement(u32 blade, u32 achievement, u32 level) {
+  GfGameManager::isStartGame();
+  if (GfMenuObjUtil::getMenuCondition(15) && !GfGameUtil::setupSaveAchievementPopup(blade, achievement, level)) {
+    GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_4, blade, achievement, level};
+#line 4476
+    SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createIdea(u32 driver, u32 idea, u32 level) {
+  if (GfGameManager::isStartGame()) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_3, driver, idea, level};
+#line 4489
+  SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createPouch(u32 item, u32 unknown2, u32 unknown3) {
+  bool isStart = GfGameManager::isStartGame();
+  if (item != 0 && !isStart) {
+    GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_2, item, unknown2, unknown3};
+#line 4503
+    SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+    return GfReqSmallCom::addRequestParallel(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createArts(u32 driver, u32 arts) {
+  if (GfGameManager::isStartGame()) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_1, driver, GfBdatBtl::get()->getArtsDrWpnType(arts), arts};
+#line 4516
+  SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+GF_SCOM_HANDLE *SCOM_POPUP::createCrystalOK(u32 item) {
+  if (GfGameManager::isStartGame()) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+  GfMenuObjPopup::OpenParam param = {GfMenuObjPopup::unknown005_10, item, 0, 0};
+#line 4529
+  SCOM_POPUP *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_POPUP(GfReqSmallCom::get()->allocate(), param);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+SCOM_BC_PARTICLE::SCOM_BC_PARTICLE(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, f32 time)
+    : SCOM(handle, SCOM_TYPE_UNKNOWN_77, SCOM_EXEC_UNKNOWN_0, 1), unknown20(target), unknown28(0), unknown30(time), unknown34(time) {
+  DataParamAcc acc(target);
+  unknown2c = acc.getAttribute(-1, false);
+  if (acc.getObjType() == OBJECT_TYPE_BLADE && acc.isValid() && acc.getBdatId() == 0x3f1) {
+    unknown2c = 0x11;
+  }
+}
+
+bool SCOM_BC_PARTICLE::exec(const fw::UpdateInfo &info) {
+  GfObjAcc acc(unknown20);
+  if (acc.getObj() != nullptr) {
+    u32 attribute = unknown2c;
+    switch (unknown28) {
+    case 0:
+      unknown28 = 1;
+      GfObjUtil::setDeadParticle(unknown20, true, attribute, acc.getAlpha());
+      return false;
+    case 1:
+      if (unknown30 > 0.0f) {
+        f32 remain = unknown30 - info.unknown04;
+        if (remain <= 0.0f) {
+          remain = 0.0f;
+        }
+        unknown30 = remain;
+        f32 ratio = remain / unknown34;
+        GfObjUtil::setDeadParticle(unknown20, ratio > 0.0f, attribute, ratio);
+        return unknown30 <= 0.0f;
+      }
+      break;
+    }
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_BC_PARTICLE::create(GF_OBJ_HANDLE *handle, f32 time) {
+  if (time < 0.000001f) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 4706
+  SCOM_BC_PARTICLE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_BC_PARTICLE(GfReqSmallCom::get()->allocate(), handle, time);
+  return GfReqSmallCom::addRequestParallel(command);
+}
+
+SCOM_DEAD_PARTICLE::SCOM_DEAD_PARTICLE(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, u32 attribute, f32 time)
+    : SCOM(handle, SCOM_TYPE_UNKNOWN_77, SCOM_EXEC_UNKNOWN_0, 1), unknown20(target), unknown28(0), unknown2c(attribute), unknown30(time), unknown34(time) {}
+
+bool SCOM_DEAD_PARTICLE::exec(const fw::UpdateInfo &info) {
+  GfObjAcc acc(unknown20);
+  GfObj *obj = acc.getObj();
+  if (obj == nullptr) {
+    return true;
+  }
+  GfComAsm *comAsm = obj->getComponent<GfComAsm>();
+  switch (unknown28) {
+  case 0:
+    if (comAsm != nullptr && !comAsm->isEnd(ANIM_LAYER_BASE) && !comAsm->isLoop(ANIM_LAYER_BASE)) {
+      return false;
+    }
+    unknown28 = 1;
+    GfObjUtil::setDeadParticle(unknown20, true, unknown2c, acc.getAlpha());
+    GfObjUtil::setDeadParticle(GfMountManager::getHandle(unknown20, GFATTACH_WEAPON, OPTMNT_BLADE), true, unknown2c, 1.0f);
+    return false;
+  case 1:
+    if (unknown30 > 0.0f) {
+      f32 remain = unknown30 - info.unknown04;
+      if (remain <= 0.0f) {
+        remain = 0.0f;
+      }
+      unknown30 = remain;
+      f32 ratio = remain / unknown34;
+      GF_OBJ_HANDLE *blade = GfMountManager::getHandle(unknown20, GFATTACH_WEAPON, OPTMNT_BLADE);
+      GfObjUtil::setDeadParticle(unknown20, ratio > 0.0f, unknown2c, ratio);
+      GfObjUtil::setDeadParticle(blade, ratio > 0.0f, unknown2c, ratio);
+    }
+    DataParamAcc param(unknown20);
+    if (param.getHp() != 0) {
+      GF_OBJ_HANDLE *blade = GfMountManager::getHandle(unknown20, GFATTACH_WEAPON, OPTMNT_BLADE);
+      GfObjUtil::setDeadParticle(unknown20, false, unknown2c, acc.getAlpha());
+      GfObjUtil::setDeadParticle(blade, false, unknown2c, acc.getAlpha());
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_DEAD_PARTICLE::create(GF_OBJ_HANDLE *handle, u32 attribute, f32 time) {
+  if (time < 0.000001f) {
+    return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+  }
+#line 4645
+  SCOM_DEAD_PARTICLE *command = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SCOM_DEAD_PARTICLE(GfReqSmallCom::get()->allocate(), handle, attribute, time);
+  return GfReqSmallCom::addRequestParallel(command);
 }
 
 mm::mtl::FixedQueue<SCOM_PARTY_ADD::unknown002, 16> SCOM_PARTY_ADD::s_info;
