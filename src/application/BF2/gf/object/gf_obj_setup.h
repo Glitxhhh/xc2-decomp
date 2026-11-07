@@ -14,6 +14,8 @@ class Transform;
 } // namespace fw
 
 namespace mm {
+struct Mat44;
+
 namespace mtl {
 class RTTI;
 } // namespace mtl
@@ -44,6 +46,7 @@ public:
   virtual u32 getEnArrangeID() const;
 
   void setInitialTransform(const fw::Transform &transform);
+  void setInitialTransform(const mm::Mat44 &matrix);
   void setInitialScale(f32 scale);
   void setInitialScale(const mm::Vec3 &scale);
 

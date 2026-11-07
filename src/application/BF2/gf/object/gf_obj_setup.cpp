@@ -1,6 +1,10 @@
 #include "gf/object/gf_obj_setup.h"
 
+#include <math.h>
+
 #include "gf/data/gf_data_obj.h"
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 
 namespace gf {
 
@@ -90,6 +94,21 @@ u32 GfObjSetupEnemy::getFootStep() const {
 u32 GfObjSetupEnemy::getFootStepEffect() const {
   DataObjEnemy enemy(getEnArrangeID());
   return enemy.getFootStepEffect();
+}
+
+void GfObjSetup::setInitialTransform(const mm::Mat44 &matrix) {
+  unknown20 = matrix.unknown004();
+  mm::Mat44 rotation;
+  for (int i = 0; i < 3; i++) {
+    f32 length = sqrtf(matrix.rows[i][0] * matrix.rows[i][0] + matrix.rows[i][1] * matrix.rows[i][1] + matrix.rows[i][2] * matrix.rows[i][2]);
+    rotation.rows[i][0] = matrix.rows[i][0] / length;
+    rotation.rows[i][1] = matrix.rows[i][1] / length;
+    rotation.rows[i][2] = matrix.rows[i][2] / length;
+  }
+  mm::unknown002(rotation, unknown30);
+  unknown30.x = -unknown30.x;
+  unknown30.y = -unknown30.y;
+  unknown30.z = -unknown30.z;
 }
 
 void GfObjSetup::setInitialScale(f32 scale) {

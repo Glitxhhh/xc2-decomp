@@ -97,6 +97,25 @@ __attribute__((always_inline)) inline Vec3 matrixToEuler(const Mat44 &matrix) {
   return euler;
 }
 
+// Inferred helper: Euler angles of the rotation of a matrix, with the sign convention opposite to Mat44::setRotXYZ
+// (the caller negates them); original name unknown. Evidence: inlined in gf::GfObjSetup::setInitialTransform and
+// in the XFRM chunk of gmk::TGmkList::createGmk.
+__attribute__((always_inline)) inline void unknown002(const Mat44 &matrix, Vec3 &euler) {
+  euler.y = mm::asin(matrix.rows[0][2]);
+  if (euler.y < 1.5707964f) {
+    if (euler.y > -1.5707964f) {
+      euler.z = atan2f(-matrix.rows[0][1], matrix.rows[0][0]);
+      euler.x = atan2f(-matrix.rows[1][2], matrix.rows[2][2]);
+    } else {
+      euler.z = -atan2f(-matrix.rows[1][0], matrix.rows[2][0]);
+      euler.x = 0.0f;
+    }
+  } else {
+    euler.z = atan2f(matrix.rows[1][0], -matrix.rows[2][0]);
+    euler.x = 0.0f;
+  }
+}
+
 __attribute__((always_inline)) inline void quatToMatrix(Mat44 &matrix, const Quat &quat) {
   f32 x2 = quat.x + quat.x;
   f32 y2 = quat.y + quat.y;
