@@ -9,6 +9,11 @@ namespace gf {
 
 void GfMenuObjInn::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjInn::update() {
+  unknown0a0.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjInn::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjInn::setFadeIn(u32 handle) {

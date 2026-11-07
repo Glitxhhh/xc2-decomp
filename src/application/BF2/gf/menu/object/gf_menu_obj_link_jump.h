@@ -7,6 +7,7 @@ class GfMenuObjLinkJump : public GfMenuObject {
 public:
   static void open();
   void initialize() override;
+  void finalize() override;
   void update() override;
   static void close();
 };

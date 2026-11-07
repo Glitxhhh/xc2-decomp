@@ -11,10 +11,19 @@ class GfMenuObjChainCount : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
-    MainListener(GfMenuObjChainCount *owner) : _0c(), unknown20(owner) {}
+    MainListener(GfMenuObjChainCount *owner) : unknown0c(0), unknown10(0), unknown14(0), unknown18(0), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x1c - 0x0c];
+    int unknown0c; // Inferred role: id of the running fade control; original member name unknown.
+    union {
+      u64 unknown10_u64; // Both flags as one 64-bit slot: the game clears them with a single store.
+      struct {
+        int unknown10; // Inferred role: opened flag; original member name unknown.
+        int unknown14; // Inferred role: faded in flag; original member name unknown.
+      };
+    };
+    int unknown18; // Inferred role: hidden flag; original member name unknown.
+    u8 _1c[0x20 - 0x1c];
     GfMenuObjChainCount *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -28,6 +37,10 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjChainCount::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjChainCount::MainListener, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjChainCount::MainListener, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuObjChainCount::MainListener, unknown14) == 0x14, "");
+static_assert(offsetof(GfMenuObjChainCount::MainListener, unknown18) == 0x18, "");
 static_assert(sizeof(GfMenuObjChainCount::MainListener) == 0x28, "");
 
 } // namespace gf

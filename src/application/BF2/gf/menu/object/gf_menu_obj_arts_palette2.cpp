@@ -15,6 +15,13 @@ constexpr u16 unknown002 = 0x101;
 
 void GfMenuObjArtsPalette2::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjArtsPalette2::update() {
+  ui::UIObjectAcc acc(unknown18);
+  GfMenuObject::disableInput(acc.searchChild("LAY_main"));
+  acc.setAlpha(0.0f);
+  GfMenuObject::update();
+}
+
 void GfMenuObjArtsPalette2::close() { unknown146(unknown001, GfMenuTypes::unknown003_34); }
 
 void GfMenuObjArtsPalette2::open() { unknown146(unknown001, GfMenuTypes::unknown003_33); }

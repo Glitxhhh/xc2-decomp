@@ -6,6 +6,11 @@ namespace gf {
 
 void GfMenuObjHanaCustom::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjHanaCustom::update() {
+  unknown0a8.unknown003();
+  GfMenuObject::update();
+}
+
 u32 GfMenuObjHanaCustom::convPartsId(u32 partsId) {
   if (partsId > 0xf) {
     return partsId - 7;

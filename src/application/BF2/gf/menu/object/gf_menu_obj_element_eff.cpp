@@ -11,6 +11,11 @@ constexpr u32 unknown001 = 0x17;
 
 void GfMenuObjElementEff::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjElementEff::update() {
+  unknown28.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjElementEff::cancel(GfMenuCallContext *context) {
   if (GfMenuObjUtil::checkCCNext(context, unknown001)) {
     unknown143(unknown001, GfMenuTypes::unknown003_34);

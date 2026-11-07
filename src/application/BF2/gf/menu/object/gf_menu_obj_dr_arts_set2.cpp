@@ -8,6 +8,11 @@ namespace gf {
 
 void GfMenuObjDrArtsSet2::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjDrArtsSet2::update() {
+  unknown0f8.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjDrArtsSet2::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjDrArtsSet2::setFadeIn(u32 handle, u32 dir, const char *child) {

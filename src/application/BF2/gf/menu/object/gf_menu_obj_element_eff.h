@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
 
 namespace gf {
@@ -12,6 +13,7 @@ class GfMenuObjElementEff : public GfMenuObject {
 public:
   void initialize() override;
   void finalize() override;
+  void update() override;
   struct StartParam {
     u32 attribute;
   };
@@ -23,8 +25,9 @@ public:
   bool seqComboName();
   bool seqClose();
 
-  u8 _24[0x2b8 - 0x24];
-  int unknown2b8; // Inferred role: control of the current step, -1 when idle; original member name unknown.
+  u8 _24[0x28 - 0x24];
+  GfMenuSequence<GfMenuObjElementEff, 8> unknown28; // Inferred role: queued steps; original member name unknown.
+  int unknown2b8;                                   // Inferred role: control of the current step, -1 when idle; original member name unknown.
   u8 _2bc[0x2c0 - 0x2bc];
   int unknown2c0; // Inferred role: frames left before the combo name fades out; original member name unknown.
 };

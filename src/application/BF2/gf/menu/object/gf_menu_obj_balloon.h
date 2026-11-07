@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "gf/object/gf_obj_handle.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
@@ -21,6 +22,7 @@ public:
   static void resetFeeling(ui::UIObjectAcc &acc);
   void initialize() override;
   void finalize() override;
+  void update() override;
   struct NextParam {
     u8 *unknown00; // Inferred role: bdat; original member name unknown.
     u32 unknown08; // Inferred role: text id; original member name unknown.
@@ -72,7 +74,12 @@ public:
   static void openEventSelectBox(GfMenuCallContext *context, const OpenSelectBoxParam &param);
   static void openEventSelectMoney(GfMenuCallContext *context, const OpenSelectMoneyParam &param);
   static bool openGetItem(GfMenuCallContext *context, const OpenGetItemParam &param);
+
+  u8 _24[0x78 - 0x24];
+  GfMenuSequence<GfMenuObjBalloon, 4> unknown78; // Inferred role: queued steps; original member name unknown.
 };
+
+static_assert(offsetof(GfMenuObjBalloon, unknown78) == 0x78, "");
 
 static_assert(offsetof(GfMenuObjBalloon::OpenParam, unknown10) == 0x10, "");
 static_assert(offsetof(GfMenuObjBalloon::OpenParam, unknown20) == 0x20, "");

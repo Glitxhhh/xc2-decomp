@@ -11,6 +11,7 @@ public:
   static void pushGroupUp();
   void initialize() override;
   void finalize() override;
+  void update() override;
   static void enableAwakening(bool);
   static void pushBladeChange(unsigned int blade);
   static void dispInfo(bool isDisp);

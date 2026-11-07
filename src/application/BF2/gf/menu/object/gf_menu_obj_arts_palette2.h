@@ -12,6 +12,7 @@ public:
   static void resetSelection();
   void initialize() override;
   void finalize() override;
+  void update() override;
 };
 
 } // namespace gf

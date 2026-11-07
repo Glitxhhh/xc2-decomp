@@ -1,15 +1,23 @@
 #include "gf/menu/object/gf_menu_obj_zone_telop.h"
 
+#include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_order_mgr.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
 // Inferred role: call id of the zone telop; original name unknown.
 constexpr u32 unknown001 = 0x45;
+// Inferred role: frames of the fade in and fade out wait; original name unknown.
+constexpr u32 TELOP_FRAME = 0x78;
+constexpr u16 EVENT_OPEN_TELOP = 0x21;
+constexpr u16 EVENT_CLOSE_TELOP = 0x22;
 
 GfMenuObjZoneTelop::GfMenuObjZoneTelop(u32 handle) : GfMenuObject(handle), unknown28(this), unknown188(false), unknown18c(0.0f) {}
 
@@ -37,6 +45,43 @@ void GfMenuObjZoneTelop::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjZoneTelop::update() {
   unknown28.unknown003();
   GfMenuObject::update();
+}
+
+void GfMenuObjZoneTelop::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 2:
+    termCallContext(handle);
+    acc.setTerm();
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case EVENT_OPEN_TELOP: {
+    ui::UIObjectAcc title(acc.unknown10, "TXT_title");
+    title.setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_ZONE_TELOP_MS), event.unknown08));
+    unknown20->unknown18c = 0.5f;
+    unknown20->unknown188 = false;
+    unknown20->unknown28.unknown005();
+    unknown20->unknown28.unknown002(&GfMenuObjZoneTelop::seqFadeIn);
+    unknown20->unknown28.unknown004(TELOP_FRAME);
+    unknown20->unknown28.unknown002(&GfMenuObjZoneTelop::seqFadeOut);
+    break;
+  }
+  case EVENT_CLOSE_TELOP:
+    if (event.unknown08_f32 == 0.0f) {
+      unknown20->unknown188 = false;
+      unknown20->unknown28.unknown005();
+    } else {
+      unknown20->unknown18c = event.unknown08_f32;
+      unknown20->unknown188 = false;
+      unknown20->unknown28.unknown005();
+      unknown20->unknown28.unknown002(&GfMenuObjZoneTelop::seqFadeOut);
+      break;
+    }
+  case 1:
+    acc.setDisp(false);
+  }
 }
 
 bool GfMenuObjZoneTelop::seqFadeIn() {

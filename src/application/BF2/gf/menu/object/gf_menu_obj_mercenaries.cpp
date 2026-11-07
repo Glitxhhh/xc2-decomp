@@ -13,6 +13,11 @@ namespace gf {
 
 void GfMenuObjMercenaries::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjMercenaries::update() {
+  unknown0e8.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjMercenaries::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjMercenaries::setFadeIn(u32 handle) {

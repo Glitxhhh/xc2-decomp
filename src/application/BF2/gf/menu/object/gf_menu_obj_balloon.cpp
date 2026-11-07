@@ -5,6 +5,11 @@ namespace gf {
 
 void GfMenuObjBalloon::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjBalloon::update() {
+  unknown78.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjBalloon::resetFeeling(ui::UIObjectAcc &acc) { acc.setAddColor("black"); }
 
 } // namespace gf

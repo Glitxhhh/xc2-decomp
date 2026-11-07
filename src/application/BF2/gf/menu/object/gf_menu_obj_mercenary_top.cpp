@@ -40,4 +40,9 @@ void GfMenuObjMercenaryTop::sendCloseEvent(u32 handle, int type) {
 
 void GfMenuObjMercenaryTop::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjMercenaryTop::update() {
+  unknown0a0.unknown003();
+  GfMenuObject::update();
+}
+
 } // namespace gf

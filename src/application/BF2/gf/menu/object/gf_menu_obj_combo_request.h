@@ -9,6 +9,7 @@ public:
   static void attachComboRequest(GfMenuCallContext *context);
   void initialize() override;
   void finalize() override;
+  void update() override;
 };
 
 } // namespace gf

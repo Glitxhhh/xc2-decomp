@@ -2,6 +2,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -18,6 +19,11 @@ constexpr u16 unknown002 = 0x10a;
 void GfMenuObjSpecialGauge::push() { unknown144(unknown001, unknown002); }
 
 void GfMenuObjSpecialGauge::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjSpecialGauge::update() {
+  ui::UIObjectAcc(unknown18).setAlpha(1.0f);
+  GfMenuObject::update();
+}
 
 void GfMenuObjSpecialGauge::close() { unknown145(unknown001, unknown003); }
 

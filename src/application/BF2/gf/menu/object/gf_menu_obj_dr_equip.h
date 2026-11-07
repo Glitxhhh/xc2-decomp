@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 #include "ui/ui_object_acc.h"
@@ -30,6 +31,7 @@ public:
   static bool attach(GfMenuCallContext *context);
   void initialize() override;
   void finalize() override;
+  void update() override;
   void suspendInput();
   void resumeInput();
   bool seqStartOpen();
@@ -39,10 +41,12 @@ public:
   bool seqAppearPhase1();
   bool seqLeavePhase1();
 
-  u8 _24[0x2e0 - 0x24];
-  int unknown2e0; // Inferred role: control of the appear and leave phases, -1 when idle; original member name unknown.
+  u8 _24[0x50 - 0x24];
+  GfMenuSequence<GfMenuObjDrEquip, 8> unknown50; // Inferred role: appear and leave steps; original member name unknown.
+  int unknown2e0;                                // Inferred role: control of the appear and leave phases, -1 when idle; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjDrEquip, unknown50) == 0x50, "");
 static_assert(offsetof(GfMenuObjDrEquip, unknown2e0) == 0x2e0, "");
 
 } // namespace gf

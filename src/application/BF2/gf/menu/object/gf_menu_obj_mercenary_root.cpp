@@ -10,6 +10,11 @@ constexpr u32 unknown001 = 0x4d;
 
 void GfMenuObjMercenaryRoot::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjMercenaryRoot::update() {
+  unknown28.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjMercenaryRoot::closeBg() { unknown144(unknown001, GfMenuTypes::unknown003_34); }
 
 } // namespace gf

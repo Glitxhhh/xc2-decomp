@@ -8,6 +8,11 @@ constexpr u32 unknown001 = 0x86;
 
 void GfMenuObjOption::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjOption::update() {
+  unknown128.unknown003();
+  GfMenuObject::update();
+}
+
 int GfMenuObjOption::getVolumeValue(u8 level, u8 levelMax) {
   f32 volume = (1.0f / levelMax) * level;
   if (volume > 1.0f) {

@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_link_jump.h"
 
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
 #include "types.h"
 
@@ -7,6 +8,11 @@ namespace gf {
 
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x49;
+
+void GfMenuObjLinkJump::finalize() {
+  GfMenuReference::clearLinkList();
+  GfMenuObject::finalize();
+}
 
 void GfMenuObjLinkJump::update() { GfMenuObject::update(); }
 

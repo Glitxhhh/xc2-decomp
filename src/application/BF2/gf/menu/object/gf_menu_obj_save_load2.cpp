@@ -11,6 +11,11 @@ constexpr u32 unknown001 = 0x35;
 
 void GfMenuObjSaveLoad2::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjSaveLoad2::update() {
+  unknown30.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjSaveLoad2::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
   layerParam.set(param);

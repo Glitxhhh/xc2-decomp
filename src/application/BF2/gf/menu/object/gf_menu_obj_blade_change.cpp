@@ -16,6 +16,11 @@ constexpr u16 unknown003 = 0x102;
 
 void GfMenuObjBladeChange::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjBladeChange::update() {
+  ui::UIObjectAcc(unknown18).setAlpha(1.0f);
+  GfMenuObject::update();
+}
+
 void GfMenuObjBladeChange::enableAwakening(bool) {}
 
 void GfMenuObjBladeChange::close() { unknown146(unknown001, GfMenuTypes::unknown003_34); }

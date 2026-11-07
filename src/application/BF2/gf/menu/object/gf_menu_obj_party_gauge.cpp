@@ -15,6 +15,11 @@ constexpr u32 BATTLE_STATE_UNKNOWN_3 = 3;
 
 void GfMenuObjPartyGauge::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjPartyGauge::update() {
+  ui::UIObjectAcc(unknown18).setAlpha(1.0f);
+  GfMenuObject::update();
+}
+
 void GfMenuObjPartyGauge::close() {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
   if (acc.isValid() && !acc.isTerm()) {

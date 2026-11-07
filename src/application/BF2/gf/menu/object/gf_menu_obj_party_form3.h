@@ -1,5 +1,8 @@
 #pragma once
+#include <stddef.h>
+
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
 
 namespace ui {
@@ -21,7 +24,13 @@ public:
   static int setFadeOut(u32 handle);
   void initialize() override;
   void finalize() override;
+  void update() override;
   static void setupBGLayout(ui::UIObjectAcc &, u32, bool);
+
+  u8 _24[0x80 - 0x24];
+  GfMenuSequence<GfMenuObjPartyForm3, 8> unknown80; // Inferred role: queued steps; original member name unknown.
 };
+
+static_assert(offsetof(GfMenuObjPartyForm3, unknown80) == 0x80, "");
 
 } // namespace gf

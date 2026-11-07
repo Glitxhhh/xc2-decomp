@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
 
 namespace ui {
@@ -21,6 +22,7 @@ public:
   static int setFadeOut(u32 handle);
   void initialize() override;
   void finalize() override;
+  void update() override;
   bool seqRewardStart();
   bool seqRewardStart2();
   bool seqRewardStart3();
@@ -30,8 +32,9 @@ public:
   bool seqRewardComp4();
   bool seqRewardComp5();
 
-  u8 _24[0x378 - 0x24];
-  int unknown378; // Inferred role: control of the reward screen steps; original member name unknown.
+  u8 _24[0xe8 - 0x24];
+  GfMenuSequence<GfMenuObjMercenaries, 8> unknown0e8; // Inferred role: queued steps; original member name unknown.
+  int unknown378;                                     // Inferred role: control of the reward screen steps; original member name unknown.
 };
 
 static_assert(offsetof(GfMenuObjMercenaries, unknown378) == 0x378, "");

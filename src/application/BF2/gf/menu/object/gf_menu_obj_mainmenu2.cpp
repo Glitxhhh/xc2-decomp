@@ -6,6 +6,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 
 #include "gf/menu/gf_menu_fullscreen.h"
+#include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_popup.h"
 #include "ui/event/ui_event_data.h"
@@ -23,6 +24,11 @@ constexpr u32 unknown002 = 0x5f;
 constexpr u32 unknown003 = 0x28;
 
 u32 GfMenuObjMainMenu2::s_openMenuID;
+
+void GfMenuObjMainMenu2::finalize() {
+  GfMenuSoundManager::fadeInFieldBgm(1.0f);
+  GfMenuObject::finalize();
+}
 
 void GfMenuObjMainMenu2::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;

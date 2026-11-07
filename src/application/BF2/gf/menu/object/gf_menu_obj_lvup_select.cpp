@@ -13,6 +13,11 @@ constexpr u32 unknown001 = 0x57;
 
 void GfMenuObjLvupSelect::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjLvupSelect::update() {
+  unknown28.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjLvupSelect::openLevelSelect(GfMenuCallContext *context, u32 level) {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
   if (acc.isValid() && GfMenuObjUtil::checkCCStart(context)) {

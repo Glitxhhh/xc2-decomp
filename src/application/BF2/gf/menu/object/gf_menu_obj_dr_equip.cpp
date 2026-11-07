@@ -11,6 +11,11 @@ constexpr u32 unknown001 = 0x7b;
 
 void GfMenuObjDrEquip::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjDrEquip::update() {
+  unknown50.unknown003();
+  GfMenuObject::update();
+}
+
 bool GfMenuObjDrEquip::attach(GfMenuCallContext *context) { return unknown153(context, unknown001); }
 
 void GfMenuObjDrEquip::suspendInput() {

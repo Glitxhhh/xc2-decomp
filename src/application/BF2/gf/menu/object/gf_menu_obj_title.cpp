@@ -12,6 +12,11 @@ bool GfMenuObjTitle::s_NoSaveData;
 
 void GfMenuObjTitle::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjTitle::update() {
+  unknown58.unknown003();
+  GfMenuObject::update();
+}
+
 bool GfMenuObjTitle::isEnableNewGame() { return true; }
 
 bool GfMenuObjTitle::isEnableNewGameAdv() { return false; }

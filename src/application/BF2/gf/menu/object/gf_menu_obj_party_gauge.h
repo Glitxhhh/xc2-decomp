@@ -10,6 +10,7 @@ public:
   static void disp(bool isDisp);
   void initialize() override;
   void finalize() override;
+  void update() override;
 };
 
 } // namespace gf

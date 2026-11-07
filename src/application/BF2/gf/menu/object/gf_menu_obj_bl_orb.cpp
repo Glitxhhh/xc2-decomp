@@ -12,6 +12,11 @@ constexpr u32 unknown001 = 0x7d;
 
 void GfMenuObjBlOrb::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjBlOrb::update() {
+  unknown58.unknown003();
+  GfMenuObject::update();
+}
+
 bool GfMenuObjBlOrb::attach(GfMenuCallContext *context) { return unknown153(context, unknown001); }
 
 void GfMenuObjBlOrb::suspendInput() {

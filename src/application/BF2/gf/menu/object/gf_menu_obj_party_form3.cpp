@@ -12,6 +12,11 @@ constexpr u32 unknown001 = 0x24;
 
 void GfMenuObjPartyForm3::finalize() { GfMenuObject::finalize(); }
 
+void GfMenuObjPartyForm3::update() {
+  unknown80.unknown003();
+  GfMenuObject::update();
+}
+
 void GfMenuObjPartyForm3::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
   layerParam.set(param);
