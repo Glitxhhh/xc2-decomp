@@ -159,6 +159,20 @@ public:
   };
 
   static GfEvtModelBlade *create(GfInitParamBlade &param);
+  ~GfEvtModelBlade() override;
+  const mm::mtl::RTTI *getRTTI() const override;
+  void update(const fw::UpdateInfo &info) override;
+  void setDispWeapon(bool isDisp) override;
+  void setDispWeapon(bool isDispRight, bool isDispLeft) override;
+  GF_OBJ_HANDLE *getWeaponHandleRight() const override;
+  GF_OBJ_HANDLE *getWeaponHandleLeft() const override;
+  void setWeaponBattleCommand() override;
+  void setWeaponFieldCommand() override;
+  void setWeaponBattleState() override;
+  void setWeaponFieldState() override;
+  void setWeaponBattleMount() override;
+  void setWeaponFieldMount() override;
+  void setStateWeapon(bool isBattle);
   bool isAnimEnd() const;
   void playAnimWeaponRightCS(const char *name);
   bool isPlayEndAnimWeaponRightCS();
@@ -166,7 +180,15 @@ public:
   void playAnimWeaponLeftCS(const char *name);
   bool isPlayEndAnimWeaponLeftCS();
   void setAnimSpeedWeaponLeftCS(f32 speed);
+
+  static mm::mtl::RTTI m_rtti;
+
+  u8 _28[0x298 - 0x28];
+  ai::Fsm unknown298; // Inferred role: state machine; original member name unknown.
 };
+
+static_assert(offsetof(GfEvtModelBlade, unknown298) == 0x298, "");
+static_assert(sizeof(GfEvtModelBlade) == 0x310, "");
 
 class GfEvtModelEnemy : public GfEvtModel {
 public:
