@@ -114,9 +114,9 @@ public:
   u8 unknownd0;                                           // Role and original member name unknown.
   u8 unknownd1;                                           // Role and original member name unknown.
   u8 _d2[0xd8 - 0xd2];
-  RaffleResult unknownd8; // Inferred role: raffle result; original member name unknown.
-  bool unknown128;        // Inferred role: display enabled; original member name unknown.
-  bool unknown129;        // Inferred role: request to sync the depop of the treasure boxes; original member name unknown.
+  RaffleResult unknownd8;  // Inferred role: raffle result; original member name unknown.
+  mutable bool unknown128; // Inferred role: display enabled; original member name unknown.
+  bool unknown129;         // Inferred role: request to sync the depop of the treasure boxes; original member name unknown.
   u8 _12a[0x130 - 0x12a];
 };
 

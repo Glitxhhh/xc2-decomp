@@ -120,7 +120,7 @@ public:
   CreateInfo unknown00;                                   // Inferred role: create info; original member name unknown.
   BdatInfo unknown18;                                     // Inferred role: bdat info; original member name unknown.
   PopInfo unknown58;                                      // Inferred role: pop info; original member name unknown.
-  bool unknowna0;                                         // Inferred role: display enabled; original member name unknown.
+  mutable bool unknowna0;                                 // Inferred role: display enabled; original member name unknown.
   mm::mtl::Vector<gf::GF_OBJ_HANDLE *> *unknowna8;        // Inferred role: game object handles; original member name unknown.
   GmkSquad *unknownb0;                                    // Inferred role: squad; original member name unknown.
   u64 unknownb8;                                          // Inferred role: matched condition flags; original member name unknown.

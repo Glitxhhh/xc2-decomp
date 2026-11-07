@@ -48,7 +48,7 @@ public:
 
   GmkRouteNavi *unknown70;    // Inferred role: route navi; original member name unknown.
   bool unknown78;             // Role and original member name unknown.
-  bool unknown79;             // Inferred role: display enabled; original member name unknown.
+  mutable bool unknown79;     // Inferred role: display enabled; original member name unknown.
   mutable mm::Vec3 unknown80; // Inferred role: position; original member name unknown.
   mutable mm::Quat unknown90; // Inferred role: rotation; original member name unknown.
 };

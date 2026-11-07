@@ -175,6 +175,13 @@ void GmkSe::debugDraw() const {
   fw::debug::drawCircleLine(matrix, data->unknown00, mm::Col4::red);
 }
 
+void GmkSe::validateMute() const {
+  if (unknownf4 == 0) {
+    return;
+  }
+  fw::SoundManager::get()->setVolume(unknownf4, unknown100 ? 0.0f : getBdatInfo()->unknown05 * 0.01f, 0.0f);
+}
+
 void GmkSe::createGmkPhantom() {
   if (canCreateGameEntity() && static_cast<u32>(AGmkBase::unknown08.unknown10->unknown0c - SHAPE_TYPE_SPHERE) < 3) {
     unknown60.create(*this, nullptr, false);
@@ -355,6 +362,13 @@ bool GmkSeLine::isPlayerInsideAabb() const {
   const Data *data = getData();
   return data->unknown00 <= position.x && position.x < data->unknown10 && data->unknown04 <= position.y && position.y < data->unknown14 && data->unknown08 <= position.z &&
          position.z < data->unknown18;
+}
+
+void GmkSeLine::validateMute() const {
+  if (unknown5c == 0) {
+    return;
+  }
+  fw::SoundManager::get()->setVolume(unknown5c, unknown68 ? 0.0f : getBdatInfo()->unknown05 * 0.01f, 0.0f);
 }
 
 bool GmkSeLine::canPopInst() const {

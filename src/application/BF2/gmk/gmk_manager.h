@@ -250,6 +250,7 @@ bool isInEvent();
 void setDispByGmkType(GmkType type, bool isDisp);
 void setDispByGmkTypeAndBdatId(GmkType type, int bdatId, bool isDisp);
 void setDispByGmkTypeAndGmkIdx(int gmkSet, GmkType type, u32 index, bool isDisp);
+void validateDispByGmkType(GmkType type);
 bool isInterestPosExist();
 bool isPlayerExist();
 bool isCameraExist();

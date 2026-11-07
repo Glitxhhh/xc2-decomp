@@ -60,7 +60,7 @@ public:
   gf::GF_OBJ_HANDLE *unknown48; // Inferred role: gob instance handle; original member name unknown.
   int unknown50;                // Inferred role: pop state; original member name unknown.
   bool unknown54;               // Inferred role: keep shown; original member name unknown.
-  bool unknown55;               // Inferred role: visible; original member name unknown.
+  mutable bool unknown55;       // Inferred role: visible; original member name unknown.
   u8 _56[0x58 - 0x56];
 };
 

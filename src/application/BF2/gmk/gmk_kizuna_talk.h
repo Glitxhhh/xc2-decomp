@@ -47,7 +47,7 @@ public:
 
   gf::GF_OBJ_HANDLE *unknown48; // Inferred role: handle; original member name unknown.
   DistCond unknown50;           // Inferred role: dist cond; original member name unknown.
-  bool unknown54;               // Inferred role: disp; original member name unknown.
+  mutable bool unknown54;       // Inferred role: disp; original member name unknown.
 };
 
 static_assert(offsetof(GmkKizunaTalk, unknown48) == 0x48, "");

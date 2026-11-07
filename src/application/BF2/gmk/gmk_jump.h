@@ -69,7 +69,7 @@ public:
   u32 unknown70;                // Inferred role: icon handle; original member name unknown.
   DistCond unknown74;           // Inferred role: icon dist; original member name unknown.
   bool unknown78;               // Inferred role: icon dead; original member name unknown.
-  bool unknown79;               // Inferred role: disp; original member name unknown.
+  mutable bool unknown79;       // Inferred role: disp; original member name unknown.
 };
 
 static_assert(offsetof(GmkJump, unknown50) == 0x50, "");

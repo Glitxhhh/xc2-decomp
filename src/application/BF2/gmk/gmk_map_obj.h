@@ -55,7 +55,7 @@ public:
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
   gf::GF_OBJ_HANDLE *unknown48; // Inferred role: handle; original member name unknown.
-  bool unknown50;               // Inferred role: disp; original member name unknown.
+  mutable bool unknown50;       // Inferred role: disp; original member name unknown.
   bool unknown51;               // Inferred role: removed; original member name unknown.
   bool unknown52;               // Inferred role: revived; original member name unknown.
   mutable f32 unknown54;        // Inferred role: dispose fade time; original member name unknown.
@@ -94,7 +94,7 @@ public:
   const GmkMapObj::BdatInfo *getBdatInfo() const { return reinterpret_cast<const GmkMapObj::BdatInfo *>(unknown20.unknown10); }
 
   gf::GF_OBJ_HANDLE *unknown50; // Inferred role: handle; original member name unknown.
-  bool unknown58;               // Inferred role: disp; original member name unknown.
+  mutable bool unknown58;       // Inferred role: disp; original member name unknown.
 };
 
 static_assert(offsetof(GmkRoutedMapObj, unknown50) == 0x50, "");

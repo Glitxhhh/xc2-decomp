@@ -69,7 +69,7 @@ public:
   f32 unknown54;                         // Role and original member name unknown.
   void (GmkCollection::*unknown58)(f32); // Inferred role: sequence; original member name unknown.
   f32 unknown68;                         // Role and original member name unknown.
-  bool unknown6c;                        // Role and original member name unknown.
+  mutable bool unknown6c;                // Role and original member name unknown.
 };
 
 static_assert(sizeof(GmkCollection::BdatInfo) == 0x30, "");

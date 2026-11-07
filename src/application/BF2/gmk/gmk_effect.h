@@ -59,8 +59,8 @@ public:
   void *unknowna0;                   // Role and original member name unknown.
   bool unknowna8;                    // Role and original member name unknown.
   u8 _a9[0xac - 0xa9];
-  u32 unknownac;  // Role and original member name unknown.
-  bool unknownb0; // Role and original member name unknown.
+  u32 unknownac;          // Role and original member name unknown.
+  mutable bool unknownb0; // Role and original member name unknown.
   u8 _b1[0xb8 - 0xb1];
   u64 unknownB8_0 : 1;  // Role and original member name unknown.
   u64 unknownB8_1 : 1;  // Inferred role: can pop; original member name unknown.

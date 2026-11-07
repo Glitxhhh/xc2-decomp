@@ -77,7 +77,7 @@ public:
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
   gf::GF_OBJ_HANDLE *unknown48; // Inferred role: handle; original member name unknown.
-  bool unknown50;               // Inferred role: disp; original member name unknown.
+  mutable bool unknown50;       // Inferred role: disp; original member name unknown.
   f32 unknown54;                // Inferred role: opened dispose time; original member name unknown.
   f32 unknown58;                // Inferred role: opened timer; original member name unknown.
 };

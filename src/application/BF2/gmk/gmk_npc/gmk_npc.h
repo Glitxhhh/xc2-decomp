@@ -85,7 +85,7 @@ public:
 
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(AGmkBase::unknown20.unknown10); }
 
-  bool unknown68; // Inferred role: display enabled; original member name unknown.
+  mutable bool unknown68; // Inferred role: display enabled; original member name unknown.
 };
 
 static_assert(sizeof(GmkNpc::BdatInfo) == 0x30, "");

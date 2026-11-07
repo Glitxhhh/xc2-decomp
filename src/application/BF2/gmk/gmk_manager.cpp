@@ -769,6 +769,254 @@ void GmkSet::seqCreateMapGmk(f32 deltaTime) {
 
 bool isInEvent() { return gf::GfGameManager::isEvent(false); }
 
+class GmkInstDispTraverserByBdatId {
+public:
+  GmkInstDispTraverserByBdatId(int bdatId, bool isDisp, bool isValidate) : unknown08(bdatId), unknown0c(isDisp), unknown0d(isValidate), unknown0e(false) {}
+  virtual void onTraverse(const AGmkBase &gmk);
+
+  int unknown08;  // Inferred role: bdat id, every gimmick when not positive; original member name unknown.
+  bool unknown0c; // Inferred role: display; original member name unknown.
+  bool unknown0d; // Inferred role: apply the current display setting instead of setting it; original member name unknown.
+  bool unknown0e; // Inferred role: a gimmick was traversed; original member name unknown.
+};
+
+// Inferred helper: sets the display of a routed enemy, or applies its current display setting; original name unknown.
+static void unknown008(const GmkRoute &route, bool isValidate, bool isDisp) {
+  const GmkRoutedEnemy &enemy = static_cast<const GmkRoutedEnemy &>(route);
+  if (isValidate) {
+    isDisp = enemy.unknown50.unknown140;
+  }
+  enemy.unknown50.unknown140 = isDisp;
+  enemy.unknown50.validateDisp();
+}
+
+// Inferred helper: sets the display of a routed mob, or applies its current display setting; original name unknown.
+static void unknown009(const GmkRoute &route, bool isValidate, bool isDisp) {
+  const GmkRoutedMob &mob = static_cast<const GmkRoutedMob &>(route);
+  if (isValidate) {
+    isDisp = mob.unknown50.unknowna0;
+  }
+  mob.unknown50.unknowna0 = isDisp;
+  mob.unknown50.validateDisp();
+}
+
+// Inferred helper: sets the display of a gimmick, or applies its current display setting; original name unknown.
+static void unknown007(const AGmkBase &gmk, bool isValidate, bool isDisp) {
+  switch (gmk.getGmkType()) {
+  case GMK_TYPE_ENEMY: {
+    const GmkEnemy &enemy = static_cast<const GmkEnemy &>(gmk);
+    if (isValidate) {
+      isDisp = enemy.unknown48.unknown140;
+    }
+    enemy.unknown48.unknown140 = isDisp;
+    enemy.unknown48.validateDisp();
+    break;
+  }
+  case GMK_TYPE_ROUTED_ENEMY:
+    unknown008(static_cast<const GmkRoute &>(gmk), isValidate, isDisp);
+    break;
+  case GMK_TYPE_NPC: {
+    const GmkNpc &npc = static_cast<const GmkNpc &>(gmk);
+    if (isValidate) {
+      isDisp = npc.unknown68;
+    }
+    npc.unknown68 = isDisp;
+    npc.validateDisp();
+    break;
+  }
+  case GMK_TYPE_ROUTED_NPC: {
+    const GmkRoutedNpc &npc = static_cast<const GmkRoutedNpc &>(gmk);
+    if (isValidate) {
+      isDisp = npc.unknown79;
+    }
+    npc.unknown79 = isDisp;
+    npc.validateDisp();
+    break;
+  }
+  case GMK_TYPE_MAP_OBJ: {
+    const GmkMapObj &mapObj = static_cast<const GmkMapObj &>(gmk);
+    if (isValidate) {
+      isDisp = mapObj.unknown50;
+    }
+    mapObj.unknown50 = isDisp;
+    mapObj.validateDisp();
+    break;
+  }
+  case GMK_TYPE_ROUTED_MAP_OBJ: {
+    const GmkRoutedMapObj &mapObj = static_cast<const GmkRoutedMapObj &>(gmk);
+    if (isValidate) {
+      isDisp = mapObj.unknown58;
+    }
+    mapObj.unknown58 = isDisp;
+    mapObj.validateDisp();
+    break;
+  }
+  case GMK_TYPE_TBOX: {
+    const GmkTbox &tbox = static_cast<const GmkTbox &>(gmk);
+    if (isValidate) {
+      isDisp = tbox.unknown50;
+    }
+    tbox.unknown50 = isDisp;
+    tbox.validateDisp();
+    break;
+  }
+  case GMK_TYPE_EFFECT: {
+    const GmkEffect &effect = static_cast<const GmkEffect &>(gmk);
+    if (isValidate) {
+      isDisp = effect.unknownb0;
+    }
+    effect.unknownb0 = isDisp;
+    effect.validateDisp();
+    break;
+  }
+  case GMK_TYPE_SE: {
+    const GmkSe &se = static_cast<const GmkSe &>(gmk);
+    se.unknown100 = isValidate ? se.unknown100 : !isDisp;
+    se.validateMute();
+    break;
+  }
+  case GMK_TYPE_SE_LINE: {
+    const GmkSeLine &se = static_cast<const GmkSeLine &>(gmk);
+    se.unknown68 = isValidate ? se.unknown68 : !isDisp;
+    se.validateMute();
+    break;
+  }
+  case GMK_TYPE_MOB: {
+    const GmkMob &mob = static_cast<const GmkMob &>(gmk);
+    if (isValidate) {
+      isDisp = mob.unknown48.unknowna0;
+    }
+    mob.unknown48.unknowna0 = isDisp;
+    mob.unknown48.validateDisp();
+    break;
+  }
+  case GMK_TYPE_ROUTED_MOB:
+    unknown009(static_cast<const GmkRoute &>(gmk), isValidate, isDisp);
+    break;
+  case GMK_TYPE_COLLECTION: {
+    const GmkCollection &collection = static_cast<const GmkCollection &>(gmk);
+    if (isValidate) {
+      collection.validateDisp();
+    } else {
+      collection.unknown6c = isDisp;
+      collection.validateDisp();
+    }
+    break;
+  }
+  case GMK_TYPE_SALVAGE: {
+    const GmkSalvage &salvage = static_cast<const GmkSalvage &>(gmk);
+    if (isValidate) {
+      salvage.validateDisp();
+    } else {
+      salvage.unknown128 = isDisp;
+      salvage.validateDisp();
+    }
+    break;
+  }
+  case GMK_TYPE_PRECIOUS: {
+    const GmkPrecious &precious = static_cast<const GmkPrecious &>(gmk);
+    if (isValidate) {
+      precious.validateDisp();
+    } else {
+      precious.unknown74 = isDisp;
+      precious.validateDisp();
+    }
+    break;
+  }
+  case GMK_TYPE_KIZUNA_TALK: {
+    const GmkKizunaTalk &kizunaTalk = static_cast<const GmkKizunaTalk &>(gmk);
+    if (isValidate) {
+      kizunaTalk.validateDisp();
+    } else {
+      kizunaTalk.unknown54 = isDisp;
+      kizunaTalk.validateDisp();
+    }
+    break;
+  }
+  case GMK_TYPE_JUMP: {
+    const GmkJump &jump = static_cast<const GmkJump &>(gmk);
+    if (isValidate) {
+      jump.validateDisp();
+    } else {
+      jump.unknown79 = isDisp;
+      jump.validateDisp();
+    }
+    break;
+  }
+  case GMK_TYPE_WARP: {
+    const GmkWarp &warp = static_cast<const GmkWarp &>(gmk);
+    if (isValidate) {
+      isDisp = warp.unknown6d;
+    }
+    warp.unknown6d = isDisp;
+    warp.validateDisp();
+    break;
+  }
+  case GMK_TYPE_BLADE: {
+    const GmkBlade &blade = static_cast<const GmkBlade &>(gmk);
+    if (isValidate) {
+      isDisp = blade.unknown55;
+    }
+    blade.unknown55 = isDisp;
+    blade.validateDisp();
+    break;
+  }
+  case GMK_TYPE_DMG_EFFECT: {
+    const GmkDmgEffect &effect = static_cast<const GmkDmgEffect &>(gmk);
+    if (isValidate) {
+      isDisp = effect.unknown48;
+    }
+    effect.unknown48 = isDisp;
+    effect.validateDisp();
+    break;
+  }
+  case GMK_TYPE_DMG_SE: {
+    const GmkDmgSe &se = static_cast<const GmkDmgSe &>(gmk);
+    se.unknowne0 = isValidate ? se.unknowne0 : !isDisp;
+    se.validateMute();
+    break;
+  }
+  default:
+    break;
+  }
+}
+
+void GmkInstDispTraverserByBdatId::onTraverse(const AGmkBase &gmk) {
+  if (!gmk.isValid()) {
+    return;
+  }
+  if (unknown08 < 1 || unknown08 == gmk.unknown20.unknown18) {
+    if (unknown0d) {
+      unknown007(gmk, true, false);
+    } else {
+      unknown007(gmk, false, unknown0c);
+    }
+    unknown0e = true;
+  }
+}
+
+void setDispByGmkType(GmkType type, bool isDisp) {
+  GmkInstDispTraverserByBdatId traverser(0, isDisp, false);
+  GmkManager::get()->traverseGmkInst(type, traverser);
+}
+
+void setDispByGmkTypeAndBdatId(GmkType type, int bdatId, bool isDisp) {
+  GmkInstDispTraverserByBdatId traverser(bdatId, isDisp, false);
+  GmkManager::get()->traverseGmkInst(type, traverser);
+}
+
+void setDispByGmkTypeAndGmkIdx(int gmkSet, GmkType type, u32 index, bool isDisp) {
+  const AGmkBase *gmk = GmkManager::get()->findGmkInstByGmkInstIndex(gmkSet, type, index);
+  if (gmk != nullptr) {
+    unknown007(*gmk, false, isDisp);
+  }
+}
+
+void validateDispByGmkType(GmkType type) {
+  GmkInstDispTraverserByBdatId traverser(0, false, true);
+  GmkManager::get()->traverseGmkInst(type, traverser);
+}
+
 } // namespace gmk
 
 template mm::mtl::PtrSingleton<gmk::GmkManager>::~PtrSingleton();

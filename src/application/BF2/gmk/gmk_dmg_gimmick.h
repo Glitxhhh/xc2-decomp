@@ -154,8 +154,8 @@ public:
   void applyEffectParam() const;
   void validateDisp() const;
 
-  bool unknown48;        // Inferred role: visible; original member name unknown.
-  mutable u32 unknown4c; // Role and original member name unknown.
+  mutable bool unknown48; // Inferred role: visible; original member name unknown.
+  mutable u32 unknown4c;  // Role and original member name unknown.
 };
 
 static_assert(offsetof(GmkDmgEffect, unknown48) == 0x48, "");
@@ -189,7 +189,7 @@ public:
   void validateMute() const;
 
   mutable GmkPhantom unknown50; // Inferred role: phantom; original member name unknown.
-  bool unknowne0;               // Inferred role: mute; original member name unknown.
+  mutable bool unknowne0;       // Inferred role: mute; original member name unknown.
   mutable u32 unknowne4;        // Inferred role: se handle; original member name unknown.
   mutable f32 unknowne8;        // Inferred role: se volume; original member name unknown.
 };

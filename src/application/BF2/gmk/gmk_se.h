@@ -66,6 +66,7 @@ public:
   void createGmkPhantom();
   bool canPopInst() const;
   bool canDepopInst() const;
+  void validateMute() const;
 
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
@@ -74,10 +75,10 @@ public:
   bool unknownf0;       // Role and original member name unknown.
   bool unknownf1;       // Role and original member name unknown.
   u8 _f2[0xf4 - 0xf2];
-  int unknownf4;   // Role and original member name unknown.
-  f32 unknownf8;   // Role and original member name unknown.
-  f32 unknownfc;   // Role and original member name unknown.
-  bool unknown100; // Role and original member name unknown.
+  int unknownf4;           // Role and original member name unknown.
+  f32 unknownf8;           // Role and original member name unknown.
+  f32 unknownfc;           // Role and original member name unknown.
+  mutable bool unknown100; // Role and original member name unknown.
 };
 
 static_assert(sizeof(GmkSe::BdatInfo) == 0x40, "");
@@ -124,6 +125,7 @@ public:
   bool canPopInst() const;
   bool canDepopInst() const;
   bool isPlayerInsideAabb() const;
+  void validateMute() const;
 
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
   const GmkSe::BdatInfo *getBdatInfo() const { return reinterpret_cast<const GmkSe::BdatInfo *>(unknown20.unknown10); }
@@ -131,10 +133,10 @@ public:
   bool unknown58; // Role and original member name unknown.
   bool unknown59; // Role and original member name unknown.
   u8 _5a[0x5c - 0x5a];
-  int unknown5c;  // Role and original member name unknown.
-  f32 unknown60;  // Role and original member name unknown.
-  f32 unknown64;  // Role and original member name unknown.
-  bool unknown68; // Role and original member name unknown.
+  int unknown5c;          // Role and original member name unknown.
+  f32 unknown60;          // Role and original member name unknown.
+  f32 unknown64;          // Role and original member name unknown.
+  mutable bool unknown68; // Role and original member name unknown.
 };
 
 static_assert(offsetof(GmkSeLine, unknown58) == 0x58, "");

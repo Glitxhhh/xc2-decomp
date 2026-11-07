@@ -173,7 +173,7 @@ public:
   DistHvCond unknown88;    // Inferred role: pop dist; original member name unknown.
   DistHvCond unknown90;    // Inferred role: depop dist; original member name unknown.
   PopInfo unknown98;       // Inferred role: pop info; original member name unknown.
-  bool unknown140;         // Inferred role: display enabled; original member name unknown.
+  mutable bool unknown140; // Inferred role: display enabled; original member name unknown.
   mutable bool unknown141; // Inferred role: force pop requested; original member name unknown.
   u8 _142[0x144 - 0x142];
   mutable ForcePopEnemyInfo unknown144; // Inferred role: force pop request; original member name unknown.
