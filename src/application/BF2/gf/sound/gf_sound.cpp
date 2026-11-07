@@ -650,6 +650,13 @@ void GfMasterVolume::setMenuBgmVolume(f32 volume) {
   }
 }
 
+u16 GfMasterVolume::getU16Volume(f32 volume) {
+  if (volume >= 1.0f) {
+    return 0xff;
+  }
+  return static_cast<u8>(volume * VOLUME_SCALE);
+}
+
 void GfSound::setCategory(SoundHandle handle, fw::SoundCategory category) {
   SeParam *param = getSeParam(static_cast<u16>(handle.unknown04));
   if (param != nullptr && fw::SoundManager::get() != nullptr) {
