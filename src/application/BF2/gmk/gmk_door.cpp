@@ -29,10 +29,6 @@
 #include "mm_mtl/rtti.h"
 #include "scn/scn_obj_acc.h"
 
-namespace ml {
-class ScnObjModel;
-} // namespace ml
-
 namespace gf {
 struct GF_OBJ_HANDLE;
 } // namespace gf
@@ -79,11 +75,11 @@ void GmkDoor::setLodSwitch(LodSwitch lodSwitch) {
     break;
   }
   gf::GfFieldLod *lod = gf::GfFieldLod::get();
-  if (lod->unknown840 == nullptr || lod->unknown850 == nullptr) {
+  if (lod->unknown840.unknown00.unknown00 == nullptr || lod->unknown840.unknown00.unknown10 == nullptr) {
     return;
   }
   u16 lodId = lod->unknown08[getBdatInfo()->unknown06 - lod->unknown808];
-  ml::ScnObjAccSeamPos seamPos(static_cast<ml::ScnObjModel *>(lod->unknown840));
+  ml::ScnObjAccSeamPos seamPos(lod->unknown840.unknown00.unknown00);
   int num = seamPos.getMax();
   for (int i = 0; i < num; i++) {
     ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);

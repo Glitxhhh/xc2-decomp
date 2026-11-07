@@ -1,12 +1,19 @@
 #include "gf/field/gf_field_lod.h"
 
 #include "bdat.h"
+#include "framework/coli/coli_manager.h"
 #include "framework/effect/effect_manager.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/field/gf_field_manager.h"
+#include "gf/gf_manager.h"
+#include "gf/map/gf_map_manager.h"
+#include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_bdat.h"
+#include "idcoli/idcoli.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_mtl/vector.h" // IWYU pragma: keep
 #include "scn/scn_obj_acc.h"
@@ -115,6 +122,149 @@ bool GfFieldLod::isFadeOut(int bdatId) const {
 bool GfFieldLod::isAnimReverseOfInit(int bdatId) { return Bdat::getFlagVal(GfDataBdat::getFP(BDAT_FLD_LODLIST), "flag", bdatId, "AnimReverse") != 0; }
 
 bool GfFieldLod::isVisibleOfInit(int bdatId) { return Bdat::getFlagVal(GfDataBdat::getFP(BDAT_FLD_LODLIST), "flag", bdatId, "Visible") != 0; }
+
+void GfFieldLodColiAnim::dispose() {
+  disposePosInfos();
+  unknown00 = CreateInfo();
+}
+
+void GfFieldLodColiAnim::disposePosInfos() {
+  clearEffectInsts();
+  fw::ColiObject *coliObject = GfMapManager::getColiObject();
+  size_t count = unknown20.size();
+  for (int i = 0; i < count; i++) {
+    PosInfo &posInfo = unknown20[i];
+    if (posInfo.unknown50 != INVALID_HANDLE) {
+      if (coliObject != nullptr && posInfo.unknown48 >= 0) {
+        idcoli::IDColiParmsGrand coliParms(coliObject->m_coliObject);
+        coliParms.getMoveObj(posInfo.unknown48).setUserData(nullptr);
+      }
+      unbindPosInfoToGfObj(posInfo);
+      GfObjUtil::destroy(posInfo.unknown50);
+    }
+  }
+  unknown20.destroy();
+}
+
+void GfFieldLodColiAnim::update(const fw::UpdateInfo &info) {
+  if (unknown00.unknown00 != nullptr && unknown00.unknown10 != nullptr && !GfManager::isDestroyNow() && unknown20.size() != 0) {
+    for (PosInfo &posInfo : unknown20) {
+      if (posInfo.unknown50 == INVALID_HANDLE) {
+        posInfo.update(info);
+      }
+    }
+  }
+}
+
+GfFieldLodState GfFieldLodColiAnim::findStateOfAnimReverse(bool isReverse) { return isReverse ? FIELD_LOD_STATE_UNKNOWN_1 : FIELD_LOD_STATE_UNKNOWN_0; }
+
+GfFieldLodState GfFieldLodColiAnim::findStateOfFade(bool isFadeIn, bool isImmediate) {
+  if (isFadeIn) {
+    return FIELD_LOD_STATE_UNKNOWN_2;
+  }
+  return isImmediate ? FIELD_LOD_STATE_UNKNOWN_3 : FIELD_LOD_STATE_UNKNOWN_4;
+}
+
+void GfFieldLodColiAnim::stop(u16 lodId) {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  int num = seamPos.getMax();
+  for (int i = 0; i < num; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (lodId == partsPos.getID()) {
+      unknown20[i].unknown68 = false;
+    }
+  }
+}
+
+bool GfFieldLodColiAnim::isLodIdExist(u16 lodId) const {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  int num = seamPos.getMax();
+  for (int i = 0; i < num; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (lodId == partsPos.getID()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void GfFieldLodColiAnim::setPlaySpeed(u16 lodId, f32 speed) {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  int num = seamPos.getMax();
+  for (int i = 0; i < num; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (lodId == partsPos.getID()) {
+      unknown20[i].unknown6c = speed;
+    }
+  }
+}
+
+f32 GfFieldLodColiAnim::getPlaySpeed(u16 lodId) const {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  int num = seamPos.getMax();
+  for (int i = 0; i < num; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (lodId == partsPos.getID()) {
+      return unknown20[i].unknown6c;
+    }
+  }
+  return 1.0f;
+}
+
+void GfFieldLodColiAnim::clearEffectInsts() {
+  size_t count = unknown20.size();
+  for (int i = 0; i < count; i++) {
+    unknown20[i].unknown08.disposeInst(false);
+  }
+}
+
+void GfFieldLodColiAnim::validateVeSe(const GfFieldLod &lod) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_FLD_LODLIST);
+  size_t count = unknown20.size();
+  for (int i = 0; i < count; i++) {
+    PosInfo &posInfo = unknown20[i];
+    int bdatId = lod.findBdatIdByLodId(posInfo.unknown40);
+    if (bdatId > Bdat::getIdTop(bdat)) {
+      posInfo.unknown08.createAsset(bdatId);
+      f32 popDist = gmk::toBdatF32(Bdat::getValCheck(bdat, "effect_pop_dist", bdatId, gmk::BDAT_TYPE_F32));
+      f32 range = popDist;
+      if (popDist == 0.0f) {
+        for (u32 state = 0; state < 5; state++) {
+          if (posInfo.unknown08.isAssetLoop(static_cast<GfFieldLodState>(state))) {
+            range = 50.0f;
+            break;
+          }
+        }
+      }
+      posInfo.unknown7c = range * range;
+      posInfo.unknown80 = Bdat::getFlagVal(bdat, "flag", bdatId, "LOD_fadeIN_collision") != 0;
+      posInfo.unknown81 = Bdat::getFlagVal(bdat, "flag", bdatId, "LOD_fadeOUT_collision") != 0;
+    }
+  }
+}
+
+void GfFieldLodColiAnim::bindPosInfoToGfObj(const PosInfo &posInfo) {
+  GfObjAcc acc(posInfo.unknown50);
+  acc.setUserData(OBJ_USER_DATA_UNKNOWN_1, reinterpret_cast<u64>(&posInfo));
+}
+
+void GfFieldLodColiAnim::unbindPosInfoToGfObj(const PosInfo &posInfo) {
+  GfObjAcc acc(posInfo.unknown50);
+  if (acc.isValid()) {
+    acc.setUserData(OBJ_USER_DATA_UNKNOWN_1, 0);
+  }
+}
+
+void GfFieldLodColiAnim::PosInfo::updateColiOff(ml::ScnObjAccPartsPos &partsPos) {
+  if (partsPos.isColiSkipData()) {
+    bool isColiOff = partsPos.isColiOff();
+    u32 id = partsPos.getID();
+    bool isGlobal = fw::ColiManager::get()->isGblId(id);
+    if (isColiOff != !isGlobal) {
+      fw::ColiManager::get()->setGblId(id, !isColiOff);
+    }
+  }
+}
 
 const mm::mtl::RTTI *GfFieldLodColiAnim::ColiUserData::getRTTI() const { return &m_rtti; }
 

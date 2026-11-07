@@ -1,15 +1,19 @@
 #include "gf/request/gf_req_command.h"
 
+#include "battle/utility_battle.h"
 #include "fw/fw_update_info.h"
 #include "gf/event/gf_event.h"
+#include "gf/field/gf_fobj_manager.h"
 #include "gf/game/gf_game_save.h"
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
+#include "gf/gf_pause.h"
 #include "gf/map/gf_map_manager.h"
 #include "gf/request/gf_req_manager.h"
 #include "gf/script/gf_script_manager.h"
+#include "ml/time_count.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
 
@@ -132,6 +136,39 @@ u32 GfReqCommand::reqWaitEvent(f32 time, GF_OBJ_HANDLE *handle) {
   param->unknown00 = time;
   param->unknown08 = handle;
   return GfReqManager::addCommand(param, execWaitEvent);
+}
+
+void GfReqCommand::execWaitEvent(const GfReqParam *param) {
+  ml::TimeCount timer;
+  timer.start();
+  while (!btl::Utility::IsEnableEventStart()) {
+    GfSleep(1);
+    if (timer.getSecLap() > 15.0f) {
+      break;
+    }
+  }
+  f32 remain = static_cast<const unknown005 *>(param)->unknown00 - 0.5f - timer.getSecLap();
+  while (remain > 0.0f) {
+    if (!GfPause::isPause(PAUSE_BIT_FIELD_TIME)) {
+      remain -= GfReqManager::getUpdateInfo()->unknown04;
+    }
+    GfSleep(1);
+  }
+  f32 elapsed = 0.0f;
+  do {
+    elapsed += GfReqManager::getUpdateInfo()->unknown04;
+    if (elapsed > 1.5f) {
+      elapsed = 1.5f;
+    }
+    GfFobjManager::get()->unknown907c = elapsed / 1.5f * 40.0f;
+    GfFobjManager::get()->unknown9080 = true;
+    GfSleep(1);
+  } while (elapsed < 1.5f);
+  GfFobjManager::get()->unknown907c = 1000.0f;
+  GfFobjManager::get()->unknown9080 = false;
+  GfSleep(1);
+  GfFobjManager::get()->unknown907c = 0.0f;
+  GfFobjManager::get()->unknown9080 = false;
 }
 
 u32 GfReqCommand::reqPlayerPause(f32 time) {

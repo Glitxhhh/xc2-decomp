@@ -35,6 +35,9 @@ public:
   u8 _9059[0x9060 - 0x9059];
   GfDropitemParams *unknown9060; // Inferred role: dropitem params; original member name unknown.
   u8 *unknown9068;               // Inferred role: dropitem bdat; original member name unknown.
+  u8 _9070[0x907c - 0x9070];
+  f32 unknown907c;  // Inferred role: dropitem collect range, read by GfFobjDropitem and ramped by GfReqCommand::execWaitEvent; original member name unknown.
+  bool unknown9080; // Inferred role: set while the collect range is ramped; original member name unknown.
 };
 
 static_assert(offsetof(GfFobjManager, unknown4830) == 0x4830, "");
@@ -42,5 +45,7 @@ static_assert(offsetof(GfFobjManager, unknown9050) == 0x9050, "");
 static_assert(offsetof(GfFobjManager, unknown9058) == 0x9058, "");
 static_assert(offsetof(GfFobjManager, unknown9060) == 0x9060, "");
 static_assert(offsetof(GfFobjManager, unknown9068) == 0x9068, "");
+static_assert(offsetof(GfFobjManager, unknown907c) == 0x907c, "");
+static_assert(offsetof(GfFobjManager, unknown9080) == 0x9080, "");
 
 } // namespace gf

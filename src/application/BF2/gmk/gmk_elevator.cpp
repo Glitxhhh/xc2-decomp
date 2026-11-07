@@ -87,7 +87,7 @@ void GmkElevator::create(const CreateInfo &info) {
 
 void GmkElevator::seqWaitToValidate_GfFieldLod(f32 deltaTime) {
   gf::GfFieldLod *lod = gf::GfFieldLod::get();
-  if (lod == nullptr || !lod->unknown80c || lod->unknown840 == nullptr || lod->unknown850 == nullptr) {
+  if (lod == nullptr || !lod->unknown80c || lod->unknown840.unknown00.unknown00 == nullptr || lod->unknown840.unknown00.unknown10 == nullptr) {
     return;
   }
   const BdatInfo *info = getBdatInfo();
@@ -378,7 +378,7 @@ void GmkElevator::sendGfComQuest() const {
 
 bool GmkElevator::isPlayEnd(u16 lodId) {
   gf::GfFieldLod *lod = gf::GfFieldLod::get();
-  if (lod->unknown840 != nullptr && lod->unknown850 != nullptr) {
+  if (lod->unknown840.unknown00.unknown00 != nullptr && lod->unknown840.unknown00.unknown10 != nullptr) {
     return lod->isPlayAnimEnd(lodId);
   }
   return false;
@@ -487,7 +487,7 @@ void GmkElevator::seqUpIdle(f32 deltaTime) {
 }
 
 void GmkElevator::seqWaitToArriveDownFloor(f32 deltaTime) {
-  if (gf::GfFieldLod::get()->unknown840 != nullptr && gf::GfFieldLod::get()->unknown850 != nullptr) {
+  if (gf::GfFieldLod::get()->unknown840.unknown00.unknown00 != nullptr && gf::GfFieldLod::get()->unknown840.unknown00.unknown10 != nullptr) {
     const BdatInfo *info = getBdatInfo();
     if (gf::GfFieldLod::get()->isPlayAnimEnd(info->unknown06)) {
       stopLiftSe();
@@ -508,7 +508,7 @@ void GmkElevator::seqWaitToArriveDownFloor(f32 deltaTime) {
 }
 
 void GmkElevator::seqWaitToArriveUpFloor(f32 deltaTime) {
-  if (gf::GfFieldLod::get()->unknown840 != nullptr && gf::GfFieldLod::get()->unknown850 != nullptr) {
+  if (gf::GfFieldLod::get()->unknown840.unknown00.unknown00 != nullptr && gf::GfFieldLod::get()->unknown840.unknown00.unknown10 != nullptr) {
     const BdatInfo *info = getBdatInfo();
     if (gf::GfFieldLod::get()->isPlayAnimEnd(info->unknown06)) {
       stopLiftSe();
@@ -530,7 +530,7 @@ void GmkElevator::seqWaitToArriveUpFloor(f32 deltaTime) {
 }
 
 void GmkElevator::seqWaitToCloseDownShutter(f32 deltaTime) {
-  if (gf::GfFieldLod::get()->unknown840 != nullptr && gf::GfFieldLod::get()->unknown850 != nullptr) {
+  if (gf::GfFieldLod::get()->unknown840.unknown00.unknown00 != nullptr && gf::GfFieldLod::get()->unknown840.unknown00.unknown10 != nullptr) {
     const BdatInfo *info = getBdatInfo();
     if (gf::GfFieldLod::get()->isPlayAnimEnd(info->unknown08)) {
       gf::GfFieldLod::get()->setAnimReverse(info->unknown06, false, false);
@@ -541,7 +541,7 @@ void GmkElevator::seqWaitToCloseDownShutter(f32 deltaTime) {
 }
 
 void GmkElevator::seqWaitToCloseUpShutter(f32 deltaTime) {
-  if (gf::GfFieldLod::get()->unknown840 != nullptr && gf::GfFieldLod::get()->unknown850 != nullptr) {
+  if (gf::GfFieldLod::get()->unknown840.unknown00.unknown00 != nullptr && gf::GfFieldLod::get()->unknown840.unknown00.unknown10 != nullptr) {
     const BdatInfo *info = getBdatInfo();
     if (gf::GfFieldLod::get()->isPlayAnimEnd(info->unknown0a)) {
       gf::GfFieldLod::get()->setAnimReverse(info->unknown06, true, false);

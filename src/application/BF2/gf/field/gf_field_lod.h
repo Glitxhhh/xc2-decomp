@@ -4,10 +4,12 @@
 #include "framework/coli/coli_object.h"
 #include "gf/event/gf_event.h"
 #include "mm_mtl/singleton.h"
+#include "mm_mtl/vector.h"
 #include "types.h"
 
 namespace mm {
 struct Mat44;
+
 namespace mtl {
 class RTTI;
 } // namespace mtl
@@ -15,7 +17,12 @@ class RTTI;
 
 namespace ml {
 class ScnObjAccPartsPos;
+class ScnObjModel;
 } // namespace ml
+
+namespace idcoli {
+class IDColiObj;
+} // namespace idcoli
 
 namespace fw {
 struct UpdateInfo;
@@ -27,6 +34,11 @@ struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
 enum GfFieldLodState {
+  FIELD_LOD_STATE_UNKNOWN_0 = 0, // Inferred role: normal animation ("effect_anime_normal"); original enumerator name unknown.
+  FIELD_LOD_STATE_UNKNOWN_1 = 1, // Inferred role: reverse animation ("effect_anime_reverse"); original enumerator name unknown.
+  FIELD_LOD_STATE_UNKNOWN_2 = 2, // Inferred role: fade in ("effect_visibleON"); original enumerator name unknown.
+  FIELD_LOD_STATE_UNKNOWN_3 = 3, // Inferred role: hidden ("effect_visibleOFF"); original enumerator name unknown.
+  FIELD_LOD_STATE_UNKNOWN_4 = 4, // Inferred role: fade out ("effect_fadeOUT"); original enumerator name unknown.
   FIELD_LOD_STATE_UNKNOWN_5 = 5, // Inferred role: no lod state, one past the five effect data; original enumerator name unknown.
 };
 
@@ -59,6 +71,8 @@ static_assert(offsetof(GfFieldLodEffect, unknown2c) == 0x2c, "");
 static_assert(offsetof(GfFieldLodEffect, unknown30) == 0x30, "");
 static_assert(sizeof(GfFieldLodEffect) == 0x38, "");
 
+class GfFieldLod;
+
 class GfFieldLodColiAnim {
 public:
   // Layout evidence: the vtable (0x7101188678) has the getRTTI slot of fw::ColiUserData; createPosInfos (0x71002e2a94)
@@ -78,6 +92,7 @@ public:
   // PosInfo methods (0x71002e2120 to 0x71002e2728) read the other members.
   struct PosInfo {
     void update(const fw::UpdateInfo &info);
+    void updateColiOff(ml::ScnObjAccPartsPos &partsPos);
 
     GfFieldLodColiAnim *unknown00; // Inferred role: owner; original member name unknown.
     GfFieldLodEffect unknown08;    // Inferred role: pop/depop effects; original member name unknown.
@@ -96,6 +111,33 @@ public:
     bool unknown80;                // Inferred role: collision waits for the end of the fade in; original member name unknown.
     bool unknown81;                // Inferred role: collision kept until the end of the fade out; original member name unknown.
   };
+
+  // Layout evidence: the constructor (0x71002e29a0), create (0x71002e2a1c) and dispose (0x71002e2a68).
+  struct CreateInfo {
+    CreateInfo() : unknown00(nullptr), unknown08(nullptr), unknown10(nullptr), unknown18(false) {}
+
+    ml::ScnObjModel *unknown00;   // Inferred role: map model; original member name unknown.
+    idcoli::IDColiObj *unknown08; // Inferred role: map collision; original member name unknown.
+    GfFieldLod *unknown10;        // Inferred role: lod; original member name unknown.
+    bool unknown18;               // Inferred role: created for the debug draw; original member name unknown.
+  };
+
+  void dispose();
+  void disposePosInfos();
+  void update(const fw::UpdateInfo &info);
+  void validateVeSe(const GfFieldLod &lod);
+  void stop(u16 lodId);
+  bool isLodIdExist(u16 lodId) const;
+  void setPlaySpeed(u16 lodId, f32 speed);
+  f32 getPlaySpeed(u16 lodId) const;
+  void clearEffectInsts();
+  static GfFieldLodState findStateOfAnimReverse(bool isReverse);
+  static GfFieldLodState findStateOfFade(bool isFadeIn, bool isImmediate);
+  static void bindPosInfoToGfObj(const PosInfo &posInfo);
+  static void unbindPosInfoToGfObj(const PosInfo &posInfo);
+
+  CreateInfo unknown00;               // Inferred role: create info the animation was created with; original member name unknown.
+  mm::mtl::Vector<PosInfo> unknown20; // Inferred role: infos of the parts positions of the model; original member name unknown.
 };
 
 static_assert(offsetof(GfFieldLodColiAnim::ColiUserData, unknown08) == 0x08, "");
@@ -111,6 +153,11 @@ static_assert(offsetof(GfFieldLodColiAnim::PosInfo, unknown70) == 0x70, "");
 static_assert(offsetof(GfFieldLodColiAnim::PosInfo, unknown7c) == 0x7c, "");
 static_assert(offsetof(GfFieldLodColiAnim::PosInfo, unknown80) == 0x80, "");
 static_assert(sizeof(GfFieldLodColiAnim::PosInfo) == 0x88, "");
+static_assert(offsetof(GfFieldLodColiAnim::CreateInfo, unknown10) == 0x10, "");
+static_assert(offsetof(GfFieldLodColiAnim::CreateInfo, unknown18) == 0x18, "");
+static_assert(sizeof(GfFieldLodColiAnim::CreateInfo) == 0x20, "");
+static_assert(offsetof(GfFieldLodColiAnim, unknown20) == 0x20, "");
+static_assert(sizeof(GfFieldLodColiAnim) == 0x48, "");
 
 class GfFieldLod : public mm::mtl::PtrSingleton<GfFieldLod> {
 public:
@@ -145,14 +192,11 @@ public:
   int unknown808;       // Inferred role: first bdat id; original member name unknown.
   bool unknown80c;      // Inferred role: lod data ready; original member name unknown.
   u8 _80d[0x840 - 0x80d];
-  void *unknown840; // Role and original member name unknown.
-  u8 _848[0x850 - 0x848];
-  void *unknown850; // Role and original member name unknown.
+  GfFieldLodColiAnim unknown840; // Inferred role: lod animation of the map model; original member name unknown.
 };
 
 static_assert(offsetof(GfFieldLod, unknown808) == 0x808, "");
 static_assert(offsetof(GfFieldLod, unknown80c) == 0x80c, "");
 static_assert(offsetof(GfFieldLod, unknown840) == 0x840, "");
-static_assert(offsetof(GfFieldLod, unknown850) == 0x850, "");
 
 } // namespace gf
