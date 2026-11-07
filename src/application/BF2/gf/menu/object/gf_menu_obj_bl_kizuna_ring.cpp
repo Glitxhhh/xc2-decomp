@@ -1,6 +1,9 @@
 #include "gf/menu/object/gf_menu_obj_bl_kizuna_ring.h"
 
 #include "gf/game/gf_game_voice.h"
+#include "gf/menu/adapter/gf_menu_achievement_adapter.h"
+#include "gf/menu/adapter/gf_menu_adapter_manager.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
@@ -43,7 +46,29 @@ bool GfMenuObjBlKizunaRing::isLockPos(int index) { return index % 10 == 0; }
 
 bool GfMenuObjBlKizunaRing::isScreenLR(u32 screen) { return screen < 4; }
 
+void GfMenuObjBlKizunaRing::setupMain(ui::UIObjectAcc &acc) {
+  GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("IMG_face@01"), 3, 0, false);
+  u32 background = acc.searchChild("IMG_bl_name_bg");
+  u32 name = acc.searchChild("TXT_bl_name");
+  GfMenuCharDataAdapter::createFromReferenceBlade(name, 2, 0, false);
+  GfMenuObjUtil::FitOption option;
+  GfMenuObjUtil::createFitPlugin(background, name, 42, 16, option);
+}
+
 void GfMenuObjBlKizunaRing::setupCircle(ui::UIObjectAcc &) {}
+
+void GfMenuObjBlKizunaRing::setupBladeSkillInfo(ui::UIObjectAcc &acc) {
+  GfMenuAchievementAdapter::createFromReferenceBlade(acc.searchChild("TXT_stocknum"), 16, 0, 0, 0, true);
+  GfMenuAchievementAdapter::createFromReferenceBlade(acc.searchChild("TXT_stockmax"), 17, 0, 0, 0, false);
+}
+
+void GfMenuObjBlKizunaRing::setupSkillSimple(ui::UIObjectAcc &acc) {
+  GfMenuAdapterManager::beginAddAfter();
+  GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("TXT_skillname"), 2, 0, 0, 1, false);
+  GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("IMG_skillicon"), 11, 0, 0, 1, false);
+  GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("IMG_skachicon"), 12, 0, 0, 1, false);
+  GfMenuAdapterManager::endAddAfter();
+}
 
 void GfMenuObjBlKizunaRing::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 

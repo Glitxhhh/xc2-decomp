@@ -2,6 +2,9 @@
 #include <stddef.h>
 
 #include "ai/ai_state.h"
+#include "gf/game/gf_game_mount.h"
+#include "gf/object/gf_obj_manager.h"
+#include "mm_mtl/reference_object.h"
 #include "types.h"
 
 namespace fw {
@@ -34,7 +37,7 @@ enum GF_EVT_MODEL {
   GF_EVT_MODEL_ENEMY = 5,
 };
 
-class GfEvtModel {
+class GfEvtModel : public mm::mtl::ReferenceObject, public IGfObjListener {
 public:
   static mm::mtl::RTTI m_rtti;
 
@@ -51,6 +54,7 @@ public:
   virtual void setWeaponFieldState();
   virtual void setWeaponBattleMount();
   virtual void setWeaponFieldMount();
+  void listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectType) override;
   bool isValid() const;
   bool isBusy(mm::mtl::FixStr<128> *name) const;
   void resetMount(GfEvtModel *parent);
@@ -59,7 +63,7 @@ public:
 
   static u32 changeLayerUI(u32 layer);
 
-  u8 _08[0x18 - 0x08];
+  // Inferred role: the GfEvtModel members from 0x18, after the ReferenceObject and IGfObjListener bases.
   GF_EVT_MODEL unknown18;   // Inferred role: type; original member name unknown.
   GF_OBJ_HANDLE *unknown20; // Inferred role: handle; original member name unknown.
 };
@@ -161,16 +165,36 @@ public:
 
 class GfEvtModelWeapon : public GfEvtModel {
 public:
+  static mm::mtl::RTTI m_rtti;
+
+  GfEvtModelWeapon(GfInitParamWeapon &param);
+  ~GfEvtModelWeapon() override;
   static void playAnimCS(GF_OBJ_HANDLE *handle, const char *name);
   static bool isPlayEndAnimCS(GF_OBJ_HANDLE *handle);
   static void setAnimSpeedCS(GF_OBJ_HANDLE *handle, f32 speed);
   static GfEvtModelWeapon *create(GfInitParamWeapon &param);
+  const mm::mtl::RTTI *getRTTI() const override;
+  void setWeaponBattleCommand() override;
+  void setWeaponFieldCommand() override;
+  void setWeaponBattleState() override;
+  void setWeaponFieldState() override;
+  void setWeaponCommand(const char *command);
+  void setWeaponState(const char *state);
   void playAnimData(void *data);
   void setScale(f32 scale);
   void playAnimCS(const char *name);
   bool isPlayEndAnimCS();
   void setAnimSpeedCS(f32 speed);
+
+  u8 _28[0x298 - 0x28];
+  GfWeapon unknown298; // Inferred role: weapon handles; original member name unknown.
+  u32 unknown348;      // Inferred role: driver; original member name unknown.
+  u8 _34c[0x350 - 0x34c];
 };
+
+static_assert(offsetof(GfEvtModelWeapon, unknown298) == 0x298, "");
+static_assert(offsetof(GfEvtModelWeapon, unknown348) == 0x348, "");
+static_assert(sizeof(GfEvtModelWeapon) == 0x350, "");
 
 class GfEvtModelEvent : public GfEvtModel {
 public:

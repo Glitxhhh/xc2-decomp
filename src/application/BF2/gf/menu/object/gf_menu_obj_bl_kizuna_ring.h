@@ -32,6 +32,9 @@ public:
   static bool isLockPos(int index);
   static bool isScreenLR(u32 screen);
   static void setupCircle(ui::UIObjectAcc &);
+  static void setupMain(ui::UIObjectAcc &acc);
+  static void setupBladeSkillInfo(ui::UIObjectAcc &acc);
+  static void setupSkillSimple(ui::UIObjectAcc &acc);
   static void refreshRing(ui::UIObjectAcc &acc);
   bool seqEnd();
   bool seqWait();

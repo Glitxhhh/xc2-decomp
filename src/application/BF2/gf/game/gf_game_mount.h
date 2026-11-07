@@ -31,7 +31,7 @@ enum OPTMNT : u32 {
 
 class GfWeapon {
 public:
-  virtual ~GfWeapon();
+  virtual ~GfWeapon() {}
 
   mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &getCurrentHandles() { return unknowna8 ? unknown58 : unknown08; }
   const mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &getCurrentHandles() const { return unknowna8 ? unknown58 : unknown08; }

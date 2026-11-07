@@ -33,6 +33,7 @@ enum VFACC : s32 {
 
 enum VFEFF : u32 {
   VFEFF_UNKNOWN_0 = 0,
+  VFEFF_UNKNOWN_9 = 9, // Inferred role: effect type copying the dead fade params; original enumerator name unknown.
 };
 
 class GfObjSetup {

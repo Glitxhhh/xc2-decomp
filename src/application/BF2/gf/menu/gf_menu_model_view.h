@@ -25,11 +25,17 @@ class GfMenuModelView {
 public:
   struct CtrlParam {
     void setMovePosX(f32 value);
+    void setMovePosX(f32 start, f32 end);
     void setMovePosY(f32 value);
+    void setMovePosY(f32 start, f32 end);
     void setMovePosZ(f32 value);
+    void setMovePosZ(f32 start, f32 end);
     void setMoveSclX(f32 value);
+    void setMoveSclX(f32 start, f32 end);
     void setMoveSclY(f32 value);
+    void setMoveSclY(f32 start, f32 end);
     void setMoveSclZ(f32 value);
+    void setMoveSclZ(f32 start, f32 end);
     void setMoveRotY(f32 value);
     void setMoveAlpha(f32 value);
     void setMoveVanish(f32 value);
@@ -76,7 +82,7 @@ public:
   void attachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
   void detachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
   static const fw::Transform &getObjectTransform(GF_OBJ_HANDLE *handle);
-  static const fw::Transform &getObjectTransformLocal(GF_OBJ_HANDLE *handle);
+  static fw::Transform &getObjectTransformLocal(GF_OBJ_HANDLE *handle);
   static bool getObjectEffectPoint(GF_OBJ_HANDLE *handle, const char *name, mm::Vec3 &position);
   static void setObjectScale(GF_OBJ_HANDLE *handle, const mm::Vec3 &scale);
   static void setObjectDisp(GF_OBJ_HANDLE *handle, bool isDisp);

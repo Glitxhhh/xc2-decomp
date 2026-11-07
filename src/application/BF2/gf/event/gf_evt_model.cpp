@@ -5,17 +5,20 @@
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/animation/gf_com_evt_anim.h"
 #include "gf/object/component/animation/gf_com_pack_anim.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/fixstr.h"
 
 namespace gf {
 
@@ -268,6 +271,70 @@ void GfEvtModelWeapon::setAnimSpeedCS(f32 speed) {
   if (anim != nullptr) {
     anim->setSpeed(speed);
   }
+}
+
+GfEvtModelWeapon::~GfEvtModelWeapon() {
+  for (u32 index = 0; index < 10; index++) {
+    GfObjUtil::destroy(unknown298.getCurrentHandles()[index]);
+  }
+}
+
+GfEvtModelWeapon *GfEvtModelWeapon::create(GfInitParamWeapon &param) {
+  // __LINE__ must be 1286 as in the original source: it is the line argument of operator new.
+#line 1286
+  GfEvtModelWeapon *model = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfEvtModelWeapon(param);
+  model->addRef();
+  return model;
+}
+
+const mm::mtl::RTTI *GfEvtModelWeapon::getRTTI() const { return &m_rtti; }
+
+void GfEvtModelWeapon::setWeaponBattleCommand() {
+  mm::mtl::FixStr<32> command;
+  GfGameUtil::makeWeaponCommandBattle(command, unknown348, true, false);
+  setWeaponCommand(command.c_str());
+}
+
+void GfEvtModelWeapon::setWeaponCommand(const char *command) {
+  for (u32 index = 0; index < 10; index++) {
+    GF_OBJ_HANDLE *handle = unknown298.getCurrentHandles()[index];
+    if (handle != INVALID_HANDLE) {
+      GfComAsm *comAsm = GfObjUtil::getObj(handle)->getComponent<GfComAsm>();
+      if (comAsm != nullptr) {
+        comAsm->execCmd(command, ANIM_LAYER_BASE);
+      }
+    }
+  }
+}
+
+void GfEvtModelWeapon::setWeaponFieldCommand() {
+  mm::mtl::FixStr<32> command;
+  GfGameUtil::makeWeaponCommandBattle(command, unknown348, false, false);
+  setWeaponCommand(command.c_str());
+}
+
+void GfEvtModelWeapon::setWeaponState(const char *state) {
+  for (u32 index = 0; index < 10; index++) {
+    GF_OBJ_HANDLE *handle = unknown298.getCurrentHandles()[index];
+    if (handle != INVALID_HANDLE) {
+      GfComAsm *comAsm = GfObjUtil::getObj(handle)->getComponent<GfComAsm>();
+      if (comAsm != nullptr) {
+        comAsm->setState(state, ANIM_LAYER_BASE);
+      }
+    }
+  }
+}
+
+void GfEvtModelWeapon::setWeaponBattleState() {
+  mm::mtl::FixStr<32> state;
+  GfGameUtil::makeWeaponStateIdle(state, unknown348, true);
+  setWeaponState(state.c_str());
+}
+
+void GfEvtModelWeapon::setWeaponFieldState() {
+  mm::mtl::FixStr<32> state;
+  GfGameUtil::makeWeaponStateIdle(state, unknown348, false);
+  setWeaponState(state.c_str());
 }
 
 ai::State *GfEvtModelDriver::StateIdleBattle::create(void *buffer) { return new (buffer) StateIdleBattle; }

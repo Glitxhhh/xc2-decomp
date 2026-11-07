@@ -16,6 +16,22 @@ void GfVolumeFade::initializeParam() {
   unknown10 = true;
 }
 
+void GfVolumeFade::setEffectType(VFEFF effect) {
+  if (unknown140 != effect) {
+    unknown140 = effect;
+    switch (effect) {
+    case VFEFF_UNKNOWN_0:
+      break;
+    case VFEFF_UNKNOWN_9:
+      setupVolumeFadeParamForDead(unknown90, VFEFF_UNKNOWN_9);
+      break;
+    default:
+      setupVolumeFadeParamForDead(unknown90, effect);
+      break;
+    }
+  }
+}
+
 f32 GfVolumeFade::getFadeRatio(VFACC acc, VFPARTS parts) const {
   if (parts != VFPARTS_UNKNOWN_FFFFFFFF) {
     return unknown14[acc][parts];

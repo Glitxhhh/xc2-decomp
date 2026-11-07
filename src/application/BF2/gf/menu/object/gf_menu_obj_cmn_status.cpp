@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
 
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
@@ -15,6 +16,12 @@ bool GfMenuObjCmnStatus::s_DispFlag[2];
 bool GfMenuObjCmnStatus::isOpenDrStatus() { return s_DispFlag[0]; }
 
 bool GfMenuObjCmnStatus::isOpenBlStatus() { return s_DispFlag[1]; }
+
+void GfMenuObjCmnStatus::finalize() {
+  GfMenuReference::resetDriverVirtual();
+  GfMenuReference::resetBladeVirtual();
+  GfMenuObject::finalize();
+}
 
 void GfMenuObjCmnStatus::update() { GfMenuObject::update(); }
 

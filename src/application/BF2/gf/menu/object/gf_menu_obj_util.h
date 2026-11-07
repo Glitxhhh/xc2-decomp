@@ -46,6 +46,16 @@ public:
     int unknown10; // Inferred role: range icon; original member name unknown.
   };
 
+  struct FitOption {
+    FitOption() : unknown00(false), unknown01(false), unknown02(false), unknown04(0, 0), unknown08(0, 0) {}
+
+    bool unknown00;         // Inferred role: half size margin flag; original member name unknown.
+    bool unknown01;         // Inferred role: keep scale x flag; original member name unknown.
+    bool unknown02;         // Inferred role: keep scale y flag; original member name unknown.
+    mm::Pnt<s16> unknown04; // Inferred role: expand; original member name unknown.
+    mm::Pnt<u16> unknown08; // Inferred role: min size; original member name unknown.
+  };
+
   struct DockingOption {
     u32 unknown00;           // Inferred role: align type; original member name unknown.
     mm::Pnt<s16> unknown04;  // Inferred role: offset; original member name unknown.
@@ -146,6 +156,7 @@ public:
   static void setColMulandAdd(u32 handle, const char *color);
   static void createDockPlugin(u32 handle, u32 target, u32 dockType, const mm::Pnt<s16> &offset, u32 alignType);
   static void createDockPluginEx(u32 handle, u32 target, u32 dockType, const DockingOption &option);
+  static void createFitPlugin(u32 handle, u32 target, int marginX, int marginY, const FitOption &option);
   static void createVScrollBarPlugin(u32 handle, ui::UIListInfoBase *list, const char *barName, bool isScaleEnable);
   static void createHScrollBarPlugin(u32 handle, ui::UIListInfoBase *list, const char *barName);
   static void createFollowDispPlugin(u32 handle, u32 target);
@@ -276,6 +287,9 @@ static_assert(sizeof(GfMenuObjUtil::DockingOption) == 0x10, "");
 static_assert(offsetof(GfMenuObjUtil::ImageParam, unknown04) == 0x04, "");
 static_assert(sizeof(GfMenuObjUtil::ImageParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjUtil::unknown001, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjUtil::FitOption, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjUtil::FitOption, unknown08) == 0x08, "");
+static_assert(sizeof(GfMenuObjUtil::FitOption) == 0x0c, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown08) == 0x08, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfMenuObjUtil::PresetCtrlParam, unknown0d) == 0x0d, "");

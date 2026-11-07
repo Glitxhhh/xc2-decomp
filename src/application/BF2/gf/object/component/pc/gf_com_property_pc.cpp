@@ -28,6 +28,8 @@ bool GfComPropertyPc::existInputXY() const {
   return exist;
 }
 
+const mm::mtl::RTTI *GfComPropertyPc::getRTTI() const { return &m_rtti; }
+
 f32 GfComPropertyPc::getGravity() const {
   if (!unknown110_3) {
     return 0.0f;

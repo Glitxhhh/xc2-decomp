@@ -89,6 +89,7 @@ public:
   static bool isInitialized();
   static void initReferenceNumber(u32 index);
   static void resetDriverVirtual();
+  static void resetBladeVirtual();
   static void postReset();
   static u32 getFieldSkillMax();
   static void getFieldSkillInfo(u8 index, FieldSkillInfo &info);

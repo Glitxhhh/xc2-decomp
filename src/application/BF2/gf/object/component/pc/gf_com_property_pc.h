@@ -77,6 +77,7 @@ public:
   static mm::mtl::RTTI m_rtti;
 
   bool existInputXY() const;
+  const mm::mtl::RTTI *getRTTI() const override;
   f32 getGravity() const;
   const fw::Transform &getLocomotion() const;
   void setPadControl(bool padControl);
