@@ -663,3 +663,6 @@ template bool GfComBehaviorEnemy::isOtherMemberHome<gmk::GmkEnemy>() const;
 template bool GfComBehaviorEnemy::isOtherMemberHome<gmk::GmkRoutedEnemy>() const;
 
 } // namespace gf
+
+template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComBehaviorEnemy>(const mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)> *,
+                                                                                                                            gf::GfComAsm *, const gf::CallBackCache &);

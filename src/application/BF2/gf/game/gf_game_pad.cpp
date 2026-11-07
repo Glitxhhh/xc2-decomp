@@ -13,6 +13,7 @@
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_mtl/delegate.h" // IWYU pragma: keep
 
 namespace gf {
 
@@ -162,3 +163,5 @@ void GfGamePad::eventInGameOpenQuestListMenu() {
 }
 
 } // namespace gf
+
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::GfGamePad>(const mm::mtl::Delegate<void()> *);

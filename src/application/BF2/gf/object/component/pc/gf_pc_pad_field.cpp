@@ -69,3 +69,6 @@ void PadField::setInput(InputID id) const {
 
 } // namespace pc
 } // namespace gf
+
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::pc::PadField>(const mm::mtl::Delegate<void()> *);
+template void mm::mtl::Delegate<void(float)>::memberFuncInvoker<gf::pc::PadField>(const mm::mtl::Delegate<void(float)> *, float);

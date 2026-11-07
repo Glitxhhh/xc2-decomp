@@ -98,3 +98,5 @@ bool GfMenuObjElementEff::seqClose() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjElementEff>(const mm::mtl::Delegate<bool()> *);

@@ -44,3 +44,5 @@ void GfMenuObjLvupSelect::openLevelup(GfMenuCallContext *context, u32 level, u32
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjLvupSelect>(const mm::mtl::Delegate<bool()> *);

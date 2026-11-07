@@ -3698,6 +3698,14 @@ tlist_iterator::tlist_iterator(QTYPE type) : unknown08(type), unknown0c(-1) {
   unknown10 = unknown00->getTaskCategory(type);
 }
 
+QuestID qlist_iterator::getQuestID() const {
+  if (unknown08 == QTYPE_NONE) {
+    return unknown00->getQuestID(unknown0c);
+  }
+
+  return QuestID(unknown10->ids[unknown0c], 0);
+}
+
 u16 tlist_iterator::getPurposeID() const {
   if (unknown08 == QTYPE_NONE) {
     CBdatWrapper *fp;

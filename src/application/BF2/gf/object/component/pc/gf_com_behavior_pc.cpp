@@ -115,3 +115,6 @@ WaterInPlugin *WaterInPlugin::create() {
 void GfComBehaviorPc::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
 
 } // namespace gf
+
+template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComBehaviorPc>(const mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)> *,
+                                                                                                                         gf::GfComAsm *, const gf::CallBackCache &);

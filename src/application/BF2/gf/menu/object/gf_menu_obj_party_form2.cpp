@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_party_form2.h"
 
+#include "mm_mtl/delegate.h" // IWYU pragma: keep
 #include "types.h"
 
 namespace gf {
@@ -16,3 +17,5 @@ u32 GfMenuObjPartyForm2::getCursorID(u32 index) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjPartyForm2>(const mm::mtl::Delegate<bool()> *);

@@ -37,3 +37,5 @@ int GfMenuObjHanaCustom::setFadeOut(u32 handle, u32 unknown) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjHanaCustom>(const mm::mtl::Delegate<bool()> *);

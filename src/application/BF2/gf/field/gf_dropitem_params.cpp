@@ -19,4 +19,6 @@ bool GfDropitemParams::isBdatIdValid(u32 bdatId) const {
   return bdatId - unknown30 < unknown08.size();
 }
 
+const GfDropitemParam &GfDropitemParams::getParamByBdatId(u32 bdatId) const { return unknown08[bdatId - unknown30]; }
+
 } // namespace gf

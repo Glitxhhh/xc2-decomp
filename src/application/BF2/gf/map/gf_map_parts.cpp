@@ -10,9 +10,14 @@
 #include "gf/gf_manager.h"
 #include "gf/map/gf_map_manager.h"
 #include "ml/scn.h"
+#include "ml/scn_obj_ibl.h"
 #include "ml/scn_obj_model.h"
 #include "mm_mtl/reference_object.h"
 #include "scn/scn_obj_model_dr_sys.h"
+
+namespace mm {
+struct Vec3;
+} // namespace mm
 
 namespace fw {
 class ModelObject;
@@ -146,6 +151,12 @@ void MapGIBL::create(GF_ASSET_HANDLE *handle) {
 }
 
 void MapGIBL::destroy() { unknown002(unknown00); }
+
+void MapGIBL::setReferencePos(const mm::Vec3 &position) {
+  if (unknown00 != nullptr) {
+    static_cast<ml::ScnObjIBL *>(unknown00)->setReferencePos(position);
+  }
+}
 
 MapLIBL::~MapLIBL() {}
 

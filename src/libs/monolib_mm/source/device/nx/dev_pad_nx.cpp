@@ -1,6 +1,7 @@
 #include "device/nx/dev_pad_nx.h"
 
 #include "mm_math/mm_math.h"
+#include "mm_mtl/delegate.h" // IWYU pragma: keep
 #include "nn/hid.h"
 
 namespace ml {
@@ -127,3 +128,5 @@ bool DevPadNx::createDevice() { return true; }
 void DevPadNx::releaseDevice() { unknown548->release(); }
 
 } // namespace ml
+
+template void mm::mtl::Delegate<void(float)>::memberFuncInvoker<ml::DevPadNx::Impl>(const mm::mtl::Delegate<void(float)> *, float);

@@ -93,3 +93,6 @@ bool GfMenuObjBlKizunaRing::seqWaitVoice() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjBlKizunaRing, 8>>(const mm::mtl::Delegate<bool()> *);
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBlKizunaRing>(const mm::mtl::Delegate<bool()> *);

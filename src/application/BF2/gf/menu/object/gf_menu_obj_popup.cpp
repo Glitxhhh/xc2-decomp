@@ -78,3 +78,6 @@ int GfMenuObjPopup::setFadeOut(u32 handle, u32 type) {
 void GfMenuObjPopup::pausePickup() { unknown142(unknown001, unknown002); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjPopup>(const mm::mtl::Delegate<bool()> *);
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjPopup, 8>>(const mm::mtl::Delegate<bool()> *);

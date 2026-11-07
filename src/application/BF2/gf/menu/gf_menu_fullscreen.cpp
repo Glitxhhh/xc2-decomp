@@ -238,3 +238,4 @@ void GfMenuFullScreen::terminateLayer(u16 index, bool isImmediate, bool isKeep) 
 } // namespace gf
 
 template mm::mtl::PtrSingleton<gf::GfMenuFullScreen>::~PtrSingleton();
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::GfMenuFullScreen>(const mm::mtl::Delegate<void()> *);

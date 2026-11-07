@@ -56,3 +56,6 @@ void GfMenuObjBladeSet2::setCloseToReturn() {
 bool GfMenuObjBladeSet2::seqWaitCommand() { return !GfReqSmallCom::get()->isValid(unknown330); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjBladeSet2, 8>>(const mm::mtl::Delegate<bool()> *);
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBladeSet2>(const mm::mtl::Delegate<bool()> *);

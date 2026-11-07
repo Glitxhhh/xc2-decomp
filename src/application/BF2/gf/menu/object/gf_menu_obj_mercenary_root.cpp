@@ -18,3 +18,5 @@ void GfMenuObjMercenaryRoot::update() {
 void GfMenuObjMercenaryRoot::closeBg() { unknown144(unknown001, GfMenuTypes::unknown003_34); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjMercenaryRoot>(const mm::mtl::Delegate<bool()> *);

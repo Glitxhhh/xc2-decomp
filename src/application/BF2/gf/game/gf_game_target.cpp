@@ -505,3 +505,4 @@ void GfGameTarget::StateBattleTarget::update(GfGameTarget *target, const fw::Upd
 } // namespace gf
 
 template mm::mtl::PtrSingleton<gf::GfGameTarget>::~PtrSingleton();
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::GfGameTarget>(const mm::mtl::Delegate<void()> *);

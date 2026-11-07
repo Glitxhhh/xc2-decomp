@@ -273,3 +273,5 @@ bool GfMenuWeaponTypeAdapter::getDriverArts(DriverArts &driverArts) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuWeaponTypeAdapter>(const mm::mtl::Delegate<bool()> *);

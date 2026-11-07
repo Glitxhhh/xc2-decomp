@@ -81,3 +81,5 @@ int GfMenuObjSaveLoad2::setFadeOut(u32 handle, u32 type) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjSaveLoad2>(const mm::mtl::Delegate<bool()> *);

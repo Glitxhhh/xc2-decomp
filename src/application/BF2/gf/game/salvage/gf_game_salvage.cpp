@@ -573,3 +573,5 @@ void GfGameSalvage::setLogButtonChallengeResult(int) {}
 void GfGameSalvage::setLogLapsedTime(int) {}
 
 } // namespace gf
+
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::StateSalvageClimbStart>(const mm::mtl::Delegate<void()> *);

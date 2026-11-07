@@ -77,3 +77,5 @@ void GfMenuObjDrArtsSet2::moveLeft(ui::UIObjectAcc &acc) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjDrArtsSet2>(const mm::mtl::Delegate<bool()> *);

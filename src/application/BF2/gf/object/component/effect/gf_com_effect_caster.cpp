@@ -5,6 +5,8 @@
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_weapon.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/object/component/animation/gf_com_asm.h"      // IWYU pragma: keep
+#include "gf/object/component/animation/gf_com_evt_anim.h" // IWYU pragma: keep
 #include "gf/object/gf_obj.h"
 
 const char *ASM_CB_NAME_EFFECT = "asm_effect";
@@ -147,3 +149,8 @@ void GfComEffectCaster::getWpnMatOld2(mm::Mat44 &matrix) { matrix = unknown11410
 
 template gf::GfComEffectCaster::Param *mm::mtl::FixedVector<gf::GfComEffectCaster::Param, 256>::erase(gf::GfComEffectCaster::Param *);
 template gf::GfComEffectCaster::EventEfHandleTbl *mm::mtl::FixedVector<gf::GfComEffectCaster::EventEfHandleTbl, 256>::erase(gf::GfComEffectCaster::EventEfHandleTbl *);
+template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComEffectCaster>(const mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)> *,
+                                                                                                                           gf::GfComAsm *, const gf::CallBackCache &);
+template void
+mm::mtl::Delegate<void(gf::GfComEvtAnim *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComEffectCaster>(const mm::mtl::Delegate<void(gf::GfComEvtAnim *, const gf::CallBackCache &)> *,
+                                                                                                                 gf::GfComEvtAnim *, const gf::CallBackCache &);

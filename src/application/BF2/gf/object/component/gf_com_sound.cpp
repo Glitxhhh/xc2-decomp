@@ -1,5 +1,8 @@
 #include "gf/object/component/gf_com_sound.h"
 
+#include "gf/object/component/animation/gf_com_asm.h"      // IWYU pragma: keep
+#include "gf/object/component/animation/gf_com_evt_anim.h" // IWYU pragma: keep
+#include "mm_mtl/delegate.h"                               // IWYU pragma: keep
 #include <string.h>
 
 namespace gf {
@@ -141,3 +144,9 @@ int getMoveStatusVariable(const char *name) {
 }
 
 } // namespace gf
+
+template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComSound>(const mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)> *,
+                                                                                                                    gf::GfComAsm *, const gf::CallBackCache &);
+template void mm::mtl::Delegate<void(gf::GfComEvtAnim *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComSound>(const mm::mtl::Delegate<void(gf::GfComEvtAnim *, const gf::CallBackCache &)> *,
+                                                                                                                        gf::GfComEvtAnim *, const gf::CallBackCache &);
+template unsigned int mm::mtl::Delegate<unsigned int()>::memberFuncInvoker<gf::GfComSound>(const mm::mtl::Delegate<unsigned int()> *);

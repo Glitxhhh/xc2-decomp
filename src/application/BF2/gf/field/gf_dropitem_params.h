@@ -14,6 +14,7 @@ public:
   void dispose();
   void update();
   bool isBdatIdValid(u32 bdatId) const;
+  const GfDropitemParam &getParamByBdatId(u32 bdatId) const;
 
   mm::mtl::Vector<GfDropitemParam> unknown08; // Inferred role: parameters of each bdat id; original member name unknown.
   u32 unknown30;                              // Inferred role: first bdat id; original member name unknown.

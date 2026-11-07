@@ -410,3 +410,5 @@ void GfMenuItemAdapter::ReferenceDriverEquipConverter::getItemInfo(MenuItemInfo 
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool(const gf::MenuItemInfo &)>::memberFuncInvoker<gf::GfMenuItemAdapter>(const mm::mtl::Delegate<bool(const gf::MenuItemInfo &)> *, const gf::MenuItemInfo &);

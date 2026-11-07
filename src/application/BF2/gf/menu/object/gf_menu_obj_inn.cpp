@@ -46,3 +46,5 @@ bool GfMenuObjInn::seqFadeOutWait() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjInn>(const mm::mtl::Delegate<bool()> *);

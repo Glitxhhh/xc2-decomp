@@ -247,3 +247,5 @@ bool GfMenuObjShop::seqEnd() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjShop, 8>>(const mm::mtl::Delegate<bool()> *);

@@ -135,3 +135,6 @@ bool SelectionChecker::isEnableSelect(u32 handle, int index) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjMainMenu2, 8>>(const mm::mtl::Delegate<bool()> *);
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjMainMenu2>(const mm::mtl::Delegate<bool()> *);

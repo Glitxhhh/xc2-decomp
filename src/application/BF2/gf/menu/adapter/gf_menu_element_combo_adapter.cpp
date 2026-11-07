@@ -133,3 +133,5 @@ void GfMenuElementComboAdapter::update(const fw::UpdateInfo &info) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuElementComboAdapter>(const mm::mtl::Delegate<bool()> *);

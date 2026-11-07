@@ -46,3 +46,5 @@ bool GfMenuObjPartyForm3::seqWaitOpenEnd() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjPartyForm3>(const mm::mtl::Delegate<bool()> *);

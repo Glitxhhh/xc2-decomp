@@ -65,3 +65,5 @@ bool GfMenuObjBlOrb::seqAppearPhase1() { return unknown002(1); }
 bool GfMenuObjBlOrb::seqLeavePhase1() { return unknown002(2); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBlOrb>(const mm::mtl::Delegate<bool()> *);

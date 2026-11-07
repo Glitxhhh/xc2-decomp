@@ -299,3 +299,5 @@ bool GfMenuMissionAdapter::update_MissionFieldSkillBladeMax() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuMissionAdapter>(const mm::mtl::Delegate<bool()> *);

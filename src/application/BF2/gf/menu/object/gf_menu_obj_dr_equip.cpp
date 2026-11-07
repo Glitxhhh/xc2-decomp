@@ -61,3 +61,5 @@ bool GfMenuObjDrEquip::seqAppearPhase1() { return unknown002(1); }
 bool GfMenuObjDrEquip::seqLeavePhase1() { return unknown002(2); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjDrEquip>(const mm::mtl::Delegate<bool()> *);

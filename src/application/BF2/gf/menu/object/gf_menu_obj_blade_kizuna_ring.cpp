@@ -105,3 +105,5 @@ void GfMenuObjBladeKizunaRing::setupName(ui::UIObjectAcc &acc) { GfMenuCharDataA
 void GfMenuObjBladeKizunaRing::open() { unknown142(unknown001, GfMenuTypes::unknown003_33); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBladeKizunaRing>(const mm::mtl::Delegate<bool()> *);

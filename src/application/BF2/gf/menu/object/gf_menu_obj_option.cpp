@@ -35,3 +35,5 @@ u32 GfMenuObjOption::getGammaValue(u8 level, u8 levelMax) {
 bool GfMenuObjOption::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjOption>(const mm::mtl::Delegate<bool()> *);

@@ -64,3 +64,6 @@ void GfMenuObjArtsPalette::updateArtsIconDisp(u32 slot) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjArtsPalette, 4>>(const mm::mtl::Delegate<bool()> *);
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjArtsPalette, 8>>(const mm::mtl::Delegate<bool()> *);

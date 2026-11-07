@@ -167,3 +167,5 @@ bool GfMenuObjMercenaries::seqRewardComp5() {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjMercenaries>(const mm::mtl::Delegate<bool()> *);

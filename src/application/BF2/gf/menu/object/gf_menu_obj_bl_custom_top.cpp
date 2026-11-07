@@ -106,3 +106,5 @@ bool GfMenuObjBlCustomTop::seqAddLayerPhase3_BlOrb() { return GfMenuObjBlOrb::at
 bool GfMenuObjBlCustomTop::seqAddLayerPhase4() { return unknown50->isTerm(); }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBlCustomTop>(const mm::mtl::Delegate<bool()> *);

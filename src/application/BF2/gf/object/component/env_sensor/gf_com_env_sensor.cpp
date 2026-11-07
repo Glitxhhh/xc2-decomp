@@ -89,3 +89,4 @@ const mm::mtl::RTTI *GfComEnvSensor::getRTTI() const { return &m_rtti; }
 } // namespace gf
 
 template void mm::mtl::UniquePtr<gf::GfEnemySensor>::_safe_bool_helper::safe_bool_function() const;
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::GfComEnvSensor>(const mm::mtl::Delegate<void()> *);

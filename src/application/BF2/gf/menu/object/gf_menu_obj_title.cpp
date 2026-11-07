@@ -40,3 +40,5 @@ void GfMenuObjTitle::setDispMode(u32 handle, int mode) {
 
 bool GfMenuObjTitle::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjTitle>(const mm::mtl::Delegate<bool()> *);

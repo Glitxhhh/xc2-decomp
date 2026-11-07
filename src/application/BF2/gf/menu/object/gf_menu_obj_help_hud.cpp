@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_help_hud.h"
 
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/delegate.h" // IWYU pragma: keep
 #include "types.h"
 #include "ui/ui_object_acc.h"
 
@@ -72,3 +73,5 @@ bool GfMenuObjHelpHud::seqPageFadeOut() {
   return isEnd;
 }
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjHelpHud>(const mm::mtl::Delegate<bool()> *);

@@ -103,3 +103,5 @@ typedef mm::mtl::RedBlackTreeBase<mm::mtl::Map<mm::mtl::FixStr<32>, mm::mtl::Del
 template void unknown102::free_node(unknown102::node *, bool);
 template unknown102::node *unknown102::insert(const mm::mtl::MapPair<mm::mtl::FixStr<32>, mm::mtl::Delegate<void(float)>> &);
 template void unknown102::rebalance(unknown102::node *);
+template void mm::mtl::Delegate<void()>::memberFuncInvoker<gf::CameraPadData>(const mm::mtl::Delegate<void()> *);
+template void mm::mtl::Delegate<void(float)>::memberFuncInvoker<gf::CameraPadData>(const mm::mtl::Delegate<void(float)> *, float);

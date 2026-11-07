@@ -38,3 +38,5 @@ void GfMenuObjButtonChallenge2::close(GfMenuCallContext *context) {
   }
 }
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjButtonChallenge2>(const mm::mtl::Delegate<bool()> *);

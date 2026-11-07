@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_field_skill.h"
 
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/delegate.h" // IWYU pragma: keep
 #include "types.h"
 
 namespace gf {
@@ -18,3 +19,5 @@ void GfMenuObjFieldSkill::attachSkip(GfMenuCallContext *context) {
 }
 
 } // namespace gf
+
+template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjFieldSkill>(const mm::mtl::Delegate<bool()> *);
