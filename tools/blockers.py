@@ -8,6 +8,7 @@ Usage:
   blockers.py list [--zone Z] [--category C] [--function TEXT] [--source RUN] [--json]
   blockers.py stats [--zone Z]
   blockers.py retire [FUNCTION... [--reason TEXT]] [--dry-run]
+  blockers.py refresh [--dry-run]                 re-read the zone of every record from work/status.json
   blockers.py import-skip FILE... [--dry-run]     one-off migration of the free text skip lists
 
 FUNCTION is a mangled name, a demangled name with its signature, or a qualified name without one
@@ -296,6 +297,26 @@ def cmd_retire(args):
             document["blockers"].remove(b)
             document["retired"].append({**b, "retired": today(), "reason": reason})
         print(f"{len(doomed)} retired, {len(document['blockers'])} left (status of {status['generated']})")
+
+
+def cmd_refresh(args):
+    """The zone is stored when a record is made; status.py has since changed how it assigns zones."""
+    status = load_status()
+    by_name = status_by_name(status)
+    with locked(write=not args.dry_run) as document:
+        moved = collections.Counter()
+        gone = 0
+        for b in document["blockers"]:
+            function = by_name.get(b["mangled"])
+            if not function:
+                gone += 1
+            elif function["zone"] != b["zone"]:
+                moved[(b["zone"], function["zone"])] += 1
+                b["zone"] = function["zone"]
+        for (old, new), count in sorted(moved.items(), key=lambda kv: -kv[1]):
+            print(f"{count:>6}  {old} -> {new}")
+        print(f"{sum(moved.values())} zone(s) changed, {gone} record(s) name a function no longer in work/status.json "
+              f"(status of {status['generated']})")
 
 
 # Migration of the free text skip lists ----------------------------------------------------------------------
@@ -663,6 +684,9 @@ def main():
     retire.add_argument("--reason")
     retire.add_argument("--dry-run", action="store_true")
     retire.set_defaults(run=cmd_retire)
+    refresh = sub.add_parser("refresh", help="re-read the zone of every record from work/status.json")
+    refresh.add_argument("--dry-run", action="store_true")
+    refresh.set_defaults(run=cmd_refresh)
     imp = sub.add_parser("import-skip", help="migrate free text skip lists")
     imp.add_argument("file", nargs="+")
     imp.add_argument("--dry-run", action="store_true")
