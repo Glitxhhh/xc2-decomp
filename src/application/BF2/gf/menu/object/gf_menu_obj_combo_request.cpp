@@ -9,6 +9,10 @@ class GfMenuCallContext;
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x5c;
 
+GfMenuObjComboRequest::GfMenuObjComboRequest(u32 handle) : GfMenuObject(handle) {}
+
+GfMenuObjComboRequest::~GfMenuObjComboRequest() { ; }
+
 void GfMenuObjComboRequest::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjComboRequest::update() {

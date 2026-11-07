@@ -2,6 +2,8 @@
 
 namespace gf {
 
+GfMenuObjCommonInfo::GfMenuObjCommonInfo(u32 handle) : GfMenuObject(handle) {}
+
 void GfMenuObjCommonInfo::finalize() {}
 
 void GfMenuObjCommonInfo::update() {}

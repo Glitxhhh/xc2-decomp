@@ -10,6 +10,8 @@ namespace gf {
 // Inferred role: call id passed to getAttachedObject in close(); taken from the game disassembly, original name unknown.
 constexpr u32 unknown001 = 0x41;
 
+GfMenuObjChainIcon::GfMenuObjChainIcon(u32 handle) : GfMenuObject(handle) {}
+
 void GfMenuObjChainIcon::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjChainIcon::update() { GfMenuObject::update(); }

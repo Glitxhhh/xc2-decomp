@@ -6,6 +6,7 @@ namespace gf {
 
 class GfMenuObjCommonInfo : public GfMenuObject {
 public:
+  GfMenuObjCommonInfo(u32 handle);
   void initialize() override;
   void finalize() override;
   void update() override;

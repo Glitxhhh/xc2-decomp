@@ -5,6 +5,11 @@
 
 namespace gf {
 
+GfMenuObjTargetCursor::GfMenuObjTargetCursor(u32 handle)
+    : GfMenuObject(handle), unknown24(0), unknown28(-1), unknown30(0), unknown38(0), unknown40(this), unknown2d0(this), unknown560(false), unknown564(0), unknown568(false) {}
+
+GfMenuObjTargetCursor::~GfMenuObjTargetCursor() {}
+
 void GfMenuObjTargetCursor::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjTargetCursor::disp(bool disp) {

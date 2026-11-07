@@ -2,6 +2,8 @@
 
 namespace gf {
 
+GfMenuObjExpGet::GfMenuObjExpGet(u32 handle) : GfMenuObject(handle) {}
+
 void GfMenuObjExpGet::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjExpGet::update() { GfMenuObject::update(); }

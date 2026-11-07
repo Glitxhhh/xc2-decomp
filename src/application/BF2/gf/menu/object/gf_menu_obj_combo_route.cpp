@@ -14,6 +14,8 @@ GfMenuObjComboRoute::GfMenuObjComboRoute(u32 handle) : GfMenuObject(handle) {
   }
 }
 
+GfMenuObjComboRoute::~GfMenuObjComboRoute() { ; }
+
 void GfMenuObjComboRoute::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjComboRoute::update() { GfMenuObject::update(); }

@@ -18,6 +18,7 @@ public:
   };
 
   GfMenuObjBladeChange(u32 handle);
+  ~GfMenuObjBladeChange() override;
   static void close();
   static void startChainAttack(GfMenuCallContext *context);
   static void exitChainAttack();

@@ -8,6 +8,7 @@ struct GF_OBJ_HANDLE;
 
 class GfMenuObjChainIcon : public GfMenuObject {
 public:
+  GfMenuObjChainIcon(u32 handle);
   static void setupScreen(u32 handle, int unknown1, int unknown2, int unknown3, int unknown4);
   void initialize() override;
   void finalize() override;

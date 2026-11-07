@@ -10,6 +10,7 @@ namespace gf {
 
 class GfMenuObjDamageBuff : public GfMenuObject {
 public:
+  GfMenuObjDamageBuff(u32 handle);
   void initialize() override;
   void finalize() override;
   void update() override;

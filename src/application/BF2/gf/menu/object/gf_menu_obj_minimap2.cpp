@@ -12,6 +12,10 @@ constexpr u32 unknown001 = 0x80;
 // Inferred role: ui event type; original name unknown.
 constexpr u16 unknown002 = 0x100;
 
+GfMenuObjMinimap2::GfMenuObjMinimap2(u32 handle) : GfMenuObject(handle), unknown24(false), unknown240(false) {}
+
+GfMenuObjMinimap2::~GfMenuObjMinimap2() {}
+
 void GfMenuObjMinimap2::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjMinimap2::enable() { GfMenuFlag::set1(0x1f, 0); }

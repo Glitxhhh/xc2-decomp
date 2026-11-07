@@ -18,6 +18,10 @@ constexpr u32 unknown001 = 0x29;
 // Inferred role: ui event type; original name unknown.
 constexpr u16 unknown002 = 0x10a;
 
+GfMenuObjSpecialGauge::GfMenuObjSpecialGauge(u32 handle) : GfMenuObject(handle) {}
+
+GfMenuObjSpecialGauge::~GfMenuObjSpecialGauge() { ; }
+
 void GfMenuObjSpecialGauge::push() { unknown144(unknown001, unknown002); }
 
 void GfMenuObjSpecialGauge::finalize() { GfMenuObject::finalize(); }

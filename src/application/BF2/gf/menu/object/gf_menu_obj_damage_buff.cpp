@@ -9,6 +9,8 @@ namespace gf {
 // Inferred role: call id passed to getAttachedObject in close(); taken from the game disassembly, original name unknown.
 constexpr u32 unknown001 = 0x2d;
 
+GfMenuObjDamageBuff::GfMenuObjDamageBuff(u32 handle) : GfMenuObject(handle) {}
+
 void GfMenuObjDamageBuff::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjDamageBuff::close(u32 handle) {

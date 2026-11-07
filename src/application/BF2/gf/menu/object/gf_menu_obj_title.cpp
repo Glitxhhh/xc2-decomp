@@ -2,7 +2,9 @@
 
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -12,6 +14,10 @@ class GfMenuCallContext;
 constexpr u32 unknown001 = 0x18;
 
 bool GfMenuObjTitle::s_NoSaveData;
+
+GfMenuObjTitle::GfMenuObjTitle(u32 handle) : GfMenuObject(handle), unknown48(0), unknown50(nullptr), unknown58(this), unknown1b8(false) { s_NoSaveData = true; }
+
+GfMenuObjTitle::~GfMenuObjTitle() { mm::mtl::safeRelease(unknown50); }
 
 void GfMenuObjTitle::finalize() { GfMenuObject::finalize(); }
 

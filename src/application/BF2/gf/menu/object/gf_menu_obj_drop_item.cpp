@@ -2,6 +2,8 @@
 
 namespace gf {
 
+GfMenuObjDropItem::GfMenuObjDropItem(u32 handle) : GfMenuObject(handle) {}
+
 void GfMenuObjDropItem::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjDropItem::update() { GfMenuObject::update(); }

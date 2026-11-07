@@ -9,6 +9,7 @@ namespace gf {
 class GfMenuObjComboRoute : public GfMenuObject {
 public:
   GfMenuObjComboRoute(u32 handle);
+  ~GfMenuObjComboRoute() override;
   static void close();
   static void disp(bool isDisp);
   static void open();
