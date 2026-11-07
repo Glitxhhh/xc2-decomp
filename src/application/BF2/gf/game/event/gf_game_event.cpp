@@ -15,6 +15,7 @@
 #include "gf/event/gf_evt_model.h"
 #include "gf/field/gf_field_lod.h"
 #include "gf/field/gf_field_weather.h"
+#include "gf/game/event/gf_event_bgm_setup.h"
 #include "gf/game/event/gf_evt_bgm.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_obj.h"

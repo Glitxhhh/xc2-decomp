@@ -4,6 +4,7 @@
 #include "event/frame_manager.h"
 #include "event/skip_manager.h"
 #include "fw/fw_debug.h"
+#include "gf/game/event/gf_event_bgm_setup.h"
 #include "gf/game/event/gf_game_event.h"
 #include "ml/rand.h"
 #include "mm_math/mm_col4.h"

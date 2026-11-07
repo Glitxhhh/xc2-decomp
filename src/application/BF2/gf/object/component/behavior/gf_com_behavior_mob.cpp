@@ -16,6 +16,7 @@
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
+#include "navi/nvmsh_ac_obj.h"
 
 namespace gf {
 
@@ -89,6 +90,16 @@ u32 GfComBehaviorMob::getStateId() const {
   }
 
   return ai::INVALID_STATE_ID;
+}
+
+void GfComBehaviorMob::createNaviMeshObj() {
+  disposeNaviMeshObj();
+  unknowna8 = fw::NaviManager::get()->createObject();
+  if (unknowna8 != nullptr) {
+    unknowna8->setMeshNum(0);
+    unknowna8->unknown10 |= 2;
+  }
+  unknownb0 = 0;
 }
 
 void GfComBehaviorMob::Listener::onWkStandbyLogout() { unknown08->unknown53b8 = nullptr; }

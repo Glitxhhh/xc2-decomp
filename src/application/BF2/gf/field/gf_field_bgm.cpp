@@ -21,11 +21,7 @@ enum SoundCategory : int;
 
 namespace gf {
 
-class BgmGimmick;    // IWYU pragma: keep
-class BgmBattle;     // IWYU pragma: keep
-class BgmBattleBoss; // IWYU pragma: keep
-class BgmEvent;      // IWYU pragma: keep
-class BgmField;      // IWYU pragma: keep
+class BgmEvent; // IWYU pragma: keep
 
 BGMCOND::BGMCOND() : unknown00(0), unknown0c(0), unknown10(0), unknown11(0), unknown58(0) {}
 
@@ -529,6 +525,20 @@ u32 GfFieldBgm::getRscFieldBgmID() const {
 
 u32 GfFieldBgm::getRscBossBattleBgmID() const { return m_rscBossBattleBgmID; }
 
+void GfFieldBgm::setRscBattleBgmID(u32 id) {
+  if (id == 0) {
+    m_rscBossBattleBgmID = 0;
+  } else if (GfBdatBgm::get()->getBgmConditionPriority(id) < 2) {
+    m_rscBossBattleBgmID = 0;
+    m_rscBattleBgmID = id;
+  } else if (BgmBattle::get()->m_bgmCondID == id) {
+    m_rscBossBattleBgmID = 0;
+  } else {
+    m_rscBossBattleBgmID = id;
+    unknown94 = 0;
+  }
+}
+
 u32 GfFieldBgm::getRscBattleBgmID() const { return m_rscBattleBgmID; }
 
 u32 GfFieldBgm::getRscGimmickBgmID() const { return m_rscGimmickBgmID; }
@@ -584,6 +594,67 @@ void GfFieldBgm::updateGimmickBgm(const fw::UpdateInfo &) {
 void GfFieldBgm::stopBgmForDebug(bool stop) { _gffsn::s_bStopBGM = stop; }
 
 bool GfFieldBgm::isStopBgmForDebug() { return _gffsn::s_bStopBGM; }
+
+BgmEvent::BgmEvent(GfFieldBgm *owner) : BgmTrack(owner, false) {}
+
+void BgmEvent::gevPlayEvent(GEV gev, u32) {
+  if (gev == GEV_EVENT_SEQUENCE_END) {
+    unknown6a0.clear();
+  }
+}
+
+bool BgmEvent::isPlaying() const { return BgmTrack::isPlaying(); }
+
+void BgmEvent::cancelOverTime() { unknown638.unknown5c = 0.0f; }
+
+const char *BgmEvent::getTrackName() const { return "EventBGM"; }
+
+const char *BgmBattle::getTrackName() const { return "BattleBGM"; }
+
+void BgmBattle::update(const fw::UpdateInfo &info) {
+  if (m_bgmCondID != unknown620->m_rscBattleBgmID) {
+    play(unknown620->m_rscBattleBgmID);
+  }
+  BgmTrack::update(info);
+}
+
+const char *BgmBattleBoss::getTrackName() const { return "BossBGM"; }
+
+void BgmBattleBoss::update(const fw::UpdateInfo &info) {
+  u32 id = unknown620->m_rscBossBattleBgmID;
+  if (id != 0 && m_bgmCondID != id) {
+    play(id);
+  }
+  BgmTrack::update(info);
+  GfGameScene *scene = GfGameScene::get();
+  if (scene != nullptr && scene->isForceBossBattleBgm() && !isPlaying()) {
+    scene->setForceBossBattleBgm(false);
+  }
+}
+
+const char *BgmField::getTrackName() const { return "FieldBGM"; }
+
+void BgmField::update(const fw::UpdateInfo &info) {
+  u32 map = GfGameManager::getMapID();
+  u32 id = 0;
+  if (map != 0) {
+    id = GfBdatMaplist::get()->getMaplistbgm_cndID(map);
+  }
+  if (m_bgmCondID != id) {
+    playWithFadeout(id);
+  }
+  BgmTrack::update(info);
+}
+
+const char *BgmGimmick::getTrackName() const { return "GimmickBGM"; }
+
+void BgmGimmick::update(const fw::UpdateInfo &info) {
+  u32 id = unknown620->m_rscGimmickBgmID;
+  if (m_bgmCondID != id) {
+    playWithFadeout(id);
+  }
+  BgmTrack::update(info);
+}
 
 } // namespace gf
 

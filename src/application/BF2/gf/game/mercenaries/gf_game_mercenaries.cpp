@@ -445,6 +445,15 @@ u32 GfGameMercenaries::getRewardTrust(u32 mission) {
   return isValid ? reward.unknown00[QUEST_REWARD_UNKNOWN_5].unknown44 : 0;
 }
 
+u32 GfGameMercenaries::getRewardMercenariesPoint(u32 mission) {
+  GfQuestReward reward;
+  u32 point = 0;
+  if (GfQuestUtil::getReward(reward, GfDataMercenaries::getMissionRewardID(mission), false)) {
+    point = reward.unknown00[QUEST_REWARD_UNKNOWN_7].unknown44;
+  }
+  return point;
+}
+
 u16 GfGameMercenaries::getRewardIdeaPoint(u32 mission) {
   GfQuestReward reward;
   bool isValid = GfQuestUtil::getReward(reward, GfDataMercenaries::getMissionRewardID(mission), false);

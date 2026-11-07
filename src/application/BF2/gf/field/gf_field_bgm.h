@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/event/gf_event.h"
+#include "gf/game/event/gf_event_bgm_setup.h"
 #include "gf/sound/gf_sound.h"
 #include "mm_mtl/delegate.h"
 #include "mm_mtl/fixed_array.h"
@@ -167,6 +168,46 @@ struct ExecFadeParam {
 };
 
 static_assert(sizeof(ExecFadeParam) == 0x20, "");
+
+class BgmBattle : public BgmTrack, public mm::mtl::PtrSingleton<BgmBattle> {
+public:
+  const char *getTrackName() const override;
+  void update(const fw::UpdateInfo &info) override;
+};
+
+class BgmBattleBoss : public BgmTrack, public mm::mtl::PtrSingleton<BgmBattleBoss> {
+public:
+  const char *getTrackName() const override;
+  void update(const fw::UpdateInfo &info) override;
+};
+
+class BgmEvent : public BgmTrack, public mm::mtl::PtrSingleton<BgmEvent> {
+public:
+  explicit BgmEvent(GfFieldBgm *owner);
+  const char *getTrackName() const override;
+  bool isPlaying() const override;
+  void gevPlayEvent(GEV gev, u32 value);
+  void cancelOverTime();
+
+  EventBgmSetup unknown638;        // Inferred role: setup of the playing event bgm; original member name unknown.
+  mm::mtl::FixStr<128> unknown6a0; // Inferred role: name of the hand over bgm; original member name unknown.
+};
+
+static_assert(offsetof(BgmEvent, unknown638) == 0x638, "");
+static_assert(offsetof(BgmEvent, unknown6a0) == 0x6a0, "");
+static_assert(sizeof(BgmEvent) == 0x728, "");
+
+class BgmField : public BgmTrack, public mm::mtl::PtrSingleton<BgmField> {
+public:
+  const char *getTrackName() const override;
+  void update(const fw::UpdateInfo &info) override;
+};
+
+class BgmGimmick : public BgmTrack, public mm::mtl::PtrSingleton<BgmGimmick> {
+public:
+  const char *getTrackName() const override;
+  void update(const fw::UpdateInfo &info) override;
+};
 
 namespace _gffsn {
 extern bool s_bStopBGM;

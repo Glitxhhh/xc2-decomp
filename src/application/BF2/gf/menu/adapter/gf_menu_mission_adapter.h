@@ -32,6 +32,7 @@ public:
   bool update_MissionRewardZonePoint();
   bool update_MissionRewardZonePointBonus();
   bool update_MissionRewardIdeaPoint();
+  bool update_MissionRewardMerPoint();
   bool update_MissionFieldSkill();
   bool update_MissionCondIcon();
   bool update_MissionCondParam();

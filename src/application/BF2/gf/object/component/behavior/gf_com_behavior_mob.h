@@ -69,10 +69,12 @@ public:
   void disposeSquadNavi();
   void setActivateCollison(bool isActivate);
   u32 getStateId() const;
+  void createNaviMeshObj();
 
   u8 _98[0xa8 - 0x98];
   navi::NvmshAcObj *unknowna8; // Inferred role: navi mesh object; original member name unknown.
-  u8 _b0[0xb8 - 0xb0];
+  u32 unknownb0;               // Inferred role: reset with the navi mesh object; original member name unknown.
+  u8 _b4[0xb8 - 0xb4];
   void *unknownb8;             // Role and original member name unknown.
   gmk::GmkSquadNavi unknownc0; // Inferred role: squad navi; original member name unknown.
   mm::Vec3 unknown100;         // Inferred role: velocity; original member name unknown.

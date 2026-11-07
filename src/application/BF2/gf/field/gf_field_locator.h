@@ -116,8 +116,8 @@ class LocatorBat_EnemySpeciesID : public AFieldLocator {
 public:
   LocatorBat_EnemySpeciesID(QuestID quest, u8 enemySpeciesId);
   ~LocatorBat_EnemySpeciesID() override { dispose(); }
-  u32 getPosNum() const override { return m_pos.size(); }
-  const mm::Vec3 *getPos(u32 index) const override { return &m_pos[index]; }
+  u32 getPosNum() const override;
+  const mm::Vec3 *getPos(u32 index) const override;
   void update() override;
   void create(QuestID quest, u8 enemySpeciesId);
   void dispose();

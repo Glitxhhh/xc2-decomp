@@ -88,6 +88,11 @@ bool GfMenuMissionAdapter::update_MissionRewardIdeaPoint() {
   return true;
 }
 
+bool GfMenuMissionAdapter::update_MissionRewardMerPoint() {
+  setNumber(GfGameMercenaries::getRewardMercenariesPoint(unknown58));
+  return true;
+}
+
 bool GfMenuMissionAdapter::update_MissionFieldSkill() {
   u8 *bdat;
   u32 textId;

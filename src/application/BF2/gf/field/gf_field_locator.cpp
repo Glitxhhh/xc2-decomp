@@ -132,6 +132,10 @@ void LocatorBat_EnemySpeciesID::dispose() {
   unknown14 = 0;
 }
 
+u32 LocatorBat_EnemySpeciesID::getPosNum() const { return m_pos.size(); }
+
+const mm::Vec3 *LocatorBat_EnemySpeciesID::getPos(u32 index) const { return &m_pos[index]; }
+
 LocatorTalk_NpcID::LocatorTalk_NpcID(QuestID quest, u16 mapId, u16 npcId) : unknown14(0), unknown18(0), m_posNum(0), m_pos(mm::Vec3::zero) {
   if (!quest.empty() && mapId != 0 && npcId != 0) {
     create(quest, mapId, npcId);

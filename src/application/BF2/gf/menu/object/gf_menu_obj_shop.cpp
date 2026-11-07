@@ -9,6 +9,7 @@
 #include "gf/game/sequential_play/gf_sequential_play.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_types.h"
@@ -18,6 +19,7 @@
 #include "gf/scom/gf_scom_achiev.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
@@ -243,6 +245,42 @@ bool GfMenuObjShop::seqEnd() {
     addCallContextResult(unknown4e0, unknown4e4);
   }
   GfMenuObject::termCallContext(main.unknown10);
+  return true;
+}
+
+bool GfMenuObjShop::getExcTaskQuestAdditionalValue(u32 id, u32 &value) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_SHOP_CHANGE_TASK);
+  if (bdat != nullptr && GfMenuBdat::isValidBdatID(bdat, id)) {
+    value = Bdat::getVal(bdat, "AddFlagValue", id).valueU8;
+    return true;
+  }
+  return false;
+}
+
+void GfMenuObjShop::setFilterIndex() {
+  u32 filter = unknown60[unknownc0];
+  ui::UIObjectAcc acc(unknown18, "TXT_store_sell_index");
+  if (acc.isValid()) {
+    u8 *bdat = GfDataBdat::getFP(BDAT_MENU_FILTER_CATEGORY);
+    ui::UIStr text(bdat, GfMenuObjUtil::getMsgIDFromList(BDAT_MNU_MSG_ITEM_LIST_FILTER, filter + 1));
+    acc.setText(text);
+  }
+}
+
+bool GfMenuObjShop::seqEndRecipeIndexOpen() {
+  ui::UIObjectAcc acc(unknown18, "LAY_orb_rcp");
+  switch (unknownfc) {
+  case 0:
+    acc.setDispChild(true, "TXT_orb_rcp_type_rare_index");
+    break;
+  case 1:
+    acc.setDispChild(true, "TXT_orb_rcp_type_cate_index");
+    break;
+  default:
+    acc.setDispChild(false, "TXT_orb_rcp_type_rare_index");
+    acc.setDispChild(false, "TXT_orb_rcp_type_cate_index");
+    break;
+  }
   return true;
 }
 
