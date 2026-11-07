@@ -28,6 +28,7 @@
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_salvage.h"
 #include "gmk/gmk_set.h"
+#include "ml/rand.h"
 #include "mm_math/mm_vec3.h"
 
 namespace fw {
@@ -476,6 +477,43 @@ void GfGameSalvage::playClimb() {
       GfGameSpeed::setSalvageCharacterSpeed(1.0f);
       SCOM_SALVAGE_VOICE::createResult(handle, static_cast<CV_SALVAGE_RESULT>(unknownd4));
       playSE(static_cast<SEID>(SE_CLIMB_BASE + m_climbAnimationType));
+    }
+  }
+}
+
+void GfGameSalvage::playVoice(VoiceType voice) {
+  if (unknownc0 != nullptr) {
+    GF_OBJ_HANDLE *handle = unknownc0->unknown20;
+    if (handle != INVALID_HANDLE) {
+      int random = ml::mtRand() % 2;
+      int cv;
+      switch (voice) {
+      case VOICE_START:
+        cv = random;
+        break;
+      case VOICE_START_SKILL:
+        cv = random + 2;
+        break;
+      case VOICETYPE_UNKNOWN_2:
+        cv = random + 4;
+        break;
+      case VOICETYPE_UNKNOWN_3:
+        cv = random + 6;
+        break;
+      case VOICETYPE_UNKNOWN_4:
+        cv = 8;
+        break;
+      case VOICETYPE_UNKNOWN_5:
+        cv = 9;
+        break;
+      case VOICETYPE_UNKNOWN_6:
+        cv = random + 10;
+        break;
+      default:
+        cv = 0;
+        break;
+      }
+      unknownc8 = SCOM_SALVAGE_VOICE::create(handle, static_cast<CV_SALVAGE>(cv));
     }
   }
 }

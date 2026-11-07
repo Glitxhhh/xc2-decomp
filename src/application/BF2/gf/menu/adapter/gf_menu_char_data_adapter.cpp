@@ -1275,6 +1275,11 @@ bool GfMenuCharDataAdapter::update_EN_Genus(const DataParamAcc &acc) {
   return false;
 }
 
+bool GfMenuCharDataAdapter::update_Name(const DataParamAcc &acc) {
+  setText(GfMenuObjUtil::getName(acc));
+  return true;
+}
+
 bool GfMenuCharDataAdapter::update_FaceIcon(const DataParamAcc &acc) {
   u32 icon = GfMenuObjUtil::getFaceIconID(acc);
   if (icon != 0) {

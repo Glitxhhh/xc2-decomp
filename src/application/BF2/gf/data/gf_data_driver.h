@@ -76,6 +76,7 @@ struct SDataDriver {
   u8 unknown570;                      // Inferred role: scenario mask; original member name unknown.
   u8 unknown571;                      // Inferred role: attached party; original member name unknown.
   u8 unknown572;                      // Inferred role: equip default acce; original member name unknown.
+  u8 unknown573;                      // Inferred role: kizunaring complete flags, set by GfDataDriver::setKizunaringComplete; original member name unknown.
   unknown115 unknown574[2];           // Inferred role: accessories; original member name unknown.
   SDataPouch unknown584[3];           // Inferred role: pouches; original member name unknown.
   mm::mtl::unknown027<28> unknown59c; // Inferred role: activate weapon types; original member name unknown.
@@ -114,6 +115,7 @@ static_assert(offsetof(SDataDriver, unknown2f0) == 0x2f0, "");
 static_assert(offsetof(SDataDriver, unknown570) == 0x570, "");
 static_assert(offsetof(SDataDriver, unknown571) == 0x571, "");
 static_assert(offsetof(SDataDriver, unknown572) == 0x572, "");
+static_assert(offsetof(SDataDriver, unknown573) == 0x573, "");
 static_assert(offsetof(SDataDriver, unknown574) == 0x574, "");
 static_assert(offsetof(SDataDriver, unknown584) == 0x584, "");
 static_assert(offsetof(SDataDriver, unknown59c) == 0x59c, "");
@@ -129,6 +131,8 @@ public:
   static int getRuleSetBlade(u32 driver, u32 blade, int slot);
   static u32 getFavorite(u32 driver, FAVORITE favorite);
   static bool isFavoriteCategory(u32 driver, u32 item);
+  static bool isKizunaringComplete(u32 driver, bool isSecond);
+  static void setKizunaringComplete(u32 driver, bool isSecond);
   static void setEquipBlade(u32 driver, bool isEquip, int slot);
   static u32 getExpNextLevel(const SDataDriver &dataDriver);
   static u32 getExpNextLevel(u32 driver);
@@ -153,6 +157,9 @@ public:
   static int getSetIdByDummyBlade(u32 driver);
   static u32 getBlade(u32 driver, int slot);
   static void unsetBlade(u32 blade);
+  static bool leaveOneCommonBlade(u32 driver);
+  static bool leaveOneRareBlade(u32 driver);
+  static bool leaveOneScenarioBlade(u32 driver);
   static SDataPouch *getPouchData(u32 driver, u32 slot);
   static int getBladeSet(u32 driver);
   static bool isActivateReserver(u32 driver);

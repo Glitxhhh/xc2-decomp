@@ -90,6 +90,7 @@ public:
   static void setDispByGmkTypeAndBdatId(gmk::GmkType type, int bdatId, bool isDisp);
   static void setDispByGmkTypeAndGmkIdx(gmk::GmkType type, u32 index, bool isDisp);
   static bool collectGfObjHandleByGmkType(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &handles, gmk::GmkType type);
+  static void clearEnemyRepopCounter(int enemy);
   static int getAntiBladeAreaBdatId();
   static bool getGmkTargetPointPos(mm::Vec3 &position, u32 gimmick);
   static bool findNpcMat44(mm::Mat44 &matrix, int bdatId);

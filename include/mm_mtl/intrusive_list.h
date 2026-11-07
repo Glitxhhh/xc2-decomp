@@ -22,6 +22,9 @@ template <typename T> class IntrusiveListNode : public IntrusiveListNodeBase {};
 class IntrusiveListBase {
 public:
   IntrusiveListBase();
+  // User-provided (empty) in the original: the game emits GfGameDepopMeterManager::~GfGameDepopMeterManager (D2) as a
+  // function of its own instead of reusing PtrSingleton's, which only happens with a member of non-trivial destructor.
+  ~IntrusiveListBase() {}
   int sizeTraverse() const;
   static void linkNode(IntrusiveListNodeBase *node, IntrusiveListNodeBase *position);
   static void unlinkNode(IntrusiveListNodeBase *node);

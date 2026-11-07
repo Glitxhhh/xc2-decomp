@@ -878,6 +878,55 @@ bool GfDataDriver::isActivatePartyAll(u32 driver) {
   return getSDataDriver(driver)->unknown20 == 1;
 }
 
+bool GfDataDriver::leaveOneRareBlade(u32 driver) {
+  for (int slot = 2; slot >= 0; slot--) {
+    u32 blade = getBlade(driver, slot);
+    if (blade == 0) {
+      return true;
+    }
+    if (GfDataBlade::isRareBlade(blade)) {
+      unsetBlade(blade);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool GfDataDriver::leaveOneCommonBlade(u32 driver) {
+  for (int slot = 2; slot >= 0; slot--) {
+    u32 blade = getBlade(driver, slot);
+    if (blade == 0) {
+      return true;
+    }
+    if (GfDataBlade::isCommonBlade(blade)) {
+      unsetBlade(blade);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool GfDataDriver::leaveOneScenarioBlade(u32 driver) {
+  for (int slot = 2; slot >= 0; slot--) {
+    u32 blade = getBlade(driver, slot);
+    if (blade == 0) {
+      return true;
+    }
+    if (blade != BLADE_HOMURA && GfDataBlade::isRegularBlade(blade)) {
+      unsetBlade(blade);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool GfDataDriver::isKizunaringComplete(u32 driver, bool isSecond) { return (getSDataDriver(driver)->unknown573 & (isSecond ? 2 : 1)) != 0; }
+
+void GfDataDriver::setKizunaringComplete(u32 driver, bool isSecond) {
+  SDataDriver *dataDriver = getSDataDriver(driver);
+  dataDriver->unknown573 = dataDriver->unknown573 | (isSecond ? 2 : 1);
+}
+
 bool GfDataDriver::isFavoriteCategory(u32 driver, u32 item) {
   if (item == 0) {
     return false;

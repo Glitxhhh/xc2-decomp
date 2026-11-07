@@ -69,6 +69,8 @@
 #include "gf/util/gf_item_util.h"
 #include "gf/util/gf_util.h"
 #include "gmk/gmk_base.h"
+#include "gmk/gmk_enemy/gmk_enemy.h"
+#include "gmk/gmk_enemy/gmk_routed_enemy.h"
 #include "gmk/gmk_list.h"
 #include "gmk/gmk_set.h"
 #include "mm_math/mm_quat.h"
@@ -82,11 +84,9 @@
 #include "mm_mtl/vector.h"
 
 namespace gmk {
-class GmkEnemy;
 class GmkMapObj;
 class GmkMob;
 class GmkNpc;
-class GmkRoutedEnemy;
 class GmkRoutedMapObj;
 class GmkRoutedMob;
 class GmkRoutedNpc;
@@ -734,6 +734,51 @@ bool GfGameUtil::isPointSavable(const mm::Vec3 &position) {
   }
 
   return true;
+}
+
+namespace {
+
+// Inferred role: traverser asking the enemies that hold an enemy id to clear their repop counter; original name unknown.
+class unknown002 {
+public:
+  explicit unknown002(int enemy) : unknown00(enemy) {}
+
+  void onTraverse(const gmk::AGmkBase &gmk) {
+    if (!gmk.isValid()) {
+      return;
+    }
+    switch (gmk.getGmkType()) {
+    case gmk::GMK_TYPE_ENEMY: {
+      const gmk::GmkEnemy &enemy = static_cast<const gmk::GmkEnemy &>(gmk);
+      if (enemy.unknown48.unknown98.hasEneID(unknown00, true)) {
+        enemy.unknown48.reqClearRepopCounter();
+      }
+      break;
+    }
+    case gmk::GMK_TYPE_ROUTED_ENEMY: {
+      const gmk::GmkRoutedEnemy &enemy = static_cast<const gmk::GmkRoutedEnemy &>(gmk);
+      if (enemy.unknown50.unknown98.hasEneID(unknown00, true)) {
+        enemy.unknown50.reqClearRepopCounter();
+      }
+      break;
+    }
+    default:
+      break;
+    }
+  }
+
+  int unknown00;
+};
+
+} // namespace
+
+void GfGameUtil::clearEnemyRepopCounter(int enemy) {
+  const gmk::GmkManager *gmkManager = gmk::GmkManager::get();
+  if (gmkManager != nullptr) {
+    unknown002 traverser(enemy);
+    gmkManager->traverseGmkInst(gmk::GMK_TYPE_ENEMY, traverser);
+    gmkManager->traverseGmkInst(gmk::GMK_TYPE_ROUTED_ENEMY, traverser);
+  }
 }
 
 u32 GfGameUtil::getFormationPlayerID(GF_OBJ_HANDLE *handle) {

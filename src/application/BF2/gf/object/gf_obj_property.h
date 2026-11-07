@@ -136,6 +136,11 @@ static_assert(offsetof(GfObjPropertyDriver, unknown19c) == 0x19c, "");
 
 class GfObjPropertyBlade : public GfObjProperty {
 public:
+  enum {
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: tested first by update_BL_DispComboReady; original name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: tested second by update_BL_DispComboReady; original name unknown.
+  };
+
   u8 _40[0x88 - 0x40];
   GfObjPropertyCharacter unknown88; // Inferred role: character, pointed to by unknown10; original member name unknown.
   u8 _bc[0x190 - 0xbc];
@@ -145,12 +150,14 @@ public:
   u32 unknown1a8; // Inferred role: special level, read by GfMenuGfObjAdapter::update_BL_SpecialLv; original member name unknown.
   f32 unknown1ac; // Inferred role: special gauge ratio; original member name unknown.
   f32 unknown1b0; // Inferred role: blade change recast ratio; original member name unknown.
+  u32 unknown1b4; // Inferred role: combo ready flags, read by GfMenuGfObjAdapter::update_BL_DispComboReady; original member name unknown.
 };
 
 static_assert(offsetof(GfObjPropertyBlade, unknown88) == 0x88, "");
 static_assert(offsetof(GfObjPropertyBlade, unknown190) == 0x190, "");
 static_assert(offsetof(GfObjPropertyBlade, unknown1a4) == 0x1a4, "");
 static_assert(offsetof(GfObjPropertyBlade, unknown1b0) == 0x1b0, "");
+static_assert(offsetof(GfObjPropertyBlade, unknown1b4) == 0x1b4, "");
 
 class GfObjPropertyPcWeapon : public GfObjProperty {};
 

@@ -31,6 +31,15 @@ constexpr u32 PARTY_DRIVER_COUNT = 3;
 // Inferred role: object attribute bit that shows the info icon of a hidden object; original name unknown.
 constexpr u32 unknown002 = 1 << 3;
 
+// Inferred role: blade property of an object, nullptr when it has none; original name unknown.
+static inline GfObjPropertyBlade *unknown003(GF_OBJ_HANDLE *handle) {
+  GfObjProperty *property = GfObjUtil::getProperty(handle);
+  if (property == nullptr) {
+    return nullptr;
+  }
+  return property->getBlade();
+}
+
 GfMenuGfObjAdapter::GfMenuGfObjAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways, bool isUpdateAfter)
     : GfMenuAdapter(plugin, isUpdateAfter, isUpdateAlways), unknown48(INVALID_HANDLE), unknown70(0), unknown78(nullptr) {}
 
@@ -470,12 +479,7 @@ bool GfMenuGfObjAdapter::update_BL_Kizuna(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  GfObjProperty *property = GfObjUtil::getProperty(handle);
-  if (property == nullptr) {
-    return false;
-  }
-
-  GfObjPropertyBlade *blade = property->getBlade();
+  GfObjPropertyBlade *blade = unknown003(handle);
   if (blade == nullptr) {
     return false;
   }
@@ -490,12 +494,7 @@ bool GfMenuGfObjAdapter::update_BL_Special(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  GfObjProperty *property = GfObjUtil::getProperty(handle);
-  if (property == nullptr) {
-    return false;
-  }
-
-  GfObjPropertyBlade *blade = property->getBlade();
+  GfObjPropertyBlade *blade = unknown003(handle);
   if (blade == nullptr) {
     return false;
   }
@@ -519,12 +518,7 @@ bool GfMenuGfObjAdapter::update_BL_SpecialLv(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  GfObjProperty *property = GfObjUtil::getProperty(handle);
-  if (property == nullptr) {
-    return false;
-  }
-
-  GfObjPropertyBlade *blade = property->getBlade();
+  GfObjPropertyBlade *blade = unknown003(handle);
   if (blade == nullptr) {
     return false;
   }
@@ -556,18 +550,29 @@ bool GfMenuGfObjAdapter::update_BL_ChangeRecast(GF_OBJ_HANDLE *handle) {
     }
   }
 
-  GfObjProperty *property = GfObjUtil::getProperty(handle);
-  if (property == nullptr) {
-    return false;
-  }
-
-  GfObjPropertyBlade *blade = property->getBlade();
+  GfObjPropertyBlade *blade = unknown003(handle);
   if (blade == nullptr) {
     return false;
   }
 
   setNumber(blade->unknown1b0 * 100.0f);
   return blade->unknown1b0 > 0.0f;
+}
+
+bool GfMenuGfObjAdapter::update_BL_DispComboReady(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if (acc.getType() == OBJECT_TYPE_BLADE && !GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_3)) {
+    GfObjPropertyBlade *blade = unknown003(handle);
+    if (blade == nullptr) {
+      return false;
+    }
+
+    if ((blade->unknown1b4 & GfObjPropertyBlade::FLAG_UNKNOWN_0) != 0) {
+      return true;
+    }
+    return (blade->unknown1b4 & GfObjPropertyBlade::FLAG_UNKNOWN_1) != 0;
+  }
+  return false;
 }
 
 bool GfMenuGfObjAdapter::update_BL_DispCurrent(GF_OBJ_HANDLE *handle) {

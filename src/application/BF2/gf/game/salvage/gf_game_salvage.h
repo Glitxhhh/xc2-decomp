@@ -265,6 +265,11 @@ public:
   enum VoiceType {
     VOICE_START,
     VOICE_START_SKILL,
+    VOICETYPE_UNKNOWN_2,
+    VOICETYPE_UNKNOWN_3,
+    VOICETYPE_UNKNOWN_4,
+    VOICETYPE_UNKNOWN_5,
+    VOICETYPE_UNKNOWN_6,
   };
 
   enum AnimationType {
