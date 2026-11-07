@@ -7,6 +7,9 @@
 
 namespace mm {
 
+struct Plane;
+class Sphere;
+
 struct Obb {
   Obb();
   Obb(const Mat44 &matrix, const Vec3 &size);
@@ -17,6 +20,9 @@ struct Obb {
   Obb &operator=(const Obb &obb);
   void setMat(const Mat44 &matrix, const Vec3 &size);
   void getVertices(Vec3 *vertices) const;
+  void getPlane(Plane *planes) const;
+  bool isInner(const Sphere &sphere) const;
+  bool isInner(const Vec3 &point) const;
 
   Mat44 matrix;
   Vec3 size;
