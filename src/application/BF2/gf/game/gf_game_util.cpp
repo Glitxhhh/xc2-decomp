@@ -31,6 +31,7 @@
 #include "gf/data/gf_item_handle.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
+#include "gf/field/gf_field_exec_cmd_turn.h"
 #include "gf/field/gf_field_gimmick.h"
 #include "gf/field/gf_field_weather.h"
 #include "gf/game/gf_game_cond.h"
@@ -43,6 +44,9 @@
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/game/quest/gf_quest_manager.h"
+#include "gf/object/component/behavior/gf_com_behavior_event.h"
+#include "gf/object/component/behavior/gf_com_behavior_npc.h"
+#include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_append_info.h"
@@ -60,6 +64,8 @@
 #include "gf/util/gf_item_util.h"
 #include "gf/util/gf_util.h"
 #include "gmk/gmk_base.h"
+#include "gmk/gmk_list.h"
+#include "gmk/gmk_set.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
@@ -67,6 +73,18 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/rtti.h"
+#include "mm_mtl/vector.h"
+
+namespace gmk {
+class GmkEnemy;
+class GmkMapObj;
+class GmkMob;
+class GmkNpc;
+class GmkRoutedEnemy;
+class GmkRoutedMapObj;
+class GmkRoutedMob;
+class GmkRoutedNpc;
+} // namespace gmk
 
 namespace gf {
 
@@ -591,6 +609,43 @@ void GfGameUtil::setDispByGmkTypeAndGmkIdx(gmk::GmkType type, u32 index, bool is
   gmk::setDispByGmkTypeAndGmkIdx(gmkSet, type, index, isDisp);
 }
 
+bool GfGameUtil::collectGfObjHandleByGmkType(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &handles, gmk::GmkType type) {
+  if (gmk::GmkManager::get() == nullptr || !gmk::GmkManager::get()->isValid()) {
+    return false;
+  }
+
+  switch (type) {
+  case gmk::GMK_TYPE_ENEMY:
+    gmk::GmkManager::get()->collectGameObjsUnbound<gmk::GmkEnemy>(handles);
+    break;
+  case gmk::GMK_TYPE_ROUTED_ENEMY:
+    gmk::GmkManager::get()->collectGameObjsUnbound<gmk::GmkRoutedEnemy>(handles);
+    break;
+  case gmk::GMK_TYPE_NPC:
+    gmk::GmkManager::get()->collectGameObjs<gmk::GmkNpc>(handles);
+    break;
+  case gmk::GMK_TYPE_ROUTED_NPC:
+    gmk::GmkManager::get()->collectGameObjs<gmk::GmkRoutedNpc>(handles);
+    break;
+  case gmk::GMK_TYPE_MAP_OBJ:
+    gmk::GmkManager::get()->collectGameObjs<gmk::GmkMapObj>(handles);
+    break;
+  case gmk::GMK_TYPE_ROUTED_MAP_OBJ:
+    gmk::GmkManager::get()->collectGameObjs<gmk::GmkRoutedMapObj>(handles);
+    break;
+  case gmk::GMK_TYPE_MOB:
+    gmk::GmkManager::get()->collectGameObjsUnbound<gmk::GmkMob>(handles);
+    break;
+  case gmk::GMK_TYPE_ROUTED_MOB:
+    gmk::GmkManager::get()->collectGameObjsUnbound<gmk::GmkRoutedMob>(handles);
+    break;
+  default:
+    return false;
+  }
+
+  return true;
+}
+
 int GfGameUtil::getAntiBladeAreaBdatId() { return GfFieldGimmick::getBdatIdOfActiveGmkAntiBladeArea(); }
 
 bool GfGameUtil::getGmkTargetPointPos(mm::Vec3 &position, GF_OBJ_HANDLE *handle) {
@@ -605,11 +660,70 @@ bool GfGameUtil::getGmkTargetPointPos(mm::Vec3 &position, GF_OBJ_HANDLE *handle)
   return false;
 }
 
+bool GfGameUtil::findNpcMat44(mm::Mat44 &matrix, int bdatId) {
+  if (gmk::GmkManager::get() != nullptr) {
+    int map = gmk::getCurrentMapBdatId();
+    int gmkSetId = gmk::GmkManager::get()->findFirstBdatId_RSC_GmkSetList(map);
+    if (gmkSetId > 0) {
+      gmk::GmkSet *gmkSet = gmk::GmkManager::get()->findGmkSet(gmkSetId);
+      if (gmkSet != nullptr) {
+        const gmk::AGmkBase *gmkInst = gmkSet->findFirstGmkInstByBdatId(gmk::GMK_TYPE_NPC, bdatId);
+        if (gmkInst != nullptr) {
+          gmkInst->getMatrix(matrix, true);
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool GfGameUtil::getGmkTargetPointPos(mm::Vec3 &position, u32 gimmick) {
+  if (gimmick == 0 || gmk::GmkManager::get() == nullptr) {
+    return false;
+  }
+
+  const gmk::GmkManager *gmkManager = gmk::GmkManager::get();
+  for (gmk::GmkSet *const *it = gmkManager->unknownf358.begin(); it != gmkManager->unknownf358.end(); ++it) {
+    gmk::IGmkList *list = (*it)->getGmkList(gmk::GMK_TYPE_TARGET_POINT);
+    if (list != nullptr && list->isValid() && gimmick <= list->getInstNum()) {
+      const gmk::AGmkBase *gmkInst = list->getInst(gimmick - 1);
+      if (gmkInst != nullptr && gmkInst->isValid()) {
+        position = gmkInst->unknown08.unknown08->unknown00;
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 bool GfGameUtil::incEnemySuppress(u32 enemy) { return GfDataEnemy::incEnemySuppress(enemy); }
 
 bool GfGameUtil::isEnableDeleteObject(GF_OBJ_HANDLE *handle) {
   GfObjAcc objAcc(handle);
   return !objAcc.isBattle();
+}
+
+bool GfGameUtil::isPointSavable(const mm::Vec3 &position) {
+  const gmk::GmkManager *gmkManager = gmk::GmkManager::get();
+  if (gmkManager != nullptr) {
+    for (gmk::GmkSet *const *it = gmkManager->unknownf358.begin(); it != gmkManager->unknownf358.end(); ++it) {
+      gmk::IGmkList *list = (*it)->getGmkList(gmk::GMK_TYPE_FIELD_VOLUME);
+      if (list != nullptr) {
+        u32 num = list->getInstNum();
+        for (u32 index = 0; index < num; index++) {
+          const gmk::AGmkBase *gmkInst = list->getInst(index);
+          if (gmkInst != nullptr && gmkInst->isValid() && gmkInst->isInsideShape(position, 0.0f)) {
+            return false;
+          }
+        }
+      }
+    }
+  }
+
+  return true;
 }
 
 u32 GfGameUtil::getFormationPlayerID(GF_OBJ_HANDLE *handle) {
@@ -1194,6 +1308,26 @@ bool GfGameUtil::hasBelonging(GF_OBJ_HANDLE *handle, u32 belonging) {
   default:
     return false;
   }
+}
+
+bool GfGameUtil::isTurnEnd(GF_OBJ_HANDLE *handle) {
+  GfObjAcc objAcc(handle);
+  GfObj *obj = objAcc.getObj();
+  if (obj == nullptr) {
+    return false;
+  }
+
+  if (GfComBehaviorEvent *event = obj->getComponent<GfComBehaviorEvent>()) {
+    return event->unknowna0.unknown6c;
+  }
+  if (GfComBehaviorEnemy *enemy = obj->getComponent<GfComBehaviorEnemy>()) {
+    return enemy->unknown53f0.unknown6c;
+  }
+  if (GfComBehaviorNpc *npc = obj->getComponent<GfComBehaviorNpc>()) {
+    return npc->unknown2e0.unknown6c;
+  }
+
+  return false;
 }
 
 void GfGameUtil::execAddDevelopPointArcadia2Iyasaki() {

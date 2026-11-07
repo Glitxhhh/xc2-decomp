@@ -372,6 +372,7 @@ public:
   static const char *getResourceNameModel(u32 blade);
   static const char *getResourceNameMotion(u32 blade);
   static const char *getResourceNameAddMotion(u32 blade);
+  static bool getBladeAddAnim(mm::mtl::FixStr<128> &animName, u32 blade, u32 weaponType);
   static const char *getDebugName(u32 blade);
   static u8 getRace(u32 blade);
   static u8 getGender(u32 blade);

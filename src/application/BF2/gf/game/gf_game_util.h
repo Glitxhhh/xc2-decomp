@@ -10,7 +10,8 @@
 
 namespace mm {
 struct Vec3;
-}
+struct Mat44;
+} // namespace mm
 
 namespace gf {
 
@@ -91,6 +92,7 @@ public:
   static bool collectGfObjHandleByGmkType(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &handles, gmk::GmkType type);
   static int getAntiBladeAreaBdatId();
   static bool getGmkTargetPointPos(mm::Vec3 &position, u32 gimmick);
+  static bool findNpcMat44(mm::Mat44 &matrix, int bdatId);
   static bool getGmkTargetPointPos(mm::Vec3 &position, GF_OBJ_HANDLE *handle);
   static bool incEnemySuppress(u32 enemy);
   static bool isEnableDeleteObject(GF_OBJ_HANDLE *handle);

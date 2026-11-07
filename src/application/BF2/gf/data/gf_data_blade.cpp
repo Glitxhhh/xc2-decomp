@@ -1,5 +1,7 @@
 #include "gf/data/gf_data_blade.h"
 
+#include <math.h>
+
 #include "bdat.h"
 #include "gf/data/gf_bdat_blade.h"
 #include "gf/data/gf_bdat_btl.h"
@@ -535,6 +537,26 @@ const char *GfDataBlade::getResourceNameMotion(u32 blade) { return getSDataBlade
 
 const char *GfDataBlade::getResourceNameAddMotion(u32 blade) { return getSDataBlade(blade)->unknown75c.c_str(); }
 
+bool GfDataBlade::getBladeAddAnim(mm::mtl::FixStr<128> &animName, u32 blade, u32 weaponType) {
+  DataParamAcc dataParamAcc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  if (!dataParamAcc.isValid()) {
+    return false;
+  }
+
+  if (dataParamAcc.getWeaponType(-1, false) == 0) {
+    return false;
+  }
+
+  const char *modelName = dataParamAcc.getModelResourceName();
+  if (weaponType >= 10) {
+    animName.format("%s_%d", modelName, weaponType);
+  } else {
+    animName.format("%s_0%d", modelName, weaponType);
+  }
+
+  return true;
+}
+
 const char *GfDataBlade::getDebugName(u32 blade) {
   if (isCommonBlade(blade)) {
     SDataBlade *dataBlade = getSDataBlade(blade);
@@ -660,6 +682,63 @@ const char *GfDataBlade::getDeathBlowWeaponName(u32 blade) {
   return deathBlowWeaponNames[weaponType];
 }
 
+u32 GfDataBlade::getBladePower(SDataBlade &dataBlade) {
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  DataIdeaAcc dataIdeaAcc(dataBlade.unknown0c, false);
+  f32 power = static_cast<u32>(dataIdeaAcc.getLevel(0));
+  power += static_cast<u32>(dataIdeaAcc.getLevel(1));
+  power += static_cast<u32>(dataIdeaAcc.getLevel(2));
+  power += static_cast<u32>(dataIdeaAcc.getLevel(3));
+  for (u32 i = 0; i < 3; i++) {
+    if (dataBlade.unknown3c[i].unknown00 != 0) {
+      u32 level = dataBlade.unknown3c[i].unknown07;
+      if (level != 0) {
+        u32 difficulty = 0;
+        if (dataBlade.unknownc4[i].unknown00 != 0) {
+          u32 achievement = questListAcc->getFLD_AchievementSetAchievementID(dataBlade.unknownc4[i].unknown00, level - 1);
+          if (achievement != 0) {
+            difficulty = questListAcc->getFLD_AchievementListDifficulty(achievement);
+          }
+        }
+        power += (level * 2.5f + difficulty) * 0.5f;
+      }
+    }
+  }
+  for (u32 i = 0; i < 3; i++) {
+    if (dataBlade.unknown9c[i].unknown00 != 0) {
+      u32 level = dataBlade.unknown9c[i].unknown03;
+      if (level != 0) {
+        u32 difficulty = 0;
+        if (dataBlade.unknown274[i].unknown00 != 0) {
+          u32 achievement = questListAcc->getFLD_AchievementSetAchievementID(dataBlade.unknown274[i].unknown00, level - 1);
+          if (achievement != 0) {
+            difficulty = questListAcc->getFLD_AchievementListDifficulty(achievement);
+          }
+        }
+        power += (level * 2.5f + difficulty) * 0.5f;
+      }
+    }
+  }
+  for (u32 i = 0; i < 3; i++) {
+    if (dataBlade.unknownae[i].unknown00 != 0) {
+      u32 level = dataBlade.unknownae[i].unknown03;
+      if (level != 0) {
+        u32 difficulty = 0;
+        if (dataBlade.unknown424[i].unknown00 != 0) {
+          u32 achievement = questListAcc->getFLD_AchievementSetAchievementID(dataBlade.unknown424[i].unknown00, level - 1);
+          if (achievement != 0) {
+            difficulty = questListAcc->getFLD_AchievementListDifficulty(achievement);
+          }
+        }
+        power += (level * 2.5f + difficulty) * 0.5f;
+      }
+    }
+  }
+
+  f32 rounded = ceilf(power);
+  return rounded > 99.0f ? 99.0f : rounded;
+}
+
 u32 GfDataBlade::getBladePower(u32 blade) {
   if (blade == 0) {
     return 0;
@@ -764,6 +843,19 @@ u16 GfDataBlade::getEquipOrb(u32 blade, u32 slot) {
   }
 
   return 0;
+}
+
+GfItemHandle GfDataBlade::getEquipOrbHandle(u32 blade, u32 slot) {
+  if (blade == 0) {
+    return GfItemHandle(0);
+  }
+
+  SDataBlade *dataBlade = getSDataBlade(blade);
+  if (slot < getEquipOrbMax(blade)) {
+    return dataBlade->unknown680[slot];
+  }
+
+  return GfItemHandle(0);
 }
 
 bool GfDataBlade::getEquipOrb(mm::mtl::FixedArray<u16, 3> &equipOrbs, u32 blade) {
