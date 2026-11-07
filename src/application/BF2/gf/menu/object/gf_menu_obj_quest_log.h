@@ -42,6 +42,7 @@ public:
   void setupLogClear();
   void setupLogItem();
   bool seqLogNextEnd();
+  bool seqLogNextWaitInfo();
   bool seqLogStart();
   bool seqLogIn();
   bool seqLogOpen();

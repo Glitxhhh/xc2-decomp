@@ -62,6 +62,7 @@ public:
   static bool isValid();
   static bool getMapSegImageOffs(mm::Pnt<s16> &offset);
   static bool getMapRatio(f32 &x, f32 &y);
+  static bool getMiniIconList(u32 type, const mm::mtl::Vector<MiniIcon> **list);
   static bool getMapSize(s16 &left, s16 &top, s16 &right, s16 &bottom);
   static bool getCurMapAreaInfo(MapAreaInfo &info);
 

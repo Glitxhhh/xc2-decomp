@@ -15,12 +15,14 @@ enum VibrationID : int;
 namespace ui {
 class UICtrlCursorSelect;
 class UIListInfoBase;
+class UIObjectAcc;
 class UIStr;
 } // namespace ui
 
 namespace mm {
+struct Col3;
 struct Vec3;
-}
+} // namespace mm
 
 namespace gf {
 
@@ -245,6 +247,9 @@ public:
   static bool isBladeSelectable(u32 blade, const GfMenuBladeList *list);
   static bool isBladeReleasable(u32 blade, const GfMenuBladeList *list);
   static bool getImageParam(u32 type, u32 id, ImageParam &param, u32 index);
+  static const mm::Col3 &getPresetColor(const char *name);
+  static mm::Col3 getElementColor(u32 combo);
+  static bool setPointSpeedRate(ui::UIObjectAcc acc, f32 rate);
 
   // Inferred helper: starts the preset 6 fade in control on a UI object; original name unknown.
   static int unknown002(u32 handle) {

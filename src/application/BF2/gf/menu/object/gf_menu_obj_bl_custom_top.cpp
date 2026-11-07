@@ -5,6 +5,7 @@
 #include "gf/menu/object/gf_menu_obj_bl_weapon.h"
 #include "gf/menu/object/gf_menu_obj_common_jog.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/reference_object.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -99,11 +100,28 @@ bool GfMenuObjBlCustomTop::seqStartAddLayer() {
   return true;
 }
 
+bool GfMenuObjBlCustomTop::seqAddLayerPhase2() {
+  GfMenuObject::enableFSSwitching();
+  GfMenuObject::changeFSSubLayer(unknown18, 2, unknown2ec, true);
+  if (unknown50 == nullptr) {
+    unknown50 = GfMenuCallContext::create();
+  }
+  ui::UIObjectAcc acc(unknown18);
+  GfMenuObject::enableInput(acc.searchChild("LAY_bl_select"));
+  return true;
+}
+
 bool GfMenuObjBlCustomTop::seqAddLayerPhase3_BlWeapon() { return GfMenuObjBlWeapon::attach(unknown50); }
 
 bool GfMenuObjBlCustomTop::seqAddLayerPhase3_BlOrb() { return GfMenuObjBlOrb::attach(unknown50); }
 
 bool GfMenuObjBlCustomTop::seqAddLayerPhase4() { return unknown50->isTerm(); }
+
+bool GfMenuObjBlCustomTop::seqEndAddLayer() {
+  mm::mtl::safeRelease(unknown50);
+  resumeInput();
+  return true;
+}
 
 } // namespace gf
 

@@ -31,6 +31,11 @@ bool GfMenuObjQuestLog::seqLogNextEnd() {
   return true;
 }
 
+bool GfMenuObjQuestLog::seqLogNextWaitInfo() {
+  ui::UIObjectAcc acc(unknown18, "LAY_log_info");
+  return !GfMenuObjUtil::isBusyCtrl(unknown814);
+}
+
 bool GfMenuObjQuestLog::seqLogStart() {
   ui::UIObjectAcc acc(unknown18, "LAY_log");
   enableInput(acc.unknown10);

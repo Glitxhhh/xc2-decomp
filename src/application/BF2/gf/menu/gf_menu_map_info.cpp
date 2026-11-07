@@ -130,6 +130,15 @@ bool GfMenuMapInfo::getMapSegImageOffs(mm::Pnt<s16> &offset) {
   return false;
 }
 
+bool GfMenuMapInfo::getMiniIconList(u32 type, const mm::mtl::Vector<MiniIcon> **list) {
+  GfMenuMapInfo *info = get();
+  if (type < 5 && info != nullptr) {
+    *list = &info->unknown80[type];
+    return true;
+  }
+  return false;
+}
+
 bool GfMenuMapInfo::getMapRatio(f32 &x, f32 &y) {
   GfMenuMapInfo *info = get();
   if (info != nullptr) {

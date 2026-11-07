@@ -35,6 +35,8 @@
 #include "gf/sound/gf_sound.h"
 #include "gf/util/gf_util.h"
 #include "ml/dev_pad.h"
+#include "mm_math/mm_col3.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
@@ -43,6 +45,9 @@
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/ctrl/ui_ctrl_manager.h"
 #include "ui/event/ui_event_manager.h"
+#include "ui/input/ui_input_layer.h"
+#include "ui/input/ui_input_manager.h"
+#include "ui/input/ui_input_pointer.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/motion/ui_motion_data.h"
 #include "ui/motion/ui_motion_library.h"
@@ -51,6 +56,7 @@
 #include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/plugin/ui_object_scroll_bar_plugin.h"
 #include "ui/plugin/ui_object_sync_plugin.h"
+#include "ui/ui_color_library.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 #include "ui/ui_util.h"
@@ -791,6 +797,31 @@ u8 GfMenuObjUtil::getElementComboStage(u32 combo) {
   return 0;
 }
 
+mm::Col3 GfMenuObjUtil::getElementColor(u32 combo) {
+  u8 *bdat = Bdat::getFP("BTL_ElementalCombo");
+  if (GfMenuBdat::isValidBdatID(bdat, combo)) {
+    switch (Bdat::getVal(bdat, "Atr", combo).valueU8) {
+    case 1:
+      return mm::Col3(1.0f, 0.0f, 0.0f);
+    case 2:
+      return mm::Col3(0.0f, 96.0f / 255.0f, 1.0f);
+    case 3:
+      return mm::Col3(0.0f, 1.0f, 30.0f / 255.0f);
+    case 4:
+      return mm::Col3(151.0f / 255.0f, 64.0f / 255.0f, 6.0f / 255.0f);
+    case 5:
+      return mm::Col3(1.0f, 252.0f / 255.0f, 0.0f);
+    case 6:
+      return mm::Col3(0.0f, 1.0f, 216.0f / 255.0f);
+    case 7:
+      return mm::Col3(1.0f, 222.0f / 255.0f, 0.0f);
+    case 8:
+      return mm::Col3(144.0f / 255.0f, 0.0f, 1.0f);
+    }
+  }
+  return mm::Col3::black;
+}
+
 bool GfMenuObjUtil::isQuestCompleted(QuestID quest) { return GfQuestInfo::isQuestFin(quest); }
 
 bool GfMenuObjUtil::getMenuCondition(u32 id) {
@@ -829,6 +860,18 @@ bool GfMenuObjUtil::isEnemyNamed(GF_OBJ_HANDLE *handle) {
     return false;
   }
   return dataEnemy->unknown04_0;
+}
+
+const mm::Col3 &GfMenuObjUtil::getPresetColor(const char *name) {
+  static mm::Col3 color;
+  color = mm::Col3(0.0f, 0.0f, 0.0f);
+  mm::Col4 libraryColor;
+  if (ui::UIColorLibrary::get()->find(name, libraryColor)) {
+    color.r = libraryColor.r;
+    color.g = libraryColor.g;
+    color.b = libraryColor.b;
+  }
+  return color;
 }
 
 void GfMenuObjUtil::setColMulandAdd(u32 handle, const char *color) {
@@ -1115,5 +1158,20 @@ void GfMenuObjUtil::changeCursorTarget(ui::UICtrlCursorSelect *cursor, u32 handl
 }
 
 bool GfMenuObjUtil::getScreenPos(mm::Vec3 &screenPos, const mm::Vec3 &position) { return util::getScreenPos(screenPos, position); }
+
+bool GfMenuObjUtil::setPointSpeedRate(ui::UIObjectAcc acc, f32 rate) {
+  u32 input = ui::UIInputManager::get()->searchInputHandle(acc.unknown10);
+  if (input != 0) {
+    ui::UIInputLayer *layer = ui::UIInputManager::get()->getInputLayer(input);
+    if (layer != nullptr) {
+      ui::UIInputPointer *pointer = layer->castUIInputPointer();
+      if (pointer != nullptr) {
+        pointer->unknown258 = rate;
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 } // namespace gf

@@ -1,5 +1,6 @@
 #include "gf/menu/gf_menu_fullscreen.h"
 
+#include "gf/gf_allocator.h"
 #include "ui/input/ui_input_manager.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_util.h"
@@ -8,7 +9,24 @@ namespace gf {
 
 static const u32 unknown002[8] = {0, 9, 2, 4, 7, 11, 3, 26}; // Inferred role: screen to ui layer id table; original name unknown.
 
+GfMenuFullScreen::GfMenuFullScreen(const GfSetupParam &param)
+    : unknown08(false), unknown0c(0), unknown10(0), unknownf8(true), unknownf9(false), unknownfc(0), unknown100(0), unknown104(0), unknown108(true), unknown109(true), unknown10a(true), unknown130(0),
+      unknown134(0), unknown158(), unknown160(8) {
+  initialize(param);
+}
+
+GfMenuFullScreen::~GfMenuFullScreen() {}
+
 void GfMenuFullScreen::initialize(const GfSetupParam &param) { unknown08 = true; }
+
+void GfMenuFullScreen::build(const GfSetupParam &param) {
+// __LINE__ must be 89 as in the original file: it is the line argument of operator new.
+#line 89
+  GfMenuFullScreen *fullScreen = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuFullScreen(param);
+  for (u16 i = 0; i < LAYER_COUNT; i++) {
+    fullScreen->resetLayer(i);
+  }
+}
 
 void GfMenuFullScreen::finalize() { unknown08 = false; }
 
@@ -24,6 +42,13 @@ void GfMenuFullScreen::releaseLayer(u16 index) {
   if (index < 5 && unknown18[index].unknown00 != 0) {
     ui::UIManager::get()->releaseLayer(unknown18[index].unknown00);
   }
+}
+
+void GfMenuFullScreen::resetLayer(u16 index) {
+  unknown18[index].unknown00 = 0;
+  unknown18[index].unknown08.clear();
+  unknown18[index].unknown30 = 0;
+  unknown18[index].unknown34 = false;
 }
 
 bool GfMenuFullScreen::isInitialized() { return get()->unknown08; }

@@ -133,6 +133,15 @@ void unknown002() {
   GfMenuObjExpGet::closeAll();
 }
 
+// Inferred role: state of a function-local static of GfMenuManager::update, only constructed; original type name unknown.
+struct unknown003 {
+  unknown003() : unknown00(false), unknown10(0) {}
+
+  bool unknown00;
+  u8 _01[0x10 - 0x01];
+  u32 unknown10;
+};
+
 } // namespace
 
 void GfMenuManager::qevOrderQuest(const QuestOrderParam &) { unknown001(); }
@@ -180,6 +189,12 @@ void GfMenuManager::qevChangeQuestState(const QuestStateParam &) {
 void GfMenuManager::qevChangeCurrentQuest(const QuestChangeParam &) { unknown001(); }
 
 void GfMenuManager::beginUpdate(const fw::UpdateInfo &info) { GfMenuAdapterManager::postUpdateAfter(info); }
+
+void GfMenuManager::update(const fw::UpdateInfo &) {
+  if (get() != nullptr) {
+    static unknown003 s_unknown;
+  }
+}
 
 void GfMenuManager::build(const GfSetupParam &param) {
   // __LINE__ must be 347 as in the original file: it is an argument of the allocation.
