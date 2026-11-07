@@ -1,7 +1,10 @@
 #include "gf/menu/object/gf_menu_obj_party_form3.h"
 
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ui/ui_object_acc.h"
 
@@ -43,6 +46,42 @@ bool GfMenuObjPartyForm3::seqWaitOpenEnd() {
   ui::UIObjectAcc acc(unknown18, "LAY_dr_select");
   enableInput(acc.unknown10);
   return true;
+}
+
+void GfMenuObjPartyForm3::refreshRemoveAddOperation(u32 handle, int index) {
+  if (unknown40 >= 0) {
+    return;
+  }
+  u32 count = unknown34;
+  if (!unknown318) {
+    if (static_cast<u32>(index) < count) {
+      GfMenuObjOperationInfo::setActionEnable(handle, 9, false);
+      return;
+    }
+  } else if (static_cast<u32>(index) < count) {
+    if (count < 2) {
+      GfMenuObjOperationInfo::setActionEnable(handle, 9, false);
+      return;
+    }
+    GfMenuObjOperationInfo::setActionEnable(handle, 9, true);
+    GfMenuObjOperationInfo::changeText(handle, 9, false);
+    return;
+  }
+  if (count > 2) {
+    GfMenuObjOperationInfo::setActionEnable(handle, 9, false);
+  } else {
+    GfMenuObjOperationInfo::setActionEnable(handle, 9, true);
+    GfMenuObjOperationInfo::changeText(handle, 9, true);
+  }
+}
+
+bool GfMenuObjPartyForm3::seqAnnounceChange() {
+  if (unknown310 != nullptr) {
+    return unknown310->isTerm();
+  }
+  unknown310 = GfMenuCallContext::create();
+  GfMenuObjCommonText::open(unknown310, 0xd, 0);
+  return false;
 }
 
 } // namespace gf

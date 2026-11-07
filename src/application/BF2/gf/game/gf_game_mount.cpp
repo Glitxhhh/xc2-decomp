@@ -167,6 +167,21 @@ bool GfGameMount::setWeaponOwner(OPTMNT type) {
   return false;
 }
 
+bool GfGameMountBlade::execMount(OPTMNT type) {
+  if (GfGameMount::execMount(type)) {
+    return true;
+  }
+  if (type != OPTMNT_BLADE) {
+    return false;
+  }
+  if (GfObjUtil::getObj(unknown30) != nullptr) {
+    detach();
+    attach(OPTMNT_BLADE, unknown30);
+    unknown20 = OPTMNT_BLADE;
+  }
+  return true;
+}
+
 GF_OBJ_HANDLE *GfGameMountBlade::getHandle(OPTMNT type) {
   GF_OBJ_HANDLE *handle;
   switch (type) {

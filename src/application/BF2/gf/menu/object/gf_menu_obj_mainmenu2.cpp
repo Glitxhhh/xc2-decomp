@@ -3,12 +3,17 @@
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/gf_allocator.h"
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_blade_list.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_popup.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/ui_manager.h"
@@ -28,6 +33,29 @@ constexpr u32 unknown004 = 0x27;
 
 u32 GfMenuObjMainMenu2::s_openMenuID;
 bool GfMenuObjMainMenu2::s_cancelEnable;
+
+GfMenuObjMainMenu2::GfMenuObjMainMenu2(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(0), unknown3c(-1), unknown40(-1), unknown44(0), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown88(0),
+      unknown8c(false), unknown90(this), unknown320(false) {
+  unknown48 = GfMenuDriverList::create();
+  unknown50 = GfMenuBladeList::create();
+  // __LINE__ must be 186 as in the original source: it is the line argument of operator new.
+#line 186
+  unknown58 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SelectionChecker();
+  s_openMenuID = 0;
+}
+
+GfMenuObjMainMenu2::~GfMenuObjMainMenu2() {
+  mm::mtl::safeRelease(unknown50);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown30);
+  if (unknown58 != nullptr) {
+    delete unknown58;
+    unknown58 = nullptr;
+  }
+  s_openMenuID = 0;
+}
 
 bool GfMenuObjMainMenu2::isOpenCharMenu() { return s_openMenuID == unknown004; }
 
