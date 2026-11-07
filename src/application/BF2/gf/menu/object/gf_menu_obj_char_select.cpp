@@ -6,6 +6,7 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 #include "types.h"
 #include "ui/ui_object_acc.h"
 
@@ -161,6 +162,25 @@ bool GfMenuObjCharSelect::seqReturn() {
   ui::UIObjectAcc acc(unknown18, "LAY_char");
   unknown140(acc.unknown10, 0x107, 0, 0.0f);
   return true;
+}
+
+bool GfMenuObjCharSelect::seqSpNiaChangeDr() {
+  SCOM_NIA_BLADE::create(false);
+  return true;
+}
+
+void GfMenuObjCharSelect::dispOnChar(u32 type) {
+  ui::UIObjectAcc acc(getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    dispOnCopyChar(acc, type);
+  }
+}
+
+void GfMenuObjCharSelect::dispOffChar(u32 type) {
+  ui::UIObjectAcc acc(getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    dispOffCopyChar(acc, type);
+  }
 }
 
 } // namespace gf
