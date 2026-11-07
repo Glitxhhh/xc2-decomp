@@ -13,6 +13,24 @@ void DevPadNx::Impl::stateUpdate(f32 time) {
 
 void DevPadNx::Impl::updatePad(f32 time) { updateNpad(); }
 
+void DevPadNx::Impl::stopVibration(PadData &data) {
+  if (data.unknown14 && data.unknown7c && (data.unknown18 | 2) == 3) {
+    u32 id = data.unknown60.unknown00;
+    if (id != 0) {
+      nn::hid::VibrationPlayer *player = getVibPlayer(id);
+      if (player != nullptr && player->IsLoaded()) {
+        player->Stop();
+        data.unknown110.Disconnect();
+        data.unknown148.Disconnect();
+        data.unknown60 = PadVibrationInfo(0);
+        data.unknown78 = 0.0f;
+        data.unknown7c = false;
+        data.unknown7d = false;
+      }
+    }
+  }
+}
+
 void DevPadNx::Impl::updateDebugPad(PadData &data) {
   data.unknown00 = 0;
   data.unknown04 = 0.0f;
@@ -75,6 +93,13 @@ void DevPadNx::Impl::updateDebugPad(PadData &data) {
   data.unknown08 = mm::clamp(-1.0f, data.unknown08, 1.0f);
   data.unknown0c = mm::clamp(-1.0f, data.unknown0c, 1.0f);
   data.unknown10 = mm::clamp(-1.0f, data.unknown10, 1.0f);
+}
+
+nn::hid::VibrationPlayer *DevPadNx::Impl::getVibPlayer(u32 id) {
+  if (id - 1 < 0x3f) {
+    return &unknown38[id].unknown18;
+  }
+  return nullptr;
 }
 
 int DevPadNx::getLocalUserSelectPadID() const {

@@ -3,6 +3,7 @@
 
 #include "ml/dev_pad.h"
 #include "mm_mtl/unique_ptr.h"
+#include "nn/hid.h"
 #include "types.h"
 
 namespace ml {
@@ -40,7 +41,23 @@ public:
       bool unknown14; // Inferred role: connected; original member name unknown.
       u8 _15[0x18 - 0x15];
       u32 unknown18; // Inferred role: pad style; original member name unknown.
-      u8 _1c[0x180 - 0x1c];
+      u8 _1c[0x60 - 0x1c];
+      PadVibrationInfo unknown60; // Inferred role: vibration requested by playVibration; original member name unknown.
+      f32 unknown78;              // Inferred role: vibration time; original member name unknown.
+      bool unknown7c;             // Inferred role: vibration playing; original member name unknown.
+      bool unknown7d;             // Inferred role: vibration initialized; original member name unknown.
+      u8 _7e[0x110 - 0x7e];
+      nn::hid::VibrationNodeConnection unknown110; // Inferred role: left vibration connection; original member name unknown.
+      nn::hid::VibrationNodeConnection unknown148; // Inferred role: right vibration connection; original member name unknown.
+    };
+
+    // Inferred role: vibration data and player; original type name unknown.
+    struct unknown002 {
+      void *unknown00; // Inferred role: vibration data; original member name unknown.
+      u64 unknown08;   // Inferred role: size of the vibration data; original member name unknown.
+      s32 unknown10;   // Inferred role: vibration id; original member name unknown.
+      u8 _14[0x18 - 0x14];
+      nn::hid::VibrationPlayer unknown18; // Inferred role: player; original member name unknown.
     };
 
     void stateUpdate(f32 time);
@@ -48,11 +65,15 @@ public:
     void updateNpad();
     void updateDebugPad(PadData &data);
     void release();
+    void stopVibration(PadData &data);
+    nn::hid::VibrationPlayer *getVibPlayer(u32 id);
 
     u8 _0000[0x0020];
     s32 unknown20;    // Inferred role: state of the pad update, 2 updates the npads; original member name unknown.
     u32 unknown24[4]; // Inferred role: npad ids of the pads; original member name unknown.
-    u8 _0034[0x4540 - 0x0034];
+    u8 _0034[0x38 - 0x34];
+    unknown002 unknown38[64]; // Inferred role: vibration entries; original member name unknown.
+    u8 _3638[0x4540 - 0x3638];
     s32 unknown4540; // Inferred role: pad index; original member name unknown.
     s32 unknown4544; // Inferred role: user select pad id; original member name unknown.
   };
@@ -78,9 +99,17 @@ static_assert(offsetof(DevPadNx::Impl::PadData, unknown04) == 0x04, "");
 static_assert(offsetof(DevPadNx::Impl::PadData, unknown10) == 0x10, "");
 static_assert(offsetof(DevPadNx::Impl::PadData, unknown14) == 0x14, "");
 static_assert(offsetof(DevPadNx::Impl::PadData, unknown18) == 0x18, "");
+static_assert(offsetof(DevPadNx::Impl::PadData, unknown60) == 0x60, "");
+static_assert(offsetof(DevPadNx::Impl::PadData, unknown78) == 0x78, "");
+static_assert(offsetof(DevPadNx::Impl::PadData, unknown7c) == 0x7c, "");
+static_assert(offsetof(DevPadNx::Impl::PadData, unknown110) == 0x110, "");
+static_assert(offsetof(DevPadNx::Impl::PadData, unknown148) == 0x148, "");
 static_assert(sizeof(DevPadNx::Impl::PadData) == 0x180, "");
+static_assert(offsetof(DevPadNx::Impl::unknown002, unknown18) == 0x18, "");
+static_assert(sizeof(DevPadNx::Impl::unknown002) == 0xd8, "");
 static_assert(offsetof(DevPadNx::Impl, unknown20) == 0x0020, "");
 static_assert(offsetof(DevPadNx::Impl, unknown24) == 0x0024, "");
+static_assert(offsetof(DevPadNx::Impl, unknown38) == 0x0038, "");
 static_assert(offsetof(DevPadNx::Impl, unknown4540) == 0x4540, "");
 static_assert(offsetof(DevPadNx::Impl, unknown4544) == 0x4544, "");
 static_assert(offsetof(DevPadNx, unknown548) == 0x548, "");
