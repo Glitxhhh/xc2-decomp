@@ -35,7 +35,9 @@ static_assert(offsetof(MsgPcFieldNotifyWall, unknown50) == 0x50, "");
 
 namespace pc {
 
-enum VehicleEvent {};
+enum VehicleEvent {
+  VEHICLE_EVENT_UNKNOWN_0 = 0,
+};
 
 struct MsgPcFieldNotifyRiderEvent : fw::Message {
   MsgPcFieldNotifyRiderEvent(VehicleEvent event) : fw::Message(0x1000024, 0x40), unknown08(event) {}

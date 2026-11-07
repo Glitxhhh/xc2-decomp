@@ -250,6 +250,9 @@ public:
   static bool isQuestCompleted(QuestID quest);
   static bool getMenuCondition(u32 id);
   static bool getScreenPos(mm::Vec3 &screenPos, const mm::Vec3 &position);
+  static void convViewSpace(mm::Vec3 &viewPos, const mm::Vec3 &position);
+  static void placeObjectHLeft(u32 handle, const char *format, u32 count, const mm::Pnt<s16> &pos, u32 interval);
+  static QuestID getCurrentQuest(u32 type);
   static bool getMenuFullOpenFlag();
   static bool isCustomEnableBlade(u32 blade);
   static int convMenuDriverID(u32 driver);

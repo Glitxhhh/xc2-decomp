@@ -385,7 +385,7 @@ public:
   static bool isMale(u32 blade);
   static bool isFemale(u32 blade);
   static bool getNameWithFieldSkillForDebug(mm::mtl::FixStr<128> &name, u32 blade);
-  static u16 getKeyReleaseLevel(u32 blade);
+  static u32 getKeyReleaseLevel(u32 blade);
   static u32 getSkillLineId(u32 blade, u32 line);
   static bool setAchievReleaseLevel(u32 blade, u32 line, u32 level);
   static bool getTaskSkillMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line);

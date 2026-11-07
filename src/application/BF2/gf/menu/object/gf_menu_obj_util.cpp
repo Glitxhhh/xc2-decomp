@@ -5,6 +5,7 @@
 #include "fw/fw_pad.h"
 #include "fw/fw_param_manager.h"
 #include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_battle.h"
 #include "gf/data/gf_data_bdat.h"
@@ -23,6 +24,8 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
+#include "gf/game/quest/gf_quest_manager.h"
+#include "gf/gf_info.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_bdat.h"
@@ -37,7 +40,9 @@
 #include "ml/dev_pad.h"
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_math/mm_pnt.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
@@ -1158,6 +1163,46 @@ void GfMenuObjUtil::changeCursorTarget(ui::UICtrlCursorSelect *cursor, u32 handl
 }
 
 bool GfMenuObjUtil::getScreenPos(mm::Vec3 &screenPos, const mm::Vec3 &position) { return util::getScreenPos(screenPos, position); }
+
+void GfMenuObjUtil::convViewSpace(mm::Vec3 &viewPos, const mm::Vec3 &position) {
+  const mm::Mat44 &view = GfInfo::m_viewMat;
+  mm::Vec3 result;
+  result.x = position.x * view.rows[0][0] + position.y * view.rows[1][0] + position.z * view.rows[2][0] + view.rows[3][0];
+  result.y = position.x * view.rows[0][1] + position.y * view.rows[1][1] + position.z * view.rows[2][1] + view.rows[3][1];
+  result.z = position.x * view.rows[0][2] + position.y * view.rows[1][2] + position.z * view.rows[2][2] + view.rows[3][2];
+  viewPos = result;
+}
+
+void GfMenuObjUtil::placeObjectHLeft(u32 handle, const char *format, u32 count, const mm::Pnt<s16> &pos, u32 interval) {
+  mm::mtl::FixStr<32> name;
+  u32 x = static_cast<u16>(pos.x);
+  s16 y = pos.y;
+  for (int i = 0; i < static_cast<int>(count); i++, x += interval) {
+    name.format(format, i + 1);
+    ui::UIObjectAcc acc(handle, name.c_str());
+    acc.setPosCenter(mm::Pnt<s16>(x, y));
+  }
+}
+
+QuestID GfMenuObjUtil::getCurrentQuest(u32 type) {
+  QuestID quest;
+  switch (type) {
+  case 0:
+    quest = GfQuestManager::getProgressCurrentQuest(QTYPE_MAIN);
+    break;
+  case 1:
+    quest = GfQuestManager::getProgressCurrentQuest(QTYPE_NORMAL);
+    if (quest.empty()) {
+      quest = GfQuestManager::getProgressCurrentQuest(QTYPE_BLADE);
+    }
+    break;
+  }
+
+  if (!quest.empty() && GfQuestInfo::isQuestOrder(quest)) {
+    return quest;
+  }
+  return QuestID();
+}
 
 bool GfMenuObjUtil::setPointSpeedRate(ui::UIObjectAcc acc, f32 rate) {
   u32 input = ui::UIInputManager::get()->searchInputHandle(acc.unknown10);

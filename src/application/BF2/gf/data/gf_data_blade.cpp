@@ -638,7 +638,7 @@ bool GfDataBlade::isFemale(u32 blade) {
 
 bool GfDataBlade::getNameWithFieldSkillForDebug(mm::mtl::FixStr<128> &, u32) { return false; }
 
-u16 GfDataBlade::getKeyReleaseLevel(u32 blade) { return getSDataBlade(blade)->unknown664; }
+u32 GfDataBlade::getKeyReleaseLevel(u32 blade) { return getSDataBlade(blade)->unknown664; }
 
 u32 GfDataBlade::getRealBladeId(u32 blade) { return blade == BLADE_REAL_ALIAS ? BLADE_REAL_ALIAS_TARGET : blade; }
 
