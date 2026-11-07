@@ -82,6 +82,7 @@ public:
   void setPadControl(bool padControl);
   void resetParams();
   void setLocomotion(const anm::QsTransform &locomotion);
+  void syncDirection();
   void procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message);
   void setEnvSensorCheckFlags(u32 flags, bool isEnable);
   bool testEnvSensorCheckFlags(EnviromentSensor::Flag flag);
