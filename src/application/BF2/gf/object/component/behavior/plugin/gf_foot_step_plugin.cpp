@@ -80,4 +80,6 @@ bool isLeftFoot(GfEnvProperty::GROUND_INDEX ground) {
 
 bool isBearFoot(GfEnvProperty::GROUND_INDEX ground) { return ground == GfEnvProperty::GROUND_INDEX_UNKNOWN_3 || ground == GfEnvProperty::GROUND_INDEX_UNKNOWN_4; }
 
+const FootStepParam *getFootParam(fw::ParamAdapter &adapter) { return adapter.get<FootStepParam>(); }
+
 } // namespace gf

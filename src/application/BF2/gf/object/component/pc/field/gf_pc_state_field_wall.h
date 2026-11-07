@@ -21,6 +21,7 @@ class StateFieldWall : public GfStateBase {
   void enter(GfComBehaviorPc *behavior, ai::State *previous);
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
+  void flushWallType(GfComBehaviorPc *behavior);
 };
 
 static_assert(sizeof(StateFieldWall) == 0x18, "");

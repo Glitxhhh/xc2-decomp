@@ -4,6 +4,7 @@
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_hana.h"
 #include "gf/data/gf_data_item.h"
+#include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
 
 namespace gf {
@@ -83,6 +84,30 @@ RESULT_HANA GfGameUtilHana::isOpenArtsCircuit(u32 blade, u32 circuit) {
   }
 
   return GfDataHana::isOpenCircuit(blade, circuit) ? RESULT_HANA_UNKNOWN_0 : RESULT_HANA_UNKNOWN_10;
+}
+
+u32 GfGameUtilHana::getConvertToEther(u32 parts) {
+  ItemProperty property;
+  GfItemUtil::getProperty(property, parts, 0);
+  if (property.unknown08 >= ItemType::HANA_ROLE && property.unknown08 <= ItemType::HANA_ASSIST) {
+    return GfItemUtil::getItemBoxCountWithoutEquip(parts);
+  }
+  return 0;
+}
+
+RESULT_HANA GfGameUtilHana::execConvertToEther(u32 parts) {
+  ItemProperty property;
+  GfItemUtil::getProperty(property, parts, 0);
+  if (property.unknown08 >= ItemType::HANA_ROLE && property.unknown08 <= ItemType::HANA_ASSIST) {
+    if (GfItemUtil::getItemBoxCountWithoutEquip(parts) == 0) {
+      return RESULT_HANA_UNKNOWN_8;
+    }
+    GfItemUtil::addItemBox(parts, -1);
+    if (property.unknown6c != 0) {
+      SCOM_ADD_ETHER::create(property.unknown6c);
+    }
+  }
+  return RESULT_HANA_UNKNOWN_0;
 }
 
 u32 GfGameUtilHana::getEmptyParts(u32 parts) {

@@ -1,4 +1,7 @@
 #pragma once
+#include <stddef.h>
+
+#include "framework/sound/sound_variable_table.h"
 #include "gf/object/component/gf_component.h"
 #include "types.h"
 
@@ -58,6 +61,10 @@ public:
   void playSe2D(const char *name, f32 volume, bool, bool);
   int getAttributeVariable() const;
   void setAttributeVariable(int attribute);
+
+  fw::SoundVariableTable unknown10; // Inferred role: sound variables; original member name unknown.
 };
+
+static_assert(offsetof(GfComSound, unknown10) == 0x10, "");
 
 } // namespace gf

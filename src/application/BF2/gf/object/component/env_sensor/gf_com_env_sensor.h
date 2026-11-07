@@ -72,7 +72,8 @@ public:
         u32 unknown24_4 : 1; // Inferred role: valid; original member name unknown.
         u32 : 1;
         u32 unknown24_6 : 1; // Inferred role: unknown; original member name unknown.
-        u32 : 25;
+        u32 unknown24_7 : 1; // Inferred role: sent to the wall sound variable by StateFieldWall::flushWallType; original member name unknown.
+        u32 : 24;
       };
     };
   };

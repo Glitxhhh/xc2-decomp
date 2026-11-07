@@ -13,6 +13,7 @@ class RTTI;
 } // namespace mm
 
 namespace fw {
+class ParamAdapter;
 struct UpdateInfo;
 } // namespace fw
 
@@ -29,6 +30,7 @@ static_assert(offsetof(FootStepParam, ankleHeight) == 0x04, "");
 GfEnvProperty::GROUND_INDEX getFootGroundIndex(const char *name);
 bool isLeftFoot(GfEnvProperty::GROUND_INDEX ground);
 bool isBearFoot(GfEnvProperty::GROUND_INDEX ground);
+const FootStepParam *getFootParam(fw::ParamAdapter &adapter);
 
 class FootStepPlugin : public Plugin {
   GF_PLUGIN(GfComBehavior)

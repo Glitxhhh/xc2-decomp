@@ -93,6 +93,7 @@ public:
 
   VoiceInfo();
   void clear();
+  void destroyJob();
   void update(const fw::UpdateInfo &info);
   void checkInvalid(const fw::UpdateInfo &info);
   bool isEmpty() const;
@@ -229,6 +230,31 @@ const char *GfVoiceName::getCharacterVoiceStr(GF_OBJ_HANDLE *handle) {
 }
 
 VoiceInfo::VoiceInfo() : unknown00(true), unknown04(CV_PRIO_UNKNOWN_0), unknown0c(0.0f), unknown10{INVALID_HANDLE, 0, 0}, unknown20(), unknown28(nullptr) { clear(); }
+
+void VoiceInfo::clear() {
+  if (unknown20.isValid()) {
+    GfSound *sound = GfSound::get();
+    if (sound != nullptr) {
+      sound->stopVoice(unknown20, 0.0f);
+    }
+    unknown20.clear();
+  }
+  unknown04 = CV_PRIO_UNKNOWN_0;
+  unknown28 = nullptr;
+  unknown10 = {INVALID_HANDLE, 0, 0};
+  unknown08 = 0;
+  unknown0c = 0.0f;
+  destroyJob();
+  unknown00 = true;
+}
+
+void VoiceInfo::destroyJob() {
+  // The game never advances the iterator (disassembly: the index is hoisted out of the loop, only the end is reloaded).
+  for (mm::mtl::FixedQueue<PJOB *, 16>::iterator it = unknown30.begin(); it != unknown30.end();) {
+    delete *it;
+  }
+  unknown30.clear();
+}
 
 bool VoiceInfo::isEmpty() const {
   if (unknown20.isValid()) {
