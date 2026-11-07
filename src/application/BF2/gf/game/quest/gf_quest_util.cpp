@@ -264,6 +264,55 @@ void GfQuestUtil::removeOrderParentQuest(QuestID quest) {
   }
 }
 
+QuestID GfQuestUtil::getLastOrderCategoryQuest(QTYPE type) {
+  SDataGame *dataGame = GfDataManager::getDataGame();
+  u16 id = 0;
+  u16 variant = 0;
+  if (dataGame->unknown10a538 != 0) {
+    for (s32 index = dataGame->unknown10a538; index > 0; index--) {
+      if (GfDataQuest::getListQuestCategory(dataGame->unknown10a138[index - 1]) == type) {
+        QuestID quest = dataGame->unknown10a138[index - 1];
+        id = quest.unknown00;
+        variant = quest.unknown02;
+        break;
+      }
+    }
+  }
+
+  return QuestID(id, variant);
+}
+
+QuestID GfQuestUtil::getLastOrderInvalidCategoryQuest(QTYPE type) {
+  SDataGame *dataGame = GfDataManager::getDataGame();
+  u16 id = 0;
+  u16 variant = 0;
+  if (dataGame->unknown10a538 != 0) {
+    for (s32 index = dataGame->unknown10a538; index > 0; index--) {
+      if (GfDataQuest::getQuestCategory(dataGame->unknown10a138[index - 1]) != type) {
+        QuestID quest = dataGame->unknown10a138[index - 1];
+        id = quest.unknown00;
+        variant = quest.unknown02;
+        break;
+      }
+    }
+  }
+
+  return QuestID(id, variant);
+}
+
+QuestID GfQuestUtil::getLastOrderParentQuest() {
+  SDataGame *dataGame = GfDataManager::getDataGame();
+  u16 id = 0;
+  u16 variant = 0;
+  if (dataGame->unknown10a538 != 0) {
+    QuestID quest = dataGame->unknown10a138[dataGame->unknown10a538 - 1];
+    id = quest.unknown00;
+    variant = quest.unknown02;
+  }
+
+  return QuestID(id, variant);
+}
+
 void GfQuestUtil::clearOrderParentQuest() { GfDataManager::getDataGame()->unknown10a538 = 0; }
 
 void GfQuestUtil::addTaskHanyouCount(u32 purpose, u32 taskIndex, u32 add) {
@@ -531,6 +580,34 @@ static void unknown002(QTYPE type) {
       GfQuestManager::resetQuest(it.getQuestID());
     }
   }
+}
+
+// Inferred role: counts the finished quests of the chain starting at quest; original name unknown.
+static void unknown004(u32 &count, QuestID quest) {
+  if (GfQuestInfo::getState(quest) < QSTATE_FIN_A) {
+    return;
+  }
+
+  count++;
+  QuestID nextA = GfDataQuest::getListNextQuestA(quest);
+  if (!nextA.empty()) {
+    unknown004(count, nextA);
+  }
+
+  QuestID nextB = GfDataQuest::getListNextQuestB(quest);
+  if (!nextB.empty()) {
+    unknown004(count, nextB);
+  }
+}
+
+u32 GfQuestUtil::getClearChildQuest(QuestID quest) {
+  if (!GfQuestInfo::isParent(quest)) {
+    return 0;
+  }
+
+  u32 count = 0;
+  unknown004(count, GfDataQuest::getListNextQuestA(quest));
+  return count;
 }
 
 void GfQuestUtil::setupNewGameParam() {

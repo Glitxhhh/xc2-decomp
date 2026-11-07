@@ -11,6 +11,10 @@ namespace mm {
 struct Vec3;
 } // namespace mm
 
+namespace fw {
+class EffectPack;
+} // namespace fw
+
 namespace gf {
 
 struct GF_OBJ_HANDLE;
@@ -44,18 +48,21 @@ public:
 
   // Inferred role: running object control (startObjectCtrl copies the start values and the CtrlParam targets here).
   struct unknown001 {
+    unknown001() : unknown00(nullptr), unknown88(1.0f) {}
+
     GF_OBJ_HANDLE *unknown00; // Inferred role: object handle; original member name unknown.
     u8 _08[0x80 - 0x08];
     f32 unknown80; // Inferred role: elapsed time; original member name unknown.
     f32 unknown84; // Inferred role: duration; original member name unknown.
-    u8 _88[0x90 - 0x88];
+    f32 unknown88; // Inferred role: end ratio, 1.0 when a control starts; original member name unknown.
+    u8 _8c[0x90 - 0x8c];
   };
 
   // Inferred role: effect slot, handle 0 when unused.
   struct unknown002 {
     u32 unknown00; // Inferred role: effect handle; original member name unknown.
     u8 _04[0x08 - 0x04];
-    u64 unknown08; // Inferred role: effect owner, all bits set when unused; original member name unknown.
+    GF_OBJ_HANDLE *unknown08; // Inferred role: effect owner, invalid handle when unused; original member name unknown.
   };
 
   void update();
@@ -80,6 +87,8 @@ public:
   int getCurrentCameraIndex();
   void stopCameraMotion();
   void playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle);
+  u32 createEffect(u32 type, const char *name);
+  void playEffectFromCAS(u32 type, const char *name, GF_OBJ_HANDLE *handle);
   bool isPlayEffect(u32 index);
   void stopEffect(u32 index);
   void removeEffect(u32 index);
@@ -88,13 +97,15 @@ public:
   GF_OBJ_HANDLE *findGfObj(u32 type, u32 id);
   bool checkGfObj(u32 type, u32 id);
 
-  u8 _00[0x28];
+  u8 _00[0x10];
+  u32 unknown10; // Inferred role: render index; original member name unknown.
+  u8 _14[0x28 - 0x14];
   mm::mtl::FixedVector<unknown001, 16> unknown28;                // Inferred role: running object controls; original member name unknown.
   mm::mtl::Vector<mm::mtl::IntrusivePtr<fw::Camera>> unknown930; // Inferred role: cameras; original member name unknown.
   mm::mtl::FixedVector<u32, 16> unknown958;                      // Inferred role: pushed camera indices; original member name unknown.
-  u8 _9a0[0x9a8 - 0x9a0];
-  unknown002 unknown9a8[16]; // Inferred role: effect slots; original member name unknown.
-  bool unknownaa8;           // Inferred role: resources loaded; original member name unknown.
+  fw::EffectPack *unknown9a0;                                    // Inferred role: effect pack; original member name unknown.
+  unknown002 unknown9a8[16];                                     // Inferred role: effect slots; original member name unknown.
+  bool unknownaa8;                                               // Inferred role: resources loaded; original member name unknown.
   u8 _aa9[0xab8 - 0xaa9];
 };
 
@@ -104,6 +115,8 @@ static_assert(offsetof(GfMenuModelView, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuModelView, unknown930) == 0x930, "");
 static_assert(offsetof(GfMenuModelView, unknown958) == 0x958, "");
 static_assert(offsetof(GfMenuModelView, unknown9a8) == 0x9a8, "");
+static_assert(offsetof(GfMenuModelView, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuModelView, unknown9a0) == 0x9a0, "");
 static_assert(offsetof(GfMenuModelView, unknownaa8) == 0xaa8, "");
 static_assert(sizeof(GfMenuModelView) == 0xab8, "");
 

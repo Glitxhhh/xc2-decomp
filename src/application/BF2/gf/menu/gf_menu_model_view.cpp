@@ -4,6 +4,7 @@
 #include "fw/fw_model_object.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/effect/gf_com_effect_caster.h"
 #include "gf/object/component/model/gf_com_model.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
@@ -147,6 +148,42 @@ int GfMenuModelView::getCurrentCameraIndex() {
   return -1;
 }
 
+void GfMenuModelView::playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle) {
+  if (fw::EffectManager::get() != nullptr && unknown9a0 != nullptr) {
+    if (unknown9a8[type].unknown00 == 0) {
+      u32 effect = fw::EffectManager::get()->create(name, unknown9a0, true);
+      fw::EffectManager::get()->setViewnum(effect, unknown10 + 1);
+      unknown9a8[type].unknown00 = effect;
+      if (effect != 0) {
+        unknown9a8[type].unknown08 = handle;
+      }
+    }
+  }
+}
+
+u32 GfMenuModelView::createEffect(u32 type, const char *name) {
+  if (fw::EffectManager::get() == nullptr || unknown9a0 == nullptr || unknown9a8[type].unknown00 != 0) {
+    return 0;
+  }
+
+  u32 effect = fw::EffectManager::get()->create(name, unknown9a0, true);
+  fw::EffectManager::get()->setViewnum(effect, unknown10 + 1);
+  unknown9a8[type].unknown00 = effect;
+  return effect;
+}
+
+void GfMenuModelView::playEffectFromCAS(u32 type, const char *name, GF_OBJ_HANDLE *handle) {
+  if (fw::EffectManager::get() != nullptr && unknown9a0 != nullptr && unknown9a8[type].unknown00 == 0) {
+    u32 effect = fw::EffectManager::get()->create(name, unknown9a0, true);
+    fw::EffectManager::get()->setViewnum(effect, unknown10 + 1);
+    unknown9a8[type].unknown00 = effect;
+    if (effect != 0) {
+      GfComEffectCaster *caster = GfObjAcc(handle).getObj()->getComponent<GfComEffectCaster>();
+      fw::EffectManager::get()->setParam(effect, caster->unknown388, 1.0f);
+    }
+  }
+}
+
 bool GfMenuModelView::isPlayEffect(u32 index) {
   if (index >= 16) {
     return false;
@@ -164,7 +201,7 @@ void GfMenuModelView::removeEffect(u32 index) {
   if (unknown9a8[index].unknown00 != 0) {
     fw::EffectManager::get()->kill(unknown9a8[index].unknown00);
     unknown9a8[index].unknown00 = 0;
-    unknown9a8[index].unknown08 = static_cast<u64>(-1);
+    unknown9a8[index].unknown08 = INVALID_HANDLE;
   }
 }
 
@@ -179,6 +216,17 @@ bool GfMenuModelView::isLoading() const {
     }
   }
   return false;
+}
+
+void GfMenuModelView::delGfObj(u32 type, u32 id) {
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    GfObjAcc acc(ctrl->unknown00);
+    if (acc.getType() == type && acc.getBdatId() == id) {
+      GfObjFactory::destroyObj(ctrl->unknown00);
+      unknown28.erase(ctrl);
+      return;
+    }
+  }
 }
 
 GF_OBJ_HANDLE *GfMenuModelView::findGfObj(u32 type, u32 id) {
