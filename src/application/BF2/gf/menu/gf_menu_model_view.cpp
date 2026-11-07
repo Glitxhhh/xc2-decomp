@@ -1,6 +1,205 @@
 #include "gf/menu/gf_menu_model_view.h"
 
+#include "framework/effect/effect_manager.h"
+#include "fw/fw_model_object.h"
+#include "gf/data/gf_object_type.h"
+#include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/model/gf_com_model.h"
+#include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_factory.h"
+#include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_util.h"
+#include "scn/scn_obj_acc.h"
+
 namespace gf {
+
+void GfMenuModelView::setVanishRatio(GF_OBJ_HANDLE *handle, f32 ratio) {
+  GfObjAcc acc(handle);
+  GfComModel *model = acc.getObj()->getComponent<GfComModel>();
+  if (model != nullptr && model->unknown18 != nullptr) {
+    ml::ScnObjAccVolumeFade fade(model->unknown18->getInterface());
+    fade.setRatio(ratio, -1);
+  }
+}
+
+void GfMenuModelView::addWeaponFromBlade(u32 blade, u32 id) { GfObjFactory::createUiWeapon(findGfObj(OBJECT_TYPE_DRIVER, id), blade); }
+
+void GfMenuModelView::delWeaponFromBlade(u32 id) { GfObjFactory::createUiWeapon(findGfObj(OBJECT_TYPE_DRIVER, id), 0); }
+
+void GfMenuModelView::sendObjectCommand(GF_OBJ_HANDLE *handle, const char *command) {
+  GfComAsm *comAsm = GfObjAcc(handle).getObj()->getComponent<GfComAsm>();
+  if (comAsm != nullptr && !comAsm->execCmd(command, ANIM_LAYER_BASE)) {
+    comAsm->setState("S_idle", ANIM_LAYER_BASE);
+  }
+}
+
+void GfMenuModelView::setObjectCommandValue(GF_OBJ_HANDLE *handle, const char *name, int value) {
+  GfComAsm *comAsm = GfObjAcc(handle).getObj()->getComponent<GfComAsm>();
+  if (comAsm != nullptr) {
+    comAsm->setVariable(name, value);
+  }
+}
+
+void GfMenuModelView::setObjectScale(GF_OBJ_HANDLE *handle, const mm::Vec3 &scale) { GfObjAcc(handle).setModelScaleForMenu(scale); }
+
+void GfMenuModelView::setObjectDisp(GF_OBJ_HANDLE *handle, bool isDisp) { GfObjAcc(handle).setDisp(OBJDISP_UNKNOWN_1, isDisp); }
+
+f32 GfMenuModelView::getVanishRatio(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  GfComModel *model = acc.getObj()->getComponent<GfComModel>();
+  f32 ratio = 0.0f;
+  if (model != nullptr && model->unknown18 != nullptr) {
+    ml::ScnObjAccVolumeFade fade(model->unknown18->getInterface());
+    ratio = fade.getRatio(0);
+  }
+  return ratio;
+}
+
+void GfMenuModelView::stopObjectCtrl(GF_OBJ_HANDLE *handle) {
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    if (ctrl->unknown00 == handle) {
+      ctrl->unknown80 = ctrl->unknown84;
+    }
+  }
+}
+
+bool GfMenuModelView::isObjectCtrlBusy(GF_OBJ_HANDLE *handle) {
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    if (ctrl->unknown00 == handle) {
+      return ctrl->unknown80 != ctrl->unknown84;
+    }
+  }
+  return false;
+}
+
+bool GfMenuModelView::isObjectAnimationBusy(GF_OBJ_HANDLE *handle) {
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    if (ctrl->unknown00 == handle) {
+      GfObjAcc acc(handle);
+      GfComAsm *comAsm = acc.getObj()->getComponent<GfComAsm>();
+      if (comAsm != nullptr) {
+        return !comAsm->isEnd(ANIM_LAYER_BASE);
+      }
+    }
+  }
+  return false;
+}
+
+const char *GfMenuModelView::getObjectAnimationState(GF_OBJ_HANDLE *handle) {
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    if (ctrl->unknown00 == handle) {
+      GfObjAcc acc(handle);
+      GfComAsm *comAsm = acc.getObj()->getComponent<GfComAsm>();
+      if (comAsm != nullptr) {
+        return comAsm->getStateName(ANIM_LAYER_BASE);
+      }
+    }
+  }
+  return nullptr;
+}
+
+void GfMenuModelView::setObjectVanishParam(GF_OBJ_HANDLE *handle, u32 param) {
+  if (param == 0) {
+    return;
+  }
+
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    if (ctrl->unknown00 == handle) {
+      ml::VolumeFadeParams params;
+      if (!fw::EffectManager::get()->getVolumeFadeParam(param, params)) {
+        return;
+      }
+
+      GfObjAcc acc(handle);
+      GfComModel *model = acc.getObj()->getComponent<GfComModel>();
+      if (model != nullptr && model->unknown18 != nullptr) {
+        ml::ScnObjAccVolumeFade fade(model->unknown18->getInterface());
+        fade.setParams(params, -1);
+      }
+    }
+  }
+}
+
+void GfMenuModelView::setObjectVanishRatio(GF_OBJ_HANDLE *handle, f32 ratio) {
+  for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
+    if (ctrl->unknown00 == handle) {
+      setVanishRatio(handle, ratio);
+    }
+  }
+}
+
+u32 GfMenuModelView::addCamera(mm::mtl::IntrusivePtr<fw::Camera> camera) {
+  u32 index = unknown930.size();
+  unknown930.push_back(camera);
+  return index;
+}
+
+void GfMenuModelView::changeCamera(u32 index, f32 time) {
+  popCamera(0.0f);
+  pushCamera(index, time);
+}
+
+int GfMenuModelView::getCurrentCameraIndex() {
+  if (!unknown958.empty()) {
+    return unknown958.back();
+  }
+  return -1;
+}
+
+bool GfMenuModelView::isPlayEffect(u32 index) {
+  if (index >= 16) {
+    return false;
+  }
+  return unknown9a8[index].unknown00 != 0;
+}
+
+void GfMenuModelView::stopEffect(u32 index) {
+  if (unknown9a8[index].unknown00 != 0) {
+    fw::EffectManager::get()->dead(unknown9a8[index].unknown00);
+  }
+}
+
+void GfMenuModelView::removeEffect(u32 index) {
+  if (unknown9a8[index].unknown00 != 0) {
+    fw::EffectManager::get()->kill(unknown9a8[index].unknown00);
+    unknown9a8[index].unknown00 = 0;
+    unknown9a8[index].unknown08 = static_cast<u64>(-1);
+  }
+}
+
+bool GfMenuModelView::isLoading() const {
+  if (!unknownaa8) {
+    return true;
+  }
+
+  for (u32 i = 0; i < unknown28.size(); i++) {
+    if (!GfObjUtil::isUpdate(unknown28[i].unknown00)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+GF_OBJ_HANDLE *GfMenuModelView::findGfObj(u32 type, u32 id) {
+  for (u32 i = 0; i < unknown28.size(); i++) {
+    GfObjAcc acc(unknown28[i].unknown00);
+    if (acc.getType() == type && acc.getBdatId() == id) {
+      return unknown28[i].unknown00;
+    }
+  }
+  return INVALID_HANDLE;
+}
+
+bool GfMenuModelView::checkGfObj(u32 type, u32 id) {
+  for (u32 i = 0; i < unknown28.size(); i++) {
+    GfObjAcc acc(unknown28[i].unknown00);
+    if (acc.getType() == type && acc.getBdatId() == id) {
+      return GfObjUtil::isUpdate(acc.getHandle());
+    }
+  }
+  return false;
+}
 
 void GfMenuModelView::CtrlParam::setMovePosX(f32 value) {
   unknown08 |= 0x1;

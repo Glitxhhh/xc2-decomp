@@ -397,6 +397,14 @@ inline QuestID GfQuestManager::getProgressCurrentQuest(QTYPE type) {
   return progress.empty() ? toQuestID(0) : progress;
 }
 
+QuestID GfQuestManager::getPrevCompleteQuest() {
+  if (s_pThis->unknown2df50.empty()) {
+    return QuestID();
+  }
+
+  return s_pThis->unknown2df50.back();
+}
+
 void GfQuestManager::updateQuestTask(const QuestData &data) {
   if (GfQuestInfo::getState(data.unknown00) >= QSTATE_FIN_A) {
     return;
@@ -575,6 +583,25 @@ u32 GfQuestManager::getOrderQuestMaxWithAchievement() {
   return s_pThis->unknowna0.size() + s_pThis->unknown7db0.size();
 }
 
+QuestID GfQuestManager::getOrderQuestWithAchievement(u32 index) {
+  u16 id = 0;
+  u16 variant = 0;
+  if (s_pThis != nullptr) {
+    size_t size = s_pThis->unknowna0.size();
+    size_t rest = index - size;
+    QuestID quest;
+    if (index < size) {
+      quest = s_pThis->unknowna0[index];
+    } else {
+      quest = s_pThis->unknown7db0[rest];
+    }
+    id = quest.unknown00;
+    variant = quest.unknown02;
+  }
+
+  return QuestID(id, variant);
+}
+
 u32 GfQuestManager::getOrderQuestMax() {
   if (s_pThis == nullptr) {
     return 0;
@@ -583,12 +610,45 @@ u32 GfQuestManager::getOrderQuestMax() {
   return s_pThis->unknowna0.size();
 }
 
+QuestID GfQuestManager::getOrderQuest(u32 index) {
+  if (s_pThis == nullptr) {
+    return QuestID();
+  }
+
+  return s_pThis->unknowna0[index];
+}
+
 u32 GfQuestManager::getReduceHpQuestMax() {
   if (s_pThis == nullptr) {
     return 0;
   }
 
   return s_pThis->unknown3f428.size();
+}
+
+QuestID GfQuestManager::getReduceHpQuest(u32 index) {
+  if (s_pThis == nullptr) {
+    return QuestID();
+  }
+
+  return s_pThis->unknown3f428[index];
+}
+
+QuestID GfQuestManager::getOrderQuestId(u32 purpose) {
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  for (mm::mtl::FixedQueue<QuestData, 8000>::iterator it = s_pThis->unknowna0.begin(); it != s_pThis->unknowna0.end(); ++it) {
+    if (questListAcc->getListPurposeID(*it) == purpose) {
+      return *it;
+    }
+  }
+
+  for (mm::mtl::FixedQueue<QuestData, 15000>::iterator it = s_pThis->unknown7db0.begin(); it != s_pThis->unknown7db0.end(); ++it) {
+    if (questListAcc->getListPurposeID(*it) == purpose) {
+      return *it;
+    }
+  }
+
+  return QuestID();
 }
 
 QuestID GfQuestManager::getLastOrder() { return s_pThis->unknown2e780; }
@@ -656,11 +716,28 @@ void GfQuestManager::eventCheckTaskAllParallel() {
   SCOM_REFRESH_COMPASS::create();
 }
 
+void GfQuestManager::checkTaskByQuestID(u32 quest) {
+  eventCheckTask(toQuestID(quest));
+  for (mm::mtl::FixedQueue<QuestData, 15000>::iterator it = s_pThis->unknown7db0.begin(); it != s_pThis->unknown7db0.end(); ++it) {
+    if ((*it).unknown00.unknown00 == quest) {
+      eventCheckTask(*it);
+    }
+  }
+}
+
 void GfQuestManager::gevReloadBdat(RELOAD_BDAT reload, u32) {
   if (reload == RELOAD_BDAT_ALL) {
     s_pThis->refreshOrderQuestList();
     GfQuestTask::refreshTaskCounters();
   }
+}
+
+void GfQuestManager::addCompleteQuest(QuestID quest) {
+  QuestData data(quest);
+  if (s_pThis->unknown2df50.full()) {
+    s_pThis->unknown2df50.pop_front();
+  }
+  s_pThis->unknown2df50.push(data);
 }
 
 void GfQuestManager::requestOrderAchievementQuestForce() {
