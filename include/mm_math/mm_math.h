@@ -121,6 +121,19 @@ __attribute__((always_inline)) inline void quatToMatrix(Mat44 &matrix, const Qua
   matrix.rows[2][2] = 1.0f - (xx + yy);
 }
 
+// Inferred helper: the matrix of a quaternion as an affine matrix without translation; original name unknown.
+// Evidence: anm::TransformUtil::calcMatrix (1.0.0: 0x710096310c).
+inline void unknown001(Mat44 &matrix, const Quat &quat) {
+  quatToMatrix(matrix, quat);
+  matrix.rows[0][3] = 0.0f;
+  matrix.rows[1][3] = 0.0f;
+  matrix.rows[2][3] = 0.0f;
+  matrix.rows[3][0] = 0.0f;
+  matrix.rows[3][1] = 0.0f;
+  matrix.rows[3][2] = 0.0f;
+  matrix.rows[3][3] = 1.0f;
+}
+
 __attribute__((always_inline)) inline Vec3 quatToEuler(const Quat &quat) {
   Mat44 matrix;
   quatToMatrix(matrix, quat);

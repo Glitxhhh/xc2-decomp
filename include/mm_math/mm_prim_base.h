@@ -32,14 +32,7 @@ public:
 
   // Inferred helper: rotation and translation matrix shared by the getOBB overrides; original name unknown.
   void unknown001(Mat44 &matrix) const {
-    quatToMatrix(matrix, getRot());
-    matrix.rows[0][3] = 0.0f;
-    matrix.rows[1][3] = 0.0f;
-    matrix.rows[2][3] = 0.0f;
-    matrix.rows[3][0] = 0.0f;
-    matrix.rows[3][1] = 0.0f;
-    matrix.rows[3][2] = 0.0f;
-    matrix.rows[3][3] = 1.0f;
+    mm::unknown001(matrix, getRot());
     Vec3 position;
     memcpy(&position, &getPos(), sizeof(f32) * 3);
     matrix.setTrans(position);

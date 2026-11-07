@@ -1,4 +1,6 @@
 #pragma once
+#include <math.h>
+
 #include "mm/mm_std_base.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
@@ -10,8 +12,10 @@ struct alignas(16) Quat {
   static const Quat identity;
 
   bool isValid() const;
+  bool isZero() const;
   Vec3 rotate(const Vec3 &vector) const;
   static Quat mul(const Quat &qa, const Quat &qb);
+  static void inverse(Quat &qa);
 
   f32 x;
   f32 y;
@@ -20,6 +24,8 @@ struct alignas(16) Quat {
 };
 
 inline bool Quat::isValid() const { return isValidFloat(x) && isValidFloat(y) && isValidFloat(z) && isValidFloat(w); }
+
+inline bool Quat::isZero() const { return fabsf(zero.x - x) <= 0.000001f && fabsf(zero.y - y) <= 0.000001f && fabsf(zero.z - z) <= 0.000001f && fabsf(zero.w - w) <= 0.000001f; }
 
 inline Vec3 Quat::rotate(const Vec3 &vector) const {
   f32 tx = y * vector.z - z * vector.y + w * vector.x;

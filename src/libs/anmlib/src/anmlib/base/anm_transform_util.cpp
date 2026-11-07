@@ -1,7 +1,11 @@
 #include "anm/anm_transform_util.h"
 
 #include "anm/anm_qs_transform.h"
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
+#include "mm_math/mm_quat_impl_nx.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec4.h"
 #include "types.h"
 
@@ -30,6 +34,44 @@ void TransformUtil::mul(const QsTransform &lhs, const QsTransform &rhs, QsTransf
   scale.z = lhs.unknown20.z * rhs.unknown20.z;
   scale.w = lhs.unknown20.w * rhs.unknown20.w;
   result->unknown20 = scale;
+}
+
+void TransformUtil::invert(const QsTransform &transform, QsTransform *result) {
+  result->unknown10 = transform.unknown10;
+  mm::Quat::inverse(result->unknown10);
+  mm::Vec4 negated;
+  negated.x = -transform.unknown00.x;
+  negated.y = -transform.unknown00.y;
+  negated.z = -transform.unknown00.z;
+  negated.w = -transform.unknown00.w;
+  const mm::Quat &q = result->unknown10;
+  f32 tx = q.y * negated.z - q.z * negated.y + q.w * negated.x;
+  f32 ty = q.z * negated.x - negated.z * q.x + negated.y * q.w;
+  f32 tz = negated.y * q.x - q.y * negated.x + negated.z * q.w;
+  f32 tw = -negated.x * q.x - q.y * negated.y - negated.z * q.z;
+  result->unknown00.x = -(q.z * ty) + q.y * tz - q.x * tw + q.w * tx;
+  result->unknown00.y = -(q.x * tz) + q.z * tx - q.y * tw + q.w * ty;
+  result->unknown00.z = -(q.y * tx) + q.x * ty - q.z * tw + q.w * tz;
+  result->unknown00.w = negated.w;
+  mm::Vec4 scale;
+  scale.x = mm::Vec4::unit.x / transform.unknown20.x;
+  scale.y = mm::Vec4::unit.y / transform.unknown20.y;
+  scale.z = mm::Vec4::unit.z / transform.unknown20.z;
+  scale.w = mm::Vec4::unit.w / transform.unknown20.w;
+  result->unknown20 = scale;
+}
+
+void TransformUtil::calcMatrix(const QsTransform &transform, mm::Mat44 *matrix) {
+  f32 scaleX = transform.unknown20.x;
+  f32 scaleY = transform.unknown20.y;
+  f32 scaleZ = transform.unknown20.z;
+  matrix->unknown010(scaleX, scaleY, scaleZ);
+  mm::Mat44 rotation;
+  mm::unknown001(rotation, transform.unknown10);
+  mm::Mat44 result;
+  result.unknown008(*matrix, rotation);
+  *matrix = result;
+  matrix->setTrans(mm::Vec3(transform.unknown00.x, transform.unknown00.y, transform.unknown00.z));
 }
 
 } // namespace anm

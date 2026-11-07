@@ -87,6 +87,27 @@ struct alignas(16) Mat44 {
     rows[3][3] = 1.0f;
   }
 
+  // Inferred helper: scale matrix (the three scales on the diagonal, no translation); original name unknown.
+  // Evidence: the first stores of anm::TransformUtil::calcMatrix (1.0.0: 0x710096310c).
+  void unknown010(f32 scaleX, f32 scaleY, f32 scaleZ) {
+    rows[0][0] = scaleX;
+    rows[0][1] = 0.0f;
+    rows[0][2] = 0.0f;
+    rows[0][3] = 0.0f;
+    rows[1][0] = 0.0f;
+    rows[1][1] = scaleY;
+    rows[1][2] = 0.0f;
+    rows[1][3] = 0.0f;
+    rows[2][0] = 0.0f;
+    rows[2][1] = 0.0f;
+    rows[2][2] = scaleZ;
+    rows[2][3] = 0.0f;
+    rows[3][0] = 0.0f;
+    rows[3][1] = 0.0f;
+    rows[3][2] = 0.0f;
+    rows[3][3] = 1.0f;
+  }
+
   // Inferred from AttachActorBase::get{Mtp,Efp,Bone}MatGlobal
   // (1.0.0: 0x710009e7b8, 0x710009ed2c, 0x710009f2a0).
   // Product order: local * attachment transform; original helper names unknown.
