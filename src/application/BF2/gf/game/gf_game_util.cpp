@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #include "battle/data_manager_battle.h"
+#include "framework/object/updatable_object.h"
 #include "fw/fw_transform.h"
 #include "gf/data/gf_bdat_blade.h"
 #include "gf/data/gf_bdat_btl.h"
@@ -39,11 +40,13 @@
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/game/gf_game_player_formation.h"
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/game/quest/gf_quest_manager.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/object/component/behavior/gf_com_behavior_event.h"
 #include "gf/object/component/behavior/gf_com_behavior_npc.h"
 #include "gf/object/component/enemy/gf_com_behavior_enemy.h"
@@ -72,6 +75,7 @@
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
 
@@ -756,6 +760,65 @@ u32 GfGameUtil::getFormationPlayerID(GF_OBJ_HANDLE *handle) {
   return hierarchy - 1;
 }
 
+void GfGameUtil::resetFormationParam(GF_OBJ_HANDLE *handle) {
+  if (GfObjUtil::isTrinityBlade(handle)) {
+    return;
+  }
+
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  for (u32 playerId = 0; playerId < GfGamePlayerFormation::PLAYER_NUM; playerId++) {
+    GF_OBJ_HANDLE *&player = formation->unknown1a0[playerId].unknown08;
+    if (player == handle) {
+      formation->unknown1a0[playerId].unknown00 = PLAYER_ID_NONE;
+      player = INVALID_HANDLE;
+      formation->unknown1a0[playerId].unknown10 = true;
+      return;
+    }
+  }
+}
+
+void GfGameUtil::debugHpRatio(GF_OBJ_HANDLE *handle, f32 ratio) {
+  GfObj *obj = GfObjUtil::getObj(handle);
+  if (obj == nullptr) {
+    return;
+  }
+
+  DataParamAcc dataParamAcc(handle);
+  u32 hp = dataParamAcc.getHp();
+  if (hp > 1) {
+    u32 damage = static_cast<u32>(hp * ratio / 100.0f);
+    if (damage == 0) {
+      damage = 1;
+    }
+
+    MsgObjectDamage message(dataParamAcc.getHp() - damage, 0);
+    obj->sendMessage(obj, message);
+  }
+}
+
+void GfGameUtil::debugHpZero(GF_OBJ_HANDLE *handle) {
+  GfObj *obj = GfObjUtil::getObj(handle);
+  if (obj == nullptr) {
+    return;
+  }
+
+  DataParamAcc dataParamAcc(handle);
+  GfObjAcc acc(handle);
+  u32 hp = dataParamAcc.getHp();
+  if (hp != 0) {
+    MsgObjectDamage firstMessage(0, 0);
+    firstMessage.unknown2e = true;
+    firstMessage.unknown2f = false;
+    firstMessage.unknown38 = true;
+    obj->sendMessage(obj, firstMessage);
+    MsgObjectDamage secondMessage(hp - GfQuestUtil::isReduceHpObj(handle), 0);
+    secondMessage.unknown2e = true;
+    secondMessage.unknown2f = true;
+    secondMessage.unknown38 = true;
+    obj->sendMessage(obj, secondMessage);
+  }
+}
+
 void GfGameUtil::setHp(GF_OBJ_HANDLE *handle, u32 hp) {
   GfObj *obj = GfObjUtil::getObj(handle);
   if (obj == nullptr) {
@@ -854,6 +917,25 @@ const char *GfGameUtil::getSalvageDriverModel(u32 driver) {
   }
 
   return "";
+}
+
+void GfGameUtil::changeStopLayer(GF_OBJ_HANDLE *handle, bool isStop) {
+  GfObjAcc acc(handle);
+  if (acc.isValid()) {
+    u32 stopLayer = isStop ? 1 : 4;
+    GfObj *obj = acc.getObj();
+    int stopSection = GfObjUtil::getLayerSection(stopLayer);
+    u32 layer = acc.getLayer();
+    int section = GfObjUtil::getLayerSection(layer);
+    int sectionDiff = stopSection - section;
+    if (stopSection != section && GfObjUtil::getParentHandle(handle) == INVALID_HANDLE) {
+      for (mm::mtl::IntrusiveList<fw::UpdatableObject>::iterator it = obj->unknownb8.begin(), last = obj->unknownb8.end(); it != last; ++it) {
+        GfObj *child = mm::mtl::dynamicCast<GfObj>(it.operator->());
+        GfObjUtil::changeLayer(child, child->unknown2c + sectionDiff);
+      }
+      GfObjUtil::changeLayer(obj, layer + sectionDiff);
+    }
+  }
 }
 
 u32 GfGameUtil::getNowHp(GF_OBJ_HANDLE *handle, u32 objectType, u32 id) {

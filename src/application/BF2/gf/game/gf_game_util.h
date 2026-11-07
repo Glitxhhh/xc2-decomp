@@ -97,7 +97,9 @@ public:
   static bool incEnemySuppress(u32 enemy);
   static bool isEnableDeleteObject(GF_OBJ_HANDLE *handle);
   static u32 getFormationPlayerID(GF_OBJ_HANDLE *handle);
+  static void resetFormationParam(GF_OBJ_HANDLE *handle);
   static void setHp(GF_OBJ_HANDLE *handle, u32 hp);
+  static void debugHpRatio(GF_OBJ_HANDLE *handle, f32 ratio);
   static void debugHpZero(GF_OBJ_HANDLE *handle);
   static void debugFallDead(GF_OBJ_HANDLE *handle);
   static bool isDriverRide(GF_OBJ_HANDLE *handle);

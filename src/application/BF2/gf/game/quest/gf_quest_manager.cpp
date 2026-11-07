@@ -1,5 +1,6 @@
 #include "gf/game/quest/gf_quest_manager.h"
 
+#include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_quest.h"
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
@@ -30,6 +31,8 @@ GfBdatQuest *GfQuestManager::s_bdat;
 GfQuestEvent *GfQuestManager::s_event;
 GfQuestTarget *GfQuestManager::s_target;
 GfQuestManager *GfQuestManager::s_pThis;
+
+u32 GfQuestReward::Param::getDevelopZone() const { return GfDataMap::getDevelopMapId(m_developZone); }
 
 GfQuestManager::GfQuestManager(const GfSetupParam &param) : unknown98(false), unknown2e780() {
   s_pThis = this;
