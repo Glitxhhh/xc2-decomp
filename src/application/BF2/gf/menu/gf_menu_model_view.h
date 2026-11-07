@@ -13,6 +13,7 @@ struct Vec3;
 
 namespace fw {
 class EffectPack;
+struct Transform;
 } // namespace fw
 
 namespace gf {
@@ -71,6 +72,11 @@ public:
   void delWeaponFromBlade(u32 id);
   void sendObjectCommand(GF_OBJ_HANDLE *handle, const char *command);
   void setObjectCommandValue(GF_OBJ_HANDLE *handle, const char *name, int value);
+  void attachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
+  void detachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
+  static const fw::Transform &getObjectTransform(GF_OBJ_HANDLE *handle);
+  static const fw::Transform &getObjectTransformLocal(GF_OBJ_HANDLE *handle);
+  static bool getObjectEffectPoint(GF_OBJ_HANDLE *handle, const char *name, mm::Vec3 &position);
   static void setObjectScale(GF_OBJ_HANDLE *handle, const mm::Vec3 &scale);
   static void setObjectDisp(GF_OBJ_HANDLE *handle, bool isDisp);
   static f32 getVanishRatio(GF_OBJ_HANDLE *handle);

@@ -1,19 +1,36 @@
 #include "gf/menu/gf_menu_model_view.h"
 
+#include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_manager.h"
+#include "framework/reference_frame.h"
 #include "fw/fw_model_object.h"
+#include "fw/fw_transform.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/effect/gf_com_effect_caster.h"
+#include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/model/gf_com_model.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_vec3.h"
 #include "scn/scn_obj_acc.h"
 
 namespace gf {
+
+const fw::Transform &GfMenuModelView::getObjectTransformLocal(GF_OBJ_HANDLE *handle) {
+  static fw::Transform transform;
+  GfObjAcc acc(handle);
+  GfComTransform *comTransform = acc.getObj()->getComponent<GfComTransform>();
+  if (comTransform != nullptr) {
+    return comTransform->unknown001()->unknown002();
+  }
+
+  return transform;
+}
 
 void GfMenuModelView::setVanishRatio(GF_OBJ_HANDLE *handle, f32 ratio) {
   GfObjAcc acc(handle);
@@ -40,6 +57,50 @@ void GfMenuModelView::setObjectCommandValue(GF_OBJ_HANDLE *handle, const char *n
   if (comAsm != nullptr) {
     comAsm->setVariable(name, value);
   }
+}
+
+void GfMenuModelView::attachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone) {
+  GfComTransform *comTransform = GfObjAcc(handle).getObj()->getComponent<GfComTransform>();
+  if (comTransform != nullptr) {
+    GfComModel *model = GfObjAcc(parent).getObj()->getComponent<GfComModel>();
+    if (model != nullptr) {
+      model->addBoneReferenceFrame(bone, comTransform->unknown10);
+    }
+  }
+}
+
+void GfMenuModelView::detachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone) {
+  GfComTransform *comTransform = GfObjAcc(handle).getObj()->getComponent<GfComTransform>();
+  if (comTransform != nullptr) {
+    GfComModel *model = GfObjAcc(parent).getObj()->getComponent<GfComModel>();
+    if (model != nullptr) {
+      model->removeBoneReferenceFrame(bone, comTransform->unknown10);
+    }
+  }
+}
+
+const fw::Transform &GfMenuModelView::getObjectTransform(GF_OBJ_HANDLE *handle) {
+  static fw::Transform transform;
+  GfObjAcc acc(handle);
+  GfComTransform *comTransform = acc.getObj()->getComponent<GfComTransform>();
+  if (comTransform != nullptr) {
+    return comTransform->unknown001()->unknown003();
+  }
+
+  return transform;
+}
+
+bool GfMenuModelView::getObjectEffectPoint(GF_OBJ_HANDLE *handle, const char *name, mm::Vec3 &position) {
+  GfObjAcc acc(handle);
+  GfComEffectCaster *effectCaster = acc.getObj()->getComponent<GfComEffectCaster>();
+  fw::EffectPoint *effectPoint = effectCaster->getEffectPoint();
+  int index = effectPoint->getPointIndex(name);
+  if (index != -1) {
+    position = effectPoint->getPointTransform(index).unknown004();
+    return true;
+  }
+
+  return false;
 }
 
 void GfMenuModelView::setObjectScale(GF_OBJ_HANDLE *handle, const mm::Vec3 &scale) { GfObjAcc(handle).setModelScaleForMenu(scale); }
