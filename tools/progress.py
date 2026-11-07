@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Convert the verified README progress snapshot to decompilati.onl JSON.
 
-Run `check --readme` locally before committing updated progress. This script
-does not compile sources or require the original game binary.
+Run `check --readme` locally before committing updated progress; the pre-commit hook also refreshes
+progress/areas.json, the per-zone byte totals added to the report as areas. This script does not compile sources
+or require the original game binary.
 """
 import argparse
 import json
@@ -16,6 +17,8 @@ PROGRESS = re.compile(
     rf"\s*({NUMBER}) / ({NUMBER}) functions \([0-9]+\.[0-9]+%\), "
     rf"({NUMBER}) / ({NUMBER}) bytes of code \([0-9]+\.[0-9]+%\)\s*"
 )
+
+AREAS = ROOT / "progress" / "areas.json"
 
 
 def read_progress(text):
@@ -40,14 +43,32 @@ def read_progress(text):
     }
 
 
+def read_areas(path, total_code):
+    try:
+        text = path.read_text()
+    except FileNotFoundError:
+        return None
+    areas = json.loads(text)
+    if not isinstance(areas, list) or not areas:
+        raise ValueError(f"{path.name} must be a non-empty list of areas")
+    for key in ("total", "matching", "non_matching"):
+        if sum(area["code"][key] for area in areas) != total_code[key]:
+            raise ValueError(f"{path.name} does not add up to the README code {key}; run the pre-commit hook")
+    return areas
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--readme", type=Path, default=ROOT / "README.md")
+    parser.add_argument("--areas", type=Path, default=AREAS)
     args = parser.parse_args()
     try:
         report = read_progress(args.readme.read_text())
-    except (OSError, ValueError) as error:
+        areas = read_areas(args.areas, report["code"])
+    except (OSError, ValueError, KeyError, TypeError) as error:
         parser.exit(1, f"progress: {error}\n")
+    if areas:
+        report["areas"] = areas
     print(json.dumps(report, indent=2))
 
 

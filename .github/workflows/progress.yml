@@ -6,12 +6,14 @@ on:
     types: [opened, synchronize, reopened, labeled]
     paths:
       - README.md
+      - progress/areas.json
       - tools/progress.py
       - .github/workflows/progress.yml
   push:
     branches: [main]
     paths:
       - README.md
+      - progress/areas.json
       - tools/progress.py
       - .github/workflows/progress.yml
   workflow_dispatch:

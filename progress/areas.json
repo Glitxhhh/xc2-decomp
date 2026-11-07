@@ -1,0 +1,186 @@
+[
+  {
+    "name": "gf",
+    "code": {
+      "total": 3133412,
+      "matching": 2098812,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "gmk",
+    "code": {
+      "total": 526224,
+      "matching": 482244,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "monolib_mm",
+    "code": {
+      "total": 1535208,
+      "matching": 458420,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "event",
+    "code": {
+      "total": 538716,
+      "matching": 431844,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "framework",
+    "code": {
+      "total": 372580,
+      "matching": 250324,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "battle",
+    "code": {
+      "total": 426652,
+      "matching": 130784,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "ui",
+    "code": {
+      "total": 148224,
+      "matching": 119240,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "grlib",
+    "code": {
+      "total": 141956,
+      "matching": 115692,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "anmlib",
+    "code": {
+      "total": 210764,
+      "matching": 103248,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "layer",
+    "code": {
+      "total": 127420,
+      "matching": 99952,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "idcoli",
+    "code": {
+      "total": 132992,
+      "matching": 68444,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "eflib",
+    "code": {
+      "total": 175688,
+      "matching": 64624,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "ssd",
+    "code": {
+      "total": 105332,
+      "matching": 63872,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "mcl",
+    "code": {
+      "total": 2046264,
+      "matching": 29808,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "aiLib",
+    "code": {
+      "total": 50552,
+      "matching": 13588,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "skdlib",
+    "code": {
+      "total": 55128,
+      "matching": 8072,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "plugin",
+    "code": {
+      "total": 15224,
+      "matching": 6716,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "movie",
+    "code": {
+      "total": 20812,
+      "matching": 2364,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "arc",
+    "code": {
+      "total": 668,
+      "matching": 668,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "wndlib",
+    "code": {
+      "total": 19288,
+      "matching": 496,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "execute",
+    "code": {
+      "total": 1832,
+      "matching": 76,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "minigame",
+    "code": {
+      "total": 2608,
+      "matching": 64,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "Not started",
+    "code": {
+      "total": 236760,
+      "matching": 0,
+      "non_matching": 0
+    }
+  }
+]

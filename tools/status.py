@@ -5,10 +5,15 @@ Usage (from the nix develop shell, the game binary is needed):
   python3 tools/status.py              write work/status.json and print the totals per zone
   python3 tools/status.py --quiet      write work/status.json only
   python3 tools/status.py --zone gf    also list the zone's functions that are not done yet, biggest first
+  python3 tools/status.py --areas      also write progress/areas.json (see below)
 
 It reuses what check.py computes (compiled objects, per-function comparison and their caches), so a run after
 check costs a few seconds. The file holds game data (names, addresses, sizes, source paths): it stays in work/ and
 is never committed. Only the aggregate numbers printed here may be published.
+
+progress/areas.json is the one tracked output: the matching and total code bytes per zone, named after the
+directories of our public src/ tree, for the area map of decompilati.onl. Zones with no matching code are folded
+into one "Not started" area. It holds no function names, addresses or game-only directory names.
 
 A record:
   name         mangled name of the game symbol (for a local function: the mangled name in our source)
@@ -42,6 +47,7 @@ import check  # noqa: E402  (needs XC2_SYSROOT from the nix develop shell)
 
 ROOT = check.ROOT
 STATUS_PATH = os.path.join(ROOT, "work", "status.json")
+AREAS_PATH = os.path.join(ROOT, "progress", "areas.json")
 STATES = ("match", "nonmatch", "todo", "local")
 GAME_SOURCE = re.compile(rb"(?<=\x00)[\x20-\x7e]{4,400}\.(?:cpp|h|inl|c)\x00")
 # The game's source tree: <prefix>/application/BF2/<dir>/... and <prefix>/libs/<lib>/...
@@ -263,6 +269,36 @@ def zone_table(records):
     return zones
 
 
+def public_zones():
+    """Lowercase zone name -> the name of our src/ directory that defines it."""
+    names = {}
+    for base in ("src/application/BF2", "src/application/BF2/libs", "src/libs"):
+        path = os.path.join(ROOT, base)
+        for entry in sorted(os.listdir(path)):
+            if os.path.isdir(os.path.join(path, entry)) and not (base.endswith("BF2") and entry == "libs"):
+                names[entry.lower()] = entry
+    return names
+
+
+def areas(records):
+    """Code bytes per zone as decompilati.onl areas. The total of all areas is the total of the game's code."""
+    public = public_zones()
+    out, rest = [], {"total": 0, "matching": 0, "non_matching": 0}
+    for name, cells in zone_table(records).items():
+        matching = cells["match"][1]
+        total = sum(c[1] for c in cells.values())
+        if matching == 0:
+            rest["total"] += total
+        elif name in public:
+            out.append({"name": public[name], "code": {"total": total, "matching": matching, "non_matching": 0}})
+        else:
+            raise ValueError(f"zone {name!r} has matching code but is not a directory of src/")
+    out.sort(key=lambda a: (-a["code"]["matching"], a["name"]))
+    if rest["total"]:
+        out.append({"name": "Not started", "code": rest})
+    return out
+
+
 def print_summary(records, zone=None):
     table = zone_table(records)
     rows = []
@@ -291,6 +327,7 @@ def print_summary(records, zone=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--areas", action="store_true", help="also write progress/areas.json")
     parser.add_argument("--zone")
     parser.add_argument("--output", default=STATUS_PATH)
     args = parser.parse_args()
@@ -304,6 +341,11 @@ def main():
     with open(partial, "w") as f:
         json.dump(document, f, separators=(",", ":"))
     os.replace(partial, args.output)
+    if args.areas:
+        os.makedirs(os.path.dirname(AREAS_PATH), exist_ok=True)
+        with open(AREAS_PATH, "w") as f:
+            json.dump(areas(records), f, indent=2)
+            f.write("\n")
     if errors:
         check.print_compile_errors(errors[:3])
         print(f"status: {len(errors)} files failed to compile, their functions count as todo", file=sys.stderr)
