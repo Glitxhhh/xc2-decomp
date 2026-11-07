@@ -6,6 +6,7 @@
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/vector.h"
 #include "types.h"
+#include "ui/ctrl/ui_ctrl_simple.h"
 
 namespace mm {
 struct Vec3;
@@ -35,7 +36,10 @@ public:
 
     GF_OBJ_HANDLE *unknown00; // Inferred role: object handle; original member name unknown.
     u16 unknown08;            // Inferred role: set value flags; original member name unknown.
-    u8 _0a[0x14 - 0x0a];
+    u16 unknown0a;            // Inferred role: curve type; original member name unknown.
+    f32 unknown0c;            // Inferred role: duration; original member name unknown.
+    bool unknown10;           // Inferred role: set by the CtrlParam constructor; original member name unknown.
+    u8 _11[0x14 - 0x11];
     f32 m_movePosX;
     f32 m_movePosY;
     f32 m_movePosZ;
@@ -49,14 +53,10 @@ public:
 
   // Inferred role: running object control (startObjectCtrl copies the start values and the CtrlParam targets here).
   struct unknown001 {
-    unknown001() : unknown00(nullptr), unknown88(1.0f) {}
+    unknown001(GF_OBJ_HANDLE *handle) : unknown00(handle), unknown08() {}
 
-    GF_OBJ_HANDLE *unknown00; // Inferred role: object handle; original member name unknown.
-    u8 _08[0x80 - 0x08];
-    f32 unknown80; // Inferred role: elapsed time; original member name unknown.
-    f32 unknown84; // Inferred role: duration; original member name unknown.
-    f32 unknown88; // Inferred role: end ratio, 1.0 when a control starts; original member name unknown.
-    u8 _8c[0x90 - 0x8c];
+    GF_OBJ_HANDLE *unknown00;      // Inferred role: object handle; original member name unknown.
+    ui::UICtrlSimple<9> unknown08; // Inferred role: interpolation of the position, scale, alpha, rotation y and vanish ratio; original member name unknown.
   };
 
   // Inferred role: effect slot, handle 0 when unused.
@@ -70,6 +70,7 @@ public:
   static void setVanishRatio(GF_OBJ_HANDLE *handle, f32 ratio);
   void addWeaponFromBlade(u32 blade, u32 id);
   void delWeaponFromBlade(u32 id);
+  u32 getMapObjID(u32 index);
   void sendObjectCommand(GF_OBJ_HANDLE *handle, const char *command);
   void setObjectCommandValue(GF_OBJ_HANDLE *handle, const char *name, int value);
   void attachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
@@ -103,7 +104,9 @@ public:
   GF_OBJ_HANDLE *findGfObj(u32 type, u32 id);
   bool checkGfObj(u32 type, u32 id);
 
-  u8 _00[0x10];
+  u8 _00[0x08];
+  int unknown08; // Inferred role: row of the model view bdat; original member name unknown.
+  u32 unknown0c; // Inferred role: ui object handle; original member name unknown.
   u32 unknown10; // Inferred role: render index; original member name unknown.
   u8 _14[0x28 - 0x14];
   mm::mtl::FixedVector<unknown001, 16> unknown28;                // Inferred role: running object controls; original member name unknown.

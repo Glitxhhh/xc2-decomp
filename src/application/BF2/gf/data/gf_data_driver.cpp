@@ -48,6 +48,8 @@ SDataDriver *GfDataDriver::getSDataDriver(u32 driver) {
   return &dataGame->unknown2c[index < DRIVER_COUNT ? index : 1];
 }
 
+SDataIdea *GfDataDriver::getSDataIdea(u32 driver) { return &getSDataDriver(driver)->unknown00; }
+
 bool GfDataDriver::getPouchEnhance(mm::mtl::FixedVector<u16, 64> &enhances, u32 driver) {
   GfBdatItem *bdatItem = GfBdatItem::get();
   for (u32 slot = 0; slot < POUCH_COUNT; slot++) {

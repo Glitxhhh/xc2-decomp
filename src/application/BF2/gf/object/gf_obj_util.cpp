@@ -30,6 +30,7 @@
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/game/gf_game_player_picker.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
+#include "gf/object/component/behavior/gf_com_behavior_weapon.h"
 #include "gf/object/component/behavior/plugin/gf_eye_blink_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin.h"
@@ -39,6 +40,7 @@
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/gf_component.h"
 #include "gf/object/component/model/gf_com_model.h"
+#include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_append_info.h"
 #include "gf/object/gf_init_param.h"
@@ -48,6 +50,7 @@
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_volume_fade.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
@@ -55,6 +58,7 @@
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/vector.h"
 #include "scn/scn_obj_acc.h"
@@ -522,6 +526,26 @@ GF_ASSET_HANDLE *GfObjUtil::getAssetHandle(GF_OBJ_HANDLE *handle) {
   return info != nullptr ? info->unknown10 : reinterpret_cast<GF_ASSET_HANDLE *>(-1);
 }
 
+void GfObjUtil::destroy(GF_OBJ_HANDLE *handle) {
+  if (handle != INVALID_HANDLE) {
+    GfObjAcc acc(handle);
+    if (acc.isValid()) {
+      if (acc.setFlag(OBJ_FLAG_DESTROY, true)) {
+        if (GfObjManager::get() != nullptr) {
+          GfObjManager::get()->addDestroyObj(handle, true);
+        }
+        applyExecUpdate(acc.getObj());
+      }
+      if (acc.isValid()) {
+        GfObj *obj = acc.getObj();
+        for (mm::mtl::IntrusiveList<fw::UpdatableObject>::iterator it = obj->unknownb8.begin(), last = obj->unknownb8.end(); it != last; ++it) {
+          destroy(mm::mtl::dynamicCast<GfObj>(it.operator->())->unknownf8);
+        }
+      }
+    }
+  }
+}
+
 void GfObjUtil::applyExecUpdate(GfObj *obj) { obj->unknown118 = isUpdateComponent(obj) && !isFollowObjNotReady(obj->unknownf8); }
 
 GF_OBJ_HANDLE *GfObjUtil::getParentHandle(GF_OBJ_HANDLE *handle) {
@@ -623,6 +647,28 @@ const char *GfObjUtil::getAddResourceName(GF_OBJ_HANDLE *handle) {
   }
 
   return nullptr;
+}
+
+void GfObjUtil::resetWeaponMotion(GF_OBJ_HANDLE *handle, OPTMNT type) {
+  GfGameMount *mount = GfMountManager::getMount(getMountHandle(handle, GFATTACH_WEAPON));
+  if (mount != nullptr) {
+    if (type == OPTMNT_UNKNOWN_FFFFFFFF) {
+      type = mount->unknown20;
+    }
+    GF_OBJ_HANDLE *owner = mount->getHandle(type);
+    if (handle != INVALID_HANDLE) {
+      for (u32 i = 0; i < 10; i++) {
+        GfObj *obj = getObj(handle);
+        if (obj != nullptr) {
+          GfObj *weapon = getObj(mount->unknown18->getCurrentHandles()[i]);
+          if (weapon != nullptr) {
+            MsgObjectForceWeaponMount message(type, owner);
+            obj->sendMessage(weapon, message);
+          }
+        }
+      }
+    }
+  }
 }
 
 GF_MOUNT_HANDLE *GfObjUtil::getMountHandle(GF_OBJ_HANDLE *handle, GFATTACH attach) {
@@ -864,6 +910,27 @@ void GfObjUtil::copyTransformToSetup(GF_OBJ_HANDLE *handle, const mm::Vec3 &posi
     if (setup != nullptr) {
       setup->unknown20 = position;
       setup->unknown30 = rotation;
+    }
+  }
+}
+
+void GfObjUtil::saveRebuildInfo(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  GfObjSetup *setup = getObjSetup(handle);
+  mm::Vec3 rotation = mm::quatToEuler(acc.getWorldTransform().unknown10);
+  setup->unknown20 = acc.getWorldTransform().unknown00;
+  setup->unknown30 = mm::Vec3(0.0f, rotation.y, 0.0f);
+  if (acc.getType() == OBJECT_TYPE_DRIVER) {
+    GfObjSetupDriver *driver = getObjSetup<GfObjSetupDriver>(handle);
+    GfComPropertyPc *property = acc.getObj()->getComponent<GfComPropertyPc>();
+    if (property != nullptr) {
+      driver->unknown70 = property->unknown38;
+    }
+  } else if (acc.getType() == OBJECT_TYPE_BLADE) {
+    GfObjSetupBlade *blade = getObjSetup<GfObjSetupBlade>(handle);
+    GfComPropertyPc *property = acc.getObj()->getComponent<GfComPropertyPc>();
+    if (property != nullptr) {
+      blade->unknown74 = property->unknown38;
     }
   }
 }

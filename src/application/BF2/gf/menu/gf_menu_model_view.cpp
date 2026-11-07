@@ -1,11 +1,15 @@
 #include "gf/menu/gf_menu_model_view.h"
 
+#include "bdat.h"
 #include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/reference_frame.h"
 #include "fw/fw_model_object.h"
 #include "fw/fw_transform.h"
+#include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/effect/gf_com_effect_caster.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -17,6 +21,7 @@
 #include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixstr.h"
 #include "scn/scn_obj_acc.h"
 
 namespace gf {
@@ -39,6 +44,18 @@ void GfMenuModelView::setVanishRatio(GF_OBJ_HANDLE *handle, f32 ratio) {
     ml::ScnObjAccVolumeFade fade(model->unknown18->getInterface());
     fade.setRatio(ratio, -1);
   }
+}
+
+u32 GfMenuModelView::getMapObjID(u32 index) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_MODEL_VIEW);
+  GfMenuBdat::isValidBdatID(bdat, unknown08);
+  mm::mtl::FixStr<16> name;
+  name.format("obj_model%02d", index);
+  u32 id = 0;
+  if (Bdat::getMember(bdat, name.c_str()) != nullptr) {
+    id = Bdat::getVal(bdat, name.c_str(), unknown08).valueU16;
+  }
+  return id;
 }
 
 void GfMenuModelView::addWeaponFromBlade(u32 blade, u32 id) { GfObjFactory::createUiWeapon(findGfObj(OBJECT_TYPE_DRIVER, id), blade); }
@@ -121,7 +138,7 @@ f32 GfMenuModelView::getVanishRatio(GF_OBJ_HANDLE *handle) {
 void GfMenuModelView::stopObjectCtrl(GF_OBJ_HANDLE *handle) {
   for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
     if (ctrl->unknown00 == handle) {
-      ctrl->unknown80 = ctrl->unknown84;
+      ctrl->unknown08.time = ctrl->unknown08.duration;
     }
   }
 }
@@ -129,7 +146,7 @@ void GfMenuModelView::stopObjectCtrl(GF_OBJ_HANDLE *handle) {
 bool GfMenuModelView::isObjectCtrlBusy(GF_OBJ_HANDLE *handle) {
   for (unknown001 *ctrl = unknown28.begin(); ctrl != unknown28.end(); ++ctrl) {
     if (ctrl->unknown00 == handle) {
-      return ctrl->unknown80 != ctrl->unknown84;
+      return ctrl->unknown08.isBusy();
     }
   }
   return false;
