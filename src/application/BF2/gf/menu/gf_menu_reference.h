@@ -18,6 +18,7 @@
 namespace gf {
 
 struct GF_SEARCH_OBJ;
+struct GfSetupParam;
 struct GfSearchParam;
 struct MenuEnemyInfo;
 struct MenuItemInfo;
@@ -80,6 +81,10 @@ public:
     u32 unknown24;                         // Inferred role: disable flags; original member name unknown.
   };
 
+  GfMenuReference(const GfSetupParam &param);
+  ~GfMenuReference() override;
+  static void build(const GfSetupParam &param);
+  static void destroy();
   void finalize();
   static bool isInitialized();
   static void initReferenceNumber(u32 index);
@@ -184,6 +189,7 @@ public:
   static void setReferenceString(ui::UIStr &string, u16 index);
   static void setPartyStatusLock(u32 index, bool isLock);
   static void clearPartyStatusLock();
+  static void setPaletteModeReverse(bool isReverse);
 
   ml::fixed_size_alloc_inside<MENUREF_OBJ, 512> unknown08; // Inferred role: referenced object pool; original member name unknown.
   ml::fixed_size_alloc_inside<REFLIST, 32> unknown4070;    // Inferred role: reference list pool; original member name unknown.

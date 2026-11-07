@@ -5,11 +5,13 @@
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_search_obj.h"
+#include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_reference_number.h" // IWYU pragma: keep
 #include "gf/menu/list/gf_menu_enemy_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_arts_palette.h"
 #include "gf/menu/object/gf_menu_obj_party_status.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
@@ -22,6 +24,18 @@
 
 namespace gf {
 struct GF_OBJ_HANDLE;
+
+void GfMenuReference::build(const GfSetupParam &param) {
+// __LINE__ must be 67 as in the original file: its value changes the instruction order.
+#line 67
+  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuReference(param);
+}
+
+void GfMenuReference::destroy() {
+  GfMenuReference *reference = get();
+  reference->finalize();
+  delete reference;
+}
 
 void GfMenuReference::finalize() {
   mm::mtl::safeRelease(unknown4cb98);
@@ -426,6 +440,16 @@ bool GfMenuReference::isPaletteModeReverse() {
     return reference->unknown4cb80;
   }
   return false;
+}
+
+void GfMenuReference::setPaletteModeReverse(bool isReverse) {
+  GfMenuReference *reference = get();
+  if (reference != nullptr) {
+    if (reference->unknown4cb80 != isReverse) {
+      GfMenuObjArtsPalette::reverse(isReverse);
+    }
+    reference->unknown4cb80 = isReverse;
+  }
 }
 
 bool GfMenuReference::isReversePaletteBtnState(u32 index, u32 button) {

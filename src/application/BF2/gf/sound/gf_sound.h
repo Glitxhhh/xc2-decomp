@@ -206,6 +206,7 @@ public:
   void stopSe(SoundHandle handle, f32 fadeTime);
   void setCategory(SoundHandle handle, fw::SoundCategory category);
   void setPause(SoundHandle handle, bool isPause, f32 fadeTime);
+  void setPauseType(SoundHandle handle, bool isPause, f32 fadeTime, u8 type);
   void setPan(SoundHandle handle, f32 pan, f32 fadeTime);
   void setPlayTime(SoundHandle handle, f32 time);
   bool getPlayTime(SoundHandle handle, f32 &time) const;

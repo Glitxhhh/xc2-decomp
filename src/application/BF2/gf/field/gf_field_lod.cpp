@@ -7,6 +7,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/field/gf_field_manager.h"
+#include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/map/gf_map_manager.h"
 #include "gf/object/gf_obj_acc.h"
@@ -112,6 +113,21 @@ int GfFieldLod::findBdatIdByLodId(u16 lodId) const {
   return unknown808 - 1;
 }
 
+f32 GfFieldLod::getPlaySpeed(int bdatId) const {
+  u16 lodId = unknown08[bdatId - unknown808];
+  return unknown840.getPlaySpeed(lodId);
+}
+
+bool GfFieldLod::isPlayAnimEnd(int bdatId) const {
+  u16 lodId = unknown08[bdatId - unknown808];
+  return unknown840.isPlayEnd(lodId);
+}
+
+f32 GfFieldLod::getAnimEndTime(int bdatId) const {
+  u16 lodId = unknown08[bdatId - unknown808];
+  return unknown840.getAnimEndTime(lodId);
+}
+
 bool GfFieldLod::isAnimReverse(int bdatId) const { return GfGameFlag::getLocal(1, bdatId + unknown002 - unknown808) != 0; }
 
 bool GfFieldLod::isFadeOut(int bdatId) const {
@@ -122,6 +138,30 @@ bool GfFieldLod::isFadeOut(int bdatId) const {
 bool GfFieldLod::isAnimReverseOfInit(int bdatId) { return Bdat::getFlagVal(GfDataBdat::getFP(BDAT_FLD_LODLIST), "flag", bdatId, "AnimReverse") != 0; }
 
 bool GfFieldLod::isVisibleOfInit(int bdatId) { return Bdat::getFlagVal(GfDataBdat::getFP(BDAT_FLD_LODLIST), "flag", bdatId, "Visible") != 0; }
+
+void GfFieldLod::debugDraw() {
+  GfFieldLod *lod = get();
+  if (lod != nullptr && lod->unknown80c) {
+    lod->unknown840.debugDraw();
+  }
+}
+
+void GfFieldLod::build(const GfSetupParam &param) {
+// __LINE__ must be 2054 as in the original file: its value changes the instruction order.
+#line 2054
+  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldLod(param);
+}
+
+void GfFieldLod::initialize(const GfSetupParam &) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_FLD_LODLIST);
+  unknown808 = Bdat::getIdTop(bdat);
+  int count = Bdat::getIdCount(bdat);
+  for (int i = 0; i < count; i++) {
+    unknown08[i] = Bdat::getValCheck(bdat, "LODID", i + unknown808, gmk::BDAT_TYPE_U16);
+  }
+  unknown80c = true;
+  validateByInitData();
+}
 
 void GfFieldLodColiAnim::dispose() {
   disposePosInfos();

@@ -130,7 +130,10 @@ public:
   bool isLodIdExist(u16 lodId) const;
   void setPlaySpeed(u16 lodId, f32 speed);
   f32 getPlaySpeed(u16 lodId) const;
+  bool isPlayEnd(u16 lodId) const;
+  f32 getAnimEndTime(u16 lodId) const;
   void clearEffectInsts();
+  void debugDraw() const;
   static GfFieldLodState findStateOfAnimReverse(bool isReverse);
   static GfFieldLodState findStateOfFade(bool isFadeIn, bool isImmediate);
   static void bindPosInfoToGfObj(const PosInfo &posInfo);
@@ -168,6 +171,8 @@ public:
     f32 unknown08; // Inferred role: fade out speed; original member name unknown.
   };
 
+  GfFieldLod(const GfSetupParam &param);
+  void initialize(const GfSetupParam &param);
   int findBdatIdByLodId(u16 lodId) const;
   const unknown001 *findBdatInfo(int bdatId) const;
   bool isAnimReverse(int bdatId) const;
@@ -176,6 +181,7 @@ public:
   void setFade(int bdatId, bool isFadeIn, bool isImmediate);
   void setLodSwitchId(int bdatId, u32 switchId);
   void setPlaySpeed(int bdatId, f32 speed);
+  f32 getPlaySpeed(int bdatId) const;
   bool setAnimReverse(int bdatId, bool isReverse, bool isSkip);
   bool isFadeOut(int bdatId) const;
   bool findTransform(mm::Mat44 &matrix, int bdatId) const;
@@ -184,6 +190,7 @@ public:
   static bool isAnimReverseOfInit(int bdatId);
   static bool isVisibleOfInit(int bdatId);
   static void validateByInitData();
+  static void debugDraw();
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
@@ -193,10 +200,12 @@ public:
   bool unknown80c;      // Inferred role: lod data ready; original member name unknown.
   u8 _80d[0x840 - 0x80d];
   GfFieldLodColiAnim unknown840; // Inferred role: lod animation of the map model; original member name unknown.
+  u8 _888[0x890 - 0x888];
 };
 
 static_assert(offsetof(GfFieldLod, unknown808) == 0x808, "");
 static_assert(offsetof(GfFieldLod, unknown80c) == 0x80c, "");
 static_assert(offsetof(GfFieldLod, unknown840) == 0x840, "");
+static_assert(sizeof(GfFieldLod) == 0x890, "");
 
 } // namespace gf

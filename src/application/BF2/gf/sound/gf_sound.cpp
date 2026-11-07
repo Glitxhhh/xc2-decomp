@@ -664,6 +664,23 @@ void GfSound::setCategory(SoundHandle handle, fw::SoundCategory category) {
   }
 }
 
+void GfSound::setPauseType(SoundHandle handle, bool isPause, f32 fadeTime, u8 type) {
+  SeParam *param = getSeParam(static_cast<u16>(handle.unknown04));
+  if (param != nullptr) {
+    u8 oldBits = param->unknown03;
+    u8 newBits;
+    if (isPause) {
+      newBits = oldBits | type;
+    } else {
+      newBits = oldBits & ~type;
+    }
+    param->unknown03 = newBits;
+    if ((oldBits == 0) != (newBits == 0) && fw::SoundManager::get() != nullptr) {
+      fw::SoundManager::get()->pause(handle.unknown00, isPause, fadeTime);
+    }
+  }
+}
+
 void GfSound::deAllocateSeParam(u16 id) {
   if (id != INVALID_SE_PARAM) {
     unknown2e20.unknown011(id);

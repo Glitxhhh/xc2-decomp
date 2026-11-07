@@ -1,4 +1,5 @@
 #include "gf/asset/gf_asset_name.h"
+#include <stdlib.h>
 
 namespace gf {
 
@@ -54,5 +55,9 @@ const char *GfAssetName::getName() {
   unknown38.format("%s%s", unknown14.c_str(), unknown00);
   return unknown38.c_str();
 }
+
+bool GfAssetName::isValid() const { return getObjType() != 0; }
+
+int GfAssetName::getValue(const char *text) const { return atoi(text); }
 
 } // namespace gf

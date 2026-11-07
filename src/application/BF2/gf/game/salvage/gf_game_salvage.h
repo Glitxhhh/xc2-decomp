@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "ai/ai_state.h"
 #include "ai/ai_state_fsm.h"
 #include "gf/gf_state.h"
@@ -114,10 +116,19 @@ class StateSalvageDiveStart : public ai::State {
   void enter(GfGameSalvage *salvage, ai::State *previous);
   void leave(GfGameSalvage *salvage, ai::State *next);
   void update(GfGameSalvage *salvage, const fw::UpdateInfo &info);
+  void callback();
 
-private:
-  u8 _18[0x48 - 0x18];
+  GfMenuCallContext *unknown18[3]; // Inferred role: contexts of the button challenges; original member name unknown.
+  int unknown30;                   // Inferred role: number of button challenges started; original member name unknown.
+  u32 unknown34;                   // Inferred role: current button challenge id; original member name unknown.
+  int unknown38;                   // Inferred role: number of great successes; original member name unknown.
+  u32 unknown3c[3];                // Inferred role: button challenge id of each step; original member name unknown.
 };
+
+static_assert(offsetof(StateSalvageDiveStart, unknown18) == 0x18, "");
+static_assert(offsetof(StateSalvageDiveStart, unknown30) == 0x30, "");
+static_assert(offsetof(StateSalvageDiveStart, unknown3c) == 0x3c, "");
+static_assert(sizeof(StateSalvageDiveStart) == 0x48, "");
 
 class StateSalvageDiveWait : public ai::State {
   GF_STATE_CLASS(StateSalvageDiveWait, GfGameSalvage)

@@ -4,14 +4,20 @@
 #include "gf/camera/gf_camera_player.h"
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_field_time.h"
+#include "gf/game/gf_game_speed.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/game/salvage/gf_game_salvage.h"
 #include "gf/gf_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_field_skill.h"
+#include "gf/menu/object/gf_menu_obj_button_challenge2.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
+#include "gf/menu/object/gf_menu_obj_cylinder_select.h"
+#include "gf/object/component/behavior/gf_com_behavior_salvage.h"
 #include "gf/scom/gf_scom_fade.h"
+#include "gf/scom/gf_scom_obj.h"
 #include "gf/util/gf_item_util.h"
+#include "gmk/gmk_base.h"
 #include "gmk/gmk_manager.h"
 #include "ml/dev_clock.h"
 #include "ml/rand.h"
@@ -19,6 +25,7 @@
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/delegate.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -91,6 +98,16 @@ void StateSalvageErrorMessage::update(GfGameSalvage *, const fw::UpdateInfo &) {
   if (GfManager::isDestroyNow()) {
     reqState(GfGameSalvage::STATE_FINISH);
   }
+}
+
+void StateSalvageItemSelect::enter(GfGameSalvage *salvage, ai::State *) {
+  u8 *bdat = salvage->getBindedBdatFp();
+  int id = salvage->getBindedBdatId();
+  u32 specialItem = static_cast<u16>(Bdat::getValCheck(bdat, "SpecialItem", id, 2));
+  context = GfMenuCallContext::create();
+  GfMenuObjCylinderSelect::open(context, specialItem);
+  GfGameUtil::setDispByGmkType(gmk::GMK_TYPE_SALVAGE, false);
+  GfEvent::callSalvageStateChange(GfGameSalvage::STATE_ITEM_SELECT);
 }
 
 void StateSalvageItemSelect::leave(GfGameSalvage *, ai::State *) {
@@ -191,6 +208,61 @@ void StateSalvageStartVoice::update(GfGameSalvage *salvage, const fw::UpdateInfo
   }
   if (salvage->isVoiceEnd()) {
     reqState(unknown08 + 1);
+  }
+}
+
+void StateSalvageDiveStart::enter(GfGameSalvage *salvage, ai::State *) {
+  salvage->clearLogButtonChallenge();
+  salvage->playAnimation(GfGameSalvage::ANIMATION_SALVAGE);
+  salvage->playCameraDiveStart();
+  unknown30 = 0;
+  unknown34 = 0;
+  unknown38 = 0;
+  for (u32 i = 0; i < 3; i++) {
+    unknown18[i] = nullptr;
+  }
+  for (u32 i = 0; i < 3; i++) {
+    unknown3c[i] = salvage->getButtonChallengeId(i);
+  }
+  GfComBehaviorSalvage *behavior = salvage->getGfComBehaviorSalvage();
+  if (behavior != nullptr) {
+    behavior->unknown98.bind(this, &StateSalvageDiveStart::callback);
+  }
+}
+
+void StateSalvageDiveStart::leave(GfGameSalvage *salvage, ai::State *) {
+  GfComBehaviorSalvage *behavior = salvage->getGfComBehaviorSalvage();
+  if (behavior != nullptr) {
+    behavior->unknown98.clear();
+  }
+  for (u32 i = 0; i < 3; i++) {
+    if (unknown18[i] != nullptr) {
+      unknown18[i]->release();
+      unknown18[i] = nullptr;
+    }
+  }
+}
+
+void StateSalvageDiveStart::callback() {
+  if (unknown30 < 3) {
+    int index = unknown30++;
+    unknown34 = unknown3c[index];
+    GfMenuCallContext *&context = unknown18[index];
+    if (context == nullptr) {
+      context = GfMenuCallContext::create();
+    } else {
+      if (!context->isTerm()) {
+        GfMenuObjButtonChallenge2::close(context);
+      }
+      context->reset();
+    }
+    GfMenuObjButtonChallenge2::OptionParam option;
+    option.unknown02 = false;
+    option.unknown00 = false;
+    option.unknown01 = false;
+    option.unknown04 = 0.16f;
+    GfMenuObjButtonChallenge2::open(context, unknown34, option);
+    GfGameSpeed::setSalvageSpeed((3 - unknown30) * 0.05f + 0.1f);
   }
 }
 
@@ -331,6 +403,15 @@ void StateSalvageResult::enter(GfGameSalvage *salvage, ai::State *) {
 }
 
 void StateSalvageResult::leave(GfGameSalvage *, ai::State *) {}
+
+void StateSalvageResultUi::leave(GfGameSalvage *salvage, ai::State *) {
+  if (context != nullptr) {
+    context->release();
+    context = nullptr;
+  }
+  salvage->setPartyDisp(true);
+  SCOM_QUEST_GIMMICK::createSalvage(gmk::getBindedGmkInst(GfGameSalvage::get()->unknowna8)->unknown20.unknown18, 0.0f);
+}
 
 void StateSalvageResultUi::update(GfGameSalvage *, const fw::UpdateInfo &) {
   if (GfManager::isDestroyNow()) {

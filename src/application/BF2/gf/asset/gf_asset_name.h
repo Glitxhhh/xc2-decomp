@@ -9,6 +9,9 @@ namespace gf {
 class GfAssetName {
 public:
   GfAssetName(const char *name);
+  bool isValid() const;
+  int getValue(const char *text) const;
+  u32 getObjType() const;
   const char *getName();
   void clear();
   bool hasCategory() const;

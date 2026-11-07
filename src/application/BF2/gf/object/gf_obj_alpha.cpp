@@ -44,6 +44,8 @@ void GfObjAlpha::updateCamera(GF_OBJ_HANDLE *handle, f32 deltaTime, bool isForce
   acc.setAlphaCamera(alpha);
 }
 
+bool GfObjAlpha::isNearCamera(const GfObjAcc &acc) { return acc.isCollideModelClip(); }
+
 f32 GfObjAlpha::getTotalAlpha(const GfComProperty *property) {
   if (property != nullptr && property->unknown20 != nullptr) {
     return property->unknown20->unknown18;

@@ -11,10 +11,19 @@ class GfMenuCallContext;
 
 class GfMenuObjButtonChallenge2 : public GfMenuObject {
 public:
+  // Layout from the open overload with two bool arguments (0x7100420938): its arguments fill the first two members and the constant 0.25 the last one.
+  struct OptionParam {
+    bool unknown00; // Inferred role: display the button (isDispButton argument of open); original member name unknown.
+    bool unknown01; // Inferred role: play the sound (isSound argument of open); original member name unknown.
+    bool unknown02; // Role and original member name unknown.
+    f32 unknown04;  // Inferred role: constant 0.25 set by open, a time; original member name unknown.
+  };
+
   void initialize() override;
   void finalize() override;
   void update() override;
   static void open(GfMenuCallContext *context, unsigned int challenge, bool isDispButton, bool isSound);
+  static void open(GfMenuCallContext *context, unsigned int challenge, const OptionParam &option);
   static void openSequence(GfMenuCallContext *context, unsigned int challenge, bool isDispButton, bool isSound);
   static void resume(GfMenuCallContext *context);
   static void close(GfMenuCallContext *context);
@@ -30,6 +39,8 @@ public:
   u8 _330[0x4a8 - 0x330];
 };
 
+static_assert(offsetof(GfMenuObjButtonChallenge2::OptionParam, unknown04) == 0x4, "");
+static_assert(sizeof(GfMenuObjButtonChallenge2::OptionParam) == 0x8, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown90) == 0x90, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown94) == 0x94, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown98) == 0x98, "");
