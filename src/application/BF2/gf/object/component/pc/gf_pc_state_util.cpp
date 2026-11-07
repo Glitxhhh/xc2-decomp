@@ -32,6 +32,8 @@ void StateUtil::resetCamera() { GfGamePlayerCamera::resetCamera(); }
 
 bool StateUtil::isManualCamera() { return GfGamePlayerCamera::isManualCamera(); }
 
+GF_OBJ_HANDLE *StateUtil::getTarget(const GfComBehaviorPc &behavior) { return behavior.unknown08->getComponent<GfComProperty>()->unknown18->handle; }
+
 void StateUtil::setTargetLock(bool isLock) { GfGameTarget::lockTarget(isLock); }
 
 bool StateUtil::isBattle(GfComBehaviorPc &behavior) {

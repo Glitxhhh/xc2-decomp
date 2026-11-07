@@ -370,6 +370,26 @@ void StateUtilField::setChildFrameHeight(GfComponent &component, f32 height) {
   frame->unknown20.unknown00.y = height;
 }
 
+mm::Vec3 StateUtilField::calcWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position, const mm::Plane &plane) {
+  mm::Vec3 result = position;
+  if (position.y >= property.unknown160.y) {
+    f32 offset = property.unknown310.unknown1c + property.unknown310.unknown4c;
+    result = position + plane.normal * offset;
+  } else {
+    f32 offset = property.unknown310.unknown2c - property.unknown310.unknown4c;
+    result = position - plane.normal * offset;
+  }
+  return result;
+}
+
+bool StateUtilField::testCloud(GfComPropertyPc &property) {
+  EnviromentSensor *sensor = property.getEnvSensor();
+  if (!sensor->unknown24_1) {
+    return false;
+  }
+  return sensor->unknown30.unknown70.unknown34 == 11;
+}
+
 bool StateUtilField::isWallIdleMotion(GfComAsm &comAsm) {
   const char *stateName = comAsm.getStateName(ANIM_LAYER_BASE);
   bool isIdle = false;

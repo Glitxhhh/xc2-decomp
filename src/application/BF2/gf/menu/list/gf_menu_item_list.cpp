@@ -7,6 +7,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/list/gf_menu_sort_type.h"
 #include "gf/request/gf_req_scom.h"
@@ -59,6 +60,27 @@ template <bool Ascending> bool unknown002(const MenuItemInfo &info, const MenuIt
     return true;
   }
   return false;
+}
+
+// Inferred role: compares the sort key name column of two items, ties broken by item id; original name unknown.
+template <bool Ascending> bool unknown003(const MenuItemInfo &info, const MenuItemInfo &other) {
+  const char *name = GfMenuBdat::getSortKeyName();
+  u32 key;
+  u32 otherKey;
+  if (name == nullptr) {
+    key = info.unknown04;
+    otherKey = other.unknown04;
+  } else {
+    key = Bdat::getVal(GfMenuBdat::getItemDataFP(info.unknown00, info.unknown04), name, info.unknown04).valueU32;
+    otherKey = Bdat::getVal(GfMenuBdat::getItemDataFP(other.unknown00, other.unknown04), name, other.unknown04).valueU32;
+  }
+  if (key == otherKey) {
+    return info.unknown04 < other.unknown04;
+  }
+  if (Ascending) {
+    return key < otherKey;
+  }
+  return key > otherKey;
 }
 
 } // namespace
@@ -237,6 +259,14 @@ bool GfMenuItemList::sortGetAreaDescending(const MenuItemInfo &info, const MenuI
   }
   return area > otherArea;
 }
+
+bool GfMenuItemList::sortNameAscending(const MenuItemInfo &info, const MenuItemInfo &other) { return unknown003<true>(info, other); }
+
+bool GfMenuItemList::sortNameDescending(const MenuItemInfo &info, const MenuItemInfo &other) { return unknown003<false>(info, other); }
+
+bool GfMenuItemList::sortTypeAsCoreEquipAscending(const MenuItemInfo &info, const MenuItemInfo &other) { return unknown001(info, other, ItemType::EQUIP_ORB, &ItemProperty::unknown4c, true); }
+
+bool GfMenuItemList::sortTypeAsCoreEquipDescending(const MenuItemInfo &info, const MenuItemInfo &other) { return unknown001(info, other, ItemType::EQUIP_ORB, &ItemProperty::unknown4c, false); }
 
 bool GfMenuItemList::sortTypeBoosterAscending(const MenuItemInfo &info, const MenuItemInfo &other) { return unknown001(info, other, ItemType::BOOSTER, &ItemProperty::unknown45, true); }
 

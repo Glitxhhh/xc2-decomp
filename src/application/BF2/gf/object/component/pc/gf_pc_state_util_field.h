@@ -92,6 +92,7 @@ public:
   static bool isFallFromSlideState(GfComPropertyPc &property);
   static bool isSlideStop(GfComPropertyPc &property);
   static void setChildFrameHeight(GfComponent &component, f32 height);
+  static bool testCloud(GfComPropertyPc &property);
   static bool isWallIdleMotion(GfComAsm &comAsm);
   static void notifyTurn(GfComBehaviorPc &behavior);
   static bool isEnableWallPrepare(GfComPropertyPc &property);
