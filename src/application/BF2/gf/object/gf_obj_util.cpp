@@ -50,6 +50,7 @@
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_volume_fade.h"
+#include "gf/sound/gf_sound.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
@@ -519,6 +520,22 @@ f32 GfObjUtil::getSetupScale(GF_OBJ_HANDLE *handle) {
 GfObjSetup *GfObjUtil::getObjSetup(GF_OBJ_HANDLE *handle) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   return info != nullptr ? info->unknown30 : nullptr;
+}
+
+fw::SoundCategory GfObjUtil::getSoundCategoryNormal(GF_OBJ_HANDLE *handle) {
+  GfObjSetup *setup = getObjSetup(handle);
+  if (setup != nullptr && isEventCharacter(setup->unknown1c)) {
+    return CATEGORY_SYSTEM;
+  }
+  return CATEGORY_CHARACTER_SE;
+}
+
+fw::SoundCategory GfObjUtil::getSoundCategoryWithoutSlow(GF_OBJ_HANDLE *handle) {
+  GfObjSetup *setup = getObjSetup(handle);
+  if (setup != nullptr && isEventCharacter(setup->unknown1c)) {
+    return CATEGORY_SYSTEM;
+  }
+  return CATEGORY_NO_SLOW_SE;
 }
 
 GF_ASSET_HANDLE *GfObjUtil::getAssetHandle(GF_OBJ_HANDLE *handle) {

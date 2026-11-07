@@ -16,6 +16,7 @@ struct Vec3;
 
 namespace fw {
 class SoundPack;
+enum SoundCategory : int;
 struct Transform;
 } // namespace fw
 
@@ -83,6 +84,8 @@ public:
   static void setEnableLookIK(GF_OBJ_HANDLE *handle, bool isEnable, f32 time);
   static void setEnableFootIK(GF_OBJ_HANDLE *handle, bool isEnable);
   static void setEnableSPCIK(GF_OBJ_HANDLE *handle, bool isEnable);
+  static fw::SoundCategory getSoundCategoryNormal(GF_OBJ_HANDLE *handle);
+  static fw::SoundCategory getSoundCategoryWithoutSlow(GF_OBJ_HANDLE *handle);
   static void setBlowRotate(GF_OBJ_HANDLE *handle, const mm::Quat &rotation);
   static void setEnableLipSync(GF_OBJ_HANDLE *handle, bool isEnable);
   static u32 getEyeIKType(GF_OBJ_HANDLE *handle);

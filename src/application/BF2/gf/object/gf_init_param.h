@@ -29,6 +29,17 @@ enum unknown030 {
   unknown030_12 = 12, // Inferred role: event npc; original name unknown.
 };
 
+inline bool isEventCharacter(u32 characterType) {
+  switch (characterType) {
+  case unknown030_6:
+  case unknown030_7:
+  case unknown030_12:
+    return true;
+  default:
+    return false;
+  }
+}
+
 enum VIEWCAM {
   VIEWCAM_UNKNOWN_0 = 0,
 };

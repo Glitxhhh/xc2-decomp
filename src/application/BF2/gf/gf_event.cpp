@@ -26,6 +26,11 @@ void GfEvent::finalize() { unknown118 = false; }
 
 bool GfEvent::isInitialized() { return get() != nullptr && get()->unknown118; }
 
+void GfEvent::removeEventCallback(IGfEvent *event) {
+  GfEvent *gfEvent = get();
+  gfEvent->unknown08.erase(gfEvent->unknown08.find(event));
+}
+
 void GfEvent::callChangeScenarioFlag(u32 scenarioFlag, u32 oldScenarioFlag) {
   GfEvent *gfEvent = get();
   for (size_t i = 0; i < gfEvent->unknown08.size(); i++) {

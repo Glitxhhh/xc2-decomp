@@ -97,17 +97,6 @@ constexpr u32 TIME_RANGE_DN_NIGHT = 7;
 constexpr u32 ASSET_PACK_MAX = 512;
 constexpr u32 DEPOP_METER_COUNT = 4;
 
-static bool isEventCharacter(u32 characterType) {
-  switch (characterType) {
-  case unknown030_6:
-  case unknown030_7:
-  case unknown030_12:
-    return true;
-  default:
-    return false;
-  }
-}
-
 GfGameManager::GfGameManager(const GfSetupParam &param) : unknown18(false), unknown19(false) { initialize(param); }
 
 void GfGameManager::initialize(const GfSetupParam &param) {
