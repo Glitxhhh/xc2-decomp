@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_param_acc.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/object/component/property/gf_com_property.h"
@@ -22,7 +23,6 @@ namespace gf {
 struct GAME_VOICE_HANDLE;
 struct GF_SCOM_HANDLE;
 struct GF_OBJ_HANDLE;
-struct ParamObj;
 enum OPTMNT : u32;
 
 class SCOM_ADD_TRUST : public SCOM {
@@ -269,19 +269,70 @@ public:
   static bool isPlayEnd(GAME_VOICE_HANDLE *voice);
 };
 
-class SCOM_FIELD_VOICE {
+class SCOM_FIELD_VOICE : public SCOM {
 public:
+  // Inferred role: queued field voice; original type name unknown.
+  struct unknown001 {
+    ParamObj unknown00;           // Inferred role: object; original member name unknown.
+    f32 unknown10;                // Inferred role: delay in seconds; original member name unknown.
+    CV_FIELD unknown14;           // Inferred role: voice; original member name unknown.
+    int unknown18;                // Inferred role: play state; original member name unknown.
+    CV_PRIO unknown1c;            // Inferred role: priority; original member name unknown.
+    GAME_VOICE_HANDLE *unknown20; // Inferred role: voice handle; original member name unknown.
+  };
+
+  SCOM_FIELD_VOICE(GF_SCOM_HANDLE *handle, bool isStopOnEvent) : SCOM(handle, SCOM_TYPE_UNKNOWN_63, SCOM_EXEC_UNKNOWN_0, 1), unknownd0(false), unknownd1(false), unknownd2(isStopOnEvent) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  bool isStopVoice() const;
+
+  // Inferred role: queues a voice to play; original name unknown.
+  void unknown002(const ParamObj &object, f32 delay, CV_FIELD voice, CV_PRIO priority) {
+    unknown001 entry = {object, delay, voice, VOICE_RESULT_UNKNOWN_0, priority, nullptr};
+    unknown20.push(entry);
+  }
+
   static void create(CV_FIELD voice, CV_PRIO priority);
-  static void createLevelup(const ParamObj &paramObj);
-  static void createJump(const ParamObj &paramObj);
-  static void createHighLanding(const ParamObj &paramObj);
-  static void createBadWeather();
-  static void createTime(CV_FIELD voice);
-  static void createExitInn();
-  static GAME_VOICE_HANDLE *createMercenariesLeader(u32 blade);
+  static void create(const ParamObj &paramObj, CV_FIELD voice, CV_PRIO priority);
+  static GF_SCOM_HANDLE *createLevelup(const ParamObj &paramObj);
+  static GAME_VOICE_HANDLE *createJump(const ParamObj &paramObj);
+  static GAME_VOICE_HANDLE *createHighLanding(const ParamObj &paramObj);
+  static GAME_VOICE_HANDLE *createFallDead(const ParamObj &paramObj);
+  static GF_SCOM_HANDLE *createLandmark();
+  static GF_SCOM_HANDLE *createUnexplored();
+  static GF_SCOM_HANDLE *createBadWeather();
+  static GF_SCOM_HANDLE *createTime(CV_FIELD voice);
+  static GF_SCOM_HANDLE *createExitInn();
+  static GF_SCOM_HANDLE *createBladeSkill(u32 blade);
+  static void createPartyIn(u32 id);
+  static void createPartyOut(u32 id);
   static void createMercenariesIn(u32 blade);
-  static void createMercenariesStart(u32 blade);
+  static GAME_VOICE_HANDLE *createMercenariesLeader(u32 blade);
+  static GF_SCOM_HANDLE *createMercenariesStart(u32 blade);
+  static GF_SCOM_HANDLE *createMercenariesEnd(u32 blade);
+  static GF_SCOM_HANDLE *createMercenariesResult(u32 blade);
+  static void createReleaseBlade(u32 blade);
+  static GF_SCOM_HANDLE *createSkipTravel(bool isStart);
+  static GF_SCOM_HANDLE *createRestart(CV_FIELD voice);
+  static GAME_VOICE_HANDLE *createEnemy(CV_FIELD voice);
+  static void createAchievement(u32 blade, u32 achievement);
+  static GF_SCOM_HANDLE *createAchievementAll(u32 blade);
+  static void createEngage(u32 blade);
+  static void createQuest(CV_FIELD voice);
+  static GAME_VOICE_HANDLE *createFieldSkillStart(u32 blade, u32 skill);
+  static GAME_VOICE_HANDLE *createFieldSkillClear(u32 skill);
+  static GAME_VOICE_HANDLE *createFieldSkillMiss(u32 skill);
+  static GAME_VOICE_HANDLE *createDriverKizuna(u32 driver);
+
+  mm::mtl::FixedQueue<unknown001, 4> unknown20; // Inferred role: voices to play in order; original member name unknown.
+  bool unknownd0;                               // Inferred role: wait until control is free; original member name unknown.
+  bool unknownd1;                               // Inferred role: waiting for control; original member name unknown.
+  bool unknownd2;                               // Inferred role: stop on event; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_FIELD_VOICE, unknown20) == 0x20, "");
+static_assert(offsetof(SCOM_FIELD_VOICE, unknownd0) == 0xd0, "");
+static_assert(offsetof(SCOM_FIELD_VOICE, unknownd2) == 0xd2, "");
+static_assert(sizeof(SCOM_FIELD_VOICE) == 0xd8, "");
 
 class SCOM_ZONE : public SCOM {
 public:

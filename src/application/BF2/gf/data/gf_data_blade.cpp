@@ -7,9 +7,11 @@
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_bdat_msg.h"
+#include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_driver.h"
+#include "gf/data/gf_data_field.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_hana.h"
 #include "gf/data/gf_data_idea.h"
@@ -1197,6 +1199,18 @@ u32 GfDataBlade::getBladeNumForWeapon(u32 weaponType) {
   }
 
   return count;
+}
+
+const char *GfDataBlade::getFieldSkillVoice(u32 blade, u32 skill) {
+  QuestListAcc *questList = QuestListAcc::get();
+  SDataBlade *dataBlade = getSDataBlade(blade);
+  if (dataBlade->unknownae[0].unknown00 == skill || dataBlade->unknownae[1].unknown00 == skill || dataBlade->unknownae[2].unknown00 == skill) {
+    u32 category = questList->getFLD_FieldSkillListVoiceCategory(skill);
+    if (category != 0) {
+      return GfDataField::getFieldSkillVoice(blade, category);
+    }
+  }
+  return nullptr;
 }
 
 bool GfDataBlade::isNeedChangeWeapon(u32 blade) { return blade - BLADE_CHANGE_WEAPON_RANGE_FIRST < BLADE_CHANGE_WEAPON_RANGE_COUNT || blade == BLADE_CHANGE_WEAPON; }
