@@ -570,7 +570,7 @@ const char *GfDataBlade::getDebugName(u32 blade) {
   return GfBdatChrBl::get()->getChrBlDebugName(blade);
 }
 
-u8 GfDataBlade::getRace(u32 blade) {
+u32 GfDataBlade::getRace(u32 blade) {
   if (blade == 0) {
     return 0;
   }
@@ -578,7 +578,7 @@ u8 GfDataBlade::getRace(u32 blade) {
   return getSDataBlade(blade)->unknown708;
 }
 
-u8 GfDataBlade::getGender(u32 blade) {
+u32 GfDataBlade::getGender(u32 blade) {
   if (blade == 0) {
     return 0;
   }

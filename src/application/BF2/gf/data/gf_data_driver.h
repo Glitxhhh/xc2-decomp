@@ -140,6 +140,7 @@ public:
   static const char *getBelongingModelName(const GfInitParamDriver &param);
   static bool isActivatePartyAll(u32 driver);
   static void setPouchData(u32 driver, u32 slot, const SDataPouch &pouch);
+  static void setUsedFavoriteItemForPouch(u32 driver, u32 item);
   static void calcDriverBaseParamByLevel(SDataDriver &dataDriver);
   static u32 getLevel(u32 driver);
   static bool isActivateParty(u32 driver);

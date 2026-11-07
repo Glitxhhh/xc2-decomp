@@ -205,11 +205,15 @@ public:
   static const u32 OBJECT_TYPE = OBJECT_TYPE_ENEMY;
 
   u32 getEnArrangeID() const override;
+  u32 getFootStep() const override;
+  u32 getFootStepEffect() const override;
   void validateBy_pop_act_type(u8 popActType);
 
   u32 unknown6c; // Inferred role: en param id; original member name unknown.
   u32 m_enArrangeID;
-  u8 _74[0xa0 - 0x74];
+  mm::mtl::FixStr<32> unknown74; // Inferred role: motion; original member name unknown.
+  bool unknown98;                // Inferred role: set by validateBy_pop_act_type; original member name unknown.
+  u8 _99[0xa0 - 0x99];
   SDataEnemy *unknowna0; // Inferred role: data enemy; original member name unknown.
   int unknowna8;         // Inferred role: row id of BDAT_FLD_ENACT_MOVE; original member name unknown.
   f32 unknownac;         // Inferred role: change battle delay, copied by GfComBehaviorEnemy::createBehField; original member name unknown.
@@ -224,6 +228,8 @@ public:
 
 static_assert(offsetof(GfObjSetupEnemy, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfObjSetupEnemy, m_enArrangeID) == 0x70, "");
+static_assert(offsetof(GfObjSetupEnemy, unknown74) == 0x74, "");
+static_assert(offsetof(GfObjSetupEnemy, unknown98) == 0x98, "");
 static_assert(offsetof(GfObjSetupEnemy, unknowna0) == 0xa0, "");
 static_assert(offsetof(GfObjSetupEnemy, unknowna8) == 0xa8, "");
 static_assert(offsetof(GfObjSetupEnemy, unknownac) == 0xac, "");
