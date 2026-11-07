@@ -42,6 +42,7 @@ public:
     void finalize();
     unknown002 *findThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path);
     nn::fs::FileHandle *addThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path);
+    void removeThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path);
 
     unknown001 unknown0000[13]; // Inferred role: channels; original member name unknown.
     u8 _17f8[0x1800 - 0x17f8];

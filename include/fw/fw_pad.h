@@ -183,6 +183,9 @@ static_assert(offsetof(PadManager, unknown3708) == 0x3708, "");
 
 class IPadListener {
 public:
+  // Inline: the game only has the base object constructor symbol (C2).
+  IPadListener() { PadManager::registListener(this); }
+
   virtual ~IPadListener();
 };
 

@@ -39,6 +39,7 @@ static_assert(sizeof(ScriptEventParam) == 0x8, "");
 
 class IScriptEvent {
 public:
+  IScriptEvent();
   virtual ~IScriptEvent();
   virtual void scriptEvent(ScriptEventParam &param);
 };
@@ -113,6 +114,7 @@ public:
   bool isScriptCreated(int type) const;
   bool isScriptLoaded(int type) const;
   bool isScriptFree(int type) const;
+  void addEvent(IScriptEvent *event);
   void removeEvent(IScriptEvent *event);
   void loadScript(int type, const char *name, ml::FILE_PRIO priority);
   void notifyEvent(int type, ScriptEventParam::State state);

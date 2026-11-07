@@ -14,6 +14,16 @@ namespace fw {
 
 PadManager::~PadManager() {}
 
+bool PadManager::registListener(IPadListener *listener) {
+  PadManager *manager = get();
+  if (manager != nullptr) {
+    if (manager->unknown3678.find(listener) == manager->unknown3678.end()) {
+      manager->unknown3678.push(listener);
+    }
+  }
+  return manager != nullptr;
+}
+
 IPadListener::~IPadListener() { PadManager::removeListener(this); }
 
 void PadManager::removeListener(IPadListener *listener) {

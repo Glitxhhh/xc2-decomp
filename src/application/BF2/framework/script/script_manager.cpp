@@ -13,6 +13,18 @@ ScriptManager::ScriptManager(mm::mtl::IAllocator *allocator, size_t count) : unk
 
 ScriptManager::~ScriptManager() { finalize(); }
 
+IScriptEvent::IScriptEvent() {
+  if (ScriptManager::get() != nullptr) {
+    ScriptManager::get()->addEvent(this);
+  }
+}
+
+void ScriptManager::addEvent(IScriptEvent *event) {
+  if (unknown38.find(event) == unknown38.end()) {
+    unknown38.push(event);
+  }
+}
+
 IScriptEvent::~IScriptEvent() {
   if (ScriptManager::get() != nullptr) {
     ScriptManager::get()->removeEvent(this);

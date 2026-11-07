@@ -48,6 +48,16 @@ nn::fs::FileHandle *DevFileArchiveNx::Param::addThreadFilehandle(u64 threadId, c
   return &file->unknown001;
 }
 
+void DevFileArchiveNx::Param::removeThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path) {
+  CS cs(unknown1800);
+  for (unknown003::iterator it = unknown29b8.begin(); it != unknown29b8.end(); ++it) {
+    if ((*it)->unknown00 == threadId && strcmp((*it)->unknown002.c_str(), path.c_str()) == 0) {
+      unknown29b8.erase(it);
+      break;
+    }
+  }
+}
+
 u32 DevFileArchiveNx::addressAlignment() { return 16; }
 
 DevFileJobTh *DevFileArchiveNx::createLoader(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobTh(); }

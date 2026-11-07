@@ -154,11 +154,14 @@ public:
     mSize++;
   }
 
+  // The position runs from mFront to mFront + mSize, with the modulo and the increment in separate statements: counting from zero or
+  // incrementing in the modulo statement changes the width of the index add (pointer queues) or the register assignment (scalar queues).
   iterator find(const T &value) {
     iterator found = end();
     if (!empty()) {
-      for (size_t i = 0; i != mSize;) {
-        size_t index = (mFront + i++) % N;
+      for (size_t i = mFront; i != mFront + mSize;) {
+        size_t index = i % N;
+        i++;
         if (buffer()[index] == value) {
           found = iterator(buffer(), index);
           break;
@@ -193,9 +196,11 @@ public:
   iterator erase(iterator position) {
     MM_ASSERT(size() != 0);
     --mSize;
-    for (size_t index = position._index; index < mFront + mSize; index++) {
-      T &source = element((index + 1) % N);
-      element(index % N) = source;
+    for (size_t index = position._index; index < mFront + mSize;) {
+      size_t destination = index % N;
+      index++;
+      T &source = element(index % N);
+      element(destination) = source;
     }
     return position;
   }
