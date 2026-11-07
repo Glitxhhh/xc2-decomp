@@ -298,6 +298,21 @@ void GfSequentialPlay::startSignal(GfSequentialPlaySignal *signal) { addCommand(
 
 void GfSequentialPlay::endSignal(GfSequentialPlaySignal *signal) { addCommand(GfPlayComExecuteSignal::create(false, signal)); }
 
+bool GfSequentialPlay::isInnerState(GF_STATE state) {
+  GfSequentialPlay *sequentialPlay = get();
+  for (GfPlayCom *command : sequentialPlay->unknown08) {
+    if (sequentialPlay->isExistState(command, state)) {
+      return true;
+    }
+  }
+  for (GfPlayCom *command : sequentialPlay->unknown1850) {
+    if (sequentialPlay->isExistState(command, state)) {
+      return true;
+    }
+  }
+  return sequentialPlay->unknown1640.find(state) != sequentialPlay->unknown1640.end();
+}
+
 bool GfSequentialPlay::isInnerPause(u32 pauseBits) {
   GfSequentialPlay *sequentialPlay = get();
   for (GfPlayCom *command : sequentialPlay->unknown08) {

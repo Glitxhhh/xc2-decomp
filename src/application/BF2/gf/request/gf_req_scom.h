@@ -17,6 +17,7 @@
 
 namespace fw {
 enum LangType : u32;
+struct UpdateInfo;
 } // namespace fw
 
 namespace gf {
@@ -1020,6 +1021,7 @@ public:
   static GF_SCOM_HANDLE *addRequest(SCOM *scom);
   static GF_SCOM_HANDLE *addRequestParallel(SCOM *scom);
   GF_SCOM_HANDLE *allocate();
+  void update(const fw::UpdateInfo &info);
   bool isValid(GF_SCOM_HANDLE *handle);
   static bool isExistCommand(SCOM_TYPE type);
   static bool isExistCommand();

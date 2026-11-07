@@ -16,7 +16,9 @@ template <typename T, size_t N> class FixedQueue {
   };
 
   template <typename Dummy> struct Storage<4, Dummy> {
-    typedef u32 Unit;
+    struct Unit {
+      u32 unknown00; // Inferred role: storage word; original member name unknown.
+    };
   };
 
   template <typename Dummy> struct Storage<8, Dummy> {
