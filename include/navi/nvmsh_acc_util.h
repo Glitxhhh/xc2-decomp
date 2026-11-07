@@ -1,10 +1,13 @@
 #pragma once
+#include <stddef.h>
 
 namespace mm {
 struct Vec3;
 } // namespace mm
 
 namespace navi {
+
+class NvmshManager;
 
 class NvmshAccUtil {
 public:
@@ -15,8 +18,15 @@ public:
   int checkNaviFindPos(const mm::Vec3 &position, float radius, float height, float range, float offset, const mm::Vec3 &target, float targetRadius, float targetHeight, float targetRange,
                        float targetOffset, int layer = 0);
   bool isNaviMeshReadCheck(const mm::Vec3 &position);
+  void setAvoidAttr(bool value);
 
-  unsigned char _00[0x10 - 0x00];
+  NvmshManager *unknown00; // Inferred role: manager singleton; original member name unknown.
+  bool unknown08;          // Inferred role: avoid attribute; original member name unknown.
+  unsigned char _09[0x10 - 0x09];
 };
+
+static_assert(offsetof(NvmshAccUtil, unknown00) == 0x00, "");
+static_assert(offsetof(NvmshAccUtil, unknown08) == 0x08, "");
+static_assert(sizeof(NvmshAccUtil) == 0x10, "");
 
 } // namespace navi

@@ -13,7 +13,7 @@ namespace gf {
 // Inferred role: rating animation of each result rank; original name unknown.
 static const char *const unknown001[] = {"rank_1", "rank_2", "rank_3", "rank_4"};
 
-// Inferred role: call id of the salvage result; original name unknown.
+// Inferred role: call id passed to attachExternalCall in initialize(); taken from the game disassembly, original name unknown.
 constexpr u32 unknown002 = 0x53;
 
 GfMenuObjSalvage::GfMenuObjSalvage(u32 handle) : GfMenuObject(handle), unknown24(0), unknown28(this), unknown2b8(false) {}
@@ -40,6 +40,18 @@ void GfMenuObjSalvage::initialize() {
 }
 
 void GfMenuObjSalvage::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjSalvage::openResult(GfMenuCallContext *context, const ResultParam &param) {
+  ui::UIObjectAcc root(getAttachedObject(unknown002));
+  if (GfMenuObjUtil::checkCCStart(context)) {
+    ui::UIObjectAcc result(root.searchChild("LAY_result"));
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    event.unknown08_u16 = param.unknown00;
+    sendEvent(result.unknown10, event, 0.0f);
+    startCallContext(context, unknown002, result.unknown10);
+  }
+}
 
 void GfMenuObjSalvage::update() {
   unknown28.unknown003();
