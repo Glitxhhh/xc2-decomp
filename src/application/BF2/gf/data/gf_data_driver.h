@@ -267,6 +267,7 @@ public:
   static void setActivateWeaponType(u32 driver, u32 weaponType);
   static bool isDriver(u32 driver);
   static u32 getEyeRotControl(u32 driver);
+  static bool isEnableEquipBlade(u32 driver, u32 blade);
   static bool isAttachedParty(u32 driver);
   static bool isEquipDefaultAcce(u32 driver);
 };

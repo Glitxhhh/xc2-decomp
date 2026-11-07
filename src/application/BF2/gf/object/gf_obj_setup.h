@@ -24,9 +24,13 @@ namespace gf {
 struct SDataBlade;
 struct SDataEnemy;
 
+enum VFACC : s32 {
+  VFACC_UNKNOWN_FFFFFFFF = -1, // Inferred role: no pending fade; original enumerator name unknown.
+  VFACC_UNKNOWN_4 = 4,         // Inferred role: fade set by enterStayObjectWithVolumeFade; original enumerator name unknown.
+};
+
 enum VFEFF : u32 {
   VFEFF_UNKNOWN_0 = 0,
-  VFEFF_UNKNOWN_4 = 4,
 };
 
 class GfObjSetup {
@@ -73,7 +77,7 @@ public:
   GimmickType unknown5c; // Inferred role: gimmick type; original member name unknown.
   bool unknown60;        // Inferred role: volume fade for user; original member name unknown.
   u8 _61[0x64 - 0x61];
-  VFEFF unknown64; // Inferred role: volume fade effect; original member name unknown.
+  VFACC unknown64; // Inferred role: pending volume fade; original member name unknown.
   s32 unknown68;   // Inferred role: skeleton type; original member name unknown.
 };
 
