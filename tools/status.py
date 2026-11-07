@@ -17,6 +17,7 @@ A record:
   size         size in bytes (a local function: four bytes per instruction)
   namespace    first component of the qualified name ("" for a global function); a class of the global namespace
                appears as its own name
+  scope        qualified scope of the name with its template arguments ("gf::GfFoo"); method: the last component
   zone         top source directory: src/application/BF2/<dir> or src/libs/<lib> of the source file defining it; for
                a function not written yet, the directory of its game source file, else the zone most of the
                functions of its namespace have, else "unknown"
@@ -49,26 +50,49 @@ GAME_APP = re.compile(r"application/BF2/+([^/]+)/")
 WRAPPERS = ("non-virtual thunk to ", "virtual thunk to ", "covariant return thunk to ")
 
 
-def scope_of(demangled):
-    """The qualified scope of a demangled function name: ['gf', 'GfFoo'] for 'gf::GfFoo::bar(int)'."""
-    text = demangled
-    for prefix in WRAPPERS:
-        if text.startswith(prefix):
-            text = text[len(prefix):]
-    depth, out = 0, []
-    for ch in text:
+def split_top(text, separator):
+    """Split text on separator where no <...> or (...) is open."""
+    parts, depth, start = [], 0, 0
+    for i, ch in enumerate(text):
         if ch in "<(":
             depth += 1
         elif ch in ">)":
             depth -= 1
-        elif depth == 0:
-            out.append(ch)
-        if ch == "(" and depth == 1:
+        elif depth == 0 and text.startswith(separator, i):
+            parts.append(text[start:i])
+            start = i + len(separator)
+    parts.append(text[start:])
+    return parts
+
+
+def parse_name(demangled):
+    """(scope, method) of a demangled function name: ('gf::GfFoo', 'bar') for 'gf::GfFoo::bar(int)'. Template
+    arguments stay in the scope ('mm::Vector<mm::Vec3>'), not in the method."""
+    text = demangled.replace("(anonymous namespace)", "anonymous")
+    for prefix in WRAPPERS:
+        if text.startswith(prefix):
+            text = text[len(prefix):]
+    operator = re.search(r"(?:^|::)operator\b", text)
+    if operator:
+        return text[:operator.start()], "operator"
+    depth, end = 0, len(text)
+    for i, ch in enumerate(text):
+        if ch == "<":
+            depth += 1
+        elif ch == ">":
+            depth -= 1
+        elif ch == "(" and depth == 0:
+            end = i
             break
-    head = "".join(out)
-    head = head.split(" ")[-1] if " " in head and "operator" not in head else head
-    parts = [p for p in head.split("::") if p]
-    return parts[:-1]
+    head = split_top(text[:end], " ")[-1]
+    parts = [p for p in split_top(head, "::") if p]
+    method = re.sub(r"<.*", "", parts[-1]) if parts else ""
+    return "::".join(parts[:-1]), method
+
+
+def name_fields(demangled):
+    scope, method = parse_name(demangled)
+    return {"namespace": re.sub(r"<.*", "", split_top(scope, "::")[0]), "scope": scope, "method": method}
 
 
 def src_zone(path):
@@ -182,11 +206,10 @@ def build():
                 state = "nonmatch"
             else:
                 state = "todo"
-            scope = scope_of(demangled[name])
             src = defined.get(name)
             records.append({
                 "name": name, "demangled": demangled[name], "address": f"{address:#x}", "size": size,
-                "namespace": scope[0] if scope else "", "zone": None,
+                **name_fields(demangled[name]), "zone": None,
                 "src_file": src, "game_file": files.get(address), "state": state,
             })
     local_names = check.demangle(sorted({r[0] for r in rows if r[4]})) if any(r[4] for r in rows) else {}
@@ -194,7 +217,7 @@ def build():
         if local:
             records.append({
                 "name": symbol, "demangled": local_names[symbol], "address": f"{address:#x}", "size": 4 * count,
-                "namespace": (scope_of(local_names[symbol]) or [""])[0], "zone": src_zone(source),
+                **name_fields(local_names[symbol]), "zone": src_zone(source),
                 "src_file": source, "game_file": files.get(address), "state": "local", "matching": ok,
             })
 
