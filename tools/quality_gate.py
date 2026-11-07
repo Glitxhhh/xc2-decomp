@@ -31,6 +31,9 @@ FORBIDDEN = [
     ("type punning through a u64 pointer", re.compile(r"reinterpret_cast<(const )?u64 \*>")),
     ("packed float constant", re.compile(r"0x3f800000[0-9a-f]{8}|0x[0-9a-f]{8}3f800000", re.I)),
 ]
+# always_inline is accepted only on the inlined math helpers of these headers (Mat44 products, Euler and
+# quaternion conversions), which the game inlines where clang 3.9 would not.
+ALWAYS_INLINE_OK = ("include/mm_math/mm_mat44.h", "include/mm_math/mm_math.h")
 
 TRIVIAL = re.compile(r"^(\{|\}|\};|\} else \{|else|return;|return \w+;|return (true|false|nullptr|0|-1);|break;|continue;|default:|)$")
 IDENT = re.compile(r"(?<![\w:.>])([A-Za-z_]\w*)(?!\s*[\w(:<])")
@@ -114,6 +117,8 @@ def main():
     print(f"== Forbidden patterns ({BASE}..{HEAD})")
     for path, at, text in texts:
         code = re.sub(r"//.*", "", text)
+        if path in ALWAYS_INLINE_OK:
+            code = code.replace("__attribute__((always_inline))", "")
         for label, pattern in FORBIDDEN:
             if pattern.search(code):
                 print(f"{path}:{at}: {label}: {text.strip()[:140]}")
