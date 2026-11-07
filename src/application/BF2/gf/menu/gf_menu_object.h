@@ -171,6 +171,17 @@ inline bool unknown143(u32 call, u16 type) {
 // Inferred helper: sends an event to the object attached to a call; original name unknown.
 inline void unknown144(u32 call, u16 type) { unknown141(call, type, 0, 0); }
 
+// Inferred helper: sends an event with only its type to the object attached to a call (parameters left to the event's
+// constructor, unlike unknown144); original name unknown.
+inline void unknown155(u32 call, u16 type) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = type;
+    GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+  }
+}
+
 // Inferred helper: requests an event on the object attached to a call unless it is terminating; original name unknown.
 inline void unknown145(u32 call, u16 type) {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(call));

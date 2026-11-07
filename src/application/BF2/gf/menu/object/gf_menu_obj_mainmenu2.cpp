@@ -22,8 +22,12 @@ constexpr u32 unknown001 = 1;
 constexpr u32 unknown002 = 0x5f;
 // Inferred role: no open menu; original name unknown.
 constexpr u32 unknown003 = 0x28;
+// Inferred role: character change menu; original name unknown.
+constexpr u32 unknown004 = 0x27;
 
 u32 GfMenuObjMainMenu2::s_openMenuID;
+
+bool GfMenuObjMainMenu2::isOpenCharMenu() { return s_openMenuID == unknown004; }
 
 void GfMenuObjMainMenu2::finalize() {
   GfMenuSoundManager::fadeInFieldBgm(1.0f);

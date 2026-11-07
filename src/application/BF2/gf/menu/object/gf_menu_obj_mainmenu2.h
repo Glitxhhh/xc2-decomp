@@ -29,6 +29,7 @@ public:
   static void setSubLayer(u32 layer);
   static void setGuideText(u32 text);
   static void dispCloseButton();
+  static bool isOpenCharMenu();
   static void execMapJump();
   void initialize() override;
   void finalize() override;
