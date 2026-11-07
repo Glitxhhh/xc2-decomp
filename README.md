@@ -1,10 +1,48 @@
 # Xenoblade Chronicles 2 decompilation
 
+[![Matching](https://decompilati.onl/badge/xenoblade-chronicles-2/matching.svg)](https://decompilati.onl/projects/xenoblade-chronicles-2)
+[![Functions](https://decompilati.onl/badge/xenoblade-chronicles-2/functions.svg)](https://decompilati.onl/projects/xenoblade-chronicles-2)
+[![Quality gate](https://github.com/KevinBonnoron/xc2-decomp/actions/workflows/quality.yml/badge.svg)](https://github.com/KevinBonnoron/xc2-decomp/actions/workflows/quality.yml)
+
 A work-in-progress matching decompilation of *Xenoblade Chronicles 2* (Nintendo Switch, version 1.0.0).
 
-The goal is to write C++ source code that, compiled with the same compiler and flags as the original, produces exactly the same machine code as the game, function by function.
-
 **This repository contains reconstructed C++ code, but must not include original game executables, extracted assets, console keys or proprietary SDK files.** You need your own legally obtained copy of the game to work on it.
+
+## Progress
+
+<!-- progress -->
+37,648 / 48,739 functions (77.244%), 4,538,772 / 10,024,304 bytes of code (45.278%)
+<!-- /progress -->
+
+Counted over the named functions of `main`, as reported by `check`. Run `check --readme` to update this section. History and details: [decompilati.onl](https://decompilati.onl/projects/xenoblade-chronicles-2).
+
+## How it works
+
+- The game was built with Clang 3.9.1. We write C++ that, compiled with the same compiler and flags, produces exactly the same machine code as the game, function by function.
+- `check` compiles `src/`, places each function at the address of the original and compares the bytes. A function counts only when every byte matches.
+- Version 1.0.0 still ships its dynamic symbol table: about 51,000 functions keep their original C++ names, so classes and functions use the original names. Names the binary does not give are written `unknownXX`, never invented.
+- The original source paths (`C:/Monolithsoft/BF2/prog/application/BF2/...`) appear in assertion strings, and `src/application/BF2/` mirrors that layout.
+
+## Quick start
+
+```sh
+nix develop
+export XC2_ROM="/path/to/Xenoblade.xci"
+setup                      # extract and verify the 1.0.0 executable into work/
+check                      # compile src/ and compare every function with the game
+check gf::GfDataBlade      # one class: its functions and the ones left to do
+```
+
+You need [Nix](https://nixos.org/) with flakes and your own XCI dump and `prod.keys`. Details are under Requirements and Setup below.
+
+## Contributing
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) (naming rules) first. In short:
+
+- Every function you keep must match: the pre-commit hook runs `format`, `includes` and `check`, and updates the progress above.
+- Use the game's names; anything the binary does not name is `unknown` plus its offset, with the inferred role in a comment. Write the code a programmer would have written, not decompiler output forced to match.
+- Never commit anything from the game (executables, assets, keys, SDK files); local files stay in `work/`.
+- To avoid working on the same code, say which namespace or classes you take in the [contribution issue](https://github.com/KevinBonnoron/xc2-decomp/issues/2). `ui` is reserved for contributors.
 
 ## Target
 
@@ -19,21 +57,19 @@ Version 1.0.0 is used because its executable still ships its dynamic symbol tabl
 
 The original source paths (`C:/Monolithsoft/BF2/prog/application/BF2/...`) appear in assertion strings, and `src/application/BF2/` mirrors that layout.
 
-## Progress
+## Reference
 
-<!-- progress -->
-37,648 / 48,739 functions (77.244%), 4,538,772 / 10,024,304 bytes of code (45.278%)
-<!-- /progress -->
-
-Counted over the named functions of `main`, as reported by `check`. Run `check --readme` to update this section.
-
-## Requirements
+<details>
+<summary><b>Requirements</b></summary>
 
 - [Nix](https://nixos.org/) with flakes enabled. The dev shell provides everything else: the original compiler, LLVM tools, hactool, Ghidra, Python.
 - Optionally [direnv](https://direnv.net/), to enter the shell automatically (`direnv allow`).
 - An XCI dump of the game, and the matching `prod.keys` from your own console.
 
-## Setup
+</details>
+
+<details>
+<summary><b>Setup</b></summary>
 
 Set `XC2_ROM` to the path of your own XCI dump; there is no machine-specific
 default. Paths containing spaces must be quoted. `SWITCH_KEYS` is optional and
@@ -49,7 +85,10 @@ setup
 
 `setup` extracts the 1.0.0 executable from the XCI, checks its hash, and converts it into `work/main_100.elf`, an ELF with relocations applied and the full symbol table. Everything under `work/` is ignored by git and must never be committed.
 
-## Checking functions
+</details>
+
+<details>
+<summary><b>Checking functions</b></summary>
 
 ```sh
 check                                       # every function defined in src/, and the overall progress
@@ -69,7 +108,10 @@ A function you define that the game has no symbol for is listed as `NOT IN GAME`
 
 Functions local to their source file (`static`, anonymous namespace) have no symbol in the game. A full `check` finds the game address of each local function where the callers that match call it, and checks it too, listed as `(local, address)`; a local function only ever inlined has no call to follow. To diff one by hand, pass its game address and its name in your file. The game side of that diff ends at the next named function or at the next address called by a `bl`; your function is compared over its own size.
 
-## Includes
+</details>
+
+<details>
+<summary><b>Includes</b></summary>
 
 ```sh
 includes                                    # list the includes to add, remove or replace by a forward declaration
@@ -78,7 +120,10 @@ includes --fix                              # apply them
 
 Each file includes the header of every name it uses, and a header forward-declares what it only needs by pointer or reference instead of including it. `includes` runs include-what-you-use over `src/` and `include/` to enforce it; class templates are always included, never forward-declared. Run `check` afterwards: adding a line above an `operator new` or an assertion shifts its `__LINE__`, which can change the instructions (pin it with `#line` when it does).
 
-## Compiler
+</details>
+
+<details>
+<summary><b>Compiler</b></summary>
 
 The game was built with **Clang 3.9.1**. The flags that matter:
 
@@ -90,13 +135,19 @@ The game was built with **Clang 3.9.1**. The flags that matter:
 
 To try another compiler: `XC2_CXX=clang++-4.0.1 check ...`.
 
-## Standard library
+</details>
+
+<details>
+<summary><b>Standard library</b></summary>
 
 The game uses the Nintendo SDK's libc++ (`std::__1`) on top of its musl based C library (`__nnmusl_init_dso`). The dev shell provides the same era of headers: the libc++ headers of LLVM 3.9.1, configured for musl and the pthread API, and the musl 1.1.16 headers for AArch64. The shell points `XC2_SYSROOT` at them (and links `work/sysroot` for editors). Include them as system headers: `<string.h>`, `<new>`, `<functional>`, `<unordered_map>`...
 
 With exceptions disabled, libc++ 3.9 reports an allocation overflow with `fprintf(stderr, ...)` and `abort()` instead of throwing, as the game does. `std::sort`, `std::function`, `std::unordered_map<std::string, ...>` and the other `std::__1` templates the game instantiates compile to the same code as the game's.
 
-## Ghidra
+</details>
+
+<details>
+<summary><b>Ghidra</b></summary>
 
 The dev shell includes Ghidra. Import `work/main_100.elf` (AArch64, little endian, base `0x7100000000`) and run the auto analysis.
 
@@ -109,7 +160,10 @@ _JAVA_OPTIONS=-Xmx24g ghidra-analyzeHeadless <project dir> <project name> -proce
 
 Ghidra cannot open a project that is already open in the GUI: run it on a copy.
 
-## Glossary
+</details>
+
+<details>
+<summary><b>Glossary</b></summary>
 
 Abbreviations and names imposed by the game's symbols:
 
@@ -142,6 +196,8 @@ Abbreviations and names imposed by the game's symbols:
 | `Elpis` | Spirit Crucible Elpys |
 | `Vandamme` | Vandham |
 | `mm`, `mtl`, `ml` | Monolith Soft's in-house libraries (`mtl` is their template library, a replacement for the STL) |
+
+</details>
 
 ## Repository layout
 
