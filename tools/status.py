@@ -228,18 +228,26 @@ def build():
             })
 
     # Zone: our source directory, else the game source directory, else what most functions of the namespace have.
+    # A header of a shared library only shows that the code inlines it (its assertion strings sit in every caller):
+    # it says nothing of the zone, so it counts only when the namespace gives no vote.
+    def weak_hint(path):
+        return bool(path) and not path.endswith(".cpp") and bool(GAME_LIBS.search(path.replace("\\", "/")))
+
     votes = collections.defaultdict(collections.Counter)
     for record in records:
         if record["src_file"]:
             record["zone"] = record["zone"] or src_zone(record["src_file"])
-        elif record["game_file"]:
+        elif record["game_file"] and not weak_hint(record["game_file"]):
             record["zone"] = game_zone(record["game_file"])
         if record["zone"] and record["zone"] != "unknown":
             votes[record["namespace"]][record["zone"]] += 1
     for record in records:
         if not record["zone"] or record["zone"] == "unknown":
             counter = votes.get(record["namespace"])
-            record["zone"] = counter.most_common(1)[0][0] if counter else "unknown"
+            if counter:
+                record["zone"] = counter.most_common(1)[0][0]
+            else:
+                record["zone"] = game_zone(record["game_file"]) if record["game_file"] else "unknown"
     records.sort(key=lambda r: (int(r["address"], 16), r["name"]))
     return records, errors
 

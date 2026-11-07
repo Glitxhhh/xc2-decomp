@@ -2,7 +2,7 @@
   {
     "name": "gf",
     "code": {
-      "total": 3142968,
+      "total": 4425448,
       "matching": 2114956,
       "non_matching": 0
     }
@@ -10,7 +10,7 @@
   {
     "name": "gmk",
     "code": {
-      "total": 526224,
+      "total": 747880,
       "matching": 482244,
       "non_matching": 0
     }
@@ -18,7 +18,7 @@
   {
     "name": "monolib_mm",
     "code": {
-      "total": 1535208,
+      "total": 1660496,
       "matching": 458252,
       "non_matching": 0
     }
@@ -26,7 +26,7 @@
   {
     "name": "event",
     "code": {
-      "total": 538716,
+      "total": 725424,
       "matching": 431844,
       "non_matching": 0
     }
@@ -34,7 +34,7 @@
   {
     "name": "framework",
     "code": {
-      "total": 372580,
+      "total": 491936,
       "matching": 251020,
       "non_matching": 0
     }
@@ -42,7 +42,7 @@
   {
     "name": "battle",
     "code": {
-      "total": 426652,
+      "total": 575168,
       "matching": 130784,
       "non_matching": 0
     }
@@ -50,7 +50,7 @@
   {
     "name": "ui",
     "code": {
-      "total": 148224,
+      "total": 197132,
       "matching": 119240,
       "non_matching": 0
     }
@@ -66,7 +66,7 @@
   {
     "name": "anmlib",
     "code": {
-      "total": 210764,
+      "total": 195336,
       "matching": 103248,
       "non_matching": 0
     }
@@ -106,7 +106,7 @@
   {
     "name": "mcl",
     "code": {
-      "total": 2038024,
+      "total": 67928,
       "matching": 29808,
       "non_matching": 0
     }
@@ -114,7 +114,7 @@
   {
     "name": "aiLib",
     "code": {
-      "total": 49236,
+      "total": 16120,
       "matching": 13588,
       "non_matching": 0
     }
@@ -154,7 +154,7 @@
   {
     "name": "wndlib",
     "code": {
-      "total": 19288,
+      "total": 18936,
       "matching": 496,
       "non_matching": 0
     }
@@ -162,7 +162,7 @@
   {
     "name": "execute",
     "code": {
-      "total": 1832,
+      "total": 15884,
       "matching": 76,
       "non_matching": 0
     }
@@ -170,7 +170,7 @@
   {
     "name": "minigame",
     "code": {
-      "total": 2608,
+      "total": 70956,
       "matching": 64,
       "non_matching": 0
     }
@@ -178,7 +178,7 @@
   {
     "name": "Not started",
     "code": {
-      "total": 236760,
+      "total": 40440,
       "matching": 0,
       "non_matching": 0
     }
