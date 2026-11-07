@@ -167,7 +167,7 @@ def resolve(text, status):
         bare = normal.rstrip()
         found = [r for r in functions if strip_signature(r["demangled"]) == bare]
     if not found:
-        found = [r for r in functions if strip_signature(r["demangled"]).endswith("::" + bare)]
+        found = [r for r in functions if strip_signature(r["demangled"]).endswith("::" + bare) or r["demangled"].endswith("::" + normal)]
     return one_per_address(found)
 
 
