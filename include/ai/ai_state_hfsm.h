@@ -16,6 +16,9 @@ class IAllocator;
 
 namespace ai {
 
+// Inferred role: maximum nesting depth of the state hierarchy; original name from the assert of Hfsm::beginSetup.
+static const u32 MAX_DEPTH = 8;
+
 class Hfsm {
 public:
   typedef State *(*CreateFunc)(void *buffer);
@@ -38,12 +41,13 @@ public:
   }
 
   explicit Hfsm(mm::mtl::IAllocator *allocator);
-  void beginSetup(void *owner, u32 stateCount, u32 param3);
+  void beginSetup(void *owner, u32 stateCount, u32 maxDepth);
   void endSetup();
   void cleanup();
+  void clearState();
   void setState(u32 state);
   void update(const void *info);
-  void execEvent(void *event);
+  bool execEvent(void *event);
 
   void *unknown00; // Inferred role: p owner; original member name unknown.
   State *m_pState;
@@ -53,6 +57,11 @@ public:
   void *unknown70;                  // Inferred role: state buffer, released by cleanup; original member name unknown.
   size_t unknown78;                 // Inferred role: state size; original member name unknown.
   bool m_setup;
+  bool m_inside; // Named by the assert of Hfsm::setState (MM_ASSERT(!m_inside)).
+
+private:
+  // The game defines it out of line; not reconstructed yet.
+  void setStateImpl(u32 state);
 };
 
 static_assert(sizeof(Hfsm::StateInfo) == 0x10, "");
