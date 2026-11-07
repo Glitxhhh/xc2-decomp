@@ -1,4 +1,5 @@
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
+#include <string.h>
 
 #include "gf/gf_allocator.h"
 #include "gf/object/component/pc/plugin/gf_pc_access_plugin.h"
@@ -18,6 +19,11 @@
 #include "gf/object/component/pc/plugin/gf_pc_water_in_plugin.h"
 
 namespace gf {
+
+bool isAttenuationPack(const char *name) {
+  return strcmp(name, "se_mov_pc_default") == 0 || strcmp(name, "se_fld_move_nopon") == 0 || strcmp(name, "se_fld_move_large") == 0 || strcmp(name, "se_fld_move_hana") == 0 ||
+         strcmp(name, "se_fld_move_beast") == 0 || strcmp(name, "se_fld_move_float") == 0 || strcmp(name, "se_fld_allmap") == 0;
+}
 namespace pc {
 
 AccessPlugin *AccessPlugin::create() {

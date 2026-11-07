@@ -41,7 +41,7 @@ public:
 
     int unknown00; // Inferred role: icon type; original member name unknown.
     int unknown04; // Inferred role: enhance icon; original member name unknown.
-    int unknown08; // Inferred role: reaction icon; original member name unknown.
+    u32 unknown08; // Inferred role: reaction icon; original member name unknown.
     u8 _0c[0x10 - 0x0c];
     int unknown10; // Inferred role: range icon; original member name unknown.
   };

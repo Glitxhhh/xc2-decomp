@@ -13,6 +13,11 @@ namespace gf {
 
 class GfMenuWeaponTypeAdapter : public GfMenuAdapter {
 public:
+  struct TypeInfo {
+    bool (GfMenuWeaponTypeAdapter::*update)();
+    PluginSetup setup;
+  };
+
   struct DriverArts {
     u32 unknown00; // Inferred role: arts; original member name unknown.
     u32 unknown04; // Inferred role: level; original member name unknown.
@@ -28,6 +33,7 @@ public:
 
   GfMenuWeaponTypeAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways);
   ~GfMenuWeaponTypeAdapter() override;
+  static GfMenuWeaponTypeAdapter *create(u32 handle, u32 type, u32 driver, u32 weaponType, u32 artsIndex, bool isUpdateAlways);
   bool update_WpnTypeName();
   bool update_WpnTypeIcon();
   bool update_WpnTypeWP();
@@ -36,6 +42,11 @@ public:
   bool update_ArtsIconEnhance();
   bool update_ArtsIconReact();
   bool update_ArtsIconRange();
+  bool update_ArtsTextType();
+  bool update_ArtsTextReact();
+  bool update_ArtsTextRange();
+  bool update_ArtsNumDamage();
+  bool update_ArtsNumRecast();
   bool update_ArtsLevel();
   bool update_ArtsIconLevel();
   bool update_ArtsDescription();
@@ -45,6 +56,7 @@ public:
   bool update_ArtsLevelMaxDisp();
   bool update_ArtsEnhanceDescription();
   bool update_ArtsReleseLv();
+  static GfMenuWeaponTypeAdapter *createFromCoverter(u32 handle, u32 type, IConverter *converter, bool isUpdateAlways);
   void update(const fw::UpdateInfo &info) override;
   bool getDriverArts(DriverArts &driverArts);
 
