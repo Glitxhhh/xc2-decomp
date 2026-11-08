@@ -15,6 +15,25 @@ movie::Status MediaClock::SetMediaStartTime(s64 mediaStartTimeUs) {
   return movie::Status_Success;
 }
 
+u64 AudioOutRenderer::GetRendererSleepTimeMs() { return m_rendererSleepTimeMs; }
+
+s64 AudioOutRenderer::GetPlayedOutAudioDurationUs(s64 currentTimeUs) {
+  s64 startTimeUs = unknown4c8;
+  if (unknown4c8 == -1) {
+    unknown4c8 = currentTimeUs;
+    startTimeUs = currentTimeUs;
+  }
+  s64 duration = unknown4d0 * 1000000 / unknown10;
+  if (currentTimeUs - startTimeUs <= duration) {
+    duration = currentTimeUs - startTimeUs;
+  }
+  return duration;
+}
+
+bool AudioOutRenderer::ExitThread() { return m_exitThread; }
+
+bool AudioOutRenderer::IsAudioOutStarted() { return m_audioOutStarted; }
+
 void AudioOutRenderer::OnOutputAvailable(int index, s64 presentationTimeUs, u32 flags) {
   audioData data;
   data.unknown00 = index;
