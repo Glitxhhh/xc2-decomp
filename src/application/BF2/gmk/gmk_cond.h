@@ -48,6 +48,8 @@ static_assert(offsetof(QuestFlagCond, unknown03) == 0x3, "");
 
 class DistHvCond {
 public:
+  DistHvCond() : unknown00(0.0f), unknown04(0.0f) {}
+
   static u16 clampDepopDist(u16 depopDist, u16 popDist) { return depopDist <= popDist ? popDist + 1 : depopDist; }
 
   void set(f32 horizontalDist, f32 verticalDist) {

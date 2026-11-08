@@ -64,6 +64,8 @@ bool SoundManager::finalize() {
   return true;
 }
 
+SoundManager::SoundManager(mm::mtl::IAllocator *allocator) : unknown18(nullptr), unknown68(0), unknown94(0), unknown98(false), unknowne0(nullptr), unknowne8() {}
+
 void SoundManager::attachPoolMemory(void *memory, u32 size) {
   if (get() != nullptr && unknown18 != nullptr && unknown98) {
     unknown18->attachPoolMemory(memory, size);

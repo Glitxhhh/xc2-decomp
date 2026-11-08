@@ -9,6 +9,7 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/object/gf_obj_handle.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_squad.h"
@@ -153,6 +154,10 @@ void GmkEnemyInsts::PopInfo::PopEnemyInfo::dispose() {
   unknown24 = 0;
 }
 
+// Unrolled by hand in the original (the game's constructor merges the last member of an entry with the first members of the next entry into one block of zero stores, which the construction loop of an
+// array does not).
+GmkEnemyInsts::PopInfo::PopInfo() : unknown00(0), unknown02(0), unknown08{PopEnemyInfo(), PopEnemyInfo(), PopEnemyInfo(), PopEnemyInfo()} {}
+
 void GmkEnemyInsts::PopInfo::dispose() {
   unknown08[0].dispose();
   unknown08[1].dispose();
@@ -259,6 +264,26 @@ int GmkEnemyInsts::getGobInstCapa() const {
   }
   return capacity;
 }
+
+gf::GF_OBJ_HANDLE *GmkEnemyInsts::getGobInst(u32 index) const {
+  for (u32 i = 0; i < 4; i++) {
+    const PopInfo::PopEnemyInfo &info = unknown98.unknown08[i];
+    u32 num = info.unknown001();
+    if (index < num) {
+      u8 slot = index;
+      if (slot < info.unknown18->size()) {
+        return (*info.unknown18)[slot];
+      }
+      return (*info.unknown10)[slot - info.unknown18->size()];
+    }
+    index -= num;
+  }
+  return gf::INVALID_HANDLE;
+}
+
+GmkEnemyInsts::GmkEnemyInsts()
+    : unknown00(), unknown38(), unknown88(), unknown90(), unknown98(), unknown140(true), unknown141(false), unknown144(), unknown150(nullptr), unknown158(false), unknown159(false), unknown15a(false),
+      unknown160(nullptr), unknown170(-1.0f), unknown178(0), unknown180(false) {}
 
 void GmkEnemyInsts::create(const CreateInfo &info) {
   dispose();

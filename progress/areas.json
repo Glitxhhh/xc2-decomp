@@ -2,7 +2,7 @@
   {
     "name": "gf",
     "code": {
-      "total": 4352444,
+      "total": 4352320,
       "matching": 2497984,
       "non_matching": 0
     }
@@ -11,7 +11,7 @@
     "name": "gmk",
     "code": {
       "total": 743968,
-      "matching": 486360,
+      "matching": 487200,
       "non_matching": 0
     }
   },
@@ -34,8 +34,8 @@
   {
     "name": "framework",
     "code": {
-      "total": 486008,
-      "matching": 258448,
+      "total": 486132,
+      "matching": 258800,
       "non_matching": 0
     }
   },

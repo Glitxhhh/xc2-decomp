@@ -29,6 +29,8 @@ enum SoundOutputType : int;
 
 // Inferred role: sound volume fade; original type name unknown.
 struct unknown129 {
+  unknown129() : unknown00(1.0f), unknown04(1.0f), unknown08(1.0f), unknown0c(0.0f), unknown10(0.0f) {}
+
   void start(f32 target, f32 fadeTime) {
     if (fadeTime > 0.0f) {
       unknown08 = unknown00;
