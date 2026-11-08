@@ -34,6 +34,8 @@ FORBIDDEN = [
 # always_inline is accepted only on the inlined math helpers of these headers (Mat44 products, Euler and
 # quaternion conversions), which the game inlines where clang 3.9 would not.
 ALWAYS_INLINE_OK = ("include/mm_math/mm_mat44.h", "include/mm_math/mm_math.h")
+# The one volatile accepted: dlmalloc 2.8's init_mparams store, reproduced verbatim from its public source.
+DLMALLOC_VOLATILE = "(*(volatile size_t *)(&(mparams.magic))) = magic;"
 
 TRIVIAL = re.compile(r"^(\{|\}|\};|\} else \{|else|return;|return \w+;|return (true|false|nullptr|0|-1);|break;|continue;|default:|)$")
 IDENT = re.compile(r"(?<![\w:.>])([A-Za-z_]\w*)(?!\s*[\w(:<])")
@@ -119,6 +121,7 @@ def main():
         code = re.sub(r"//.*", "", text)
         if path in ALWAYS_INLINE_OK:
             code = code.replace("__attribute__((always_inline))", "")
+        code = code.replace(DLMALLOC_VOLATILE, "")
         for label, pattern in FORBIDDEN:
             if pattern.search(code):
                 print(f"{path}:{at}: {label}: {text.strip()[:140]}")
