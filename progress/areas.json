@@ -2,8 +2,8 @@
   {
     "name": "gf",
     "code": {
-      "total": 4423508,
-      "matching": 2444448,
+      "total": 4423148,
+      "matching": 2444088,
       "non_matching": 0
     }
   },
@@ -19,7 +19,7 @@
     "name": "monolib_mm",
     "code": {
       "total": 1660772,
-      "matching": 467152,
+      "matching": 468316,
       "non_matching": 0
     }
   },
@@ -34,8 +34,8 @@
   {
     "name": "framework",
     "code": {
-      "total": 485468,
-      "matching": 254592,
+      "total": 486008,
+      "matching": 256976,
       "non_matching": 0
     }
   },
@@ -106,8 +106,8 @@
   {
     "name": "mcl",
     "code": {
-      "total": 68888,
-      "matching": 30768,
+      "total": 68708,
+      "matching": 30588,
       "non_matching": 0
     }
   },

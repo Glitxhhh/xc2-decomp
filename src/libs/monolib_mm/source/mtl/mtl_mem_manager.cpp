@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdlib.h>
 
 #include "ml/critical_section.h"
 #include "ml/stack_trace.h"
@@ -14,10 +15,17 @@
 #include "mtl/dl_allocator.h"
 #include "mtl/dlmalloc.h"
 #include "mtl/mem_allocator.h"
+#include "mtl/mem_handlebase_allocator.h"
 #include "mtl/mem_manager.h"
 #include "mtl/mem_manager_region.h"
 #include "mtl/null_allocator.h"
 #include "types.h"
+
+namespace mm {
+namespace mtl {
+class IAllocator;
+} // namespace mtl
+} // namespace mm
 
 namespace mtl {
 
@@ -169,6 +177,12 @@ void AllocatorWrapper::clear() {}
 void NullAllocator::create(void *buffer, size_t size, const char *name) { m_name = name; }
 
 void NullAllocator::destroy() {}
+
+void *IMemAllocator::allocate_tail(size_t size, size_t alignment, const char *file, int line) { return nullptr; }
+
+void IMemAllocator::log_callSTack(void *callStack) const {}
+
+void IMemAllocator::checkLeakMemory() {}
 
 AllocatorType NullAllocator::getType() const { return static_cast<AllocatorType>(0); }
 
@@ -496,6 +510,16 @@ void MemManager::destroyAllocator(AllocatorType type, IMemAllocator *allocator) 
   }
 }
 
+void AllocatorWrapper::destroy() {
+  if (m_allocator != nullptr) {
+    MemManager::destroyAllocator(m_allocator->getType(), m_allocator);
+    m_capacity = 0;
+    unknown18 = 0;
+    m_allocator = nullptr;
+    m_buffer = nullptr;
+  }
+}
+
 void MemManager::log_section(ALLOC_HANDLE handle, bool isDetail, MemoryInfo *info) {
   Region *region = s_ptrMap.unknown003(handle);
   if (region != nullptr) {
@@ -581,6 +605,17 @@ static bool unknown013(const DlAllocator::unknown002 *chunk) { return (chunk->un
 // Inferred role: footer of the chunk; original name unknown.
 static DlAllocator::unknown001 *unknown014(DlAllocator::unknown002 *chunk) { return reinterpret_cast<DlAllocator::unknown001 *>(static_cast<u8 *>(unknown011(chunk)) + unknown012(chunk)); }
 
+size_t getMemoryChunkSize(void *pointer) {
+  size_t size = 0;
+  if (pointer != nullptr) {
+    DlAllocator::unknown002 *chunk = reinterpret_cast<DlAllocator::unknown002 *>(static_cast<u8 *>(pointer) - sizeof(DlAllocator::unknown002));
+    if (unknown013(chunk)) {
+      size = (chunk->unknown08 - sizeof(DlAllocator::unknown002)) & ~static_cast<size_t>(7);
+    }
+  }
+  return size;
+}
+
 void DlAllocator::create(void *buffer, size_t size, const char *name) {
   m_name = name;
   unknown30 = nullptr;
@@ -659,9 +694,86 @@ void DlAllocator::initFooter(void *footer, const char *file, int line, int size)
   }
 }
 
+CallStackInfo::CallStackInfo() : unknown10(0x43534931), unknown14(0), unknown98("noname"), unknowna0(0), unknowna4(0) {}
+
+CallStackInfo::CallStackInfo(void **stack, u32 count, mm::mtl::IAllocator *allocator, const char *file, u32 line) : unknown10(0x43534931), unknown14(0), unknowna0(line), unknowna4(count) {
+  u32 length = count < 16 ? count : 15;
+  unknown98 = file == nullptr ? "noname" : file;
+  for (u32 i = 0; i < length; i++) {
+    unknown18[i] = stack[i];
+  }
+  unknown18[length] = nullptr;
+}
+
+int CallStackInfo::addRef() const { return ++unknown14; }
+
+int CallStackInfo::release() { return --unknown14; }
+
+bool CallStackInfo::equal(void **stack, u32 count, const char *file, u32 line) const {
+  if (unknown98 == file && unknowna0 == line) {
+    u32 length = unknowna4;
+    if (count <= length) {
+      length = count;
+    }
+    for (u32 i = 0; i < length; i++) {
+      if (stack[i] != unknown18[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
 void CallStackInfo::log() {
   if (unknowna4 != 0) {
     mlStackTrace(unknown18);
+  }
+}
+
+void CallStackManager::initialize() {
+  m_maxAllocate = 0;
+  m_nowAllocate = 0;
+  m_maxAllocateSize = 0;
+  m_nowAllocateSize = 0;
+  m_bufferSize = 0;
+  m_maxRefCount = 0;
+  size_t size = MAX_ALLOCATE_SIZE * sizeof(CallStackInfo);
+  m_buffer = malloc(size);
+  if (m_buffer != nullptr) {
+    m_allocator.create(m_buffer, size, "CallStackAllocator");
+    m_bufferSize = size;
+  }
+}
+
+void CallStackManager::finalize() {
+  if (m_buffer != nullptr) {
+    m_allocator.destroy(false);
+    free(m_buffer);
+    m_buffer = nullptr;
+    m_bufferSize = 0;
+  }
+}
+
+bool CallStackManager::validMemoryRange(void *pointer) {
+  if (pointer == nullptr) {
+    return true;
+  }
+  if (pointer < m_buffer) {
+    return false;
+  }
+  return reinterpret_cast<size_t>(pointer) < m_bufferSize + reinterpret_cast<size_t>(m_buffer);
+}
+
+void CallStackManager::remove(CallStackInfo *info) {
+  if (info != nullptr) {
+    if (info->unknown14 == 1) {
+      erase(info);
+    }
+    if (info->release() == 0) {
+      ml::CS lock(unknown18);
+      m_allocator.deallocate(info);
+    }
   }
 }
 
@@ -893,6 +1005,14 @@ template <int N> bool AssetAllocator<N>::getMemInfo1(MemoryInfo1 *info, u32 num)
   }
   return count != 0;
 }
+
+// The line argument of the allocation is the line of the original file.
+#line 1906
+void *MemHandlebaseAllocator::allocate(size_t size, size_t alignment) { return MemManager::allocate(unknown08, size, alignment, false, __FILE__, __LINE__); }
+
+void MemHandlebaseAllocator::deallocate(void *pointer) { MemManager::deallocate(pointer, 0, false); }
+
+const char *MemHandlebaseAllocator::getName() const { return "MemHandlebaseAllocator"; }
 
 } // namespace mtl
 

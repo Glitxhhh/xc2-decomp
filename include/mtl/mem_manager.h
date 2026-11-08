@@ -16,6 +16,8 @@ template <typename T, size_t N> class FixedVector;
 namespace mtl {
 class IMemAllocator;
 
+size_t getMemoryChunkSize(void *pointer);
+
 struct MemoryInfo {
   MemoryInfo() : unknown00(0), unknown08(0), unknown10(0), unknown18(0), unknown20(0), unknown24(0), unknown28(0), unknown30(0), unknown38(0), unknown40(0) {}
 
