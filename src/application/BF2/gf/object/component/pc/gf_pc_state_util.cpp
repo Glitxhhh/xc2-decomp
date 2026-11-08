@@ -3,6 +3,7 @@
 #include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/pad/pad_relay_util.h"
+#include "fw/fw_pad.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_player_camera.h"
@@ -23,6 +24,7 @@
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
+#include "ml/dev_pad.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/unique_ptr.h"
 #include "mm_mtl/vector.h"
@@ -327,6 +329,12 @@ void StateUtil::sendMessageGfObj(GfComBehaviorPc &behavior, GF_OBJ_HANDLE *handl
   GfObj *obj = GfObjUtil::getObj(handle);
   if (obj != nullptr) {
     static_cast<GfObj *>(behavior.unknown08)->sendMessage(obj, message);
+  }
+}
+
+void StateUtil::playVibration(GfComBehaviorPc &behavior, fw::VibrationID id) {
+  if (behavior.getProperty()->unknown111_2) {
+    fw::PadManager::playVibration(ml::PadVibrationInfo(id));
   }
 }
 

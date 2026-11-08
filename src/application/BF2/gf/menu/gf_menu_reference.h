@@ -29,8 +29,11 @@ struct MENUREF_OBJ {
 
 class GfMenuReference : public mm::mtl::PtrSingleton<GfMenuReference> {
 public:
-  static const u32 ARTS_PALETTE_COUNT = 3;
-  static const u32 ALL_ARTS_PALETTE_COUNT = 9;
+  // 64-bit counts: with u32 counts the index is widened separately in each branch and the address computation becomes
+  // a umaddl; the game shares one widened index (mul + add), as getArtsPaletteDisable, getArtsPaletteElementType,
+  // isArtsPaletteEnable and setArtsPaletteEnable show.
+  static const u64 ARTS_PALETTE_COUNT = 3;
+  static const u64 ALL_ARTS_PALETTE_COUNT = 9;
 
   enum HOMURA_MODE { HOMURA_MODE_UNKNOWN_1 = 1 };
 

@@ -140,6 +140,7 @@ public:
   void finalize();
   void update(const fw::UpdateInfo &info);
   void postUpdate(const fw::UpdateInfo &info);
+  void updateFirstObjects(const fw::UpdateInfo &info);
   void checkTerminate();
   void applyModelLayerPauseSpeed();
   static bool reloadForDebug(GF_OBJ_HANDLE *handle, bool isReload);
@@ -149,6 +150,7 @@ public:
   static void removeListener(IGfObjListener *listener);
   static int getGfObjCapacity(u32 objectType);
   static int getObjectNum(u32 objectType);
+  GF_OBJ_HANDLE *getExistFixedObj(int index) const;
   bool isValidMultiBind(GF_OBJ_HANDLE *handle, u32 uniqId) const;
   GfAssetMultiBind *getAssetMultiBind(u32 uniqId) const;
   GfAssetMultiBind *getMultiBinder(GF_OBJ_HANDLE *handle);
