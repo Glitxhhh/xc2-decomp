@@ -1,6 +1,7 @@
 #pragma once
 #include "mm/mm_std_base.h"
 #include "mm_mtl/type_traits.h"
+#include "types.h"
 #include <stddef.h>
 
 namespace mm {
@@ -109,6 +110,35 @@ template <typename T> void move(const T *from, size_t n, T *result) {
     }
   } else {
     mtl_detail::copy_n(from, n, result, int_to_type<__has_trivial_assign(T)>());
+  }
+}
+
+// Inferred role: fills size bytes (a multiple of 4) from top with a 32-bit pattern, as a Duff's device; original name unknown.
+// __LINE__ must be 465 as in the original header: it is the line argument of the assert.
+#line 465
+inline void unknown001(void *top, u32 value, size_t size) {
+  MM_ASSERT((reinterpret_cast<size_t>(top) & 0x03) == 0);
+  u32 *first = static_cast<u32 *>(top);
+  u32 *last = first + (size >> 2);
+  switch ((size >> 2) & 7) {
+  case 0:
+    while (first != last) {
+      *first++ = value;
+    case 7:
+      *first++ = value;
+    case 6:
+      *first++ = value;
+    case 5:
+      *first++ = value;
+    case 4:
+      *first++ = value;
+    case 3:
+      *first++ = value;
+    case 2:
+      *first++ = value;
+    case 1:
+      *first++ = value;
+    }
   }
 }
 

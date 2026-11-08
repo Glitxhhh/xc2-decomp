@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include "mm_math/mm_math.h"
+
 #include "ml/critical_section.h"
 #include "ml/stack_trace.h"
 #include "mm_mtl/algorithm.h"
@@ -13,13 +15,14 @@
 #include "mtl/asset_allocator.h"
 #include "mtl/call_stack_manager.h"
 #include "mtl/dl_allocator.h"
-#include "mtl/dlmalloc.h"
 #include "mtl/mem_allocator.h"
 #include "mtl/mem_handlebase_allocator.h"
 #include "mtl/mem_manager.h"
 #include "mtl/mem_manager_region.h"
 #include "mtl/null_allocator.h"
 #include "types.h"
+
+#include "mtl/dlmalloc.inl"
 
 namespace mm {
 namespace mtl {
@@ -537,80 +540,12 @@ bool MemManager::valid_section(const ALLOC_HANDLE &handle, bool) {
   return false;
 }
 
-// Inferred role: parameters of dlmalloc (mparams); original type name unknown.
-struct unknown006 {
-  size_t unknown00; // Inferred role: magic of the dlmalloc spaces; original member name unknown.
-  size_t unknown08; // Inferred role: page size; original member name unknown.
-  size_t unknown10; // Inferred role: granularity; original member name unknown.
-  size_t unknown18; // Inferred role: threshold of the mmap; original member name unknown.
-  size_t unknown20; // Inferred role: threshold of the trim; original member name unknown.
-  u32 unknown28;    // Inferred role: default flags; original member name unknown.
-};
-
-static_assert(sizeof(unknown006) == 0x30, "");
-
-// Inferred role: parameters of dlmalloc (static struct malloc_params mparams in dlmalloc 2.8); original name unknown.
-static unknown006 unknown007;
-
-// Inferred role: offset of the footer from the memory handed out by dlmalloc: from the size of its chunk when the
-// chunk is in use (the footer is the end of the memory), the size of the footer backwards otherwise; original name unknown.
-static size_t unknown008(size_t memory) {
-  DlAllocator::unknown002 *chunk = reinterpret_cast<DlAllocator::unknown002 *>(memory - sizeof(DlAllocator::unknown002));
-  if ((chunk->unknown08 & 3) == 1) {
-    return -sizeof(DlAllocator::unknown001);
-  }
-  return (chunk->unknown08 - sizeof(DlAllocator::unknown002) - sizeof(DlAllocator::unknown001)) & ~static_cast<size_t>(7);
-}
-
-// Inferred macro name; macros leave no trace in the binary. Initialization of the parameters of dlmalloc
-// (ensure_initialization of dlmalloc 2.8, whose init_mparams the game inlines in every function that uses them).
-#define DL_ALLOCATOR_ENSURE_INITIALIZATION()                                                                                                                                                           \
-  do {                                                                                                                                                                                                 \
-    if (unknown007.unknown00 == 0) {                                                                                                                                                                   \
-      unknown007.unknown10 = 0x10000;                                                                                                                                                                  \
-      unknown007.unknown08 = 0x1000;                                                                                                                                                                   \
-      unknown007.unknown18 = ~static_cast<size_t>(0);                                                                                                                                                  \
-      unknown007.unknown20 = 0x200000;                                                                                                                                                                 \
-      unknown007.unknown28 = 4;                                                                                                                                                                        \
-      /* The only volatile of the sources: dlmalloc 2.8 init_mparams writes the magic that way, */                                                                                                     \
-      /* (*(volatile size_t *)(&(mparams.magic))) = magic; */                                                                                                                                          \
-      (*(volatile size_t *)(&unknown007.unknown00)) = 0x520e9848;                                                                                                                                      \
-    }                                                                                                                                                                                                  \
-  } while (0)
-
-// Inferred role: first chunk of the segment starting at base (align_as_chunk); original name unknown.
-static DlAllocator::unknown002 *unknown009(u8 *base) {
-  size_t address = reinterpret_cast<size_t>(base + sizeof(DlAllocator::unknown002));
-  size_t offset = 0;
-  if ((address & 0xf) != 0) {
-    offset = (0x10 - (address & 0xf)) & 0xf;
-  }
-  return reinterpret_cast<DlAllocator::unknown002 *>(base + offset);
-}
-
-// Inferred role: chunk following the given one; original name unknown.
-static DlAllocator::unknown002 *unknown010(DlAllocator::unknown002 *chunk) {
-  return reinterpret_cast<DlAllocator::unknown002 *>(reinterpret_cast<u8 *>(chunk) + (chunk->unknown08 & ~static_cast<size_t>(7)));
-}
-
-// Inferred role: memory handed out for the chunk; original name unknown.
-static void *unknown011(DlAllocator::unknown002 *chunk) { return chunk + 1; }
-
-// Inferred role: offset of the footer from the memory of the chunk; original name unknown.
-static size_t unknown012(const DlAllocator::unknown002 *chunk) { return (chunk->unknown08 - sizeof(DlAllocator::unknown002) - sizeof(DlAllocator::unknown001)) & ~static_cast<size_t>(7); }
-
-// Inferred role: the chunk is in use (is_inuse); original name unknown.
-static bool unknown013(const DlAllocator::unknown002 *chunk) { return (chunk->unknown08 & 3) != 1; }
-
-// Inferred role: footer of the chunk; original name unknown.
-static DlAllocator::unknown001 *unknown014(DlAllocator::unknown002 *chunk) { return reinterpret_cast<DlAllocator::unknown001 *>(static_cast<u8 *>(unknown011(chunk)) + unknown012(chunk)); }
-
 size_t getMemoryChunkSize(void *pointer) {
   size_t size = 0;
   if (pointer != nullptr) {
-    DlAllocator::unknown002 *chunk = reinterpret_cast<DlAllocator::unknown002 *>(static_cast<u8 *>(pointer) - sizeof(DlAllocator::unknown002));
-    if (unknown013(chunk)) {
-      size = (chunk->unknown08 - sizeof(DlAllocator::unknown002)) & ~static_cast<size_t>(7);
+    mchunkptr p = mem2chunk(pointer);
+    if (is_inuse(p)) {
+      size = chunksize(p) - overhead_for(p);
     }
   }
   return size;
@@ -622,10 +557,8 @@ void DlAllocator::create(void *buffer, size_t size, const char *name) {
   unknown38 = buffer;
   unknown40 = size;
   if (buffer != nullptr) {
-    unknown30 = static_cast<unknown003 *>(create_mspace_with_base(buffer, size));
-    if (unknown30 != nullptr && unknown30->unknown40 == unknown007.unknown00) {
-      unknown30->unknown398 = name != nullptr ? name : "no name";
-    }
+    unknown30 = static_cast<mstate>(create_mspace_with_base(buffer, size));
+    mspace_set_stats(unknown30, name);
   }
 }
 
@@ -636,7 +569,7 @@ void DlAllocator::swap(DlAllocator &other) {
   void *buffer = unknown38;
   unknown38 = other.unknown38;
   other.unknown38 = buffer;
-  unknown003 *space = unknown30;
+  mstate space = unknown30;
   unknown30 = other.unknown30;
   other.unknown30 = space;
   size_t size = unknown40;
@@ -777,11 +710,38 @@ void CallStackManager::remove(CallStackInfo *info) {
   }
 }
 
+// Inferred role: offset of the footer written by initFooter from the memory of an allocation: the end of the usable
+// size of its chunk, the size of the footer backwards when the chunk is not in use; original name unknown.
+static size_t unknown015(const void *memory) { return mspace_usable_size(memory) - sizeof(DlAllocator::unknown001); }
+
+// Inferred role: footer written by initFooter at the end of the memory of an allocation; original name unknown.
+static DlAllocator::unknown001 *unknown016(mchunkptr p) { return reinterpret_cast<DlAllocator::unknown001 *>(static_cast<u8 *>(chunk2mem(p)) + unknown015(chunk2mem(p))); }
+
+void *DlAllocator::allocate(size_t size, size_t alignment, const char *file, int line) {
+  // The game asserts alignment <= 0x10000000 here with the assertion of mm::clamp ("mi<=ma", line 819 of mm_math.h) whose result is not used.
+  mm::clamp<size_t>(16, alignment, 0x10000000);
+  if (unknown30 == nullptr) {
+    return nullptr;
+  }
+  size_t total = getAllocSize(size);
+  void *memory = mspace_memalign(unknown30, alignment, total);
+  if (memory != nullptr) {
+    if (total < 16) {
+      mm::mtl::unknown001(memory, 0xf3f3f3f3, total);
+    } else {
+      mm::mtl::unknown001(memory, 0xf3f3f3f3, 16);
+    }
+    size_t offset = unknown015(memory);
+    initFooter(static_cast<u8 *>(memory) + offset, file, line, offset);
+  }
+  return memory;
+}
+
 void *DlAllocator::getNewInfo(const void *pointer, size_t &size) {
   size = 0;
   size_t address = reinterpret_cast<size_t>(pointer);
   if (address != 0) {
-    size_t offset = unknown008(address);
+    size_t offset = unknown015(pointer);
     address = offset + address;
     size = static_cast<int>(offset) > 0 ? offset : 0;
     address = static_cast<int>(offset) > 0 ? address : 0;
@@ -789,10 +749,39 @@ void *DlAllocator::getNewInfo(const void *pointer, size_t &size) {
   return reinterpret_cast<void *>(address);
 }
 
+void DlAllocator::deallocate(void *pointer, size_t size) {
+  if (pointer != nullptr && unknown30 != nullptr) {
+    size_t address = reinterpret_cast<size_t>(pointer);
+    size_t offset = unknown015(pointer);
+    unknown001 *info = reinterpret_cast<unknown001 *>(offset + address);
+    if (info != nullptr && static_cast<int>(offset) > 0 && info->unknown10 != nullptr) {
+      unknown48.remove(info->unknown10);
+      info->unknown10 = nullptr;
+    }
+    mspace_free(unknown30, pointer);
+  }
+}
+
+void *DlAllocator::reallocate(void *pointer, size_t size) {
+  if (pointer == nullptr || unknown30 == nullptr) {
+    return nullptr;
+  }
+  CallStackInfo *callStack = reinterpret_cast<unknown001 *>(static_cast<u8 *>(pointer) + unknown015(pointer))->unknown10;
+  const char *file = callStack != nullptr ? callStack->unknown98 : "noname";
+  u32 line = callStack != nullptr ? callStack->unknowna0 : 0;
+  void *memory = mspace_realloc(unknown30, pointer, getAllocSize(size));
+  if (memory == nullptr) {
+    return nullptr;
+  }
+  size_t offset = unknown015(memory);
+  initFooter(static_cast<u8 *>(memory) + offset, file, line, offset);
+  return memory;
+}
+
 void DlAllocator::log_callSTack(void *callStack) const {
   if (callStack != nullptr && unknown30 != nullptr) {
     size_t address = reinterpret_cast<size_t>(callStack);
-    size_t offset = unknown008(address);
+    size_t offset = unknown015(callStack);
     unknown001 *info = reinterpret_cast<unknown001 *>(offset + address);
     if (static_cast<int>(offset) > 0 && info != nullptr && info->unknown10 != nullptr && info->unknown00 == 0x44434241) {
       info->unknown10->log();
@@ -801,17 +790,16 @@ void DlAllocator::log_callSTack(void *callStack) const {
 }
 
 bool DlAllocator::hasMemory(const void *pointer) const {
-  unknown003 *space = unknown30;
-  if (pointer != nullptr && space != nullptr) {
-    if (space->unknown40 == unknown007.unknown00) {
-      DL_ALLOCATOR_ENSURE_INITIALIZATION();
-      if (space->unknown28 != nullptr) {
-        for (unknown004 *segment = &space->unknown378; segment != nullptr; segment = segment->unknown10) {
-          unknown002 *chunk = unknown009(segment->unknown00);
-          while (reinterpret_cast<u8 *>(chunk) >= segment->unknown00 && chunk != space->unknown28 && reinterpret_cast<u8 *>(chunk) < segment->unknown00 + segment->unknown08 &&
-                 chunk->unknown08 != 0xb) {
-            void *memory = unknown011(chunk);
-            chunk = unknown010(chunk);
+  mstate m = unknown30;
+  if (pointer != nullptr && m != nullptr) {
+    if (ok_magic(m)) {
+      ensure_initialization();
+      if (is_initialized(m)) {
+        for (msegmentptr s = &m->seg; s != nullptr; s = s->next) {
+          mchunkptr q = align_as_chunk(s->base);
+          while (reinterpret_cast<char *>(q) >= s->base && q != m->top && reinterpret_cast<char *>(q) < s->base + s->size && q->head != FENCEPOST_HEAD) {
+            void *memory = chunk2mem(q);
+            q = next_chunk(q);
             if (memory == pointer) {
               return true;
             }
@@ -824,21 +812,21 @@ bool DlAllocator::hasMemory(const void *pointer) const {
 }
 
 void DlAllocator::checkLeakMemory() {
-  unknown003 *space = unknown30;
-  if (space != nullptr) {
-    DL_ALLOCATOR_ENSURE_INITIALIZATION();
-    if (space->unknown28 != nullptr) {
+  mstate m = unknown30;
+  if (m != nullptr) {
+    ensure_initialization();
+    if (is_initialized(m)) {
       int index = 0;
-      for (unknown004 *segment = &space->unknown378; segment != nullptr; segment = segment->unknown10) {
-        unknown002 *chunk = unknown009(segment->unknown00);
-        while (reinterpret_cast<u8 *>(chunk) >= segment->unknown00 && reinterpret_cast<u8 *>(chunk) < segment->unknown00 + segment->unknown08 && chunk != space->unknown28 && chunk->unknown08 != 0xb) {
-          if (index > 0 && unknown013(chunk)) {
-            CallStackInfo *info = unknown014(chunk)->unknown10;
+      for (msegmentptr s = &m->seg; s != nullptr; s = s->next) {
+        mchunkptr q = align_as_chunk(s->base);
+        while (segment_holds(s, q) && q != m->top && q->head != FENCEPOST_HEAD) {
+          if (index > 0 && is_inuse(q)) {
+            CallStackInfo *info = unknown016(q)->unknown10;
             if (info != nullptr) {
               info->log();
             }
           }
-          chunk = unknown010(chunk);
+          q = next_chunk(q);
           index++;
         }
       }
@@ -847,26 +835,25 @@ void DlAllocator::checkLeakMemory() {
 }
 
 void DlAllocator::getMemImage(MEMIMAGE_HEAD *head) const {
-  unknown003 *space = unknown30;
-  if (space != nullptr) {
-    if (space->unknown40 == unknown007.unknown00) {
-      DL_ALLOCATOR_ENSURE_INITIALIZATION();
-      if (space->unknown28 != nullptr) {
+  mstate m = unknown30;
+  if (m != nullptr) {
+    if (ok_magic(m)) {
+      ensure_initialization();
+      if (is_initialized(m)) {
         int index = 0;
         u32 count = 0;
         MEMIMAGE_HEAD::unknown001 *block = head->unknown18;
-        for (unknown004 *segment = &space->unknown378; segment != nullptr; segment = segment->unknown10) {
-          unknown002 *chunk = unknown009(segment->unknown00);
-          while (reinterpret_cast<u8 *>(chunk) >= segment->unknown00 && reinterpret_cast<u8 *>(chunk) < segment->unknown00 + segment->unknown08 && chunk != space->unknown28 &&
-                 chunk->unknown08 != 0xb) {
-            size_t size = chunk->unknown08 & ~static_cast<size_t>(7);
-            if (index > 0 && unknown013(chunk) && unknown012(chunk) == unknown014(chunk)->unknown08 && count < head->unknown10) {
-              block->unknown00 = reinterpret_cast<size_t>(chunk);
+        for (msegmentptr s = &m->seg; s != nullptr; s = s->next) {
+          mchunkptr q = align_as_chunk(s->base);
+          while (segment_holds(s, q) && q != m->top && q->head != FENCEPOST_HEAD) {
+            size_t size = chunksize(q);
+            if (index > 0 && is_inuse(q) && unknown015(chunk2mem(q)) == unknown016(q)->unknown08 && count < head->unknown10) {
+              block->unknown00 = reinterpret_cast<size_t>(q);
               block->unknown08 = size;
               block++;
               count++;
             }
-            chunk = unknown010(chunk);
+            q = next_chunk(q);
             index++;
           }
         }
