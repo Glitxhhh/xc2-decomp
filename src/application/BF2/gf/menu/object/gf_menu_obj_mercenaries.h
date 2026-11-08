@@ -34,6 +34,14 @@ public:
   static void setupLocationZone(ui::UIObjectAcc &acc, u16 zone);
   static void setupMission(ui::UIObjectAcc &acc);
   static void setupMercenaries(ui::UIObjectAcc &acc);
+  static void updateTeamList(GfMenuTeamList *list);
+  static void updateMissionList(GfMenuMissionList *list, u16 zone);
+  static void updateBladeListReserver(GfMenuBladeList *list);
+  static void updateBladeList(GfMenuBladeList *list, u32 team);
+  static void updateFieldSkillList(GfMenuFieldSkillList *list, const GfMenuBladeList *blades);
+  static bool isExistFieldSkill(u32 mission, u32 index);
+  static void moveFieldSkillEnd(ui::UIObjectAcc &acc, u32 mission, u32 index);
+  static void setupMercenariesCondParam(ui::UIObjectAcc &acc, int index, u32 type, const char *adapterFormat, const char *iconFormat);
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);
   static int setFadeOut(u32 handle);

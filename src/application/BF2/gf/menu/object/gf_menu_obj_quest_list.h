@@ -26,6 +26,18 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  struct OpenParam {
+    u32 unknown00; // Role and original member name unknown.
+  };
+
+  static void registOpenParam(const OpenParam &param);
+  void sendUpdateEvent(u32 handle, int param);
+  void sendResumeEvent(u32 handle, int param);
+  void sendSuspendEvent(u32 handle, int param);
+  void changeView(u32 view);
+  bool seqActivateSelect();
+  bool seqEnd();
+  bool seqActivateError();
 
   u8 _24[0x28 - 0x24];
   GfMenuQuestList *unknown28;        // Inferred role: quests; original member name unknown.

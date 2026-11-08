@@ -21,6 +21,15 @@ public:
     const mm::mtl::FixedVector<u16, 422> *unknown18; // Inferred role: blades; original member name unknown.
   };
 
+  struct TeamSetup {
+    TeamSetup() : unknown14(0), unknown18(0), unknown1c(true) {}
+
+    SetupParam unknown00; // Inferred role: param; original member name unknown.
+    u32 unknown14;        // Inferred role: source; original member name unknown.
+    u32 unknown18;        // Inferred role: team; original member name unknown.
+    bool unknown1c;       // Inferred role: unknown; original member name unknown.
+  };
+
   GfMenuBladeList();
   ~GfMenuBladeList() override;
   static GfMenuBladeList *create();
@@ -42,6 +51,7 @@ public:
   static bool sortGenderAscending(const MenuBladeInfo &info, const MenuBladeInfo &other);
   void updateOwner();
   void setupFromBladeList(const BladeListSetup &setup);
+  void setupFromTeam(const TeamSetup &setup);
 };
 
 static_assert(offsetof(GfMenuBladeList::BladeListSetup, unknown18) == 0x18, "");

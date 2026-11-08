@@ -24,6 +24,15 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  void stopVoice();
+  void playVoice(const char *name);
+  void getScreenOverSize(u32 handle, f32 scale, s16 &width, s16 &height);
+  bool seqEffReleaseA();
+  bool seqEffReleaseB();
+  bool seqEffReleaseC();
+  bool seqEffReleaseD();
+  bool seqConfirmBoosterGet();
+  bool seqResumeRelease();
 
   u8 _24[0x28 - 0x24];
   GfMenuBladeList *unknown28;                      // Inferred role: blades; original member name unknown.

@@ -5,40 +5,62 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
 
+namespace ui {
+class UISelectObjList;
+} // namespace ui
+
 namespace gf {
+class GfMenuCallContext;
 
 class GfMenuObjPartyForm2 : public GfMenuObject {
 public:
+  struct OpenParam {
+    u16 unknown00; // Role and original member name unknown.
+  };
+
   GfMenuObjPartyForm2(u32 handle);
   ~GfMenuObjPartyForm2() override;
+  void update() override;
+  static void registOpenParam(const OpenParam &param);
   u32 getCursorID(u32 index);
+  void changeCursorMode(u32 mode);
+  bool seqStartOpen();
+  bool seqAppearTitle();
+  bool seqAppearFrame();
+  bool seqAppearPlate();
+  bool seqAnnounceChange();
+  bool seqWaitOpenEnd();
+  bool seqStartSwap();
+  bool seqTakePlate();
+  bool seqMovePlate();
+  bool seqWaitSwapEnd();
+
+  // Inferred role: the object ring of a driver list and a second word; original type name unknown.
+  struct unknown001 {
+    ui::UISelectObjList *unknown00; // Inferred role: driver objects; original member name unknown.
+    u64 unknown08;                  // Role and original member name unknown, cleared by the constructor.
+  };
 
   u8 _24[0x38 - 0x24];
   bool unknown38; // Role and original member name unknown, cleared by the constructor.
   u8 _39[0x40 - 0x39];
-  u64 unknown40;                                    // Role and original member name unknown, cleared by the constructor.
-  u64 unknown48;                                    // Role and original member name unknown, cleared by the constructor.
-  u64 unknown50;                                    // Role and original member name unknown, cleared by the constructor.
-  u64 unknown58;                                    // Role and original member name unknown, cleared by the constructor.
-  int unknown60;                                    // Role and original member name unknown, 0xff at start.
-  int unknown64;                                    // Role and original member name unknown, 0xff at start.
+  unknown001 unknown40[2];                          // Inferred role: the two driver rings; original member name unknown.
+  u32 unknown60;                                    // Inferred role: ring of the cursor, 0xff at start; original member name unknown.
+  u32 unknown64;                                    // Inferred role: ring the cursor came from, 0xff at start; original member name unknown.
   GfMenuSequence<GfMenuObjPartyForm2, 8> unknown68; // Inferred role: queued steps; original member name unknown.
   u16 unknown2f8;                                   // Role and original member name unknown, cleared by the constructor.
   u8 _2fa[0x2fc - 0x2fa];
-  int unknown2fc; // Role and original member name unknown, -1 at start.
-  int unknown300; // Role and original member name unknown, -1 at start.
-  int unknown304; // Role and original member name unknown, -1 at start.
-  u32 unknown308; // Role and original member name unknown, cleared by the constructor.
+  int unknown2fc; // Inferred role: control of the current step, -1 when idle; original member name unknown.
+  int unknown300; // Inferred role: control of the first plate, -1 when idle; original member name unknown.
+  int unknown304; // Inferred role: control of the second plate, -1 when idle; original member name unknown.
+  u32 unknown308; // Inferred role: display priority of the plate; original member name unknown.
   u8 _30c[0x310 - 0x30c];
-  u64 unknown310; // Role and original member name unknown, cleared by the constructor.
-  u64 unknown318; // Role and original member name unknown, cleared by the constructor.
+  GfMenuCallContext *unknown310; // Inferred role: announce call context; original member name unknown.
+  u64 unknown318;                // Role and original member name unknown, cleared by the constructor.
 };
 
 static_assert(offsetof(GfMenuObjPartyForm2, unknown38) == 0x38, "");
 static_assert(offsetof(GfMenuObjPartyForm2, unknown40) == 0x40, "");
-static_assert(offsetof(GfMenuObjPartyForm2, unknown48) == 0x48, "");
-static_assert(offsetof(GfMenuObjPartyForm2, unknown50) == 0x50, "");
-static_assert(offsetof(GfMenuObjPartyForm2, unknown58) == 0x58, "");
 static_assert(offsetof(GfMenuObjPartyForm2, unknown60) == 0x60, "");
 static_assert(offsetof(GfMenuObjPartyForm2, unknown64) == 0x64, "");
 static_assert(offsetof(GfMenuObjPartyForm2, unknown68) == 0x68, "");
