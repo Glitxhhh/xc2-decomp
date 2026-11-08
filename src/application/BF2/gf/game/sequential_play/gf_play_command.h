@@ -901,6 +901,10 @@ class GfPlayComResetBlade : public GfPlayCom {
   GF_PLAY_COM("ResetBlade")
 
 public:
+  ~GfPlayComResetBlade() override;
+  void start() override;
+  void end() override;
+  bool update(const fw::UpdateInfo &info, bool isCancel) override;
   static GfPlayComResetBlade *create(u32 partyId, int blade);
   static bool isPlaying(u32 partyId);
 

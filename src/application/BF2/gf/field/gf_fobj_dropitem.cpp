@@ -189,6 +189,58 @@ u32 GfFobjDropitem::getResBdatIdFromItemId(s32 itemId) {
   return 0xffffffff;
 }
 
+GfDropitemEmitter::GfDropitemEmitter(const CreateInfo *info) : m_dropitemsEmitted(false), unknown44(0.0f), unknown48(0.0f) {
+  if (info != nullptr) {
+    create(*info);
+  }
+}
+
+void GfDropitemEmitter::create(const CreateInfo &info) {
+  dispose();
+  unknown00 = info;
+  unknown50 = &GfDropitemEmitter::seqWaitBeginDrop;
+}
+
+void GfDropitemEmitter::dispose() {
+  unknown44 = 0.0f;
+  unknown48 = 0.0f;
+  m_dropitemsEmitted = false;
+  unknown00 = CreateInfo();
+}
+
+void GfDropitemEmitter::update(f32 deltaTime) {
+  if (unknown00.unknown28 != nullptr && unknown00.unknown30 > 0) {
+    unknown44 += deltaTime;
+    if (unknown50) {
+      (this->*unknown50)(deltaTime);
+    }
+  }
+}
+
+void GfDropitemEmitter::seqWaitBeginDrop(f32 deltaTime) {
+  if (unknown44 < unknown00.unknown1c) {
+    return;
+  }
+  GfFobjDropitem::EmitInfo info;
+  info.createDropitemInfos(unknown00.unknown28, unknown00.unknown30);
+  info.unknown00 = unknown00.unknown00;
+  info.unknown10 = unknown00.unknown10;
+  info.unknown14 = unknown00.unknown14;
+  info.unknown18 = unknown00.unknown18;
+  info.unknown1c = unknown00.unknown20;
+  info.unknown20 = unknown00.unknown24;
+  unknown48 = GfFobjDropitem::emitDropitems(info) + unknown44;
+  unknown50 = &GfDropitemEmitter::seqWaitEndDrop;
+}
+
+void GfDropitemEmitter::seqWaitEndDrop(f32 deltaTime) {
+  if (unknown44 < unknown48) {
+    return;
+  }
+  m_dropitemsEmitted = true;
+  unknown50 = nullptr;
+}
+
 } // namespace gf
 
 template mm::mtl::FixedList<gf::GfFobjDropitem *, 1024>::iterator mm::mtl::FixedList<gf::GfFobjDropitem *, 1024>::erase(mm::mtl::FixedList<gf::GfFobjDropitem *, 1024>::iterator);

@@ -2,7 +2,11 @@
 #include <stddef.h>
 
 #include "gf/menu/adapter/gf_menu_adapter.h"
+#include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/list/gf_menu_mission_list.h"
 #include "mm_mtl/delegate.h"
+#include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/reference_object.h"
 #include "types.h"
 
 namespace ui {
@@ -19,6 +23,23 @@ public:
   public:
     virtual ~IConverter() {}
     virtual u32 getMissionId() = 0;
+  };
+
+  class MissionListConverter : public IConverter {
+  public:
+    ~MissionListConverter() override { mm::mtl::safeRelease(list); }
+    u32 getMissionId() override;
+
+    GfMenuMissionList *list;
+    u32 listIndex;
+  };
+
+  class ReferenceConverter : public IConverter {
+  public:
+    ~ReferenceConverter() override { number = nullptr; }
+    u32 getMissionId() override;
+
+    mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number;
   };
 
   static GfMenuMissionAdapter *createFromReferenceMission(u32 handle, u32 type, u32 index, bool isUpdateAlways);

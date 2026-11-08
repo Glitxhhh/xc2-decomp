@@ -4,6 +4,7 @@
 
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
+#include "gmk/gmk_cond.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/singleton.h"
 #include "mm_mtl/vector.h"
@@ -58,8 +59,7 @@ public:
   CreateInfo unknown10;                                             // Inferred role: create info; original member name unknown.
   f32 unknown40;                                                    // Inferred role: minimum pop radius; original member name unknown.
   f32 unknown44;                                                    // Inferred role: maximum pop radius; original member name unknown.
-  f32 unknown48;                                                    // Inferred role: squared range of the pop area; original member name unknown.
-  f32 unknown4c;                                                    // Inferred role: squared range of the pop area; original member name unknown.
+  gmk::DistHvCond unknown48;                                        // Inferred role: depop range of the popped enemies; original member name unknown.
   mm::mtl::Vector<PopInfo> unknown50;                               // Inferred role: pop points; original member name unknown.
   mm::mtl::Vector<std::pair<PopInfo *, GF_OBJ_HANDLE *>> unknown78; // Inferred role: wait enemies; original member name unknown.
   mm::mtl::Vector<GF_OBJ_HANDLE *> unknowna0;                       // Inferred role: popped enemies; original member name unknown.
@@ -74,6 +74,7 @@ static_assert(offsetof(GfRelSmnEnemy::CreateInfo, unknown10) == 0x10, "");
 static_assert(sizeof(GfRelSmnEnemy::CreateInfo) == 0x30, "");
 static_assert(offsetof(GfRelSmnEnemy, unknown10) == 0x10, "");
 static_assert(offsetof(GfRelSmnEnemy, unknown40) == 0x40, "");
+static_assert(offsetof(GfRelSmnEnemy, unknown48) == 0x48, "");
 static_assert(offsetof(GfRelSmnEnemy, unknown50) == 0x50, "");
 static_assert(offsetof(GfRelSmnEnemy, unknown78) == 0x78, "");
 static_assert(offsetof(GfRelSmnEnemy, unknowna0) == 0xa0, "");

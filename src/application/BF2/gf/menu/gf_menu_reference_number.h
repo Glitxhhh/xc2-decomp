@@ -10,6 +10,9 @@ class GfMenuReferenceNumber : public mm::mtl::ReferenceObject {
 public:
   GfMenuReferenceNumber() : unknown0c(0), unknown10(0), unknown14(9999) {}
 
+  // Inferred helper: sets the number; original name unknown.
+  void unknown162(int number) { unknown0c = number; }
+
   int unknown0c; // Inferred role: number; original member name unknown.
   int unknown10; // Inferred role: min; original member name unknown.
   int unknown14; // Inferred role: max; original member name unknown.

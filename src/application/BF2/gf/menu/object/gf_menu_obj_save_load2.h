@@ -7,6 +7,7 @@
 #include "types.h"
 
 namespace ui {
+class UIObjectAcc;
 class UIObjectNumberPlugin;
 class UIObjectTextPlugin;
 class UIObjectTimePlugin;
@@ -27,6 +28,10 @@ public:
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle, u32 type);
   static int setFadeOut(u32 handle, u32 type);
+  void refreshSave(ui::UIObjectAcc &acc, u32 flag);
+  bool seqSave();
+  bool seqSaveWait();
+  bool seqSaveWaitToClose();
   void initialize() override;
   void finalize() override;
   void update() override;

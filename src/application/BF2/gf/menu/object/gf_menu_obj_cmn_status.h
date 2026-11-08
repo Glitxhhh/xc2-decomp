@@ -26,6 +26,9 @@ public:
   static void closeDrStatus();
   static void openBlStatus(u32 blade, int page);
   static void closeBlStatus();
+  static bool swapDrStatus();
+  static bool swapBlStatus();
+  void updateBladeBase(u32 page);
 
   static bool s_DispFlag[2];
 

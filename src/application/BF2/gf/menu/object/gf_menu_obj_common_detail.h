@@ -13,13 +13,14 @@ class GfMenuCallContext;
 class GfMenuObjCommonDetail : public GfMenuObject {
 public:
   struct OpenParam {
-    OpenParam() : unknown18(0), unknown28(0), unknown2c(0), unknown30(-1) {}
+    OpenParam() : unknown18(0), unknown28(false), unknown29(false), unknown2c(0), unknown30(-1) {}
 
     mm::mtl::FixedVector<u32, 4> unknown00; // Inferred role: detail ids; original member name unknown.
     u32 unknown18;                          // Role and original member name unknown.
     int unknown1c;                          // Inferred role: kind of the detail, 0 driver and 1 blade; original member name unknown.
     mm::Rect<s16> unknown20;                // Inferred role: layout rect; original member name unknown.
-    u16 unknown28;                          // Role and original member name unknown.
+    bool unknown28;                         // Role and original member name unknown.
+    bool unknown29;                         // Role and original member name unknown.
     u32 unknown2c;                          // Inferred role: parent object handle; original member name unknown.
     int unknown30;                          // Role and original member name unknown.
   };

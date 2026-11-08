@@ -1,5 +1,7 @@
 #include "gf/game/gf_game_player_formation.h"
 
+#include <math.h>
+
 #include "framework/debug/debug_draw.h"
 #include "fw/fw_param_manager.h"
 #include "gf/event/gf_event.h"
@@ -70,6 +72,20 @@ const fw::Transform &GfGamePlayerFormation::getFollowTransform(u32 playerId) con
   }
 
   return unknowne0[playerId];
+}
+
+bool GfGamePlayerFormation::isFarRandomTalk(GF_OBJ_HANDLE *handle) {
+  u32 playerId = findPlayer(handle);
+  if (playerId == PLAYER_ID_NONE) {
+    return false;
+  }
+  const WarpForRandomTalkParam *param = getWarpForRandomTalkParam();
+  mm::Vec3 delta = unknowne0[0].unknown00 - unknowne0[playerId].unknown00;
+  if (fabsf(delta.y) >= param->height) {
+    return true;
+  }
+  f32 distanceSq = param->distance * param->distance;
+  return delta.x * delta.x + delta.z * delta.z >= distanceSq;
 }
 
 void GfGamePlayerFormation::swapFormation(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *otherHandle) { swapFormation(findPlayer(handle), findPlayer(otherHandle)); }

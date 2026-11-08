@@ -12,6 +12,7 @@ class ReferenceObject;
 } // namespace mm
 
 namespace ui {
+class UIObjectAcc;
 class UISelectObjList;
 } // namespace ui
 
@@ -32,6 +33,7 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void setupEquipItem(ui::UIObjectAcc &acc, GfMenuItemList *list);
 
   u32 unknown24;  // Role and original member name unknown, cleared by the constructor.
   bool unknown28; // Role and original member name unknown, cleared by the constructor.

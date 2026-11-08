@@ -99,7 +99,7 @@ void GfMenuModelView::detachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent,
   }
 }
 
-const fw::Transform &GfMenuModelView::getObjectTransform(GF_OBJ_HANDLE *handle) {
+fw::Transform &GfMenuModelView::getObjectTransform(GF_OBJ_HANDLE *handle) {
   static fw::Transform transform;
   GfObjAcc acc(handle);
   GfComTransform *comTransform = acc.getObj()->getComponent<GfComTransform>();

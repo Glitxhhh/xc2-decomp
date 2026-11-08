@@ -5,6 +5,7 @@
 #include "types.h"
 
 namespace ui {
+struct EventData;
 class UICtrlCursorSelect;
 class UICtrlRevolveSelect;
 class UIListInfoBase;
@@ -31,6 +32,8 @@ public:
   void finalize() override;
   void update() override;
   static void close();
+  void changeCategory(int index);
+  void listenerCategorySelect(const ui::EventData &event);
 
   u8 _24[0x28 - 0x24];
   unknown002 unknown28[2];

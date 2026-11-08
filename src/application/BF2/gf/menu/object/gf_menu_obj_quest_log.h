@@ -51,6 +51,7 @@ public:
   static void completeTask(const QuestTaskParam &param);
   static void closeLog();
   static void openLog();
+  void setupLog();
   void setupLogClear();
   u32 nextTaskIndex(u32 index);
   void setupLogItem();

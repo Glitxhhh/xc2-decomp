@@ -478,6 +478,22 @@ void GfMenuItemAdapter::PouchConverter::getItemInfo(MenuItemInfo &info) {
   info.unknown08 = 1;
 }
 
+void GfMenuItemAdapter::PouchReferenceIndexConverter::getItemInfo(MenuItemInfo &info) {
+  u32 pouchIndex = number->unknown0c;
+  SDataPouch *pouch = GfPouchUtil::getPouch(driver, pouchIndex);
+  info.unknown00 = ItemType::FAVORITE;
+  info.unknown04 = pouch->unknown04;
+  info.unknown08 = 1;
+}
+
+void GfMenuItemAdapter::PouchReferenceIndexReferenceDriverConverter::getItemInfo(MenuItemInfo &info) {
+  u32 pouchIndex = number->unknown0c;
+  SDataPouch *pouch = GfPouchUtil::getPouch(GfMenuReference::getReferenceDriverID(driverIndex), pouchIndex);
+  info.unknown00 = ItemType::FAVORITE;
+  info.unknown04 = pouch->unknown04;
+  info.unknown08 = 1;
+}
+
 void GfMenuItemAdapter::MissionConverter::getItemInfo(MenuItemInfo &info) {
   if (index < 4) {
     u32 item;

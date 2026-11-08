@@ -80,6 +80,19 @@ void GfMenuObjCmnStatus::closeDrStatus() {
   }
 }
 
+bool GfMenuObjCmnStatus::swapDrStatus() {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::UIObjectAcc status(acc.unknown10, "LAY_status_dr");
+    ui::EventData event;
+    event.unknown00 = 0x102;
+    GfMenuObject::sendEvent(status.unknown10, event, 0.0f);
+    s_DispFlag[0] = !s_DispFlag[0];
+    return s_DispFlag[0];
+  }
+  return false;
+}
+
 void GfMenuObjCmnStatus::openBlStatus(u32 blade, int page) {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
   if (acc.isValid()) {
@@ -100,5 +113,31 @@ void GfMenuObjCmnStatus::closeBlStatus() {
     GfMenuObject::sendEvent(acc.searchChild("LAY_status_bl"), event, 0.0f);
     s_DispFlag[1] = false;
   }
+}
+
+bool GfMenuObjCmnStatus::swapBlStatus() {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::UIObjectAcc status(acc.unknown10, "LAY_status_bl");
+    ui::EventData event;
+    event.unknown00 = 0x102;
+    GfMenuObject::sendEvent(status.unknown10, event, 0.0f);
+    s_DispFlag[1] = !s_DispFlag[1];
+    return s_DispFlag[1];
+  }
+  return false;
+}
+
+void GfMenuObjCmnStatus::updateBladeBase(u32 page) {
+  u32 type = page - 2;
+  bool isSkill = type < 5;
+  ui::UIObjectAcc index(unknown18, "LAY_status_bl_index");
+  ui::UIObjectAcc indexSkill(unknown18, "LAY_status_bl_index_sk");
+  ui::UIObjectAcc base(unknown18, "IMG_status_bl_base");
+  ui::UIObjectAcc baseSkill(unknown18, "IMG_status_bl_base_sk");
+  index.setDisp(!isSkill);
+  base.setDisp(!isSkill);
+  indexSkill.setDisp(isSkill);
+  baseSkill.setDisp(isSkill);
 }
 } // namespace gf

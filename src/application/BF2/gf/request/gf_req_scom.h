@@ -1020,10 +1020,13 @@ static_assert(sizeof(SCOM_STOP_BATTLE) == 0x20, "");
 
 class GfReqSmallCom : public mm::mtl::PtrSingleton<GfReqSmallCom> {
 public:
+  GfReqSmallCom();
   ~GfReqSmallCom() override;
   static GF_SCOM_HANDLE *addRequest(SCOM *scom);
   static GF_SCOM_HANDLE *addRequestParallel(SCOM *scom);
   GF_SCOM_HANDLE *allocate();
+  bool update(const fw::UpdateInfo &info, u16 priority);
+  bool updateParallel(const fw::UpdateInfo &info);
   void update(const fw::UpdateInfo &info);
   bool isValid(GF_SCOM_HANDLE *handle);
   static bool isExistCommand(SCOM_TYPE type);

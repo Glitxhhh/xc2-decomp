@@ -83,7 +83,7 @@ public:
   void setObjectCommandValue(GF_OBJ_HANDLE *handle, const char *name, int value);
   void attachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
   void detachObject(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *parent, const char *bone);
-  static const fw::Transform &getObjectTransform(GF_OBJ_HANDLE *handle);
+  static fw::Transform &getObjectTransform(GF_OBJ_HANDLE *handle);
   static fw::Transform &getObjectTransformLocal(GF_OBJ_HANDLE *handle);
   static bool getObjectEffectPoint(GF_OBJ_HANDLE *handle, const char *name, mm::Vec3 &position);
   static void setObjectScale(GF_OBJ_HANDLE *handle, const mm::Vec3 &scale);

@@ -25,6 +25,8 @@ public:
   static void fadeout(GfMenuCallContext *context);
   static void fadein(GfMenuCallContext *context);
   static void dispOffScreen(bool isDisp);
+  void refreshSelctList();
+  void updateSubMsgList();
 
   int unknown24;                  // Role and original member name unknown, 1 at start.
   GfMenuMsgList *unknown28;       // Inferred role: event messages; original member name unknown.

@@ -2,16 +2,21 @@
 
 #include <algorithm>
 
+#include "framework/debug/debug_draw.h"
+#include "fw/fw_transform.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_enemy/gmk_enemy.h"
 #include "gmk/gmk_manager.h"
+#include "mm_math/mm_col4.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/vector.h"
 
@@ -19,7 +24,7 @@ constexpr size_t SMN_ENEMY_CAPACITY = 40;
 
 namespace gf {
 
-GfRelSmnEnemy::GfRelSmnEnemy(const CreateInfo *info) : unknown40(1.0f), unknown44(5.0f), unknown48(0.0f), unknown4c(0.0f) {
+GfRelSmnEnemy::GfRelSmnEnemy(const CreateInfo *info) : unknown40(1.0f), unknown44(5.0f), unknown48() {
   GfObjManager::addListener(this, OBJEVT_ALL);
   if (info != nullptr) {
     create(*info);
@@ -99,6 +104,32 @@ void GfRelSmnEnemy::disposeEnemies(bool isFade) {
       }
     }
     unknowna0.destroy();
+  }
+}
+
+void GfRelSmnEnemy::debugDraw() const {
+  if (unknown10.unknown00 != INVALID_HANDLE && unknown10.unknown08 > 0) {
+    GfObjAcc acc(unknown10.unknown00);
+    if (acc.getObj() != nullptr) {
+      mm::Mat44 matrix;
+      acc.getWorldTransform().unknown001(matrix);
+      matrix.rows[3][1] += 0.1f;
+      fw::debug::drawCircleLine(matrix, unknown40, mm::Col4::blue);
+      fw::debug::drawCircleLine(matrix, unknown44, mm::Col4::red);
+    }
+  }
+}
+
+void GfRelSmnEnemy::updateDepopEnemy() {
+  if (!unknowna0.empty()) {
+    for (GF_OBJ_HANDLE **enemy = unknowna0.begin(), **end = unknowna0.end(); enemy != end; ++enemy) {
+      GfObjSetupEnemy *setup = GfObjUtil::getObjSetup<GfObjSetupEnemy>(*enemy);
+      if (0.0f < unknown48.unknown00 && 0.0f < unknown48.unknown04 && !unknown48.isMatch(setup->unknown20)) {
+        unknowna0.erase(enemy);
+        SCOM_DESTROY_GAME_OBJ::create(*enemy, 0.5f, 0);
+        return;
+      }
+    }
   }
 }
 

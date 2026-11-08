@@ -53,11 +53,20 @@ public:
     bool unknown01; // Inferred role: enemy is linked to others (link icon); original member name unknown.
   };
 
+  struct UiActionWindowInfo {
+    UiActionWindowInfo() : unknown00(nullptr), unknown08(-1) {}
+    void create(GF_OBJ_HANDLE *handle);
+
+    u8 *unknown00; // Inferred role: action window table (fld_actionwindow); original member name unknown.
+    u32 unknown08; // Inferred role: action window message id; original member name unknown.
+  };
+
   static bool isUiGfObjHandleValid(GF_OBJ_HANDLE *handle);
   static f32 getUiNameDist(GF_OBJ_HANDLE *handle);
   static bool isUiNameDistMatch(GF_OBJ_HANDLE *handle);
   static bool isUiInfoIconDistMatch(GF_OBJ_HANDLE *handle);
   static int getUiInfoIconBdatId(GF_OBJ_HANDLE *handle);
+  static int getUiOffsetId(GF_OBJ_HANDLE *handle);
   static bool enterPlayerBattle(bool isStart, GF_OBJ_HANDLE *target, bool isForce);
   static bool evalSumFs(int condition, u32 option);
   static bool getNameMsId(u32 &nameId, GF_OBJ_HANDLE *handle);
@@ -196,6 +205,8 @@ public:
 
 static_assert(offsetof(GfGameUtil::UiEnemyStatusIconInfo, unknown01) == 0x01, "");
 static_assert(sizeof(GfGameUtil::UiEnemyStatusIconInfo) == 0x02, "");
+static_assert(offsetof(GfGameUtil::UiActionWindowInfo, unknown08) == 0x08, "");
+static_assert(sizeof(GfGameUtil::UiActionWindowInfo) == 0x10, "");
 
 class GfGameUtilCloudSea {
 public:

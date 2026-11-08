@@ -16,6 +16,9 @@ public:
   ~GfMenuObjLvupSelect() override;
   static void openLevelSelect(GfMenuCallContext *context, u32 level);
   static void openLevelup(GfMenuCallContext *context, u32 level, u32 levelMax);
+  bool seqConfirmLevelUp();
+  bool seqExecLevelUp();
+  void updateBonusExp();
   void initialize() override;
   void finalize() override;
   void update() override;

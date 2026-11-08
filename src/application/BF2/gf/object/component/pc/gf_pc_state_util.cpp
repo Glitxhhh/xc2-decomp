@@ -102,6 +102,18 @@ void StateUtil::setEnableDownIK(GfComBehaviorPc &behavior, bool isEnable) {
   }
 }
 
+void StateUtil::setEnableHeadDetectForSwitcher(GfComBehaviorPc &behavior, bool isEnable) {
+  FootIkControllerPlugin *plugin = behavior.unknown001<FootIkControllerPlugin>(3);
+  if (plugin != nullptr && plugin->unknown1c) {
+    GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+    if (isEnable) {
+      property->unknown111_6 = true;
+    } else {
+      property->unknown111_6 = false;
+    }
+  }
+}
+
 void StateUtil::switchPlacementIK(GfComBehaviorPc &behavior, bool isOn) {
   FootIkControllerPlugin *plugin = behavior.unknown001<FootIkControllerPlugin>(3);
   if (plugin != nullptr) {

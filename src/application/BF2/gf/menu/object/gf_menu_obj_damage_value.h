@@ -5,6 +5,7 @@
 #include "gf/menu/gf_menu_object.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -21,6 +22,8 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void removeObject(ui::UIObjectAcc acc);
+  static void close(u32 handle);
   static void closeAll();
 };
 

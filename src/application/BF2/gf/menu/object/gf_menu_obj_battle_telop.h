@@ -13,8 +13,13 @@ class GfMenuReferenceNumber;
 
 class GfMenuObjBattleTelop : public GfMenuObject {
 public:
+  struct OpenParam {
+    u16 unknown00; // Inferred role: telop message; original member name unknown.
+  };
+
   GfMenuObjBattleTelop(u32 handle);
   ~GfMenuObjBattleTelop() override;
+  static void open(const OpenParam &param);
   static void close();
   static void closeUniteCombo();
   void initialize() override;

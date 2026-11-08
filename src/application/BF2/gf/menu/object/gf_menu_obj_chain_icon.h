@@ -2,6 +2,7 @@
 #include "gf/menu/gf_menu_many_objects.h"
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -23,7 +24,9 @@ public:
   };
 
   static void open(const OpenParam &param);
+  static void removeObject(ui::UIObjectAcc acc);
   static void close(u32 handle);
+  static void closeAll();
 };
 
 static_assert(sizeof(GfMenuObjChainIcon::ChainIconInfo) == 0x10, "");

@@ -253,6 +253,7 @@ enum {
   DEAD_TYPE_UNKNOWN_1 = 1, // Inferred role: game over of the controlled character, sent by StateBattleDead::Update; original name unknown.
   DEAD_TYPE_UNKNOWN_3 = 3, // Inferred role: death that the pc water states do not relay to the buddy; original name unknown.
   DEAD_TYPE_EMERGENCY_ESCAPE = 4,
+  DEAD_TYPE_UNKNOWN_7 = 7, // Inferred role: death by staying inside the collision, sent by FallIntoColiPlugin::update; original name unknown.
 };
 
 struct MsgObjectDead : fw::Message {

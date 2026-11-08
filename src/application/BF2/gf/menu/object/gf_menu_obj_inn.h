@@ -9,6 +9,7 @@
 namespace ui {
 class UICtrlCursorSelect;
 class UICtrlSlideSelect;
+class UIObjectAcc;
 class UISelectObjList;
 } // namespace ui
 
@@ -21,6 +22,7 @@ class GfMenuObjInn : public GfMenuObject {
 public:
   GfMenuObjInn(u32 handle);
   ~GfMenuObjInn() override;
+  static bool isEnableLevelUp();
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);
   static int setFadeOut(u32 handle);
@@ -29,6 +31,9 @@ public:
   bool seqFadeOut();
   bool seqFadeOutWait();
   void update() override;
+  static void setupLvSelectAdapter(ui::UIObjectAcc &acc, ui::UISelectObjList *list);
+  static void detailOpen(GfMenuObjInn *object, ui::UIObjectAcc &acc, const char *layout, u32 driver);
+  static void setupLvUpAdapter(ui::UIObjectAcc &acc);
 
   u8 _24[0x28 - 0x24];
   GfMenuCallContext *unknown28;          // Inferred role: call context; original member name unknown.

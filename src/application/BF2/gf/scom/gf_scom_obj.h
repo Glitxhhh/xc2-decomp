@@ -64,8 +64,13 @@ static_assert(sizeof(SCOM_QUEST_GIMMICK) == 0x28, "");
 
 class SCOM_OBJ_WARP_POS : public SCOM {
 public:
+  SCOM_OBJ_WARP_POS(GF_SCOM_HANDLE *handle, GF_OBJ_HANDLE *target, const fw::Transform &transform, bool isResetState)
+      : SCOM(handle, SCOM_TYPE_UNKNOWN_17, SCOM_EXEC_UNKNOWN_0, 1), unknown20(target), unknown30(transform), unknown50(isResetState) {}
   bool exec(const fw::UpdateInfo &info) override;
-  static void create(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation, bool isFollow);
+  static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation, bool isFollow);
+  static GF_SCOM_HANDLE *create(const mm::Vec3 &position, const mm::Vec3 &rotation, bool isFollow);
+  static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *handle, const fw::Transform &transform, bool isFollow);
+  static GF_SCOM_HANDLE *create(const fw::Transform &transform, bool isFollow);
 
   u8 _1c[0x20 - 0x1c];
   GF_OBJ_HANDLE *unknown20; // Inferred role: target; original member name unknown.

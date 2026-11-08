@@ -87,6 +87,30 @@ bool GfMenuObjBlWeapon2::isDownWeapon(u32 blade, u32 chip) {
   return GfDataWeapon::getRank(GfDataWeapon::getNewWeapon(acc.getEquipWeapon(-1, false), chip)) < rank;
 }
 
+void GfMenuObjBlWeapon2::closeCharChange() {
+  if (unknown2f0 == 0) {
+    if (GfMenuObjMainMenu2::isOpenCharMenu()) {
+      ui::UIObjectAcc chips(unknown18, "LAY_chips");
+      GfMenuObjMainMenu2::disableCharChange();
+    }
+  } else {
+    ui::UIObjectAcc acc(unknown18);
+    unknown158(acc.searchChild("LAY_chr_change"), 0x102, 0, 0.0f);
+  }
+}
+
+void GfMenuObjBlWeapon2::openCharChange() {
+  if (unknown2f0 == 0) {
+    if (GfMenuObjMainMenu2::isOpenCharMenu()) {
+      ui::UIObjectAcc chips(unknown18, "LAY_chips");
+      GfMenuObjMainMenu2::openCharChange(chips.unknown10, 1, false);
+    }
+  } else {
+    ui::UIObjectAcc acc(unknown18);
+    unknown158(acc.searchChild("LAY_chr_change"), GfMenuTypes::unknown003_33, 0, 0.0f);
+  }
+}
+
 bool GfMenuObjBlWeapon2::attach(GfMenuCallContext *context) { return unknown151(context, unknown001); }
 
 void GfMenuObjBlWeapon2::update() {

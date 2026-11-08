@@ -49,7 +49,7 @@ public:
 
   // Inferred role: water info; original type name unknown.
   struct unknown001 {
-    u32 unknown00;       // Inferred role: unknown; original member name unknown.
+    f32 unknown00;       // Inferred role: water height; original member name unknown.
     mm::Plane unknown10; // Inferred role: plane; original member name unknown.
     u32 unknown30;       // Inferred role: damage id; original member name unknown.
     u32 unknown34;       // Inferred role: unknown; original member name unknown.

@@ -8,11 +8,11 @@
 
 namespace ui {
 class UICtrlCursorSelect;
-class UIListInfoBase;
 class UISelectObjList;
 } // namespace ui
 namespace gf {
 class GfMenuCallContext;
+class GfMenuDriverList;
 
 class GfMenuObjLvupMain : public GfMenuObject {
 public:
@@ -29,7 +29,7 @@ public:
 
   u8 _24[0x28 - 0x24];
   ui::UISelectObjList *unknown28;    // Inferred role: mode tag objects; original member name unknown.
-  ui::UIListInfoBase *unknown30;     // Inferred role: driver list; original member name unknown.
+  GfMenuDriverList *unknown30;       // Inferred role: driver list; original member name unknown.
   ui::UISelectObjList *unknown38;    // Inferred role: driver info objects; original member name unknown.
   ui::UICtrlCursorSelect *unknown40; // Inferred role: driver info cursor; original member name unknown.
   u32 unknown48;                     // Inferred role: selected driver, 0xff when none; original member name unknown.

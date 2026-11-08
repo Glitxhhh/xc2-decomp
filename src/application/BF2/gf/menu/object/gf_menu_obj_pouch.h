@@ -27,6 +27,9 @@ public:
   void finalize() override;
   void update() override;
   static void setupPouch(ui::UIObjectAcc &);
+  static void updateItemList(GfMenuItemList *list);
+  static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list);
+  static void setupDescription(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceItem> &item);
 
   u8 _24[0x28 - 0x24];
   GfMenuItemList *unknown28;                            // Inferred role: items; original member name unknown.

@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_dr_equip2.h"
 
+#include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
@@ -7,6 +8,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/list/ui_select_obj_list.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -61,6 +63,12 @@ int GfMenuObjDrEquip2::setFadeOut(u32 handle, u32 type) {
   }
   GfMenuObject::hookCtrlEvent(handle, ctrl);
   return ctrl;
+}
+
+void GfMenuObjDrEquip2::setupEquipItem(ui::UIObjectAcc &acc, GfMenuItemList *list) {
+  GfMenuItemAdapter::createFromList(acc.searchChild("TXT_equip_item_tag"), 0, list, -1, false);
+  GfMenuItemAdapter::createFromList(acc.searchChild("TXT_equip_item_info"), 9, list, -1, false);
+  GfMenuItemAdapter::createFromList(acc.searchChild("IMG_equip_item_reality_icon"), 7, list, -1, false);
 }
 
 } // namespace gf

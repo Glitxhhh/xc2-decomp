@@ -1,5 +1,6 @@
 #include "gf/util/gf_util.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,7 +10,9 @@
 #include "ml/char_code.h"
 #include "ml/path_util.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_plane.h"
+#include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 
 namespace gf {
@@ -83,6 +86,38 @@ bool getUpperHitCollision(mm::Vec3 &hit, const mm::Vec3 &position, f32 distance)
 
   hit = result.getPosition(0);
   return true;
+}
+
+void getEulerRotateModel(mm::Vec3 &euler, const mm::Quat &quat) {
+  f32 x2 = quat.x + quat.x;
+  f32 y2 = quat.y + quat.y;
+  f32 z2 = quat.z + quat.z;
+  f32 r = -(quat.x * z2 - y2 * quat.w);
+  if (r >= 1.0f) {
+    r = 1.0f;
+  } else if (r <= -1.0f) {
+    r = -1.0f;
+  }
+  euler.y = mm::asin(r);
+  f32 xx = x2 * quat.x;
+  f32 xy = y2 * quat.x;
+  f32 wz = z2 * quat.w;
+  f32 zz = z2 * quat.z;
+  if (euler.y < 1.5707964f) {
+    if (euler.y > -1.5707964f) {
+      f32 yz = z2 * quat.y;
+      f32 wx = x2 * quat.w;
+      f32 yy = y2 * quat.y;
+      euler.x = atan2f(wx + yz, 1.0f - (xx + yy));
+      euler.z = atan2f(xy + wz, 1.0f - (zz + yy));
+    } else {
+      euler.x = -atan2f(xy - wz, 1.0f - (xx + zz));
+      euler.z = 0.0f;
+    }
+  } else {
+    euler.x = atan2f(xy - wz, 1.0f - (xx + zz));
+    euler.z = 0.0f;
+  }
 }
 
 bool isInsideView(const mm::Vec3 &position, f32 radius) {

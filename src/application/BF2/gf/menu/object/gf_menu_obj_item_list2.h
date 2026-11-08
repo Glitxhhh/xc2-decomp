@@ -6,7 +6,9 @@
 #include "types.h"
 
 namespace ui {
+class UIObjectAcc;
 class UISelectObjList;
+class UIStr;
 } // namespace ui
 
 namespace gf {
@@ -24,6 +26,9 @@ public:
   void finalize() override;
   void update() override;
   static void setFadeOutSub(u32 handle);
+  static void refreshItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList);
+  static void setupFilter(ui::UIObjectAcc &acc, u32 index);
+  static void getFilterText(u32 index, ui::UIStr &text);
 
   u8 _24[0x28 - 0x24];
   GfMenuItemList *unknown28;               // Inferred role: item list; original member name unknown.

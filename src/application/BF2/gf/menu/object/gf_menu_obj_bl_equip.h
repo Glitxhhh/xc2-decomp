@@ -5,6 +5,7 @@
 #include "types.h"
 
 namespace ui {
+class UIObjectAcc;
 class UICtrlCursorSelect;
 class UISelectObjList;
 } // namespace ui
@@ -24,6 +25,8 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void refreshItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList, u32 slot);
+  static bool removeItem(ui::UIObjectAcc &acc, GfMenuItemList *equipList, GfMenuItemList *list, ui::UISelectObjList *selectList, u32 blade, u32 slot, GfMenuCallContext *context);
 
   u8 _24[0x28 - 0x24];
   GfMenuItemList *unknown28;         // Inferred role: equipped items; original member name unknown.

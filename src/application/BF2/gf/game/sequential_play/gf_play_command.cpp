@@ -49,7 +49,9 @@
 #include "gf/scom/gf_scom_fade.h"
 #include "gf/scom/gf_scom_script.h"
 #include "gf/script/gf_script_manager.h"
+#include "gmk/gmk_base.h"
 #include "gmk/gmk_manager.h"
+#include "gmk/gmk_tbox.h"
 #include "mm_math/mm_col4.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_queue.h"
@@ -1201,6 +1203,18 @@ void GfPlayComCollect::end() {
   }
 }
 
+GfPlayComFieldTbox::GfPlayComFieldTbox(GF_OBJ_HANDLE *handle) : GfPlayCom(PCOMTYPE_FIELD_TBOX, false), unknown20(handle), unknown2c(0), unknown30(0.0f) {
+  if (GfGameScene::get() != nullptr) {
+    unknown18 = GfGameScene::get()->createPlayerPause();
+  }
+  unknown28 = GfQuestUtil::getCurrentTBoxWithEvent(handle);
+  gmk::AGmkBase *gmk = gmk::getBindedGmkInst(handle);
+  if (gmk != nullptr && gmk->getGmkType() == gmk::GMK_TYPE_TBOX && static_cast<gmk::GmkTbox *>(gmk)->getBdatInfo()->unknown02 &&
+      static_cast<gmk::GmkTbox *>(gmk)->getProgress() == gmk::GmkTbox::PROGRESS_CLOSED) {
+    unknown28 = toQuestID(0);
+  }
+}
+
 void GfPlayComFieldTbox::start() {
   GfFieldTbox::get()->start(unknown20);
   SCOM_FIELD_VOICE::create(CV_FIELD_UNKNOWN_3, CV_PRIO_UNKNOWN_1);
@@ -1274,6 +1288,20 @@ GfPlayComFieldSeq *GfPlayComFieldSeq::create(IFieldSeq *sequence, GF_OBJ_HANDLE 
 #line 1972
   return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfPlayComFieldSeq(sequence, handle);
 }
+
+GfPlayComResetBlade::~GfPlayComResetBlade() {
+  size_t index = 0;
+  for (; index != s_execFlag.size(); index++) {
+    if (*s_execFlag.at(index) == static_cast<u8>(unknown14)) {
+      break;
+    }
+  }
+  s_execFlag.erase(s_execFlag.begin() + index);
+}
+
+void GfPlayComResetBlade::start() { unknown1c = 3; }
+
+void GfPlayComResetBlade::end() {}
 
 bool GfPlayComResetBlade::isPlaying(u32 partyId) { return mm::mtl::find(s_execFlag.begin(), s_execFlag.end(), static_cast<u8>(partyId)) != s_execFlag.end(); }
 

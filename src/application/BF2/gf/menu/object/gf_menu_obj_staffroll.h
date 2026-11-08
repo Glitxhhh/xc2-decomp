@@ -6,6 +6,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/vector.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace fw {
 class CommonResource;
@@ -19,6 +20,15 @@ namespace gf {
 
 class GfMenuObjStaffroll : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    MainListener(GfMenuObjStaffroll *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjStaffroll *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   // Inferred role: scrolled row; original member names unknown.
   struct RowInfo {
     u8 unknown00[0xe];                      // Inferred role: row values and flags; original member name unknown.
@@ -47,6 +57,8 @@ public:
   mm::mtl::Vector<RowInfo> unknown78; // Inferred role: scrolled rows; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjStaffroll::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjStaffroll::MainListener) == 0x28, "");
 static_assert(sizeof(GfMenuObjStaffroll::RowInfo) == 0x28, "");
 static_assert(offsetof(GfMenuObjStaffroll, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjStaffroll, unknown30) == 0x30, "");

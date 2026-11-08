@@ -36,10 +36,17 @@ public:
   };
 
   struct EmitInfo {
+    EmitInfo() : unknown00(mm::Vec3::zero), unknown10(0.0f), unknown14(3.1415927f), unknown18(0.0f), unknown1c(0.0f), unknown20(0.0f), unknown50(0), unknown54(0), unknown55(false) {}
+    void createDropitemInfos(u8 *bdat, s32 row);
     bool isValid() const;
 
     mm::Vec3 unknown00;
-    u8 _10[0x28 - 0x10];
+    f32 unknown10; // Inferred role: rotation Y; original member name unknown.
+    f32 unknown14; // Role and original member name unknown.
+    f32 unknown18; // Role and original member name unknown.
+    f32 unknown1c; // Role and original member name unknown.
+    f32 unknown20; // Role and original member name unknown.
+    u8 _24[0x28 - 0x24];
     mm::mtl::Vector<GfDropitemInfo> unknown28; // Inferred role: dropitems; original member name unknown.
     u32 unknown50;                             // Role and original member name unknown.
     u8 unknown54;                              // Inferred role: parameter id; original member name unknown.
@@ -58,6 +65,7 @@ public:
   static u32 getResBdatIdFromItemId(s32 itemId);
   void applyGetItem(GF_OBJ_HANDLE *target) const;
   static bool applyGetItem(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *target);
+  static f32 emitDropitems(const EmitInfo &info);
   void createGottenEffect(GF_OBJ_HANDLE *target) const;
   bool isEnableGet() const;
   void disposeEffect();
@@ -118,6 +126,8 @@ public:
   void create(const CreateInfo &info);
   void dispose();
   void update(f32 deltaTime);
+  void seqWaitBeginDrop(f32 deltaTime);
+  void seqWaitEndDrop(f32 deltaTime);
 
   CreateInfo unknown00; // Inferred role: create info; original member name unknown.
   bool m_dropitemsEmitted;

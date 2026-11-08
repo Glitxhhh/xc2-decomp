@@ -18,6 +18,12 @@ void GfMenuObjChainIcon::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjChainIcon::update() { GfMenuObject::update(); }
 
+void GfMenuObjChainIcon::removeObject(ui::UIObjectAcc acc) {
+  GfMenuManyObjects::remove<ChainIconInfo>(GfMenuManyObjects::unknown001_2, acc.unknown10);
+  acc.setDisp(false);
+  acc.setTerm();
+}
+
 void GfMenuObjChainIcon::close(u32 handle) {
   ui::UIObjectAcc root(getAttachedObject(unknown001));
   if (!root.isValid()) {
@@ -38,6 +44,15 @@ void GfMenuObjChainIcon::close(u32 handle) {
   event.unknown00 = GfMenuTypes::unknown003_34;
   event.unknown08_u16 = ui::UIObjectAcc(handle).getDuplicateIndex();
   sendEvent(root.unknown10, event, 0.0f);
+}
+
+void GfMenuObjChainIcon::closeAll() {
+  u32 handle = getAttachedObject(unknown001);
+  if (ui::UIObjectAcc(handle).isValid()) {
+    if (!ui::UIObjectAcc(handle).isTerm()) {
+      GfMenuManyObjects::closeAll<ChainIconInfo>(GfMenuManyObjects::unknown001_2, close);
+    }
+  }
 }
 
 void GfMenuObjChainIcon::setupScreen(u32 handle, int, int, int, int) { GfMenuObjUtil::setChildDisp(handle, "LAY_main", true); }

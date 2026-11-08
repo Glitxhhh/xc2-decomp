@@ -44,6 +44,7 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  void closeCharChange();
   void openCharChange();
   bool seqStart();
   bool seqSrcLeave();

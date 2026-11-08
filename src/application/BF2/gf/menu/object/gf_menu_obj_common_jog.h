@@ -4,6 +4,7 @@
 #include "gf/menu/gf_menu_object.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlRevolveSelect;
@@ -16,6 +17,15 @@ class GfMenuCallContext;
 
 class GfMenuObjCommonJog : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    MainListener(GfMenuObjCommonJog *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjCommonJog *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   struct OpenParam {
     OpenParam() : unknown00(0), unknown04(-1) {}
 
@@ -26,6 +36,7 @@ public:
   GfMenuObjCommonJog(u32 handle);
   ~GfMenuObjCommonJog() override;
   void initialize() override;
+  void finalize() override;
   void update() override;
   static void open(GfMenuCallContext *context, const OpenParam &param);
   static void pop(GfMenuCallContext *context);
@@ -50,6 +61,9 @@ public:
   int unknown64;                          // Inferred role: selected index, -1 when none; original member name unknown.
   mm::mtl::FixedVector<u32, 4> unknown68; // Inferred role: visited menus; original member name unknown.
 };
+
+static_assert(offsetof(GfMenuObjCommonJog::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjCommonJog::MainListener) == 0x28, "");
 
 static_assert(offsetof(GfMenuObjCommonJog::OpenParam, unknown04) == 0x04, "");
 static_assert(sizeof(GfMenuObjCommonJog::OpenParam) == 0x08, "");

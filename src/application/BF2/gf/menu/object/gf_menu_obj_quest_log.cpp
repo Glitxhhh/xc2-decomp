@@ -1,15 +1,23 @@
 #include "gf/menu/object/gf_menu_obj_quest_log.h"
 
+#include "gf/data/gf_bdat_quest.h"
+#include "gf/data/gf_data_item.h"
+#include "gf/data/gf_item_handle.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
+#include "gf/game/quest/gf_quest_task.h"
 #include "gf/game/quest/gf_quest_task_param.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/menu/gf_menu_flag.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_reference_quest.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/sound/gf_sound.h"
+#include "gf/util/gf_item_util.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
@@ -304,6 +312,55 @@ void GfMenuObjQuestLog::updateTask() { unknown147(unknown001, "LAY_log", unknown
 void GfMenuObjQuestLog::closeLog() { unknown148(unknown001, "LAY_log", GfMenuTypes::unknown003_34); }
 
 void GfMenuObjQuestLog::openLog() { unknown148(unknown001, "LAY_log", GfMenuTypes::unknown003_33); }
+
+void GfMenuObjQuestLog::setupLog() {
+  QuestID quest;
+  unknown30->getQuest(quest);
+  unknown5b = QuestListAcc::get()->getListVisible(quest) == 1;
+  if (unknown59) {
+    ui::UIObjectAcc acc(unknown18, "LAY_log_to_detail");
+    acc.setDisp(unknown5b);
+    GfMenuManager::setEnableQuestOpen(unknown5b);
+  }
+  u32 taskCount;
+  u32 completeCount;
+  GfQuestInfo::getQuestTaskInfo(taskCount, completeCount, quest);
+  unknown828 = taskCount;
+  for (u32 index = 0; index < unknown828; index++) {
+    QuestTaskParam param(quest, index, TASK_STATE_NONE);
+    if (GfQuestInfo::getTaskHide(param) == 1) {
+      taskCount--;
+    }
+  }
+  unknown40->unknown162(0);
+  unknown48->unknown162(taskCount);
+}
+
+void GfMenuObjQuestLog::setupLogClear() {
+  QuestID quest;
+  unknown30->getQuest(quest);
+  QuestTaskParam param(quest, unknown40->unknown0c, TASK_STATE_NONE);
+  bool isComplete = GfQuestTask::isCompleteFlag(param);
+  ui::UIObjectAcc acc(unknown18, "IMG_log_complete");
+  acc.setImageIndex(!isComplete);
+}
+
+void GfMenuObjQuestLog::setupLogItem() {
+  QuestID quest;
+  GfQuestTaskLogResult result;
+  unknown30->getQuest(quest);
+  QuestTaskParam param(quest, unknown40->unknown0c, TASK_STATE_NONE);
+  GfQuestUtil::getMsgQuestTaskLog(result, param);
+  u32 item = result.unknown1c;
+  ItemType::Type type = GfItemUtil::getType(item);
+  MenuItemInfo &info = unknown50->unknown0c;
+  info.unknown04 = item;
+  info.unknown00 = type;
+  info.unknown08 = 1;
+  info.unknown0c = GfItemHandle(0);
+  ui::UIObjectAcc acc(unknown18, "LAY_log_info_task_item");
+  acc.setDisp(result.unknown14 != 0);
+}
 
 u32 GfMenuObjQuestLog::nextTaskIndex(u32 index) {
   QuestID quest;

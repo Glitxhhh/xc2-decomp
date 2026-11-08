@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_tutorial.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -7,6 +8,7 @@
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -23,6 +25,24 @@ GfMenuObjTutorial::GfMenuObjTutorial(u32 handle) : GfMenuObject(handle), unknown
 }
 
 GfMenuObjTutorial::~GfMenuObjTutorial() { mm::mtl::safeRelease(unknown002); }
+
+bool GfMenuObjTutorial::isWaiting() { return unknown002 != nullptr && unknown002->isActive(); }
+
+void GfMenuObjTutorial::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  if (main.isValid()) {
+    attachExternalCall(unknown001, main.unknown10);
+// __LINE__ must be 239 as in the original file: it is the line argument of operator new.
+#line 239
+    MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+    listener->addRef();
+    ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
+    if (listener != nullptr) {
+      listener->release();
+    }
+    GfMenuObject::initialize();
+  }
+}
 
 void GfMenuObjTutorial::finalize() { GfMenuObject::finalize(); }
 
