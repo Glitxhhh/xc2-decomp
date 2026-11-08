@@ -10,7 +10,7 @@ class RchaChrEff : public RchaNode {
 public:
   RchaChrEff();
   virtual ~RchaChrEff();
-  virtual void setup(mtl::ALLOC_HANDLE handle, const void *data);
+  virtual bool setup(mtl::ALLOC_HANDLE handle, const void *data);
   void getVolumeFade(int &type, f32 frame) const;
   void getVolumeFadeId(int &id, f32 frame) const;
   void getVolumeFadeUVWScale(mm::Vec3 &scale, f32 frame) const;

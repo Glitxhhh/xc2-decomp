@@ -12,6 +12,7 @@
 #include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_data.h"
 #include "framework/effect/effect_pack.h"
+#include "framework/effect/volume_fade_params.h"
 #include "framework/framework.h"
 #include "framework/memory/framework_memory.h"
 #include "fw/fw_render_resource.h"
@@ -23,9 +24,11 @@
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_math/mm_vec3_na.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "mtl/mem_manager.h"
+#include "scn/scn_obj_acc.h"
 
 namespace ml {
 class IDrDrawWorkInfo;
@@ -272,6 +275,27 @@ void EffectManager::sendCasterStateName(EffectCasterBase *caster, const char *na
 }
 
 EffectCasterSend *EffectManager::getCasterCB(EffectCasterBase *caster) { return getCaster(caster); }
+
+bool EffectManager::getVolumeFadeParam(u32 index, ml::VolumeFadeParams &params) {
+  if (index < unknown005) {
+    const VolumeFadeParams *source = m_volumeFadeParam[index];
+    if (source != nullptr) {
+      for (u32 i = 0; i < 5; i++) {
+        params.unknown00[i] = source->unknown00[i];
+        params.unknown60[i] = source->unknown54[i];
+        params.unknown74[i] = source->unknown68[i];
+        params.unknown88[i] = source->unknown7c[i];
+      }
+      params.unknown40 = mm::Vec3(source->unknown3c.x, source->unknown3c.y, source->unknown3c.z);
+      params.unknown50 = mm::Vec3(source->unknown48.x, source->unknown48.y, source->unknown48.z);
+      params.unknown9c = source->unknown90;
+      params.unknowna0 = source->unknown94;
+      params.unknowna4 = source->unknown98;
+      return true;
+    }
+  }
+  return false;
+}
 
 void EffectManager::setIBLSaturation(f32 saturation) { effect::SystemManager::getPtr()->setIBLSaturation(saturation); }
 

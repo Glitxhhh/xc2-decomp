@@ -10,7 +10,7 @@ class RchaCam : public RchaNode {
 public:
   RchaCam();
   virtual ~RchaCam();
-  virtual void setup(mtl::ALLOC_HANDLE handle, const void *data);
+  virtual bool setup(mtl::ALLOC_HANDLE handle, const void *data);
   void getPos(mm::Vec3 *pos, f32 frame) const;
   void getRot(mm::Vec3 *rot, f32 frame) const;
 

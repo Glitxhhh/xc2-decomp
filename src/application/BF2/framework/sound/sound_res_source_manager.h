@@ -18,6 +18,7 @@ class IAllocator;
 } // namespace mm
 
 namespace fw {
+class SoundVariableTable;
 
 // Layouts from SoundResSourceManager::endPush and playSe (1.0.0: 0x71001abeac, 0x71001ac394).
 struct ResSoundData {
@@ -28,27 +29,45 @@ struct ResSoundData {
 static_assert(sizeof(ResSoundData) == 0x10, "");
 
 struct ResSoundSourceBase {
-  const char *unknown00;  // Inferred role: name, the key of the source map; original member name unknown.
-  u32 unknown08;          // Inferred role: type, 0 for a single sound and 1 for a complex one; original member name unknown.
-  ResSoundData unknown10; // Inferred role: sound of a single source; original member name unknown.
+  const char *unknown00; // Inferred role: name, the key of the source map; original member name unknown.
+  u32 unknown08;         // Inferred role: type, 0 for a single sound and 1 for a complex one; original member name unknown.
 };
 
 static_assert(offsetof(ResSoundSourceBase, unknown08) == 0x08, "");
-static_assert(offsetof(ResSoundSourceBase, unknown10) == 0x10, "");
-static_assert(sizeof(ResSoundSourceBase) == 0x20, "");
+static_assert(sizeof(ResSoundSourceBase) == 0x10, "");
 
 struct ResComplexSoundSource : public ResSoundSourceBase {
-  u8 _20[0x30 - 0x20];
+  // Inferred role: sound selected by the values of the variables; original type name unknown.
+  struct unknown001 {
+    ResSoundData unknown00;    // Inferred role: sound; original member name unknown.
+    anm::Array<s32> unknown10; // Inferred role: expected value of each variable, negative for any value; original member name unknown.
+  };
+
+  anm::Array<const char *> unknown10; // Inferred role: variable names; original member name unknown.
+  anm::Array<unknown001> unknown20;   // Inferred role: sounds by variable values; original member name unknown.
 };
 
+static_assert(offsetof(ResComplexSoundSource::unknown001, unknown10) == 0x10, "");
+static_assert(sizeof(ResComplexSoundSource::unknown001) == 0x20, "");
+static_assert(offsetof(ResComplexSoundSource, unknown10) == 0x10, "");
+static_assert(offsetof(ResComplexSoundSource, unknown20) == 0x20, "");
 static_assert(sizeof(ResComplexSoundSource) == 0x30, "");
 
 struct ResSoundSource {
-  anm::Array<ResSoundSourceBase> unknown00;    // Inferred role: single sources; original member name unknown.
+  // Inferred role: single sound source; original type name unknown.
+  struct unknown001 : public ResSoundSourceBase {
+    ResSoundData unknown10; // Inferred role: sound of the source; original member name unknown.
+  };
+
+  anm::Array<unknown001> unknown00;            // Inferred role: single sources; original member name unknown.
   anm::Array<ResComplexSoundSource> unknown10; // Inferred role: complex sources; original member name unknown.
 };
 
+static_assert(offsetof(ResSoundSource::unknown001, unknown10) == 0x10, "");
+static_assert(sizeof(ResSoundSource::unknown001) == 0x20, "");
 static_assert(offsetof(ResSoundSource, unknown10) == 0x10, "");
+
+int findComplexIndex(const SoundVariableTable &table, const ResComplexSoundSource *source);
 
 class SoundResSourceImporter {
 public:

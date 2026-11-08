@@ -8,7 +8,7 @@ class RchaCamEff : public RchaNode {
 public:
   RchaCamEff();
   virtual ~RchaCamEff();
-  virtual void setup(mtl::ALLOC_HANDLE handle, const void *data);
+  virtual bool setup(mtl::ALLOC_HANDLE handle, const void *data);
 
 private:
   u8 _19a0[0x19b8 - 0x19a0];

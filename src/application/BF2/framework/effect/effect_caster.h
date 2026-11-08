@@ -51,6 +51,8 @@ public:
   void setDirty(u32 index, bool isDirty);
   const char *getParentName(const char *name);
   mm::Mat44 getOffset(const char *name);
+  void update(const UpdateInfo &info);
+  void calcPoint(Param &param, mm::Mat44 &matrix) const;
 
   u32 unknown0c;                        // Inferred role: layer; original member name unknown.
   mm::mtl::Vector<Param> unknown10;     // Inferred role: points; original member name unknown.

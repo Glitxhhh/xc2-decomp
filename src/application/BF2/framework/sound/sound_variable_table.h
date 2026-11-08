@@ -15,6 +15,7 @@ public:
   SoundVariableTable();
   ~SoundVariableTable();
   void setVariable(const char *name, int value);
+  bool getVariable(const char *name, int *value) const;
 
   mm::mtl::Map<mm::mtl::FixStr<64>, int> unknown00; // Inferred role: variables by name; original member name unknown.
   u8 _18[0x20 - 0x18];
