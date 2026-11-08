@@ -1,5 +1,7 @@
 #include "gf/object/component/behavior/gf_com_behavior_mob.h"
 
+#include <math.h>
+
 #include "ai/ai_state.h"
 #include "framework/coli/coli_object.h"
 #include "framework/navi/navi_manager.h"
@@ -16,6 +18,7 @@
 #include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gmk/gmk_manager.h"
@@ -119,6 +122,13 @@ void GfComBehaviorMob::createFsm() {
   unknown5328.registerState<npc::StateBattle<GfComBehaviorMob>>(mob::STATE_ID_UNKNOWN_5, -1);
   unknown5328.endSetup();
   unknown53b0 = false;
+}
+
+void GfComBehaviorMob::execTurnCmdToPos(const mm::Vec3 &position) {
+  const mm::Vec3 &current = getPos();
+  f32 angle = atan2f(position.x - current.x, position.z - current.z);
+  angle += unknown2c0.unknown00.unknown00 == INVALID_HANDLE ? 0.0f : unknown2c0.getCurAngle();
+  unknown250.create(TFieldExecCmdTurn<GfComAsm>::CreateInfo(static_cast<GfObj *>(unknown08)->unknownf8, angle));
 }
 
 void GfComBehaviorMob::Listener::onWkStandbyLogout() { unknown08->unknown53b8 = nullptr; }

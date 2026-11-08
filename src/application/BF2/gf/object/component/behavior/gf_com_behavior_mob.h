@@ -62,11 +62,16 @@ public:
     u16 unknown0a; // Inferred role: battle motion; original member name unknown.
   };
 
+  ~GfComBehaviorMob() override;
+  const mm::mtl::RTTI *getRTTI() const override;
+  bool recieveMessage(fw::MessageObject *sender, fw::Message &message) override;
+  void update(const fw::UpdateInfo &info) override;
+  virtual const mm::Vec3 &getPos() const;
+  virtual const mm::Quat &getRot() const;
+
   void procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message);
   void procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message);
   void cleanup();
-  const mm::Vec3 &getPos() const;
-  const mm::Quat &getRot() const;
   fw::ColiMoveObject *getColiObject() const;
   gmk::AGmkBase *getBindedGmkInst() const;
   bool isSquadMember() const;
@@ -88,6 +93,21 @@ public:
 
   // Inferred helper: rotation of the object kept by the reaction state; original name unknown.
   mm::Quat &unknown003() { return unknown120; }
+
+  // Inferred helper: turn command; original name unknown.
+  TFieldExecCmdTurn<GfComAsm> &unknown004() { return unknown250; }
+
+  // Inferred helper: goal position; original name unknown.
+  mm::Vec3 &unknown005() { return unknown110; }
+
+  // Inferred helper: reaction motion; original name unknown.
+  u16 unknown006() const { return unknown98.unknown06; }
+
+  // Inferred helper: battle motion; original name unknown.
+  u16 unknown007() const { return unknown98.unknown0a; }
+
+  // Inferred helper: battle reaction; original name unknown.
+  u16 unknown008() const { return unknown98.unknown08; }
 
   BdatInfo unknown98; // Inferred role: bdat parameters; original member name unknown.
   u8 _a4[0xa8 - 0xa4];

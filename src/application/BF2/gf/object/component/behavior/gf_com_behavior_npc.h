@@ -129,6 +129,21 @@ public:
   // Inferred helper: rotation of the object kept by the reaction state; original name unknown.
   mm::Quat &unknown003() { return unknownd0; }
 
+  // Inferred helper: turn command; original name unknown.
+  TFieldExecCmdTurn<GfComAsm> &unknown004() { return unknown2e0; }
+
+  // Inferred helper: goal position; original name unknown.
+  mm::Vec3 &unknown005() { return unknownc0; }
+
+  // Inferred helper: reaction motion; original name unknown.
+  u16 unknown006() const { return unknown98.unknown12; }
+
+  // Inferred helper: battle motion; original name unknown.
+  u16 unknown007() const { return unknown98.unknown16; }
+
+  // Inferred helper: battle reaction; original name unknown.
+  u16 unknown008() const { return unknown98.unknown14; }
+
   BdatInfo unknown98; // Inferred role: bdat parameters; original member name unknown.
   u8 _b4[0xb8 - 0xb4];
   navi::NvmshAcObj *unknownb8; // Inferred role: navi mesh object; original member name unknown.

@@ -137,8 +137,8 @@ public:
   const void *getAppendix(const char *name) const;
   bool existState(const char *state);
   void executeCallback();
-  bool execCmd(const char *command, AnimLayer layer);
-  const char *getStateName(AnimLayer layer) const;
+  bool execCmd(const char *command, AnimLayer layer = ANIM_LAYER_BASE);
+  const char *getStateName(AnimLayer layer = ANIM_LAYER_BASE) const;
   bool setState(const char *state, AnimLayer layer);
   void clearState(AnimLayer layer);
   bool resetState(const char *state, AnimLayer layer);

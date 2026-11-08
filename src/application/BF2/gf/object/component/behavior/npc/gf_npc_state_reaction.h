@@ -2,8 +2,12 @@
 #include <new> // IWYU pragma: keep
 
 #include "ai/ai_state.h"
+#include "bdat.h"
 #include "fw/fw_update_info.h"
 #include "gf/field/gf_field_exec_cmd.h"
+#include "gf/object/gf_obj.h"
+#include "gmk/gmk_bdat.h"
+#include "gmk/gmk_manager.h"
 #include "mm_math/mm_quat.h"
 #include "types.h"
 
@@ -47,6 +51,26 @@ template <typename T> void StateReaction<T>::onStep(void *owner, const void *par
   if (unknown50) {
     (this->*unknown50)(*static_cast<T *>(owner), *static_cast<const fw::UpdateInfo *>(param));
   }
+}
+
+template <typename T> void StateReaction<T>::seqTurnToPc(T &behavior, const fw::UpdateInfo &info) {
+  if (gmk::isPlayerExist()) {
+    behavior.init(false);
+    behavior.execTurnCmdToPos(gmk::getPlayerPos());
+    unknown50 = &StateReaction::seqWaitTurnToPcEnd;
+  }
+}
+
+template <typename T> void StateReaction<T>::seqWaitTurnToPcEnd(T &behavior, const fw::UpdateInfo &info) {
+  if (behavior.unknown004().unknown6c) {
+    beginReaction(behavior);
+    unknown50 = &StateReaction::seqUpdateMove;
+  }
+}
+
+template <typename T> void StateReaction<T>::beginReaction(const T &behavior) {
+  const char *command = reinterpret_cast<const char *>(Bdat::getValCheck(Bdat::getFP("FLD_NpcMobMotionId"), "cmdName", behavior.unknown006(), gmk::BDAT_TYPE_STRING));
+  unknown18.create(TFieldExecCmd<GfComAsm>::CreateInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8, command));
 }
 
 } // namespace npc
