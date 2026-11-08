@@ -3,11 +3,27 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
+#include "ui/ctrl/ui_ctrl_manager.h"
 
 namespace gf {
 
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x4b;
+
+GfMenuObjButtonChallenge2::~GfMenuObjButtonChallenge2() {
+  if (unknown3e0.ctrl != nullptr) {
+    ui::UICtrlManager::get()->delUpdater(unknown3e0);
+  }
+  unknown3e0.ctrl = nullptr;
+  if (unknown428.ctrl != nullptr) {
+    ui::UICtrlManager::get()->delUpdater(unknown428);
+  }
+  unknown428.ctrl = nullptr;
+  if (unknown470.ctrl != nullptr) {
+    ui::UICtrlManager::get()->delUpdater(unknown470);
+  }
+  unknown470.ctrl = nullptr;
+}
 
 void GfMenuObjButtonChallenge2::finalize() { GfMenuObject::finalize(); }
 

@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
+#include "mm_mtl/fixed_vector.h"
 #include "types.h"
 
 namespace ui {
@@ -24,7 +25,14 @@ public:
     u32 unknown04; // Inferred role: blade; original member name unknown.
   };
 
+  struct Achievement {
+    u16 unknown00; // Inferred role: achievement line; original member name unknown.
+    u16 unknown02; // Inferred role: achievement level; original member name unknown.
+    u16 unknown04; // Inferred role: release state; original member name unknown.
+  };
+
   GfMenuObjBlKizunaRing(u32 handle);
+  ~GfMenuObjBlKizunaRing() override;
   static void registOpenParam(const OpenParam &param);
   static void openForMercenary(u32 handle, u32 blade, u16 group);
   static bool attach(GfMenuCallContext *context);
@@ -56,10 +64,9 @@ public:
   GfMenuCallContext *unknown48; // Inferred role: call context; original member name unknown.
   u32 unknown50;                // Inferred role: achievement count; original member name unknown.
   u8 _54[0x58 - 0x54];
-  GfMenuCallContext *unknown58; // Inferred role: call context; original member name unknown.
-  u8 _60[0x190 - 0x60];
-  u64 unknown190; // Inferred role: node animation frames left; original member name unknown.
-  u32 unknown198; // Inferred role: node animation; original member name unknown.
+  GfMenuCallContext *unknown58;                    // Inferred role: call context; original member name unknown.
+  mm::mtl::FixedVector<Achievement, 50> unknown60; // Inferred role: achievements to complete; original member name unknown.
+  u32 unknown198;                                  // Inferred role: node animation; original member name unknown.
   u8 _19c[0x1a0 - 0x19c];
   GfMenuSequence<GfMenuObjBlKizunaRing, 8> unknown1a0; // Inferred role: achievement steps; original member name unknown.
   int unknown430;                                      // Inferred role: step; original member name unknown.
@@ -86,7 +93,8 @@ static_assert(offsetof(GfMenuObjBlKizunaRing, unknown40) == 0x40, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown50) == 0x50, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown58) == 0x58, "");
-static_assert(offsetof(GfMenuObjBlKizunaRing, unknown190) == 0x190, "");
+static_assert(sizeof(GfMenuObjBlKizunaRing::Achievement) == 6, "");
+static_assert(offsetof(GfMenuObjBlKizunaRing, unknown60) == 0x60, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown198) == 0x198, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown430) == 0x430, "");

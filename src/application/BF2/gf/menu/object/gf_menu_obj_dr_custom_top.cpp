@@ -1,13 +1,27 @@
 #include "gf/menu/object/gf_menu_obj_dr_custom_top.h"
 
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_common_jog.h"
 #include "gf/menu/object/gf_menu_obj_dr_arts_set.h"
 #include "gf/menu/object/gf_menu_obj_dr_equip.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_revolve_select.h"
+#include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
+
+GfMenuObjDrCustomTop::GfMenuObjDrCustomTop(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown50(nullptr), unknown58(this) {}
+
+GfMenuObjDrCustomTop::~GfMenuObjDrCustomTop() {
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown38);
+}
 
 void GfMenuObjDrCustomTop::finalize() { GfMenuObject::finalize(); }
 
@@ -18,8 +32,8 @@ void GfMenuObjDrCustomTop::update() {
 
 void GfMenuObjDrCustomTop::suspendInput() {
   GfMenuObject::disableFSSwitching();
-  if (unknown40.get() != nullptr) {
-    GfMenuObjCommonJog::disable(unknown40.get());
+  if (unknown40 != nullptr) {
+    GfMenuObjCommonJog::disable(unknown40);
   }
   ui::UIObjectAcc acc(unknown18);
   GfMenuObject::disableInput(acc.searchChild("LAY_main"));
@@ -28,8 +42,8 @@ void GfMenuObjDrCustomTop::suspendInput() {
 
 void GfMenuObjDrCustomTop::resumeInput() {
   GfMenuObject::enableFSSwitching();
-  if (unknown40.get() != nullptr && unknown40.get()->isActive()) {
-    GfMenuObjCommonJog::enable(unknown40.get());
+  if (unknown40 != nullptr && unknown40->isActive()) {
+    GfMenuObjCommonJog::enable(unknown40);
   }
   ui::UIObjectAcc acc(unknown18);
   GfMenuObject::enableInput(acc.searchChild("LAY_main"));

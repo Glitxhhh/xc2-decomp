@@ -1,10 +1,27 @@
 #include "gf/menu/object/gf_menu_obj_option.h"
 
+#include "gf/menu/call/gf_menu_call_context.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/list/ui_select_obj_list.h"
+
 namespace gf {
-class GfMenuCallContext;
 
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x86;
+
+GfMenuObjOption::GfMenuObjOption(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(0), unknown4c(0), unknown120(nullptr), unknown128(this), unknown3b8(false),
+      unknown3bc(-1), unknown3c0(0), unknown3c2(0xff) {
+  unknown120 = GfMenuCallContext::create();
+}
+
+GfMenuObjOption::~GfMenuObjOption() {
+  mm::mtl::safeRelease(unknown120);
+  mm::mtl::safeRelease(unknown38);
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown28);
+}
 
 void GfMenuObjOption::finalize() { GfMenuObject::finalize(); }
 

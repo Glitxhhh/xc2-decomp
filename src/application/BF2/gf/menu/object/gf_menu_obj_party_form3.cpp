@@ -2,10 +2,13 @@
 
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
+#include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/reference_object.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -13,6 +16,17 @@ namespace gf {
 // Inferred role: menu id; original name unknown.
 constexpr u32 unknown001 = 0x24;
 
+GfMenuObjPartyForm3::GfMenuObjPartyForm3(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(0), unknown34(0), unknown38(0), unknown3c(0), unknown40(-1), unknown44(false), unknown80(this), unknown310(nullptr), unknown318(true),
+      unknown319(false) {
+  unknown48.assign(mm::mtl::IntrusivePtr<GfMenuReferenceNumber>());
+}
+
+GfMenuObjPartyForm3::~GfMenuObjPartyForm3() {
+  unknown48.assign(mm::mtl::IntrusivePtr<GfMenuReferenceNumber>());
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown310);
+}
 void GfMenuObjPartyForm3::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjPartyForm3::update() {
