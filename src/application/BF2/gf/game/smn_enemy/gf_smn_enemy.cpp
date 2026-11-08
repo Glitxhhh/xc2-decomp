@@ -10,23 +10,57 @@
 
 namespace gf {
 
+GfRelSmnEnemy::GfRelSmnEnemy(const CreateInfo *info) : unknown40(1.0f), unknown44(5.0f), unknown48(0.0f), unknown4c(0.0f) {
+  GfObjManager::addListener(this, OBJEVT_ALL);
+  if (info != nullptr) {
+    create(*info);
+  }
+}
+
+GfRelSmnEnemy::~GfRelSmnEnemy() {
+  dispose();
+  GfObjManager::removeListener(this);
+}
+
+void GfRelSmnEnemy::dispose() {
+  disposeEnemies(false);
+  if (unknown50.size() != 0) {
+    unknown50.clear();
+    unknown50.destroy();
+  }
+  unknown10 = CreateInfo();
+}
+
+void GfRelSmnEnemy::update(f32 deltaTime) {
+  if (unknown10.unknown00 == INVALID_HANDLE || unknown10.unknown08 < 1) {
+    return;
+  }
+  if (isOwnerValid()) {
+    updatePopEnemy();
+    updateDepopEnemy();
+    validatePopPos();
+  } else {
+    disposeWaitEnemies();
+  }
+}
+
 bool GfRelSmnEnemy::isOwnerValid() const {
-  GfObjAcc acc(unknown10);
+  GfObjAcc acc(unknown10.unknown00);
   return !acc.isDestroy() && !acc.testFlag(OBJ_FLAG_UI_HIDDEN) && acc.getObj() != nullptr;
 }
 
 u32 GfRelSmnEnemy::getEnemyNum() const {
-  if (unknown10 == INVALID_HANDLE) {
+  if (unknown10.unknown00 == INVALID_HANDLE) {
     return 0;
   }
-  if (unknown18 > 0) {
+  if (unknown10.unknown08 > 0) {
     return unknowna0.size();
   }
   return 0;
 }
 
 GF_OBJ_HANDLE *GfRelSmnEnemy::getEnemy(u32 index) const {
-  if (unknown10 == INVALID_HANDLE || unknown18 < 1) {
+  if (unknown10.unknown00 == INVALID_HANDLE || unknown10.unknown08 < 1) {
     return INVALID_HANDLE;
   }
   return unknowna0[index];

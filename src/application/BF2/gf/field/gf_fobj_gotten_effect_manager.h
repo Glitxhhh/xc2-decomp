@@ -42,6 +42,7 @@ public:
   GfFobjGottenEffectManager(const CreateInfo *info);
   void create(const CreateInfo &info);
   void dispose();
+  void createEffect(const CreateEffectInfo &info);
   void createResHandles();
   bool getTargetPos(mm::Vec3 &position, GF_OBJ_HANDLE *handle) const;
 

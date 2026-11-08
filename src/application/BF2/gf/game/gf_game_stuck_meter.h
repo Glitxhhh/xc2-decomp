@@ -15,6 +15,13 @@ struct GF_OBJ_HANDLE;
 
 class GfGameDepopMeter : public mm::mtl::IntrusiveListNode<GfGameDepopMeter> {
 public:
+  struct CreateInfo {
+    GF_OBJ_HANDLE *unknown00; // Inferred role: target object; original member name unknown.
+    bool unknown08;           // Inferred role: destroy the object when it is hidden by a collision; original member name unknown.
+  };
+
+  GfGameDepopMeter(const CreateInfo *info);
+  void create(const CreateInfo &info);
   void dispose();
   void update(f32 deltaTime);
 

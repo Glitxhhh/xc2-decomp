@@ -12,6 +12,12 @@
 
 namespace gf {
 
+GfGameDepopMeter::GfGameDepopMeter(const CreateInfo *info) : unknown10(INVALID_HANDLE), unknown18(true), unknown20(true), unknown30(mm::Vec3::zero), unknown40(false) {
+  if (info != nullptr) {
+    create(*info);
+  }
+}
+
 void GfGameDepopMeter::dispose() {
   if (unknown10 != INVALID_HANDLE) {
     GfGameDepopMeterManager::removeDepopMeter(this);
