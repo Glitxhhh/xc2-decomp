@@ -11,6 +11,8 @@ constexpr u32 unknown001 = 0x2d;
 
 GfMenuObjDamageBuff::GfMenuObjDamageBuff(u32 handle) : GfMenuObject(handle) {}
 
+GfMenuObjDamageBuff::~GfMenuObjDamageBuff() { GfMenuManyObjects::destroy<DamageInfo>(GfMenuManyObjects::unknown001_1); }
+
 void GfMenuObjDamageBuff::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjDamageBuff::close(u32 handle) {
@@ -38,3 +40,7 @@ void GfMenuObjDamageBuff::close(u32 handle) {
 void GfMenuObjDamageBuff::update() { GfMenuObject::update(); }
 
 } // namespace gf
+
+template void gf::GfMenuManyObjects::remove<gf::GfMenuObjDamageBuff::DamageInfo>(u32, u32);
+template void mm::mtl::Queue<gf::GfMenuObjDamageBuff::DamageInfo>::push_back(const gf::GfMenuObjDamageBuff::DamageInfo &);
+template void mm::mtl::Queue<gf::GfMenuObjDamageBuff::DamageInfo>::expand(size_t, size_t);

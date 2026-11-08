@@ -3,13 +3,55 @@
 #include "gf/menu/adapter/gf_menu_game_adapter.h"
 #include "gf/menu/adapter/gf_menu_mercenaries_adapter.h"
 #include "gf/menu/adapter/gf_menu_zone_adapter.h"
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fade.h"
+#include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/list/gf_menu_blade_list.h"
+#include "gf/menu/list/gf_menu_field_skill_list.h"
+#include "gf/menu/list/gf_menu_mission_list.h"
+#include "gf/menu/list/gf_menu_team_list.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_col4.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
+
+GfMenuObjMercenaries::GfMenuObjMercenaries(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr),
+      unknown70(nullptr), unknown78(nullptr), unknown80(nullptr), unknown88(nullptr), unknown90(nullptr), unknown98(0), unknown9c(1), unknown9e(0), unknowna0(0), unknown0a8(nullptr),
+      unknown0b0(nullptr), unknown0b8(nullptr), unknown0e8(this), unknown388(0) {
+  unknown0c0 = nullptr;
+  unknown0c8 = nullptr;
+  unknown0d0 = 0;
+  unknown0d8 = 0;
+  unknown0e0 = 0;
+}
+
+GfMenuObjMercenaries::~GfMenuObjMercenaries() {
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown38);
+  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown50);
+  mm::mtl::safeRelease(unknown60);
+  mm::mtl::safeRelease(unknown58);
+  mm::mtl::safeRelease(unknown68);
+  mm::mtl::safeRelease(unknown70);
+  mm::mtl::safeRelease(unknown78);
+  mm::mtl::safeRelease(unknown80);
+  mm::mtl::safeRelease(unknown88);
+  mm::mtl::safeRelease(unknown90);
+  mm::mtl::safeRelease(unknown0a8);
+  mm::mtl::safeRelease(unknown0b0);
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown0b8);
+  mm::mtl::safeRelease(unknown0c0);
+  mm::mtl::safeRelease(unknown0c8);
+  unknown380 = nullptr;
+}
 
 void GfMenuObjMercenaries::finalize() { GfMenuObject::finalize(); }
 

@@ -23,6 +23,15 @@ public:
       return *this;
     }
 
+    // __LINE__ must be 411 as in the original header: it is the line argument of the assert.
+#line 410
+    friend bool operator==(const queue_iterator &a, const queue_iterator &b) {
+      MM_ASSERT(a._pArray == b._pArray);
+      return a._index == b._index;
+    }
+
+    friend bool operator!=(const queue_iterator &a, const queue_iterator &b) { return !(a == b); }
+
     V *_pArray;
     size_t _index;
     size_t unknown10; // Inferred role: capacity of the queue; original member name unknown.
@@ -56,7 +65,7 @@ public:
 
   // __LINE__ must be 543 as in the original header: it is the line argument of the assert.
 #line 542
-  void reserve(size_t capacity, size_t alignment = 8) {
+  void reserve(size_t capacity, size_t alignment = alignof(T)) {
     MM_ASSERT(m_allocator && "yet setAllocator");
     if (capacity <= m_capacity) {
       return;
@@ -85,7 +94,7 @@ public:
     m_size++;
   }
 
-  iterator begin() { return iterator(m_buffer, m_front, m_capacity); }
+  iterator begin() { return iterator(&at(0), m_front, m_capacity); }
 
   u32 size() const { return m_size; }
   u32 capacity() const { return m_capacity; }
@@ -122,6 +131,12 @@ public:
     m_size = 0;
     m_front = 0;
   }
+
+  iterator end() { return iterator(&at(0), m_front + m_size, m_capacity); }
+
+  // Declared only: the game has an out-of-line instance per element type (assert "size() != 0", queue.h line 1067), but its size() reads
+  // m_size as 64 bits while ThreadPool::threadFunc needs the 32-bit u32 size() above, so no body matches both.
+  iterator erase(iterator position);
 
 private:
   // __LINE__ must be 65 as in the original header: it is the line argument of the assert.

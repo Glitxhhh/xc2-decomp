@@ -1,8 +1,8 @@
 #include "gf/menu/object/gf_menu_obj_quest_list.h"
 
 #include "gf/menu/call/gf_menu_call_context.h"
-#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/gf_menu_reference_quest.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/list/gf_menu_quest_list.h"
 #include "mm_mtl/reference_object.h"
