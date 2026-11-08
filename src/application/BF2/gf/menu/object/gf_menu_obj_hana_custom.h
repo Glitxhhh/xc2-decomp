@@ -1,8 +1,11 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_data_item.h"
+#include "gf/data/gf_item_handle.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
@@ -38,13 +41,26 @@ public:
   static u32 convPartsId(u32 partsId);
   static bool isExpandParts(u32 partsId);
   static void refreshPlanLine(ui::UIObjectAcc &);
+  static void setupMain(ui::UIObjectAcc &acc);
+  static void updateItemList(GfMenuItemList *list, ItemType::Type type);
+  u32 getPartsId();
+  static void removeParts(u32 blade, u32 parts);
+  static void expandCircuit(u32 blade, u32 parts);
+  static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList);
+  static void equipParts(u32 blade, u32 parts, u32 partsId, GfItemHandle handle);
+  static void setupPlan(ui::UIObjectAcc &acc, GfMenuIDList *list);
+  static void setupItemInfo2(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 blade);
+  static u32 chkSameSlot(mm::mtl::FixedArray<GfMenuIDList *, 7> &lists, u32 parts);
+  static u8 getEquipSlot(mm::mtl::FixedArray<GfMenuIDList *, 7> &lists, u32 parts);
+  static void clearPLanSelect(ui::UIObjectAcc &acc);
+  static u32 searchIdList(GfMenuIDList *list, u32 id);
 
   u8 _24[0x28 - 0x24];
   GfMenuIDList *unknown28;                           // Inferred role: identifiers; original member name unknown.
   GfMenuIDList *unknown30;                           // Inferred role: identifiers; original member name unknown.
   ui::UISelectObjList *unknown38;                    // Inferred role: list objects; original member name unknown.
   mm::mtl::ReferenceObject *unknown40;               // Inferred role: reference-counted object; type and original member name unknown.
-  GfMenuIDList *unknown48[7];                        // Inferred role: identifiers; original member name unknown.
+  mm::mtl::FixedArray<GfMenuIDList *, 7> unknown48;  // Inferred role: identifiers; original member name unknown.
   u32 unknown80;                                     // Role and original member name unknown, cleared by the constructor.
   u32 unknown84;                                     // Role and original member name unknown, cleared by the constructor.
   GfMenuItemList *unknown88;                         // Inferred role: items; original member name unknown.

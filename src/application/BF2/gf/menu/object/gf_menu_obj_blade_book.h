@@ -58,4 +58,6 @@ static_assert(offsetof(GfMenuObjBladeBook, unknown2e0) == 0x2e0, "");
 static_assert(offsetof(GfMenuObjBladeBook, unknown2f0) == 0x2f0, "");
 static_assert(sizeof(GfMenuObjBladeBook) == 0x310, "");
 
+bool isUnuseBlade(u32 blade);
+
 } // namespace gf

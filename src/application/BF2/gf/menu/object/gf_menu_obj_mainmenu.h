@@ -17,11 +17,28 @@ class GfMenuCallContext;
 
 class GfMenuObjMainMenu : public GfMenuObject {
 public:
+  // Inferred role: layer parameter read when the menu opens; original type name unknown.
+  struct unknown001 {
+    u16 unknown00; // Inferred role: selected menu; original member name unknown.
+  };
+
   GfMenuObjMainMenu(u32 handle);
   ~GfMenuObjMainMenu() override;
   void initialize() override;
   void finalize() override;
   void update() override;
+  void suspendInput();
+  void resumeInput();
+  bool seqStartOpen();
+  bool seqAppearPhase1();
+  bool seqAppearPhase2();
+  bool seqAppearPhase3();
+  bool seqAppearPhase4();
+  bool seqEndCommon();
+  bool seqStartCommon();
+  bool seqCloseJog();
+  bool seqOpenJog();
+  bool seqSwapPhase2();
 
   u8 _24[0x28 - 0x24];
   mm::mtl::FixedVector<int, 12> unknown28; // Inferred role: menu entries; original member name unknown.
@@ -42,6 +59,7 @@ public:
   u32 unknown354; // Role and original member name unknown, cleared by the constructor.
 };
 
+static_assert(sizeof(GfMenuObjMainMenu::unknown001) == 0x02, "");
 static_assert(offsetof(GfMenuObjMainMenu, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjMainMenu, unknown68) == 0x68, "");
 static_assert(offsetof(GfMenuObjMainMenu, unknown2f8) == 0x2f8, "");

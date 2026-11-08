@@ -133,21 +133,20 @@ void GfGameStuckMeter::CreateInfo::operator=(const CreateInfo &other) {
 }
 
 GfGameStuckMeter::GfGameStuckMeter(const CreateInfo *info)
-    : unknown00(1.0f), unknown04(0.5f), unknown08(nullptr), unknown10(1.0f), unknown18(0.0f), unknown1c(0.0f), unknown20(1.0f), unknown30(mm::Vec3::zero), unknown40(mm::Vec3::zero), unknown50(0.0f),
-      unknown54(0.0f) {
+    : unknown00(), unknown18(0.0f), unknown1c(0.0f), unknown20(1.0f), unknown30(mm::Vec3::zero), unknown40(mm::Vec3::zero), unknown50(0.0f), unknown54(0.0f) {
   if (info != nullptr) {
     create(*info);
   }
 }
 
 void GfGameStuckMeter::dispose() {
-  if (unknown08 != nullptr) {
-    unknown08->resetCharacter(unknown18, unknown1c);
-    mm::mtl::safeRelease(unknown08);
+  if (unknown00.unknown08 != nullptr) {
+    unknown00.unknown08->resetCharacter(unknown18, unknown1c);
+    mm::mtl::safeRelease(unknown00.unknown08);
   }
 }
 
-bool GfGameStuckMeter::isStuck() const { return unknown04 <= unknown54; }
+bool GfGameStuckMeter::isStuck() const { return unknown00.unknown04 <= unknown54; }
 
 } // namespace gf
 

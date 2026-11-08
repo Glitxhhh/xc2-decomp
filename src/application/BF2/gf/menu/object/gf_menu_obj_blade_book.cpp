@@ -1,5 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_blade_book.h"
 
+#include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_event.h"
+#include "gf/data/gf_data_util.h"
+#include "gf/data/gf_game_flag.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
@@ -22,6 +28,52 @@ GfMenuObjBladeBook::~GfMenuObjBladeBook() {
   mm::mtl::safeRelease(unknown38);
   mm::mtl::safeRelease(unknown30);
   mm::mtl::safeRelease(unknown28);
+}
+
+bool isUnuseBlade(u32 blade) {
+  if (!GfMenuObjUtil::isValidBlade(blade)) {
+    return true;
+  }
+  if (!GfDataBlade::isRegularBlade(blade)) {
+    if (!GfDataBlade::isRareBlade(blade)) {
+      return true;
+    }
+    if (blade == 1045) {
+      return GfGameFlag::getLocal(1, 0x8a03) == 0;
+    }
+    u32 event = GfDataBlade::getCreateEvent(blade);
+    if (event != 0 && GfDataEvent::isWatchedEventFlag(event)) {
+      return false;
+    }
+    return GfDataBlade::isActivateUnuse(blade);
+  }
+  if (GfGameManager::isClearGame()) {
+    return false;
+  }
+  switch (blade) {
+  case BLADE_HOMURA:
+    return GfDataUtil::getScenarioFlag() <= 0x406;
+  case BLADE_HIKARI:
+    return GfDataUtil::getScenarioFlag() <= 0xbe7;
+  case BLADE_BYAKKO:
+    return GfDataUtil::getScenarioFlag() <= 0x7d9;
+  case BLADE_HANA_JS:
+    return GfDataUtil::getScenarioFlag() <= 0x7f0;
+  case BLADE_HANA_JK:
+    return GfDataUtil::getScenarioFlag() <= 0xfd5;
+  case BLADE_HANA_JD:
+    return GfGameFlag::getLocal(1, 0x8a03) == 0;
+  case BLADE_SUZAKU:
+    return GfDataUtil::getScenarioFlag() <= 0xbc4;
+  case 1009:
+    return (GfDataUtil::getScenarioFlag() >> 2) <= 0x4e2;
+  case BLADE_SAIKA:
+    return (GfDataUtil::getScenarioFlag() >> 1) <= 0x9d8;
+  case BLADE_UNKNOWN_1011:
+    return (GfDataUtil::getScenarioFlag() >> 7) <= 0x36;
+  default:
+    return true;
+  }
 }
 
 void GfMenuObjBladeBook::finalize() {
@@ -179,5 +231,4 @@ bool GfMenuObjBladeBook::seqResumeRelease() {
   GfMenuObjMainMenu2::setCloseKeyEnable(true);
   return true;
 }
-
 } // namespace gf

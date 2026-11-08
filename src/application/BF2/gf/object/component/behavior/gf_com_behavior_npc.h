@@ -4,6 +4,9 @@
 #include "ai/ai_state_hfsm.h"
 #include "gf/field/gf_field_exec_cmd_turn.h"
 #include "gf/field/gf_field_local_steer.h"
+#include "gf/field/gf_field_look_ik.h"
+#include "gf/field/gf_field_move_speed.h"
+#include "gf/game/gf_game_stuck_meter.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
@@ -92,6 +95,12 @@ public:
     bool unknown1a; // Inferred role: talk bonus enabled; original member name unknown.
   };
 
+  ~GfComBehaviorNpc() override;
+  const mm::mtl::RTTI *getRTTI() const override;
+  virtual GfComAsm *getComAsm() const;
+
+  void cleanup();
+
   void procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message);
   void procMsgPcFieldNotifyAction(fw::MessageObject *sender, MsgPcFieldNotifyAction &message);
   void procMsgPcFieldGetAccessType(fw::MessageObject *sender, MsgPcFieldGetAccessType &message);
@@ -115,15 +124,16 @@ public:
   void initStateId(npc::STATE_ID stateId);
   void validateLocalSteer(npc::STATE_ID stateId);
   void setActivateCollison(bool isActivate);
-  GfComAsm *getComAsm() const;
   void createFsm();
+  void createNaviMeshObj();
+  void updateNaviMeshObj(f32 deltaTime);
   void init(bool param1);
   bool isStateCondMatch(npc::STATE_ID stateId);
   int getNexStateId();
   void execTurnCmd(f32 angle);
+  void execTurnCmd(f32 angle, f32 param2, f32 param3, f32 param4);
   void execTurnCmdToGoal();
   void execTurnCmdToPos(const mm::Vec3 &position);
-  bool isArrivedToGoal() const;
   void moveToGoal(f32 deltaTime);
 
   // Inferred helper: rotation of the object kept by the reaction state; original name unknown.
@@ -161,12 +171,13 @@ public:
   Listener unknown1a0;                                  // Inferred role: listener; original member name unknown.
   GfMenuCallContext *unknown1b0;                        // Inferred role: target info menu context; original member name unknown.
   mm::mtl::IntrusivePtr<fw::ReferenceFrame> unknown1b8; // Inferred role: look point frame; original member name unknown.
-  u8 _1c0[0x240 - 0x1c0];
-  bool unknown240; // Inferred role: set when the talk access ends; original member name unknown.
-  u8 _241[0x2e0 - 0x241];
-  TFieldExecCmdTurn<GfComAsm> unknown2e0;  // Inferred role: turn command; original member name unknown.
-  GfFieldLocalSteer unknown350;            // Inferred role: local steer; original member name unknown.
-  LocalSteerIsTargetNotPlayer unknown53b0; // Inferred role: predicate of the local steer while approaching the player; original member name unknown.
+  GfGameStuckMeter unknown1c0;                          // Inferred role: stuck meter; original member name unknown.
+  GfGameDepopMeter unknown220;                          // Inferred role: depop meter, its flag is cleared while the player talks to the npc; original member name unknown.
+  GfFieldMoveSpeed unknown270;                          // Inferred role: move speed; original member name unknown.
+  GfFieldLookIk unknown2a0;                             // Inferred role: look ik; original member name unknown.
+  TFieldExecCmdTurn<GfComAsm> unknown2e0;               // Inferred role: turn command; original member name unknown.
+  GfFieldLocalSteer unknown350;                         // Inferred role: local steer; original member name unknown.
+  LocalSteerIsTargetNotPlayer unknown53b0;              // Inferred role: predicate of the local steer while approaching the player; original member name unknown.
 };
 
 static_assert(offsetof(GfComBehaviorNpc::BdatInfo, unknown04) == 0x04, "");
@@ -187,7 +198,10 @@ static_assert(offsetof(GfComBehaviorNpc, unknown198) == 0x198, "");
 static_assert(offsetof(GfComBehaviorNpc, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(GfComBehaviorNpc, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(GfComBehaviorNpc, unknown1b8) == 0x1b8, "");
-static_assert(offsetof(GfComBehaviorNpc, unknown240) == 0x240, "");
+static_assert(offsetof(GfComBehaviorNpc, unknown1c0) == 0x1c0, "");
+static_assert(offsetof(GfComBehaviorNpc, unknown220) == 0x220, "");
+static_assert(offsetof(GfComBehaviorNpc, unknown270) == 0x270, "");
+static_assert(offsetof(GfComBehaviorNpc, unknown2a0) == 0x2a0, "");
 static_assert(offsetof(GfComBehaviorNpc, unknown2e0) == 0x2e0, "");
 static_assert(offsetof(GfComBehaviorNpc, unknown350) == 0x350, "");
 static_assert(offsetof(GfComBehaviorNpc, unknown53b0) == 0x53b0, "");

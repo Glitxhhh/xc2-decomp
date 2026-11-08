@@ -15,6 +15,7 @@ class ReferenceObject;
 namespace ui {
 class UICtrlCursorSelect;
 class UISelectObjList;
+class UIObjectAcc;
 } // namespace ui
 
 namespace gf {
@@ -33,6 +34,21 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  void refreshBladeInfo(ui::UIObjectAcc &acc, u32 type);
+  bool seqOpenImage();
+  bool seqSubMenuOpen();
+  bool seqEffReleaseA();
+  bool seqEffReleaseB();
+  bool seqConfirmBoosterGet();
+  bool seqResumeRelease();
+  bool seqEffReleaseC();
+  bool seqEffReleaseD();
+  bool seqSubMenuEnd();
+  bool seqSubMenuOpenCustomize();
+  bool seqSubMenuErrorOvdOnly();
+  bool seqSubMenuErrorOvdLastOne();
+  bool seqSubMenuWaitLoadCustomize();
+  bool seqSubMenuWaitEndCustomize();
 
   u8 _24[0x28 - 0x24];
   mm::mtl::ReferenceObject *unknown28;                // Inferred role: reference-counted object; type and original member name unknown.

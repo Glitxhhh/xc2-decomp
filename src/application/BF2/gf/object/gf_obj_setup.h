@@ -30,6 +30,7 @@ class GfObjSetupBelonging;
 class GfObjSetupBlade;
 class GfObjSetupDriver;
 class GfObjSetupEnWeapon;
+class GfObjSetupEventObj;
 class GfObjSetupExtra;
 class GfObjSetupFieldObj;
 class GfObjSetupGimmick;
@@ -37,6 +38,7 @@ class GfObjSetupMap;
 class GfObjSetupMapLodAnim;
 class GfObjSetupMob;
 class GfObjSetupNpc;
+class GfObjSetupUiObj;
 class GfObjSetupWeapon;
 
 enum VFACC : s32 {
@@ -96,6 +98,8 @@ public:
   static GfObjSetupEnWeapon *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamEnWeapon &param);
   static GfObjSetupBelonging *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamBelonging &param);
   static GfObjSetupExtra *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamExtra &param);
+  static GfObjSetupEventObj *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamEventObj &param);
+  static GfObjSetupUiObj *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamUiObj &param);
 
   bool isEvent() const {
     switch (unknown1c) {
@@ -365,7 +369,12 @@ public:
   static mm::mtl::RTTI m_rtti;
 
   const mm::mtl::RTTI *getRTTI() const override;
+
+  mm::mtl::FixStr<128> unknown6c; // Inferred role: model name; original member name unknown.
 };
+
+static_assert(offsetof(GfObjSetupEventObj, unknown6c) == 0x6c, "");
+static_assert(sizeof(GfObjSetupEventObj) == 0xf0, "");
 
 class GfObjSetupExtra : public GfObjSetup {
 public:

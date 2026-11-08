@@ -46,6 +46,9 @@ struct AssetPackInfo {
   bool getSlotHandle(mm::mtl::FixedVector<GF_SLOT_HANDLE *, 88> &slots) const;
   GF_SLOT_HANDLE *getSlotHandle(GfFileIdx index) const;
   GfAssetPack *getAssetPack(GfFileIdx index) const;
+  GfAssetPack *getAssetPack(const char *name) const;
+  GfAssetPack *getAssetPackByAssetType(GfAssetType type) const;
+  bool isSameResource(const AssetPackInfo *other) const;
   GfAssetResource *getResource(GfFileIdx index);
   bool isExist(GfFileIdx index) const;
   bool isLoaded(mm::mtl::FixStr<128> *name);

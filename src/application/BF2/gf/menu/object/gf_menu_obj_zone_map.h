@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/array.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
@@ -12,12 +13,19 @@
 namespace ui {
 class UICtrlObject;
 class UISelectObjList;
+class UIObjectAcc;
 } // namespace ui
+
+namespace mm {
+struct Aabb;
+struct Vec2;
+} // namespace mm
 
 namespace gf {
 
 class GfMenuCallContext;
 class GfMenuZoneMapList;
+struct MenuZoneMapInfo;
 
 class GfMenuObjZoneMap : public GfMenuObject {
 public:
@@ -32,6 +40,25 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void setupMain(ui::UIObjectAcc &acc);
+  static int setFadeIn(u32 handle);
+  static int setFadeOut(u32 handle);
+  static void setDispMapCursor(ui::UIObjectAcc &acc, bool isDisp);
+  static void setupMapSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list);
+  static void setupPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list);
+  static bool isEnableJump(const MenuZoneMapInfo &info);
+  void clearTex();
+  static void setupPoint(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects);
+  static void setupHelp(ui::UIObjectAcc &acc);
+  static bool chkFloor(u32 map, u32 floor);
+  static u32 setupIconTableSub(ui::UIObjectAcc &acc, mm::mtl::FixedVector<u32, 256> &icons, u32 type, mm::Pnt<s16> pos, mm::Vec2 scale);
+  static const char *getIconNodeName(u32 type);
+  static void closeIconTable(ui::UIObjectAcc &acc, mm::mtl::FixedArray<mm::mtl::FixedVector<u32, 256>, 12> &icons);
+  u32 getFloor();
+  bool seqTexDelete();
+  bool seqTexDeleteWait();
+  bool seqTexLoadWait();
+  static void getFloorAABB(u32 map, u32 floor, mm::Aabb &aabb, mm::Pnt<s16> &center);
 
   u8 _24[0x28 - 0x24];
   GfMenuZoneMapList *unknown28;   // Inferred role: maps; original member name unknown.

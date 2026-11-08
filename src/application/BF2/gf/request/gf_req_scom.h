@@ -337,7 +337,7 @@ public:
   static GF_SCOM_HANDLE *createMercenariesStart(u32 blade);
   static GF_SCOM_HANDLE *createMercenariesEnd(u32 blade);
   static GF_SCOM_HANDLE *createMercenariesResult(u32 blade);
-  static void createReleaseBlade(u32 blade);
+  static GAME_VOICE_HANDLE *createReleaseBlade(u32 blade);
   static GF_SCOM_HANDLE *createSkipTravel(bool isStart);
   static GF_SCOM_HANDLE *createRestart(CV_FIELD voice);
   static GAME_VOICE_HANDLE *createEnemy(CV_FIELD voice);

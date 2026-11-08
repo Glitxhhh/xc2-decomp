@@ -19,6 +19,7 @@ public:
   static void open(bool isLock);
   static void close(bool isImmediate);
   static void attachComboRequest(GfMenuCallContext *context);
+  static void memberChange(u16 member, u32 type);
 
   u8 _24[0x30 - 0x24];
   int unknown30[2]; // Inferred role: unused, -1 at start; original member name unknown.

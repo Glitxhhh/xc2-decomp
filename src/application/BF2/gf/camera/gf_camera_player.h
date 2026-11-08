@@ -10,6 +10,7 @@
 
 namespace fw {
 class ParamAdapter;
+class Reflection;
 } // namespace fw
 
 namespace mm {
@@ -53,6 +54,7 @@ public:
   void updateCollision2(mm::Vec3 &position, mm::Vec3 &target);
   f32 getYaw(const mm::Vec3 &position, const mm::Vec3 &target);
   static mm::mtl::IntrusivePtr<fw::Camera> create();
+  static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
   static f32 getNearClip();
   static f32 getFarClip();
   static f32 getFov();

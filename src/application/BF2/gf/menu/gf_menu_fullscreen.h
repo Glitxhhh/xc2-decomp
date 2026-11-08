@@ -71,7 +71,7 @@ public:
   static void removeLayerParam(u32 layer);
   static void registLayerObject(u32 layer, u32 object);
   static void setShadowLayer(u32 layer, bool shadow);
-  static u16 getLayerGroup(u32 layer);
+  static u32 getLayerGroup(u32 layer);
   static void destroy();
   static void postUpdate(const fw::UpdateInfo &info);
   void initialize(const GfSetupParam &param);

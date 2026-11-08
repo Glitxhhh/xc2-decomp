@@ -222,7 +222,7 @@ void GfMenuFullScreen::setShadowLayer(u32 layer, bool shadow) {
   }
 }
 
-u16 GfMenuFullScreen::getLayerGroup(u32 layer) {
+u32 GfMenuFullScreen::getLayerGroup(u32 layer) {
   GfMenuFullScreen *fullScreen = get();
   if (layer != 0 && fullScreen != nullptr) {
     for (u16 i = 0; i < LAYER_COUNT; i++) {

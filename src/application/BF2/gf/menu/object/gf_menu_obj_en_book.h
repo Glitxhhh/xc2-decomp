@@ -23,6 +23,18 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  void setupFamilyMsgList();
+  void refreshFamilyList();
+  void refreshGenusMsgList();
+  void setupMapIDList();
+  bool isBattled(u32 id);
+  bool isDefeated(u32 id);
+  void deleteCurEnemyModel();
+  bool seqWaitLoading();
+  bool seqStartTop();
+  bool seqDeleteEnmey();
+  bool seqCreateEnmey();
+  bool seqFadeOutEnmey();
 
   u32 unknown24;                     // Role and original member name unknown, cleared by the constructor.
   u32 unknown28;                     // Role and original member name unknown, cleared by the constructor.

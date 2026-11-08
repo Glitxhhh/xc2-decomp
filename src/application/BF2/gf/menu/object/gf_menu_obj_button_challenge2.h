@@ -51,13 +51,35 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void open(GfMenuCallContext *context, const OpenParam &param, unsigned int sequence);
+  static bool isValidParam(const OpenParam &param);
   static void open(GfMenuCallContext *context, unsigned int challenge, bool isDispButton, bool isSound);
   static void open(GfMenuCallContext *context, unsigned int challenge, const OptionParam &option);
+  static void importOpenParam(OpenParam &param, unsigned int challenge);
   static void openSequence(GfMenuCallContext *context, unsigned int challenge, bool isDispButton, bool isSound);
+  static void openSequence(GfMenuCallContext *context, unsigned int challenge, const OptionParam &option);
   static void resume(GfMenuCallContext *context);
   static void close(GfMenuCallContext *context);
+  void setup(const OpenParam &param, unsigned int challenge, bool);
+  void setupV2(const OpenParam &param);
+  bool seqStart();
+  bool seqRunningV2();
+  bool seqAppearCursor();
+  bool seqCheckSequence();
+  bool seqWaitRestartV2();
+  bool seqWaitMashingV2();
+  void nextChallenge();
   static void dispRelationHUD(bool);
+  static void setSpeedFactor(GfMenuCallContext *context, f32 speedFactor);
   u32 getResultPoint() const;
+  void stopSeqCtrl();
+  bool seqEnd();
+  void notifyChallengeResult();
+  bool getChallengeMashingWait(u32 &wait);
+  void setRingScale(f32 scale);
+  void setRingScaleV2(u32 index, f32 scale);
+  void updateChallenge();
+  bool isSeqCtrlBusy();
 
   u8 _24[0x28 - 0x24];
   OpenParam unknown28;                                     // Inferred role: parameter of the running challenge; original member name unknown.
@@ -72,7 +94,8 @@ public:
   GfMenuSequence<GfMenuObjButtonChallenge2, 8> unknown0a0; // Inferred role: queued steps; original member name unknown.
   mm::mtl::FixedVector<int, 4> unknown330;                 // Inferred role: running controls; original member name unknown.
   mm::mtl::FixedVector<f32, 2> unknown348;                 // Role and original member name unknown.
-  u16 unknown358;                                          // Role and original member name unknown, cleared by the constructor.
+  bool unknown358;                                         // Role and original member name unknown, cleared by the constructor.
+  bool unknown359;                                         // Inferred role: challenge result notified flag; original member name unknown, cleared by the constructor.
   u16 unknown35a;                                          // Role and original member name unknown, cleared by the constructor.
   u16 unknown35c;                                          // Role and original member name unknown.
   u16 unknown35e;                                          // Role and original member name unknown.

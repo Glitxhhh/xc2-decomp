@@ -16,10 +16,18 @@ class GfMenuCallContext;
 
 class GfMenuObjCommonJog : public GfMenuObject {
 public:
+  struct OpenParam {
+    OpenParam() : unknown00(0), unknown04(-1) {}
+
+    u32 unknown00; // Inferred role: open mode; original member name unknown.
+    u32 unknown04; // Inferred role: selected menu, -1 for none; original member name unknown.
+  };
+
   GfMenuObjCommonJog(u32 handle);
   ~GfMenuObjCommonJog() override;
   void initialize() override;
   void update() override;
+  static void open(GfMenuCallContext *context, const OpenParam &param);
   static void pop(GfMenuCallContext *context);
   static void enable(GfMenuCallContext *context);
   static void disable(GfMenuCallContext *context);
@@ -43,6 +51,8 @@ public:
   mm::mtl::FixedVector<u32, 4> unknown68; // Inferred role: visited menus; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjCommonJog::OpenParam, unknown04) == 0x04, "");
+static_assert(sizeof(GfMenuObjCommonJog::OpenParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjCommonJog, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjCommonJog, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjCommonJog, unknown38) == 0x38, "");

@@ -85,6 +85,6 @@ static_assert(sizeof(GfFieldLocalSteer) == 0x5060, "");
 void validateGmkRouteNaviConsideringGfLocalSteer(gmk::GmkRouteNavi &navi, const GfFieldLocalSteer &steer, const mm::Vec3 &position);
 bool canGetMoveVec(const navi::NvmshAcObj *navi);
 bool getMoveVec(mm::Vec3 &vector, const navi::NvmshAcObj *navi);
-void execEndSchedule(fw::ComponentObject &component);
+bool execEndSchedule(fw::ComponentObject &component);
 
 } // namespace gf

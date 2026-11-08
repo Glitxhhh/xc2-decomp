@@ -24,6 +24,7 @@ struct GF_OBJ_HANDLE;
 class GfMenuModelView {
 public:
   struct CtrlParam {
+    CtrlParam(GF_OBJ_HANDLE *handle, f32 duration, bool unknown);
     void setMovePosX(f32 value);
     void setMovePosX(f32 start, f32 end);
     void setMovePosY(f32 value);
@@ -72,6 +73,7 @@ public:
     GF_OBJ_HANDLE *unknown08; // Inferred role: effect owner, invalid handle when unused; original member name unknown.
   };
 
+  virtual ~GfMenuModelView();
   void update();
   static void setVanishRatio(GF_OBJ_HANDLE *handle, f32 ratio);
   void addWeaponFromBlade(u32 blade, u32 id);
@@ -108,9 +110,11 @@ public:
   bool isLoading() const;
   void delGfObj(u32 type, u32 id);
   GF_OBJ_HANDLE *findGfObj(u32 type, u32 id);
+  void addEnemyObject(u32 id, const fw::Transform &transform);
+  void startObjectCtrl(const CtrlParam &param);
   bool checkGfObj(u32 type, u32 id);
 
-  u8 _00[0x08];
+  // The vptr is at 0x00.
   int unknown08; // Inferred role: row of the model view bdat; original member name unknown.
   u32 unknown0c; // Inferred role: ui object handle; original member name unknown.
   u32 unknown10; // Inferred role: render index; original member name unknown.

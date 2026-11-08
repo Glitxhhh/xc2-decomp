@@ -6,6 +6,7 @@
 
 namespace ui {
 class UICtrlCursorSelect;
+class UIObjectAcc;
 } // namespace ui
 
 namespace gf {
@@ -16,6 +17,12 @@ class GfMenuObjBladeSet : public GfMenuObject {
 public:
   GfMenuObjBladeSet(u32 handle);
   ~GfMenuObjBladeSet() override;
+  enum eMode {
+    eMode_UNKNOWN_0,
+    eMode_UNKNOWN_1,
+    eMode_UNKNOWN_2,
+  };
+
   static bool checkBladeRelease(u32 blade);
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);
@@ -23,6 +30,18 @@ public:
   static u32 setEmptyTeamId();
   static bool isMenuBtnEnable(int menu, u32 blade, const GfMenuBladeList *list);
   static void setMenuBtnStat(int menu, u32 blade, const GfMenuBladeList *list);
+  static void setupMercenaries(ui::UIObjectAcc &acc);
+  static void createBladeList(eMode mode, int driver, GfMenuBladeList *list);
+  static void setupReleaseSlot(ui::UIObjectAcc &acc, const GfMenuBladeList *list);
+  static void detailOpen(GfMenuObjBladeSet *object, ui::UIObjectAcc &acc, const char *layout, u32 unknown);
+  static void setupMercenariesSlotMenu(ui::UIObjectAcc &acc);
+  static void setupMercenariesCondParam(ui::UIObjectAcc &acc, u32 mission, int task, u32 type, const char *format, const char *layoutFormat);
+  static void setupMercenariesSlotBl(ui::UIObjectAcc &acc, const GfMenuBladeList *list);
+  static void setupBladePreview(ui::UIObjectAcc &acc);
+  static bool checkMercenaries(u32 blade, GfMenuBladeList *list);
+  static void setCompleteBtnStat(int menu, u32 mission, const GfMenuBladeList *list);
+  static void setupBladeSelect(ui::UIObjectAcc &acc, const GfMenuBladeList *list, GfMenuBladeList *slotList);
+  static void setupMercenariesPreview(ui::UIObjectAcc &acc, GfMenuBladeList *list);
   void initialize() override;
   void finalize() override;
   void update() override;
