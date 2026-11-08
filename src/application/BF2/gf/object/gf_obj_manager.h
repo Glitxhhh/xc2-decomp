@@ -5,6 +5,7 @@
 #include "gf/event/gf_event.h"
 #include "gf/object/gf_append_info.h"
 #include "ml/fixed_size_alloc.h"
+#include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
 #include "mm_mtl/fixed_array.h"
@@ -74,7 +75,9 @@ struct GFOBJ_INFO {
   mm::mtl::unknown027<64> unknown38;            // Inferred role: flags; original member name unknown.
   mm::mtl::unknown027<64> unknown40;            // Inferred role: previous flags; original member name unknown.
   u32 unknown48;                                // Inferred role: disp flags; original member name unknown.
-  u8 _4c[0x70 - 0x4c];
+  u8 _4c[0x50 - 0x4c];
+  mm::Vec3 unknown50;                            // Inferred role: world position saved when the object is reloaded; original member name unknown.
+  mm::Quat unknown60;                            // Inferred role: world rotation saved when the object is reloaded; original member name unknown.
   u64 unknown70[3];                              // Inferred role: user data; original member name unknown.
   GF_OBJ_HANDLE *unknown88;                      // Inferred role: master; original member name unknown.
   GF_OBJ_HANDLE *unknown90;                      // Inferred role: owner; original member name unknown.
@@ -96,6 +99,8 @@ static_assert(offsetof(GFOBJ_INFO, unknown18) == 0x18, "");
 static_assert(offsetof(GFOBJ_INFO, unknown20) == 0x20, "");
 static_assert(offsetof(GFOBJ_INFO, unknownb0) == 0xb0, "");
 static_assert(offsetof(GFOBJ_INFO, unknown30) == 0x30, "");
+static_assert(offsetof(GFOBJ_INFO, unknown50) == 0x50, "");
+static_assert(offsetof(GFOBJ_INFO, unknown60) == 0x60, "");
 static_assert(offsetof(GFOBJ_INFO, unknown38) == 0x38, "");
 static_assert(offsetof(GFOBJ_INFO, unknown40) == 0x40, "");
 static_assert(offsetof(GFOBJ_INFO, unknown48) == 0x48, "");

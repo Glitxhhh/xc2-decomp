@@ -55,6 +55,7 @@ public:
   ~GfGameObj() override;
   void listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectType) override;
   void finalize();
+  void initialize(const GfSetupParam &param);
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
@@ -76,6 +77,7 @@ public:
   static GfObj *getObj(GF_OBJ_HANDLE *handle);
   bool isEffectFadeEnd(const INOUT &inout, const GfObjAcc &acc) const;
   bool fadeinGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo &info);
+  void removeGameObjCommon(GfObjAcc &acc);
   void addGameObj(GF_OBJ_HANDLE *handle);
   bool isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list) const;
   void calcCameraFade(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list, const mm::Vec3 &cameraPosition);

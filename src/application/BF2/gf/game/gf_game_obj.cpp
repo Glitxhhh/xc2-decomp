@@ -2,6 +2,7 @@
 
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
+#include "gf/asset/gf_asset_manager.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_param_acc.h"
@@ -12,17 +13,22 @@
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj_enemy.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/game/gf_game_ride.h"
+#include "gf/game/gf_game_scene.h"
 #include "gf/game/gf_game_search_obj.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/rtti.h"
 
 namespace gf {
@@ -32,6 +38,11 @@ void GfGameObj::build(const GfSetupParam &param) {
   // __LINE__ must be 213 as in the original file: it is the line argument of the allocation.
 #line 213
   new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameObj(param);
+}
+
+GfGameObj::GfGameObj(const GfSetupParam &param) : unknown55c68(nullptr), unknown55c70(false) {
+  initialize(param);
+  GfObjManager::addListener(this, OBJEVT_ALL);
 }
 
 GfGameObj::~GfGameObj() { GfObjManager::removeListener(this); }
@@ -82,6 +93,65 @@ void GfGameObj::enableGameObj(GfObjAcc &acc, bool isEnable) {
     unknown52238.push_back(acc.getHandle());
   } else {
     unknown50230.push_back(acc.getHandle());
+  }
+}
+
+void GfGameObj::removeGameObjCommon(GfObjAcc &acc) {
+  if (acc.isPartyObj() && acc.getType() != OBJECT_TYPE_PC_WEAPON) {
+    acc.getPartyID();
+    if (GfGameRide::testRideOn() && GfGameScene::get() != nullptr && GfGameScene::get()->isRideObj(acc.getHandle())) {
+      GfGameRide::setRideOn(false);
+    }
+  }
+  enableGameObj(acc, false);
+  acc.setFlag(OBJ_FLAG_UI_HIDDEN, false);
+  if (acc.isReload() && !acc.hasParent() && GfObjUtil::getParentHandle(acc.getHandle()) == INVALID_HANDLE) {
+    GfObj *obj = acc.getObj();
+    if (obj != nullptr && obj->getComponent<GfComTransform>() != nullptr) {
+      GFOBJ_INFO *info = acc.unknown00;
+      const fw::Transform &transform = acc.getWorldTransform();
+      info->unknown50 = transform.unknown00;
+      info->unknown60 = transform.unknown10;
+    }
+  }
+  unknown55c68->leaveEnemyObj(acc.getHandle());
+  GfObjManager *manager = GfObjManager::get();
+  if (manager != nullptr) {
+    mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> followObjs;
+    manager->getFollowObj(followObjs, acc.getHandle());
+    for (GF_OBJ_HANDLE *followObj : followObjs) {
+      GfObjUtil::unmountFromBone(followObj);
+    }
+    GfObjUtil::unmountFromBone(acc.getHandle());
+  }
+  int partyId = acc.getPartyID();
+  bool isReload = acc.isReload();
+  if (partyId == -1) {
+    if (!isReload && !acc.isRebuild()) {
+      return;
+    }
+    if (acc.testFlag(OBJ_FLAG_LOADED_WAIT) && (acc.getType() == OBJECT_TYPE_BLADE || acc.getType() == OBJECT_TYPE_PC_WEAPON)) {
+      acc.setFlag(OBJ_FLAG_LOADED_WAIT_OK, true);
+    }
+    return;
+  }
+  if (!isReload && !acc.isRebuild()) {
+    return;
+  }
+  if (!acc.testFlag(OBJ_FLAG_LOADED_WAIT)) {
+    return;
+  }
+  if (acc.getType() != OBJECT_TYPE_BLADE && acc.getType() != OBJECT_TYPE_PC_WEAPON) {
+    return;
+  }
+  DataParamAcc paramAcc(GfGameParty::getHandleDriver(acc.getPartyID()));
+  int bladeSet = paramAcc.getBladeSet(false);
+  if (acc.getType() == OBJECT_TYPE_BLADE) {
+    GfObjSetupBlade *setup = mm::mtl::dynamicCast<GfObjSetupBlade>(GfObjManager::getObjInfo(acc.getHandle())->unknown30);
+    acc.setFlag(OBJ_FLAG_LOADED_WAIT_OK, bladeSet == setup->unknown6c);
+  } else if (acc.getType() == OBJECT_TYPE_PC_WEAPON) {
+    GfObjSetupWeapon *setup = mm::mtl::dynamicCast<GfObjSetupWeapon>(GfObjManager::getObjInfo(acc.getHandle())->unknown30);
+    acc.setFlag(OBJ_FLAG_LOADED_WAIT_OK, bladeSet == setup->unknown6c);
   }
 }
 
@@ -140,6 +210,44 @@ bool GfGameObj::isDestroyGameObj(GF_OBJ_HANDLE *handle) {
     return true;
   }
   return !acc.testFlag(OBJ_FLAG_UNKNOWN_E);
+}
+
+bool GfGameObj::isValidGameObj(GF_OBJ_HANDLE *handle, bool isCheckState, mm::mtl::FixStr<128> *reason) {
+  GfGameObj *gameObj = get();
+  GfObjAcc acc(handle);
+  if (isCheckState) {
+    for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+      if (it->unknown00 == handle) {
+        return true;
+      }
+    }
+  } else {
+    for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+      if ((*it).unknown00 == handle) {
+        if (reason != nullptr) {
+          reason->format("GfGameObj::Fadein[%s]", acc.getDebugName());
+        }
+        return false;
+      }
+    }
+  }
+  bool isValid = acc.testFlag(OBJ_FLAG_UNKNOWN_E);
+  if (reason == nullptr || isValid) {
+    return isValid;
+  }
+  GfAssetManager *assetManager = GfAssetManager::get();
+  if (assetManager != nullptr && !assetManager->isLoaded(acc.getAssetHandle(), nullptr)) {
+    reason->format("Loading Asset[%s]", acc.getDebugName());
+  } else if (!acc.isLoadedWaitOK()) {
+    reason->format("isLoadedWaitOK[%s]", acc.getDebugName());
+  } else if (!GfObjManager::get()->isValidMultiBind(acc.getHandle(), acc.getMultiBindUniqId())) {
+    reason->format("isValidMultiBind[%s]", acc.getDebugName());
+  } else if (isGameObjWaiting(handle)) {
+    reason->format("GfObjFlags::GAMEOBJ[%s]", acc.getDebugName());
+  } else {
+    reason->format("GfGameObj::isGameObjWaiting[%s]", acc.getDebugName());
+  }
+  return false;
 }
 
 bool GfGameObj::isEnterGameObj(GF_OBJ_HANDLE *handle) {
