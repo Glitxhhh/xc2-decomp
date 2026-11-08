@@ -78,6 +78,14 @@ void GfMenuReference::resetDriverVirtual() {
   }
 }
 
+void GfMenuReference::resetBladeVirtual() {
+  GfMenuReference *reference = get();
+  if (reference != nullptr) {
+    reference->unknown4ccd0 = 0;
+    reference->unknown4ccd4 = unknown006();
+  }
+}
+
 void GfMenuReference::postReset() {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
@@ -839,14 +847,14 @@ u32 GfMenuReference::getBladeVirtualEquipWpnChip() {
 void GfMenuReference::setBladeVirtualEquipOrb(u32 id) {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
-    reference->unknown4ccd4 = id;
+    reference->unknown4ccd4.unknown00 = id;
   }
 }
 
 u32 GfMenuReference::getBladeVirtualEquipOrb() {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
-    return reference->unknown4ccd4;
+    return reference->unknown4ccd4.unknown00;
   }
   return 0;
 }
@@ -854,14 +862,14 @@ u32 GfMenuReference::getBladeVirtualEquipOrb() {
 void GfMenuReference::setBladeVirtualEquipOrbSlot(u32 slot) {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
-    reference->unknown4ccd8 = slot;
+    reference->unknown4ccd4.unknown04 = slot;
   }
 }
 
 u32 GfMenuReference::getBladeVirtualEquipOrbSlot() {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
-    return reference->unknown4ccd8;
+    return reference->unknown4ccd4.unknown04;
   }
   return 0;
 }

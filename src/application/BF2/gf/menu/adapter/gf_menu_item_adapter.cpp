@@ -51,6 +51,35 @@ bool GfMenuItemAdapter::update_Name(const MenuItemInfo &info) {
   return result;
 }
 
+bool GfMenuItemAdapter::update_IconAll(const MenuItemInfo &info) {
+  if (unknown38.unknown04 == 0 || unknown38.unknown00 == ItemType::NONE || info.unknown00 == ItemType::NONE) {
+    return false;
+  }
+  u32 param = 0;
+  u32 number;
+  if (info.unknown00 == ItemType::FAVORITE) {
+    ItemProperty property;
+    GfItemUtil::getProperty(property, info.unknown04, 0);
+    param = property.unknown4e;
+    if (param == 0) {
+      return false;
+    }
+  } else if (info.unknown00 == ItemType::PC_EQUIP) {
+    ItemProperty property;
+    GfItemUtil::getProperty(property, info.unknown04, 0);
+    param = property.unknown65 + 1;
+  } else if (info.unknown00 == ItemType::COLLECTION_LIST) {
+    ItemProperty property;
+    GfItemUtil::getProperty(property, info.unknown04, 0);
+    param = property.unknown4d;
+  }
+  if (GfMenuItemUtil::getIconNumber(info.unknown00, param, number, false)) {
+    setNumber(number);
+    return true;
+  }
+  return false;
+}
+
 bool GfMenuItemAdapter::update_Count(const MenuItemInfo &info) {
   if (unknown38.unknown04 != 0 && unknown38.unknown00 != ItemType::NONE) {
     setNumber(info.unknown08);
@@ -317,6 +346,33 @@ bool GfMenuItemAdapter::update_revise(const MenuItemInfo &info) {
   return false;
 }
 
+bool GfMenuItemAdapter::update_dispRevise(const MenuItemInfo &info) {
+  if (unknown38.unknown04 == 0 || unknown38.unknown00 == ItemType::NONE || info.unknown00 != ItemType::HANA_ROLE) {
+    return false;
+  }
+  ItemProperty property;
+  GfItemUtil::getProperty(property, info.unknown04, 0);
+  if (property.unknown78 != 0 && unknown70 == 0) {
+    return true;
+  }
+  if (property.unknown79 != 0 && unknown70 == 1) {
+    return true;
+  }
+  if (property.unknown7a != 0 && unknown70 == 2) {
+    return true;
+  }
+  if (property.unknown7b != 0 && unknown70 == 3) {
+    return true;
+  }
+  if (property.unknown7c != 0 && unknown70 == 4) {
+    return true;
+  }
+  if (property.unknown7d != 0 && unknown70 == 5) {
+    return true;
+  }
+  return false;
+}
+
 bool GfMenuItemAdapter::update_roleText(const MenuItemInfo &info) {
   bool result = false;
   if (unknown38.unknown04 != 0 && unknown38.unknown00 != ItemType::NONE && info.unknown00 == ItemType::HANA_ROLE) {
@@ -395,6 +451,23 @@ GfMenuItemAdapter *GfMenuItemAdapter::createFromRefernceList(u32 handle, u32 typ
   return adapter;
 }
 
+GfMenuItemAdapter *GfMenuItemAdapter::createFromPouch(u32 handle, u32 type, u32 pouchIndex, u32 driver, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 709 as in the original source: it is the line argument of operator new.
+#line 709
+  PouchConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PouchConverter(pouchIndex, driver);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
+  return adapter;
+}
+
 GfMenuItemAdapter *GfMenuItemAdapter::createFromPouchReferenceIndex(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 driver, bool isUpdateAlways) {
   if (handle == 0) {
     return nullptr;
@@ -408,6 +481,23 @@ GfMenuItemAdapter *GfMenuItemAdapter::createFromPouchReferenceIndex(u32 handle, 
   if (adapter != nullptr) {
     adapter->unknown68 = converter;
   }
+  return adapter;
+}
+
+GfMenuItemAdapter *GfMenuItemAdapter::createFromPouchReferenceDriver(u32 handle, u32 type, u32 pouchIndex, u32 driverIndex, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 731 as in the original source: it is the line argument of operator new.
+#line 731
+  PouchReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PouchReferenceDriverConverter(pouchIndex, driverIndex);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
   return adapter;
 }
 
@@ -427,6 +517,23 @@ GfMenuItemAdapter *GfMenuItemAdapter::createFromPouchReferenceIndexReferenceDriv
   return adapter;
 }
 
+GfMenuItemAdapter *GfMenuItemAdapter::createFromMission(u32 handle, u32 type, u32 mission, u32 index, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 754 as in the original source: it is the line argument of operator new.
+#line 754
+  MissionConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MissionConverter(mission, index);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
+  return adapter;
+}
+
 GfMenuItemAdapter *GfMenuItemAdapter::createFromReferenceMission(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   if (handle == 0) {
     return nullptr;
@@ -440,6 +547,74 @@ GfMenuItemAdapter *GfMenuItemAdapter::createFromReferenceMission(u32 handle, u32
   if (adapter != nullptr) {
     adapter->unknown68 = converter;
   }
+  return adapter;
+}
+
+GfMenuItemAdapter *GfMenuItemAdapter::createFromDriverEquip(u32 handle, u32 type, u32 driver, u32 slot, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 776 as in the original source: it is the line argument of operator new.
+#line 776
+  DriverEquipConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) DriverEquipConverter(driver, slot);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
+  return adapter;
+}
+
+GfMenuItemAdapter *GfMenuItemAdapter::createFromReferenceDriverEquip(u32 handle, u32 type, u32 driverIndex, u32 slot, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 787 as in the original source: it is the line argument of operator new.
+#line 787
+  ReferenceDriverEquipConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverEquipConverter(driverIndex, slot);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
+  return adapter;
+}
+
+GfMenuItemAdapter *GfMenuItemAdapter::createFromBladeEquip(u32 handle, u32 type, u32 blade, u32 slot, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 798 as in the original source: it is the line argument of operator new.
+#line 798
+  BladeEquipConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) BladeEquipConverter(blade, slot);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
+  return adapter;
+}
+
+GfMenuItemAdapter *GfMenuItemAdapter::createFromReferenceBladeEquip(u32 handle, u32 type, u32 bladeIndex, u32 slot, bool isUpdateAlways) {
+  if (handle == 0) {
+    return nullptr;
+  }
+  // __LINE__ must be 809 as in the original source: it is the line argument of operator new.
+#line 809
+  ReferenceBladeEquipConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceBladeEquipConverter(bladeIndex, slot);
+  MenuItemInfo info;
+  converter->getItemInfo(info);
+  GfMenuItemAdapter *adapter = create(handle, type, info, isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown68 = converter;
   return adapter;
 }
 
@@ -469,6 +644,31 @@ GfMenuItemAdapter::ListConverter *GfMenuItemAdapter::IConverter::fromList() { re
 GfMenuItemAdapter::PouchConverter *GfMenuItemAdapter::IConverter::fromPouch() { return nullptr; }
 
 GfMenuItemAdapter::MissionConverter *GfMenuItemAdapter::IConverter::fromMission() { return nullptr; }
+
+void GfMenuItemAdapter::ListConverter::getItemInfo(MenuItemInfo &info) {
+  if (listIndex == -1) {
+    info = list->getContents(list->getIndex(false));
+  } else {
+    if (listIndex >= list->getSize()) {
+      info.unknown00 = ItemType::NONE;
+      info.unknown04 = 0;
+      return;
+    }
+    info = list->getContents(list->getPageIndex(listIndex));
+  }
+}
+
+void GfMenuItemAdapter::ReferenceListConverter::getItemInfo(MenuItemInfo &info) {
+  if (list->unknown10.get() != nullptr) {
+    GfMenuItemList &itemList = *list->unknown10.get();
+    if (listIndex < itemList.getSize()) {
+      info = itemList.getContents(itemList.getPageIndex(listIndex));
+    } else {
+      info.unknown00 = ItemType::NONE;
+      info.unknown04 = 0;
+    }
+  }
+}
 
 void GfMenuItemAdapter::ReferenceItemConverter::getItemInfo(MenuItemInfo &info) { item->getItem(info); }
 

@@ -18,7 +18,7 @@
 
 namespace gf {
 
-GfMenuObjItemList2::GfMenuObjItemList2(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown98(0), unknowna0(true) {}
+GfMenuObjItemList2::GfMenuObjItemList2(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown98(0), unknown9c(0), unknowna0(true) {}
 
 GfMenuObjItemList2::~GfMenuObjItemList2() {
   mm::mtl::safeRelease(unknown30);
@@ -43,6 +43,25 @@ void GfMenuObjItemList2::setupFilter(ui::UIObjectAcc &acc, u32 index) {
   getFilterText(index, text);
   ui::UIObjectAcc label(acc.searchChild("TXT_filterlabel"));
   label.setText(text);
+}
+
+void GfMenuObjItemList2::refreshFilterIcon() {
+  ui::UIObjectAcc filter(unknown18, "LAY_filter");
+  mm::mtl::FixStr<32> name;
+  if (unknown38.size() != 0) {
+    u32 i = 0;
+    do {
+      u32 selected = unknown98;
+      name.format("IMG_ficon@%02d", i + 1);
+      ui::UIObjectAcc icon(filter.searchChild(name.c_str()));
+      if (i == selected) {
+        icon.setMulColor("sys_select");
+      } else {
+        icon.loadDefColor();
+      }
+      i++;
+    } while (i < unknown38.size());
+  }
 }
 
 void GfMenuObjItemList2::getFilterText(u32 index, ui::UIStr &text) {

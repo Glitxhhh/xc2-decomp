@@ -6,6 +6,7 @@
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/unique_ptr.h" // IWYU pragma: keep
 
@@ -50,6 +51,24 @@ void GfComProperty::procMsgObjectDead(fw::MessageObject *object, MsgObjectDead &
     MsgObjectNotifyDead notify(0, static_cast<const MsgObjectDamage *>(static_cast<const fw::Message *>(&message)));
     notify.unknown08 = message.deadType;
     onDead(notify);
+  }
+}
+
+void GfComProperty::onDamage(MsgObjectNotifyDamage &message) {
+  GfComBehavior *behavior = unknown08->getComponent<GfComBehavior>();
+  if (behavior != nullptr) {
+    GfObj *object = static_cast<GfObj *>(unknown08);
+    behavior->recieveMessage(object, message);
+  }
+
+  SCOM_CHAR_DMG::create(static_cast<GfObj *>(unknown08)->unknownf8, message);
+}
+
+void GfComProperty::onHeal(MsgObjectNotifyHealHp &message) {
+  GfComBehavior *behavior = unknown08->getComponent<GfComBehavior>();
+  if (behavior != nullptr) {
+    GfObj *object = static_cast<GfObj *>(unknown08);
+    behavior->recieveMessage(object, message);
   }
 }
 

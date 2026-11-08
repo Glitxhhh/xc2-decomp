@@ -297,6 +297,7 @@ public:
   static u32 getDriverClassBuffLv(u32 driverClass, u32 index);
   static bool isBladeSelectable(u32 blade, const GfMenuBladeList *list);
   static bool isBladeReleasable(u32 blade, const GfMenuBladeList *list);
+  static bool isBladeLastOne(u32 blade, const GfMenuBladeList *list);
   static bool getImageParam(u32 type, u32 id, ImageParam &param, u32 index);
   static const mm::Col3 &getPresetColor(const char *name);
   static mm::Col3 getElementColor(u32 combo);

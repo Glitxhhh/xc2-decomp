@@ -38,12 +38,14 @@ public:
   static void refreshItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList);
   static void setupFilter(ui::UIObjectAcc &acc, u32 index);
   static void getFilterText(u32 index, ui::UIStr &text);
+  void refreshFilterIcon();
 
   u8 _24[0x28 - 0x24];
   GfMenuItemList *unknown28;               // Inferred role: item list; original member name unknown.
   ui::UISelectObjList *unknown30;          // Inferred role: item objects; original member name unknown.
   mm::mtl::FixedVector<int, 21> unknown38; // Inferred role: item types of the filter icons; original member name unknown.
-  u64 unknown98;                           // Role and original member name unknown, cleared by the constructor.
+  u32 unknown98;                           // Inferred role: selected filter; original member name unknown.
+  u32 unknown9c;                           // Role and original member name unknown, cleared by the constructor.
   bool unknowna0;                          // Role and original member name unknown, set by the constructor.
 };
 
@@ -52,6 +54,7 @@ static_assert(offsetof(GfMenuObjItemList2, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjItemList2, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjItemList2, unknown38) == 0x38, "");
 static_assert(offsetof(GfMenuObjItemList2, unknown98) == 0x98, "");
+static_assert(offsetof(GfMenuObjItemList2, unknown9c) == 0x9c, "");
 static_assert(offsetof(GfMenuObjItemList2, unknowna0) == 0xa0, "");
 
 } // namespace gf

@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "bdat.h"
+#include "fw/fw_pad.h"
 #include "gf/camera/gf_camera_player.h"
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_field_time.h"
@@ -20,6 +21,7 @@
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_manager.h"
 #include "ml/dev_clock.h"
+#include "ml/dev_pad.h"
 #include "ml/rand.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
@@ -416,6 +418,32 @@ void StateSalvageClimbStart::leave(GfGameSalvage *salvage, ai::State *) {
   if (behavior != nullptr) {
     behavior->unknown98.clear();
   }
+}
+
+void StateSalvageClimbStart::callback() {
+  fw::VibrationID vibration = fw::VIBRATION_ID_UNKNOWN_15;
+  switch (unknown18) {
+  case GfGameSalvage::ANIMATION_RESULT_00:
+    vibration = fw::VIBRATION_ID_UNKNOWN_13;
+    break;
+  case GfGameSalvage::ANIMATION_RESULT_01:
+    vibration = unknown19 == 0 ? fw::VIBRATION_ID_UNKNOWN_10 : fw::VIBRATION_ID_UNKNOWN_13;
+    break;
+  case GfGameSalvage::ANIMATION_RESULT_02:
+    vibration = fw::VIBRATION_ID_UNKNOWN_7;
+    break;
+  case GfGameSalvage::ANIMATION_RESULT_03:
+    vibration = fw::VIBRATION_ID_UNKNOWN_14;
+    break;
+  case GfGameSalvage::ANIMATION_RESULT_04:
+    vibration = fw::VIBRATION_ID_UNKNOWN_22;
+    break;
+  case GfGameSalvage::ANIMATION_RESULT_05:
+    vibration = unknown19 == 0 ? fw::VIBRATION_ID_UNKNOWN_8 : fw::VIBRATION_ID_UNKNOWN_14;
+    break;
+  }
+  fw::PadManager::playVibration(ml::PadVibrationInfo(vibration));
+  unknown19++;
 }
 
 void StateSalvageClimbStart::update(GfGameSalvage *salvage, const fw::UpdateInfo &) {

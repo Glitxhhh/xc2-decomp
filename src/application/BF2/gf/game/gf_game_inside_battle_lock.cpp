@@ -6,10 +6,41 @@
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "gmk/gmk_base.h"
+#include "gmk/gmk_battle_lock.h"
+#include "gmk/gmk_collision.h"
+#include "gmk/gmk_manager.h"
+#include "gmk/gmk_set.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/map.h" // IWYU pragma: keep
 
 namespace gf {
+namespace {
+
+// Inferred role: tells whether a position is inside one of the battle locks; original name unknown.
+struct unknown001 {
+  void onTraverse(const gmk::AGmkBase &gmk) {
+    if (static_cast<const gmk::GmkBattleLock &>(gmk).unknown50.unknown58 != nullptr) {
+      result = gmk.isInsideShape(position, 0.0f);
+    }
+  }
+
+  bool &result;
+  mm::Vec3 position;
+};
+
+} // namespace
+
+bool GfGameInsideBattleLock::isInside(const mm::Vec3 &position) {
+  bool result = false;
+  unknown001 traverser = {result, position};
+  if (gmk::GmkManager::get()->traverseGmkInst(gmk::GMK_TYPE_BATTLE_LOCK, traverser)) {
+    return result;
+  }
+
+  return false;
+}
+
 struct GF_OBJ_HANDLE;
 
 void GfGameInsideBattleLock::destroy() { delete get(); }

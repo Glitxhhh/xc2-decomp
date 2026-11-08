@@ -32,6 +32,7 @@
 #include "ml/dev_pad.h"
 #include "ml/rand.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/reference_object.h"
 
 namespace fw {
 enum SoundCategory : int;
@@ -372,6 +373,8 @@ void GfGameSalvage::createModel() {
     unknownc0 = GfGameEvent::createSalvage();
   }
 }
+
+void GfGameSalvage::destroyModel() { mm::mtl::safeRelease(unknownc0); }
 
 bool GfGameSalvage::isValidModel() {
   if (unknownc0 != nullptr) {

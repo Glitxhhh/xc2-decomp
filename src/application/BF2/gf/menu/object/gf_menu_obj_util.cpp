@@ -799,6 +799,43 @@ u32 GfMenuObjUtil::canRemoveBladeEx(u32 blade, u32 driver, const mm::mtl::FixedV
 
 bool GfMenuObjUtil::canRemoveBlade(u32 blade, const mm::mtl::FixedVector<u16, 422> *blades) { return canRemoveBladeEx(blade, 0, blades) == 0; }
 
+bool GfMenuObjUtil::isBladeLastOne(u32 blade, const GfMenuBladeList *list) {
+  mm::mtl::FixedVector<u16, 422> blades;
+  GfDataBlade::getListParty(blades);
+  GfDataBlade::getListReserver(blades);
+  u32 creator = GfDataBlade::getCreator(blade);
+  if (blades.empty()) {
+    return true;
+  }
+  u32 count = 0;
+  if (list == nullptr) {
+    for (u32 i = 0; i < blades.size(); i++) {
+      u16 candidate = blades.begin()[i];
+      if ((candidate == BLADE_SUZAKU || !GfDataBlade::isReleaseLock(candidate)) && GfDataBlade::getCreator(candidate) == creator) {
+        count++;
+      }
+    }
+  } else {
+    for (u32 i = 0; i < blades.size(); i++) {
+      u16 candidate = blades.begin()[i];
+      if (candidate == BLADE_SUZAKU || !GfDataBlade::isReleaseLock(candidate)) {
+        bool found = false;
+        for (u32 index = 0; index < list->getSize(); index++) {
+          bool match = list->getContents(index).unknown00 == candidate;
+          found |= match;
+          if (match) {
+            break;
+          }
+        }
+        if (!found && GfDataBlade::getCreator(candidate) == creator) {
+          count++;
+        }
+      }
+    }
+  }
+  return count < 2;
+}
+
 bool GfMenuObjUtil::hasHomura(u32 driver) {
   bool hasHomura = false;
   DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);

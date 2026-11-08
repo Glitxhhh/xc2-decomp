@@ -45,6 +45,7 @@ inline bool isEventCharacter(u32 characterType) {
 
 enum VIEWCAM {
   VIEWCAM_UNKNOWN_0 = 0,
+  VIEWCAM_UNKNOWN_1 = 1,
 };
 
 class GfInitParam {

@@ -1,5 +1,6 @@
 #include "gf/object/component/pc/field/gf_pc_state_field_water_dead_sink.h"
 
+#include "framework/object/updatable_object.h"
 #include "fw/fw_param_manager.h"
 #include "fw/fw_update_info.h"
 #include "gf/object/component/pc/field/gf_pc_param_field.h"
@@ -13,6 +14,13 @@
 
 namespace gf {
 namespace pc {
+
+void StateFieldWaterDeadSink::enter(GfComBehaviorPc *behavior, ai::State *previous) {
+  unknown18 = 0.0f;
+  GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
+  const WaterCommonParam *param = property->unknown310.unknown002();
+  property->unknown90 = property->unknown90 < -param->waterDeadVelMin ? property->unknown90 : -param->waterDeadVelMin;
+}
 
 void StateFieldWaterDeadSink::leave(GfComBehaviorPc *behavior, ai::State *next) {}
 

@@ -18,6 +18,7 @@
 #include "ui/shape/ui_shape.h"
 #include "ui/shape/ui_shape_ring.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
@@ -511,6 +512,65 @@ bool GfMenuObjButtonChallenge2::seqAppearCursor() {
   } else if (challenge.unknown01 == 2) {
     unknown0a0.unknown002(&GfMenuObjButtonChallenge2::seqMoveMashing);
   }
+  return true;
+}
+
+bool GfMenuObjButtonChallenge2::seqResultStart() {
+  if (unknown330.empty()) {
+    {
+      ui::UIObjectAcc main(unknown18, "LAY_main");
+      GfMenuObject::disableInput(main.unknown10);
+    }
+    u8 *bdat = GfDataBdat::getFP(BDAT_MNU_CHALLENGE_RESULT);
+    if (bdat != nullptr) {
+      int top = Bdat::getIdTop(bdat);
+      u32 point = getResultPoint();
+      u32 text = 0;
+      int i = 0;
+      int rank = 0;
+      for (; i < Bdat::getIdCount(bdat); i++) {
+        if (point >= Bdat::getVal(bdat, "Point", i + top).valueU8) {
+          text = Bdat::getVal(bdat, "Text", i + top).valueU32;
+          rank = i + 1;
+        }
+      }
+      if (text != 0) {
+        ui::UIObjectAcc result(unknown18, "LAY_result");
+        ui::UIObjectAcc resultText(unknown18, "LAY_result_text");
+        ui::UIObjectAcc effect(result.unknown10, "IMG_result_eff");
+        {
+          ui::UIObjectAcc label(result.unknown10, "TXT_result");
+          ui::UIObjectAcc shadow(result.unknown10, "TXT_result_shadow");
+          label.setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), text));
+          shadow.setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), text));
+          if (rank == 3) {
+            label.setTextFacePattern("element01");
+            label.setAddColor("txt_bch_result_exc_add");
+            GfMenuObjUtil::setColMulandAdd(shadow.unknown10, "txt_bch_result_exc");
+          } else {
+            label.setTextFacePattern("element03");
+            label.setAddColor("txt_bch_result_good_add");
+            GfMenuObjUtil::setColMulandAdd(shadow.unknown10, "txt_bch_result_good");
+          }
+        }
+        result.setDisp(true);
+        resultText.setDisp(true);
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown08 = 0x10000000;
+        param.unknown50 = "cmn_fade_motion_zoom_2";
+        param.unknown58 = "fade_in";
+        param.unknown11 = true;
+        param.unknown14 = 8;
+        unknown330.push_back(GfMenuObjUtil::startCtrl(resultText.unknown10, param, nullptr));
+        GfMenuObject::addResultCallContext(GfMenuObject::getAttachedObject(unknown001), 3, rank);
+        effect.startAnimation("start", false);
+      }
+    }
+  }
+  if (isSeqCtrlBusy()) {
+    return false;
+  }
+  unknown35c = 30;
   return true;
 }
 } // namespace gf

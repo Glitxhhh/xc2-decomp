@@ -68,6 +68,8 @@ struct MsgObjectStopAutoHeal;
 struct MsgObjectLimitHP;
 struct MsgObjectDead;
 struct MsgObjectNotifyDead;
+struct MsgObjectNotifyDamage;
+struct MsgObjectNotifyHealHp;
 struct MsgGameChangeTarget;
 
 class GfComProperty : public GfComponent {
@@ -81,6 +83,8 @@ public:
   void changeLayer(u32 oldLayer, u32 newLayer) override;
   const mm::mtl::RTTI *getRTTI() const override;
   void onDead(MsgObjectNotifyDead &message);
+  void onDamage(MsgObjectNotifyDamage &message);
+  void onHeal(MsgObjectNotifyHealHp &message);
   void procMsgObjectDead(fw::MessageObject *object, MsgObjectDead &message);
   void procMsgGameChangeTarget(fw::MessageObject *object, MsgGameChangeTarget &message);
   void flush();

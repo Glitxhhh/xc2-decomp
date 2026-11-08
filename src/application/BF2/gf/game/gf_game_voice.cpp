@@ -512,6 +512,16 @@ void GfGameVoice::playStop(GAME_VOICE_HANDLE *voice) {
   }
 }
 
+int GfGameVoice::getResult(GAME_VOICE_HANDLE *voice) {
+  GfGameVoice *self = get();
+  mm::mtl::FixedQueue<unknown001, 256>::iterator result = mm::mtl::find_if(self->unknown118.begin(), self->unknown118.end(), [voice](const unknown001 &entry) { return entry.unknown10 == voice; });
+  if (result != self->unknown118.end()) {
+    return (*result).unknown18;
+  }
+  mm::mtl::FixedList<VoiceInfo *, 6>::iterator it = mm::mtl::find_if(self->unknown90.begin(), self->unknown90.end(), [voice](VoiceInfo *info) { return info->isEnableVoiceHandle(voice); });
+  return it != self->unknown90.end() ? VOICE_RESULT_PLAY : VOICE_RESULT_UNKNOWN_3;
+}
+
 void GfGameVoice::gevLayerPause(u32 layer, bool isPause) {
   GfGameVoice *voice = get();
   VoiceInfoPause pause = {layer, isPause};

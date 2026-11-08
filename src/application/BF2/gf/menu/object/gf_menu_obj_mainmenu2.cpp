@@ -152,6 +152,20 @@ void GfMenuObjMainMenu2::execMapJump() {
   }
 }
 
+void GfMenuObjMainMenu2::setSubIndexText(u32 text) {
+  u32 handle = GfMenuObject::getAttachedObject(unknown002);
+  if (ui::UIObjectAcc(handle).isValid()) {
+    if (!ui::UIObjectAcc(handle).isTerm()) {
+      ui::EventData event;
+      event.unknown0c = 0;
+      event.unknown00 = 0x102;
+      event.unknown08 = text;
+      ui::UIObjectAcc acc(handle);
+      ui::UIManager::get()->requestObjectEvent(acc.searchChild("LAY_index"), event, 0.0f);
+    }
+  }
+}
+
 // Inferred helper: sends the system key enable event and remembers the flag; original name unknown.
 static inline void unknown005(bool enable) {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown002));

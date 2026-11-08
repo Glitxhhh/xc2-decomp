@@ -135,6 +135,9 @@ public:
     return transform->unknown18.get() == nullptr ? transform->unknown10 : transform->unknown18;
   }
 
+  // Inferred helper: moves the field behavior toward its goal; original name unknown.
+  void unknown003(f32 deltaTime) { unknown140.moveToGoal(deltaTime); }
+
   ai::Hfsm unknowna0;                                   // Inferred role: state machine; original member name unknown.
   bool unknown128;                                      // Inferred role: state machine is not set up, true by default; original member name unknown.
   GfMenuCallContext *unknown130;                        // Inferred role: target info menu context; original member name unknown.

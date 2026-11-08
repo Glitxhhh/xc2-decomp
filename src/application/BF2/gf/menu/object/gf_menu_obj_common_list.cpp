@@ -1,10 +1,12 @@
 #include "gf/menu/object/gf_menu_obj_common_list.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_rect.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/plugin/ui_object_fit_plugin.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_util.h"
@@ -20,6 +22,24 @@ static const char *const unknown002[] = {"IMG_list01_bg", "IMG_list02_bg", "IMG_
 GfMenuObjCommonList::GfMenuObjCommonList(u32 handle) : GfMenuObject(handle) {}
 
 GfMenuObjCommonList::~GfMenuObjCommonList() { ; }
+
+void GfMenuObjCommonList::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+  if (ui::UIObjectAcc(main).isValid()) {
+// __LINE__ must be 112 as in the original file: it is the line argument of operator new.
+#line 112
+    ListListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListListener(this);
+    listener->addRef();
+    ui::UIEventManager::get()->registObjectListener(main, listener);
+    if (listener != nullptr) {
+      listener->release();
+    }
+    attachExternalCall(unknown001, main);
+    setupPlugin(unknown18);
+  }
+  GfMenuObject::initialize();
+}
 
 void GfMenuObjCommonList::setupPlugin(u32 handle) {
   u32 list = ui::UIUtil::searchChild(handle, "LAY_list");

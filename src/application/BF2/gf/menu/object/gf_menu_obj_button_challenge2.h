@@ -88,6 +88,7 @@ public:
   bool seqMovePush();
   bool seqMoveMashing();
   bool seqCheckSequence();
+  bool seqResultStart();
   bool seqWaitRestartV2();
   bool seqWaitMashingV2();
   void nextChallenge();

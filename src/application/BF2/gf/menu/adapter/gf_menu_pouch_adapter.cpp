@@ -3,6 +3,7 @@
 #include "gf/data/gf_data_driver.h"
 #include "gf/game/item/gf_pouch_util.h"
 #include "gf/gf_allocator.h"
+#include "ui/plugin/ui_object_time_plugin.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_object_plugin.h"
 
@@ -40,6 +41,27 @@ GfMenuPouchAdapter *GfMenuPouchAdapter::create(u32 handle, u32 type, u16 pouchIn
   return nullptr;
 }
 
+bool GfMenuPouchAdapter::update_PouchRemainTime() {
+  SDataPouch *pouch = GfPouchUtil::getPouch(unknown64, unknown60);
+  if (pouch->unknown04 != 0) {
+    ui::uiDateTime time = {};
+    u32 remain = unknown5c;
+    time.unknown03_7 = remain / 3600;
+    time.unknown04_6 = (remain - time.unknown03_7 * 3600) / 60;
+    time.unknown05_5 = remain % 60;
+    setTime(time);
+    return true;
+  }
+  return false;
+}
+
+GfMenuPouchAdapter *GfMenuPouchAdapter::createFromReferenceIndex(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 driver, bool isUpdateAlways) {
+  // __LINE__ must be 200 as in the original source: it is the line argument of operator new.
+#line 200
+  IConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceIndexConverter(number, driver);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
 GfMenuPouchAdapter *GfMenuPouchAdapter::createFromCoverter(u32 handle, u32 type, IConverter *converter, bool isUpdateAlways) {
   u16 pouchIndex = converter->getPouchIndex();
   u32 driver = converter->getDriverId();
@@ -54,6 +76,13 @@ GfMenuPouchAdapter *GfMenuPouchAdapter::createFromReferenceDriver(u32 handle, u3
   // __LINE__ must be 207 as in the original source: it is the line argument of operator new.
 #line 207
   ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverConverter(pouchIndex, driverIndex);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuPouchAdapter *GfMenuPouchAdapter::createFromReferenceIndexReferenceDriver(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 driverIndex, bool isUpdateAlways) {
+  // __LINE__ must be 214 as in the original source: it is the line argument of operator new.
+#line 214
+  IConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceIndexReferenceDriverConverter(number, driverIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 

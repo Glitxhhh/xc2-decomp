@@ -1046,6 +1046,48 @@ bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, u32
   return getEquipOrbEnance(enhances, *getSDataBlade(blade));
 }
 
+bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, SDataBlade &dataBlade) {
+  GfBdatItem *bdatItem = GfBdatItem::get();
+  u32 equipOrbMax = dataBlade.unknown822;
+  for (u32 slot = 0; slot < equipOrbMax; slot++) {
+    u32 orb = dataBlade.unknown678[slot];
+    if (orb != 0) {
+      u16 enhance = bdatItem->getEquipOrbEnhance(orb);
+      if (enhance != 0) {
+        enhances.push_back(enhance);
+      }
+    }
+  }
+
+  if (dataBlade.unknown06 - BLADE_HANA_JS < BLADE_HANA_COUNT) {
+    u32 condenserNum = GfDataHana::getCondenserNum(dataBlade.unknown06);
+    for (u32 slot = 0; slot < condenserNum; slot++) {
+      u32 parts = dataBlade.unknown68c.unknown4c[slot];
+      if (parts != 0) {
+        u16 enhance = GfBdatItem::get()->getITM_HanaAssistEnhance(parts);
+        if (enhance != 0) {
+          enhances.push_back(enhance);
+        }
+      }
+    }
+
+    u32 extendCondenserNum = GfDataHana::getExtendCondenserNum(dataBlade.unknown06);
+    for (u32 slot = 0; slot < extendCondenserNum; slot++) {
+      if (GfDataHana::isOpenCircuit(dataBlade, slot + 3)) {
+        u32 parts = dataBlade.unknown68c.unknown52[slot];
+        if (parts != 0) {
+          u16 enhance = GfBdatItem::get()->getITM_HanaAssistEnhance(parts);
+          if (enhance != 0) {
+            enhances.push_back(enhance);
+          }
+        }
+      }
+    }
+  }
+
+  return !enhances.empty();
+}
+
 u32 GfDataBlade::getBladeWeaponRank(u32 blade) {
   u32 weapon = getSDataBlade(blade)->unknown82c;
   if (weapon == 0) {

@@ -83,6 +83,12 @@ public:
     u32 unknown24;                         // Inferred role: disable flags; original member name unknown.
   };
 
+  // Inferred role: blade virtual equip orb and its slot; original type name unknown.
+  struct unknown006 {
+    u32 unknown00; // Inferred role: orb; original member name unknown.
+    u32 unknown04; // Inferred role: orb slot; original member name unknown.
+  };
+
   GfMenuReference(const GfSetupParam &param);
   ~GfMenuReference() override;
   static void build(const GfSetupParam &param);
@@ -243,8 +249,7 @@ public:
   u32 unknown4ccbc;           // Inferred role: driver virtual equip acc slot; original member name unknown.
   int unknown4ccc0[4];        // Inferred role: driver add idea lvs; original member name unknown.
   u32 unknown4ccd0;           // Inferred role: blade virtual equip wpn chip; original member name unknown.
-  u32 unknown4ccd4;           // Inferred role: blade virtual equip orb; original member name unknown.
-  u32 unknown4ccd8;           // Inferred role: blade virtual equip orb slot; original member name unknown.
+  unknown006 unknown4ccd4;    // Inferred role: blade virtual equip orb and slot; original member name unknown.
   u8 _4ccdc[0x4cce0 - 0x4ccdc];
   ui::UIStr unknown4cce0[8];                       // Inferred role: reference strings; original member name unknown.
   unknown005 unknown4cda0[ALL_ARTS_PALETTE_COUNT]; // Inferred role: all arts palettes; original member name unknown.
@@ -290,7 +295,7 @@ static_assert(offsetof(GfMenuReference, unknown4cca8) == 0x4cca8, "");
 static_assert(offsetof(GfMenuReference, unknown4ccac) == 0x4ccac, "");
 static_assert(offsetof(GfMenuReference, unknown4ccc0) == 0x4ccc0, "");
 static_assert(offsetof(GfMenuReference, unknown4ccd0) == 0x4ccd0, "");
-static_assert(offsetof(GfMenuReference, unknown4ccd8) == 0x4ccd8, "");
+static_assert(offsetof(GfMenuReference, unknown4ccd4) == 0x4ccd4, "");
 static_assert(offsetof(GfMenuReference, unknown4cce0) == 0x4cce0, "");
 static_assert(offsetof(GfMenuReference, unknown4cf08) == 0x4cf08, "");
 static_assert(sizeof(GfMenuReference) == 0x4cf10, "");

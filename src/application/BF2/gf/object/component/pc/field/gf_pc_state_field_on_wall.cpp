@@ -1,5 +1,6 @@
 #include "gf/object/component/pc/field/gf_pc_state_field_on_wall.h"
 
+#include "ai/ai_state.h"
 #include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
 #include "fw/fw_transform.h"
@@ -38,6 +39,32 @@ void StateFieldOnWall::enter(GfComBehaviorPc *behavior, ai::State *previous) {
   AccessPlugin *plugin = behavior->unknown001<AccessPlugin>(4);
   if (plugin != nullptr) {
     plugin->unknown28 = 8;
+  }
+}
+
+void StateFieldOnWall::leave(GfComBehaviorPc *behavior, ai::State *next) {
+  GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
+  property->unknown310.unknown10_5 = false;
+  StateUtil::setEnvSensor(*behavior, 0x100, false);
+  if (next != nullptr && next->unknown08 != STATE_ID_FIELD_WALL_PREPARE_JUMP) {
+    StateUtilField::setAccessFlag(*behavior, false);
+    u32 type = next->unknown08 == STATE_ID_FIELD_FALL ? 2 : 1;
+    MsgPcFieldNotifyWall message;
+    message.unknown10 = unknown20.unknown00;
+    message.unknown30.unknown00 = property->unknown160;
+    message.unknown30.unknown10 = property->unknown170;
+    message.unknown50 = type;
+    if (next->unknown08 == STATE_ID_FIELD_WALL_CLIMB_END) {
+      EnviromentSensor::GroundInfo *ground = StateUtil::getClimbEndGroundInfo(*behavior);
+      if (ground != nullptr) {
+        message.unknown30.unknown00.y = ground->unknown00.y;
+      }
+    }
+    StateUtilField::sendMessageWallChilds(*property, message);
+  }
+  AccessPlugin *plugin = behavior->unknown001<AccessPlugin>(4);
+  if (plugin != nullptr) {
+    plugin->unknown28 = 0;
   }
 }
 

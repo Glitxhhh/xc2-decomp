@@ -55,6 +55,30 @@ bool GfMenuEnhanceAdapter::update_Caption(u32 enhance) {
   return result;
 }
 
+GfMenuEnhanceAdapter *GfMenuEnhanceAdapter::createFromItem(u32 handle, u32 type, const MenuItemInfo &info, bool isUpdateAlways) {
+  // __LINE__ must be 227 as in the original source: it is the line argument of operator new.
+#line 227
+  ItemConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ItemConverter(info);
+  GfMenuEnhanceAdapter *adapter = create(handle, type, converter->getEnhanceID(), isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown50 = converter;
+  return adapter;
+}
+
+GfMenuEnhanceAdapter *GfMenuEnhanceAdapter::createFromItemList(u32 handle, u32 type, GfMenuItemList *list, int listIndex, bool isUpdateAlways) {
+  // __LINE__ must be 236 as in the original source: it is the line argument of operator new.
+#line 236
+  ItemListConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ItemListConverter(list, listIndex);
+  GfMenuEnhanceAdapter *adapter = create(handle, type, converter->getEnhanceID(), isUpdateAlways);
+  if (adapter == nullptr) {
+    return nullptr;
+  }
+  adapter->unknown50 = converter;
+  return adapter;
+}
+
 GfMenuEnhanceAdapter *GfMenuEnhanceAdapter::createFromCoverter(u32 handle, u32 type, IConverter *converter, bool isUpdateAlways) {
   GfMenuEnhanceAdapter *adapter = create(handle, type, converter->getEnhanceID(), isUpdateAlways);
   if (adapter != nullptr) {

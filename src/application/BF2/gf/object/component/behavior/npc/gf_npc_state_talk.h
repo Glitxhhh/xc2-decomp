@@ -13,6 +13,7 @@ namespace gf {
 
 class GfComAsm;
 class GfComBehaviorNpc;
+struct GF_OBJ_HANDLE;
 
 namespace npc {
 
@@ -23,6 +24,7 @@ class StateTalk : public ai::State {
   void leave(GfComBehaviorNpc *behavior, ai::State *next);
   void update(GfComBehaviorNpc *behavior, const fw::UpdateInfo &info);
   void setCollideNpcMob(bool isCollide);
+  void setCollideNpcMob(GF_OBJ_HANDLE *handle, bool isCollide);
   void seqWaitTalkEnd(GfComBehaviorNpc &behavior, const fw::UpdateInfo &info);
   void seqWaitTurnEnd(GfComBehaviorNpc &behavior, const fw::UpdateInfo &info);
 

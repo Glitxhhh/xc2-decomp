@@ -15,6 +15,7 @@
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_bdat.h"
+#include "gf/menu/gf_menu_fade.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_reference.h"
@@ -27,6 +28,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/scom/gf_scom_achiev.h"
+#include "mm_math/mm_col4.h"
 #include "mm_mtl/delegate.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_list_info.h"
@@ -49,6 +51,18 @@ constexpr u32 unknown005 = 0x59;
 constexpr u32 unknown006 = 0x23;
 
 u32 GfMenuObjShop::getSellItemTypeMax() { return 0xd; }
+
+void GfMenuObjShop::open(GfMenuCallContext *context, const OpenParam &param) {
+  ui::UIObjectAcc acc(getAttachedObject(unknown001));
+  if (acc.isValid() && GfMenuObjUtil::checkCCStart(context)) {
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    event.unknown08_u16 = param.unknown00;
+    GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+    GfMenuObject::startCallContext(context, unknown001, acc.unknown10);
+    GfMenuAdapterManager::addActiveCategory(unknown002);
+  }
+}
 
 void GfMenuObjShop::close(GfMenuCallContext *context) {
   if (GfMenuObjUtil::checkCCNext(context, unknown001)) {
@@ -246,6 +260,15 @@ bool GfMenuObjShop::seqStartSleepFade() {
   unknown4d8 = 0;
   unknown4dc = false;
   return true;
+}
+
+bool GfMenuObjShop::seqWaitSleepFade() {
+  if (!unknown4dc) {
+    GfMenuFade::setFade(2, 30, mm::Col4::black);
+    unknown4dc = true;
+    return false;
+  }
+  return !GfMenuManager::isFading();
 }
 
 void GfMenuObjShop::openNumSelect(u32 owner, u32 value, bool isFlag) {

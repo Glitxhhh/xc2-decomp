@@ -7,6 +7,7 @@
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -21,6 +22,14 @@ class GfMenuDriverList;
 class GfMenuObjCharSelect : public GfMenuObject {
 public:
   GfMenuObjCharSelect(u32 handle);
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjCharSelect *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   ~GfMenuObjCharSelect() override;
 
   struct OpenCustomizeParam {
@@ -98,6 +107,9 @@ public:
   bool seqStreamWaitSelect();
   bool seqWaitSelect();
   bool seqSpNiaChangeBl();
+  static void setupCharSelect(ui::UIObjectAcc &acc, GfMenuDriverList *list, mm::mtl::FixedArray<GfMenuBladeList *, 3> &blades);
+  static void setPartyData(mm::mtl::FixedArray<DriverData, 5> &party, GfMenuDriverList *list);
+  bool seqStreamWait();
 
   u8 _24[0x28 - 0x24];
   GfMenuDriverList *unknown28;                         // Inferred role: party drivers; original member name unknown.
@@ -109,7 +121,8 @@ public:
   u32 unknown3fc;                                      // Role and original member name unknown, cleared by the constructor.
   mm::mtl::FixedArray<int, 8> unknown400;              // Inferred role: control ids of the sub menu movement, -1 at start; original member name unknown.
   u8 _420[0x428 - 0x420];
-  u16 unknown428; // Role and original member name unknown, cleared by the constructor.
+  bool unknown428; // Role and original member name unknown, cleared by the constructor.
+  bool unknown429; // Role and original member name unknown, cleared by the constructor.
   u8 _42a[0x430 - 0x42a];
   GfMenuSequence<GfMenuObjCharSelect, 8> unknown430; // Inferred role: character select steps; original member name unknown.
   bool unknown6c0;                                   // Inferred role: character select steps request flag; original member name unknown.
@@ -129,14 +142,15 @@ public:
   u32 unknown748;                          // Inferred role: special operation, 0xff for none; original member name unknown.
   u8 _74c[0x750 - 0x74c];
   mm::mtl::FixedArray<int, 5> unknown750; // Role and original member name unknown, -1 at start.
-  u8 _764[0x768 - 0x764];
-  bool unknown768; // Role and original member name unknown, cleared by the constructor.
+  int unknown764;                         // Inferred role: kind of the character on the move layer, 0 driver and 1 blade; original member name unknown.
+  bool unknown768;                        // Role and original member name unknown, cleared by the constructor.
   u8 _769[0x770 - 0x769];
 };
 
 static_assert(offsetof(GfMenuObjCharSelect::OpenCustomizeParam, unknown04) == 0x04, "");
 static_assert(sizeof(GfMenuObjCharSelect::OpenCustomizeParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjCharSelect::unknown003, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjCharSelect::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjCharSelect::unknown003) == 0x08, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown30) == 0x30, "");
@@ -158,6 +172,7 @@ static_assert(offsetof(GfMenuObjCharSelect, unknown740) == 0x740, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown742) == 0x742, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown748) == 0x748, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown750) == 0x750, "");
+static_assert(offsetof(GfMenuObjCharSelect, unknown764) == 0x764, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown768) == 0x768, "");
 static_assert(sizeof(GfMenuObjCharSelect) == 0x770, "");
 

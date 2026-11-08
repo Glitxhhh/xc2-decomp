@@ -30,6 +30,7 @@ public:
   bool isDropitemsEmitted() const;
   void gevMapjump(GEV event, const MapjumpCallbackInfo &info);
   void end();
+  void dispose();
   void start(GF_OBJ_HANDLE *handle);
   void createDropitemEmitter(const GfDropitemEmitter::CreateInfo &info);
   void update(f32 deltaTime);

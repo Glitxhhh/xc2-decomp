@@ -1,5 +1,7 @@
 #include "gf/field/gf_field_weather.h"
 
+#include <string.h>
+
 #include "gf/data/gf_bdat_maplist.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_manager.h"
@@ -247,6 +249,32 @@ bool GfFieldWeather::isColud2Condition(u32 map) const {
   }
 
   return false;
+}
+
+void GfFieldWeather::createWeather(const WeatherParam &param, f32 fadeSec) {
+  if (param.unknown0c == 0) {
+    return;
+  }
+
+  createWeather(param.unknown18, param.unknown0c, fadeSec);
+  WeatherInfo *info = _gffwt::getFadeinWeatherInfo();
+  if (info == nullptr) {
+    info = _gffwt::getCurrentWeatherInfo();
+  }
+  if (info == nullptr) {
+    return;
+  }
+
+  if (info->unknown0c == 0 || info->unknown0c != param.unknown0c || info->unknown18 == param.unknown18) {
+    info->unknown10 = param.unknown10;
+    if (param.unknown14 > 0.0f) {
+      info->unknown14 = param.unknown14;
+    }
+  }
+  if (info->unknown00[0] == '\0') {
+    strcpy(info->unknown00, param.unknown00);
+  }
+  info->unknown20 = info->unknown24 / info->unknown28;
 }
 
 void GfFieldWeather::execChangeCloud(u32 map) { setCloudSeaForDebug(map, GfDataMap::getCloudType(map)); }

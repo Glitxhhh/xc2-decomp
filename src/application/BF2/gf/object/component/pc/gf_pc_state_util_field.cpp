@@ -152,6 +152,39 @@ bool StateUtilField::isStartSlidePosuture(GfComBehaviorPc &behavior) {
   return true;
 }
 
+bool StateUtilField::isInputInverseDirAutoRun(GfComPropertyPc &property) {
+  f32 cosine;
+  if (property.unknown310.unknown10_4) {
+    f32 length;
+    f32 inputX = property.unknown60.unknown00;
+    f32 inputY = property.unknown60.unknown04;
+    if (!(fabsf(inputX) <= 0.000001f) || !(fabsf(inputY) <= 0.000001f)) {
+      length = sqrtf(inputX * inputX + inputY * inputY);
+      inputX = inputX * (1.0f / length);
+      inputY = inputY * (1.0f / length);
+    }
+    f32 prevX = property.unknown6c.unknown00;
+    f32 prevY = property.unknown6c.unknown04;
+    if (!(fabsf(prevX) <= 0.000001f) || !(fabsf(prevY) <= 0.000001f)) {
+      length = sqrtf(prevX * prevX + prevY * prevY);
+      prevX = prevX * (1.0f / length);
+      prevY = prevY * (1.0f / length);
+    }
+    cosine = inputX * prevX + inputY * prevY;
+  } else {
+    mm::Vec3 input = property.unknown2b0 * property.unknown60.unknown04 + property.unknown2d0 * property.unknown60.unknown00;
+    if (!(fabsf(input.x) <= 0.000001f) || !(fabsf(input.y) <= 0.000001f) || !(fabsf(input.z) <= 0.000001f)) {
+      input.unknown001();
+      cosine = input.x * property.unknown1e0.x + input.y * property.unknown1e0.y + input.z * property.unknown1e0.z;
+    } else {
+      return false;
+    }
+  }
+
+  f32 angle = mm::acos(mm::clamp(cosine, -1.0f, 1.0f));
+  return property.unknown310.unknown001()->turnAngle <= angle;
+}
+
 bool StateUtilField::isBackRange(GfComPropertyPc &property) { return calcInputDiffAngle(property) >= property.unknown310.unknown001()->backAngle; }
 
 bool StateUtilField::isBackRangeAir(GfComPropertyPc &property) { return calcInputDiffAngleVel(property) >= property.unknown310.unknown001()->backAngle; }

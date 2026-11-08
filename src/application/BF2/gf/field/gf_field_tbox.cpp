@@ -59,6 +59,18 @@ void GfFieldTbox::end() {
   unknown18 = INVALID_HANDLE;
 }
 
+void GfFieldTbox::dispose() {
+  unknown38 = 0.0f;
+  unknown40.dispose();
+  unknown24 = false;
+  unknown20 = -1;
+  unknown28 = nullptr;
+  unknown18 = INVALID_HANDLE;
+  if (unknown10) {
+    unknown10 = false;
+  }
+}
+
 void GfFieldTbox::createDropitemEmitter(const GfDropitemEmitter::CreateInfo &info) { unknown40.create(info); }
 
 void GfFieldTbox::update(f32 deltaTime) {
@@ -69,6 +81,12 @@ void GfFieldTbox::update(f32 deltaTime) {
 }
 
 void GfFieldTbox::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldTbox(param); }
+
+void GfFieldTbox::destroy() {
+  GfFieldTbox *tbox = get();
+  tbox->dispose();
+  delete tbox;
+}
 
 void GfFieldTbox::update(const fw::UpdateInfo &info) {
   if (get() != nullptr && get()->unknown10) {

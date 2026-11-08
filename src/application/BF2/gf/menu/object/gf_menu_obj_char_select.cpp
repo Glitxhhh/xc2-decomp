@@ -1,5 +1,10 @@
 #include "gf/menu/object/gf_menu_obj_char_select.h"
 
+#include "bdat.h"
+#include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
@@ -12,13 +17,17 @@
 #include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_party_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_scom.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
+#include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -40,8 +49,8 @@ static unknown006 unknown007;
 static const char *const unknown008[4] = {"LAY_char_dr", "LAY_char_bl@01", "LAY_char_bl@02", "LAY_char_bl@03"};
 
 GfMenuObjCharSelect::GfMenuObjCharSelect(u32 handle)
-    : GfMenuObject(handle), unknown48(nullptr), unknown3f8(0), unknown3fc(0), unknown428(0), unknown430(this), unknown6c0(false), unknown6d8(0), unknown6e8(-1), unknown740(true), unknown741(false),
-      unknown742(0), unknown744(0), unknown748(0xff), unknown768(false) {
+    : GfMenuObject(handle), unknown48(nullptr), unknown3f8(0), unknown3fc(0), unknown428(false), unknown429(false), unknown430(this), unknown6c0(false), unknown6d8(0), unknown6e8(-1),
+      unknown740(true), unknown741(false), unknown742(0), unknown744(0), unknown748(0xff), unknown768(false) {
   unknown400.assign(-1);
   unknown28 = nullptr;
   unknown30.assign(nullptr);
@@ -426,6 +435,151 @@ bool GfMenuObjCharSelect::seqWaitSelect() {
 bool GfMenuObjCharSelect::getCharBusy() { return unknown007.unknown00; }
 
 bool GfMenuObjCharSelect::getSelectBusy() { return unknown007.unknown01; }
+
+void GfMenuObjCharSelect::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    setupCharSelect(acc, unknown20->unknown28, unknown20->unknown30);
+    setupCharSelectCopy(acc);
+    GfDataBlade::getListReserverWithSolo(unknown20->unknown50);
+    for (u16 *it = unknown20->unknown50.begin(); it != unknown20->unknown50.end();) {
+      if (*it == BLADE_HIKARI || *it == BLADE_HOMURI) {
+        it = unknown20->unknown50.erase(it);
+      } else {
+        ++it;
+      }
+    }
+    setPartyData(unknown20->unknown3a8, unknown20->unknown28);
+    GfMenuObjOperationInfo::setGuideText(1, 0);
+    GfMenuObjMainMenu2::setSubIndexText(1);
+    acc.setDisp(false);
+    unknown20->unknown768 = !unknown20->unknown741;
+    unknown20->unknown430.unknown005();
+    unknown20->unknown430.unknown002(&GfMenuObjCharSelect::seqStreamWait);
+    unknown20->unknown6f0.clear();
+    u8 *driverOrder = GfDataBdat::getFP(BDAT_MNU_CHAR_DRIVER_ORDER);
+    for (int i = 0; i < 5; i++) {
+      int id = Bdat::getIdTop(driverOrder) + i;
+      if (GfMenuObjUtil::getMenuCondition(Bdat::getVal(driverOrder, "useCond", id).valueU16)) {
+        unknown20->unknown6f0.push_back(id);
+      }
+    }
+    unknown20->unknown710.clear();
+    u8 *bladeOrder = GfDataBdat::getFP(BDAT_MNU_CHAR_BLADE_ORDER);
+    for (int i = 0; i < 3; i++) {
+      int id = Bdat::getIdTop(bladeOrder) + i;
+      if (GfMenuObjUtil::getMenuCondition(Bdat::getVal(bladeOrder, "useCond", id).valueU16)) {
+        unknown20->unknown710.push_back(id);
+      }
+    }
+    unknown20->unknown728.clear();
+    u8 *hanaOrder = GfDataBdat::getFP(BDAT_MNU_CHAR_HANA_ORDER);
+    for (int i = 0; i < 4; i++) {
+      int id = Bdat::getIdTop(hanaOrder) + i;
+      if (GfMenuObjUtil::getMenuCondition(Bdat::getVal(hanaOrder, "useCond", id).valueU16)) {
+        unknown20->unknown728.push_back(id);
+      }
+    }
+    unknown20->unknown740 = true;
+    break;
+  }
+  case 2:
+    unknown20->unknown430.unknown005();
+    GfMenuObjMainMenu2::closeCharChange();
+    if (unknown20->unknown428) {
+      RQ_SETUP_PARTY party;
+      RQ_SETUP_PARTY::Member *member = party.unknown00;
+      for (u32 i = 0; i < 5; i++, member++) {
+        const DriverData &driver = unknown20->unknown3a8[i];
+        member->unknown00 = driver.unknown00;
+        member->unknown04 = 0;
+        member->unknown08[0] = driver.unknown04[0];
+        member->unknown08[1] = driver.unknown04[1];
+        member->unknown08[2] = driver.unknown04[2];
+      }
+      party.unknownc8 = 3;
+      party.unknowncc = 0;
+      GfReqCommand::reqChangeParty(party);
+    }
+    if (!unknown20->unknown740) {
+      ui::EventData sendData;
+      sendData.unknown00 = 3;
+      sendData.unknown08 = 2;
+      ui::UIManager::get()->requestObjectEvent(handle, sendData, 0.0f);
+    } else {
+      setFadeOut(handle, 0);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    setFadeOutSub(handle, 0);
+    disableInput(acc.searchChild("LAY_char"));
+    break;
+  case 0x24:
+    disableInput(acc.searchChild("LAY_char"));
+    hookCtrlEvent(0, unknown005(handle, 0));
+    unknown20->unknown740 = false;
+    break;
+  case GfMenuTypes::unknown003_260:
+    unknown164(acc.searchChild("LAY_sub_menu"), GfMenuTypes::unknown003_260);
+    break;
+  case 0x109: {
+    unknown20->unknown764 = event.unknown08;
+    if (unknown20->unknown764 == 0) {
+      GfMenuObjUtil::setChildDisp(acc.unknown10, "LAY_char_dr_move", false);
+    } else {
+      GfMenuObjUtil::setChildDisp(acc.unknown10, "LAY_char_bl_move", false);
+    }
+    unknown007.unknown00 = true;
+    if (unknown20->unknown764 == 0) {
+      unknown20->seqStreamWaitStatDrBefore();
+    } else {
+      unknown20->seqStreamWaitStatBlBefore();
+    }
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0;
+    param.unknown04 = 4;
+    param.unknown00 = 0.06f;
+    int ctrl = GfMenuObjUtil::startCtrl(acc.searchChild("LAY_bg"), param, nullptr);
+    hookCtrlEvent(acc.unknown10, ctrl);
+    break;
+  }
+  case 3:
+    switch (event.unknown08) {
+    case 2:
+      acc.setTerm();
+      break;
+    case 1:
+      if (!unknown20->unknown741) {
+        ui::UIObjectAcc layer(acc.searchChild("LAY_char"));
+        GfMenuObjMainMenu2::openCharChange(layer.unknown10, 3, true);
+        enableInput(layer.unknown10);
+        GfMenuObjMainMenu2::setSystemKeyEnable(true);
+      }
+      break;
+    case 4: {
+      int kind = unknown20->unknown764;
+      unknown20->unknown430.unknown005();
+      unknown20->unknown430.unknown004(1);
+      if (kind == 0) {
+        unknown20->unknown430.unknown002(&GfMenuObjCharSelect::seqStreamWaitStatDr);
+        setCharPosScale(0, GfMenuReference::getReferenceDriverID(0), 4, false);
+      } else {
+        unknown20->unknown430.unknown002(&GfMenuObjCharSelect::seqStreamWaitStatBl);
+        setCharPosScale(1, GfMenuReference::getReferenceBladeID(0), 4, false);
+      }
+      break;
+    }
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 
 } // namespace gf
 

@@ -89,6 +89,41 @@ void GfMenuObjHanaPartsCrystal::updatePartsList(ui::UIObjectAcc &acc, GfMenuIDLi
   }
 }
 
+void GfMenuObjHanaPartsCrystal::updateItemList(GfMenuItemList *list, ItemType::Type type) {
+  list->clear();
+  GfMenuItemList::ItemBoxSetup setup;
+  setup.unknown00.unknown08 = 10;
+  setup.unknown14 = type;
+  setup.unknown28 = false;
+  setup.unknown29 = false;
+  list->setupFromBox(setup);
+}
+
+// Inferred role: parts type and item type of a parts category; original name unknown.
+struct unknown001 {
+  u32 unknown00;
+  ItemType::Type unknown04;
+};
+
+// Inferred role: parts categories; original name unknown.
+static const unknown001 unknown002[] = {
+    {1, ItemType::HANA_ROLE},
+    {2, ItemType::HANA_ATR},
+    {3, ItemType::HANA_N_ARTS_SET},
+    {9, ItemType::HANA_ARTS_ENH},
+    {6, ItemType::HANA_ASSIST},
+};
+
+void GfMenuObjHanaPartsCrystal::makeCategoryItemList(GfMenuIDList *idList, GfMenuItemList *itemList) {
+  u32 type = idList->getContents(idList->getIndex(false)).unknown00;
+  for (int i = 0; i < 5; i++) {
+    if (unknown002[i].unknown00 == type) {
+      updateItemList(itemList, unknown002[i].unknown04);
+      return;
+    }
+  }
+}
+
 void GfMenuObjHanaPartsCrystal::refreshItemList(GfMenuItemList *list, ui::UISelectObjList *objects, u32 unknown) {}
 
 void GfMenuObjHanaPartsCrystal::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {

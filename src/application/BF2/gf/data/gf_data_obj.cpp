@@ -389,6 +389,27 @@ u32 DataObjDriver::getBladeSkillLevel(bool isVirtual, u32 index) const {
 
 u32 DataObjDriver::getDriverArts(u32 weaponType, u32 index) const { return get(false)->unknownc0[weaponType].unknown00[index]; }
 
+bool DataObjDriver::setDriverArts(u32 weaponType, int index, u32 arts) {
+  SDataDriver *dataDriver = get(false);
+  unknown114 &weapon = dataDriver->unknownc0[weaponType];
+  if (arts == 0 || (weapon.unknown00[0] != arts && weapon.unknown00[1] != arts && weapon.unknown00[2] != arts)) {
+    if (index < 0) {
+      for (u64 i = 0; i < 3; i++) {
+        if (get(false)->unknownc0[weaponType].unknown00[i] == 0) {
+          weapon.unknown00[i] = arts;
+          return true;
+        }
+      }
+      return false;
+    }
+    if (static_cast<u32>(index) > 2) {
+      return true;
+    }
+    weapon.unknown00[index] = arts;
+  }
+  return true;
+}
+
 u32 DataObjDriver::getDriverArtsLevel(u32 arts) const { return get(false)->unknown2f0[arts]; }
 
 void DataObjDriver::setDriverArtsLevel(u32 arts, u32 level) {

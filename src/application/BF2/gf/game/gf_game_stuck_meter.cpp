@@ -8,7 +8,9 @@
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/scom/gf_scom_obj.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_mtl/reference_object.h"
+#include "mm_mtl/unique_ptr.h"
 
 namespace gf {
 
@@ -139,10 +141,70 @@ GfGameStuckMeter::GfGameStuckMeter(const CreateInfo *info)
   }
 }
 
+void GfGameStuckMeter::create(const CreateInfo &info) {
+  dispose();
+  unknown00 = info;
+  const fw::unknown031 *shape = unknown00.unknown08->unknowne8.get();
+  if (shape != nullptr && shape->unknown00 == fw::unknown031::TYPE_CHARACTER) {
+    unknown18 = static_cast<const fw::unknown134 *>(shape)->unknown04;
+    unknown1c = static_cast<const fw::unknown134 *>(shape)->unknown08;
+  } else {
+    unknown20 = unknown00.unknown08->unknowne0;
+  }
+  const mm::Mat44 &matrix = unknown00.unknown08->getMatrix();
+  unknown30 = mm::Vec3(matrix.rows[3][0], matrix.rows[3][1], matrix.rows[3][2]);
+  unknown40 = unknown30;
+  unknown50 = 0.0f;
+  unknown54 = 0.0f;
+}
+
 void GfGameStuckMeter::dispose() {
   if (unknown00.unknown08 != nullptr) {
     unknown00.unknown08->resetCharacter(unknown18, unknown1c);
     mm::mtl::safeRelease(unknown00.unknown08);
+  }
+}
+
+void GfGameStuckMeter::update(f32 deltaTime) {
+  if (deltaTime <= 0.0f || unknown00.unknown08 == nullptr) {
+    return;
+  }
+  bool isRestore;
+  if (checkStuck(deltaTime)) {
+    isRestore = false;
+    unknown50 = 0.0f;
+    unknown54 += deltaTime;
+  } else {
+    unknown50 += deltaTime;
+    if (unknown50 > 3.0f) {
+      isRestore = true;
+      unknown54 = 0.0f;
+    } else {
+      isRestore = false;
+    }
+  }
+  fw::ColiObject *coli = unknown00.unknown08;
+  if (coli->unknown30 == fw::COLI_TYPE_UNKNOWN_1) {
+    const fw::unknown031 *base = coli->unknowne8.get();
+    const fw::unknown134 *shape = base != nullptr && base->unknown00 == fw::unknown031::TYPE_CHARACTER ? static_cast<const fw::unknown134 *>(base) : nullptr;
+    if (isStuck()) {
+      if (shape != nullptr) {
+        f32 radius = shape->unknown04 * 0.99f <= 0.05f ? 0.05f : shape->unknown04 * 0.99f;
+        f32 height = shape->unknown08 * 0.99f <= 0.05f ? 0.05f : shape->unknown08 * 0.99f;
+        coli->resetCharacter(radius, height);
+      } else {
+        coli->unknowne0 = coli->unknowne0 * 0.99f <= 0.05f ? 0.05f : coli->unknowne0 * 0.99f;
+      }
+    } else if (isRestore) {
+      if (shape != nullptr) {
+        f32 radius = unknown18 < shape->unknown04 * 1.1f ? unknown18 : shape->unknown04 * 1.1f;
+        f32 height = unknown1c < shape->unknown08 * 1.1f ? unknown1c : shape->unknown08 * 1.1f;
+        coli->resetCharacter(radius, height);
+      } else {
+        f32 scale = coli->unknowne0 * 1.1f;
+        coli->unknowne0 = unknown20 < scale ? unknown20 : scale;
+      }
+    }
   }
 }
 
