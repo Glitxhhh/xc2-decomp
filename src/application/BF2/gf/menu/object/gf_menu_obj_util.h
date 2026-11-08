@@ -252,6 +252,7 @@ public:
   static u32 playSE(const char *name);
   static u32 playSECommonDecide();
   static u32 playSECommon(u32 type);
+  static u32 playSECommonFromInput(u32 input);
   static u32 playSECommonCancel();
   static u32 playSECommonCursor();
   static u32 playSECommonTab();
