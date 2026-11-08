@@ -4,10 +4,19 @@
 #include "event/cam_manager.h"
 #include "event/cam_motion.h"
 #include "event/cam_obj.h"
+#include "event/object_util.h"
+#include "event/seq_info.h"
 #include "event/seq_manager.h"
+#include "ml/dev_graph.h"
 #include "mm_mtl/singleton.h"
 
 namespace event {
+
+ObjectCamera::ObjectCamera(const char *name, u32 id) : Object(OBJTYPE_CAMERA, name), unknown68(nullptr), unknown70(id), unknown4e0(0), unknown4e4(0) {
+  unknown68 = mm::mtl::Singleton<CamManager>::getPtr()->createCam(id);
+  unknown80 = PosAxis(PosAxis::AXIS_POS, unknown68->getPos());
+  unknown2b0 = TarAxis(TarAxis::AXIS_POS, unknown68->getTarget());
+}
 
 ObjectCamera::~ObjectCamera() {
   mm::mtl::Singleton<CamManager>::getPtr()->destroyCam(unknown68);
@@ -84,5 +93,15 @@ void ObjectCamera::OnManiRender(IManiCallback::RenderParam &param) { mm::mtl::Si
 bool ObjectCamera::isFollowTar() const { return unknown68->activateHands()->isFollowTar(); }
 
 bool ObjectCamera::OnBouRectSelect(const IBouCallback::SelectParam &param) { return false; }
+
+void ObjectCamera::OnBouRender(const IBouCallback::RenderParam &param) {
+  if (static_cast<int>(mm::mtl::Singleton<SeqManager>::getPtr()->unknown001().unknown54) < 3 && unknown70 == 0) {
+    int x = ml::DevGraph::getRootWidth() - 415;
+    const mm::Vec3 &pos = unknown68->getPos();
+    const mm::Vec3 &target = unknown68->getTarget();
+    mm::Vec3 rot = unknown68->getRot();
+    ObjectUtil::drawCameraInfo(x, 120, pos, target, rot, unknown68->getFov(), unknown68->isFocal());
+  }
+}
 
 } // namespace event

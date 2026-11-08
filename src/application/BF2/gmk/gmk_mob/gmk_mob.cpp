@@ -151,6 +151,42 @@ void GmkMobInsts::update(const UpdateInfo &info) {
   }
 }
 
+void GmkMobInsts::updatePopDepopCond(const UpdateInfo &info) {
+  if (unknown18.isPopCommonCondMatched(*unknown00.unknown00)) {
+    unknownb8 |= MATCHED_UNKNOWN_0;
+  } else {
+    unknownb8 &= ~MATCHED_UNKNOWN_0;
+  }
+  const mm::Vec3 &position = *info.unknown08;
+  if (unknown18.unknown30.isMatch(position) && unknown18.isMobPopDistCondMatched(position)) {
+    unknownb8 |= MATCHED_UNKNOWN_1;
+  } else {
+    unknownb8 &= ~MATCHED_UNKNOWN_1;
+  }
+  if (unknown18.unknown38.isMatch(*info.unknown08)) {
+    unknownb8 |= MATCHED_UNKNOWN_2;
+  } else {
+    unknownb8 &= ~MATCHED_UNKNOWN_2;
+  }
+}
+
+void GmkMobInsts::seqUpdatePopDepop(const UpdateInfo &info) {
+  if (!isInterestPosExist()) {
+    return;
+  }
+  updatePopDepopCond(info);
+  if (canPopGobInst(*info.unknown08)) {
+    createGobInsts();
+    u32 num = unknowna8->capacity();
+    info.unknown10->onCreateGobInsts(num);
+  } else if (canDepopGobInst(*info.unknown08)) {
+    disposeGobInsts(true);
+  }
+  if (unknownb8 & MATCHED_UNKNOWN_1) {
+    unknown58.update(*this, *unknowna8, *info.unknown10);
+  }
+}
+
 bool GmkMob::PopXformFinder::findPosRot(mm::Vec3 &position, mm::Vec3 &rotation) const {
   GmkSquad *squad = unknown08->unknown48.unknownb0;
   bool isPlaced = false;

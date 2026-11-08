@@ -74,6 +74,11 @@
 #include "gmk/gmk_enemy/gmk_enemy.h"
 #include "gmk/gmk_enemy/gmk_routed_enemy.h"
 #include "gmk/gmk_list.h"
+#include "gmk/gmk_map_obj.h"
+#include "gmk/gmk_mob/gmk_mob.h"
+#include "gmk/gmk_mob/gmk_routed_mob.h"
+#include "gmk/gmk_npc/gmk_npc.h"
+#include "gmk/gmk_npc/gmk_routed_npc.h"
 #include "gmk/gmk_set.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
@@ -85,15 +90,6 @@
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
-
-namespace gmk {
-class GmkMapObj;
-class GmkMob;
-class GmkNpc;
-class GmkRoutedMapObj;
-class GmkRoutedMob;
-class GmkRoutedNpc;
-} // namespace gmk
 
 namespace gf {
 
