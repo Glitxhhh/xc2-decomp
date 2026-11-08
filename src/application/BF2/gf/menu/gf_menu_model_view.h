@@ -31,6 +31,9 @@ public:
     void setMovePosY(f32 start, f32 end);
     void setMovePosZ(f32 value);
     void setMovePosZ(f32 start, f32 end);
+    void setAddPosX(f32 value);
+    void setAddPosY(f32 value);
+    void setAddPosZ(f32 value);
     void setMoveSclX(f32 value);
     void setMoveSclX(f32 start, f32 end);
     void setMoveSclY(f32 value);
@@ -102,6 +105,8 @@ public:
   int getCurrentCameraIndex();
   mm::Vec3 getCameraPos(u32 index);
   mm::Vec3 getCameraRot(u32 index);
+  void setCameraPos(u32 index, const mm::Vec3 &position);
+  void setCameraRotY(u32 index, f32 rotation);
   bool playCameraMotion(const char *name, const mm::Vec3 &position, f32 rotation);
   void resetCamera(u32 index, f32 time);
   void stopCameraMotion();
@@ -115,6 +120,8 @@ public:
   void delGfObj(u32 type, u32 id);
   GF_OBJ_HANDLE *findGfObj(u32 type, u32 id);
   void addEnemyObject(u32 id, const fw::Transform &transform);
+  void addDriverObject(u32 id, const fw::Transform &transform);
+  void addBladeObject(u32 id, const fw::Transform &transform);
   void startObjectCtrl(const CtrlParam &param);
   bool checkGfObj(u32 type, u32 id);
 

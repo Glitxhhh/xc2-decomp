@@ -113,6 +113,7 @@ public:
   static void debugHpRatio(GF_OBJ_HANDLE *handle, f32 ratio);
   static void debugHpZero(GF_OBJ_HANDLE *handle);
   static void debugFallDead(GF_OBJ_HANDLE *handle);
+  static void setEnterbattleEnemyForDebug();
   static bool isDriverRide(GF_OBJ_HANDLE *handle);
   static bool isSceneRide();
   static const char *getBladeModel(u32 blade, bool isDefault);

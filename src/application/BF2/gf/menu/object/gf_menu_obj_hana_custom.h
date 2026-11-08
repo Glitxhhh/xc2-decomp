@@ -26,6 +26,7 @@ namespace gf {
 class GfMenuCallContext;
 class GfMenuIDList;
 class GfMenuItemList;
+struct MenuItemInfo;
 class GfMenuReferenceItem;
 class GfMenuReferenceNumber;
 
@@ -60,7 +61,16 @@ public:
   static void setupPlan(ui::UIObjectAcc &acc, GfMenuIDList *list);
   static void setupItemInfo2(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 blade);
   static u32 chkSameSlot(mm::mtl::FixedArray<GfMenuIDList *, 7> &lists, u32 parts);
-  static u8 getEquipSlot(mm::mtl::FixedArray<GfMenuIDList *, 7> &lists, u32 parts);
+  static bool refreshEquipListSub(ui::UIObjectAcc &acc, u32 type, u32 item, u32 index);
+  static void refreshEquipList(ui::UIObjectAcc &acc, u32 blade);
+  static void refreshPartsList(ui::UIObjectAcc &acc, mm::mtl::FixedArray<GfMenuIDList *, 7> &lists);
+  static void refreshItemList(GfMenuItemList *list, ui::UISelectObjList *selectList, u32 type);
+  static void setupItemInfo(ui::UIObjectAcc &acc, GfMenuItemList *list);
+  static void getEquipItem(u32 blade, u32 parts, MenuItemInfo &info);
+  static void refreshItemInfo(ui::UIObjectAcc &acc, GfMenuItemList *list, u32 type, u32 index);
+  static void updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *selectList, mm::mtl::FixedArray<GfMenuIDList *, 7> &lists);
+  static void setupPartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *selectList, GfMenuReferenceItem *item, mm::mtl::FixedArray<GfMenuIDList *, 7> &lists);
+  static u32 getEquipSlot(mm::mtl::FixedArray<GfMenuIDList *, 7> &lists, u32 parts);
   static void clearPLanSelect(ui::UIObjectAcc &acc);
   static u32 searchIdList(GfMenuIDList *list, u32 id);
 

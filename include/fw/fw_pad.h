@@ -30,6 +30,7 @@ struct UpdateInfo;
 
 enum VibrationID : int {
   VIBRATION_ID_UNKNOWN_2 = 2,
+  VIBRATION_ID_UNKNOWN_16 = 16,
 };
 
 struct PadData {

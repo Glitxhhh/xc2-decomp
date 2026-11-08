@@ -122,7 +122,7 @@ bool GfPouchUtil::isEnableOpen(u32 driver) {
   return false;
 }
 
-u8 GfPouchUtil::getOpenCount(u32 driver) {
+u32 GfPouchUtil::getOpenCount(u32 driver) {
   u8 count = 0;
   for (u32 slot = 0; slot < 3; slot++) {
     if (GfDataDriver::getPouchData(driver, slot)->_06 != 0) {

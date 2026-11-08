@@ -1,5 +1,6 @@
 #include "gf/game/gf_game_fall_dead_camera.h"
 
+#include "fw/fw_transform.h"
 #include "gf/camera/gf_camera_player_target.h"
 #include "gf/gf_info.h"
 
@@ -18,7 +19,7 @@ GfGameFallDeadCamera::~GfGameFallDeadCamera() {}
 void GfGameFallDeadCamera::onActivate() {
   PlayerCameraTarget *target = PlayerCameraTarget::get();
   if (target != nullptr) {
-    unknownb0 = GfInfo::m_camTgt - target->unknown20;
+    unknownb0 = GfInfo::m_camTgt - target->unknown20.unknown00;
   }
   unknownd0 = GfInfo::m_camTgt;
   unknownc0 = GfInfo::m_camPos;
@@ -29,7 +30,7 @@ void GfGameFallDeadCamera::onActivate() {
 void GfGameFallDeadCamera::update(const fw::UpdateInfo &info) {
   PlayerCameraTarget *target = PlayerCameraTarget::get();
   if (target != nullptr) {
-    unknownd0 = target->unknown20 + unknownb0;
+    unknownd0 = target->unknown20.unknown00 + unknownb0;
   }
   setLookAt(unknownc0, unknownd0, 0.0f);
 }

@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #include "battle/data_manager_battle.h"
+#include "bdat.h"
 #include "framework/object/updatable_object.h"
 #include "fw/fw_transform.h"
 #include "gf/data/gf_bdat_blade.h"
@@ -11,11 +12,13 @@
 #include "gf/data/gf_bdat_chrdr.h"
 #include "gf/data/gf_bdat_chrenarrange.h"
 #include "gf/data/gf_bdat_chrenparam.h"
+#include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_bdat_maplist.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_achievement.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_develop.h"
 #include "gf/data/gf_data_driver.h"
@@ -36,6 +39,7 @@
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_field_exec_cmd_turn.h"
 #include "gf/field/gf_field_gimmick.h"
+#include "gf/field/gf_field_manager.h"
 #include "gf/field/gf_field_weather.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
@@ -52,6 +56,7 @@
 #include "gf/object/component/behavior/gf_com_behavior_event.h"
 #include "gf/object/component/behavior/gf_com_behavior_npc.h"
 #include "gf/object/component/enemy/gf_com_behavior_enemy.h"
+#include "gf/object/component/enemy/gf_enemy_state_id.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_append_info.h"
@@ -70,18 +75,28 @@
 #include "gf/util/gf_item_util.h"
 #include "gf/util/gf_util.h"
 #include "gmk/gmk_base.h"
+#include "gmk/gmk_bdat.h"
+#include "gmk/gmk_collection.h"
 #include "gmk/gmk_cond.h"
+#include "gmk/gmk_door.h"
+#include "gmk/gmk_elevator.h"
 #include "gmk/gmk_enemy/gmk_enemy.h"
 #include "gmk/gmk_enemy/gmk_routed_enemy.h"
+#include "gmk/gmk_jump.h"
 #include "gmk/gmk_list.h"
+#include "gmk/gmk_map_gimmick.h"
 #include "gmk/gmk_map_obj.h"
 #include "gmk/gmk_mob/gmk_mob.h"
 #include "gmk/gmk_mob/gmk_routed_mob.h"
 #include "gmk/gmk_npc/gmk_npc.h"
 #include "gmk/gmk_npc/gmk_routed_npc.h"
+#include "gmk/gmk_salvage.h"
 #include "gmk/gmk_set.h"
+#include "gmk/gmk_tbox.h"
+#include "gmk/gmk_warp.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h"
@@ -89,6 +104,7 @@
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
+#include "mm_mtl/unique_ptr.h"
 #include "mm_mtl/vector.h"
 
 namespace gf {
@@ -164,6 +180,78 @@ bool GfGameUtil::isUiGfObjHandleValid(GF_OBJ_HANDLE *handle) {
 
   GfObjAcc objAcc(handle);
   return objAcc.isValid() && !objAcc.isDestroy() && !objAcc.testFlag(OBJ_FLAG_UI_HIDDEN);
+}
+
+f32 GfGameUtil::getUiNameDist(GF_OBJ_HANDLE *handle) {
+  GfObjAcc objAcc(handle);
+  switch (objAcc.getType()) {
+  case OBJECT_TYPE_ENEMY:
+    return GfFieldManager::getEnemyBaloonRadius();
+  case OBJECT_TYPE_NPC:
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_F32).valueF32;
+  case OBJECT_TYPE_GIMMICK:
+    break;
+  default:
+    return -1.0f;
+  }
+
+  gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
+  if (gmkInst == nullptr) {
+    return -1.0f;
+  }
+
+  switch (gmkInst->getGmkType()) {
+  case gmk::GMK_TYPE_TBOX: {
+    gmk::GmkTbox *tbox = static_cast<gmk::GmkTbox *>(gmkInst);
+    const gmk::GmkTbox::BdatInfo *info = tbox->getBdatInfo();
+    if (info->unknown02) {
+      return tbox->getProgress() == gmk::GmkTbox::PROGRESS_CLOSED ? info->unknown04 : info->unknown03;
+    }
+    return info->unknown03;
+  }
+  case gmk::GMK_TYPE_EVENT:
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xe, gmk::BDAT_TYPE_F32).valueF32;
+  case gmk::GMK_TYPE_COLLECTION:
+    return static_cast<gmk::GmkCollection *>(gmkInst)->getBdatInfo()->unknown00;
+  case gmk::GMK_TYPE_SALVAGE:
+  case gmk::GMK_TYPE_KIZUNA_TALK:
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_F32).valueF32;
+  case gmk::GMK_TYPE_SALVAGE_LOCATOR:
+    if (static_cast<gmk::GmkSalvageLocator *>(gmkInst)->getData()->unknown00 == 2) {
+      return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_F32).valueF32;
+    }
+    return -1.0f;
+  case gmk::GMK_TYPE_MAP_GIMMICK: {
+    gmk::GmkMapGimmick *mapGimmick = static_cast<gmk::GmkMapGimmick *>(gmkInst);
+    if (!mapGimmick->unknown68) {
+      return -1.0f;
+    }
+    return mapGimmick->getBdatInfo()->unknown02;
+  }
+  case gmk::GMK_TYPE_GRAVE:
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0x29, gmk::BDAT_TYPE_F32).valueF32;
+  case gmk::GMK_TYPE_JUMP:
+    return static_cast<gmk::GmkJump *>(gmkInst)->getBdatInfo()->unknown04;
+  case gmk::GMK_TYPE_WARP:
+    return static_cast<gmk::GmkWarp *>(gmkInst)->unknown002()->unknown02;
+  case gmk::GMK_TYPE_DOOR:
+    if (!(objAcc.getAttribute() & 4)) {
+      return -1.0f;
+    }
+    return static_cast<gmk::GmkDoor *>(gmkInst)->getBdatInfo()->unknown04;
+  case gmk::GMK_TYPE_ELEVATOR: {
+    if (!(objAcc.getAttribute() & 4)) {
+      return -1.0f;
+    }
+    gmk::GmkElevator *elevator = static_cast<gmk::GmkElevator *>(gmkInst);
+    if (elevator->isCallSwitch(handle)) {
+      return elevator->getBdatInfo()->unknown02;
+    }
+    return elevator->getBdatInfo()->unknown04;
+  }
+  default:
+    return -1.0f;
+  }
 }
 
 bool GfGameUtil::isUiNameDistMatch(GF_OBJ_HANDLE *handle) {
@@ -927,6 +1015,33 @@ bool GfGameUtil::isSceneRide() {
   return true;
 }
 
+void GfGameUtil::setEnterbattleEnemyForDebug() {
+  GF_OBJ_HANDLE *nearest = INVALID_HANDLE;
+  f32 nearestDistance = 100000.0f;
+  for (GF_OBJ_HANDLE *const &handle : *GfGameObj::getList(OBJECT_TYPE_ENEMY)) {
+    GfObjAcc acc(handle);
+    mm::Vec3 difference = GfGameManager::getControlMoverPosition() - acc.getWorldTransform().unknown00;
+    f32 distance = sqrtf(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
+    if (!(nearestDistance < distance)) {
+      nearest = handle;
+      nearestDistance = distance;
+    }
+  }
+
+  if (nearest != INVALID_HANDLE) {
+    GfObjAcc acc(nearest);
+    GfComBehaviorEnemy *behavior = acc.getObj()->getComponent<GfComBehaviorEnemy>();
+    if (behavior != nullptr) {
+      GfComProperty *property = acc.getObj()->getComponent<GfComProperty>();
+      GF_OBJ_HANDLE *leader = GfGameManager::getPartyLeaderDriver();
+      if (property->unknown18) {
+        property->unknown18->handle = leader;
+      }
+      behavior->setStateId(enemy::STATE_ID_UNKNOWN_0);
+    }
+  }
+}
+
 const char *GfGameUtil::getBladeModel(u32 blade, bool isDefault) {
   SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
   if (!dataBlade->unknown720.empty() && !isDefault && isCondBladeModel(blade)) {
@@ -1411,6 +1526,40 @@ void GfGameUtil::execEquipMercenariesBlade(u32 driver, u32 blade) {
   GfGameMercenaries::clearTeamMember(team);
   if (GfDataBlade::isActivateReserver(blade)) {
     GfDataBlade::setActivateDriver(blade, -1, driver, 0);
+  }
+}
+
+// Inferred helper: adds a blade to a list unless it is already in it; original name unknown.
+static void unknown003(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades, u16 blade) {
+  if (mm::mtl::find(blades.begin(), blades.end(), blade) == blades.end()) {
+    blades.push_back(blade);
+  }
+}
+
+// Inferred helper: adds the blades set to a driver, except the dummy ones, to a list; original name unknown (0x7100350e28).
+static void unknown004(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades, u32 driver) {
+  for (u32 slot = 0; slot < 3; slot++) {
+    u32 blade = GfDataDriver::getBlade(driver, slot);
+    if (blade != 0 && !GfDataBlade::isDummyBlade(blade)) {
+      unknown003(blades, blade);
+    }
+  }
+}
+
+void GfGameUtil::addTrusuPointByLastKizunaTalk() {
+  mm::mtl::FixedVector<u16, BLADE_COUNT> blades;
+  unknown004(blades, DRIVER_REX);
+  unknown004(blades, DRIVER_NIA);
+  unknown004(blades, DRIVER_MELEPH);
+  unknown004(blades, DRIVER_JIKU);
+  unknown003(blades, BLADE_HOMURA);
+  unknown003(blades, BLADE_HIKARI);
+  unknown003(blades, BLADE_UNKNOWN_1011);
+  unknown003(blades, BLADE_HANA_JS);
+  unknown003(blades, BLADE_HANA_JK);
+  unknown003(blades, BLADE_HANA_JD);
+  for (u16 blade : blades) {
+    addTrustPoint(blade, 300);
   }
 }
 

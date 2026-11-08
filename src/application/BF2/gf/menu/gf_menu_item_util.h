@@ -28,6 +28,7 @@ public:
   static u32 searchEquipAcc(u32 accessory, GfItemHandle handle, u32 *slot);
   static u32 canEquipOrb(u32 orb, u32 blade, u32 slot);
   static u32 searchEquipOrb(u32 orb, GfItemHandle handle, u32 *slot);
+  static u32 searchEquipHanaParts(u32 type, u32 parts, GfItemHandle handle);
   static u32 canCreateOrb(u32 item);
   static u32 getEquipErrorCmnWindowID(u32 error);
   static bool getItemCrystal(u32 item, CrystalInfo &info);

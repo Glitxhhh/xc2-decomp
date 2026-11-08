@@ -3,12 +3,16 @@
 #include <string.h>
 
 #include "bdat.h"
+#include "fw/fw_pad.h"
 #include "fw/fw_transform.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_save.h"
 #include "gf/data/gf_item_id.h"
+#include "gf/game/sequential_play/gf_play_command.h"
+#include "gf/game/sequential_play/gf_play_factory.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_fade.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
@@ -17,7 +21,9 @@
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_blade_name.h"
+#include "gf/menu/object/gf_menu_obj_blade_set2.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
@@ -25,14 +31,20 @@
 #include "gf/object/gf_obj_acc.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
+#include "gf/request/gf_req_scom.h"
 #include "gf/sound/gf_sound.h"
 #include "gf/util/gf_item_util.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/reference_object.h"
 #include "scn/scn_render_dr_sys_parm_acc.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_list_info.h"
+#include "ui/list/ui_select_obj_list.h"
+#include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 
@@ -48,8 +60,17 @@ const char *const unknown002[6] = {"LAY_dr_select", "LAY_core_select", "LAY_bst_
 // Inferred role: object type of the drivers in the model view; original name unknown.
 constexpr u32 unknown003 = 3;
 
+// Inferred role: object type of the crystals in the model view; original name unknown.
+constexpr u32 unknown009 = 0xf;
+
 // Inferred role: driver of each camera of the driver select page; original name unknown.
 const u32 unknown004[16] = {1, 2, 6, 3, 0x15, 0x13, 0x15, 0x15, 0xb9, 0xba, 0xbb, 0xbc, 0x154, 0x151, 0xffffffff, 0x150};
+
+// Inferred role: camera offset of each page of the creation screen; original name unknown.
+const int unknown008[6] = {0, 1, 2, 3, 4, 4};
+
+// Inferred role: camera motion of each driver of the creation screen, null for the drivers without one; original name unknown.
+const char *const unknown012[6] = {"mnu_blade_create_rex_01", "mnu_blade_create_nia_01", "mnu_blade_create_sieg_01", nullptr, nullptr, "mnu_blade_create_melef_01"};
 
 // Inferred role: sets the weapon type of a driver in the model view; original name unknown.
 static void unknown006(GfMenuModelView *view, u32 driver, int weaponType) { view->setObjectCommandValue(view->findGfObj(unknown003, driver), "V_weaponselect", weaponType); }
@@ -57,6 +78,17 @@ static void unknown006(GfMenuModelView *view, u32 driver, int weaponType) { view
 // Inferred role: starts the blade arts animation of a driver in the model view; original name unknown.
 static void unknown007(GfMenuModelView *view, u32 driver) { view->sendObjectCommand(view->findGfObj(unknown003, driver), "C_bladearts_01"); }
 
+// Inferred role: gets a crystal object of the model view; original name unknown.
+static GF_OBJ_HANDLE *unknown011(GfMenuModelView *view, u32 index) { return view->findGfObj(unknown009, view->getMapObjID(index)); }
+
+// Inferred role: attaches a crystal object of the model view to the right hand of a driver; original name unknown.
+static void unknown010(GfMenuModelView *view, u32 driver, u32 index) {
+  GF_OBJ_HANDLE *driverObj = view->findGfObj(unknown003, driver);
+  view->attachObject(unknown011(view, index), driverObj, "EX_wp_R");
+}
+
+// Inferred role: checks that a crystal object of the model view exists; original name unknown.
+static bool unknown013(GfMenuModelView *view, u32 index) { return view->checkGfObj(unknown009, view->getMapObjID(index)); }
 void GfMenuObjBladeCreate::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
   layerParam.set(param);
@@ -76,6 +108,31 @@ u32 GfMenuObjBladeCreate::getPageObject(u32 handle, u32 page, bool isSibling) {
     }
   }
   return object;
+}
+
+void GfMenuObjBladeCreate::changePage(u32 handle, PageContext *context, u32 page, bool isSibling, bool isReturn) {
+  ui::UIObjectAcc oldPage(getPageObject(handle, context->unknown00, isSibling));
+  ui::UIObjectAcc newPage(getPageObject(handle, page, isSibling));
+  ui::EventData event;
+  if (newPage.isValid()) {
+    event.unknown00 = 0x22;
+    ui::UIManager::get()->requestObjectEvent(oldPage.unknown10, event, 0.0f);
+    if (newPage.isValid()) {
+      event.unknown00 = 0x21;
+      ui::UIManager::get()->requestObjectEvent(newPage.unknown10, event, 0.0f);
+    }
+    context->unknown04 = context->unknown00;
+    context->unknown00 = page;
+    disableFSInput();
+    if (isReturn) {
+      context->unknownac8->popCamera(0.5f);
+    }
+    if (page == 0) {
+      context->unknownac8->resetCamera(unknown1198, 0.0f);
+    } else {
+      context->unknownac8->pushCamera(unknown008[page] + unknown11a0, 0.5f);
+    }
+  }
 }
 
 u32 GfMenuObjBladeCreate::getDriverCameraIndex(u32 driver) {
@@ -141,12 +198,101 @@ void GfMenuObjBladeCreate::returnPage(u32 handle, PageContext *context, bool isS
   changePage(handle, context, page, true, true);
 }
 
+void GfMenuObjBladeCreate::finalize() {
+  if (unknown28.unknownac8 != nullptr) {
+    delete unknown28.unknownac8;
+    unknown28.unknownac8 = nullptr;
+  }
+  mm::mtl::safeRelease(unknown28.unknown40);
+  mm::mtl::safeRelease(unknown28.unknown50);
+  mm::mtl::safeRelease(unknown28.unknown48);
+  mm::mtl::safeRelease(unknown28.unknown30);
+  mm::mtl::safeRelease(unknown28.unknown38);
+  GfMenuObject::finalize();
+}
+
 void GfMenuObjBladeCreate::update() {
   unknownaf8.unknown003();
   if (unknown28.unknownac8 != nullptr) {
     unknown28.unknownac8->update();
   }
   GfMenuObject::update();
+}
+
+bool GfMenuObjBladeCreate::seqSetupCrystal() {
+  u32 driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
+  unknown010(unknown28.unknownac8, driver, 1);
+  unknown010(unknown28.unknownac8, driver, 2);
+  mm::Vec3 scale;
+  scale.z = 0.7f;
+  scale.y = 0.7f;
+  scale.x = 0.7f;
+  GfMenuModelView::setObjectScale(unknown011(unknown28.unknownac8, 1), scale);
+  GfMenuModelView::setObjectScale(unknown011(unknown28.unknownac8, 2), scale);
+  GfMenuModelView::setObjectDisp(unknown011(unknown28.unknownac8, 2), false);
+  unknown11c4[1] = GfMenuObjUtil::playSE("se_fld_allmap_706");
+  refreshCrystalList();
+  return true;
+}
+
+void GfMenuObjBladeCreate::refreshCrystalList() {
+  if (unknown1150 != nullptr) {
+    GfMenuItemList *crystals = unknown28.unknown48;
+    if (crystals != nullptr) {
+      for (u32 i = 0; i < unknown1150->getSize(); i++) {
+        u32 item = crystals->getContents(crystals->getPageIndex(i)).unknown04;
+        if (item != 0) {
+          mm::mtl::FixStr<32> name;
+          name.format("TXT_core_sel_item_name@%02d", i + 1);
+          ui::UIObjectAcc acc(unknown18, name.c_str());
+          if (!isValidCrystal(item)) {
+            GfMenuObjUtil::setColMulandAdd(acc.unknown10, "txt_disable");
+            acc.setBorderWeight(1.0f);
+            name.format("TXT_core_sel_item_num@%02d", i + 1);
+            ui::UIObjectAcc(unknown18, name.c_str()).setBorderWeight(1.0f);
+            name.format("TXT_core_sel_item_max@%02d", i + 1);
+            ui::UIObjectAcc(unknown18, name.c_str()).setBorderWeight(1.0f);
+            name.format("TXT_core_sel_item_slash@%02d", i + 1);
+            ui::UIObjectAcc(unknown18, name.c_str()).setBorderWeight(1.0f);
+          } else {
+            GfMenuObjUtil::setColDefault(acc.unknown10);
+            acc.setBorderWeight(-0.5f);
+            name.format("TXT_core_sel_item_num@%02d", i + 1);
+            ui::UIObjectAcc(unknown18, name.c_str()).setBorderWeight(-0.5f);
+            name.format("TXT_core_sel_item_max@%02d", i + 1);
+            ui::UIObjectAcc(unknown18, name.c_str()).setBorderWeight(-0.5f);
+            name.format("TXT_core_sel_item_slash@%02d", i + 1);
+            ui::UIObjectAcc(unknown18, name.c_str()).setBorderWeight(-0.5f);
+          }
+        }
+      }
+      if (unknown013(unknown28.unknownac8, 1) && unknown013(unknown28.unknownac8, 2)) {
+        if (!isValidCrystal(crystals->getContents(crystals->getIndex(false)).unknown04)) {
+          {
+            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 1), 0.1f, false);
+            param.setMoveAlpha(0.0f);
+            unknown28.unknownac8->startObjectCtrl(param);
+          }
+          {
+            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 2), 0.1f, false);
+            param.setMoveAlpha(1.0f);
+            unknown28.unknownac8->startObjectCtrl(param);
+          }
+        } else {
+          {
+            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 1), 0.1f, false);
+            param.setMoveAlpha(1.0f);
+            unknown28.unknownac8->startObjectCtrl(param);
+          }
+          {
+            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 2), 0.1f, false);
+            param.setMoveAlpha(0.0f);
+            unknown28.unknownac8->startObjectCtrl(param);
+          }
+        }
+      }
+    }
+  }
 }
 
 void GfMenuObjBladeCreate::stopAllSound() {
@@ -239,9 +385,186 @@ bool GfMenuObjBladeCreate::seqResultBladeFull() {
   }
   return false;
 }
+bool GfMenuObjBladeCreate::seqResultConfirm() {
+  if (!unknown1120) {
+    if (unknown11b4 && unknown11bc) {
+      u32 driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
+      SCOM_PARTY_ADD::addBlade(unknown28.unknown28, driver, 1);
+      if (!unknown11b4) {
+        GfMenuObjMainMenu2::setCloseKeyEnable(true);
+      }
+      GfMenuObjOperationInfo::close();
+      GfMenuObject::returnFSSubLayer(this);
+      return true;
+    }
+    GfMenuManager::openCommonWindow(7);
+    unknown1120 = true;
+  }
+  if (GfMenuManager::isOpenCommonWindow()) {
+    return false;
+  }
+  s16 result = GfMenuManager::getCommonWindowResult();
+  if (result != 0) {
+    if (!unknown11b4) {
+      unknownaf8.unknown002(&GfMenuObjBladeCreate::seqResultEnd);
+    } else {
+      GfMenuObjMainMenu2::setCloseKeyEnable(true);
+      GfMenuObjOperationInfo::close();
+      GfMenuObject::returnFSSubLayer(this);
+    }
+    unknown1120 = false;
+    return true;
+  }
+  if (!unknown11b4 || unknown11b8 == 0) {
+    GfMenuObjBladeSet2::setCloseToReturn();
+  } else {
+    GfMenuObjBladeSet2::setCloseToFSClose();
+  }
+  if (unknown11b4) {
+    GfMenuObjMainMenu2::setCloseKeyEnable(true);
+  }
+  GfMenuObject::changeFSSubLayer(unknown18, GfMenuFullScreen::getLayerGroup(unknown20), GfMenuObject::getMenuLayerID(0x1e), true);
+  return true;
+}
+
+bool GfMenuObjBladeCreate::seqCreateCtrlBlade() {
+  u32 blade = unknown1128.front();
+  switch (unknown1144) {
+  case 0: {
+    unknown28.unknownac8->setObjectVanishRatio(unknown28.unknownac8->findGfObj(4, blade), 1.0f);
+    unknown28.unknownac8->setObjectVanishParam(unknown28.unknownac8->findGfObj(4, blade), 9);
+    GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.3f, false);
+    param.setAddPosY(0.2f);
+    if (unknown1128.size() == 1) {
+      param.setMoveVanish(0.5f);
+    } else {
+      param.setMoveVanish(0.7f);
+    }
+    unknown28.unknownac8->startObjectCtrl(param);
+    GF_OBJ_HANDLE *driver = unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)));
+    if (unknown1148 == 0) {
+      unknown28.unknownac8->playEffectFromCAS(1, "bc_20_010", driver);
+      unknown1148++;
+    } else if (unknown1128.size() > 1) {
+      unknown28.unknownac8->playEffectFromCAS(unknown1148 + 1, "bc_20_010", driver);
+      unknown1148++;
+    } else {
+      GF_OBJ_HANDLE *bladeObj = unknown28.unknownac8->findGfObj(4, blade);
+      unknown28.unknownac8->playEffectFromCAS(5, "bc_20_020", driver);
+      unknown28.unknownac8->playEffectFromCAS(7, "bc_20_040", bladeObj);
+    }
+    GfMenuObjUtil::playVibration(fw::VIBRATION_ID_UNKNOWN_16, 1.0f);
+    GfMenuObjUtil::playSE("se_fld_allmap_712");
+    unknown114c = 15;
+    break;
+  }
+  case 1: {
+    GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.4f, false);
+    param.setAddPosY(0.2f);
+    unknown28.unknownac8->startObjectCtrl(param);
+    break;
+  }
+  case 2: {
+    GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.3f, false);
+    if (unknown1128.size() == 1) {
+      param.setAddPosY(-0.5f);
+      param.setMoveSclX(0.001f);
+      param.setMoveSclZ(0.001f);
+    } else {
+      param.setAddPosY(0.2f);
+      param.setMoveVanish(1.0f);
+      GfMenuObjUtil::playSE("se_fld_allmap_713");
+    }
+    unknown28.unknownac8->startObjectCtrl(param);
+    break;
+  }
+  }
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitBlade);
+  return true;
+}
+
+bool GfMenuObjBladeCreate::seqCreateWaitBlade() {
+  u32 blade = unknown1128.front();
+  GfMenuModelView *view = unknown28.unknownac8;
+  if (view->isObjectCtrlBusy(view->findGfObj(4, blade))) {
+    return false;
+  }
+  if (unknown1144 < 2) {
+    unknown1144++;
+    unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateCtrlBlade);
+  } else {
+    unknown28.unknownac8->delGfObj(4, blade);
+    unknown1128.erase(unknown1128.begin());
+    if (!unknown1128.empty()) {
+      unknown1144 = 0;
+      unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateBuildBlade);
+    } else {
+      GfMenuFade::setFade(2, 60, mm::Col4::white);
+      GfMenuObjUtil::playSE("se_fld_allmap_714");
+      unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitFade);
+      unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreatePlayJingle);
+      unknownaf8.unknown004(30);
+      unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreatePlayBgmAfter);
+      unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateStartEvent);
+      unknown1128.clear();
+    }
+  }
+  return true;
+}
+
+bool GfMenuObjBladeCreate::seqCreateStart() {
+  GF_OBJ_HANDLE *driverObj = unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)));
+  GfMenuModelView *view = unknown28.unknownac8;
+  {
+    mm::Vec3 position(0.0f, 0.0f, 0.0f);
+    view->playEffect(6, "bc_20_030", position, unknown011(view, 1));
+  }
+  unknown28.unknownac8->playEffectFromCAS(0, "bc_20_000", driverObj);
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateSetup);
+  int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
+  for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
+    if (driver != unknown28.unknown40->getContents(i)) {
+      GfObjAcc acc(unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(i)));
+      acc.setDisp(OBJDISP_UNKNOWN_1, false);
+    }
+  }
+  const char *motion = nullptr;
+  if (driver >= 1 && driver <= 6) {
+    motion = unknown012[driver - 1];
+  }
+  if (motion != nullptr) {
+    fw::Transform &transform = GfMenuModelView::getObjectTransform(unknown28.unknownac8->findGfObj(unknown003, driver));
+    mm::Vec3 rotation = mm::quatToEuler(transform.unknown10);
+    unknown28.unknownac8->playCameraMotion(motion, transform.unknown00, rotation.y);
+  }
+  return true;
+}
+
+bool GfMenuObjBladeCreate::seqCreateStartEvent() {
+  for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
+    u32 id = unknown28.unknown40->getContents(i);
+    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_1, false);
+  }
+  u32 event = GfDataBlade::getCreateEvent(unknown28.unknown28);
+#line 2938
+  unknown1118 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfSequentialPlaySignal();
+  GfPlayFactory::createBlEvent(event, 1, unknown28.unknown28, unknown1118);
+  unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitEvent);
+  unknown28.unknownac8->delGfObj(unknown009, unknown28.unknownac8->getMapObjID(1));
+  unknown28.unknownac8->delGfObj(unknown009, unknown28.unknownac8->getMapObjID(2));
+  unknown28.unknownac8->stopEffect(6);
+  unknown28.unknownac8->stopEffect(7);
+  unknown28.unknownac8->stopEffect(0);
+  unknown28.unknownac8->stopEffect(unknown1148 + 1);
+  if (unknown11c4[2] != 0) {
+    GfMenuObjUtil::stopSE(unknown11c4[2], 0.0f);
+    unknown11c4[2] = 0;
+  }
+  return true;
+}
 
 bool GfMenuObjBladeCreate::seqCreateWaitEvent() {
-  if (*unknown1118) {
+  if (unknown1118->isActive) {
     return false;
   }
   if (unknown1118 != nullptr) {

@@ -151,6 +151,7 @@ public:
   static GfMenuCharDataAdapter *createFromBladeList(u32 handle, u32 type, const GfMenuBladeList *list, int index, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways);
+  static GfMenuCharDataAdapter *createFromReferenceBladeSet(u32 handle, u32 type, u32 index, int slot, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceBladeOwnerDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways);
   bool update_Name(const DataParamAcc &acc);
   bool update_BL_RoleIcon(const DataParamAcc &acc);
