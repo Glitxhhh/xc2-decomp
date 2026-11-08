@@ -7,6 +7,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
 #include "ui/ctrl/ui_ctrl_simple.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace gf {
 
@@ -38,13 +39,31 @@ public:
   };
 
   struct OpenParam {
-    OpenParam() : unknown00(0), unknown02(0), unknown04(false), unknown50{false, true, false, 0.25f} {}
+    OpenParam() : unknown00(0), unknown02(0), unknown04(0), unknown50{false, true, false, 0.25f} {}
 
     u16 unknown00;                                 // Role and original member name unknown.
     u16 unknown02;                                 // Role and original member name unknown.
-    bool unknown04;                                // Role and original member name unknown.
+    u8 unknown04;                                  // Role and original member name unknown.
     mm::mtl::FixedVector<unknown002, 3> unknown08; // Inferred role: challenges; original member name unknown.
     OptionParam unknown50;                         // Inferred role: display options; original member name unknown.
+  };
+
+  class MainListener : public ui::UIObjectListener {
+  public:
+    MainListener(GfMenuObjButtonChallenge2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjButtonChallenge2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class RingListener : public ui::UIObjectListener {
+  public:
+    RingListener(GfMenuObjButtonChallenge2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjButtonChallenge2 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   ~GfMenuObjButtonChallenge2() override;
@@ -65,6 +84,9 @@ public:
   bool seqStart();
   bool seqRunningV2();
   bool seqAppearCursor();
+  bool seqAppear();
+  bool seqMovePush();
+  bool seqMoveMashing();
   bool seqCheckSequence();
   bool seqWaitRestartV2();
   bool seqWaitMashingV2();
@@ -126,6 +148,10 @@ static_assert(sizeof(GfMenuObjButtonChallenge2::unknown002) == 0x14, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2::OpenParam, unknown08) == 0x8, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2::OpenParam, unknown50) == 0x50, "");
 static_assert(sizeof(GfMenuObjButtonChallenge2::OpenParam) == 0x58, "");
+static_assert(offsetof(GfMenuObjButtonChallenge2::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjButtonChallenge2::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjButtonChallenge2::RingListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjButtonChallenge2::RingListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown80) == 0x80, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown90) == 0x90, "");
