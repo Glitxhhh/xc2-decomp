@@ -92,6 +92,29 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  class StateStartBattle : public ai::State {
+  public:
+    static ai::State *create(void *buffer);
+    const char *getName() const override;
+    void onEnter(void *owner, ai::State *previous) override;
+    void onLeave(void *owner, ai::State *next) override;
+    void onStep(void *owner, const void *param) override;
+    void enter(GfEvtModelDriver *model, ai::State *previous);
+    void update(GfEvtModelDriver *model, const fw::UpdateInfo &info);
+  };
+
+  class StateEndBattle : public ai::State {
+  public:
+    static ai::State *create(void *buffer);
+    const char *getName() const override;
+    void onEnter(void *owner, ai::State *previous) override;
+    void onLeave(void *owner, ai::State *next) override;
+    void onStep(void *owner, const void *param) override;
+    void enter(GfEvtModelDriver *model, ai::State *previous);
+    void leave(GfEvtModelDriver *model, ai::State *next);
+    void update(GfEvtModelDriver *model, const fw::UpdateInfo &info);
+  };
+
   explicit GfEvtModelDriver(GfInitParamDriver &param);
   static GfEvtModelDriver *create(GfInitParamDriver &param);
   ~GfEvtModelDriver() override;
@@ -162,6 +185,29 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  class StateStartBattle : public ai::State {
+  public:
+    static ai::State *create(void *buffer);
+    const char *getName() const override;
+    void onEnter(void *owner, ai::State *previous) override;
+    void onLeave(void *owner, ai::State *next) override;
+    void onStep(void *owner, const void *param) override;
+    void enter(GfEvtModelBlade *model, ai::State *previous);
+    void update(GfEvtModelBlade *model, const fw::UpdateInfo &info);
+  };
+
+  class StateEndBattle : public ai::State {
+  public:
+    static ai::State *create(void *buffer);
+    const char *getName() const override;
+    void onEnter(void *owner, ai::State *previous) override;
+    void onLeave(void *owner, ai::State *next) override;
+    void onStep(void *owner, const void *param) override;
+    void enter(GfEvtModelBlade *model, ai::State *previous);
+    void leave(GfEvtModelBlade *model, ai::State *next);
+    void update(GfEvtModelBlade *model, const fw::UpdateInfo &info);
+  };
+
   static GfEvtModelBlade *create(GfInitParamBlade &param);
   ~GfEvtModelBlade() override;
   const mm::mtl::RTTI *getRTTI() const override;
@@ -212,6 +258,29 @@ public:
     void onEnter(void *owner, ai::State *previous) override;
     void onLeave(void *owner, ai::State *next) override;
     void onStep(void *owner, const void *param) override;
+  };
+
+  class StateStartBattle : public ai::State {
+  public:
+    static ai::State *create(void *buffer);
+    const char *getName() const override;
+    void onEnter(void *owner, ai::State *previous) override;
+    void onLeave(void *owner, ai::State *next) override;
+    void onStep(void *owner, const void *param) override;
+    void enter(GfEvtModelEnemy *model, ai::State *previous);
+    void update(GfEvtModelEnemy *model, const fw::UpdateInfo &info);
+  };
+
+  class StateEndBattle : public ai::State {
+  public:
+    static ai::State *create(void *buffer);
+    const char *getName() const override;
+    void onEnter(void *owner, ai::State *previous) override;
+    void onLeave(void *owner, ai::State *next) override;
+    void onStep(void *owner, const void *param) override;
+    void enter(GfEvtModelEnemy *model, ai::State *previous);
+    void leave(GfEvtModelEnemy *model, ai::State *next);
+    void update(GfEvtModelEnemy *model, const fw::UpdateInfo &info);
   };
 
   GfEvtModelEnemy(GfInitParamEnemy &param);

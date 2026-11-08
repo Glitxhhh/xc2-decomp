@@ -19,6 +19,13 @@
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/object/gf_menu_obj_target_info.h"
 #include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_approach_pc.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_area_move.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_battle.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_idle.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_reaction.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_talk.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_walk.h"
 #include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
 #include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -256,6 +263,20 @@ void GfComBehaviorNpc::setActivateCollison(bool isActivate) {
   if (coli != nullptr) {
     coli->setActivate(isActivate);
   }
+}
+
+void GfComBehaviorNpc::createFsm() {
+  disposeFsm();
+  unknown108.beginSetup(this, 7, 1);
+  unknown108.registerState<npc::StateIdle>(npc::STATE_ID_UNKNOWN_0, -1);
+  unknown108.registerState<npc::StateWalk>(npc::STATE_ID_UNKNOWN_1, -1);
+  unknown108.registerState<npc::StateAreaMove<GfComBehaviorNpc>>(npc::STATE_ID_UNKNOWN_2, -1);
+  unknown108.registerState<npc::StateApproachPc>(npc::STATE_ID_UNKNOWN_3, -1);
+  unknown108.registerState<npc::StateReaction<GfComBehaviorNpc>>(npc::STATE_ID_UNKNOWN_4, -1);
+  unknown108.registerState<npc::StateBattle<GfComBehaviorNpc>>(npc::STATE_ID_UNKNOWN_5, -1);
+  unknown108.registerState<npc::StateTalk>(npc::STATE_ID_UNKNOWN_6, -1);
+  unknown108.endSetup();
+  unknown190 = false;
 }
 
 void GfComBehaviorNpc::Listener::onWkStandbyLogout() { unknown08->unknown198 = nullptr; }

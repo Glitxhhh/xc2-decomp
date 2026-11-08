@@ -6,6 +6,12 @@
 #include "framework/object/updatable_object.h"
 #include "framework/reference_frame.h"
 #include "fw/fw_transform.h"
+#include "gf/object/component/behavior/mob/gf_mob_state_idle.h"
+#include "gf/object/component/behavior/mob/gf_mob_state_move.h"
+#include "gf/object/component/behavior/mob/gf_mob_state_squad_member.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_area_move.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_battle.h"
+#include "gf/object/component/behavior/npc/gf_npc_state_reaction.h"
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -100,6 +106,19 @@ void GfComBehaviorMob::createNaviMeshObj() {
     unknowna8->unknown10 |= 2;
   }
   unknownb0 = 0;
+}
+
+void GfComBehaviorMob::createFsm() {
+  disposeFsm();
+  unknown5328.beginSetup(this, 6, 1);
+  unknown5328.registerState<mob::StateIdle>(mob::STATE_ID_UNKNOWN_0, -1);
+  unknown5328.registerState<mob::StateMove>(mob::STATE_ID_UNKNOWN_1, -1);
+  unknown5328.registerState<npc::StateAreaMove<GfComBehaviorMob>>(mob::STATE_ID_UNKNOWN_2, -1);
+  unknown5328.registerState<mob::StateSquadMember>(mob::STATE_ID_UNKNOWN_3, -1);
+  unknown5328.registerState<npc::StateReaction<GfComBehaviorMob>>(mob::STATE_ID_UNKNOWN_4, -1);
+  unknown5328.registerState<npc::StateBattle<GfComBehaviorMob>>(mob::STATE_ID_UNKNOWN_5, -1);
+  unknown5328.endSetup();
+  unknown53b0 = false;
 }
 
 void GfComBehaviorMob::Listener::onWkStandbyLogout() { unknown08->unknown53b8 = nullptr; }
