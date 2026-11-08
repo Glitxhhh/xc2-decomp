@@ -5,8 +5,16 @@
 #include <algorithm>
 
 #include "fw/fw_transform.h"
+#include "gf/data/gf_data_quest.h"
+#include "gf/field/gf_field_locator.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/quest/gf_quest_id.h"
+#include "gf/game/quest/gf_quest_info.h"
+#include "gf/game/quest/gf_quest_manager.h"
+#include "gf/game/quest/gf_quest_task.h"
+#include "gf/game/quest/gf_quest_task_param.h"
 #include "gf/menu/gf_menu_fullscreen.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_acc.h"
 #include "mm_math/mm_vec3.h"
 
@@ -33,12 +41,41 @@ bool GfMenuLocation::isInitialized() {
   return false;
 }
 
+GfMenuLocation::GfMenuLocation(const GfSetupParam &param) : unknown10(), unknown10f0(0) {}
+
 u32 GfMenuLocation::getLocatorDataNum(u32 type) {
   GfMenuLocation *location = get();
   if (type < LOCATOR_TYPE_COUNT && location != nullptr) {
     return location->unknown10[type].unknown28;
   }
   return 0;
+}
+
+void GfMenuLocation::refreshLocatorFromQuest(u32 index, u32 type) {
+  QuestID current = GfMenuObjUtil::getCurrentQuest(type);
+  mm::mtl::FixedVector<QuestID, 16> linkQuests;
+  GfQuestManager::getLinkQuest(linkQuests, current);
+  mm::mtl::Vector<GfFieldLocator> &locators = unknown10[index].unknown00;
+  QuestID *end = linkQuests.end();
+  for (QuestID *quest = linkQuests.begin(); quest != end; ++quest) {
+    if (!GfMenuObjUtil::isQuestCompleted(*quest)) {
+      u32 purpose = GfDataQuest::getListPurposeID(*quest);
+      for (u32 task = 0; task < 4; task++) {
+        QuestTaskParam param(*quest, task, purpose, TASK_STATE_NONE);
+        if (param.unknown10 == 0) {
+          break;
+        }
+        if (!GfQuestInfo::isCompleteTask(param) && GfQuestTask::isEnableTaskCondition(param)) {
+          GfFieldLocator::CreateInfoByQuest info;
+          info.unknown00 = *quest;
+          info.unknown08 = param.unknown14;
+          info.unknown04 = param.unknown10;
+          GfFieldLocator locator(&info);
+          locators.push_back(locator);
+        }
+      }
+    }
+  }
 }
 
 void GfMenuLocation::updateDataNum(u32 type) {

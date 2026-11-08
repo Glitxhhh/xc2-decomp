@@ -1,7 +1,6 @@
 #pragma once
 #include <stddef.h>
 
-#include "gf/data/gf_data_driver_skill.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
@@ -27,20 +26,11 @@ public:
   GfMenuObjDrKizunaRing(u32 handle);
   ~GfMenuObjDrKizunaRing() override;
 
-  // Inferred helper: number of unlocked skill levels of a driver ring, 0 to 3; original name unknown.
-  static u32 unknown001(u32 driver, bool isHidden) {
-    u32 level = 0;
-    if (GfDataDriverSkill::isSkillLevelUnlock(driver, 1, isHidden)) {
-      if (!GfDataDriverSkill::isSkillLevelUnlock(driver, 2, isHidden)) {
-        level = 1;
-      } else if (!GfDataDriverSkill::isSkillLevelUnlock(driver, 3, isHidden)) {
-        level = 2;
-      } else {
-        level = 3;
-      }
-    }
-    return level;
-  }
+  static u32 getSkillUnlockLevel(u32 driver);
+  static void movePointer(u32 handle, int index, ui::UISelectObjList *list);
+  static void setupMain(ui::UIObjectAcc &acc);
+  static void setupDriverSkillInfo(ui::UIObjectAcc &acc);
+  static void setupSkillDetail(ui::UIObjectAcc &acc);
 
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);

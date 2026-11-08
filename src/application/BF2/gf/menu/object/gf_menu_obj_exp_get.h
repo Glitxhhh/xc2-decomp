@@ -4,6 +4,7 @@
 #include "gf/menu/gf_menu_many_objects.h"
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -33,6 +34,10 @@ public:
   void finalize() override;
   void update() override;
   static void closeAll();
+  static void close(u32 handle);
+  static void close2(u32 handle);
+  static void removeObject(ui::UIObjectAcc acc);
+  static void removeObject2(ui::UIObjectAcc acc);
 };
 
 static_assert(offsetof(GfMenuObjExpGet::OpenParam, unknown10) == 0x10, "");

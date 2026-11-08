@@ -4,12 +4,20 @@
 #include "ai/ai_state_hfsm.h"
 #include "gf/field/gf_field_exec_cmd_turn.h"
 #include "gf/field/gf_field_local_steer.h"
+#include "gf/field/gf_field_look_ik.h"
 #include "gf/field/gf_field_move_speed.h"
+#include "gf/game/gf_game_stuck_meter.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gmk/gmk_squad.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
+
+namespace mm {
+namespace mtl {
+class RTTI;
+} // namespace mtl
+} // namespace mm
 
 namespace fw {
 class ColiMoveObject;
@@ -62,6 +70,8 @@ public:
     u16 unknown0a; // Inferred role: battle motion; original member name unknown.
   };
 
+  static mm::mtl::RTTI m_rtti;
+
   ~GfComBehaviorMob() override;
   const mm::mtl::RTTI *getRTTI() const override;
   bool recieveMessage(fw::MessageObject *sender, fw::Message &message) override;
@@ -75,6 +85,7 @@ public:
   fw::ColiMoveObject *getColiObject() const;
   gmk::AGmkBase *getBindedGmkInst() const;
   bool isSquadMember() const;
+  bool isMove() const;
   void initMoveSpeed(f32 time);
   void setStateId(mob::STATE_ID stateId);
   void disposeNaviMeshObj();
@@ -83,6 +94,7 @@ public:
   void setActivateCollison(bool isActivate);
   u32 getStateId() const;
   void createNaviMeshObj();
+  void createSquadNavi();
   void createFsm();
   void init(bool param1);
   bool isStateCondMatch(mob::STATE_ID stateId);
@@ -114,14 +126,15 @@ public:
   navi::NvmshAcObj *unknowna8; // Inferred role: navi mesh object; original member name unknown.
   u32 unknownb0;               // Inferred role: reset with the navi mesh object; original member name unknown.
   u8 _b4[0xb8 - 0xb4];
-  void *unknownb8;             // Role and original member name unknown.
-  gmk::GmkSquadNavi unknownc0; // Inferred role: squad navi; original member name unknown.
-  mm::Vec3 unknown100;         // Inferred role: velocity; original member name unknown.
-  mm::Vec3 unknown110;         // Inferred role: goal position; original member name unknown.
-  mm::Quat unknown120;         // Inferred role: rotation; original member name unknown.
-  u8 _130[0x1e0 - 0x130];
-  GfFieldMoveSpeed unknown1e0; // Inferred role: move speed; original member name unknown.
-  u8 _210[0x250 - 0x210];
+  void *unknownb8;                        // Role and original member name unknown.
+  gmk::GmkSquadNavi unknownc0;            // Inferred role: squad navi; original member name unknown.
+  mm::Vec3 unknown100;                    // Inferred role: velocity; original member name unknown.
+  mm::Vec3 unknown110;                    // Inferred role: goal position; original member name unknown.
+  mm::Quat unknown120;                    // Inferred role: rotation; original member name unknown.
+  GfGameStuckMeter unknown130;            // Inferred role: stuck meter; original member name unknown.
+  GfGameDepopMeter unknown190;            // Inferred role: depop meter; original member name unknown.
+  GfFieldMoveSpeed unknown1e0;            // Inferred role: move speed; original member name unknown.
+  GfFieldLookIk unknown210;               // Inferred role: look ik; original member name unknown.
   TFieldExecCmdTurn<GfComAsm> unknown250; // Inferred role: turn command; original member name unknown.
   GfFieldLocalSteer unknown2c0;           // Inferred role: local steer; original member name unknown.
   u8 _5320[0x5328 - 0x5320];

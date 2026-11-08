@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_data_item.h"
 #include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/gf_menu_object.h"
 #include "mm_mtl/intrusive_ptr.h"
@@ -9,6 +10,7 @@
 namespace ui {
 class UICtrlCursorColor;
 class UICtrlCursorSelect;
+class UIObjectAcc;
 class UISelectObjList;
 } // namespace ui
 
@@ -34,6 +36,12 @@ public:
   static u32 getMakeItemCount(u32 parts);
   static RESULT_HANA makeParts(u32 type, u32 parts);
   static RESULT_HANA crystalParts(u32 type, u32 parts);
+  static void setupMain(ui::UIObjectAcc &acc);
+  static void setupNumSelect(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> price);
+  static void updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects);
+  static void setupPartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects);
+  static void makeCategoryItemList(GfMenuIDList *idList, GfMenuItemList *itemList, u32 isEquip, u32 sort);
+  static void updateItemList(GfMenuItemList *list, ItemType::Type type, u32 isEquip);
 
   u8 _24[0x28 - 0x24];
   GfMenuIDList *unknown28;                                // Inferred role: parts types; original member name unknown.

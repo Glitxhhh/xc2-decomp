@@ -48,11 +48,13 @@ public:
   template <typename T> static void closeAll(u32 type, void (*callback)(u32));
 
   bool unknown08;     // Inferred role: initialized; original member name unknown.
-  void *unknown10[9]; // Inferred role: queues of the pooled objects, indexed by type (0 to 7); original member name unknown.
+  void *unknown10[8]; // Inferred role: queues of the pooled objects, indexed by type (0 to 7); original member name unknown.
+  bool unknown50[8];  // Inferred role: per type flag, cleared with the queues by initialize (the popup continue sequence clears the one of type 7); original member name unknown.
 };
 
 static_assert(offsetof(GfMenuManyObjects, unknown08) == 0x08, "");
 static_assert(offsetof(GfMenuManyObjects, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuManyObjects, unknown50) == 0x50, "");
 static_assert(sizeof(GfMenuManyObjects) == 0x58, "");
 
 template <typename T> void GfMenuManyObjects::remove(u32 type, u32 handle) {

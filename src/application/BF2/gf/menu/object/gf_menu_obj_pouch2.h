@@ -10,6 +10,8 @@
 namespace ui {
 class UICtrlCursorSelect;
 class UISelectObjList;
+class UIObjectAcc;
+class UIStr;
 } // namespace ui
 
 namespace gf {
@@ -40,6 +42,12 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void setupSlot(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number);
+  static void getFilterText(u32 filter, ui::UIStr &text);
+  bool seqFavOpen();
+  static GAME_VOICE_HANDLE *procFavFlag(ui::UIObjectAcc &acc, FavoriteFlag &flag, u32 index, u32 favorite);
+  static void updateSlotList(GfMenuItemList *list);
+  bool seqFavClose();
 
   u8 _24[0x28 - 0x24];
   GfMenuItemList *unknown28;                              // Inferred role: items; original member name unknown.
@@ -56,8 +64,9 @@ public:
   mm::mtl::FixedArray<FavoriteFlag, 4> unknown70; // Inferred role: favorite flags; original member name unknown.
   mm::mtl::FixedArray<FavoriteFlag, 4> unknownd0; // Inferred role: favorite flags; original member name unknown.
   GfMenuSequence<GfMenuObjPouch2, 8> unknown130;  // Inferred role: queued steps; original member name unknown.
-  u8 _3c0[0x3c9 - 0x3c0];
-  bool unknown3c9; // Role and original member name unknown, cleared by the constructor.
+  u64 unknown3c0;                                 // Role and original member name unknown.
+  bool unknown3c8;                                // Role and original member name unknown.
+  bool unknown3c9;                                // Role and original member name unknown, cleared by the constructor.
   u8 _3ca[0x3d0 - 0x3ca];
   GAME_VOICE_HANDLE *unknown3d0; // Inferred role: playing voice; original member name unknown.
   u32 unknown3d8;                // Role and original member name unknown, cleared by the constructor.

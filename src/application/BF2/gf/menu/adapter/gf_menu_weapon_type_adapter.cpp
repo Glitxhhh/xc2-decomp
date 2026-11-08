@@ -5,6 +5,7 @@
 #include "gf/data/gf_data_driver_arts.h"
 #include "gf/data/gf_data_weapon.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixed_array.h"
 #include "ui/ui_object_acc.h"
@@ -392,6 +393,32 @@ bool GfMenuWeaponTypeAdapter::getDriverArts(DriverArts &driverArts) {
   }
   return false;
 }
+
+GfMenuWeaponTypeAdapter *GfMenuWeaponTypeAdapter::createFromReferenceDriverWpnType(u32 handle, u32 type, u16 driver, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> wpnType, u16 artsIndex,
+                                                                                   bool isUpdateAlways) {
+  // __LINE__ must be 234 as in the original source: it is the line argument of operator new.
+#line 234
+  ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverConverter(driver, wpnType, artsIndex);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuWeaponTypeAdapter *GfMenuWeaponTypeAdapter::createFromReferenceDriverWpnTypeArtsIndex(u32 handle, u32 type, u16 driver, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> wpnType,
+                                                                                            mm::mtl::IntrusivePtr<GfMenuReferenceNumber> artsIndex, bool isUpdateAlways) {
+  // __LINE__ must be 242 as in the original source: it is the line argument of operator new.
+#line 242
+  ReferenceDriverWeaponTypeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverWeaponTypeConverter(driver, wpnType, artsIndex);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+u32 GfMenuWeaponTypeAdapter::ReferenceDriverConverter::getDriverId() { return GfMenuReference::getReferenceDriverID(unknown08); }
+
+u32 GfMenuWeaponTypeAdapter::ReferenceDriverConverter::getWpnType() { return unknown10->unknown0c; }
+
+u32 GfMenuWeaponTypeAdapter::ReferenceDriverWeaponTypeConverter::getDriverId() { return GfMenuReference::getReferenceDriverID(unknown08); }
+
+u32 GfMenuWeaponTypeAdapter::ReferenceDriverWeaponTypeConverter::getWpnType() { return unknown10->unknown0c; }
+
+u32 GfMenuWeaponTypeAdapter::ReferenceDriverWeaponTypeConverter::getArtsIndex() { return unknown18->unknown0c; }
 
 } // namespace gf
 

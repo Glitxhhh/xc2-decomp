@@ -8,6 +8,7 @@
 namespace ui {
 class UICtrlRevolveSelect;
 class UISelectObjList;
+struct EventData;
 } // namespace ui
 
 namespace gf {
@@ -23,15 +24,19 @@ public:
   void update() override;
   void suspendInput();
   void resumeInput();
+  void receiveRevolveEvent(const ui::EventData &event, u32 handle);
   bool seqStartOpen();
   bool seqAppearPhase1();
+  bool seqAppearPhase3();
   bool seqAppearPhase2();
   bool seqAppearPhase4();
   bool seqEndOpen();
   bool seqStartAddLayer();
+  bool seqAddLayerPhase2();
   bool seqAddLayerPhase3_DrEquip();
   bool seqAddLayerPhase3_DrArtsSet();
   bool seqAddLayerPhase4();
+  bool seqEndAddLayer();
 
   u8 _24[0x28 - 0x24];
   GfMenuDriverList *unknown28;                       // Inferred role: drivers; original member name unknown.
@@ -42,6 +47,7 @@ public:
   GfMenuCallContext *unknown50;                      // Inferred role: call context of the layer being added; original member name unknown.
   GfMenuSequence<GfMenuObjDrCustomTop, 8> unknown58; // Inferred role: queued steps; original member name unknown.
   int unknown2e8;                                    // Inferred role: control of the current step, -1 when idle; original member name unknown.
+  u16 unknown2ec;                                    // Inferred role: layer to add; original member name unknown.
 };
 
 static_assert(offsetof(GfMenuObjDrCustomTop, unknown28) == 0x28, "");
@@ -52,5 +58,6 @@ static_assert(offsetof(GfMenuObjDrCustomTop, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjDrCustomTop, unknown50) == 0x50, "");
 static_assert(offsetof(GfMenuObjDrCustomTop, unknown58) == 0x58, "");
 static_assert(offsetof(GfMenuObjDrCustomTop, unknown2e8) == 0x2e8, "");
+static_assert(offsetof(GfMenuObjDrCustomTop, unknown2ec) == 0x2ec, "");
 
 } // namespace gf

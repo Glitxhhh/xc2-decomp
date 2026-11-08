@@ -9,6 +9,7 @@
 
 namespace ui {
 class UIObjectNumberPlugin;
+class UIObjectAcc;
 } // namespace ui
 
 namespace gf {
@@ -43,6 +44,11 @@ public:
   static void dispCloseButton();
   static bool isOpenCharMenu();
   static void execMapJump();
+  static void setContentsText(u32 handle, u32 index);
+  static void initChrChangeDr(ui::UIObjectAcc &acc, GfMenuDriverList *list);
+  static void initChrChangeBl(ui::UIObjectAcc &acc, GfMenuBladeList *list);
+  static int moveMainMenu(ui::UIObjectAcc &acc, u32 index, bool);
+  static void refreshCharChangeDr(ui::UIObjectAcc &acc, GfMenuDriverList *list);
   void initialize() override;
   void finalize() override;
   void update() override;

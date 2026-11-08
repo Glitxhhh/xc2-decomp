@@ -151,7 +151,7 @@ static const char *unknown079[] = {"DamageDown", "DamageUP", "HealUP", "AutoHate
 // Inferred role: bdat columns of the class buff levels; original name unknown.
 static const char *unknown080[] = {"DamageDownNum", "DamageUPNum", "HealUPNum", "AutoHateNum", "ArtsHateNum"};
 
-u32 GfMenuObjUtil::getBtnIconNumber(u32 button) {
+s16 GfMenuObjUtil::getBtnIconNumber(u32 button) {
   for (u32 i = 0; i < sizeof(s_buttonIcons) / sizeof(s_buttonIcons[0]); i++) {
     if ((button & s_buttonIcons[i].unknown00) != 0) {
       return s_buttonIcons[i].unknown04;

@@ -13,6 +13,7 @@
 namespace ui {
 class UIObjectAcc;
 class UISelectObjList;
+class UIStr;
 } // namespace ui
 
 namespace gf {
@@ -25,6 +26,7 @@ class GfMenuObjBalloon : public GfMenuObject {
 public:
   GfMenuObjBalloon(u32 handle);
   ~GfMenuObjBalloon() override;
+  static void setFeeling(ui::UIObjectAcc &acc, const ui::UIStr &string);
   static void resetFeeling(ui::UIObjectAcc &acc);
   void initialize() override;
   void finalize() override;
@@ -80,6 +82,11 @@ public:
   static void openEventSelectBox(GfMenuCallContext *context, const OpenSelectBoxParam &param);
   static void openEventSelectMoney(GfMenuCallContext *context, const OpenSelectMoneyParam &param);
   static bool openGetItem(GfMenuCallContext *context, const OpenGetItemParam &param);
+  static u32 openCommon(GfMenuCallContext *context, u32 call, GF_OBJ_HANDLE *handle, const MenuOffset &offset, u32 type, bool isAutoTalk);
+  static void setup(u32 object, GF_OBJ_HANDLE *handle, const MenuOffset &offset, bool isUpdate, u32 type, bool isAutoTalk);
+  static u32 getFeeling(const ui::UIStr &string);
+  bool seqSave();
+  bool seqSaveWait();
 
   u8 _24[0x28 - 0x24];
   u64 unknown28;                                                                // Role and original member name unknown, cleared by the constructor.

@@ -229,7 +229,7 @@ public:
   bool unknown78; // Inferred role: alternate; original member name unknown.
   u8 _79[0x80 - 0x79];
   GfInitParamWeapon unknown80; // Inferred role: copy of the init param; original member name unknown.
-  u8 _1a0[0x270 - 0x1a0];
+  u8 _268[0x270 - 0x268];
 };
 
 // Evidence: the GfObjSetupWeapon constructor calls GfAppend::GfAppend on this+0x118 (GfInitParamWeapon::unknown98 of the copy) and assigns its mounts from GfInitParamWeapon::unknown98.
@@ -243,6 +243,7 @@ static_assert(sizeof(GfObjSetupWeapon) == 0x270, "");
 class GfObjSetupMob : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
+  static const u32 OBJECT_TYPE = OBJECT_TYPE_MOB;
 
   GfObjSetupMob(const GfInitParamMob &param) : GfObjSetup(param, OBJECT_TYPE_MOB), unknown6c("S_idle"), unknown90(100) {}
   const mm::mtl::RTTI *getRTTI() const override;

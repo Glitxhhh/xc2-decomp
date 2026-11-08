@@ -158,9 +158,9 @@ public:
   u64 getAttribute(AsmCategory category, AnimLayer layer) const;
   const anm::QsTransform &getLocomotion() const;
   void setVariable(const char *name, f32 value);
-  void getVariable(const char *name, f32 *value) const;
+  bool getVariable(const char *name, f32 *value) const;
   void setVariable(const char *name, int value);
-  void getVariable(const char *name, int *value) const;
+  bool getVariable(const char *name, int *value) const;
   void cacheCallback(anm::AsmListener::CallBackType type, const anm::AsmAnnotetion &annotation);
   void changeLayer(u32 oldLayer, u32 newLayer) override;
   const mm::mtl::RTTI *getRTTI() const override;

@@ -100,6 +100,10 @@ public:
   void popCamera(f32 time);
   void changeCamera(u32 index, f32 time);
   int getCurrentCameraIndex();
+  mm::Vec3 getCameraPos(u32 index);
+  mm::Vec3 getCameraRot(u32 index);
+  bool playCameraMotion(const char *name, const mm::Vec3 &position, f32 rotation);
+  void resetCamera(u32 index, f32 time);
   void stopCameraMotion();
   void playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle);
   u32 createEffect(u32 type, const char *name);

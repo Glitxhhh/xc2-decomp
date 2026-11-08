@@ -11,6 +11,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/menu/gf_menu_bdat.h"
+#include "gf/menu/model_view/gf_menu_model_view_camera.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/effect/gf_com_effect_caster.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -235,6 +236,59 @@ void GfMenuModelView::stopCameraMotion() {
       unknownab0 = nullptr;
     }
   }
+}
+
+mm::Vec3 GfMenuModelView::getCameraPos(u32 index) {
+  if (index < unknown930.size()) {
+    fw::Camera *camera = unknown930[index].get();
+    if (camera != nullptr && camera->getRTTI()->isKindOf(&GfMenuModelViewCamera::m_rtti)) {
+      return static_cast<GfMenuModelViewCamera *>(camera)->unknownb0;
+    }
+  }
+  return mm::Vec3::zero;
+}
+
+mm::Vec3 GfMenuModelView::getCameraRot(u32 index) {
+  if (index < unknown930.size()) {
+    fw::Camera *camera = unknown930[index].get();
+    if (camera != nullptr && camera->getRTTI()->isKindOf(&GfMenuModelViewCamera::m_rtti)) {
+      return static_cast<GfMenuModelViewCamera *>(camera)->unknownc0;
+    }
+  }
+  return mm::Vec3::zero;
+}
+
+bool GfMenuModelView::playCameraMotion(const char *name, const mm::Vec3 &position, f32 rotation) {
+  if (name != nullptr && *name != '\0') {
+    mm::mtl::IntrusivePtr<fw::Camera> camera = GimmickCamera::create(name, position, rotation);
+    GimmickCamera *gimmick = static_cast<GimmickCamera *>(camera.get());
+    if (gimmick != nullptr) {
+      if (gimmick->getRTTI()->isKindOf(&GimmickCamera::m_rtti)) {
+        gimmick->setNearClip(0.01f);
+        gimmick->play();
+      }
+      if (fw::CameraManager::get() != nullptr) {
+        fw::CameraManager::get()->unknown20[unknown10 + 1].push(camera, 0.5f);
+        unknownab0 = camera;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+void GfMenuModelView::resetCamera(u32 index, f32 time) {
+  fw::CameraManager *manager = fw::CameraManager::get();
+  if (manager != nullptr) {
+    fw::CameraLayer &layer = manager->unknown20[unknown10 + 1];
+    for (u32 i = 0; i < unknown930.size(); i++) {
+      if (unknown930[i]->unknowna0) {
+        layer.pop(unknown930[i], 0.0f);
+      }
+    }
+  }
+  unknown958.clear();
+  pushCamera(index, time);
 }
 
 void GfMenuModelView::playEffect(u32 type, const char *name, const mm::Vec3 &position, GF_OBJ_HANDLE *handle) {

@@ -11,6 +11,7 @@ public:
   GfMenuObjSort(u32 handle);
   ~GfMenuObjSort() override;
   static void close();
+  static u16 getSortID(u16 table, u16 index);
   void initialize() override;
   void finalize() override;
   void update() override;

@@ -272,13 +272,36 @@ static_assert(offsetof(GfInitParamFobj, unknown94) == 0x94, "");
 
 class GfInitParamWeapon : public GfInitParam {
 public:
-  u8 _90[0x94 - 0x90];
+  void setupForEvent(u32 driver, u32 blade);
+  void setupBladeForEvent(u32 blade);
+  void setupForEventBlade(u32 blade, GF_OBJ_HANDLE *owner);
+  void setupBladeForEventRight(u32 blade);
+  void setupBladeForEventCS(u32 blade);
+  void setupBladeForEventRightCS(u32 blade);
+  void setupBladeForEventLeft(u32 blade);
+  void setupBladeForEventLeftCS(u32 blade);
+
+  bool unknown90; // Role and original member name unknown.
+  u8 _91[0x94 - 0x91];
   int unknown94;      // Inferred role: slot; original member name unknown.
   GfAppend unknown98; // Inferred role: append; original member name unknown.
+  u8 _120[0x128 - 0x120];
+  u32 unknown128; // Inferred role: driver; original member name unknown.
+  u32 unknown12c; // Inferred role: blade; original member name unknown.
+  u8 _130[0x1e0 - 0x130];
+  bool unknown1e0; // Inferred role: right hand; original member name unknown.
+  bool unknown1e1; // Inferred role: left hand; original member name unknown.
+  u8 _1e2[0x1e8 - 0x1e2];
 };
 
+static_assert(offsetof(GfInitParamWeapon, unknown90) == 0x90, "");
 static_assert(offsetof(GfInitParamWeapon, unknown94) == 0x94, "");
 static_assert(offsetof(GfInitParamWeapon, unknown98) == 0x98, "");
+static_assert(offsetof(GfInitParamWeapon, unknown128) == 0x128, "");
+static_assert(offsetof(GfInitParamWeapon, unknown12c) == 0x12c, "");
+static_assert(offsetof(GfInitParamWeapon, unknown1e0) == 0x1e0, "");
+static_assert(offsetof(GfInitParamWeapon, unknown1e1) == 0x1e1, "");
+static_assert(sizeof(GfInitParamWeapon) == 0x1e8, "");
 
 class GfInitParamEnWeapon : public GfInitParam {
 public:

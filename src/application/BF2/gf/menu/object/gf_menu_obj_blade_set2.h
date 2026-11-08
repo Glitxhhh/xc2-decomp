@@ -13,6 +13,7 @@ class ReferenceObject;
 
 namespace ui {
 class UICtrlCursorSelect;
+class UIObjectAcc;
 } // namespace ui
 
 namespace gf {
@@ -31,9 +32,15 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void setupMain(ui::UIObjectAcc &acc);
+  static void createDriverList(u32 driver, GfMenuDriverList *list);
+  static bool checkInSlot(u32 blade, GfMenuBladeList *list);
   static void setCloseToReturn();
   static void setCloseToFSClose();
   bool seqWaitCommand();
+  bool seqReturnBlSlot();
+  static void refreshBladeSlot(GfMenuBladeList *list);
+  void refreshBladeList();
 
   u8 _24[0x28 - 0x24];
   GfMenuBladeList *unknown28;          // Inferred role: blades; original member name unknown.

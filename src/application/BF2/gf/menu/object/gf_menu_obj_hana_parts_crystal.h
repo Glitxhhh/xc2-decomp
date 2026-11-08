@@ -8,6 +8,7 @@
 
 namespace ui {
 class UICtrlCursorColor;
+class UIObjectAcc;
 class UISelectObjList;
 } // namespace ui
 
@@ -30,6 +31,9 @@ public:
   void update() override;
   static u32 getCrystalItemCount(u32 item);
   static RESULT_HANA crystalParts(u32 type, u32 parts);
+  static void setupNumSelect(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> price);
+  static void updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects);
+  static void refreshItemList(GfMenuItemList *list, ui::UISelectObjList *objects, u32 unknown);
 
   u8 _24[0x28 - 0x24];
   GfMenuIDList *unknown28;                                // Inferred role: crystal types; original member name unknown.

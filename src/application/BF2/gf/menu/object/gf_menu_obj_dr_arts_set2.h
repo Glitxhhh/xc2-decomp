@@ -29,6 +29,22 @@ class GfMenuObjDrArtsSet2 : public GfMenuObject {
 public:
   GfMenuObjDrArtsSet2(u32 handle);
   ~GfMenuObjDrArtsSet2() override;
+  // Inferred role: result of checkArtsLvUp, 0 when the arts can be leveled up, 4 at the maximum level and 5 without enough WP; original type name unknown.
+  enum unknown001 {
+    UNKNOWN001_UNKNOWN_0 = 0,
+    UNKNOWN001_UNKNOWN_4 = 4,
+    UNKNOWN001_UNKNOWN_5 = 5,
+  };
+
+  static unknown001 checkArtsLvUp(u32 driver, u32 weaponType, u32 arts, u32 level);
+  static unknown001 checkArtsLvUp(u32 driver, u32 weaponType, GfMenuArtsList *list, u32 index);
+  static void refreshParam(ui::UIObjectAcc &acc, u32 driver, u32 weaponType, GfMenuArtsList *list, u32 index);
+  static void refreshArtsNeedWP(ui::UIObjectAcc &acc, GfMenuArtsList *list, u32 driver, u32 weaponType);
+  static void refreshLvUpWpn(ui::UIObjectAcc &acc, u32 driver, const mm::mtl::FixedVector<u32, 27> &weaponTypes);
+  static void setupArtsDetail(ui::UIObjectAcc &acc, GfMenuArtsList *list, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number);
+  bool seqReturnWeaponSelect();
+  bool seqSelectItem();
+  bool seqConfirmItem();
   static void moveRight(ui::UIObjectAcc &acc);
   static void moveLeft(ui::UIObjectAcc &acc);
   static void sendEvent(u32 handle, u32 type, u32 param);

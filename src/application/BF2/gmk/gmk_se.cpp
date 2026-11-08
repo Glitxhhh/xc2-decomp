@@ -451,3 +451,4 @@ template void mm::mtl::Vector<gmk::GmkSeLine>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkSeLinePoint>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkSeLinePoint>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkSe>::expand(size_t, size_t);
+template void mm::mtl::construct_n<gmk::GmkSe>(gmk::GmkSe *, size_t);

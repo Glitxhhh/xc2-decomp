@@ -9,6 +9,7 @@
 namespace ui {
 class UICtrlRevolveSelect;
 class UISelectObjList;
+struct EventData;
 } // namespace ui
 
 namespace gf {
@@ -30,6 +31,11 @@ public:
   static void registOpenParam(const OpenParam &param);
   void sendOpenEvent(u32 handle, int type);
   void sendCloseEvent(u32 handle, int type);
+  void listenerCtrl(const ui::EventData &event);
+  bool seqExit();
+  void updateBladeList();
+  void updateTargetTeam();
+  bool seqCanNotOrder();
   void initialize() override;
   void finalize() override;
   void update() override;

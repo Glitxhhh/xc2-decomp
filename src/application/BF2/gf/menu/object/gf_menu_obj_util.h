@@ -137,7 +137,7 @@ public:
     const char *unknown18; // Inferred role: animation name; original member name unknown.
   };
 
-  static u32 getBtnIconNumber(u32 button);
+  static s16 getBtnIconNumber(u32 button);
   static u32 getFavoriteStat(u32 objType, u32 id, FAVORITE favorite);
   static u32 getPadSelectIconNumber(u32 select);
   static u32 getPointerSelectIconNumber();

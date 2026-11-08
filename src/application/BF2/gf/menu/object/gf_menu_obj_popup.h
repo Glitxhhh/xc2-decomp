@@ -5,12 +5,15 @@
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
+#include "ui/ui_object_acc.h"
 
 namespace ui {
 class UIObjectNumberPlugin;
 } // namespace ui
 
 namespace gf {
+
+class DataParamAcc;
 
 class GfMenuObjPopup : public GfMenuObject {
 public:
@@ -55,6 +58,11 @@ public:
   void finalize() override;
   void update() override;
   static void closeAll();
+  static void close(u32 handle);
+  static void sendOpen(u32 handle, const PopupInfo &info);
+  static void setFaceIcon(ui::UIObjectAcc &acc, const DataParamAcc &param);
+  static void setFlagIcon(ui::UIObjectAcc &acc, u32 flag);
+  static void removeObject(ui::UIObjectAcc acc);
 
   bool unknown24; // Role and original member name unknown, cleared by the constructor.
   u8 _25[0x28 - 0x25];
