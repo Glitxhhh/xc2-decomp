@@ -87,6 +87,8 @@ SCOM::SCOM(GF_SCOM_HANDLE *handle, SCOM_TYPE type, SCOM_EXEC exec, u16 unknown10
 
 GF_OBJ_HANDLE *SCOM::getObjHandle() const { return INVALID_HANDLE; }
 
+GfReqSmallCom::~GfReqSmallCom() {}
+
 GF_SCOM_HANDLE *GfReqSmallCom::allocate() {
   s64 handle = unknownd868++;
   if (handle == -1) {

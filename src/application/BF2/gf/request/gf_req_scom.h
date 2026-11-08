@@ -1018,6 +1018,7 @@ static_assert(sizeof(SCOM_STOP_BATTLE) == 0x20, "");
 
 class GfReqSmallCom : public mm::mtl::PtrSingleton<GfReqSmallCom> {
 public:
+  ~GfReqSmallCom() override;
   static GF_SCOM_HANDLE *addRequest(SCOM *scom);
   static GF_SCOM_HANDLE *addRequestParallel(SCOM *scom);
   GF_SCOM_HANDLE *allocate();

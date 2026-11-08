@@ -227,6 +227,8 @@ GfAppendInfo *GfGameMountBlade::getAppendInfo() {
   return GfObjUtil::getAppendInfo(unknown10, unknown2c);
 }
 
+GfMountManager::~GfMountManager() {}
+
 GfGameMount *GfMountManager::getMount(GF_MOUNT_HANDLE *mountHandle) {
   for (mm::mtl::FixedList<MINFO, 256>::iterator it = get()->unknown10.begin(); it != get()->unknown10.end(); ++it) {
     if (it->unknown08 == mountHandle) {
