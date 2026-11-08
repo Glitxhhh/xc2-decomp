@@ -6,6 +6,7 @@
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -24,6 +25,11 @@ struct GAME_VOICE_HANDLE;
 
 class GfMenuObjPouch2 : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   // Layout from setFavFlag: a blade, its slot and its four favorite stats; original member names unknown.
   struct FavoriteFlag {
     u32 unknown00; // Inferred role: blade; original member name unknown.

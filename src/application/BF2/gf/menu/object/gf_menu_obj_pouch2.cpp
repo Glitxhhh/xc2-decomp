@@ -10,8 +10,10 @@
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_char_select.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
 #include "mm_mtl/fixstr.h"
@@ -184,6 +186,32 @@ bool GfMenuObjPouch2::seqFavClose() {
   unknown001(acc.searchChild("LAY_eqp_fevitem"), 0x101, 1, 0);
   unknown3c0 = 0;
   return true;
+}
+
+void GfMenuObjPouch2::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setFadeIn(handle, 0);
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      acc.setDisp(false);
+      acc.setTerm();
+      GfMenuObjCharSelect::returnSubMenu();
+      GfMenuObject::returnFSSubLayer(handle, 2);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    setFadeOut(handle, 0);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

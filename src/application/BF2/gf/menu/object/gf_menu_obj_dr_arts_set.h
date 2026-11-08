@@ -5,6 +5,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -18,6 +19,11 @@ class GfMenuReferenceNumber;
 
 class GfMenuObjDrArtsSet : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjDrArtsSet(u32 handle);
   ~GfMenuObjDrArtsSet() override;
   static bool attach(GfMenuCallContext *context);

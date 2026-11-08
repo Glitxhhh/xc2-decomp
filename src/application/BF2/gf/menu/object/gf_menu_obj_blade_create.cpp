@@ -19,19 +19,22 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_blade_name.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
+#include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
+#include "gf/sound/gf_sound.h"
 #include "gf/util/gf_item_util.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "scn/scn_render_dr_sys_parm_acc.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
-
-#include "gf/object/gf_obj_acc.h"
 
 namespace gf {
 struct GF_OBJ_HANDLE;
@@ -364,6 +367,35 @@ bool GfMenuObjBladeCreate::seqResultEnd() {
     GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_1, true);
   }
   return true;
+}
+
+void GfMenuObjBladeCreate::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObjOperationInfo::setGuideDisp(false);
+    acc.setDisp(false);
+    break;
+  case 2: {
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 2;
+    param.unknown14 = 1;
+    param.unknown00 = 0.5f;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    GfMenuObjOperationInfo::setGuideDisp(true);
+    GfMenuObjMainMenu2::dispCloseButton();
+    if (GfSound::get() != nullptr) {
+      GfMenuSoundManager::fadeFieldBgm(1.0f, 0.5f);
+      GfMenuObjUtil::stopBGM(unknown20->unknown11c0, 1.0f);
+      unknown20->unknown11c0 = 0;
+      unknown20->stopAllSound();
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

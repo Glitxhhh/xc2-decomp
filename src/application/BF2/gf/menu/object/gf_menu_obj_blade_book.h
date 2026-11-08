@@ -6,6 +6,7 @@
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_vec2.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -19,6 +20,11 @@ struct GAME_VOICE_HANDLE;
 
 class GfMenuObjBladeBook : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjBladeBook(u32 handle);
   ~GfMenuObjBladeBook() override;
   void initialize() override;

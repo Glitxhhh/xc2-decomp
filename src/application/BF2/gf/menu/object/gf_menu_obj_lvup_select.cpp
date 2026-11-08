@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_lvup_select.h"
 
 #include "gf/data/gf_bdat_btl.h"
+#include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -103,6 +104,29 @@ void GfMenuObjLvupSelect::openLevelup(GfMenuCallContext *context, u32 level, u32
     event.unknown10 = levelMax;
     GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
     GfMenuObject::startCallContext(context, unknown001, acc.unknown10);
+  }
+}
+
+void GfMenuObjLvupSelect::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case GfMenuTypes::unknown003_33: {
+    u32 driver = event.unknown0c;
+    GfMenuReference::setReferenceDriverID(0, driver);
+    GfMenuReference::setDriverVirtualLevel(GfDataDriver::getLevel(driver) + 1);
+    unknown20->updateBonusExp();
+    GfMenuObject::sendOpenEvent(acc.searchChild("LAY_lvup_sellect"), 0, 0.0f);
+    GfMenuObject::sendOpenEvent(acc.searchSibiling("LAY_dr_img"), 0, 0.0f);
+    break;
+  }
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::termCallContext(acc.unknown10);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
   }
 }
 

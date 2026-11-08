@@ -2,11 +2,15 @@
 
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/ctrl/ui_ctrl_slide_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
+#include "ui/ui_object_acc.h"
 
 namespace gf {
 
@@ -43,5 +47,38 @@ int GfMenuObjDrArtsSet::setFadeOut(u32 handle) {
 }
 
 bool GfMenuObjDrArtsSet::attach(GfMenuCallContext *context) { return unknown153(context, unknown001); }
+
+void GfMenuObjDrArtsSet::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    GfMenuObjUtil::setChildDisp(handle, "LAY_arts_detail", false);
+    unknown163(handle, GfMenuTypes::unknown003_33, 0);
+    break;
+  case 2:
+    GfMenuObjOperationInfo::close();
+    GfMenuObject::termCallContext(handle);
+    acc.setDisp(false);
+    acc.setTerm();
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::returnFSSubLayer(handle, 2);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    setFadeIn(handle);
+    unknown163(acc.searchChild("LAY_category"), GfMenuTypes::unknown003_33, 0);
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObjOperationInfo::close();
+    setFadeOut(handle);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 
 } // namespace gf

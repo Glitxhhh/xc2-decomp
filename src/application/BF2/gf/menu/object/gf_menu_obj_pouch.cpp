@@ -5,11 +5,14 @@
 #include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_item.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -70,6 +73,37 @@ void GfMenuObjPouch::setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list) {
 
 void GfMenuObjPouch::setupDescription(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceItem> &item) {
   GfMenuEnhanceAdapter::createFromReferenceItem(acc.searchChild("TXT_enhance"), 0, item.get(), true);
+}
+
+void GfMenuObjPouch::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    unknown163(handle, GfMenuTypes::unknown003_33, 0);
+    break;
+  case 2:
+    unknown163(handle, GfMenuTypes::unknown003_34, 0);
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      acc.setDisp(false);
+      acc.setTerm();
+      GfMenuObject::returnFSSubLayer(handle, 1);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    setFadeIn(handle);
+    unknown163(acc.searchChild("LAY_pouch"), GfMenuTypes::unknown003_33, 0);
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObjOperationInfo::close();
+    setFadeOut(handle);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

@@ -7,12 +7,16 @@
 #include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_hana_submenu.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/util/gf_item_util.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_color.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -86,5 +90,33 @@ void GfMenuObjHanaPartsCrystal::updatePartsList(ui::UIObjectAcc &acc, GfMenuIDLi
 }
 
 void GfMenuObjHanaPartsCrystal::refreshItemList(GfMenuItemList *list, ui::UISelectObjList *objects, u32 unknown) {}
+
+void GfMenuObjHanaPartsCrystal::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObjOperationInfo::add(handle, 0, 0, 0);
+    GfMenuObjOperationInfo::setGuideText(0x1a, 0);
+    setFadeIn(handle);
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      GfMenuObjOperationInfo::remove(handle, 0, 0, 0);
+      acc.setDisp(false);
+      acc.setTerm();
+      GfMenuObjHanaSubmenu::returnHanaSubMenu();
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    setFadeOut(handle);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 
 } // namespace gf

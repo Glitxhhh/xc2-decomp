@@ -10,8 +10,12 @@
 #include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_char_select.h"
+#include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_sort.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/util/gf_item_util.h"
@@ -20,6 +24,7 @@
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_color.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -173,4 +178,33 @@ void GfMenuObjHanaPartsMake::makeCategoryItemList(GfMenuIDList *idList, GfMenuIt
   }
 }
 
+void GfMenuObjHanaPartsMake::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupMain(acc);
+    GfMenuObjOperationInfo::setGuideText(0x19, 0);
+    GfMenuObjMainMenu2::setSubIndexText(0x1a);
+    GfMenuObjMainMenu2::closeCharChange();
+    setFadeIn(handle, 0);
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      acc.setDisp(false);
+      acc.setTerm();
+      GfMenuObjCharSelect::returnSubMenu();
+      GfMenuObject::returnFSSubLayer(unknown20);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    setFadeOut(handle, 0);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf

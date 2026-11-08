@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlRadarGraph;
@@ -13,6 +14,13 @@ namespace gf {
 
 class GfMenuObjCmnStatus : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x28 - 0x0c];
+  };
+
   GfMenuObjCmnStatus(u32 handle);
   ~GfMenuObjCmnStatus() override;
   void initialize() override;

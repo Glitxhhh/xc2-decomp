@@ -6,6 +6,7 @@
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fade.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_common_detail.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -15,6 +16,7 @@
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/ctrl/ui_ctrl_slide_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -115,6 +117,25 @@ bool GfMenuObjInn::seqFadeOutWait() {
     isEnd = true;
   }
   return isEnd;
+}
+
+void GfMenuObjInn::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_33:
+    break;
+  case GfMenuTypes::unknown003_34:
+    unknown20->unknown0a0.unknown005();
+    unknown20->unknown0a0.unknown002(&GfMenuObjInn::seqFadeOut);
+    unknown20->unknown0a0.unknown002(&GfMenuObjInn::seqFadeOutWait);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

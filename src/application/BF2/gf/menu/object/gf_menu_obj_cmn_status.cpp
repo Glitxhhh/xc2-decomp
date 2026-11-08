@@ -140,4 +140,31 @@ void GfMenuObjCmnStatus::updateBladeBase(u32 page) {
   indexSkill.setDisp(isSkill);
   baseSkill.setDisp(isSkill);
 }
+
+void GfMenuObjCmnStatus::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  case GfMenuTypes::unknown003_257: {
+    u32 target = event.unknown08;
+    u32 size = event.unknown0c;
+    int mode = event.unknown10;
+    if (target != 0) {
+      GfMenuObject::enableInput(acc.unknown10);
+      if (mode == 1) {
+        GfMenuObject::setupInputSelection(acc.unknown10, 0, size);
+      }
+    } else {
+      GfMenuObject::disableInput(acc.unknown10);
+    }
+    GfMenuObject::migrateInput(acc.unknown10, target);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf

@@ -5,6 +5,7 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 #include "ui/list/ui_list_info.h"
 
 namespace ui {
@@ -19,6 +20,14 @@ class GfMenuModelView;
 
 class GfMenuObjBladeCreate : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeCreate *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   struct OpenParam {
     u32 unknown00; // Inferred role: event; original member name unknown.
   };

@@ -6,6 +6,7 @@
 #include "gf/menu/gf_menu_object.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorColor;
@@ -23,6 +24,14 @@ class GfMenuReferenceNumber;
 
 class GfMenuObjHanaPartsMake : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjHanaPartsMake *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjHanaPartsMake(u32 handle);
   ~GfMenuObjHanaPartsMake() override;
   static void sendEvent(u32 handle, u32 type, u32 param);
@@ -69,5 +78,6 @@ static_assert(offsetof(GfMenuObjHanaPartsMake, unknown68) == 0x68, "");
 static_assert(offsetof(GfMenuObjHanaPartsMake, unknown70) == 0x70, "");
 static_assert(offsetof(GfMenuObjHanaPartsMake, unknown74) == 0x74, "");
 static_assert(sizeof(GfMenuObjHanaPartsMake) == 0x78, "");
+static_assert(offsetof(GfMenuObjHanaPartsMake::MainListener, unknown20) == 0x20, "");
 
 } // namespace gf

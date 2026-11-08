@@ -3,12 +3,18 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace gf {
 class GfMenuCallContext;
 
 class GfMenuObjHanaSubmenu : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjHanaSubmenu(u32 handle);
   ~GfMenuObjHanaSubmenu() override;
   static void returnHanaSubMenu();

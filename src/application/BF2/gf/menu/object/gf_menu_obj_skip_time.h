@@ -4,6 +4,7 @@
 #include "gf/field/gf_field_time.h"
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UIObjectAcc;
@@ -14,6 +15,14 @@ namespace gf {
 
 class GfMenuObjSkipTime : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjSkipTime *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjSkipTime(u32 handle);
   ~GfMenuObjSkipTime() override;
   static void rotHand(ui::UIObjectAcc &acc, u32 value);
@@ -34,6 +43,7 @@ public:
 static_assert(offsetof(GfMenuObjSkipTime, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjSkipTime, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjSkipTime, unknown34) == 0x34, "");
+static_assert(offsetof(GfMenuObjSkipTime::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjSkipTime) == 0x38, "");
 
 } // namespace gf

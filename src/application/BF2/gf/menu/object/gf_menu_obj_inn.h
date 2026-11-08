@@ -5,6 +5,7 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/fixed_queue.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -20,6 +21,14 @@ class GfMenuDriverList;
 
 class GfMenuObjInn : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjInn(u32 handle);
   ~GfMenuObjInn() override;
   static bool isEnableLevelUp();
@@ -62,5 +71,6 @@ static_assert(offsetof(GfMenuObjInn, unknown60) == 0x60, "");
 static_assert(offsetof(GfMenuObjInn, unknown88) == 0x88, "");
 static_assert(offsetof(GfMenuObjInn, unknown98) == 0x98, "");
 static_assert(offsetof(GfMenuObjInn, unknown0a0) == 0xa0, "");
+static_assert(offsetof(GfMenuObjInn::MainListener, unknown20) == 0x20, "");
 
 } // namespace gf

@@ -6,6 +6,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace mm {
 namespace mtl {
@@ -27,6 +28,14 @@ class GfMenuReferenceNumber;
 
 class GfMenuObjDrArtsSet2 : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjDrArtsSet2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjDrArtsSet2(u32 handle);
   ~GfMenuObjDrArtsSet2() override;
   // Inferred role: result of checkArtsLvUp, 0 when the arts can be leveled up, 4 at the maximum level and 5 without enough WP; original type name unknown.

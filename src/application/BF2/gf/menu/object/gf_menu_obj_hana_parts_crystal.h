@@ -5,6 +5,7 @@
 #include "gf/menu/gf_menu_object.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorColor;
@@ -21,6 +22,11 @@ class GfMenuReferenceNumber;
 
 class GfMenuObjHanaPartsCrystal : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjHanaPartsCrystal(u32 handle);
   ~GfMenuObjHanaPartsCrystal() override;
   static void sendEvent(u32 handle, u32 type, u32 param);

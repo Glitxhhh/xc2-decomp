@@ -1,8 +1,12 @@
 #include "gf/menu/object/gf_menu_obj_skip_time.h"
 
 #include "gf/field/gf_field_time.h"
+#include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/plugin/ui_object_time_plugin.h"
 #include "ui/ui_object_acc.h"
 
@@ -36,6 +40,35 @@ void GfMenuObjSkipTime::setTime(ui::UIObjectTimePlugin *plugin, GameTime &time) 
   plugin->setHour(time.unknown01_4);
   plugin->setMin(time.unknown00_6);
   plugin->setSec(time.unknown00_0);
+}
+
+void GfMenuObjSkipTime::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObjOperationInfo::add(acc.searchChild("LAY_skiptime_main"), 0, 0, 0);
+    GfMenuObjOperationInfo::setGuideText(0x38, 0);
+    GfMenuObjMainMenu2::setSubIndexText(0x17);
+    setFadeIn(handle);
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      GfMenuObjOperationInfo::remove(acc.searchChild("LAY_skiptime_main"), 0, 0, 0);
+      acc.setDisp(false);
+      acc.setTerm();
+      GfMenuObject::returnFSSubLayer(unknown20);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    setFadeOut(handle);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

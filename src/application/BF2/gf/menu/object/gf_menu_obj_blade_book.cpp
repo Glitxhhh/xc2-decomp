@@ -15,6 +15,7 @@
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_util.h"
@@ -230,5 +231,43 @@ bool GfMenuObjBladeBook::seqResumeRelease() {
   sendOpenEvent(list.unknown10, 0, 0.0f);
   GfMenuObjMainMenu2::setCloseKeyEnable(true);
   return true;
+}
+
+void GfMenuObjBladeBook::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    GfMenuObjMainMenu2::setSubIndexText(0x1b);
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 0;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case 2: {
+    GfMenuObjMainMenu2::dispGuide(true);
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    param.unknown0c = true;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case 0x100:
+    GfMenuObjMainMenu2::dispGuide(false);
+    sendCloseEvent(acc.searchChild("LAY_select"), 0, 0.0f);
+    sendOpenEvent(acc.searchChild("LAY_preview"), 0, 0.0f);
+    break;
+  case 0x101:
+    GfMenuObjMainMenu2::dispGuide(true);
+    sendOpenEvent(acc.searchChild("LAY_select"), 1, 0.0f);
+    sendCloseEvent(acc.searchChild("LAY_preview"), 0, 0.0f);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 } // namespace gf

@@ -5,6 +5,7 @@
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/list/gf_menu_id_list.h"
@@ -18,6 +19,7 @@
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -280,6 +282,38 @@ bool GfMenuObjBladeRelease::seqSubMenuWaitLoadCustomize() {
     }
   }
   return false;
+}
+
+void GfMenuObjBladeRelease::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 0;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case 2: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    param.unknown0c = true;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case GfMenuTypes::unknown003_257:
+    if (GfMenuReference::getReferenceBladeID(0) != 0) {
+      unknown20->unknown2f0.unknown005();
+      unknown20->unknown2f0.unknown002(&GfMenuObjBladeRelease::seqOpenImage);
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

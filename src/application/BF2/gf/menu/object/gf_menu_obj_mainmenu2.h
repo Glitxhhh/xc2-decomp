@@ -37,6 +37,8 @@ public:
   static void disableCharChange();
   static void setSubLayer(u32 layer);
   static void setGuideText(u32 text);
+  static void setSubIndexText(u32 text);
+  static void dispGuide(bool isDisp);
   static void setSystemKeyEnable(bool enable);
   static void cancelEnableMainMenu(bool enable);
   static void setDispGold(bool isDisp);
