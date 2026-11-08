@@ -5,8 +5,6 @@
 #include "types.h"
 
 namespace mtl {
-struct MEMIMAGE_HEAD;
-struct MemoryInfo1;
 
 class IMemAllocator {
 public:
