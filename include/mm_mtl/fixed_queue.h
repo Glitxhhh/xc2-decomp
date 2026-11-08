@@ -191,7 +191,13 @@ public:
     mSize++;
   }
 
-  void remove(const T &value);
+  void remove(const T &value) {
+    iterator it = find(value);
+    while (it != end()) {
+      erase(it);
+      it = find(value);
+    }
+  }
 
   // __LINE__ must be 683 as in the original header: it is the line argument of the assert.
 #line 682

@@ -24,6 +24,8 @@ bool PadManager::registListener(IPadListener *listener) {
   return manager != nullptr;
 }
 
+IPadListener::IPadListener() { PadManager::registListener(this); }
+
 IPadListener::~IPadListener() { PadManager::removeListener(this); }
 
 void PadManager::removeListener(IPadListener *listener) {

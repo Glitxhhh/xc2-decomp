@@ -134,8 +134,10 @@ public:
 
   iterator end() { return iterator(&at(0), m_front + m_size, m_capacity); }
 
-  // Declared only: the game has an out-of-line instance per element type (assert "size() != 0", queue.h line 1067), but its size() reads
-  // m_size as 64 bits while ThreadPool::threadFunc needs the 32-bit u32 size() above, so no body matches both.
+  // Declared only: the game has an out-of-line instance per element type. Its body is end() (one at() assert), the iterator
+  // compare, the size() != 0 assert (line 1067), --m_size, the shifting loop (destination = index % capacity, index++, source at
+  // index % capacity, with both at() asserts) and then two more at() asserts before returning the position unchanged; no single
+  // trailing statement produces two at() calls, and a duplicated destruct() would only reproduce them as a no-op.
   iterator erase(iterator position);
 
 private:
