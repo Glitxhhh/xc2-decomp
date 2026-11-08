@@ -50,6 +50,8 @@ public:
   static GF_OBJ_HANDLE *createMap(const GfInitParamMapSeamless &param);
   static GF_OBJ_HANDLE *createDebugMap(const GfInitParamMap &param);
   static void destroyObj(GF_OBJ_HANDLE *handle);
+  static GF_OBJ_HANDLE *createSmnEnemy(int id, const mm::Vec3 &position, const mm::Vec3 &rotation, bool flag);
+  static bool destroyObjHandle(GF_OBJ_HANDLE *handle);
   static void createUiWeapon(GF_OBJ_HANDLE *handle, u32 blade);
 };
 

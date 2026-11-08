@@ -6,6 +6,10 @@
 #include "mm_mtl/vector.h"
 #include "types.h"
 
+namespace fw {
+struct UpdateInfo;
+} // namespace fw
+
 namespace gf {
 
 struct GF_OBJ_HANDLE;
@@ -46,6 +50,8 @@ public:
   virtual ~GfFobjDropitem() {}
   void bindToGfObj(GF_OBJ_HANDLE *handle) const;
   void unbindToGfObj(GF_OBJ_HANDLE *handle) const;
+  void initialize();
+  void update(const fw::UpdateInfo &info);
   void destroy();
   void setEventDisp(bool isDisp);
   static u32 getBdatDefineFromItemId(s32 itemId);

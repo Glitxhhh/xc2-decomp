@@ -42,6 +42,7 @@ public:
   void dispose();
   void update(f32 deltaTime);
   void updatePopEnemy();
+  void debugDraw() const;
   void updateDepopEnemy();
   void validatePopPos();
   void removeEnemy(GF_OBJ_HANDLE *handle);
@@ -79,9 +80,25 @@ static_assert(offsetof(GfRelSmnEnemy, unknowna0) == 0xa0, "");
 
 class GfSmnEnemyManager : public mm::mtl::PtrSingleton<GfSmnEnemyManager> {
 public:
+  // Layout evidence: execRelSummon (0x710038c4c4) copies these 12 bytes to the owner and the table row of a GfRelSmnEnemy::CreateInfo.
+  struct RelSmnInfo {
+    GF_OBJ_HANDLE *unknown00; // Inferred role: owner object; original member name unknown.
+    s32 unknown08;            // Inferred role: bdat id of the summon enemy table row; original member name unknown.
+  };
+
+  GfSmnEnemyManager();
+  ~GfSmnEnemyManager();
   static void create();
   static void dispose();
   static void update(f32 deltaTime);
+  static void clearSmnEnemies();
+  static void debugDraw();
+  static bool execRelSummon(const RelSmnInfo &info);
+
+  mm::mtl::Vector<GfRelSmnEnemy *> unknown08; // Inferred role: relative summon enemies; original member name unknown.
 };
+
+static_assert(offsetof(GfSmnEnemyManager, unknown08) == 0x08, "");
+static_assert(sizeof(GfSmnEnemyManager) == 0x30, "");
 
 } // namespace gf

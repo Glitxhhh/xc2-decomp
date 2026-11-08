@@ -7,6 +7,10 @@
 #include "mm_mtl/vector.h"
 #include "types.h"
 
+namespace fw {
+struct UpdateInfo;
+} // namespace fw
+
 namespace gf {
 
 class GfMenuLocation : public mm::mtl::PtrSingleton<GfMenuLocation> {
@@ -33,6 +37,9 @@ public:
   void updateDataNum(u32 type);
   static bool isInitialized();
   static void refreshLocator(u32 type);
+  static void updateLocator();
+  static void postUpdate(const fw::UpdateInfo &info);
+  static u32 convIcon(u32 type);
   static u32 getLocatorDataNum(u32 type);
 
   bool unknown08; // Inferred role: initialized; original member name unknown.
