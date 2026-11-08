@@ -31,7 +31,7 @@ const WinView *WinSplitFrame::getView2() const { return WinViewRoot::getView(unk
 mm::Rect<int> WinSplitFrame::getWorkRect1(bool isBack) const {
   const WinView::RENDER_INFO *info = isBack ? unknown00->unknown1b8.m_back : unknown00->unknown1b8.m_front;
   mm::Pnt<int> pos = mm::Pnt<int>::zero;
-  mm::Pnt<int> size = info->unknown08;
+  mm::Pnt<int> size = info->m_workSize;
   mm::Rect<int> rect(pos.x, pos.y, size.x, size.y);
   if (unknown08) {
     rect.height = unknown10;

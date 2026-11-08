@@ -878,7 +878,7 @@ bool ScnObjAccPartsEtcPos::isDisp(u32 index) const {
   if (!m_etcPos->unknown08) {
     const unknown058 *data = m_etcPos->unknown00;
     u16 group = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(data) + data->unknown24)[index];
-    if (group != 0 && (DrMan::getIns()->unknown1d20[group >> 5] & (1 << (group & 31)))) {
+    if (group != 0 && (DrMan::getIns()->m_gblIdx[group >> 5] & (1 << (group & 31)))) {
       return false;
     }
   }

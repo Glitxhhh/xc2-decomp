@@ -21,15 +21,15 @@ f32 DrPixlShadowMan::getShadowTexSize(int index) {
 }
 
 void DrPixlShadowMan::beforUpdate() {
-  unknown8918 = nullptr;
+  m_addShadowObj = nullptr;
   for (int i = 0; i < unknown8900; i++) {
     unknown0000[i]->update();
   }
 }
 
 void DrPixlShadowMan::afterUpdate() {
-  if (unknown8918 != nullptr) {
-    unknown8918->calcLgtMat();
+  if (m_addShadowObj != nullptr) {
+    m_addShadowObj->calcLgtMat();
   }
   for (int i = 0; i < unknown8900; i++) {
     unknown0000[i]->afterUpdate();
@@ -64,8 +64,8 @@ bool DrPixlShadowMan::renderDirShadowObj() {
 }
 
 bool DrPixlShadowMan::setAddObjPos(const mm::Vec3 &position, f32 value) {
-  if (unknown8908->unknown120[unknown8908->unknown1c98]->unknown103e && unknown8918 != nullptr) {
-    return unknown8918->setAddObjPos(position, value);
+  if (unknown8908->unknown120[unknown8908->unknown1c98]->unknown103e && m_addShadowObj != nullptr) {
+    return m_addShadowObj->setAddObjPos(position, value);
   }
   return false;
 }
@@ -143,6 +143,6 @@ void DrPixlShadowMan::releaseShadow(DrPixlShadowObj *shadow) {
   }
 }
 
-void DrPixlShadowMan::setAddShadowObj(DrPixlShadowObjDir *shadow) { unknown8918 = shadow; }
+void DrPixlShadowMan::setAddShadowObj(DrPixlShadowObjDir *shadow) { m_addShadowObj = shadow; }
 
 } // namespace ml

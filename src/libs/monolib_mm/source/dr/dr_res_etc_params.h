@@ -19,12 +19,12 @@ public:
   u8 _02[0x04 - 0x02];
   f32 unknown04[2]; // Inferred role: params per buffer; original member name unknown.
   f32 unknown0c[2]; // Inferred role: pre params per buffer; original member name unknown.
-  f32 unknown14;    // Inferred role: current param; original member name unknown.
+  f32 m_params;
 };
 
 static_assert(offsetof(DrResEtcParams, unknown00) == 0x00, "");
 static_assert(offsetof(DrResEtcParams, unknown04) == 0x04, "");
-static_assert(offsetof(DrResEtcParams, unknown14) == 0x14, "");
+static_assert(offsetof(DrResEtcParams, m_params) == 0x14, "");
 static_assert(sizeof(DrResEtcParams) == 0x18, "");
 
 // Inferred role: resource etc pam name; original type name unknown.

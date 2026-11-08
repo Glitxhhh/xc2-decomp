@@ -7,7 +7,7 @@ namespace ml {
 
 DrFogMan::DrFogMan(DrMan *man)
     : unknown00(man), unknown08(nullptr), unknown10(nullptr), unknown18(0.5f, 0.5f, 0.5f), unknown24(0.0f, 0.0f, 0.0f), unknown30(0.0f, 0.0f, 0.0f), unknown3c(0.1f), unknown40(10000.0f),
-      unknown44(1.0f), unknown48(1.0f), unknown4c(1.0f), unknown50(1.0f), unknown54(1.0f), unknown58(0.0f), unknown5c(1.0f), unknownd0(false), unknownd1(true) {}
+      unknown44(1.0f), unknown48(1.0f), unknown4c(1.0f), unknown50(1.0f), unknown54(1.0f), unknown58(0.0f), unknown5c(1.0f), m_fogOn(false), unknownd1(true) {}
 
 DrFogMan::~DrFogMan() { releaseAll(); }
 
@@ -27,6 +27,6 @@ void DrFogMan::releaseGblFog(DrFogObj *fog) {
   delete fog;
 }
 
-bool DrFogMan::isFogOn() const { return unknownd0; }
+bool DrFogMan::isFogOn() const { return m_fogOn; }
 
 } // namespace ml

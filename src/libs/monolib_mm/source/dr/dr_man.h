@@ -143,6 +143,8 @@ public:
   u32 getMem1AlphaFree();
   void setGblIdx(s32 id);
   void offGblIdx(s32 id);
+  // Name from Xenoblade Chronicles DE: _ZNK2ml5DrMan8isGblIdxEi (same class, same bit test of the global index table; the DE copy also tests a second table).
+  u32 isGblIdx(s32 id) const { return m_gblIdx[id >> 5] & (1 << (id & 31)); }
   void setTimeVal(f32 timeVal);
   void setGroupsDisp(s32 group, bool disp);
   void setReduction(bool isReduction, f32 scaleX, f32 scaleY);
@@ -273,10 +275,10 @@ public:
   u8 _1cd8[0x1cfc - 0x1cd8];
   s32 unknown1cfc; // Inferred role: seam read lv; original member name unknown.
   u8 _1d00[0x1d20 - 0x1d00];
-  u32 *unknown1d20;           // Inferred role: gbl tbl; original member name unknown.
+  u32 *m_gblIdx;              // Named after setGblIdx and offGblIdx, which write its bits; Xenoblade Chronicles DE has isGblIdx and clearGblIdx on its table.
   RenderSpecMode unknown1d28; // Inferred role: render spec mode; original member name unknown.
   u8 _1d2c[0x1d30 - 0x1d2c];
-  mm::Vec3 unknown1d30[2]; // Inferred role: global winds; original member name unknown.
+  mm::Vec3 m_globalWind[2];
   u8 _1d50[0x1d60 - 0x1d50];
   bool unknown1d60; // Inferred role: chara disp off; original member name unknown.
   bool unknown1d61; // Inferred role: seam render skip; original member name unknown.
@@ -306,9 +308,9 @@ public:
   u8 _1d8f[0x1d94 - 0x1d8f];
   FILE_PRIO unknown1d94; // Inferred role: seam map pri mdl; original member name unknown.
   FILE_PRIO unknown1d98; // Inferred role: seam map pri coli; original member name unknown.
-  bool unknown1d9c[2];   // Inferred role: all middel tex stm chks; original member name unknown.
-  bool unknown1d9e[2];   // Inferred role: seam map stm oks; original member name unknown.
-  bool unknown1da0;      // Inferred role: camera light; original member name unknown.
+  bool m_allMiddelTexStmChk[2];
+  bool m_seamMapStmOk[2];
+  bool unknown1da0; // Inferred role: camera light; original member name unknown.
   u8 _1da1[0x1da4 - 0x1da1];
   s32 unknown1da4; // Inferred role: dynamic light type; original member name unknown.
   u8 _1da8[0x1de4 - 0x1da8];
@@ -383,9 +385,9 @@ static_assert(offsetof(DrMan, unknown1cc9) == 0x1cc9, "");
 static_assert(offsetof(DrMan, unknown1ccc) == 0x1ccc, "");
 static_assert(offsetof(DrMan, unknown1cd0) == 0x1cd0, "");
 static_assert(offsetof(DrMan, unknown1cfc) == 0x1cfc, "");
-static_assert(offsetof(DrMan, unknown1d20) == 0x1d20, "");
+static_assert(offsetof(DrMan, m_gblIdx) == 0x1d20, "");
 static_assert(offsetof(DrMan, unknown1d28) == 0x1d28, "");
-static_assert(offsetof(DrMan, unknown1d30) == 0x1d30, "");
+static_assert(offsetof(DrMan, m_globalWind) == 0x1d30, "");
 static_assert(offsetof(DrMan, unknown1d60) == 0x1d60, "");
 static_assert(offsetof(DrMan, unknown1d61) == 0x1d61, "");
 static_assert(offsetof(DrMan, unknown1d63) == 0x1d63, "");
@@ -402,8 +404,8 @@ static_assert(offsetof(DrMan, unknown1d80) == 0x1d80, "");
 static_assert(offsetof(DrMan, unknown1d8e) == 0x1d8e, "");
 static_assert(offsetof(DrMan, unknown1d94) == 0x1d94, "");
 static_assert(offsetof(DrMan, unknown1d98) == 0x1d98, "");
-static_assert(offsetof(DrMan, unknown1d9c) == 0x1d9c, "");
-static_assert(offsetof(DrMan, unknown1d9e) == 0x1d9e, "");
+static_assert(offsetof(DrMan, m_allMiddelTexStmChk) == 0x1d9c, "");
+static_assert(offsetof(DrMan, m_seamMapStmOk) == 0x1d9e, "");
 static_assert(offsetof(DrMan, unknown1da0) == 0x1da0, "");
 static_assert(offsetof(DrMan, unknown1da4) == 0x1da4, "");
 static_assert(offsetof(DrMan, unknown1de4) == 0x1de4, "");

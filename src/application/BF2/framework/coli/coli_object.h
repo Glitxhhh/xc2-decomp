@@ -333,11 +333,11 @@ public:
   void postUpdate() override;
   void setDir(const mm::Vec3 &direction) override;
 
-  mm::Vec3 unknown100; // Inferred role: move direction; original member name unknown.
-  u32 unknown110;      // Inferred role: flags; original member name unknown.
+  mm::Vec3 m_dir;
+  u32 unknown110; // Inferred role: flags; original member name unknown.
 };
 
-static_assert(offsetof(ColiMoveObject, unknown100) == 0x100, "");
+static_assert(offsetof(ColiMoveObject, m_dir) == 0x100, "");
 static_assert(offsetof(ColiMoveObject, unknown110) == 0x110, "");
 static_assert(sizeof(ColiMoveObject) == 0x120, "");
 

@@ -46,7 +46,7 @@ void EffectCasterSend::sendData(f32 scale) {
     return;
   }
 
-  unknown88[effect::SystemManager::getPtr()->unknown7824d != 0] = scale;
+  m_mdlScl[effect::SystemManager::getPtr()->unknown7824d != 0] = scale;
 }
 
 void EffectCasterSend::sendDataFrame(f32 frame) {
@@ -54,7 +54,7 @@ void EffectCasterSend::sendDataFrame(f32 frame) {
     return;
   }
 
-  unknown90[effect::SystemManager::getPtr()->unknown7824d != 0] = frame;
+  m_mdlFrame[effect::SystemManager::getPtr()->unknown7824d != 0] = frame;
 }
 
 void EffectCasterSend::sendDataStateName(const char *name) {
@@ -82,15 +82,15 @@ EffectCasterSend::MtxAndName *EffectCasterSend::getBindData(u32 &count) {
   return datas;
 }
 
-f32 EffectCasterSend::getMdlFrame() { return unknown90[effect::SystemManager::getPtr()->unknown7824d == 0]; }
+f32 EffectCasterSend::getMdlFrame() { return m_mdlFrame[effect::SystemManager::getPtr()->unknown7824d == 0]; }
 
-f32 EffectCasterSend::getMdlScl() { return unknown88[effect::SystemManager::getPtr()->unknown7824d == 0]; }
+f32 EffectCasterSend::getMdlScl() { return m_mdlScl[effect::SystemManager::getPtr()->unknown7824d == 0]; }
 
 void EffectCasterSend::tailCopy() {
   u32 src = effect::SystemManager::getPtr()->unknown7824d != 0;
   u32 dst = effect::SystemManager::getPtr()->unknown7824d == 0;
-  unknown88[dst] = unknown88[src];
-  unknown90[dst] = unknown90[src];
+  m_mdlScl[dst] = m_mdlScl[src];
+  m_mdlFrame[dst] = m_mdlFrame[src];
   unknown98[dst] = unknown98[src];
 }
 

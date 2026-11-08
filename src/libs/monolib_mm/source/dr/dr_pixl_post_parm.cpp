@@ -102,11 +102,11 @@ void DrPixlPostParm::OnCloseAttriMenu() { unknown10fc = true; }
 
 void DrPixlPostParm::resetScene() { unknown1105[DrMan::s_nDblStockIdx] = true; }
 
-void DrPixlPostParm::setWeatherFrame(f32 weatherFrame) { unknown1088[DrMan::s_nDblStockIdx] = weatherFrame; }
+void DrPixlPostParm::setWeatherFrame(f32 weatherFrame) { m_weatherFrame[DrMan::s_nDblStockIdx] = weatherFrame; }
 
-f32 DrPixlPostParm::getWeatherFrame() const { return unknown1088[DrMan::s_nDblIdx]; }
+f32 DrPixlPostParm::getWeatherFrame() const { return m_weatherFrame[DrMan::s_nDblIdx]; }
 
-void DrPixlPostParm::resetWeatherFrame() { unknown1088[DrMan::s_nDblIdx] = 60.0f; }
+void DrPixlPostParm::resetWeatherFrame() { m_weatherFrame[DrMan::s_nDblIdx] = 60.0f; }
 
 void DrPixlPostParm::writeParameter(const char *path, const char *name) {}
 
@@ -126,7 +126,7 @@ void DrPixlPostParm::setDOFDownSec(bool dofDownSec) { unknown514[DrMan::s_nDblId
 
 void DrPixlPostParm::setDOFAutoFocus(bool dofAutoFocus) { unknown514[DrMan::s_nDblIdx].unknown225 = dofAutoFocus; }
 
-void DrPixlPostParm::setDOFAutoFocusDebug(bool dofAutoFocusDebug) { unknown21e = dofAutoFocusDebug; }
+void DrPixlPostParm::setDOFAutoFocusDebug(bool dofAutoFocusDebug) { m_DOFAutoFocusDebug = dofAutoFocusDebug; }
 
 void DrPixlPostParm::setDoFPixlRatio(f32 dofPixlRatio) { unknown514[DrMan::s_nDblIdx].unknown228 = dofPixlRatio; }
 
@@ -158,7 +158,7 @@ void DrPixlPostParm::setColorFilterNum(s32 colorFilterNum) { unknown514[DrMan::s
 
 void DrPixlPostParm::setColorFilterFrm(f32 colorFilterFrm) { unknown514[DrMan::s_nDblIdx].unknown278 = colorFilterFrm; }
 
-void DrPixlPostParm::setColorFilterTransZ(bool colorFilterTransZ) { this->unknown274 = colorFilterTransZ; }
+void DrPixlPostParm::setColorFilterTransZ(bool colorFilterTransZ) { this->m_colorFilterTransZ = colorFilterTransZ; }
 
 void DrPixlPostParm::setColorFilterFarNum(s32 colorFilterFarNum) { unknown514[DrMan::s_nDblIdx].unknown280 = colorFilterFarNum; }
 

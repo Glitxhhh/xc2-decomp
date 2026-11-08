@@ -18,7 +18,7 @@ void DrResMdoSeamParmRead::addPos(const mm::Vec3 &position) {
   unknown40++;
 }
 
-void DrResMdoSeamParmRead::setStockEnvMdl(int index) { unknown68 = index; }
+void DrResMdoSeamParmRead::setStockEnvMdl(int index) { m_stockEnvMdl = index; }
 
 void DrResMdoSeamParmRead::setStockBaseMap(int index) {
   u64 count = unknown5d0;

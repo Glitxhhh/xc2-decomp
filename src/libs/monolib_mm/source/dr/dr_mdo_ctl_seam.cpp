@@ -20,8 +20,8 @@ DrMdoCtlSeam::DrMdoCtlSeam(int viewNum)
       unknownc4c(0), unknownc50(0), unknownc54(0), unknownc58(0), unknownc5c(0), unknownc60(0), unknownc64(0), unknownc68(0), unknownc6c(0), unknownc70(0), unknownc74(0), unknownc78(0), unknownc7c(0),
       unknownc80(0), unknownc84(0), unknownc88(1), unknownc90(0), unknownc98(0), unknownca0(0), unknownca2(0), unknownca4(0), unknownca6(0), unknowncc8(false), unknown14b0(0), unknown14c0(0),
       unknown14c8(0) {
-  unknown650[0] = 0;
-  unknown650[1] = 0;
+  m_coliListMax[0] = 0;
+  m_coliListMax[1] = 0;
   unknowncac = 0;
   for (int i = 0; i < 4; i++) {
     unknowncae[i] = -1;
@@ -32,9 +32,9 @@ DrMdoCtlSeam::DrMdoCtlSeam(int viewNum)
   unknown528.clear();
 }
 
-void *DrMdoCtlSeam::getColiListTbl() { return unknown640[DrMan::s_nDblIdx]; }
+void *DrMdoCtlSeam::getColiListTbl() { return m_coliListTbl[DrMan::s_nDblIdx]; }
 
-u32 DrMdoCtlSeam::getColiListMax() { return unknown650[DrMan::s_nDblIdx]; }
+u32 DrMdoCtlSeam::getColiListMax() { return m_coliListMax[DrMan::s_nDblIdx]; }
 
 u32 DrMdoCtlSeam::isRead(int index) const {
   if (((unknownc7c >> 28) & 1) == 0) {

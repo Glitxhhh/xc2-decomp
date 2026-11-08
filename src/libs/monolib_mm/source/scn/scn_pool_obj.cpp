@@ -31,12 +31,12 @@ void ScnPoolObj::deleteObj() {
 void ScnPoolObj::update() {
   CS lock(unknown10);
   for (reslist<ScnObj *>::Node *node = unknown68.begin(); node != unknown68.end(); node = node->getNext()) {
-    if (!node->value->unknown12) {
+    if (!node->value->m_delete) {
       node->value->update();
     }
   }
   for (reslist<ScnObj *>::Node *node = unknowna8.begin(); node != unknowna8.end(); node = node->getNext()) {
-    if (!node->value->unknown12) {
+    if (!node->value->m_delete) {
       node->value->update();
     }
   }
@@ -45,12 +45,12 @@ void ScnPoolObj::update() {
 void ScnPoolObj::renderDebug(DebDraw *debDraw) {
   CS lock(unknown10);
   for (reslist<ScnObj *>::Node *node = unknown68.begin(); node != unknown68.end(); node = node->getNext()) {
-    if (!node->value->unknown12) {
+    if (!node->value->m_delete) {
       node->value->renderDebug(debDraw);
     }
   }
   for (reslist<ScnObj *>::Node *node = unknowna8.begin(); node != unknowna8.end(); node = node->getNext()) {
-    if (!node->value->unknown12) {
+    if (!node->value->m_delete) {
       node->value->renderDebug(debDraw);
     }
   }

@@ -52,10 +52,10 @@ inline FileResTh *unknown003(const DrIniSys *self, const char *path) {
 } // namespace
 
 DrIniSys::DrIniSys(DrMan *drMan)
-    : unknown00(drMan), unknown878(nullptr), unknown880(nullptr), m_updateMirrorBallPos(true), unknown890(nullptr), unknown898(nullptr), unknown8a0(nullptr), unknown1a80(DUMMY_CUBEMAP_FILE),
+    : unknown00(drMan), unknown878(nullptr), unknown880(nullptr), m_updateMirrorBallPos(true), unknown890(nullptr), unknown898(nullptr), unknown8a0(nullptr), m_IBLEnvTexturePath(DUMMY_CUBEMAP_FILE),
       unknown1b88(nullptr) {
   memset(unknown08, 0, sizeof(unknown08));
-  unknown1a80.format("%sshader/%s.witex", "/monolib/", DUMMY_CUBEMAP_FILE);
+  m_IBLEnvTexturePath.format("%sshader/%s.witex", "/monolib/", DUMMY_CUBEMAP_FILE);
 }
 
 DrIniSys::~DrIniSys() { dataWorkClear(); }
@@ -173,11 +173,11 @@ void DrIniSys::loadVolumeTexture() { unknown001(this); }
 
 void DrIniSys::loadIBLEnvTexture() {
   Scn *scn = Scn::get();
-  if (scn != nullptr && scn->allocEntryRes(unknown1a80.c_str()) != nullptr) {
+  if (scn != nullptr && scn->allocEntryRes(m_IBLEnvTexturePath.c_str()) != nullptr) {
     return;
   }
   FileResTh *res = new (WorkUtil::getWorkMem()) FileResTh();
-  if (res->loadBlock(unknown00->unknown1c, unknown1a80.c_str(), 0x1000, 0)) {
+  if (res->loadBlock(unknown00->unknown1c, m_IBLEnvTexturePath.c_str(), 0x1000, 0)) {
     if (unknown08[12] != nullptr) {
       unknown08[12]->Release();
       unknown08[12] = nullptr;
@@ -230,7 +230,7 @@ void DrIniSys::loadFlagWaveTexture() {
   loadTextureImpl(17, FLAG_WAVE1_FILE);
 }
 
-void DrIniSys::setIBLEnvTexturePath(const char *path) { unknown1a80 = path; }
+void DrIniSys::setIBLEnvTexturePath(const char *path) { m_IBLEnvTexturePath = path; }
 
 void DrIniSys::reloadToonGradTexture() { loadToonGradTexture(); }
 

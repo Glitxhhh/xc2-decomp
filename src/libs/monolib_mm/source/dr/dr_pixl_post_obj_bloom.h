@@ -52,16 +52,16 @@ public:
   grlib::CGLibRenderTarget *unknown78; // Inferred role: render target; original member name unknown.
   grlib::CGLibRenderTarget *unknown80; // Inferred role: render target; original member name unknown.
   u8 _88[0x90 - 0x88];
-  u32 unknown90;                          // Inferred role: update request; original member name unknown.
-  u32 unknown94;                          // Inferred role: flags; original member name unknown.
-  grlib::CGLibRenderTarget *unknown98[2]; // Inferred role: lgt down targets; original member name unknown.
-  s32 unknowna8;                          // Inferred role: bloom scale type; original member name unknown.
+  u32 unknown90; // Inferred role: update request; original member name unknown.
+  u32 unknown94; // Inferred role: flags; original member name unknown.
+  grlib::CGLibRenderTarget *m_lgtDownTarget[2];
+  s32 unknowna8; // Inferred role: bloom scale type; original member name unknown.
 };
 
 static_assert(offsetof(DrPixlPostObjBloom, unknown18) == 0x18, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknown80) == 0x80, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknown90) == 0x90, "");
-static_assert(offsetof(DrPixlPostObjBloom, unknown98) == 0x98, "");
+static_assert(offsetof(DrPixlPostObjBloom, m_lgtDownTarget) == 0x98, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknown94) == 0x94, "");
 static_assert(offsetof(DrPixlPostObjBloom, unknowna8) == 0xa8, "");
 

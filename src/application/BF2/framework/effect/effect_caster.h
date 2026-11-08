@@ -111,11 +111,11 @@ public:
 
   mm::mtl::Vector<MtxAndName> unknown18[BUFFER_NUM]; // Inferred role: bind datas; original member name unknown.
   EffectCasterBase *m_caster;
-  void *unknown70;                           // Inferred role: point; original member name unknown.
-  mm::mtl::IAllocator *unknown78;            // Inferred role: allocator; original member name unknown.
-  void *unknown80;                           // Inferred role: model; original member name unknown.
-  f32 unknown88[BUFFER_NUM];                 // Inferred role: scales; original member name unknown.
-  f32 unknown90[BUFFER_NUM];                 // Inferred role: frames; original member name unknown.
+  void *unknown70;                // Inferred role: point; original member name unknown.
+  mm::mtl::IAllocator *unknown78; // Inferred role: allocator; original member name unknown.
+  void *unknown80;                // Inferred role: model; original member name unknown.
+  f32 m_mdlScl[BUFFER_NUM];
+  f32 m_mdlFrame[BUFFER_NUM];
   mm::mtl::FixStr<32> unknown98[BUFFER_NUM]; // Inferred role: state names; original member name unknown.
 };
 

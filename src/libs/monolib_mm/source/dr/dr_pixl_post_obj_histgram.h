@@ -21,7 +21,7 @@ public:
   f32 getPercentage(u32 index) const;
 
   DrResUseQueryObj *unknown18; // Inferred role: occlusion query; original member name unknown.
-  f32 unknown20[11];           // Inferred role: section boundaries; original member name unknown.
+  f32 m_maxLuminance[11];
   f32 m_percentage[11];
   u32 unknown78[11]; // Inferred role: sample counts; original member name unknown.
   s32 unknowna4;     // Inferred role: sample index; original member name unknown.
@@ -33,7 +33,7 @@ public:
 };
 
 static_assert(offsetof(DrPixlPostObjHistgram, unknown18) == 0x18, "");
-static_assert(offsetof(DrPixlPostObjHistgram, unknown20) == 0x20, "");
+static_assert(offsetof(DrPixlPostObjHistgram, m_maxLuminance) == 0x20, "");
 static_assert(offsetof(DrPixlPostObjHistgram, m_percentage) == 0x4c, "");
 static_assert(offsetof(DrPixlPostObjHistgram, unknown78) == 0x78, "");
 static_assert(offsetof(DrPixlPostObjHistgram, unknowna4) == 0xa4, "");

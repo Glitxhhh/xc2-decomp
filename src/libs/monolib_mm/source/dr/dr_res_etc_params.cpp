@@ -6,9 +6,9 @@
 
 namespace ml {
 
-DrResEtcParams::DrResEtcParams() : unknown00(0), unknown04{0, 0}, unknown0c{0, 0}, unknown14(0) {}
+DrResEtcParams::DrResEtcParams() : unknown00(0), unknown04{0, 0}, unknown0c{0, 0}, m_params(0) {}
 
-f32 DrResEtcParams::getParams() const { return unknown14; }
+f32 DrResEtcParams::getParams() const { return m_params; }
 
 void DrResEtcParams::setParams(f32 value) {
   unknown00 |= 1 << DrMan::s_nDblStockIdx;
@@ -23,11 +23,11 @@ void DrResEtcParams::setPreParams(f32 value) {
 void DrResEtcParams::update() {
   if (unknown00 & (1 << DrMan::s_nDblMemIdx)) {
     unknown00 &= ~(1 << DrMan::s_nDblMemIdx);
-    unknown14 = unknown04[DrMan::s_nDblMemIdx];
+    m_params = unknown04[DrMan::s_nDblMemIdx];
   }
   if (unknown00 & (4 << DrMan::s_nDblMemIdx)) {
     unknown00 &= ~(4 << DrMan::s_nDblMemIdx);
-    unknown14 = unknown0c[DrMan::s_nDblMemIdx];
+    m_params = unknown0c[DrMan::s_nDblMemIdx];
   }
 }
 
@@ -62,7 +62,7 @@ void DrResEtcParams::setInitParams(f32 value) {
   unknown0c[0] = value;
   unknown04[1] = value;
   unknown04[0] = value;
-  unknown14 = value;
+  m_params = value;
 }
 
 void DrResEtcPamObj::release(DrResEtcPamObj *&obj) {

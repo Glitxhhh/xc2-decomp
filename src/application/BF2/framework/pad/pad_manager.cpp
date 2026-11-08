@@ -65,7 +65,7 @@ void PadManager::stopVibration() {
   }
 }
 
-void PadManager::setFilter(int padNo, IPadFilter *filter) { get()->unknown20[padNo] = filter; }
+void PadManager::setFilter(int padNo, IPadFilter *filter) { get()->m_filter[padNo] = filter; }
 
 int PadManager::getPadMax() { return ml::DevPad::getPadMax(); }
 
@@ -93,7 +93,7 @@ u32 PadManager::updateCnt(int padNo, const PadData &pad, PadWorkArray &works, f3
   u32 cnt = 0;
   for (u32 i = 0; i < BUTTON_MAX; i++) {
     PadWork &work = works[padNo][i];
-    if ((pad.unknown00 & 1 << i) == 0 && unknown3668 < work.unknown04 && work.unknown04 < unknown366c) {
+    if ((pad.unknown00 & 1 << i) == 0 && m_cntTime < work.unknown04 && work.unknown04 < m_holdTime) {
       cnt |= 1 << i;
     }
   }
@@ -106,7 +106,7 @@ u32 PadManager::updateHold(int padNo, const PadData &pad, PadWorkArray &works, f
   for (u32 i = 0; i < BUTTON_MAX; i++) {
     PadWork &work = works[padNo][i];
     if ((pad.unknown00 & 1 << i) != 0) {
-      if (work.unknown04 > unknown366c) {
+      if (work.unknown04 > m_holdTime) {
         hold |= 1 << i;
       } else {
         work.unknown04 += deltaTime;
@@ -131,9 +131,9 @@ void PadManager::setRepeatTimeFirst(f32 time) {
   manager->unknown3664 = time;
 }
 
-void PadManager::setCntTime(f32 time) { get()->unknown3668 = time; }
+void PadManager::setCntTime(f32 time) { get()->m_cntTime = time; }
 
-void PadManager::setHoldTime(f32 time) { get()->unknown366c = time; }
+void PadManager::setHoldTime(f32 time) { get()->m_holdTime = time; }
 
 bool PadManager::isInitialized() const {
   if (!ml::DevPad::isInitialized()) {
@@ -184,7 +184,7 @@ void PadManager::playVibration(const ml::PadVibrationInfo &info) {
 }
 
 const char *PadManager::getPadFilterName(int padNo) {
-  IPadFilter *filter = get()->unknown20[padNo];
+  IPadFilter *filter = get()->m_filter[padNo];
   if (filter != nullptr) {
     return filter->getFilterName();
   }

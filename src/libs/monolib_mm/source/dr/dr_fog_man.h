@@ -32,13 +32,13 @@ public:
   f32 unknown58;
   f32 unknown5c;
   u8 _60[0xd0 - 0x60];
-  bool unknownd0; // Inferred role: fog on; original member name unknown.
+  bool m_fogOn;
   bool unknownd1;
 };
 
 static_assert(offsetof(DrFogMan, unknown08) == 0x08, "");
 static_assert(offsetof(DrFogMan, unknown18) == 0x18, "");
 static_assert(offsetof(DrFogMan, unknown3c) == 0x3c, "");
-static_assert(offsetof(DrFogMan, unknownd0) == 0xd0, "");
+static_assert(offsetof(DrFogMan, m_fogOn) == 0xd0, "");
 
 } // namespace ml

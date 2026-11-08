@@ -69,7 +69,7 @@ bool WorkCpu::isInitialized() {
     return false;
   }
 
-  for (u32 i = 0; i < cpu->unknown1bc; i++) {
+  for (u32 i = 0; i < cpu->m_cpuNum; i++) {
     WorkCpuThread *thread = cpu->unknown1740[i];
     if (thread == nullptr || thread->wkIsWaitException() || !thread->wkIsActive()) {
       return false;
@@ -137,7 +137,7 @@ CPUID WorkCpu::getMainCPUID() { return CPUID_CORE_0; }
 
 CPUID WorkCpu::getRenderCPUID() {
   if (s_bRenderSubCpu) {
-    u32 cpuNum = get()->unknown1bc;
+    u32 cpuNum = get()->m_cpuNum;
     if (cpuNum > 2) {
       return CPUID_CORE_2;
     }
@@ -150,9 +150,9 @@ CPUID WorkCpu::getRenderCPUID() {
   return CPUID_CORE_0;
 }
 
-u32 WorkCpu::getCpuNum() { return get()->unknown1bc; }
+u32 WorkCpu::getCpuNum() { return get()->m_cpuNum; }
 
-void WorkCpu::setThread(DO_THREAD thread) { get()->unknown173c = thread; }
+void WorkCpu::setThread(DO_THREAD thread) { get()->m_thread = thread; }
 
 DO_THREAD WorkCpu::getThread() {
   WorkCpu *cpu = get();
@@ -163,7 +163,7 @@ DO_THREAD WorkCpu::getThread() {
   return static_cast<DO_THREAD>(0);
 }
 
-u32 WorkCpu::getEven() { return get()->unknown1764; }
+u32 WorkCpu::getEven() { return get()->m_even; }
 
 bool WorkCpu::isShutdown() {
   WorkCpu *cpu = get();
@@ -178,7 +178,7 @@ u32 WorkCpu::getFrameCountU32() { return get()->unknown2090; }
 
 const unsigned long &WorkCpu::getFrameCount() { return get()->unknown2090; }
 
-u32 WorkCpu::getOdd() { return get()->unknown1764 == 0; }
+u32 WorkCpu::getOdd() { return get()->m_even == 0; }
 
 bool WorkCpu::isBackground() { return _mlwcpu::s_bBackGround; }
 
@@ -186,7 +186,7 @@ void WorkCpu::syncSubCpu() {}
 
 void WorkCpu::setHeartBeatCpu(CPUID cpu) { DevClock::getClockNow(_mlwcpu::s_aHearBeat[cpu - 1]); }
 
-u32 WorkCpu::getJobTrans() { return get()->unknown2028[getOdd()]; }
+u32 WorkCpu::getJobTrans() { return get()->m_jobTrans[getOdd()]; }
 
 const long &WorkCpu::getBeginClock(bool isCurrent) {
   WorkCpu *cpu = get();
@@ -194,11 +194,11 @@ const long &WorkCpu::getBeginClock(bool isCurrent) {
   return cpu->unknown2048[index];
 }
 
-const long &WorkCpu::getTailStartClock() { return get()->unknown2070; }
+const long &WorkCpu::getTailStartClock() { return get()->m_tailStartClock; }
 
-const long &WorkCpu::getTailEndClock() { return get()->unknown2078; }
+const long &WorkCpu::getTailEndClock() { return get()->m_tailEndClock; }
 
-const long &WorkCpu::getSyncClock() { return get()->unknown2080; }
+const long &WorkCpu::getSyncClock() { return get()->m_syncClock; }
 
 CPUID WorkCpu::getCurrentCPUID() {
   WorkCpu *cpu = get();
@@ -207,7 +207,7 @@ CPUID WorkCpu::getCurrentCPUID() {
   }
 
   u64 threadId = ThreadUtil::getCurrentID();
-  for (u32 i = 0; i < cpu->unknown1bc; i++) {
+  for (u32 i = 0; i < cpu->m_cpuNum; i++) {
     WorkCpuThread *thread = cpu->unknown1740[i];
     if (thread != nullptr && thread->getThreadID() == threadId) {
       return thread->getCPUID();
@@ -223,7 +223,7 @@ bool WorkCpu::getStackInfo(u64 threadId, u64 &address, u64 &size) {
     return false;
   }
 
-  for (u32 i = 0; i < cpu->unknown1bc; i++) {
+  for (u32 i = 0; i < cpu->m_cpuNum; i++) {
     WorkCpuThread *thread = cpu->unknown1740[i];
     if (thread != nullptr && thread->getThreadID() == threadId) {
       thread->getStackInfo(address, size);

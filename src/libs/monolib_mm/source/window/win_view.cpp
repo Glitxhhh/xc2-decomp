@@ -303,7 +303,7 @@ void WinView::renderView() {
   bool isEmpty = true;
   if (size.x > 0 && size.y > 0 && rect.width > 0 && rect.height > 0) {
     const WinViewPort *port = unknown1b8.m_front;
-    isEmpty = port->unknown08.x <= 0 && port->unknown08.y <= 0;
+    isEmpty = port->m_workSize.x <= 0 && port->m_workSize.y <= 0;
   }
   if (!isSkip) {
     if (!isSplit(false) && !(unknown3b8 & 1) && !isEmpty) {
@@ -314,8 +314,8 @@ void WinView::renderView() {
     mm::Rect<int> viewport = getClientAbsRect(false);
     // The viewport part of the render info, picking for each axis the larger of the view size and the work size.
     const WinViewPort *port = unknown1b8.m_front;
-    const mm::Pnt<int> &widthSrc = port->unknown00.x > port->unknown08.x ? port->unknown00 : port->unknown08;
-    const mm::Pnt<int> &heightSrc = port->unknown00.y > port->unknown08.y ? port->unknown00 : port->unknown08;
+    const mm::Pnt<int> &widthSrc = port->unknown00.x > port->m_workSize.x ? port->unknown00 : port->m_workSize;
+    const mm::Pnt<int> &heightSrc = port->unknown00.y > port->m_workSize.y ? port->unknown00 : port->m_workSize;
     mm::Rect<int> renderRect;
     renderRect.x = port->unknown10.x;
     renderRect.y = port->unknown10.y;

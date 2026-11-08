@@ -4,7 +4,7 @@
 
 namespace ml {
 
-void ProcException::setInfo(EXCEPTION_PRIO prio) { unknown228 = prio; }
+void ProcException::setInfo(EXCEPTION_PRIO prio) { m_info = prio; }
 
 void ProcException::setInfo(u32 wid, const wchar_t *message) {
   unknown1f8 = wid;

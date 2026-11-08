@@ -36,15 +36,15 @@ public:
   virtual void setFrame(f32 frame) = 0;
   virtual void changeMemCall(const void *data) = 0;
 
-  void setMatrix(const mm::Mat44 &matrix) { unknown30 = matrix; }
+  void setMatrix(const mm::Mat44 &matrix) { m_matrix = matrix; }
 
   DrEnvironmentObj *unknown08; // Inferred role: prev; original member name unknown.
   DrEnvironmentObj *unknown10; // Inferred role: next; original member name unknown.
   DrMan *unknown18;            // Inferred role: dr man; original member name unknown.
   DrLightMan *unknown20;       // Inferred role: light man; original member name unknown.
   DrFogMan *unknown28;         // Inferred role: fog man; original member name unknown.
-  mm::Mat44 unknown30;         // Inferred role: matrix; original member name unknown.
-  mm::Vec3 unknown70;          // Inferred role: offset pos; original member name unknown.
+  mm::Mat44 m_matrix;
+  mm::Vec3 unknown70; // Inferred role: offset pos; original member name unknown.
   f32 m_frame;
   f32 m_frameSpd;
   f32 m_maxFrame;
@@ -53,7 +53,7 @@ public:
 };
 
 static_assert(offsetof(DrEnvironmentObj, unknown18) == 0x18, "");
-static_assert(offsetof(DrEnvironmentObj, unknown30) == 0x30, "");
+static_assert(offsetof(DrEnvironmentObj, m_matrix) == 0x30, "");
 static_assert(offsetof(DrEnvironmentObj, unknown70) == 0x70, "");
 static_assert(offsetof(DrEnvironmentObj, m_frame) == 0x80, "");
 static_assert(offsetof(DrEnvironmentObj, unknown8c) == 0x8c, "");

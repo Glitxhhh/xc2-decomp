@@ -411,16 +411,16 @@ void DrMan::memcpyLcDMA(void *destination, const void *source, u32 size) { memcp
 u32 DrMan::getMem1AlphaFree() { return DrPixlMemMan::get()->unknown434; }
 
 void DrMan::setGblIdx(s32 id) {
-  if (!(unknown1d20[id >> 5] & (1 << (id & 31)))) {
+  if (!isGblIdx(id)) {
     unknown78->callShadowCacheVariance();
-    unknown1d20[id >> 5] |= 1 << (id & 31);
+    m_gblIdx[id >> 5] |= 1 << (id & 31);
   }
 }
 
 void DrMan::offGblIdx(s32 id) {
-  if (unknown1d20[id >> 5] & (1 << (id & 31))) {
+  if (isGblIdx(id)) {
     unknown78->callShadowCacheVariance();
-    unknown1d20[id >> 5] &= ~(1 << (id & 31));
+    m_gblIdx[id >> 5] &= ~(1 << (id & 31));
   }
 }
 
@@ -497,9 +497,9 @@ void DrMan::setDepthOfFieldParm(f32 distance, f32 range, f32 strength, f32 blend
   postParm->setDoFLens(blend);
 }
 
-void DrMan::setGlobalWind(const mm::Vec3 &globalWind) { unknown1d30[s_nDblStockIdx] = globalWind; }
+void DrMan::setGlobalWind(const mm::Vec3 &globalWind) { m_globalWind[s_nDblStockIdx] = globalWind; }
 
-const mm::Vec3 &DrMan::getGlobalWind() const { return unknown1d30[s_nDblNowIdx]; }
+const mm::Vec3 &DrMan::getGlobalWind() const { return m_globalWind[s_nDblNowIdx]; }
 
 void DrMan::callCubeMapRender(const DR_CAPCUBE_PARAM &param) {}
 
@@ -519,13 +519,13 @@ void DrMan::releaseFastLight(s32 index) {
   }
 }
 
-void DrMan::setAllMiddelTexStmChk(bool isCheck) { unknown1d9c[s_nDblIdx] |= isCheck; }
+void DrMan::setAllMiddelTexStmChk(bool isCheck) { m_allMiddelTexStmChk[s_nDblIdx] |= isCheck; }
 
-bool DrMan::isAllMiddelTexStmChk() const { return unknown1d9c[s_nDblStockIdx]; }
+bool DrMan::isAllMiddelTexStmChk() const { return m_allMiddelTexStmChk[s_nDblStockIdx]; }
 
-void DrMan::setSeamMapStmOk(bool isOk) { unknown1d9e[s_nDblIdx] = isOk; }
+void DrMan::setSeamMapStmOk(bool isOk) { m_seamMapStmOk[s_nDblIdx] = isOk; }
 
-bool DrMan::isSeamMapStmOk() const { return unknown1d9e[s_nDblStockIdx]; }
+bool DrMan::isSeamMapStmOk() const { return m_seamMapStmOk[s_nDblStockIdx]; }
 
 void DrMan::setAvatarCapMode(s32 avatarCapMode) {}
 

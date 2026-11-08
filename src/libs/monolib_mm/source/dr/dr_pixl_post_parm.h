@@ -222,7 +222,7 @@ public:
   bool unknown21b; // Inferred role: dof down sec; original member name unknown.
   bool unknown21c; // Inferred role: dof auto focus; original member name unknown.
   u8 _021d[0x021e - 0x021d];
-  bool unknown21e; // Inferred role: dof focus debug; original member name unknown.
+  bool m_DOFAutoFocusDebug;
   u8 _021f[0x0220 - 0x021f];
   f32 unknown220;  // Inferred role: dof pixl ratio; original member name unknown.
   f32 unknown224;  // Inferred role: dof distance; original member name unknown.
@@ -239,9 +239,9 @@ public:
   bool unknown269; // Inferred role: global IBL relight request enable; original member name unknown.
   bool m_colTblOn;
   u8 _026b[0x026c - 0x026b];
-  u32 unknown26c;  // Inferred role: color filter near first texture id; original member name unknown.
-  f32 unknown270;  // Inferred role: color filter frm; original member name unknown.
-  bool unknown274; // Inferred role: color filter trans z; original member name unknown.
+  u32 unknown26c; // Inferred role: color filter near first texture id; original member name unknown.
+  f32 unknown270; // Inferred role: color filter frm; original member name unknown.
+  bool m_colorFilterTransZ;
   u8 _0275[0x0278 - 0x0275];
   u32 unknown278; // Inferred role: color filter far first texture id; original member name unknown.
   u8 _027c[0x028c - 0x027c];
@@ -327,8 +327,8 @@ public:
   s32 unknown107c;  // Inferred role: light num; original member name unknown.
   bool unknown1080; // Inferred role: in out; original member name unknown.
   u8 _1081[0x1084 - 0x1081];
-  s32 unknown1084;    // Inferred role: weather; original member name unknown.
-  f32 unknown1088[2]; // Inferred role: weather frames; original member name unknown.
+  s32 unknown1084; // Inferred role: weather; original member name unknown.
+  f32 m_weatherFrame[2];
   u8 _1090[0x109c - 0x1090];
   f32 unknown109c; // Inferred role: wetness value, its ini default is the fallback of DrIniSys::getWetnessSetting; original member name unknown.
   u8 _10a0[0x10c0 - 0x10a0];
@@ -406,7 +406,7 @@ static_assert(offsetof(DrPixlPostParm, unknown219) == 0x0219, "");
 static_assert(offsetof(DrPixlPostParm, unknown21a) == 0x021a, "");
 static_assert(offsetof(DrPixlPostParm, unknown21b) == 0x021b, "");
 static_assert(offsetof(DrPixlPostParm, unknown21c) == 0x021c, "");
-static_assert(offsetof(DrPixlPostParm, unknown21e) == 0x021e, "");
+static_assert(offsetof(DrPixlPostParm, m_DOFAutoFocusDebug) == 0x021e, "");
 static_assert(offsetof(DrPixlPostParm, unknown220) == 0x0220, "");
 static_assert(offsetof(DrPixlPostParm, unknown224) == 0x0224, "");
 static_assert(offsetof(DrPixlPostParm, unknown228) == 0x0228, "");
@@ -426,7 +426,7 @@ static_assert(offsetof(DrPixlPostParm, unknown28c) == 0x028c, "");
 static_assert(offsetof(DrPixlPostParm, unknown294) == 0x0294, "");
 static_assert(offsetof(DrPixlPostParm, unknown298) == 0x0298, "");
 static_assert(offsetof(DrPixlPostParm, unknown270) == 0x0270, "");
-static_assert(offsetof(DrPixlPostParm, unknown274) == 0x0274, "");
+static_assert(offsetof(DrPixlPostParm, m_colorFilterTransZ) == 0x0274, "");
 static_assert(offsetof(DrPixlPostParm, unknown2a0) == 0x02a0, "");
 static_assert(offsetof(DrPixlPostParm, unknown2c4) == 0x02c4, "");
 static_assert(offsetof(DrPixlPostParm, unknown2cc) == 0x02cc, "");
@@ -474,7 +474,7 @@ static_assert(offsetof(DrPixlPostParm, unknown1064) == 0x1064, "");
 static_assert(offsetof(DrPixlPostParm, unknown107c) == 0x107c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1080) == 0x1080, "");
 static_assert(offsetof(DrPixlPostParm, unknown1084) == 0x1084, "");
-static_assert(offsetof(DrPixlPostParm, unknown1088) == 0x1088, "");
+static_assert(offsetof(DrPixlPostParm, m_weatherFrame) == 0x1088, "");
 static_assert(offsetof(DrPixlPostParm, unknown109c) == 0x109c, "");
 static_assert(offsetof(DrPixlPostParm, unknown10c0) == 0x10c0, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fc) == 0x10fc, "");

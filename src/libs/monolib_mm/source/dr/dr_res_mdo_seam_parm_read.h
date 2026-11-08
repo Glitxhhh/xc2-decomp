@@ -80,7 +80,7 @@ public:
   u64 unknown50; // Inferred role: cleared by the constructor; original member name unknown.
   u32 unknown58; // Inferred role: cleared by the constructor; original member name unknown.
   u8 _5c[0x68 - 0x5c];
-  s16 unknown68;    // Inferred role: stock env model; original member name unknown.
+  s16 m_stockEnvMdl;
   s16 unknown6a[8]; // Inferred role: stock base maps; original member name unknown.
   u8 _7a[0x80 - 0x7a];
   unknown062 unknown80[8]; // Inferred role: stock instance maps; original member name unknown.
@@ -114,7 +114,7 @@ public:
 
 static_assert(offsetof(DrResMdoSeamParmRead, unknown10) == 0x10, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown40) == 0x40, "");
-static_assert(offsetof(DrResMdoSeamParmRead, unknown68) == 0x68, "");
+static_assert(offsetof(DrResMdoSeamParmRead, m_stockEnvMdl) == 0x68, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown6a) == 0x6a, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown80) == 0x80, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown100) == 0x100, "");

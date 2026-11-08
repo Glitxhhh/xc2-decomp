@@ -383,7 +383,7 @@ bool SoundSsdDriver::isDeviceEnable() const {
   return false;
 }
 
-const mm::Mat44 &SoundSsdDriver::getListeningPoint() const { return unknown30; }
+const mm::Mat44 &SoundSsdDriver::getListeningPoint() const { return m_listeningPoint; }
 
 SoundPoolMemory *SoundSsdDriver::findPoolMemory(void *pointer, u32 size) const {
   for (mm::mtl::FixedList<SoundPoolMemory *, 256>::const_iterator it = unknown8f0.begin(); it != unknown8f0.end(); ++it) {
@@ -412,7 +412,7 @@ void SoundSsdDriver::setListeningPoint(const mm::Mat44 &matrix) {
       forward.z = scale * forward.z;
     }
     unknown28->SetOrientation(ssd::Vec3(forward.x, forward.y, forward.z), ssd::Vec3(0.0f, 1.0f, 0.0f));
-    unknown30 = matrix;
+    m_listeningPoint = matrix;
   }
 }
 

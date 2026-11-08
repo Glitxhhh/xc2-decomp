@@ -260,11 +260,8 @@ bool DrEnvColiObj::testTreeColi(DrEnvColiResult *result, const EnvColiListTreeDa
           continue;
         }
         u16 gblId = primitive->unknown0c;
-        if (gblId != 0) {
-          u32 *gblTbl = unknown30->unknown1d20;
-          if (gblTbl[gblId >> 5] & (1 << (gblId & 31))) {
-            continue;
-          }
+        if (gblId != 0 && unknown30->isGblIdx(gblId)) {
+          continue;
         }
         if (!(this->*s_pColiTest[primitive->unknown04])(unknown10 + primitive->unknown00, position, radius, unknown28[index])) {
           continue;

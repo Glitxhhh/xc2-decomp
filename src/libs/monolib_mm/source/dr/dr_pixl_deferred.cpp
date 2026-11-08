@@ -25,7 +25,7 @@ void DrPixlDeferred::globalIBLRender() {
 
 void DrPixlDeferred::shadowBuffBegin() { DrAPGxType::setupStencilTest(false, false, 7, false, 0, 0, 2, 0, 0, 0); }
 
-void DrPixlDeferred::shadowBuffClear() { unknown20->clearTexture(mm::Col4(1.0f, 1.0f, 1.0f, 1.0f), static_cast<GrlClaerMask>(0xf)); }
+void DrPixlDeferred::shadowBuffClear() { m_temporalInputShadowMap->clearTexture(mm::Col4(1.0f, 1.0f, 1.0f, 1.0f), static_cast<GrlClaerMask>(0xf)); }
 
 grlib::CGLibTextureBuffer *DrPixlDeferred::getShadowMapTexture() const {
   if (unknown08->unknown1d7a || !unknown08->unknown588->unknown1b9 || unknown08->unknown588->unknown160 <= 0.0f) {
@@ -35,10 +35,10 @@ grlib::CGLibTextureBuffer *DrPixlDeferred::getShadowMapTexture() const {
   if (parm->unknown103c && parm->unknown103d) {
     return getTemporalOutputShadowMap()->unknown70;
   }
-  return unknown20->unknown70;
+  return m_temporalInputShadowMap->unknown70;
 }
 
-DrPixlRenderTarget *DrPixlDeferred::getTemporalInputShadowMap() { return unknown20; }
+DrPixlRenderTarget *DrPixlDeferred::getTemporalInputShadowMap() { return m_temporalInputShadowMap; }
 
 DrPixlRenderTarget *DrPixlDeferred::getTemporalOutputShadowMap() { return unknown28[DrMan::s_nDblIdx]; }
 
@@ -77,7 +77,7 @@ void DrPixlDeferred::releaseColorBuff() {
   if (postParm->unknownfe4 == 2) {
     return;
   }
-  unknown20->releaseTexture();
+  m_temporalInputShadowMap->releaseTexture();
 }
 
 } // namespace ml

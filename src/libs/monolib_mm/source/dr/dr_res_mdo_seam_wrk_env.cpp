@@ -5,7 +5,7 @@
 
 namespace ml {
 
-DrResMdoSeamWrkEnv::DrResMdoSeamWrkEnv() : unknown28(nullptr), unknown38(), unknown48(), unknown58(nullptr), unknown60(nullptr), unknown6c(0), unknown70(0) {}
+DrResMdoSeamWrkEnv::DrResMdoSeamWrkEnv() : unknown28(nullptr), m_displayWrk(), m_displayWrkSize(), unknown58(nullptr), unknown60(nullptr), unknown6c(0), unknown70(0) {}
 
 DrResMdoSeamWrkEnv::~DrResMdoSeamWrkEnv() { release(); }
 
@@ -14,20 +14,20 @@ void DrResMdoSeamWrkEnv::release() {
     mtl::MemManager::deallocate(unknown58, 0, false);
     unknown58 = nullptr;
   }
-  if (unknown38[0] != nullptr) {
-    mtl::MemManager::deallocate(unknown38[0], 0, false);
-    unknown38[0] = nullptr;
+  if (m_displayWrk[0] != nullptr) {
+    mtl::MemManager::deallocate(m_displayWrk[0], 0, false);
+    m_displayWrk[0] = nullptr;
   }
-  if (unknown38[1] != nullptr) {
-    mtl::MemManager::deallocate(unknown38[1], 0, false);
-    unknown38[1] = nullptr;
+  if (m_displayWrk[1] != nullptr) {
+    mtl::MemManager::deallocate(m_displayWrk[1], 0, false);
+    m_displayWrk[1] = nullptr;
   }
   if (unknown28 != nullptr) {
     mtl::MemManager::deallocate(unknown28, 0, false);
     unknown28 = nullptr;
   }
-  unknown48[0] = 0;
-  unknown48[1] = 0;
+  m_displayWrkSize[0] = 0;
+  m_displayWrkSize[1] = 0;
   unknown6c = 0;
   unknown60 = nullptr;
 }
@@ -36,14 +36,14 @@ void DrResMdoSeamWrkEnv::setDispState() { unknown6c |= 1 << DrMan::s_nDblNowIdx;
 
 u32 DrResMdoSeamWrkEnv::chkDispState() { return unknown6c & (1 << DrMan::s_nDblNowIdx); }
 
-u8 *DrResMdoSeamWrkEnv::getDisplayWrk() { return unknown38[DrMan::s_nDblNowIdx]; }
+u8 *DrResMdoSeamWrkEnv::getDisplayWrk() { return m_displayWrk[DrMan::s_nDblNowIdx]; }
 
-int DrResMdoSeamWrkEnv::getDisplayWrkSize() { return unknown48[DrMan::s_nDblNowIdx]; }
+int DrResMdoSeamWrkEnv::getDisplayWrkSize() { return m_displayWrkSize[DrMan::s_nDblNowIdx]; }
 
 void DrResMdoSeamWrkEnv::setDisplayWrk(u8 *work, int size) {
   int index = DrMan::s_nDblNowIdx;
-  unknown38[index] = work;
-  unknown48[index] = size;
+  m_displayWrk[index] = work;
+  m_displayWrkSize[index] = size;
 }
 
 void DrResMdoSeamWrkEnv::changeMemCall(const MdsSeamEnvMapHead *head) {

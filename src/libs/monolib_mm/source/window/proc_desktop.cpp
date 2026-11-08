@@ -208,7 +208,7 @@ void ProcDesktop::setSimpleInfo(bool isSimple) { _dsk::s_flg = !isSimple ? _dsk:
 
 bool ProcDesktop::isDispInfo() { return _dsk::s_flg & _dsk::FLAG_DISP_INFO; }
 
-WinView *ProcDesktop::getSelectedView() { return get()->unknown248; }
+WinView *ProcDesktop::getSelectedView() { return get()->m_selectedView; }
 
 WinView *ProcDesktop::getView() {
   ProcDesktop *desktop = get();
@@ -218,7 +218,7 @@ WinView *ProcDesktop::getView() {
   return desktop->unknown208;
 }
 
-const mm::Col4 &ProcDesktop::getDefaultFrameColor() { return get()->unknown1f8; }
+const mm::Col4 &ProcDesktop::getDefaultFrameColor() { return get()->m_defaultFrameColor; }
 
 _dsk::ProcDesktopBackGround *ProcDesktop::getBackGround() { return mm::mtl::PtrSingleton<_dsk::ProcDesktopBackGround>::get(); }
 

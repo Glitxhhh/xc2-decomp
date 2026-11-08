@@ -53,9 +53,9 @@ ScnObjEnvColi::ScnObjEnvColi(Scn *scn) : ScnObj(scn, TYPE_CLIP), m_name("envColi
 
 ScnObjEnvColi::~ScnObjEnvColi() {}
 
-void ScnObjModel::setDelete() { unknown12 = true; }
+void ScnObjModel::setDelete() { m_delete = true; }
 
-void ScnObj::setDelete() { unknown12 = true; }
+void ScnObj::setDelete() { m_delete = true; }
 
 void ScnObjModel::setFrameSpd(f32 speed) { m_frameSpd = speed; }
 

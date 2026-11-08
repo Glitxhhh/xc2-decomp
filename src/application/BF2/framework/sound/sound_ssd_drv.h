@@ -199,10 +199,10 @@ public:
   void updateDebugInfoLocal(mm::mtl::FixedVector<SoundHandleDebugInfo, 128> &handles);
   void updateDebugInfoLocal(mm::mtl::FixedVector<SoundCategoryDebugInfo, 18> &categories);
 
-  ssd::SoundCore *unknown10;                                      // Inferred role: sound device; original member name unknown.
-  SoundAllocator unknown18;                                       // Inferred role: allocator; original member name unknown.
-  ssd::SoundListener *unknown28;                                  // Inferred role: listener; original member name unknown.
-  mm::Mat44 unknown30;                                            // Inferred role: listening point; original member name unknown.
+  ssd::SoundCore *unknown10;     // Inferred role: sound device; original member name unknown.
+  SoundAllocator unknown18;      // Inferred role: allocator; original member name unknown.
+  ssd::SoundListener *unknown28; // Inferred role: listener; original member name unknown.
+  mm::Mat44 m_listeningPoint;
   ml::CriticalSection unknown70;                                  // Inferred role: lock; original member name unknown.
   ml::CriticalSectionNC unknown98;                                // Inferred role: lock; original member name unknown.
   ml::CriticalSection unknownc0;                                  // Inferred role: lock; original member name unknown.
@@ -224,7 +224,7 @@ static_assert(offsetof(SoundSsdDriver::SoundAllocator, unknown08) == 0x08, "");
 static_assert(offsetof(SoundSsdDriver, unknown10) == 0x10, "");
 static_assert(offsetof(SoundSsdDriver, unknown18) == 0x18, "");
 static_assert(offsetof(SoundSsdDriver, unknown28) == 0x28, "");
-static_assert(offsetof(SoundSsdDriver, unknown30) == 0x30, "");
+static_assert(offsetof(SoundSsdDriver, m_listeningPoint) == 0x30, "");
 static_assert(offsetof(SoundSsdDriver, unknown70) == 0x70, "");
 static_assert(offsetof(SoundSsdDriver, unknown98) == 0x98, "");
 static_assert(offsetof(SoundSsdDriver, unknownc0) == 0xc0, "");

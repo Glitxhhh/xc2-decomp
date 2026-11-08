@@ -291,7 +291,7 @@ f32 ScnRenderDrSysParmAcc::getDOFFocusMin() const { return unknown08->unknown244
 
 f32 ScnRenderDrSysParmAcc::getDOFFocusRatio() const { return unknown08->unknown240; }
 
-bool ScnRenderDrSysParmAcc::isDOFFocusDebug() const { return unknown08->unknown21e; }
+bool ScnRenderDrSysParmAcc::isDOFFocusDebug() const { return unknown08->m_DOFAutoFocusDebug; }
 
 void ScnRenderDrSysParmAcc::setPlaneCloudNum(u32 planeCloudNum) {
   cloud::CloudMan *cloudMan = DrMan::getIns()->unknown1e00;
@@ -375,10 +375,7 @@ void ScnRenderDrSysParmAcc::setSeamMapReadPos(const mm::Vec3 &seamMapReadPos) {
 
 void ScnRenderDrSysParmAcc::releaseFastLight() { unknown00->releaseFastLight(unknown10); }
 
-u32 ScnRenderDrSysParmAcc::isGblId(s32 id) {
-  u32 *gblTbl = unknown00->unknown1d20;
-  return gblTbl[id >> 5] & (1 << (id & 31));
-}
+u32 ScnRenderDrSysParmAcc::isGblId(s32 id) { return unknown00->isGblIdx(id); }
 
 void ScnRenderDrSysParmAcc::setSelectIdDisp(s32 id, bool disp) {
   if (disp) {
@@ -398,7 +395,7 @@ void ScnRenderDrSysParmAcc::setClip(bool clip) { unknown00->unknown1d80 = clip; 
 
 void ScnRenderDrSysParmAcc::setFogSkip(bool fogSkip) { unknown00->unknown1d71 = fogSkip; }
 
-u32 *ScnRenderDrSysParmAcc::getGblTbl() { return unknown00->unknown1d20; }
+u32 *ScnRenderDrSysParmAcc::getGblTbl() { return unknown00->m_gblIdx; }
 
 void ScnRenderDrSysParmAcc::setSpCapMode(s32 spCapMode) { unknown00->setAvatarCapMode(spCapMode); }
 

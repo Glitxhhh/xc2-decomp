@@ -41,11 +41,11 @@ ColiObject *ColiMoveObject::createColiPhantom(const ColiPhantomInfo &info, const
   return object;
 }
 
-ColiMoveObject::ColiMoveObject() : unknown100(mm::Vec3::zero), unknown110(0) {}
+ColiMoveObject::ColiMoveObject() : m_dir(mm::Vec3::zero), unknown110(0) {}
 
 const mm::mtl::RTTI *ColiMoveObject::getRTTI() const { return &m_rtti; }
 
-void ColiMoveObject::setDir(const mm::Vec3 &direction) { unknown100 = direction; }
+void ColiMoveObject::setDir(const mm::Vec3 &direction) { m_dir = direction; }
 
 void ColiMoveObject::postUpdate() {
   ColiObject::postUpdate();
@@ -56,7 +56,7 @@ void ColiMoveObject::postUpdate() {
         move.setAccuracy(true);
         unknown110 &= ~FLAG_ACCURACY;
       }
-      move.moveColi(m_coliObject, unknown100);
+      move.moveColi(m_coliObject, m_dir);
       mm::Mat44 matrix(getMatrix());
       mm::Vec3 delta = move.unknown130;
       matrix.rows[3][0] = delta.x + matrix.rows[3][0];
@@ -69,7 +69,7 @@ void ColiMoveObject::postUpdate() {
         frame->unknown40.unknown00 += move.unknown130;
       }
     }
-    unknown100 = mm::Vec3::zero;
+    m_dir = mm::Vec3::zero;
   }
 }
 

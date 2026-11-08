@@ -27,9 +27,9 @@ public:
   u8 _20[0x28 - 0x20];
   void *unknown28; // Inferred role: allocated bit table; original member name unknown.
   u8 _30[0x38 - 0x30];
-  u8 *unknown38[2]; // Inferred role: display work per buffer; original member name unknown.
-  int unknown48[2]; // Inferred role: display work size per buffer; original member name unknown.
-  u32 unknown50;    // Inferred role: env map index; original member name unknown.
+  u8 *m_displayWrk[2];
+  int m_displayWrkSize[2];
+  u32 unknown50; // Inferred role: env map index; original member name unknown.
   u8 _54[0x58 - 0x54];
   MdoWrkMatRes *unknown58;       // Inferred role: material work; original member name unknown.
   DrResMdoSeamMemObj *unknown60; // Inferred role: memory object; original member name unknown.
@@ -45,8 +45,8 @@ public:
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown28) == 0x28, "");
 
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown18) == 0x18, "");
-static_assert(offsetof(DrResMdoSeamWrkEnv, unknown38) == 0x38, "");
-static_assert(offsetof(DrResMdoSeamWrkEnv, unknown48) == 0x48, "");
+static_assert(offsetof(DrResMdoSeamWrkEnv, m_displayWrk) == 0x38, "");
+static_assert(offsetof(DrResMdoSeamWrkEnv, m_displayWrkSize) == 0x48, "");
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown68) == 0x68, "");
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown50) == 0x50, "");
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown58) == 0x58, "");

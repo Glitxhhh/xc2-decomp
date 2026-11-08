@@ -53,12 +53,12 @@ void DrResMdoLight::setDisp(bool isDisp) {
   }
 }
 
-void DrResMdoLight::lgtCall_col_r(f32 *color, DrResEtcParams *params) { color[0] = params->unknown14; }
+void DrResMdoLight::lgtCall_col_r(f32 *color, DrResEtcParams *params) { color[0] = params->m_params; }
 
-void DrResMdoLight::lgtCall_col_g(f32 *color, DrResEtcParams *params) { color[1] = params->unknown14; }
+void DrResMdoLight::lgtCall_col_g(f32 *color, DrResEtcParams *params) { color[1] = params->m_params; }
 
-void DrResMdoLight::lgtCall_col_b(f32 *color, DrResEtcParams *params) { color[2] = params->unknown14; }
+void DrResMdoLight::lgtCall_col_b(f32 *color, DrResEtcParams *params) { color[2] = params->m_params; }
 
-void DrResMdoLight::lgtCall_col_inv(f32 *color, DrResEtcParams *params) { color[3] = params->unknown14; }
+void DrResMdoLight::lgtCall_col_inv(f32 *color, DrResEtcParams *params) { color[3] = params->m_params; }
 
 } // namespace ml

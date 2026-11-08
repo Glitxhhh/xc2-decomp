@@ -179,7 +179,7 @@ EffectData *EffectManager::findData(const char *name) {
 }
 
 void EffectManager::setMasterPause(bool isPause) {
-  if (unknown2fd5 == isPause) {
+  if (m_masterPause == isPause) {
     return;
   }
 
@@ -187,11 +187,11 @@ void EffectManager::setMasterPause(bool isPause) {
     return;
   }
 
-  unknown2fd5 = isPause;
-  effect::SystemManager::getPtr()->es_pause(unknown2fd5);
+  m_masterPause = isPause;
+  effect::SystemManager::getPtr()->es_pause(m_masterPause);
 }
 
-bool EffectManager::isMasterPause() const { return unknown2fd5; }
+bool EffectManager::isMasterPause() const { return m_masterPause; }
 
 EffectCasterSend *EffectManager::getCaster(EffectCasterBase *caster) {
   for (u32 i = 0; i < LAYER_MAX; i++) {
@@ -239,7 +239,7 @@ void EffectManager::sendCaster(EffectCasterBase *caster, f32 scale) {
       if (it.get()->m_caster == caster) {
         EffectCasterSend *send = it.get();
         if (send->m_caster != nullptr && effect::SystemManager::getPtr() != nullptr) {
-          send->unknown88[effect::SystemManager::getPtr()->unknown7824d != 0] = scale;
+          send->m_mdlScl[effect::SystemManager::getPtr()->unknown7824d != 0] = scale;
         }
         return;
       }
@@ -254,7 +254,7 @@ void EffectManager::sendCasterFrame(EffectCasterBase *caster, f32 frame) {
       if (it.get()->m_caster == caster) {
         EffectCasterSend *send = it.get();
         if (send->m_caster != nullptr && effect::SystemManager::getPtr() != nullptr) {
-          send->unknown90[effect::SystemManager::getPtr()->unknown7824d != 0] = frame;
+          send->m_mdlFrame[effect::SystemManager::getPtr()->unknown7824d != 0] = frame;
         }
         return;
       }

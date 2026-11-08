@@ -24,7 +24,7 @@ u16 DrAPCache::getSamplerID() {
   if (unknown40 != 0) {
     return unknown40;
   }
-  return unknown3a + unknown38 * 4 + m_filter * 16 + unknown3e * 32;
+  return unknown3a + unknown38 * 4 + m_filter * 16 + m_mipMapOn * 32;
 }
 
 void DrAPCache::depthBegin() {
@@ -141,7 +141,7 @@ void DrAPCache::beginTexSampling(int clamp, int filter) {
   unknown38 = clamp;
   unknown3a = clamp;
   m_filter = filter;
-  unknown3e = 0;
+  m_mipMapOn = 0;
 }
 
 void DrAPCache::begin3DTextureSampling() {
@@ -204,7 +204,7 @@ void DrAPCache::texSampClamping(int clampU, int clampV) {
   unknown3a = static_cast<u8>(clampV);
 }
 
-void DrAPCache::setMipMapOn(const grlib::CGLibTextureBuffer &texture) { unknown3e = texture.getMipmap() != 0; }
+void DrAPCache::setMipMapOn(const grlib::CGLibTextureBuffer &texture) { m_mipMapOn = texture.getMipmap() != 0; }
 
 void DrAPCache::setupShader(grlib::CGLibDecShader *shader, DrResFetch *fetch) { grlib::CGLibCtlShader::setShader(*shader, *fetch); }
 

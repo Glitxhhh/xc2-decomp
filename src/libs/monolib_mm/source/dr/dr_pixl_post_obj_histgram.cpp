@@ -109,13 +109,13 @@ mm::Vec2 DrPixlPostObjHistgram::getSection(u32 index) const {
   if (index == 0) {
     section.x = 0.0f;
   } else {
-    section.x = unknown20[index - 1];
+    section.x = m_maxLuminance[index - 1];
   }
-  section.y = unknown20[index];
+  section.y = m_maxLuminance[index];
   return section;
 }
 
-f32 DrPixlPostObjHistgram::getMaxLuminance() const { return unknown20[9]; }
+f32 DrPixlPostObjHistgram::getMaxLuminance() const { return m_maxLuminance[9]; }
 
 int DrPixlPostObjHistgram::getSectionNum() const { return 0xb; }
 

@@ -184,8 +184,7 @@ bool DrMdoCtlPos::clipRenderMdl(const MdsPosRangeTreeData *tree, MdoArgInst &arg
       isRender |= objPartsRenderMdl(keep, &unknown1e0[*index], arg);
       continue;
     }
-    u32 *gblTbl = m_drMan->unknown1d20;
-    if ((gblTbl[gbl >> 5] & (1 << (gbl & 31))) == 0) {
+    if (!m_drMan->isGblIdx(gbl)) {
       DrResMdoPos *pos = &unknown1e0[*index];
       f32 objAlpha = 1.0f;
       if (unknown1e8.unknown00 != nullptr) {

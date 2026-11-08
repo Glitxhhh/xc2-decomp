@@ -36,12 +36,12 @@ public:
   u8 _8904[0x8908 - 0x8904];
   DrMan *unknown8908; // Inferred role: driver manager; original member name unknown.
   u8 _8910[0x8918 - 0x8910];
-  DrPixlShadowObjDir *unknown8918; // Inferred role: additional shadow object; original member name unknown.
+  DrPixlShadowObjDir *m_addShadowObj;
 };
 
 static_assert(offsetof(DrPixlShadowMan, unknown0800) == 0x0800, "");
 static_assert(offsetof(DrPixlShadowMan, unknown8900) == 0x8900, "");
 static_assert(offsetof(DrPixlShadowMan, unknown8908) == 0x8908, "");
-static_assert(offsetof(DrPixlShadowMan, unknown8918) == 0x8918, "");
+static_assert(offsetof(DrPixlShadowMan, m_addShadowObj) == 0x8918, "");
 
 } // namespace ml

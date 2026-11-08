@@ -76,7 +76,7 @@ public:
   u16 unknown38;                  // Inferred role: clamp u; original member name unknown.
   u16 unknown3a;                  // Inferred role: clamp v; original member name unknown.
   u16 m_filter;
-  u16 unknown3e; // Inferred role: mip map; original member name unknown.
+  u16 m_mipMapOn;
   u16 unknown40; // Inferred role: sampler id; original member name unknown.
   u16 unknown42; // Inferred role: sampler type; original member name unknown.
 };

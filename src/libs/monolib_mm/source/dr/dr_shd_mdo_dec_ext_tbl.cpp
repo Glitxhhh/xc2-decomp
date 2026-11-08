@@ -24,11 +24,11 @@ void DrShdMdoDecExtTbl::bindShader() {
   cache->setupShader(this, fetch);
 }
 
-u32 DrShdMdoDecExtTbl::getValGlobalParam(int index) { return unknown28[index]; }
+u32 DrShdMdoDecExtTbl::getValGlobalParam(int index) { return m_valGlobalParam[index]; }
 
 void DrShdMdoDecExtTbl::setShaderParamAdd(u32 *param, u32 *globalParam) {
   unknown20 = param;
-  unknown28 = globalParam;
+  m_valGlobalParam = globalParam;
 }
 
 } // namespace ml

@@ -18,7 +18,7 @@ public:
     TYPE_CLIP = 6,
   };
 
-  ScnObj(Scn *scn, u16 type) : unknown08(scn), unknown10(type), unknown12(false) {}
+  ScnObj(Scn *scn, u16 type) : unknown08(scn), unknown10(type), m_delete(false) {}
   virtual ~ScnObj() {}
   virtual void update() {}
   virtual void renderDebug(DebDraw *debDraw) {}
@@ -29,11 +29,11 @@ public:
 
   Scn *unknown08; // Inferred role: scn; original member name unknown.
   u16 unknown10;  // Inferred role: type; original member name unknown.
-  bool unknown12; // Inferred role: delete; original member name unknown.
+  bool m_delete;
 };
 
 static_assert(offsetof(ScnObj, unknown08) == 0x08, "");
 static_assert(offsetof(ScnObj, unknown10) == 0x10, "");
-static_assert(offsetof(ScnObj, unknown12) == 0x12, "");
+static_assert(offsetof(ScnObj, m_delete) == 0x12, "");
 
 } // namespace ml

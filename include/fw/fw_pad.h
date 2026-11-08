@@ -148,7 +148,7 @@ public:
   static void setConfigData(int padNo, const PadConfigData &data);
   void updateControlPadNo(int padNo);
 
-  IPadFilter *unknown20[PAD_MAX];      // Inferred role: filters; original member name unknown.
+  IPadFilter *m_filter[PAD_MAX];
   PadData unknown80[PAD_MAX];          // Inferred role: pads; original member name unknown.
   PadData unknown3e0[PAD_MAX];         // Inferred role: pads updated by the second updatePadData loop; original member name unknown.
   PadWorkArray unknown740;             // Inferred role: button works of unknown80; original member name unknown.
@@ -163,15 +163,15 @@ public:
   u8 _3655[0x3660 - 0x3655];
   f32 unknown3660; // Inferred role: repeat time; original member name unknown.
   f32 unknown3664; // Inferred role: repeat time first; original member name unknown.
-  f32 unknown3668; // Inferred role: cnt time; original member name unknown.
-  f32 unknown366c; // Inferred role: hold time; original member name unknown.
+  f32 m_cntTime;
+  f32 m_holdTime;
   int unknown3670; // Inferred role: user select pad no; original member name unknown.
   u8 _3674[0x3678 - 0x3674];
   mm::mtl::FixedQueue<IPadListener *, LISTENER_MAX> unknown3678; // Inferred role: listeners; original member name unknown.
   PadResEventManager unknown3708;                                // Inferred role: pad res event manager; original member name unknown.
 };
 
-static_assert(offsetof(PadManager, unknown20) == 0x20, "");
+static_assert(offsetof(PadManager, m_filter) == 0x20, "");
 static_assert(offsetof(PadManager, unknown80) == 0x80, "");
 static_assert(offsetof(PadManager, unknown3e0) == 0x3e0, "");
 static_assert(offsetof(PadManager, unknown740) == 0x740, "");

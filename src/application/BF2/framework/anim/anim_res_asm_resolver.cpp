@@ -7,17 +7,17 @@
 
 namespace fw {
 
-AnimResAsmResolver::AnimResAsmResolver(mm::mtl::IAllocator &allocator) : unknown08(&allocator), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(&allocator) {}
+AnimResAsmResolver::AnimResAsmResolver(mm::mtl::IAllocator &allocator) : unknown08(&allocator), m_skekelton(nullptr), m_mirrorMapper(nullptr), m_simpleMapper(nullptr), unknown48(&allocator) {}
 
 AnimResAsmResolver::~AnimResAsmResolver() {
-  anm::unknown001(unknown38);
-  anm::unknown001(unknown40);
+  anm::unknown001(m_mirrorMapper);
+  anm::unknown001(m_simpleMapper);
 }
 
-const anm::Skeleton *AnimResAsmResolver::getSkekelton() const { return unknown30; }
+const anm::Skeleton *AnimResAsmResolver::getSkekelton() const { return m_skekelton; }
 
-anm::MirrorMapper *AnimResAsmResolver::getMirrorMapper() const { return unknown38; }
+anm::MirrorMapper *AnimResAsmResolver::getMirrorMapper() const { return m_mirrorMapper; }
 
-anm::SimpleMapper *AnimResAsmResolver::getSimpleMapper() const { return unknown40; }
+anm::SimpleMapper *AnimResAsmResolver::getSimpleMapper() const { return m_simpleMapper; }
 
 } // namespace fw

@@ -119,9 +119,7 @@ bool DrResMdoInstPartsObj::isDisp() const {
   if (unknown18->unknown08 == 0) {
     return false;
   }
-  DrMan *drMan = DrMan::getIns();
-  s32 id = unknown18->unknown08;
-  return drMan->unknown1d20[id >> 5] & (1 << (id & 31));
+  return DrMan::getIns()->isGblIdx(unknown18->unknown08);
 }
 
 DrResMdoInstPartsAnm::DrResMdoInstPartsAnm(const u8 *data, const MdsInstObjPosData *info)

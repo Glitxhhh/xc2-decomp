@@ -34,16 +34,16 @@ public:
   anm::SimpleMapper *getSimpleMapper() const override;
 
   mm::mtl::Vector<arc::CArcData> unknown08; // Inferred role: archives of the animation packs; original member name unknown.
-  const anm::Skeleton *unknown30;           // Inferred role: skeleton; original member name unknown.
-  anm::MirrorMapper *unknown38;             // Inferred role: mirror mapper; original member name unknown.
-  anm::SimpleMapper *unknown40;             // Inferred role: simple mapper; original member name unknown.
-  mm::mtl::IAllocator *unknown48;           // Inferred role: allocator of the mappers; original member name unknown.
+  const anm::Skeleton *m_skekelton;
+  anm::MirrorMapper *m_mirrorMapper;
+  anm::SimpleMapper *m_simpleMapper;
+  mm::mtl::IAllocator *unknown48; // Inferred role: allocator of the mappers; original member name unknown.
 };
 
 static_assert(offsetof(AnimResAsmResolver, unknown08) == 0x08, "");
-static_assert(offsetof(AnimResAsmResolver, unknown30) == 0x30, "");
-static_assert(offsetof(AnimResAsmResolver, unknown38) == 0x38, "");
-static_assert(offsetof(AnimResAsmResolver, unknown40) == 0x40, "");
+static_assert(offsetof(AnimResAsmResolver, m_skekelton) == 0x30, "");
+static_assert(offsetof(AnimResAsmResolver, m_mirrorMapper) == 0x38, "");
+static_assert(offsetof(AnimResAsmResolver, m_simpleMapper) == 0x40, "");
 static_assert(offsetof(AnimResAsmResolver, unknown48) == 0x48, "");
 
 } // namespace fw

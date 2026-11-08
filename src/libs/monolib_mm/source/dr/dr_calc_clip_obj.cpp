@@ -104,7 +104,7 @@ void DrCalcClipObj::seachTree(const MdsClipListTreeData *node, const mm::Vec3 &p
       u32 index = indices[i];
       if (!(unknown60[header->unknown04 >> 5] & (1 << (header->unknown04 & 0x1f)))) {
         const unknown007 *group = &unknown30[index];
-        if (group->unknown02 == 0 || !(DrMan::getIns()->unknown1d20[group->unknown02 >> 5] & (1 << (group->unknown02 & 0x1f)))) {
+        if (group->unknown02 == 0 || !(DrMan::getIns()->m_gblIdx[group->unknown02 >> 5] & (1 << (group->unknown02 & 0x1f)))) {
           if ((this->*s_pColiCheck[header->unknown06])(reinterpret_cast<const u8 *>(unknown10) + header->unknown00, position)) {
             unknown60[header->unknown04 >> 5] |= 1 << (header->unknown04 & 0x1f);
             if (unknown28 != nullptr) {
@@ -150,7 +150,7 @@ void DrCalcClipObj::seachCheckTree(const MdsClipListTreeData *node, const mm::Ve
         continue;
       }
       const unknown007 *group = &unknown30[index];
-      if (group->unknown02 != 0 && (DrMan::getIns()->unknown1d20[group->unknown02 >> 5] & (1 << (group->unknown02 & 0x1f)))) {
+      if (group->unknown02 != 0 && (DrMan::getIns()->m_gblIdx[group->unknown02 >> 5] & (1 << (group->unknown02 & 0x1f)))) {
         continue;
       }
       if (flag->unknown00 < radius) {
@@ -196,7 +196,7 @@ void DrCalcClipObj::seachOffTree(const MdsClipListTreeData *node, const mm::Vec3
         continue;
       }
       const unknown007 *group = &unknown30[index];
-      if (group->unknown02 != 0 && (DrMan::getIns()->unknown1d20[group->unknown02 >> 5] & (1 << (group->unknown02 & 0x1f)))) {
+      if (group->unknown02 != 0 && (DrMan::getIns()->m_gblIdx[group->unknown02 >> 5] & (1 << (group->unknown02 & 0x1f)))) {
         continue;
       }
       if (unknown28[header->unknown04].unknown00 < radius) {

@@ -166,18 +166,18 @@ public:
 
   static bool s_bRenderSubCpu;
 
-  u32 unknown1b0;                        // Inferred role: flags; original member name unknown.
-  mtl::ALLOC_HANDLE unknown1b4;          // Inferred role: mem work; original member name unknown.
-  mtl::ALLOC_HANDLE unknown1b8;          // Inferred role: mem stack; original member name unknown.
-  u32 unknown1bc;                        // Inferred role: cpu num; original member name unknown.
+  u32 unknown1b0;               // Inferred role: flags; original member name unknown.
+  mtl::ALLOC_HANDLE unknown1b4; // Inferred role: mem work; original member name unknown.
+  mtl::ALLOC_HANDLE unknown1b8; // Inferred role: mem stack; original member name unknown.
+  u32 m_cpuNum;
   reslist<IThreadValue *> unknown1c0[3]; // Inferred role: thread values swapped per cpu; original member name unknown.
   u8 _280[0x1738 - 0x280];
-  DO_THREAD unknown1738;         // Inferred role: thread; original member name unknown.
-  DO_THREAD unknown173c;         // Inferred role: next thread; original member name unknown.
+  DO_THREAD unknown1738; // Inferred role: thread; original member name unknown.
+  DO_THREAD m_thread;
   WorkCpuThread *unknown1740[3]; // Inferred role: cpu threads; original member name unknown.
   s32 unknown1758;               // Inferred role: render wakeup cpu; original member name unknown.
   u8 _175c[0x1764 - 0x175c];
-  u32 unknown1764; // Inferred role: even; original member name unknown.
+  u32 m_even;
   u8 _1768[0x1798 - 0x1768];
   TJOB *unknown1798; // Inferred role: last entered job; original member name unknown.
   u8 _17a0[0x195c - 0x17a0];
@@ -186,14 +186,14 @@ public:
   mm::mtl::FixedList<IWorkBackground *, 32> unknown1ba0; // Inferred role: background listeners; original member name unknown.
   mm::mtl::FixedList<IWorkInfomation *, 32> unknown1de0; // Inferred role: system info listeners; original member name unknown.
   u64 unknown2020;                                       // Inferred role: main thread id; original member name unknown.
-  u32 unknown2028[2];                                    // Inferred role: job trans; original member name unknown.
+  u32 m_jobTrans[2];
   u8 _2030[0x2034 - 0x2030];
   f32 unknown2034; // Inferred role: all cost sec; original member name unknown.
   u8 _2038[0x2048 - 0x2038];
   long unknown2048[5]; // Inferred role: begin clocks; original member name unknown.
-  long unknown2070;    // Inferred role: tail start clock; original member name unknown.
-  long unknown2078;    // Inferred role: tail end clock; original member name unknown.
-  long unknown2080;    // Inferred role: sync clock; original member name unknown.
+  long m_tailStartClock;
+  long m_tailEndClock;
+  long m_syncClock;
   u8 _2088[0x2090 - 0x2088];
   unsigned long unknown2090; // Inferred role: frame count; original member name unknown.
   u8 _2098[0x20a0 - 0x2098];
@@ -202,12 +202,12 @@ public:
 };
 
 static_assert(offsetof(WorkCpu, unknown1b0) == 0x1b0, "");
-static_assert(offsetof(WorkCpu, unknown1bc) == 0x1bc, "");
+static_assert(offsetof(WorkCpu, m_cpuNum) == 0x1bc, "");
 static_assert(offsetof(WorkCpu, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(WorkCpu, unknown1738) == 0x1738, "");
 static_assert(offsetof(WorkCpu, unknown1740) == 0x1740, "");
 static_assert(offsetof(WorkCpu, unknown1758) == 0x1758, "");
-static_assert(offsetof(WorkCpu, unknown1764) == 0x1764, "");
+static_assert(offsetof(WorkCpu, m_even) == 0x1764, "");
 static_assert(offsetof(WorkCpu, unknown1798) == 0x1798, "");
 static_assert(offsetof(WorkCpu, unknown195c) == 0x195c, "");
 static_assert(offsetof(WorkCpu, unknown1960) == 0x1960, "");
@@ -216,7 +216,7 @@ static_assert(offsetof(WorkCpu, unknown1de0) == 0x1de0, "");
 static_assert(offsetof(WorkCpu, unknown2020) == 0x2020, "");
 static_assert(offsetof(WorkCpu, unknown2034) == 0x2034, "");
 static_assert(offsetof(WorkCpu, unknown2048) == 0x2048, "");
-static_assert(offsetof(WorkCpu, unknown2080) == 0x2080, "");
+static_assert(offsetof(WorkCpu, m_syncClock) == 0x2080, "");
 static_assert(offsetof(WorkCpu, unknown2090) == 0x2090, "");
 static_assert(offsetof(WorkCpu, unknown20a0) == 0x20a0, "");
 static_assert(offsetof(WorkCpu, unknown22e0) == 0x22e0, "");

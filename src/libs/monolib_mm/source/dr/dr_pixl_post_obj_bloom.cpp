@@ -52,8 +52,8 @@ void DrPixlPostObjBloom::releaseBloomTexture() {
   unknown001(unknown78);
   unknown001(unknown58);
   unknown001(unknown80);
-  unknown001(unknown98[0]);
-  unknown001(unknown98[1]);
+  unknown001(m_lgtDownTarget[0]);
+  unknown001(m_lgtDownTarget[1]);
 }
 
 void DrPixlPostObjBloom::update() { unknown90 = 0; }
@@ -75,10 +75,10 @@ void DrPixlPostObjBloom::calcRender() {
 void DrPixlPostObjBloom::releaseColorBuff(bool isForce) {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   if (postParm->unknownfe4 == 3 || isForce) {
-    unknown98[0]->releaseTexture();
-    unknown98[1]->releaseTexture();
+    m_lgtDownTarget[0]->releaseTexture();
+    m_lgtDownTarget[1]->releaseTexture();
   } else {
-    unknown98[DrMan::s_nDblIdx]->releaseTexture();
+    m_lgtDownTarget[DrMan::s_nDblIdx]->releaseTexture();
   }
   if (postParm->unknownfe4 == 2 && !isForce) {
     return;
@@ -99,6 +99,6 @@ void DrPixlPostObjBloom::releaseColorBuff(bool isForce) {
   unknown30->releaseTexture();
 }
 
-grlib::CGLibRenderTarget *DrPixlPostObjBloom::getLgtDownTarget() { return unknown98[DrMan::s_nDblIdx]; }
+grlib::CGLibRenderTarget *DrPixlPostObjBloom::getLgtDownTarget() { return m_lgtDownTarget[DrMan::s_nDblIdx]; }
 
 } // namespace ml

@@ -70,12 +70,12 @@ bool SoundPack::canRelease() const {
   return true;
 }
 
-mm::mtl::IntrusivePtr<SoundSsdSource> SoundPack::getSource(u32 index) const { return unknown180[index]; }
+mm::mtl::IntrusivePtr<SoundSsdSource> SoundPack::getSource(u32 index) const { return m_source[index]; }
 
 mm::mtl::IntrusivePtr<SoundSsdSource> SoundPack::findSourceFromID(u32 id) const {
   for (u32 i = 0; i < unknown988.size(); i++) {
     if (unknown988[i].unknown00 == id) {
-      return unknown180[i];
+      return m_source[i];
     }
   }
 
@@ -86,8 +86,8 @@ mm::mtl::IntrusivePtr<SoundSsdSource> SoundPack::findSource(const char *name) co
   u32 hash = mm::mtl::hashStrCrc(name);
   for (u32 i = 0; i < unknown988.size(); i++) {
     if (unknown988[i].unknown04 == hash) {
-      if (strcmp(unknown180[i]->unknown134.c_str(), name) == 0) {
-        return unknown180[i];
+      if (strcmp(m_source[i]->unknown134.c_str(), name) == 0) {
+        return m_source[i];
       }
     }
   }
@@ -107,7 +107,7 @@ bool SoundPack::isLoopSource(const char *name) const {
 bool SoundPack::isLoopSource(u32 id) const {
   for (u32 i = 0; i < unknown988.size(); i++) {
     if (unknown988[i].unknown00 == id) {
-      SoundSsdSource *source = unknown180[i].get();
+      SoundSsdSource *source = m_source[i].get();
       if (source == nullptr) {
         return false;
       }
