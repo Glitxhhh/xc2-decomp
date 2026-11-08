@@ -1,13 +1,30 @@
 #include "gf/menu/object/gf_menu_obj_dr_kizuna_ring.h"
 
 #include "gf/game/gf_game_util.h"
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
+
+GfMenuObjDrKizunaRing::GfMenuObjDrKizunaRing(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(false), unknown3c(0), unknown40(-1), unknown48(nullptr), unknown50(nullptr), unknown60(0), unknown68(this), unknown2f8(0),
+      unknown300(nullptr), unknown308(nullptr), unknown310(0) {}
+
+GfMenuObjDrKizunaRing::~GfMenuObjDrKizunaRing() {
+  mm::mtl::safeRelease(unknown50);
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown300);
+  mm::mtl::safeRelease(unknown308);
+}
 
 void GfMenuObjDrKizunaRing::finalize() { GfMenuObject::finalize(); }
 

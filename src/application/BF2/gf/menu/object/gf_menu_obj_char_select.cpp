@@ -1,17 +1,21 @@
 #include "gf/menu/object/gf_menu_obj_char_select.h"
 
 #include "gf/game/gf_game_util.h"
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_blade_list.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
+#include "mm_mtl/reference_object.h"
 #include "types.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
-class GfMenuCallContext;
 
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x61;
@@ -19,6 +23,15 @@ constexpr u32 unknown001 = 0x61;
 constexpr u16 unknown002 = 0x104;
 // Inferred role: customize layer; original name unknown.
 constexpr u16 unknown004 = 0x27;
+
+GfMenuObjCharSelect::~GfMenuObjCharSelect() {
+  mm::mtl::safeRelease(unknown6e0);
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown30[0]);
+  mm::mtl::safeRelease(unknown30[1]);
+  mm::mtl::safeRelease(unknown30[2]);
+}
 
 void GfMenuObjCharSelect::finalize() { GfMenuObject::finalize(); }
 

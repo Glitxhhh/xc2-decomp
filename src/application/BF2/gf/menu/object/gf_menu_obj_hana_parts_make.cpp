@@ -3,11 +3,34 @@
 #include "gf/data/gf_data_hana.h"
 #include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/adapter/gf_menu_hana_adapter.h"
+#include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/list/gf_menu_id_list.h"
+#include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/util/gf_item_util.h"
 #include "mm_math/mm_math.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_color.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/list/ui_select_obj_list.h"
 
 namespace gf {
+
+GfMenuObjHanaPartsMake::GfMenuObjHanaPartsMake(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown70(0), unknown74(0) {}
+
+GfMenuObjHanaPartsMake::~GfMenuObjHanaPartsMake() {
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown38);
+  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown50);
+  mm::mtl::safeRelease(unknown58);
+  unknown60 = nullptr;
+  unknown68 = nullptr;
+}
 
 void GfMenuObjHanaPartsMake::finalize() { GfMenuObject::finalize(); }
 

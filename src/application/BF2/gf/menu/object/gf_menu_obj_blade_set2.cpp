@@ -1,9 +1,14 @@
 #include "gf/menu/object/gf_menu_obj_blade_set2.h"
 
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_blade_list.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
+#include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 
 namespace gf {
 
@@ -14,6 +19,21 @@ struct unknown001 {
 
 // Inferred role: menu id; original name unknown.
 constexpr u32 unknown002 = 0x1e;
+
+GfMenuObjBladeSet2::GfMenuObjBladeSet2(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(0), unknown60(nullptr), unknown68(0),
+      unknown78(false), unknown80(nullptr), unknown88(false), unknown8c(0), unknown90(0), unknown94(0), unknown98(0), unknowna0(this), unknown338(this) {}
+
+GfMenuObjBladeSet2::~GfMenuObjBladeSet2() {
+  mm::mtl::safeRelease(unknown80);
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown38);
+  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown50);
+  mm::mtl::safeRelease(unknown60);
+}
 
 void GfMenuObjBladeSet2::finalize() { GfMenuObject::finalize(); }
 

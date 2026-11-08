@@ -6,14 +6,27 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "types.h"
 
+namespace mm {
+namespace mtl {
+class ReferenceObject;
+} // namespace mtl
+} // namespace mm
+
 namespace ui {
 class UIObjectAcc;
+class UISelectObjList;
 } // namespace ui
 
 namespace gf {
 
+class GfMenuCallContext;
+class GfMenuItemList;
+
 class GfMenuObjDrKizunaRing : public GfMenuObject {
 public:
+  GfMenuObjDrKizunaRing(u32 handle);
+  ~GfMenuObjDrKizunaRing() override;
+
   // Inferred helper: number of unlocked skill levels of a driver ring, 0 to 3; original name unknown.
   static u32 unknown001(u32 driver, bool isHidden) {
     u32 level = 0;
@@ -44,14 +57,41 @@ public:
   bool seqUnlockAnime();
   bool seqWait();
 
-  u8 _24[0x68 - 0x24];
+  u8 _24[0x28 - 0x24];
+  ui::UISelectObjList *unknown28;      // Inferred role: ring objects; original member name unknown.
+  mm::mtl::ReferenceObject *unknown30; // Inferred role: reference-counted object; type and original member name unknown.
+  bool unknown38;                      // Role and original member name unknown, cleared by the constructor.
+  u32 unknown3c;                       // Role and original member name unknown, cleared by the constructor.
+  int unknown40;                       // Role and original member name unknown, set to -1 by the constructor.
+  u8 _44[0x48 - 0x44];
+  GfMenuCallContext *unknown48; // Inferred role: call context; original member name unknown.
+  GfMenuCallContext *unknown50; // Inferred role: call context; original member name unknown.
+  u8 _58[0x60 - 0x58];
+  u32 unknown60; // Role and original member name unknown, cleared by the constructor.
+  u8 _64[0x68 - 0x64];
   GfMenuSequence<GfMenuObjDrKizunaRing, 8> unknown68; // Inferred role: skill learning steps; original member name unknown.
   int unknown2f8;                                     // Inferred role: step state; original member name unknown.
-  u8 _2fc[0x318 - 0x2fc];
+  u8 _2fc[0x300 - 0x2fc];
+  GfMenuCallContext *unknown300; // Inferred role: call context; original member name unknown.
+  GfMenuItemList *unknown308;    // Inferred role: reward items; original member name unknown.
+  u32 unknown310;                // Role and original member name unknown, cleared by the constructor.
+  u8 _314[0x318 - 0x314];
 };
+
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown28) == 0x28, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown30) == 0x30, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown38) == 0x38, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown3c) == 0x3c, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown40) == 0x40, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown48) == 0x48, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown50) == 0x50, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown60) == 0x60, "");
 
 static_assert(offsetof(GfMenuObjDrKizunaRing, unknown68) == 0x68, "");
 static_assert(offsetof(GfMenuObjDrKizunaRing, unknown2f8) == 0x2f8, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown300) == 0x300, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown308) == 0x308, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing, unknown310) == 0x310, "");
 static_assert(sizeof(GfMenuObjDrKizunaRing) == 0x318, "");
 
 } // namespace gf
