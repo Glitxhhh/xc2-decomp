@@ -47,6 +47,7 @@ public:
     u8 _17[0x18 - 0x17];
   };
 
+  explicit GfGameObj(const GfSetupParam &param);
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
@@ -67,6 +68,8 @@ public:
   static void setupEnterGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime);
   static GfObj *getObj(GF_OBJ_HANDLE *handle);
   bool isEffectFadeEnd(const INOUT &inout, const GfObjAcc &acc) const;
+  bool fadeinGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo &info);
+  void addGameObj(GF_OBJ_HANDLE *handle);
   bool isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list) const;
   static void destroyGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime);
   static void addCharDeadMessage(GF_OBJ_HANDLE *handle, const MsgObjectNotifyDead &message);

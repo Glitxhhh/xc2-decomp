@@ -92,6 +92,7 @@ public:
     void onStep(void *owner, const void *param) override;
   };
 
+  explicit GfEvtModelDriver(GfInitParamDriver &param);
   static GfEvtModelDriver *create(GfInitParamDriver &param);
   ~GfEvtModelDriver() override;
   const mm::mtl::RTTI *getRTTI() const override;
@@ -132,6 +133,9 @@ static_assert(sizeof(GfEvtModelDriver) == 0x318, "");
 class GfEvtModelSalvage : public GfEvtModelDriver {
 public:
   static mm::mtl::RTTI m_rtti;
+
+  explicit GfEvtModelSalvage(GfInitParamDriver &param);
+  static GfEvtModelSalvage *create(GfInitParamDriver &param);
 
   const mm::mtl::RTTI *getRTTI() const override;
   bool isValid() const;

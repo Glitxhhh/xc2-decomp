@@ -1,14 +1,17 @@
 #include "gf/game/gf_game_obj.h"
 
+#include "fw/fw_update_info.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
 #include "gf/game/event/gf_game_event.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj_enemy.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
@@ -20,6 +23,12 @@
 
 namespace gf {
 struct GF_MOUNT_HANDLE;
+
+void GfGameObj::build(const GfSetupParam &param) {
+  // __LINE__ must be 213 as in the original file: it is the line argument of the allocation.
+#line 213
+  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameObj(param);
+}
 
 bool GfGameObj::isInitialized() {
   GfGameObj *gameObj = get();
@@ -94,6 +103,27 @@ GfObj *GfGameObj::getObj(GF_OBJ_HANDLE *handle) {
     return GfObjUtil::getObj(handle);
   }
   return nullptr;
+}
+
+bool GfGameObj::fadeinGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo &info) {
+  if (inout.unknown15) {
+    inout.unknown15 = false;
+  }
+  if (GfGameManager::isFadeout()) {
+    inout.unknown10 = 1.0f;
+  }
+  if (0.0f < inout.unknown08) {
+    inout.unknown10 += (1.0f / inout.unknown08) * info.unknown04;
+    acc.setAlphaLife(inout.unknown10);
+    if (!(inout.unknown10 >= 1.0f)) {
+      return false;
+    }
+  } else {
+    inout.unknown10 = 1.0f;
+  }
+  addGameObj(inout.unknown00);
+  acc.setAlphaLife(1.0f);
+  return true;
 }
 
 bool GfGameObj::isEffectFadeEnd(const INOUT &inout, const GfObjAcc &acc) const {

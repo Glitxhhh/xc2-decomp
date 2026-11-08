@@ -583,11 +583,83 @@ void GfFieldBgm::applyMapJumpFadein(const MapjumpCallbackInfo &info) {
   m_disableFieldBgmChange = false;
 }
 
+void GfFieldBgm::destroy() {
+  for (BgmTrack *track : unknown08) {
+    track->stopBGM(2.0f);
+    track->unknown610 = 1.0f;
+    track->unknown614 = 1.0f;
+    track->unknown618 = 1.0f;
+    track->m_categoryApply = 1;
+  }
+}
+
+void GfFieldBgm::update(const fw::UpdateInfo &info) {
+  updateBattleBgm(info);
+  updateGimmickBgm(info);
+  if (!m_disableFieldBgmChange) {
+    for (BgmTrack *track : unknown08) {
+      track->update(info);
+    }
+  }
+}
+
+void GfFieldBgm::updateBattleBgm(const fw::UpdateInfo &) {
+  if (m_rscBossBattleBgmID != 0 && m_rscBossBattleBgmID != 0xff && !BgmBattleBoss::get()->isPlaying()) {
+    if (unknown94++ > 0x12a) {
+      m_rscBossBattleBgmID = 0;
+      unknown94 = 0;
+    }
+  }
+}
+
 void GfFieldBgm::updateGimmickBgm(const fw::UpdateInfo &) {
   unknowna4--;
   if (unknowna4 <= 0 && m_gimmickBgmID != static_cast<u32>(-1)) {
     m_rscGimmickBgmID = m_gimmickBgmID;
     m_gimmickBgmID = -1;
+  }
+}
+
+void GfFieldBgm::gevPause(u32 resumeBits, u32 pauseBits) {
+  if (!(resumeBits >> 2 & 1) && (pauseBits & 4)) {
+    for (BgmTrack *track : unknown08) {
+      track->setPause(true);
+    }
+  } else if ((resumeBits >> 2 & 1) && !(pauseBits & 4)) {
+    for (BgmTrack *track : unknown08) {
+      track->setPause(false);
+    }
+  }
+}
+
+bool GfFieldBgm::isBossBgmCopied() const {
+  if (BgmBattleBoss::get() != nullptr) {
+    return BgmBattleBoss::get()->unknown629;
+  }
+  return false;
+}
+
+void GfFieldBgm::transferSoundParam(BgmTrack *track) {
+  for (BgmTrack *&source : unknown08) {
+    if (source != track && source->isPlaying()) {
+      track->copyPlayParam(source);
+      return;
+    }
+  }
+}
+
+void GfFieldBgm::setPause(bool isPause) {
+  for (BgmTrack *track : unknown08) {
+    track->setPause(isPause);
+  }
+}
+
+GfFieldBgm::~GfFieldBgm() {
+  for (BgmTrack **it = unknown08.begin(); it != unknown08.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
+      *it = nullptr;
+    }
   }
 }
 

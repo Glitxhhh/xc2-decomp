@@ -130,6 +130,16 @@ void GfEvtModel::setWeaponBattleMount() {}
 
 void GfEvtModel::setWeaponFieldMount() {}
 
+GfEvtModelSalvage::GfEvtModelSalvage(GfInitParamDriver &param) : GfEvtModelDriver(param) {}
+
+GfEvtModelSalvage *GfEvtModelSalvage::create(GfInitParamDriver &param) {
+  // __LINE__ must be 689 as in the original source: it is the line argument of operator new.
+#line 689
+  GfEvtModelSalvage *model = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfEvtModelSalvage(param);
+  model->addRef();
+  return model;
+}
+
 bool GfEvtModelSalvage::isValid() const { return GfGameObj::isValidGameObj(unknown20, false, nullptr); }
 
 void GfEvtModelSalvage::setTransform(const mm::Vec3 &position, f32 rotation) {
