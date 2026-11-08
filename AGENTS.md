@@ -26,8 +26,10 @@
   meaning (`IsPlayer` over `IsEnableBattleFace`); a union read by accessors of
   different types stays `unknownXX`.
 - Exceptions: the math types of `include/mm_math/` keep their component names
-  (`x`, `y`, `z`, `w`...), and the SDK and NVN declarations of `include/nn/`
-  and `include/nvn/` keep the names of their public API.
+  (`x`, `y`, `z`, `w`...), the SDK and NVN declarations of `include/nn/`
+  and `include/nvn/` keep the names of their public API, and the dlmalloc code
+  Monolith embedded (`src/libs/monolib_mm/source/mtl/dlmalloc.inl`) keeps the
+  names of dlmalloc 2.8's public source, with a provenance comment.
 - Document evidence for reconstructed layouts (assembly offsets, symbols and
   matching checks). Matching machine code does not prove the original types or
   variable names.
