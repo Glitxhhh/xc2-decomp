@@ -2,6 +2,12 @@
 
 - Preserve names established by original symbols. Do not present inferred names
   as original names.
+- The symbol tables of Monolith's sibling builds, Xenoblade Chronicles 2: Torna
+  - The Golden Country and Xenoblade Chronicles: Definitive Edition, also count
+  as original symbols for the code they share with this game (same class, same
+  library): a name taken from them cites the game and the mangled symbol in a
+  comment, and the match must be shown (same class and signature, or the same
+  body). Their executables stay local under `work/` like the game's.
 - Data members follow Monolith Soft's convention, seen in the game's assertion
   strings (`m_size`, `m_allocator`, `m_RefCount`, `m_stateInfos`): an `m_`
   prefix.
