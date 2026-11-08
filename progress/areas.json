@@ -2,8 +2,8 @@
   {
     "name": "gf",
     "code": {
-      "total": 4352320,
-      "matching": 2497984,
+      "total": 4352304,
+      "matching": 2497968,
       "non_matching": 0
     }
   },
@@ -128,6 +128,14 @@
     }
   },
   {
+    "name": "execute",
+    "code": {
+      "total": 15980,
+      "matching": 9356,
+      "non_matching": 0
+    }
+  },
+  {
     "name": "skdlib",
     "code": {
       "total": 55128,
@@ -176,14 +184,6 @@
     }
   },
   {
-    "name": "execute",
-    "code": {
-      "total": 15884,
-      "matching": 76,
-      "non_matching": 0
-    }
-  },
-  {
     "name": "minigame",
     "code": {
       "total": 70956,
@@ -194,7 +194,7 @@
   {
     "name": "Not started",
     "code": {
-      "total": 36056,
+      "total": 35976,
       "matching": 0,
       "non_matching": 0
     }
