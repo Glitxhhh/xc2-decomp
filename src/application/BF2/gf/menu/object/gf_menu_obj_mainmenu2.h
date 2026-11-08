@@ -5,9 +5,11 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 #include "ui/input/ui_input_layer.h"
 
 namespace ui {
+class UICtrlCursorSelect;
 class UIObjectNumberPlugin;
 class UIObjectAcc;
 } // namespace ui
@@ -25,6 +27,17 @@ public:
     u32 unknown00; // Inferred role: page; original member name unknown.
   };
 
+  class MainListener : public ui::UIObjectListener {
+  public:
+    MainListener(GfMenuObjMainMenu2 *owner) : unknown0c(), _10(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: fade state of the menu, 1 when faded in; original member name unknown.
+    u8 _10[0x1c - 0x10];
+    u8 _1c[0x20 - 0x1c];
+    GfMenuObjMainMenu2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjMainMenu2(u32 handle);
   ~GfMenuObjMainMenu2() override;
   static void registOpenParam(const OpenParam &param);
@@ -39,6 +52,7 @@ public:
   static void setGuideText(u32 text);
   static void setSubIndexText(u32 text);
   static void dispGuide(bool isDisp);
+  static void setupMainMenu(ui::UIObjectAcc &acc);
   static void setSystemKeyEnable(bool enable);
   static void cancelEnableMainMenu(bool enable);
   static void setDispGold(bool isDisp);
@@ -60,9 +74,9 @@ public:
   static bool s_cancelEnable;
 
   u8 _24[0x28 - 0x24];
-  GfMenuCallContext *unknown28; // Inferred role: call context; original member name unknown.
-  GfMenuCallContext *unknown30; // Inferred role: call context; original member name unknown.
-  u16 unknown38;                // Inferred role: unused; original member name unknown.
+  ui::UICtrlCursorSelect *unknown28; // Inferred role: contents cursor; original member name unknown.
+  GfMenuCallContext *unknown30;      // Inferred role: call context; original member name unknown.
+  u16 unknown38;                     // Inferred role: unused; original member name unknown.
   u8 _3a[0x3c - 0x3a];
   int unknown3c;                                   // Inferred role: unused, -1 at start; original member name unknown.
   int unknown40;                                   // Inferred role: unused, -1 at start; original member name unknown.
@@ -92,6 +106,8 @@ static_assert(offsetof(GfMenuObjMainMenu2, unknown8c) == 0x8c, "");
 static_assert(offsetof(GfMenuObjMainMenu2, unknown90) == 0x90, "");
 static_assert(offsetof(GfMenuObjMainMenu2, unknown320) == 0x320, "");
 static_assert(sizeof(GfMenuObjMainMenu2) == 0x328, "");
+static_assert(offsetof(GfMenuObjMainMenu2::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjMainMenu2::MainListener) == 0x28, "");
 
 class SelectionChecker : public ui::IUIInputSelectionChecker {
 public:

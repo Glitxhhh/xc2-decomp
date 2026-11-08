@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/data/gf_data_driver.h"
+#include "mm_math/mm_col3.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixed_array.h"
@@ -21,7 +22,6 @@ class UIStr;
 } // namespace ui
 
 namespace mm {
-struct Col3;
 struct Vec3;
 } // namespace mm
 
@@ -95,15 +95,23 @@ public:
     int unknown18;  // Inferred role: control slot, -1 to reserve one; original member name unknown.
     f32 unknown1c;  // Inferred role: delay time; original member name unknown.
     int unknown20;  // Inferred role: move distance; original member name unknown.
-    u8 _24[0x2c - 0x24];
+    u8 _24[0x26 - 0x24];
+    s16 unknown26; // Inferred role: layout x offset; original member name unknown.
+    s16 unknown28; // Inferred role: layout y offset; original member name unknown.
+    u8 _2a[0x2c - 0x2a];
     f32 unknown2c; // Inferred role: scale; original member name unknown.
     u8 _30[0x34 - 0x30];
     f32 unknown34; // Inferred role: rotation; original member name unknown.
     f32 unknown38; // Inferred role: brightness; original member name unknown.
     f32 unknown3c; // Inferred role: alpha; original member name unknown.
-    f32 unknown40; // Inferred role: control parameter; original member name unknown.
-    f32 unknown44; // Inferred role: control parameter; original member name unknown.
-    f32 unknown48; // Inferred role: control parameter; original member name unknown.
+    union {
+      struct {
+        f32 unknown40; // Inferred role: control parameter; original member name unknown.
+        f32 unknown44; // Inferred role: control parameter; original member name unknown.
+        f32 unknown48; // Inferred role: control parameter; original member name unknown.
+      };
+      mm::Col3 unknown40_col3; // View of the three control parameters as a color: the game copies a preset color into them with one 64-bit and one 32-bit move; original member name unknown.
+    };
     u8 _4c[0x50 - 0x4c];
     const char *unknown50; // Inferred role: motion data name; original member name unknown.
     const char *unknown58; // Inferred role: motion name; original member name unknown.
@@ -335,6 +343,8 @@ static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown14) == 0x14, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown18) == 0x18, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown1c) == 0x1c, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown26) == 0x26, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown2c) == 0x2c, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown34) == 0x34, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown38) == 0x38, "");

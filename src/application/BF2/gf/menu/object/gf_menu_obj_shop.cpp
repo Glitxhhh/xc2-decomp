@@ -5,19 +5,31 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_util.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/game/gf_game_util_shop.h"
+#include "gf/game/quest/gf_quest_id.h"
+#include "gf/game/quest/gf_quest_info.h"
+#include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/sequential_play/gf_sequential_play.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/object/gf_menu_obj_bl_weapon2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
+#include "gf/menu/object/gf_menu_obj_sort.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/scom/gf_scom_achiev.h"
+#include "mm_mtl/delegate.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/list/ui_list_info.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 
@@ -50,7 +62,7 @@ void GfMenuObjShop::close(GfMenuCallContext *context) {
   }
 }
 
-void GfMenuObjShop::dispBlade(bool isDisp) { unknown150(unknown001, 0x46, isDisp); }
+void GfMenuObjShop::dispBlade(bool isDisp) { gf::unknown150(unknown001, 0x46, isDisp); }
 
 void GfMenuObjShop::openOrbError(u32 error) {
   switch (error) {
@@ -303,6 +315,159 @@ bool GfMenuObjShop::seqEndRecipeIndexOpen() {
     break;
   }
   return true;
+}
+
+void GfMenuObjShop::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case GfMenuTypes::unknown003_33: {
+    unknown20->unknown24 = event.unknown08;
+    unknown20->unknown34 = getSpecialShop(unknown20->unknown24);
+    u8 *bdat = GfDataBdat::getFP(BDAT_MNU_SHOP_LIST);
+    if (bdat == nullptr) {
+      return;
+    }
+    unknown20->unknown28 = Bdat::getVal(bdat, "ShopType", unknown20->unknown24).valueU8;
+    unknown20->unknown30 = Bdat::getVal(bdat, "TableID", unknown20->unknown24).valueU16;
+    unknown20->unknown2c = Bdat::getVal(bdat, "ShopIcon", unknown20->unknown24).valueU16;
+    GfMenuReference::setReferenceShopID(unknown20->unknown24);
+    if (unknown20->unknown28 == 1 || unknown20->unknown28 == 3) {
+      GfMenuObjUtil::setChildDisp(handle, "LAY_location", false);
+      GfMenuObjUtil::setChildDisp(handle, "LAY_index_money", false);
+    } else {
+      GfMenuObjUtil::setChildDisp(handle, "LAY_location", true);
+      GfMenuObjUtil::setChildDisp(handle, "LAY_index_money", true);
+    }
+    unknown20->unknown4e0 = 0;
+    unknown20->unknown4e4 = 0;
+    acc.setDispChild(false, "TXT_common_guide");
+    unknown20->unknown38 = 0;
+    int isQuest = 0;
+    if (unknown20->unknown28 == 2) {
+      u32 price = GfGameUtilShop::getNeedMoneyForInn(unknown20->unknown24);
+      if (price != 0) {
+        unknown20->unknown168[3]->unknown162(price);
+        unknown20->unknown168[4]->unknown162(price * 2);
+        u32 money = GfDataUtil::getMoney();
+        u32 need = unknown20->unknown168[3]->unknown0c;
+        u32 text = acc.searchChild("TXT_inn_action@01");
+        if (money < need) {
+          GfMenuObjUtil::setColMulandAdd(text, "txt_disable");
+        } else {
+          GfMenuObjUtil::setColDefault(text);
+        }
+        money = GfDataUtil::getMoney();
+        need = unknown20->unknown168[4]->unknown0c;
+        text = acc.searchChild("TXT_inn_action@02");
+        if (money < need) {
+          GfMenuObjUtil::setColMulandAdd(text, "txt_disable");
+        } else {
+          GfMenuObjUtil::setColDefault(text);
+        }
+      } else {
+        unknown20->unknown248.unknown005();
+        unknown20->unknown248.unknown002(&GfMenuObjShop::seqStartSleepFade);
+        unknown20->unknown4e0 = 1;
+        unknown20->unknown4e4 = 0;
+        acc.setSuspend(false);
+        break;
+      }
+    } else if (unknown20->unknown28 == 3) {
+      GfMenuObjSort::setSortLabelText(GfMenuObjSort::getSortID(8, 0), acc.searchChild("TXT_orb_item_sort_label"));
+      unknown20->unknown14c = 0;
+    } else if (unknown20->unknown28 == 1) {
+      ui::UIListInfoBase::SetupParam param;
+      param.unknown08 = 8;
+      param.unknown10 = true;
+      acc.setDispChild(false, "TXT_exc_task_index");
+      acc.setDispChild(false, "TXT_exc_task_index_quest");
+      acc.setDispChild(false, "TXT_exc_task_index_cook");
+      acc.setDispChild(false, "TXT_exc_task_index_craft");
+      unknown20->unknown150->setupExcTaskListFromShop(param, unknown20->unknown24);
+      unknown20->unknown150->setIndex(0);
+      int taskType;
+      if (unknown20->unknown150->getSize() != 0) {
+        u8 *changeBdat = GfDataBdat::getFP(BDAT_MNU_SHOP_CHANGE);
+        if (changeBdat == nullptr) {
+          return;
+        }
+        u32 purpose = Bdat::getVal(changeBdat, "LinkQuestTask", unknown20->unknown30).valueU16;
+        if (purpose != 0) {
+          u32 taskIndex = Bdat::getVal(changeBdat, "LinkQuestTaskID", unknown20->unknown30).valueU16;
+          u8 *logBdat = nullptr;
+          u32 logId = 0;
+          GfQuestInfo::getTaskLog(logBdat, logId, purpose, taskIndex);
+          if (logBdat != nullptr && logId != 0) {
+            ui::UIObjectAcc(acc.unknown10, "TXT_exc_reward_quest_task").setText(ui::UIStr(logBdat, logId));
+          }
+          QuestID quest = GfQuestManager::getOrderQuestId(purpose);
+          unknown20->unknown548 = QuestTaskParam(quest, taskIndex, purpose, TASK_STATE_NONE);
+          isQuest = 1;
+          acc.setDispChild(true, "TXT_exc_task_index_quest");
+          taskType = 1;
+        }
+      }
+      if (!isQuest) {
+        taskType = 0;
+        if (unknown20->unknown2c == 0x1aa) {
+          acc.setDispChild(true, "TXT_exc_task_index_cook");
+          taskType = 2;
+        } else if (unknown20->unknown2c == 0x1ab) {
+          acc.setDispChild(true, "TXT_exc_task_index_craft");
+          taskType = 3;
+        } else if (unknown20->unknown2c == 0x1a4) {
+          acc.setDispChild(true, "TXT_exc_task_index_quest");
+          taskType = 1;
+        }
+      }
+      unknown20->unknown168[24]->unknown10 = 0;
+      unknown20->unknown168[24]->unknown14 = 999;
+      unknown20->unknown168[25]->unknown10 = 0;
+      unknown20->unknown168[25]->unknown14 = 999;
+      unknown20->unknown568 = taskType;
+      if (unknown20->unknown568 == 0) {
+        acc.setDispChild(true, "TXT_exc_task_index");
+      }
+      unknown20->setupExcItem();
+    }
+    GfMenuObjOperationInfo::open(0, 0, 0, 0);
+    GfMenuObjOperationInfo::setGuideDisp(false);
+    unknown20->unknown168[0]->unknown162(unknown20->unknown24);
+    unknown20->unknown168[1]->unknown162(GfGameManager::getMapZoneID());
+    GfMenuObject::sendOpenEvent(acc.searchChild("LAY_common"), 0, 0.06666667f);
+    GfMenuObject::sendOpenEvent(unknown20->getShopSubLayer(acc.unknown10), 0, 0.06666667f);
+    ui::UIObjectAcc(acc.unknown10, "LAY_index_normal").setDisp(!isQuest);
+    ui::UIObjectAcc(acc.unknown10, "LAY_index_quest").setDisp(isQuest);
+    acc.setSuspend(false);
+    break;
+  }
+  case GfMenuTypes::unknown003_34:
+    unknown20->sendCloseEvent(acc.searchChild("LAY_common"));
+    unknown20->sendCloseEvent(unknown20->getShopSubLayer(acc.unknown10));
+    GfMenuObjOperationInfo::close();
+    break;
+  case 0x41:
+    GfMenuReference::setReferenceShopID(0);
+    if (unknown20->unknown4e0 != 0) {
+      unknown20->addCallContextResult(unknown20->unknown4e0, unknown20->unknown4e4);
+    }
+    if (unknown20->unknown248.unknown00.empty()) {
+      GfMenuObject::termCallContext(acc.unknown10);
+      acc.setSuspend(true);
+    }
+    break;
+  case 0x46: {
+    u32 isFadeIn = event.unknown08;
+    ui::UIObjectAcc layer(acc.searchChild("LAY_char"));
+    if (isFadeIn == 0) {
+      GfMenuObjUtil::setCommonFadeOut(layer.unknown10, 2, false);
+    } else {
+      GfMenuObjUtil::setCommonFadeIn(layer.unknown10, 2, false);
+    }
+    return;
+  }
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
 }
 
 } // namespace gf

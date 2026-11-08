@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/gf_allocator.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/reference_object.h"
@@ -27,12 +28,25 @@ struct ElapseTime;
 
 class GfMenuRewriteNumber : public mm::mtl::ReferenceObject {
 public:
+  GfMenuRewriteNumber() : unknown0c(0), unknown10(true) {}
+
   int unknown0c;  // Inferred role: number; original member name unknown.
   bool unknown10; // Inferred role: rewrite; original member name unknown.
 };
 
 static_assert(offsetof(GfMenuRewriteNumber, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfMenuRewriteNumber, unknown10) == 0x10, "");
+
+// Inferred helper: allocates a rewrite number held once; original name unknown.
+// __LINE__ must be 39 as in the original header (the line of the new expression): it is the line argument of operator new.
+#line 38
+inline GfMenuRewriteNumber *unknown168() {
+  GfMenuRewriteNumber *number = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuRewriteNumber();
+  if (number != nullptr) {
+    number->addRef();
+  }
+  return number;
+}
 
 class GfMenuAdapter : public mm::mtl::IntrusiveListNode<GfMenuAdapter> {
 public:

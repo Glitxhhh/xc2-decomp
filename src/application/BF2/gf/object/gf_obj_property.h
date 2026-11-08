@@ -190,7 +190,9 @@ public:
   bool unknownc2; // Inferred role: scouted; original member name unknown.
   u8 _c3[0xc4 - 0xc3];
   u32 unknownc4; // Inferred role: arts id; original member name unknown.
-  u8 _c8[0xd8 - 0xc8];
+  u32 unknownc8; // Inferred role: arts message id; original member name unknown.
+  u8 _cc[0xd0 - 0xcc];
+  u8 *unknownd0;  // Inferred role: arts message bdat; original member name unknown.
   u32 unknownd8;  // Inferred role: weak attribute bits; original member name unknown.
   u32 unknowndc;  // Inferred role: element combo id, read by GfMenuReference::getElementComboRootCurrent; original member name unknown.
   f32 unknowne0;  // Inferred role: element combo time ratio; original member name unknown.
@@ -211,6 +213,8 @@ static_assert(offsetof(GfObjPropertyEnemy, unknown88) == 0x88, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknownc2) == 0xc2, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknownc4) == 0xc4, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknownd8) == 0xd8, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownc8) == 0xc8, "");
+static_assert(offsetof(GfObjPropertyEnemy, unknownd0) == 0xd0, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknowndc) == 0xdc, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknowne8) == 0xe8, "");
 static_assert(offsetof(GfObjPropertyEnemy, unknownf8) == 0xf8, "");

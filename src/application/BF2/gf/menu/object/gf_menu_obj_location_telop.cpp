@@ -2,6 +2,8 @@
 
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_order_mgr.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/sound/gf_sound.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
@@ -14,6 +16,9 @@ constexpr u32 CALL_LOCATION_TELOP_SUB = 38;
 constexpr u16 EVENT_OPEN_TELOP = 0x100;
 constexpr u16 EVENT_CLOSE_TELOP = 0x101;
 constexpr u32 TELOP_FRAME = 200;
+
+// Inferred role: frame and flag of the telop when it is reset; original name unknown.
+static const GfMenuObjLocationTelop::MainListener::unknown001 unknown002 = {0, 0};
 
 GfMenuObjLocationTelop::GfMenuObjLocationTelop(u32 handle) : GfMenuObject(handle) {}
 
@@ -61,6 +66,102 @@ void GfMenuObjLocationTelop::cancel() {
   ui::UIObjectAcc acc(getAttachedObject(CALL_LOCATION_TELOP));
   if (acc.isValid() && !acc.isTerm()) {
     GfMenuOrderMgr::cancelOrder(ORDER_LOCATION_TELOP);
+  }
+}
+
+void GfMenuObjLocationTelop::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    unknown0c = 0;
+    unknown10 = unknown002;
+    break;
+  case 3:
+    acc.setDisp(false);
+    GfMenuOrderMgr::finishOrder(ORDER_LOCATION_TELOP);
+    break;
+  case 0xc: {
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 2;
+    param.unknown00 = 1.0f;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    break;
+  }
+  case EVENT_OPEN_TELOP: {
+    acc.setDisp(true);
+    const char *textName = "TXT_name_other";
+    if (event.unknown10 == 2) {
+      textName = "TXT_name_area";
+    }
+    ui::UIObjectAcc text(acc.unknown10, textName);
+    GfMenuObject::setText(text.unknown10, event.unknown08);
+    const char *animation;
+    u32 jingle;
+    if (event.unknown10 == 0) {
+      jingle = 1;
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_landmark", true);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_secret", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_area", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_name_other", true);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_name_area", false);
+      animation = "landmark";
+    } else if (event.unknown10 == 1) {
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_landmark", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_secret", true);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_area", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_name_other", true);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_name_area", false);
+      jingle = 3;
+      animation = "secret";
+    } else if (event.unknown10 == 2) {
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_landmark", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_secret", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_index_area", true);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_name_other", false);
+      GfMenuObjUtil::setChildDisp(handle, "TXT_name_area", true);
+      jingle = 2;
+      animation = "area";
+    } else {
+      jingle = 0;
+      animation = nullptr;
+    }
+    ui::UIObjectAcc background(acc.unknown10, "IMG_bg");
+    background.startAnimation(animation, false);
+    GfMenuObject::hookAnimationEvent(handle, background.unknown10);
+    ui::UIObjectAcc index(acc.searchChild("LAY_index"));
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_in_r");
+    param.unknown11 = true;
+    param.unknown04 = 1;
+    GfMenuObjUtil::startCtrl(index.unknown10, param, nullptr);
+    ui::UIObjectAcc name(acc.searchChild("LAY_name"));
+    param.unknown04 = 1;
+    param.unknown004("fade_in_l");
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(name.unknown10, param, nullptr);
+    ui::UIObjectAcc telop(handle);
+    telop.setAlpha(1.0f);
+    if (jingle != 0) {
+      GfMenuObjUtil::playJingle(jingle);
+    }
+    unknown0c = 1;
+    unknown10.unknown00 = event.unknown0c;
+    break;
+  }
+  case EVENT_CLOSE_TELOP:
+    if (unknown0c != 0 && unknown0c != 3) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 2;
+      param.unknown00 = 0.25f;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+      unknown10.unknown04 = 0;
+      unknown0c = 3;
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
   }
 }
 

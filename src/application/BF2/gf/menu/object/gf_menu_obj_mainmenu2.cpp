@@ -8,18 +8,22 @@
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_popup.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/list/ui_select_obj_list.h"
 #include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
@@ -265,8 +269,8 @@ int GfMenuObjMainMenu2::moveMainMenu(ui::UIObjectAcc &acc, u32 index, bool) {
   param.unknown0c = 1;
   mm::Rect<s16> rect;
   move.getLayoutRect("move_guide_line", rect);
-  param.unknown00 = 0.35f;
   param.unknown20 = rect.y;
+  param.unknown00 = 0.35f;
   mm::Pnt<s16> pos(0, 0);
   switch (index) {
   case 3:
@@ -335,6 +339,164 @@ void GfMenuObjMainMenu2::update() {
   }
   unknown90.unknown003();
   GfMenuObject::update();
+}
+
+void GfMenuObjMainMenu2::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc root(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case GfMenuTypes::unknown003_259: {
+    u32 enable = event.unknown08;
+    ui::UIObjectAcc(acc.unknown10, "LAY_contents_input").setAlpha(enable == 1 ? 1.0f : 0.5f);
+    if (enable == 1) {
+      ui::UIObjectAcc(acc.unknown10, "LAY_contents_bg_sep").setAlpha(1.0f);
+    } else {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 4;
+      param.unknown3c = 0.5f;
+      param.unknown00 = 0.33f;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_contents_bg_sep");
+    }
+    if (unknown20->unknown28 != nullptr) {
+      mm::mtl::FixStr<32> name;
+      unknown20->unknown28->setDisp(enable == 1);
+      u32 item = unknown20->unknown28->unknown58->getIndex(false) + 1;
+      name.format("TXT_contents_item@%02d", item);
+      {
+        ui::UIObjectAcc text(acc.unknown10, name.c_str());
+        if (enable == 1) {
+          GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_title_sel");
+        } else {
+          GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_sys_disable");
+        }
+      }
+      name.format("IMG_contents_item_bg@%02d", item);
+      {
+        ui::UIObjectAcc background(acc.unknown10, name.c_str());
+        background.startAnimation(enable == 1 ? "loop" : "idol", false);
+        if (enable == 1) {
+          background.setMulColor("white");
+          background.setAddColor("black");
+        } else {
+          background.setMulColor("black");
+          background.setAddColor("sys_disable");
+        }
+      }
+      for (int i = 0; i < 7; i++) {
+        if (unknown20->unknown3c != i) {
+          name.format("TXT_contents_item@%02d", i + 1);
+          ui::UIObjectAcc text(acc.unknown10, name.c_str());
+          text.setDisp(enable == 1);
+        }
+      }
+    }
+    break;
+  }
+  case 1:
+    setupMainMenu(acc);
+    acc.setDisp(true);
+    unknown0c = 1;
+    GfMenuSoundManager::fadeFieldBgm(1.0f, 0.5f);
+    GfMenuObjPopup::pausePickup();
+    break;
+  case 0x105:
+    GfMenuObject::hookCtrlEvent(handle, moveMainMenu(root, 4, false));
+    GfMenuObjOperationInfo::open(root.searchChild("LAY_close"), root.searchChild("LAY_contents"), 0, 0);
+    setDispGold(true);
+    {
+      u8 *order = GfDataBdat::getFP(BDAT_MNU_MAIN_ORDER);
+      GfMenuObjOperationInfo::setGuideText(Bdat::getVal(order, "guide", unknown20->unknown60[unknown20->unknown3c]).valueU16, 0);
+    }
+    unknown20->unknown44 = 0;
+    if (unknown20->unknown8c) {
+      setCloseKeyEnable(true);
+    }
+    break;
+  case 0x106: {
+    bool enable = event.unknown08 == 1;
+    GfMenuObject::setInputActionEnable(root.searchChild("LAY_close"), 2, enable);
+    break;
+  }
+  case 0x107:
+    if (!GfMenuManager::isSwitchingFullScreen()) {
+      GfMenuObject::closeFSLayer(root.unknown10, true, true);
+      GfMenuObjUtil::playSE(4);
+    }
+    break;
+  case 0x108:
+    if (!unknown20->unknown8c) {
+      unknown20->unknown44 = event.unknown08;
+    }
+    break;
+  case 0x10a: {
+    ui::UIStr text;
+    if (event.unknown08 == 0) {
+      text.copy(ui::UIStr(" ", false));
+    } else {
+      u32 name = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_OPERATION_GUIDE), "name", event.unknown08).valueU16;
+      text.copy(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_OPERATION_GUIDE), name));
+    }
+    ui::UIObjectAcc guide(acc.searchChild("TXT_guide"));
+    guide.setText(text);
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_in_l");
+    param.unknown11 = true;
+    param.unknown14 = 8;
+    param.unknown00 = 0.2f;
+    GfMenuObjUtil::startCtrl(guide.unknown10, param, nullptr);
+    break;
+  }
+  case 0x10b:
+    if (unknown0c != event.unknown08) {
+      if (event.unknown08 == 1) {
+        GfMenuObjUtil::setCommonFadeIn(acc.unknown10, 0, 0);
+      } else {
+        GfMenuObjUtil::setCommonFadeOut(acc.unknown10, 0, 0);
+      }
+      unknown0c = event.unknown08;
+    }
+    break;
+  case 0x10e:
+    unknown20->unknown320 = true;
+    break;
+  case 2:
+    unknown20->unknown90.unknown005();
+    unknown20->unknown90.unknown004(0x10);
+    unknown20->unknown90.unknown002(&GfMenuObjMainMenu2::seqExecTerm);
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      if (handle != 0) {
+        ui::EventData request;
+        request.unknown00 = 0x107;
+        ui::UIManager::get()->requestObjectEvent(handle, request, 0.0f);
+      }
+    } else if (event.unknown08 == 4) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0;
+      param.unknown00 = 0.1f;
+      param.unknown04 = 7;
+      GfMenuObject::hookCtrlEvent(handle, GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr));
+    } else if (event.unknown08 == 7) {
+      GfMenuObject::enableInput(root.searchChild("LAY_contents"));
+      if (handle != 0) {
+        ui::EventData request;
+        request.unknown00 = GfMenuTypes::unknown003_259;
+        request.unknown08 = 1;
+        ui::UIManager::get()->requestObjectEvent(handle, request, 0.0f);
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::hookCtrlEvent(handle, GfMenuObjUtil::setCommonFadeOut(handle, 2, 0));
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 bool GfMenuObjMainMenu2::seqExecTerm() {

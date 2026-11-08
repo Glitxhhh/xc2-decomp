@@ -1,7 +1,5 @@
 #include "gf/menu/object/gf_menu_obj_party_status2.h"
 
-#include <string.h>
-
 #include "gf/game/gf_game_party.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_adapter.h"
@@ -9,6 +7,9 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/sound/gf_sound.h"
+#include "mm_math/mm_pnt.h"
+#include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
@@ -21,7 +22,7 @@ namespace gf {
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x5d;
 
-GfMenuObjPartyStatus2::GfMenuObjPartyStatus2(u32 handle) : GfMenuObject(handle), unknown24(false), unknown28(nullptr), unknown30(-1) { memset(unknown34, 0xff, sizeof(unknown34)); }
+GfMenuObjPartyStatus2::GfMenuObjPartyStatus2(u32 handle) : GfMenuObject(handle), unknown24(false), unknown28(nullptr), unknown30{-1, -1, -1} {}
 
 GfMenuObjPartyStatus2::~GfMenuObjPartyStatus2() { mm::mtl::safeRelease(unknown28); }
 
@@ -116,6 +117,145 @@ void GfMenuObjPartyStatus2::movePartyFrameInEnd(ui::UIObjectAcc &acc, u32 index)
     param.unknown08 = 1;
     param.unknown00 = 0.2f;
     GfMenuObjUtil::startCtrl(text.unknown10, param, nullptr);
+  }
+}
+
+void GfMenuObjPartyStatus2::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown20->unknown28 = unknown168();
+    setupPartyStatus(acc, unknown20->unknown28);
+    GfMenuObjUtil::setChildDisp(handle, "LAY_dr_list", true);
+    acc.setDisp(false);
+    break;
+  case 3: {
+    u32 state = event.unknown08;
+    switch (state) {
+    case 1:
+      movePartyFrameIn(acc, 0, unknown20->unknown30[0]);
+      movePartyFrameIn(acc, 1, unknown20->unknown30[1]);
+      movePartyFrameIn(acc, 2, unknown20->unknown30[2]);
+      break;
+    case 4:
+      movePartyFrameOut(acc, 0, unknown20->unknown30[0]);
+      movePartyFrameOut(acc, 1, unknown20->unknown30[1]);
+      movePartyFrameOut(acc, 2, unknown20->unknown30[2]);
+      break;
+    case 7:
+    case 8:
+    case 9:
+      movePartyFrameInEnd(acc, state - 7);
+      unknown20->unknown30[state - 7] = -1;
+      break;
+    case 10:
+    case 11:
+    case 12:
+      unknown20->unknown30[state - 10] = -1;
+      break;
+    }
+    break;
+  }
+  case 0xd:
+    if (event.unknown0c == 0) {
+      u32 index = event.unknown10;
+      u32 state = event.unknown08;
+      mm::mtl::FixStr<32> name;
+      name.format("IMG_dr_dmg_eff@%02d", index);
+      ui::UIObjectAcc effect(acc.searchChild(name.c_str()));
+      if (state == 1 || state == 2) {
+        effect.setDisp(true);
+        effect.startAnimation("pinch", false);
+      } else {
+        effect.setDisp(false);
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    if (!unknown20->unknown24) {
+      for (u32 i = 0; i < 3; i++) {
+        if (unknown20->unknown30[i] != -1) {
+          GfMenuObjUtil::stopCtrl(unknown20->unknown30[i]);
+          unknown20->unknown30[i] = -1;
+        }
+      }
+      acc.setDisp(true);
+      mm::mtl::FixStr<32> name;
+      for (u32 i = 1; i < 4; i++) {
+        name.format("LAY_dr@%02d", i);
+        ui::UIObjectAcc frame(handle, name.c_str());
+        frame.setAlpha(0.0f);
+        name.format("dr_position%02d", i);
+        mm::Rect<s16> rect;
+        frame.getLayoutRect(name.c_str(), rect);
+        mm::Pnt<s16> pos;
+        frame.getPos(pos);
+        pos.x = rect.x;
+        frame.setPos(pos);
+        name.format("TXT_dr_name@%02d", i);
+        ui::UIObjectAcc driverName(handle, name.c_str());
+        driverName.setAlpha(0.0f);
+        name.format("TXT_dr_hp_num@%02d", i);
+        ui::UIObjectAcc driverHp(handle, name.c_str());
+        driverHp.setAlpha(0.0f);
+      }
+      if (unknown20->unknown28 != nullptr) {
+        unknown20->unknown28->unknown10 = false;
+      }
+      unknown20->unknown24 = true;
+      if (handle != 0) {
+        unknown140(handle, 3, 1, 0.0f);
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_34:
+    if (unknown20->unknown24) {
+      unknown20->unknown24 = false;
+      for (u32 i = 0; i < 3; i++) {
+        if (unknown20->unknown30[i] != -1) {
+          GfMenuObjUtil::stopCtrl(unknown20->unknown30[i]);
+          unknown20->unknown30[i] = -1;
+        }
+      }
+      if (handle != 0) {
+        unknown158(handle, 3, 4, 0.0f);
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_257: {
+    u32 number = event.unknown08 + 1;
+    mm::mtl::FixStr<32> name;
+    name.format("IMG_dr_exp_eff@%02d", number);
+    ui::UIObjectAcc effect(acc.searchChild(name.c_str()));
+    effect.startAnimation("label", false);
+    name.format("TXT_dr_levelup@%02d", number);
+    ui::UIObjectAcc levelup(acc.searchChild(name.c_str()));
+    if (levelup.isValid()) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "mnu034_levelup_move";
+      param.unknown58 = "level_up";
+      param.unknown11 = true;
+      param.unknown14 = 8;
+      GfMenuObjUtil::startCtrl(levelup.unknown10, param, nullptr);
+    }
+    name.format("TXT_dr_levelup2@%02d", number);
+    ui::UIObjectAcc levelup2(acc.searchChild(name.c_str()));
+    if (levelup2.isValid()) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "mnu034_levelup_scale";
+      param.unknown58 = "level_up";
+      param.unknown11 = true;
+      param.unknown14 = 8;
+      GfMenuObjUtil::startCtrl(levelup2.unknown10, param, nullptr);
+    }
+    GfMenuObjUtil::playJingle(5);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
   }
 }
 

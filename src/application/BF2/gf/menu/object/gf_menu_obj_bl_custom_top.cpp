@@ -4,10 +4,12 @@
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/object/gf_menu_obj_bl_orb.h"
 #include "gf/menu/object/gf_menu_obj_bl_weapon.h"
+#include "gf/menu/object/gf_menu_obj_blade_set.h"
 #include "gf/menu/object/gf_menu_obj_common_jog.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_revolve_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -134,6 +136,81 @@ bool GfMenuObjBlCustomTop::seqEndAddLayer() {
   mm::mtl::safeRelease(unknown50);
   resumeInput();
   return true;
+}
+
+void GfMenuObjBlCustomTop::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqStartOpen);
+    unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAppearPhase1);
+    unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAppearPhase2);
+    unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAppearPhase3);
+    unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAppearPhase4);
+    unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqEndOpen);
+    break;
+  case 2: {
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 2;
+    param.unknown00 = 0.25f;
+    param.unknown14 = 1;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    break;
+  }
+  case 3:
+    GfMenuObject::enableFSSwitching();
+    GfMenuObject::returnFSSubLayer(acc.unknown10, 1);
+    break;
+  case 8:
+    if (event.unknown0c == 2) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 2;
+      param.unknown00 = 0.25f;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+      GfMenuObjCommonJog::close(unknown20->unknown40);
+      unknown20->suspendInput();
+    }
+    break;
+  default:
+    if (event.unknown00 == 0x41) {
+      u32 call = event.unknown08;
+      u32 layer = event.unknown14;
+      if (unknown20->unknown40 == nullptr || unknown20->unknown40->unknown0c != call || event.unknown10_u16 != 3) {
+        break;
+      }
+      if ((layer & 0xffff) == 6) {
+        GfMenuObjBladeSet::OpenParam param;
+        param.unknown00 = 0;
+        param.unknown04 = unknown20->unknown28->getContents(unknown20->unknown28->getIndex(false)).unknown00;
+        GfMenuObjBladeSet::registOpenParam(param);
+        GfMenuObject::changeFSSubLayer(acc.unknown10, 1, 6, true);
+        GfMenuObjCommonJog::close(unknown20->unknown40);
+      } else if ((layer & 0xffff) == 0x22) {
+        GfMenuObject::changeFSSubLayer(acc.unknown10, 1, 0x22, true);
+        GfMenuObjCommonJog::close(unknown20->unknown40);
+      } else {
+        unknown20->unknown2ec = layer;
+        unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqStartAddLayer);
+        unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAddLayerPhase1);
+        unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAddLayerPhase2);
+        if ((layer & 0xffff) == 0x24) {
+          unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAddLayerPhase3_BlWeapon);
+        } else if ((layer & 0xffff) == 0x26) {
+          unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAddLayerPhase3_BlOrb);
+        }
+        unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAddLayerPhase4);
+        unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqAddLayerPhase5);
+        unknown20->unknown58.unknown002(&GfMenuObjBlCustomTop::seqEndAddLayer);
+      }
+      break;
+    }
+  case 4:
+  case 5:
+  case 6:
+  case 7:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf

@@ -6,9 +6,13 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
+#include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
+#include "gf/menu/object/gf_menu_obj_party_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -96,6 +100,67 @@ bool GfMenuObjPartyForm3::seqAnnounceChange() {
   unknown310 = GfMenuCallContext::create();
   GfMenuObjCommonText::open(unknown310, 0xd, 0);
   return false;
+}
+
+void GfMenuObjPartyForm3::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc main(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1:
+    unknown20->unknown80.unknown005();
+    if (unknown20->unknown30 == 0) {
+      GfMenuObjOperationInfo::add(main.searchChild("LAY_dr_select"), 0, 0, 0);
+      unknown20->refreshRemoveAddOperation(main.searchChild("LAY_dr_select"), 0);
+      acc.setDispChild(false, "LAY_index");
+      GfMenuObjMainMenu2::setSubIndexText(4);
+      GfMenuObjMainMenu2::cancelEnableMainMenu(false);
+      GfMenuObjOperationInfo::setGuideText(0xb, 0);
+    } else {
+      GfMenuObjOperationInfo::open(main.searchChild("LAY_dr_select"), 0, 0, 0);
+      unknown20->refreshRemoveAddOperation(main.searchChild("LAY_dr_select"), 0);
+      unknown20->unknown80.unknown002(&GfMenuObjPartyForm3::seqAnnounceChange);
+      GfMenuObjOperationInfo::setGuideText(0xb, 2);
+    }
+    GfMenuObject::hookCtrlEvent(handle, GfMenuObjUtil::setCommonFadeIn(handle, 1, 0));
+    break;
+  case 2:
+    if (unknown20->unknown44) {
+      mm::mtl::FixedVector<u16, 16> drivers;
+      for (u32 i = 0; i < 3; i++) {
+        drivers.push_back(i < unknown20->unknown34 ? unknown20->unknown28->getContents(i).unknown00 : 0);
+      }
+      for (u32 i = unknown20->unknown34; i < unknown20->unknown28->getSize(); i++) {
+        drivers.push_back(unknown20->unknown28->getContents(i).unknown00);
+      }
+      GfMenuObjPartyStatus::memberChange(1, drivers[0]);
+      GfMenuObjPartyStatus::memberChange(2, drivers[1]);
+      GfMenuObjPartyStatus::memberChange(3, drivers[2]);
+      GfMenuObjUtil::setupPartyDriver(drivers);
+    }
+    if (unknown20->unknown30 == 0) {
+      GfMenuObjOperationInfo::remove(main.searchChild("LAY_dr_select"), 0, 0, 0);
+    } else {
+      GfMenuObjOperationInfo::close();
+    }
+    GfMenuObject::hookCtrlEvent(handle, GfMenuObjUtil::setCommonFadeOut(handle, 2, 0));
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      acc.setTerm();
+    } else if (event.unknown08 == 1) {
+      unknown20->unknown80.unknown002(&GfMenuObjPartyForm3::seqWaitOpenEnd);
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    acc.setDisp(false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 } // namespace gf
