@@ -121,6 +121,7 @@ public:
   static void notifyDead(GfComBehaviorPc &behavior, MsgObjectNotifyDead &message, bool isBroadcast);
   static void setEnableFallDistChecker(GfComBehaviorPc &behavior, bool isEnable);
   static EnviromentSensor::GroundInfo *getGroundInfo(GfComBehaviorPc &behavior);
+  static void applyDamage(GfComBehaviorPc &behavior, u32 rate, bool isTerrain);
   static EnviromentSensor::unknown003 *getClimbWallInfo(GfComBehaviorPc &behavior);
   static EnviromentSensor::GroundInfo *getClimbEndGroundInfo(GfComBehaviorPc &behavior);
   static EnviromentSensor::unknown003 *getDescendWallInfo(GfComBehaviorPc &behavior);

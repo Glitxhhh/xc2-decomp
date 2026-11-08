@@ -14,6 +14,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/util/gf_equip_util.h"
 #include "gf/util/gf_item_util.h"
 #include "mm_mtl/fixstr.h"
 #include "ui/plugin/ui_object_time_plugin.h"
@@ -494,6 +495,14 @@ void GfMenuItemAdapter::PouchReferenceIndexReferenceDriverConverter::getItemInfo
   info.unknown08 = 1;
 }
 
+void GfMenuItemAdapter::PouchReferenceDriverConverter::getItemInfo(MenuItemInfo &info) {
+  u32 index = pouchIndex;
+  SDataPouch *pouch = GfPouchUtil::getPouch(GfMenuReference::getReferenceDriverID(driverIndex), index);
+  info.unknown00 = ItemType::FAVORITE;
+  info.unknown04 = pouch->unknown04;
+  info.unknown08 = 1;
+}
+
 void GfMenuItemAdapter::MissionConverter::getItemInfo(MenuItemInfo &info) {
   if (index < 4) {
     u32 item;
@@ -540,6 +549,29 @@ void GfMenuItemAdapter::ReferenceDriverEquipConverter::getItemInfo(MenuItemInfo 
       accessory = 0;
     }
     GfDataItem::getItemType(info.unknown00, info.unknown04, accessory);
+    info.unknown08 = 1;
+  }
+}
+
+void GfMenuItemAdapter::BladeEquipConverter::getItemInfo(MenuItemInfo &info) {
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  if (acc.isValid()) {
+    if (slot < 3) {
+      info.unknown04 = GfEquipUtil::getEquipBladeOrb(blade, slot);
+      info.unknown00 = ItemType::EQUIP_ORB;
+    }
+    info.unknown08 = 1;
+  }
+}
+
+void GfMenuItemAdapter::ReferenceBladeEquipConverter::getItemInfo(MenuItemInfo &info) {
+  u32 blade = GfMenuReference::getReferenceBladeID(bladeIndex);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  if (acc.isValid()) {
+    if (slot < 3) {
+      info.unknown04 = GfEquipUtil::getEquipBladeOrb(blade, slot);
+      info.unknown00 = ItemType::EQUIP_ORB;
+    }
     info.unknown08 = 1;
   }
 }

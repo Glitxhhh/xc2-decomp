@@ -312,6 +312,15 @@ u32 GfMenuMissionAdapter::MissionListConverter::getMissionId() {
 
 u32 GfMenuMissionAdapter::ReferenceConverter::getMissionId() { return number->unknown0c; }
 
+u32 GfMenuMissionAdapter::ListConverter::getMissionId() {
+  if (listIndex < list->getSize()) {
+    return list->getContents(list->getPageIndex(listIndex)).unknown00;
+  }
+  return 0;
+}
+
+u32 GfMenuMissionAdapter::ReferenceMissionConverter::getMissionId() { return GfMenuReference::getReferenceMissionID(); }
+
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuMissionAdapter>(const mm::mtl::Delegate<bool()> *);

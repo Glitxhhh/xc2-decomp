@@ -3,6 +3,7 @@
 
 #include "gf/menu/adapter/gf_menu_adapter.h"
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_mission_list.h"
 #include "mm_mtl/delegate.h"
 #include "mm_mtl/intrusive_ptr.h"
@@ -40,6 +41,20 @@ public:
     u32 getMissionId() override;
 
     mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number;
+  };
+
+  class ListConverter : public IConverter {
+  public:
+    ~ListConverter() override { mm::mtl::safeRelease(list); }
+    u32 getMissionId() override;
+
+    GfMenuIDList *list;
+    u32 listIndex;
+  };
+
+  class ReferenceMissionConverter : public IConverter {
+  public:
+    u32 getMissionId() override;
   };
 
   static GfMenuMissionAdapter *createFromReferenceMission(u32 handle, u32 type, u32 index, bool isUpdateAlways);
