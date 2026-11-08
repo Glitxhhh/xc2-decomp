@@ -5,9 +5,12 @@
 #include "gf/game/quest/gf_quest_task_param.h"
 #include "gf/menu/gf_menu_flag.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/gf_menu_reference_item.h"
+#include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/sound/gf_sound.h"
+#include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
@@ -22,6 +25,20 @@ constexpr u16 unknown002 = 0x101;
 constexpr u16 unknown003 = 0x104;
 // Inferred role: ui event type closing the complete telop; original name unknown.
 constexpr u16 unknown006 = 0x103;
+
+GfMenuObjQuestLog::GfMenuObjQuestLog(u32 handle)
+    : GfMenuObject(handle), unknown58(false), unknown59(false), unknown5a(false), unknown5b(false), unknown60(this), unknown2f0(this), unknown580(this), unknown810(false), unknown818(false),
+      unknown820(nullptr), unknown828(0), unknown82c(0) {}
+
+GfMenuObjQuestLog::~GfMenuObjQuestLog() {
+  unknown28 = nullptr;
+  unknown30 = nullptr;
+  unknown38 = nullptr;
+  unknown40 = nullptr;
+  unknown48 = nullptr;
+  unknown50 = nullptr;
+  mm::mtl::safeRelease(unknown820);
+}
 
 void GfMenuObjQuestLog::finalize() { GfMenuObject::finalize(); }
 
