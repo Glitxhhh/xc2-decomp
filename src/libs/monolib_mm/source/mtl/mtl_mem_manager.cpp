@@ -8,6 +8,8 @@
 #include "mm_mtl/internal/heap_allocator.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/allocator_wrapper.h"
+#include "mtl/call_stack_manager.h"
+#include "mtl/dl_allocator.h"
 #include "mtl/mem_allocator.h"
 #include "mtl/mem_manager.h"
 #include "mtl/mem_manager_region.h"
@@ -510,6 +512,38 @@ bool MemManager::valid_section(const ALLOC_HANDLE &handle, bool) {
   return false;
 }
 
+DlAllocator::DlAllocator() : unknown30(nullptr), unknown38(nullptr), unknown40(0) {}
+
+DlAllocator::~DlAllocator() {}
+
+void DlAllocator::destroy() {
+  unknown38 = nullptr;
+  unknown40 = 0;
+  unknown30 = nullptr;
+}
+
+const char *DlAllocator::getName() const { return m_name.c_str(); }
+
+void *DlAllocator::allocate(size_t size, size_t alignment) { return allocate(size, 16, "no name", 0); }
+
+size_t DlAllocator::getAllocSize(size_t size) const {
+  size_t total = size + sizeof(unknown001);
+  if ((total & 0xf) != 0) {
+    total = total + 16 - (total & 0xf);
+  }
+  return total;
+}
+
+void DlAllocator::finalizeFooter(void *footer) {
+  unknown001 *info = static_cast<unknown001 *>(footer);
+  if (info != nullptr && info->unknown10 != nullptr) {
+    unknown48.remove(info->unknown10);
+    info->unknown10 = nullptr;
+  }
+}
+
 } // namespace mtl
 
 template mm::mtl::FixedVector<mtl::MemManager::HandleRegion, 512>::~FixedVector();
+
+void operator delete(void *pointer) noexcept { mtl::MemManager::deallocate(pointer, 0, false); }
