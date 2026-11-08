@@ -16,6 +16,8 @@ struct GF_OBJ_HANDLE;
 struct GfReqParam;
 
 struct RQ_SETUP_BLADE {
+  RQ_SETUP_BLADE();
+
   u16 unknown00;                         // Inferred role: driver; original member name unknown.
   u16 unknown02;                         // Inferred role: current blade; original member name unknown.
   mm::mtl::FixedArray<u16, 5> unknown04; // Inferred role: blades; original member name unknown.

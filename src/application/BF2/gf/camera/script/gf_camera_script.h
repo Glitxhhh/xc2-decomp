@@ -39,6 +39,19 @@ public:
   u8 _118[0x120 - 0x118];
 };
 
+class ScriptCamera {
+public:
+  ScriptCamera();
+  virtual ~ScriptCamera();
+  void end(f32 time);
+  void move(const mm::Vec3 &position, const mm::Vec3 &rotation, f32 time);
+
+  mm::mtl::IntrusivePtr<fw::Camera> unknown08; // Inferred role: script camera; original member name unknown.
+};
+
+static_assert(offsetof(ScriptCamera, unknown08) == 0x08, "");
+static_assert(sizeof(ScriptCamera) == 0x10, "");
+
 static_assert(offsetof(ScriptCameraEntity, unknownb0) == 0xb0, "");
 static_assert(offsetof(ScriptCameraEntity, unknownf0) == 0xf0, "");
 static_assert(offsetof(ScriptCameraEntity, unknown100) == 0x100, "");

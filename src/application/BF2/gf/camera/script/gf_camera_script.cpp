@@ -39,4 +39,23 @@ const mm::mtl::RTTI *ScriptCameraEntity::getRTTI() const { return &m_rtti; }
 
 const char *ScriptCameraEntity::getName() const { return "ScriptCameraEntity"; }
 
+ScriptCamera::ScriptCamera() {}
+
+ScriptCamera::~ScriptCamera() {}
+
+void ScriptCamera::end(f32 time) {
+  if (unknown08.get() != nullptr) {
+    if (unknown08->unknowna0) {
+      fw::CameraManager::get()->unknown20[0].pop(unknown08, time / 30.0f);
+    }
+    unknown08 = nullptr;
+  }
+}
+
+void ScriptCamera::move(const mm::Vec3 &position, const mm::Vec3 &rotation, f32 time) {
+  if (unknown08.get() != nullptr) {
+    static_cast<ScriptCameraEntity *>(unknown08.get())->move(position, rotation, time);
+  }
+}
+
 } // namespace gf
