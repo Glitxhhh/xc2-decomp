@@ -35,8 +35,8 @@ FORBIDDEN = [
 # quaternion conversions), which the game inlines where clang 3.9 would not.
 ALWAYS_INLINE_OK = ("include/mm_math/mm_mat44.h", "include/mm_math/mm_math.h")
 # The one volatile accepted: dlmalloc 2.8's init_mparams store `(*(volatile size_t *)(&(mparams.magic))) = magic;`,
-# reproduced from its public source in the DlAllocator code.
-DLMALLOC_FILE = "src/libs/monolib_mm/source/mtl/mtl_mem_manager.cpp"
+# reproduced from its public source in the dlmalloc code Monolith embedded.
+DLMALLOC_FILE = ("src/libs/monolib_mm/source/mtl/mtl_mem_manager.cpp", "src/libs/monolib_mm/source/mtl/dlmalloc.inl")
 DLMALLOC_VOLATILE = re.compile(r"\(\*\(volatile size_t \*\)\(&\(?[\w.]+\)?\)\) = \w+;")
 
 TRIVIAL = re.compile(r"^(\{|\}|\};|\} else \{|else|return;|return \w+;|return (true|false|nullptr|0|-1);|break;|continue;|default:|)$")
@@ -123,7 +123,7 @@ def main():
         code = re.sub(r"//.*", "", re.sub(r"/\*.*?\*/", "", text))
         if path in ALWAYS_INLINE_OK:
             code = code.replace("__attribute__((always_inline))", "")
-        if path == DLMALLOC_FILE:
+        if path in DLMALLOC_FILE:
             code = DLMALLOC_VOLATILE.sub("", code)
         for label, pattern in FORBIDDEN:
             if pattern.search(code):
