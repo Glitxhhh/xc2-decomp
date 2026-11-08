@@ -138,6 +138,13 @@ public:
     return at(index);
   }
 
+  // Inferred role: copies the front element into out before removing it; original name unknown.
+  void unknown002(T &out) {
+    out = at(mFront);
+    mFront = (mFront + 1) % N;
+    --mSize;
+  }
+
   // __LINE__ must be 485 as in the original header: it is the line argument of the assert.
 #line 484
   T pop_back() {

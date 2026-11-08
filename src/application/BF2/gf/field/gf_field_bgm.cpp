@@ -446,6 +446,32 @@ bool BgmTrack::getPlayVolume(f32 &volume, const fw::UpdateInfo &info, const BGMC
   return false;
 }
 
+void BgmTrack::copyPlayParam(BgmTrack *src) {
+  m_bgmCondID = src->m_bgmCondID;
+  unknown614 = src->unknown614;
+  unknown610 = src->unknown610;
+  unknown08 = src->unknown08;
+  unknown629 = true;
+  if (!unknown08[0].unknown04.isValid() && unknown08[1].unknown04.isValid()) {
+    unknown08[0].copyPlayInfo(unknown08[1]);
+    unknown08[1].clear();
+  }
+  GfSound *sound = GfSound::get();
+  if (sound != nullptr) {
+    for (BGMCOND *cond = src->unknown08.begin(); cond != src->unknown08.end(); cond++) {
+      if (cond->unknown04.isValid()) {
+        sound->setCategory(cond->unknown04, static_cast<fw::SoundCategory>(m_categoryApply));
+      }
+    }
+  }
+  src->m_bgmCondID = 0;
+  src->unknown610 = 0.0f;
+  src->unknown614 = 0.0f;
+  for (BGMCOND *cond = src->unknown08.begin(); cond != src->unknown08.end(); cond++) {
+    cond->clear();
+  }
+}
+
 void BgmTrack::copyPlayParam(BgmTrack *src, const BgmFileInfo &info) {
   m_bgmCondID = info.unknown00;
   unknown614 = src->unknown614;
