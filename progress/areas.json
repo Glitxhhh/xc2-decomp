@@ -18,8 +18,8 @@
   {
     "name": "monolib_mm",
     "code": {
-      "total": 1742856,
-      "matching": 482812,
+      "total": 1744624,
+      "matching": 482940,
       "non_matching": 0
     }
   },
@@ -34,8 +34,8 @@
   {
     "name": "framework",
     "code": {
-      "total": 486132,
-      "matching": 258800,
+      "total": 486800,
+      "matching": 259468,
       "non_matching": 0
     }
   },
@@ -154,8 +154,40 @@
   {
     "name": "movie",
     "code": {
-      "total": 20812,
-      "matching": 2636,
+      "total": 24668,
+      "matching": 3056,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "dir",
+    "code": {
+      "total": 3372,
+      "matching": 1952,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "csvb",
+    "code": {
+      "total": 4044,
+      "matching": 1444,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "minigame",
+    "code": {
+      "total": 70956,
+      "matching": 976,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "arc",
+    "code": {
+      "total": 896,
+      "matching": 896,
       "non_matching": 0
     }
   },
@@ -168,14 +200,6 @@
     }
   },
   {
-    "name": "arc",
-    "code": {
-      "total": 668,
-      "matching": 668,
-      "non_matching": 0
-    }
-  },
-  {
     "name": "wndlib",
     "code": {
       "total": 18936,
@@ -184,17 +208,9 @@
     }
   },
   {
-    "name": "minigame",
-    "code": {
-      "total": 70956,
-      "matching": 320,
-      "non_matching": 0
-    }
-  },
-  {
     "name": "Not started",
     "code": {
-      "total": 24460,
+      "total": 10524,
       "matching": 0,
       "non_matching": 0
     }

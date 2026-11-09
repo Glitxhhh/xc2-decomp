@@ -1,16 +1,91 @@
+#include <stdlib.h>
 #include <vector>
 
 #include "libs/movie/audio_out_renderer.h"
+#include "libs/movie/cmovie_nx.h"
 #include "libs/movie/media_clock.h"
 #include "libs/movie/movie_decoder_player.h"
 #include "libs/movie/movie_status.h"
 #include "libs/movie/video_renderer.h"
+#include "mm_mtl/allocator.h"
 #include "nn/os.h"
 #include "types.h"
 
 namespace movie {
 class Decoder;
 } // namespace movie
+
+namespace {
+
+bool unknown001; // Inferred role: movie is paused; original name unknown.
+
+} // namespace
+
+namespace CMovieNX {
+
+u8 *CMovie::randfill(u8 *buffer, size_t size) {
+  unsigned int seed = rand();
+  u8 *p = buffer;
+  for (size_t i = 0; i < size; i++) {
+    *p++ = seed >> 8;
+    seed = seed * 1103515245 + 12345;
+  }
+  return p;
+}
+
+void CMovie::finalize() {
+  if (unknown10 != nullptr) {
+    unknown20->deallocate(unknown10);
+    unknown10 = nullptr;
+  }
+}
+
+float CMovie::get_length() { return 0.0f; }
+
+float CMovie::pos() { return 0.0f; }
+
+void CMovie::play() {
+  if (unknown001 == true) {
+    unknown001 = false;
+  }
+}
+
+void CMovie::pause() {
+  if (!unknown001) {
+    unknown001 = true;
+  }
+}
+
+bool CMovie::isstandby() {
+  if (unknown08 == nullptr) {
+    return false;
+  }
+  if (unknown08->unknown438 != nullptr) {
+    return unknown08->unknown438->unknown268;
+  }
+  return false;
+}
+
+bool CMovie::ispause() { return unknown001; }
+
+bool CMovie::isplaying() {
+  MovieDecoderPlayer *player = unknown08;
+  if (player == nullptr) {
+    return false;
+  }
+  bool audioFinished;
+  if (player->unknown430 == nullptr) {
+    audioFinished = true;
+  } else {
+    audioFinished = player->unknown430->unknown4b0;
+  }
+  if ((player->unknown438 == nullptr || player->unknown438->unknown269) && audioFinished) {
+    player->unknownb30 = true;
+  }
+  return !player->unknownb30;
+}
+
+} // namespace CMovieNX
 
 MediaClock::MediaClock() {
   nn::os::InitializeMutex(&unknown00, false, 0);

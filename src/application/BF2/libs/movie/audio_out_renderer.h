@@ -35,7 +35,8 @@ public:
   u64 m_rendererSleepTimeMs; // Named by the accessor GetRendererSleepTimeMs.
   u8 _488[0x490 - 0x488];
   nn::os::MutexType unknown490; // Inferred role: audio data mutex; original member name unknown.
-  u8 _4b0[0x4b8 - 0x4b0];
+  bool unknown4b0;              // Inferred role: flag tested by CMovie::isplaying; original member name unknown.
+  u8 _4b1[0x4b8 - 0x4b1];
   MediaClock *unknown4b8; // Inferred role: media clock; original member name unknown.
   s64 unknown4c0;         // Inferred role: start time us; original member name unknown.
   s64 unknown4c8;         // Inferred role: played out start time us; original member name unknown.
@@ -49,6 +50,7 @@ static_assert(offsetof(AudioOutRenderer, unknown430) == 0x430, "");
 static_assert(offsetof(AudioOutRenderer, m_rendererSleepTimeMs) == 0x480, "");
 static_assert(offsetof(AudioOutRenderer, unknown490) == 0x490, "");
 static_assert(offsetof(AudioOutRenderer, unknown4b8) == 0x4b8, "");
+static_assert(offsetof(AudioOutRenderer, unknown4b0) == 0x4b0, "");
 static_assert(offsetof(AudioOutRenderer, unknown4c0) == 0x4c0, "");
 static_assert(offsetof(AudioOutRenderer, unknown4c8) == 0x4c8, "");
 static_assert(offsetof(AudioOutRenderer, unknown4d0) == 0x4d0, "");

@@ -4,6 +4,7 @@
 #include "anm/anm_reference_object.h"
 #include "anm/anm_simple_mapper.h"
 #include "arc/arc_data.h"
+#include "mm_mtl/vector.h" // IWYU pragma: keep
 
 namespace fw {
 
@@ -21,3 +22,8 @@ anm::MirrorMapper *AnimResAsmResolver::getMirrorMapper() const { return m_mirror
 anm::SimpleMapper *AnimResAsmResolver::getSimpleMapper() const { return m_simpleMapper; }
 
 } // namespace fw
+
+// The game instantiates these where AnimResAsmResolver::resolvePackFiles uses them, calling CArcData::CArcData(void *) out of line:
+// they cannot sit in arc_data.cpp, which defines that constructor and would inline it.
+template void mm::mtl::Vector<arc::CArcData>::extend(size_t, size_t);
+template void mm::mtl::Vector<arc::CArcData>::resize(size_t);

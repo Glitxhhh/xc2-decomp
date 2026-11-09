@@ -31,9 +31,11 @@ public:
   u8 _228[0x230 - 0x228];
   nn::os::MutexType unknown230; // Inferred role: video data mutex; original member name unknown.
   u8 _250[0x260 - 0x250];
-  int unknown260; // First int argument of Open; role unknown, original member name unknown.
-  int unknown264; // Second int argument of Open; role unknown, original member name unknown.
-  u8 _268[0x278 - 0x268];
+  int unknown260;  // First int argument of Open; role unknown, original member name unknown.
+  int unknown264;  // Second int argument of Open; role unknown, original member name unknown.
+  bool unknown268; // Inferred role: flag tested by CMovie::isstandby; original member name unknown.
+  bool unknown269; // Inferred role: flag tested by CMovie::isplaying; original member name unknown.
+  u8 _26a[0x278 - 0x26a];
   s64 m_videoPostDelayUs; // Read and clamped to 2000..300000 by GetVideoPostDelayUs, hence the accessor-derived name.
 };
 
@@ -43,4 +45,6 @@ static_assert(offsetof(VideoRenderer, unknown210) == 0x210, "");
 static_assert(offsetof(VideoRenderer, unknown230) == 0x230, "");
 static_assert(offsetof(VideoRenderer, unknown260) == 0x260, "");
 static_assert(offsetof(VideoRenderer, unknown264) == 0x264, "");
+static_assert(offsetof(VideoRenderer, unknown268) == 0x268, "");
+static_assert(offsetof(VideoRenderer, unknown269) == 0x269, "");
 static_assert(offsetof(VideoRenderer, m_videoPostDelayUs) == 0x278, "");
