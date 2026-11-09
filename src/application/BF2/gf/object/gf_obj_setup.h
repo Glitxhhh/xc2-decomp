@@ -394,19 +394,25 @@ class GfObjSetupFieldObj : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
 
-  GfObjSetupFieldObj(const GfInitParamFobj &param) : GfObjSetup(param, OBJECT_TYPE_FOBJ), unknown6c(-1), unknown70(0), unknown78(0), unknown80(0), unknown88(0) {}
+  GfObjSetupFieldObj(const GfInitParamFobj &param) : GfObjSetup(param, OBJECT_TYPE_FOBJ), unknown6c(-1), unknown70(0), unknown78(0), unknown7c(0), unknown80(0), unknown84(0), unknown88(0.0f) {}
   const mm::mtl::RTTI *getRTTI() const override;
 
   u32 unknown6c; // Inferred role: param id; original member name unknown.
   u64 unknown70; // Role and original member name unknown; cleared by the constructor.
-  u64 unknown78; // Role and original member name unknown; cleared by the constructor.
-  u64 unknown80; // Role and original member name unknown; cleared by the constructor.
-  u32 unknown88; // Role and original member name unknown; cleared by the constructor.
+  u32 unknown78; // Inferred role: item list bdat of the dropitem, set by GfFobjDropitem::emitDropitem; original member name unknown.
+  s32 unknown7c; // Inferred role: item id of the dropitem; original member name unknown.
+  u32 unknown80; // Inferred role: gold of the dropitem, set by GfFobjDropitem::emitDropgold; original member name unknown.
+  u32 unknown84; // Inferred role: resource bdat id of the dropitem; original member name unknown.
+  f32 unknown88; // Role and original member name unknown; cleared by the constructor.
   u8 _8c[0x90 - 0x8c];
 };
 
 static_assert(offsetof(GfObjSetupFieldObj, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfObjSetupFieldObj, unknown70) == 0x70, "");
+static_assert(offsetof(GfObjSetupFieldObj, unknown78) == 0x78, "");
+static_assert(offsetof(GfObjSetupFieldObj, unknown7c) == 0x7c, "");
+static_assert(offsetof(GfObjSetupFieldObj, unknown80) == 0x80, "");
+static_assert(offsetof(GfObjSetupFieldObj, unknown84) == 0x84, "");
 static_assert(offsetof(GfObjSetupFieldObj, unknown88) == 0x88, "");
 static_assert(sizeof(GfObjSetupFieldObj) == 0x90, "");
 

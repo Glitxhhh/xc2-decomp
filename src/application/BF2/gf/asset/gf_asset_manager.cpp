@@ -14,6 +14,7 @@
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/reference_object.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
@@ -42,6 +43,49 @@ void GfAssetManager::destroy() {
   GfAssetManager *manager = get();
   manager->finalize();
   delete manager;
+}
+
+void GfAssetManager::finalize() {
+  unknowne04c1 = true;
+  GfFileSizePool::destroy();
+  while (unknownce0b8.size() != 0) {
+    GfSleep(1);
+  }
+  for (mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = unknownd70f8.begin(); it != unknownd70f8.end(); ++it) {
+    AssetPackInfo *info = getAssetPackInfo(*it);
+    if (info != nullptr) {
+      info->~AssetPackInfo();
+      unknown10.unknown004(info);
+    }
+  }
+  unknownd70f8.clear();
+  unknownd28d8.clear();
+  bool isAllCached;
+  do {
+    isAllCached = true;
+    for (mm::mtl::FixedList<GfAssetPack *, 1024>::iterator it = unknowndb920.begin(); it != unknowndb920.end(); ++it) {
+      if (!(*it)->isCached()) {
+        isAllCached = false;
+        GfSleep(1);
+        break;
+      }
+    }
+  } while (!isAllCached);
+  for (mm::mtl::FixedList<GfAssetPack *, 1024>::iterator it = unknowndb920.begin(); it != unknowndb920.end(); ++it) {
+    (*it)->releaseResource();
+  }
+  GfSleep(5);
+  for (mm::mtl::FixedList<GfAssetPack *, 1024>::iterator it = unknowndb920.begin(); it != unknowndb920.end(); ++it) {
+    mm::mtl::safeRelease(*it);
+  }
+  unknowndb920.clear();
+  m_slotMapping->destroy();
+  GfManager::getSetupParam().unknown08->detachWorkEvent(this);
+  if (m_slotMapping != nullptr) {
+    delete m_slotMapping;
+    m_slotMapping = nullptr;
+  }
+  unknowne04c0 = false;
 }
 
 bool GfAssetManager::isInitialized() {
@@ -77,6 +121,52 @@ void GfAssetManager::disableGameResource(GF_ASSET_HANDLE *handle) {
   if (info != nullptr && info->unknown305) {
     info->setUsingGame(false);
   }
+}
+
+void GfAssetManager::destroy(GF_ASSET_HANDLE *handle) {
+  AssetPackInfo *info = getAssetPackInfo(handle);
+  if (info != nullptr && !info->unknown304) {
+    info->setDestroy();
+    GfAssetManager *manager = get();
+    mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = mm::mtl::find(manager->unknownd70f8.begin(), manager->unknownd70f8.end(), handle);
+    if (it == manager->unknownd70f8.end()) {
+      it = mm::mtl::find(manager->unknownce0b8.begin(), manager->unknownce0b8.end(), handle);
+      if (it == manager->unknownce0b8.end()) {
+        return;
+      }
+    }
+    manager->unknownd28d8.push_back(*it);
+  }
+}
+
+GfAssetPack *GfAssetManager::createAssetFiles(const GfAssetFilesInfo &info) {
+  GfAssetManager *manager = get();
+  u64 value = GfAssetPack::calcAssetPackValue(info.unknown30, info.unknown08);
+  GfAssetPack *pack = nullptr;
+  for (GfAssetPack *other : manager->unknowndb920) {
+    if (other->unknown10 == value && !other->unknown238) {
+      if (info.unknown00 == INVALID_ASSET_HANDLE) {
+        return nullptr;
+      }
+      pack = other;
+      break;
+    }
+  }
+  if (pack == nullptr) {
+    pack = GfAssetPack::create(info);
+    manager->unknowndb920.push_back(pack);
+    pack->addRef();
+  }
+  AssetPackInfo *packInfo = getAssetPackInfo(info.unknown00);
+  if (packInfo != nullptr) {
+    packInfo->setAssetPack(info.unknown08, pack);
+    packInfo->unknown300 = info.unknown38;
+  }
+  if (info.unknown08 != ASSET_TYPE_BASE && pack->isNeedLoad()) {
+    manager->m_slotMapping->requestSlotLoad(info.unknown00, pack);
+  }
+  callEventAssetPack(pack);
+  return pack;
 }
 
 void GfAssetManager::loadStart(GfAssetPack *pack, mm::mtl::IAllocator *allocator) { pack->loadStart(allocator); }

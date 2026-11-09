@@ -25,15 +25,15 @@ struct GF_ASSET_HANDLE;
 struct GF_SLOT_HANDLE;
 
 struct GfAssetFilesInfo {
-  GfAssetFilesInfo() : unknown00(INVALID_ASSET_HANDLE), unknown08(ASSET_TYPE_BASE), unknown30(nullptr), _38(), unknown3c(1), unknown40(0) {}
+  GfAssetFilesInfo() : unknown00(INVALID_ASSET_HANDLE), unknown08(ASSET_TYPE_BASE), unknown30(nullptr), unknown38(0), unknown3c(1), unknown40(0) {}
 
   GF_ASSET_HANDLE *unknown00;                    // Inferred role: handle; original member name unknown.
   GfAssetType unknown08;                         // Inferred role: asset type; original member name unknown.
   mm::mtl::FixedQueue<GfAssetType, 4> unknown10; // Inferred role: backup asset types; original member name unknown.
   const char *unknown30;                         // Inferred role: name; original member name unknown.
-  u8 _38[0x3c - 0x38];
-  u32 unknown3c; // Inferred role: slot num; original member name unknown.
-  u32 unknown40; // Inferred role: priority; original member name unknown.
+  u32 unknown38;                                 // Inferred role: priority, copied to AssetPackInfo::unknown300 by GfAssetManager::createAssetFiles; original member name unknown.
+  u32 unknown3c;                                 // Inferred role: slot num; original member name unknown.
+  u32 unknown40;                                 // Inferred role: priority; original member name unknown.
 };
 
 static_assert(offsetof(GfAssetFilesInfo, unknown08) == 0x08, "");
@@ -96,16 +96,6 @@ static_assert(offsetof(GfAssetFiles::AssetFile, unknown94) == 0x94, "");
 static_assert(offsetof(GfAssetFiles::AssetFile, unknown98) == 0x98, "");
 static_assert(sizeof(GfAssetFiles::AssetFile) == 0xa0, "");
 
-// Layout evidence: GfAssetPack::calcAssetPackValue (0x71001bbbc8) and the GfAssetPack constructor build it from the asset type
-// in the low word and the name hash in the high word; AssetPackInfo::isExistAssetPack compares it as one 64-bit value.
-struct AssetPackValue {
-  GfAssetType unknown00; // Inferred role: asset type; original member name unknown.
-  u32 unknown04;         // Inferred role: asset name hash; original member name unknown.
-};
-
-static_assert(offsetof(AssetPackValue, unknown04) == 0x04, "");
-static_assert(sizeof(AssetPackValue) == 0x08, "");
-
 class GfAssetPack : public mm::mtl::ReferenceObject {
 public:
   // Inferred role: loaded resource of one file, pushed by setResource; original name unknown.
@@ -153,12 +143,12 @@ public:
   s64 getAllFileSize();
   void replaceAssetType(const GfAssetFilesInfo &info);
   static GfAssetPack *create(const GfAssetFilesInfo &info);
-  static AssetPackValue calcAssetPackValue(const char *name, GfAssetType type);
+  static u64 calcAssetPackValue(const char *name, GfAssetType type);
 
   void setLoadSlotNum(u32 num) { unknown24c = num; }
 
   u8 _0c[0x10 - 0x0c];
-  u64 unknown10;                                  // Inferred role: asset pack value (AssetPackValue as one 64-bit word); original member name unknown.
+  u64 unknown10;                                  // Inferred role: asset pack value, name hash in the high word and asset type in the low word (calcAssetPackValue); original member name unknown.
   mm::mtl::FixedVector<unknown001, 16> unknown18; // Inferred role: resources; original member name unknown.
   GfAssetFiles m_assetType;
   GF_SLOT_HANDLE *unknown230; // Inferred role: slot handle; original member name unknown.

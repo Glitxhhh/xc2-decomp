@@ -28,7 +28,8 @@ enum {
   OWNER_BONUS_FAVORITE_VALUE_MAX = 3,
   OWNER_BONUS_IDEA_POINT = 4,
   OWNER_BONUS_DEVELOP_POINT = 5,
-  OWNER_BONUS_UNKNOWN_9 = 9, // Inferred role: reduction of the enemy sight radius in percent; original name unknown.
+  OWNER_BONUS_UNKNOWN_9 = 9,   // Inferred role: reduction of the enemy sight radius in percent; original name unknown.
+  OWNER_BONUS_UNKNOWN_10 = 10, // Inferred role: pick up range bonus of the dropitems in percent, read by GfFobjDropitem::canGetItem; original name unknown.
   OWNER_BONUS_BOOSTER_VALUE_MAX = 13,
 };
 

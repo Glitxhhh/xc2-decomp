@@ -9,14 +9,17 @@
 #include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_list_info.h"
+#include "ui/plugin/ui_object_sync_plugin.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
+#include "ui/ui_util.h"
 
 namespace gf {
 
@@ -25,10 +28,31 @@ constexpr u32 unknown001 = 0x64;
 
 ui::UIListInfo<MenuItemInfo> *GfMenuObjCommonText::s_pItemList;
 ui::UIListInfo<MenuID> *GfMenuObjCommonText::s_pSubMenuIDList;
+ui::UIListInfo<MenuDriverInfo> *GfMenuObjCommonText::s_pChangeDrList;
 
 void GfMenuObjCommonText::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjCommonText::update() { GfMenuObject::update(); }
+
+void GfMenuObjCommonText::setupDialog(u32 handle) {
+  GfMenuObjUtil::FitOption option;
+  option.unknown00 = true;
+  option.unknown01 = true;
+  u32 text = ui::UIUtil::searchChild(handle, "LAY_dialog_text");
+  GfMenuObjUtil::createFitPlugin(ui::UIUtil::searchChild(handle, "IMG_dialog_win@01"), text, 0, 0, option);
+  GfMenuObjUtil::createFitPlugin(ui::UIUtil::searchChild(handle, "IMG_dialog_win@02"), text, 0, 0, option);
+  u32 cursor = ui::UIUtil::searchChild(handle, "LAY_dialog_cursor");
+  ui::UIObjectSyncPlugin *plugin;
+  {
+    ui::UIObjectAcc acc(cursor);
+    plugin = ui::UIObjectSyncPlugin::create(acc.searchSibiling("LAY_dialog_cursor_base"));
+  }
+  plugin->setTargetObject(cursor);
+  plugin->setTargetFlag(0x3e);
+  if (plugin != nullptr) {
+    plugin->release();
+  }
+}
 
 void GfMenuObjCommonText::sendEvent(u32 handle, u32 type, u32 param, f32 delay) { unknown140(handle, type, param, delay); }
 
@@ -45,6 +69,47 @@ int GfMenuObjCommonText::setFadeOut(u32 handle) {
 }
 
 void GfMenuObjCommonText::close() { unknown143(unknown001, GfMenuTypes::unknown003_34); }
+
+void GfMenuObjCommonText::open(GfMenuCallContext *context, const MenuCommonWindowParam &param) {
+  u32 handle = getAttachedObject(unknown001);
+  if (ui::UIObjectAcc(handle).isValid()) {
+    bool isTerm = ui::UIObjectAcc(handle).isTerm();
+    if (!isTerm) {
+      startCallContext(context, unknown001, handle);
+      u16 title = 0xffff;
+      if (param.unknown00 != nullptr) {
+        ui::UIStr str(param.unknown00, param.unknown08);
+        title = registString(str);
+      }
+      u16 text = 0xffff;
+      if (param.unknown10 != nullptr) {
+        ui::UIStr str(param.unknown10, param.unknown18);
+        text = registString(str);
+      }
+      u16 ok = 0xffff;
+      if (param.unknown20 != nullptr) {
+        ui::UIStr str(param.unknown20, param.unknown28);
+        ok = registString(str);
+      }
+      u16 cancel = 0xffff;
+      if (param.unknown30 != nullptr) {
+        ui::UIStr str(param.unknown30, param.unknown38);
+        cancel = registString(str);
+      }
+      ui::EventData event;
+      event.unknown00 = 0x21;
+      event.unknown08_u16 = title;
+      event.unknown0a = text;
+      event.unknown0c_u16 = ok;
+      event.unknown0e = cancel;
+      event.unknown10_u16 = param.unknown3c;
+      event.unknown12 = param.unknown40 != 0;
+      event.unknown14_u16 = param.unknown44;
+      event.unknown16 = param.unknown48;
+      GfMenuObject::sendEvent(handle, event, 0.0f);
+    }
+  }
+}
 
 void GfMenuObjCommonText::open(GfMenuCallContext *context, u32 window, u32 param) {
   u8 *windowBdat = GfDataBdat::getFP(BDAT_MNU_CMN_WINDOW);
@@ -224,6 +289,26 @@ void GfMenuObjCommonText::openSelectItem(GfMenuCallContext *context, const GfMen
       event.unknown00 = 0x21;
       event.unknown08 = 1;
       event.unknown16 = 5;
+      GfMenuObject::sendEvent(handle, event, 0.0f);
+      startCallContext(context, unknown001, handle);
+    }
+  }
+}
+
+void GfMenuObjCommonText::openDrChange(GfMenuCallContext *context, u32 driver, const GfMenuDriverList *list) {
+  u32 handle = getAttachedObject(unknown001);
+  if (ui::UIObjectAcc(handle).isValid()) {
+    bool isTerm = ui::UIObjectAcc(handle).isTerm();
+    if (context != nullptr && !isTerm) {
+      s_pChangeDrList->clear();
+      for (u32 i = 0; i < list->getSize(); i++) {
+        s_pChangeDrList->addContents(list->getContents(i));
+      }
+      s_pChangeDrList->setIndex(0);
+      GfMenuReference::setReferenceDriverID(4, driver);
+      ui::EventData event;
+      event.unknown00 = 0x21;
+      event.unknown16 = 6;
       GfMenuObject::sendEvent(handle, event, 0.0f);
       startCallContext(context, unknown001, handle);
     }

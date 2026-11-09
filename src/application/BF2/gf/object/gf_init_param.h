@@ -264,12 +264,24 @@ class GfInitParamMapObj : public GfInitParam {};
 
 class GfInitParamFobj : public GfInitParam {
 public:
-  u8 _90[0x94 - 0x90];
+  GfInitParamFobj() : GfInitParam(OBJECT_TYPE_FOBJ, 4) {
+    unknown88 = nullptr;
+    unknown94 = 0;
+    unknown81 = false;
+    unknown95 = true;
+    unknown90 = 2;
+  }
+
+  u32 unknown90;  // Role and original member name unknown; 2 by default.
   u8 unknown94;   // Inferred role: index of the "paramid" column of the bdat; original member name unknown.
   bool unknown95; // Inferred role: creates a dropitem for the object; original member name unknown.
+  u8 _96[0xa0 - 0x96];
 };
 
+static_assert(offsetof(GfInitParamFobj, unknown90) == 0x90, "");
 static_assert(offsetof(GfInitParamFobj, unknown94) == 0x94, "");
+static_assert(offsetof(GfInitParamFobj, unknown95) == 0x95, "");
+static_assert(sizeof(GfInitParamFobj) == 0xa0, "");
 
 class GfInitParamWeapon : public GfInitParam {
 public:

@@ -6,10 +6,12 @@
 namespace gf {
 
 class GfMenuCallContext;
+class GfMenuDriverList;
 class GfMenuIDList;
 class GfMenuItemList;
 struct MenuCommonWindowParam;
 struct MenuID;
+struct MenuDriverInfo;
 struct MenuItemInfo;
 
 class GfMenuObjCommonText : public GfMenuObject {
@@ -33,12 +35,14 @@ public:
   };
 
   static void close();
+  static void setupDialog(u32 handle);
   static void open(GfMenuCallContext *context, const MenuCommonWindowParam &param);
   static void open(GfMenuCallContext *context, u32 window, u32 param);
   static void openError(GfMenuCallContext *context, u32 error, u32 param);
   static void openItem(GfMenuCallContext *context, u32 window, u32 item);
   static void openMissionStop(GfMenuCallContext *context, u32 mission, u32 param);
   static void openSelectItem(GfMenuCallContext *context, const GfMenuItemList *list);
+  static void openDrChange(GfMenuCallContext *context, u32 driver, const GfMenuDriverList *list);
   static void openGetItem(GfMenuCallContext *context, const GfMenuItemList *items);
   static void openSubMenu(GfMenuCallContext *context, const GfMenuIDList *list);
   static void openKizunaDialog(GfMenuCallContext *context, const OpenKizunaParam &param);
@@ -47,6 +51,7 @@ public:
 
   static ui::UIListInfo<MenuItemInfo> *s_pItemList;
   static ui::UIListInfo<MenuID> *s_pSubMenuIDList;
+  static ui::UIListInfo<MenuDriverInfo> *s_pChangeDrList;
 };
 
 } // namespace gf

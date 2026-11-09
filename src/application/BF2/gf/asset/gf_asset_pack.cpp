@@ -756,12 +756,7 @@ void GfAssetPack::dispAssetLogForDebug() {}
 
 void GfAssetPack::setLoadComplete() {}
 
-AssetPackValue GfAssetPack::calcAssetPackValue(const char *name, GfAssetType type) {
-  AssetPackValue value;
-  value.unknown00 = type;
-  value.unknown04 = mm::mtl::hashStrCrc(name);
-  return value;
-}
+u64 GfAssetPack::calcAssetPackValue(const char *name, GfAssetType type) { return static_cast<u64>(mm::mtl::hashStrCrc(name)) << 32 | static_cast<u32>(type); }
 
 // __LINE__ must be 1029 as in the original file: it is the line argument of operator new.
 #line 1029
