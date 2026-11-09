@@ -50,6 +50,8 @@ class FallDamagePlugin : public Plugin {
   GF_PLUGIN(GfComBehaviorPc)
 
 public:
+  static const u32 PLUGIN_INDEX = 7;
+
   FallDamagePlugin();
   static FallDamagePlugin *create();
   ~FallDamagePlugin();

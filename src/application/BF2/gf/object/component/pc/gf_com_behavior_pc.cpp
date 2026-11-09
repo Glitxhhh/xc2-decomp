@@ -154,5 +154,22 @@ const mm::mtl::RTTI *GfComBehaviorPc::getRTTI() const { return &m_rtti; }
 
 } // namespace gf
 
+template void gf::PluginManager::createPlugin<gf::pc::AccessPlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::FallIntoColiPlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::FallDamagePlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::FadePlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::LurePlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::TerrainDamagePlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::DeadColCheckPlugin>();
+template void gf::PluginManager::createPlugin<gf::pc::FallDistanceAchievPlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::DeadColCheckPlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::TerrainDamagePlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::AccessPlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::FallIntoColiPlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::FallDamagePlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::FadePlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::LurePlugin>();
+template void gf::PluginManager::destroyPlugin<gf::pc::FallDistanceAchievPlugin>();
+
 template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComBehaviorPc>(const mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)> *,
                                                                                                                          gf::GfComAsm *, const gf::CallBackCache &);

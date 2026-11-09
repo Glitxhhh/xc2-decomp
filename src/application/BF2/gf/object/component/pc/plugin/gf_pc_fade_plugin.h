@@ -29,6 +29,8 @@ class FadePlugin : public Plugin {
   GF_PLUGIN(GfComBehaviorPc)
 
 public:
+  static const u32 PLUGIN_INDEX = 11;
+
   enum Mode {
     MODE_NONE,
     MODE_FADE_IN,

@@ -5,6 +5,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_bdat.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ml/rand.h"
@@ -32,18 +33,12 @@ static ui::UIShapeRing *unknown003(ui::UIShape *shape) { return shape != nullptr
 static const int unknown004[6] = {0, 0, 1, 2, 3, 0};
 
 GfMenuObjButtonChallenge2::~GfMenuObjButtonChallenge2() {
-  if (unknown3e0.ctrl != nullptr) {
-    ui::UICtrlManager::get()->delUpdater(unknown3e0);
+  for (u32 i = 0; i < 3; i++) {
+    if (unknown3b8[i].unknown28.ctrl != nullptr) {
+      ui::UICtrlManager::get()->delUpdater(unknown3b8[i].unknown28);
+    }
+    unknown3b8[i].unknown28.ctrl = nullptr;
   }
-  unknown3e0.ctrl = nullptr;
-  if (unknown428.ctrl != nullptr) {
-    ui::UICtrlManager::get()->delUpdater(unknown428);
-  }
-  unknown428.ctrl = nullptr;
-  if (unknown470.ctrl != nullptr) {
-    ui::UICtrlManager::get()->delUpdater(unknown470);
-  }
-  unknown470.ctrl = nullptr;
 }
 
 void GfMenuObjButtonChallenge2::initialize() {
@@ -92,6 +87,26 @@ void GfMenuObjButtonChallenge2::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjButtonChallenge2::update() {
   unknown0a0.unknown003();
   GfMenuObject::update();
+}
+
+void GfMenuObjButtonChallenge2::open(GfMenuCallContext *context, const OpenParam &param, unsigned int sequence) {
+  if (GfMenuObjUtil::checkCCStart(context)) {
+    ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+    if (acc.isValid() && isValidParam(param)) {
+// __LINE__ must be 258 as in the original file: it is the line argument of operator new.
+#line 258
+      OpenParam *openParam = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) OpenParam();
+      if (openParam != nullptr) {
+        *openParam = param;
+        ui::EventData event;
+        event.unknown00 = GfMenuTypes::unknown003_33;
+        event.unknown08_u64 = reinterpret_cast<u64>(openParam);
+        event.unknown10 = sequence;
+        GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+        GfMenuObject::startCallContext(context, unknown001, acc.unknown10);
+      }
+    }
+  }
 }
 
 bool GfMenuObjButtonChallenge2::isValidParam(const OpenParam &param) {
@@ -478,6 +493,168 @@ bool GfMenuObjButtonChallenge2::seqAppear() {
     contents.setPosCenter(unknown360);
   }
   return !isSeqCtrlBusy();
+}
+
+bool GfMenuObjButtonChallenge2::seqClose() {
+  if (unknown330.empty()) {
+    ui::UIObjectAcc main(unknown18, "LAY_main");
+    if (unknown28.unknown50.unknown04 > 0.0f) {
+      if (main.isDisp()) {
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown08 = 2;
+        param.unknown00 = unknown28.unknown50.unknown04;
+        param.unknown14 = 10;
+        unknown330.push_back(GfMenuObjUtil::startCtrl(main.unknown10, param, nullptr));
+      }
+    } else {
+      main.setDisp(false);
+    }
+  }
+  return !isSeqCtrlBusy();
+}
+
+bool GfMenuObjButtonChallenge2::seqSuccess() {
+  if (unknown330.empty()) {
+    const unknown002 &challenge = unknown28.unknown08[unknown80];
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown00 = 0.25f;
+    param.unknown08 = 2;
+    param.unknown14 = 10;
+    unknown330.push_back(GfMenuObjUtil::startCtrl(unknown18, param, "LAY_challenge_v2@04"));
+  }
+  if (isSeqCtrlBusy()) {
+    return false;
+  }
+  nextChallenge();
+  return true;
+}
+
+bool GfMenuObjButtonChallenge2::seqFailed() {
+  if (unknown330.empty()) {
+    const unknown002 &challenge = unknown28.unknown08[unknown80];
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown00 = 0.25f;
+    param.unknown08 = 2;
+    param.unknown14 = 10;
+    unknown330.push_back(GfMenuObjUtil::startCtrl(unknown18, param, "LAY_challenge_v2@04"));
+  }
+  if (isSeqCtrlBusy()) {
+    return false;
+  }
+  nextChallenge();
+  return true;
+}
+
+bool GfMenuObjButtonChallenge2::seqRunningV2() {
+  ui::UIObjectAcc acc(unknown18, "LAY_challenge_v2");
+  mm::mtl::FixStr<32> name;
+  ui::EventData event;
+  event.unknown00 = 0x103;
+  unknown494 += GfMenuManager::getUpdateDT() * unknown9c;
+  f32 frame = unknown494 / 0.033333335f;
+  unknown490 = static_cast<int>(frame + (frame > 0.0f ? 0.5f : -0.5f));
+  u32 finished = 0;
+  for (u32 i = 0; i < unknown28.unknown08.size(); i++) {
+    if (!unknown3b8[i].unknown00.isBusy()) {
+      finished++;
+      u32 bit = 1 << i;
+      if ((unknown49c & bit) == 0) {
+        if (unknown28.unknown08[i].unknown01 != 2) {
+          unknown80++;
+        }
+        name.format("LAY_challenge_v2@%02d", i + 1);
+        GfMenuObject::sendEvent(acc.searchChild(name.c_str()), event, 0.0f);
+        unknown49c |= bit;
+      }
+    } else {
+      setRingScaleV2(i, unknown3b8[i].unknown00.values[0]);
+    }
+  }
+  if (finished < unknown28.unknown08.size()) {
+    return false;
+  }
+  if (unknown498 > unknown490) {
+    unknown0a0.unknown002(&GfMenuObjButtonChallenge2::seqWaitMashingV2);
+  } else {
+    event.unknown00 = 0x104;
+    for (u32 i = 0; i < unknown28.unknown08.size(); i++) {
+      name.format("LAY_challenge_v2@%02d", i + 1);
+      GfMenuObject::sendEvent(acc.searchChild(name.c_str()), event, 0.0f);
+    }
+    notifyChallengeResult();
+  }
+  unknown0a0.unknown002(&GfMenuObjButtonChallenge2::seqCheckSequence);
+  return true;
+}
+
+bool GfMenuObjButtonChallenge2::seqResultWait() {
+  if (unknown35c != 0) {
+    unknown35c--;
+    return false;
+  }
+  if (unknown330.empty()) {
+    ui::UIObjectAcc text(unknown18, "LAY_result_text");
+    if (text.isDisp()) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "cmn_fade_motion_zoom";
+      param.unknown58 = "fade_out";
+      param.unknown11 = true;
+      param.unknown14 = 10;
+      unknown330.push_back(GfMenuObjUtil::startCtrl(text.unknown10, param, nullptr));
+    }
+  }
+  if (isSeqCtrlBusy()) {
+    return false;
+  }
+  ui::UIObjectAcc result(unknown18, "LAY_result");
+  result.setDisp(false);
+  return true;
+}
+
+bool GfMenuObjButtonChallenge2::seqWaitMashing() {
+  u32 wait = unknown8c;
+  if (unknown88 == 0 && unknown80 < unknown28.unknown08.size() && unknown28.unknown08[unknown80].unknown01 == 2) {
+    wait = unknown28.unknown08[unknown80].unknown0a;
+    {
+      ui::UIObjectAcc ring(unknown18, "LAY_ring_v2@04");
+      ring.setDisp(false);
+    }
+    {
+      ui::UIObjectAcc effect(unknown18, "IMG_challenge_btn_push_eff@04");
+      effect.setDisp(true);
+      effect.startAnimation("loop", false);
+    }
+    {
+      ui::UIObjectAcc arrow(unknown18, "IMG_challenge_btn_push_arw@04");
+      arrow.setDisp(true);
+      arrow.startAnimation("loop", false);
+    }
+    unknown88 = 1;
+    unknown8c = wait;
+  }
+  if (unknown35a == 0 && unknown8c != 0) {
+    unknown8c--;
+    return false;
+  }
+  {
+    ui::UIObjectAcc effect(unknown18, "IMG_challenge_btn_push_eff@04");
+    effect.setDisp(false);
+    effect.stopAnimation();
+  }
+  {
+    ui::UIObjectAcc arrow(unknown18, "IMG_challenge_btn_push_arw@04");
+    arrow.setDisp(false);
+    arrow.stopAnimation();
+  }
+  if (unknown35a == 1) {
+    stopSeqCtrl();
+    unknown0a0.unknown002(&GfMenuObjButtonChallenge2::seqSuccess);
+  } else {
+    unknown0a0.unknown002(&GfMenuObjButtonChallenge2::seqFailed);
+  }
+  unknown88 = 0;
+  return true;
 }
 
 bool GfMenuObjButtonChallenge2::seqAppearCursor() {

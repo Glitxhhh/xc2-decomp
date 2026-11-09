@@ -30,6 +30,8 @@ class AccessPlugin : public Plugin {
   GF_PLUGIN(GfComBehaviorPc)
 
 public:
+  static const u32 PLUGIN_INDEX = 4;
+
   AccessPlugin();
   static AccessPlugin *create();
   virtual bool setup(GfComBehaviorPc &behavior);

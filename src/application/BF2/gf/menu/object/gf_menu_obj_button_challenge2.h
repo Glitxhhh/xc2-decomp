@@ -38,6 +38,12 @@ public:
     u16 unknown12; // Role and original member name unknown.
   };
 
+  // Inferred role: ring interpolation and its updater; original name unknown.
+  struct unknown005 {
+    ui::UICtrlSimple<1> unknown00;                          // Role and original member name unknown.
+    ui::UICtrlSimpleUpdater<ui::UICtrlSimple<1>> unknown28; // Role and original member name unknown.
+  };
+
   struct OpenParam {
     OpenParam() : unknown00(0), unknown02(0), unknown04(0), unknown50{false, true, false, 0.25f} {}
 
@@ -66,6 +72,7 @@ public:
     GfMenuObjButtonChallenge2 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  GfMenuObjButtonChallenge2(u32 handle);
   ~GfMenuObjButtonChallenge2() override;
   void initialize() override;
   void finalize() override;
@@ -91,6 +98,12 @@ public:
   bool seqResultStart();
   bool seqWaitRestartV2();
   bool seqWaitMashingV2();
+  bool seqResultWait();
+  bool seqWaitMashing();
+  void pushChallengeButtonV2(u8 button);
+  bool seqClose();
+  bool seqSuccess();
+  bool seqFailed();
   void nextChallenge();
   static void dispRelationHUD(bool);
   static void setSpeedFactor(GfMenuCallContext *context, f32 speedFactor);
@@ -129,17 +142,12 @@ public:
   s16 unknown3b0;                                          // Inferred role: minimum ring size; original member name unknown.
   s16 unknown3b2;                                          // Inferred role: maximum ring size; original member name unknown.
   u8 _3b4[0x3b8 - 0x3b4];
-  ui::UICtrlSimple<1> unknown3b8;                          // Role and original member name unknown.
-  ui::UICtrlSimpleUpdater<ui::UICtrlSimple<1>> unknown3e0; // Role and original member name unknown.
-  ui::UICtrlSimple<1> unknown400;                          // Role and original member name unknown.
-  ui::UICtrlSimpleUpdater<ui::UICtrlSimple<1>> unknown428; // Role and original member name unknown.
-  ui::UICtrlSimple<1> unknown448;                          // Role and original member name unknown.
-  ui::UICtrlSimpleUpdater<ui::UICtrlSimple<1>> unknown470; // Role and original member name unknown.
-  u32 unknown490;                                          // Role and original member name unknown, cleared by the constructor.
-  f32 unknown494;                                          // Role and original member name unknown, cleared by the constructor.
-  u32 unknown498;                                          // Role and original member name unknown, cleared by the constructor.
-  u32 unknown49c;                                          // Role and original member name unknown, cleared by the constructor.
-  bool unknown4a0;                                         // Role and original member name unknown, cleared by the constructor.
+  unknown005 unknown3b8[3]; // Inferred role: ring interpolation of each challenge; original member name unknown.
+  u32 unknown490;           // Role and original member name unknown, cleared by the constructor.
+  f32 unknown494;           // Role and original member name unknown, cleared by the constructor.
+  u32 unknown498;           // Role and original member name unknown, cleared by the constructor.
+  u32 unknown49c;           // Role and original member name unknown, cleared by the constructor.
+  bool unknown4a0;          // Role and original member name unknown, cleared by the constructor.
   u8 _4a1[0x4a8 - 0x4a1];
 };
 
@@ -168,11 +176,7 @@ static_assert(offsetof(GfMenuObjButtonChallenge2, unknown368) == 0x368, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown390) == 0x390, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown3b0) == 0x3b0, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown3b8) == 0x3b8, "");
-static_assert(offsetof(GfMenuObjButtonChallenge2, unknown3e0) == 0x3e0, "");
-static_assert(offsetof(GfMenuObjButtonChallenge2, unknown400) == 0x400, "");
-static_assert(offsetof(GfMenuObjButtonChallenge2, unknown428) == 0x428, "");
-static_assert(offsetof(GfMenuObjButtonChallenge2, unknown448) == 0x448, "");
-static_assert(offsetof(GfMenuObjButtonChallenge2, unknown470) == 0x470, "");
+static_assert(sizeof(GfMenuObjButtonChallenge2::unknown005) == 0x48, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown490) == 0x490, "");
 static_assert(offsetof(GfMenuObjButtonChallenge2, unknown4a0) == 0x4a0, "");
 static_assert(sizeof(GfMenuObjButtonChallenge2) == 0x4a8, "");
