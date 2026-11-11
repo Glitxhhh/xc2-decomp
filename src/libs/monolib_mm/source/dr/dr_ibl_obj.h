@@ -38,6 +38,7 @@ static_assert(offsetof(unknown003, unknown0c) == 0x0c, "");
 class DrIBLObj {
 public:
   DrIBLObj(const void *data);
+  ~DrIBLObj();
   bool hasValidIBL() const;
   u32 getIBLNum() const;
   u32 getPriority() const;

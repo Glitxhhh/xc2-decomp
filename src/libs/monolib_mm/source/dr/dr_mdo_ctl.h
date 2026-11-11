@@ -12,6 +12,7 @@ struct Vec3;
 namespace ml {
 
 class MdoWrkMatRes;
+class DrResMdoAlpTbl;
 struct MdoInstancePrePassArg;
 struct MdsMdlInfoHeader;
 
@@ -27,12 +28,17 @@ public:
   void changeSeamBaseMapMdlInfo();
   void updateMdl();
   void partsBaseMdlRender(const MdsMdlInfoHeader *header);
+  void partsMaterialSetup(const MdsMdlInfoHeader *header);
   void partsDefRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, bool isDepthStencil);
   void setMatrix(const mm::Mat44 &matrix);
   void setOffsetPos(const mm::Vec3 &position);
   const mm::Mat44 &getMatrix() const;
   void partsInstanceThicknessBillRender(const MdoInstancePrePassArg &arg);
   void createMaterialOneDisplayList(MdoWrkMatRes *matRes, int index);
+  void partsZPrePassRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, DrResMdoAlpTbl *alpTbl, u32 alpIndex);
+  void partsShadowRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, int shaderParam2);
+  void partsShadowDirRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1);
+  void partsThicknessRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, DrResMdoAlpTbl *alpTbl, u32 alpIndex, bool isFirst);
   void createWeightVtx(int renderType, u32 alphaFlags, u32 lodFlags, bool isPrePass);
   void setFrameSpd(f32 speed) { unknowndc = speed; }
   static void waitWeightVtx();

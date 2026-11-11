@@ -23,8 +23,10 @@ public:
   void beforUpdate();
   bool renderShadowObj();
   bool renderDirShadowObj();
+  void shadowRender();
   void afterUpdate();
   bool setAddObjPos(const mm::Vec3 &position, f32 value);
+  bool clipDirShadowChk(const mm::Vec3 &position, f32 radius, bool isCache);
   bool setSptCalcPos(const mm::Vec3 &position, f32 value);
   MdoShdPxlWrkTex *createShdTexWrk(int index, int type);
   void releaseTexWorkOne(MdoShdPxlWrkTex *work);

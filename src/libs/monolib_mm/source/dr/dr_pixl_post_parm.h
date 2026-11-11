@@ -149,7 +149,8 @@ public:
   f32 unknown24; // Inferred role: tone blm ratio last; original member name unknown.
   f32 unknown28; // Inferred role: tone ave min rate; original member name unknown.
   f32 unknown2c; // Inferred role: tone ave max rate; original member name unknown.
-  u8 _0030[0x003c - 0x0030];
+  f32 unknown30; // Inferred role: tone map parameter written with the tone ave max rate by resetToneMapParams; original member name unknown.
+  u8 _0034[0x003c - 0x0034];
   bool m_bloomOn;
   u8 _003d[0x003e - 0x003d];
   bool unknown3e; // Inferred role: lens flare; original member name unknown.
@@ -160,21 +161,23 @@ public:
   f32 unknown4c;    // Inferred role: border blm sec mul; original member name unknown.
   f32 unknown50;    // Inferred role: border blm max; original member name unknown.
   f32 unknown54[3]; // Inferred role: blm weight; original member name unknown.
-  u8 _0060[0x007c - 0x0060];
+  f32 unknown60[7]; // Inferred role: bloom parameters copied from the default post parm by updateBloomParams; original member name unknown.
   f32 unknown7c[3]; // Inferred role: blm str; original member name unknown.
-  u8 _0088[0x0090 - 0x0088];
+  f32 unknown88[2]; // Inferred role: bloom parameters copied from the default post parm by updateBloomParams; original member name unknown.
   f32 unknown90[3]; // Inferred role: blm gauss; original member name unknown.
-  u8 _009c[0x00c8 - 0x009c];
-  f32 unknownc8;  // Inferred role: blm lens sub; original member name unknown.
-  f32 unknowncc;  // Inferred role: blm lens mul; original member name unknown.
-  s32 unknownd0;  // Inferred role: blm lens max; original member name unknown.
-  f32 unknownd4;  // Inferred role: blm lens rot; original member name unknown.
-  f32 unknownd8;  // Inferred role: blm lens weight; original member name unknown.
-  f32 unknowndc;  // Inferred role: blm lens decay; original member name unknown.
-  f32 unknowne0;  // Inferred role: blm lens strength; original member name unknown.
-  f32 unknowne4;  // Inferred role: blm lens parm max; original member name unknown.
-  f32 unknowne8;  // Inferred role: blm lens uv decay; original member name unknown.
-  bool unknownec; // Inferred role: god ray; original member name unknown.
+  f32 unknown9c[7]; // Inferred role: bloom parameters copied from the default post parm by updateBloomParams; original member name unknown.
+  u8 _00b8[0x00c0 - 0x00b8];
+  f32 unknownc0[2]; // Inferred role: bloom parameters copied from the default post parm by updateBloomParams; original member name unknown.
+  f32 unknownc8;    // Inferred role: blm lens sub; original member name unknown.
+  f32 unknowncc;    // Inferred role: blm lens mul; original member name unknown.
+  s32 unknownd0;    // Inferred role: blm lens max; original member name unknown.
+  f32 unknownd4;    // Inferred role: blm lens rot; original member name unknown.
+  f32 unknownd8;    // Inferred role: blm lens weight; original member name unknown.
+  f32 unknowndc;    // Inferred role: blm lens decay; original member name unknown.
+  f32 unknowne0;    // Inferred role: blm lens strength; original member name unknown.
+  f32 unknowne4;    // Inferred role: blm lens parm max; original member name unknown.
+  f32 unknowne8;    // Inferred role: blm lens uv decay; original member name unknown.
+  bool unknownec;   // Inferred role: god ray; original member name unknown.
   u8 _00ed[0x00f0 - 0x00ed];
   f32 unknownf0; // Inferred role: god ray weight; original member name unknown.
   f32 unknownf4; // Inferred role: god ray decay; original member name unknown.
@@ -313,9 +316,15 @@ public:
   s32 unknownfe4; // Inferred role: render mode; original member name unknown.
   u8 _0fe8[0x0ff0 - 0x0fe8];
   mm::Vec3 unknownff0; // Inferred role: sp blur target; original member name unknown.
-  u8 _1000[0x1024 - 0x1000];
+  u8 _1000[0x101c - 0x1000];
+  f32 unknown101c; // Inferred role: unbranch to depth quarter size scale parameter; original member name unknown.
+  u8 _1020[0x1024 - 0x1020];
   bool unknown1024; // Inferred role: shw raytrace temporal; original member name unknown.
-  u8 _1025[0x103c - 0x1025];
+  bool unknown1025; // Inferred role: debug shadow render; original member name unknown.
+  u8 _1026[0x1027 - 0x1026];
+  bool unknown1027; // Inferred role: debug deferred render; original member name unknown.
+  bool unknown1028; // Inferred role: debug shadow cache render; original member name unknown.
+  u8 _1029[0x103c - 0x1029];
   bool unknown103c; // Inferred role: temporal shadow enable; original member name unknown.
   bool unknown103d; // Inferred role: temporal shadow history valid; original member name unknown.
   bool unknown103e; // Inferred role: char dir shadow; original member name unknown.
@@ -362,10 +371,15 @@ static_assert(offsetof(DrPixlPostParm, unknown40) == 0x0040, "");
 static_assert(offsetof(DrPixlPostParm, m_borderBlmMul) == 0x0044, "");
 static_assert(offsetof(DrPixlPostParm, unknown48) == 0x0048, "");
 static_assert(offsetof(DrPixlPostParm, unknown4c) == 0x004c, "");
+static_assert(offsetof(DrPixlPostParm, unknown30) == 0x0030, "");
 static_assert(offsetof(DrPixlPostParm, unknown50) == 0x0050, "");
 static_assert(offsetof(DrPixlPostParm, unknown54) == 0x0054, "");
+static_assert(offsetof(DrPixlPostParm, unknown60) == 0x0060, "");
 static_assert(offsetof(DrPixlPostParm, unknown7c) == 0x007c, "");
+static_assert(offsetof(DrPixlPostParm, unknown88) == 0x0088, "");
 static_assert(offsetof(DrPixlPostParm, unknown90) == 0x0090, "");
+static_assert(offsetof(DrPixlPostParm, unknown9c) == 0x009c, "");
+static_assert(offsetof(DrPixlPostParm, unknownc0) == 0x00c0, "");
 static_assert(offsetof(DrPixlPostParm, unknownc8) == 0x00c8, "");
 static_assert(offsetof(DrPixlPostParm, unknowncc) == 0x00cc, "");
 static_assert(offsetof(DrPixlPostParm, unknownd0) == 0x00d0, "");
@@ -465,7 +479,11 @@ static_assert(offsetof(DrPixlPostParm, unknownfbc) == 0x0fbc, "");
 static_assert(offsetof(DrPixlPostParm, unknownfc0) == 0x0fc0, "");
 static_assert(offsetof(DrPixlPostParm, unknownfc8) == 0x0fc8, "");
 static_assert(offsetof(DrPixlPostParm, unknownff0) == 0x0ff0, "");
+static_assert(offsetof(DrPixlPostParm, unknown101c) == 0x101c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1024) == 0x1024, "");
+static_assert(offsetof(DrPixlPostParm, unknown1025) == 0x1025, "");
+static_assert(offsetof(DrPixlPostParm, unknown1027) == 0x1027, "");
+static_assert(offsetof(DrPixlPostParm, unknown1028) == 0x1028, "");
 static_assert(offsetof(DrPixlPostParm, unknown103c) == 0x103c, "");
 static_assert(offsetof(DrPixlPostParm, unknown103d) == 0x103d, "");
 static_assert(offsetof(DrPixlPostParm, unknown103e) == 0x103e, "");

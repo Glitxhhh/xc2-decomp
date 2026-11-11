@@ -5,6 +5,7 @@
 #include "dr/dr_env_coli_man.h"
 #include "dr/dr_env_coli_parameter.h"
 #include "dr/dr_environment_man.h"
+#include "dr/dr_ini_sys.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "mm_math/mm_math.h"
@@ -205,6 +206,77 @@ void DrEnvColiParameter::calcPostEffectParams(bool isReset) {
   const unknown008 *postIndexList = reinterpret_cast<const unknown008 *>(unknown20 + reinterpret_cast<const unknown007 *>(unknown20)->unknown04);
   const unknown008 *postIndex = &postIndexList[unknown10->unknown1c];
   calcParams(postIndex->unknown04, postIndex->unknown08, isReset);
+}
+
+void DrEnvColiParameter::updateBloomParams() {
+  DrMan *man = DrMan::getIns();
+  DrPixlPostParm *postParm = man->unknown120[man->unknown1c98];
+  const DrPixlPostParm &defaultParm = DrMan::getIns()->unknown70->unknown970;
+  postParm->unknown40 = defaultParm.unknown40;
+  postParm->m_borderBlmMul = defaultParm.m_borderBlmMul;
+  postParm->unknown48 = defaultParm.unknown48;
+  postParm->unknown4c = defaultParm.unknown4c;
+  postParm->unknown50 = defaultParm.unknown50;
+  for (int i = 0; i < 3; i++) {
+    postParm->unknown54[i] = defaultParm.unknown54[i];
+  }
+  for (int i = 0; i < 7; i++) {
+    postParm->unknown60[i] = defaultParm.unknown60[i];
+  }
+  for (int i = 0; i < 3; i++) {
+    postParm->unknown7c[i] = defaultParm.unknown7c[i];
+  }
+  for (int i = 0; i < 2; i++) {
+    postParm->unknown88[i] = defaultParm.unknown88[i];
+  }
+  for (int i = 0; i < 3; i++) {
+    postParm->unknown90[i] = defaultParm.unknown90[i];
+  }
+  for (int i = 0; i < 7; i++) {
+    postParm->unknown9c[i] = defaultParm.unknown9c[i];
+  }
+  for (int i = 0; i < 2; i++) {
+    postParm->unknownc0[i] = defaultParm.unknownc0[i];
+  }
+  postParm->unknownc8 = defaultParm.unknownc8;
+  postParm->unknowncc = defaultParm.unknowncc;
+  postParm->unknownd0 = defaultParm.unknownd0;
+  postParm->unknownd4 = defaultParm.unknownd4;
+  postParm->unknownd8 = defaultParm.unknownd8;
+  postParm->unknowndc = defaultParm.unknowndc;
+  postParm->unknowne0 = defaultParm.unknowne0;
+  postParm->unknowne4 = defaultParm.unknowne4;
+  postParm->unknowne8 = defaultParm.unknowne8;
+}
+
+void DrEnvColiParameter::resetToneMapParams(const EnvColiPostParameterVer<10006> *from, const EnvColiPostParameterVer<10006> *to, f32 ratio) {
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  if (ratio != 0.0f) {
+    f32 inverse = 1.0f - ratio;
+    postParm->unknown08 = from->unknown00 * ratio + inverse * to->unknown00;
+    postParm->unknown0c = from->unknown04 * ratio + inverse * to->unknown04;
+    postParm->unknown10 = from->unknown08 * ratio + inverse * to->unknown08;
+    postParm->unknown14 = from->unknown0c * ratio + inverse * to->unknown0c;
+    postParm->unknown18 = from->unknown10 * ratio + inverse * to->unknown10;
+    postParm->unknown1c = from->unknown14 * ratio + inverse * to->unknown14;
+    postParm->unknown20 = from->unknown18 * ratio + inverse * to->unknown18;
+    postParm->unknown24 = from->unknown1c * ratio + inverse * to->unknown1c;
+    postParm->unknown28 = from->unknown20 * ratio + inverse * to->unknown20;
+    postParm->unknown2c = from->unknown24 * ratio + inverse * to->unknown24;
+    postParm->unknown30 = from->unknown28 * ratio + inverse * to->unknown28;
+  } else {
+    postParm->unknown08 = from->unknown00;
+    postParm->unknown0c = from->unknown04;
+    postParm->unknown10 = from->unknown08;
+    postParm->unknown14 = from->unknown0c;
+    postParm->unknown18 = from->unknown10;
+    postParm->unknown1c = from->unknown14;
+    postParm->unknown20 = from->unknown18;
+    postParm->unknown24 = from->unknown1c;
+    postParm->unknown28 = from->unknown20;
+    postParm->unknown2c = from->unknown24;
+    postParm->unknown30 = from->unknown28;
+  }
 }
 
 bool DrEnvColiMan::testEnvColi(DrEnvColiResult *result, const mm::Vec3 &position, f32 radius) {

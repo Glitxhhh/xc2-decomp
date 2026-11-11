@@ -394,6 +394,16 @@ VMData vmDataGet(unknown007 *pThread, int pc, u32 size) {
   }
 }
 
+// Inferred role: type names indexed by script object type; no game symbol, original name unknown.
+static const char *const unknown018[] = {"nil", "true", "false", "int", "fixed", "string", "array", "function", "plugin", "OC", "sys"};
+
+const char *getScTypeName(int type) {
+  if (static_cast<unsigned int>(type) > 10) {
+    return "invalid";
+  }
+  return unknown018[type];
+}
+
 void vmHalt() {
 #line 4066
   vmMlAssert("[VM] INFINITY_LOOP", __FILE__, __LINE__);
@@ -632,6 +642,12 @@ u8 vmArrayLocalChk(unknown004 *pData) {
     return static_cast<u32>(pData->unknown04) >> 31;
   }
   return 0;
+}
+
+void splitFixed(float value, int *sign, int *integer, int *fraction) {
+  *sign = value < 0.0 ? -1 : 0;
+  *integer = static_cast<int>(value);
+  *fraction = static_cast<int>((value - static_cast<float>(*integer)) * 1000.0f);
 }
 
 int vmArgBoolGet(unknown007 *pThread, unknown004 *pData) {

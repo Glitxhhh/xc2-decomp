@@ -37,7 +37,8 @@ struct wkPixlManRes {
   grlib::CGLibDepthTarget *unknown1a0[2]; // Inferred role: depth objs; original member name unknown.
   grlib::CGLibDepthTarget *unknown1b0;    // Inferred role: separate trans depth object; original member name unknown.
   grlib::CGLibDepthTarget *unknown1b8;    // Inferred role: light depth object; original member name unknown.
-  u8 _1c0[0x1d0 - 0x1c0];
+  grlib::CGLibDepthTarget *unknown1c0;    // Inferred role: quarter size depth object; original member name unknown.
+  u8 _1c8[0x1d0 - 0x1c8];
   grlib::CGLibRenderTarget *unknown1d0; // Inferred role: main render target; original member name unknown.
   u32 unknown1d8;                       // Inferred role: flags; original member name unknown.
   u8 _1dc[0x1f8 - 0x1dc];
@@ -53,6 +54,7 @@ static_assert(offsetof(wkPixlManRes, unknown194) == 0x194, "");
 static_assert(offsetof(wkPixlManRes, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(wkPixlManRes, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(wkPixlManRes, unknown1b8) == 0x1b8, "");
+static_assert(offsetof(wkPixlManRes, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(wkPixlManRes, unknown1d0) == 0x1d0, "");
 static_assert(offsetof(wkPixlManRes, unknown1d8) == 0x1d8, "");
 static_assert(sizeof(wkPixlManRes) == 0x1f8, "");
@@ -75,6 +77,13 @@ public:
   void lastTexRender();
   void debugIlluminanceRender();
   void endDeferredRenderTarget();
+  void toneMapRender(bool isDepth);
+  void gammaRender(bool isDepth);
+  void offScreenAlphaRender();
+  void lastRender();
+  void lastUpdate();
+  void debugGBuffRender();
+  void debugReductionRender();
   void endSkyRenderTarget();
   void setMainViewPort();
   void resetRenderTarget();

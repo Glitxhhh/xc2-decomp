@@ -11,6 +11,7 @@ namespace ml {
 
 class DrResMdoMeshParts {
 public:
+  static const u32 FLAG_UNKNOWN_0 = 0x1; // Inferred role: the mdl info is drawn with the parts matrix; original name unknown.
   static const u32 FLAG_MAT_ADD = 0x8000000;
 
   DrResMdoMeshParts();
@@ -34,7 +35,7 @@ public:
   u32 unknown28;              // Inferred role: flags; original member name unknown.
   f32 unknown2c[2];           // Inferred role: def alphas; original member name unknown.
   f32 unknown34;              // Inferred role: alpha; original member name unknown.
-  u16 unknown38;              // Inferred role: mat index; original member name unknown.
+  s16 unknown38;              // Inferred role: mat index; original member name unknown.
   u8 unknown3a;               // Inferred role: volume fade effect; original member name unknown.
   u8 _3b[0x40 - 0x3b];
 };
@@ -50,6 +51,7 @@ class DrResMdoMeshObj {
 public:
   DrResMdoMeshObj();
   ~DrResMdoMeshObj();
+  bool updateDisplayCheck(bool isDisp);
   int setup(const u8 *resource, u8 *work);
   int getIdx(const char *name) const;
   static int calcWorkSize(const u8 *resource);

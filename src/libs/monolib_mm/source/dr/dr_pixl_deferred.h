@@ -18,6 +18,9 @@ public:
   void displayUpdate();
   void globalIBLRender();
   void lastDeferredRender();
+  void fastDeferredRender(int cate);
+  void shadowTexRender(int cate);
+  void debugRender();
   grlib::CGLibTextureBuffer *getShadowMapTexture() const;
   void shadowBuffBegin();
   void shadowBuffClear();

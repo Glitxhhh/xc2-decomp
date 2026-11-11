@@ -1,11 +1,14 @@
 #include "ml/dev_file_th.h"
 
+#include "device/nx/dev_file_nx_th.h"
 #include "ml/dev_file_accessor.h"
 #include "ml/dev_file_job_th.h"
 #include "ml/file_handle_th.h"
+#include "ml/lib_main.h"
+#include "ml/reslist.h"
+#include "ml/work_obj.h"
 #include "ml/work_root.h"
-
-#include "device/nx/dev_file_nx_th.h"
+#include "ml/work_system.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/construct.h"
 #include "mm_mtl/fixstr.h"
@@ -24,6 +27,40 @@ void clearLoadMedia() { g_loadMedia.clear(); }
 } // namespace dvfl_detail
 
 DevFileTh::~DevFileTh() {}
+
+namespace {
+
+// Inferred role: replaces the backslashes of a path by slashes; original name unknown.
+template <int LEN> void unknown108(mm::mtl::FixStr<LEN> &path) {
+  for (int i = 0; i < path.length(); i++) {
+    if (path[i] == '\\') {
+      path[i] = '/';
+    }
+  }
+}
+
+} // namespace
+
+void DevFileTh::makeMediaFileName(mm::mtl::FixStr<256> &fileName, const char *directory, const char *path) {
+  if (getMediaType(path) != MEDIA_UNKNOWN_0) {
+    fileName = path;
+    return;
+  }
+  fileName = directory;
+  if (fileName.length() != 0) {
+    unknown108(fileName);
+    if (fileName[fileName.length() - 1] == '/') {
+      fileName.resize(fileName.length() - 1);
+    }
+  }
+  if (path[0] == '\\' || path[0] == '/') {
+    fileName += path;
+  } else {
+    fileName += "/";
+    fileName += path;
+  }
+  unknown108(fileName);
+}
 
 void DevFileTh::flushSave() {
   if (DevFileNxTh::m_mountSave) {
@@ -407,6 +444,16 @@ bool DevFileTh::finalize() {
     return true;
   }
   return file->unknown1c0->finalize();
+}
+
+bool DevFileTh::wkStandbyLogout() {
+  if (unknown60.size() != 0 || WorkSystem::get() != nullptr || LibMain::get() != nullptr) {
+    return false;
+  }
+  if (!finalize()) {
+    return false;
+  }
+  return WorkObj::wkStandbyLogout();
 }
 
 void DevFileTh::initializeEnv(const char *path) {

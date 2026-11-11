@@ -62,6 +62,8 @@ public:
   void setReflection(f32 x, f32 y, f32 z, bool isHigh);
   void renderDeferred();
   void renderDeferredLast();
+  void render();
+  void renderDeferredTemporal();
   DrPixlRenderTarget *getDownDepth();
   bool isCalcVolume();
   void update();

@@ -4,22 +4,36 @@
 #include "dr/dr_res_mdo_seam_res.h"
 #include "types.h"
 
+namespace mtl {
+class ALLOC_HANDLE;
+} // namespace mtl
+
 namespace grlib {
-class CGLibVtxInstans;
+class CGLibTriUniformArray;
 } // namespace grlib
 
 namespace ml {
+class DrCalcClipMan;
+class DrCalcViewWork;
 class DrMdoCtlSeamBaseMap;
 class DrPixlShadowCacheObj;
 class DrPixlShadowObj;
+class DrResMdoAlpTbl;
 class DrResMdoSeamWrkBaseVertex;
 struct MdoWrkMatRes;
+struct MdsSeamBaseMapHead;
+struct MdsSeamOfsTexTblData;
+class DrResMdoSeamParmRead;
 
 class DrResMdoSeamWrkBase : public unknown133<DrResMdoSeamWrkBase> {
 public:
   DrResMdoSeamWrkBase();
   virtual ~DrResMdoSeamWrkBase();
   void release();
+  bool update(DrCalcViewWork *view, const DrResMdoSeamParmRead *parmRead, bool isOpen, u32 flags);
+  u32 updateRenderList(DrCalcViewWork *view, DrCalcClipMan *clip, u16 *textureFlags, DrResMdoSeamTexture *textures, u16 *texListFlags, DrResMdoSeamTexList *texLists, DrMdoCtlSeamBaseMap *ctl,
+                       const MdsSeamOfsTexTblData *table, u32 flags);
+  void setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniformArray *uniforms, mtl::ALLOC_HANDLE handle, DrMdoCtlSeamBaseMap *ctl, const MdsSeamBaseMapHead *head, u32 max);
   void beginBaseMapRenderList();
   void callShadowCacheBaseUpdate(u64 mask);
   void beginRender();
@@ -46,21 +60,21 @@ public:
   s32 unknownb4; // Inferred role: memory size; original member name unknown.
   u8 _b8[0xe0 - 0xb8];
   void *unknowne0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  void *unknowne8; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u32 *unknowne8;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u8 **unknownf0;  // Inferred role: shadow bit tables; original member name unknown.
   u32 unknownf8;   // Inferred role: shadow bit table size; original member name unknown.
   u8 _fc[0x110 - 0xfc];
-  u8 *unknown110; // Inferred role: render lists; original member name unknown.
+  u8 *unknown110; // Inferred role: render list memory; original member name unknown.
   u8 _118[0x158 - 0x118];
   DrResMdoSeamMemObj *unknown158; // Inferred role: memory object; original member name unknown.
   u8 _160[0x168 - 0x160];
-  grlib::CGLibVtxInstans *unknown168; // Inferred role: instance vertex; original member name unknown.
-  s32 unknown170;                     // Inferred role: render list num; original member name unknown.
-  s32 unknown174;                     // Inferred role: render list size; original member name unknown.
-  s16 unknown178;                     // Inferred role: selected vertex; original member name unknown.
-  s16 unknown17a;                     // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  s16 unknown17c;                     // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  s16 unknown17e;                     // Inferred role: vertex count; original member name unknown.
+  DrResMdoAlpTbl *unknown168; // Inferred role: alpha table; original member name unknown.
+  s32 unknown170;             // Inferred role: render list num; original member name unknown.
+  s32 unknown174;             // Inferred role: render list size; original member name unknown.
+  s16 unknown178;             // Inferred role: selected vertex; original member name unknown.
+  s16 unknown17a;             // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s16 unknown17c;             // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s16 unknown17e;             // Inferred role: vertex count; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown68) == 0x68, "");

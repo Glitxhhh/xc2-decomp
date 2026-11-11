@@ -34,7 +34,9 @@ public:
     node_iterator(NodePtr node, FixedList *list) : m_node(node), mList(list) {}
 
     V &operator*() const {
+#line 84
       MM_ASSERT(m_node != 0);
+#line 38
       return m_node->mValue;
     }
     V *operator->() const { return &m_node->mValue; }

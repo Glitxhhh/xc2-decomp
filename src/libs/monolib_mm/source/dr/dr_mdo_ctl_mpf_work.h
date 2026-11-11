@@ -22,6 +22,10 @@ struct MdsMpfObjData {
 static_assert(offsetof(MdsMpfObjData, unknown06) == 0x06, "");
 static_assert(sizeof(MdsMpfObjData) == 0x18, "");
 
+struct _wkMpfInsMdlVertex;
+
+void SetMpfBuffPosData(_wkMpfInsMdlVertex *vertex, f32, f32, f32 scale, f32 posX, f32 posY, f32 posZ, f32 dirX, f32 dirY, f32 dirZ, f32 angle);
+
 class DrMdoCtlMpfWork {
 public:
   // Inferred role: object select buffer; original type name unknown.

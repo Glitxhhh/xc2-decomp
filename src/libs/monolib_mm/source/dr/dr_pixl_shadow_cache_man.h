@@ -6,6 +6,10 @@
 #include "grlib/cglib_uniform_array.h"
 #include "types.h"
 
+namespace mm {
+struct Vec3;
+} // namespace mm
+
 namespace ml {
 class DrPixlMan;
 
@@ -36,7 +40,9 @@ public:
   void delShadowCacheUpdate();
   void callSelectShadowCacheUpdate(u64 mask);
   bool isShadowCache() const;
+  u32 clipDirShadowChk(const mm::Vec3 &position, f32 radius, bool isFirst);
   void debugInfoRender();
+  void debugShadowCacheRender();
   void createCacheBuff();
   void resetColorBuff();
   void createShadowTemp();

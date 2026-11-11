@@ -98,8 +98,8 @@ static_assert(sizeof(unknown136) == 0x8, "");
 // Inferred role: seam resource header; original type name unknown.
 struct unknown061 {
   u8 _00[0x18];
-  u32 m_seamBaseMdlMax;
-  u8 _1c[0x20 - 0x1c];
+  s32 m_seamBaseMdlMax;
+  u32 unknown1c; // Inferred role: offset of the base map data; original member name unknown.
   u32 m_seamInstMdlMax;
   u8 _24[0x28 - 0x24];
   u32 m_seamColiMax;
@@ -126,6 +126,7 @@ struct unknown061 {
   u32 unknowne8; // Inferred role: offset of the cloud model data; original member name unknown.
 };
 
+static_assert(offsetof(unknown061, unknown1c) == 0x1c, "");
 static_assert(offsetof(unknown061, m_seamBaseMdlMax) == 0x18, "");
 static_assert(offsetof(unknown061, m_seamInstMdlMax) == 0x20, "");
 static_assert(offsetof(unknown061, m_seamColiMax) == 0x28, "");
@@ -287,6 +288,14 @@ static_assert(offsetof(unknown094<DrResMdoSeamTexture>, unknown10) == 0x10, "");
 static_assert(offsetof(unknown094<DrResMdoSeamTexture>, unknown28) == 0x28, "");
 static_assert(sizeof(unknown094<DrResMdoSeamTexture>) == 0x38, "");
 
+// Bit table of the seam objects, passed by reference to DrResMdoSeamWrkLow::updateRenderList; only its first member is known.
+struct DrResBitTbl {
+  u32 *unknown00; // Inferred role: bits; original member name unknown.
+  u8 _08[0x10 - 0x08];
+};
+
+static_assert(sizeof(DrResBitTbl) == 0x10, "");
+
 class DrMdoCtlSeam : public DrMdlObj {
 public:
   DrMdoCtlSeam(int viewNum);
@@ -358,9 +367,8 @@ public:
   u8 _b48[0xb50 - 0xb48];
   u32 *unknownb50; // Inferred role: base map read bits; original member name unknown.
   u8 _b58[0xb60 - 0xb58];
-  u32 *unknownb60; // Inferred role: base map render bits; original member name unknown.
-  u8 _b68[0xb70 - 0xb68];
-  u32 *unknownb70; // Inferred role: low map read bits; original member name unknown.
+  DrResBitTbl unknownb60; // Inferred role: base map render bits; original member name unknown.
+  u32 *unknownb70;        // Inferred role: low map read bits; original member name unknown.
   u8 _b78[0xb80 - 0xb78];
   u32 *unknownb80; // Inferred role: inst map read bits; original member name unknown.
   u8 _b88[0xb90 - 0xb88];

@@ -3,10 +3,15 @@
 
 #include "types.h"
 
+namespace mm {
+struct Mat44;
+} // namespace mm
+
 namespace ml {
 
 class DrLightObj;
 class DrResEtcParams;
+class DrResEtcPamObj;
 
 class DrResMdoLight {
 public:
@@ -25,6 +30,8 @@ public:
   ~DrResMdoLight();
   static void release(DrResMdoLight *&light);
   void release();
+  void lgtCreate();
+  void update(const mm::Mat44 *prevMatrix, const mm::Mat44 &matrix, DrResEtcPamObj *pamObj, f32 ratio);
   static int calcWorkSize(const u8 *resource);
   void setDisp(bool isDisp);
   static void lgtCall_col_r(f32 *color, DrResEtcParams *params);

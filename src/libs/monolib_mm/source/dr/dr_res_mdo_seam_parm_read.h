@@ -95,9 +95,8 @@ public:
   mm::Vec3 unknown10[3]; // Inferred role: positions; original member name unknown.
   s32 unknown40;         // Inferred role: position num; original member name unknown.
   u8 _44[0x50 - 0x44];
-  u64 unknown50; // Inferred role: cleared by the constructor; original member name unknown.
-  u32 unknown58; // Inferred role: cleared by the constructor; original member name unknown.
-  u8 _5c[0x68 - 0x5c];
+  mm::Vec3 unknown50; // Inferred role: main read position; original member name unknown.
+  u8 _60[0x68 - 0x60];
   s16 m_stockEnvMdl;
   s16 unknown6a[8]; // Inferred role: stock base maps; original member name unknown.
   u8 _7a[0x80 - 0x7a];
@@ -168,7 +167,6 @@ static_assert(offsetof(DrResMdoSeamParmRead, unknown5d8) == 0x5d8, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown5e2) == 0x5e2, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown5e8) == 0x5e8, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown50) == 0x50, "");
-static_assert(offsetof(DrResMdoSeamParmRead, unknown58) == 0x58, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown5ea) == 0x5ea, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown5f0) == 0x5f0, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown610) == 0x610, "");

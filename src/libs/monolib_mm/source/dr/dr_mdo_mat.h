@@ -333,18 +333,30 @@ struct unknown016 {
 static_assert(sizeof(unknown016) == 0x04, "");
 
 struct MdsMdlInfoHeader {
-  u8 _00[0x04 - 0x00];
+  // Inferred role: mdl info flag; original type name unknown.
+  enum Flag {
+    FLAG_UNKNOWN_8 = 1 << 8, // Inferred role: has mesh parts; original name unknown.
+  };
+
+  u32 unknown00; // Inferred role: flags; original member name unknown.
   u32 unknown04; // Inferred role: render pass flags; original member name unknown.
   u16 unknown08; // Inferred role: vertex bind index; original member name unknown.
   u16 unknown0a; // Inferred role: render index; original member name unknown.
   u8 _0c[0x0e - 0x0c];
   u16 unknown0e; // Inferred role: material index; original member name unknown.
-  u8 _10[0x30 - 0x10];
+  u8 _10[0x16 - 0x10];
+  u16 unknown16; // Inferred role: mesh parts index; original member name unknown.
+  u8 _18[0x1c - 0x18];
+  u16 unknown1c; // Inferred role: shader parameter; original member name unknown.
+  u8 _1e[0x30 - 0x1e];
 };
 
+static_assert(offsetof(MdsMdlInfoHeader, unknown04) == 0x04, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown08) == 0x08, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown0a) == 0x0a, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown0e) == 0x0e, "");
+static_assert(offsetof(MdsMdlInfoHeader, unknown16) == 0x16, "");
+static_assert(offsetof(MdsMdlInfoHeader, unknown1c) == 0x1c, "");
 
 static_assert(sizeof(MdsMdlInfoHeader) == 0x30, "");
 
@@ -564,6 +576,7 @@ class DrMdoMat : public DrMdlBase {
 public:
   // Inferred role: draw flag; original type name unknown.
   enum unknown027 {
+    unknown027_0 = 1 << 0,    // Inferred role: resource ready; original name unknown.
     unknown027_2 = 1 << 2,    // Inferred role: always tex stm; original name unknown.
     unknown027_4 = 1 << 4,    // Inferred role: write stencil; original name unknown.
     unknown027_6 = 1 << 6,    // Inferred role: flag wave; original name unknown.
@@ -575,6 +588,9 @@ public:
     unknown027_17 = 1 << 17,  // Inferred role: always middle tex stm; original name unknown.
     unknown027_18 = 1 << 18,  // Inferred role: occlusion query off; original name unknown.
     unknown027_20 = 1 << 20,  // Inferred role: express draw mode; original name unknown.
+    unknown027_22 = 1 << 22,  // Inferred role: updated render list; original name unknown.
+    unknown027_23 = 1 << 23,  // Inferred role: unknown, cleared while the display is off; original name unknown.
+    unknown027_26 = 1 << 26,  // Inferred role: model matrix is updated; original name unknown.
     unknown027_28 = 1 << 28,  // Inferred role: cam check mode; original name unknown.
     unknown027_29 = 1 << 29,  // Inferred role: cam check resl; original name unknown.
     unknown027_30 = 1 << 30,  // Inferred role: debug delete; original name unknown.
@@ -593,6 +609,9 @@ public:
     unknown028_8 = 1 << 8,
     unknown028_9 = 1 << 9,
     unknown028_20 = 1 << 20,
+    unknown028_11 = 1 << 11, // Inferred role: shadow map of the first cascade; original name unknown.
+    unknown028_12 = 1 << 12, // Inferred role: shadow map of the second cascade; original name unknown.
+    unknown028_13 = 1 << 13, // Inferred role: shadow map of the third cascade; original name unknown.
     unknown028_21 = 1 << 21, // Inferred role: no z pre pass before the opaque render; original name unknown.
     unknown028_15 = 1 << 15, // Inferred role: bloom; original name unknown.
     unknown028_16 = 1 << 16, // Inferred role: alpha bloom; original name unknown.
@@ -601,6 +620,8 @@ public:
     unknown028_25 = 1 << 25,
     unknown028_26 = 1 << 26,
     unknown028_27 = 1 << 27,
+    unknown028_28 = 1 << 28,
+    unknown028_31 = 1u << 31,
   };
 
   // Inferred role: alpha flag; original type name unknown.
@@ -612,6 +633,10 @@ public:
   DrMdoMat(int viewNum);
 
   void initMdlInfo(const u8 *data, MdoWrkMatRes *matRes);
+  void initMaterial(const u8 *matData, const u8 *shaderData, const u8 *mdlData, const u8 *texData, bool isStm);
+  void setupResource(bool isStm);
+  void oneTextureStream();
+  void updateBillTbl();
   int getNodeAnmWrkRes(const u8 *data, u8 *work, MdoWrkMatRes *matRes);
   void resetNodeAnmWrkRes(const u8 *data, MdoWrkMatRes *matRes);
   int getDispCallRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes *matRes);
@@ -628,6 +653,8 @@ public:
   int getFurShaderRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes *matRes);
   void resetFurShaderRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes);
   void releaseMat();
+  void initBaseMapMaterial(MdoWrkMatRes *&matRes, const u8 *data0, const u8 *data1, const u8 *data2, const u8 *data3, const u8 *data4, int count);
+  void resetBaseMapMaterial(MdoWrkMatRes *matRes, const u8 *data0, const u8 *data1, const u8 *data2, const u8 *data3, const u8 *data4, int count);
   void releaseBaseMapSeamMat(MdoWrkMatRes *matRes);
   void releaseInstMapSeamMat(MdoWrkMatRes *matRes);
   void releaseMpfMapSeamMat(MdoWrkMatRes *matRes);
@@ -672,6 +699,7 @@ public:
   void matCall_VolumeTest(const MdsMatInfoHeader *header, int valueIndex, int matIndex);
   void updateMatFstCallBack();
   void updateMatCallBack(const u32 *flags);
+  void updateTimerCalc(const u32 *flags);
 
   static void (DrMdoMat::*s_pCallFstMatVal[])(const MdsMatInfoHeader *header, int valueIndex, int matIndex);
   static void (DrMdoMat::*s_pCallMatVal[])(const MdsMatInfoHeader *header, int valueIndex, int matIndex);
@@ -682,9 +710,9 @@ public:
   DrShdMdoDecExtTbl *unknown38;        // Inferred role: dec ext tbl; original member name unknown.
   mm::Col3 *unknown40;                 // Inferred role: avatar map colors; original member name unknown.
   const MdsMatCharMkTexTbl *unknown48; // Inferred role: char mk textures; original member name unknown.
-  void *unknown50;                     // Inferred role: dammy data; original member name unknown.
+  const void *unknown50;               // Inferred role: dammy data; original member name unknown.
   DrMdoSmlShadowObj *unknown58;        // Inferred role: sml shadow; original member name unknown.
-  u8 _60[0x70 - 0x60];
+  mm::Mat44 *unknown60[2];             // Inferred role: matrix of each buffer; original member name unknown.
   mm::Mat44 m_matrix;
   mm::Vec3 m_offsetPos;
   u8 _c0[0xd0 - 0xc0];
@@ -694,7 +722,7 @@ public:
   f32 unknowne0;    // Inferred role: alpha; original member name unknown.
   f32 unknowne4;    // Inferred role: outline value time; original member name unknown.
   f32 unknowne8;    // Inferred role: scale; original member name unknown.
-  u8 _ec[0xf0 - 0xec];
+  u32 unknownec;    // Inferred role: screen share limit that keeps the gpu render flag on; original member name unknown.
   bool m_gpuRender;
   u8 _f1;
   u16 unknownf2; // Inferred role: render pass id; original member name unknown.
@@ -712,7 +740,7 @@ public:
   u8 _164[0x168 - 0x164];
   u16 unknown168; // Inferred role: update flags; original member name unknown.
   u8 unknown16a;  // Inferred role: char mk texture count; original member name unknown.
-  u8 _16b;
+  s8 unknown16b;  // Inferred role: gpu render hold count; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoMat, m_drMan) == 0x28, "");

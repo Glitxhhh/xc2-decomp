@@ -12,6 +12,7 @@ namespace ml {
 class DrResMdoMat;
 struct DrResMpfSampler;
 class DrShdDataList;
+struct MdoWrkMatSetupArg;
 struct MdsMatInfoHeader;
 struct MdsMpfMatInfoHeader;
 
@@ -91,6 +92,7 @@ public:
   void changeSeamMatInfo();
   void changeShaderMat(bool isChange);
   void changeShaderPos();
+  void getSetupMaterial(MdoWrkMatSetupArg &arg, const MdsMatInfoHeader *header, int mode);
   void createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat);
   void updateUniformBlock(const u32 *flags);
   void createMpfMatUniformBlock(const MdsMpfMatExtData *data, int index);

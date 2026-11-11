@@ -8,6 +8,23 @@ namespace ml {
 
 DrIBLMan::DrIBLMan(DrMan *man, int index) : unknown00(man), unknown08(index), unknown910(nullptr) {}
 
+DrIBLMan::~DrIBLMan() {
+  for (mm::mtl::FixedList<DrIBLObj *, 32>::iterator it = unknown10.begin(); it != unknown10.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
+      *it = nullptr;
+    }
+  }
+  for (int i = 0; i < 2; i++) {
+    for (mm::mtl::FixedList<DrIBLObj *, 32>::iterator it = unknown250[i].begin(); it != unknown250[i].end(); ++it) {
+      if (*it != nullptr) {
+        delete *it;
+        *it = nullptr;
+      }
+    }
+  }
+}
+
 bool DrIBLMan::isValid() const { return unknown910 != nullptr; }
 
 void DrIBLMan::releaseObj(DrIBLObj *obj) { obj->unknown58 |= 2; }

@@ -10,4 +10,6 @@ void vmThreadSleepAll(void *vm);
 void vmThreadWakeupAll(void *vm);
 void vmMlAssert(const char *message, const char *file, int line);
 void vmMlOutputMsg(int level, const char *format, ...);
+void splitFixed(float value, int *sign, int *integer, int *fraction);
+const char *getScTypeName(int type);
 }

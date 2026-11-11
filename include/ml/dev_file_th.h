@@ -35,6 +35,7 @@ enum CBM : int {
   CBM_UNKNOWN_6 = 6,
 };
 enum MEDIA {
+  MEDIA_UNKNOWN_0 = 0, // Inferred role: path without media prefix.
   MEDIA_UNKNOWN_8 = 8, // Inferred role: media count, unset media of a DevFileArchiver list.
 };
 
@@ -181,6 +182,7 @@ public:
 
   static const int INVALID_FILE_CHANNEL;
   static void normalizeDvdFileName(mm::mtl::FixStr<256> &fileName, const char *path);
+  static void makeMediaFileName(mm::mtl::FixStr<256> &fileName, const char *directory, const char *path);
   static FileHandleTh *checkValidFile(const char *path, IWorkEvent *event);
   static const char *getDvdRoot();
   static MEDIA getMediaType(const char *path);
@@ -227,6 +229,7 @@ public:
   static int getFileSize(const char *path, mm::VAL64 *size);
   static bool checkValidFileBlock(const char *path);
   static void sendCommand(const char *command, const char *argument);
+  bool wkStandbyLogout() override;
   void wkTail() override;
   void wkUpdate() override;
   bool icbError(CERR_STRUCT *error) override;

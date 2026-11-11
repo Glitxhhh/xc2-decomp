@@ -24,6 +24,7 @@ public:
   void updateUniform(const mm::Mat44 &matrix, f32 param2, f32 param3);
   void setActive(bool isActive, u32 index);
   void alpRender();
+  void stmRender(bool isNode);
   u32 setup(const u8 *, u8 *);
   u32 calcWorkSize(const u8 *);
   void resourceInit(DrResMdoVertex *vertex);

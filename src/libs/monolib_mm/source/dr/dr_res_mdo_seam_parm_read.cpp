@@ -4,8 +4,7 @@ namespace ml {
 
 DrResMdoSeamParmRead::DrResMdoSeamParmRead() {
   unknown00 = 0;
-  unknown50 = 0;
-  unknown58 = 0;
+  unknown50 = mm::Vec3(0.0f, 0.0f, 0.0f);
   unknown62c = 0;
   unknown40 = 0;
 }

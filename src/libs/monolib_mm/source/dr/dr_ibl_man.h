@@ -16,6 +16,7 @@ class DrMan;
 class DrIBLMan {
 public:
   DrIBLMan(DrMan *man, int index);
+  ~DrIBLMan();
   DrIBLObj *createObj(const void *data);
   bool isValid() const;
   void releaseObj(DrIBLObj *obj);

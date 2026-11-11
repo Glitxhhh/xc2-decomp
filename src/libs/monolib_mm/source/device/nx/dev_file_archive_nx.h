@@ -20,7 +20,6 @@
 
 namespace ml {
 
-class DevFileArchiveNx;
 class Thread;
 class FileHandleTh;
 
@@ -41,7 +40,7 @@ struct OpenReadParam {
   DevFileParamTh unknown120;               // Inferred role: parameters of the request; original member name unknown.
   u64 unknown190;                          // Inferred role: data offset in the archive; original member name unknown.
   Thread *unknown198;                      // Inferred role: loader thread; original member name unknown.
-  DevFileArchiveNx *unknown1a0;            // Inferred role: owner; original member name unknown.
+  DevFileAccessor *unknown1a0;             // Inferred role: owner, a DevFileArchiveNx or a DevFileNxTh; original member name unknown.
   mm::threading::ReadWriteLock unknown1a8; // Inferred role: lock; original member name unknown.
   u8 _1c8[0x1d8 - 0x1c8];
 };

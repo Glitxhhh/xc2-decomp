@@ -56,6 +56,7 @@ public:
   void setMatAnmFrme(f32 frame);
   void changeMemFixAnim(MdoWrkMatRes *matRes, const void *data);
   void setupFixAnim(const void *data);
+  void updateAnim(f32 frame, const u32 *flags, DrResEtcPamObj *pamObj);
   void updateAnimEnd(f32 frame, const u32 *flags, DrResEtcPamObj *pamObj);
   void calcAnim(const MdsFixAnmCate *cate, DrResMdoMat *mat, DrResEtcPamObj *pamObj, f32 *work, f32 frame);
   f32 getHermiteAttr(const MdsFixAnmInf *inf, f32 frame);
