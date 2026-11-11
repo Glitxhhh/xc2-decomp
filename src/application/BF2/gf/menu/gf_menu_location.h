@@ -17,8 +17,10 @@ struct GfSetupParam;
 
 class GfMenuLocation : public mm::mtl::PtrSingleton<GfMenuLocation> {
 public:
-  static const u32 LOCATOR_TYPE_COUNT = 4;
-  static const u32 ORDER_MAX = 128;
+  // Inferred role: number of locator types; original name unknown.
+  static const u32 LOCATOR_TYPE_UNKNOWN_4 = 4;
+  // Inferred role: capacity of the orders of a locator group; original name unknown.
+  static const u32 ORDER_UNKNOWN_128 = 128;
 
   struct OrderInfo {
     u32 unknown00; // Inferred role: index; original member name unknown.
@@ -31,9 +33,9 @@ public:
 
   // Inferred role: locator group; original type name unknown.
   struct unknown001 {
-    mm::mtl::Vector<GfFieldLocator> unknown00;            // Inferred role: locators; original member name unknown.
-    u32 unknown28;                                        // Inferred role: data num; original member name unknown.
-    mm::mtl::FixedVector<OrderInfo, ORDER_MAX> unknown30; // Inferred role: orders; original member name unknown.
+    mm::mtl::Vector<GfFieldLocator> unknown00;                    // Inferred role: locators; original member name unknown.
+    u32 unknown28;                                                // Inferred role: data num; original member name unknown.
+    mm::mtl::FixedVector<OrderInfo, ORDER_UNKNOWN_128> unknown30; // Inferred role: orders; original member name unknown.
   };
 
   GfMenuLocation(const GfSetupParam &param);
@@ -48,8 +50,8 @@ public:
 
   bool unknown08; // Inferred role: initialized; original member name unknown.
   u8 _09[0x10 - 0x09];
-  unknown001 unknown10[LOCATOR_TYPE_COUNT]; // Inferred role: groups; original member name unknown.
-  u32 unknown10f0;                          // Role and original member name unknown.
+  unknown001 unknown10[LOCATOR_TYPE_UNKNOWN_4]; // Inferred role: groups; original member name unknown.
+  u32 unknown10f0;                              // Role and original member name unknown.
 };
 
 static_assert(sizeof(GfMenuLocation::OrderInfo) == 0x8, "");

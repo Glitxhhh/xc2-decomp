@@ -111,32 +111,55 @@ void GfMenuManager::changeHUDScene(u32 scene) { GfMenuHUD::changeScene(scene); }
 
 namespace {
 
-constexpr u32 MENU_CHAPTER_TELOP = 68;
-constexpr u32 MENU_ZONE_TELOP = 69;
-constexpr u32 MENU_COMMON_TEXT = 100;
-constexpr u32 MENU_DUMMY_TUTORIAL = 121;
+// Inferred role: call menu of the chapter telop; original name unknown.
+constexpr u32 MENU_UNKNOWN_68 = 68;
+// Inferred role: call menu of the zone telop; original name unknown.
+constexpr u32 MENU_UNKNOWN_69 = 69;
+// Inferred role: call menu of the common text; original name unknown.
+constexpr u32 MENU_UNKNOWN_100 = 100;
+// Inferred role: call menu of the dummy tutorial; original name unknown.
+constexpr u32 MENU_UNKNOWN_121 = 121;
 
-constexpr u32 COMMON_TEXT_PRECIOUS = 11;
-constexpr u8 CHAPTER_MAX = 10;
+// Inferred role: common text type that shows a precious item; original name unknown.
+constexpr u32 COMMON_TEXT_UNKNOWN_11 = 11;
+// Inferred role: maximum chapter number of the chapter telop; original name unknown.
+constexpr u8 CHAPTER_UNKNOWN_10 = 10;
 
-constexpr u32 LAYER_BTL_MODEL_VIEW = 10;
-constexpr u32 LAYER_NAME_SELECT = 12;
-constexpr u32 LAYER_OPENING_TELOP = 13;
-constexpr u32 LAYER_STAFFROLL = 14;
+// Inferred role: UI layer of the battle model view; original name unknown.
+constexpr u32 LAYER_UNKNOWN_10 = 10;
+// Inferred role: UI layer of the name selection; original name unknown.
+constexpr u32 LAYER_UNKNOWN_12 = 12;
+// Inferred role: UI layer of the opening telop; original name unknown.
+constexpr u32 LAYER_UNKNOWN_13 = 13;
+// Inferred role: UI layer of the staff roll; original name unknown.
+constexpr u32 LAYER_UNKNOWN_14 = 14;
 
-constexpr u32 FULL_SCREEN_MAIN_ROOT = 2;
-constexpr u32 MAIN_ROOT_BLADE_CREATE = 11;
-constexpr u32 MAIN_ROOT_SAVE_LOAD = 53;
-constexpr u32 MAINMENU2_MAP = 1;
-constexpr u32 MAINMENU2_SYSTEM = 6;
-constexpr u16 SAVE_LOAD_SAVE = 1;
-constexpr u32 SE_ACCEPT_ACCESS = 27;
-constexpr u32 LANGUAGE_STEP_WAIT_LOAD = 1;
-constexpr u32 LANGUAGE_STEP_SELECT = 2;
-constexpr u32 LANGUAGE_STEP_WAIT_CONFIRM_LOAD = 3;
-constexpr u32 LANGUAGE_STEP_CONFIRM = 4;
-constexpr u32 LANGUAGE_STEP_RELEASE = 5;
-constexpr u32 LANGUAGE_STEP_DONE = 6;
+// Inferred role: full screen of the main root; original name unknown.
+constexpr u32 FULL_SCREEN_UNKNOWN_2 = 2;
+// Inferred role: open parameter of the main root that shows the blade creation; original name unknown.
+constexpr u32 MAIN_ROOT_UNKNOWN_11 = 11;
+// Inferred role: open parameter of the main root that shows the save and load; original name unknown.
+constexpr u32 MAIN_ROOT_UNKNOWN_53 = 53;
+// Inferred role: open parameter of the main menu 2 that shows the map; original name unknown.
+constexpr u32 MAINMENU2_UNKNOWN_1 = 1;
+// Inferred role: open parameter of the main menu 2 that shows the system menu; original name unknown.
+constexpr u32 MAINMENU2_UNKNOWN_6 = 6;
+// Inferred role: open parameter of the save and load that selects the save; original name unknown.
+constexpr u16 SAVE_LOAD_UNKNOWN_1 = 1;
+// Inferred role: sound effect of acceptAccess; original name unknown.
+constexpr u32 SE_UNKNOWN_27 = 27;
+// Inferred role: language selection step that waits for the language resource to load; original name unknown.
+constexpr u32 LANGUAGE_STEP_UNKNOWN_1 = 1;
+// Inferred role: language selection step where the player chooses; original name unknown.
+constexpr u32 LANGUAGE_STEP_UNKNOWN_2 = 2;
+// Inferred role: language selection step that waits for the confirmation resource to load; original name unknown.
+constexpr u32 LANGUAGE_STEP_UNKNOWN_3 = 3;
+// Inferred role: language selection step where the player confirms; original name unknown.
+constexpr u32 LANGUAGE_STEP_UNKNOWN_4 = 4;
+// Inferred role: language selection step that releases the resources; original name unknown.
+constexpr u32 LANGUAGE_STEP_UNKNOWN_5 = 5;
+// Inferred role: language selection step after which the selection is done; original name unknown.
+constexpr u32 LANGUAGE_STEP_UNKNOWN_6 = 6;
 
 // Inferred role: trigger bits of the control pad read by the language selection; original names unknown.
 constexpr u32 PAD_BUTTON_UNKNOWN_0 = 1 << 0;
@@ -155,7 +178,7 @@ bool isOpenCallMenu(GfMenuManager *manager, u32 menu) {
   if (manager->unknown40d0 == nullptr) {
     return false;
   }
-  if (manager->unknown40d0->getState() == GfMenuCallContext::STATE_IDLE) {
+  if (manager->unknown40d0->getState() == GfMenuCallContext::STATE_UNKNOWN_0) {
     return false;
   }
   if (manager->unknown40d0->isActive()) {
@@ -267,7 +290,7 @@ bool GfMenuManager::isInitialized() {
 
 bool GfMenuManager::isRegionJP() {
   if (get() != nullptr) {
-    return get()->unknown4104 == REGION_JP;
+    return get()->unknown4104 == REGION_UNKNOWN_0;
   }
   return false;
 }
@@ -291,10 +314,10 @@ bool GfMenuManager::selectLanguage() {
     ui::UIUtil::makeMenuImageFileName(fileName, "mnu001_langage_select_tw");
     mm::mtl::safeRelease(unknown4140);
     unknown4140 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), fileName.c_str(), 10, true);
-    unknown4108 = LANGUAGE_STEP_WAIT_LOAD;
+    unknown4108 = LANGUAGE_STEP_UNKNOWN_1;
     return false;
   }
-  case LANGUAGE_STEP_WAIT_LOAD:
+  case LANGUAGE_STEP_UNKNOWN_1:
     if (!unknown4110->valid()) {
       return false;
     }
@@ -308,10 +331,10 @@ bool GfMenuManager::selectLanguage() {
         unknown4128 = layerAcc.createObj(unknown4120->getAssetData());
         unknown004(unknown4128, 640.0f, 470.0f);
       }
-      unknown4108 = LANGUAGE_STEP_SELECT;
+      unknown4108 = LANGUAGE_STEP_UNKNOWN_2;
     }
     return false;
-  case LANGUAGE_STEP_SELECT: {
+  case LANGUAGE_STEP_UNKNOWN_2: {
     const fw::PadData *pad = fw::PadManager::getControlPadData(0);
     layer::LayerAccDefObj layout(unknown4118);
     layout.setDisp(true);
@@ -337,23 +360,23 @@ bool GfMenuManager::selectLanguage() {
         layer::LayerAccDefObj caution(unknown4128);
         caution.setDisp(false);
       }
-      unknown4108 = LANGUAGE_STEP_WAIT_CONFIRM_LOAD;
+      unknown4108 = LANGUAGE_STEP_UNKNOWN_3;
       fw::SoundManager::get()->playSe(1, nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
     }
     return false;
   }
-  case LANGUAGE_STEP_WAIT_CONFIRM_LOAD: {
+  case LANGUAGE_STEP_UNKNOWN_3: {
     fw::CommonResource *confirm = unknown4150 == 1 ? unknown4140 : (unknown4150 == 2 ? unknown4138 : unknown4130);
     if (confirm != nullptr && confirm->valid()) {
       layer::LayerAccManager layerAcc;
       mm::mtl::safeRelease(unknown4148);
       unknown4148 = layerAcc.createObj(confirm->getAssetData());
       unknown004(unknown4148, 640.0f, 360.0f);
-      unknown4108 = LANGUAGE_STEP_CONFIRM;
+      unknown4108 = LANGUAGE_STEP_UNKNOWN_4;
     }
     return false;
   }
-  case LANGUAGE_STEP_CONFIRM: {
+  case LANGUAGE_STEP_UNKNOWN_4: {
     const fw::PadData *pad = fw::PadManager::getControlPadData(0);
     if ((pad->unknown04 & PAD_BUTTON_UNKNOWN_2) == 0) {
       if ((pad->unknown04 & PAD_BUTTON_UNKNOWN_1) == 0) {
@@ -362,7 +385,7 @@ bool GfMenuManager::selectLanguage() {
       layer::LayerAccDefObj layout(unknown4148);
       layout.setDisp(false);
       fw::SoundManager::get()->playSe(2, nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
-      unknown4108 = LANGUAGE_STEP_SELECT;
+      unknown4108 = LANGUAGE_STEP_UNKNOWN_2;
       return false;
     }
     switch (unknown4150) {
@@ -377,10 +400,10 @@ bool GfMenuManager::selectLanguage() {
       break;
     }
     fw::SoundManager::get()->playSe(1, nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
-    unknown4108 = LANGUAGE_STEP_RELEASE;
+    unknown4108 = LANGUAGE_STEP_UNKNOWN_5;
     return false;
   }
-  case LANGUAGE_STEP_RELEASE:
+  case LANGUAGE_STEP_UNKNOWN_5:
     mm::mtl::safeRelease(unknown4140);
     mm::mtl::safeRelease(unknown4138);
     mm::mtl::safeRelease(unknown4130);
@@ -389,7 +412,7 @@ bool GfMenuManager::selectLanguage() {
     mm::mtl::safeRelease(unknown4128);
     mm::mtl::safeRelease(unknown4110);
     mm::mtl::safeRelease(unknown4118);
-    unknown4108 = LANGUAGE_STEP_DONE;
+    unknown4108 = LANGUAGE_STEP_UNKNOWN_6;
     return false;
   default:
     return true;
@@ -912,7 +935,7 @@ void GfMenuManager::closeCommonWindow() {
 bool GfMenuManager::isOpenCommonWindow() {
   GfMenuManager *manager = get();
   if (manager != nullptr && manager->unknown4090) {
-    return isOpenCallMenu(manager, MENU_COMMON_TEXT);
+    return isOpenCallMenu(manager, MENU_UNKNOWN_100);
   }
   return false;
 }
@@ -943,21 +966,21 @@ void GfMenuManager::openPreciousWindow(u16 item) {
   GfMenuManager *manager = get();
   if (manager != nullptr && manager->unknown4090 && manager->unknown40d0 != nullptr) {
     manager->unknown40d0->reset();
-    GfMenuObjCommonText::openItem(manager->unknown40d0, COMMON_TEXT_PRECIOUS, item);
+    GfMenuObjCommonText::openItem(manager->unknown40d0, COMMON_TEXT_UNKNOWN_11, item);
   }
 }
 
 bool GfMenuManager::isOpenPreciousWindow() {
   GfMenuManager *manager = get();
   if (manager != nullptr && manager->unknown4090) {
-    return isOpenCallMenu(manager, MENU_COMMON_TEXT);
+    return isOpenCallMenu(manager, MENU_UNKNOWN_100);
   }
   return false;
 }
 
 void GfMenuManager::openChapterTelop(u8 chapter) {
   GfMenuManager *manager = get();
-  if (manager != nullptr && manager->unknown4090 && chapter >= 1 && chapter <= CHAPTER_MAX && manager->unknown40d0 != nullptr) {
+  if (manager != nullptr && manager->unknown4090 && chapter >= 1 && chapter <= CHAPTER_UNKNOWN_10 && manager->unknown40d0 != nullptr) {
     manager->unknown40d0->reset();
     GfMenuObjChapterTelop::openBeginTelop(manager->unknown40d0, chapter);
   }
@@ -965,7 +988,7 @@ void GfMenuManager::openChapterTelop(u8 chapter) {
 
 void GfMenuManager::openChapterEndTelop(u8 chapter) {
   GfMenuManager *manager = get();
-  if (manager != nullptr && manager->unknown4090 && chapter >= 1 && chapter <= CHAPTER_MAX && manager->unknown40d0 != nullptr) {
+  if (manager != nullptr && manager->unknown4090 && chapter >= 1 && chapter <= CHAPTER_UNKNOWN_10 && manager->unknown40d0 != nullptr) {
     manager->unknown40d0->reset();
     GfMenuObjChapterTelop::openEndTelop(manager->unknown40d0, chapter);
   }
@@ -974,7 +997,7 @@ void GfMenuManager::openChapterEndTelop(u8 chapter) {
 bool GfMenuManager::isOpenChapterTelop() {
   GfMenuManager *manager = get();
   if (manager != nullptr && manager->unknown4090) {
-    return isOpenCallMenu(manager, MENU_CHAPTER_TELOP);
+    return isOpenCallMenu(manager, MENU_UNKNOWN_68);
   }
   return false;
 }
@@ -982,7 +1005,7 @@ bool GfMenuManager::isOpenChapterTelop() {
 bool GfMenuManager::isOpenZoneTelop() {
   GfMenuManager *manager = get();
   if (manager != nullptr && manager->unknown4090) {
-    return isOpenCallMenu(manager, MENU_ZONE_TELOP);
+    return isOpenCallMenu(manager, MENU_UNKNOWN_69);
   }
   return false;
 }
@@ -1000,7 +1023,7 @@ void GfMenuManager::openDummyTutorial(u8 tutorial) {
 bool GfMenuManager::isOpenDummyTutorial() {
   GfMenuManager *manager = get();
   if (manager != nullptr && manager->unknown4090) {
-    return isOpenCallMenu(manager, MENU_DUMMY_TUTORIAL);
+    return isOpenCallMenu(manager, MENU_UNKNOWN_121);
   }
   return false;
 }
@@ -1043,12 +1066,12 @@ GfMenuManager::REGION GfMenuManager::getRegion() {
   if (get() != nullptr) {
     return get()->unknown4104;
   }
-  return REGION_JP;
+  return REGION_UNKNOWN_0;
 }
 
 bool GfMenuManager::isRegionUS() {
   if (get() != nullptr) {
-    return get()->unknown4104 == REGION_US;
+    return get()->unknown4104 == REGION_UNKNOWN_1;
   }
   return false;
 }
@@ -1059,7 +1082,7 @@ void GfMenuManager::openMenu(u32 menu) {
   GfMenuObjMainRoot::OpenParam param;
   param.unknown00 = menu;
   GfMenuObjMainRoot::registOpenParam(param);
-  GfMenuFullScreen::open(FULL_SCREEN_MAIN_ROOT, true, true);
+  GfMenuFullScreen::open(FULL_SCREEN_UNKNOWN_2, true, true);
 }
 
 void GfMenuManager::openBladeCreateFromEvent(u32 event) {
@@ -1067,20 +1090,20 @@ void GfMenuManager::openBladeCreateFromEvent(u32 event) {
   GfMenuObjBladeCreate::OpenParam bladeCreateParam;
   bladeCreateParam.unknown00 = event;
   GfMenuObjBladeCreate::registOpenParam(bladeCreateParam);
-  mainRootParam.unknown00 = MAIN_ROOT_BLADE_CREATE;
+  mainRootParam.unknown00 = MAIN_ROOT_UNKNOWN_11;
   GfMenuObjMainRoot::registOpenParam(mainRootParam);
-  GfMenuFullScreen::open(FULL_SCREEN_MAIN_ROOT, true, true);
+  GfMenuFullScreen::open(FULL_SCREEN_UNKNOWN_2, true, true);
 }
 
 void GfMenuManager::openBtlModelView() {
   if (get() != nullptr) {
-    ui::UIManager::get()->createLayer(LAYER_BTL_MODEL_VIEW);
+    ui::UIManager::get()->createLayer(LAYER_UNKNOWN_10);
   }
 }
 
 void GfMenuManager::closeBtlModelView() {
   if (get() != nullptr && get()->unknown40fd) {
-    ui::UIManager::get()->terminateLayer(LAYER_BTL_MODEL_VIEW, true);
+    ui::UIManager::get()->terminateLayer(LAYER_UNKNOWN_10, true);
   }
 }
 
@@ -1094,7 +1117,7 @@ bool GfMenuManager::isOpenBtlModelView() {
 void GfMenuManager::openNameSelect() {
   GfMenuManager *manager = get();
   if (manager != nullptr) {
-    ui::UIManager::get()->createLayer(LAYER_NAME_SELECT);
+    ui::UIManager::get()->createLayer(LAYER_UNKNOWN_12);
     manager->unknown40fe = true;
   }
 }
@@ -1109,14 +1132,14 @@ bool GfMenuManager::isOpenNameSelect() {
 void GfMenuManager::openOpeningTelop() {
   GfMenuManager *manager = get();
   if (manager != nullptr) {
-    ui::UIManager::get()->createLayer(LAYER_OPENING_TELOP);
+    ui::UIManager::get()->createLayer(LAYER_UNKNOWN_13);
     manager->unknown40ff = true;
   }
 }
 
 void GfMenuManager::closeOpeningTelop() {
   if (get() != nullptr) {
-    ui::UIManager::get()->terminateLayer(LAYER_OPENING_TELOP, true);
+    ui::UIManager::get()->terminateLayer(LAYER_UNKNOWN_13, true);
   }
 }
 
@@ -1129,29 +1152,29 @@ bool GfMenuManager::isOpenOpeningTelop() {
 
 void GfMenuManager::openStaffroll() {
   if (get() != nullptr) {
-    ui::UIManager::get()->createLayer(LAYER_STAFFROLL);
+    ui::UIManager::get()->createLayer(LAYER_UNKNOWN_14);
   }
 }
 
 void GfMenuManager::closeStaffroll() {
   if (get() != nullptr) {
-    ui::UIManager::get()->terminateLayer(LAYER_STAFFROLL, true);
+    ui::UIManager::get()->terminateLayer(LAYER_UNKNOWN_14, true);
   }
 }
 
 void GfMenuManager::setMainmenuOpenMap() {
   GfMenuObjMainMenu2::OpenParam param;
-  param.unknown00 = MAINMENU2_MAP;
+  param.unknown00 = MAINMENU2_UNKNOWN_1;
   GfMenuObjMainMenu2::registOpenParam(param);
 }
 
 void GfMenuManager::setMainmenuOpenSystem() {
   GfMenuObjMainMenu2::OpenParam param;
-  param.unknown00 = MAINMENU2_SYSTEM;
+  param.unknown00 = MAINMENU2_UNKNOWN_6;
   GfMenuObjMainMenu2::registOpenParam(param);
 }
 
-void GfMenuManager::acceptAccess(GF_OBJ_HANDLE *) { GfMenuObjUtil::playSE(SE_ACCEPT_ACCESS); }
+void GfMenuManager::acceptAccess(GF_OBJ_HANDLE *) { GfMenuObjUtil::playSE(SE_UNKNOWN_27); }
 
 void GfMenuManager::closeFullScreen(bool isFadeOut, bool isFadeIn) { GfMenuFullScreen::close(isFadeOut, isFadeIn); }
 
@@ -1170,11 +1193,11 @@ bool GfMenuManager::isFieldHudInputEnable() { return !GfMenuObjTutorial::isWaiti
 void GfMenuManager::openSave() {
   GfMenuObjMainRoot::OpenParam mainRootParam;
   GfMenuObjSaveLoad2::OpenParam saveLoadParam;
-  saveLoadParam.unknown00 = SAVE_LOAD_SAVE;
+  saveLoadParam.unknown00 = SAVE_LOAD_UNKNOWN_1;
   GfMenuObjSaveLoad2::registOpenParam(saveLoadParam);
-  mainRootParam.unknown00 = MAIN_ROOT_SAVE_LOAD;
+  mainRootParam.unknown00 = MAIN_ROOT_UNKNOWN_53;
   GfMenuObjMainRoot::registOpenParam(mainRootParam);
-  GfMenuFullScreen::open(FULL_SCREEN_MAIN_ROOT, true, true);
+  GfMenuFullScreen::open(FULL_SCREEN_UNKNOWN_2, true, true);
 }
 
 } // namespace gf

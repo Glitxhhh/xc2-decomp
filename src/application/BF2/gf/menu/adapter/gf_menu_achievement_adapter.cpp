@@ -21,11 +21,16 @@
 
 namespace gf {
 
-constexpr u32 KEY_LEVEL_FIRST = 1;
-constexpr u32 KEY_ACHIEVEMENT_LINK_THREE = 6;
-constexpr u32 KEY_ACHIEVEMENT_LINK_FIVE = 7;
-constexpr u32 POUCH_MSG_HIDDEN = 1;
-constexpr u32 POUCH_MSG_HANA = 3;
+// Inferred role: first level of the key achievement line (the title and release flag are hidden for it); original name unknown.
+constexpr u32 KEY_UNKNOWN_1 = 1;
+// Inferred role: achievement key of the three-link entry, replaces index 3; original name unknown.
+constexpr u32 KEY_UNKNOWN_6 = 6;
+// Inferred role: achievement key of the five-link entry, replaces index 5; original name unknown.
+constexpr u32 KEY_UNKNOWN_7 = 7;
+// Inferred role: row of BDAT_MNU_MSG_POUCH (column name) of the hidden achievement text; original name unknown.
+constexpr u32 POUCH_MSG_UNKNOWN_1 = 1;
+// Inferred role: row of BDAT_MNU_MSG_POUCH (column name) of the Hana achievement text; original name unknown.
+constexpr u32 POUCH_MSG_UNKNOWN_3 = 3;
 
 static GfMenuAchievementAdapter::unknown001 TYPE_INFOS[] = {
     {&GfMenuAchievementAdapter::update_AchievementReleaseFlagIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
@@ -97,7 +102,7 @@ bool GfMenuAchievementAdapter::update_AchievementCategory() {
 }
 
 bool GfMenuAchievementAdapter::update_AchievementTitle() {
-  if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_LEVEL_FIRST) {
+  if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_UNKNOWN_1) {
     return false;
   }
   if (GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64) == 0) {
@@ -127,15 +132,15 @@ bool GfMenuAchievementAdapter::update_AchievementResult() {
     u32 index = unknown64;
     u32 linkNum = GfDataBlade::getLinkChNum(unknown5c);
     if (linkNum == 3 && index == 3) {
-      index = KEY_ACHIEVEMENT_LINK_THREE;
+      index = KEY_UNKNOWN_6;
     }
     if (index == 5 && linkNum == 5) {
-      index = KEY_ACHIEVEMENT_LINK_FIVE;
+      index = KEY_UNKNOWN_7;
     }
     u32 nameId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_KEY_ACHIEVE), "name", index).valueU16;
     setText(ui::UIStr(GfDataBdat::getFP(BDAT_FLD_QUEST_ACHIEVEMENT), nameId));
   } else if (unknown60 != ACHIEVEMENT_LINE_KEY && GfDataHana::isValid(unknown5c)) {
-    textId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", POUCH_MSG_HANA).valueU16;
+    textId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", POUCH_MSG_UNKNOWN_3).valueU16;
     bdat = GfDataBdat::getFP(BDAT_MENU_MS);
     setText(ui::UIStr(bdat, textId));
   } else {
@@ -183,7 +188,7 @@ bool GfMenuAchievementAdapter::update_AchievementTypeIcon() {
   u32 release = GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64);
   int icon;
   if (unknown60 == ACHIEVEMENT_LINE_KEY) {
-    if (unknown64 == KEY_LEVEL_FIRST) {
+    if (unknown64 == KEY_UNKNOWN_1) {
       return false;
     }
     icon = (release == 4 || release == 5) ? 5 : 11;
@@ -221,7 +226,7 @@ bool GfMenuAchievementAdapter::update_AchievementCategoryIcon() {
   }
   ACHIEVEMENT_TYPE type;
   u32 index;
-  if (GfDataAchievement::getAchievementType(type, index, unknown60) && type == ACHIEVEMENT_TYPE_KEY && unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_LEVEL_FIRST) {
+  if (GfDataAchievement::getAchievementType(type, index, unknown60) && type == ACHIEVEMENT_TYPE_KEY && unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_UNKNOWN_1) {
     return false;
   }
   int icon;
@@ -341,7 +346,7 @@ bool GfMenuAchievementAdapter::update_QuestCaptionText() {
   u8 *bdat;
   u32 textId;
   if (!GfKizunaringBlade::isNetabareOK(unknown5c, unknown60, unknown64)) {
-    u32 nameId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", POUCH_MSG_HIDDEN).valueU16;
+    u32 nameId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", POUCH_MSG_UNKNOWN_1).valueU16;
     setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), nameId));
     return true;
   }
@@ -376,7 +381,7 @@ bool GfMenuAchievementAdapter::update_QuestResultText() {
 
 bool GfMenuAchievementAdapter::update_KeyIcon() {
   u32 release = GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64);
-  setNumber(unknown64 == KEY_LEVEL_FIRST || release == 4 || release == 5 ? 5 : 11);
+  setNumber(unknown64 == KEY_UNKNOWN_1 || release == 4 || release == 5 ? 5 : 11);
   return true;
 }
 
@@ -426,14 +431,14 @@ void GfMenuAchievementAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     setDisp(unknown30());
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 
 bool GfMenuAchievementAdapter::update_AchievementReleaseFlagDisp() {
-  if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_LEVEL_FIRST) {
+  if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_UNKNOWN_1) {
     return false;
   }
   u32 release = GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64);

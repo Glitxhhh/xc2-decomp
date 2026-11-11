@@ -1664,14 +1664,14 @@ GF_SCOM_HANDLE *SCOM_CREATE_MAP_OBJ::create(u32 mapJump, u32 map) {
   return GfReqSmallCom::addRequest(command);
 }
 
-SCOM_FADE::unknown001 SCOM_FADE::s_fades[GfMenuFade::FADE_COUNT];
+SCOM_FADE::unknown001 SCOM_FADE::s_fades[GfMenuFade::FADE_UNKNOWN_3];
 GF_SCOM_HANDLE *SCOM_FADE::s_hCreatedReq = reinterpret_cast<GF_SCOM_HANDLE *>(-1);
 
 bool SCOM_FADE::exec(const fw::UpdateInfo &) {
   if (!GfMenuFade::isInitialized()) {
     return false;
   }
-  for (u32 i = 0; i < GfMenuFade::FADE_COUNT; i++) {
+  for (u32 i = 0; i < GfMenuFade::FADE_UNKNOWN_3; i++) {
     if (s_fades[i].unknown00 != 0xffffffff) {
       GfMenuFade::setFade(s_fades[i].unknown00, s_fades[i].unknown04, s_fades[i].unknown08);
       s_fades[i].unknown00 = 0xffffffff;

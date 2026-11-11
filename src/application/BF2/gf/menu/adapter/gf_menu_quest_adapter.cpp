@@ -188,7 +188,7 @@ void GfMenuQuestAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if ((unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if ((unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     if (unknown30.unknown00 != 0) {
       setDisp(true);
     } else {
@@ -260,7 +260,7 @@ void GfMenuQuestAdapter::update(const fw::UpdateInfo &info) {
     setDisp(isDisp);
     unknown3c = false;
   }
-  unknown20 &= ~FLAG_CHANGED;
+  unknown20 &= ~FLAG_UNKNOWN_0;
 }
 
 bool GfMenuQuestAdapter::getParamText(QuestID quest, u32 type, const char **text) {

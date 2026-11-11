@@ -13,7 +13,8 @@
 
 namespace gf {
 
-constexpr u32 BATTLE_STATE_NORMAL = 0;
+// Inferred role: battle state read by GfMenuManager::isBattleState, normal; original name unknown.
+constexpr u32 BATTLE_STATE_UNKNOWN_0 = 0;
 constexpr u32 BATTLE_STATE_UNKNOWN_1 = 1;
 
 // Inferred role: range effect state and arts info display flag when the palette is reset; original name unknown.
@@ -92,7 +93,7 @@ void GfMenuObjArtsPalette::MainListener::reciveEvent(const ui::EventData &event,
   ui::UIObjectAcc acc(handle);
   switch (event.unknown00) {
   case 0x100:
-    if (GfMenuManager::isBattleState(BATTLE_STATE_NORMAL)) {
+    if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_0)) {
       if (unknown10.unknown00 == 0) {
         GfMenuObjUtil::PresetCtrlParam param;
         param.unknown10 = 0;

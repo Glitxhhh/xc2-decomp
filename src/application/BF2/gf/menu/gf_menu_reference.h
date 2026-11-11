@@ -32,8 +32,10 @@ public:
   // 64-bit counts: with u32 counts the index is widened separately in each branch and the address computation becomes
   // a umaddl; the game shares one widened index (mul + add), as getArtsPaletteDisable, getArtsPaletteElementType,
   // isArtsPaletteEnable and setArtsPaletteEnable show.
-  static const u64 ARTS_PALETTE_COUNT = 3;
-  static const u64 ALL_ARTS_PALETTE_COUNT = 9;
+  // Inferred role: number of arts palettes; original name unknown.
+  static const u64 ARTS_PALETTE_UNKNOWN_3 = 3;
+  // Inferred role: number of arts palettes of the whole party; original name unknown.
+  static const u64 ALL_ARTS_PALETTE_UNKNOWN_9 = 9;
 
   enum HOMURA_MODE { HOMURA_MODE_UNKNOWN_1 = 1 };
 
@@ -207,7 +209,7 @@ public:
   ml::CriticalSection unknown4ca18;                        // Inferred role: critical section; original member name unknown.
   bool unknown4ca40;                                       // Inferred role: initialized; original member name unknown.
   mm::mtl::FixedVector<FieldSkillInfo, 28> unknown4ca48;   // Inferred role: field skills; original member name unknown.
-  unknown005 unknown4cac0[ARTS_PALETTE_COUNT];             // Inferred role: arts palettes; original member name unknown.
+  unknown005 unknown4cac0[ARTS_PALETTE_UNKNOWN_3];         // Inferred role: arts palettes; original member name unknown.
   u8 _4cb38[0x4cb3c - 0x4cb38];
   bool unknown4cb3c;   // Inferred role: just range; original member name unknown.
   f32 unknown4cb40;    // Inferred role: awakening rest time ratio; original member name unknown.
@@ -251,9 +253,9 @@ public:
   u32 unknown4ccd0;           // Inferred role: blade virtual equip wpn chip; original member name unknown.
   unknown006 unknown4ccd4;    // Inferred role: blade virtual equip orb and slot; original member name unknown.
   u8 _4ccdc[0x4cce0 - 0x4ccdc];
-  ui::UIStr unknown4cce0[8];                       // Inferred role: reference strings; original member name unknown.
-  unknown005 unknown4cda0[ALL_ARTS_PALETTE_COUNT]; // Inferred role: all arts palettes; original member name unknown.
-  mm::mtl::unknown027<32> unknown4cf08;            // Inferred role: party status lock; original member name unknown.
+  ui::UIStr unknown4cce0[8];                           // Inferred role: reference strings; original member name unknown.
+  unknown005 unknown4cda0[ALL_ARTS_PALETTE_UNKNOWN_9]; // Inferred role: all arts palettes; original member name unknown.
+  mm::mtl::unknown027<32> unknown4cf08;                // Inferred role: party status lock; original member name unknown.
   u8 _4cf0c[0x4cf10 - 0x4cf0c];
 };
 

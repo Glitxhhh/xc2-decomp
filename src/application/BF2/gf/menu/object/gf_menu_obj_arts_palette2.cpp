@@ -23,7 +23,8 @@ constexpr u16 unknown002 = 0x101;
 // Inferred role: ui event type; original name unknown.
 constexpr u16 unknown003 = 0x100;
 
-constexpr u32 BATTLE_STATE_NORMAL = 0;
+// Inferred role: battle state read by GfMenuManager::isBattleState, normal; original name unknown.
+constexpr u32 BATTLE_STATE_UNKNOWN_0 = 0;
 
 // Inferred role: cursor display state and selection flag when the palette is reset; original name unknown.
 static const GfMenuObjArtsPalette2::MainListener::unknown004 unknown005 = {0, 0};
@@ -229,7 +230,7 @@ void GfMenuObjArtsPalette2::MainListener::reciveEvent(const ui::EventData &event
     break;
   }
   case 0x21:
-    if (GfMenuManager::isBattleState(BATTLE_STATE_NORMAL) && unknown10.unknown00 == 0) {
+    if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_0) && unknown10.unknown00 == 0) {
       GfMenuObjUtil::PresetCtrlParam param;
       param.unknown10 = 0;
       param.unknown00 = 3;

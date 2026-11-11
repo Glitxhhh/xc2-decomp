@@ -71,8 +71,8 @@ public:
   };
 
   enum {
-    FLAG_CHANGED = 1 << 0,
-    FLAG_UPDATE_ALWAYS = 1 << 1,
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: the shown value changed; original enumerator name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: the adapter updates every frame; original enumerator name unknown.
   };
 
   // Inferred role: compare result; original type name unknown.

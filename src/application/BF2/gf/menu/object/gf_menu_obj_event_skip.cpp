@@ -9,7 +9,8 @@
 
 namespace gf {
 
-constexpr u32 CALL_EVENT_SKIP = 47;
+// Inferred role: call id of the event skip layout; original name unknown.
+constexpr u32 CALL_UNKNOWN_47 = 47;
 
 GfMenuObjEventSkip::GfMenuObjEventSkip(u32 handle) : GfMenuObject(handle) {}
 
@@ -27,7 +28,7 @@ void GfMenuObjEventSkip::initialize() {
     if (listener != nullptr) {
       listener->release();
     }
-    attachExternalCall(CALL_EVENT_SKIP, main);
+    attachExternalCall(CALL_UNKNOWN_47, main);
   }
   GfMenuObject::initialize();
 }
@@ -36,15 +37,15 @@ void GfMenuObjEventSkip::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjEventSkip::update() { GfMenuObject::update(); }
 
-void GfMenuObjEventSkip::close() { unknown143(CALL_EVENT_SKIP, GfMenuTypes::unknown003_34); }
+void GfMenuObjEventSkip::close() { unknown143(CALL_UNKNOWN_47, GfMenuTypes::unknown003_34); }
 
 u32 GfMenuObjEventSkip::setupScreen(u32 screen) { return screen; }
 
 void GfMenuObjEventSkip::open(GfMenuCallContext *context) {
-  u32 object = getAttachedObject(CALL_EVENT_SKIP);
+  u32 object = getAttachedObject(CALL_UNKNOWN_47);
   if (ui::UIObjectAcc(object).isValid()) {
     if (!ui::UIObjectAcc(object).isTerm()) {
-      startCallContext(context, CALL_EVENT_SKIP, object);
+      startCallContext(context, CALL_UNKNOWN_47, object);
       ui::EventData event;
       event.unknown00 = GfMenuTypes::unknown003_33;
       sendEvent(object, event, 0.0f);

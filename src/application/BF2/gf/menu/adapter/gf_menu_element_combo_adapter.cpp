@@ -14,12 +14,14 @@
 namespace gf {
 struct GF_OBJ_HANDLE;
 
-constexpr int ELEMENT_COMBO_ROUTE_NONE = 7;
-constexpr u32 BATTLE_STATE_NORMAL = 0;
+// Inferred role: route number of an element combo without route; original name unknown.
+constexpr int ELEMENT_COMBO_ROUTE_UNKNOWN_7 = 7;
+// Inferred role: battle state read by GfMenuManager::isBattleState, normal; original name unknown.
+constexpr u32 BATTLE_STATE_UNKNOWN_0 = 0;
 constexpr u32 BATTLE_STATE_UNKNOWN_1 = 1;
 
 GfMenuElementComboAdapter::GfMenuElementComboAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways)
-    : GfMenuAdapter(plugin, true, isUpdateAlways), unknown50(0), unknown54(ELEMENT_COMBO_ROUTE_NONE), unknown58(nullptr) {}
+    : GfMenuAdapter(plugin, true, isUpdateAlways), unknown50(0), unknown54(ELEMENT_COMBO_ROUTE_UNKNOWN_7), unknown58(nullptr) {}
 
 GfMenuElementComboAdapter::~GfMenuElementComboAdapter() {
   if (unknown58 != nullptr) {
@@ -109,7 +111,7 @@ u32 GfMenuElementComboAdapter::ReferenceRouteConverter::getElementComboId() {
   return 0;
 }
 
-u32 GfMenuElementComboAdapter::TargetEnemyConverter::getElementComboRouteNo() { return ELEMENT_COMBO_ROUTE_NONE; }
+u32 GfMenuElementComboAdapter::TargetEnemyConverter::getElementComboRouteNo() { return ELEMENT_COMBO_ROUTE_UNKNOWN_7; }
 
 u32 GfMenuElementComboAdapter::TargetEnemyConverter::getElementComboId() { return getTargetElementComboId(); }
 
@@ -122,13 +124,13 @@ void GfMenuElementComboAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0 && (GfMenuManager::isBattleState(BATTLE_STATE_NORMAL) || GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_1))) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0 && (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_0) || GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_1))) {
     if (unknown50 != 0) {
       setDisp(unknown30());
     } else {
       setDisp(false);
     }
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

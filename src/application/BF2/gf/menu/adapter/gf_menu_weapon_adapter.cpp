@@ -19,7 +19,8 @@
 
 namespace gf {
 
-constexpr int EQUIP_WEAPON_SLOT_CURRENT = -1;
+// Inferred role: weapon slot argument that selects the equipped weapon of the blade; original name unknown.
+constexpr int EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF = -1;
 
 static GfMenuWeaponAdapter::TypeInfo TYPE_INFOS[] = {
     {&GfMenuWeaponAdapter::update_Name, {GfMenuAdapter::unknown004_2, 0, 0}},
@@ -166,7 +167,7 @@ GfMenuWeaponAdapter *GfMenuWeaponAdapter::createFromReferenceChip(u32 handle, u3
 u32 GfMenuWeaponAdapter::BladeConverter::getWeaponID() {
   DataParamAcc acc(OBJECT_TYPE_BLADE, unknown08, GIMMICK_TYPE_NONE);
   if (acc.isValid()) {
-    return acc.getEquipWeapon(EQUIP_WEAPON_SLOT_CURRENT, false);
+    return acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false);
   }
   return 0;
 }
@@ -174,7 +175,7 @@ u32 GfMenuWeaponAdapter::BladeConverter::getWeaponID() {
 u32 GfMenuWeaponAdapter::ReferenceBladeConverter::getWeaponID() {
   DataParamAcc acc(OBJECT_TYPE_BLADE, GfMenuReference::getReferenceBladeID(unknown08), GIMMICK_TYPE_NONE);
   if (acc.isValid()) {
-    return acc.getEquipWeapon(EQUIP_WEAPON_SLOT_CURRENT, false);
+    return acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false);
   }
   return 0;
 }
@@ -184,7 +185,7 @@ u32 GfMenuWeaponAdapter::BladeWithChipListConverter::getWeaponID() {
   if (acc.isValid()) {
     u32 chip = unknown10->getContents(unknown10->getPageIndex(unknown18)).unknown04;
     if (chip != 0) {
-      return GfDataWeapon::getNewWeapon(acc.getEquipWeapon(EQUIP_WEAPON_SLOT_CURRENT, false), chip);
+      return GfDataWeapon::getNewWeapon(acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false), chip);
     }
   }
   return 0;
@@ -194,7 +195,7 @@ u32 GfMenuWeaponAdapter::ReferenceChipConverter::getWeaponID() {
   DataParamAcc acc(OBJECT_TYPE_BLADE, GfMenuReference::getReferenceBladeID(unknown08), GIMMICK_TYPE_NONE);
   if (acc.isValid()) {
     if (unknown10.get() != nullptr && unknown10->unknown0c != 0) {
-      return GfDataWeapon::getNewWeapon(acc.getEquipWeapon(EQUIP_WEAPON_SLOT_CURRENT, false), unknown10->unknown0c);
+      return GfDataWeapon::getNewWeapon(acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false), unknown10->unknown0c);
     }
   }
   return 0;

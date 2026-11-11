@@ -38,11 +38,11 @@ GfMenuObject::GfMenuObject(u32 handle) : unknown18(handle), unknown1c(0) {}
 
 GfMenuObject::~GfMenuObject() { ; }
 
-void GfMenuObject::initialize() { unknown1c |= FLAG_INITIALIZED; }
+void GfMenuObject::initialize() { unknown1c |= FLAG_UNKNOWN_0; }
 
 void GfMenuObject::finalize() {
   unknown18 = 0;
-  unknown1c |= FLAG_FINALIZED;
+  unknown1c |= FLAG_UNKNOWN_1;
 }
 
 void GfMenuObject::update() {}

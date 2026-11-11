@@ -45,7 +45,8 @@
 namespace gf {
 
 constexpr u32 BATTLE_STATE_UNKNOWN_3 = 3;
-constexpr u32 PARTY_DRIVER_MAX = 3;
+// Inferred role: number of drivers of the party, bound of the chain attack party index; original name unknown.
+constexpr u32 PARTY_DRIVER_UNKNOWN_3 = 3;
 
 static GfMenuCharDataAdapter::TypeInfo TYPE_INFOS[] = {
     {&GfMenuCharDataAdapter::update_HpMax, {GfMenuAdapter::unknown004_0, 0, 9999}},
@@ -172,7 +173,7 @@ void GfMenuCharDataAdapter::PartyBladeConverter::getCharData(u8 &type, u32 &id) 
   if (partyId == 0) {
     if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_3)) {
       int chainPartyId = GfMenuReference::getChainAttackActionPartyID();
-      if (chainPartyId >= 0 && chainPartyId < PARTY_DRIVER_MAX) {
+      if (chainPartyId >= 0 && chainPartyId < PARTY_DRIVER_UNKNOWN_3) {
         partyId = chainPartyId;
       } else {
         partyId = 0;
@@ -420,7 +421,7 @@ void GfMenuCharDataAdapter::update(const fw::UpdateInfo &info) {
     unknown70->getCharData(type, id);
     changeCharData(type, id);
   }
-  if ((unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) == 0) {
+  if ((unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) == 0) {
     return;
   }
   if (!unknown50.isValid()) {
@@ -466,7 +467,7 @@ void GfMenuCharDataAdapter::update(const fw::UpdateInfo &info) {
     }
   }
   setDisp(isDisp);
-  unknown20 &= ~FLAG_CHANGED;
+  unknown20 &= ~FLAG_UNKNOWN_0;
 }
 
 void GfMenuCharDataAdapter::changeGfObj(GF_OBJ_HANDLE *handle) {

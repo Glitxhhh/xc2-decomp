@@ -172,7 +172,7 @@ void GfMenuObjBalloon::close(GfMenuCallContext *context, bool isImmediate) {
 }
 
 void GfMenuObjBalloon::openEventSelectBox(GfMenuCallContext *context, const OpenSelectBoxParam &param) {
-  if (context->getState() == GfMenuCallContext::STATE_IDLE && param.unknown18.size() != 0) {
+  if (context->getState() == GfMenuCallContext::STATE_UNKNOWN_0 && param.unknown18.size() != 0) {
     u32 object = GfMenuObject::getAttachedObject(7);
     u16 id = GfMenuObject::registString(ui::UIStr(param.unknown00, param.unknown08));
     for (int i = 0; i < static_cast<int>(param.unknown18.size()); i++) {

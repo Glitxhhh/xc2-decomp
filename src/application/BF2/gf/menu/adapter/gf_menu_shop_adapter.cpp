@@ -111,7 +111,8 @@ bool GfMenuShopAdapter::update_Icon(u32 shop) {
 }
 
 bool GfMenuShopAdapter::update_CategoryIcon(u32 shop) {
-  static const int CATEGORY_ICONS[] = {0, 2, 3, 1};
+  // Inferred role: icon number of each shop category; original name unknown.
+  static const int unknown001[] = {0, 2, 3, 1};
   u8 *bdat = GfDataBdat::getFP(BDAT_MNU_SHOP_LIST);
   if (bdat != nullptr) {
     u16 icon = Bdat::getVal(bdat, "ShopIcon", shop).valueU16;
@@ -125,7 +126,7 @@ bool GfMenuShopAdapter::update_CategoryIcon(u32 shop) {
         }
         number = 5;
       } else if (shopType != 3) {
-        number = CATEGORY_ICONS[index];
+        number = unknown001[index];
         if (shopType == 1) {
           u8 *changeBdat = GfDataBdat::getFP(BDAT_MNU_SHOP_CHANGE);
           if (changeBdat == nullptr) {
@@ -224,7 +225,7 @@ void GfMenuShopAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     u8 *bdat = nullptr;
     if (unknown58 != 0) {
       bdat = GfDataBdat::getFP(BDAT_MNU_SHOP_LIST);
@@ -234,7 +235,7 @@ void GfMenuShopAdapter::update(const fw::UpdateInfo &info) {
     } else {
       setDisp(false);
     }
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

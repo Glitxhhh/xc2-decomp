@@ -6,7 +6,8 @@
 
 namespace gf {
 
-constexpr u32 MAIN_LAYER = 3;
+// Inferred role: UI layer of the main menu; original name unknown.
+constexpr u32 LAYER_UNKNOWN_3 = 3;
 
 GfMenuMain::GfMenuMain(const GfSetupParam &param) { initialize(param); }
 
@@ -35,9 +36,9 @@ void GfMenuMain::postUpdate(const fw::UpdateInfo &info) {}
 
 void GfMenuMain::setDisp(bool disp) {
   if (disp) {
-    ui::UIManager::get()->createLayer(MAIN_LAYER);
+    ui::UIManager::get()->createLayer(LAYER_UNKNOWN_3);
   } else {
-    ui::UIManager::get()->releaseLayer(MAIN_LAYER);
+    ui::UIManager::get()->releaseLayer(LAYER_UNKNOWN_3);
   }
 }
 

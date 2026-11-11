@@ -17,8 +17,9 @@ struct unknown001 {
 };
 
 // Inferred role: priority of each order; original table name unknown.
-static const unknown001 PRIORITY_TABLE[] = {{ORDER_ZONE_TELOP, 6}, {ORDER_LOCATION_TELOP, 5}};
-constexpr u32 PRIORITY_TABLE_COUNT = sizeof(PRIORITY_TABLE) / sizeof(PRIORITY_TABLE[0]);
+static const unknown001 unknown003[] = {{ORDER_UNKNOWN_1, 6}, {ORDER_UNKNOWN_2, 5}};
+// Inferred role: number of entries of the priority table; original name unknown.
+constexpr u32 unknown004 = sizeof(unknown003) / sizeof(unknown003[0]);
 
 void GfMenuOrderMgr::initialize(const GfSetupParam &) {
   unknown08 = true;
@@ -59,9 +60,9 @@ void GfMenuOrderMgr::postUpdate(const fw::UpdateInfo &) {
 }
 
 int GfMenuOrderMgr::getPrioOrder(int order) {
-  for (u32 i = 0; i < PRIORITY_TABLE_COUNT; i++) {
-    if (PRIORITY_TABLE[i].unknown00 == order) {
-      return PRIORITY_TABLE[i].unknown04;
+  for (u32 i = 0; i < unknown004; i++) {
+    if (unknown003[i].unknown00 == order) {
+      return unknown003[i].unknown04;
     }
   }
   return 0;
@@ -75,8 +76,8 @@ void GfMenuOrderMgr::setOrder(int order, u32 handle, const ui::EventData &event)
 
 void GfMenuOrderMgr::pushLogOrder(const sLog &log) {
   if (!unknown10.full()) {
-    for (mm::mtl::FixedQueue<sLog, LOG_MAX>::iterator it = unknown10.begin(); it != unknown10.end(); ++it) {
-      if ((*it).unknown00 == log.unknown00 && (*it).unknown00 == ORDER_LOCATION_TELOP && (*it).unknown08.unknown14 == 0) {
+    for (mm::mtl::FixedQueue<sLog, LOG_UNKNOWN_20>::iterator it = unknown10.begin(); it != unknown10.end(); ++it) {
+      if ((*it).unknown00 == log.unknown00 && (*it).unknown00 == ORDER_UNKNOWN_2 && (*it).unknown08.unknown14 == 0) {
         *it = log;
         return;
       }

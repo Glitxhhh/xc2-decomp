@@ -10,8 +10,10 @@
 
 namespace gf {
 
-constexpr u32 MERCENARY_ZONE_FIRST = 1;
-constexpr u32 MERCENARY_ZONE_LAST = 7;
+// Inferred role: first mercenary zone; original name unknown.
+constexpr u32 MERCENARY_ZONE_UNKNOWN_1 = 1;
+// Inferred role: last mercenary zone; original name unknown.
+constexpr u32 MERCENARY_ZONE_UNKNOWN_7 = 7;
 
 // Inferred role: mercenary zone; original type name unknown.
 struct unknown094 {
@@ -19,7 +21,8 @@ struct unknown094 {
   u32 unknown04; // Inferred role: condition; original member name unknown.
 };
 
-static const unknown094 MERCENARY_ZONES[] = {
+// Inferred role: mercenary zone to menu condition table; original table name unknown.
+static const unknown094 unknown095[] = {
     {1, 25},
     {2, 26},
     {3, 27},
@@ -45,10 +48,10 @@ void GfMenuIDList::setupMercenaryZoneList(const SetupParam &param, bool isCondit
   SetupParam setupParam = param;
   UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_DEFAULT), setupParam);
   if (isCondition) {
-    for (u32 i = 0; i < sizeof(MERCENARY_ZONES) / sizeof(MERCENARY_ZONES[0]); i++) {
-      if (GfMenuObjUtil::getMenuCondition(MERCENARY_ZONES[i].unknown04)) {
+    for (u32 i = 0; i < sizeof(unknown095) / sizeof(unknown095[0]); i++) {
+      if (GfMenuObjUtil::getMenuCondition(unknown095[i].unknown04)) {
         mm::mtl::FixedVector<u16, 500> missions;
-        u32 zone = MERCENARY_ZONES[i].unknown00;
+        u32 zone = unknown095[i].unknown00;
         GfGameMercenaries::getZoneMission(missions, zone);
         if (!missions.empty()) {
           MenuID id = {zone};
@@ -57,7 +60,7 @@ void GfMenuIDList::setupMercenaryZoneList(const SetupParam &param, bool isCondit
       }
     }
   } else {
-    for (u32 zone = MERCENARY_ZONE_FIRST; zone <= MERCENARY_ZONE_LAST; zone++) {
+    for (u32 zone = MERCENARY_ZONE_UNKNOWN_1; zone <= MERCENARY_ZONE_UNKNOWN_7; zone++) {
       mm::mtl::FixedVector<u16, 500> missions;
       GfGameMercenaries::getZoneMission(missions, zone);
       if (!missions.empty()) {

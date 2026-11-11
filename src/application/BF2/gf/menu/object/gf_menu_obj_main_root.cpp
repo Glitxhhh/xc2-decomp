@@ -9,7 +9,8 @@
 
 namespace gf {
 
-constexpr u32 SCREEN_MAIN_ROOT = 2;
+// Inferred role: full screen of the main root; original name unknown.
+constexpr u32 SCREEN_UNKNOWN_2 = 2;
 
 GfMenuObjMainRoot::GfMenuObjMainRoot(u32 handle) : GfMenuObject(handle) {}
 
@@ -18,7 +19,7 @@ GfMenuObjMainRoot::~GfMenuObjMainRoot() { ; }
 void GfMenuObjMainRoot::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
   layerParam.set(param);
-  GfMenuFullScreen::registLayerParam(GfMenuFullScreen::getScreenLayerID(SCREEN_MAIN_ROOT), layerParam);
+  GfMenuFullScreen::registLayerParam(GfMenuFullScreen::getScreenLayerID(SCREEN_UNKNOWN_2), layerParam);
 }
 
 void GfMenuObjMainRoot::initialize() {

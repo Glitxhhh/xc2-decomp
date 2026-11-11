@@ -28,7 +28,8 @@ namespace gf {
 constexpr u32 BATTLE_STATE_UNKNOWN_1 = 1;
 constexpr u32 BATTLE_STATE_UNKNOWN_3 = 3;
 constexpr u32 BATTLE_STATE_UNKNOWN_5 = 5;
-constexpr u32 PARTY_DRIVER_COUNT = 3;
+// Inferred role: number of drivers of the party, bound of the chain attack party index; original name unknown.
+constexpr u32 PARTY_DRIVER_UNKNOWN_3 = 3;
 // Inferred role: object attribute bit that shows the info icon of a hidden object; original name unknown.
 constexpr u32 unknown002 = 1 << 3;
 
@@ -584,7 +585,7 @@ bool GfMenuGfObjAdapter::update_BL_DispCurrent(GF_OBJ_HANDLE *handle) {
 
   if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_3)) {
     int partyId = GfMenuReference::getChainAttackActionPartyID();
-    if (partyId >= 0 && partyId < PARTY_DRIVER_COUNT) {
+    if (partyId >= 0 && partyId < PARTY_DRIVER_UNKNOWN_3) {
       return false;
     }
   }
@@ -632,9 +633,9 @@ void GfMenuGfObjAdapter::update(const fw::UpdateInfo &info) {
     changeGfObj(unknown78->getGfObjHandle());
   }
 
-  if ((unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0 && unknown50.isValid()) {
+  if ((unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0 && unknown50.isValid()) {
     setDisp(unknown48 != INVALID_HANDLE ? unknown50(unknown48) : false);
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 
@@ -683,7 +684,7 @@ GF_OBJ_HANDLE *GfMenuGfObjAdapter::PartyBladeConverter::getGfObjHandle() {
   if (partyId == 0) {
     if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_3)) {
       int chainPartyId = GfMenuReference::getChainAttackActionPartyID();
-      partyId = chainPartyId >= 0 && chainPartyId < PARTY_DRIVER_COUNT ? chainPartyId : 0;
+      partyId = chainPartyId >= 0 && chainPartyId < PARTY_DRIVER_UNKNOWN_3 ? chainPartyId : 0;
     } else {
       partyId = 0;
     }

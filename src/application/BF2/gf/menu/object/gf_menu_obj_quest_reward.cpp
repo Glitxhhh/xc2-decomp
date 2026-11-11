@@ -8,7 +8,8 @@
 
 namespace gf {
 
-constexpr u32 CALL_QUEST_REWARD = 33;
+// Inferred role: call id of the quest reward layout; original name unknown.
+constexpr u32 CALL_UNKNOWN_33 = 33;
 
 GfMenuObjQuestReward::GfMenuObjQuestReward(u32 handle) : GfMenuObject(handle) {}
 
@@ -17,7 +18,7 @@ GfMenuObjQuestReward::~GfMenuObjQuestReward() { ; }
 void GfMenuObjQuestReward::initialize() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
   if (main.isValid()) {
-    attachExternalCall(CALL_QUEST_REWARD, main.unknown10);
+    attachExternalCall(CALL_UNKNOWN_33, main.unknown10);
     GfMenuObject::initialize();
     main.setSuspend(true);
   }
@@ -28,7 +29,7 @@ void GfMenuObjQuestReward::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjQuestReward::update() { GfMenuObject::update(); }
 
 void GfMenuObjQuestReward::open(GfMenuCallContext *context, bool isAnim) {
-  if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_QUEST_REWARD)) {
+  if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_33)) {
     ui::UIObjectAcc acc(context->unknown14);
     ui::EventData event;
     event.unknown00 = GfMenuTypes::unknown003_33;
@@ -39,7 +40,7 @@ void GfMenuObjQuestReward::open(GfMenuCallContext *context, bool isAnim) {
 }
 
 void GfMenuObjQuestReward::close(GfMenuCallContext *context, bool isAnim) {
-  if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_QUEST_REWARD)) {
+  if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_33)) {
     ui::UIObjectAcc acc(context->unknown14);
     ui::EventData event;
     event.unknown00 = GfMenuTypes::unknown003_34;

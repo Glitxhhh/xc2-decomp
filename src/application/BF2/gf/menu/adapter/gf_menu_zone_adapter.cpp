@@ -14,10 +14,14 @@
 
 namespace gf {
 
-constexpr u32 MISSION_CATEGORY_QUEST = 3;
-constexpr u32 NOTICE_TEAM_FIRST = 1;
-constexpr u32 MERCENARIES_MSG_QUEST_MISSION = 0x11;
-constexpr u32 MERCENARIES_MSG_NEW_MISSION = 0x12;
+// Inferred role: mission category of the quest missions; original name unknown.
+constexpr u32 MISSION_CATEGORY_UNKNOWN_3 = 3;
+// Inferred role: first mercenary team, shown with the quest notice; original name unknown.
+constexpr u32 NOTICE_TEAM_UNKNOWN_1 = 1;
+// Inferred role: row of BDAT_MNU_MSG_MERCENARIES of the quest mission notice; original name unknown.
+constexpr u32 MERCENARIES_MSG_UNKNOWN_17 = 0x11;
+// Inferred role: row of BDAT_MNU_MSG_MERCENARIES of the new mission notice; original name unknown.
+constexpr u32 MERCENARIES_MSG_UNKNOWN_18 = 0x12;
 
 static GfMenuZoneAdapter::TypeInfo TYPE_INFOS[] = {
     {&GfMenuZoneAdapter::update_ZoneName, {GfMenuAdapter::unknown004_2, 0, 0}},
@@ -117,7 +121,7 @@ bool GfMenuZoneAdapter::update_ZoneNoticeDisp() {
   mm::mtl::FixedVector<u16, 500> missions;
   GfGameMercenaries::getZoneMission(missions, unknown58);
   for (u16 *mission = missions.begin(); mission != missions.end(); mission++) {
-    if (GfDataMercenaries::getMissionCategory(*mission) == MISSION_CATEGORY_QUEST) {
+    if (GfDataMercenaries::getMissionCategory(*mission) == MISSION_CATEGORY_UNKNOWN_3) {
       return true;
     }
     if (GfDataMercenaries::isNewMission(*mission)) {
@@ -133,7 +137,7 @@ bool GfMenuZoneAdapter::update_ZoneNotice() {
   int questNum = 0;
   int newNum = 0;
   for (u16 *mission = missions.begin(); mission != missions.end(); mission++) {
-    if (GfDataMercenaries::getMissionCategory(*mission) == MISSION_CATEGORY_QUEST) {
+    if (GfDataMercenaries::getMissionCategory(*mission) == MISSION_CATEGORY_UNKNOWN_3) {
       questNum++;
     }
     newNum += GfDataMercenaries::isNewMission(*mission);
@@ -143,16 +147,16 @@ bool GfMenuZoneAdapter::update_ZoneNotice() {
   u8 *menuBdat = GfDataBdat::getFP(BDAT_MENU_MS);
   u8 *msgBdat = GfDataBdat::getFP(BDAT_MNU_MSG_MERCENARIES);
   int msg;
-  if (unknown5c == NOTICE_TEAM_FIRST) {
+  if (unknown5c == NOTICE_TEAM_UNKNOWN_1) {
     if (hasQuest) {
-      msg = MERCENARIES_MSG_QUEST_MISSION;
+      msg = MERCENARIES_MSG_UNKNOWN_17;
     } else if (newNum > 0) {
-      msg = MERCENARIES_MSG_NEW_MISSION;
+      msg = MERCENARIES_MSG_UNKNOWN_18;
     } else {
       return false;
     }
   } else if (hasQuest && newNum > 0) {
-    msg = MERCENARIES_MSG_NEW_MISSION;
+    msg = MERCENARIES_MSG_UNKNOWN_18;
   } else {
     return false;
   }
@@ -191,13 +195,13 @@ void GfMenuZoneAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     if (unknown58 != 0) {
       setDisp(unknown30());
     } else {
       setDisp(false);
     }
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

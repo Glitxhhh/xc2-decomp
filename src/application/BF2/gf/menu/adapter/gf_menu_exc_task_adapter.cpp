@@ -80,13 +80,13 @@ void GfMenuExcTaskAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown38.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown38.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     if (unknown30 != 0) {
       setDisp(unknown38(unknown30));
     } else {
       setDisp(false);
     }
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

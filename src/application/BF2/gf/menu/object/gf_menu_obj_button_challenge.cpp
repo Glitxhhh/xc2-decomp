@@ -46,7 +46,7 @@ void GfMenuObjButtonChallenge::update() { GfMenuObject::update(); }
 bool GfMenuObjButtonChallenge::start(GfMenuCallContext *context, const ChallengeParam &param) {
   bool result = false;
   if (context != nullptr) {
-    if (context->getState() == GfMenuCallContext::STATE_IDLE) {
+    if (context->getState() == GfMenuCallContext::STATE_UNKNOWN_0) {
       ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown002));
       if (acc.isValid()) {
         m_ChallengeData.unknown00 = static_cast<f32>(param.unknown00) / static_cast<f32>(param.unknown02) * 0.033333335f;

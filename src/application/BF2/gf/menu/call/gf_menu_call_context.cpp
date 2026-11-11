@@ -24,12 +24,12 @@ GfMenuCallContext *GfMenuCallContext::create() {
 
 GfMenuCallContext::STATE GfMenuCallContext::getState() {
   if (unknown14 != 0 && ui::UIObjectAcc(unknown14).isTerm()) {
-    return STATE_TERM;
+    return STATE_UNKNOWN_2;
   }
   if (unknown40) {
-    return STATE_TERM;
+    return STATE_UNKNOWN_2;
   }
-  return unknown14 != 0 ? STATE_ACTIVE : STATE_IDLE;
+  return unknown14 != 0 ? STATE_UNKNOWN_1 : STATE_UNKNOWN_0;
 }
 
 bool GfMenuCallContext::isTerm() const {

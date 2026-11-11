@@ -29,8 +29,8 @@ struct Param;
 class GfMenuObject : public mm::mtl::IntrusiveListNode<GfMenuObject> {
 public:
   enum FLAG {
-    FLAG_INITIALIZED = 1 << 0,
-    FLAG_FINALIZED = 1 << 1,
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: initialized; original enumerator name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: finalized; original enumerator name unknown.
   };
 
   GfMenuObject(u32 handle);

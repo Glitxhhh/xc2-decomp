@@ -90,32 +90,47 @@ struct unknown078 {
 };
 
 enum MENU_SE {
-  MENU_SE_DECIDE = 1,
-  MENU_SE_CANCEL = 2,
-  MENU_SE_TAB = 5,
-  MENU_SE_CURSOR = 6,
-  MENU_SE_INVALID = 7,
-  MENU_SE_SORT = 11,
-  MENU_SE_OPEN_SUB_MENU = 12,
-  MENU_SE_CLOSE_SUB_MENU = 14,
+  MENU_SE_UNKNOWN_1 = 1,   // Inferred role: sound effect played by playSECommonDecide; original enumerator name unknown.
+  MENU_SE_UNKNOWN_2 = 2,   // Inferred role: sound effect played by playSECommonCancel; original enumerator name unknown.
+  MENU_SE_UNKNOWN_5 = 5,   // Inferred role: sound effect played by playSECommonTab; original enumerator name unknown.
+  MENU_SE_UNKNOWN_6 = 6,   // Inferred role: sound effect played by playSECommonCursor; original enumerator name unknown.
+  MENU_SE_UNKNOWN_7 = 7,   // Inferred role: sound effect of the invalid operation entry of the common sound effects; original enumerator name unknown.
+  MENU_SE_UNKNOWN_11 = 11, // Inferred role: sound effect played by playSECommonSort; original enumerator name unknown.
+  MENU_SE_UNKNOWN_12 = 12, // Inferred role: sound effect played by playSECommonOpenSubMenu; original enumerator name unknown.
+  MENU_SE_UNKNOWN_14 = 14, // Inferred role: sound effect played by playSECommonCloseSubMenu; original enumerator name unknown.
 };
 
-constexpr u32 ICON_NONE = 0xffff;
-constexpr u32 POINTER_SELECT_ICON = 17;
-constexpr u32 PARTY_DRIVER_MAX = 3;
-constexpr u16 SCENARIO_CUSTOM_ENABLE = 2000;
-constexpr u32 BLADE_EXTRA_FIRST = 1043;
-constexpr u32 BLADE_EXTRA_COUNT = 7;
-constexpr u32 BLADE_RANK_MAX = 5;
-constexpr u32 BLADE_RARITY_SCENARIO = 2;
-constexpr int FLAG_BLADE_SLOT_2_OPEN = 0x89ff;
-constexpr int FLAG_BLADE_SLOT_3_OPEN = 0x8a00;
-constexpr u32 ICON_WEAPON_TYPE_BASE = 0x8a;
-constexpr u32 ICON_WEAPON_TYPE_NONE = 0x8b;
-constexpr u32 ICON_ATTRIBUTE_BASE = 0x9e;
-constexpr u32 ICON_TRUST_RANK_BASE = 0x83;
+// Inferred role: icon number returned when no icon matches; original name unknown.
+constexpr u32 ICON_UNKNOWN_65535 = 0xffff;
+// Inferred role: icon number of the pointer select icon (getPointerSelectIconNumber); original name unknown.
+constexpr u32 POINTER_UNKNOWN_17 = 17;
+// Inferred role: number of drivers of the party; original name unknown.
+constexpr u32 PARTY_DRIVER_UNKNOWN_3 = 3;
+// Inferred role: scenario flag above which the blade customization is enabled; original name unknown.
+constexpr u16 SCENARIO_UNKNOWN_2000 = 2000;
+// Inferred role: first extra blade; original name unknown.
+constexpr u32 BLADE_EXTRA_UNKNOWN_1043 = 1043;
+// Inferred role: number of extra blades; original name unknown.
+constexpr u32 BLADE_EXTRA_UNKNOWN_7 = 7;
+// Inferred role: maximum rank of a blade; original name unknown.
+constexpr u32 BLADE_RANK_UNKNOWN_5 = 5;
+// Inferred role: rarity of the scenario blades; original name unknown.
+constexpr u32 BLADE_RARITY_UNKNOWN_2 = 2;
+// Inferred role: local flag id that opens the second blade slot; original name unknown.
+constexpr int FLAG_BLADE_SLOT_UNKNOWN_35327 = 0x89ff;
+// Inferred role: local flag id that opens the third blade slot; original name unknown.
+constexpr int FLAG_BLADE_SLOT_UNKNOWN_35328 = 0x8a00;
+// Inferred role: icon number of the first weapon type; original name unknown.
+constexpr u32 ICON_WEAPON_TYPE_UNKNOWN_138 = 0x8a;
+// Inferred role: icon number returned when the blade has no weapon type; original name unknown.
+constexpr u32 ICON_WEAPON_TYPE_UNKNOWN_139 = 0x8b;
+// Inferred role: icon number of the first attribute; original name unknown.
+constexpr u32 ICON_ATTRIBUTE_UNKNOWN_158 = 0x9e;
+// Inferred role: icon number of the first trust rank; original name unknown.
+constexpr u32 ICON_TRUST_RANK_UNKNOWN_131 = 0x83;
 
-static const unknown078 s_buttonIcons[] = {
+// Inferred role: icon number of each pad button; original name unknown.
+static const unknown078 unknown081[] = {
     {0x1000, 26},
     {0x2000, 29},
     {0x4000, 27},
@@ -134,7 +149,8 @@ static const unknown078 s_buttonIcons[] = {
     {0x100, 8},
 };
 
-static const unknown078 s_padSelectIcons[] = {
+// Inferred role: icon number of each pad selection; original name unknown.
+static const unknown078 unknown082[] = {
     {1, 30},
     {2, 31},
     {6, 5},
@@ -145,9 +161,11 @@ static const unknown078 s_padSelectIcons[] = {
     {8, 17},
 };
 
-static const u32 s_ideaLevelPoints[] = {500, 1500, 3500, 7000, 10000};
+// Inferred role: idea points needed for each level; original name unknown.
+static const u32 unknown083[] = {500, 1500, 3500, 7000, 10000};
 
-static const u16 s_commonSes[] = {MENU_SE_DECIDE, MENU_SE_CANCEL, MENU_SE_INVALID};
+// Inferred role: sound effects of the common sound effect types; original name unknown.
+static const u16 unknown084[] = {MENU_SE_UNKNOWN_1, MENU_SE_UNKNOWN_2, MENU_SE_UNKNOWN_7};
 
 // Inferred role: bdat columns of the class buff types; original name unknown.
 static const char *unknown079[] = {"DamageDown", "DamageUP", "HealUP", "AutoHate", "ArtsHate"};
@@ -156,24 +174,24 @@ static const char *unknown079[] = {"DamageDown", "DamageUP", "HealUP", "AutoHate
 static const char *unknown080[] = {"DamageDownNum", "DamageUPNum", "HealUPNum", "AutoHateNum", "ArtsHateNum"};
 
 s16 GfMenuObjUtil::getBtnIconNumber(u32 button) {
-  for (u32 i = 0; i < sizeof(s_buttonIcons) / sizeof(s_buttonIcons[0]); i++) {
-    if ((button & s_buttonIcons[i].unknown00) != 0) {
-      return s_buttonIcons[i].unknown04;
+  for (u32 i = 0; i < sizeof(unknown081) / sizeof(unknown081[0]); i++) {
+    if ((button & unknown081[i].unknown00) != 0) {
+      return unknown081[i].unknown04;
     }
   }
-  return ICON_NONE;
+  return ICON_UNKNOWN_65535;
 }
 
 u32 GfMenuObjUtil::getPadSelectIconNumber(u32 select) {
-  for (u32 i = 0; i < sizeof(s_padSelectIcons) / sizeof(s_padSelectIcons[0]); i++) {
-    if (s_padSelectIcons[i].unknown00 == select) {
-      return s_padSelectIcons[i].unknown04;
+  for (u32 i = 0; i < sizeof(unknown082) / sizeof(unknown082[0]); i++) {
+    if (unknown082[i].unknown00 == select) {
+      return unknown082[i].unknown04;
     }
   }
-  return ICON_NONE;
+  return ICON_UNKNOWN_65535;
 }
 
-u32 GfMenuObjUtil::getPointerSelectIconNumber() { return POINTER_SELECT_ICON; }
+u32 GfMenuObjUtil::getPointerSelectIconNumber() { return POINTER_UNKNOWN_17; }
 
 void GfMenuObjUtil::setChildDisp(u32 handle, const char *name, bool disp) {
   ui::UIObjectAcc acc(handle, name);
@@ -390,8 +408,8 @@ int GfMenuObjUtil::getLeaderPartyType() {
 }
 
 bool GfMenuObjUtil::isExitDriver(u32 partyId) {
-  if (partyId >= PARTY_DRIVER_MAX) {
-    partyId %= PARTY_DRIVER_MAX;
+  if (partyId >= PARTY_DRIVER_UNKNOWN_3) {
+    partyId %= PARTY_DRIVER_UNKNOWN_3;
   }
   return GfGameParty::getHandleDriver(partyId) != INVALID_HANDLE;
 }
@@ -550,10 +568,10 @@ GF_OBJ_HANDLE *GfMenuObjUtil::getBladeHandleOffset(u32 partyId, int offset) {
 
 u32 GfMenuObjUtil::getBladeSlotMax() {
   u32 slotMax = 1;
-  if (GfGameFlag::getLocal(1, FLAG_BLADE_SLOT_2_OPEN) == 1) {
+  if (GfGameFlag::getLocal(1, FLAG_BLADE_SLOT_UNKNOWN_35327) == 1) {
     slotMax++;
   }
-  if (GfGameFlag::getLocal(1, FLAG_BLADE_SLOT_3_OPEN) == 1) {
+  if (GfGameFlag::getLocal(1, FLAG_BLADE_SLOT_UNKNOWN_35328) == 1) {
     slotMax = 3;
   }
   return slotMax;
@@ -681,23 +699,23 @@ u16 GfMenuObjUtil::getBladeFaceIconID(u32 blade) {
 
 u32 GfMenuObjUtil::getBladeWeaponTypeIconID(u32 blade) {
   if (GfDataBlade::isValid(blade)) {
-    return GfDataBlade::getSDataBlade(blade)->unknown821 + ICON_WEAPON_TYPE_BASE;
+    return GfDataBlade::getSDataBlade(blade)->unknown821 + ICON_WEAPON_TYPE_UNKNOWN_138;
   }
-  return ICON_WEAPON_TYPE_NONE;
+  return ICON_WEAPON_TYPE_UNKNOWN_139;
 }
 
 u16 GfMenuObjUtil::getBladeAttributeIconID(u32 blade) {
   if (GfDataBlade::isValid(blade)) {
-    return GfDataBlade::getAttribute(blade) + ICON_ATTRIBUTE_BASE;
+    return GfDataBlade::getAttribute(blade) + ICON_ATTRIBUTE_UNKNOWN_158;
   }
-  return ICON_ATTRIBUTE_BASE;
+  return ICON_ATTRIBUTE_UNKNOWN_158;
 }
 
 u16 GfMenuObjUtil::getBladeCompatibilityIconID(u32 driver, u32 blade) {
   if (GfDataBlade::isValid(blade)) {
-    return GfGameUtil::getTrustRank(blade) + ICON_TRUST_RANK_BASE;
+    return GfGameUtil::getTrustRank(blade) + ICON_TRUST_RANK_UNKNOWN_131;
   }
-  return ICON_TRUST_RANK_BASE;
+  return ICON_TRUST_RANK_UNKNOWN_131;
 }
 
 u16 GfMenuObjUtil::getBladeAttributeID(u32 blade) {
@@ -709,10 +727,10 @@ u16 GfMenuObjUtil::getBladeAttributeID(u32 blade) {
 
 u32 GfMenuObjUtil::getBladeRank(u32 blade) {
   if (isScenarioBlade(blade)) {
-    return BLADE_RANK_MAX;
+    return BLADE_RANK_UNKNOWN_5;
   }
   if (GfDataBlade::isRareBlade(blade)) {
-    return BLADE_RANK_MAX;
+    return BLADE_RANK_UNKNOWN_5;
   }
   u32 kizunaringMax = GfDataBlade::getKizunaringMax(blade);
   if (kizunaringMax > 37) {
@@ -728,14 +746,14 @@ bool GfMenuObjUtil::isScenarioBlade(u32 blade) { return GfDataBlade::isRegularBl
 
 u32 GfMenuObjUtil::getBladeRarity(u32 blade) {
   if (isScenarioBlade(blade)) {
-    return BLADE_RARITY_SCENARIO;
+    return BLADE_RARITY_UNKNOWN_2;
   }
   return GfDataBlade::isRareBlade(blade);
 }
 
-bool GfMenuObjUtil::isExtraBlade(u32 blade) { return blade - BLADE_EXTRA_FIRST < BLADE_EXTRA_COUNT; }
+bool GfMenuObjUtil::isExtraBlade(u32 blade) { return blade - BLADE_EXTRA_UNKNOWN_1043 < BLADE_EXTRA_UNKNOWN_7; }
 
-bool GfMenuObjUtil::isBladeNoBuildWeapon(u32 blade) { return blade - BLADE_EXTRA_FIRST < BLADE_EXTRA_COUNT; }
+bool GfMenuObjUtil::isBladeNoBuildWeapon(u32 blade) { return blade - BLADE_EXTRA_UNKNOWN_1043 < BLADE_EXTRA_UNKNOWN_7; }
 
 bool GfMenuObjUtil::isBladeCurrent(u32 blade) {
   u32 driver = GfDataBlade::getSetDriver(blade);
@@ -975,12 +993,12 @@ bool GfMenuObjUtil::checkCCStart(GfMenuCallContext *context) { return context !=
 bool GfMenuObjUtil::checkCCNext(GfMenuCallContext *context, u32 menu) { return context != nullptr && context->unknown10 == menu; }
 
 u32 GfMenuObjUtil::convIdeaPointToLevel(u32 point) {
-  for (u32 level = 0; level < sizeof(s_ideaLevelPoints) / sizeof(s_ideaLevelPoints[0]); level++) {
-    if (point < s_ideaLevelPoints[level]) {
+  for (u32 level = 0; level < sizeof(unknown083) / sizeof(unknown083[0]); level++) {
+    if (point < unknown083[level]) {
       return level;
     }
   }
-  return sizeof(s_ideaLevelPoints) / sizeof(s_ideaLevelPoints[0]);
+  return sizeof(unknown083) / sizeof(unknown083[0]);
 }
 
 u32 GfMenuObjUtil::playSE(u32 id) {
@@ -1000,26 +1018,26 @@ u32 GfMenuObjUtil::playSE(const char *name) {
   return 0;
 }
 
-u32 GfMenuObjUtil::playSECommonDecide() { return playSE(MENU_SE_DECIDE); }
+u32 GfMenuObjUtil::playSECommonDecide() { return playSE(MENU_SE_UNKNOWN_1); }
 
 u32 GfMenuObjUtil::playSECommon(u32 type) {
-  if (type < sizeof(s_commonSes) / sizeof(s_commonSes[0])) {
-    return playSE(s_commonSes[type]);
+  if (type < sizeof(unknown084) / sizeof(unknown084[0])) {
+    return playSE(unknown084[type]);
   }
   return 0;
 }
 
-u32 GfMenuObjUtil::playSECommonCancel() { return playSE(MENU_SE_CANCEL); }
+u32 GfMenuObjUtil::playSECommonCancel() { return playSE(MENU_SE_UNKNOWN_2); }
 
-u32 GfMenuObjUtil::playSECommonCursor() { return playSE(MENU_SE_CURSOR); }
+u32 GfMenuObjUtil::playSECommonCursor() { return playSE(MENU_SE_UNKNOWN_6); }
 
-u32 GfMenuObjUtil::playSECommonTab() { return playSE(MENU_SE_TAB); }
+u32 GfMenuObjUtil::playSECommonTab() { return playSE(MENU_SE_UNKNOWN_5); }
 
-u32 GfMenuObjUtil::playSECommonSort() { return playSE(MENU_SE_SORT); }
+u32 GfMenuObjUtil::playSECommonSort() { return playSE(MENU_SE_UNKNOWN_11); }
 
-u32 GfMenuObjUtil::playSECommonOpenSubMenu() { return playSE(MENU_SE_OPEN_SUB_MENU); }
+u32 GfMenuObjUtil::playSECommonOpenSubMenu() { return playSE(MENU_SE_UNKNOWN_12); }
 
-u32 GfMenuObjUtil::playSECommonCloseSubMenu() { return playSE(MENU_SE_CLOSE_SUB_MENU); }
+u32 GfMenuObjUtil::playSECommonCloseSubMenu() { return playSE(MENU_SE_UNKNOWN_14); }
 
 void GfMenuObjUtil::stopSE(u32 handle, f32 time) {
   if (fw::SoundManager::get() != nullptr) {
@@ -1249,10 +1267,10 @@ bool GfMenuObjUtil::getMenuCondition(u32 id) {
 
 bool GfMenuObjUtil::getMenuFullOpenFlag() { return false; }
 
-bool GfMenuObjUtil::isCustomEnableBlade(u32 blade) { return GfDataUtil::getScenarioFlag() > SCENARIO_CUSTOM_ENABLE; }
+bool GfMenuObjUtil::isCustomEnableBlade(u32 blade) { return GfDataUtil::getScenarioFlag() > SCENARIO_UNKNOWN_2000; }
 
 u16 GfMenuObjUtil::getBladeRareIconID(u32 blade) {
-  u32 icon = ICON_WEAPON_TYPE_BASE - 1;
+  u32 icon = ICON_WEAPON_TYPE_UNKNOWN_138 - 1;
   if (GfDataBlade::isValid(blade)) {
     icon += GfDataBlade::isRareBlade(blade);
   }

@@ -11,7 +11,8 @@
 
 namespace gf {
 
-constexpr s16 HIDDEN_POS = 10000;
+// Inferred role: screen coordinate far outside the screen that hides the point; original name unknown.
+constexpr s16 POS_UNKNOWN_10000 = 10000;
 
 GfMenuFieldPosAdapter::GfMenuFieldPosAdapter(ui::UIObjectPlugin *plugin) : GfMenuAdapter(plugin, false, true), unknown40(false), unknown44(0), unknown48(true) {}
 
@@ -52,8 +53,8 @@ void GfMenuFieldPosAdapter::update(const fw::UpdateInfo &info) {
     ui::UIObjectAcc acc(unknown44);
     if (acc.isValid()) {
       if (unknown48) {
-        point.x = HIDDEN_POS;
-        point.y = HIDDEN_POS;
+        point.x = POS_UNKNOWN_10000;
+        point.y = POS_UNKNOWN_10000;
         unknown48 = false;
       } else {
         mm::Rect<s16> rect;

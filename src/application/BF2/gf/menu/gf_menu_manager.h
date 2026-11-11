@@ -36,8 +36,8 @@ class GfMenuCallContext;
 class GfMenuManager : public mm::mtl::PtrSingleton<GfMenuManager> {
 public:
   enum REGION {
-    REGION_JP,
-    REGION_US,
+    REGION_UNKNOWN_0, // Inferred role: Japanese region; original enumerator name unknown.
+    REGION_UNKNOWN_1, // Inferred role: US region; original enumerator name unknown.
   };
 
   GfMenuManager(const GfSetupParam &param);

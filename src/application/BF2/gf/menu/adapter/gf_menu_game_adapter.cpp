@@ -19,10 +19,14 @@
 
 namespace gf {
 
-constexpr u32 ELAPSE_HOUR_MAX = 999;
-constexpr u32 ELAPSE_MINUTE_MAX = 59;
-constexpr u32 ELAPSE_SECOND_MAX = 59;
-constexpr int CHAPTER_MAX = 10;
+// Inferred role: maximum hours of the play time shown; original name unknown.
+constexpr u32 ELAPSE_HOUR_UNKNOWN_999 = 999;
+// Inferred role: minutes set when the play time exceeds the maximum; original name unknown.
+constexpr u32 ELAPSE_MINUTE_UNKNOWN_59 = 59;
+// Inferred role: seconds set when the play time exceeds the maximum; original name unknown.
+constexpr u32 ELAPSE_SECOND_UNKNOWN_59 = 59;
+// Inferred role: maximum chapter number shown; original name unknown.
+constexpr int CHAPTER_UNKNOWN_10 = 10;
 
 static GfMenuGameAdapter::TypeInfo TYPE_INFOS[] = {
     {&GfMenuGameAdapter::update_GamePlayTime, {GfMenuAdapter::unknown004_7, 7, 0}},
@@ -69,10 +73,10 @@ GfMenuGameAdapter *GfMenuGameAdapter::create(u32 handle, u32 type, bool isUpdate
 bool GfMenuGameAdapter::update_GamePlayTime() {
   if (GfFieldTime::get() != nullptr) {
     ElapseTime time = GfFieldTime::get()->getElapseTime();
-    if (time.unknown01_4 > ELAPSE_HOUR_MAX) {
-      time.unknown01_4 = ELAPSE_HOUR_MAX;
-      time.unknown00_6 = ELAPSE_MINUTE_MAX;
-      time.unknown00_0 = ELAPSE_SECOND_MAX;
+    if (time.unknown01_4 > ELAPSE_HOUR_UNKNOWN_999) {
+      time.unknown01_4 = ELAPSE_HOUR_UNKNOWN_999;
+      time.unknown00_6 = ELAPSE_MINUTE_UNKNOWN_59;
+      time.unknown00_0 = ELAPSE_SECOND_UNKNOWN_59;
     }
     setElapseTime(time);
   }
@@ -197,16 +201,16 @@ bool GfMenuGameAdapter::update_RealTime() {
 
 bool GfMenuGameAdapter::update_Chapter() {
   setNumber(GfGameManager::getScenarioId());
-  setNumberMax(CHAPTER_MAX);
+  setNumberMax(CHAPTER_UNKNOWN_10);
   return true;
 }
 
 bool GfMenuGameAdapter::update_DispAccess() { return GfGameManager::isPlaySequenceClear(); }
 
 void GfMenuGameAdapter::update(const fw::UpdateInfo &info) {
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     setDisp(unknown30());
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

@@ -77,9 +77,9 @@ bool GfMenuDiffAdapter::update_DispSameOn(int result) { return result == unknown
 bool GfMenuDiffAdapter::update_DispSameOff(int result) { return result != unknown005_0; }
 
 void GfMenuDiffAdapter::update(const fw::UpdateInfo &info) {
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     setDisp(unknown30(compare(unknown50, unknown58)));
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

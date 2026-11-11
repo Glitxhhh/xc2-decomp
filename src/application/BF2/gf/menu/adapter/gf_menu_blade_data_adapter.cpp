@@ -135,9 +135,9 @@ void GfMenuBladeDataAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if ((unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0 && unknown38.isValid()) {
+  if ((unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0 && unknown38.isValid()) {
     setDisp(unknown60 != 0 && unknown64 != 0 && unknown38());
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

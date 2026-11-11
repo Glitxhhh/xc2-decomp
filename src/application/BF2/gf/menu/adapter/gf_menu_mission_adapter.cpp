@@ -22,12 +22,17 @@
 
 namespace gf {
 
-constexpr int MISSION_STATE_READY = 0;
-constexpr int MISSION_STATE_WORKING = 1;
-constexpr int MISSION_STATE_COMPLETE = 2;
-constexpr int MISSION_TASK_MAX = 3;
+// Inferred role: mission not started; original name unknown.
+constexpr int MISSION_STATE_UNKNOWN_0 = 0;
+// Inferred role: mission in progress; original name unknown.
+constexpr int MISSION_STATE_UNKNOWN_1 = 1;
+// Inferred role: mission complete or its reward received; original name unknown.
+constexpr int MISSION_STATE_UNKNOWN_2 = 2;
+// Inferred role: number of conditions of a mission; original name unknown.
+constexpr int MISSION_TASK_UNKNOWN_3 = 3;
 
-static const char *STATUS_COLORS[] = {"mer_unit_ready", "mer_unit_active", "mer_unit_complete"};
+// Inferred role: color of the mission status icon for each state; original name unknown.
+static const char *unknown003[] = {"mer_unit_ready", "mer_unit_active", "mer_unit_complete"};
 
 GfMenuMissionAdapter::GfMenuMissionAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways)
     : GfMenuAdapter(plugin, false, isUpdateAlways), unknown50(nullptr), unknown58(0), unknown5c(0), unknown60(0), unknown64(0), unknown68(nullptr), unknown70(0) {}
@@ -76,14 +81,14 @@ bool GfMenuMissionAdapter::update_MissionCategoryIcon() {
 bool GfMenuMissionAdapter::update_MissionTime() {
   ui::uiDateTime time = {};
   int stat = getStat(unknown58, false);
-  if (stat == MISSION_STATE_COMPLETE) {
+  if (stat == MISSION_STATE_UNKNOWN_2) {
     return false;
   }
-  if (stat == MISSION_STATE_READY) {
+  if (stat == MISSION_STATE_UNKNOWN_0) {
     u32 minutes = GfDataMercenaries::getMissionTime(unknown58);
     time.unknown03_7 = minutes / 60;
     time.unknown04_6 = minutes % 60;
-  } else if (stat == MISSION_STATE_WORKING) {
+  } else if (stat == MISSION_STATE_UNKNOWN_1) {
     ElapseTime elapse = GfDataMercenaries::getTeamMissionTime(GfDataMercenaries::getTeamIDByMissionID(unknown58));
     time.unknown03_7 = elapse.unknown01_4;
     time.unknown04_6 = elapse.unknown00_6;
@@ -119,7 +124,7 @@ bool GfMenuMissionAdapter::update_MissionStatus() {
 }
 
 bool GfMenuMissionAdapter::update_MissionStatusColor() {
-  const char *color = STATUS_COLORS[getStat(unknown58, true)];
+  const char *color = unknown003[getStat(unknown58, true)];
   switch (unknown70) {
   case 0:
     setAddColor(color);
@@ -210,7 +215,7 @@ static void unknown002(u8 *&bdat, u32 &textId, u32 bdatId, u32 listId, u16 id) {
 }
 
 bool GfMenuMissionAdapter::update_MissionCond() {
-  if (unknown70 >= MISSION_TASK_MAX) {
+  if (unknown70 >= MISSION_TASK_UNKNOWN_3) {
     return false;
   }
   GfRequestBladeData data = {};
@@ -253,7 +258,7 @@ bool GfMenuMissionAdapter::update_MissionCond() {
 }
 
 bool GfMenuMissionAdapter::update_MissionCondIcon() {
-  if (unknown70 < MISSION_TASK_MAX) {
+  if (unknown70 < MISSION_TASK_UNKNOWN_3) {
     GfRequestBladeData data = {};
     if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70)) {
       setNumber(data.unknown00 - 1);
@@ -264,7 +269,7 @@ bool GfMenuMissionAdapter::update_MissionCondIcon() {
 }
 
 bool GfMenuMissionAdapter::update_MissionCondParam() {
-  if (unknown70 < MISSION_TASK_MAX) {
+  if (unknown70 < MISSION_TASK_UNKNOWN_3) {
     GfRequestBladeData data = {};
     if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70) && data.unknown00 == 2) {
       setNumber(data.unknown08);
@@ -275,7 +280,7 @@ bool GfMenuMissionAdapter::update_MissionCondParam() {
 }
 
 bool GfMenuMissionAdapter::update_MissionCondLv() {
-  if (unknown70 < MISSION_TASK_MAX) {
+  if (unknown70 < MISSION_TASK_UNKNOWN_3) {
     GfRequestBladeData data = {};
     if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70)) {
       if (data.unknown00 == 5) {
@@ -292,7 +297,7 @@ bool GfMenuMissionAdapter::update_MissionCondLv() {
 }
 
 bool GfMenuMissionAdapter::update_MissionCondBladeMax() {
-  if (unknown70 < MISSION_TASK_MAX) {
+  if (unknown70 < MISSION_TASK_UNKNOWN_3) {
     GfRequestBladeData data = {};
     if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70)) {
       setNumber(data.unknown0c == 0 ? 1 : data.unknown0c);
@@ -303,7 +308,7 @@ bool GfMenuMissionAdapter::update_MissionCondBladeMax() {
 }
 
 bool GfMenuMissionAdapter::update_MissionCondBladeCount() {
-  if (unknown70 < MISSION_TASK_MAX && unknown68 != nullptr && unknown68->getSize() != 0) {
+  if (unknown70 < MISSION_TASK_UNKNOWN_3 && unknown68 != nullptr && unknown68->getSize() != 0) {
     GfRequestBladeData data = {};
     if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70)) {
       setNumber(GfMenuObjUtil::getMissionCondBladeCount(data, unknown68));
@@ -314,7 +319,7 @@ bool GfMenuMissionAdapter::update_MissionCondBladeCount() {
 }
 
 bool GfMenuMissionAdapter::update_MissionCondCheckIcon() {
-  if (unknown70 < MISSION_TASK_MAX && unknown68 != nullptr && unknown68->getSize() != 0) {
+  if (unknown70 < MISSION_TASK_UNKNOWN_3 && unknown68 != nullptr && unknown68->getSize() != 0) {
     GfRequestBladeData data = {};
     if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70)) {
       u32 count = GfMenuObjUtil::getMissionCondBladeCount(data, unknown68);
@@ -331,7 +336,7 @@ bool GfMenuMissionAdapter::update_MissionCondCheckDisp() {
     if (unknown70 == -1) {
       return GfMenuObjUtil::checkMissionCond(unknown58, unknown68);
     }
-    if (unknown70 < MISSION_TASK_MAX) {
+    if (unknown70 < MISSION_TASK_UNKNOWN_3) {
       GfRequestBladeData data = {};
       if (GfDataMercenaries::getRequestCondition(data, unknown58, unknown70)) {
         u32 count = GfMenuObjUtil::getMissionCondBladeCount(data, unknown68);
@@ -379,7 +384,7 @@ bool GfMenuMissionAdapter::update_MissionStateIcon() {
 bool GfMenuMissionAdapter::update_MissionNewDisp() { return unknown58 != 0 && GfDataMercenaries::isNewMission(unknown58); }
 
 bool GfMenuMissionAdapter::update_MissionCondParamIcon() {
-  if (unknown70 >= MISSION_TASK_MAX) {
+  if (unknown70 >= MISSION_TASK_UNKNOWN_3) {
     return false;
   }
   GfRequestBladeData data = {};
@@ -657,21 +662,21 @@ void GfMenuMissionAdapter::update(const fw::UpdateInfo &info) {
     unknown5c = stat;
     setChange();
   }
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     setDisp(unknown58 != 0 ? unknown30() : false);
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 
 int GfMenuMissionAdapter::getStat(u32 mission, bool isOrderParty) {
   u32 team = GfDataMercenaries::getTeamIDByMissionID(mission);
   if (team == 0 && isOrderParty && GfDataMercenaries::isMissionOrderParty(mission)) {
-    return MISSION_STATE_WORKING;
+    return MISSION_STATE_UNKNOWN_1;
   }
   if (team == 0) {
-    return GfDataMercenaries::isMissionComplete(mission) ? MISSION_STATE_COMPLETE : MISSION_STATE_READY;
+    return GfDataMercenaries::isMissionComplete(mission) ? MISSION_STATE_UNKNOWN_2 : MISSION_STATE_UNKNOWN_0;
   }
-  return GfDataMercenaries::isTeamStateReward(team) ? MISSION_STATE_COMPLETE : MISSION_STATE_WORKING;
+  return GfDataMercenaries::isTeamStateReward(team) ? MISSION_STATE_UNKNOWN_2 : MISSION_STATE_UNKNOWN_1;
 }
 
 u32 GfMenuMissionAdapter::MissionListConverter::getMissionId() {

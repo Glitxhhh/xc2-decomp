@@ -14,7 +14,8 @@
 
 namespace gf {
 
-constexpr u32 ARTS_SLOT_MAX = 4;
+// Inferred role: number of art slots; original name unknown.
+constexpr u32 ARTS_SLOT_UNKNOWN_4 = 4;
 
 static GfMenuWeaponTypeAdapter::TypeInfo TYPE_INFOS[] = {
     {&GfMenuWeaponTypeAdapter::update_WpnTypeName, {GfMenuAdapter::unknown004_2, 0, 0}},
@@ -371,20 +372,20 @@ void GfMenuWeaponTypeAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     if (unknown58 != 0) {
       setDisp(unknown30());
     } else {
       setDisp(false);
     }
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 
 bool GfMenuWeaponTypeAdapter::getDriverArts(DriverArts &driverArts) {
   mm::mtl::FixedArray<u32, 4> arts;
   if (GfMenuObjUtil::getEnableArts(arts, unknown58, unknown5c)) {
-    if (unknown60 < ARTS_SLOT_MAX) {
+    if (unknown60 < ARTS_SLOT_UNKNOWN_4) {
       driverArts.unknown00 = arts[unknown60];
       driverArts.unknown04 = GfDataDriverArts::getArtsLevel(unknown58, driverArts.unknown00);
       return true;

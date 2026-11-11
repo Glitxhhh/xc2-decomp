@@ -17,7 +17,8 @@ struct unknown001 {
   const char *unknown08; // Inferred role: sort key column name of the language; original member name unknown.
 };
 
-const unknown001 s_sortKeyNames[] = {
+// Inferred role: sort key column name of each language; original name unknown.
+const unknown001 unknown002[] = {
     {0, "sortJP"},
     {3, "sortGE"},
     {2, "sortFR"},
@@ -40,10 +41,11 @@ u8 *GfMenuBdat::getFP(u32 bdat) {
 }
 
 void GfMenuBdat::initialize() {
-  static const char *const names[] = {"MNU_OffsetList", "MNU_IconList", "MNU_Layer", "FLD_FieldSkillList", "ITM_CollectionList", "itm_collection", "BTL_Arts_Dr"};
+  // Inferred role: BDAT table names loaded by initialize; original name unknown.
+  static const char *const unknown003[] = {"MNU_OffsetList", "MNU_IconList", "MNU_Layer", "FLD_FieldSkillList", "ITM_CollectionList", "itm_collection", "BTL_Arts_Dr"};
 
-  for (u32 i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
-    s_BdatArray[i] = Bdat::getFP(names[i]);
+  for (u32 i = 0; i < sizeof(unknown003) / sizeof(unknown003[0]); i++) {
+    s_BdatArray[i] = Bdat::getFP(unknown003[i]);
   }
 }
 
@@ -206,9 +208,9 @@ int GfMenuBdat::getIconIDFromWeatherType(u32 weatherType) { return weatherType +
 
 const char *GfMenuBdat::getSortKeyName() {
   u32 lang = fw::LangUtil::getLangType();
-  for (u32 i = 0; i < sizeof(s_sortKeyNames) / sizeof(s_sortKeyNames[0]); i++) {
-    if (s_sortKeyNames[i].unknown00 == lang) {
-      return s_sortKeyNames[i].unknown08;
+  for (u32 i = 0; i < sizeof(unknown002) / sizeof(unknown002[0]); i++) {
+    if (unknown002[i].unknown00 == lang) {
+      return unknown002[i].unknown08;
     }
   }
   return nullptr;

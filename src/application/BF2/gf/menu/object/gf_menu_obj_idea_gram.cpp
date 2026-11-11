@@ -9,7 +9,8 @@
 
 namespace gf {
 
-constexpr u32 CALL_IDEA_GRAM = 57;
+// Inferred role: call id of the idea gram layout; original name unknown.
+constexpr u32 CALL_UNKNOWN_57 = 57;
 
 GfMenuObjIdeaGram::GfMenuObjIdeaGram(u32 handle) : GfMenuObject(handle) {}
 
@@ -17,7 +18,7 @@ GfMenuObjIdeaGram::~GfMenuObjIdeaGram() { ; }
 
 void GfMenuObjIdeaGram::initialize() {
   ui::UIObjectAcc root(unknown18);
-  attachExternalCall(CALL_IDEA_GRAM, ui::UIObjectAcc(unknown18, "LAY_driver").unknown10);
+  attachExternalCall(CALL_UNKNOWN_57, ui::UIObjectAcc(unknown18, "LAY_driver").unknown10);
   GfMenuObject::initialize();
 }
 
@@ -26,7 +27,7 @@ void GfMenuObjIdeaGram::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjIdeaGram::update() { GfMenuObject::update(); }
 
 void GfMenuObjIdeaGram::setIdeaPoint(GfMenuCallContext *context, u8 type, u32 point) {
-  if (context != nullptr && context->unknown10 == CALL_IDEA_GRAM) {
+  if (context != nullptr && context->unknown10 == CALL_UNKNOWN_57) {
     ui::EventData event;
     event.unknown08 = 0;
     event.unknown00 = 0x100;
@@ -55,7 +56,7 @@ void GfMenuObjIdeaGram::setIdeaPointFromBlade(GfMenuCallContext *context, u32 bl
 }
 
 void GfMenuObjIdeaGram::addIdeaPoint(GfMenuCallContext *context, u8 type, int value, bool flag) {
-  if (context != nullptr && context->unknown10 == CALL_IDEA_GRAM) {
+  if (context != nullptr && context->unknown10 == CALL_UNKNOWN_57) {
     ui::EventData event;
     event.unknown00 = 0x101;
     event.unknown08_u16 = type;
@@ -66,7 +67,7 @@ void GfMenuObjIdeaGram::addIdeaPoint(GfMenuCallContext *context, u8 type, int va
 }
 
 void GfMenuObjIdeaGram::addIdeaLevel(GfMenuCallContext *context, u8 type, int value, bool flag) {
-  if (context != nullptr && context->unknown10 == CALL_IDEA_GRAM) {
+  if (context != nullptr && context->unknown10 == CALL_UNKNOWN_57) {
     ui::EventData event;
     event.unknown00 = 0x102;
     event.unknown08_u16 = type;

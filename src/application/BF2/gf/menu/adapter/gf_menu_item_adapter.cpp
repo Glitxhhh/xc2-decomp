@@ -633,9 +633,9 @@ void GfMenuItemAdapter::update(const fw::UpdateInfo &updateInfo) {
     changeItem(info);
   }
 
-  if (unknown48.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown48.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     setDisp(unknown48(unknown38));
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

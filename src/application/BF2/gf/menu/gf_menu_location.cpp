@@ -20,8 +20,10 @@
 
 namespace gf {
 
-constexpr u32 ORDER_DISTANCE_OTHER_MAP = 0xffffffff;
-constexpr u32 ICON_DEFAULT = 455;
+// Inferred role: distance of the locators of another map; original name unknown.
+constexpr u32 ORDER_DISTANCE_UNKNOWN_4294967295 = 0xffffffff;
+// Inferred role: icon of an unknown locator type; original name unknown.
+constexpr u32 ICON_UNKNOWN_455 = 455;
 
 // Inferred role: locator type to icon entry; original type name unknown.
 struct unknown002 {
@@ -30,8 +32,9 @@ struct unknown002 {
 };
 
 // Inferred role: locator type to icon table; original table name unknown.
-static const unknown002 ICON_TABLE[] = {{415, 455}, {416, 456}, {417, 457}};
-constexpr u32 ICON_TABLE_COUNT = sizeof(ICON_TABLE) / sizeof(ICON_TABLE[0]);
+static const unknown002 unknown003[] = {{415, 455}, {416, 456}, {417, 457}};
+// Inferred role: number of entries of the locator type to icon table; original name unknown.
+constexpr u32 unknown004 = sizeof(unknown003) / sizeof(unknown003[0]);
 
 bool GfMenuLocation::isInitialized() {
   GfMenuLocation *location = get();
@@ -45,7 +48,7 @@ GfMenuLocation::GfMenuLocation(const GfSetupParam &param) : unknown10(), unknown
 
 u32 GfMenuLocation::getLocatorDataNum(u32 type) {
   GfMenuLocation *location = get();
-  if (type < LOCATOR_TYPE_COUNT && location != nullptr) {
+  if (type < LOCATOR_TYPE_UNKNOWN_4 && location != nullptr) {
     return location->unknown10[type].unknown28;
   }
   return 0;
@@ -80,7 +83,7 @@ void GfMenuLocation::refreshLocatorFromQuest(u32 index, u32 type) {
 
 void GfMenuLocation::updateDataNum(u32 type) {
   unknown001 &group = unknown10[type];
-  if (type >= LOCATOR_TYPE_COUNT) {
+  if (type >= LOCATOR_TYPE_UNKNOWN_4) {
     return;
   }
   mm::Vec3 position;
@@ -110,7 +113,7 @@ void GfMenuLocation::updateDataNum(u32 type) {
         group.unknown30.push_back(order);
       }
     } else if (group.unknown00[i].isOtherMap()) {
-      OrderInfo order = {dataNum, ORDER_DISTANCE_OTHER_MAP};
+      OrderInfo order = {dataNum, ORDER_DISTANCE_UNKNOWN_4294967295};
       group.unknown30.push_back(order);
       posNum = 1;
     }
@@ -127,12 +130,12 @@ void GfMenuLocation::postUpdate(const fw::UpdateInfo &) {
 }
 
 u32 GfMenuLocation::convIcon(u32 type) {
-  for (u32 i = 0; i < ICON_TABLE_COUNT; i++) {
-    if (ICON_TABLE[i].unknown00 == type) {
-      return ICON_TABLE[i].unknown04;
+  for (u32 i = 0; i < unknown004; i++) {
+    if (unknown003[i].unknown00 == type) {
+      return unknown003[i].unknown04;
     }
   }
-  return ICON_DEFAULT;
+  return ICON_UNKNOWN_455;
 }
 
 } // namespace gf

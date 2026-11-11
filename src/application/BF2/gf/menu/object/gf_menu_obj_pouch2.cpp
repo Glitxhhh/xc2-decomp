@@ -469,13 +469,15 @@ bool GfMenuObjPouch2::seqFavOpen() {
 }
 
 GAME_VOICE_HANDLE *GfMenuObjPouch2::procFavFlag(ui::UIObjectAcc &acc, FavoriteFlag &flag, u32 index, u32 favorite) {
-  static const char *const effects[] = {"IMG_chr_fvicon01eff@%02d", "IMG_chr_fvicon02eff@%02d", "IMG_chr_fviconit01eff@%02d", "IMG_chr_fviconit02eff@%02d"};
-  static const char *const icons[] = {"IMG_chr_fvicon01anm@%02d", "IMG_chr_fvicon02anm@%02d", "IMG_chr_fviconit01anm@%02d", "IMG_chr_fviconit02anm@%02d"};
+  // Inferred role: effect image names of the favorite flag icons; original name unknown.
+  static const char *const unknown006[] = {"IMG_chr_fvicon01eff@%02d", "IMG_chr_fvicon02eff@%02d", "IMG_chr_fviconit01eff@%02d", "IMG_chr_fviconit02eff@%02d"};
+  // Inferred role: animation image names of the favorite flag icons; original name unknown.
+  static const char *const unknown007[] = {"IMG_chr_fvicon01anm@%02d", "IMG_chr_fvicon02anm@%02d", "IMG_chr_fviconit01anm@%02d", "IMG_chr_fviconit02anm@%02d"};
   mm::mtl::FixStr<32> name;
-  name.format(effects[favorite], index + 1);
+  name.format(unknown006[favorite], index + 1);
   ui::UIObjectAcc effect(acc.searchChild(name.c_str()));
   effect.startAnimation("flash", false);
-  name.format(icons[favorite], index + 1);
+  name.format(unknown007[favorite], index + 1);
   ui::UIObjectAcc icon(acc.searchChild(name.c_str()));
   GfMenuObjUtil::CtrlParam param;
   param.unknown08 = 0x10000000;

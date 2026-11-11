@@ -115,11 +115,11 @@ const GfMenuReference::ArtsPaletteInfo &GfMenuReference::getArtsPaletteInfo(u8 i
   GfMenuReference *reference = get();
   const ArtsPaletteInfo *info = &empty;
   if (reference != nullptr) {
-    if (index < ARTS_PALETTE_COUNT) {
+    if (index < ARTS_PALETTE_UNKNOWN_3) {
       info = &reference->unknown4cac0[index].unknown00;
     } else {
       info = &reference->unknown4cda0[index].unknown00;
-      if (!(index < ALL_ARTS_PALETTE_COUNT)) {
+      if (!(index < ALL_ARTS_PALETTE_UNKNOWN_9)) {
         info = &empty;
       }
     }
@@ -133,11 +133,11 @@ const GfMenuObjUtil::ArtsIconInfo &GfMenuReference::getArtsPaletteIconInfo(u8 in
   if (reference == nullptr) {
     return empty;
   }
-  if (index < ARTS_PALETTE_COUNT) {
+  if (index < ARTS_PALETTE_UNKNOWN_3) {
     return reference->unknown4cac0[index].unknown08;
   }
   const GfMenuObjUtil::ArtsIconInfo *info = &reference->unknown4cda0[index].unknown08;
-  if (!(index < ALL_ARTS_PALETTE_COUNT)) {
+  if (!(index < ALL_ARTS_PALETTE_UNKNOWN_9)) {
     info = &empty;
   }
   return *info;
@@ -146,11 +146,11 @@ const GfMenuObjUtil::ArtsIconInfo &GfMenuReference::getArtsPaletteIconInfo(u8 in
 void GfMenuReference::setArtsPaletteEnable(u8 index, bool isEnable, u32 disableFlags) {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
-    if (index < ARTS_PALETTE_COUNT) {
+    if (index < ARTS_PALETTE_UNKNOWN_3) {
       reference->unknown4cac0[index].unknown20 = isEnable;
       reference->unknown4cac0[index].unknown24 = disableFlags;
     }
-    if (index < ALL_ARTS_PALETTE_COUNT) {
+    if (index < ALL_ARTS_PALETTE_UNKNOWN_9) {
       reference->unknown4cda0[index].unknown20 = isEnable;
       reference->unknown4cda0[index].unknown24 = disableFlags;
     }
@@ -162,10 +162,10 @@ u32 GfMenuReference::getArtsPaletteElementType(u8 index) {
   if (reference == nullptr) {
     return 0;
   }
-  if (index < ARTS_PALETTE_COUNT) {
+  if (index < ARTS_PALETTE_UNKNOWN_3) {
     return reference->unknown4cac0[index].unknown1c;
   }
-  if (index < ALL_ARTS_PALETTE_COUNT) {
+  if (index < ALL_ARTS_PALETTE_UNKNOWN_9) {
     return reference->unknown4cda0[index].unknown1c;
   }
   return 0;
@@ -176,10 +176,10 @@ bool GfMenuReference::isArtsPaletteEnable(u8 index) {
   if (reference == nullptr) {
     return false;
   }
-  if (index < ARTS_PALETTE_COUNT) {
+  if (index < ARTS_PALETTE_UNKNOWN_3) {
     return reference->unknown4cac0[index].unknown20;
   }
-  if (index < ALL_ARTS_PALETTE_COUNT) {
+  if (index < ALL_ARTS_PALETTE_UNKNOWN_9) {
     return reference->unknown4cda0[index].unknown20;
   }
   return false;
@@ -190,10 +190,10 @@ u32 GfMenuReference::getArtsPaletteDisable(u8 index) {
   if (reference == nullptr) {
     return 0;
   }
-  if (index < ARTS_PALETTE_COUNT) {
+  if (index < ARTS_PALETTE_UNKNOWN_3) {
     return reference->unknown4cac0[index].unknown24;
   }
-  if (index < ALL_ARTS_PALETTE_COUNT) {
+  if (index < ALL_ARTS_PALETTE_UNKNOWN_9) {
     return reference->unknown4cda0[index].unknown24;
   }
   return 0;
@@ -437,9 +437,10 @@ u32 GfMenuReference::getActiveElementComboID(u32 level) {
 }
 
 u32 GfMenuReference::getElementComboRootLevel(u32 index) {
-  static const u32 levels[7] = {1, 2, 2, 3, 3, 3, 3};
+  // Inferred role: root level of each element combo route; original name unknown.
+  static const u32 unknown028[7] = {1, 2, 2, 3, 3, 3, 3};
   if (index < 7) {
-    return levels[index];
+    return unknown028[index];
   }
   return 0;
 }

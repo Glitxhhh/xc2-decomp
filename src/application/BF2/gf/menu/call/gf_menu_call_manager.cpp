@@ -8,7 +8,7 @@ namespace gf {
 GfMenuCallManager::GfMenuCallManager(const GfSetupParam &param) : unknown08(), unknown228(getAllocator(ALLOCATOR_DEFAULT)), unknown1108() { reset(); }
 
 void GfMenuCallManager::reset() {
-  for (u32 i = 0; i < CALL_MAX; i++) {
+  for (u32 i = 0; i < CALL_UNKNOWN_135; i++) {
     unknown08[i] = 0;
   }
 }
@@ -24,7 +24,7 @@ GfMenuCallManager::~GfMenuCallManager() {
 }
 
 bool GfMenuCallManager::canCall(u32 call) const {
-  if (call < CALL_MAX) {
+  if (call < CALL_UNKNOWN_135) {
     return unknown08[call] != 0;
   }
   return false;
@@ -43,13 +43,13 @@ bool GfMenuCallManager::isInitialized() { return true; }
 void GfMenuCallManager::attachCall(u32 call, u32 object) { unknown08[call] = object; }
 
 void GfMenuCallManager::detachCall(u32 call) {
-  if (call < CALL_MAX && unknown08[call] != 0) {
+  if (call < CALL_UNKNOWN_135 && unknown08[call] != 0) {
     unknown08[call] = 0;
   }
 }
 
 u32 GfMenuCallManager::getAttachedObject(u32 call) {
-  if (call < CALL_MAX) {
+  if (call < CALL_UNKNOWN_135) {
     return unknown08[call];
   }
   return 0;

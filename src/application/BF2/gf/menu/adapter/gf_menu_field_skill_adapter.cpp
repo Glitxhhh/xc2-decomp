@@ -105,9 +105,9 @@ void GfMenuFieldSkillAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if ((unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0 && unknown30.isValid()) {
+  if ((unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0 && unknown30.isValid()) {
     setDisp(unknown58.unknown00 != 0 && unknown30(unknown58));
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

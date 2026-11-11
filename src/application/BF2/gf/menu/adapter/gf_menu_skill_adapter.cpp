@@ -8,7 +8,8 @@
 
 namespace gf {
 
-constexpr u32 SKILL_LEVEL_FIRST = 1;
+// Inferred role: first level of a skill, always unlocked; original name unknown.
+constexpr u32 SKILL_LEVEL_UNKNOWN_1 = 1;
 
 static GfMenuSkillAdapter::TypeInfo TYPE_INFOS[] = {
     {&GfMenuSkillAdapter::update_SkillName, {GfMenuAdapter::unknown004_2, 0, 0}},
@@ -161,7 +162,7 @@ bool GfMenuSkillAdapter::update_SkillLearnDisp() {
 }
 
 bool GfMenuSkillAdapter::update_SkillLevelLockIcon() {
-  setNumber(unknown64 == SKILL_LEVEL_FIRST || GfDataDriverSkill::isSkillLevelUnlock(unknown5c, unknown64, unknown68 != 0) ? 5 : 11);
+  setNumber(unknown64 == SKILL_LEVEL_UNKNOWN_1 || GfDataDriverSkill::isSkillLevelUnlock(unknown5c, unknown64, unknown68 != 0) ? 5 : 11);
   return true;
 }
 
@@ -236,9 +237,9 @@ void GfMenuSkillAdapter::update(const fw::UpdateInfo &info) {
     }
   }
 
-  if (unknown30.isValid() && (unknown20 & (FLAG_CHANGED | FLAG_UPDATE_ALWAYS)) != 0) {
+  if (unknown30.isValid() && (unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0) {
     setDisp(unknown30());
-    unknown20 &= ~FLAG_CHANGED;
+    unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
 

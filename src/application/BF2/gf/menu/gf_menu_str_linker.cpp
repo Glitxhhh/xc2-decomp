@@ -3,7 +3,7 @@
 namespace gf {
 
 GfMenuStrLinker::GfMenuStrLinker(mm::mtl::IAllocator *allocator) : unknown08(allocator), unknown10(), unknownc10(), unknowne18() {
-  for (u32 i = 0; i < STRING_MAX; i++) {
+  for (u32 i = 0; i < STRING_UNKNOWN_128; i++) {
     unknownc10.push_back(i);
   }
 }
@@ -11,14 +11,14 @@ GfMenuStrLinker::GfMenuStrLinker(mm::mtl::IAllocator *allocator) : unknown08(all
 GfMenuStrLinker::~GfMenuStrLinker() {}
 
 void GfMenuStrLinker::delString(u16 id) {
-  if (id < STRING_MAX) {
+  if (id < STRING_UNKNOWN_128) {
     unknown10[id].release();
     unknownc10.push_back(id);
   }
 }
 
 const ui::UIStr &GfMenuStrLinker::getString(u16 id) {
-  if (id < STRING_MAX) {
+  if (id < STRING_UNKNOWN_128) {
     return unknown10[id];
   }
   static ui::UIStr invalid;

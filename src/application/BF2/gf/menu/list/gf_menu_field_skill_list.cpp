@@ -10,9 +10,12 @@
 
 namespace gf {
 
-constexpr u8 FIELD_SKILL_LEVEL_MAX = 99;
-constexpr u32 BLADE_FIELD_SKILL_COUNT = 3;
-constexpr int DRIVER_BLADE_COUNT = 3;
+// Inferred role: maximum level of a summed field skill; original name unknown.
+constexpr u8 FIELD_SKILL_LEVEL_UNKNOWN_99 = 99;
+// Inferred role: number of field skills of a blade; original name unknown.
+constexpr u32 BLADE_FIELD_SKILL_UNKNOWN_3 = 3;
+// Inferred role: number of blade slots of a driver; original name unknown.
+constexpr int DRIVER_BLADE_UNKNOWN_3 = 3;
 
 GfMenuFieldSkillList::GfMenuFieldSkillList() {}
 
@@ -31,7 +34,7 @@ void GfMenuFieldSkillList::addFieldSkill(const MenuFieldSkill &fieldSkill) {
     MenuFieldSkill &current = getContents(i);
     if (current.unknown00 == fieldSkill.unknown00) {
       u8 level = fieldSkill.unknown02 + current.unknown02;
-      current.unknown02 = level > FIELD_SKILL_LEVEL_MAX ? FIELD_SKILL_LEVEL_MAX : level;
+      current.unknown02 = level > FIELD_SKILL_LEVEL_UNKNOWN_99 ? FIELD_SKILL_LEVEL_UNKNOWN_99 : level;
       return;
     }
   }
@@ -44,7 +47,7 @@ void GfMenuFieldSkillList::addFieldSkillFromBlade(u32 blade) {
   }
   DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
   if (acc.isValid()) {
-    for (u32 i = 0; i < BLADE_FIELD_SKILL_COUNT; i++) {
+    for (u32 i = 0; i < BLADE_FIELD_SKILL_UNKNOWN_3; i++) {
       if (acc.getFieldSkill(i, false) != 0) {
         MenuFieldSkill fieldSkill;
         fieldSkill.unknown00 = acc.getFieldSkill(i, false);
@@ -70,7 +73,7 @@ void GfMenuFieldSkillList::addFieldSkillFromParty() {
   for (u32 i = 0; i < drivers.size(); i++) {
     DataParamAcc acc(OBJECT_TYPE_DRIVER, drivers[i], GIMMICK_TYPE_NONE);
     if (acc.isValid()) {
-      for (int slot = 0; slot < DRIVER_BLADE_COUNT; slot++) {
+      for (int slot = 0; slot < DRIVER_BLADE_UNKNOWN_3; slot++) {
         addFieldSkillFromBlade(acc.getBlade(slot, false));
       }
     }
