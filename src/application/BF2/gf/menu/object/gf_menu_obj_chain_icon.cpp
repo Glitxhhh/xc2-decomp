@@ -1,8 +1,10 @@
 #include "gf/menu/object/gf_menu_obj_chain_icon.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -17,6 +19,25 @@ GfMenuObjChainIcon::~GfMenuObjChainIcon() { GfMenuManyObjects::destroy<ChainIcon
 void GfMenuObjChainIcon::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjChainIcon::update() { GfMenuObject::update(); }
+
+void GfMenuObjChainIcon::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+  if (ui::UIObjectAcc(main).isValid()) {
+    attachExternalCall(unknown001, main);
+// __LINE__ must be 78 as in the original file: it is the line argument of operator new.
+#line 78
+    ListListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListListener(this);
+    listener->addRef();
+    ui::UIEventManager::get()->registObjectListener(main, listener);
+    if (listener != nullptr) {
+      listener->release();
+    }
+  }
+  ui::UIObjectAcc(unknown18).setTerm();
+  GfMenuObject::initialize();
+  GfMenuManyObjects::unknown002<ChainIconInfo>(GfMenuManyObjects::unknown001_2, 32);
+}
 
 void GfMenuObjChainIcon::removeObject(ui::UIObjectAcc acc) {
   GfMenuManyObjects::remove<ChainIconInfo>(GfMenuManyObjects::unknown001_2, acc.unknown10);

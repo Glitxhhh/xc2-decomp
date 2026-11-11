@@ -3,13 +3,18 @@
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_param_acc.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
+#include "gf/menu/adapter/gf_menu_game_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
@@ -23,6 +28,7 @@
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/ui_manager.h"
@@ -42,6 +48,8 @@ constexpr u32 unknown004 = 0x27;
 
 u32 GfMenuObjMainMenu2::s_openMenuID;
 bool GfMenuObjMainMenu2::s_cancelEnable;
+// Inferred role: number of main menu order entries; original name unknown.
+static u32 unknown006;
 
 GfMenuObjMainMenu2::GfMenuObjMainMenu2(u32 handle)
     : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(0), unknown3c(-1), unknown40(-1), unknown44(0), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown88(0),
@@ -64,6 +72,65 @@ GfMenuObjMainMenu2::~GfMenuObjMainMenu2() {
     unknown58 = nullptr;
   }
   s_openMenuID = 0;
+}
+
+void GfMenuObjMainMenu2::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u8 *order = GfDataBdat::getFP(BDAT_MNU_MAIN_ORDER);
+  unknown60.clear();
+  for (u32 i = 0; i < Bdat::getIdCount(order); i++) {
+    unknown60.push_back(Bdat::getIdTop(order) + i);
+  }
+  unknown006 = unknown60.size();
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 225 as in the original file: it is the line argument of operator new.
+#line 225
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(unknown002, main);
+  u32 contents = acc.searchChild("LAY_contents");
+// __LINE__ must be 231 as in the original file: it is the line argument of operator new.
+#line 231
+  ContentsListener *contentsListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ContentsListener(this);
+  contentsListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(contents, contentsListener);
+  if (contentsListener != nullptr) {
+    contentsListener->release();
+  }
+  u32 index = acc.searchChild("LAY_index");
+// __LINE__ must be 235 as in the original file: it is the line argument of operator new.
+#line 235
+  IndexListener *indexListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) IndexListener(this);
+  indexListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(index, indexListener);
+  if (indexListener != nullptr) {
+    indexListener->release();
+  }
+  u32 close = acc.searchChild("LAY_close");
+// __LINE__ must be 240 as in the original file: it is the line argument of operator new.
+#line 240
+  CloseListener *closeListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) CloseListener(this);
+  closeListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(close, closeListener);
+  if (closeListener != nullptr) {
+    closeListener->release();
+  }
+  u32 change = acc.searchChild("LAY_chr_change");
+// __LINE__ must be 248 as in the original file: it is the line argument of operator new.
+#line 248
+  ChrChangeListener *changeListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ChrChangeListener(this);
+  changeListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(change, changeListener);
+  if (changeListener != nullptr) {
+    changeListener->release();
+  }
+  unknown30 = GfMenuCallContext::create();
+  acc.setDispChild(GfMenuManager::isClearCheck(), "IMG_clear_mark");
+  GfMenuObject::initialize();
 }
 
 bool GfMenuObjMainMenu2::isOpenCharMenu() { return s_openMenuID == unknown004; }
@@ -347,6 +414,103 @@ void GfMenuObjMainMenu2::refreshCharChangeDr(ui::UIObjectAcc &acc, GfMenuDriverL
   }
 }
 
+void GfMenuObjMainMenu2::refreshCharChangeBl(ui::UIObjectAcc &acc, GfMenuBladeList *list) {
+  ui::UIObjectAcc change(acc.unknown10, "LAY_chr_change_bl");
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < list->getPageSize(); i++) {
+    name.format("IMG_chr_change_bl_cursor@%02d", i + 1);
+    ui::UIObjectAcc cursor(change.unknown10, name.c_str());
+    if (i == list->getIndex(true)) {
+      cursor.setDisp(true);
+      cursor.startAnimation("loop", false);
+    } else {
+      cursor.stopAnimation();
+      cursor.setDisp(false);
+    }
+  }
+  ui::UIObjectAcc left(change.unknown10, "IMG_chr_change_bl_icon_l");
+  left.setDisp(false);
+  u32 leftIndex = list->getPageIndex(0);
+  if (leftIndex != 0) {
+    DataParamAcc blade(OBJECT_TYPE_BLADE, list->getContents(leftIndex - 1).unknown00, GIMMICK_TYPE_UNKNOWN_0);
+    int icon = GfMenuObjUtil::getFaceIconID(blade);
+    if (icon != 0) {
+      left.setImageIndex(GfMenuBdat::getIconImageIndex(icon));
+      left.setDisp(true);
+    }
+  }
+  ui::UIObjectAcc right(change.unknown10, "IMG_chr_change_bl_icon_r");
+  right.setDisp(false);
+  u32 pageSize = list->getPageSize();
+  if (pageSize != 0) {
+    u32 rightIndex = list->getPageIndex(pageSize - 1);
+    if (rightIndex < list->getSize() - 1) {
+      DataParamAcc blade(OBJECT_TYPE_BLADE, list->getContents(rightIndex + 1).unknown00, GIMMICK_TYPE_UNKNOWN_0);
+      int icon = GfMenuObjUtil::getFaceIconID(blade);
+      if (icon != 0) {
+        right.setImageIndex(GfMenuBdat::getIconImageIndex(icon));
+        right.setDisp(true);
+      }
+    }
+  }
+}
+
+void GfMenuObjMainMenu2::inputChrChangeSub(ui::UIObjectAcc &acc, ChrChangeParam &param, int index) {
+  switch (param.unknown00) {
+  case 0:
+    if (index == -1) {
+      return;
+    }
+    param.unknown18->setIndex(index);
+    refreshCharChangeDr(acc, param.unknown18);
+    if (GfMenuReference::getReferenceDriverID(0) == param.unknown18->getContents(param.unknown18->getIndex(false)).unknown00) {
+      return;
+    }
+    {
+      u32 handle = param.unknown10;
+      u32 selected = param.unknown18->getContents(param.unknown18->getIndex(false)).unknown00;
+      if (handle != 0) {
+        unknown163(handle, 0x140, selected);
+      }
+    }
+    break;
+  case 1:
+  case 2:
+    if (index == -1) {
+      return;
+    }
+    param.unknown20->setIndex(index);
+    refreshCharChangeBl(acc, param.unknown20);
+    if (GfMenuReference::getReferenceBladeID(0) == param.unknown20->getContents(param.unknown20->getIndex(false)).unknown00) {
+      return;
+    }
+    {
+      u32 handle = param.unknown10;
+      u32 selected = param.unknown20->getContents(param.unknown20->getIndex(false)).unknown00;
+      if (handle != 0) {
+        unknown163(handle, 0x140, selected);
+      }
+    }
+    break;
+  }
+}
+
+void GfMenuObjMainMenu2::setupMainMenu(ui::UIObjectAcc &acc) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < unknown006; i++) {
+    name.format("TXT_contents_item@%02d", i + 1);
+    u32 text = acc.searchChild(name.c_str());
+    if (text != 0) {
+      setContentsText(text, i);
+      GfMenuObjUtil::setColMulandAdd(text, "txt_main_title");
+    }
+  }
+  GfMenuGameAdapter::create(acc.searchChild("TXT_info_time"), 0, true);
+  GfMenuGameAdapter::create(acc.searchChild("TXT_info_money"), 1, true);
+  ui::UIObjectAcc background(acc.searchChild("IMG_contents_bg"));
+  background.startAnimation("loop", false);
+}
+
 void GfMenuObjMainMenu2::update() {
   if (unknown44 != unknown003) {
     s_openMenuID = unknown44;
@@ -523,6 +687,212 @@ bool GfMenuObjMainMenu2::seqExecTerm() {
   }
   main.setTerm();
   return true;
+}
+
+void GfMenuObjMainMenu2::IndexListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    setContentsSubText(acc.searchChild("TXT_index"), 0, acc.unknown10);
+    setContentsSubText(acc.searchChild("TXT_index_shadow"), 0, acc.unknown10);
+    ui::UIObjectAcc image(acc.searchChild("IMG_index_icon"));
+    image.setImageIndex(0);
+    acc.setDisp(true);
+    break;
+  }
+  case GfMenuTypes::unknown003_258: {
+    u32 text = event.unknown08;
+    ui::UIObjectAcc title(acc.searchChild("LAY_title"));
+    if (text != 0) {
+      setContentsSubText(acc.searchChild("TXT_index"), text, acc.unknown10);
+      setContentsSubText(acc.searchChild("TXT_index_shadow"), text, acc.unknown10);
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 1;
+      param.unknown0c = 1;
+      param.unknown00 = 0.3f;
+      GfMenuObjUtil::startCtrl(title.unknown10, param, nullptr);
+      title.setDisp(true);
+    } else {
+      title.setDisp(false);
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_257: {
+    int index = event.unknown08;
+    u8 *order = GfDataBdat::getFP(BDAT_MNU_MAIN_ORDER);
+    int entry = unknown20->unknown60[index];
+    u32 subTitle = Bdat::getVal(order, "subTitle", entry).valueU16;
+    if (handle != 0) {
+      unknown163(handle, GfMenuTypes::unknown003_258, subTitle);
+    }
+    u32 icon = Bdat::getVal(order, "titleIcon", entry).valueU16;
+    ui::UIObjectAcc image(acc.searchChild("IMG_index_icon"));
+    image.setImageIndex(icon);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjMainMenu2::CloseListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc root(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::disableInput(handle);
+    s_cancelEnable = false;
+    break;
+  case 8:
+    if (event.unknown0c == 2) {
+      if (s_cancelEnable && !GfMenuManager::isSwitchingFullScreen()) {
+        if (unknown20->unknown44 != 0) {
+          GfMenuObject::returnFSSubLayer(handle, 1);
+          openMainMenu();
+          GfMenuObjUtil::playSECommonCancel();
+        } else {
+          u32 main = root.searchChild("LAY_main");
+          if (main != 0) {
+            ui::EventData request;
+            request.unknown00 = 0x107;
+            ui::UIManager::get()->requestObjectEvent(main, request, 0.0f);
+          }
+          GfMenuObject::disableInput(handle);
+        }
+      }
+    } else if (event.unknown0c == 3) {
+      if (!GfMenuManager::isSwitchingFullScreen()) {
+        u32 main = root.searchChild("LAY_main");
+        if (main != 0) {
+          ui::EventData request;
+          request.unknown00 = 0x107;
+          ui::UIManager::get()->requestObjectEvent(main, request, 0.0f);
+        }
+        GfMenuObject::disableInput(handle);
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    GfMenuObject::enableInput(handle);
+    s_cancelEnable = true;
+    break;
+  case 0x10d:
+    GfMenuObjOperationInfo::open(handle, 0, 0, 0);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjMainMenu2::ChrChangeListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc root(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    initChrChangeDr(root, unknown20->unknown48);
+    initChrChangeBl(root, unknown20->unknown50);
+    acc.setDisp(false);
+    GfMenuObject::disableInput(acc.unknown10);
+    unknown0c = 0;
+    unknown10 = unknown007(-1, 0);
+    break;
+  }
+  case 3:
+    switch (event.unknown08) {
+    case 0:
+      return;
+    case 1:
+      if (unknown10.unknown00 == 1 || unknown10.unknown00 == 2) {
+        GfMenuObject::resetInputSelection(acc.unknown10);
+        GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown50);
+      } else if (unknown10.unknown00 == 0) {
+        GfMenuObject::resetInputSelection(acc.unknown10);
+        GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown48);
+      }
+      if (unknown20->unknown88 == 0) {
+        GfMenuObject::disableInput(acc.unknown10);
+      } else {
+        GfMenuObject::enableInput(acc.unknown10);
+      }
+      break;
+    case 2:
+      GfMenuObject::termCallContext(acc.unknown10);
+      acc.setDisp(false);
+      break;
+    case 3:
+      if (handle != 0) {
+        ui::EventData request;
+        request.unknown00 = 0x10c;
+        ui::UIManager::get()->requestObjectEvent(handle, request, 0.0f);
+      }
+      break;
+    }
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 6: {
+    int next = event.unknown08;
+    int previous = event.unknown0c;
+    ChrChangeParam param;
+    param.unknown00 = unknown10.unknown00;
+    param.unknown10 = unknown20->unknown88;
+    param.unknown18 = unknown20->unknown48;
+    param.unknown20 = unknown20->unknown50;
+    inputChrChangeSub(acc, param, next);
+    if (previous != -1 && next != previous) {
+      GfMenuObjUtil::playSECommonTab();
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_33: {
+    u32 type = event.unknown08;
+    u32 flag = event.unknown10;
+    unknown20->unknown88 = event.unknown0c;
+    ChrChangeParam param;
+    if (type == 3) {
+      type = 0;
+      param.unknown2c = false;
+    }
+    param.unknown00 = type;
+    param.unknown04 = flag == 1;
+    param.unknown08 = unknown10.unknown00;
+    param.unknown0c = unknown0c == 1;
+    param.unknown10 = unknown20->unknown88;
+    param.unknown18 = unknown20->unknown48;
+    param.unknown20 = unknown20->unknown50;
+    param.unknown28 = GfMenuReference::getReferenceDriverID(0);
+    param.unknown30 = unknown10.unknown04;
+    u32 value = 0;
+    if (openChrChangeSub(acc, param, value)) {
+      unknown0c = 1;
+      unknown10.unknown00 = type;
+      unknown10.unknown04 = value;
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    ChrChangeParam param;
+    param.unknown00 = unknown10.unknown00;
+    closeChrChangeSub(acc, param);
+    unknown0c = 0;
+    break;
+  }
+  case 0x109:
+    unknown20->unknown88 = 0;
+    break;
+  case 0x10c: {
+    ChrChangeParam param;
+    param.unknown00 = unknown10.unknown00;
+    param.unknown18 = unknown20->unknown48;
+    param.unknown20 = unknown20->unknown50;
+    openChrChange2Sub(acc, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 bool SelectionChecker::isEnableSelect(u32 handle, int index) {

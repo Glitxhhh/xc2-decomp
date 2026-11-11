@@ -2,6 +2,7 @@
 
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_char_select.h"
@@ -11,6 +12,7 @@
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/plugin/ui_object_dock_plugin.h"
 #include "ui/ui_object_acc.h"
 
@@ -24,6 +26,30 @@ constexpr u16 unknown002 = 0x101;
 GfMenuObjHanaSubmenu::GfMenuObjHanaSubmenu(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(0) {}
 
 GfMenuObjHanaSubmenu::~GfMenuObjHanaSubmenu() { mm::mtl::safeRelease(unknown28); }
+
+void GfMenuObjHanaSubmenu::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 101 as in the original file: it is the line argument of operator new.
+#line 101
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(unknown001, main);
+  u32 subMenu = acc.searchChild("LAY_sub_menu");
+// __LINE__ must be 107 as in the original file: it is the line argument of operator new.
+#line 107
+  SubmenuListener *submenuListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SubmenuListener(this);
+  submenuListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(subMenu, submenuListener);
+  if (submenuListener != nullptr) {
+    submenuListener->release();
+  }
+  GfMenuObject::initialize();
+}
 
 void GfMenuObjHanaSubmenu::finalize() { GfMenuObject::finalize(); }
 

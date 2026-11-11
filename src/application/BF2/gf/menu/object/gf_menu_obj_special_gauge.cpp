@@ -1,11 +1,14 @@
 #include "gf/menu/object/gf_menu_obj_special_gauge.h"
 
+#include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_gfobj_adapter.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
 
@@ -35,6 +38,39 @@ static int unknown005(u32 handle, int ctrl, u32 type) {
 GfMenuObjSpecialGauge::GfMenuObjSpecialGauge(u32 handle) : GfMenuObject(handle) {}
 
 GfMenuObjSpecialGauge::~GfMenuObjSpecialGauge() { ; }
+
+void GfMenuObjSpecialGauge::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  if (acc.isValid()) {
+    ui::UIObjectAcc main(acc.unknown10, "LAY_main");
+    if (main.isValid()) {
+// __LINE__ must be 82 as in the original file: it is the line argument of operator new.
+#line 82
+      MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+      listener->addRef();
+      ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
+      if (listener != nullptr) {
+        listener->release();
+      }
+      attachExternalCall(unknown001, main.unknown10);
+    }
+    mm::mtl::FixStr<32> name;
+    for (u32 i = 0; i < 5; i++) {
+      name.format("IMG_gauge_lv@%d", i);
+      ui::UIObjectAcc gauge(main.unknown10, name.c_str());
+      if (gauge.isValid()) {
+        GfMenuGfObjAdapter *adapter = GfMenuGfObjAdapter::createFromPartyBlade(gauge.unknown10, 0x23, 0, -1, true, false);
+        adapter->unknown70 = i;
+        adapter->setNumberInterpolateMode(0.25f);
+        gauge.startAnimation("start", true);
+        addNumberEventCondition(main.unknown10, name.c_str(), 0, i, 1.0f);
+      }
+    }
+    GfMenuGfObjAdapter::createFromPartyBlade(acc.searchChild("IMG_arts_lv"), 0x24, 0, -1, true, false);
+    addNumberEventCondition(main.unknown10, "IMG_arts_lv", 1, 0, 0.0f);
+    GfMenuObject::initialize();
+  }
+}
 
 void GfMenuObjSpecialGauge::push() { unknown144(unknown001, unknown002); }
 

@@ -11,6 +11,7 @@ class GfMenuObjSpecialGauge : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjSpecialGauge *owner) : unknown0c(0), unknown10(), unknown18(0), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
     int unknown0c; // Inferred role: fade control; original member name unknown.
