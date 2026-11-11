@@ -41,6 +41,33 @@ bool DrPixlPostParm::getBloomOn() const { return m_bloomOn; }
 
 bool DrPixlPostParm::getToneMapOn() const { return m_toneMapOn; }
 
+bool DrPixlPostParm::isMotBlur() const { return unknown1ca || unknown1cb; }
+
+void DrPixlPostParm::setGlassBrk(bool isGlassBreak, u32 type) {
+  unknown4d0 = isGlassBreak;
+  if (isGlassBreak && type != 0xffffffff) {
+    unknown4d8 = 1.0f;
+    unknown4dc = 0.0f;
+    unknown4e0 = 1.0f;
+    unknown4e4 = 0.0f;
+    unknown4e8 = 10.0f;
+    unknown4ec = 1.0f;
+    unknown4f0 = 0.0f;
+    unknown4f4 = 0.0f;
+    unknown4f8 = 8.0f;
+    unknown4fc = 6.0f;
+    unknown500 = 2.0f;
+    unknown504 = 3.0f;
+    unknown508 = 1.0f;
+    unknown50c = 0.05f;
+    if (type == 1) {
+      unknown510 = 30.0f;
+    } else {
+      unknown510 = 0.0f;
+    }
+  }
+}
+
 void DrPixlPostParm::update() {
   if (unknown10fc) {
     unknown10fc = false;

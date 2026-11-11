@@ -205,7 +205,8 @@ public:
   f32 unknown19c; // Inferred role: ssao blur str; original member name unknown.
   u8 _01a0[0x01ca - 0x01a0];
   bool unknown1ca; // Inferred role: mot blur; original member name unknown.
-  u8 _01cb[0x01cd - 0x01cb];
+  bool unknown1cb; // Inferred role: mot blur second flag, tested together with unknown1ca by isMotBlur; original member name unknown.
+  u8 _01cc[0x01cd - 0x01cc];
   bool unknown1cd; // Inferred role: obj mot blur; original member name unknown.
   bool unknown1ce; // Inferred role: app blur; original member name unknown.
   u8 _01cf[0x01d0 - 0x01cf];
@@ -288,7 +289,22 @@ public:
   bool unknown48a; // Inferred role: SSR; original member name unknown.
   u8 _048b[0x04d0 - 0x048b];
   bool unknown4d0; // Inferred role: glass br; original member name unknown.
-  u8 _04d1[0x0514 - 0x04d1];
+  u8 _04d1[0x04d8 - 0x04d1];
+  f32 unknown4d8;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4dc;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4e0;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4e4;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4e8;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4ec;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4f0;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4f4;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4f8;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown4fc;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown500;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown504;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown508;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown50c;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
+  f32 unknown510;           // Inferred role: glass break parameter set by setGlassBrk; original member name unknown.
   unknown039 unknown514[2]; // Inferred role: dbl parms; original member name unknown.
   bool unknownf54;          // Inferred role: histgram reset; original member name unknown.
   u8 _0f55[0x0f58 - 0x0f55];

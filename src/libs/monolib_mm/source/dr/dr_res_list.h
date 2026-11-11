@@ -59,4 +59,18 @@ template <typename T> inline void unknown004(T *&first, T *&last, T *node) {
   node->unknown10 = nullptr;
 }
 
+// Inferred helper: links a node at the end of a doubly linked list linked through unknown08 and unknown10; original name unknown.
+template <typename T> inline void unknown100(T *&first, T *&last, T *node) {
+  if (last == nullptr) {
+    first = node;
+    last = node;
+    node->unknown08 = nullptr;
+  } else {
+    last->unknown10 = node;
+    node->unknown08 = last;
+    last = node;
+  }
+  node->unknown10 = nullptr;
+}
+
 } // namespace ml

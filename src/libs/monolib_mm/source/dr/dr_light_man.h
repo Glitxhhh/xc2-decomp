@@ -66,7 +66,9 @@ public:
   u8 _110[0x120 - 0x110];
   mm::Col3 unknown120; // Inferred role: ambient color of the other buffer; original member name unknown.
   mm::Col3 unknown12c; // Inferred role: ambient color; original member name unknown.
-  u8 _138[0x160 - 0x138];
+  u8 _138[0x140 - 0x138];
+  mm::Col3 unknown140; // Inferred role: vector copied into the fog table by DrFogMan::calcTbl; original member name unknown.
+  u8 _14c[0x160 - 0x14c];
   f32 unknown160; // Inferred role: sun shadow strength; original member name unknown.
   u8 _164[0x168 - 0x164];
   u32 unknown168;         // Inferred role: stocked dir light count; original member name unknown.
@@ -92,6 +94,7 @@ static_assert(offsetof(DrLightMan, unknown108) == 0x108, "");
 static_assert(offsetof(DrLightMan, unknown10c) == 0x10c, "");
 static_assert(offsetof(DrLightMan, unknown120) == 0x120, "");
 static_assert(offsetof(DrLightMan, unknown16c) == 0x16c, "");
+static_assert(offsetof(DrLightMan, unknown140) == 0x140, "");
 static_assert(offsetof(DrLightMan, unknown12c) == 0x12c, "");
 static_assert(offsetof(DrLightMan, unknown160) == 0x160, "");
 static_assert(offsetof(DrLightMan, unknown168) == 0x168, "");

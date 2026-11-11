@@ -16,8 +16,8 @@ public:
   u8 _c0[0x170 - 0x0c0];
   f32 unknown170; // Inferred role: cloud density; original member name unknown.
   u8 _174[0x1d4 - 0x174];
-  f32 m_fogTbl[24]; // Name from CloudCalcParams::getFogTbl; original member name unknown.
-  u8 _234[0x420 - 0x234];
+  f32 m_fogTbl[27]; // Name from CloudCalcParams::getFogTbl; original member name unknown.
+  u8 _240[0x420 - 0x240];
   mm::Mat44 m_shadowMatrix[3]; // Name from CloudCalcParams::getShadowMatrix; original member name unknown.
   f32 m_shadowOfs[3];          // Name from CloudCalcParams::getShadowOfs; original member name unknown.
   f32 unknown4ec;              // Role unknown; original member name unknown.
