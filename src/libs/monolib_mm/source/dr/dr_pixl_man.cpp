@@ -9,7 +9,6 @@
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_pixl_deferred.h"
-#include "dr/dr_pixl_occ_query.cpp"
 #include "dr/dr_pixl_occ_query.h"
 #include "dr/dr_pixl_post_man.h"
 #include "dr/dr_pixl_post_parm.h"
@@ -878,3 +877,6 @@ DrPixlRenderTarget *DrPixlMan::getDiffIBLObj() {
 DrPixlRenderTarget *DrPixlMan::getBackFaceDepthTexture() const { return unknown7f0->unknown148; }
 
 } // namespace ml
+
+// The game builds these files in one unit with this one.
+#include "dr_pixl_occ_query.cpp"
