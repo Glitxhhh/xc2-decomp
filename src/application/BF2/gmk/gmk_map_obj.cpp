@@ -21,6 +21,14 @@ namespace gmk {
 template bool TGmkList<GmkMapObj, GmkMapObj::BdatInfo, 1330659661u, 3u, GmkMapObjGob>::initGmkBdatInfo(GmkMapObj::BdatInfo &, int &, const AGmkBase &);
 template bool TGmkList<GmkRoutedMapObj, GmkMapObj::BdatInfo, 1330662738u, 7u, GmkRouteGob>::initGmkBdatInfo(GmkMapObj::BdatInfo &, int &, const AGmkBase &);
 
+GmkMapObj::GmkMapObj() : unknown48(gf::INVALID_HANDLE) {
+  unknown54 = 0.0f;
+  unknown50 = true;
+  unknown51 = false;
+  unknown52 = false;
+  unknown58 = 0;
+}
+
 void GmkMapObj::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
   unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
   u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_U16);

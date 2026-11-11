@@ -56,6 +56,14 @@ SoundPack::SoundPack(SoundCategory category, mm::mtl::IAllocator *allocator, con
   unknown12c = ml::PathUtil::getNoPathExtName(name);
 }
 
+SoundPack::~SoundPack() {
+  stopAll();
+  m_source.clear();
+  unknown988.clear();
+  mm::mtl::safeRelease(unknown178);
+  SoundManager::get()->removePack(this);
+}
+
 void SoundPack::stopAll() {
   if (unknown178 != nullptr) {
     unknown178->stopAll();

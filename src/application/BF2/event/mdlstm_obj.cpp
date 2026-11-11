@@ -16,6 +16,9 @@ MdlstmObj::MdlstmObj()
     : unknown08(0), unknown0c(STATE_NONE), unknown10(0.0f), _98(0), _9c(0), _a0(0), _a4(false), _a5(false), _a8(0), _b0(nullptr), _b8(nullptr), _c0(nullptr), _c8(nullptr), _d0(nullptr),
       unknownd8(nullptr), unknowne0(nullptr) {}
 
+// The empty statement makes the body non-trivial, which keeps the vtable pointer stores of the original.
+MdlstmObj::~MdlstmObj() { ; }
+
 void MdlstmObj::destroy() { finishFree(); }
 
 void MdlstmObj::finishFree() {
