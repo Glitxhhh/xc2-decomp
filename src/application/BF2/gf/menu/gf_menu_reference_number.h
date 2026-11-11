@@ -13,6 +13,12 @@ public:
   // Inferred helper: sets the number; original name unknown.
   void unknown162(int number) { unknown0c = number; }
 
+  // Inferred helper: sets the min; original name unknown.
+  void unknown165(int min) { unknown10 = min; }
+
+  // Inferred helper: sets the max; original name unknown.
+  void unknown166(int max) { unknown14 = max; }
+
   int unknown0c; // Inferred role: number; original member name unknown.
   int unknown10; // Inferred role: min; original member name unknown.
   int unknown14; // Inferred role: max; original member name unknown.

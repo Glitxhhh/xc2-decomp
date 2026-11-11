@@ -286,6 +286,8 @@ public:
   static void placeObjectH(ui::UISelectObjList *list, const mm::Pnt<s16> &pos, u32 interval);
   static void placeObjectH(u32 handle, const char *format, u32 count, const mm::Pnt<s16> &pos, u32 interval);
   static void placeObjectHLeft(u32 handle, const char *format, u32 count, const mm::Pnt<s16> &pos, u32 interval);
+  static void placeObjectV(ui::UISelectObjList *list, const mm::Pnt<s16> &pos, u32 interval);
+  static void placeObjectV(u32 handle, const char *format, u32 count, const mm::Pnt<s16> &pos, u32 interval);
   static void placeObjectHRatio(u32 handle, u32 target, f32 ratio, s16 margin);
   static QuestID getCurrentQuest(u32 type);
   static bool getMenuFullOpenFlag();

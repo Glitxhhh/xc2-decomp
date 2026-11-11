@@ -36,6 +36,14 @@ struct LookParam {
 
 struct ItemGetParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
+
+  f32 radius;
+  f32 upper;
+  f32 lower;
 };
+
+static_assert(offsetof(ItemGetParam, upper) == 0x04, "");
+static_assert(offsetof(ItemGetParam, lower) == 0x08, "");
+static_assert(sizeof(ItemGetParam) == 0x0c, "");
 
 } // namespace gf
