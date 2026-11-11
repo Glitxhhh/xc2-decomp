@@ -101,10 +101,13 @@ struct unknown721 {
   u8 _00[0x34];
   u32 unknown34; // Inferred role: data offset; original member name unknown.
   s32 unknown38; // Inferred role: data size; original member name unknown.
-  u8 _3c[0x40 - 0x3c];
+  u16 unknown3c; // Inferred role: etc position index; original member name unknown.
+  u16 unknown3e; // Inferred role: flags; original member name unknown.
 };
 
 static_assert(offsetof(unknown721, unknown34) == 0x34, "");
+static_assert(offsetof(unknown721, unknown3c) == 0x3c, "");
+static_assert(offsetof(unknown721, unknown3e) == 0x3e, "");
 static_assert(offsetof(unknown721, unknown38) == 0x38, "");
 static_assert(sizeof(unknown721) == 0x40, "");
 

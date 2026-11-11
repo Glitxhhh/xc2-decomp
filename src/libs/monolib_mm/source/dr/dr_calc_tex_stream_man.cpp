@@ -304,5 +304,10 @@ bool DrCalcTexStreamMan::memTempCopy(u32 size) {
 
 } // namespace ml
 
+// The game compiles DrCalcStmWork and DrCalcStmListObj in this unit (their functions are interleaved with the DrCalcTexStreamMan ones from 0x71008b2c8c on):
+// release inlines DrCalcTexStreamMan::getCriticalSection and the destructor inlines releaseFreeObj and DrCalcStmWork::workRelease.
+#include "dr_calc_stm_list_obj.cpp"
+#include "dr_calc_stm_work.cpp"
+
 template mm::mtl::PtrSingleton<ml::DrCalcTexStreamMan>::~PtrSingleton();
 template void ml::DrResChankList<ml::DrCalcTexStmObj>::changeList(ml::DrCalcTexStmObj *first, ml::DrCalcTexStmObj *second);

@@ -795,6 +795,7 @@ public:
   void resetFurShaderRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes);
   void releaseMat();
   void initBaseMapMaterial(MdoWrkMatRes *&matRes, const u8 *data0, const u8 *data1, const u8 *data2, const u8 *data3, const u8 *data4, int count);
+  void initInstMapMaterial(MdoWrkMatRes *&matRes, const u8 *matData, const u8 *mdlData, const u8 *shaderData, const u8 *texData, int skipTexList);
   void resetBaseMapMaterial(MdoWrkMatRes *matRes, const u8 *matData, const u8 *mdlData, const u8 *vertexData, const u8 *shaderData, const u8 *texData, int skipTexList);
   void resetInstMapMaterial(MdoWrkMatRes *matRes, const u8 *matData, const u8 *mdlData, const u8 *shaderData, const u8 *texData, int skipTexList);
   void releaseBaseMapSeamMat(MdoWrkMatRes *matRes);
