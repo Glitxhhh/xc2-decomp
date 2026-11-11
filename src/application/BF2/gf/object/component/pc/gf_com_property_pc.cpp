@@ -9,6 +9,7 @@
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
 #include "gf/object/component/pc/gf_pc_agent.h" // IWYU pragma: keep
 #include "gf/object/component/pc/param/gf_pc_param.h"
+#include "mm_math/mm_quat.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/unique_ptr.h" // IWYU pragma: keep
 

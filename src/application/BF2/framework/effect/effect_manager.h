@@ -83,6 +83,7 @@ public:
     KizunaWork();
     ~KizunaWork();
     void term();
+    void init();
 
     f32 unknown00; // Inferred role: gravity; original member name unknown.
     u32 unknown04; // Inferred role: line level; original member name unknown.
@@ -132,6 +133,8 @@ public:
   EffectData *searchData(const char *name);
   void setMasterPause(bool isPause);
   bool isMasterPause() const;
+  void addCaster(EffectCasterBase *caster);
+  void removeCaster(EffectCasterBase *caster);
   EffectCasterSend *getCaster(EffectCasterBase *caster);
   void remove(EffectCasterBase *caster);
   void changeLayerCaster(EffectCasterBase *caster, u32 layer, u32 newLayer);
@@ -159,6 +162,7 @@ public:
   void kill(u32 handle);
   void remove(u32 handle);
   void dead(u32 handle);
+  u32 createKizunaLine();
   void destroyKizunaLine(u32 handle);
   void setDispAllKizunaLine(bool isDisp);
   void updateKizunaLine(u32 handle, const mm::Vec3 &start, const mm::Vec3 &end, u32 level);

@@ -1,9 +1,9 @@
 #include "gf/menu/gf_menu_model_view.h"
 
 #include "bdat.h"
-#include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/effect/effect_pack.h"
+#include "framework/effect/effect_point.h"
 #include "framework/reference_frame.h"
 #include "framework/resource/common_resource.h"
 #include "fw/fw_model_object.h"

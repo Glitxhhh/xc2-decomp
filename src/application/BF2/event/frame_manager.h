@@ -43,6 +43,9 @@ public:
     PAUSE_TYPE_UNKNOWN_11 = 11,                      // Inferred role: homura hikari ui; original name unknown.
     PAUSE_TYPE_UNKNOWN_12 = 12,                      // Inferred role: minigame; original name unknown.
     PAUSE_TYPE_UNKNOWN_13 = 13,                      // Inferred role: new game wait; original name unknown.
+    PAUSE_TYPE_UNKNOWN_14 = 14,                      // Inferred role: gf pause only while the stop3d display flag is set (PAUSE_PRESERVED_UNKNOWN_14 is its bit); original name unknown.
+    PAUSE_TYPE_UNKNOWN_15 = 15,                      // Inferred role: gf pause only while the stop3d display flag is set; original name unknown.
+    PAUSE_TYPE_UNKNOWN_16 = 16,                      // Inferred role: gf pause like the homura hikari ui; original name unknown.
     PAUSE_TYPE_UNKNOWN_17 = 17,                      // Inferred role: count; original name unknown.
     PAUSE_TYPE_UNKNOWN_17_2 = PAUSE_TYPE_UNKNOWN_17, // Inferred role: all; original name unknown.
   };

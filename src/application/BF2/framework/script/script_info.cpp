@@ -49,6 +49,17 @@ void ScriptInfo::relink() {
   unknown228 = STATE_UNKNOWN_1;
 }
 
+void ScriptInfo::execute() {
+  if (unknown08 == nullptr) {
+    return;
+  }
+  if (unknown228 == STATE_UNKNOWN_1) {
+    waitLoad();
+  } else if (unknown228 == STATE_UNKNOWN_2) {
+    update();
+  }
+}
+
 void ScriptInfo::start() {
   if ((unknown22c & FLAG_UNKNOWN_2) != 0) {
     return;
@@ -71,7 +82,7 @@ void ScriptInfo::waitLoad() {
       }
     }
 
-    unknown228 = static_cast<State>(2);
+    unknown228 = STATE_UNKNOWN_2;
   }
 }
 

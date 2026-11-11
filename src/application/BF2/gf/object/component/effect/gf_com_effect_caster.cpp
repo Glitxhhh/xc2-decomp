@@ -4,6 +4,7 @@
 #include "framework/effect/effect_clip.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/effect/effect_pack.h"
+#include "framework/effect/effect_point.h"
 #include "gf/asset/gf_asset_resource.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_weapon.h"

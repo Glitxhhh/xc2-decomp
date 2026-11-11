@@ -51,6 +51,7 @@ public:
   enum State {
     STATE_UNKNOWN_0 = 0, // Inferred role: empty; original name unknown.
     STATE_UNKNOWN_1 = 1, // Inferred role: loaded; original name unknown.
+    STATE_UNKNOWN_2 = 2, // Inferred role: running; original name unknown.
     STATE_UNKNOWN_3 = 3, // Inferred role: finish; original name unknown.
   };
 
@@ -67,6 +68,8 @@ public:
   void clear();
   void unlink();
   void relink();
+  void load(const mm::mtl::FixStr<256> &path, ml::FILE_PRIO priority);
+  void loadFromMemory(const mm::mtl::FixStr<256> &path, const char *data, size_t size);
   void start();
   void destroy();
   void execute();
@@ -115,6 +118,8 @@ public:
   bool isScriptLoaded(int type) const;
   bool isScriptFree(int type) const;
   void addEvent(IScriptEvent *event);
+  void makeFullPath(mm::mtl::FixStr<256> &path, const char *name);
+  void loadScriptFromMemory(int type, const char *name, const char *data, size_t size);
   void removeEvent(IScriptEvent *event);
   void loadScript(int type, const char *name, ml::FILE_PRIO priority);
   void notifyEvent(int type, ScriptEventParam::State state);

@@ -119,6 +119,15 @@ static_assert(offsetof(ReflectionValueBitset32, unknown78) == 0x78, "");
 
 class ReflectionValueEnum : public ReflectionValue {
 public:
+  ~ReflectionValueEnum() override {
+    while (!unknown78.empty()) {
+      ReflectionValueEnumElem *value = unknown78.begin().get();
+      unknown78.pop_front();
+      value->release();
+    }
+  }
+  void writeDefault(u8 *data) const override;
+
   mm::mtl::IntrusiveList<ReflectionValueEnumElem> unknown78; // Inferred role: elements; original member name unknown.
   int unknown90;                                             // Inferred role: default value; original member name unknown.
 };

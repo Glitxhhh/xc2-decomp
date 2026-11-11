@@ -4,9 +4,13 @@
 
 #include "event/copydata_manager.h"
 #include "event/cpu_manager.h"
+#include "event/cs_snd_manager.h"
 #include "event/manager.h"
+#include "event/movie_manager.h"
 #include "event/skip_manager.h"
+#include "event/voice_manager.h"
 #include "fw/fw_debug.h"
+#include "gf/gf_pause.h"
 #include "ml/dev_graph.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_pnt.h"
@@ -14,8 +18,15 @@
 
 namespace event {
 
-static constexpr u32 PAUSE_BITS_UNKNOWN_5108 = 0x13f4;    // Inferred role: pause bits acc frame; original name unknown.
-static constexpr u32 PAUSE_BITS_UNKNOWN_120842 = 0x1d80a; // Inferred role: pause bits stream stop; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_5108 = 0x13f4;                                           // Inferred role: pause bits acc frame; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_120842 = 0x1d80a;                                        // Inferred role: pause bits stream stop; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_129 = gf::PAUSE_BIT_UNKNOWN_0 | gf::PAUSE_BIT_UNKNOWN_7; // Inferred role: gf pause bits; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_141 =
+    gf::PAUSE_BIT_UNKNOWN_0 | gf::PAUSE_BIT_UNKNOWN_2 | gf::PAUSE_BIT_UNKNOWN_3 | gf::PAUSE_BIT_UNKNOWN_7; // Inferred role: gf pause bits; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_653 =
+    gf::PAUSE_BIT_UNKNOWN_0 | gf::PAUSE_BIT_UNKNOWN_2 | gf::PAUSE_BIT_UNKNOWN_3 | gf::PAUSE_BIT_UNKNOWN_7 | gf::PAUSE_BIT_UNKNOWN_9; // Inferred role: gf pause bits; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_124930 = 0x1e802;                                                                            // Inferred role: pause bits cs sound; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_124938 = 0x1e80a;                                                                            // Inferred role: pause bits voice; original name unknown.
 
 f32 FrameManager::getFrame() const { return m_frame; }
 
@@ -45,6 +56,53 @@ const FrameInfo &FrameManager::frameInfo() {
 }
 
 f32 FrameManager::getTotalFrame() const { return m_totalFrame; }
+
+void FrameManager::pause(PAUSE_TYPE type, bool isPause) {
+  u32 bit = 1u << type;
+  if (((unknown18 & bit) != 0) == isPause) {
+    return;
+  }
+  if (unknown20[type] != reinterpret_cast<gf::GF_PAUSE_HANDLE *>(-1)) {
+    gf::GfPause::destroyHandle(unknown20[type]);
+    unknown20[type] = reinterpret_cast<gf::GF_PAUSE_HANDLE *>(-1);
+  }
+  if (isPause) {
+    switch (type) {
+    case PAUSE_TYPE_UNKNOWN_1:
+      unknown20[type] = gf::GfPause::reqPause(PAUSE_BITS_UNKNOWN_653);
+      break;
+    case PAUSE_TYPE_UNKNOWN_3:
+      unknown20[type] = gf::GfPause::reqPause(PAUSE_BITS_UNKNOWN_129);
+      break;
+    case PAUSE_TYPE_UNKNOWN_11:
+    case PAUSE_TYPE_UNKNOWN_16:
+      unknown20[type] = gf::GfPause::reqPause(PAUSE_BITS_UNKNOWN_141);
+      break;
+    case PAUSE_TYPE_UNKNOWN_14:
+    case PAUSE_TYPE_UNKNOWN_15:
+      if (unknown14 & DISP_FLAG_UNKNOWN_4) {
+        unknown20[type] = gf::GfPause::reqPause(PAUSE_BITS_UNKNOWN_141);
+      }
+      break;
+    default:
+      break;
+    }
+    unknown18 |= bit;
+  } else {
+    unknown18 &= ~bit;
+  }
+  mm::mtl::Singleton<CsSndManager>::getPtr()->pause((unknown18 & PAUSE_BITS_UNKNOWN_124930) != 0);
+  mm::mtl::Singleton<VoiceManager>::getPtr()->pause((unknown18 & PAUSE_BITS_UNKNOWN_124938) != 0);
+  mm::mtl::Singleton<MovieManager>::getPtr()->pause((unknown18 & PAUSE_BITS_UNKNOWN_120842) != 0);
+  mm::mtl::Singleton<CpuManager>::getPtr()->pause(unknown18 != 0);
+  if (type == PAUSE_TYPE_UNKNOWN_1) {
+    if (isPause) {
+      unknown10 |= FLAG_UNKNOWN_10;
+    } else {
+      unknown10 |= FLAG_UNKNOWN_11;
+    }
+  }
+}
 
 void FrameManager::requestFrame(f32 frame) {
   unknown10 |= FLAG_UNKNOWN_7;

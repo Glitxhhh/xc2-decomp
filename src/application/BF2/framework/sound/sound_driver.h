@@ -33,6 +33,12 @@ static_assert(sizeof(SoundCategoryDebugInfo) == 0x30, "");
 struct SoundPlayInfo;
 struct SoundResult;
 struct UpdateInfo;
+
+enum SoundPriority : int {
+  SOUND_PRIORITY_UNKNOWN_254 = 254, // Inferred role: priority of the streams of the voice bank; original name unknown.
+  SOUND_PRIORITY_UNKNOWN_255 = 255, // Inferred role: priority of the streams of the bgm bank; original name unknown.
+};
+
 enum SoundCategory : int;
 enum SoundOutputType : int;
 

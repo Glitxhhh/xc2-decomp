@@ -12,6 +12,7 @@
 #include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_data.h"
 #include "framework/effect/effect_pack.h"
+#include "framework/effect/effect_point.h"
 #include "framework/effect/volume_fade_params.h"
 #include "framework/framework.h"
 #include "framework/memory/framework_memory.h"
@@ -51,6 +52,21 @@ struct unknown001 {
   f32 unknown18;      // Inferred role: view num; original member name unknown.
   f32 unknown1c;      // Inferred role: display threshold; original member name unknown.
 };
+
+// Inferred role: light parameter handed over by the effect system; original name unknown.
+struct unknown007 {
+  f32 unknown00;      // Inferred role: color intensity, ignored when -1.0 or less; original member name unknown.
+  f32 unknown04;      // Inferred role: size, ignored when -1.0 or less; original member name unknown.
+  mm::Col3 unknown08; // Inferred role: color; original member name unknown.
+  f32 unknown14;      // Inferred role: spot angle; original member name unknown.
+  f32 unknown18;      // Inferred role: spot value; original member name unknown.
+  f32 unknown1c;      // Inferred role: spot value; original member name unknown.
+  f32 unknown20;      // Inferred role: subtract threshold; original member name unknown.
+};
+
+static_assert(offsetof(unknown007, unknown08) == 0x08, "");
+static_assert(offsetof(unknown007, unknown14) == 0x14, "");
+static_assert(offsetof(unknown007, unknown20) == 0x20, "");
 
 } // namespace
 
@@ -126,6 +142,31 @@ void EffectManager::updateLayerPost(const UpdateInfo &info, u32 layers) {
   }
 }
 
+void EffectManager::updateLayer(const UpdateInfo &info, u32 layer) {
+  for (u32 i = 0; i < LAYER_MAX; i++) {
+    if (layer & (1 << i)) {
+      mm::mtl::IntrusiveList<EffectCasterSend> &casters = unknown48[i].unknown00;
+      for (mm::mtl::IntrusiveList<EffectCasterSend>::iterator it = casters.begin(); it != casters.end(); ++it) {
+        EffectCasterSend *send = it.get();
+        EffectCasterBase *caster = send->m_caster;
+        if (caster != nullptr && !caster->_40) {
+          if (send->unknown70 != nullptr) {
+            send->unknown70->update(info);
+          }
+          if (send->m_caster != nullptr) {
+            send->m_caster->unknown001(info);
+          }
+          if (send->unknown70 != nullptr) {
+            for (int j = 0; j < send->unknown70->getPointCount(); j++) {
+              send->unknown70->setDirty(j, true);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 void EffectManager::tail(const UpdateInfo &info, bool flag) {
   if (unknown2fd9) {
     efSystemEnd();
@@ -192,6 +233,18 @@ void EffectManager::setMasterPause(bool isPause) {
 }
 
 bool EffectManager::isMasterPause() const { return m_masterPause; }
+
+void EffectManager::removeCaster(EffectCasterBase *caster) {
+  mm::mtl::IntrusiveList<EffectCasterSend> &casters = unknown48[caster->unknown3c].unknown00;
+  for (mm::mtl::IntrusiveList<EffectCasterSend>::iterator it = casters.begin(); it != casters.end(); ++it) {
+    if (it.get()->m_caster == caster) {
+      remove(caster);
+      casters.erase(it);
+      delete it.get();
+      return;
+    }
+  }
+}
 
 EffectCasterSend *EffectManager::getCaster(EffectCasterBase *caster) {
   for (u32 i = 0; i < LAYER_MAX; i++) {
@@ -545,6 +598,17 @@ void EffectManager::setMatrix(u32 handle, const mm::Mat44 &matrix) {
   }
 }
 
+u32 EffectManager::createKizunaLine() {
+  for (u32 i = 1; i < unknown002; i++) {
+    if (unknown353e0[i].unknown459 == 0) {
+      unknown353e0[i].unknown459 = 1;
+      unknown353e0[i].init();
+      return i;
+    }
+  }
+  return 0;
+}
+
 void EffectManager::destroyKizunaLine(u32 handle) {
   if (handle != 0 && handle < unknown002) {
     unknown353e0[handle].unknown459 = 0;
@@ -791,6 +855,50 @@ void EffectManager::setLgtMatrix(u32 type, void *light, void *matrix) {
       case 2:
         static_cast<ml::DrLightObjSpt *>(light)->setMat(*static_cast<mm::Mat44 *>(matrix));
         break;
+      }
+    }
+  }
+}
+
+void EffectManager::setLgtParam(u32 type, void *light, void *param) {
+  if (Framework::get() != nullptr && light != nullptr && param != nullptr) {
+    ml::DrMan *drMan = ml::DrMan::getIns();
+    if (drMan != nullptr && drMan->unknown588 != nullptr) {
+      const unknown007 *lightParam = static_cast<const unknown007 *>(param);
+      switch (type) {
+      case 1: {
+        ml::DrLightObjPnt *pointLight = static_cast<ml::DrLightObjPnt *>(light);
+        if (lightParam->unknown00 > -1.0f) {
+          pointLight->unknowna4 = lightParam->unknown00;
+        }
+        pointLight->unknown90 = mm::Col3(lightParam->unknown08.r, lightParam->unknown08.g, lightParam->unknown08.b);
+        if (lightParam->unknown04 > -1.0f) {
+          pointLight->m_size = lightParam->unknown04;
+        }
+        pointLight->unknownb4[0] = lightParam->unknown1c;
+        break;
+      }
+      case 2: {
+        ml::DrLightObjSpt *spotLight = static_cast<ml::DrLightObjSpt *>(light);
+        if (lightParam->unknown00 > -1.0f) {
+          spotLight->unknownc8 = lightParam->unknown00;
+        }
+        spotLight->unknownb0 = mm::Col3(lightParam->unknown08.r, lightParam->unknown08.g, lightParam->unknown08.b);
+        if (lightParam->unknown04 > -1.0f) {
+          spotLight->m_size = lightParam->unknown04;
+        }
+        spotLight->unknownbc = lightParam->unknown14;
+        spotLight->unknowndc = lightParam->unknown1c;
+        spotLight->unknowne0 = lightParam->unknown18;
+        break;
+      }
+      default:
+        return;
+      }
+      if (lightParam->unknown20 > 0.0f) {
+        static_cast<ml::DrLightObj *>(light)->setSubtractOn(true);
+      } else {
+        static_cast<ml::DrLightObj *>(light)->setSubtractOn(false);
       }
     }
   }
