@@ -87,6 +87,14 @@ CriticalSection &getWaitingJobLock();
 
 class WorkCpu : public WorkObj, public mm::mtl::PtrSingleton<WorkCpu> {
 public:
+  // Inferred role: entry of the auto executed group list; original member names unknown.
+  struct AUTO_EXEC {
+    int unknown00; // Inferred role: group handle woken by beginUpdate; original member name unknown.
+    u32 unknown04; // Inferred role: sort key; original member name unknown.
+  };
+
+  WorkCpu(const char *name, WorkObj *parent);
+  static WorkCpu *create(WorkObj *parent);
   static bool isInitialized();
   static void stallRender();
   static bool isGotoEShop();
@@ -116,7 +124,7 @@ public:
   static void setThread(DO_THREAD thread);
   static DO_THREAD getThread();
   static u32 getEven();
-  static void runThread(CPUID cpu, unsigned int (*function)(void *, void *), void *argument, void *userData, const mm::Col3 *color, bool isDebug, WKCPU_SYNC sync);
+  static u32 runThread(CPUID cpu, unsigned int (*function)(void *, void *), void *argument, void *userData, const mm::Col3 *color, bool isDebug, WKCPU_SYNC sync);
   static bool isShutdown();
   static void entrySwap(IThreadValue *value);
   static void removeSwap(IThreadValue *value);
@@ -151,6 +159,17 @@ public:
   static u32 thForeground(void *argument, void *userData);
   static u32 thBackground(void *argument, void *userData);
   static u32 thSwap(void *argument, void *userData);
+  static u32 thRender(void *argument, void *userData);
+  static void resumeThread();
+  static int createGroupHandle(u32 count);
+  static bool entryJobThread(int handle, u32 (*function)(void *, void *), u32 priority, void *argument, void *userData, CPUID cpu, bool isDebug, bool isBackground);
+  static u32 getResult(int handle);
+  static void endFrame();
+  static void endRender();
+  void updateMessage();
+  static void swapBank();
+  static void beginFrame();
+  static void beginUpdate();
   static void setAfterUpdateRender(bool isAfterUpdateRender);
   static bool isHomeMenuEnable();
   static int reqHomeMenuDisable();
@@ -176,20 +195,26 @@ public:
   DO_THREAD m_thread;
   WorkCpuThread *unknown1740[3]; // Inferred role: cpu threads; original member name unknown.
   s32 unknown1758;               // Inferred role: render wakeup cpu; original member name unknown.
-  u8 _175c[0x1764 - 0x175c];
+  s32 unknown175c;               // Inferred role: swap wakeup cpu; original member name unknown.
+  bool unknown1760;              // Inferred role: rendering; original member name unknown.
+  u8 _1761[0x1764 - 0x1761];
   u32 m_even;
   u8 _1768[0x1798 - 0x1768];
-  TJOB *unknown1798; // Inferred role: last entered job; original member name unknown.
-  u8 _17a0[0x195c - 0x17a0];
-  u32 unknown195c;                                       // Inferred role: counter; original member name unknown.
+  TJOB *unknown1798;                             // Inferred role: last entered job; original member name unknown.
+  mm::mtl::FixedList<AUTO_EXEC, 32> unknown17a0; // Inferred role: auto executed groups; original member name unknown.
+  u32 unknown1958;
+  u32 unknown195c;
   mm::mtl::FixedList<IWorkEvent *, 32> unknown1960;      // Inferred role: shutdown force listeners; original member name unknown.
   mm::mtl::FixedList<IWorkBackground *, 32> unknown1ba0; // Inferred role: background listeners; original member name unknown.
   mm::mtl::FixedList<IWorkInfomation *, 32> unknown1de0; // Inferred role: system info listeners; original member name unknown.
   u64 unknown2020;                                       // Inferred role: main thread id; original member name unknown.
   u32 m_jobTrans[2];
-  u8 _2030[0x2034 - 0x2030];
-  f32 unknown2034; // Inferred role: all cost sec; original member name unknown.
-  u8 _2038[0x2048 - 0x2038];
+  f32 unknown2030;  // Inferred role: render cost sec; original member name unknown.
+  f32 unknown2034;  // Inferred role: all cost sec; original member name unknown.
+  f32 unknown2038;  // Inferred role: render tail cost sec; original member name unknown.
+  f32 unknown203c;  // Inferred role: update cost sec; original member name unknown.
+  bool unknown2040; // Inferred role: save finish message pending; original member name unknown.
+  u8 _2041[0x2048 - 0x2041];
   long unknown2048[5]; // Inferred role: begin clocks; original member name unknown.
   long m_tailStartClock;
   long m_tailEndClock;
@@ -209,6 +234,8 @@ static_assert(offsetof(WorkCpu, unknown1740) == 0x1740, "");
 static_assert(offsetof(WorkCpu, unknown1758) == 0x1758, "");
 static_assert(offsetof(WorkCpu, m_even) == 0x1764, "");
 static_assert(offsetof(WorkCpu, unknown1798) == 0x1798, "");
+static_assert(offsetof(WorkCpu, unknown17a0) == 0x17a0, "");
+static_assert(offsetof(WorkCpu, unknown1958) == 0x1958, "");
 static_assert(offsetof(WorkCpu, unknown195c) == 0x195c, "");
 static_assert(offsetof(WorkCpu, unknown1960) == 0x1960, "");
 static_assert(offsetof(WorkCpu, unknown1ba0) == 0x1ba0, "");

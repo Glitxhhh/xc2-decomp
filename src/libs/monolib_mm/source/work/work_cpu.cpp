@@ -2,11 +2,16 @@
 
 #include "ml/critical_section.h"
 #include "ml/dev_clock.h"
+#include "ml/dev_graph.h"
 #include "ml/fixed_size_alloc.h"
 #include "ml/reslist.h"
 #include "ml/thread_util.h"
 #include "ml/threadval.h"
+#include "ml/work_background.h"
+#include "ml/work_control.h"
 #include "ml/work_cpu_thread.h"
+#include "ml/work_root.h"
+#include "ml/work_util.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 
@@ -316,6 +321,223 @@ void WorkCpu::attachJobCol(const mm::Col3 &color) {
 s32 WorkCpu::getHeartBeatStall() { return _mlwcpu::s_cpuStall; }
 
 void WorkCpu::clrHeartBeatStall() { _mlwcpu::s_cpuStall = 0; }
+
+u32 WorkCpu::thRender(void *argument, void *userData) {
+  WorkCpu *cpu = static_cast<WorkCpu *>(argument);
+  if ((cpu->unknown1b0 & 0x10) != 0) {
+    long clock;
+    DevClock::getClockNow(clock);
+    f32 time;
+    for (;;) {
+      if ((cpu->unknown1b0 & 0x20) != 0) {
+        break;
+      }
+      DevClock::getTimeNow(time, clock);
+      if (time > 0.1f) {
+        break;
+      }
+    }
+  }
+  cpu->unknown1760 = true;
+  long clock;
+  DevClock::getClockNow(clock);
+  WorkRootState::renderWork();
+  DevClock::getTimeNow(cpu->unknown2030, clock);
+  cpu->unknown1760 = false;
+  return 0;
+}
+
+void WorkCpu::resumeThread() {
+  WorkCpu *cpu = get();
+  if (cpu != nullptr && getCurrentCPUID() == CPUID_CORE_0) {
+    for (u32 i = 1; i < cpu->m_cpuNum; i++) {
+      cpu->unknown1740[i]->setEvent(true);
+    }
+  }
+}
+
+void WorkCpu::swapBank() {
+  CS lock(_mlwcpu::getSwapLock());
+  WorkCpu *cpu = get();
+  cpu->m_even = cpu->m_even == 0;
+  if (cpu->unknown175c != -1) {
+    wakeup(cpu->unknown175c);
+    sync(cpu->unknown175c, WKCPU_SYNC_NONE, CPUID_ANY);
+  }
+}
+
+void WorkCpu::beginFrame() {
+  WorkCpu *cpu = get();
+  if (cpu == nullptr) {
+    return;
+  }
+  cpu->m_jobTrans[cpu->m_even] = 0;
+  if ((cpu->unknown1b0 & 0x2) == 0) {
+    if (!_mlwcpu::s_bStallRender) {
+      DevGraph::cmdExecDisplayList();
+    }
+  } else if (_mlwcpu::s_bBackGround && !_mlwcpu::s_bStallRender) {
+    DevGraph::cmdExecDisplayList();
+  }
+  DevClock::getClockNow(cpu->unknown2048[0]);
+  for (u32 i = 0; i < get()->m_cpuNum; i++) {
+    WorkCpuThread *thread = cpu->unknown1740[i];
+    if (thread != nullptr) {
+      thread->unknown1e0 = 0.0f;
+      DevClock::getClockNow(thread->unknown1d0);
+      thread->unknown1d8 = thread->unknown1d0;
+    }
+  }
+  DevGraph::cb(RCB_UNKNOWN_0);
+}
+
+void WorkCpu::beginUpdate() {
+  WorkCpu *cpu = get();
+  if (cpu != nullptr) {
+    for (mm::mtl::FixedList<AUTO_EXEC, 32>::iterator it = cpu->unknown17a0.begin(); it != cpu->unknown17a0.end(); ++it) {
+      wakeup((*it).unknown00);
+    }
+  }
+}
+
+void WorkCpu::endRender() {
+  WorkCpu *cpu = get();
+  if (cpu == nullptr) {
+    return;
+  }
+  if (!WorkRoot::isErrorStop()) {
+    if (cpu->unknown1758 != -1 && (cpu->unknown1b0 & 0x2) == 0) {
+      sync(cpu->unknown1758, WKCPU_SYNC_NONE, CPUID_ANY);
+    }
+    if (!WorkRoot::isErrorStop()) {
+      DevGraph::cb(RCB_UNKNOWN_4);
+      if (!WorkRoot::isErrorStop()) {
+        for (mm::mtl::FixedList<AUTO_EXEC, 32>::iterator it = cpu->unknown17a0.begin(); it != cpu->unknown17a0.end(); ++it) {
+          sync((*it).unknown00, WKCPU_SYNC_NONE, CPUID_ANY);
+        }
+      }
+    }
+  }
+  bool isBusy;
+  do {
+    isBusy = false;
+    for (u32 i = 0; i < get()->m_cpuNum; i++) {
+      WorkCpuThread *thread = cpu->unknown1740[i];
+      if (thread != nullptr && thread->getJobNum() != 0) {
+        resumeThread();
+        isBusy = true;
+      }
+    }
+  } while (isBusy);
+  DevClock::getClockNow(cpu->unknown2048[1]);
+}
+
+void WorkCpu::endFrame() {
+  WorkCpu *cpu = get();
+  if (cpu != nullptr && DevClock::get() != nullptr) {
+    DevClock::getClockNow(cpu->unknown2048[2]);
+    DevClock::getTimeNow(cpu->unknown2038, cpu->unknown2048[1]);
+    DevClock::getTimeNow(cpu->unknown203c, cpu->unknown2048[0]);
+    for (u32 i = 0; i < get()->m_cpuNum; i++) {
+      WorkCpuThread *thread = cpu->unknown1740[i];
+      if (thread != nullptr) {
+        thread->calcPerformance(true);
+      }
+    }
+    if (!WorkRoot::isErrorStop()) {
+      if (WorkRootState::isThreadRender()) {
+        swapBank();
+      }
+      if (!isShutdown() && !_mlwcpu::s_bStallRender) {
+        DevGraph::renderSync();
+      }
+    }
+    cpu->unknown1b0 &= ~0x20;
+    get()->unknown1738 = get()->m_thread;
+    DevClock::getClockNow(cpu->unknown2048[3]);
+    DevGraph::cb(RCB_UNKNOWN_3);
+    WorkControl::endFrame();
+    DevClock::getTimeNow(cpu->unknown2034, cpu->unknown2048[0]);
+    cpu->unknown2048[4] = cpu->unknown2048[0];
+    cpu->m_tailStartClock = cpu->unknown2048[1];
+    cpu->m_tailEndClock = cpu->unknown2048[2];
+    cpu->m_syncClock = cpu->unknown2048[3];
+    cpu->unknown195c++;
+    cpu->unknown2090++;
+    cpu->updateMessage();
+    DevClock::getClockNow(_mlwcpu::s_aHearBeat[0]);
+  }
+}
+
+void WorkCpu::entrySwap(IThreadValue *value) {
+  CS lock(_mlwcpu::getSwapLock());
+  WorkCpu *cpu = get();
+  value->tvSwap();
+  u32 index = 0;
+  u32 minSize = 0xfffff;
+  u32 cpuNum = get()->m_cpuNum;
+  for (u32 i = 0; i < cpuNum; i++) {
+    u32 size = cpu->unknown1c0[i].size();
+    if (minSize > size) {
+      index = i;
+      minSize = size;
+    }
+  }
+  value->setCpuBank(index);
+  cpu->unknown1c0[index].push_back(value);
+}
+
+u32 WorkCpu::runThread(CPUID cpu, u32 (*function)(void *, void *), void *argument, void *userData, const mm::Col3 *color, bool isDebug, WKCPU_SYNC sync) {
+  WorkCpu *instance = get();
+  if (instance != nullptr && (instance->unknown1b0 & 0x2) != 0 && getRenderCPUID() == cpu) {
+    return 0;
+  }
+
+  CPUID current = getCurrentCPUID();
+  if (current != cpu) {
+    int handle = createGroupHandle(1);
+    entryJobThread(handle, function, 0, argument, userData, cpu, isDebug, true);
+    if (current == CPUID_ANY) {
+      if (color != nullptr) {
+        attachJobCol(*color);
+      }
+      wakeup(handle);
+      WorkCpu::sync(handle, sync, CPUID_ANY);
+    } else {
+      if (color != nullptr) {
+        attachJobCol(*color);
+      }
+      wakeup(handle);
+      WorkCpu::sync(handle, sync, cpu);
+    }
+    u32 result = getResult(handle);
+    releaseGroupHandle(handle);
+    return result;
+  }
+
+  return function(argument, userData);
+}
+
+void WorkCpu::setBackground(bool isBackground) {
+  if (_mlwcpu::s_bBackGround != isBackground) {
+    _mlwcpu::s_bBackGround = isBackground;
+    WorkCpu *cpu = get();
+    if (cpu != nullptr) {
+      CS lock(_mlwcpu::getListenerLock());
+      if (isBackground) {
+        for (mm::mtl::FixedList<IWorkBackground *, 32>::iterator it = cpu->unknown1ba0.begin(); it != cpu->unknown1ba0.end(); ++it) {
+          (*it)->bkgHomeMenu(true);
+        }
+      } else {
+        for (mm::mtl::FixedList<IWorkBackground *, 32>::iterator it = cpu->unknown1ba0.begin(); it != cpu->unknown1ba0.end(); ++it) {
+          (*it)->bkgHomeMenu(false);
+        }
+      }
+    }
+  }
+}
+
+WorkCpu *WorkCpu::create(WorkObj *parent) { return WorkUtil::createWork<WorkCpu>("WorkCpu", parent, false); }
 
 template class reslist<IThreadValue *>;
 template class reslist<TJOB *>;

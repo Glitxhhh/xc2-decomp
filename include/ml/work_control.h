@@ -36,6 +36,7 @@ public:
   static bool setFlowSystemPause(u32 wid);
   static bool setFlowShutdownAll(bool);
   static void pause(bool isPause, const char *name);
+  static void endFrame();
   static bool hasFlow();
   static CriticalSection &getCriticalSection();
 

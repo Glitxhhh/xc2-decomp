@@ -21,6 +21,7 @@ public:
   ~Device() override {}
   bool wkStandbyLogout() override;
   static bool isAllReady();
+  static bool isColdStartReady();
   static void createPort(const char *name);
   static void removeSubCpuUpdate(void (*update)(void *));
   static void updateSubCpu();
