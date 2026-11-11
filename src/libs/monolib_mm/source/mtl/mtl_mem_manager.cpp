@@ -6,6 +6,7 @@
 
 #include "ml/critical_section.h"
 #include "ml/stack_trace.h"
+#include "mm/mm_std_base.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixed_vector.h" // IWYU pragma: keep
@@ -876,7 +877,9 @@ template <int N> void AssetAllocator<N>::create(void *buffer, size_t size, const
   m_name = name != nullptr ? name : "no name";
   unknown30.clear();
   unknown8860.clear();
-  SMemChunk chunk = {nullptr, 0, 0, 0, static_cast<int>(unknown110a8)};
+  SMemChunk chunk;
+  chunk.unknown0c = 0;
+  chunk.unknown10 = unknown110a8;
   unknown30.push_back(chunk);
 }
 
@@ -891,6 +894,20 @@ template <int N> void AssetAllocator<N>::destroy() {
 template <int N> AllocatorType AssetAllocator<N>::getType() const { return ALLOCATOR_TYPE_UNKNOWN_2; }
 
 template <int N> void *AssetAllocator<N>::allocate(size_t size, size_t alignment) { return allocate(size, alignment, "", 0); }
+
+template <int N> void AssetAllocator<N>::deallocate(void *pointer, size_t size) {
+  if (pointer != nullptr) {
+    SMemChunk chunk;
+    chunk.unknown0c = (reinterpret_cast<size_t>(pointer) - reinterpret_cast<size_t>(unknown11090)) / unknown110a0;
+    typename mm::mtl::FixedList<SMemChunk, N>::iterator it = mm::mtl::find(unknown8860.begin(), unknown8860.end(), chunk);
+    if (unknown8860.end() != it) {
+      chunk = *it;
+      unknown8860.erase(it);
+      MM_VERIFY(mm::mtl::find(unknown8860.begin(), unknown8860.end(), chunk));
+      merge(pointer, chunk);
+    }
+  }
+}
 
 template <int N> void *AssetAllocator<N>::reallocate(void *pointer, size_t size) { return nullptr; }
 

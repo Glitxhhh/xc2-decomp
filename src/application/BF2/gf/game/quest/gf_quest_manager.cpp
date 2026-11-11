@@ -15,6 +15,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/scom/gf_scom_achiev.h"
+#include "mm/mm_std_base.h"
 #include "mm_mtl/algorithm.h"
 
 namespace gf {
@@ -110,6 +111,14 @@ void GfQuestManager::destroyEvent() {
   while (!unknown2e788.empty()) {
     delete unknown2e788.front();
     unknown2e788.pop_front();
+  }
+}
+
+void GfQuestManager::addEvent(IQuestEvent *event) {
+  GfQuestManager *manager = get();
+  if (manager != nullptr) {
+    MM_VERIFY(manager->unknown08.find(event));
+    manager->unknown08.push(event);
   }
 }
 

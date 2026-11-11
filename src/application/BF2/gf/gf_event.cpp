@@ -1,6 +1,7 @@
 #include "gf/event/gf_event.h"
 
 #include "gf/gf_allocator.h"
+#include "mm/mm_std_base.h"
 
 namespace gf {
 
@@ -25,6 +26,12 @@ void GfEvent::destroy() {
 void GfEvent::finalize() { unknown118 = false; }
 
 bool GfEvent::isInitialized() { return get() != nullptr && get()->unknown118; }
+
+void GfEvent::addEventCallback(IGfEvent *event) {
+  GfEvent *gfEvent = get();
+  MM_VERIFY(gfEvent->unknown08.find(event));
+  gfEvent->unknown08.push(event);
+}
 
 void GfEvent::removeEventCallback(IGfEvent *event) {
   GfEvent *gfEvent = get();

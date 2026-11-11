@@ -20,6 +20,13 @@ public:
     int unknown0c;         // Inferred role: index of the first block of the chunk; original member name unknown.
     int unknown10;         // Inferred role: number of blocks of the chunk; original member name unknown.
 
+    // Evidence: allocate_tail stores 0xffffffff in unknown0c and zeros in the other fields of its chunk before the search loop
+    // (0x71007855f0 to 0x7100785610 in the game); deallocate only keeps the zero stores, it sets unknown0c right away.
+    SMemChunk() : unknown00(nullptr), unknown08(0), unknown0a(0), unknown0c(-1), unknown10(0) {}
+
+    // Inferred role: chunks are the same when they start at the same block; original form unknown.
+    bool operator==(const SMemChunk &other) const { return unknown0c == other.unknown0c; }
+
     // Inferred role: order of the free chunks, by index of the first block; original form unknown.
     bool operator<(const SMemChunk &other) const { return unknown0c < other.unknown0c; }
   };
