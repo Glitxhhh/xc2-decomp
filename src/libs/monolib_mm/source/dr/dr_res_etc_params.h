@@ -5,6 +5,9 @@
 
 namespace ml {
 
+class DrResMdoMeshObj;
+struct MdoWrkVanishEffect;
+
 class DrResEtcParams {
 public:
   DrResEtcParams();
@@ -35,6 +38,17 @@ struct unknown040 {
 
 static_assert(sizeof(unknown040) == 0x10, "");
 
+struct MdsEtcParamsCallBack {
+  u16 unknown00; // Inferred role: index into the callback table; original member name unknown.
+  u16 unknown02; // Inferred role: param index; original member name unknown.
+  u32 unknown04; // Inferred role: mesh parts index; original member name unknown.
+  u8 _08[0x14 - 0x08];
+};
+
+static_assert(offsetof(MdsEtcParamsCallBack, unknown02) == 0x02, "");
+static_assert(offsetof(MdsEtcParamsCallBack, unknown04) == 0x04, "");
+static_assert(sizeof(MdsEtcParamsCallBack) == 0x14, "");
+
 class DrResEtcPamObj {
 public:
   // Inferred role: model resource header; original type name unknown.
@@ -51,9 +65,16 @@ public:
     u32 unknown10; // Inferred role: offset of the initial values; original member name unknown.
   };
 
+  struct wrkCallbackArg {
+    DrResMdoMeshObj *unknown00;    // Inferred role: mesh parts; original member name unknown.
+    MdoWrkVanishEffect *unknown08; // Inferred role: vanish effects; original member name unknown.
+  };
+
   ~DrResEtcPamObj();
   int setup(const u8 *data, u8 *work);
   void update();
+  void mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg);
+  void mdonode_etcpam_volfadeanm(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg);
   static int calcWorkSize(const u8 *data);
   static void release(DrResEtcPamObj *&obj);
 

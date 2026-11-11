@@ -3,6 +3,8 @@
 #include <new>
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_mat.h"
+#include "dr/dr_res_mdo_mesh_obj.h"
 
 namespace ml {
 
@@ -68,6 +70,37 @@ void DrResEtcParams::setInitParams(f32 value) {
 void DrResEtcPamObj::release(DrResEtcPamObj *&obj) {
   if (obj != nullptr) {
     obj = nullptr;
+  }
+}
+
+void DrResEtcPamObj::mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg) {
+  f32 value = 1.0f;
+  if (param->getParams() <= 0.5f) {
+    value = 0.0f;
+  }
+  DrResMdoMeshParts *parts = arg.unknown00->getParts(callback->unknown04);
+  parts->unknown34 = value;
+  parts->unknown2c[1] = value;
+  parts->unknown2c[0] = value;
+  parts->unknown28 &= ~6;
+}
+
+void DrResEtcPamObj::mdonode_etcpam_volfadeanm(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg) {
+  if ((unknown1c & 1) != 0) {
+    f32 value = param->getParams();
+    u32 index = arg.unknown00->getParts(callback->unknown04)->unknown3a * 3 + 2;
+    if (value <= 0.01f) {
+      arg.unknown08[index].unknowna4 = arg.unknown08[index].unknownd0;
+    } else if (value > 1.0f) {
+      arg.unknown08[index].unknowna4 = arg.unknown08[index].unknownd0 + 1.0f;
+    } else {
+      arg.unknown08[index].unknowna4 = value + arg.unknown08[index].unknownd0;
+    }
+    if (arg.unknown08[index].unknowna4 > 1.0f) {
+      arg.unknown08[index].unknowna4 = 1.0f;
+    } else if (arg.unknown08[index].unknowna4 < 0.0f) {
+      arg.unknown08[index].unknowna4 = 0.0f;
+    }
   }
 }
 

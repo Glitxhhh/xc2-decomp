@@ -523,12 +523,14 @@ static_assert(offsetof(MdoWrkMatRes, unknown178) == 0x178, "");
 struct MdoWrkVanishEffect {
   u8 _00[0xa4 - 0x00];
   f32 unknowna4; // Inferred role: ratio; original member name unknown.
-  u8 _a8[0xd4 - 0xa8];
+  u8 _a8[0xd0 - 0xa8];
+  f32 unknownd0; // Inferred role: base ratio; original member name unknown.
   u32 unknownd4; // Inferred role: flags; original member name unknown.
   u8 _d8[0xe0 - 0xd8];
 };
 
 static_assert(offsetof(MdoWrkVanishEffect, unknowna4) == 0xa4, "");
+static_assert(offsetof(MdoWrkVanishEffect, unknownd0) == 0xd0, "");
 static_assert(offsetof(MdoWrkVanishEffect, unknownd4) == 0xd4, "");
 static_assert(sizeof(MdoWrkVanishEffect) == 0xe0, "");
 
