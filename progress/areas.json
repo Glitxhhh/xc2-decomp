@@ -160,6 +160,14 @@
     }
   },
   {
+    "name": "minigame",
+    "code": {
+      "total": 70956,
+      "matching": 3592,
+      "non_matching": 0
+    }
+  },
+  {
     "name": "dir",
     "code": {
       "total": 3372,
@@ -172,14 +180,6 @@
     "code": {
       "total": 4044,
       "matching": 1444,
-      "non_matching": 0
-    }
-  },
-  {
-    "name": "minigame",
-    "code": {
-      "total": 70956,
-      "matching": 1108,
       "non_matching": 0
     }
   },
