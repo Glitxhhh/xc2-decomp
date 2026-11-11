@@ -58,6 +58,12 @@ public:
   bool seqSubMenuErrorOvdLastOne();
   bool seqSubMenuWaitLoadCustomize();
   bool seqSubMenuWaitEndCustomize();
+  bool seqConfirmRelease();
+  bool seqExecRelease();
+  bool seqSubMenuDrChange();
+  bool seqSubMenuConfSetRex();
+  bool seqSubMenuConfRemoveRex();
+  bool seqSubMenuOwnerChange();
 
   u8 _24[0x28 - 0x24];
   mm::mtl::ReferenceObject *unknown28;                // Inferred role: reference-counted object; type and original member name unknown.

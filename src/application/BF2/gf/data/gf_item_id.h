@@ -9,6 +9,7 @@ enum {
   ITEM_UNKNOWN_62D9 = 0x62d9, // Inferred role: item counted by GfPouchUtil::isExistOpenItem; original name unknown.
   ITEM_WP_UP_FIRST = 0x633d,
   ITEM_WP_UP_LAST = 0x633f,
+  ITEM_UNKNOWN_6340 = 0x6340, // Inferred role: item consumed by GfMenuObjBladeRelease::seqSubMenuDrChange when the owner of a blade changes; original name unknown.
   ITEM_CRYSTAL_WADATSUMI = 0xafcd,
   ITEM_CRYSTAL_SUZAKU = 0xafd1,
   ITEM_CRYSTAL_UNNAMED_RARE = 0xafd2,

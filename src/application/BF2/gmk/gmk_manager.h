@@ -261,6 +261,7 @@ bool isPlayerInDoor();
 gf::GF_OBJ_HANDLE *getPlayer();
 bool toScreenPos(mm::Vec2 &screenPos, const mm::Vec3 &position);
 AGmkBase *getBindedGmkInst(gf::GF_OBJ_HANDLE *handle);
+bool hasEyeBlink(const AGmkBase &gmk);
 GmkType getBindedGmkInstType(gf::GF_OBJ_HANDLE *handle);
 void setEventDisp(gf::GF_OBJ_HANDLE *handle, bool isDisp);
 bool getGobPosRot(mm::Vec3 &position, mm::Quat &rotation, gf::GF_OBJ_HANDLE *handle);

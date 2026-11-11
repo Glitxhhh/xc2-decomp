@@ -39,6 +39,7 @@ public:
   }
 
   void create(const CreateInfo &info);
+  void update(f32 deltaTime);
 
   CreateInfo unknown00;       // Inferred role: create info; original member name unknown.
   TFieldExecCmd<T> unknown20; // Inferred role: turn command; original member name unknown.

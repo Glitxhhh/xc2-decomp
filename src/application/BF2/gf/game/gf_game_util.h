@@ -20,6 +20,7 @@ enum {
 };
 
 struct GF_OBJ_HANDLE;
+struct GfItem;
 struct OwnerBonus;
 struct SDataBlade;
 struct SDataGame;
@@ -160,6 +161,7 @@ public:
   static bool isDispWorldMap(u32 map);
   static u32 getBladeOnBookedItem(u32 blade);
   static bool execActivateUnuseForBlade(u32 blade, bool isRelease);
+  static void execBoosterAddForReleaseBlade(mm::mtl::FixedVector<GfItem, 1024> &items, u32 blade);
   static bool execActivateMercenaryTeamForBlade(u32 blade);
   static bool execActivateReserverForBlade(u32 blade);
   static void execEquipMercenariesBlade(u32 driver, u32 blade);
