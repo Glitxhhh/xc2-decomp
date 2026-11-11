@@ -3,17 +3,22 @@
 #include <string.h>
 
 #include "gf/data/gf_data_save.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_pos_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/call/gf_menu_call_manager.h"
 #include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/gf_menu_str_linker.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
 #include "mm_math/mm_pnt.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/text/ui_tag_parser.h"
@@ -35,7 +40,8 @@ struct unknown002 {
 
 namespace gf {
 
-GfMenuObjBalloon::GfMenuObjBalloon(u32 handle) : GfMenuObject(handle), unknown28(0), unknown30(0), unknown38(nullptr), unknown40(nullptr), unknown78(this), unknown1d8(false), unknown1dc(0xffffffff) {
+GfMenuObjBalloon::GfMenuObjBalloon(u32 handle)
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown78(this), unknown1d8(false), unknown1dc(0xffffffff) {
   unknown60.assign(mm::mtl::IntrusivePtr<GfMenuReferenceItem>());
 }
 
@@ -237,6 +243,181 @@ void GfMenuObjBalloon::openEventSelectBox(GfMenuCallContext *context, const Open
     ui::EventData event;
     event.unknown00 = 0x105;
     event.unknown08 = id;
+    GfMenuObject::sendEvent(object, event, 0.0f);
+    ui::UIObjectAcc(object).setSuspend(false);
+  }
+}
+
+void GfMenuObjBalloon::AutoTalkListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case GfMenuTypes::unknown003_256: {
+    u32 text = event.unknown08;
+    ui::UIObjectAcc talk(acc.searchDuplicatedChild("LAY_auto_talk", event.unknown14));
+    if (talk.isValid()) {
+      {
+        ui::UIObjectAcc message(talk.unknown10, "TXT_auto_talk_msg");
+        GfMenuObject::setText(message.unknown10, text);
+      }
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "cmn_fade_emotion";
+      param.unknown58 = "fade_in";
+      GfMenuObjUtil::startCtrl(talk.unknown10, param, nullptr);
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_259: {
+    ui::UIObjectAcc talk(acc.searchDuplicatedChild("LAY_auto_talk", event.unknown14));
+    if (talk.isValid()) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "cmn_fade_emotion";
+      param.unknown58 = "fade_out";
+      param.unknown14 = 1;
+      GfMenuObjUtil::startCtrl(talk.unknown10, param, nullptr);
+      GfMenuObject::termCallContext(talk.unknown10);
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBalloon::EvSelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown0c = 0;
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      ui::UIObjectAcc select(unknown0c);
+      if (select.isValid()) {
+        GfMenuObject::enableInput(acc.unknown10);
+        GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
+        GfMenuObjOperationInfo::setGuideDisp(false);
+        GfMenuObjOperationInfo::setActionEnable(acc.unknown10, 1, false);
+      }
+    }
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    int previous = event.unknown0c;
+    ui::UIObjectAcc select(unknown0c);
+    if (index == 0xffffffff) {
+      select.setDispChild(false, "LAY_ev_select_cursor");
+    } else {
+      mm::mtl::FixStr<32> name;
+      unknown20->unknown30->setIndex(index);
+      if (previous != -1) {
+        name.format("TXT_ev_select_msg@%02d", previous + 1);
+        ui::UIObjectAcc message(select.unknown10, name.c_str());
+        message.loadDefColor();
+      }
+      name.format("TXT_ev_select_msg@%02d", index + 1);
+      ui::UIObjectAcc message(select.unknown10, name.c_str());
+      GfMenuObjUtil::setColMulandAdd(message.unknown10, "txt_normal");
+      select.setDispChild(true, "LAY_ev_select_cursor");
+      GfMenuObjOperationInfo::setActionEnable(acc.unknown10, 1, true);
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      int index = event.unknown08;
+      ui::UIObjectAcc select(unknown0c);
+      if (index != -1 && select.isValid()) {
+        GfMenuObject::addResultCallContext(select.unknown10, 2, event.unknown08);
+        GfMenuObject::disableInput(acc.unknown10);
+        GfMenuObjOperationInfo::close();
+        GfMenuObjUtil::playSECommonDecide();
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_256: {
+    int title = event.unknown08;
+    u64 params = event.unknown10_u64;
+    ui::UIObjectAcc select(acc.searchDuplicatedChild("LAY_ev_select", params >> 32));
+    if (select.isValid()) {
+      setupEvSelect(select.unknown10, title, params);
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "cmn_fade_emotion";
+      param.unknown58 = "fade_in";
+      param.unknown04 = 1;
+      int ctrl = GfMenuObjUtil::startCtrl(select.unknown10, param, nullptr);
+      GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+      GfMenuObject::disableInput(acc.unknown10);
+      if (unknown20->unknown28 != nullptr) {
+        unknown20->unknown28->release();
+        unknown20->unknown28 = nullptr;
+      }
+      if (unknown20->unknown30 != nullptr) {
+        unknown20->unknown30->release();
+        unknown20->unknown30 = nullptr;
+      }
+      {
+        ui::UISelectObjList::CreateParam createParam;
+        createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+        unknown20->unknown30 = ui::UISelectObjList::create(createParam);
+      }
+      unknown20->unknown30->pickupObject(select.unknown10, "LAY_ev_select_msg@%02d", 1);
+      ui::UICtrlCursorSelect::CursorSetting setting;
+      setting.setType(0);
+      setting.unknown18 = 0;
+      setting.unknown20 = false;
+      unknown20->unknown28 = ui::UICtrlCursorSelect::create(select.searchChild("LAY_ev_select_cursor"), setting, unknown20->unknown30);
+      GfMenuObject::setupInputSelection(acc.unknown10, -1, unknown20->unknown30->getSize());
+      unknown0c = select.unknown10;
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_259: {
+    ui::UIObjectAcc select(acc.searchDuplicatedChild("LAY_ev_select", event.unknown14));
+    if (select.isValid()) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x10000000;
+      param.unknown50 = "cmn_fade_emotion";
+      param.unknown58 = "fade_out";
+      param.unknown04 = 1;
+      param.unknown14 = 1;
+      GfMenuObjUtil::startCtrl(select.unknown10, param, nullptr);
+      if (select.unknown10 == unknown0c) {
+        GfMenuObject::disableInput(acc.unknown10);
+        unknown0c = 0;
+      }
+      GfMenuObject::termCallContext(select.unknown10);
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBalloon::openEventSelectMoney(GfMenuCallContext *context, const OpenSelectMoneyParam &param) {
+  if (GfMenuObjUtil::checkCCStart(context) && param.unknown10.size() != 0) {
+    u32 object = GfMenuObject::getAttachedObject(8);
+    if (param.unknown00 != nullptr && param.unknown08 != 0) {
+      GfMenuObject::registString(ui::UIStr(param.unknown00, param.unknown08));
+    }
+    if (context != nullptr) {
+      GfMenuObject::startCallContext(context, 8, object);
+    }
+    ui::EventData event;
+// __LINE__ must be 2741 as in the original file: it is the line argument of operator new.
+#line 2741
+    OpenSelectMoneyParam *copy = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) OpenSelectMoneyParam();
+    *copy = param;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    event.unknown08_u64 = reinterpret_cast<u64>(copy);
     GfMenuObject::sendEvent(object, event, 0.0f);
     ui::UIObjectAcc(object).setSuspend(false);
   }
