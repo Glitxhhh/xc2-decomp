@@ -20,6 +20,7 @@ public:
   DrIBLObj *createObj(const void *data);
   bool isValid() const;
   void releaseObj(DrIBLObj *obj);
+  void update();
   grlib::CGLibTextureBuffer *debug_getAlbedoTexture(u32 index) const;
   grlib::CGLibTextureBuffer *debug_getNormalTexture(u32 index) const;
 

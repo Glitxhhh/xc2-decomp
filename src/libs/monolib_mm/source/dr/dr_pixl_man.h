@@ -122,6 +122,7 @@ public:
   void setupCate(int cate);
   void delViewInfo(int index);
   void updateShadowDisplayList();
+  void beforUpdate(int view);
   DrPixlRenderTarget *getResponsiveAAMask();
   grlib::CGLibDepthTarget *getSeparateTransDepthObj();
   void afterUpdate(int loop);

@@ -84,6 +84,7 @@ public:
   void releaseAll();
   DrGlobalIBLPack *createObj(const void *data);
   void releaseObj(DrGlobalIBLPack *pack);
+  void update();
 
   DrMan *unknown00;        // Inferred role: dr man; original member name unknown.
   s32 unknown08;           // Inferred role: view index; original member name unknown.

@@ -3,6 +3,7 @@
 
 #include "dr/dr_mdl_obj.h"
 #include "dr/dr_res_mdo_inst_anm_obj.h"
+#include "mm_math/mm_mat44.h"
 #include "types.h"
 
 namespace grlib {
@@ -44,9 +45,8 @@ static_assert(offsetof(MdsPosRangeTreeData, unknown1e) == 0x1e, "");
 static_assert(sizeof(MdsPosRangeTreeData) == 0x20, "");
 
 struct MdsPosKeepData {
-  u8 _00[0x30 - 0x00];
-  f32 unknown30[3]; // Inferred role: lod position; original member name unknown.
-  u8 _3c[0x4c - 0x3c];
+  mm::Mat44 unknown00; // Inferred role: matrix; original member name unknown.
+  u8 _40[0x4c - 0x40];
   f32 unknown4c;    // Inferred role: clip radius; original member name unknown.
   f32 unknown50[3]; // Inferred role: clip center; original member name unknown.
   u32 unknown5c;    // Inferred role: lod range index; original member name unknown.
@@ -57,7 +57,6 @@ struct MdsPosKeepData {
   u8 _68[0x70 - 0x68];
 };
 
-static_assert(offsetof(MdsPosKeepData, unknown30) == 0x30, "");
 static_assert(offsetof(MdsPosKeepData, unknown4c) == 0x4c, "");
 static_assert(offsetof(MdsPosKeepData, unknown50) == 0x50, "");
 static_assert(offsetof(MdsPosKeepData, unknown5c) == 0x5c, "");

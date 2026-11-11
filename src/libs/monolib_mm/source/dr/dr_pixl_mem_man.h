@@ -10,22 +10,30 @@ class DrPixlMemMan : public mm::mtl::PtrSingleton<DrPixlMemMan> {
 public:
   // Inferred role: memory sizes of one resource category; original type name unknown.
   struct unknown001 {
-    u8 _000[0x1a4];
-    u32 unknown1a4[6]; // Inferred role: scale down target sizes of the tone map; original member name unknown.
-    u8 _1bc[0x210 - 0x1bc];
+    u8 _000[0x19c];
+    u32 unknown19c[6]; // Inferred role: scale down target sizes of the tone map; original member name unknown.
+    u8 _1b4[0x1e8 - 0x1b4];
+    u32 unknown1e8; // Inferred role: shadow cache objects memory offset; original member name unknown.
+    u32 unknown1ec; // Inferred role: shadow direction depth target memory offset; original member name unknown.
+    u32 unknown1f0; // Inferred role: memory size of one shadow cache object; original member name unknown.
+    u32 unknown1f4; // Inferred role: last shadow cache objects memory offset; original member name unknown.
+    u32 unknown1f8; // Inferred role: last shadow direction depth target memory offset; original member name unknown.
+    u32 unknown1fc; // Inferred role: memory size of one last shadow cache object; original member name unknown.
+    u8 _200[0x210 - 0x200];
   };
 
   DrPixlMemMan();
   virtual ~DrPixlMemMan();
   void setupMemBuff();
 
-  unknown001 unknown008[2]; // Inferred role: memory sizes per resource category; original member name unknown.
-  u8 _428[0x434 - 0x428];
+  u8 _008[0x010 - 0x008];
+  unknown001 unknown010[2]; // Inferred role: memory sizes per resource category; original member name unknown.
+  u8 _430[0x434 - 0x430];
   u32 unknown434; // Inferred role: mem1 alpha free; original member name unknown.
 };
 
 static_assert(sizeof(DrPixlMemMan::unknown001) == 0x210, "");
-static_assert(offsetof(DrPixlMemMan, unknown008) == 0x008, "");
+static_assert(offsetof(DrPixlMemMan, unknown010) == 0x010, "");
 static_assert(offsetof(DrPixlMemMan, unknown434) == 0x434, "");
 
 } // namespace ml

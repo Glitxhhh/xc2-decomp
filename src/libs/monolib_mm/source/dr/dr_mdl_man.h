@@ -64,7 +64,10 @@ public:
     bool unknown0c; // Inferred role: seam model updated; original member name unknown.
   };
 
+  void setupCate(int cate);
   void setupEnd();
+  void applyDispOff(u32 view);
+  void apply();
   void addMpfObj();
   void delMpfObj();
   void renderBegin();
@@ -116,7 +119,8 @@ public:
   DrResEtcUniformObj *unknown040; // Inferred role: etc uniform; original member name unknown.
   u8 _048[0x050 - 0x048];
   DrMdoZSortMan *unknown050[4]; // Inferred role: z sort men per category; original member name unknown.
-  u8 _070[0x0a8 - 0x070];
+  unknown004 unknown070[4];     // Inferred role: render flags per category; original member name unknown.
+  u8 _0a4[0x0a8 - 0x0a4];
   DrResChankList<DrMdlBase> unknown0a8[4]; // Inferred role: models per view; original member name unknown.
   DrResChankList<DrMdlBase> unknown0e8[2]; // Inferred role: models created per buffer; original member name unknown.
   u8 _108[0x148 - 0x108];
@@ -127,10 +131,10 @@ public:
   DrResChankList<DrStmReadObj> unknown1f8[2]; // Inferred role: stream read objects created per buffer; original member name unknown.
   DrMdoZSortMan *unknown218;                  // Inferred role: z sort man; original member name unknown.
   DrResChankList<DrMdlBase> *unknown220;      // Inferred role: model list; original member name unknown.
-  u8 _228[0x230 - 0x228];
-  unknown004 *unknown230; // Inferred role: current category render flags; original member name unknown.
-  u32 unknown238;         // Inferred role: cate; original member name unknown.
-  u32 unknown23c;         // Inferred role: groups disp; original member name unknown.
+  DrResChankList<DrGpuCheckObj> *unknown228;  // Inferred role: gpu check object list; original member name unknown.
+  unknown004 *unknown230;                     // Inferred role: current category render flags; original member name unknown.
+  u32 unknown238;                             // Inferred role: cate; original member name unknown.
+  u32 unknown23c;                             // Inferred role: groups disp; original member name unknown.
   u8 _240[0x248 - 0x240];
 };
 

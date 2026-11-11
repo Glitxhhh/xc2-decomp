@@ -3,7 +3,9 @@
 #include <string.h>
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_ctl_pos.h"
 #include "dr/dr_res_mdo_pos.h"
+#include "grlib/shd_util.h"
 #include "mm_math/mm_vec3.h"
 
 namespace ml {
@@ -315,6 +317,16 @@ void DrResMdoInstAnmObj::setupLink(DrResMdoPos *pos, int posStart, int posCount,
       pos[unknown08[index]->unknown18->unknown04].unknown18 = index;
     }
   }
+}
+
+void DrResMdoInstAnmObj::getUniformOldMat(f32 *work, const DrResMdoPos *pos, const mm::Mat44 &matrix) {
+  mm::Mat44 result;
+  if (pos->unknown1e & DrResMdoPos::FLAG_UNKNOWN_12) {
+    result.unknown009(unknown28[pos->unknown18].unknown110, matrix);
+  } else {
+    result.unknown009(pos->unknown08->unknown00, matrix);
+  }
+  grlib::ShdMat44TransposeMat44(work, result);
 }
 
 } // namespace ml

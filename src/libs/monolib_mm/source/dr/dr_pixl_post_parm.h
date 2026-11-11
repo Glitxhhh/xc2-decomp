@@ -341,7 +341,9 @@ public:
   u8 _1026[0x1027 - 0x1026];
   bool unknown1027; // Inferred role: debug deferred render; original member name unknown.
   bool unknown1028; // Inferred role: debug shadow cache render; original member name unknown.
-  u8 _1029[0x103c - 0x1029];
+  u8 _1029[0x102c - 0x1029];
+  f32 unknown102c; // Inferred role: debug shadow cache render grid count; original member name unknown.
+  u8 _1030[0x103c - 0x1030];
   bool unknown103c; // Inferred role: temporal shadow enable; original member name unknown.
   bool unknown103d; // Inferred role: temporal shadow history valid; original member name unknown.
   bool unknown103e; // Inferred role: char dir shadow; original member name unknown.
@@ -502,6 +504,7 @@ static_assert(offsetof(DrPixlPostParm, unknown1024) == 0x1024, "");
 static_assert(offsetof(DrPixlPostParm, unknown1025) == 0x1025, "");
 static_assert(offsetof(DrPixlPostParm, unknown1027) == 0x1027, "");
 static_assert(offsetof(DrPixlPostParm, unknown1028) == 0x1028, "");
+static_assert(offsetof(DrPixlPostParm, unknown102c) == 0x102c, "");
 static_assert(offsetof(DrPixlPostParm, unknown103c) == 0x103c, "");
 static_assert(offsetof(DrPixlPostParm, unknown103d) == 0x103d, "");
 static_assert(offsetof(DrPixlPostParm, unknown103e) == 0x103e, "");

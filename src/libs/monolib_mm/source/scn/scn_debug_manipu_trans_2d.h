@@ -31,11 +31,13 @@ public:
   void renderArrowAxisX(DebDraw *debDraw, s16 x, s16 y, int size, const mm::Col4 *color);
   void renderArrowAxisY(DebDraw *debDraw, s16 x, s16 y, int size, const mm::Col4 *color);
 
-  u64 unknown360; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s32 unknown360; // Inferred role: mouse drag x, cleared by the constructor; original member name unknown.
+  s32 unknown364; // Inferred role: mouse drag y, cleared by the constructor; original member name unknown.
   s32 unknown368; // Inferred role: unknown, 4 set by the constructor; original member name unknown.
 };
 
 static_assert(offsetof(ScnDebugManipuTrans2D, unknown360) == 0x360, "");
+static_assert(offsetof(ScnDebugManipuTrans2D, unknown364) == 0x364, "");
 static_assert(offsetof(ScnDebugManipuTrans2D, unknown368) == 0x368, "");
 
 } // namespace ml

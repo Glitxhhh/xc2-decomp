@@ -23,6 +23,7 @@ public:
   void renderDebugDir();
   void stockBegin();
   void stockEnd();
+  void update();
   void updateAfterPnt();
   void updateAfterSpt();
   void releaseFastLight();

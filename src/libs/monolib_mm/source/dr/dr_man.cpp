@@ -2,12 +2,17 @@
 
 #include <string.h>
 
+#include "cloud/cloud_man.h"
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_calc_gpu_cost.h"
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_tex_stream_man.h"
 #include "dr/dr_draw_callback.h"
+#include "dr/dr_environment_man.h"
+#include "dr/dr_fog_man.h"
+#include "dr/dr_global_ibl_man.h"
 #include "dr/dr_gpu_check_obj.h"
+#include "dr/dr_ibl_man.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_mdl_base.h"
 #include "dr/dr_mdl_man.h"
@@ -33,6 +38,7 @@
 #include "dr/dr_pixl_tile_parm.h"
 #include "dr/dr_res_chank_list.h"
 #include "dr/dr_res_etc_uniform_obj.h"
+#include "dr/dr_res_filter_data.h"
 #include "dr/dr_res_occ_uniform_obj.h"
 #include "dr/dr_shd_lgt_global_ibl.h"
 #include "dr/dr_shd_lgt_man.h"
@@ -584,6 +590,28 @@ void DrMan::setTimeVal(f32 timeVal) {
 
 void DrMan::setGroupsDisp(s32 group, bool disp) { unknown88->setGroupsDisp(group, disp); }
 
+void DrMdlMan::setupCate(int cate) {
+  unknown238 = cate;
+  unknown230 = &unknown070[cate];
+  unknown218 = unknown050[cate];
+  unknown220 = &unknown0a8[cate];
+  unknown228 = &unknown148[cate];
+  unknown030->unknown04 = cate;
+}
+
+void DrMdlMan::applyDispOff(u32 view) {
+  unknown230 = &unknown070[view];
+  unknown238 = view;
+  unknown220 = &unknown0a8[view];
+  unknown228 = &unknown148[view];
+  for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
+    mdl->noOffScreenUpdate();
+  }
+  for (DrGpuCheckObj *check = unknown228->unknown00; check != nullptr; check = check->unknown10) {
+    check->update();
+  }
+}
+
 void DrMdlMan::beginApply() {
   if (unknown020 != nullptr) {
     unknown020->begin();
@@ -687,10 +715,90 @@ void DrMan::bkgHomeMenu(bool isOpen) {
   }
 }
 
+void DrMan::end() {
+  if (unknown1e00 != nullptr) {
+    unknown1e00->end();
+  }
+  for (int i = 0; i < unknown658; i++) {
+    unknown5d8[i]->end();
+  }
+  endSetup();
+}
+
+void DrMan::endSetup() {
+  unknown1d8d = unknown1d8c;
+  unknown5b8 = unknown440;
+  unknown580 = unknowna0[0];
+  unknown1c98 = 0;
+  unknown588 = unknownc0[0];
+  unknown590 = unknowne0[0];
+  unknown598 = unknown100[0];
+  unknown78->setupCate(0);
+  unknown88->setupCate(0);
+  unknown80->setupCate(0);
+}
+
+void DrMan::applyView(int view) {
+  unknown5b8 = &unknown440[view];
+  unknown1c98 = view;
+  unknown660[view].unknown560 = view;
+  unknown660[view].unknown568 = unknown1d62;
+  unknown98->unknown100 = view;
+  unknown580 = unknowna0[view];
+  unknown588 = unknownc0[view];
+  unknown590 = unknowne0[view];
+  unknown598 = unknown100[view];
+  unknown5a0 = unknown140[view];
+  unknown5a8 = unknown160[view];
+  unknown88->setupCate(view);
+  unknown80->setupCate(view);
+  unknown78->setupCate(view);
+  unknown5c0->begin();
+  unknown78->updateShadowDisplayList();
+  unknown580->begin();
+  unknown588->stockBegin();
+  unknown588->update();
+  unknown590->update();
+  unknown598->update();
+  unknown98->update(view);
+  unknown5a0->update();
+  unknown5a8->update();
+  unknown80->beforeUpdateCate(view);
+  unknown590->calcTbl();
+  unknown78->beforUpdate(view);
+  for (int i = 0; i < unknown658; i++) {
+    unknown5d8[i]->apply(&unknown660[unknown1c98]);
+  }
+  unknown88->apply();
+  unknown588->stockEnd();
+  unknown80->updateCate(view);
+  unknown78->afterUpdate(view);
+  unknown580->end();
+}
+
+void DrMan::render(int loop) {
+  if (unknown1dbc != 0) {
+    return;
+  }
+  unknown180->begin(DrPixlTileParm::TILE_TYPE_UNKNOWN_0);
+  for (int view = 3; view >= 0; view--) {
+    if ((unknown440[view].unknown38 & 3) == 1) {
+      renderView(view);
+    }
+  }
+  for (int view = 3; view >= 0; view--) {
+    if ((unknown440[view].unknown38 & 3) == 3) {
+      renderView(view);
+    }
+  }
+  unknown120[unknown1c98]->resetWeatherFrame();
+  unknown78->setMainRenderTarget();
+  unknown180->end(DrPixlTileParm::TILE_TYPE_UNKNOWN_0);
+}
+
 } // namespace ml
 
 // The game compiles DrMdlObj::setDblBuffAlpha and DrMdlObj::setClipBoxMode in this unit (0x7ce29c and 0x7ce2b8 follow createInstantMdl, which inlines them).
 #include "dr_mdl_obj.cpp"
-
 // The game compiles DrMdoGrpObj in this unit too (0x7cf5e4 follows DrMdlObj::OnCloseAttriMenu): its create functions inline DrMan::getCriticalSection.
 #include "dr_mdo_grp_obj.cpp"

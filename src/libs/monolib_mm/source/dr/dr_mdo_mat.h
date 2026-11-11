@@ -200,7 +200,9 @@ struct unknown022 {
   u8 _04[0x1c - 0x04];
   u32 unknown1c; // Inferred role: mdl entry offset; original member name unknown.
   u32 unknown20; // Inferred role: mdl entry count; original member name unknown.
-  u8 _24[0x30 - 0x24];
+  u8 _24[0x28 - 0x24];
+  u32 unknown28; // Inferred role: offset of the node table; original member name unknown.
+  u8 _2c[0x30 - 0x2c];
   u32 unknown30; // Inferred role: offset of the second table; original member name unknown.
   s32 unknown34; // Inferred role: count of the second table; original member name unknown.
   u8 _38[0x64 - 0x38];
@@ -214,6 +216,7 @@ struct unknown022 {
 
 static_assert(offsetof(unknown022, unknown1c) == 0x1c, "");
 static_assert(offsetof(unknown022, unknown20) == 0x20, "");
+static_assert(offsetof(unknown022, unknown28) == 0x28, "");
 static_assert(offsetof(unknown022, unknown30) == 0x30, "");
 static_assert(offsetof(unknown022, unknown34) == 0x34, "");
 static_assert(offsetof(unknown022, unknown64) == 0x64, "");

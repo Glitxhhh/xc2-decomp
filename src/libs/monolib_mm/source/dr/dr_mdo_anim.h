@@ -4,6 +4,10 @@
 #include "dr/dr_mdo_mat.h"
 #include "types.h"
 
+namespace grlib {
+class CGLibEtcUniformBlock;
+} // namespace grlib
+
 namespace mm {
 struct Vec3;
 } // namespace mm
@@ -83,6 +87,23 @@ public:
   static void anmNodeParm_SclZ(mm::Vec3 *transform, f32 value);
 
   static void (*s_pCallAnim[])(DrResMdoMat *mat, f32 *work, f32 value);
+
+  u8 _16c[0x170 - 0x16c];
+  grlib::CGLibEtcUniformBlock *unknown170; // Inferred role: etc uniform; original member name unknown.
+  u8 unknown178;                           // Inferred role: setup flags; original member name unknown.
+  u8 unknown179;                           // Inferred role: seam flag; original member name unknown.
+  s16 unknown17a;                          // Inferred role: uniform index; original member name unknown.
+  s16 unknown17c;                          // Inferred role: material index; original member name unknown.
+  s16 unknown17e;                          // Inferred role: previous material index; original member name unknown.
+  s16 m_nodeMax;
+  u8 _182[0x190 - 0x182];
 };
+
+static_assert(offsetof(DrMdoAnim, unknown170) == 0x170, "");
+static_assert(offsetof(DrMdoAnim, unknown178) == 0x178, "");
+static_assert(offsetof(DrMdoAnim, unknown17a) == 0x17a, "");
+static_assert(offsetof(DrMdoAnim, unknown17c) == 0x17c, "");
+static_assert(offsetof(DrMdoAnim, m_nodeMax) == 0x180, "");
+static_assert(sizeof(DrMdoAnim) == 0x190, "");
 
 } // namespace ml

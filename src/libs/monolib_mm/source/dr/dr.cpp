@@ -1,3 +1,4 @@
+#include "dr_pixl_deferred.cpp"
 #include "dr_pixl_man.cpp"
 #include "dr_pixl_post_man.cpp"
 #include "dr_pixl_post_obj.cpp"
@@ -8,6 +9,7 @@
 #include "dr_pixl_post_parm.cpp"
 #include "dr_pixl_render_target.cpp"
 #include "dr_pixl_shadow_cache_man.cpp"
+#include "dr_pixl_shadow_cache_obj.cpp"
 #include "dr_pixl_shadow_man.cpp"
 #include "dr_pixl_sky_dome.cpp"
 #include "dr_pixl_tile_parm.cpp"

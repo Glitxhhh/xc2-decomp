@@ -82,14 +82,11 @@ public:
   static void waitWeightVtx();
   static void waitBeginWeightVtx();
 
-  s16 m_nodeMax;
-  u8 _182[0x190 - 0x182];
   DrResChkList *(*unknown190)[8]; // Inferred role: render list per mdl and render type; original member name unknown.
   DrResChkList *unknown198;       // Inferred role: render list entries; original member name unknown.
   s32 unknown1a0;                 // Inferred role: render list entry count; original member name unknown.
 };
 
-static_assert(offsetof(DrMdoCtl, m_nodeMax) == 0x180, "");
 static_assert(offsetof(DrMdoCtl, unknown190) == 0x190, "");
 static_assert(offsetof(DrMdoCtl, unknown198) == 0x198, "");
 static_assert(offsetof(DrMdoCtl, unknown1a0) == 0x1a0, "");
