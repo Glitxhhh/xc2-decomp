@@ -1081,14 +1081,15 @@ public:
   bool testSphere(const mm::Vec3 &center, f32 radius);
   bool testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 radius);
   bool testAaBb(const mm::Vec3 &max, const mm::Vec3 &min);
+  bool testCharColiObj(IDColiObj *object, f32 range);
   bool getAaBbPoliAaBb(mm::Vec3 &max, mm::Vec3 &min, const mm::Vec3 &inputMax, const mm::Vec3 &inputMin);
 
-  bool unknown00;         // Inferred role: test the character objects; original member name unknown.
-  bool unknown01;         // Inferred role: test the ground objects; original member name unknown.
-  bool unknown02;         // Inferred role: test the ground character objects; original member name unknown.
-  f32 unknown04;          // Inferred role: squared range of the inputs; original member name unknown.
-  unknown005 *unknown08;  // Inferred role: callback; original member name unknown.
-  IDColiResult unknown10; // Inferred role: collision result; original member name unknown.
+  bool unknown00;            // Inferred role: test the character objects; original member name unknown.
+  bool unknown01;            // Inferred role: test the ground objects; original member name unknown.
+  bool unknown02;            // Inferred role: test the ground character objects; original member name unknown.
+  f32 unknown04;             // Inferred role: squared range of the inputs; original member name unknown.
+  IDColiCallBack *unknown08; // Inferred role: callback; original member name unknown.
+  IDColiResult unknown10;    // Inferred role: collision result; original member name unknown.
 };
 
 static_assert(offsetof(IDColiDef, unknown04) == 0x4, "");
@@ -1103,14 +1104,15 @@ public:
   bool testRay(const mm::Vec3 &start, const mm::Vec3 &direction, f32 length, f32 backLength);
   bool testSphere(const mm::Vec3 &center, f32 radius);
   bool testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 radius);
+  bool testCharColiObj(IDColiObj *object, f32 range);
   bool testPhantomColiObj(IDColiObj *object, f32 range);
 
-  bool unknown00;         // Inferred role: unknown, initialized like IDColiDef::unknown00; original member name unknown.
-  bool unknown01;         // Inferred role: unknown, initialized like IDColiDef::unknown01; original member name unknown.
-  bool unknown02;         // Inferred role: unknown, initialized like IDColiDef::unknown02; original member name unknown.
-  f32 unknown04;          // Inferred role: squared range of the inputs; original member name unknown.
-  unknown005 *unknown08;  // Inferred role: callback; original member name unknown.
-  IDColiResult unknown10; // Inferred role: collision result; original member name unknown.
+  bool unknown00;            // Inferred role: unknown, initialized like IDColiDef::unknown00; original member name unknown.
+  bool unknown01;            // Inferred role: unknown, initialized like IDColiDef::unknown01; original member name unknown.
+  bool unknown02;            // Inferred role: unknown, initialized like IDColiDef::unknown02; original member name unknown.
+  f32 unknown04;             // Inferred role: squared range of the inputs; original member name unknown.
+  IDColiCallBack *unknown08; // Inferred role: callback; original member name unknown.
+  IDColiResult unknown10;    // Inferred role: collision result; original member name unknown.
 };
 
 static_assert(offsetof(IDColiPhantom, unknown04) == 0x4, "");
@@ -1126,12 +1128,12 @@ public:
   bool testSphere(const IDColiObj *object, const mm::Vec3 &center, f32 radius);
   bool testCapsule(const IDColiObj *object, const mm::Vec3 &start, const mm::Vec3 &end, f32 radius);
 
-  bool unknown00;         // Inferred role: unknown, initialized like IDColiDef::unknown00; original member name unknown.
-  bool unknown01;         // Inferred role: unknown, initialized like IDColiDef::unknown01; original member name unknown.
-  bool unknown02;         // Inferred role: unknown, initialized like IDColiDef::unknown02; original member name unknown.
-  f32 unknown04;          // Inferred role: squared range of the inputs; original member name unknown.
-  unknown005 *unknown08;  // Inferred role: callback; original member name unknown.
-  IDColiResult unknown10; // Inferred role: collision result; original member name unknown.
+  bool unknown00;            // Inferred role: unknown, initialized like IDColiDef::unknown00; original member name unknown.
+  bool unknown01;            // Inferred role: unknown, initialized like IDColiDef::unknown01; original member name unknown.
+  bool unknown02;            // Inferred role: unknown, initialized like IDColiDef::unknown02; original member name unknown.
+  f32 unknown04;             // Inferred role: squared range of the inputs; original member name unknown.
+  IDColiCallBack *unknown08; // Inferred role: callback; original member name unknown.
+  IDColiResult unknown10;    // Inferred role: collision result; original member name unknown.
 };
 
 static_assert(offsetof(IDColiCheckObj, unknown04) == 0x4, "");

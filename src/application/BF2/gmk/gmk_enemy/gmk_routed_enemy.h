@@ -47,7 +47,7 @@ public:
   static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_ENEMY; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkRoutedEnemy();
-  ~GmkRoutedEnemy() override;
+  ~GmkRoutedEnemy() override { dispose(); }
   GmkType getGmkType() const override;
   const IGmkList *getBindedRoutePointList() const override;
   bool isValid() const override;

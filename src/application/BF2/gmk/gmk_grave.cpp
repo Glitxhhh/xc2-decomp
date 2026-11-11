@@ -23,6 +23,11 @@ class GmkRoutedEnemy;
 
 GmkGrave::GmkGrave() : unknown48(false), unknown50(gf::unknown020), unknown58(), unknown98(false) {}
 
+void GmkGrave::dispose() {
+  disposeGobInst(false);
+  AGmkBase::dispose();
+}
+
 void GmkGrave::BdatInfo::create(u8 *bdat, int id, const AGmkBase &gmk) {
   dispose();
   unknown00 = Bdat::getValCheck(bdat, "en_popID", id, BDAT_TYPE_UNKNOWN_2);

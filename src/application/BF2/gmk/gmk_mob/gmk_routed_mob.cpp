@@ -1,6 +1,7 @@
 #include "gmk/gmk_mob/gmk_routed_mob.h"
 
 #include "gf/game/gf_game_manager.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
@@ -115,6 +116,18 @@ void GmkRoutedMob::dispose() {
 void GmkRoutedMob::disposeRouteNavis() {
   if (!unknown120.empty()) {
     unknown120.destroy();
+  }
+}
+
+void GmkRoutedMob::createRouteNavis(u32 num) {
+  disposeRouteNavis();
+  unknown120.setAllocator(gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0));
+  unknown120.reserve(num, 16);
+  unknown120.resize(num);
+  if (!unknown120.empty()) {
+    for (std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi> *it = unknown120.begin(); it != unknown120.end(); ++it) {
+      it->first = gf::unknown020;
+    }
   }
 }
 

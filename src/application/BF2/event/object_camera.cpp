@@ -1,9 +1,13 @@
 #include "event/object_camera.h"
 
+#include <math.h>
+
 #include "event/cam_hands.h"
 #include "event/cam_manager.h"
 #include "event/cam_motion.h"
 #include "event/cam_obj.h"
+#include "event/debug_manager.h"
+#include "event/frame_manager.h"
 #include "event/object_util.h"
 #include "event/seq_info.h"
 #include "event/seq_manager.h"
@@ -33,6 +37,14 @@ void ObjectCamera::end() {
 }
 
 void ObjectCamera::tail() { unknown68->tail(); }
+
+void ObjectCamera::update() {
+  const FrameInfo &info = mm::mtl::Singleton<FrameManager>::getPtr()->frameInfo();
+  unknown68->update(info);
+  if (unknown70 == 0 && mm::mtl::Singleton<DebugManager>::getPtr()->isSyncFreeCam() && mm::mtl::Singleton<CamManager>::getPtr()->isFreeCam()) {
+    updateSyncFreeCam();
+  }
+}
 
 void ObjectCamera::playMotion(const char *name, const mm::Vec3 &offset) { unknown68->activateMotion()->play(name, offset); }
 
@@ -102,6 +114,19 @@ void ObjectCamera::OnBouRender(const IBouCallback::RenderParam &param) {
     mm::Vec3 rot = unknown68->getRot();
     ObjectUtil::drawCameraInfo(x, 120, pos, target, rot, unknown68->getFov(), unknown68->isFocal());
   }
+}
+
+mm::Vec3 ObjectCamera::calcRot() const {
+  mm::Vec3 tar = getTar();
+  mm::Vec3 pos = getPos();
+  f32 dx = tar.x - pos.x;
+  f32 dy = tar.y - pos.y;
+  f32 dz = tar.z - pos.z;
+  mm::Vec3 rot;
+  rot.y = -atan2f(dx, -dz);
+  rot.x = atan2f(dy, sqrtf(dx * dx + dz * dz));
+  rot.z = unknown68->getRoll();
+  return rot;
 }
 
 } // namespace event

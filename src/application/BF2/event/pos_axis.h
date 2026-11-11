@@ -23,6 +23,7 @@ public:
   void set(u32 axis, const mm::Vec3 &pos);
   mm::Vec3 calcPos() const;
   mm::Mat44 calcOrigMat() const;
+  mm::Mat44 calcOrigMatInv() const;
   const char *getOrigName() const;
   u32 getAxis() const { return unknown08; }
   const mm::Vec3 &getPos() const { return unknown10; }

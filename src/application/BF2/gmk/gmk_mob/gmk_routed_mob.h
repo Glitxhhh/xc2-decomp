@@ -36,7 +36,7 @@ public:
   static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_MOB; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkRoutedMob();
-  ~GmkRoutedMob() override;
+  ~GmkRoutedMob() override { dispose(); }
   GmkType getGmkType() const override;
   const IGmkList *getBindedRoutePointList() const override;
   bool isValid() const override;

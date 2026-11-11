@@ -25,6 +25,7 @@ public:
   void set(u32 axis, const mm::Vec3 &tar);
   mm::Vec3 calcTar(const mm::Vec3 &pos) const;
   mm::Mat44 calcOrigMat() const;
+  mm::Mat44 calcOrigMatInv() const;
   const char *getOrigName() const;
   u32 getAxis() const { return unknown08; }
   const mm::Vec3 &getTar() const { return unknown10; }

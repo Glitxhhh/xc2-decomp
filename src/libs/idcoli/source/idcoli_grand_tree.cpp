@@ -234,7 +234,7 @@ bool IDColiGrandObj::coliCallCheck(unknown020 function) {
     for (ColiLinkList<IDColiTreeObj> *list = tree.unknown033(); list != nullptr; list = tree.unknown033()) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiGrdMoveObj *moveObj = reinterpret_cast<unknown006 *>(node)->unknown10;
-        unknown08->unknownf0 = reinterpret_cast<u64>(moveObj->unknown1b8);
+        unknown08->unknownf0 = moveObj->unknown1b8;
         if ((this->*function)(&moveObj->unknown100, &moveObj->unknown1a0)) {
           return true;
         }

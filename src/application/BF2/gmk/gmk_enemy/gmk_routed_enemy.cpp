@@ -1,6 +1,7 @@
 #include "gmk/gmk_enemy/gmk_routed_enemy.h"
 
 #include "gf/game/gf_game_manager.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/component/enemy/gf_behavior_enemy_field.h"
 #include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -70,6 +71,24 @@ bool GmkRoutedEnemy::PopXformFinder::onPopGob(gf::GF_OBJ_HANDLE *handle) const {
   }
   unknown08->bindRouteNavi(handle, *navi);
   return true;
+}
+
+void GmkRoutedEnemy::createRouteNavis(u32 num) {
+  disposeRouteNavis();
+  unknown1d8.setAllocator(gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0));
+  unknown1d8.reserve(num, 16);
+  unknown1d8.resize(num);
+  if (!unknown1d8.empty()) {
+    for (std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi> *it = unknown1d8.begin(); it != unknown1d8.end(); ++it) {
+      it->first = gf::unknown020;
+    }
+  }
+}
+
+void GmkRoutedEnemy::dispose() {
+  disposeRouteNavis();
+  unknown50.dispose();
+  AGmkBase::dispose();
 }
 
 void GmkRoutedEnemy::disposeRouteNavis() {
