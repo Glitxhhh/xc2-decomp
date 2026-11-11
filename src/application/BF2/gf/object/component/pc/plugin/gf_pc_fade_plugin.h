@@ -13,6 +13,7 @@ class RTTI;
 } // namespace mm
 
 namespace fw {
+class Reflection;
 struct UpdateInfo;
 } // namespace fw
 
@@ -20,6 +21,8 @@ namespace gf {
 namespace pc {
 
 struct FadeParam {
+  static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
+
   f32 fadeOutTime;
   f32 blackTime;
   f32 fadeTime;

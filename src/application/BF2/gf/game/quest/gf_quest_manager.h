@@ -159,7 +159,7 @@ public:
   static void resetBattleTaskForPlayerDead();
   void acceptOrder(QuestID quest);
   void addEntryQuest(QuestID quest);
-  static QuestID getCurrentQuestScenario();
+  QuestID getCurrentQuestScenario();
   static void setCurrentQuestForScenario();
   static void eventCheckTask(QuestID quest);
   static bool openOrder(QuestID quest, bool isEvent);

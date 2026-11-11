@@ -14,6 +14,8 @@ enum {
   DRIVER_SHIN_2 = 9,
   DRIVER_JIKU_HOOD = 10,
   DRIVER_REX_2 = 11,
+  DRIVER_UNKNOWN_12 = 12,
+  DRIVER_UNKNOWN_13 = 13,
 };
 
 enum {
@@ -32,9 +34,12 @@ enum {
   BLADE_WADATSUMI = 1014,
   BLADE_REAL_ALIAS_TARGET = 1022,
   BLADE_KOSMOS = 1039,
+  BLADE_UNKNOWN_1040 = 1040,
   BLADE_REAL_ALIAS = 1050,
   BLADE_UNKNOWN_1073 = 1073,
   BLADE_UNKNOWN_1074 = 1074, // Inferred role: Homuri loaded when GfDataBlade::isHomuriNameHikari; original name unknown.
+  BLADE_UNKNOWN_1078 = 1078,
+  BLADE_UNKNOWN_1079 = 1079,
 };
 
 } // namespace gf

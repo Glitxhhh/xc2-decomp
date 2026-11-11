@@ -1,14 +1,42 @@
 #include "gf/object/component/pc/plugin/gf_pc_lure_plugin.h"
 
+#include <math.h>
+
 #include "framework/object/updatable_object.h"
+#include "fw/fw_transform.h"
+#include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/gf_pc_state_util.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_util.h"
+#include "gf/param/access/gf_param_access.h"
+#include "mm_math/mm_quat.h"
+#include "mm_math/mm_vec3.h"
+#include "types.h"
 
 namespace gf {
-struct AccessParam;
+class GfObj;
 
 namespace pc {
+
+bool isActiveRangeLure(GfComPropertyPc &property, const AccessParam &param, GF_OBJ_HANDLE *target) {
+  bool isActive = false;
+  GfObj *obj = GfObjUtil::getObj(target);
+  if (obj != nullptr && GfObjUtil::getObjType(target) == OBJECT_TYPE_ENEMY) {
+    GfObjAcc acc(obj);
+    const mm::Vec3 &position = acc.getWorldTransform().unknown00;
+    mm::Vec3 center = property.unknown160 + property.unknown170.rotate(mm::Vec3::unitZ * param.offsetFront);
+    mm::Vec3 difference = position - center;
+    bool isInHeight = AccessParam::unknown001(difference.y, param.accessUpper, -param.accessDown);
+    s16 ownerBonus = GfGameManager::getOwnerBonus()->unknown00[OWNER_BONUS_UNKNOWN_11];
+    f32 radius = param.accessRadius + (ownerBonus >= 0 ? static_cast<f32>(ownerBonus < 10 ? ownerBonus : 10) : 0.0f);
+    bool isInRadius = sqrtf(difference.x * difference.x + 0.0f + difference.z * difference.z) < radius;
+    isActive = isInHeight && isInRadius;
+  }
+  return isActive;
+}
 
 LurePlugin::LurePlugin() : unknown10(INVALID_HANDLE), unknown20(nullptr) {}
 

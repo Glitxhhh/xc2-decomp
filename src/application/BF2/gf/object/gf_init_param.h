@@ -5,6 +5,7 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_manager.h"
 #include "mm_math/mm_vec3_na.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
@@ -30,6 +31,7 @@ enum unknown030 {
   unknown030_10 = 10,
   unknown030_11 = 11, // Inferred role: act viewer event; original name unknown.
   unknown030_12 = 12, // Inferred role: event npc; original name unknown.
+  unknown030_13 = 13,
 };
 
 inline bool isEventCharacter(u32 characterType) {
@@ -207,19 +209,30 @@ public:
   void setupForActViewer(u32 resource, const CBdatWrapper *bdat);
   void setupForActViewerEvent(u32 resource, const CBdatWrapper *bdat);
 
-  u8 _90[0x98 - 0x90];
-  u32 unknown98; // Inferred role: en param id; original member name unknown.
+  void *unknown90; // Role and original member name unknown.
+  u32 unknown98;   // Inferred role: en param id; original member name unknown.
   u32 m_enArrangeID;
   u32 m_bladeID;
-  u32 unknowna4; // Inferred role: resource id; original member name unknown.
-  u32 unknowna8; // Inferred role: blade flag; original member name unknown.
+  u32 unknowna4;      // Inferred role: resource id; original member name unknown.
+  u32 unknowna8;      // Inferred role: blade flag; original member name unknown.
+  u16 unknownac;      // Inferred role: level; original member name unknown.
+  s8 unknownae;       // Inferred role: level offset; original member name unknown.
+  u8 unknownaf;       // Role and original member name unknown.
+  GFATTACH unknownb0; // Inferred role: attach slot of the weapons; original member name unknown.
+  u8 _b4[0xc8 - 0xb4];
 };
 
+static_assert(offsetof(GfInitParamEnemy, unknown90) == 0x90, "");
 static_assert(offsetof(GfInitParamEnemy, unknown98) == 0x98, "");
 static_assert(offsetof(GfInitParamEnemy, m_enArrangeID) == 0x9c, "");
 static_assert(offsetof(GfInitParamEnemy, m_bladeID) == 0xa0, "");
 static_assert(offsetof(GfInitParamEnemy, unknowna4) == 0xa4, "");
 static_assert(offsetof(GfInitParamEnemy, unknowna8) == 0xa8, "");
+static_assert(offsetof(GfInitParamEnemy, unknownac) == 0xac, "");
+static_assert(offsetof(GfInitParamEnemy, unknownae) == 0xae, "");
+static_assert(offsetof(GfInitParamEnemy, unknownaf) == 0xaf, "");
+static_assert(offsetof(GfInitParamEnemy, unknownb0) == 0xb0, "");
+static_assert(sizeof(GfInitParamEnemy) == 0xc8, "");
 
 class GfInitParamNpc : public GfInitParam {
 public:
@@ -323,10 +336,15 @@ public:
   u8 _90[0x98 - 0x90];
   GfAppend unknown98; // Inferred role: append; original member name unknown.
   u32 m_enArrangeID;
+  u8 _124[0x128 - 0x124];
+  GF_OBJ_HANDLE *unknown128; // Inferred role: owner handle passed to GfAppendUtil::setupEnemy; original member name unknown.
+  GFATTACH unknown130;       // Inferred role: attach slot; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParamEnWeapon, unknown98) == 0x98, "");
 static_assert(offsetof(GfInitParamEnWeapon, m_enArrangeID) == 0x120, "");
+static_assert(offsetof(GfInitParamEnWeapon, unknown128) == 0x128, "");
+static_assert(offsetof(GfInitParamEnWeapon, unknown130) == 0x130, "");
 
 class GfInitParamBelonging : public GfInitParam {
 public:

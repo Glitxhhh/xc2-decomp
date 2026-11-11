@@ -23,8 +23,8 @@ public:
   ~GfMenuObjHelpHud() override;
   void initialize() override;
   void finalize() override;
-  void enable();
-  void disable();
+  static void enable();
+  static void disable();
   static void ctrlFadeOut(u32 handle);
   static void ctrlFadeIn(u32 handle);
   bool seqPageFadeIn();

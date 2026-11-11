@@ -102,6 +102,22 @@ AssetPackInfo *GfAssetManager::getAssetPackInfo(GF_ASSET_HANDLE *handle) {
   return manager->unknown10.unknown010(index) ? info : nullptr;
 }
 
+void GfAssetManager::destroy(GF_ASSET_HANDLE *handle) {
+  AssetPackInfo *info = getAssetPackInfo(handle);
+  if (info != nullptr && !info->unknown304) {
+    info->setDestroy();
+    GfAssetManager *manager = get();
+    mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = mm::mtl::find(manager->unknownd70f8.begin(), manager->unknownd70f8.end(), handle);
+    if (it == manager->unknownd70f8.end()) {
+      it = mm::mtl::find(manager->unknownce0b8.begin(), manager->unknownce0b8.end(), handle);
+      if (it == manager->unknownce0b8.end()) {
+        return;
+      }
+    }
+    manager->unknownd28d8.push_back(*it);
+  }
+}
+
 void GfAssetManager::setNoCacheAsset(GF_ASSET_HANDLE *handle, bool noCache) {
   AssetPackInfo *info = getAssetPackInfo(handle);
   if (info != nullptr) {
@@ -120,22 +136,6 @@ void GfAssetManager::disableGameResource(GF_ASSET_HANDLE *handle) {
   AssetPackInfo *info = getAssetPackInfo(handle);
   if (info != nullptr && info->unknown305) {
     info->setUsingGame(false);
-  }
-}
-
-void GfAssetManager::destroy(GF_ASSET_HANDLE *handle) {
-  AssetPackInfo *info = getAssetPackInfo(handle);
-  if (info != nullptr && !info->unknown304) {
-    info->setDestroy();
-    GfAssetManager *manager = get();
-    mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = mm::mtl::find(manager->unknownd70f8.begin(), manager->unknownd70f8.end(), handle);
-    if (it == manager->unknownd70f8.end()) {
-      it = mm::mtl::find(manager->unknownce0b8.begin(), manager->unknownce0b8.end(), handle);
-      if (it == manager->unknownce0b8.end()) {
-        return;
-      }
-    }
-    manager->unknownd28d8.push_back(*it);
   }
 }
 

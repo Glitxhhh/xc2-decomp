@@ -1,7 +1,7 @@
 #pragma once
 #include <stddef.h>
 
-#include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_driver.h"
 #include "gf/event/gf_event.h"
 #include "gf/game/gf_game_pad.h"
 #include "gf/game/quest/gf_quest_manager.h"
@@ -30,6 +30,7 @@ enum {
   OWNER_BONUS_DEVELOP_POINT = 5,
   OWNER_BONUS_UNKNOWN_9 = 9,   // Inferred role: reduction of the enemy sight radius in percent; original name unknown.
   OWNER_BONUS_UNKNOWN_10 = 10, // Inferred role: pick up range bonus of the dropitems in percent, read by GfFobjDropitem::canGetItem; original name unknown.
+  OWNER_BONUS_UNKNOWN_11 = 11, // Inferred role: bonus in meters added to the access radius of lure targets, read by gf::pc::isActiveRangeLure; original name unknown.
   OWNER_BONUS_BOOSTER_VALUE_MAX = 13,
 };
 

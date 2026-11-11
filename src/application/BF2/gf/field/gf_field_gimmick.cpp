@@ -1,11 +1,10 @@
 // Same order as in the game executable.
 // clang-format off
 #include "gf/field/gf_mob_slot_manager.cpp"
+#include "gf/data/gf_data_blade.h"
 // clang-format on
 
 #include "gf/field/gf_field_gimmick.h"
-#include "mm_mtl/map.h" // IWYU pragma: keep
-
 #include "fw/fw_update_info.h"
 #include "gf/asset/gf_slot.h"
 #include "gf/data/gf_character_id.h"
@@ -24,6 +23,7 @@
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/map.h" // IWYU pragma: keep
 #include "mm_mtl/singleton.h"
 #include "mm_mtl/vector.h"
 #include "mtl/alloc_handle.h"

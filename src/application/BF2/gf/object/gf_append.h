@@ -16,7 +16,6 @@ class MessageObject;
 namespace gf {
 
 struct GF_OBJ_HANDLE;
-class GfInitParamDriver;
 enum OPTMNT : u32;
 
 class GfAppend {
@@ -114,12 +113,5 @@ static_assert(offsetof(GfAppendWire, unknown30) == 0x30, "");
 static_assert(offsetof(GfAppendWire, unknown34) == 0x34, "");
 static_assert(offsetof(GfAppendWire, unknown48) == 0x48, "");
 static_assert(sizeof(GfAppendWire) == 0x50, "");
-
-class GfAppendUtil {
-public:
-  static void setupBelonging(GF_OBJ_HANDLE *handle, u32 param2, u32 param3, u32 param4, u32 param5);
-  static void setupBelongingForDriver(GF_OBJ_HANDLE *handle, const GfInitParamDriver &param);
-  static void setupExtraModel(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *owner);
-};
 
 } // namespace gf

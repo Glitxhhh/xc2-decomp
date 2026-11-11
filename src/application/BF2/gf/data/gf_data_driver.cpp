@@ -199,6 +199,17 @@ void unknown006(u32 driver, u32 blade, bool isNew) {
   }
 }
 
+// Inferred role: removes a driver from its party slot, which also clears the party leader when it is the driver; original name unknown.
+bool unknown012(u32 driver, u32 partyId) {
+  unknown124 *party = GfDataParty::getSDataParty();
+  if (party->unknown40 == driver) {
+    party->unknown40 = 0;
+    party->unknown3c = 0;
+  }
+
+  return GfDataParty::setDriver(partyId, 0);
+}
+
 } // namespace
 
 void GfDataDriver::openDriverArtsForLevelup(u32 driver) { unknown006(driver, 0, true); }
@@ -890,21 +901,21 @@ const char *GfDataDriver::getBelongingModelName(const GfInitParamDriver &param) 
   return nullptr;
 }
 
-u32 GfDataDriver::getDriverActivateType(const SDataDriver &dataDriver) {
+ActivateType GfDataDriver::getDriverActivateType(const SDataDriver &dataDriver) {
   if (dataDriver.unknown20 != 1) {
-    return 0;
+    return ACTIVATE_TYPE_UNUSE;
   }
 
   if (GfDataParty::isExistDriver(dataDriver.unknown22)) {
-    return 2;
+    return ACTIVATE_TYPE_PARTY;
   }
 
-  return 1;
+  return ACTIVATE_TYPE_RESERVER;
 }
 
-u32 GfDataDriver::getDriverActivateType(u32 driver) {
+ActivateType GfDataDriver::getDriverActivateType(u32 driver) {
   if (driver == 0) {
-    return 0;
+    return ACTIVATE_TYPE_UNUSE;
   }
 
   return getDriverActivateType(*getSDataDriver(driver));
@@ -931,6 +942,27 @@ bool GfDataDriver::isActivateReserver(u32 driver) {
 }
 
 bool GfDataDriver::isActivateUnuse(u32 driver) { return getSDataDriver(driver)->unknown20 == 0; }
+
+bool GfDataDriver::setActivateUnuse(u32 driver) {
+  if (driver == 0) {
+    return false;
+  }
+
+  ActivateType activateType = getDriverActivateType(*getSDataDriver(driver));
+  SDataDriver *dataDriver = getSDataDriver(driver);
+  if (dataDriver->unknown20 != 0) {
+    dataDriver->unknown20 = 0;
+  }
+
+  bool isChanged = false;
+  int partyId = GfDataParty::getDriverPartyID(driver);
+  if (partyId != -1) {
+    isChanged = unknown012(driver, partyId);
+  }
+
+  GfEvent::callDriverActivate(driver, activateType, getDriverActivateType(*getSDataDriver(driver)));
+  return isChanged;
+}
 
 bool GfDataDriver::isActivatePartyAll(u32 driver) {
   if (driver == 0) {

@@ -20,11 +20,12 @@ struct UpdateInfo;
 namespace gf {
 
 struct GF_OBJ_HANDLE;
+struct AccessParam;
 class GfComPropertyPc;
 
 namespace pc {
 
-struct AccessParam;
+bool isActiveRange(GfComPropertyPc &property, const AccessParam &param, GF_OBJ_HANDLE *target);
 
 class AccessPlugin : public Plugin {
   GF_PLUGIN(GfComBehaviorPc)

@@ -25,6 +25,7 @@
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/component/property/gf_env_property.h"
 #include "gf/object/gf_append.h"
+#include "gf/object/gf_append_util.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
@@ -392,6 +393,38 @@ GF_OBJ_HANDLE *GfObjFactory::createBelonging(GfInitParamBelonging &param) {
     GfAppendUtil::setupBelonging(handle, param.unknown118, param.unknown11a, param.unknown11c, param.unknown11e);
   } else {
     GfAppendUtil::setupBelongingForDriver(handle, *param.unknown128);
+  }
+  GfObjUtil::addDebugName(handle);
+  manager->callGfObjListener(IGfObjListener::OBJEVT_ENTRY, handle);
+  return handle;
+}
+
+GF_OBJ_HANDLE *GfObjFactory::createEnWeapon(GfInitParamEnWeapon &param) {
+  GfObjManager *manager = GfObjManager::get();
+  if (manager == nullptr) {
+    return INVALID_HANDLE;
+  }
+  GF_ASSET_HANDLE *asset = GfAssetFactory::createAssetPackEnWeapon(param);
+  if (asset == INVALID_ASSET_HANDLE) {
+    return INVALID_HANDLE;
+  }
+  GF_OBJ_HANDLE *handle = manager->createGfObj(OBJECT_TYPE_EN_WEAPON, param);
+  if (handle != INVALID_HANDLE) {
+    unknown001(handle, asset, param);
+  }
+  u16 mountIndex = param.unknown98.getMountIndex();
+  if (handle != INVALID_HANDLE) {
+    GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
+    if (info != nullptr) {
+      info->unknownb8[GFATTACH_WEAPON].unknown08 = mountIndex;
+    }
+  }
+  manager->addHandle(handle);
+  GfObjSetup::createSetupParam(handle, param);
+  if (param.isEvent() || (param.unknown08 >= unknown030_10 && param.unknown08 <= unknown030_13)) {
+    GfAppendUtil::setupEventActEnemy(param.unknown130, handle, param.getEnArrangeID());
+  } else {
+    GfAppendUtil::setupEnemy(param.unknown130, handle, param.getEnArrangeID(), param.unknown128);
   }
   GfObjUtil::addDebugName(handle);
   manager->callGfObjListener(IGfObjListener::OBJEVT_ENTRY, handle);

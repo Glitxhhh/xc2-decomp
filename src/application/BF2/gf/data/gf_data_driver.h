@@ -82,6 +82,13 @@ struct SDataDriver {
   mm::mtl::unknown027<28> unknown59c; // Inferred role: activate weapon types; original member name unknown.
 };
 
+enum ActivateType {
+  ACTIVATE_TYPE_UNUSE,
+  ACTIVATE_TYPE_RESERVER,
+  ACTIVATE_TYPE_PARTY,
+  ACTIVATE_TYPE_MERCENARY_TEAM,
+};
+
 enum DBSLOT {};
 enum FAVORITE {
   FAVORITE_CATEGORY_0,
@@ -133,7 +140,7 @@ public:
   static bool isFavoriteCategory(u32 driver, u32 item);
   static bool isKizunaringComplete(u32 driver, bool isSecond);
   static void setKizunaringComplete(u32 driver, bool isSecond);
-  static void setEquipBlade(u32 driver, bool isEquip, int slot);
+  static bool setEquipBlade(u32 driver, bool isEquip, int slot);
   static u32 getExpNextLevel(const SDataDriver &dataDriver);
   static u32 getExpNextLevel(u32 driver);
   static u32 getBattleExpNextLevel(const SDataDriver &dataDriver);
@@ -148,16 +155,16 @@ public:
   static void calcDriverBaseParamByLevel(SDataDriver &dataDriver);
   static u32 getLevel(u32 driver);
   static bool isActivateParty(u32 driver);
-  static u32 getDriverActivateType(u32 driver);
-  static u32 getDriverActivateType(const SDataDriver &dataDriver);
-  static void setBlade(u32 driver, u32 blade, int slot);
+  static ActivateType getDriverActivateType(u32 driver);
+  static ActivateType getDriverActivateType(const SDataDriver &dataDriver);
+  static bool setBlade(u32 driver, u32 blade, int slot);
   static int getSetIdByBlade(u32 driver, u32 blade);
   static int getSetIdByBlade(const SDataDriver &dataDriver, u32 blade);
   static int getMaxSetBladeNum(u32 driver);
   static int getSetIdByDummyBlade(u32 driver);
   static u32 getBlade(u32 driver, int slot);
   static bool getListBlade(mm::mtl::FixedVector<u16, 422> &blades, u32 driver);
-  static void unsetBlade(u32 blade);
+  static bool unsetBlade(u32 blade);
   static bool leaveOneCommonBlade(u32 driver);
   static bool leaveOneRareBlade(u32 driver);
   static bool leaveOneScenarioBlade(u32 driver);
@@ -255,7 +262,7 @@ public:
   static void addSkillPoint(u32 driver, int skillPoint);
   static void addSkillPoint(SDataDriver &dataDriver, int skillPoint);
   static void getValidEnhance(mm::mtl::FixedVector<u16, 64> &enhances, u32 driver);
-  static void getValidEnhance(mm::mtl::FixedVector<u16, 64> &enhances, const SDataDriver &dataDriver);
+  static bool getValidEnhance(mm::mtl::FixedVector<u16, 64> &enhances, const SDataDriver &dataDriver);
   static u32 getExtraMountNpcRsc(u32 driver);
   static const char *getExtraMountBone(u32 driver);
   static u32 getExtraMountCondition(u32 driver);

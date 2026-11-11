@@ -1,7 +1,7 @@
 #pragma once
 #include <stddef.h>
 
-#include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_driver.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"

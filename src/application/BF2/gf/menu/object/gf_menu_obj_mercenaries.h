@@ -31,6 +31,34 @@ class GfMenuObjMercenaries : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjMercenaries *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjMercenaries *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class LocationSelectListener : public ui::UIObjectListener {
+  public:
+    LocationSelectListener(GfMenuObjMercenaries *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjMercenaries *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class MissionListener : public ui::UIObjectListener {
+  public:
+    MissionListener(GfMenuObjMercenaries *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjMercenaries *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class MissionRewardListener : public ui::UIObjectListener {
+  public:
+    MissionRewardListener(GfMenuObjMercenaries *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
     u8 _0c[0x20 - 0x0c];
@@ -42,6 +70,12 @@ public:
   static void setupLocationSelect(ui::UIObjectAcc &acc);
   static void setupLocationZone(ui::UIObjectAcc &acc, u16 zone);
   static void setupMission(ui::UIObjectAcc &acc);
+  static void setupLocation(ui::UIObjectAcc &acc);
+  static void setupMissionList(ui::UIObjectAcc &acc, GfMenuMissionList *list);
+  static void setupMissionFieldSkill(ui::UIObjectAcc &acc, const GfMenuBladeList *blades);
+  static void setupFormBladeSelect(ui::UIObjectAcc &acc, const GfMenuBladeList *blades);
+  static void setupReward(ui::UIObjectAcc &acc, const GfMenuBladeList *blades);
+  static void setupMissionDetail(ui::UIObjectAcc &acc, GfMenuBladeList *blades, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number);
   static void setupMercenaries(ui::UIObjectAcc &acc);
   static void updateTeamList(GfMenuTeamList *list);
   static void updateMissionList(GfMenuMissionList *list, u16 zone);

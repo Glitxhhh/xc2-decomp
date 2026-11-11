@@ -54,8 +54,12 @@ public:
   static int setFadeOut(u32 handle);
   static void setDispMapCursor(ui::UIObjectAcc &acc, bool isDisp);
   static void setupMapSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list);
+  static void refreshMapSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, u32 map);
   static void setupPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list);
+  static void refreshPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, u32 point);
   static bool isEnableJump(const MenuZoneMapInfo &info);
+  static bool setupMapList(GfMenuZoneMapList *list);
+  static void setupZoneMap(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, bool);
   void clearTex();
   static void setupPoint(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects);
   static void setupHelp(ui::UIObjectAcc &acc);

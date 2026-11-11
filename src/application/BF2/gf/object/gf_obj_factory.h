@@ -26,6 +26,7 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 class GfComSound;
 class GfInitParamBelonging;
+class GfInitParamEnWeapon;
 class GfInitParamEventObj;
 class GfInitParamExtra;
 class GfInitParamFobj;
@@ -77,6 +78,7 @@ public:
   static GF_OBJ_HANDLE *createMobNull();
   static GF_OBJ_HANDLE *createFieldObj(const GfInitParamFobj &param);
   static GF_OBJ_HANDLE *createBelonging(GfInitParamBelonging &param);
+  static GF_OBJ_HANDLE *createEnWeapon(GfInitParamEnWeapon &param);
   static GF_OBJ_HANDLE *createExtraModel(GfInitParamExtra &param);
   static void destroyObj(GF_OBJ_HANDLE *handle);
   static GF_OBJ_HANDLE *createSmnEnemy(int id, const mm::Vec3 &position, const mm::Vec3 &rotation, bool flag);

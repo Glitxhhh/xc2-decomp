@@ -78,13 +78,6 @@ static_assert(offsetof(unknown112, unknown04) == 0x04, "");
 static_assert(offsetof(unknown112, unknown06) == 0x06, "");
 static_assert(sizeof(unknown112) == 0x08, "");
 
-enum ActivateType {
-  ACTIVATE_TYPE_UNUSE,
-  ACTIVATE_TYPE_RESERVER,
-  ACTIVATE_TYPE_PARTY,
-  ACTIVATE_TYPE_MERCENARY_TEAM,
-};
-
 enum {
   BLADE_ACTIVATE_UNUSE = 0,
   BLADE_ACTIVATE_DRIVER = 1,

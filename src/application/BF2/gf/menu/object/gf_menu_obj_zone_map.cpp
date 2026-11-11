@@ -1,5 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_zone_map.h"
 
+#include <string.h>
+
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
@@ -25,6 +27,7 @@
 #include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
+#include "ui/plugin/ui_object_sync_plugin.h"
 #include "ui/stream/ui_stream_manager.h"
 #include "ui/ui_object_acc.h"
 
@@ -81,6 +84,20 @@ int GfMenuObjZoneMap::setFadeIn(u32 handle) {
   return ctrl;
 }
 
+void GfMenuObjZoneMap::setDispIconNode(ui::UIObjectAcc &acc, u32 node) {
+  if (node == 0) {
+    for (u32 i = 0; i < 8; i++) {
+      ui::UIObjectAcc icon(acc.searchChild(gmo_zone_map::nd_lay_icon_node_tbl[i]));
+      icon.setDisp(true);
+    }
+  } else {
+    for (u32 i = 0; i < 8; i++) {
+      ui::UIObjectAcc icon(acc.searchChild(gmo_zone_map::nd_lay_icon_node_tbl[i]));
+      icon.setDisp(node - 1 == i);
+    }
+  }
+}
+
 int GfMenuObjZoneMap::setFadeOut(u32 handle) {
   int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 2, 0);
   GfMenuObject::hookCtrlEvent(handle, ctrl);
@@ -111,6 +128,31 @@ void GfMenuObjZoneMap::setupMapSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *l
   arrow2.startAnimation("loop", false);
 }
 
+void GfMenuObjZoneMap::refreshMapSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, u32 map) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    u32 id = list->getContents(list->getPageIndex(i)).unknown00;
+    name.format("IMG_zone_base_@%02d", i + 1);
+    ui::UIObjectAcc base(acc.searchChild(name.c_str()));
+    name.format("TXT_zonename@%02d", i + 1);
+    ui::UIObjectAcc text(acc.searchChild(name.c_str()));
+    if (id == map) {
+      base.setImageIndex(1);
+      GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_bl_index");
+    } else {
+      base.setImageIndex(0);
+      GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_dr_index");
+    }
+  }
+  bool isDispPrev = list->getPageIndex(0) != 0;
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "IMG_zonearrow@01", isDispPrev);
+  bool isDispNext = false;
+  if (list->getSize() != 0) {
+    isDispNext = list->getPageIndex(objects->getSize() - 1) != list->getSize() - 1;
+  }
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "IMG_zonearrow@02", isDispNext);
+}
+
 void GfMenuObjZoneMap::setupPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list) {
   mm::mtl::FixStr<32> name;
   for (u32 i = 0; i < 8; i++) {
@@ -129,6 +171,34 @@ void GfMenuObjZoneMap::setupPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList 
   arrow2.startAnimation("loop", false);
 }
 
+void GfMenuObjZoneMap::refreshPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, u32 point) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    u32 id = list->getContents(list->getPageIndex(i)).unknown00;
+    name.format("IMG_point_base_@%02d", i + 1);
+    ui::UIObjectAcc base(acc.searchChild(name.c_str()));
+    name.format("TXT_pointname_@%02d", i + 1);
+    ui::UIObjectAcc text(acc.searchChild(name.c_str()));
+    if (id == point) {
+      base.setImageIndex(1);
+      GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_bl_index");
+    } else {
+      base.setImageIndex(0);
+      GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_dr_index");
+    }
+    if (!isEnableJump(list->getContents(list->getPageIndex(i)))) {
+      GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_disable");
+    }
+  }
+  bool isDispPrev = list->getPageIndex(0) != 0;
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "IMG_pointarrow@01", isDispPrev);
+  bool isDispNext = false;
+  if (list->getSize() != 0) {
+    isDispNext = list->getPageIndex(objects->getSize() - 1) != list->getSize() - 1;
+  }
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "IMG_pointarrow@02", isDispNext);
+}
+
 bool GfMenuObjZoneMap::isEnableJump(const MenuZoneMapInfo &info) {
   u32 worldMap = GfMenuReference::getReferenceWorldMapID();
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_MAPLIST);
@@ -144,6 +214,59 @@ bool GfMenuObjZoneMap::isEnableJump(const MenuZoneMapInfo &info) {
     return false;
   }
   return true;
+}
+
+bool GfMenuObjZoneMap::setupMapList(GfMenuZoneMapList *list) {
+  const char *mapName = GfDataMap::getMapResourceNameByMapID(GfMenuReference::getReferenceWorldMapID());
+  list->clear();
+  u8 *group = GfDataBdat::getFP(BDAT_MNU_MAP_GROUP);
+  int top = Bdat::getIdTop(group);
+  for (u32 i = 0; i < Bdat::getIdCount(group); i++) {
+    const char *includeMap = Bdat::getVal(group, "include_map", top + i).valueString;
+    if (includeMap != nullptr && strcmp(mapName, includeMap) == 0) {
+      MenuZoneMapInfo info;
+      info.unknown00 = top + i;
+      list->addContents(info);
+    }
+  }
+  u32 size = list->getSize();
+  if (size == 0) {
+    u8 *mapInfo = GfDataBdat::getFP(BDAT_MNU_MAP_INFO);
+    int infoTop = Bdat::getIdTop(mapInfo);
+    for (u32 i = 0; i < Bdat::getIdCount(mapInfo); i++) {
+      const char *levelName = Bdat::getVal(mapInfo, "level_name", infoTop + i).valueString;
+      if (levelName != nullptr && strncmp(mapName, levelName, 5) == 0) {
+        MenuZoneMapInfo info;
+        info.unknown00 = infoTop + i;
+        list->addContents(info);
+      }
+    }
+  }
+  return size != 0;
+}
+
+void GfMenuObjZoneMap::setupZoneMap(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, bool) {
+  for (u32 i = 0; i < list->getSize(); i++) {
+    mm::mtl::FixStr<32> name;
+    name.format("LAY_zonespot@%02d", i + 1);
+    u32 object = acc.searchChild(name.c_str());
+    if (object != 0) {
+      objects->addObject(object);
+    }
+    if (i + 1 >= 8) {
+      break;
+    }
+  }
+  ui::UIObjectAcc cursor(acc.searchChild("IMG_cursor"));
+  cursor.startAnimation("loop", false);
+  ui::UIObjectSyncPlugin *plugin = ui::UIObjectSyncPlugin::create(acc.searchChild("IMG_cursorline_w"));
+  plugin->setTargetObject(acc.searchChild("IMG_cursor"));
+  plugin->setTargetFlag(ui::UIObjectSyncPlugin::TARGET_POS_CENTER);
+  mm::mtl::safeRelease(plugin);
+  plugin = ui::UIObjectSyncPlugin::create(acc.searchChild("IMG_cursorline_h"));
+  plugin->setTargetObject(acc.searchChild("IMG_cursor"));
+  plugin->setTargetFlag(ui::UIObjectSyncPlugin::TARGET_POS_CENTER);
+  mm::mtl::safeRelease(plugin);
 }
 
 void GfMenuObjZoneMap::clearTex() {
@@ -239,6 +362,24 @@ u32 GfMenuObjZoneMap::getFloor() {
   }
   u16 image = unknown48->getContents(unknown48->getIndex(false)).unknown00;
   return Bdat::getVal(unknown33c8, "menuMapImage", image).valueU16;
+}
+
+bool GfMenuObjZoneMap::seqTexDelete() {
+  ui::UIObjectAcc main(ui::UIObjectAcc(unknown18).searchChild("LAY_main"));
+  if (unknown70) {
+    GfMenuObjUtil::setChildDisp(main.unknown10, unknown74.c_str(), false);
+    unknown98->clear();
+    closeIconTable(main, unknown0a0);
+    ui::UIStreamManager::get()->deleteImage(unknown74, main.searchChild("LAY_floor"));
+    GfFieldGimmick::get()->unknownf4c0.dispose();
+    mm::mtl::safeRelease(unknown38);
+    unknown70 = false;
+  }
+  ui::UIObjectAcc(main.searchChild("LAY_floor")).setDisp(false);
+  GfMenuObjUtil::setChildDisp(main.unknown10, "IMG_cursor", false);
+  GfMenuObjUtil::setChildDisp(main.unknown10, "IMG_cursorline_w", false);
+  GfMenuObjUtil::setChildDisp(main.unknown10, "IMG_cursorline_h", false);
+  return true;
 }
 
 bool GfMenuObjZoneMap::seqTexDeleteWait() { return true; }

@@ -1,6 +1,10 @@
 #include "gf/menu/gf_menu_manager.h"
 
 #include "bdat.h"
+#include "framework/lang_util.h"
+#include "framework/resource/common_resource.h"
+#include "framework/sound/sound_manager.h"
+#include "fw/fw_pad.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_option.h"
@@ -39,12 +43,15 @@
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/gf_menu_status.h"
 #include "gf/menu/object/gf_menu_obj_action_window.h"
+#include "gf/menu/object/gf_menu_obj_arts_palette.h"
 #include "gf/menu/object/gf_menu_obj_blade_change.h"
 #include "gf/menu/object/gf_menu_obj_blade_create.h"
+#include "gf/menu/object/gf_menu_obj_blade_switch.h"
 #include "gf/menu/object/gf_menu_obj_chain_attack.h"
 #include "gf/menu/object/gf_menu_obj_chapter_telop.h"
 #include "gf/menu/object/gf_menu_obj_combo_route.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
+#include "gf/menu/object/gf_menu_obj_compass.h"
 #include "gf/menu/object/gf_menu_obj_damage_buff.h"
 #include "gf/menu/object/gf_menu_obj_damage_value.h"
 #include "gf/menu/object/gf_menu_obj_drop_item.h"
@@ -52,27 +59,47 @@
 #include "gf/menu/object/gf_menu_obj_enemy_status.h"
 #include "gf/menu/object/gf_menu_obj_environment_info.h"
 #include "gf/menu/object/gf_menu_obj_exp_get.h"
+#include "gf/menu/object/gf_menu_obj_field_icon.h"
+#include "gf/menu/object/gf_menu_obj_help_hud.h"
+#include "gf/menu/object/gf_menu_obj_location_telop.h"
 #include "gf/menu/object/gf_menu_obj_main_root.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_minimap2.h"
 #include "gf/menu/object/gf_menu_obj_option.h"
+#include "gf/menu/object/gf_menu_obj_other_cursor.h"
 #include "gf/menu/object/gf_menu_obj_party_gauge.h"
 #include "gf/menu/object/gf_menu_obj_party_status.h"
 #include "gf/menu/object/gf_menu_obj_party_status2.h"
 #include "gf/menu/object/gf_menu_obj_popup.h"
 #include "gf/menu/object/gf_menu_obj_quest_log.h"
 #include "gf/menu/object/gf_menu_obj_save_load2.h"
+#include "gf/menu/object/gf_menu_obj_special_gauge.h"
+#include "gf/menu/object/gf_menu_obj_target_cursor.h"
+#include "gf/menu/object/gf_menu_obj_target_info.h"
 #include "gf/menu/object/gf_menu_obj_tutorial.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
+#include "layer/layer_acc_def_obj.h"
 #include "layer/layer_acc_manager.h"
+#include "layer/layer_acc_obj_base.h"
+#include "layer/layer_base.h"
 #include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
+#include "mm_mtl/reference_object.h"
 #include "scn/scn_render_dr_sys_parm_acc.h"
 #include "ui/input/ui_input_manager.h"
 #include "ui/ui_manager.h"
+#include "ui/ui_util.h"
+
+namespace fw {
+enum LangType : u32;
+enum SoundCategory : int;
+} // namespace fw
 
 namespace gf {
 
@@ -104,6 +131,25 @@ constexpr u32 MAINMENU2_MAP = 1;
 constexpr u32 MAINMENU2_SYSTEM = 6;
 constexpr u16 SAVE_LOAD_SAVE = 1;
 constexpr u32 SE_ACCEPT_ACCESS = 27;
+constexpr u32 LANGUAGE_STEP_WAIT_LOAD = 1;
+constexpr u32 LANGUAGE_STEP_SELECT = 2;
+constexpr u32 LANGUAGE_STEP_WAIT_CONFIRM_LOAD = 3;
+constexpr u32 LANGUAGE_STEP_CONFIRM = 4;
+constexpr u32 LANGUAGE_STEP_RELEASE = 5;
+constexpr u32 LANGUAGE_STEP_DONE = 6;
+
+// Inferred role: trigger bits of the control pad read by the language selection; original names unknown.
+constexpr u32 PAD_BUTTON_UNKNOWN_0 = 1 << 0;
+constexpr u32 PAD_BUTTON_UNKNOWN_1 = 1 << 1;
+constexpr u32 PAD_BUTTON_UNKNOWN_2 = 1 << 2;
+constexpr u32 PAD_BUTTON_UNKNOWN_3 = 1 << 3;
+
+// Inferred role: places the layer object of a loaded layout at a position, centered; original name unknown.
+void unknown004(layer::LayerBase *layer, f32 x, f32 y) {
+  layer::LayerAccDefObj object(layer);
+  object.setCenterType(layer::LAYER_CENTER_TYPE_CENTER);
+  object.setPos(x, y);
+}
 
 bool isOpenCallMenu(GfMenuManager *manager, u32 menu) {
   if (manager->unknown40d0 == nullptr) {
@@ -226,6 +272,130 @@ bool GfMenuManager::isRegionJP() {
   return false;
 }
 
+bool GfMenuManager::selectLanguage() {
+  switch (unknown4108) {
+  case 0: {
+    mm::mtl::FixStr<128> fileName;
+    ui::UIUtil::makeMenuImageFileName(fileName, "mnu001_langage");
+    mm::mtl::safeRelease(unknown4110);
+    unknown4110 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), fileName.c_str(), 10, true);
+    ui::UIUtil::makeMenuImageFileName(fileName, "mnu001_langage_caution");
+    mm::mtl::safeRelease(unknown4120);
+    unknown4120 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), fileName.c_str(), 10, true);
+    ui::UIUtil::makeMenuImageFileName(fileName, "mnu001_langage_select");
+    mm::mtl::safeRelease(unknown4130);
+    unknown4130 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), fileName.c_str(), 10, true);
+    ui::UIUtil::makeMenuImageFileName(fileName, "mnu001_langage_select_cn");
+    mm::mtl::safeRelease(unknown4138);
+    unknown4138 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), fileName.c_str(), 10, true);
+    ui::UIUtil::makeMenuImageFileName(fileName, "mnu001_langage_select_tw");
+    mm::mtl::safeRelease(unknown4140);
+    unknown4140 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), fileName.c_str(), 10, true);
+    unknown4108 = LANGUAGE_STEP_WAIT_LOAD;
+    return false;
+  }
+  case LANGUAGE_STEP_WAIT_LOAD:
+    if (!unknown4110->valid()) {
+      return false;
+    }
+    if (unknown4120->valid()) {
+      layer::LayerAccManager layerAcc;
+      mm::mtl::safeRelease(unknown4118);
+      unknown4118 = layerAcc.createObj(unknown4110->getAssetData());
+      unknown004(unknown4118, 640.0f, 300.0f);
+      if (fw::LangUtil::getLangType() == 0) {
+        mm::mtl::safeRelease(unknown4128);
+        unknown4128 = layerAcc.createObj(unknown4120->getAssetData());
+        unknown004(unknown4128, 640.0f, 470.0f);
+      }
+      unknown4108 = LANGUAGE_STEP_SELECT;
+    }
+    return false;
+  case LANGUAGE_STEP_SELECT: {
+    const fw::PadData *pad = fw::PadManager::getControlPadData(0);
+    layer::LayerAccDefObj layout(unknown4118);
+    layout.setDisp(true);
+    if (unknown4128 != nullptr) {
+      layer::LayerAccDefObj caution(unknown4128);
+      caution.setDisp(true);
+    }
+    u32 trigger = pad->unknown04;
+    bool isSelected = false;
+    if ((trigger & PAD_BUTTON_UNKNOWN_3) != 0) {
+      unknown4150 = 0;
+      isSelected = true;
+    } else if ((trigger & PAD_BUTTON_UNKNOWN_0) != 0) {
+      unknown4150 = 1;
+      isSelected = true;
+    } else if ((trigger & PAD_BUTTON_UNKNOWN_1) != 0) {
+      unknown4150 = 2;
+      isSelected = true;
+    }
+    if (isSelected) {
+      layout.setDisp(false);
+      if (unknown4128 != nullptr) {
+        layer::LayerAccDefObj caution(unknown4128);
+        caution.setDisp(false);
+      }
+      unknown4108 = LANGUAGE_STEP_WAIT_CONFIRM_LOAD;
+      fw::SoundManager::get()->playSe(1, nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
+    }
+    return false;
+  }
+  case LANGUAGE_STEP_WAIT_CONFIRM_LOAD: {
+    fw::CommonResource *confirm = unknown4150 == 1 ? unknown4140 : (unknown4150 == 2 ? unknown4138 : unknown4130);
+    if (confirm != nullptr && confirm->valid()) {
+      layer::LayerAccManager layerAcc;
+      mm::mtl::safeRelease(unknown4148);
+      unknown4148 = layerAcc.createObj(confirm->getAssetData());
+      unknown004(unknown4148, 640.0f, 360.0f);
+      unknown4108 = LANGUAGE_STEP_CONFIRM;
+    }
+    return false;
+  }
+  case LANGUAGE_STEP_CONFIRM: {
+    const fw::PadData *pad = fw::PadManager::getControlPadData(0);
+    if ((pad->unknown04 & PAD_BUTTON_UNKNOWN_2) == 0) {
+      if ((pad->unknown04 & PAD_BUTTON_UNKNOWN_1) == 0) {
+        return false;
+      }
+      layer::LayerAccDefObj layout(unknown4148);
+      layout.setDisp(false);
+      fw::SoundManager::get()->playSe(2, nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
+      unknown4108 = LANGUAGE_STEP_SELECT;
+      return false;
+    }
+    switch (unknown4150) {
+    case 0:
+      SCOM_RELOAD_TEXT::create(static_cast<fw::LangType>(0));
+      break;
+    case 1:
+      SCOM_RELOAD_TEXT::create(static_cast<fw::LangType>(11));
+      break;
+    case 2:
+      SCOM_RELOAD_TEXT::create(static_cast<fw::LangType>(6));
+      break;
+    }
+    fw::SoundManager::get()->playSe(1, nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
+    unknown4108 = LANGUAGE_STEP_RELEASE;
+    return false;
+  }
+  case LANGUAGE_STEP_RELEASE:
+    mm::mtl::safeRelease(unknown4140);
+    mm::mtl::safeRelease(unknown4138);
+    mm::mtl::safeRelease(unknown4130);
+    mm::mtl::safeRelease(unknown4148);
+    mm::mtl::safeRelease(unknown4120);
+    mm::mtl::safeRelease(unknown4128);
+    mm::mtl::safeRelease(unknown4110);
+    mm::mtl::safeRelease(unknown4118);
+    unknown4108 = LANGUAGE_STEP_DONE;
+    return false;
+  default:
+    return true;
+  }
+}
+
 void GfMenuManager::changeBattleState(u32 state, bool isEnable) {
   switch (state) {
   case 0:
@@ -272,6 +442,123 @@ void GfMenuManager::changeBattleState(u32 state, bool isEnable) {
     break;
   default:
     break;
+  }
+}
+
+void GfMenuManager::updateHudState() {
+  if (!get()->unknown4091) {
+    for (u32 hud = 0; hud < 6; hud++) {
+      u32 flags = unknown40e4.unknown001(0);
+      u32 mask = 1UL << hud;
+      bool isEnable = (flags & mask) != 0;
+      if (isEnable != unknown40e8.test(hud)) {
+        switch (hud) {
+        case 0:
+          if (isEnable) {
+            GfMenuObjArtsPalette::open();
+            GfMenuObjPartyGauge::open();
+            if (GfMenuObjUtil::isLeaderBladeEnable()) {
+              GfMenuObjBladeChange::open();
+              GfMenuObjSpecialGauge::open();
+            }
+            GfMenuObjPartyStatus::open(true);
+          } else {
+            GfMenuObjArtsPalette::close();
+            if (!unknown40ca || !unknown40dc.test(6)) {
+              GfMenuObjPartyGauge::close();
+            }
+            if (GfMenuObjUtil::isLeaderBladeEnable()) {
+              GfMenuObjBladeChange::close();
+              GfMenuObjSpecialGauge::close();
+            }
+            GfMenuObjPartyStatus::close(false);
+          }
+          break;
+        case 1:
+          if (isEnable) {
+            GfMenuObjPartyStatus::open(false);
+            GfMenuObjTargetInfo::disp(true);
+            GfMenuObjTargetCursor::disp(true);
+            GfMenuObjFieldIcon::dispAll(true);
+            GfMenuObjOtherCursor::disp(true);
+            GfMenuObjActionWindow::disp(true);
+            GfMenuObjEnemyStatus::disp(true);
+          } else {
+            GfMenuObjPartyStatus::close(true);
+            GfMenuObjTargetInfo::disp(false);
+            GfMenuObjTargetCursor::disp(false);
+            GfMenuObjFieldIcon::dispAll(false);
+            GfMenuObjOtherCursor::disp(false);
+            GfMenuObjActionWindow::disp(false);
+            GfMenuObjEnemyStatus::disp(false);
+            GfMenuObjLocationTelop::close();
+          }
+          break;
+        case 2:
+          if (isEnable) {
+            GfMenuObjCompass::open();
+            GfMenuObjMinimap2::open();
+            GfMenuObjEnvironmentInfo::open();
+            GfMenuObjTargetInfo::dispAllOther(true);
+            GfMenuObjTargetInfo::dispAllSymbol(true);
+            GfMenuObjFieldIcon::dispAll(true);
+            GfMenuObjHelpHud::enable();
+          } else {
+            GfMenuObjCompass::close();
+            GfMenuObjMinimap2::close();
+            GfMenuObjEnvironmentInfo::close();
+            GfMenuObjTargetInfo::dispAllOther(false);
+            GfMenuObjTargetInfo::dispAllSymbol(false);
+            GfMenuObjFieldIcon::dispAll(false);
+            GfMenuObjHelpHud::disable();
+          }
+          break;
+        case 3:
+          if (isEnable) {
+            GfMenuObjQuestLog::openLog();
+            GfMenuObjBladeSwitch::setActive(true);
+            GfMenuObjPopup::continuePickup(0);
+          } else {
+            GfMenuObjQuestLog::closeLog();
+            GfMenuObjBladeSwitch::setActive(false);
+            GfMenuObjPopup::pausePickup();
+          }
+          break;
+        case 4:
+          if (isEnable) {
+            GfMenuObjTargetInfo::disp(false);
+            GfMenuObjComboRoute::disp(false);
+            GfMenuObjPartyGauge::disp(false);
+          } else {
+            GfMenuObjTargetInfo::disp(true);
+            GfMenuObjComboRoute::disp(true);
+            GfMenuObjPartyGauge::disp(true);
+          }
+          break;
+        case 5:
+          if (unknown40dc.test(0) || unknown40dc.test(1)) {
+            if (isEnable) {
+              GfMenuObjEnemyStatus::disp(false);
+              GfMenuObjComboRoute::disp(false);
+              GfMenuObjPartyStatus2::disp(false);
+              GfMenuObjPartyGauge::disp(false);
+            } else {
+              GfMenuObjEnemyStatus::disp(true);
+              GfMenuObjComboRoute::disp(true);
+              GfMenuObjPartyStatus2::disp(true);
+              GfMenuObjPartyGauge::disp(true);
+            }
+          } else {
+            GfMenuObjEnemyStatus::disp(false);
+            GfMenuObjComboRoute::disp(false);
+            GfMenuObjPartyStatus2::disp(false);
+            GfMenuObjPartyGauge::disp(false);
+          }
+          break;
+        }
+      }
+    }
+    unknown40e8 = unknown40e4;
   }
 }
 
