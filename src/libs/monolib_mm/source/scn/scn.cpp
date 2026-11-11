@@ -13,6 +13,7 @@
 #include "ml/win_view_root.h"
 #include "ml/work_cpu.h"
 #include "ml/work_root.h"
+#include "ml/work_util.h"
 #include "mm_mtl/algorithm.h"
 #include "mtl/mem_manager.h"
 #include "scn/scn_debug.h"
@@ -20,7 +21,22 @@
 
 #include <string.h>
 
+// Scn::move inlines ScnPoolObj::update in the game: keep its definition visible in this unit.
+#include "scn_pool_obj.cpp"
+
 namespace ml {
+
+Scn *Scn::create(const ScnSetup *setup) {
+  ScnSetup defaultSetup;
+  if (setup == nullptr) {
+    setup = &defaultSetup;
+  }
+  Scn *scn = new (WorkUtil::getWorkMem()) Scn(setup);
+  if (scn != nullptr) {
+    scn->addRef();
+  }
+  return scn;
+}
 
 void Scn::setPause(bool isPause) {
   if (unknowndf8 != isPause) {
@@ -96,6 +112,18 @@ void Scn::callbackToListener(SCNCB type) {
     case SCNCB_UNKNOWN_4:
       unknownb8[i].unknown00->cbManipuPickMove(this, unknownb8[i].unknown08);
       break;
+    }
+  }
+}
+
+void Scn::move() {
+  callbackToListener(SCNCB_UNKNOWN_0);
+  unknown28->update();
+  unknown20->update();
+  if (!unknownb0) {
+    unknownb0 = true;
+    if (unknown38 != nullptr) {
+      unknown38->update();
     }
   }
 }
