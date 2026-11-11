@@ -89,8 +89,8 @@ void DrResMdoPosInstAnm::anmInsPosParm_SclZ(mm::Vec3 *transform, f32 value) { tr
 
 DrResMdoInstPartsObj::DrResMdoInstPartsObj(const u8 *data, const MdsInstObjPosData *info) : unknown10(reinterpret_cast<const char *>(data)), unknown18(info), unknown20(nullptr), unknown28(1.0f) {
   unknown08.unknown00 = 0;
-  unknown08.isLoop = info->flags & MdsInstObjPosData::FLAG_LOOP;
-  if (info->flags & MdsInstObjPosData::FLAG_DISP_OFF && info->unknown08 != 0) {
+  unknown08.isLoop = info->flags & MdsInstObjPosData::FLAG_UNKNOWN_0;
+  if (info->flags & MdsInstObjPosData::FLAG_UNKNOWN_9 && info->unknown08 != 0) {
     DrMan::getIns()->setGblIdx(unknown18->unknown08);
   }
 }
@@ -106,7 +106,7 @@ void DrResMdoInstPartsObj::setDisp(bool disp) {
 }
 
 void DrResMdoInstPartsObj::getMatrix(mm::Mat44 &matrix) const {
-  if (unknown18->flags & MdsInstObjPosData::FLAG_POS_MATRIX) {
+  if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_5) {
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
         matrix.rows[i][j] = unknown20->rows[i][j];
@@ -150,7 +150,7 @@ f32 DrResMdoInstPartsAnm::getNodeFrame() const {
 }
 
 void DrResMdoInstPartsAnm::setSwitchID(u8 id) {
-  if (unknown18->flags & MdsInstObjPosData::FLAG_SWITCH && m_switchID != id) {
+  if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_7 && m_switchID != id) {
     m_switchID = id;
     updateSwitch();
   }
@@ -166,11 +166,11 @@ void DrResMdoInstPartsAnm::updateSwitch() {
     }
   }
   const unknown044 &entry = unknown68[index == -1 ? 0 : index];
-  unknown08.unknown00 = (entry.unknown00 & unknown044::FLAG_LOOP) == 0 ? unknown08.unknown00 & ~FLAG_LOOP : unknown08.unknown00 | FLAG_LOOP;
-  if (entry.unknown00 & unknown044::FLAG_FRAME) {
+  unknown08.unknown00 = (entry.unknown00 & unknown044::FLAG_UNKNOWN_1) == 0 ? unknown08.unknown00 & ~FLAG_UNKNOWN_2 : unknown08.unknown00 | FLAG_UNKNOWN_2;
+  if (entry.unknown00 & unknown044::FLAG_UNKNOWN_0) {
     u16 startFrame = entry.unknown04_0;
     u16 maxFrame = entry.unknown06_0 - entry.unknown04_0;
-    if (unknown18->flags & MdsInstObjPosData::FLAG_NODE_ANM) {
+    if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_3) {
       unknown5c = startFrame;
       unknown5e = maxFrame;
       if (unknown08.unknown00 & (1 << DrMan::s_nDblStockIdx)) {
@@ -191,7 +191,7 @@ void DrResMdoInstPartsAnm::updateSwitch() {
         unknown48 = unknown44;
       }
     }
-    if (unknown18->flags & MdsInstObjPosData::FLAG_POS_ANM) {
+    if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_4) {
       unknown30->setAnmFrame(startFrame, maxFrame);
     }
   }
@@ -205,7 +205,7 @@ u32 DrResMdoInstPartsAnm::getSwitchIndex(u32 index) const {
 }
 
 void DrResMdoInstPartsAnm::getMatrix(mm::Mat44 &matrix) const {
-  if (unknown18->flags & MdsInstObjPosData::FLAG_POS_ANM) {
+  if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_4) {
     unknown30->getMatrix(matrix);
   } else {
     DrResMdoInstPartsObj::getMatrix(matrix);
@@ -213,7 +213,7 @@ void DrResMdoInstPartsAnm::getMatrix(mm::Mat44 &matrix) const {
 }
 
 void DrResMdoInstPartsAnm::getAnmMatrix(mm::Mat44 &matrix) const {
-  if (unknown18->flags & MdsInstObjPosData::FLAG_POS_ANM) {
+  if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_4) {
     unknown30->getAnmMatrix(&matrix, m_posFrame * unknown58);
   } else {
     DrResMdoInstPartsObj::getMatrix(matrix);
@@ -221,7 +221,7 @@ void DrResMdoInstPartsAnm::getAnmMatrix(mm::Mat44 &matrix) const {
 }
 
 void DrResMdoInstPartsAnm::setMatrix(const mm::Mat44 &matrix) {
-  if (unknown18->flags & MdsInstObjPosData::FLAG_POS_ANM) {
+  if (unknown18->flags & MdsInstObjPosData::FLAG_UNKNOWN_4) {
     unknown30->setMatrix(matrix);
   }
 }

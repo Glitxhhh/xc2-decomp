@@ -278,7 +278,7 @@ void DebDrawCmd::release() {}
 DebDrawCmd::DebDrawCmd()
     : unknown219(false), unknown21c(mm::Col4::white), unknown230(mm::Vec3::unitY), unknown240(mm::Col4::white), unknown250(mm::Col4::white), unknown260(mm::Col4::white), unknown270(false),
       unknown2d0(nullptr), unknown2d8(0), unknown2e8(nullptr) {
-  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thInitialize, this, nullptr, nullptr, false, WKCPU_SYNC_NONE);
+  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thInitialize, this, nullptr, nullptr, false, WKCPU_SYNC_UNKNOWN_0);
 }
 
 u32 DebDrawCmd::thInitialize(void *argument, void *userData) {
@@ -292,7 +292,7 @@ u32 DebDrawCmd::thInitialize(void *argument, void *userData) {
 
 DebDrawCmd::~DebDrawCmd() {
   unknown008 = unknown2d0;
-  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thDestroy, &unknown008, nullptr, nullptr, false, WKCPU_SYNC_NONE);
+  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thDestroy, &unknown008, nullptr, nullptr, false, WKCPU_SYNC_UNKNOWN_0);
 }
 
 u32 DebDrawCmd::thDestroy(void *argument, void *userData) {

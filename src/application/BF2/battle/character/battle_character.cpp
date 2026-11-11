@@ -258,12 +258,12 @@ void BattleCharacter::WriteBackChrCollisionFlag() {
   }
 
   if (!unknownf90_4) {
-    coli->clearState(fw::COLI_STATE_ENABLE);
+    coli->clearState(fw::COLI_STATE_UNKNOWN_1);
   } else {
     if (IsDead(0)) {
       return;
     }
-    coli->setState(fw::COLI_STATE_ENABLE);
+    coli->setState(fw::COLI_STATE_UNKNOWN_1);
   }
   unknownf90_5 = false;
 }

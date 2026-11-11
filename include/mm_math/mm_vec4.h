@@ -5,8 +5,8 @@
 namespace mm {
 
 struct alignas(16) Vec4 {
-  static const Vec4 zero;
-  static const Vec4 unit;
+  static const Vec4 zero; // Name from the game symbol _ZN2mm4Vec44zeroE; also in torna and xc1de.
+  static const Vec4 unit; // Name from the game symbol _ZN2mm4Vec44unitE; also in torna and xc1de.
 
   Vec4() {}
   Vec4(const Vec3 &vector, f32 w) : x(vector.x), y(vector.y), z(vector.z), w(w) {}

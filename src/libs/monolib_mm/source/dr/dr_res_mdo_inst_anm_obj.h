@@ -14,12 +14,12 @@ struct MdsPosKeepData;
 
 struct MdsInstObjPosData {
   enum Flag {
-    FLAG_LOOP = 0x1,
-    FLAG_NODE_ANM = 0x8,
-    FLAG_POS_ANM = 0x10,
-    FLAG_POS_MATRIX = 0x20,
-    FLAG_SWITCH = 0x80,
-    FLAG_DISP_OFF = 0x200,
+    FLAG_UNKNOWN_0 = 0x1,   // Inferred role: loop; original name unknown.
+    FLAG_UNKNOWN_3 = 0x8,   // Inferred role: node anm; original name unknown.
+    FLAG_UNKNOWN_4 = 0x10,  // Inferred role: pos anm; original name unknown.
+    FLAG_UNKNOWN_5 = 0x20,  // Inferred role: pos matrix; original name unknown.
+    FLAG_UNKNOWN_7 = 0x80,  // Inferred role: switch; original name unknown.
+    FLAG_UNKNOWN_9 = 0x200, // Inferred role: disp off; original name unknown.
   };
 
   u32 unknown00; // Inferred role: name offset; original member name unknown.
@@ -97,8 +97,8 @@ static_assert(offsetof(MdsInstAnmNodeData, unknown04) == 0x04, "");
 // Inferred role: model data inst anm switch; original type name unknown.
 struct unknown044 {
   enum Flag {
-    FLAG_FRAME = 0x1,
-    FLAG_LOOP = 0x2,
+    FLAG_UNKNOWN_0 = 0x1, // Inferred role: frame; original name unknown.
+    FLAG_UNKNOWN_1 = 0x2, // Inferred role: loop; original name unknown.
   };
 
   u16 unknown00;        // Inferred role: flags; original member name unknown.
@@ -163,7 +163,7 @@ static_assert(offsetof(DrResMdoPosInstAnm, unknown154) == 0x154, "");
 class DrResMdoInstPartsObj {
 public:
   enum Flag {
-    FLAG_LOOP = 0x4,
+    FLAG_UNKNOWN_2 = 0x4, // Inferred role: loop; original name unknown.
   };
 
   DrResMdoInstPartsObj(const u8 *data, const MdsInstObjPosData *info);

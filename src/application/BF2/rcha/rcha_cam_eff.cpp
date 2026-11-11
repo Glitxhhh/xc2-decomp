@@ -34,14 +34,14 @@ f32 RchaCamEff::getValue(int slot, f32 frame, f32 defaultValue) const {
 }
 
 bool RchaCamEff::isEnableColFilter(f32 frame) const {
-  if (unknown19a4[CAMATR_COL_FILTER] >= 0) {
-    return unknown10[unknown19a4[CAMATR_COL_FILTER]].getValue(frame) > 0.9f;
+  if (unknown19a4[CAMATR_COL_FILTER_UNKNOWN_0] >= 0) {
+    return unknown10[unknown19a4[CAMATR_COL_FILTER_UNKNOWN_0]].getValue(frame) > 0.9f;
   }
   return false;
 }
 
 bool RchaCamEff::getColFilter(int &filter, f32 frame) const {
-  int index = unknown19a4[CAMATR_COL_FILTER];
+  int index = unknown19a4[CAMATR_COL_FILTER_UNKNOWN_0];
   if (index >= 0) {
     filter = unknown10[index].getValueInt(frame);
     return true;
@@ -49,8 +49,8 @@ bool RchaCamEff::getColFilter(int &filter, f32 frame) const {
   return false;
 }
 
-int RchaCamEff::getNearColFilter(f32 frame) const { return getValueInt(CAMATR_COL_FILTER_NEAR, frame, 0); }
+int RchaCamEff::getNearColFilter(f32 frame) const { return getValueInt(CAMATR_COL_FILTER_UNKNOWN_1, frame, 0); }
 
-int RchaCamEff::getFarColFilter(f32 frame) const { return getValueInt(CAMATR_COL_FILTER_FAR, frame, 0); }
+int RchaCamEff::getFarColFilter(f32 frame) const { return getValueInt(CAMATR_COL_FILTER_UNKNOWN_2, frame, 0); }
 
-f32 RchaCamEff::getFrColFilter(f32 frame) const { return getValue(CAMATR_COL_FILTER_FR, frame, 0.0f); }
+f32 RchaCamEff::getFrColFilter(f32 frame) const { return getValue(CAMATR_COL_FILTER_UNKNOWN_3, frame, 0.0f); }

@@ -325,9 +325,9 @@ private:
 class ScnObjAccStmReadObj {
 public:
   enum ReadType {
-    READ_TYPE_NONE,
-    READ_TYPE_LOAD,
-    READ_TYPE_SIZE,
+    READ_TYPE_UNKNOWN_0, // Inferred role: none; original name unknown.
+    READ_TYPE_UNKNOWN_1, // Inferred role: load; original name unknown.
+    READ_TYPE_UNKNOWN_2, // Inferred role: size; original name unknown.
   };
 
   ScnObjAccStmReadObj(DrStmReadObj *readObj);

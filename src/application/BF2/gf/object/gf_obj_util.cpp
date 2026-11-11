@@ -617,7 +617,7 @@ u32 GfObjUtil::getLayerSection(u32 layer) {
 
 void GfObjUtil::changeLayer(GfObj *obj, u32 layer) {
   u32 oldLayer = obj->unknown2c;
-  for (u32 i = 0; i < fw::UpdatableObject::COMPONENT_MAX; i++) {
+  for (u32 i = 0; i < fw::UpdatableObject::COMPONENT_UNKNOWN_12; i++) {
     fw::ComponentObject *component = obj->unknown38[i];
     if (component != nullptr) {
       GfComponent *gfComponent = mm::mtl::dynamicCast<GfComponent>(component);

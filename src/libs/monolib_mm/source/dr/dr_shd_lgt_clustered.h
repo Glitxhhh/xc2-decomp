@@ -71,7 +71,7 @@ public:
   void ssboBiteSwap();
   void convertToViewProj(mm::Vec3 &result, const mm::Vec2 &position);
 
-  static const unknown001 c_ClusterSettings[4];
+  static const unknown001 c_ClusterSettings[4]; // Name from the game symbol _ZN2ml17DrShdLgtClustered17c_ClusterSettingsE; also in torna and xc1de.
 
   bool unknown18;          // Inferred role: is low resolution; original member name unknown.
   unknown002 unknown20[3]; // Inferred role: view infos; original member name unknown.

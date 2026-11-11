@@ -102,10 +102,10 @@ static_assert(sizeof(PadConfigData) == 0x54, "");
 
 class PadManager : public ManagerObject, public mm::mtl::PtrSingleton<PadManager>, public ml::DevGraphCB {
 public:
-  static const u32 PAD_MAX = 12;
+  static const u32 PAD_UNKNOWN_12 = 12; // Inferred role: maximum number of pads; original name unknown.
 
-  static const u32 BUTTON_MAX = 32;
-  static const u32 LISTENER_MAX = 16;
+  static const u32 BUTTON_UNKNOWN_32 = 32;   // Inferred role: maximum number of buttons; original name unknown.
+  static const u32 LISTENER_UNKNOWN_16 = 16; // Inferred role: maximum number of listeners; original name unknown.
 
   struct PadWork {
     f32 unknown00; // Inferred role: repeat time; original member name unknown.
@@ -113,7 +113,7 @@ public:
     u32 unknown08; // Inferred role: repeat; original member name unknown.
   };
 
-  typedef mm::mtl::FixedArray<mm::mtl::FixedArray<PadWork, BUTTON_MAX>, PAD_MAX> PadWorkArray;
+  typedef mm::mtl::FixedArray<mm::mtl::FixedArray<PadWork, BUTTON_UNKNOWN_32>, PAD_UNKNOWN_12> PadWorkArray;
 
   static PadData m_nullPad;
 
@@ -156,18 +156,18 @@ public:
   static void setConfigData(int padNo, const PadConfigData &data);
   void updateControlPadNo(int padNo);
 
-  IPadFilter *m_filter[PAD_MAX];
-  PadData unknown80[PAD_MAX];          // Inferred role: pads; original member name unknown.
-  PadData unknown3e0[PAD_MAX];         // Inferred role: pads updated by the second updatePadData loop; original member name unknown.
-  PadWorkArray unknown740;             // Inferred role: button works of unknown80; original member name unknown.
-  PadWorkArray unknown1940;            // Inferred role: button works of unknown3e0; original member name unknown.
-  PadData unknown2b40[PAD_MAX];        // Inferred role: control pad data; original member name unknown.
-  PadData unknown2ea0[PAD_MAX];        // Inferred role: debug pad data; original member name unknown.
-  PadConfigData unknown3200[PAD_MAX];  // Inferred role: configs; original member name unknown.
-  int unknown35f0[PAD_MAX];            // Inferred role: control pad nos; original member name unknown.
-  int unknown3620[PAD_MAX];            // Inferred role: debug pad nos; original member name unknown.
-  mm::mtl::unknown027<32> unknown3650; // Inferred role: enable flags; original member name unknown.
-  bool unknown3654;                    // Inferred role: debug draw enable; original member name unknown.
+  IPadFilter *m_filter[PAD_UNKNOWN_12];
+  PadData unknown80[PAD_UNKNOWN_12];         // Inferred role: pads; original member name unknown.
+  PadData unknown3e0[PAD_UNKNOWN_12];        // Inferred role: pads updated by the second updatePadData loop; original member name unknown.
+  PadWorkArray unknown740;                   // Inferred role: button works of unknown80; original member name unknown.
+  PadWorkArray unknown1940;                  // Inferred role: button works of unknown3e0; original member name unknown.
+  PadData unknown2b40[PAD_UNKNOWN_12];       // Inferred role: control pad data; original member name unknown.
+  PadData unknown2ea0[PAD_UNKNOWN_12];       // Inferred role: debug pad data; original member name unknown.
+  PadConfigData unknown3200[PAD_UNKNOWN_12]; // Inferred role: configs; original member name unknown.
+  int unknown35f0[PAD_UNKNOWN_12];           // Inferred role: control pad nos; original member name unknown.
+  int unknown3620[PAD_UNKNOWN_12];           // Inferred role: debug pad nos; original member name unknown.
+  mm::mtl::unknown027<32> unknown3650;       // Inferred role: enable flags; original member name unknown.
+  bool unknown3654;                          // Inferred role: debug draw enable; original member name unknown.
   u8 _3655[0x3660 - 0x3655];
   f32 unknown3660; // Inferred role: repeat time; original member name unknown.
   f32 unknown3664; // Inferred role: repeat time first; original member name unknown.
@@ -175,8 +175,8 @@ public:
   f32 m_holdTime;
   int unknown3670; // Inferred role: user select pad no; original member name unknown.
   u8 _3674[0x3678 - 0x3674];
-  mm::mtl::FixedQueue<IPadListener *, LISTENER_MAX> unknown3678; // Inferred role: listeners; original member name unknown.
-  PadResEventManager unknown3708;                                // Inferred role: pad res event manager; original member name unknown.
+  mm::mtl::FixedQueue<IPadListener *, LISTENER_UNKNOWN_16> unknown3678; // Inferred role: listeners; original member name unknown.
+  PadResEventManager unknown3708;                                       // Inferred role: pad res event manager; original member name unknown.
 };
 
 static_assert(offsetof(PadManager, m_filter) == 0x20, "");

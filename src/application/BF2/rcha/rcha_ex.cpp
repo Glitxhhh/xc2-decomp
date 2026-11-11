@@ -55,7 +55,7 @@ bool CRchaEx::getVisible(int &visible, const char *name, f32 frame) const {
 }
 
 bool CRchaEx::getDynamicsBlend(f32 &blend, f32 frame) const {
-  int index = unknown19a4[ANM_DYNAMICS_BLEND];
+  int index = unknown19a4[ANM_UNKNOWN_1];
   if (index >= 0) {
     blend = unknown10[index].getValue(frame);
     return true;
@@ -63,66 +63,66 @@ bool CRchaEx::getDynamicsBlend(f32 &blend, f32 frame) const {
   return false;
 }
 
-bool CRchaEx::getWeaponDisp(int &disp, f32 frame) const { return unknown001(disp, ANM_WEAPON_DISP, frame); }
+bool CRchaEx::getWeaponDisp(int &disp, f32 frame) const { return unknown001(disp, ANM_UNKNOWN_2, frame); }
 
-bool CRchaEx::getWeaponMount(int &mount, f32 frame) const { return unknown001(mount, ANM_WEAPON_MOUNT, frame); }
+bool CRchaEx::getWeaponMount(int &mount, f32 frame) const { return unknown001(mount, ANM_UNKNOWN_3, frame); }
 
-bool CRchaEx::getWeaponBattle(int &battle, f32 frame) const { return unknown001(battle, ANM_WEAPON_BATTLE, frame); }
+bool CRchaEx::getWeaponBattle(int &battle, f32 frame) const { return unknown001(battle, ANM_UNKNOWN_4, frame); }
 
 bool CRchaEx::getWeaponSpMotion(f32 frame) const {
-  if (unknown19a4[ANM_WEAPON_SP_MOT] >= 0) {
-    return unknown10[unknown19a4[ANM_WEAPON_SP_MOT]].getValueInt(frame) != 0;
+  if (unknown19a4[ANM_UNKNOWN_5] >= 0) {
+    return unknown10[unknown19a4[ANM_UNKNOWN_5]].getValueInt(frame) != 0;
   }
   return false;
 }
 
 void CRchaEx::getWeaponPos(mm::Vec3 &pos, f32 frame) const {
-  pos.x = getValue(ANM_WEAPON_TRANSLATE_X, frame, 0.0f);
-  pos.y = getValue(ANM_WEAPON_TRANSLATE_Y, frame, 0.0f);
-  pos.z = getValue(ANM_WEAPON_TRANSLATE_Z, frame, 0.0f);
+  pos.x = getValue(ANM_UNKNOWN_6, frame, 0.0f);
+  pos.y = getValue(ANM_UNKNOWN_7, frame, 0.0f);
+  pos.z = getValue(ANM_UNKNOWN_8, frame, 0.0f);
 }
 
 void CRchaEx::getWeaponRot(mm::Vec3 &rot, f32 frame) const {
-  rot.x = getValue(ANM_WEAPON_ROTATE_X, frame, 0.0f) * mm::DEG_TO_RAD;
-  rot.y = getValue(ANM_WEAPON_ROTATE_Y, frame, 0.0f) * mm::DEG_TO_RAD;
-  rot.z = getValue(ANM_WEAPON_ROTATE_Z, frame, 0.0f) * mm::DEG_TO_RAD;
+  rot.x = getValue(ANM_UNKNOWN_9, frame, 0.0f) * mm::DEG_TO_RAD;
+  rot.y = getValue(ANM_UNKNOWN_10, frame, 0.0f) * mm::DEG_TO_RAD;
+  rot.z = getValue(ANM_UNKNOWN_11, frame, 0.0f) * mm::DEG_TO_RAD;
 }
 
-void CRchaEx::getWeaponScl(f32 &scale, f32 frame) const { scale = getValue(ANM_WEAPON_SCALE, frame, 1.0f); }
+void CRchaEx::getWeaponScl(f32 &scale, f32 frame) const { scale = getValue(ANM_UNKNOWN_12, frame, 1.0f); }
 
-bool CRchaEx::getFootEffectL(int &effect, f32 frame) const { return unknown001(effect, ANM_FOOT_EFFECT_L, frame); }
+bool CRchaEx::getFootEffectL(int &effect, f32 frame) const { return unknown001(effect, ANM_UNKNOWN_13, frame); }
 
-bool CRchaEx::getFootEffectR(int &effect, f32 frame) const { return unknown001(effect, ANM_FOOT_EFFECT_R, frame); }
+bool CRchaEx::getFootEffectR(int &effect, f32 frame) const { return unknown001(effect, ANM_UNKNOWN_14, frame); }
 
-int CRchaEx::getActionType(f32 frame) const { return getValueInt(ANM_AO_ACTIONID, frame, -1); }
+int CRchaEx::getActionType(f32 frame) const { return getValueInt(ANM_UNKNOWN_15, frame, -1); }
 
-int CRchaEx::getFacePrisetType(f32 frame) const { return getValueInt(ANM_AO_FACE_PRISET_TYPE, frame, -1); }
+int CRchaEx::getFacePrisetType(f32 frame) const { return getValueInt(ANM_UNKNOWN_16, frame, -1); }
 
-int CRchaEx::getEyeType(f32 frame) const { return getValueInt(ANM_AO_EYE_TYPE, frame, -1); }
+int CRchaEx::getEyeType(f32 frame) const { return getValueInt(ANM_UNKNOWN_17, frame, -1); }
 
 void CRchaEx::getObjPos(mm::Vec3 &pos, f32 frame) const {
-  pos.x = getValue(ANM_AO_TRANSLATE_X, frame, 0.0f);
-  pos.y = getValue(ANM_AO_TRANSLATE_Y, frame, 0.0f);
-  pos.z = getValue(ANM_AO_TRANSLATE_Z, frame, 0.0f);
+  pos.x = getValue(ANM_UNKNOWN_18, frame, 0.0f);
+  pos.y = getValue(ANM_UNKNOWN_19, frame, 0.0f);
+  pos.z = getValue(ANM_UNKNOWN_20, frame, 0.0f);
 }
 
 void CRchaEx::getObjRot(mm::Vec3 &rot, f32 frame) const {
-  rot.x = getValue(ANM_AO_ROTATE_X, frame, 0.0f) * mm::DEG_TO_RAD;
-  rot.y = getValue(ANM_AO_ROTATE_Y, frame, 0.0f) * mm::DEG_TO_RAD;
-  rot.z = getValue(ANM_AO_ROTATE_Z, frame, 0.0f) * mm::DEG_TO_RAD;
+  rot.x = getValue(ANM_UNKNOWN_21, frame, 0.0f) * mm::DEG_TO_RAD;
+  rot.y = getValue(ANM_UNKNOWN_22, frame, 0.0f) * mm::DEG_TO_RAD;
+  rot.z = getValue(ANM_UNKNOWN_23, frame, 0.0f) * mm::DEG_TO_RAD;
 }
 
-void CRchaEx::getObjScl(f32 &scale, f32 frame) const { scale = getValue(ANM_AO_SCALE, frame, 1.0f); }
+void CRchaEx::getObjScl(f32 &scale, f32 frame) const { scale = getValue(ANM_UNKNOWN_24, frame, 1.0f); }
 
 bool CRchaEx::isTargetEnable(f32 frame) const {
-  if (unknown19a4[ANM_AOTGT_ENABLE] >= 0) {
-    return unknown10[unknown19a4[ANM_AOTGT_ENABLE]].getValueInt(frame) == 1;
+  if (unknown19a4[ANM_UNKNOWN_25] >= 0) {
+    return unknown10[unknown19a4[ANM_UNKNOWN_25]].getValueInt(frame) == 1;
   }
   return false;
 }
 
 void CRchaEx::getTarget(mm::Vec3 &target, f32 frame) const {
-  target.x = getValue(ANM_AOTGT_TRANSLATE_X, frame, 0.0f);
-  target.y = getValue(ANM_AOTGT_TRANSLATE_Y, frame, 0.0f);
-  target.z = getValue(ANM_AOTGT_TRANSLATE_Z, frame, 0.0f);
+  target.x = getValue(ANM_UNKNOWN_26, frame, 0.0f);
+  target.y = getValue(ANM_UNKNOWN_27, frame, 0.0f);
+  target.z = getValue(ANM_UNKNOWN_28, frame, 0.0f);
 }

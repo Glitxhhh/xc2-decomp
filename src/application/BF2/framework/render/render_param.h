@@ -8,7 +8,7 @@ struct Vec3;
 namespace fw {
 
 enum CAMERA_TYPE : int {
-  CAMERA_TYPE_MAIN = 0,
+  CAMERA_TYPE_UNKNOWN_0 = 0, // Inferred role: main; original name unknown.
 };
 
 class RenderParam {

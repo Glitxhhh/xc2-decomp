@@ -145,7 +145,7 @@ void GfGameStuckMeter::create(const CreateInfo &info) {
   dispose();
   unknown00 = info;
   const fw::unknown031 *shape = unknown00.unknown08->unknowne8.get();
-  if (shape != nullptr && shape->unknown00 == fw::unknown031::TYPE_CHARACTER) {
+  if (shape != nullptr && shape->unknown00 == fw::unknown031::TYPE_UNKNOWN_3) {
     unknown18 = static_cast<const fw::unknown134 *>(shape)->unknown04;
     unknown1c = static_cast<const fw::unknown134 *>(shape)->unknown08;
   } else {
@@ -186,7 +186,7 @@ void GfGameStuckMeter::update(f32 deltaTime) {
   fw::ColiObject *coli = unknown00.unknown08;
   if (coli->unknown30 == fw::COLI_TYPE_UNKNOWN_1) {
     const fw::unknown031 *base = coli->unknowne8.get();
-    const fw::unknown134 *shape = base != nullptr && base->unknown00 == fw::unknown031::TYPE_CHARACTER ? static_cast<const fw::unknown134 *>(base) : nullptr;
+    const fw::unknown134 *shape = base != nullptr && base->unknown00 == fw::unknown031::TYPE_UNKNOWN_3 ? static_cast<const fw::unknown134 *>(base) : nullptr;
     if (isStuck()) {
       if (shape != nullptr) {
         f32 radius = shape->unknown04 * 0.99f <= 0.05f ? 0.05f : shape->unknown04 * 0.99f;

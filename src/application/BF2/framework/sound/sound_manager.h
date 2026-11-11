@@ -83,7 +83,7 @@ public:
     u32 unknown08; // Inferred role: max; original member name unknown.
   };
 
-  static const u32 BATTLE_RESOURCE_MAX = 3;
+  static const u32 BATTLE_RESOURCE_UNKNOWN_3 = 3; // Inferred role: maximum number of battle resources; original name unknown.
 
   static unknown130 m_uniqueID;
 
@@ -170,7 +170,7 @@ public:
   u8 _99[0xa0 - 0x99];
   mm::mtl::List<SoundPack *> unknowna0;                         // Inferred role: packs; original member name unknown.
   ResourceObject *unknowne0;                                    // Inferred role: common resource; original member name unknown.
-  ResourceObject *unknowne8[BATTLE_RESOURCE_MAX];               // Inferred role: battle resources; original member name unknown.
+  ResourceObject *unknowne8[BATTLE_RESOURCE_UNKNOWN_3];         // Inferred role: battle resources; original member name unknown.
   mm::mtl::FixedVector<SoundHandleDebugInfo, 128> unknown100;   // Inferred role: handle debug infos; original member name unknown.
   mm::mtl::FixedVector<SoundCategoryDebugInfo, 18> unknown4110; // Inferred role: category debug infos; original member name unknown.
   SoundResSourceManager unknown4478;                            // Inferred role: resource sources; original member name unknown.

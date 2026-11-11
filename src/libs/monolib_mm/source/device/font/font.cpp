@@ -9,7 +9,7 @@ class CGLibTextureBuffer;
 } // namespace grlib
 
 FontSys::FontSys() : m_head(nullptr), m_data(nullptr), m_width(0.0f), m_height(0.0f), m_ux(0.0f), m_vy(0.0f), m_uw(0.0f), m_vh(0.0f), m_texobj(nullptr) {
-  for (int i = 0; i < HASH_SIZE; i++) {
+  for (int i = 0; i < HASH_UNKNOWN_101; i++) {
     unknown08[i] = nullptr;
   }
 }
@@ -51,7 +51,7 @@ void FontSys::get_texture(u16 code) {
   if ((code & 0xff00) == 0xff00) {
     code &= 0xff;
   }
-  for (unknown002 *node = unknown08[((code >> 8) * 0x1003f + (code & 0xff) + 0x59bbe285) % HASH_SIZE]; node != nullptr; node = node->unknown00) {
+  for (unknown002 *node = unknown08[((code >> 8) * 0x1003f + (code & 0xff) + 0x59bbe285) % HASH_UNKNOWN_101]; node != nullptr; node = node->unknown00) {
     if (node->unknown08 == code) {
       const unknown001 *glyph = node->unknown10;
       m_width = glyph->unknown04;

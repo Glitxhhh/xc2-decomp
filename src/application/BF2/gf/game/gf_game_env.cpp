@@ -395,7 +395,7 @@ CFILTER_HANDLE GfGameEnv::createColorFilter(const ColorFilter &filter) {
   if (!inserted) {
     gameEnv->unknown18.push_front(newFilter);
   }
-  fw::RenderParam::setColorFilter(gameEnv->unknown18.front().unknown00, gameEnv->unknown18.front().unknown04, gameEnv->unknown18.front().unknown08, fw::CAMERA_TYPE_MAIN);
+  fw::RenderParam::setColorFilter(gameEnv->unknown18.front().unknown00, gameEnv->unknown18.front().unknown04, gameEnv->unknown18.front().unknown08, fw::CAMERA_TYPE_UNKNOWN_0);
   return newFilter.unknown0c;
 }
 
@@ -413,9 +413,9 @@ void GfGameEnv::destroyColorFilter(CFILTER_HANDLE handle) {
   gameEnv->unknown18.pop_front();
   if (!gameEnv->unknown18.empty()) {
     const ColorFilter &current = gameEnv->unknown18.front();
-    fw::RenderParam::setColorFilter(current.unknown00, current.unknown04, current.unknown08, fw::CAMERA_TYPE_MAIN);
+    fw::RenderParam::setColorFilter(current.unknown00, current.unknown04, current.unknown08, fw::CAMERA_TYPE_UNKNOWN_0);
   } else {
-    fw::RenderParam::resetColorFilter(1.0f, fw::CAMERA_TYPE_MAIN);
+    fw::RenderParam::resetColorFilter(1.0f, fw::CAMERA_TYPE_UNKNOWN_0);
   }
 }
 
@@ -429,7 +429,7 @@ void GfGameEnv::setColorFilter(CFILTER_HANDLE handle, const ColorFilter &filter)
   (*it).unknown08 = filter.unknown08;
   (*it).unknown04 = filter.unknown04;
   (*it).unknown00 = filter.unknown00;
-  fw::RenderParam::setColorFilter(gameEnv->unknown18.back().unknown00, gameEnv->unknown18.back().unknown04, gameEnv->unknown18.back().unknown08, fw::CAMERA_TYPE_MAIN);
+  fw::RenderParam::setColorFilter(gameEnv->unknown18.back().unknown00, gameEnv->unknown18.back().unknown04, gameEnv->unknown18.back().unknown08, fw::CAMERA_TYPE_UNKNOWN_0);
 }
 
 CLOUD_SEA_HANDLE GfGameEnv::createCloudSea(CLOUD_SEA cloudSea, CLOUD_SEA_PRIO prio) {
@@ -528,9 +528,9 @@ void GfGameEnv::gevPlayEvent(GEV, u32) {}
 
 void GfGameEnv::gevGameState(GF_STATE, GF_STATE state) {
   if (state == GF_STATE_DESTROY) {
-    fw::RenderParam::setMotionBlur(false, fw::CAMERA_TYPE_MAIN);
+    fw::RenderParam::setMotionBlur(false, fw::CAMERA_TYPE_UNKNOWN_0);
   } else if (state == GF_STATE_CONTROL && !GfManager::isExecModeAdvertize()) {
-    fw::RenderParam::setMotionBlur(true, fw::CAMERA_TYPE_MAIN);
+    fw::RenderParam::setMotionBlur(true, fw::CAMERA_TYPE_UNKNOWN_0);
   }
 }
 
@@ -546,7 +546,7 @@ void GfGameEnv::update(const fw::UpdateInfo &info) {
   updateGlobalIBLReferencePos(info);
   if (!gameEnv->unknown18.empty()) {
     const ColorFilter &filter = gameEnv->unknown18.back();
-    fw::RenderParam::setColorFilter(filter.unknown00, filter.unknown04, filter.unknown08, fw::CAMERA_TYPE_MAIN);
+    fw::RenderParam::setColorFilter(filter.unknown00, filter.unknown04, filter.unknown08, fw::CAMERA_TYPE_UNKNOWN_0);
   }
   if (gameEnv->unknown324 != 0 && --gameEnv->unknown324 == 0) {
     nn::oe::EnableScreenShot();
@@ -558,7 +558,7 @@ void GfGameEnv::updateIsInRoom(const fw::UpdateInfo &) {
   if (isMapjumpBlackout()) {
     return;
   }
-  if (fw::RenderParam::isRoom(position, fw::CAMERA_TYPE_MAIN)) {
+  if (fw::RenderParam::isRoom(position, fw::CAMERA_TYPE_UNKNOWN_0)) {
     if (unknown320 <= 0) {
       unknown320 = 1;
     } else if (unknown320 < ROOM_COUNT_MAX) {
@@ -581,7 +581,7 @@ void GfGameEnv::updateGlobalIBLReferencePos(const fw::UpdateInfo &) {
 
 bool GfGameEnv::isRoom() { return get()->unknown320 > -3; }
 
-void GfGameEnv::sendPlayerPositionToRender(const mm::Vec3 &position) { fw::RenderParam::setPlayerPosition(position, fw::CAMERA_TYPE_MAIN); }
+void GfGameEnv::sendPlayerPositionToRender(const mm::Vec3 &position) { fw::RenderParam::setPlayerPosition(position, fw::CAMERA_TYPE_UNKNOWN_0); }
 
 void GfGameEnv::setWeather(WEATHERID weather) { GfFieldWeather::setMapWeatherID(weather); }
 

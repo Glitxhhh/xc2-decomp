@@ -19,11 +19,11 @@ namespace ml {
 
 WorkCpuThread *WorkCpu::getCpuThread(CPUID cpuId) {
   WorkCpu *cpu = get();
-  u32 index = cpuId - CPUID_CORE_0;
+  u32 index = cpuId - CPUID_UNKNOWN_1;
   return cpu->unknown1740[index];
 }
 
-void WorkCpu::removeCpu(CPUID cpu, WorkCpuThread *) { get()->unknown1740[cpu - CPUID_CORE_0] = nullptr; }
+void WorkCpu::removeCpu(CPUID cpu, WorkCpuThread *) { get()->unknown1740[cpu - CPUID_UNKNOWN_1] = nullptr; }
 
 namespace _mlwcpu {
 
@@ -138,21 +138,21 @@ mtl::ALLOC_HANDLE WorkCpu::getMemStack() {
   return mtl::ALLOC_HANDLE();
 }
 
-CPUID WorkCpu::getMainCPUID() { return CPUID_CORE_0; }
+CPUID WorkCpu::getMainCPUID() { return CPUID_UNKNOWN_1; }
 
 CPUID WorkCpu::getRenderCPUID() {
   if (s_bRenderSubCpu) {
     u32 cpuNum = get()->m_cpuNum;
     if (cpuNum > 2) {
-      return CPUID_CORE_2;
+      return CPUID_UNKNOWN_3;
     }
 
     if (cpuNum == 2) {
-      return CPUID_CORE_1;
+      return CPUID_UNKNOWN_2;
     }
   }
 
-  return CPUID_CORE_0;
+  return CPUID_UNKNOWN_1;
 }
 
 u32 WorkCpu::getCpuNum() { return get()->m_cpuNum; }
@@ -208,7 +208,7 @@ const long &WorkCpu::getSyncClock() { return get()->m_syncClock; }
 CPUID WorkCpu::getCurrentCPUID() {
   WorkCpu *cpu = get();
   if (cpu == nullptr) {
-    return CPUID_ANY;
+    return CPUID_UNKNOWN_0;
   }
 
   u64 threadId = ThreadUtil::getCurrentID();
@@ -247,7 +247,7 @@ bool WorkCpu::isSuspendThread(CPUID cpuId) {
     return false;
   }
 
-  WorkCpuThread *thread = cpu->unknown1740[cpuId - CPUID_CORE_0];
+  WorkCpuThread *thread = cpu->unknown1740[cpuId - CPUID_UNKNOWN_1];
   if (thread != nullptr) {
     return thread->isSuspendThread();
   }
@@ -349,7 +349,7 @@ u32 WorkCpu::thRender(void *argument, void *userData) {
 
 void WorkCpu::resumeThread() {
   WorkCpu *cpu = get();
-  if (cpu != nullptr && getCurrentCPUID() == CPUID_CORE_0) {
+  if (cpu != nullptr && getCurrentCPUID() == CPUID_UNKNOWN_1) {
     for (u32 i = 1; i < cpu->m_cpuNum; i++) {
       cpu->unknown1740[i]->setEvent(true);
     }
@@ -362,7 +362,7 @@ void WorkCpu::swapBank() {
   cpu->m_even = cpu->m_even == 0;
   if (cpu->unknown175c != -1) {
     wakeup(cpu->unknown175c);
-    sync(cpu->unknown175c, WKCPU_SYNC_NONE, CPUID_ANY);
+    sync(cpu->unknown175c, WKCPU_SYNC_UNKNOWN_0, CPUID_UNKNOWN_0);
   }
 }
 
@@ -407,13 +407,13 @@ void WorkCpu::endRender() {
   }
   if (!WorkRoot::isErrorStop()) {
     if (cpu->unknown1758 != -1 && (cpu->unknown1b0 & 0x2) == 0) {
-      sync(cpu->unknown1758, WKCPU_SYNC_NONE, CPUID_ANY);
+      sync(cpu->unknown1758, WKCPU_SYNC_UNKNOWN_0, CPUID_UNKNOWN_0);
     }
     if (!WorkRoot::isErrorStop()) {
       DevGraph::cb(RCB_UNKNOWN_4);
       if (!WorkRoot::isErrorStop()) {
         for (mm::mtl::FixedList<AUTO_EXEC, 32>::iterator it = cpu->unknown17a0.begin(); it != cpu->unknown17a0.end(); ++it) {
-          sync((*it).unknown00, WKCPU_SYNC_NONE, CPUID_ANY);
+          sync((*it).unknown00, WKCPU_SYNC_UNKNOWN_0, CPUID_UNKNOWN_0);
         }
       }
     }
@@ -497,12 +497,12 @@ u32 WorkCpu::runThread(CPUID cpu, u32 (*function)(void *, void *), void *argumen
   if (current != cpu) {
     int handle = createGroupHandle(1);
     entryJobThread(handle, function, 0, argument, userData, cpu, isDebug, true);
-    if (current == CPUID_ANY) {
+    if (current == CPUID_UNKNOWN_0) {
       if (color != nullptr) {
         attachJobCol(*color);
       }
       wakeup(handle);
-      WorkCpu::sync(handle, sync, CPUID_ANY);
+      WorkCpu::sync(handle, sync, CPUID_UNKNOWN_0);
     } else {
       if (color != nullptr) {
         attachJobCol(*color);

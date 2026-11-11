@@ -44,7 +44,7 @@ ScnDebugManipu *ScnDebug::getManipulator() { return m_manipulator; }
 void ScnDebugManipu::setCalcRotationZXY() {
   CS cs(unknown08);
   if (unknown38 != nullptr) {
-    unknown38->unknownb0.m_back->unknown00.unknown130 |= AttrTransform::FLAG_ROTATION_ZXY;
+    unknown38->unknownb0.m_back->unknown00.unknown130 |= AttrTransform::FLAG_UNKNOWN_3;
   }
 }
 
@@ -72,7 +72,7 @@ SCNMANIPU ScnDebug::getManipuType() const { return m_manipulator->getType(); }
 SCNMANIPU ScnDebugManipu::getType() const {
   CS cs(unknown08);
   if (unknown38 == nullptr) {
-    return SCNMANIPU_NONE;
+    return SCNMANIPU_UNKNOWN_FFFFFFFF;
   }
   return unknown38->unknown10;
 }

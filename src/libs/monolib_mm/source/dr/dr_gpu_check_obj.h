@@ -19,8 +19,8 @@ public:
   };
 
   enum Flag {
-    FLAG_RENDER = 0x10,
-    FLAG_PAUSE = 0x80,
+    FLAG_UNKNOWN_4 = 0x10, // Inferred role: render; original name unknown.
+    FLAG_UNKNOWN_7 = 0x80, // Inferred role: pause; original name unknown.
   };
 
   DrGpuCheckObj(int type, bool isWorld);

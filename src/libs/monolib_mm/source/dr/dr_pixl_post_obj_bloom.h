@@ -20,8 +20,8 @@ public:
   };
 
   static f32 BLOOMTEX_SCALE;
-  static const f32 BLOOMTEX_SCALE_OLD;
-  static const f32 BLOOMTEX_SCALE_NEW;
+  static const f32 BLOOMTEX_SCALE_OLD; // Name from the game symbol _ZN2ml18DrPixlPostObjBloom18BLOOMTEX_SCALE_OLDE; also in torna and xc1de.
+  static const f32 BLOOMTEX_SCALE_NEW; // Name from the game symbol _ZN2ml18DrPixlPostObjBloom18BLOOMTEX_SCALE_NEWE; also in torna and xc1de.
 
   ~DrPixlPostObjBloom();
   void resetColorBuff(bool isForce);

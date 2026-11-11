@@ -10,40 +10,40 @@ struct Vec3;
 
 class RchaCam : public RchaNode {
 public:
-  static const int NAME_COUNT = 30;
+  static const int NAME_COUNT = 30; // Range marker, kept: the enum below has 30 enumerators, 0 to 29, and the array it sizes is indexed by them.
 
   // Slots of unknown19a4, in the order of the names (cam/ and camAtr/ tracks) that setup looks for.
   enum {
-    CAM_TRANSLATE_X = 0,
-    CAM_TRANSLATE_Y = 1,
-    CAM_TRANSLATE_Z = 2,
-    CAM_ROTATE_X = 3,
-    CAM_ROTATE_Y = 4,
-    CAM_ROTATE_Z = 5,
-    CAM_ROTATE_ORDER = 6,
-    CAMATR_NEAR = 7, // camAtr/translate_x
-    CAMATR_FAR = 8,  // camAtr/translate_y
-    CAMATR_FOV = 9,  // camAtr/translate_z
-    CAMATR_DOF = 10,
-    CAMATR_DOF_DISTANCE = 11,
-    CAMATR_DOF_RANGE = 12,
-    CAMATR_DOF_PIXEL = 13,
-    CAMATR_DOF_LENS = 14,
-    CAMATR_DOF_STRENGTH = 15,
-    CAMATR_DOF_BLEND = 16,
-    CAMATR_DOF_PIXEL_LV = 17,
-    CAMATR_DOF_HLV = 18,
-    CAMATR_MBLUR = 19,
-    CAMATR_MBLUR_STR = 20,
-    CAMATR_MBLUR_SUB = 21,
-    CAMATR_SM_VIS = 22,
-    CAMATR_CLOCK = 23,
-    CAMATR_CLOCK_HOUR = 24,
-    CAMATR_WTR = 25,
-    CAMATR_WTR_TYPE = 26,
-    CAMATR_WTR_FADE = 27,
-    CAMATR_CAM_LGT = 28,
-    CAMATR_NEAR_FAR = 29,
+    CAM_UNKNOWN_0 = 0,      // Inferred role: cam translate x; original name unknown.
+    CAM_UNKNOWN_1 = 1,      // Inferred role: cam translate y; original name unknown.
+    CAM_UNKNOWN_2 = 2,      // Inferred role: cam translate z; original name unknown.
+    CAM_UNKNOWN_3 = 3,      // Inferred role: cam rotate x; original name unknown.
+    CAM_UNKNOWN_4 = 4,      // Inferred role: cam rotate y; original name unknown.
+    CAM_UNKNOWN_5 = 5,      // Inferred role: cam rotate z; original name unknown.
+    CAM_UNKNOWN_6 = 6,      // Inferred role: cam rotate order; original name unknown.
+    CAMATR_UNKNOWN_7 = 7,   // Inferred role: camatr near (camAtr/translate_x); original name unknown.
+    CAMATR_UNKNOWN_8 = 8,   // Inferred role: camatr far (camAtr/translate_y); original name unknown.
+    CAMATR_UNKNOWN_9 = 9,   // Inferred role: camatr fov (camAtr/translate_z); original name unknown.
+    CAMATR_UNKNOWN_10 = 10, // Inferred role: camatr dof; original name unknown.
+    CAMATR_UNKNOWN_11 = 11, // Inferred role: camatr dof distance; original name unknown.
+    CAMATR_UNKNOWN_12 = 12, // Inferred role: camatr dof range; original name unknown.
+    CAMATR_UNKNOWN_13 = 13, // Inferred role: camatr dof pixel; original name unknown.
+    CAMATR_UNKNOWN_14 = 14, // Inferred role: camatr dof lens; original name unknown.
+    CAMATR_UNKNOWN_15 = 15, // Inferred role: camatr dof strength; original name unknown.
+    CAMATR_UNKNOWN_16 = 16, // Inferred role: camatr dof blend; original name unknown.
+    CAMATR_UNKNOWN_17 = 17, // Inferred role: camatr dof pixel lv; original name unknown.
+    CAMATR_UNKNOWN_18 = 18, // Inferred role: camatr dof hlv; original name unknown.
+    CAMATR_UNKNOWN_19 = 19, // Inferred role: camatr mblur; original name unknown.
+    CAMATR_UNKNOWN_20 = 20, // Inferred role: camatr mblur str; original name unknown.
+    CAMATR_UNKNOWN_21 = 21, // Inferred role: camatr mblur sub; original name unknown.
+    CAMATR_UNKNOWN_22 = 22, // Inferred role: camatr sm vis; original name unknown.
+    CAMATR_UNKNOWN_23 = 23, // Inferred role: camatr clock; original name unknown.
+    CAMATR_UNKNOWN_24 = 24, // Inferred role: camatr clock hour; original name unknown.
+    CAMATR_UNKNOWN_25 = 25, // Inferred role: camatr wtr; original name unknown.
+    CAMATR_UNKNOWN_26 = 26, // Inferred role: camatr wtr type; original name unknown.
+    CAMATR_UNKNOWN_27 = 27, // Inferred role: camatr wtr fade; original name unknown.
+    CAMATR_UNKNOWN_28 = 28, // Inferred role: camatr cam lgt; original name unknown.
+    CAMATR_UNKNOWN_29 = 29, // Inferred role: camatr near far; original name unknown.
   };
 
   RchaCam();

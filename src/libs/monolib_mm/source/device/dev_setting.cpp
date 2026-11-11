@@ -36,7 +36,7 @@ LangType DevSetting::getLang() {
 
 void DevSetting::setLangDefault(LangType lang) { m_defaultLang = lang; }
 
-mm::mtl::FixedVector<LangType, DEV_LANG_NUM> &DevSetting::getLangList(mm::mtl::FixedVector<LangType, DEV_LANG_NUM> &list) {
+mm::mtl::FixedVector<LangType, DEV_LANG_UNKNOWN_15> &DevSetting::getLangList(mm::mtl::FixedVector<LangType, DEV_LANG_UNKNOWN_15> &list) {
   list.clear();
   if (get() != nullptr) {
     return get()->unknown08->getLangList(list);

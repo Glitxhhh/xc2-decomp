@@ -11,30 +11,30 @@ struct Vec3;
 
 class RchaEff : public RchaNode {
 public:
-  static const int NAME_COUNT = 20;
+  static const int NAME_COUNT = 20; // Range marker, kept: the enum below has 20 enumerators, 0 to 19, and the array it sizes is indexed by them.
 
   // Slots of unknown19a4, in the order of the names (eff/ and effAtr/ tracks) that setup looks for.
   enum {
-    EFF_TRANSLATE_X = 0,
-    EFF_TRANSLATE_Y = 1,
-    EFF_TRANSLATE_Z = 2,
-    EFF_ROTATE_X = 3,
-    EFF_ROTATE_Y = 4,
-    EFF_ROTATE_Z = 5,
-    EFF_SCALE_X = 6,
-    EFF_SCALE_Y = 7,
-    EFF_SCALE_Z = 8,
-    EFFATR_TRANSLATE_X = 9,
-    EFFATR_TRANSLATE_Y = 10,
-    EFFATR_TRANSLATE_Z = 11,
-    EFFATR_ROTATE_X = 12,
-    EFFATR_ROTATE_Y = 13,
-    EFFATR_ROTATE_Z = 14,
-    EFFATR_SCALE_X = 15,
-    EFFATR_SCALE_Y = 16,
-    EFFATR_SCALE_Z = 17,
-    EFFATR_END = 18,
-    EFFATR_KILL = 19,
+    EFF_UNKNOWN_0 = 0,      // Inferred role: eff translate x; original name unknown.
+    EFF_UNKNOWN_1 = 1,      // Inferred role: eff translate y; original name unknown.
+    EFF_UNKNOWN_2 = 2,      // Inferred role: eff translate z; original name unknown.
+    EFF_UNKNOWN_3 = 3,      // Inferred role: eff rotate x; original name unknown.
+    EFF_UNKNOWN_4 = 4,      // Inferred role: eff rotate y; original name unknown.
+    EFF_UNKNOWN_5 = 5,      // Inferred role: eff rotate z; original name unknown.
+    EFF_UNKNOWN_6 = 6,      // Inferred role: eff scale x; original name unknown.
+    EFF_UNKNOWN_7 = 7,      // Inferred role: eff scale y; original name unknown.
+    EFF_UNKNOWN_8 = 8,      // Inferred role: eff scale z; original name unknown.
+    EFFATR_UNKNOWN_9 = 9,   // Inferred role: effatr translate x; original name unknown.
+    EFFATR_UNKNOWN_10 = 10, // Inferred role: effatr translate y; original name unknown.
+    EFFATR_UNKNOWN_11 = 11, // Inferred role: effatr translate z; original name unknown.
+    EFFATR_UNKNOWN_12 = 12, // Inferred role: effatr rotate x; original name unknown.
+    EFFATR_UNKNOWN_13 = 13, // Inferred role: effatr rotate y; original name unknown.
+    EFFATR_UNKNOWN_14 = 14, // Inferred role: effatr rotate z; original name unknown.
+    EFFATR_UNKNOWN_15 = 15, // Inferred role: effatr scale x; original name unknown.
+    EFFATR_UNKNOWN_16 = 16, // Inferred role: effatr scale y; original name unknown.
+    EFFATR_UNKNOWN_17 = 17, // Inferred role: effatr scale z; original name unknown.
+    EFFATR_UNKNOWN_18 = 18, // Inferred role: effatr end; original name unknown.
+    EFFATR_UNKNOWN_19 = 19, // Inferred role: effatr kill; original name unknown.
   };
 
   RchaEff();

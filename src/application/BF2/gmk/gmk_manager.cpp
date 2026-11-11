@@ -1522,7 +1522,7 @@ void GmkPhantomSimple::create(const CreateInfo &info) {
   dispose();
   unknown10 = info;
   fw::ColiPhantomInfo coliInfo;
-  coliInfo.unknown04 = fw::COLI_TYPE_STATIC;
+  coliInfo.unknown04 = fw::COLI_TYPE_UNKNOWN_0;
   coliInfo.unknown14 = 0x100000;
   switch (info.unknown00) {
   case GmkPhantom::SHAPE_TYPE_UNKNOWN_1: {
@@ -1577,7 +1577,7 @@ void GmkPhantom::create(const CreateInfo &info) {
   dispose();
   unknown20 = info;
   fw::ColiPhantomInfo coliInfo;
-  coliInfo.unknown04 = fw::COLI_TYPE_STATIC;
+  coliInfo.unknown04 = fw::COLI_TYPE_UNKNOWN_0;
   coliInfo.unknown14 = 0x100000;
   coliInfo.unknown20 = this;
   switch (info.unknown00) {

@@ -303,7 +303,7 @@ public:
 };
 
 template <typename T> void Vector<T>::copy(const T *first, const T *last, T *result) {
-  if (is_pod<T>::value) {
+  if (is_pod<T>::unknown001) {
     __builtin_memcpy(result, first, (last - first) * sizeof(T));
   } else {
     while (first != last) {

@@ -301,7 +301,7 @@ void ScnObjAccResSubMesh::setExtRegisterMatrix(int index, bool isRegister) { m_m
 
 void ScnObjAccResSubMesh::setExtMatrix(int index, const mm::Mat44 &matrix) {
   DrResMdoMeshParts *parts = m_meshObj->getParts(index);
-  if (parts->unknown28 & DrResMdoMeshParts::FLAG_MAT_ADD) {
+  if (parts->unknown28 & DrResMdoMeshParts::FLAG_UNKNOWN_27) {
     parts->setMatrix(matrix);
   }
 }
@@ -468,7 +468,7 @@ void ScnObjAccResAvatar::resetAvatarTexture() {
   m_drMdl->setCreateDisplayList();
 }
 
-static const mm::Col3 s_defaultShaderColor(0.5f, 0.5f, 0.5f);
+static const mm::Col3 unknown001(0.5f, 0.5f, 0.5f); // Inferred role: default shader color; original name unknown.
 
 ScnObjAccResShaderParm::ScnObjAccResShaderParm() : m_shaderParm(nullptr) {}
 
@@ -495,7 +495,7 @@ void ScnObjAccResShaderParm::setVal(int index, f32 value) {
 
 const mm::Col3 *ScnObjAccResShaderParm::getColor(int index) const {
   if (m_shaderParm == nullptr) {
-    return &s_defaultShaderColor;
+    return &unknown001;
   }
   return &m_shaderParm->unknown00[index];
 }
@@ -685,13 +685,13 @@ ScnObjAccStmReadObj::ScnObjAccStmReadObj(DrStmReadObj *readObj) : m_readObj(read
 
 void ScnObjAccStmReadObj::readType(ReadType type) {
   switch (type) {
-  case READ_TYPE_NONE:
+  case READ_TYPE_UNKNOWN_0:
     m_readObj->unknown18 = 0;
     break;
-  case READ_TYPE_LOAD:
+  case READ_TYPE_UNKNOWN_1:
     m_readObj->unknown18 = 1;
     break;
-  case READ_TYPE_SIZE:
+  case READ_TYPE_UNKNOWN_2:
     m_readObj->unknown18 = 2;
     break;
   }

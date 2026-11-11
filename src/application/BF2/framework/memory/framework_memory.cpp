@@ -8,7 +8,7 @@
 
 namespace fw {
 
-MemorySectionInfo::MemorySectionInfo() : unknown00(0), unknown08(0), unknown10(0x20), unknown14(true), unknown5c(mtl::ALLOCATOR_TYPE_PROGRAM) {}
+MemorySectionInfo::MemorySectionInfo() : unknown00(0), unknown08(0), unknown10(0x20), unknown14(true), unknown5c(mtl::ALLOCATOR_TYPE_UNKNOWN_1) {}
 
 FrameworkMemory::FrameworkMemory() : unknown20(false) {}
 

@@ -9,7 +9,7 @@ namespace ml {
 class EventView {
 public:
   enum {
-    BUTTON_LEFT = 1 << 0,
+    BUTTON_UNKNOWN_0 = 1 << 0, // Inferred role: left; original name unknown.
   };
 
   mm::Pnt<int> pos;

@@ -56,7 +56,7 @@ void BouManager::render() {
 }
 
 bool BouManager::OnMouseButtonDown(ml::EventView *view) {
-  if (isEnable() && isDebugEnable() && unknown002() && (view->buttons & ml::EventView::BUTTON_LEFT) != 0) {
+  if (isEnable() && isDebugEnable() && unknown002() && (view->buttons & ml::EventView::BUTTON_UNKNOWN_0) != 0) {
     startActive(view->pos);
     updateActive(view->pos);
   }

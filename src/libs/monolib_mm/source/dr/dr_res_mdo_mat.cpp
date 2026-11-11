@@ -38,7 +38,7 @@ DrResMdoMeshParts::DrResMdoMeshParts() : unknown28(0) {}
 DrResMdoMeshParts::~DrResMdoMeshParts() {}
 
 DrResMdoMeshParts &DrResMdoMeshParts::operator=(const DrResMdoMeshParts &other) {
-  if (unknown28 & FLAG_MAT_ADD) {
+  if (unknown28 & FLAG_UNKNOWN_27) {
     memcpy(unknown10, other.unknown10, sizeof(mm::Mat44));
   }
   unknown2c[0] = other.unknown2c[0];
@@ -62,7 +62,7 @@ void DrResMdoMeshParts::setMatAdd(mm::Mat44 *matrix, const mm::Mat44 *baseMat, c
 }
 
 void DrResMdoMeshParts::setRegisterMatrix(int index, bool isRegister) {
-  if (unknown28 & FLAG_MAT_ADD) {
+  if (unknown28 & FLAG_UNKNOWN_27) {
     if (isRegister) {
       if (unknown28 & 1) {
         unknown28 &= ~0x100;

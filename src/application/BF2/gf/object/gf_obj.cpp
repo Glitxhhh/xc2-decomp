@@ -41,7 +41,7 @@ void GfObj::update(const fw::UpdateInfo &info) {
 }
 
 void GfObj::onEvent(const fw::ObjectEvent &event) {
-  if (event.type == fw::OBJECT_EVENT_UPDATE_END) {
+  if (event.type == fw::OBJECT_EVENT_UNKNOWN_0) {
     GfComProperty *property = getComponent<GfComProperty>();
     if (property != nullptr) {
       property->flush();
@@ -52,7 +52,7 @@ void GfObj::onEvent(const fw::ObjectEvent &event) {
 const char *GfObj::getTypeName(u32 type) { return TYPE_NAMES[type]; }
 
 bool GfObj::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
-  for (u32 i = 0; i < COMPONENT_MAX; i++) {
+  for (u32 i = 0; i < COMPONENT_UNKNOWN_12; i++) {
     if ((message.unknown04 & (1 << i)) != 0 && unknown38[i] != nullptr) {
       GfComponent *component = mm::mtl::dynamicCast<GfComponent>(unknown38[i]);
       if (component != nullptr) {
@@ -82,10 +82,10 @@ void GfObj::setUpdateComponent(bool isUpdate) {
   GfObjUtil::applyExecUpdate(this);
 }
 
-GfObjLayerSpeed::Info GfObjLayerSpeed::s_info[fw::Framework::LAYER_MAX];
+GfObjLayerSpeed::Info GfObjLayerSpeed::s_info[fw::Framework::LAYER_UNKNOWN_32];
 
 void GfObjLayerSpeed::initialize() {
-  for (u32 layer = 0; layer < fw::Framework::LAYER_MAX; layer++) {
+  for (u32 layer = 0; layer < fw::Framework::LAYER_UNKNOWN_32; layer++) {
     s_info[layer] = Info();
   }
 }
@@ -102,7 +102,7 @@ bool GfObjLayerSpeed::isRequest(u32 layer) { return s_info[layer].unknown00; }
 f32 GfObjLayerSpeed::getSpeed(u32 layer) { return s_info[layer].unknown04; }
 
 void GfObjLayerSpeed::cleanup() {
-  for (u32 layer = 0; layer < fw::Framework::LAYER_MAX; layer++) {
+  for (u32 layer = 0; layer < fw::Framework::LAYER_UNKNOWN_32; layer++) {
     s_info[layer] = Info();
   }
 }

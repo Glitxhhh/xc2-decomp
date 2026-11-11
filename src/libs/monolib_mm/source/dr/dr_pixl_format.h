@@ -9,7 +9,7 @@ public:
   static f32 getPixelScale(u32 format);
 
   static GrlDepthFormat s_ShadowFormat;
-  static const f32 s_fPixelScale[19];
+  static const f32 s_fPixelScale[19]; // Name from the game symbol _ZN2ml12DrPixlFormat13s_fPixelScaleE; also in torna and xc1de.
 };
 
 } // namespace ml

@@ -82,7 +82,7 @@ public:
   static void cleanup();
 
 private:
-  static Info s_info[fw::Framework::LAYER_MAX];
+  static Info s_info[fw::Framework::LAYER_UNKNOWN_32];
 };
 
 static_assert(sizeof(GfObjLayerSpeed::Info) == 0x8, "");

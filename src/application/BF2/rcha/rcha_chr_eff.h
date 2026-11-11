@@ -11,30 +11,30 @@ struct Vec3;
 
 class RchaChrEff : public RchaNode {
 public:
-  static const int NAME_COUNT = 20;
+  static const int NAME_COUNT = 20; // Range marker, kept: the enum below has 20 enumerators, 0 to 19, and the array it sizes is indexed by them.
 
   // Slots of unknown19a4, in the order of the names (chrEff/ tracks) that setup looks for.
   enum {
-    CHREFF_VOLUME_FADE = 0,
-    CHREFF_VOLUME_FADE_ID = 1,
-    CHREFF_VOLUME_FADE_UVW_SCALE_X = 2,
-    CHREFF_VOLUME_FADE_UVW_SCALE_Y = 3,
-    CHREFF_VOLUME_FADE_UVW_SCALE_Z = 4,
-    CHREFF_VOLUME_FADE_CENTER_POS_X = 5,
-    CHREFF_VOLUME_FADE_CENTER_POS_Y = 6,
-    CHREFF_VOLUME_FADE_CENTER_POS_Z = 7,
-    CHREFF_VOLUME_FADE_DISTANCE = 8,
-    CHREFF_VOLUME_FADE_DIRECTIVITY = 9,
-    CHREFF_VOLUME_FADE_MESH_NO = 10,
-    CHREFF_VOLUME_FADE_RATIO = 11,
-    CHREFF_RIM_BLOOM = 12,
-    CHREFF_RIM_BLOOM_ID = 13,
-    CHREFF_AFTER_IMAGE = 14,
-    CHREFF_AFTER_IMAGE_ID1 = 15,
-    CHREFF_AFTER_IMAGE_ID2 = 16,
-    CHREFF_AFTER_IMAGE_CAPTURE_FRAME = 17,
-    CHREFF_AFTER_IMAGE_EXIST_FRAME = 18,
-    CHREFF_AFTER_IMAGE_FADE_OUT_FRAME = 19,
+    CHREFF_UNKNOWN_0 = 0,   // Inferred role: chreff volume fade; original name unknown.
+    CHREFF_UNKNOWN_1 = 1,   // Inferred role: chreff volume fade id; original name unknown.
+    CHREFF_UNKNOWN_2 = 2,   // Inferred role: chreff volume fade uvw scale x; original name unknown.
+    CHREFF_UNKNOWN_3 = 3,   // Inferred role: chreff volume fade uvw scale y; original name unknown.
+    CHREFF_UNKNOWN_4 = 4,   // Inferred role: chreff volume fade uvw scale z; original name unknown.
+    CHREFF_UNKNOWN_5 = 5,   // Inferred role: chreff volume fade center pos x; original name unknown.
+    CHREFF_UNKNOWN_6 = 6,   // Inferred role: chreff volume fade center pos y; original name unknown.
+    CHREFF_UNKNOWN_7 = 7,   // Inferred role: chreff volume fade center pos z; original name unknown.
+    CHREFF_UNKNOWN_8 = 8,   // Inferred role: chreff volume fade distance; original name unknown.
+    CHREFF_UNKNOWN_9 = 9,   // Inferred role: chreff volume fade directivity; original name unknown.
+    CHREFF_UNKNOWN_10 = 10, // Inferred role: chreff volume fade mesh no; original name unknown.
+    CHREFF_UNKNOWN_11 = 11, // Inferred role: chreff volume fade ratio; original name unknown.
+    CHREFF_UNKNOWN_12 = 12, // Inferred role: chreff rim bloom; original name unknown.
+    CHREFF_UNKNOWN_13 = 13, // Inferred role: chreff rim bloom id; original name unknown.
+    CHREFF_UNKNOWN_14 = 14, // Inferred role: chreff after image; original name unknown.
+    CHREFF_UNKNOWN_15 = 15, // Inferred role: chreff after image id1; original name unknown.
+    CHREFF_UNKNOWN_16 = 16, // Inferred role: chreff after image id2; original name unknown.
+    CHREFF_UNKNOWN_17 = 17, // Inferred role: chreff after image capture frame; original name unknown.
+    CHREFF_UNKNOWN_18 = 18, // Inferred role: chreff after image exist frame; original name unknown.
+    CHREFF_UNKNOWN_19 = 19, // Inferred role: chreff after image fade out frame; original name unknown.
   };
 
   RchaChrEff();

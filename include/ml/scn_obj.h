@@ -11,11 +11,11 @@ class Scn;
 class ScnObj {
 public:
   enum Type {
-    TYPE_MODEL = 1,
-    TYPE_CAM = 2,
-    TYPE_LIGHT = 4,
-    TYPE_IBL = 5,
-    TYPE_CLIP = 6,
+    TYPE_UNKNOWN_1 = 1, // Inferred role: model; original name unknown.
+    TYPE_UNKNOWN_2 = 2, // Inferred role: cam; original name unknown.
+    TYPE_UNKNOWN_4 = 4, // Inferred role: light; original name unknown.
+    TYPE_UNKNOWN_5 = 5, // Inferred role: ibl; original name unknown.
+    TYPE_UNKNOWN_6 = 6, // Inferred role: clip; original name unknown.
   };
 
   ScnObj(Scn *scn, u16 type) : unknown08(scn), unknown10(type), m_delete(false) {}

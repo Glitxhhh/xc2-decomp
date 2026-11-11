@@ -20,7 +20,7 @@ public:
   void setPerfConfig(DevPerfMode mode, DevPerfConfig config) override;
   DevPerfConfig getPerfConfig(DevPerfMode mode) const override;
 
-  DevPerfConfig m_perfConfig[DEV_PERF_MODE_NUM];
+  DevPerfConfig m_perfConfig[DEV_PERF_MODE_UNKNOWN_3];
   DevPerfOperationMode m_operationMode;
   DevPerfMode m_performanceMode;
   int m_focusState;

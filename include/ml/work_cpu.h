@@ -23,15 +23,15 @@ struct DEFHBM;
 struct DEFIMM;
 
 enum CPUID {
-  CPUID_ANY,
-  CPUID_CORE_0,
-  CPUID_CORE_1,
-  CPUID_CORE_2,
+  CPUID_UNKNOWN_0, // Inferred role: any; original name unknown.
+  CPUID_UNKNOWN_1, // Inferred role: core 0; original name unknown.
+  CPUID_UNKNOWN_2, // Inferred role: core 1; original name unknown.
+  CPUID_UNKNOWN_3, // Inferred role: core 2; original name unknown.
 };
 
 enum WKCPU_SYNC {
-  WKCPU_SYNC_NONE,
-  WKCPU_SYNC_WAIT,
+  WKCPU_SYNC_UNKNOWN_0, // Inferred role: none; original name unknown.
+  WKCPU_SYNC_UNKNOWN_1, // Inferred role: wait; original name unknown.
 };
 
 enum DO_THREAD {};

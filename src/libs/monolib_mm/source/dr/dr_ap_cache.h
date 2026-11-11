@@ -14,10 +14,10 @@ namespace ml {
 class DrResFetch;
 
 enum DrApCullType {
-  DR_AP_CULL_TYPE_BACK,
-  DR_AP_CULL_TYPE_FRONT,
-  DR_AP_CULL_TYPE_OFF,
-  DR_AP_CULL_TYPE_DISP_OFF,
+  DR_AP_CULL_TYPE_UNKNOWN_0, // Inferred role: back; original name unknown.
+  DR_AP_CULL_TYPE_UNKNOWN_1, // Inferred role: front; original name unknown.
+  DR_AP_CULL_TYPE_UNKNOWN_2, // Inferred role: off; original name unknown.
+  DR_AP_CULL_TYPE_UNKNOWN_3, // Inferred role: disp off; original name unknown.
   DR_AP_CULL_TYPE_UNKNOWN_4,
 };
 

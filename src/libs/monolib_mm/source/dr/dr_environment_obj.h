@@ -13,12 +13,12 @@ class DrMan;
 class DrEnvironmentObj {
 public:
   enum Flag {
-    FLAG_DISP_OFF = 1 << 0,
-    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: zone object; original name unknown.
-    FLAG_GROUP = 1 << 2,
-    FLAG_OFS_MATRIX = 1 << 3,
-    FLAG_DEBUG_DISP_2D = 1 << 20,
-    FLAG_RELEASE = 1 << 30,
+    FLAG_UNKNOWN_0 = 1 << 0,   // Inferred role: disp off; original name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1,   // Inferred role: zone object; original name unknown.
+    FLAG_UNKNOWN_2 = 1 << 2,   // Inferred role: group; original name unknown.
+    FLAG_UNKNOWN_3 = 1 << 3,   // Inferred role: ofs matrix; original name unknown.
+    FLAG_UNKNOWN_20 = 1 << 20, // Inferred role: debug disp 2d; original name unknown.
+    FLAG_UNKNOWN_30 = 1 << 30, // Inferred role: release; original name unknown.
   };
 
   void release();

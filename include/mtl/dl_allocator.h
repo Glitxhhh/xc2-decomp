@@ -27,7 +27,7 @@ public:
   ~DlAllocator() override;
   void create(void *buffer, size_t size, const char *name) override;
   void destroy() override;
-  AllocatorType getType() const override { return ALLOCATOR_TYPE_PROGRAM; }
+  AllocatorType getType() const override { return ALLOCATOR_TYPE_UNKNOWN_1; }
   void *allocate(size_t size, size_t alignment) override;
   void *allocate(size_t size, size_t alignment, const char *file, int line) override;
   void deallocate(void *pointer, size_t size) override;

@@ -537,7 +537,7 @@ bool SoundManager::isCommonLoaded() const {
 SoundPack *SoundManager::getBattlePack() { return findPack("se_btl_system", nullptr); }
 
 bool SoundManager::isBattleLoaded() const {
-  for (u32 i = 0; i < BATTLE_RESOURCE_MAX; i++) {
+  for (u32 i = 0; i < BATTLE_RESOURCE_UNKNOWN_3; i++) {
     if (unknowne8[i] != nullptr && !unknowne8[i]->valid()) {
       return false;
     }

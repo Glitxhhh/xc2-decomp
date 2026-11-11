@@ -162,7 +162,7 @@ void GfGameLoad::getOptionFileNameBin(mm::mtl::FixStr<256> &path) {
 bool GfGameLoad::OnFileEvent(ml::EventFileTh *event) {
   if (unknown128 == event->unknown08) {
     unknown130 = event->type;
-    if (unknown130 == ml::EventFileTh::TYPE_COMPLETE) {
+    if (unknown130 == ml::EventFileTh::TYPE_UNKNOWN_2) {
       unknown134 = event->unknown30;
     }
     unknown128 = nullptr;

@@ -17,7 +17,8 @@ namespace fw {
 namespace detail {
 
 template <typename T> int getPadNo(const T &name) {
-  static const char *padNames[] = {"pad0", "pad1", "pad2", "pad3", "pad4", "pad5", "pad6", "pad7"};
+  static const char *padNames[] = {
+      "pad0", "pad1", "pad2", "pad3", "pad4", "pad5", "pad6", "pad7"}; // Name from the game symbol _ZZN2fw6detail8getPadNoIN2mm3mtl6FixStrILi32EEEEEiRKT_E8padNames; also in torna.
   for (int i = 0; i < 8; i++) {
     if (strcmp(name.c_str(), padNames[i]) == 0) {
       return i;
@@ -71,7 +72,7 @@ int PadManager::getPadMax() { return ml::DevPad::getPadMax(); }
 
 u32 PadManager::updateRepeat(int padNo, const PadData &pad, PadWorkArray &works, f32 deltaTime) {
   u32 repeat = pad.unknown04;
-  for (u32 i = 0; i < BUTTON_MAX; i++) {
+  for (u32 i = 0; i < BUTTON_UNKNOWN_32; i++) {
     PadWork &work = works[padNo][i];
     if ((pad.unknown00 & 1 << i) != 0) {
       work.unknown00 += deltaTime;
@@ -91,7 +92,7 @@ u32 PadManager::updateRepeat(int padNo, const PadData &pad, PadWorkArray &works,
 
 u32 PadManager::updateCnt(int padNo, const PadData &pad, PadWorkArray &works, f32 deltaTime) {
   u32 cnt = 0;
-  for (u32 i = 0; i < BUTTON_MAX; i++) {
+  for (u32 i = 0; i < BUTTON_UNKNOWN_32; i++) {
     PadWork &work = works[padNo][i];
     if ((pad.unknown00 & 1 << i) == 0 && m_cntTime < work.unknown04 && work.unknown04 < m_holdTime) {
       cnt |= 1 << i;
@@ -103,7 +104,7 @@ u32 PadManager::updateCnt(int padNo, const PadData &pad, PadWorkArray &works, f3
 
 u32 PadManager::updateHold(int padNo, const PadData &pad, PadWorkArray &works, f32 deltaTime) {
   u32 hold = 0;
-  for (u32 i = 0; i < BUTTON_MAX; i++) {
+  for (u32 i = 0; i < BUTTON_UNKNOWN_32; i++) {
     PadWork &work = works[padNo][i];
     if ((pad.unknown00 & 1 << i) != 0) {
       if (work.unknown04 > m_holdTime) {
@@ -145,7 +146,7 @@ bool PadManager::isInitialized() const {
 
 const PadData *PadManager::getPadData(int padNo) {
   PadManager *manager = get();
-  if (manager != nullptr && static_cast<u32>(padNo) < PAD_MAX) {
+  if (manager != nullptr && static_cast<u32>(padNo) < PAD_UNKNOWN_12) {
     return &manager->unknown80[padNo];
   }
 
@@ -241,7 +242,7 @@ void PadManager::updateControlPadNo(int padNo) {
     }
   }
 
-  if (ml::DevPerf::getOperationMode() == ml::DEV_PERF_OPERATION_MODE_HANDHELD) {
+  if (ml::DevPerf::getOperationMode() == ml::DEV_PERF_OPERATION_MODE_UNKNOWN_0) {
     if (padNo == 0) {
       const PadData &handheldPad = unknown80[4];
       if (handheldPad.unknown40 && handheldPad.unknown44 == 3) {
@@ -254,8 +255,8 @@ void PadManager::updateControlPadNo(int padNo) {
       unknown35f0[padNo] = padNo;
       return;
     }
-  } else if (ml::DevPerf::getOperationMode() == ml::DEV_PERF_OPERATION_MODE_CONSOLE) {
-    for (u32 i = padNo; i < PAD_MAX; i++) {
+  } else if (ml::DevPerf::getOperationMode() == ml::DEV_PERF_OPERATION_MODE_UNKNOWN_1) {
+    for (u32 i = padNo; i < PAD_UNKNOWN_12; i++) {
       if (unknown80[i].unknown40 && unknown80[i].unknown44 - 1 < 2) {
         unknown35f0[padNo] = i;
         return;

@@ -43,8 +43,8 @@ void DrGlobalIBLPack::release() {
 
 void DrGlobalIBLPack::update() {
   DrMan *man = DrMan::getIns();
-  if ((unknown50 ^ unknown54) & FLAG_DISP_OFF) {
-    if (unknown50 & FLAG_DISP_OFF) {
+  if ((unknown50 ^ unknown54) & FLAG_UNKNOWN_0) {
+    if (unknown50 & FLAG_UNKNOWN_0) {
       for (u32 i = 0; i < unknown28.size(); i++) {
         man->unknown588->unknowne8->unknown58->removeObj(unknown28[i], unknown18);
       }
@@ -54,7 +54,7 @@ void DrGlobalIBLPack::update() {
       }
     }
   }
-  if (!(unknown50 & FLAG_DISP_OFF)) {
+  if (!(unknown50 & FLAG_UNKNOWN_0)) {
     for (u32 i = 0; i < unknown28.size(); i++) {
       unknown28[i]->update();
     }

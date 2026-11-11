@@ -37,15 +37,15 @@ enum SoundCategory : int;
 enum SoundOutputType : int;
 
 enum SoundType : int {
-  SOUND_TYPE_BGM = 1,
-  SOUND_TYPE_VOICE = 2,
-  SOUND_TYPE_SE = 3,
+  SOUND_TYPE_UNKNOWN_1 = 1, // Inferred role: bgm; original name unknown.
+  SOUND_TYPE_UNKNOWN_2 = 2, // Inferred role: voice; original name unknown.
+  SOUND_TYPE_UNKNOWN_3 = 3, // Inferred role: se; original name unknown.
 };
 
 enum SoundVolumeType : int {
-  SOUND_VOLUME_TYPE_HANDLE = 0,
-  SOUND_VOLUME_TYPE_DISTANCE = 1,
-  SOUND_VOLUME_TYPE_CATEGORY = 2,
+  SOUND_VOLUME_TYPE_UNKNOWN_0 = 0, // Inferred role: handle; original name unknown.
+  SOUND_VOLUME_TYPE_UNKNOWN_1 = 1, // Inferred role: distance; original name unknown.
+  SOUND_VOLUME_TYPE_UNKNOWN_2 = 2, // Inferred role: category; original name unknown.
 };
 
 class ISoundDriver {

@@ -27,14 +27,14 @@ void GmkCollision::create(const CreateInfo &info) {
     unknown10.unknown34[1] = unknown10.unknown34[0];
   }
   fw::ColiCharacterInfo coliInfo;
-  coliInfo.unknown04 = fw::COLI_TYPE_STATIC;
+  coliInfo.unknown04 = fw::COLI_TYPE_UNKNOWN_0;
   coliInfo.unknown08 = 799;
   coliInfo.unknown14 = 0x200000;
   coliInfo.unknown0c = 2;
   coliInfo.unknown28.unknown08 = this;
   coliInfo.unknown20 = this;
-  coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_ENTER;
-  coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_LEAVE;
+  coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_UNKNOWN_0;
+  coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_UNKNOWN_2;
   switch (info.unknown00) {
   case GmkPhantom::SHAPE_TYPE_UNKNOWN_1: {
     fw::unknown131 shape(info.unknown34[0]);

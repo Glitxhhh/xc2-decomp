@@ -49,12 +49,12 @@ void ColiMoveObject::setDir(const mm::Vec3 &direction) { m_dir = direction; }
 
 void ColiMoveObject::postUpdate() {
   ColiObject::postUpdate();
-  if (unknown30 != COLI_TYPE_STATIC) {
+  if (unknown30 != COLI_TYPE_UNKNOWN_0) {
     if (m_coliObject != nullptr) {
       idcoli::IDColiMove move;
-      if (unknown110 & FLAG_ACCURACY) {
+      if (unknown110 & FLAG_UNKNOWN_1) {
         move.setAccuracy(true);
-        unknown110 &= ~FLAG_ACCURACY;
+        unknown110 &= ~FLAG_UNKNOWN_1;
       }
       move.moveColi(m_coliObject, m_dir);
       mm::Mat44 matrix(getMatrix());

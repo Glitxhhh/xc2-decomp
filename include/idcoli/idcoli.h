@@ -41,12 +41,12 @@ enum unknown098 {
 };
 
 enum ShapeType : unsigned int {
-  SHAPE_TYPE_SPHERE = 0,
-  SHAPE_TYPE_BOX = 1,
-  SHAPE_TYPE_CAPSULE = 2,
-  SHAPE_TYPE_CHARACTER = 3,
-  SHAPE_TYPE_BOX_ROTATE = 6,
-  SHAPE_TYPE_CAPSULE_ROTATE = 7,
+  SHAPE_TYPE_UNKNOWN_0 = 0, // Inferred role: sphere; original name unknown.
+  SHAPE_TYPE_UNKNOWN_1 = 1, // Inferred role: box; original name unknown.
+  SHAPE_TYPE_UNKNOWN_2 = 2, // Inferred role: capsule; original name unknown.
+  SHAPE_TYPE_UNKNOWN_3 = 3, // Inferred role: character; original name unknown.
+  SHAPE_TYPE_UNKNOWN_6 = 6, // Inferred role: box rotate; original name unknown.
+  SHAPE_TYPE_UNKNOWN_7 = 7, // Inferred role: capsule rotate; original name unknown.
 };
 
 template <typename T> struct ColiLinkList {
@@ -90,7 +90,7 @@ static_assert(sizeof(unknown003) == 0x10, "");
 class IDColiTreeTop {
 public:
   static const u8 COLI_TBL_GRID[5];
-  static const u8 COLI_TBL_INDEX[5];
+  static const u8 COLI_TBL_INDEX[5]; // Name from the game symbol _ZN6idcoli13IDColiTreeTop14COLI_TBL_INDEXE; also in torna and xc1de.
 
   IDColiTreeTop();
   ~IDColiTreeTop();
@@ -127,15 +127,15 @@ static_assert(sizeof(IDColiTreeTop) == 0x2c10, "");
 
 class IDColiObj {
 public:
-  static const u32 FLAG_LANDING = 1 << 0;
-  static const u32 FLAG_OUT_RANGE = 1 << 1;
-  static const u32 FLAG_CONTACT_WALL = 1 << 2;
+  static const u32 FLAG_UNKNOWN_0 = 1 << 0; // Inferred role: landing; original name unknown.
+  static const u32 FLAG_UNKNOWN_1 = 1 << 1; // Inferred role: out range; original name unknown.
+  static const u32 FLAG_UNKNOWN_2 = 1 << 2; // Inferred role: contact wall; original name unknown.
 
-  static const u32 UPDATE_MATRIX = 1 << 3;
-  static const u32 UPDATE_SIZE = 1 << 5;
-  static const u32 UPDATE_ROTATE = 1 << 10;
+  static const u32 UPDATE_UNKNOWN_3 = 1 << 3;   // Inferred role: matrix; original name unknown.
+  static const u32 UPDATE_UNKNOWN_5 = 1 << 5;   // Inferred role: size; original name unknown.
+  static const u32 UPDATE_UNKNOWN_10 = 1 << 10; // Inferred role: rotate; original name unknown.
 
-  static const f32 OBJ_CALC_RADIUS;
+  static const f32 OBJ_CALC_RADIUS; // Name from the game symbol _ZN6idcoli9IDColiObj15OBJ_CALC_RADIUSE; also in torna and xc1de.
 
   bool isDeleteCall() const;
   IDColiObj();
@@ -483,7 +483,7 @@ public:
   void primset_box(void *work, IDColiBaseType &type, const CHCLBaseData *data, const CHCLBaseInfo *info);
   void primset_poli(void *work, IDColiBaseType &type, const CHCLBaseData *data, const CHCLBaseInfo *info);
 
-  static const ShapeType s_TypePrimiteve[7];
+  static const ShapeType s_TypePrimiteve[7]; // Name from the game symbol _ZN6idcoli13IDColiObjData15s_TypePrimiteveE; also in torna and xc1de.
 
   // Inferred helper: releases the ground character object created from the binary; original name unknown.
   void unknown021() {
@@ -1146,9 +1146,9 @@ public:
     f32 unknown04; // Inferred role: z; original member name unknown.
   };
 
-  static const f32 s_fBaseWallDot;
-  static const f32 s_fLandingAngle;
-  static const f32 s_fLandingVecChk;
+  static const f32 s_fBaseWallDot;   // Name from the game symbol _ZN6idcoli10IDColiMove14s_fBaseWallDotE; also in torna and xc1de.
+  static const f32 s_fLandingAngle;  // Name from the game symbol _ZN6idcoli10IDColiMove15s_fLandingAngleE; also in torna and xc1de.
+  static const f32 s_fLandingVecChk; // Name from the game symbol _ZN6idcoli10IDColiMove16s_fLandingVecChkE; also in torna and xc1de.
 
   IDColiMove();
   void setShapeParms(f32 radius, f32 height);

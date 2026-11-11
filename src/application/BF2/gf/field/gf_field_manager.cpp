@@ -157,7 +157,7 @@ bool GfFieldManager::isExecMapScriptBusy() { return GfFieldZoneScript::isExecScr
 
 bool GfFieldManager::isDestroyMapScriptBusy() { return GfFieldZoneScript::isDestroyScriptBusy(); }
 
-void GfFieldManager::updateGlobalWind() { fw::RenderParam::setGlobalWindPower(fw::WindManager::getGlobalWindPower(), fw::CAMERA_TYPE_MAIN); }
+void GfFieldManager::updateGlobalWind() { fw::RenderParam::setGlobalWindPower(fw::WindManager::getGlobalWindPower(), fw::CAMERA_TYPE_UNKNOWN_0); }
 
 f32 GfFieldManager::getEnemyBaloonRadius() { return get()->unknown1c; }
 

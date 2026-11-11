@@ -209,7 +209,7 @@ void DrCalcTexStreamMan::releaseFreeObj(DrCalcTexStmObj *&object) {
   }
 }
 
-void DrCalcTexStreamMan::jobWait() { WorkCpu::sync(unknown2498, WKCPU_SYNC_NONE, CPUID_ANY); }
+void DrCalcTexStreamMan::jobWait() { WorkCpu::sync(unknown2498, WKCPU_SYNC_UNKNOWN_0, CPUID_UNKNOWN_0); }
 
 void DrCalcTexStreamMan::callHlvTexOptimization() { unknown248c = 0xa0; }
 

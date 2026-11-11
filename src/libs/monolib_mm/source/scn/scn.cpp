@@ -54,7 +54,7 @@ void Scn::term() {
     delete unknown20;
     unknown20 = nullptr;
   }
-  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thRenderKillTerminate, this, nullptr, nullptr, true, WKCPU_SYNC_NONE);
+  WorkCpu::runThread(WorkCpu::getRenderCPUID(), thRenderKillTerminate, this, nullptr, nullptr, true, WKCPU_SYNC_UNKNOWN_0);
   if (unknown28 != nullptr) {
     delete unknown28;
     unknown28 = nullptr;
@@ -166,7 +166,7 @@ void Scn::releaseItem(ScnObj *obj) {
 
 void Scn::setDeleteRender() {
   if (unknown38 != nullptr) {
-    WorkCpu::runThread(WorkCpu::getRenderCPUID(), thRenderKillTerminate, this, nullptr, nullptr, true, WKCPU_SYNC_WAIT);
+    WorkCpu::runThread(WorkCpu::getRenderCPUID(), thRenderKillTerminate, this, nullptr, nullptr, true, WKCPU_SYNC_UNKNOWN_1);
   }
 }
 

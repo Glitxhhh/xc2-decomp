@@ -10,7 +10,7 @@
 // are its three virtual functions, and clear() zeroes the fields up to 0x199c.
 class RchaNode {
 public:
-  static const int TRACK_MAX = 48;
+  static const int TRACK_UNKNOWN_48 = 48; // Inferred role: track max; original name unknown.
 
   RchaNode();
   virtual ~RchaNode() {}
@@ -21,12 +21,12 @@ public:
   int getFrameCount() const { return unknown199c; }
 
 protected:
-  mtl::ALLOC_HANDLE unknown08;  // Inferred role: allocation handle given to setup; original member name unknown.
-  RchaAnm unknown10[TRACK_MAX]; // Inferred role: tracks; original member name unknown.
-  int unknown1990;              // Inferred role: track count; original member name unknown.
-  int unknown1994;              // Inferred role: set by setup from the resource header; original member name unknown.
-  int unknown1998;              // Inferred role: set by setup from the resource header; original member name unknown.
-  int unknown199c;              // Inferred role: frame count; original member name unknown.
+  mtl::ALLOC_HANDLE unknown08;         // Inferred role: allocation handle given to setup; original member name unknown.
+  RchaAnm unknown10[TRACK_UNKNOWN_48]; // Inferred role: tracks; original member name unknown.
+  int unknown1990;                     // Inferred role: track count; original member name unknown.
+  int unknown1994;                     // Inferred role: set by setup from the resource header; original member name unknown.
+  int unknown1998;                     // Inferred role: set by setup from the resource header; original member name unknown.
+  int unknown199c;                     // Inferred role: frame count; original member name unknown.
 
   friend struct RchaNodeLayout;
 };

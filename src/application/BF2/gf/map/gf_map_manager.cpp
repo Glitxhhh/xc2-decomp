@@ -201,9 +201,9 @@ u32 GfMapManager::getMapID() { return get()->unknown2c; }
 
 fw::EffectPack *GfMapManager::getEffectPack() { return get()->unknown40.unknown08; }
 
-void GfMapManager::setEnvTime(u32 hour, u32 minute) { fw::RenderParam::setTime(hour, minute, fw::CAMERA_TYPE_MAIN); }
+void GfMapManager::setEnvTime(u32 hour, u32 minute) { fw::RenderParam::setTime(hour, minute, fw::CAMERA_TYPE_UNKNOWN_0); }
 
-void GfMapManager::setEnvWeather(u32 weatherType) { fw::RenderParam::setWeather(weatherType, fw::CAMERA_TYPE_MAIN); }
+void GfMapManager::setEnvWeather(u32 weatherType) { fw::RenderParam::setWeather(weatherType, fw::CAMERA_TYPE_UNKNOWN_0); }
 
 void GfMapManager::setGlobalIBLReferencePos(const mm::Vec3 &position) {
   if (get() != nullptr) {

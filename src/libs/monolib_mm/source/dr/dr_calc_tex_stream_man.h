@@ -55,7 +55,7 @@ public:
   DrCalcTexStmObj *createChildObj(DrCalcTexStmObj *parent, u32 size);
 
   enum Flag {
-    FLAG_CACHER_CLEAR_MODE = 1 << 4,
+    FLAG_UNKNOWN_4 = 1 << 4, // Inferred role: cacher clear mode; original name unknown.
   };
 
   DrResChankList<DrCalcTexStmObj> unknown08; // Inferred role: object list; original member name unknown.

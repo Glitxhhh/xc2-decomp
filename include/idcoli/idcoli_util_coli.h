@@ -233,10 +233,10 @@ public:
 
 class IDColiUtilColiResult {
 public:
-  static const unknown004 s_CallLine[5];
-  static const unknown004 s_CallRay[5];
-  static const unknown004 s_CallSphere[5];
-  static const unknown004 s_CallCapsule[5];
+  static const unknown004 s_CallLine[5];    // Name from the game symbol _ZN6idcoli20IDColiUtilColiResult10s_CallLineE; also in torna and xc1de.
+  static const unknown004 s_CallRay[5];     // Name from the game symbol _ZN6idcoli20IDColiUtilColiResult9s_CallRayE; also in torna and xc1de.
+  static const unknown004 s_CallSphere[5];  // Name from the game symbol _ZN6idcoli20IDColiUtilColiResult12s_CallSphereE; also in torna and xc1de.
+  static const unknown004 s_CallCapsule[5]; // Name from the game symbol _ZN6idcoli20IDColiUtilColiResult13s_CallCapsuleE; also in torna and xc1de.
 
   static void setStockParms(IDColiResult &result, IDColiCallArg &arg, f32 distance, bool isBack);
   static s32 calcNearBoxPoint(mm::Vec3 &near, const CLBoxWork *box, const mm::Vec3 &point);
@@ -263,11 +263,11 @@ public:
 
 class IDColiUtilColiSimple {
 public:
-  static const unknown004 s_CallLine[5];
-  static const unknown004 s_CallRay[5];
-  static const unknown004 s_CallSphere[5];
-  static const unknown004 s_CallCapsule[5];
-  static const unknown004 s_CallBox[5];
+  static const unknown004 s_CallLine[5];    // Name from the game symbol _ZN6idcoli20IDColiUtilColiSimple10s_CallLineE; also in torna and xc1de.
+  static const unknown004 s_CallRay[5];     // Name from the game symbol _ZN6idcoli20IDColiUtilColiSimple9s_CallRayE; also in torna and xc1de.
+  static const unknown004 s_CallSphere[5];  // Name from the game symbol _ZN6idcoli20IDColiUtilColiSimple12s_CallSphereE; also in torna and xc1de.
+  static const unknown004 s_CallCapsule[5]; // Name from the game symbol _ZN6idcoli20IDColiUtilColiSimple13s_CallCapsuleE; also in torna and xc1de.
+  static const unknown004 s_CallBox[5];     // Name from the game symbol _ZN6idcoli20IDColiUtilColiSimple9s_CallBoxE; also in torna and xc1de.
 
   static bool isSphereSphere(IDColiResult &result, const IDColiInput &input, const void *data);
   static bool isPartsLineSphere(IDColiResult &result, const CLLineWork *line, const void *data);

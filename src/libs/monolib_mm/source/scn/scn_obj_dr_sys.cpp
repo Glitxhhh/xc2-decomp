@@ -35,7 +35,7 @@ ScnObjClipDySys::~ScnObjClipDySys() {
 }
 
 ScnObj *ScnObjClipDySys::create(Scn *scn, const void *data, int screen) {
-  if (!scn->unknown20->isValidInsert(TYPE_LIGHT)) {
+  if (!scn->unknown20->isValidInsert(TYPE_UNKNOWN_4)) {
     return nullptr;
   }
   ScnObjClipDySys *clip = new (scn->unknown64) ScnObjClipDySys(scn, data, screen);
@@ -70,7 +70,7 @@ bool ScnObjEnvColiDr::isPause() const {
 }
 
 ScnObj *ScnObjEnvColiDr::create(Scn *scn, const void *data, int screen) {
-  if (!scn->unknown20->isValidInsert(TYPE_LIGHT)) {
+  if (!scn->unknown20->isValidInsert(TYPE_UNKNOWN_4)) {
     return nullptr;
   }
   ScnObjEnvColiDr *envColi = new (scn->unknown64) ScnObjEnvColiDr(scn, data, screen);
@@ -105,7 +105,7 @@ ScnObjIBLDr::~ScnObjIBLDr() {
 }
 
 ScnObj *ScnObjIBLDr::create(Scn *scn, const void *data, int screen) {
-  if (!scn->unknown20->isValidInsert(TYPE_IBL)) {
+  if (!scn->unknown20->isValidInsert(TYPE_UNKNOWN_5)) {
     return nullptr;
   }
   ScnObjIBLDr *ibl = new (scn->unknown64) ScnObjIBLDr(scn, data, screen);
@@ -124,7 +124,7 @@ void ScnObjIBLDr::dispDebugWindow(bool isOpen, const char *title, WinProc *windo
 void ScnObjIBLDr::apply() {
   DrGlobalIBLPack *pack = unknown18;
   if (pack != nullptr) {
-    pack->unknown50 = !isDisp() ? pack->unknown50 | DrGlobalIBLPack::FLAG_DISP_OFF : pack->unknown50 & ~DrGlobalIBLPack::FLAG_DISP_OFF;
+    pack->unknown50 = !isDisp() ? pack->unknown50 | DrGlobalIBLPack::FLAG_UNKNOWN_0 : pack->unknown50 & ~DrGlobalIBLPack::FLAG_UNKNOWN_0;
   }
 }
 
@@ -154,15 +154,15 @@ void ScnObjLightDrSys::apply() {
   DrEnvironmentObj *drEnv = unknown320;
   if (drEnv != nullptr) {
     if (isDisp()) {
-      drEnv->unknown8c &= ~DrEnvironmentObj::FLAG_DISP_OFF;
+      drEnv->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_0;
     } else {
-      drEnv->unknown8c |= DrEnvironmentObj::FLAG_DISP_OFF;
+      drEnv->unknown8c |= DrEnvironmentObj::FLAG_UNKNOWN_0;
     }
     if (isOfsMatrix()) {
-      unknown320->unknown8c |= DrEnvironmentObj::FLAG_OFS_MATRIX;
+      unknown320->unknown8c |= DrEnvironmentObj::FLAG_UNKNOWN_3;
       unknown320->setMatrix(getTrans(false)->unknown70);
     } else {
-      unknown320->unknown8c &= ~DrEnvironmentObj::FLAG_GROUP;
+      unknown320->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_2;
     }
   }
 }
@@ -216,9 +216,9 @@ const mm::Vec3 &ScnObjLightDrSys::getOffsetPos() const { return unknown320->unkn
 
 void ScnObjLightDrSys::setDeugDisp2D(bool isDisp) {
   if (isDisp) {
-    unknown320->unknown8c |= DrEnvironmentObj::FLAG_DEBUG_DISP_2D;
+    unknown320->unknown8c |= DrEnvironmentObj::FLAG_UNKNOWN_20;
   } else {
-    unknown320->unknown8c &= ~DrEnvironmentObj::FLAG_DEBUG_DISP_2D;
+    unknown320->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_20;
   }
 }
 
@@ -227,7 +227,7 @@ void ScnObjLightDrSys::setFromCaptureTool() { static_cast<DrEnvironmentObjLgt *>
 void ScnObjLightDrSys::setLocalIBLName(const char *name) {}
 
 ScnObj *ScnObjLightDrSys::create(Scn *scn, const void *data, int screen) {
-  if (!scn->unknown20->isValidInsert(TYPE_LIGHT)) {
+  if (!scn->unknown20->isValidInsert(TYPE_UNKNOWN_4)) {
     return nullptr;
   }
   ScnObjLightDrSys *light = new (scn->unknown64) ScnObjLightDrSys(scn, data, screen);
@@ -244,7 +244,7 @@ void ScnObjModelDrSysStandard::createScnMdl(int screen) {
     DrCreator creator;
     unknown3d8 = creator.createMdl(m_data, unknown350.c_str(), screen);
     if (unknown3d8->unknown1c == unknown037_3) {
-      unknown34c |= FLAG_SEAM;
+      unknown34c |= FLAG_UNKNOWN_5;
     }
   }
 }
@@ -261,7 +261,7 @@ void ScnObjModelDrSysStandard::update() { ScnObjModelDrSys::update(); }
 void ScnObjModelDrSysStandard::tail() { ScnObjModel::tail(); }
 
 ScnObjModelDrSysStandard *ScnObjModelDrSysStandard::create(Scn *scn, const void *data, const char *name, int screen) {
-  if (!scn->unknown20->isValidInsert(TYPE_MODEL)) {
+  if (!scn->unknown20->isValidInsert(TYPE_UNKNOWN_1)) {
     return nullptr;
   }
   ScnObjModelDrSysStandard *model = new (scn->unknown64) ScnObjModelDrSysStandard(scn, data, name, screen);

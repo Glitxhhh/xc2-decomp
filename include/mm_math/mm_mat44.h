@@ -11,7 +11,7 @@
 namespace mm {
 
 struct alignas(16) Mat44 {
-  static const Mat44 identity;
+  static const Mat44 identity; // Name from the game symbol _ZN2mm5Mat448identityE; also in torna and xc1de.
 
   Mat44() {}
 

@@ -40,22 +40,22 @@ class DrResUseQueryObj;
 class DrPixlPostMan {
 public:
   enum Flag {
-    FLAG_3D_LUT = 0x1,
-    FLAG_TONE_MAPING = 0x2,
-    FLAG_BLOOM = 0x4,
-    FLAG_VOLUME = 0x8,
-    FLAG_SSAO = 0x10,
-    FLAG_DEPTH_FIELD = 0x20,
-    FLAG_BLUR = 0x40,
-    FLAG_REFLECTION = 0x80,
-    FLAG_CHG_SHADER = 0x100,
-    FLAG_SSS = 0x200,
-    FLAG_CALC_BLOOM = 0x8000,
-    FLAG_CALC_VOLUME = 0x10000,
-    FLAG_UNKNOWN_17 = 0x20000, // Inferred role: reflection; original name unknown.
-    FLAG_UNKNOWN_18 = 0x40000, // Inferred role: high reflection; original name unknown.
-    FLAG_DEPTH_DOWN = 0x80000,
-    FLAG_REFRACTION_MAP = 0x200000,
+    FLAG_UNKNOWN_0 = 0x1,       // Inferred role: 3d lut; original name unknown.
+    FLAG_UNKNOWN_1 = 0x2,       // Inferred role: tone maping; original name unknown.
+    FLAG_UNKNOWN_2 = 0x4,       // Inferred role: bloom; original name unknown.
+    FLAG_UNKNOWN_3 = 0x8,       // Inferred role: volume; original name unknown.
+    FLAG_UNKNOWN_4 = 0x10,      // Inferred role: ssao; original name unknown.
+    FLAG_UNKNOWN_5 = 0x20,      // Inferred role: depth field; original name unknown.
+    FLAG_UNKNOWN_6 = 0x40,      // Inferred role: blur; original name unknown.
+    FLAG_UNKNOWN_7 = 0x80,      // Inferred role: reflection; original name unknown.
+    FLAG_UNKNOWN_8 = 0x100,     // Inferred role: chg shader; original name unknown.
+    FLAG_UNKNOWN_9 = 0x200,     // Inferred role: sss; original name unknown.
+    FLAG_UNKNOWN_15 = 0x8000,   // Inferred role: calc bloom; original name unknown.
+    FLAG_UNKNOWN_16 = 0x10000,  // Inferred role: calc volume; original name unknown.
+    FLAG_UNKNOWN_17 = 0x20000,  // Inferred role: reflection; original name unknown.
+    FLAG_UNKNOWN_18 = 0x40000,  // Inferred role: high reflection; original name unknown.
+    FLAG_UNKNOWN_19 = 0x80000,  // Inferred role: depth down; original name unknown.
+    FLAG_UNKNOWN_21 = 0x200000, // Inferred role: refraction map; original name unknown.
   };
 
   void setDownDepth();

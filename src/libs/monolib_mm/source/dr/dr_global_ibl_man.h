@@ -21,7 +21,7 @@ public:
   static bool checkFileType(const void *data);
 
   enum Flag {
-    FLAG_DISP_OFF = 1 << 0,
+    FLAG_UNKNOWN_0 = 1 << 0,   // Inferred role: disp off; original name unknown.
     FLAG_UNKNOWN_30 = 1 << 30, // Inferred role: release per buffer; original name unknown.
   };
 

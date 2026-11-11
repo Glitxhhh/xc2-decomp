@@ -48,7 +48,7 @@ void GfFileSizePool::finalize() {
 }
 
 void GfFileSizePool::createThread() {
-  unknown1e038 = ml::Thread::create("FileSizeJob", false, fnThread, this, 0x10000, ml::CPUID_CORE_1, 0);
+  unknown1e038 = ml::Thread::create("FileSizeJob", false, fnThread, this, 0x10000, ml::CPUID_UNKNOWN_2, 0);
   if (unknown1e038 != nullptr) {
     unknown1e038->resume();
   }

@@ -21,7 +21,7 @@ void RchaNode::clear() {
   unknown1994 = 0;
   unknown1998 = 0;
   unknown199c = 0;
-  for (int i = 0; i < TRACK_MAX; i++) {
+  for (int i = 0; i < TRACK_UNKNOWN_48; i++) {
     RchaAnm &anm = unknown10[i];
     anm.unknown001();
     anm.unknown00 = "";

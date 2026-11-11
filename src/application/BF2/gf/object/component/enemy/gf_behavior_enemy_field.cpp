@@ -304,7 +304,7 @@ void GfBehaviorEnemyField::update(f32 deltaTime) {
   unknowna0.z = 0.0f;
   unknowna0.x = 0.0f;
   fw::ColiMoveObject *coli = getColiObject();
-  if (coli == nullptr || coli->testAttribute(fw::COLI_ATRR_UNKNOWN_0) || coli->unknown30 == fw::COLI_TYPE_STATIC || !unknown90) {
+  if (coli == nullptr || coli->testAttribute(fw::COLI_ATRR_UNKNOWN_0) || coli->unknown30 == fw::COLI_TYPE_UNKNOWN_0 || !unknown90) {
     unknowna0.y = 0.0f;
   } else {
     unknowna0.y += deltaTime * -9.8f;

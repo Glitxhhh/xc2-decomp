@@ -20,7 +20,7 @@ bool RchaChrEff::hasAnm(const void *data) {
   return anm.unknown19a0;
 }
 
-bool RchaChrEff::getVolumeFade(int &type, f32 frame) const { return unknown001(type, CHREFF_VOLUME_FADE, frame); }
+bool RchaChrEff::getVolumeFade(int &type, f32 frame) const { return unknown001(type, CHREFF_UNKNOWN_0, frame); }
 
 int RchaChrEff::getValueInt(int slot, f32 frame, int defaultValue) const {
   if (unknown19a4[slot] >= 0) {
@@ -29,12 +29,12 @@ int RchaChrEff::getValueInt(int slot, f32 frame, int defaultValue) const {
   return defaultValue;
 }
 
-bool RchaChrEff::getVolumeFadeId(int &id, f32 frame) const { return unknown001(id, CHREFF_VOLUME_FADE_ID, frame); }
+bool RchaChrEff::getVolumeFadeId(int &id, f32 frame) const { return unknown001(id, CHREFF_UNKNOWN_1, frame); }
 
 void RchaChrEff::getVolumeFadeUVWScale(mm::Vec3 &scale, f32 frame) const {
-  scale.x = getValue(CHREFF_VOLUME_FADE_UVW_SCALE_X, frame, 0.0f);
-  scale.y = getValue(CHREFF_VOLUME_FADE_UVW_SCALE_Y, frame, 0.0f);
-  scale.z = getValue(CHREFF_VOLUME_FADE_UVW_SCALE_Z, frame, 0.0f);
+  scale.x = getValue(CHREFF_UNKNOWN_2, frame, 0.0f);
+  scale.y = getValue(CHREFF_UNKNOWN_3, frame, 0.0f);
+  scale.z = getValue(CHREFF_UNKNOWN_4, frame, 0.0f);
 }
 
 f32 RchaChrEff::getValue(int slot, f32 frame, f32 defaultValue) const {
@@ -45,34 +45,34 @@ f32 RchaChrEff::getValue(int slot, f32 frame, f32 defaultValue) const {
 }
 
 void RchaChrEff::getVolumeFadeCenterPos(mm::Vec3 &pos, f32 frame) const {
-  pos.x = getValue(CHREFF_VOLUME_FADE_CENTER_POS_X, frame, 0.0f);
-  pos.y = getValue(CHREFF_VOLUME_FADE_CENTER_POS_Y, frame, 0.0f);
-  pos.z = getValue(CHREFF_VOLUME_FADE_CENTER_POS_Z, frame, 0.0f);
+  pos.x = getValue(CHREFF_UNKNOWN_5, frame, 0.0f);
+  pos.y = getValue(CHREFF_UNKNOWN_6, frame, 0.0f);
+  pos.z = getValue(CHREFF_UNKNOWN_7, frame, 0.0f);
 }
 
-bool RchaChrEff::getVolumeFadeDistance(f32 &distance, f32 frame) const { return unknown002(distance, CHREFF_VOLUME_FADE_DISTANCE, frame); }
+bool RchaChrEff::getVolumeFadeDistance(f32 &distance, f32 frame) const { return unknown002(distance, CHREFF_UNKNOWN_8, frame); }
 
-bool RchaChrEff::getVolumeFadeDirectivity(f32 &directivity, f32 frame) const { return unknown002(directivity, CHREFF_VOLUME_FADE_DIRECTIVITY, frame); }
+bool RchaChrEff::getVolumeFadeDirectivity(f32 &directivity, f32 frame) const { return unknown002(directivity, CHREFF_UNKNOWN_9, frame); }
 
-bool RchaChrEff::getVolumeFadeMesh(int &mesh, f32 frame) const { return unknown001(mesh, CHREFF_VOLUME_FADE_MESH_NO, frame); }
+bool RchaChrEff::getVolumeFadeMesh(int &mesh, f32 frame) const { return unknown001(mesh, CHREFF_UNKNOWN_10, frame); }
 
-bool RchaChrEff::getVolumeFadeRatio(f32 &ratio, f32 frame) const { return unknown002(ratio, CHREFF_VOLUME_FADE_RATIO, frame); }
+bool RchaChrEff::getVolumeFadeRatio(f32 &ratio, f32 frame) const { return unknown002(ratio, CHREFF_UNKNOWN_11, frame); }
 
-bool RchaChrEff::getRimBloom(int &type, f32 frame) const { return unknown001(type, CHREFF_RIM_BLOOM, frame); }
+bool RchaChrEff::getRimBloom(int &type, f32 frame) const { return unknown001(type, CHREFF_UNKNOWN_12, frame); }
 
-bool RchaChrEff::getRimBloomId(int &id, f32 frame) const { return unknown001(id, CHREFF_RIM_BLOOM_ID, frame); }
+bool RchaChrEff::getRimBloomId(int &id, f32 frame) const { return unknown001(id, CHREFF_UNKNOWN_13, frame); }
 
-bool RchaChrEff::getAfterImage(int &type, f32 frame) const { return unknown001(type, CHREFF_AFTER_IMAGE, frame); }
+bool RchaChrEff::getAfterImage(int &type, f32 frame) const { return unknown001(type, CHREFF_UNKNOWN_14, frame); }
 
-bool RchaChrEff::getAfterImageId1(int &id, f32 frame) const { return unknown001(id, CHREFF_AFTER_IMAGE_ID1, frame); }
+bool RchaChrEff::getAfterImageId1(int &id, f32 frame) const { return unknown001(id, CHREFF_UNKNOWN_15, frame); }
 
-bool RchaChrEff::getAfterImageId2(int &id, f32 frame) const { return unknown001(id, CHREFF_AFTER_IMAGE_ID2, frame); }
+bool RchaChrEff::getAfterImageId2(int &id, f32 frame) const { return unknown001(id, CHREFF_UNKNOWN_16, frame); }
 
-bool RchaChrEff::getAfterImageCaptureFrame(f32 &captureFrame, f32 frame) const { return unknown002(captureFrame, CHREFF_AFTER_IMAGE_CAPTURE_FRAME, frame); }
+bool RchaChrEff::getAfterImageCaptureFrame(f32 &captureFrame, f32 frame) const { return unknown002(captureFrame, CHREFF_UNKNOWN_17, frame); }
 
-bool RchaChrEff::getAfterImageExistFrame(f32 &existFrame, f32 frame) const { return unknown002(existFrame, CHREFF_AFTER_IMAGE_EXIST_FRAME, frame); }
+bool RchaChrEff::getAfterImageExistFrame(f32 &existFrame, f32 frame) const { return unknown002(existFrame, CHREFF_UNKNOWN_18, frame); }
 
-bool RchaChrEff::getAfterImageFadeOutFrame(f32 &fadeOutFrame, f32 frame) const { return unknown002(fadeOutFrame, CHREFF_AFTER_IMAGE_FADE_OUT_FRAME, frame); }
+bool RchaChrEff::getAfterImageFadeOutFrame(f32 &fadeOutFrame, f32 frame) const { return unknown002(fadeOutFrame, CHREFF_UNKNOWN_19, frame); }
 
 void RchaChrEff::clear() {
   RchaNode::clear();

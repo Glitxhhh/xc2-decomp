@@ -12,13 +12,13 @@ public:
 
   unknown027 &operator=(const unknown027 &other) {
     if (&other != this) {
-      copy(other.mBits, WORD_COUNT, mBits);
+      copy(other.mBits, unknown003, mBits);
     }
     return *this;
   }
 
   void clear() {
-    for (unsigned int i = 0; i < WORD_COUNT; i++) {
+    for (unsigned int i = 0; i < unknown003; i++) {
       mBits[i] = 0;
     }
   }
@@ -56,7 +56,7 @@ public:
 #line 132
   bool test(unsigned int index) const {
     MM_ASSERT(index < Size);
-    if (WORD_COUNT > 1) {
+    if (unknown003 > 1) {
       return (mBits[wordIndex(index)] & bit(index)) != 0;
     }
 
@@ -67,16 +67,16 @@ public:
   unsigned int unknown001(unsigned int word) const { return mBits[word]; }
 
 private:
-  static const unsigned int WORD_COUNT = (Size + 31) / 32;
+  static const unsigned int unknown003 = (Size + 31) / 32; // Inferred role: number of 32-bit words holding the bits; original name unknown.
 
-  static unsigned int wordIndex(unsigned int index) { return WORD_COUNT > 1 ? index >> 5 : 0; }
+  static unsigned int wordIndex(unsigned int index) { return unknown003 > 1 ? index >> 5 : 0; }
 
   static unsigned int bit(unsigned int index) {
     unsigned long position = index;
-    return static_cast<unsigned int>(1UL << (WORD_COUNT > 1 ? position & 31 : position));
+    return static_cast<unsigned int>(1UL << (unknown003 > 1 ? position & 31 : position));
   }
 
-  unsigned int mBits[WORD_COUNT];
+  unsigned int mBits[unknown003];
 };
 
 } // namespace mtl

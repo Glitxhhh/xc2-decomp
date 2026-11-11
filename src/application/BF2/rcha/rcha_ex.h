@@ -13,39 +13,39 @@ struct Vec3;
 // the vtable _ZTV7CRchaEx (0x71011a77c0); its size is the allocation size in CharaEvaPlayer::play.
 class CRchaEx : public RchaNode {
 public:
-  static const int NAME_COUNT = 29;
+  static const int NAME_COUNT = 29; // Range marker, kept: the enum below has 29 enumerators, 0 to 28, and the array it sizes is indexed by them.
 
   // Slots of unknown19a4, in the order of the names (dmy and the ptExAnm/ tracks) that setup looks for.
   enum {
-    ANM_DMY = 0,
-    ANM_DYNAMICS_BLEND = 1,
-    ANM_WEAPON_DISP = 2,
-    ANM_WEAPON_MOUNT = 3,
-    ANM_WEAPON_BATTLE = 4,
-    ANM_WEAPON_SP_MOT = 5,
-    ANM_WEAPON_TRANSLATE_X = 6,
-    ANM_WEAPON_TRANSLATE_Y = 7,
-    ANM_WEAPON_TRANSLATE_Z = 8,
-    ANM_WEAPON_ROTATE_X = 9,
-    ANM_WEAPON_ROTATE_Y = 10,
-    ANM_WEAPON_ROTATE_Z = 11,
-    ANM_WEAPON_SCALE = 12,
-    ANM_FOOT_EFFECT_L = 13,
-    ANM_FOOT_EFFECT_R = 14,
-    ANM_AO_ACTIONID = 15,
-    ANM_AO_FACE_PRISET_TYPE = 16,
-    ANM_AO_EYE_TYPE = 17,
-    ANM_AO_TRANSLATE_X = 18,
-    ANM_AO_TRANSLATE_Y = 19,
-    ANM_AO_TRANSLATE_Z = 20,
-    ANM_AO_ROTATE_X = 21,
-    ANM_AO_ROTATE_Y = 22,
-    ANM_AO_ROTATE_Z = 23,
-    ANM_AO_SCALE = 24,
-    ANM_AOTGT_ENABLE = 25,
-    ANM_AOTGT_TRANSLATE_X = 26,
-    ANM_AOTGT_TRANSLATE_Y = 27,
-    ANM_AOTGT_TRANSLATE_Z = 28,
+    ANM_UNKNOWN_0 = 0,   // Inferred role: anm dmy; original name unknown.
+    ANM_UNKNOWN_1 = 1,   // Inferred role: anm dynamics blend; original name unknown.
+    ANM_UNKNOWN_2 = 2,   // Inferred role: anm weapon disp; original name unknown.
+    ANM_UNKNOWN_3 = 3,   // Inferred role: anm weapon mount; original name unknown.
+    ANM_UNKNOWN_4 = 4,   // Inferred role: anm weapon battle; original name unknown.
+    ANM_UNKNOWN_5 = 5,   // Inferred role: anm weapon sp mot; original name unknown.
+    ANM_UNKNOWN_6 = 6,   // Inferred role: anm weapon translate x; original name unknown.
+    ANM_UNKNOWN_7 = 7,   // Inferred role: anm weapon translate y; original name unknown.
+    ANM_UNKNOWN_8 = 8,   // Inferred role: anm weapon translate z; original name unknown.
+    ANM_UNKNOWN_9 = 9,   // Inferred role: anm weapon rotate x; original name unknown.
+    ANM_UNKNOWN_10 = 10, // Inferred role: anm weapon rotate y; original name unknown.
+    ANM_UNKNOWN_11 = 11, // Inferred role: anm weapon rotate z; original name unknown.
+    ANM_UNKNOWN_12 = 12, // Inferred role: anm weapon scale; original name unknown.
+    ANM_UNKNOWN_13 = 13, // Inferred role: anm foot effect l; original name unknown.
+    ANM_UNKNOWN_14 = 14, // Inferred role: anm foot effect r; original name unknown.
+    ANM_UNKNOWN_15 = 15, // Inferred role: anm ao actionid; original name unknown.
+    ANM_UNKNOWN_16 = 16, // Inferred role: anm ao face priset type; original name unknown.
+    ANM_UNKNOWN_17 = 17, // Inferred role: anm ao eye type; original name unknown.
+    ANM_UNKNOWN_18 = 18, // Inferred role: anm ao translate x; original name unknown.
+    ANM_UNKNOWN_19 = 19, // Inferred role: anm ao translate y; original name unknown.
+    ANM_UNKNOWN_20 = 20, // Inferred role: anm ao translate z; original name unknown.
+    ANM_UNKNOWN_21 = 21, // Inferred role: anm ao rotate x; original name unknown.
+    ANM_UNKNOWN_22 = 22, // Inferred role: anm ao rotate y; original name unknown.
+    ANM_UNKNOWN_23 = 23, // Inferred role: anm ao rotate z; original name unknown.
+    ANM_UNKNOWN_24 = 24, // Inferred role: anm ao scale; original name unknown.
+    ANM_UNKNOWN_25 = 25, // Inferred role: anm aotgt enable; original name unknown.
+    ANM_UNKNOWN_26 = 26, // Inferred role: anm aotgt translate x; original name unknown.
+    ANM_UNKNOWN_27 = 27, // Inferred role: anm aotgt translate y; original name unknown.
+    ANM_UNKNOWN_28 = 28, // Inferred role: anm aotgt translate z; original name unknown.
   };
 
   CRchaEx();

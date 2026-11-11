@@ -21,10 +21,10 @@ void Updatable1::update(const fw::UpdateInfo &info) {}
 
 bool Updatable1::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
   switch (message.unknown00) {
-  case MSG_DAMAGE:
+  case MSG_UNKNOWN_0:
     procMsgDamage(sender, static_cast<MsgDamage &>(message));
     return true;
-  case MSG_GET_LIFE:
+  case MSG_UNKNOWN_1:
     procMsgGetLife(sender, static_cast<MsgGetLife &>(message));
     return true;
   }

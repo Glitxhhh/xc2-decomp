@@ -148,7 +148,7 @@ static_assert(sizeof(unknown020) == 0x10, "");
 struct unknown022 {
   enum Flag {
     FLAG_UNKNOWN_3 = 1 << 3,
-    FLAG_VANISH_EFFECT = 1 << 13,
+    FLAG_UNKNOWN_13 = 1 << 13, // Inferred role: vanish effect; original name unknown.
   };
 
   u16 unknown00; // Inferred role: flags; original member name unknown.

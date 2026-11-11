@@ -41,7 +41,7 @@ class CGLibTextureBuffer;
 
 namespace ml {
 
-void DrEnvironmentObj::release() { unknown8c |= FLAG_RELEASE << DrMan::s_nDblStockIdx; }
+void DrEnvironmentObj::release() { unknown8c |= FLAG_UNKNOWN_30 << DrMan::s_nDblStockIdx; }
 
 DrEnvironmentObj::DrEnvironmentObj(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan)
     : unknown08(nullptr), unknown10(nullptr), unknown18(drMan), unknown20(lightMan), unknown28(fogMan), unknown70(0.0f, 0.0f, 0.0f), m_frame(0.0f), m_frameSpd(1.0f), m_maxFrame(0.0f), unknown8c(0),
@@ -103,9 +103,9 @@ void DrEnvironmentMan::updateCameraLight() {
       res->AddRef();
       unknown68 = createObj(res->unknownc8);
     }
-    unknown68->unknown8c &= ~DrEnvironmentObj::FLAG_DISP_OFF;
+    unknown68->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_0;
   } else if (unknown68 != nullptr) {
-    unknown68->unknown8c |= DrEnvironmentObj::FLAG_DISP_OFF;
+    unknown68->unknown8c |= DrEnvironmentObj::FLAG_UNKNOWN_0;
   }
 }
 
@@ -119,13 +119,13 @@ void DrEnvironmentMan::setZoneObj(DrEnvironmentObj *obj, bool isOn) {
   if (isOn) {
     for (DrEnvironmentObj *current = unknown48; current != nullptr; current = current->unknown10) {
       if (current->unknown8c & DrEnvironmentObj::FLAG_UNKNOWN_1) {
-        current->unknown8c &= ~DrEnvironmentObj::FLAG_DISP_OFF;
+        current->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_0;
       }
     }
   } else {
     for (DrEnvironmentObj *current = unknown48; current != nullptr; current = current->unknown10) {
       if (current->unknown8c & DrEnvironmentObj::FLAG_UNKNOWN_1) {
-        current->unknown8c |= DrEnvironmentObj::FLAG_DISP_OFF;
+        current->unknown8c |= DrEnvironmentObj::FLAG_UNKNOWN_0;
       }
     }
   }
@@ -340,7 +340,7 @@ void DrEnvironmentObjLgt::setFrame(f32 frame) {
 }
 
 void DrEnvironmentObjLgt::update() {
-  if (unknown8c & FLAG_DISP_OFF) {
+  if (unknown8c & FLAG_UNKNOWN_0) {
     unknown007();
     DrEnvironmentLgtList **lists = unknown1a8;
     for (int i = 0; i < unknown1e4; i++, lists++) {
@@ -379,7 +379,7 @@ void DrEnvironmentObjLgt::updatePosLgt() {
   unknown210.x = viewWork->unknown400.x - unknown70.x;
   unknown210.y = viewWork->unknown400.y - unknown70.y;
   unknown210.z = viewWork->unknown400.z - unknown70.z;
-  if (unknown8c & FLAG_OFS_MATRIX) {
+  if (unknown8c & FLAG_UNKNOWN_3) {
     setupCalcMatrix();
     calcLgtPos(viewWork);
   } else {
@@ -466,7 +466,7 @@ void DrEnvironmentObjLgt::calcLgtObj(int index, DrCalcViewWork *viewWork) {
 }
 
 void DrEnvironmentObjLgt::renderLgt() {
-  if (unknown8c & FLAG_DISP_OFF) {
+  if (unknown8c & FLAG_UNKNOWN_0) {
     return;
   }
   if (unknown1fc != 0 && unknown1e0 != 0) {
@@ -487,9 +487,9 @@ void DrEnvironmentObjLgt::debugRenderLgt() {
 }
 
 void DrEnvironmentObjLgt::debugRenderLgt2D() {
-  if (!(unknown8c & FLAG_DISP_OFF) && unknown1fc != 0) {
+  if (!(unknown8c & FLAG_UNKNOWN_0) && unknown1fc != 0) {
     DrShdLgtMan *shdLgtMan = unknown18->unknown80->unknown18;
-    if (unknown8c & FLAG_DEBUG_DISP_2D) {
+    if (unknown8c & FLAG_UNKNOWN_20) {
       for (int i = 0; i < unknown1fc; i++) {
         DrEnvironmentLgtList *list = &unknown198[i];
         DrLightObj *light = list->m_lightObj;
@@ -509,7 +509,7 @@ bool DrEnvironmentObjLgt::callback_Chk_Ambinet_Directional(DrEnvironmentLgtList 
       return false;
     }
   }
-  if (data->unknown22 != 0 && (unknown8c & FLAG_GROUP) && unknown90 != data->unknown22) {
+  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && unknown90 != data->unknown22) {
     return false;
   }
   list->unknown18 = 1.0f;
@@ -545,7 +545,7 @@ bool DrEnvironmentObjLgt::callback_Chk_Point(DrEnvironmentLgtList *list, DrCalcV
   } else {
     list->unknown18 = 1.0f;
   }
-  if (data->unknown22 != 0 && (unknown8c & FLAG_GROUP) && unknown90 != data->unknown22) {
+  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && unknown90 != data->unknown22) {
     return false;
   }
   DrLightObjPnt *light = static_cast<DrLightObjPnt *>(list->m_lightObj);
@@ -585,7 +585,7 @@ bool DrEnvironmentObjLgt::callback_Chk_Spot(DrEnvironmentLgtList *list, DrCalcVi
   } else {
     list->unknown18 = 1.0f;
   }
-  if (data->unknown22 != 0 && (unknown8c & FLAG_GROUP) && unknown90 != data->unknown22) {
+  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && unknown90 != data->unknown22) {
     return false;
   }
   DrLightObjSpt *light = static_cast<DrLightObjSpt *>(list->m_lightObj);

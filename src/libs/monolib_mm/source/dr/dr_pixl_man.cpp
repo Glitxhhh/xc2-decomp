@@ -37,7 +37,7 @@
 
 namespace ml {
 
-static const s32 s_gbuffPixlObjs[] = {0, 1, 2, 3, 4, 8, 5, 6, 7, 15, 18};
+static const s32 unknown003[] = {0, 1, 2, 3, 4, 8, 5, 6, 7, 15, 18}; // Inferred role: pixel objects of the geometry buffers; original name unknown.
 
 static bool isDblPixlObj(int type) { return (0x27200ULL >> type) & 1; }
 
@@ -76,7 +76,7 @@ void DrPixlMan::captureMainFrameBuffer(grlib::CGLibTextureBuffer *buffer, u32 wi
 }
 
 void DrPixlMan::setupGodRay() {
-  if (unknown08->unknown120[unknown08->unknown1c98]->m_bloomOn && (unknown7f0->unknown180->unknownf8 & DrPixlPostMan::FLAG_CALC_VOLUME)) {
+  if (unknown08->unknown120[unknown08->unknown1c98]->m_bloomOn && (unknown7f0->unknown180->unknownf8 & DrPixlPostMan::FLAG_UNKNOWN_16)) {
     unknown7f0->unknown00[7][0]->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
   }
 }
@@ -469,7 +469,7 @@ bool DrPixlMan::selectGBuffRenderTarget(u32 mask) {
   int mrt = 0;
   for (int i = 0; i < 11; i++) {
     if (mask & (1 << i)) {
-      grlib::CGLibState::setRegisterRenderTarget(*getPixlObj(s_gbuffPixlObjs[i]), static_cast<grlib::GrlMrtType>(mrt));
+      grlib::CGLibState::setRegisterRenderTarget(*getPixlObj(unknown003[i]), static_cast<grlib::GrlMrtType>(mrt));
       mrt++;
     }
   }

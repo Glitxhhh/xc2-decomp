@@ -289,7 +289,7 @@ DrResMdoSeamColi *DrMdoCtlSeam::createFreeSeamCollision() { return unknown258.un
 void DrMdoCtlSeam::seamZPrePassBegin() {
   unknownf2 = 0;
   unknown001();
-  m_drMan->unknown5c0->setupCulling(DR_AP_CULL_TYPE_OFF);
+  m_drMan->unknown5c0->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
 }
 
 void DrMdoCtlSeam::seamZPrePassEnd() {}
@@ -302,7 +302,7 @@ void DrMdoCtlSeam::seamThicknessPassBegin(bool isFirst) {
   } else {
     m_drMan->unknown5c0->beginThicknessRenderSecond();
   }
-  m_drMan->unknown5c0->setupCulling(isFirst ? DR_AP_CULL_TYPE_FRONT : DR_AP_CULL_TYPE_BACK);
+  m_drMan->unknown5c0->setupCulling(isFirst ? DR_AP_CULL_TYPE_UNKNOWN_1 : DR_AP_CULL_TYPE_UNKNOWN_0);
 }
 
 void DrMdoCtlSeam::seamThicknessPassEnd(bool value) {}

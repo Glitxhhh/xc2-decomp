@@ -114,7 +114,7 @@ void DrMan::resetModelTexture(u32 index) {
 
 void DrMan::renderEnd(int loop) {
   unknown78->setMainRenderTarget();
-  unknown180->end(DrPixlTileParm::TILE_TYPE_MAIN);
+  unknown180->end(DrPixlTileParm::TILE_TYPE_UNKNOWN_0);
 }
 
 void DrMan::renderViewBegin() {
@@ -150,7 +150,7 @@ void DrMan::applyViewBegin() {
   unknown78->updateShadowDisplayList();
 }
 
-void DrMan::renderBegin(int loop) { unknown180->begin(DrPixlTileParm::TILE_TYPE_MAIN); }
+void DrMan::renderBegin(int loop) { unknown180->begin(DrPixlTileParm::TILE_TYPE_UNKNOWN_0); }
 
 void DrMan::setMainRenderTarget() { unknown78->setMainRenderTarget(); }
 
@@ -546,7 +546,7 @@ void DrMan::releaseCallBack(IDrDrawCallback *callback) {
 }
 
 void DrMan::setCacherClearMode(bool cacherClearMode) {
-  unknown5b0->unknown2068 = !cacherClearMode ? unknown5b0->unknown2068 & ~DrCalcTexStreamMan::FLAG_CACHER_CLEAR_MODE : unknown5b0->unknown2068 | DrCalcTexStreamMan::FLAG_CACHER_CLEAR_MODE;
+  unknown5b0->unknown2068 = !cacherClearMode ? unknown5b0->unknown2068 & ~DrCalcTexStreamMan::FLAG_UNKNOWN_4 : unknown5b0->unknown2068 | DrCalcTexStreamMan::FLAG_UNKNOWN_4;
 }
 
 void DrMan::openPixelDebugWindow(WinProc *window) {}

@@ -16,7 +16,7 @@ class WinProc;
 class ScnObjIBL : public ScnObj {
 public:
   enum Flag {
-    FLAG_DISP = 1 << 0,
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: disp; original name unknown.
   };
 
   ScnObjIBL(Scn *scn);

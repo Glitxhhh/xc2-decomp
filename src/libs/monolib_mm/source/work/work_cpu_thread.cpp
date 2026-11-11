@@ -16,7 +16,7 @@
 namespace ml {
 
 WorkCpuThread::WorkCpuThread(const char *name, WorkObj *parent)
-    : WorkObj(name, parent, 0), m_CPUID(CPUID_CORE_0), m_threadID(0), unknown1b8(nullptr), unknown1c0(0), unknown1c4(0), m_aboutJobNumC(0), unknown1d0(0), unknown1d8(0), unknown1e0(0.0f),
+    : WorkObj(name, parent, 0), m_CPUID(CPUID_UNKNOWN_1), m_threadID(0), unknown1b8(nullptr), unknown1c0(0), unknown1c4(0), m_aboutJobNumC(0), unknown1d0(0), unknown1d8(0), unknown1e0(0.0f),
       unknown1e4(0.0f), unknown1e8(nullptr), unknown650(nullptr), unknown658(WorkCpu::unknown001(mm::Col3::yellow)), unknown660(0), unknown668(0), m_background(false), unknown671(false),
       m_beginTerm(false) {
   unknown1e8 = new (WorkRootState::getWorkMem()) CriticalSection();
@@ -163,7 +163,7 @@ void WorkCpuThread::beginUpdate() {
 
 void WorkCpuThread::calcPerformance(bool isCalc) {
   if (isCalc) {
-    if (m_CPUID == CPUID_CORE_0) {
+    if (m_CPUID == CPUID_UNKNOWN_1) {
       long clock = unknown1d8 - unknown1d0;
       unknown1e4 = DevClock::getClock2Sec(clock);
     } else {
@@ -201,7 +201,7 @@ void WorkCpuThread::setWorkingJob(TJOB *job) {
 
 void WorkCpuThread::setup(CPUID cpuId) {
   m_CPUID = cpuId;
-  if (cpuId == CPUID_CORE_0) {
+  if (cpuId == CPUID_UNKNOWN_1) {
     m_threadID = ThreadUtil::getCurrentID();
     return;
   }

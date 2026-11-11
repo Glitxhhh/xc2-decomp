@@ -17,8 +17,8 @@ class DrResUseQueryObj;
 
 class DrLightObjGlobalIBL {
 public:
-  static const int TEXTURE_MAX = 7;
-  static const int SH_TERM_NUM = 4;
+  static const int TEXTURE_UNKNOWN_7 = 7; // Inferred role: maximum number of textures; original name unknown.
+  static const int SH_TERM_UNKNOWN_4 = 4; // Inferred role: number of spherical harmonics terms; original name unknown.
 
   struct MeshData {
     ~MeshData() { unknown1c0.release(); }
@@ -54,17 +54,17 @@ public:
   u8 _48[0x70 - 0x48];
   u32 unknown70; // Inferred role: current mesh index; original member name unknown.
   u8 _74[0x78 - 0x74];
-  grlib::CGLibTextureBuffer unknown78[TEXTURE_MAX]; // Inferred role: textures; original member name unknown.
+  grlib::CGLibTextureBuffer unknown78[TEXTURE_UNKNOWN_7]; // Inferred role: textures; original member name unknown.
   u8 _388[0x3a0 - 0x388];
   mm::Col3 unknown3a0; // Inferred role: additional ambient; original member name unknown.
   u8 _3ac[0x3b0 - 0x3ac];
   f32 unknown3b0; // Inferred role: sky intensity; original member name unknown.
   f32 unknown3b4; // Inferred role: dir light intensity; original member name unknown.
   u8 _3b8[0x3d0 - 0x3b8];
-  mm::Mat44 unknown3d0;                            // Inferred role: world to proxy space matrix (DrShdLgtGlobalIBL::updateUB_ToProxySpace); original member name unknown.
-  f32 unknown410[16];                              // Inferred role: similarity values; original member name unknown.
-  f32 unknown450[TEXTURE_MAX][SH_TERM_NUM][9];     // Inferred role: sh terms; original member name unknown.
-  mm::Mat44 unknown840[TEXTURE_MAX * SH_TERM_NUM]; // Inferred role: sh matrices; original member name unknown.
+  mm::Mat44 unknown3d0;                                        // Inferred role: world to proxy space matrix (DrShdLgtGlobalIBL::updateUB_ToProxySpace); original member name unknown.
+  f32 unknown410[16];                                          // Inferred role: similarity values; original member name unknown.
+  f32 unknown450[TEXTURE_UNKNOWN_7][SH_TERM_UNKNOWN_4][9];     // Inferred role: sh terms; original member name unknown.
+  mm::Mat44 unknown840[TEXTURE_UNKNOWN_7 * SH_TERM_UNKNOWN_4]; // Inferred role: sh matrices; original member name unknown.
 };
 
 static_assert(offsetof(DrLightObjGlobalIBL, unknown08) == 0x08, "");

@@ -11,8 +11,8 @@ namespace ml {
 
 class DrResMdoMeshParts {
 public:
-  static const u32 FLAG_UNKNOWN_0 = 0x1; // Inferred role: the mdl info is drawn with the parts matrix; original name unknown.
-  static const u32 FLAG_MAT_ADD = 0x8000000;
+  static const u32 FLAG_UNKNOWN_0 = 0x1;        // Inferred role: the mdl info is drawn with the parts matrix; original name unknown.
+  static const u32 FLAG_UNKNOWN_27 = 0x8000000; // Inferred role: mat add; original name unknown.
 
   DrResMdoMeshParts();
   ~DrResMdoMeshParts();

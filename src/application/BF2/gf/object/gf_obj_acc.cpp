@@ -302,9 +302,9 @@ void GfObjAcc::setCollisionChar(bool isEnable) {
   for (u32 i = 0; i < collider->unknown18.size(); i++) {
     if (collider->unknown18[i] != nullptr) {
       if (isEnable) {
-        collider->unknown18[i]->setState(fw::COLI_STATE_ENABLE);
+        collider->unknown18[i]->setState(fw::COLI_STATE_UNKNOWN_1);
       } else {
-        collider->unknown18[i]->clearState(fw::COLI_STATE_ENABLE);
+        collider->unknown18[i]->clearState(fw::COLI_STATE_UNKNOWN_1);
       }
     }
   }

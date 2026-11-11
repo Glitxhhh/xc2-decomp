@@ -162,11 +162,11 @@ void unknown001(const DataParamAcc &paramAcc, bool isDead, bool isSwim) { // Inf
       return;
     }
     coli->setPriority(DEAD_COLI_PRIORITY);
-    coli->clearState(fw::COLI_STATE_ENABLE);
+    coli->clearState(fw::COLI_STATE_UNKNOWN_1);
   }
   if (priority != currentPriority && !isDead) {
     coli->setPriority(priority);
-    coli->setState(fw::COLI_STATE_ENABLE);
+    coli->setState(fw::COLI_STATE_UNKNOWN_1);
   }
 }
 
@@ -505,7 +505,7 @@ void GfGameScene::setEnemyDead(GF_OBJ_HANDLE *handle) {
   }
   fw::ColiObject *coli = collider->unknown18[0];
   if (coli != nullptr) {
-    coli->clearState(fw::COLI_STATE_ENABLE);
+    coli->clearState(fw::COLI_STATE_UNKNOWN_1);
   }
 }
 

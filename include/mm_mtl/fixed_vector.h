@@ -192,7 +192,7 @@ public:
 
 private:
   static void copy(const T *first, const T *last, T *dest) {
-    if (is_pod<T>::value) {
+    if (is_pod<T>::unknown001) {
       size_t count = last - first;
       __builtin_memcpy(dest, first, count * sizeof(T));
     } else {

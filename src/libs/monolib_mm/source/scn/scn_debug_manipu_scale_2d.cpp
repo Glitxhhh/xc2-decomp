@@ -8,7 +8,7 @@
 
 namespace ml {
 
-ScnDebugManipuScale2D::ScnDebugManipuScale2D(Scn *scn, const mm::Mat44 *matrix, const mm::Vec3 *scale) : ScnDebugManipuObj(SCNMANIPU_SCALE_2D, scn, matrix, scale) {
+ScnDebugManipuScale2D::ScnDebugManipuScale2D(Scn *scn, const mm::Mat44 *matrix, const mm::Vec3 *scale) : ScnDebugManipuObj(SCNMANIPU_UNKNOWN_4, scn, matrix, scale) {
   unknown368 = 4;
   ScnObjCam *cam = scn->getCam(-1);
   if (cam != nullptr) {

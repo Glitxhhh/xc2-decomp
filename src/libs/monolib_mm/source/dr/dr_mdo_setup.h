@@ -29,7 +29,7 @@ static_assert(sizeof(MdsMatVariableTbl) == 0x08, "");
 
 struct MdsMatValShaderCate {
   enum Flag {
-    FLAG_STORAGE_BUFFER = 1 << 0,
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: storage buffer; original name unknown.
   };
 
   u8 _00[0x03 - 0x00];

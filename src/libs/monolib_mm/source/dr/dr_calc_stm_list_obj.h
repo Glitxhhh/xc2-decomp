@@ -48,9 +48,9 @@ static_assert(sizeof(unknown035) == 0x18, "");
 class DrCalcStmListObj {
 public:
   enum DrTexUseMode {
-    DR_TEX_USE_MODE_NONE,
-    DR_TEX_USE_MODE_LOW,
-    DR_TEX_USE_MODE_MIDDLE,
+    DR_TEX_USE_MODE_UNKNOWN_0, // Inferred role: none; original name unknown.
+    DR_TEX_USE_MODE_UNKNOWN_1, // Inferred role: low; original name unknown.
+    DR_TEX_USE_MODE_UNKNOWN_2, // Inferred role: middle; original name unknown.
   };
 
   void release();

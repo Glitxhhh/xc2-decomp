@@ -38,7 +38,7 @@ void DrAPCache::shadowBegin() {
   unknown18 = -1;
   unknown24 = 2;
   unknown08 = 0;
-  unknown10 = DR_AP_CULL_TYPE_OFF;
+  unknown10 = DR_AP_CULL_TYPE_UNKNOWN_2;
   unknown14 = -1;
   grlib::CGLibDepthCtl::setDepthControl(true, true, GRL_COMPARE_LESS);
   grlib::CGLibPolygon::setCullingOff();
@@ -49,7 +49,7 @@ void DrAPCache::beginZRender() {
   unknown24 = 2;
   unknown1c = 1;
   unknown18 = -1;
-  unknown10 = DR_AP_CULL_TYPE_OFF;
+  unknown10 = DR_AP_CULL_TYPE_UNKNOWN_2;
   unknown14 = -1;
   grlib::CGLibDepthCtl::setDepthControl(true, true, GRL_COMPARE_LESS);
   grlib::CGLibPolygon::setCullingOff();
@@ -62,7 +62,7 @@ void DrAPCache::beginThicknessRenderFirst() {
   unknown24 = 2;
   unknown18 = -1;
   unknown1c = 0;
-  unknown10 = DR_AP_CULL_TYPE_OFF;
+  unknown10 = DR_AP_CULL_TYPE_UNKNOWN_2;
   unknown14 = -1;
   grlib::CGLibDepthCtl::setDepthControl(true, false, GRL_COMPARE_LESS);
   grlib::CGLibPolygon::setCullingOff();
@@ -76,7 +76,7 @@ void DrAPCache::beginThicknessRenderSecond() {
   unknown24 = 2;
   unknown1c = 1;
   unknown18 = -1;
-  unknown10 = DR_AP_CULL_TYPE_OFF;
+  unknown10 = DR_AP_CULL_TYPE_UNKNOWN_2;
   unknown14 = -1;
   grlib::CGLibDepthCtl::setDepthControl(true, true, GRL_COMPARE_LESS);
   grlib::CGLibPolygon::setCullingOff();
@@ -156,13 +156,13 @@ void DrAPCache::setupCulling(DrApCullType cullType) {
   }
   unknown10 = cullType;
   switch (cullType) {
-  case DR_AP_CULL_TYPE_BACK:
+  case DR_AP_CULL_TYPE_UNKNOWN_0:
     grlib::CGLibPolygon::setCullingBack();
     break;
-  case DR_AP_CULL_TYPE_FRONT:
+  case DR_AP_CULL_TYPE_UNKNOWN_1:
     grlib::CGLibPolygon::setCullingFront();
     break;
-  case DR_AP_CULL_TYPE_OFF:
+  case DR_AP_CULL_TYPE_UNKNOWN_2:
     grlib::CGLibPolygon::setCullingOff();
     break;
   default:

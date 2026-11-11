@@ -189,7 +189,7 @@ bool DrCalcStmListObj::texstm_defupdate() {
 }
 
 bool DrCalcStmListObj::OnFileEvent(EventFileTh *event) {
-  if (event->type != EventFileTh::TYPE_COMPLETE) {
+  if (event->type != EventFileTh::TYPE_UNKNOWN_2) {
     unknown40 = nullptr;
     unknown80 = (unknown80 & ~0x0c000000u) | 0x08000000;
     return 0;

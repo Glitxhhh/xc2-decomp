@@ -360,7 +360,7 @@ u32 DrMdoMat::getVanishEffectMax() const {
   if (header == nullptr) {
     return 0;
   }
-  if (!(header->unknown00 & unknown022::FLAG_VANISH_EFFECT)) {
+  if (!(header->unknown00 & unknown022::FLAG_UNKNOWN_13)) {
     return 0;
   }
   return header->unknown94 > 1 ? header->unknown94 : 1;

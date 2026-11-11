@@ -8,14 +8,14 @@
 // (0x710069d8a8) and the vtable _ZTV10RchaCamEff (0x71011a75d0); its size is the allocation size in CamEvaPlayerEff::play.
 class RchaCamEff : public RchaNode {
 public:
-  static const int NAME_COUNT = 4;
+  static const int NAME_COUNT = 4; // Range marker, kept: the enum below has 4 enumerators, 0 to 3, and the array it sizes is indexed by them.
 
   // Slots of unknown19a4, in the order of the names (camAtr/ tracks) that setup looks for.
   enum {
-    CAMATR_COL_FILTER = 0,
-    CAMATR_COL_FILTER_NEAR = 1,
-    CAMATR_COL_FILTER_FAR = 2,
-    CAMATR_COL_FILTER_FR = 3,
+    CAMATR_COL_FILTER_UNKNOWN_0 = 0, // Inferred role: camatr col filter; original name unknown.
+    CAMATR_COL_FILTER_UNKNOWN_1 = 1, // Inferred role: camatr col filter near; original name unknown.
+    CAMATR_COL_FILTER_UNKNOWN_2 = 2, // Inferred role: camatr col filter far; original name unknown.
+    CAMATR_COL_FILTER_UNKNOWN_3 = 3, // Inferred role: camatr col filter fr; original name unknown.
   };
 
   RchaCamEff();

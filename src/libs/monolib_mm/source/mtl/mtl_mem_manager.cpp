@@ -460,10 +460,10 @@ bool MemManager::isInitialized() { return s_bInitialize; }
 
 void MemManager::setCollectCallStack(bool collect) { m_collectCallstack = collect; }
 
-ALLOC_HANDLE MemManager::create(void *buffer, size_t size, const char *name, bool isCritical) { return create(buffer, size, name, isCritical, ALLOCATOR_TYPE_PROGRAM); }
+ALLOC_HANDLE MemManager::create(void *buffer, size_t size, const char *name, bool isCritical) { return create(buffer, size, name, isCritical, ALLOCATOR_TYPE_UNKNOWN_1); }
 
 ALLOC_HANDLE MemManager::create(ALLOC_HANDLE parent, size_t size, const char *name, bool isCritical, const char *file, int line) {
-  return create(parent, size, name, isCritical, ALLOCATOR_TYPE_PROGRAM, 0x10, file, line);
+  return create(parent, size, name, isCritical, ALLOCATOR_TYPE_UNKNOWN_1, 0x10, file, line);
 }
 
 void MemManager::deallocate(void *pointer, size_t size, bool isBack) {
@@ -887,7 +887,7 @@ template <int N> void AssetAllocator<N>::destroy() {
   unknown8860.clear();
 }
 
-template <int N> AllocatorType AssetAllocator<N>::getType() const { return ALLOCATOR_TYPE_RESOURCE; }
+template <int N> AllocatorType AssetAllocator<N>::getType() const { return ALLOCATOR_TYPE_UNKNOWN_2; }
 
 template <int N> void *AssetAllocator<N>::allocate(size_t size, size_t alignment) { return allocate(size, alignment, "", 0); }
 

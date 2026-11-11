@@ -4,7 +4,7 @@
 
 namespace ml {
 
-ScnDebugManipuScale::ScnDebugManipuScale(Scn *scn, const mm::Mat44 *matrix, const mm::Vec3 *scale) : ScnDebugManipuObj(SCNMANIPU_SCALE, scn, matrix, scale) {
+ScnDebugManipuScale::ScnDebugManipuScale(Scn *scn, const mm::Mat44 *matrix, const mm::Vec3 *scale) : ScnDebugManipuObj(SCNMANIPU_UNKNOWN_2, scn, matrix, scale) {
   unknown380 = 0;
   unknown388 = 7;
   unknown390 = mm::Vec3::zero;

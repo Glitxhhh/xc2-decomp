@@ -28,12 +28,12 @@ namespace ml {
 namespace _dsk {
 
 enum Flag {
-  FLAG_DISP_INFO = 0x1,
-  FLAG_SIMPLE_INFO = 0x2,
-  FLAG_AUTO_EXECUTE = 0x8,
-  FLAG_SCREEN_LOG = 0x10,
-  FLAG_PAUSE = 0x20,
-  FLAG_SIMPLE_COST = 0x40,
+  FLAG_UNKNOWN_0 = 0x1,  // Inferred role: disp info; original name unknown.
+  FLAG_UNKNOWN_1 = 0x2,  // Inferred role: simple info; original name unknown.
+  FLAG_UNKNOWN_3 = 0x8,  // Inferred role: auto execute; original name unknown.
+  FLAG_UNKNOWN_4 = 0x10, // Inferred role: screen log; original name unknown.
+  FLAG_UNKNOWN_5 = 0x20, // Inferred role: pause; original name unknown.
+  FLAG_UNKNOWN_6 = 0x40, // Inferred role: simple cost; original name unknown.
 };
 
 u32 s_flg;
@@ -78,7 +78,7 @@ public:
 
 } // namespace _dsk
 
-void ProcDesktop::setSimpleCost(bool isSimpleCost) { _dsk::s_flg = !isSimpleCost ? _dsk::s_flg & ~_dsk::FLAG_SIMPLE_COST : _dsk::s_flg | _dsk::FLAG_SIMPLE_COST; }
+void ProcDesktop::setSimpleCost(bool isSimpleCost) { _dsk::s_flg = !isSimpleCost ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_6 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_6; }
 
 ProcDesktop::~ProcDesktop() {
   unknown218 = 0;
@@ -91,11 +91,11 @@ ProcDesktop::~ProcDesktop() {
   unknown220 = mtl::ALLOC_HANDLE();
 }
 
-bool ProcDesktop::isSimpleCost() { return _dsk::s_flg & _dsk::FLAG_SIMPLE_COST; }
+bool ProcDesktop::isSimpleCost() { return _dsk::s_flg & _dsk::FLAG_UNKNOWN_6; }
 
-void ProcDesktop::setScreenLog(bool isScreenLog) { _dsk::s_flg = !isScreenLog ? _dsk::s_flg & ~_dsk::FLAG_SCREEN_LOG : _dsk::s_flg | _dsk::FLAG_SCREEN_LOG; }
+void ProcDesktop::setScreenLog(bool isScreenLog) { _dsk::s_flg = !isScreenLog ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_4 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_4; }
 
-bool ProcDesktop::isDispScreenLog() { return _dsk::s_flg & _dsk::FLAG_SCREEN_LOG; }
+bool ProcDesktop::isDispScreenLog() { return _dsk::s_flg & _dsk::FLAG_UNKNOWN_4; }
 
 void ProcDesktop::executeApp(const char *name) {
   ProcDesktop *desktop = get();
@@ -129,7 +129,7 @@ f32 ProcDesktop::setUpdateRatio(f32 ratio) {
   f32 oldRatio = desktop->unknown25c;
   desktop->unknown260 = ratio;
   if (oldRatio != ratio) {
-    f32 scale = (_dsk::s_flg & _dsk::FLAG_PAUSE) ? 0.0f : 1.0f;
+    f32 scale = (_dsk::s_flg & _dsk::FLAG_UNKNOWN_5) ? 0.0f : 1.0f;
     desktop->unknown25c = ratio;
     DevGraph::setFrameSpd(ratio * scale);
   }
@@ -154,7 +154,7 @@ f32 ProcDesktop::getUpdateRatio() {
 
 void ProcDesktop::entryTable(DESKTOP_ICON_DEF *table, bool isAutoExecute) {
   _dsk::s_pIconTable = table;
-  _dsk::s_flg = !isAutoExecute ? _dsk::s_flg & ~_dsk::FLAG_AUTO_EXECUTE : _dsk::s_flg | _dsk::FLAG_AUTO_EXECUTE;
+  _dsk::s_flg = !isAutoExecute ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_3 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_3;
 }
 
 void ProcDesktop::entryStaticApp(DESKTOP_ICON_DEF *table) { _dsk::s_pStaticTable = table; }
@@ -202,11 +202,11 @@ void ProcDesktop::setDisableFlag(u32 flag) { _dsk::s_bitDisable = flag; }
 
 void ProcDesktop::autorun(const char *name) { _dsk::s_pszAutorun = name; }
 
-void ProcDesktop::dispInfo(bool isDisp) { _dsk::s_flg = !isDisp ? _dsk::s_flg & ~_dsk::FLAG_DISP_INFO : _dsk::s_flg | _dsk::FLAG_DISP_INFO; }
+void ProcDesktop::dispInfo(bool isDisp) { _dsk::s_flg = !isDisp ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_0 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_0; }
 
-void ProcDesktop::setSimpleInfo(bool isSimple) { _dsk::s_flg = !isSimple ? _dsk::s_flg & ~_dsk::FLAG_SIMPLE_INFO : _dsk::s_flg | _dsk::FLAG_SIMPLE_INFO; }
+void ProcDesktop::setSimpleInfo(bool isSimple) { _dsk::s_flg = !isSimple ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_1 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_1; }
 
-bool ProcDesktop::isDispInfo() { return _dsk::s_flg & _dsk::FLAG_DISP_INFO; }
+bool ProcDesktop::isDispInfo() { return _dsk::s_flg & _dsk::FLAG_UNKNOWN_0; }
 
 WinView *ProcDesktop::getSelectedView() { return get()->m_selectedView; }
 
@@ -285,7 +285,7 @@ bool ProcDesktop::wkStandbyLogin() {
     return false;
   }
   if (WorkFlowShutdownAll::get() == nullptr) {
-    if ((_dsk::s_flg & _dsk::FLAG_AUTO_EXECUTE) && unknown218 != 0) {
+    if ((_dsk::s_flg & _dsk::FLAG_UNKNOWN_3) && unknown218 != 0) {
       unknown210[0]->execute();
       _dsk::s_selectAppName = unknown210[0]->unknown08.c_str();
     }
@@ -341,11 +341,11 @@ DesktopIcon *DesktopIcon::create(mtl::ALLOC_HANDLE handle, const char *name, voi
 
 DesktopIcon::DesktopIcon(const char *name, void (*func)()) : unknown08(name), unknown50(func) {
   unknown68 = false;
-  unknown58 = mm::Rect<int>(0, 0, DevGraph::fontGetWidth(name, FONT_STYLE_NORMAL, 1.0f), 25);
+  unknown58 = mm::Rect<int>(0, 0, DevGraph::fontGetWidth(name, FONT_STYLE_UNKNOWN_0, 1.0f), 25);
 }
 
 void DesktopIcon::render(WinView *view) {
-  view->fontStyle(FONT_STYLE_NORMAL);
+  view->fontStyle(FONT_STYLE_UNKNOWN_0);
   view->fontScale(1.0f, 1.0f);
   view->fontColor(mm::Col4(1.0f, 1.0f, 1.0f, 1.0f));
   if (unknown68) {
@@ -381,7 +381,7 @@ void ProcDesktop::wkRenderAfter() {}
 void ProcDesktop::debugSimpleCost(int x, int y) {}
 
 void ProcDesktop::OnPauseTrigger(bool isPause, const char *name) {
-  _dsk::s_flg = !isPause ? _dsk::s_flg & ~_dsk::FLAG_PAUSE : _dsk::s_flg | _dsk::FLAG_PAUSE;
+  _dsk::s_flg = !isPause ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_5 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_5;
   f32 ratio = unknown25c;
   unknown25c = 0.0f;
   setUpdateRatio(ratio);

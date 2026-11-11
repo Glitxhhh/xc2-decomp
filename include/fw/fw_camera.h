@@ -104,7 +104,7 @@ static_assert(sizeof(CameraLayer) == 0xd0, "");
 
 class CameraManager : public ManagerObject, public mm::mtl::PtrSingleton<CameraManager> {
 public:
-  static constexpr u32 LAYER_COUNT = 4;
+  static constexpr u32 LAYER_UNKNOWN_4 = 4; // Inferred role: number of camera layers; original name unknown.
 
   class Listener {
   public:
@@ -115,13 +115,13 @@ public:
 
   CameraManager(ml::Scn *scn) : unknown368(nullptr) {
     unknown370.unknown08 = this;
-    for (u32 i = 0; i < LAYER_COUNT; i++) {
+    for (u32 i = 0; i < LAYER_UNKNOWN_4; i++) {
       unknown20[i].setup(scn, i);
     }
   }
 
   ~CameraManager() override {
-    for (u32 i = 0; i < LAYER_COUNT; i++) {
+    for (u32 i = 0; i < LAYER_UNKNOWN_4; i++) {
       unknown20[i].cleanup();
     }
   }
@@ -129,7 +129,7 @@ public:
   virtual void update(const UpdateInfo &info);
 
   u8 _18[0x20 - 0x18];
-  CameraLayer unknown20[LAYER_COUNT];             // Inferred role: layers; original member name unknown.
+  CameraLayer unknown20[LAYER_UNKNOWN_4];         // Inferred role: layers; original member name unknown.
   mm::mtl::IntrusivePtr<CameraTarget> unknown360; // Inferred role: target; original member name unknown.
   void *unknown368;                               // Inferred role: reset target; original member name unknown.
   Listener unknown370;                            // Inferred role: standby listener; original member name unknown.

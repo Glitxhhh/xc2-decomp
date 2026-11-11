@@ -8,7 +8,7 @@
 
 namespace ml {
 
-ScnDebugManipuTrans2D::ScnDebugManipuTrans2D(Scn *scn, const mm::Mat44 *matrix, const mm::Vec3 *scale) : ScnDebugManipuObj(SCNMANIPU_TRANS_2D, scn, matrix, scale) {
+ScnDebugManipuTrans2D::ScnDebugManipuTrans2D(Scn *scn, const mm::Mat44 *matrix, const mm::Vec3 *scale) : ScnDebugManipuObj(SCNMANIPU_UNKNOWN_3, scn, matrix, scale) {
   unknown368 = 4;
   ScnObjCam *cam = scn->getCam(-1);
   if (cam != nullptr) {

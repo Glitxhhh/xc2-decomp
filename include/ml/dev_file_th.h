@@ -70,8 +70,8 @@ void addMediaPath(MEDIA media, const char *path, int priority);
 class EventFileTh {
 public:
   enum {
-    TYPE_COMPLETE = 2,
-    TYPE_VALID = 9,
+    TYPE_UNKNOWN_2 = 2, // Inferred role: complete; original name unknown.
+    TYPE_UNKNOWN_9 = 9, // Inferred role: valid; original name unknown.
   };
 
   EventFileTh(CBM cbm, FileHandleTh *handle);
@@ -180,7 +180,7 @@ public:
 
   ~DevFileTh() override;
 
-  static const int INVALID_FILE_CHANNEL;
+  static const int INVALID_FILE_CHANNEL; // Name from the game symbol _ZN2ml9DevFileTh20INVALID_FILE_CHANNELE; also in torna and xc1de.
   static void normalizeDvdFileName(mm::mtl::FixStr<256> &fileName, const char *path);
   static void makeMediaFileName(mm::mtl::FixStr<256> &fileName, const char *directory, const char *path);
   static FileHandleTh *checkValidFile(const char *path, IWorkEvent *event);

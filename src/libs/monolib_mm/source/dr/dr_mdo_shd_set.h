@@ -125,11 +125,11 @@ public:
   void unknown002(int index, DrResShdShw *shw, DrShdDataList *list);
 
   static void (DrMdoShdSetShadow::*const s_pShwMaterial[])(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused, DrShdDataList *list);
-  static const u8 s_pShwUseShdader[];
-  static const u8 s_pShwFethcDef[];
-  static const u8 s_pShwFethcMof[];
-  static const u8 s_pShwTypeDec[];
-  static const u8 *const s_pShwFethcTbl[2];
+  static const u8 s_pShwUseShdader[];       // Name from the game symbol _ZN2ml17DrMdoShdSetShadow16s_pShwUseShdaderE; also in torna and xc1de.
+  static const u8 s_pShwFethcDef[];         // Name from the game symbol _ZN2ml17DrMdoShdSetShadow14s_pShwFethcDefE; also in torna and xc1de.
+  static const u8 s_pShwFethcMof[];         // Name from the game symbol _ZN2ml17DrMdoShdSetShadow14s_pShwFethcMofE; also in torna and xc1de.
+  static const u8 s_pShwTypeDec[];          // Name from the game symbol _ZN2ml17DrMdoShdSetShadow13s_pShwTypeDecE; also in torna and xc1de.
+  static const u8 *const s_pShwFethcTbl[2]; // Name from the game symbol _ZN2ml17DrMdoShdSetShadow14s_pShwFethcTblE; also in torna and xc1de.
 };
 
 } // namespace ml

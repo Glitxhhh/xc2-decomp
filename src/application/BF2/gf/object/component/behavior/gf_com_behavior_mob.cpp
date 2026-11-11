@@ -78,7 +78,7 @@ bool GfComBehaviorMob::isMove() const {
     if (coli == nullptr) {
       return false;
     }
-    if (coli->unknown30 != fw::COLI_TYPE_STATIC) {
+    if (coli->unknown30 != fw::COLI_TYPE_UNKNOWN_0) {
       gmk::AGmkBase *gmk = getBindedGmkInst();
       if (unknownb8 != nullptr) {
         return true;
@@ -99,13 +99,13 @@ bool GfComBehaviorMob::isMove() const {
 void GfComBehaviorMob::init(bool param1) {
   fw::ColiMoveObject *coli = getColiObject();
   if (coli != nullptr) {
-    coli->setState(fw::COLI_STATE_ENABLE);
+    coli->setState(fw::COLI_STATE_UNKNOWN_1);
     if (param1) {
       coli->setColiType(fw::COLI_TYPE_UNKNOWN_1);
       coli->setPriority(100);
       coli->setState(fw::COLI_STATE_UNKNOWN_0);
     } else {
-      coli->setColiType(fw::COLI_TYPE_STATIC);
+      coli->setColiType(fw::COLI_TYPE_UNKNOWN_0);
       coli->setPriority(800);
       coli->clearState(fw::COLI_STATE_UNKNOWN_0);
     }
@@ -215,7 +215,7 @@ bool GfComBehaviorMob::isArrivedToGoal() const {
   f32 height;
   f32 radius;
   const fw::unknown031 *shape = coli->unknowne8.get();
-  if (shape != nullptr && shape->unknown00 == fw::unknown031::TYPE_CHARACTER) {
+  if (shape != nullptr && shape->unknown00 == fw::unknown031::TYPE_UNKNOWN_3) {
     const fw::unknown134 *character = static_cast<const fw::unknown134 *>(shape);
     height = character->unknown04;
     radius = character->unknown08;

@@ -54,7 +54,7 @@ bool StmPackData::isSuccess() const { return unknown90 != nullptr && !isBusy(); 
 bool StmPackData::isFailure() const { return unknown90 == nullptr; }
 
 bool StmPackData::OnFileEvent(ml::EventFileTh *event) {
-  if (event->type == ml::EventFileTh::TYPE_COMPLETE) {
+  if (event->type == ml::EventFileTh::TYPE_UNKNOWN_2) {
     unknown08 &= ~FLAG_UNKNOWN_0;
     return true;
   }

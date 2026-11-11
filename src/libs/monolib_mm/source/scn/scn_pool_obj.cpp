@@ -73,17 +73,17 @@ bool ScnPoolObj::isExistLgtEnv() const {
 
 const reslist<ScnObj *> *ScnPoolObj::getList(u16 type) const {
   switch (type) {
-  case ScnObj::TYPE_MODEL:
+  case ScnObj::TYPE_UNKNOWN_1:
     return &unknowna8;
-  case ScnObj::TYPE_CAM:
+  case ScnObj::TYPE_UNKNOWN_2:
     return &unknown68;
   case 3:
     return &unknowne8;
-  case ScnObj::TYPE_LIGHT:
+  case ScnObj::TYPE_UNKNOWN_4:
     return &unknown128;
-  case ScnObj::TYPE_IBL:
+  case ScnObj::TYPE_UNKNOWN_5:
     return &unknown168;
-  case ScnObj::TYPE_CLIP:
+  case ScnObj::TYPE_UNKNOWN_6:
     return &unknown1a8;
   default:
     return nullptr;
@@ -92,17 +92,17 @@ const reslist<ScnObj *> *ScnPoolObj::getList(u16 type) const {
 
 reslist<ScnObj *> *ScnPoolObj::getList(u16 type) {
   switch (type) {
-  case ScnObj::TYPE_MODEL:
+  case ScnObj::TYPE_UNKNOWN_1:
     return &unknowna8;
-  case ScnObj::TYPE_CAM:
+  case ScnObj::TYPE_UNKNOWN_2:
     return &unknown68;
   case 3:
     return &unknowne8;
-  case ScnObj::TYPE_LIGHT:
+  case ScnObj::TYPE_UNKNOWN_4:
     return &unknown128;
-  case ScnObj::TYPE_IBL:
+  case ScnObj::TYPE_UNKNOWN_5:
     return &unknown168;
-  case ScnObj::TYPE_CLIP:
+  case ScnObj::TYPE_UNKNOWN_6:
     return &unknown1a8;
   default:
     return nullptr;

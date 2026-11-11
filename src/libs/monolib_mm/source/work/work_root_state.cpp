@@ -176,7 +176,7 @@ WorkObj *WorkRootState::getWork(WorkObj *parent, u32 wid) {
     }
     for (reslist<WorkObj *>::Node *node = parent->wkGetChild()->begin(); node != parent->wkGetChild()->end(); node = node->getNext()) {
       WorkObj *work = getWork(node->value, wid);
-      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_SHUTDOWN) {
+      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_UNKNOWN_5) {
         return work;
       }
     }
@@ -192,7 +192,7 @@ WorkObj *WorkRootState::getWork(WorkObj *parent, const char *name) {
     }
     for (reslist<WorkObj *>::Node *node = parent->wkGetChild()->begin(); node != parent->wkGetChild()->end(); node = node->getNext()) {
       WorkObj *work = getWork(node->value, name);
-      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_SHUTDOWN) {
+      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_UNKNOWN_5) {
         return work;
       }
     }
@@ -208,7 +208,7 @@ const WorkObj *WorkRootState::getWork(const WorkObj *parent, const char *name) {
     }
     for (reslist<WorkObj *>::Node *node = parent->wkGetChild()->begin(); node != parent->wkGetChild()->end(); node = node->getNext()) {
       WorkObj *work = getWork(node->value, name);
-      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_SHUTDOWN) {
+      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_UNKNOWN_5) {
         return work;
       }
     }
@@ -224,7 +224,7 @@ WorkObj *WorkRootState::getActiveWork(WorkObj *parent, const char *name) {
     }
     for (reslist<WorkObj *>::Node *node = parent->wkGetChild()->begin(); node != parent->wkGetChild()->end(); node = node->getNext()) {
       WorkObj *work = getActiveWork(node->value, name);
-      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_SHUTDOWN && !parent->wkIsShutdown()) {
+      if (work != nullptr && work->unknown4c != WorkObj::WKSTATE_UNKNOWN_5 && !parent->wkIsShutdown()) {
         return work;
       }
     }

@@ -11,11 +11,11 @@ inline bool isValidFloat(f32 value) {
 }
 
 struct alignas(16) Vec3 {
-  static const Vec3 zero;
-  static const Vec3 unit;
-  static const Vec3 unitX;
-  static const Vec3 unitY;
-  static const Vec3 unitZ;
+  static const Vec3 zero;  // Name from the game symbol _ZN2mm4Vec34zeroE; also in torna and xc1de.
+  static const Vec3 unit;  // Name from the game symbol _ZN2mm4Vec34unitE; also in torna and xc1de.
+  static const Vec3 unitX; // Name from the game symbol _ZN2mm4Vec35unitXE; also in torna and xc1de.
+  static const Vec3 unitY; // Name from the game symbol _ZN2mm4Vec35unitYE; also in torna and xc1de.
+  static const Vec3 unitZ; // Name from the game symbol _ZN2mm4Vec35unitZE; also in torna and xc1de.
 
   Vec3() {}
   Vec3(f32 x, f32 y, f32 z) : x(x), y(y), z(z) {}

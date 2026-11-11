@@ -68,7 +68,7 @@ int SoundReferenceObject::release() {
 unknown126 *SoundSsdDriver::findCategory(SoundCategory category) {
   unknown126 *found = &unknowne8[static_cast<u32>(category)];
   if (found->unknown00.unknown08.unknown00 != static_cast<int>(category)) {
-    found = &unknowne8[CATEGORY_COUNT];
+    found = &unknowne8[CATEGORY_UNKNOWN_18];
   }
 
   return found;
@@ -77,7 +77,7 @@ unknown126 *SoundSsdDriver::findCategory(SoundCategory category) {
 const unknown126 *SoundSsdDriver::findCategory(SoundCategory category) const {
   const unknown126 *found = &unknowne8[static_cast<u32>(category)];
   if (found->unknown00.unknown08.unknown00 != static_cast<int>(category)) {
-    found = &unknowne8[CATEGORY_COUNT];
+    found = &unknowne8[CATEGORY_UNKNOWN_18];
   }
 
   return found;
@@ -97,7 +97,7 @@ void SoundSsdDriver::addCategory(SoundCategory category, f32 volume, const char 
 
 void SoundSsdDriver::removeCategory(SoundCategory category) {
   unknown126 *found = findCategory(category);
-  if (found != &unknowne8[CATEGORY_COUNT]) {
+  if (found != &unknowne8[CATEGORY_UNKNOWN_18]) {
     unknown126 &data = unknowne8[static_cast<u32>(category)];
     data.unknown00.unknown08.unknown00 = 0;
     data.unknown00.unknown08.unknown04 = 1.0f;
@@ -112,7 +112,7 @@ f32 SoundSsdDriver::getCategoryVolume(SoundCategory category) const {
   f32 volume = 0.0f;
   if (unknown10 != nullptr) {
     const unknown126 *found = findCategory(category);
-    if (found != &unknowne8[CATEGORY_COUNT]) {
+    if (found != &unknowne8[CATEGORY_UNKNOWN_18]) {
       volume = found->unknown14.unknown00;
     }
   }
@@ -148,7 +148,7 @@ SoundSsdSource *SoundSsdSource::createWave(const SetupWaveInfo &info) {
     source->unknown20->addEntry(source->unknown18);
     source->unknown20->addSource(source);
     if (info.unknown00.unknown68.unknown01) {
-      source->unknown240 |= FLAG_3D;
+      source->unknown240 |= FLAG_UNKNOWN_1;
     }
   }
 
@@ -434,7 +434,7 @@ int SoundSsdSource::getSourceRefCount() const {
 
 bool SoundSsdPlayer::getTotalTime(f32 &time) const {
   time = 0.0f;
-  if ((unknownc4 & FLAG_STREAM) != 0 && isValid()) {
+  if ((unknownc4 & FLAG_UNKNOWN_2) != 0 && isValid()) {
     return unknown88->GetDataTime(&time) >= 0;
   }
 
@@ -444,7 +444,7 @@ bool SoundSsdPlayer::getTotalTime(f32 &time) const {
 bool SoundSsdPlayer::isValid() const { return unknown88 != nullptr && unknown88->IsValidHandle(); }
 
 bool SoundSsdPlayer::setPlayTime(f32 time) {
-  if ((unknownc4 & FLAG_STREAM) != 0 && isValid()) {
+  if ((unknownc4 & FLAG_UNKNOWN_2) != 0 && isValid()) {
     return unknown88->SetPlayTime(time) >= 0;
   }
 
@@ -453,7 +453,7 @@ bool SoundSsdPlayer::setPlayTime(f32 time) {
 
 bool SoundSsdPlayer::getPlayTime(f32 &time) const {
   time = 0.0f;
-  if ((unknownc4 & FLAG_STREAM) != 0 && isValid()) {
+  if ((unknownc4 & FLAG_UNKNOWN_2) != 0 && isValid()) {
     return unknown88->GetPlayTime(&time) >= 0;
   }
 
@@ -462,7 +462,7 @@ bool SoundSsdPlayer::getPlayTime(f32 &time) const {
 
 bool SoundSsdPlayer::is3DSource() const {
   if (isValid()) {
-    return (unknown80->unknown240 & SoundSsdSource::FLAG_3D) != 0;
+    return (unknown80->unknown240 & SoundSsdSource::FLAG_UNKNOWN_1) != 0;
   }
 
   return false;
@@ -474,7 +474,7 @@ bool SoundSsdPlayer::is3D() const {
   }
 
   bool isSource3D = is3DSource();
-  bool hasListener = (unknownc4 & FLAG_LISTENER) != 0;
+  bool hasListener = (unknownc4 & FLAG_UNKNOWN_3) != 0;
   return isSource3D && hasListener;
 }
 
@@ -490,7 +490,7 @@ bool SoundSsdPlayer::isLoop() const {
 }
 
 bool SoundSsdPlayer::setRemainLoopCount(int count) {
-  if ((unknownc4 & FLAG_STREAM) != 0 && isValid()) {
+  if ((unknownc4 & FLAG_UNKNOWN_2) != 0 && isValid()) {
     return unknown88->SetRemainLoopCount(count) >= 0;
   }
 
@@ -499,7 +499,7 @@ bool SoundSsdPlayer::setRemainLoopCount(int count) {
 
 bool SoundSsdPlayer::getRemainLoopCount(int &count) const {
   count = 0;
-  if ((unknownc4 & FLAG_STREAM) != 0 && isValid()) {
+  if ((unknownc4 & FLAG_UNKNOWN_2) != 0 && isValid()) {
     return unknown88->GetRemainLoopCount(&count) >= 0;
   }
 
@@ -540,9 +540,9 @@ void SoundSsdPlayer::setListener(ssd::SoundListener *listener) {
   }
 
   if (listener != nullptr) {
-    unknownc4 |= FLAG_LISTENER;
+    unknownc4 |= FLAG_UNKNOWN_3;
   } else {
-    unknownc4 &= ~FLAG_LISTENER;
+    unknownc4 &= ~FLAG_UNKNOWN_3;
   }
 
   this->unknown90 = listener;
@@ -588,13 +588,13 @@ f32 SoundSsdPlayer::getVolume(SoundVolumeType type) const {
   f32 result = 0.0f;
   if (isValid()) {
     switch (type) {
-    case SOUND_VOLUME_TYPE_HANDLE:
+    case SOUND_VOLUME_TYPE_UNKNOWN_0:
       result = unknown88->unknown84.unknown00;
       break;
-    case SOUND_VOLUME_TYPE_DISTANCE:
+    case SOUND_VOLUME_TYPE_UNKNOWN_1:
       result = unknown88->GetDistanceVolume();
       break;
-    case SOUND_VOLUME_TYPE_CATEGORY:
+    case SOUND_VOLUME_TYPE_UNKNOWN_2:
       result = unknown88->unknownb8;
       break;
     }
@@ -657,7 +657,7 @@ bool SoundSsdPlayer::isPlaying() const { return unknown88 != nullptr && unknown8
 void SoundSsdPlayer::progress(f32 deltaTime) {}
 
 bool SoundSsdPlayer::canDestroy() const {
-  if ((unknownc4 & FLAG_RELEASED) != 0) {
+  if ((unknownc4 & FLAG_UNKNOWN_1) != 0) {
     return true;
   }
 
@@ -854,7 +854,7 @@ u32 SoundSsdDriver::findSe(const char *name) const {
   for (PtrMapIterator it = unknown8b8.begin(); it != unknown8b8.end();) {
     const SoundSsdPlayer *player = static_cast<const SoundSsdPlayer *>(*it);
     ++it;
-    if (player != nullptr && player->unknownb0 == SOUND_TYPE_SE && strcmp(player->unknown80->unknown134.c_str(), name) == 0) {
+    if (player != nullptr && player->unknownb0 == SOUND_TYPE_UNKNOWN_3 && strcmp(player->unknown80->unknown134.c_str(), name) == 0) {
       return 1;
     }
   }
@@ -898,7 +898,7 @@ void SoundSsdDriver::setCategoryPitch(SoundCategory category, f32 pitch, f32 tim
     }
 
     unknown126 *found = findCategory(category);
-    if (found != &unknowne8[CATEGORY_COUNT]) {
+    if (found != &unknowne8[CATEGORY_UNKNOWN_18]) {
       found->unknown44 = pitch;
     }
   }
@@ -912,17 +912,17 @@ void SoundSsdDriver::updateDebugInfo(mm::mtl::FixedVector<SoundHandleDebugInfo, 
 
 void SoundSsdDriver::stopBgmAll() {
   ml::CS lock(unknown70);
-  stopSoundAll(SOUND_TYPE_BGM, 0.0f);
+  stopSoundAll(SOUND_TYPE_UNKNOWN_1, 0.0f);
 }
 
 void SoundSsdDriver::stopVoiceAll() {
   ml::CS lock(unknown70);
-  stopSoundAll(SOUND_TYPE_VOICE, 0.0f);
+  stopSoundAll(SOUND_TYPE_UNKNOWN_2, 0.0f);
 }
 
 void SoundSsdDriver::stopSeAll() {
   ml::CS lock(unknown70);
-  stopSoundAll(SOUND_TYPE_SE, 0.0f);
+  stopSoundAll(SOUND_TYPE_UNKNOWN_3, 0.0f);
 }
 
 void SoundSsdDriver::stopAll() {

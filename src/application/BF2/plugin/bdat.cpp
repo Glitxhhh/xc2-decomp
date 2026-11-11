@@ -10,7 +10,7 @@ namespace Bdat {
 namespace {
 
 enum {
-  BDAT_FILE_MAX = 16,
+  BDAT_FILE_MAX = 16, // Name from the assertion string "idx < BDAT_FILE_MAX".
 };
 
 // Inferred role: header of a bdat archive, which holds several sheets; original name unknown.

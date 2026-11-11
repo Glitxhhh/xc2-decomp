@@ -447,13 +447,13 @@ void GfComBehaviorNpc::updateNaviMeshObj(f32 deltaTime) {
 void GfComBehaviorNpc::init(bool param1) {
   fw::ColiMoveObject *coli = getColiObject();
   if (coli != nullptr) {
-    coli->setState(fw::COLI_STATE_ENABLE);
+    coli->setState(fw::COLI_STATE_UNKNOWN_1);
     if (param1) {
       coli->setColiType(fw::COLI_TYPE_UNKNOWN_1);
       coli->setPriority(200);
       coli->setState(fw::COLI_STATE_UNKNOWN_0);
     } else {
-      coli->setColiType(fw::COLI_TYPE_STATIC);
+      coli->setColiType(fw::COLI_TYPE_UNKNOWN_0);
       coli->setPriority(900);
       coli->clearState(fw::COLI_STATE_UNKNOWN_0);
     }

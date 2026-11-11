@@ -101,7 +101,7 @@ public:
     u32 unknown08; // Inferred role: render list index, bit 31 marks a range tree lod; original member name unknown.
   };
 
-  static const int INS_RENDERBUFF_SIZE = 0xbd000;
+  static const int INS_RENDERBUFF_SIZE = 0xbd000; // Name from the game symbol _ZN2ml11DrMdoCtlPos19INS_RENDERBUFF_SIZEE; also in torna and xc1de.
 
   ~DrMdoCtlPos() override;
   void update() override;

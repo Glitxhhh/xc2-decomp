@@ -24,7 +24,7 @@ class DevGraphQue;
 class GraphQue;
 
 enum FONT_STYLE : int {
-  FONT_STYLE_NORMAL = 0,
+  FONT_STYLE_UNKNOWN_0 = 0, // Inferred role: normal; original name unknown.
 };
 
 enum DevGraphModeType {};
