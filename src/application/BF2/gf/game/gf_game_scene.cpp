@@ -859,8 +859,8 @@ void GfGameScene::gevBladeActivate(u32 blade, ActivateType activateType, Activat
     for (u32 slot = 0; slot < GfDataBlade::getEquipOrbMax(BLADE_SUZAKU); slot++) {
       GfEquipUtil::equipBladeOrb(BLADE_SUZAKU, 0, slot, GfItemHandle(0));
     }
-    SDataBlade *dataBlade = GfDataBlade::getSDataBlade(BLADE_SUZAKU);
-    dataBlade->unknown82c = GfBdatChrBl::get()->getChrBlDefWeapon(BLADE_SUZAKU);
+    SDataBlade &dataBlade = GfDataBlade::getSDataBlade(BLADE_SUZAKU);
+    dataBlade.unknown82c = GfBdatChrBl::get()->getChrBlDefWeapon(BLADE_SUZAKU);
   }
   if (activateType == 0 && oldActivateType != 0 && !GfDataBlade::isUnselect(blade)) {
     GfGameUtil::execSaveAchievementPopup(blade);

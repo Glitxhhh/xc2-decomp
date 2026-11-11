@@ -76,7 +76,7 @@ DataObjDriver::DataObjDriver(u32 id) : unknown10(nullptr), unknown18(unknown020)
 void DataObjDriver::setup(u32 id) {
   this->m_bdatId = id;
   if (id != 0) {
-    unknown10 = GfDataDriver::getSDataDriver(id);
+    unknown10 = &GfDataDriver::getSDataDriver(id);
   }
 }
 
@@ -91,6 +91,8 @@ DataObjDriver::~DataObjDriver() {
     unknown20 = nullptr;
   }
 }
+
+SDataDriver *DataObjDriver::get(bool isVirtual) const { return isVirtual ? unknown10 : &GfDataDriver::getSDataDriver(getBdatId()); }
 
 void DataObjDriver::setVirtualLevel(u32 level) {
   setupVirtualParam();
@@ -180,6 +182,8 @@ bool DataObjDriver::getName(u8 *&bdat, u32 &textId) const { return GfDataDriver:
 
 u32 DataObjDriver::getBdatId() const { return m_bdatId; }
 
+SDataIdea *DataObjDriver::getIdea() const { return &GfDataDriver::getSDataDriver(getBdatId()).unknown00; }
+
 u32 DataObjDriver::getDataType() const { return unknown10->unknown20; }
 
 u32 DataObjDriver::getHp() const { return GfObjUtil::getHp(unknown18); }
@@ -243,7 +247,7 @@ u32 DataObjDriver::getWeaponPoint(u32 weaponType) const {
       return 0;
     }
 
-    weaponType = GfDataBlade::getSDataBlade(blade)->unknown821;
+    weaponType = GfDataBlade::getSDataBlade(blade).unknown821;
   }
 
   return get(false)->unknownc0[weaponType].unknown0c;
@@ -544,7 +548,7 @@ static void unknown002(u32 &value, SDataBlade &dataBlade, u32 percentEffect, u32
   value = base + base * percent;
 }
 
-SDataIdea *DataObjBlade::getIdea() const { return &GfDataBlade::getSDataBlade(getBdatId())->unknown0c; }
+SDataIdea *DataObjBlade::getIdea() const { return &GfDataBlade::getSDataBlade(getBdatId()).unknown0c; }
 
 u32 DataObjBlade::getPArmor(bool isVirtual) const {
   u32 pArmor = GfDataBlade::getParmor(getBdatId());
@@ -961,7 +965,7 @@ DataObjBlade::DataObjBlade(u32 id) : unknown08(nullptr), unknown10(unknown020), 
 void DataObjBlade::setup(u32 id) {
   this->m_bdatId = id;
   if (id != 0) {
-    unknown08 = GfDataBlade::getSDataBlade(id);
+    unknown08 = &GfDataBlade::getSDataBlade(id);
   }
 }
 
@@ -976,6 +980,8 @@ DataObjBlade::~DataObjBlade() {
     unknown18 = nullptr;
   }
 }
+
+SDataBlade *DataObjBlade::get(bool isVirtual) const { return isVirtual ? unknown08 : &GfDataBlade::getSDataBlade(getBdatId()); }
 
 void DataObjBlade::setupVirtualParam() {
   if (unknown18 == nullptr) {

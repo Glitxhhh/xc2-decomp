@@ -140,10 +140,10 @@ void RQ_SETUP_PARTY::getAllBlade(mm::mtl::FixedVector<u32, 16> &blades) const {
 static u32 unknown009(u32 blade) {
   u32 commonBlade = GfDataBlade::getActBlade2CommonBlade(blade);
   if (commonBlade != blade) {
-    SDataBlade *commonData = GfDataBlade::getSDataBlade(commonBlade);
-    if (commonData->unknown06 == 0) {
-      *commonData = *GfDataBlade::getSDataBlade(blade);
-      commonData->unknown06 = commonBlade;
+    SDataBlade &commonData = GfDataBlade::getSDataBlade(commonBlade);
+    if (commonData.unknown06 == 0) {
+      commonData = GfDataBlade::getSDataBlade(blade);
+      commonData.unknown06 = commonBlade;
     }
     blade = commonBlade;
   }

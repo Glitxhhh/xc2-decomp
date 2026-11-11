@@ -720,7 +720,7 @@ RESULT_HANA GfGameUtilHana::execEquipExtendCondenserParts(u32 blade, u32 parts, 
 }
 
 void GfGameUtilHana::setupDefaultParts(u32 blade) {
-  if (!GfDataHana::isValid(blade) || GfDataBlade::getSDataBlade(blade)->unknown68c.unknown00 != 0) {
+  if (!GfDataHana::isValid(blade) || GfDataBlade::getSDataBlade(blade).unknown68c.unknown00 != 0) {
     return;
   }
 

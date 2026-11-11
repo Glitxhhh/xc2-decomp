@@ -131,7 +131,7 @@ static_assert(sizeof(SDataDriver) == 0x5a0, "");
 
 class GfDataDriver {
 public:
-  static SDataDriver *getSDataDriver(u32 driver);
+  static SDataDriver &getSDataDriver(u32 driver);
   static SDataIdea *getSDataIdea(u32 driver);
   static const char *getName(u32 driver);
   static bool getName(u8 *&bdat, u32 &textId, u32 driver);

@@ -118,14 +118,14 @@ void GfDataBlade::initSaveData(SDataGame &dataGame) {
       SDataBlade dataBlade;
       setupSDataBlade(dataBlade, blade, false);
       dataGame.unknown5a2c[index] = dataBlade;
-      setupSDataBladeAchievement(*getSDataBlade(blade), true);
+      setupSDataBladeAchievement(getSDataBlade(blade), true);
     }
   }
 }
 
 void GfDataBlade::setCreator(u32 blade, u32 creator) {
   if (blade != 0) {
-    getSDataBlade(blade)->unknown02 = creator;
+    getSDataBlade(blade).unknown02 = creator;
   }
 }
 
@@ -134,12 +134,12 @@ u32 GfDataBlade::getCreator(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown02;
+  return getSDataBlade(blade).unknown02;
 }
 
-SDataBlade *GfDataBlade::getSDataBlade(u32 blade) {
+SDataBlade &GfDataBlade::getSDataBlade(u32 blade) {
   u32 index = getBladeRelativeID(blade);
-  return &GfDataManager::getDataGame()->unknown5a2c[index];
+  return GfDataManager::getDataGame()->unknown5a2c[index];
 }
 
 u32 GfDataBlade::getBladeID(u32 index) {
@@ -165,7 +165,7 @@ u32 GfDataBlade::getBladeWpnType(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown821;
+  return getSDataBlade(blade).unknown821;
 }
 
 bool GfDataBlade::isDisableHomuraHikari(u32 blade) {
@@ -192,11 +192,11 @@ bool GfDataBlade::isHikariCurrent() {
   return dataGame->unknown10ae7d != 0;
 }
 
-bool GfDataBlade::isEnableEngageRex(u32 blade) { return getSDataBlade(blade)->unknown89e != 0; }
+bool GfDataBlade::isEnableEngageRex(u32 blade) { return getSDataBlade(blade).unknown89e != 0; }
 
 void GfDataBlade::setEnableEngageRex(u32 blade, bool enableEngageRex) {
-  SDataBlade *dataBlade = getSDataBlade(blade);
-  dataBlade->unknown89e = enableEngageRex;
+  SDataBlade &dataBlade = getSDataBlade(blade);
+  dataBlade.unknown89e = enableEngageRex;
 }
 
 u32 GfDataBlade::getBLD_NameList(u32 blade) {
@@ -204,7 +204,7 @@ u32 GfDataBlade::getBLD_NameList(u32 blade) {
     return 0;
   }
 
-  u16 &nameListCategory = getSDataBlade(blade)->unknown834;
+  u16 &nameListCategory = getSDataBlade(blade).unknown834;
   if (nameListCategory == 0) {
     return 0;
   }
@@ -262,7 +262,7 @@ u32 GfDataBlade::getBornTime(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown08;
+  return getSDataBlade(blade).unknown08;
 }
 
 u8 GfDataBlade::getEyeRotControl(u32 blade) {
@@ -270,7 +270,7 @@ u8 GfDataBlade::getEyeRotControl(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown826;
+  return getSDataBlade(blade).unknown826;
 }
 
 void GfDataBlade::setHikariCurrent(bool hikariCurrent) {
@@ -327,7 +327,7 @@ bool GfDataBlade::getNameWithMsgID(u8 *&bdat, u32 &textId, u32 blade) {
     return false;
   }
 
-  return getNameWithMsgID(bdat, textId, *getSDataBlade(blade));
+  return getNameWithMsgID(bdat, textId, getSDataBlade(blade));
 }
 
 bool GfDataBlade::getNameWithMsgID(u8 *&bdat, u32 &textId, const SDataBlade &dataBlade) {
@@ -359,7 +359,7 @@ bool GfDataBlade::getNameWithMsgID(u8 *&bdat, u32 &textId, const SDataBlade &dat
 
 int GfDataBlade::getDriverSetID(u32 blade) {
   if (blade != 0) {
-    u32 driver = getSDataBlade(blade)->unknown04;
+    u32 driver = getSDataBlade(blade).unknown04;
     if (driver != 0) {
       return GfDataDriver::getSetIdByBlade(driver, blade);
     }
@@ -378,8 +378,8 @@ u32 GfDataBlade::addRareBlade(const SDataBlade &dataBlade) {
     return 0;
   }
 
-  *getSDataBlade(dataBlade.unknown06) = dataBlade;
-  setupSDataBladeAchievement(*getSDataBlade(dataBlade.unknown06), false);
+  getSDataBlade(dataBlade.unknown06) = dataBlade;
+  setupSDataBladeAchievement(getSDataBlade(dataBlade.unknown06), false);
   setActivateReserver(dataBlade.unknown06);
   unknown005(getCreator(dataBlade.unknown06), dataBlade.unknown06);
   return dataBlade.unknown06;
@@ -395,9 +395,9 @@ bool GfDataBlade::getCommonBladeName(const char *model) {
 u32 GfDataBlade::addCommonBlade(const SDataBlade &dataBlade) {
   for (u32 blade = BLADE_UNKNOWN_1197; blade < BLADE_UNKNOWN_1397; blade++) {
     if (isActivateUnuse(blade)) {
-      *getSDataBlade(blade) = dataBlade;
-      getSDataBlade(blade)->unknown06 = blade;
-      setupSDataBladeAchievement(*getSDataBlade(blade), false);
+      getSDataBlade(blade) = dataBlade;
+      getSDataBlade(blade).unknown06 = blade;
+      setupSDataBladeAchievement(getSDataBlade(blade), false);
       setActivateReserver(blade);
       unknown005(getCreator(blade), blade);
       return blade;
@@ -429,12 +429,12 @@ u32 GfDataBlade::getFavorite(u32 blade, FAVORITE favorite) {
     return 0;
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
+  SDataBlade &dataBlade = getSDataBlade(blade);
   if (favorite >= FAVORITE_UNKNOWN_2 && favorite <= FAVORITE_UNKNOWN_3) {
-    return dataBlade->unknown666[favorite - FAVORITE_UNKNOWN_2].unknown02;
+    return dataBlade.unknown666[favorite - FAVORITE_UNKNOWN_2].unknown02;
   }
   if (favorite >= FAVORITE_UNKNOWN_0 && favorite <= FAVORITE_UNKNOWN_1) {
-    return dataBlade->unknown666[favorite - FAVORITE_UNKNOWN_0].unknown00;
+    return dataBlade.unknown666[favorite - FAVORITE_UNKNOWN_0].unknown00;
   }
 
   return 0;
@@ -491,31 +491,31 @@ void SDataIdea::setLevel(u32 idea, int level) {
 
 bool GfDataBlade::isValid(u32 blade) { return blade - BLADE_UNKNOWN_1001 < BLADE_UNKNOWN_422; }
 
-bool GfDataBlade::isActivateDriver(u32 blade) { return getSDataBlade(blade)->unknown04 != 0; }
+bool GfDataBlade::isActivateDriver(u32 blade) { return getSDataBlade(blade).unknown04 != 0; }
 
 u32 GfDataBlade::getSetDriver(u32 blade) {
   if (blade == 0) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown04;
+  return getSDataBlade(blade).unknown04;
 }
 
 bool GfDataBlade::isDummyBlade(u32 blade) { return (blade == BLADE_DUMMY_UNKNOWN_1012 || blade == BLADE_DUMMY_UNKNOWN_1013) || blade == BLADE_DUMMY_UNKNOWN_1073; }
 
 bool GfDataBlade::setActivateMercenaryTeam(u32 blade) {
-  getSDataBlade(blade)->unknown00 = 2;
+  getSDataBlade(blade).unknown00 = 2;
   return true;
 }
 
-bool GfDataBlade::isUnselect(u32 blade) { return getSDataBlade(blade)->unknown8a0 != 0; }
+bool GfDataBlade::isUnselect(u32 blade) { return getSDataBlade(blade).unknown8a0 != 0; }
 
 bool GfDataBlade::isActivateUnuse(u32 blade) {
   if (blade == 0) {
     return true;
   }
 
-  return getSDataBlade(blade)->unknown00 == BLADE_ACTIVATE_UNKNOWN_0;
+  return getSDataBlade(blade).unknown00 == BLADE_ACTIVATE_UNKNOWN_0;
 }
 
 bool GfDataBlade::isActivateMercenaryTeam(u32 blade) {
@@ -523,10 +523,10 @@ bool GfDataBlade::isActivateMercenaryTeam(u32 blade) {
     return false;
   }
 
-  return getSDataBlade(blade)->unknown00 == BLADE_ACTIVATE_UNKNOWN_2;
+  return getSDataBlade(blade).unknown00 == BLADE_ACTIVATE_UNKNOWN_2;
 }
 
-bool GfDataBlade::isAttachedParty(u32 blade) { return getSDataBlade(blade)->unknown89f != 0; }
+bool GfDataBlade::isAttachedParty(u32 blade) { return getSDataBlade(blade).unknown89f != 0; }
 
 u32 GfDataBlade::getStartBlade() { return BLADE_UNKNOWN_1001; }
 
@@ -538,7 +538,7 @@ u32 GfDataBlade::getStartCommonBlade() { return BLADE_UNKNOWN_1197; }
 
 u32 GfDataBlade::getEndCommonBlade() { return BLADE_UNKNOWN_1397; }
 
-ActivateType GfDataBlade::getBladeActivateType(u32 blade) { return getBladeActivateType(*getSDataBlade(blade)); }
+ActivateType GfDataBlade::getBladeActivateType(u32 blade) { return getBladeActivateType(getSDataBlade(blade)); }
 
 ActivateType GfDataBlade::getBladeActivateType(const SDataBlade &dataBlade) {
   ActivateType activateType = ACTIVATE_TYPE_UNKNOWN_0;
@@ -559,16 +559,16 @@ ActivateType GfDataBlade::getBladeActivateType(const SDataBlade &dataBlade) {
   return activateType;
 }
 
-void GfDataBlade::setKizunaringComplete(u32 blade) { getSDataBlade(blade)->unknown8a1 = 1; }
+void GfDataBlade::setKizunaringComplete(u32 blade) { getSDataBlade(blade).unknown8a1 = 1; }
 
-bool GfDataBlade::isKizunaringComplete(u32 blade) { return getSDataBlade(blade)->unknown8a1 == 1; }
+bool GfDataBlade::isKizunaringComplete(u32 blade) { return getSDataBlade(blade).unknown8a1 == 1; }
 
-bool GfDataBlade::getExtraParts(u32 blade, u32 index) { return getSDataBlade(blade)->unknownc0[index] != 0; }
+bool GfDataBlade::getExtraParts(u32 blade, u32 index) { return getSDataBlade(blade).unknownc0[index] != 0; }
 
 bool GfDataBlade::getExtraParts(const SDataBlade &dataBlade, u32 index) { return dataBlade.unknownc0[index] != 0; }
 
 u32 GfDataBlade::getLinkChNum(u32 blade) {
-  u32 kizunaLinkSet = getSDataBlade(blade)->unknown84a;
+  u32 kizunaLinkSet = getSDataBlade(blade).unknown84a;
   if (kizunaLinkSet == 0) {
     return 0;
   }
@@ -577,18 +577,18 @@ u32 GfDataBlade::getLinkChNum(u32 blade) {
 }
 
 void GfDataBlade::setUnselect(u32 blade, bool unselect) {
-  SDataBlade *dataBlade = getSDataBlade(blade);
-  dataBlade->unknown8a0 = unselect;
+  SDataBlade &dataBlade = getSDataBlade(blade);
+  dataBlade.unknown8a0 = unselect;
   GfEvent::callBladeUnselect(blade, unselect);
 }
 
-bool GfDataBlade::isReleasedRareBlade(u32 blade) { return getSDataBlade(blade)->unknown89f == 2; }
+bool GfDataBlade::isReleasedRareBlade(u32 blade) { return getSDataBlade(blade).unknown89f == 2; }
 
 void GfDataBlade::resetAttachedParty(u32 blade) {
-  SDataBlade *dataBlade = getSDataBlade(blade);
-  dataBlade->unknown89f = 2;
+  SDataBlade &dataBlade = getSDataBlade(blade);
+  dataBlade.unknown89f = 2;
   if (isRareBlade(blade)) {
-    dataBlade->unknown82c = GfBdatChrBl::get()->getChrBlDefWeapon(blade);
+    dataBlade.unknown82c = GfBdatChrBl::get()->getChrBlDefWeapon(blade);
   }
 
   GfEvent::callBladeActivate(blade, ACTIVATE_TYPE_UNKNOWN_0, ACTIVATE_TYPE_UNKNOWN_0);
@@ -598,8 +598,8 @@ u32 GfDataBlade::getEndRareBlade() { return GfBdatChrBl::get()->getChrBlEnd(); }
 
 u32 GfDataBlade::addCommonBladeWithPos(const SDataBlade &dataBlade, u32 pos) {
   u32 blade = BLADE_UNKNOWN_1197 + pos;
-  *getSDataBlade(blade) = dataBlade;
-  getSDataBlade(blade)->unknown06 = blade;
+  getSDataBlade(blade) = dataBlade;
+  getSDataBlade(blade).unknown06 = blade;
   setActivateReserver(blade);
   return blade;
 }
@@ -612,11 +612,11 @@ u32 GfDataBlade::getStartActCommonBlade() { return BLADE_UNKNOWN_1401_2; }
 
 u32 GfDataBlade::getEndActCommonBlade() { return BLADE_UNKNOWN_1423; }
 
-bool GfDataBlade::isSetBlade(u32 blade) { return getSDataBlade(blade)->unknown04 != 0; }
+bool GfDataBlade::isSetBlade(u32 blade) { return getSDataBlade(blade).unknown04 != 0; }
 
 u32 GfDataBlade::getBladeWeaponWithChip(u32 blade, u32 chip) {
   GfBdatItem *bdatItem = GfBdatItem::get();
-  u32 weapon = blade == 0 ? 0 : getSDataBlade(blade)->unknown82c;
+  u32 weapon = blade == 0 ? 0 : getSDataBlade(blade).unknown82c;
   u32 weaponRank = bdatItem->getPcWpnRank(weapon);
   u32 chipRank = bdatItem->getPcWpnChipRank(chip);
   return weaponRank < chipRank ? weapon - weaponRank + chipRank : 0;
@@ -627,7 +627,7 @@ u32 GfDataBlade::getBladeWeapon(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown82c;
+  return getSDataBlade(blade).unknown82c;
 }
 
 u32 GfDataBlade::getBladeWeaponByRank(u32 blade, u32 chip) {
@@ -636,7 +636,7 @@ u32 GfDataBlade::getBladeWeaponByRank(u32 blade, u32 chip) {
   }
 
   GfBdatItem *bdatItem = GfBdatItem::get();
-  u32 weaponTypeIndex = getSDataBlade(blade)->unknown821 - 1;
+  u32 weaponTypeIndex = getSDataBlade(blade).unknown821 - 1;
   if (weaponTypeIndex < CHIP_CREATE_WEAPON_TYPE_UNKNOWN_16) {
     return bdatItem->getPcWpnChipCreateWpn(chip, weaponTypeIndex);
   }
@@ -644,11 +644,11 @@ u32 GfDataBlade::getBladeWeaponByRank(u32 blade, u32 chip) {
   return 0;
 }
 
-const char *GfDataBlade::getResourceNameModel(u32 blade) { return getSDataBlade(blade)->unknown70c.c_str(); }
+const char *GfDataBlade::getResourceNameModel(u32 blade) { return getSDataBlade(blade).unknown70c.c_str(); }
 
-const char *GfDataBlade::getResourceNameMotion(u32 blade) { return getSDataBlade(blade)->unknown734.c_str(); }
+const char *GfDataBlade::getResourceNameMotion(u32 blade) { return getSDataBlade(blade).unknown734.c_str(); }
 
-const char *GfDataBlade::getResourceNameAddMotion(u32 blade) { return getSDataBlade(blade)->unknown75c.c_str(); }
+const char *GfDataBlade::getResourceNameAddMotion(u32 blade) { return getSDataBlade(blade).unknown75c.c_str(); }
 
 bool GfDataBlade::getBladeAddAnim(mm::mtl::FixStr<128> &animName, u32 blade, u32 weaponType) {
   DataParamAcc dataParamAcc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
@@ -672,9 +672,9 @@ bool GfDataBlade::getBladeAddAnim(mm::mtl::FixStr<128> &animName, u32 blade, u32
 
 const char *GfDataBlade::getDebugName(u32 blade) {
   if (isCommonBlade(blade)) {
-    SDataBlade *dataBlade = getSDataBlade(blade);
-    if (dataBlade->unknown898 != 0) {
-      return dataBlade->unknown858;
+    SDataBlade &dataBlade = getSDataBlade(blade);
+    if (dataBlade.unknown898 != 0) {
+      return dataBlade.unknown858;
     }
 
     return getName(blade, 0);
@@ -688,7 +688,7 @@ u32 GfDataBlade::getRace(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown708;
+  return getSDataBlade(blade).unknown708;
 }
 
 u32 GfDataBlade::getGender(u32 blade) {
@@ -696,7 +696,7 @@ u32 GfDataBlade::getGender(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown709;
+  return getSDataBlade(blade).unknown709;
 }
 
 u32 GfDataBlade::getQuestRace(u32 blade) {
@@ -704,7 +704,7 @@ u32 GfDataBlade::getQuestRace(u32 blade) {
     return QUEST_RACE_UNKNOWN_1;
   }
 
-  return getSDataBlade(blade)->unknown846;
+  return getSDataBlade(blade).unknown846;
 }
 
 bool GfDataBlade::isOperable(u32 blade) {
@@ -720,7 +720,7 @@ bool GfDataBlade::isAnimal(u32 blade) {
     return false;
   }
 
-  return getSDataBlade(blade)->unknown846 == QUEST_RACE_UNKNOWN_2;
+  return getSDataBlade(blade).unknown846 == QUEST_RACE_UNKNOWN_2;
 }
 
 bool GfDataBlade::isMale(u32 blade) {
@@ -728,12 +728,12 @@ bool GfDataBlade::isMale(u32 blade) {
     return false;
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
-  if (dataBlade->unknown709 != GENDER_UNKNOWN_1) {
+  SDataBlade &dataBlade = getSDataBlade(blade);
+  if (dataBlade.unknown709 != GENDER_UNKNOWN_1) {
     return false;
   }
 
-  return dataBlade->unknown846 == QUEST_RACE_UNKNOWN_1;
+  return dataBlade.unknown846 == QUEST_RACE_UNKNOWN_1;
 }
 
 bool GfDataBlade::isFemale(u32 blade) {
@@ -741,17 +741,17 @@ bool GfDataBlade::isFemale(u32 blade) {
     return false;
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
-  if (dataBlade->unknown709 != GENDER_UNKNOWN_2) {
+  SDataBlade &dataBlade = getSDataBlade(blade);
+  if (dataBlade.unknown709 != GENDER_UNKNOWN_2) {
     return false;
   }
 
-  return dataBlade->unknown846 == QUEST_RACE_UNKNOWN_1;
+  return dataBlade.unknown846 == QUEST_RACE_UNKNOWN_1;
 }
 
 bool GfDataBlade::getNameWithFieldSkillForDebug(mm::mtl::FixStr<128> &, u32) { return false; }
 
-u32 GfDataBlade::getKeyReleaseLevel(u32 blade) { return getSDataBlade(blade)->unknown664; }
+u32 GfDataBlade::getKeyReleaseLevel(u32 blade) { return getSDataBlade(blade).unknown664; }
 
 u32 GfDataBlade::getRealBladeId(u32 blade) { return blade == BLADE_UNKNOWN_1050 ? BLADE_UNKNOWN_1022 : blade; }
 
@@ -802,7 +802,7 @@ u8 GfDataBlade::getAttribute(u32 blade) {
     return GfDataHana::getAttribute(blade);
   }
 
-  return getSDataBlade(blade)->unknown823;
+  return getSDataBlade(blade).unknown823;
 }
 
 bool GfDataBlade::isMatchIdeaAttribute(u32 blade, u32 idea) {
@@ -825,7 +825,7 @@ bool GfDataBlade::isMatchIdeaAttribute(u32 blade, u32 idea) {
 }
 
 const char *GfDataBlade::getDeathBlowWeaponName(u32 blade) {
-  u32 weaponType = blade == 0 ? 0 : getSDataBlade(blade)->unknown821;
+  u32 weaponType = blade == 0 ? 0 : getSDataBlade(blade).unknown821;
   return unknown002[weaponType];
 }
 
@@ -891,7 +891,7 @@ u32 GfDataBlade::getBladePower(u32 blade) {
     return 0;
   }
 
-  return getBladePower(*getSDataBlade(blade));
+  return getBladePower(getSDataBlade(blade));
 }
 
 f32 GfDataBlade::getWpnScale(u32 blade) {
@@ -899,7 +899,7 @@ f32 GfDataBlade::getWpnScale(u32 blade) {
     return 1.0f;
   }
 
-  return getSDataBlade(blade)->unknown838 * unknown021;
+  return getSDataBlade(blade).unknown838 * unknown021;
 }
 
 f32 GfDataBlade::getScale(u32 blade) {
@@ -907,7 +907,7 @@ f32 GfDataBlade::getScale(u32 blade) {
     return 1.0f;
   }
 
-  return getSDataBlade(blade)->unknown836 * unknown021;
+  return getSDataBlade(blade).unknown836 * unknown021;
 }
 
 u32 GfDataBlade::getOffsetID(u32 blade) {
@@ -915,7 +915,7 @@ u32 GfDataBlade::getOffsetID(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown83a;
+  return getSDataBlade(blade).unknown83a;
 }
 
 u16 GfDataBlade::getMountPoint(u32 blade) {
@@ -923,7 +923,7 @@ u16 GfDataBlade::getMountPoint(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown854;
+  return getSDataBlade(blade).unknown854;
 }
 
 u16 GfDataBlade::getMountObject(u32 blade) {
@@ -931,7 +931,7 @@ u16 GfDataBlade::getMountObject(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown856;
+  return getSDataBlade(blade).unknown856;
 }
 
 u8 GfDataBlade::getSize(u32 blade) {
@@ -939,7 +939,7 @@ u8 GfDataBlade::getSize(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown820;
+  return getSDataBlade(blade).unknown820;
 }
 
 u16 GfDataBlade::getCollisionId(u32 blade) {
@@ -947,7 +947,7 @@ u16 GfDataBlade::getCollisionId(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown83c;
+  return getSDataBlade(blade).unknown83c;
 }
 
 u32 GfDataBlade::getRoleByWpnType(u32 weaponType) {
@@ -963,12 +963,12 @@ u32 GfDataBlade::getRole(u32 blade) {
     return 0;
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
+  SDataBlade &dataBlade = getSDataBlade(blade);
   if (GfDataHana::isValid(blade)) {
     return GfDataHana::getRole(blade);
   }
 
-  return getRoleByWpnType(dataBlade->unknown821);
+  return getRoleByWpnType(dataBlade.unknown821);
 }
 
 u32 GfDataBlade::getEquipOrbMax(u32 blade) {
@@ -976,7 +976,7 @@ u32 GfDataBlade::getEquipOrbMax(u32 blade) {
     return 0;
   }
 
-  return getSDataBlade(blade)->unknown822;
+  return getSDataBlade(blade).unknown822;
 }
 
 u16 GfDataBlade::getEquipOrb(u32 blade, u32 slot) {
@@ -984,9 +984,9 @@ u16 GfDataBlade::getEquipOrb(u32 blade, u32 slot) {
     return 0;
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
+  SDataBlade &dataBlade = getSDataBlade(blade);
   if (slot < getEquipOrbMax(blade)) {
-    return dataBlade->unknown678[slot];
+    return dataBlade.unknown678[slot];
   }
 
   return 0;
@@ -997,9 +997,9 @@ GfItemHandle GfDataBlade::getEquipOrbHandle(u32 blade, u32 slot) {
     return GfItemHandle(0);
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
+  SDataBlade &dataBlade = getSDataBlade(blade);
   if (slot < getEquipOrbMax(blade)) {
-    return dataBlade->unknown680[slot];
+    return dataBlade.unknown680[slot];
   }
 
   return GfItemHandle(0);
@@ -1010,7 +1010,7 @@ bool GfDataBlade::getEquipOrb(mm::mtl::FixedArray<u16, 3> &equipOrbs, u32 blade)
     return false;
   }
 
-  equipOrbs = getSDataBlade(blade)->unknown678;
+  equipOrbs = getSDataBlade(blade).unknown678;
   return true;
 }
 
@@ -1019,7 +1019,7 @@ bool GfDataBlade::getEquipOrbHandle(mm::mtl::FixedArray<u32, 3> &equipOrbHandles
     return false;
   }
 
-  equipOrbHandles = getSDataBlade(blade)->unknown680;
+  equipOrbHandles = getSDataBlade(blade).unknown680;
   return true;
 }
 
@@ -1028,10 +1028,10 @@ bool GfDataBlade::isEquipOrbFull(u32 blade) {
     return false;
   }
 
-  SDataBlade *dataBlade = getSDataBlade(blade);
+  SDataBlade &dataBlade = getSDataBlade(blade);
   u32 equipOrbMax = getEquipOrbMax(blade);
   for (u32 slot = 0; slot < equipOrbMax; slot++) {
-    if (dataBlade->unknown678[slot] == 0) {
+    if (dataBlade.unknown678[slot] == 0) {
       return false;
     }
   }
@@ -1044,7 +1044,7 @@ bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, u32
     return false;
   }
 
-  return getEquipOrbEnance(enhances, *getSDataBlade(blade));
+  return getEquipOrbEnance(enhances, getSDataBlade(blade));
 }
 
 bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, SDataBlade &dataBlade) {
@@ -1090,7 +1090,7 @@ bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, SDa
 }
 
 u32 GfDataBlade::getBladeWeaponRank(u32 blade) {
-  u32 weapon = getSDataBlade(blade)->unknown82c;
+  u32 weapon = getSDataBlade(blade).unknown82c;
   if (weapon == 0) {
     return 0;
   }
@@ -1100,27 +1100,27 @@ u32 GfDataBlade::getBladeWeaponRank(u32 blade) {
 
 void GfDataBlade::setBladeWeapon(u32 blade, u32 weapon) {
   if (blade != 0) {
-    getSDataBlade(blade)->unknown82c = weapon;
+    getSDataBlade(blade).unknown82c = weapon;
   }
 }
 
 void GfDataBlade::setAttributeForDebug(u32 blade, u8 attribute) {
   if (blade != 0) {
-    getSDataBlade(blade)->unknown823 = attribute;
+    getSDataBlade(blade).unknown823 = attribute;
   }
 }
 
-unknown108 *GfDataBlade::getArts(u32 blade, u32 slot) { return &getSDataBlade(blade)->unknown3c[slot]; }
+unknown108 *GfDataBlade::getArts(u32 blade, u32 slot) { return &getSDataBlade(blade).unknown3c[slot]; }
 
 u32 GfDataBlade::getArtsEnhance(u32 blade, u32 slot) {
   if (blade - BLADE_UNKNOWN_1005 < BLADE_HANA_UNKNOWN_3) {
-    return getSDataBlade(blade)->unknown68c.unknown04[slot].unknown00;
+    return getSDataBlade(blade).unknown68c.unknown04[slot].unknown00;
   }
 
   return 0;
 }
 
-unknown109 *GfDataBlade::getSkill(u32 blade, u32 slot) { return &getSDataBlade(blade)->unknown9c[slot]; }
+unknown109 *GfDataBlade::getSkill(u32 blade, u32 slot) { return &getSDataBlade(blade).unknown9c[slot]; }
 
 bool GfDataBlade::getListRegular(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
   for (u32 blade = BLADE_UNKNOWN_1001; blade < BLADE_UNKNOWN_1014; blade++) {
@@ -1259,25 +1259,25 @@ bool GfDataBlade::getListPartyAll(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &
   return !blades.empty();
 }
 
-u32 GfDataBlade::getCreateEvent(u32 blade) { return getSDataBlade(blade)->unknown850; }
+u32 GfDataBlade::getCreateEvent(u32 blade) { return getSDataBlade(blade).unknown850; }
 
-u16 GfDataBlade::getNormalTalk(u32 blade) { return getSDataBlade(blade)->unknown84c; }
+u16 GfDataBlade::getNormalTalk(u32 blade) { return getSDataBlade(blade).unknown84c; }
 
 u32 GfDataBlade::getActBlade2CommonBlade(u32 blade) { return blade - BLADE_UNKNOWN_1051 >= BLADE_ACT_UNKNOWN_22 ? blade : blade + (BLADE_UNKNOWN_1401_2 - BLADE_UNKNOWN_1051); }
 
 bool GfDataBlade::isNeedAttributeResource(u32 blade) { return isCommonBlade(blade) || blade - BLADE_UNKNOWN_1051 < BLADE_ACT_UNKNOWN_22 || blade - BLADE_UNKNOWN_1005 < BLADE_HANA_UNKNOWN_3; }
 
-u32 GfDataBlade::getTrustPoint(u32 blade) { return getSDataBlade(blade)->unknown34; }
+u32 GfDataBlade::getTrustPoint(u32 blade) { return getSDataBlade(blade).unknown34; }
 
-GfIdea GfDataBlade::getTrustRank(u32 blade) { return getSDataBlade(blade)->unknown38; }
+GfIdea GfDataBlade::getTrustRank(u32 blade) { return getSDataBlade(blade).unknown38; }
 
 void GfDataBlade::setTrustPoint(u32 blade, u32 trustPoint) {
-  getSDataBlade(blade)->unknown34 = trustPoint;
+  getSDataBlade(blade).unknown34 = trustPoint;
   GfEvent::callDebugChangeIdea(DEBUG_UNKNOWN_4, blade, 0, 0);
 }
 
 void GfDataBlade::setTrustRank(u32 blade, GfIdea trustRank) {
-  getSDataBlade(blade)->unknown38 = trustRank;
+  getSDataBlade(blade).unknown38 = trustRank;
   GfEvent::callDebugChangeIdea(DEBUG_UNKNOWN_4, blade, 0, 0);
 }
 
@@ -1286,7 +1286,7 @@ u32 GfDataBlade::getParmor(u32 blade) {
     return GfDataHana::getParmor(blade);
   }
 
-  return getSDataBlade(blade)->unknown83e;
+  return getSDataBlade(blade).unknown83e;
 }
 
 u32 GfDataBlade::getEarmor(u32 blade) {
@@ -1294,7 +1294,7 @@ u32 GfDataBlade::getEarmor(u32 blade) {
     return GfDataHana::getEarmor(blade);
   }
 
-  return getSDataBlade(blade)->unknown83f;
+  return getSDataBlade(blade).unknown83f;
 }
 
 u32 GfDataBlade::getHpMaxRev(u32 blade) {
@@ -1302,7 +1302,7 @@ u32 GfDataBlade::getHpMaxRev(u32 blade) {
     return GfDataHana::getHpMaxRev(blade);
   }
 
-  return getSDataBlade(blade)->unknown840;
+  return getSDataBlade(blade).unknown840;
 }
 
 u32 GfDataBlade::getStrengthRev(u32 blade) {
@@ -1310,7 +1310,7 @@ u32 GfDataBlade::getStrengthRev(u32 blade) {
     return GfDataHana::getStrengthRev(blade);
   }
 
-  return getSDataBlade(blade)->unknown841;
+  return getSDataBlade(blade).unknown841;
 }
 
 u32 GfDataBlade::getPowerEtherRev(u32 blade) {
@@ -1318,7 +1318,7 @@ u32 GfDataBlade::getPowerEtherRev(u32 blade) {
     return GfDataHana::getPowerEtherRev(blade);
   }
 
-  return getSDataBlade(blade)->unknown842;
+  return getSDataBlade(blade).unknown842;
 }
 
 u32 GfDataBlade::getDexRev(u32 blade) {
@@ -1326,7 +1326,7 @@ u32 GfDataBlade::getDexRev(u32 blade) {
     return GfDataHana::getDexRev(blade);
   }
 
-  return getSDataBlade(blade)->unknown843;
+  return getSDataBlade(blade).unknown843;
 }
 
 u32 GfDataBlade::getAgilityRev(u32 blade) {
@@ -1334,7 +1334,7 @@ u32 GfDataBlade::getAgilityRev(u32 blade) {
     return GfDataHana::getAgilityRev(blade);
   }
 
-  return getSDataBlade(blade)->unknown844;
+  return getSDataBlade(blade).unknown844;
 }
 
 u32 GfDataBlade::getLuckRev(u32 blade) {
@@ -1342,7 +1342,7 @@ u32 GfDataBlade::getLuckRev(u32 blade) {
     return GfDataHana::getLuckRev(blade);
   }
 
-  return getSDataBlade(blade)->unknown845;
+  return getSDataBlade(blade).unknown845;
 }
 
 u32 GfDataBlade::getBookedItemInfo(u32 blade) {
@@ -1355,28 +1355,28 @@ u32 GfDataBlade::getBookedItemInfo(u32 blade) {
 }
 
 bool GfDataBlade::isUsedFavorite(u32 blade, FAVORITE favorite) {
-  SDataBlade *dataBlade = getSDataBlade(blade);
+  SDataBlade &dataBlade = getSDataBlade(blade);
   switch (favorite) {
   case FAVORITE_UNKNOWN_0:
-    return dataBlade->unknown666[0].unknown04 != 0;
+    return dataBlade.unknown666[0].unknown04 != 0;
   case FAVORITE_UNKNOWN_1:
-    return dataBlade->unknown666[1].unknown04 != 0;
+    return dataBlade.unknown666[1].unknown04 != 0;
   case FAVORITE_UNKNOWN_2:
-    return dataBlade->unknown666[0].unknown06 != 0;
+    return dataBlade.unknown666[0].unknown06 != 0;
   case FAVORITE_UNKNOWN_3:
-    return dataBlade->unknown666[1].unknown06 != 0;
+    return dataBlade.unknown666[1].unknown06 != 0;
   default:
     return false;
   }
 }
 
-u32 GfDataBlade::getFootStep(u32 blade) { return getSDataBlade(blade)->unknown848; }
+u32 GfDataBlade::getFootStep(u32 blade) { return getSDataBlade(blade).unknown848; }
 
-u32 GfDataBlade::getFootStepEffect(u32 blade) { return getSDataBlade(blade)->unknown849; }
+u32 GfDataBlade::getFootStepEffect(u32 blade) { return getSDataBlade(blade).unknown849; }
 
 bool GfDataBlade::isBladeID(u32 blade) { return blade - BLADE_UNKNOWN_1001 < BLADE_UNKNOWN_422; }
 
-bool GfDataBlade::isReleaseLock(u32 blade) { return getSDataBlade(blade)->unknown847 != 0; }
+bool GfDataBlade::isReleaseLock(u32 blade) { return getSDataBlade(blade).unknown847 != 0; }
 
 bool GfDataBlade::getMercenaryName(u8 *&bdat, u32 &textId, u32 blade) {
   if (isCommonBlade(blade)) {
@@ -1388,10 +1388,10 @@ bool GfDataBlade::getMercenaryName(u8 *&bdat, u32 &textId, u32 blade) {
   return textId != 0;
 }
 
-u8 GfDataBlade::getPersonality(u32 blade) { return getSDataBlade(blade)->unknown824; }
+u8 GfDataBlade::getPersonality(u32 blade) { return getSDataBlade(blade).unknown824; }
 
 u32 GfDataBlade::getVoiceID(u32 blade) {
-  u32 personality = getSDataBlade(blade)->unknown824;
+  u32 personality = getSDataBlade(blade).unknown824;
   if (personality == 0) {
     return 0;
   }
@@ -1399,9 +1399,9 @@ u32 GfDataBlade::getVoiceID(u32 blade) {
   return GfBdatBtl::get()->getBTL_Bl_PersonalityVoiceID(personality);
 }
 
-const char *GfDataBlade::getVoiceStr(u32 blade) { return getSDataBlade(blade)->unknown770; }
+const char *GfDataBlade::getVoiceStr(u32 blade) { return getSDataBlade(blade).unknown770; }
 
-const char *GfDataBlade::getSePack(u32 blade) { return getSDataBlade(blade)->unknown7fc; }
+const char *GfDataBlade::getSePack(u32 blade) { return getSDataBlade(blade).unknown7fc; }
 
 u32 GfDataBlade::getBladeNum() {
   mm::mtl::FixedVector<u16, 422> blades;
@@ -1484,8 +1484,8 @@ u32 GfDataBlade::getBladeNumForWeapon(u32 weaponType) {
 
 const char *GfDataBlade::getFieldSkillVoice(u32 blade, u32 skill) {
   QuestListAcc *questList = QuestListAcc::get();
-  SDataBlade *dataBlade = getSDataBlade(blade);
-  if (dataBlade->unknownae[0].unknown00 == skill || dataBlade->unknownae[1].unknown00 == skill || dataBlade->unknownae[2].unknown00 == skill) {
+  SDataBlade &dataBlade = getSDataBlade(blade);
+  if (dataBlade.unknownae[0].unknown00 == skill || dataBlade.unknownae[1].unknown00 == skill || dataBlade.unknownae[2].unknown00 == skill) {
     u32 category = questList->getFLD_FieldSkillListVoiceCategory(skill);
     if (category != 0) {
       return GfDataField::getFieldSkillVoice(blade, category);
@@ -1501,15 +1501,15 @@ bool GfDataBlade::isActivateParty(u32 blade) {
     return false;
   }
 
-  if (getSDataBlade(blade)->unknown00 != BLADE_ACTIVATE_UNKNOWN_1) {
+  if (getSDataBlade(blade).unknown00 != BLADE_ACTIVATE_UNKNOWN_1) {
     return false;
   }
 
-  return static_cast<u32>(GfDataParty::getDriverPartyID(getSDataBlade(blade)->unknown04)) < 3;
+  return static_cast<u32>(GfDataParty::getDriverPartyID(getSDataBlade(blade).unknown04)) < 3;
 }
 
 bool GfDataBlade::isActivateReserver(u32 blade) {
-  if (getSDataBlade(blade)->unknown00 != BLADE_ACTIVATE_UNKNOWN_1) {
+  if (getSDataBlade(blade).unknown00 != BLADE_ACTIVATE_UNKNOWN_1) {
     return false;
   }
 
@@ -1522,17 +1522,17 @@ bool GfDataBlade::isActivateReserver(u32 blade) {
   return true;
 }
 
-SDataIdea *GfDataBlade::getSDataIdea(u32 blade) { return &getSDataBlade(blade)->unknown0c; }
+SDataIdea *GfDataBlade::getSDataIdea(u32 blade) { return &getSDataBlade(blade).unknown0c; }
 
 void GfDataBlade::setUiCommonBlade(const SDataBlade &dataBlade, u32 blade) {
-  SDataBlade *uiCommonBlade = getSDataBlade(blade);
-  *uiCommonBlade = dataBlade;
-  uiCommonBlade->unknown06 = blade;
+  SDataBlade &uiCommonBlade = getSDataBlade(blade);
+  uiCommonBlade = dataBlade;
+  uiCommonBlade.unknown06 = blade;
 }
 
 void GfDataBlade::setActCommonBlade(const SDataBlade &dataBlade, u32 blade) {
-  *getSDataBlade(blade) = dataBlade;
-  getSDataBlade(blade)->unknown06 = blade;
+  getSDataBlade(blade) = dataBlade;
+  getSDataBlade(blade).unknown06 = blade;
 }
 
 } // namespace gf

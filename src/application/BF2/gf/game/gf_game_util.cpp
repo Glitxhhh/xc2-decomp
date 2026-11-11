@@ -334,8 +334,8 @@ void GfGameUtil::flushProperty(GF_OBJ_HANDLE *handle) {
     driver->unknown194 = paramAcc.getExpNext(false);
   } else if (acc.getType() == OBJECT_TYPE_BLADE) {
     mm::mtl::FixedArray<unknown109, 3> &skills = property->getBlade()->unknown190;
-    SDataBlade *sdata = GfDataBlade::getSDataBlade(paramAcc.isValid() ? paramAcc.getBdatId() : 0);
-    skills = sdata->unknownae;
+    SDataBlade &sdata = GfDataBlade::getSDataBlade(paramAcc.isValid() ? paramAcc.getBdatId() : 0);
+    skills = sdata.unknownae;
   }
 }
 
@@ -1043,12 +1043,12 @@ void GfGameUtil::setEnterbattleEnemyForDebug() {
 }
 
 const char *GfGameUtil::getBladeModel(u32 blade, bool isDefault) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
-  if (!dataBlade->unknown720.empty() && !isDefault && isCondBladeModel(blade)) {
-    return dataBlade->unknown720.c_str();
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
+  if (!dataBlade.unknown720.empty() && !isDefault && isCondBladeModel(blade)) {
+    return dataBlade.unknown720.c_str();
   }
 
-  return dataBlade->unknown70c.c_str();
+  return dataBlade.unknown70c.c_str();
 }
 
 bool GfGameUtil::isCondBladeModel(u32 blade) {
@@ -1065,16 +1065,16 @@ bool GfGameUtil::isCondBladeModel(u32 blade) {
     return false;
   }
 
-  return GfGameCond::isGameCond(GfDataBlade::getSDataBlade(blade)->unknown82a);
+  return GfGameCond::isGameCond(GfDataBlade::getSDataBlade(blade).unknown82a);
 }
 
 const char *GfGameUtil::getBladeMotion(u32 blade, bool isDefault) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
-  if (!dataBlade->unknown748.empty() && !isDefault && isCondBladeModel(blade)) {
-    return dataBlade->unknown748.c_str();
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
+  if (!dataBlade.unknown748.empty() && !isDefault && isCondBladeModel(blade)) {
+    return dataBlade.unknown748.c_str();
   }
 
-  return dataBlade->unknown734.c_str();
+  return dataBlade.unknown734.c_str();
 }
 
 const char *GfGameUtil::getDriverModel(u32 driver) {
@@ -1471,7 +1471,7 @@ bool GfGameUtil::execActivateUnuseForBlade(u32 blade, bool isRelease) {
     }
   }
 
-  ActivateType activateType = GfDataBlade::getBladeActivateType(*GfDataBlade::getSDataBlade(blade));
+  ActivateType activateType = GfDataBlade::getBladeActivateType(GfDataBlade::getSDataBlade(blade));
   if (GfDataBlade::setActivateUnuse(blade)) {
     if (isRelease && GfDataBlade::isRareBlade(blade)) {
       GfDataBlade::resetAttachedParty(blade);
@@ -1488,14 +1488,14 @@ bool GfGameUtil::execActivateMercenaryTeamForBlade(u32 blade) {
     return false;
   }
 
-  ActivateType activateType = GfDataBlade::getBladeActivateType(*GfDataBlade::getSDataBlade(blade));
+  ActivateType activateType = GfDataBlade::getBladeActivateType(GfDataBlade::getSDataBlade(blade));
   GfDataBlade::setActivateMercenaryTeam(blade);
   GfEvent::callBladeActivate(blade, activateType, ACTIVATE_TYPE_UNKNOWN_3);
   return true;
 }
 
 bool GfGameUtil::execActivateReserverForBlade(u32 blade) {
-  ActivateType activateType = GfDataBlade::getBladeActivateType(*GfDataBlade::getSDataBlade(blade));
+  ActivateType activateType = GfDataBlade::getBladeActivateType(GfDataBlade::getSDataBlade(blade));
   if (GfDataBlade::isActivateReserver(blade)) {
     if (GfDataBlade::getSetDriver(blade) != 0) {
       GfDataDriver::unsetBlade(blade);
@@ -1566,14 +1566,14 @@ void GfGameUtil::addTrusuPointByLastKizunaTalk() {
 u32 GfGameUtil::execAddRareBlade(const SDataBlade &dataBlade) {
   u32 blade = GfDataBlade::addRareBlade(dataBlade);
   if (blade != 0) {
-    SDataBlade *addedBlade = GfDataBlade::getSDataBlade(blade);
-    ActivateType activateType = GfDataBlade::getBladeActivateType(*addedBlade);
+    SDataBlade &addedBlade = GfDataBlade::getSDataBlade(blade);
+    ActivateType activateType = GfDataBlade::getBladeActivateType(addedBlade);
     if (blade == BLADE_UNKNOWN_1022) {
       GfDataBlade::setCreator(BLADE_UNKNOWN_1050, GfDataBlade::getCreator(BLADE_UNKNOWN_1022));
     }
 
-    if (addedBlade->unknown850 != 0) {
-      setWatchedEvent(addedBlade->unknown850);
+    if (addedBlade.unknown850 != 0) {
+      setWatchedEvent(addedBlade.unknown850);
     }
 
     GfEvent::callBladeActivate(blade, activateType, ACTIVATE_TYPE_UNKNOWN_1);
@@ -1585,9 +1585,9 @@ u32 GfGameUtil::execAddRareBlade(const SDataBlade &dataBlade) {
 u32 GfGameUtil::execAddCommonBlade(const SDataBlade &dataBlade) {
   u32 blade = GfDataBlade::addCommonBlade(dataBlade);
   if (blade != 0) {
-    SDataBlade *addedBlade = GfDataBlade::getSDataBlade(blade);
-    if (addedBlade->unknown850 != 0) {
-      setWatchedEvent(addedBlade->unknown850);
+    SDataBlade &addedBlade = GfDataBlade::getSDataBlade(blade);
+    if (addedBlade.unknown850 != 0) {
+      setWatchedEvent(addedBlade.unknown850);
     }
 
     GfEvent::callBladeActivate(blade, ACTIVATE_TYPE_UNKNOWN_0, ACTIVATE_TYPE_UNKNOWN_1);
@@ -1844,7 +1844,7 @@ void GfGameUtil::setKosmosArts3EnableBothWeapon(GF_OBJ_HANDLE *handle, bool isEn
   weapon->unknowna8 = isAlternate;
 }
 
-bool GfGameUtil::isHomuraHoodStyle() { return GfGameCond::isGameCond(GfDataBlade::getSDataBlade(BLADE_HOMURA)->unknown82a); }
+bool GfGameUtil::isHomuraHoodStyle() { return GfGameCond::isGameCond(GfDataBlade::getSDataBlade(BLADE_HOMURA).unknown82a); }
 
 bool GfGameUtil::isTrueRex() { return GfGameCond::isGameCond(GfBdatChrDr::get()->getChrDrCondition(DRIVER_UNKNOWN_1)); }
 
@@ -1953,7 +1953,7 @@ void GfGameUtil::execEquipDriverDefaultAcce(u32 driver) {
     return;
   }
 
-  GfDataDriver::getSDataDriver(driver)->unknown572 = true;
+  GfDataDriver::getSDataDriver(driver).unknown572 = true;
   u32 accessory = GfBdatChrDr::get()->getChrDrDefAcce(driver);
   if (accessory == 0) {
     return;

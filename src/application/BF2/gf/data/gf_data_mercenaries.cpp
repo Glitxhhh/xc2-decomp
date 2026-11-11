@@ -293,7 +293,7 @@ int GfDataMercenaries::getTeamAnimalNum(u32 teamID) {
 
   int animalNum = 0;
   for (u32 i = 0; i < 6; i++) {
-    if (team->unknown00[i] != 0 && GfDataBlade::getSDataBlade(team->unknown00[i])->unknown846 == QUEST_RACE_UNKNOWN_2) {
+    if (team->unknown00[i] != 0 && GfDataBlade::getSDataBlade(team->unknown00[i]).unknown846 == QUEST_RACE_UNKNOWN_2) {
       animalNum++;
     }
   }

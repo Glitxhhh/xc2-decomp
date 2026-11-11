@@ -216,7 +216,7 @@ u32 GfDataEvent::getBladeQuestDriver(u32 event) {
         return blade;
       }
 
-      return GfDataBlade::getSDataBlade(blade)->unknown02;
+      return GfDataBlade::getSDataBlade(blade).unknown02;
     }
   }
 

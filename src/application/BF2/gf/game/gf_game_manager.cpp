@@ -348,9 +348,9 @@ void GfGameManager::gevBladeEnable(u32 blade) {
 
   GfFieldTime *fieldTime = GfFieldTime::get();
   if (fieldTime != nullptr) {
-    SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
-    if (dataBlade->unknown08 == 0) {
-      dataBlade->unknown08 = reinterpret_cast<const u32 &>(fieldTime->getElapseTime());
+    SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
+    if (dataBlade.unknown08 == 0) {
+      dataBlade.unknown08 = reinterpret_cast<const u32 &>(fieldTime->getElapseTime());
     }
   }
 }
@@ -622,7 +622,7 @@ bool GfGameManager::isEnableBattouWithHoodHomura(bool isCheckCondition) {
     return false;
   }
 
-  if (isCheckCondition && !GfGameCond::isGameCond(GfDataBlade::getSDataBlade(bladeAcc.getBladeId())->unknown82a)) {
+  if (isCheckCondition && !GfGameCond::isGameCond(GfDataBlade::getSDataBlade(bladeAcc.getBladeId()).unknown82a)) {
     return false;
   }
 
@@ -1271,7 +1271,7 @@ bool GfGameManager::isHoodHomura(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  if (!GfGameCond::isGameCond(GfDataBlade::getSDataBlade(objAcc.getBladeId())->unknown82a)) {
+  if (!GfGameCond::isGameCond(GfDataBlade::getSDataBlade(objAcc.getBladeId()).unknown82a)) {
     return false;
   }
 

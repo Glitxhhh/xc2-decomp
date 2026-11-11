@@ -1193,7 +1193,7 @@ bool GfMenuCharDataAdapter::update_BL_SkillName(const DataParamAcc &acc) {
 bool GfMenuCharDataAdapter::update_BL_weaponTypeName(const DataParamAcc &acc) {
   if (acc.getObjType() == OBJECT_TYPE_BLADE) {
     u8 *bdat = GfDataBdat::getFP(BDAT_MNU_MSG_WEAPON_TYPE);
-    u32 weaponType = GfDataBlade::getSDataBlade(acc.getValidBdatId())->unknown821;
+    u32 weaponType = GfDataBlade::getSDataBlade(acc.getValidBdatId()).unknown821;
     u8 *msBdat = GfDataBdat::getFP(BDAT_ITM_PCWPNTYPE_MS);
     u16 name = Bdat::getVal(bdat, "name", weaponType).valueU16;
     ui::UIStr text(msBdat, name);

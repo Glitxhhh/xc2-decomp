@@ -36,7 +36,7 @@ bool GfDataSalvage::getSalvageSkillBlade(mm::mtl::FixedVector<u16, 422> &blades)
       int setBladeNum = GfDataDriver::getMaxSetBladeNum(dataParamAcc.getBdatId());
       for (int slot = 0; slot < setBladeNum; slot++) {
         u32 blade = dataParamAcc.getBlade(slot, false);
-        if (blade != 0 && hasSalvageSkill(*GfDataBlade::getSDataBlade(blade))) {
+        if (blade != 0 && hasSalvageSkill(GfDataBlade::getSDataBlade(blade))) {
           blades.push_back(blade);
         }
       }
@@ -49,10 +49,10 @@ bool GfDataSalvage::getSalvageSkillBlade(mm::mtl::FixedVector<u16, 422> &blades)
 u8 GfDataSalvage::getSalvageSkillLevel(u32 blade) {
   u8 level = 0;
   if (blade != 0) {
-    SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
+    SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
     for (u32 index = 0; index < 3; index++) {
-      if (dataBlade->unknownae[index].unknown00 == FIELD_UNKNOWN_9 && level < dataBlade->unknownae[index].unknown03) {
-        level = dataBlade->unknownae[index].unknown03;
+      if (dataBlade.unknownae[index].unknown00 == FIELD_UNKNOWN_9 && level < dataBlade.unknownae[index].unknown03) {
+        level = dataBlade.unknownae[index].unknown03;
       }
     }
   }

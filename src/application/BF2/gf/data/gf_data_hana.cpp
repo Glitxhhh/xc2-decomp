@@ -63,7 +63,7 @@ bool GfDataHana::isValid(u32 blade) { return blade - BLADE_UNKNOWN_1005 < HANA_U
 
 u32 GfDataHana::getRole(u32 blade) {
   GfBdatItem *bdatItem = GfBdatItem::get();
-  return bdatItem->getITM_HanaRoleRole(GfDataBlade::getSDataBlade(blade)->unknown68c.unknown00);
+  return bdatItem->getITM_HanaRoleRole(GfDataBlade::getSDataBlade(blade).unknown68c.unknown00);
 }
 
 u32 GfDataHana::getCondenserNum(u32 blade) { return GfBdatBtl::get()->getBTL_HanaBaseNCondNum(blade - HANA_UNKNOWN_1004); }
@@ -75,7 +75,7 @@ u32 GfDataHana::getExtendCondenserNum(u32 blade) { return GfBdatBtl::get()->getB
 bool GfDataHana::isOpenCircuit(SDataBlade &dataBlade, u32 circuit) { return (dataBlade.unknown706 & 1 << circuit) != 0; }
 
 u32 GfDataHana::getAttribute(u32 blade) {
-  u32 attribute = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown02;
+  u32 attribute = GfDataBlade::getSDataBlade(blade).unknown68c.unknown02;
   if (attribute == 0) {
     return 0;
   }
@@ -83,9 +83,9 @@ u32 GfDataHana::getAttribute(u32 blade) {
   return GfBdatItem::get()->getITM_HanaAtrAtr(attribute);
 }
 
-u16 GfDataHana::getArtsEnhance(u32 blade, u32 slot) { return GfDataBlade::getSDataBlade(blade)->unknown68c.unknown04[slot].unknown00; }
+u16 GfDataHana::getArtsEnhance(u32 blade, u32 slot) { return GfDataBlade::getSDataBlade(blade).unknown68c.unknown04[slot].unknown00; }
 
-EquipHana *GfDataHana::getEquipParts(u32 blade) { return &GfDataBlade::getSDataBlade(blade)->unknown68c; }
+EquipHana *GfDataHana::getEquipParts(u32 blade) { return &GfDataBlade::getSDataBlade(blade).unknown68c; }
 
 u32 GfDataHana::getParmor(u32 blade) {
   u32 role = getEquipParts(blade)->unknown00;
@@ -163,83 +163,83 @@ u32 GfDataHana::getDefaultNArtsParts(u32 blade, u32 slot) { return GfBdatBtl::ge
 
 u32 GfDataHana::getDefaultCondenserParts(u32 blade, u32 slot) { return GfBdatBtl::get()->getBTL_HanaChipsetNCondParts(blade - HANA_UNKNOWN_1004, slot); }
 
-bool GfDataHana::isOpenCircuit(u32 blade, u32 circuit) { return (GfDataBlade::getSDataBlade(blade)->unknown706 & 1 << circuit) != 0; }
+bool GfDataHana::isOpenCircuit(u32 blade, u32 circuit) { return (GfDataBlade::getSDataBlade(blade).unknown706 & 1 << circuit) != 0; }
 
 void GfDataHana::setOpenCircuit(u32 blade, u32 circuit, bool openCircuit) {
   u16 mask = 1 << circuit;
   if (openCircuit) {
-    GfDataBlade::getSDataBlade(blade)->unknown706 |= mask;
+    GfDataBlade::getSDataBlade(blade).unknown706 |= mask;
   } else {
-    GfDataBlade::getSDataBlade(blade)->unknown706 &= ~mask;
+    GfDataBlade::getSDataBlade(blade).unknown706 &= ~mask;
   }
 }
 
 u32 GfDataHana::getOpenCircuitEther(u32 blade, u32 circuit) { return GfBdatBtl::get()->getBTL_HanaBaseCircuitNum(blade - HANA_UNKNOWN_1004, circuit); }
 
-void GfDataHana::setEquipParts(u32 blade, const EquipHana &equipParts) { __builtin_memcpy(&GfDataBlade::getSDataBlade(blade)->unknown68c, &equipParts, sizeof(EquipHana)); }
+void GfDataHana::setEquipParts(u32 blade, const EquipHana &equipParts) { __builtin_memcpy(&GfDataBlade::getSDataBlade(blade).unknown68c, &equipParts, sizeof(EquipHana)); }
 
 void GfDataHana::setEquipRoleParts(u32 blade, u32 parts, GfItemHandle handle) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
   GfItemHandle roleHandle = handle;
-  dataBlade->unknown68c.unknown00 = parts;
-  dataBlade->unknown68c.unknown58 = roleHandle.value;
+  dataBlade.unknown68c.unknown00 = parts;
+  dataBlade.unknown68c.unknown58 = roleHandle.value;
 }
 
 u32 GfDataHana::getAutoHate(u32 blade) {
   GfBdatItem *bdatItem = GfBdatItem::get();
-  return bdatItem->getITM_HanaRoleAutoHate(GfDataBlade::getSDataBlade(blade)->unknown68c.unknown00);
+  return bdatItem->getITM_HanaRoleAutoHate(GfDataBlade::getSDataBlade(blade).unknown68c.unknown00);
 }
 
 u32 GfDataHana::getArtsHate(u32 blade) {
   GfBdatItem *bdatItem = GfBdatItem::get();
-  return bdatItem->getITM_HanaRoleArtsHate(GfDataBlade::getSDataBlade(blade)->unknown68c.unknown00);
+  return bdatItem->getITM_HanaRoleArtsHate(GfDataBlade::getSDataBlade(blade).unknown68c.unknown00);
 }
 
 void GfDataHana::setEquipAttributeParts(u32 blade, u32 parts, GfItemHandle handle) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
   GfItemHandle attributeHandle = handle;
-  dataBlade->unknown68c.unknown02 = parts;
-  dataBlade->unknown68c.unknown5c = attributeHandle.value;
+  dataBlade.unknown68c.unknown02 = parts;
+  dataBlade.unknown68c.unknown5c = attributeHandle.value;
 }
 
 void GfDataHana::setEquipArtsParts(u32 blade, u32 slot, u32 parts, GfItemHandle handle) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
   GfItemHandle artsHandle = handle;
-  unknown066 &arts = dataBlade->unknown68c.unknown04[slot];
+  unknown066 &arts = dataBlade.unknown68c.unknown04[slot];
   arts.unknown04 = parts;
   arts.unknown0a = artsHandle.value;
   arts.unknown00 = GfBdatItem::get()->getITM_HanaArtsEnhEnhance(parts);
 }
 
-void GfDataHana::getEquipCondenserParts(mm::mtl::FixedArray<u16, 3> &condenser, u32 blade) { condenser = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown4c; }
+void GfDataHana::getEquipCondenserParts(mm::mtl::FixedArray<u16, 3> &condenser, u32 blade) { condenser = GfDataBlade::getSDataBlade(blade).unknown68c.unknown4c; }
 
 void GfDataHana::setEquipCondenserParts(u32 blade, u32 slot, u32 parts, GfItemHandle handle) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
   GfItemHandle condenserHandle = handle;
-  dataBlade->unknown68c.unknown4c[slot] = parts;
-  dataBlade->unknown68c.unknown60[slot] = condenserHandle.value;
+  dataBlade.unknown68c.unknown4c[slot] = parts;
+  dataBlade.unknown68c.unknown60[slot] = condenserHandle.value;
 }
 
 bool GfDataHana::getEquipExtendCondenserParts(mm::mtl::FixedArray<u16, 3> &extendCondenser, u32 blade) {
-  extendCondenser = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown52;
+  extendCondenser = GfDataBlade::getSDataBlade(blade).unknown68c.unknown52;
   return true;
 }
 
 void GfDataHana::setEquipExtendCondenserParts(u32 blade, u32 slot, u32 parts, GfItemHandle handle) {
-  SDataBlade *dataBlade = GfDataBlade::getSDataBlade(blade);
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
   GfItemHandle extendCondenserHandle = handle;
-  dataBlade->unknown68c.unknown52[slot] = parts;
-  dataBlade->unknown68c.unknown6c[slot] = extendCondenserHandle.value;
+  dataBlade.unknown68c.unknown52[slot] = parts;
+  dataBlade.unknown68c.unknown6c[slot] = extendCondenserHandle.value;
 }
 
-u32 GfDataHana::getEquipPowerRank(u32 blade) { return GfDataBlade::getSDataBlade(blade)->unknown704; }
+u32 GfDataHana::getEquipPowerRank(u32 blade) { return GfDataBlade::getSDataBlade(blade).unknown704; }
 
 u16 GfDataHana::getEquipPowerRank(const SDataBlade &dataBlade) { return dataBlade.unknown704; }
 
-void GfDataHana::setEquipPowerRank(u32 blade, u32 equipPowerRank) { GfDataBlade::getSDataBlade(blade)->unknown704 = equipPowerRank; }
+void GfDataHana::setEquipPowerRank(u32 blade, u32 equipPowerRank) { GfDataBlade::getSDataBlade(blade).unknown704 = equipPowerRank; }
 
 u32 GfDataHana::getPowerCapacity(u32 blade) {
-  u32 equipPowerRank = GfDataBlade::getSDataBlade(blade)->unknown704;
+  u32 equipPowerRank = GfDataBlade::getSDataBlade(blade).unknown704;
   GfBdatBtl *bdatBattle = GfBdatBtl::get();
   return bdatBattle->getBTL_HanaPowerPowerNum(equipPowerRank, blade - BLADE_UNKNOWN_1005);
 }
@@ -279,7 +279,7 @@ u32 GfDataHana::getPartsPower(u32 parts) {
   return power;
 }
 
-u32 GfDataHana::getEquipPower(u32 blade) { return getEquipPower(GfDataBlade::getSDataBlade(blade)->unknown68c); }
+u32 GfDataHana::getEquipPower(u32 blade) { return getEquipPower(GfDataBlade::getSDataBlade(blade).unknown68c); }
 
 u32 GfDataHana::getEquipPower(const EquipHana &equipParts) {
   GfBdatItem *bdatItem = GfBdatItem::get();
@@ -323,7 +323,7 @@ u32 GfDataHana::getEquipPower(const SDataBlade &dataBlade) { return getEquipPowe
 
 u16 GfDataHana::getPowerRankEther(u32 blade, u32 ether) {
   GfBdatBtl *bdatBattle = GfBdatBtl::get();
-  u16 rank = GfDataBlade::getSDataBlade(blade)->unknown704;
+  u16 rank = GfDataBlade::getSDataBlade(blade).unknown704;
   if (rank >= RANK_UNKNOWN_20) {
     return RANK_UNKNOWN_20;
   }
@@ -448,7 +448,7 @@ const char *GfDataHana::getAssistName(u32 parts) {
 u32 GfDataHana::getEquipArtsItemNum(u32 blade, u32 parts) {
   u32 count = 0;
   for (u32 slot = 0; slot < 3; slot++) {
-    u32 equipParts = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown04[slot].unknown04;
+    u32 equipParts = GfDataBlade::getSDataBlade(blade).unknown68c.unknown04[slot].unknown04;
     if (equipParts != 0) {
       count += equipParts == parts;
     }
@@ -460,7 +460,7 @@ u32 GfDataHana::getEquipArtsItemNum(u32 blade, u32 parts) {
 u32 GfDataHana::getEquipNArtsItemNum(u32 blade, u32 parts) {
   u32 count = 0;
   for (u32 slot = 0; slot < 3; slot++) {
-    u32 equipParts = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown28[slot].unknown04;
+    u32 equipParts = GfDataBlade::getSDataBlade(blade).unknown68c.unknown28[slot].unknown04;
     if (equipParts != 0) {
       count += equipParts == parts;
     }
@@ -472,10 +472,10 @@ u32 GfDataHana::getEquipNArtsItemNum(u32 blade, u32 parts) {
 u32 GfDataHana::getEquipCondenserItemNum(u32 blade, u32 parts) {
   u32 count = 0;
   for (u32 slot = 0; slot < 3; slot++) {
-    u32 condenser = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown4c[slot];
+    u32 condenser = GfDataBlade::getSDataBlade(blade).unknown68c.unknown4c[slot];
     if (condenser != 0) {
       count += condenser == parts;
-      u32 extendCondenser = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown52[slot];
+      u32 extendCondenser = GfDataBlade::getSDataBlade(blade).unknown68c.unknown52[slot];
       if (extendCondenser != 0) {
         count += extendCondenser == parts;
       }
@@ -486,7 +486,7 @@ u32 GfDataHana::getEquipCondenserItemNum(u32 blade, u32 parts) {
 }
 
 u32 GfDataHana::getEquipRoleItemNum(u32 blade, u32 parts) {
-  u32 role = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown00;
+  u32 role = GfDataBlade::getSDataBlade(blade).unknown68c.unknown00;
   if (role == 0) {
     return 0;
   }
@@ -495,7 +495,7 @@ u32 GfDataHana::getEquipRoleItemNum(u32 blade, u32 parts) {
 }
 
 u32 GfDataHana::getEquipAttributeItemNum(u32 blade, u32 parts) {
-  u32 attribute = GfDataBlade::getSDataBlade(blade)->unknown68c.unknown02;
+  u32 attribute = GfDataBlade::getSDataBlade(blade).unknown68c.unknown02;
   if (attribute == 0) {
     return 0;
   }

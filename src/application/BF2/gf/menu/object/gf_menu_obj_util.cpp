@@ -686,21 +686,21 @@ int GfMenuObjUtil::getDriverPartyID(u32 driver) {
 u16 GfMenuObjUtil::getBladeFaceIconID(GF_OBJ_HANDLE *handle) {
   u32 blade = GfObjAcc(handle).getBdatId();
   if (GfDataBlade::isValid(blade)) {
-    return GfDataBlade::getSDataBlade(blade)->unknown70a;
+    return GfDataBlade::getSDataBlade(blade).unknown70a;
   }
   return GfMenuBdat::getTopBladeIconID();
 }
 
 u16 GfMenuObjUtil::getBladeFaceIconID(u32 blade) {
   if (GfDataBlade::isValid(blade)) {
-    return GfDataBlade::getSDataBlade(blade)->unknown70a;
+    return GfDataBlade::getSDataBlade(blade).unknown70a;
   }
   return GfMenuBdat::getTopBladeIconID();
 }
 
 u32 GfMenuObjUtil::getBladeWeaponTypeIconID(u32 blade) {
   if (GfDataBlade::isValid(blade)) {
-    return GfDataBlade::getSDataBlade(blade)->unknown821 + ICON_WEAPON_TYPE_UNKNOWN_138;
+    return GfDataBlade::getSDataBlade(blade).unknown821 + ICON_WEAPON_TYPE_UNKNOWN_138;
   }
   return ICON_WEAPON_TYPE_UNKNOWN_139;
 }
@@ -721,7 +721,7 @@ u16 GfMenuObjUtil::getBladeCompatibilityIconID(u32 driver, u32 blade) {
 
 u16 GfMenuObjUtil::getBladeAttributeID(u32 blade) {
   if (GfDataBlade::isValid(blade)) {
-    return GfDataBlade::getSDataBlade(blade)->unknown823;
+    return GfDataBlade::getSDataBlade(blade).unknown823;
   }
   return 0;
 }

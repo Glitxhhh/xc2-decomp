@@ -161,7 +161,7 @@ u32 GfDataDriverSkill::getSkill(u32 driver, u32 row, u32 column, bool isHidden) 
     return 0;
   }
 
-  return getSkill(*GfDataDriver::getSDataDriver(driver), row, column, isHidden);
+  return getSkill(GfDataDriver::getSDataDriver(driver), row, column, isHidden);
 }
 
 bool GfDataDriverSkill::isSkillLevelUnlock(u32 driver, u32 column, bool isHidden) {
@@ -208,7 +208,7 @@ u32 GfDataDriverSkill::getNextSkillPoint(u32 driver, u32 row, bool isHidden) {
     return 0;
   }
 
-  u32 level = getSkillLevel(*GfDataDriver::getSDataDriver(driver), row, isHidden);
+  u32 level = getSkillLevel(GfDataDriver::getSDataDriver(driver), row, isHidden);
   if (level >= SKILL_UNKNOWN_3) {
     return 0;
   }
@@ -220,7 +220,7 @@ u32 GfDataDriverSkill::getNextSkillPoint(u32 driver, u32 row, bool isHidden) {
   return getSkillPointFromBdat(driver, row, level + 1, isHidden);
 }
 
-u32 GfDataDriverSkill::getSkillLevel(u32 driver, u32 row, bool isHidden) { return getSkillLevel(*GfDataDriver::getSDataDriver(driver), row, isHidden); }
+u32 GfDataDriverSkill::getSkillLevel(u32 driver, u32 row, bool isHidden) { return getSkillLevel(GfDataDriver::getSDataDriver(driver), row, isHidden); }
 
 u16 GfDataDriverSkill::getSkillLevel(const SDataDriver &dataDriver, u32 row, bool isHidden) {
   if (dataDriver.unknown22 >= DRIVER_UNKNOWN_7_2) {
@@ -236,8 +236,8 @@ void GfDataDriverSkill::setSkillLevel(u32 driver, u32 row, u32 level, bool isHid
     return;
   }
 
-  SDataDriver *dataDriver = GfDataDriver::getSDataDriver(driver);
-  unknown116 *rows = isHidden ? dataDriver->unknown62 : dataDriver->unknown30;
+  SDataDriver &dataDriver = GfDataDriver::getSDataDriver(driver);
+  unknown116 *rows = isHidden ? dataDriver.unknown62 : dataDriver.unknown30;
   rows[row].unknown08 = static_cast<u8>(level);
   for (u32 column = 1; column <= level; column++) {
     rows[row].unknown00[column - 1] = getSkillFromBdat(driver, row, column, isHidden);

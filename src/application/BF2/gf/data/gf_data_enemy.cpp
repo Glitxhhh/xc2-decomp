@@ -164,7 +164,7 @@ u32 GfDataEnemy::getWeaponType(u32 arrange) {
     return 0;
   }
 
-  return GfDataBlade::getSDataBlade(blade)->unknown821;
+  return GfDataBlade::getSDataBlade(blade).unknown821;
 }
 
 bool GfDataEnemy::getDriverAddAnim(mm::mtl::FixStr<128> &animName, u32 driver, u32 number) {
