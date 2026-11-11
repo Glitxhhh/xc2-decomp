@@ -6,7 +6,9 @@
 
 namespace ml {
 
+class DrResMdoSeamWrkBase;
 class DrResMdoSeamWrkInst;
+class DrResMdoSeamWrkMpf;
 
 // Inferred type: read request of the seam; the original type name is unknown.
 struct _wkSeamReadWait {
@@ -38,6 +40,10 @@ struct wkSeamReadPacDataInf {
   u32 unknown00;  // Inferred role: bit tables size; original member name unknown.
   u32 *unknown08; // Inferred role: vertex bits; original member name unknown.
   u32 *unknown10; // Inferred role: texture bits; original member name unknown.
+  u32 *unknown18; // Inferred role: base map vertex bits; original member name unknown.
+  u32 *unknown20; // Inferred role: instance map position bits; original member name unknown.
+  u32 *unknown28; // Inferred role: mpf poli bits; original member name unknown.
+  u32 *unknown30; // Inferred role: mpf instance bits; original member name unknown.
 };
 
 static_assert(offsetof(wkSeamReadPacDataInf, unknown08) == 0x08, "");
@@ -56,6 +62,14 @@ static_assert(sizeof(unknown062) == 0x10, "");
 
 class DrResMdoSeamParmRead {
 public:
+  // Inferred role: stock entry of the position read lists, with the highest and lowest requested index; original type name unknown.
+  template <typename T> struct unknown001 {
+    T *unknown00;  // Inferred role: work; original member name unknown.
+    u16 unknown08; // Inferred role: highest index; original member name unknown.
+    u16 unknown0a; // Inferred role: lowest index; original member name unknown.
+    u8 _0c[0x10 - 0x0c];
+  };
+
   ~DrResMdoSeamParmRead();
   void addPos(const mm::Vec3 &position);
   void setStockEnvMdl(int index);
@@ -71,6 +85,10 @@ public:
   void setStockTexture(f32 level, int index);
   bool isReadInfo(const _wkSeamReadWait &wait);
   bool isReadAllInfo(const _wkSeamReadWait &wait);
+  void setStockBaseVertex(int index, DrResMdoSeamWrkBase *work);
+  void setStockInstPos(int index, DrResMdoSeamWrkInst *work);
+  void setStockMpfPoli(int index, DrResMdoSeamWrkMpf *work);
+  void setStockMpfInst(int index, DrResMdoSeamWrkMpf *work);
 
   u32 unknown00; // Inferred role: flags; original member name unknown.
   u8 _04[0x10 - 0x04];
@@ -87,12 +105,16 @@ public:
   s16 unknown100[8];       // Inferred role: stock low models; original member name unknown.
   s16 unknown110[4];       // Inferred role: stock mpf models; original member name unknown.
   s16 unknown118[4];       // Inferred role: stock lights; original member name unknown.
-  u8 _120[0x5d0 - 0x120];
-  u16 unknown5d0; // Inferred role: stock base map num; original member name unknown.
-  u16 unknown5d2; // Inferred role: stock instance map num; original member name unknown.
-  u16 unknown5d4; // Inferred role: stock low model num; original member name unknown.
-  u16 unknown5d6; // Inferred role: stock mpf model num; original member name unknown.
-  u16 unknown5d8; // Inferred role: stock light num; original member name unknown.
+  u8 _120[0x3d0 - 0x120];
+  unknown001<DrResMdoSeamWrkBase> unknown3d0[8]; // Inferred role: stock base map vertex works; original member name unknown.
+  unknown001<DrResMdoSeamWrkInst> unknown450[8]; // Inferred role: stock instance map position works; original member name unknown.
+  unknown001<DrResMdoSeamWrkMpf> unknown4d0[8];  // Inferred role: stock mpf instance works; original member name unknown.
+  unknown001<DrResMdoSeamWrkMpf> unknown550[8];  // Inferred role: stock mpf poli works; original member name unknown.
+  u16 unknown5d0;                                // Inferred role: stock base map num; original member name unknown.
+  u16 unknown5d2;                                // Inferred role: stock instance map num; original member name unknown.
+  u16 unknown5d4;                                // Inferred role: stock low model num; original member name unknown.
+  u16 unknown5d6;                                // Inferred role: stock mpf model num; original member name unknown.
+  u16 unknown5d8;                                // Inferred role: stock light num; original member name unknown.
   u8 _5da[0x5e2 - 0x5da];
   u16 unknown5e2; // Inferred role: stock texture list num; original member name unknown.
   u8 _5e4[0x5e8 - 0x5e4];
@@ -101,7 +123,19 @@ public:
   u16 unknown5ec; // Inferred role: lowest vertex index; original member name unknown.
   u16 unknown5ee; // Inferred role: highest texture index; original member name unknown.
   u16 unknown5f0; // Inferred role: lowest texture index; original member name unknown.
-  u8 _5f2[0x610 - 0x5f2];
+  u16 unknown5f2; // Inferred role: highest base map vertex index; original member name unknown.
+  u16 unknown5f4; // Inferred role: lowest base map vertex index; original member name unknown.
+  u16 unknown5f6; // Inferred role: highest instance map position index; original member name unknown.
+  u16 unknown5f8; // Inferred role: lowest instance map position index; original member name unknown.
+  u16 unknown5fa; // Inferred role: highest mpf poli index; original member name unknown.
+  u16 unknown5fc; // Inferred role: lowest mpf poli index; original member name unknown.
+  u16 unknown5fe; // Inferred role: highest mpf instance index; original member name unknown.
+  u16 unknown600; // Inferred role: lowest mpf instance index; original member name unknown.
+  u16 unknown602; // Inferred role: stock base map vertex work num; original member name unknown.
+  u16 unknown604; // Inferred role: stock instance map position work num; original member name unknown.
+  u16 unknown606; // Inferred role: stock mpf instance work num; original member name unknown.
+  u16 unknown608; // Inferred role: stock mpf poli work num; original member name unknown.
+  u8 _60a[0x610 - 0x60a];
   _wkSeamReadCall *unknown610; // Inferred role: read calls; original member name unknown.
   s32 unknown618;              // Inferred role: read call num; original member name unknown.
   u8 _61c[0x620 - 0x61c];
@@ -112,6 +146,15 @@ public:
   wkSeamReadPacDataInf *unknown630; // Inferred role: read packet; original member name unknown.
 };
 
+static_assert(sizeof(DrResMdoSeamParmRead::unknown001<DrResMdoSeamWrkBase>) == 0x10, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown3d0) == 0x3d0, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown450) == 0x450, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown4d0) == 0x4d0, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown550) == 0x550, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown5f2) == 0x5f2, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown600) == 0x600, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown602) == 0x602, "");
+static_assert(offsetof(DrResMdoSeamParmRead, unknown608) == 0x608, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown10) == 0x10, "");
 static_assert(offsetof(DrResMdoSeamParmRead, unknown40) == 0x40, "");
 static_assert(offsetof(DrResMdoSeamParmRead, m_stockEnvMdl) == 0x68, "");

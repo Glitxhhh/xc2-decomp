@@ -8,6 +8,9 @@
 
 namespace ml {
 
+DrIBLObj::DrIBLObj(const void *data)
+    : unknown00(static_cast<const unknown001 *>(data)), unknown08(nullptr), unknown10(nullptr), unknown18(nullptr), unknown20(nullptr), unknown28(0), unknown38(nullptr), unknown40(0),
+      unknown48(nullptr), unknown50(nullptr), unknown58(0), unknown5c(1), unknown60(nullptr) {}
 bool DrIBLObj::hasValidIBL() const { return unknown38 != nullptr; }
 
 u32 DrIBLObj::getIBLNum() const {

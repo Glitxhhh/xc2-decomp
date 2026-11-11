@@ -12,19 +12,47 @@ DrMdoSmlShadowObj::~DrMdoSmlShadowObj() {
   }
 }
 
-void DrMdoSmlShadowMan::releaseObj(DrMdoSmlShadowObj *shadow) { shadow->unknown28 |= DrMdoSmlShadowObj::FLAG_UNKNOWN_14 << DrMan::s_nDblStockIdx; }
+DrMdoSmlShadowMan::DrMdoSmlShadowMan(DrMan *man) : unknown00(0), unknown04(0), unknown08(man) {
+  for (int i = 0; i < 4; i++) {
+    unknown10[i][0] = nullptr;
+    unknown10[i][1] = nullptr;
+  }
+  for (int i = 0; i < 2; i++) {
+    unknown50[i][0] = nullptr;
+    unknown50[i][1] = nullptr;
+  }
+  unknown70[0] = nullptr;
+  unknown70[1] = nullptr;
+}
 
-void DrMdoSmlShadowMan::delObjList() {
-  unknown50[DrMan::s_nDblIdx][0] = nullptr;
-  unknown50[DrMan::s_nDblIdx][1] = nullptr;
-  DrMdoSmlShadowObj *shadow = unknown70[0];
+// Inferred helper: deletes the objects of a list and empties it; original name unknown.
+static void unknown001(DrMdoSmlShadowObj **list) {
+  DrMdoSmlShadowObj *shadow = list[0];
   while (shadow != nullptr) {
     DrMdoSmlShadowObj *next = shadow->unknown08;
     delete shadow;
     shadow = next;
   }
-  unknown70[0] = nullptr;
-  unknown70[1] = nullptr;
+  list[0] = nullptr;
+  list[1] = nullptr;
+}
+
+DrMdoSmlShadowMan::~DrMdoSmlShadowMan() {
+  for (int i = 0; i < 2; i++) {
+    unknown001(unknown50[i]);
+  }
+  unknown001(unknown70);
+  for (int i = 0; i < 4; i++) {
+    unknown001(unknown10[i]);
+  }
+}
+
+void DrMdoSmlShadowMan::releaseObj(DrMdoSmlShadowObj *shadow) { shadow->unknown28 |= DrMdoSmlShadowObj::FLAG_UNKNOWN_14 << DrMan::s_nDblStockIdx; }
+
+void DrMdoSmlShadowMan::delObjList() {
+  unknown50[DrMan::s_nDblIdx][0] = nullptr;
+  unknown50[DrMan::s_nDblIdx][1] = nullptr;
+  unknown001(unknown70);
 }
 
 bool DrMdoSmlShadowMan::checkDisp() {
