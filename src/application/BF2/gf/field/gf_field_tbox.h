@@ -37,6 +37,8 @@ public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static void update(const fw::UpdateInfo &info);
+  void seqWaitCheckFs(f32 deltaTime);
+  void seqCheckFs(f32 deltaTime);
   void seqWaitUIEnd(f32 deltaTime);
   void seqWaitOpenFieldTbox(f32 deltaTime);
   void seqWaitDigEnd(f32 deltaTime);

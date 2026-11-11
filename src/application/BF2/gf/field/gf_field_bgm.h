@@ -216,6 +216,7 @@ extern bool s_bStopBGM;
 
 class GfFieldBgm : public mm::mtl::PtrSingleton<GfFieldBgm> {
 public:
+  GfFieldBgm();
   ~GfFieldBgm() override;
   u32 getRscFieldBgmID() const;
   u32 getRscBossBattleBgmID() const;

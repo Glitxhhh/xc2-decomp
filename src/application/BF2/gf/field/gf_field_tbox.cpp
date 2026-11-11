@@ -94,6 +94,41 @@ void GfFieldTbox::update(const fw::UpdateInfo &info) {
   }
 }
 
+void GfFieldTbox::start(GF_OBJ_HANDLE *handle) {
+  unknown38 = 0.0f;
+  unknown40.dispose();
+  unknown24 = false;
+  unknown28 = nullptr;
+  unknown20 = -1;
+  unknown11 = false;
+  unknown12 = false;
+  unknown18 = handle;
+  gmk::AGmkBase *gmk = gmk::getBindedGmkInst(handle);
+  if (gmk != nullptr) {
+    gmk::GmkType type = gmk->getGmkType();
+    if (type == gmk::GMK_TYPE_TBOX) {
+      gmk::GmkTbox *tbox = static_cast<gmk::GmkTbox *>(gmk);
+      unknown20 = Bdat::getValCheck(tbox->getBindedBdatFp(), "RSC_ID", tbox->unknown20.unknown18, gmk::BDAT_TYPE_U16) & 0xffff;
+      unknown24 = tbox->getBdatInfo()->unknown02 && tbox->getProgress() == gmk::GmkTbox::PROGRESS_CLOSED;
+    } else if (type == gmk::GMK_TYPE_SALVAGE_LOCATOR) {
+      unknown20 = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_SALVAGE_ITEM_SET), "RSC_ID", static_cast<gmk::GmkSalvageLocator *>(gmk)->unknowne8, gmk::BDAT_TYPE_U16) & 0xffff;
+    }
+    u8 *bdat = GfDataBdat::getFP(BDAT_RSC_TBOX_LIST);
+    unknown08 = gmk::toBdatF32(Bdat::getValCheck(bdat, "FS_starttime", unknown20, gmk::BDAT_TYPE_F32));
+    unknown0c = gmk::toBdatF32(Bdat::getValCheck(bdat, "TBOX_open_starttime", unknown20, gmk::BDAT_TYPE_F32));
+    unknown28 = &GfFieldTbox::seqWaitCheckFs;
+  }
+}
+
+void GfFieldTbox::seqWaitCheckFs(f32 deltaTime) {
+  unknown38 += deltaTime;
+  if (unknown38 < unknown08) {
+    return;
+  }
+  unknown38 = 0.0f;
+  unknown28 = &GfFieldTbox::seqCheckFs;
+}
+
 void GfFieldTbox::seqWaitUIEnd(f32) {
   if (GfMenuFieldSkill::isRunning()) {
     return;

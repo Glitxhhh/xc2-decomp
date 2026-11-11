@@ -89,6 +89,8 @@ void GfMenuOrderMgr::pushLogOrder(const sLog &log) {
   }
 }
 
+void GfMenuOrderMgr::cancelOrder(int order) { get()->cancelLogOrder(order); }
+
 void GfMenuOrderMgr::finishOrder(int order) {
   if (get()->unknown340.unknown00 == order) {
     get()->unknown368 = 0;

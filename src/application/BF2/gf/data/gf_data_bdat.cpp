@@ -1,7 +1,24 @@
 #include "gf/data/gf_data_bdat.h"
 
 #include "fw/fw_bdat_manager.h"
+#include "gf/data/gf_bdat_bgm.h"
+#include "gf/data/gf_bdat_blade.h"
+#include "gf/data/gf_bdat_btl.h"
+#include "gf/data/gf_bdat_chrbl.h"
+#include "gf/data/gf_bdat_chrdr.h"
+#include "gf/data/gf_bdat_chrenarrange.h"
+#include "gf/data/gf_bdat_chrenparam.h"
+#include "gf/data/gf_bdat_cond.h"
+#include "gf/data/gf_bdat_item.h"
+#include "gf/data/gf_bdat_lookat.h"
+#include "gf/data/gf_bdat_maplist.h"
+#include "gf/data/gf_bdat_msg.h"
+#include "gf/data/gf_bdat_quest.h"
+#include "gf/data/gf_bdat_rsc.h"
+#include "gf/data/gf_bdat_shop.h"
+#include "gf/data/gf_bdat_unique_motion.h"
 #include "gf/gf_allocator.h"
+#include "gf/gf_manager.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
 
@@ -12,6 +29,42 @@ extern const char *s_aszGfBdatName[];
 }
 
 constexpr u32 BDAT_LOOKAT = 15;
+
+GfDataBdat::GfDataBdat(const GfSetupParam &param) : unknowncf8(0), unknowncfc(false) { initialize(param); }
+
+void GfDataBdat::build(const GfSetupParam &param) {
+// __LINE__ of the operator new call is 0x1f7 in the game.
+#line 503
+  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfDataBdat(param);
+}
+
+void GfDataBdat::initialize(const GfSetupParam &) {
+  GfEvent::addEventCallback(this);
+  loadBdat("lookat", BDAT_LOOKAT);
+  while (isBdatLoading(BDAT_LOOKAT)) {
+    GfSleep(1);
+  }
+  setupBdatInfo();
+// __LINE__ of the first operator new call is 0x223 in the game.
+#line 547
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatQuest());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatBlade());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatItem());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatCond());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatMaplist());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatChrDr());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatChrBl());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatBgm());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatChrEnArrange());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatChrEnParam());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatRsc());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatBtl());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatMsg());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatLookAt());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatShop());
+  unknownd00.push_back(new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfBdatUniqueMotion());
+  unknowncfc = true;
+}
 
 GfDataBdat::~GfDataBdat() {}
 

@@ -1,10 +1,15 @@
 #include "gf/game/gf_game_player_unique_scheduler.h"
 
+#include <algorithm>
+
 #include "fw/fw_param_manager.h"
 #include "fw/fw_update_info.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 
 namespace gf {
@@ -77,6 +82,42 @@ void GfGamePlayerUniqueScheduler::gevBattleStart() {
   for (u32 index = 0; index < UNIT_NUM; index++) {
     unknown30[index].unknown0c = UNIT_STATE_READY;
   }
+}
+
+// Inferred role: sets the unit of a party member from its handle; original name unknown.
+static void unknown002(GfGamePlayerUniqueScheduler::unknown001 &unit, GF_OBJ_HANDLE *handle) {
+  unit.unknown00 = handle;
+  if (handle != INVALID_HANDLE) {
+    unit.unknown08 = GfObjUtil::getObjSetup(handle)->unknown10;
+    unit.unknown0c = GfGamePlayerUniqueScheduler::UNIT_STATE_READY;
+  } else {
+    unit.unknown08 = 0;
+    unit.unknown0c = GfGamePlayerUniqueScheduler::UNIT_STATE_NONE;
+  }
+}
+
+void GfGamePlayerUniqueScheduler::gevPartyMemberOK(bool isOK) {
+  if (isOK) {
+    for (u32 partyId = 0; partyId < 3; partyId++) {
+      unknown002(unknown30[partyId * 2], GfGameParty::getHandleDriver(partyId));
+      unknown002(unknown30[partyId * 2 + 1], GfGameParty::getHandleBlade(partyId, -1));
+    }
+    rebuildPreset();
+  }
+}
+
+void GfGamePlayerUniqueScheduler::onReload() {
+  GfGamePlayerUniqueScheduler *scheduler = get();
+  if (scheduler != nullptr) {
+    scheduler->rebuildPreset();
+  }
+}
+
+void GfGamePlayerUniqueScheduler::rebuildPreset() {
+  unknownc0.clear();
+  GfBdatUniqueMotion::PresetKey key(unknown30[0].unknown08, unknown30[1].unknown08, unknown30[2].unknown08, unknown30[3].unknown08, unknown30[4].unknown08, unknown30[5].unknown08);
+  std::sort(key.ids, key.ids + UNIT_NUM);
+  GfBdatUniqueMotion::queryPreset(&unknownc0, key);
 }
 
 } // namespace gf

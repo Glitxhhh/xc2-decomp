@@ -43,6 +43,7 @@ public:
   static void postUpdate(const fw::UpdateInfo &info);
   static void setOrder(int order, u32 handle, const ui::EventData &event);
   static void cancelOrder(int order);
+  void cancelLogOrder(int order);
   static void finishOrder(int order);
   int getPrioOrder(int order);
   void pushLogOrder(const sLog &log);

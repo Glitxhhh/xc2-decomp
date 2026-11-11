@@ -29,6 +29,10 @@ public:
   };
 
   struct PresetKey {
+    // Inferred: GfGamePlayerUniqueScheduler::rebuildPreset loads the six characters before it stores any of them, as a constructor call does;
+    // the constructor is always inlined and the original parameter names are unknown.
+    PresetKey(u16 id0, u16 id1, u16 id2, u16 id3, u16 id4, u16 id5) : ids{id0, id1, id2, id3, id4, id5} {}
+
     bool isContain(const PresetKey &key) const;
 
     u16 ids[6];
