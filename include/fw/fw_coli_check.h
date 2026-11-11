@@ -13,6 +13,7 @@ class IDColiObj;
 
 namespace fw {
 class ColiObject;
+class ColiUserData;
 
 struct ColiCheckConfig {
   static const u32 FLAG_UNKNOWN_0 = 1 << 0; // Inferred role: test the ground objects; original name unknown.
@@ -79,6 +80,18 @@ public:
     }
 
     return 0;
+  }
+
+  // Inferred helper: user data of the object of a hit, as getHandle reads the handle; original name unknown.
+  ColiUserData *unknown002(u32 index) const {
+    if (index < getCount()) {
+      const unknown001 &hit = hits[index];
+      if (hit.object != nullptr) {
+        return hit.object->unknown58;
+      }
+    }
+
+    return nullptr;
   }
 
   const idcoli::unknown250 &getMaterial(u32 index) const {

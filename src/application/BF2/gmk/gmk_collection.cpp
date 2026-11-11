@@ -9,6 +9,9 @@
 #include "gf/data/gf_game_flag.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/object/component/gimmick/gf_com_behavior_gmk.h"
+#include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
@@ -236,6 +239,30 @@ bool GmkCollection::canDepopGobInst() const {
     return false;
   }
   return true;
+}
+
+void GmkCollection::setTargetable(bool isTargetable) {
+  gf::GfGameFlag::setLocal(1, getGameFlagId(), !isTargetable);
+  if (unknown48 != gf::unknown020) {
+    unknown002(unknown48, isTargetable);
+    gf::GfObjAcc acc(unknown48);
+    gf::GfObj *obj = acc.getObj();
+    if (obj != nullptr) {
+      gf::GfComBehaviorGmk *behavior = obj->getComponent<gf::GfComBehaviorGmk>();
+      if (behavior != nullptr) {
+        behavior->createMenuObj();
+      }
+    }
+  }
+  if (isTargetable) {
+    unknown68 = 0.0f;
+    unknown58 = &GmkCollection::seqUpdatePopDepop;
+  } else {
+    if (unknown68 == 0.0f) {
+      unknown68 = static_cast<GmkCollectionList *>(unknown08.unknown00)->unknown228.unknown04 * 60.0f;
+    }
+    unknown58 = &GmkCollection::seqUpdateRepopCounter;
+  }
 }
 
 } // namespace gmk

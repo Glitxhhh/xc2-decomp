@@ -45,7 +45,12 @@ public:
   ~FixedVector() { clear(); }
 
   T &front() { return *at(0); }
-  const T &front() const { return *at(0); }
+  // __LINE__ must be 163 as in the original header: it is the line argument of the assert.
+  const T &front() const {
+#line 163
+    MM_ASSERT(0 < m_size);
+    return *at(0);
+  }
 
   // __LINE__ must be 165, 166, 170, 181, 192, 203 and 227 as in the original header: they are the line arguments of the asserts.
   T &back() {

@@ -2,13 +2,72 @@
 
 #include <math.h>
 
+#include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
 
 namespace fw {
 
+// Inferred helper: quaternion of the rotation of a matrix; original name unknown. Evidence: inlined in PrimCapsule::setup
+// (1.0.0: 0x7100197934), whose stack holds the four values and the pointers to the four components below the quaternion of the caller.
+static void unknown001(mm::Quat &rotation, const mm::Mat44 &matrix) {
+  f32 values[4];
+  values[0] = ((matrix.rows[0][0] - matrix.rows[1][1]) - matrix.rows[2][2]) + 1.0f;
+  values[1] = ((matrix.rows[1][1] - matrix.rows[0][0]) - matrix.rows[2][2]) + 1.0f;
+  values[2] = (-matrix.rows[0][0] - matrix.rows[1][1]) + matrix.rows[2][2] + 1.0f;
+  values[3] = matrix.rows[0][0] + matrix.rows[1][1] + matrix.rows[2][2] + 1.0f;
+  u32 largest = 0;
+  if (values[1] > values[0]) {
+    largest = 1;
+  }
+  if (values[2] > values[largest]) {
+    largest = 2;
+  }
+  if (values[3] > values[largest]) {
+    largest = 3;
+  }
+  if (values[largest] < 0.0f) {
+    rotation = mm::Quat::identity;
+  } else {
+    f32 *components[4] = {&rotation.x, &rotation.y, &rotation.z, &rotation.w};
+    f32 root = sqrtf(values[largest]);
+    *components[largest] = root * 0.5f;
+    f32 scale = 0.25f / (root * 0.5f);
+    switch (largest) {
+    case 3:
+      rotation.x = scale * (matrix.rows[1][2] - matrix.rows[2][1]);
+      rotation.y = scale * (matrix.rows[2][0] - matrix.rows[0][2]);
+      rotation.z = scale * (matrix.rows[0][1] - matrix.rows[1][0]);
+      break;
+    case 1:
+      rotation.x = scale * (matrix.rows[0][1] + matrix.rows[1][0]);
+      rotation.z = scale * (matrix.rows[1][2] + matrix.rows[2][1]);
+      rotation.w = scale * (matrix.rows[2][0] - matrix.rows[0][2]);
+      break;
+    case 2:
+      rotation.x = scale * (matrix.rows[2][0] + matrix.rows[0][2]);
+      rotation.y = scale * (matrix.rows[1][2] + matrix.rows[2][1]);
+      rotation.w = scale * (matrix.rows[0][1] - matrix.rows[1][0]);
+      break;
+    default:
+      rotation.y = scale * (matrix.rows[0][1] + matrix.rows[1][0]);
+      rotation.z = scale * (matrix.rows[2][0] + matrix.rows[0][2]);
+      rotation.w = scale * (matrix.rows[1][2] - matrix.rows[2][1]);
+      break;
+    }
+  }
+}
+
 void PrimCapsule::setup(const mm::Vec3 &start, const mm::Vec3 &end, f32 radius) {
   set(start, end);
   this->unknown30 = radius;
+}
+
+void PrimCapsule::setup(const mm::Mat44 &matrix, f32 length, f32 radius) {
+  mm::Quat rotation;
+  unknown001(rotation, matrix);
+  mm::Vec3 position(matrix.rows[3][0], matrix.rows[3][1], matrix.rows[3][2]);
+  setup(position, rotation, length, radius);
 }
 
 f32 PrimCapsule::getHeight() const {
@@ -46,6 +105,15 @@ void PrimCapsule::getCenter(mm::Vec3 &center) const {
   center.y = end.y + start.y;
   center.z = end.z + start.z;
   center *= 0.5f;
+}
+
+void PrimCapsule::getMat(mm::Mat44 &matrix) const {
+  mm::Quat rotation;
+  getRot(rotation);
+  mm::Vec3 center;
+  getCenter(center);
+  mm::unknown001(matrix, rotation);
+  matrix.setTrans(center);
 }
 
 bool PrimCapsule::isCollide(const PrimCapsule &capsule) const { return getNearestLength(*this, capsule) <= unknown30 + capsule.unknown30; }

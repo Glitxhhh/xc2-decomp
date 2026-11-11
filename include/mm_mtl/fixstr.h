@@ -41,6 +41,18 @@ public:
     dest.m_nLen = __builtin_strlen(dest.mData);
   }
 
+  // Inferred role: index of the first occurrence of a substring, -1 when missing; no game symbol, original name unknown. Shape from
+  // fw::ResourceManager::isDelayReleaseExtention (1.0.0: 0x710019c128), which compares at each position with strncmp.
+  int unknown003(const char *pszStr) const {
+    int len = __builtin_strlen(pszStr);
+    for (int i = 0; i < m_nLen; i++) {
+      if (strncmp(mData + i, pszStr, len) == 0) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   FixStr &operator+=(const char *pszBack) {
     // __LINE__ must be 485 and 487 as in the original header: they are the line arguments of the asserts.
 #line 485

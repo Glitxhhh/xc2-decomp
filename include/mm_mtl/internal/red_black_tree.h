@@ -50,6 +50,37 @@ public:
     node *nodePtr;
   };
 
+  class const_iterator {
+  public:
+    explicit const_iterator(const node *node) : nodePtr(node) {}
+
+    const value_type &operator*() const { return nodePtr->unknown18; }
+    const value_type *operator->() const { return &nodePtr->unknown18; }
+
+    bool operator==(const const_iterator &rhs) const { return nodePtr == rhs.nodePtr; }
+    bool operator!=(const const_iterator &rhs) const { return nodePtr != rhs.nodePtr; }
+
+    const node *nodePtr;
+  };
+
+  const_iterator end() const { return const_iterator(nullptr); }
+
+  const_iterator find(const key_type &key) const {
+    const node *current = m_root;
+    while (current != &m_sentinel) {
+      if (Traits::get_key(current->unknown18) < key) {
+        current = current->unknown10;
+        continue;
+      }
+      if (key < Traits::get_key(current->unknown18)) {
+        current = current->unknown00;
+        continue;
+      }
+      return const_iterator(current);
+    }
+    return const_iterator(nullptr);
+  }
+
   iterator begin() {
     node *current = m_root;
     if (current == &m_sentinel) {

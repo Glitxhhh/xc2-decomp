@@ -1,5 +1,6 @@
 #include "framework/anim/anim_res_asm_resolver.h"
 
+#include "anm/anm_animation_importer.h"
 #include "anm/anm_mirror_mapper.h"
 #include "anm/anm_reference_object.h"
 #include "anm/anm_simple_mapper.h"
@@ -13,6 +14,16 @@ AnimResAsmResolver::AnimResAsmResolver(mm::mtl::IAllocator &allocator) : unknown
 AnimResAsmResolver::~AnimResAsmResolver() {
   anm::unknown001(m_mirrorMapper);
   anm::unknown001(m_simpleMapper);
+}
+
+const anm::Binding *AnimResAsmResolver::importBinding(const char *name, u32 id) const {
+  if (name != nullptr && unknown08[id].unknown00 != nullptr) {
+    void *data = unknown08[id].getFileAdr(name);
+    if (data != nullptr) {
+      return anm::AnimationImporter::import(data);
+    }
+  }
+  return nullptr;
 }
 
 const anm::Skeleton *AnimResAsmResolver::getSkekelton() const { return m_skekelton; }

@@ -111,6 +111,17 @@ inline void unknown005(mm::Mat44 &matrix, mm::Vec3 rotation) {
   matrix.rows[3][3] = 1.0f;
 }
 
+// Inferred helper: rotation of a vector around the Y axis, the debug drawings of the jump and warp points; original name unknown.
+inline mm::Vec3 unknown017(mm::Vec3 vector, f32 angle) {
+  mm::Mat44 matrix;
+  matrix.setRotY(angle);
+  mm::Vec3 result;
+  result.x = vector.x * matrix.rows[0][0] + vector.y * matrix.rows[1][0] + vector.z * matrix.rows[2][0] + matrix.rows[3][0];
+  result.y = vector.x * matrix.rows[0][1] + vector.y * matrix.rows[1][1] + vector.z * matrix.rows[2][1] + matrix.rows[3][1];
+  result.z = vector.x * matrix.rows[0][2] + vector.y * matrix.rows[1][2] + vector.z * matrix.rows[2][2] + matrix.rows[3][2];
+  return result;
+}
+
 class AGmkBase {
 public:
   struct CreateBaseInfo {

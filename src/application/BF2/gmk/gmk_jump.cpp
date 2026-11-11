@@ -1,5 +1,8 @@
 #include "gmk/gmk_jump.h"
+#include "framework/debug/debug_draw.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
+#include "mm_math/mm_col3.h"
+#include "mm_math/mm_col4.h"
 
 #include "bdat.h"
 #include "framework/effect/effect_manager.h"
@@ -222,6 +225,23 @@ void GmkJump::validateDisp() const {
   }
   if (unknown70 != 0) {
     fw::EffectManager::get()->setDisp(unknown70, isDisp);
+  }
+}
+
+void GmkJump::debugDraw() const {
+  if (!isValid()) {
+    return;
+  }
+  const unknown001 *points = unknown016();
+  mm::Col4 color;
+  if (!unknown50) {
+    color = mm::Col4::gray;
+  } else {
+    color = mm::Col4(mm::Col3::yellow.r, mm::Col3::yellow.g, mm::Col3::yellow.b, 1.0f);
+  }
+  for (u32 i = 0; i < 2; i++) {
+    mm::Vec3 end = unknown017(mm::Vec3::unitZ, points[i].unknown0c) + points[i];
+    fw::debug::drawArrow(points[i], end, color);
   }
 }
 

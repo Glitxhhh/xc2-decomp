@@ -98,7 +98,6 @@ public:
 
   void create(const CreateInfo &info) override;
 
-private:
   BdatInfo unknown228; // Inferred role: bdat info; original member name unknown.
 };
 

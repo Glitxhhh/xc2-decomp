@@ -37,6 +37,13 @@ public:
     mm::Vec3 position;
   };
 
+  // Inferred role: one jump point of the gimmick data; original type name unknown. Layout evidence: GmkJump::debugDraw
+  // (1.0.0: 0x71006134cc) reads the rotation at +0xc and +0x1c and the position at +0x0 and +0x10, so two points of
+  // stride 0x10 with the rotation stored in the padding after the position.
+  struct unknown001 : mm::Vec3 {
+    f32 unknown0c; // Inferred role: rotation; original member name unknown.
+  };
+
   GmkJump();
   ~GmkJump() override { dispose(); }
   GmkType getGmkType() const override { return GMK_TYPE; }
@@ -60,6 +67,8 @@ public:
 
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
+  // Inferred helper: jump points of the gimmick data, the first is the one of getData; original name unknown.
+  const unknown001 *unknown016() const { return static_cast<const unknown001 *>(unknown20.unknown08); }
 
   u8 _48[0x50 - 0x48];
   bool unknown50;               // Inferred role: cond matched; original member name unknown.
@@ -80,6 +89,8 @@ static_assert(offsetof(GmkJump, unknown74) == 0x74, "");
 static_assert(offsetof(GmkJump, unknown78) == 0x78, "");
 static_assert(offsetof(GmkJump, unknown79) == 0x79, "");
 
+static_assert(sizeof(GmkJump::unknown001) == 0x10, "");
+static_assert(offsetof(GmkJump::unknown001, unknown0c) == 0xc, "");
 static_assert(sizeof(GmkJump::BdatInfo) == 0x6, "");
 static_assert(sizeof(GmkJump) == 0x80, "");
 

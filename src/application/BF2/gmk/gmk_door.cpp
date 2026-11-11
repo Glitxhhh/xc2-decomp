@@ -1,8 +1,12 @@
 #include "gmk/gmk_door.h"
 
 #include "bdat.h"
+#include "framework/coli/coli_object.h"
 #include "framework/sound/sound_manager.h"
+#include "fw/fw_coli_check.h"
 #include "gf/data/gf_bdat_wrapper.h"
+#include "gf/data/gf_data_enemy.h"
+#include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/field/gf_field_lod.h"
@@ -11,6 +15,7 @@
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/quest/gf_quest_util.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
@@ -666,6 +671,80 @@ void GmkDoorPhantomManager::removeTargetInfo(gf::GF_OBJ_HANDLE *handle) {
     if (it->unknown00 == handle) {
       unknown08.erase(it);
       return;
+    }
+  }
+}
+
+void GmkDoorPhantomManager::listenerGfObj(OBJEVT event, gf::GF_OBJ_HANDLE *handle, u32 objectType) {
+  gf::GfObjAcc acc(handle);
+  if (objectType != gf::OBJECT_TYPE_PC && objectType != gf::OBJECT_TYPE_BLADE) {
+    if (objectType != gf::OBJECT_TYPE_ENEMY) {
+      return;
+    }
+    gf::DataParamAcc dataParam(handle);
+    const gf::SDataEnemy *data = dataParam.getSDataEnemy();
+    if (data == nullptr) {
+      return;
+    }
+    if ((data->unknown04 & gf::ENEMY_FLAG_UNKNOWN_10) == 0) {
+      return;
+    }
+  }
+  if (event == OBJEVT_UNKNOWN_2) {
+    addTargetInfo(handle);
+  } else if (event == OBJEVT_UNKNOWN_3) {
+    removeTargetInfo(handle);
+  }
+}
+
+void GmkDoorPhantomManager::update(f32 deltaTime) {
+  if (unknown08.capacity() == 0) {
+    return;
+  }
+  fw::ColiCheckConfig config;
+  config.unknown14 = true;
+  config.unknown08 = 0.0f;
+  config.unknown0c = 0.0f;
+  config.unknown15 = false;
+  config.unknown00 = fw::ColiCheckConfig::FLAG_UNKNOWN_2;
+  config.unknown04 = 0x100000;
+  config.unknown10 = 0;
+  fw::TColiCheckResult<256> result;
+  for (GmkDoorPhantomTargetInfo &info : unknown08) {
+    gf::GfObjAcc acc(info.unknown00);
+    gf::GfObj *obj = acc.getObj();
+    if (obj == nullptr) {
+      continue;
+    }
+    const gf::GfComCollider *collider = obj->getComponent<gf::GfComCollider>();
+    if (collider == nullptr) {
+      continue;
+    }
+    fw::ColiObject *coli = collider->unknown18[0];
+    if (coli == nullptr) {
+      continue;
+    }
+    result.clear();
+    if (!fw::ColiCheck::testObjectPhantom(result, coli, config)) {
+      continue;
+    }
+    u32 hitNum = result.getCount();
+    for (u32 i = 0; i < hitNum; i++) {
+      fw::ColiUserData *userData = result.unknown002(i);
+      GmkDoor *door = nullptr;
+      if (userData != nullptr) {
+        door = mm::mtl::dynamicCast<GmkDoor>(userData);
+      }
+      if (door != nullptr) {
+        if (door->isValid()) {
+          door->unknown2b0 = true;
+          if (&GmkDoor::seqDoor_BeforeBoot != door->unknown2c8 && &GmkDoor::seqDoor_Booted != door->unknown2c8 && &GmkDoor::seqDoor_Shutdowned != door->unknown2c8) {
+            break;
+          }
+          door->pollBootGmk();
+        }
+        break;
+      }
     }
   }
 }

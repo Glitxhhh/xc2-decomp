@@ -79,6 +79,20 @@ void ReferenceFrame::unlinkParent(ReferenceFrame &frame) {
   }
 }
 
+void ReferenceFrame::unlinkChild(ReferenceFrame &frame) {
+  const Transform &world = frame.getSyncedWorldTransform();
+  for (mm::mtl::IntrusiveList<ReferenceFrame>::iterator it = frame.unknownb0.begin(); it != frame.unknownb0.end(); ++it) {
+    ReferenceFrame &child = *it;
+    if (child.unknowna8 == &frame) {
+      child.invalidateWorld();
+      child.unknown20.unknown00 += world.unknown00;
+      child.unknown20.unknown10 = mm::Quat::mul(world.unknown10, child.unknown20.unknown10);
+      child.unknowna8 = nullptr;
+    }
+  }
+  frame.unknownb0.clear();
+}
+
 void TransformManager::update(u32 layerMask) {
   for (u32 layer = 0; layer < LAYER_UNKNOWN_32; layer++) {
     if ((1 << layer & layerMask) != 0) {

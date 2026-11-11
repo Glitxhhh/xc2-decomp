@@ -1,6 +1,8 @@
 #include "event/voice_one_shoter.h"
 
+#include "event/skip_manager.h"
 #include "framework/sound/sound_manager.h"
+#include "mm_mtl/singleton.h"
 
 namespace event {
 
@@ -30,6 +32,20 @@ void VoiceOneShoter::pause(bool isPause) {
     unknown08 |= FLAG_UNKNOWN_0;
   } else {
     unknown08 &= ~FLAG_UNKNOWN_0;
+  }
+}
+
+void VoiceOneShoter::update() {
+  if (unknown10.size() != 0) {
+    while (unknown10.size() != 0) {
+      if (fw::SoundManager::get()->isPlaying(unknown10[0])) {
+        break;
+      }
+      unknown10.erase(unknown10.begin());
+    }
+    if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkip()) {
+      clear();
+    }
   }
 }
 
