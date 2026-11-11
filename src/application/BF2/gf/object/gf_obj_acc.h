@@ -36,6 +36,7 @@ enum OBJ_ALPHA {
 enum OBJDISP {
   OBJDISP_UNKNOWN_0 = 0x1,
   OBJDISP_UNKNOWN_1 = 0x2,  // Inferred role: objdisp event; original name unknown.
+  OBJDISP_UNKNOWN_2 = 0x4,  // Inferred role: hidden while the layer is paused, cleared by GfObjManager::isFinishLoadState; original name unknown.
   OBJDISP_UNKNOWN_3 = 0x8,  // Inferred role: objdisp gmk event; original name unknown.
   OBJDISP_UNKNOWN_4 = 0x10, // Inferred role: hidden by a gimmick camera; original name unknown.
   OBJDISP_UNKNOWN_5 = 0x20, // Inferred role: objdisp kosmos arts 3; original name unknown.

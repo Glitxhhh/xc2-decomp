@@ -13,6 +13,10 @@
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
+namespace effect {
+struct SendParam;
+} // namespace effect
+
 namespace anm {
 class ResASM;
 }
@@ -39,6 +43,7 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 struct GF_ASSET_HANDLE;
 struct MsgFxRimBloomEnd;
+
 struct MsgFxRimBloomTarget : fw::Message {
   MsgFxRimBloomTarget() : fw::Message(0x1000054, 0x80) {}
 };
@@ -165,8 +170,12 @@ public:
 
   static void registerAsmCallbackEffect(GF_OBJ_HANDLE *handle, anm::ResASM *resAsm, fw::EffectResData *effectData);
   bool getEfpMatrix(const char *name, mm::Mat44 &matrix);
+  void calcMtxAndScale(GfComEffectCaster *caster, Param *param, f32 time, bool unknown, effect::SendParam &sendParam);
+  void updateParam(GfComEffectCaster *caster, Param *param, f32 time, bool unknown);
+  void getWpnMat(mm::Mat44 &matrix);
+  u32 calcFollowAnnotetionTag(Param *param, effect::SendParam &sendParam);
   void addMountEffectEv(const EffectMountSetupEv &setup);
-  void removeMountEffectEv(u32 effect);
+  bool removeMountEffectEv(u32 effect);
   u32 calcWeaponID() const;
   void setCaster(u32 effect);
   bool setSpeed(u32 effect, f32 speed);
@@ -184,6 +193,7 @@ public:
   fw::EffectPack *getEffectPack(GF_ASSET_HANDLE *handle);
   const char *getEfpData(const char *name, mm::Mat44 &matrix);
   bool getWeaponEffectPack(mm::mtl::FixedVector<fw::EffectPack *, 8> &packs, int type, int);
+  fw::EffectPack *getWeaponEffectPack(const char *name);
   fw::EffectPoint *getEffectPoint();
   bool getValidEffectName(const char *name) const;
   bool isDynamicAnnotationEffect(u8 type) const;

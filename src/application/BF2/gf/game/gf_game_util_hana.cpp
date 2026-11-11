@@ -2,10 +2,12 @@
 
 #include "gf/data/gf_bdat_btl.h"
 #include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_hana.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
+#include "mm_mtl/fixed_array.h"
 
 namespace gf {
 
@@ -294,5 +296,461 @@ RESULT_HANA GfGameUtilHana::isExchangeNArtsParts(u32 parts) { return unknown001<
 RESULT_HANA GfGameUtilHana::exchangeCondenserParts(u32 parts) { return unknown002<GfDataHana::getNeedCondenserPartsEther>(parts); }
 
 RESULT_HANA GfGameUtilHana::isExchangeCondenserParts(u32 parts) { return unknown001<GfDataHana::getNeedCondenserPartsEther>(parts); }
+
+RESULT_HANA GfGameUtilHana::isEnableEquipRoleParts(u32 blade, u32 parts) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (!GfDataHana::isEquipRoleParts(blade, parts)) {
+    return RESULT_HANA_UNKNOWN_12;
+  }
+
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  GfItemHandle handle = GfItemUtil::getNoEquipItemHandle(parts);
+  if (handle.value == 0) {
+    return RESULT_HANA_UNKNOWN_9;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  equipParts.unknown00 = parts;
+  equipParts.unknown58 = handle.value;
+  return checkEquip(blade, equipParts);
+}
+
+RESULT_HANA GfGameUtilHana::isEnableEquipAttributeParts(u32 blade, u32 parts) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (!GfDataHana::isEquipAttributeParts(blade, parts)) {
+    return RESULT_HANA_UNKNOWN_12;
+  }
+
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  GfItemHandle handle = GfItemUtil::getNoEquipItemHandle(parts);
+  if (handle.value == 0) {
+    return RESULT_HANA_UNKNOWN_9;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  equipParts.unknown02 = parts;
+  equipParts.unknown5c = handle.value;
+  return checkEquip(blade, equipParts);
+}
+
+RESULT_HANA GfGameUtilHana::isEnableEquipArtsParts(u32 blade, u32 parts, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (!GfDataHana::isEquipArtsParts(blade, parts)) {
+    return RESULT_HANA_UNKNOWN_12;
+  }
+
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  GfItemHandle handle = GfItemUtil::getNoEquipItemHandle(parts);
+  if (handle.value == 0) {
+    return RESULT_HANA_UNKNOWN_9;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  equipParts.setArtsParts(parts, handle.value, slot);
+  return checkEquip(blade, equipParts);
+}
+
+RESULT_HANA GfGameUtilHana::isEnableEquipNArtsParts(u32 blade, u32 parts, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (!GfDataHana::isEquipNArtsParts(blade, parts)) {
+    return RESULT_HANA_UNKNOWN_12;
+  }
+
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  GfItemHandle handle = GfItemUtil::getNoEquipItemHandle(parts);
+  if (handle.value == 0) {
+    return RESULT_HANA_UNKNOWN_9;
+  }
+
+  if (GfDataHana::isExistSameEffectNArtsParts(blade, parts, slot)) {
+    return RESULT_HANA_UNKNOWN_13;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  equipParts.setNArtsParts(parts, handle.value, slot);
+  return checkEquip(blade, equipParts);
+}
+
+RESULT_HANA GfGameUtilHana::isEnableEquipCondenserParts(u32 blade, u32 parts, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (!GfDataHana::isEquipCondenserParts(blade, parts)) {
+    return RESULT_HANA_UNKNOWN_12;
+  }
+
+  if (GfDataHana::isExistSameEffectCondenserParts(blade, parts, slot, false)) {
+    return RESULT_HANA_UNKNOWN_13;
+  }
+
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  GfItemHandle handle = GfItemUtil::getNoEquipItemHandle(parts);
+  if (handle.value == 0) {
+    return RESULT_HANA_UNKNOWN_9;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  equipParts.unknown001(parts, handle.value, slot);
+  return checkEquip(blade, equipParts);
+}
+
+RESULT_HANA GfGameUtilHana::isEnableEquipExtendCondenserParts(u32 blade, u32 parts, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (!GfDataHana::isEquipCondenserParts(blade, parts)) {
+    return RESULT_HANA_UNKNOWN_12;
+  }
+
+  if (GfDataHana::isExistSameEffectCondenserParts(blade, parts, slot, true)) {
+    return RESULT_HANA_UNKNOWN_13;
+  }
+
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  GfItemHandle handle = GfItemUtil::getNoEquipItemHandle(parts);
+  if (handle.value == 0) {
+    return RESULT_HANA_UNKNOWN_9;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  equipParts.unknown002(parts, handle.value, slot);
+  return checkEquip(blade, equipParts);
+}
+
+RESULT_HANA GfGameUtilHana::execEquipRoleParts(u32 blade, u32 parts, GfItemHandle handle) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (parts == 0) {
+    return RESULT_HANA_UNKNOWN_11;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  u16 oldParts = equipParts.unknown00;
+  u32 oldHandle = equipParts.unknown58;
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  if (handle.value == 0) {
+    handle = GfItemUtil::getNoEquipItemHandle(parts);
+    if (handle.value == 0) {
+      return RESULT_HANA_UNKNOWN_9;
+    }
+  }
+
+  equipParts.unknown00 = parts;
+  equipParts.unknown58 = handle.value;
+  if (GfDataHana::isValid(blade)) {
+    u32 power = GfDataHana::getEquipPower(equipParts);
+    if (GfDataHana::getPowerCapacity(blade) < power) {
+      return RESULT_HANA_UNKNOWN_5;
+    }
+  }
+
+  GfItemUtil::setEquipFlag(parts, handle, true);
+  if (oldParts != 0) {
+    if (oldHandle == 0) {
+      GfItemUtil::addItemBox(oldParts, 1);
+    } else {
+      GfItemUtil::setEquipFlag(oldParts, oldHandle, false);
+    }
+  }
+
+  GfDataHana::setEquipParts(blade, equipParts);
+  return RESULT_HANA_UNKNOWN_0;
+}
+
+RESULT_HANA GfGameUtilHana::execEquipAttributeParts(u32 blade, u32 parts, GfItemHandle handle) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  if (parts == 0) {
+    return RESULT_HANA_UNKNOWN_11;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  u16 oldParts = equipParts.unknown02;
+  u32 oldHandle = equipParts.unknown5c;
+  if (GfItemUtil::getItemBoxCount(parts) == 0) {
+    return RESULT_HANA_UNKNOWN_8;
+  }
+
+  if (handle.value == 0) {
+    handle = GfItemUtil::getNoEquipItemHandle(parts);
+    if (handle.value == 0) {
+      return RESULT_HANA_UNKNOWN_9;
+    }
+  }
+
+  equipParts.unknown02 = parts;
+  equipParts.unknown5c = handle.value;
+  if (GfDataHana::isValid(blade)) {
+    u32 power = GfDataHana::getEquipPower(equipParts);
+    if (GfDataHana::getPowerCapacity(blade) < power) {
+      return RESULT_HANA_UNKNOWN_5;
+    }
+  }
+
+  GfItemUtil::setEquipFlag(parts, handle, true);
+  if (oldParts != 0) {
+    if (oldHandle == 0) {
+      GfItemUtil::addItemBox(oldParts, 1);
+    } else {
+      GfItemUtil::setEquipFlag(oldParts, oldHandle, false);
+    }
+  }
+
+  GfDataHana::setEquipParts(blade, equipParts);
+  return RESULT_HANA_UNKNOWN_0;
+}
+
+RESULT_HANA GfGameUtilHana::execEquipArtsParts(u32 blade, u32 parts, GfItemHandle handle, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  u16 oldParts = equipParts.unknown04[slot].unknown04;
+  u16 oldHandle = equipParts.unknown04[slot].unknown0a;
+  if (parts != 0) {
+    if (GfItemUtil::getItemBoxCount(parts) == 0) {
+      return RESULT_HANA_UNKNOWN_8;
+    }
+
+    if (handle.value == 0) {
+      handle = GfItemUtil::getNoEquipItemHandle(parts);
+      if (handle.value == 0) {
+        return RESULT_HANA_UNKNOWN_9;
+      }
+    }
+  }
+
+  equipParts.setArtsParts(parts, handle.value, slot);
+  if (GfDataHana::isValid(blade)) {
+    u32 power = GfDataHana::getEquipPower(equipParts);
+    if (GfDataHana::getPowerCapacity(blade) < power) {
+      return RESULT_HANA_UNKNOWN_5;
+    }
+  }
+
+  if (parts != 0) {
+    GfItemUtil::setEquipFlag(parts, handle, true);
+  }
+
+  if (oldParts != 0) {
+    if (oldHandle == 0) {
+      GfItemUtil::addItemBox(oldParts, 1);
+    } else {
+      GfItemUtil::setEquipFlag(oldParts, oldHandle, false);
+    }
+  }
+
+  GfDataHana::setEquipParts(blade, equipParts);
+  return RESULT_HANA_UNKNOWN_0;
+}
+
+RESULT_HANA GfGameUtilHana::execEquipNArtsParts(u32 blade, u32 parts, GfItemHandle handle, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  u16 oldParts = equipParts.unknown28[slot].unknown04;
+  u16 oldHandle = equipParts.unknown28[slot].unknown0a;
+  if (parts != 0) {
+    if (GfItemUtil::getItemBoxCount(parts) == 0) {
+      return RESULT_HANA_UNKNOWN_8;
+    }
+
+    if (handle.value == 0) {
+      handle = GfItemUtil::getNoEquipItemHandle(parts);
+      if (handle.value == 0) {
+        return RESULT_HANA_UNKNOWN_9;
+      }
+    }
+  }
+
+  equipParts.setNArtsParts(parts, handle.value, slot);
+  if (GfDataHana::isValid(blade)) {
+    u32 power = GfDataHana::getEquipPower(equipParts);
+    if (GfDataHana::getPowerCapacity(blade) < power) {
+      return RESULT_HANA_UNKNOWN_5;
+    }
+  }
+
+  if (parts != 0) {
+    GfItemUtil::setEquipFlag(parts, handle, true);
+  }
+
+  if (oldParts != 0) {
+    if (oldHandle == 0) {
+      GfItemUtil::addItemBox(oldParts, 1);
+    } else {
+      GfItemUtil::setEquipFlag(oldParts, oldHandle, false);
+    }
+  }
+
+  GfDataHana::setEquipParts(blade, equipParts);
+  return RESULT_HANA_UNKNOWN_0;
+}
+
+RESULT_HANA GfGameUtilHana::execEquipCondenserParts(u32 blade, u32 parts, GfItemHandle handle, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  u16 oldParts = equipParts.unknown4c[slot];
+  u16 oldHandle = equipParts.unknown60[slot];
+  if (parts != 0) {
+    if (GfItemUtil::getItemBoxCount(parts) == 0) {
+      return RESULT_HANA_UNKNOWN_8;
+    }
+
+    if (handle.value == 0) {
+      handle = GfItemUtil::getNoEquipItemHandle(parts);
+      if (handle.value == 0) {
+        return RESULT_HANA_UNKNOWN_9;
+      }
+    }
+  }
+
+  equipParts.unknown001(parts, handle.value, slot);
+  if (GfDataHana::isValid(blade)) {
+    u32 power = GfDataHana::getEquipPower(equipParts);
+    if (GfDataHana::getPowerCapacity(blade) < power) {
+      return RESULT_HANA_UNKNOWN_5;
+    }
+  }
+
+  if (parts != 0) {
+    GfItemUtil::setEquipFlag(parts, handle, true);
+  }
+
+  if (oldParts != 0) {
+    if (oldHandle == 0) {
+      GfItemUtil::addItemBox(oldParts, 1);
+    } else {
+      GfItemUtil::setEquipFlag(oldParts, oldHandle, false);
+    }
+  }
+
+  GfDataHana::setEquipParts(blade, equipParts);
+  return RESULT_HANA_UNKNOWN_0;
+}
+
+RESULT_HANA GfGameUtilHana::execEquipExtendCondenserParts(u32 blade, u32 parts, GfItemHandle handle, u32 slot) {
+  if (!GfDataHana::isValid(blade)) {
+    return RESULT_HANA_UNKNOWN_4;
+  }
+
+  EquipHana equipParts = *GfDataHana::getEquipParts(blade);
+  u16 oldParts = equipParts.unknown52[slot];
+  u16 oldHandle = equipParts.unknown6c[slot];
+  if (parts != 0) {
+    if (GfItemUtil::getItemBoxCount(parts) == 0) {
+      return RESULT_HANA_UNKNOWN_8;
+    }
+
+    if (handle.value == 0) {
+      handle = GfItemUtil::getNoEquipItemHandle(parts);
+      if (handle.value == 0) {
+        return RESULT_HANA_UNKNOWN_9;
+      }
+    }
+  }
+
+  equipParts.unknown002(parts, handle.value, slot);
+  if (GfDataHana::isValid(blade)) {
+    u32 power = GfDataHana::getEquipPower(equipParts);
+    if (GfDataHana::getPowerCapacity(blade) < power) {
+      return RESULT_HANA_UNKNOWN_5;
+    }
+  }
+
+  if (parts != 0) {
+    GfItemUtil::setEquipFlag(parts, handle, true);
+  }
+
+  if (oldParts != 0) {
+    if (oldHandle == 0) {
+      GfItemUtil::addItemBox(oldParts, 1);
+    } else {
+      GfItemUtil::setEquipFlag(oldParts, oldHandle, false);
+    }
+  }
+
+  GfDataHana::setEquipParts(blade, equipParts);
+  return RESULT_HANA_UNKNOWN_0;
+}
+
+void GfGameUtilHana::setupDefaultParts(u32 blade) {
+  if (!GfDataHana::isValid(blade) || GfDataBlade::getSDataBlade(blade)->unknown68c.unknown00 != 0) {
+    return;
+  }
+
+  u32 rolePartsId = GfDataHana::getDefaultRoleParts(blade);
+  if (rolePartsId != 0) {
+    GfItemUtil::addItemBox(rolePartsId, 1);
+    execEquipRoleParts(blade, rolePartsId, GfItemUtil::getNoEquipItemHandle(rolePartsId));
+  }
+
+  u32 attributePartsId = GfDataHana::getDefaultAttributeParts(blade);
+  if (attributePartsId != 0) {
+    GfItemUtil::addItemBox(attributePartsId, 1);
+    execEquipAttributeParts(blade, attributePartsId, GfItemUtil::getNoEquipItemHandle(attributePartsId));
+  }
+
+  for (u32 slot = 0; slot < GfDataHana::getNartsNum(blade); slot++) {
+    u32 nartsParts = GfDataHana::getDefaultNArtsParts(blade, slot);
+    if (nartsParts != 0) {
+      GfItemUtil::addItemBox(nartsParts, 1);
+      execEquipNArtsParts(blade, nartsParts, GfItemUtil::getNoEquipItemHandle(nartsParts), slot);
+    }
+  }
+
+  for (u32 slot = 0; slot < GfDataHana::getCondenserNum(blade); slot++) {
+    u32 condenserParts = GfDataHana::getDefaultCondenserParts(blade, slot);
+    if (condenserParts != 0) {
+      GfItemUtil::addItemBox(condenserParts, 1);
+      execEquipCondenserParts(blade, condenserParts, GfItemUtil::getNoEquipItemHandle(condenserParts), slot);
+    }
+  }
+}
 
 } // namespace gf

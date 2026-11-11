@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_blade_kizuna_ring.h"
 
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_achievement_adapter.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/gf_menu_reference.h"
@@ -12,6 +13,7 @@
 #include "types.h"
 #include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -26,6 +28,44 @@ GfMenuObjBladeKizunaRing::GfMenuObjBladeKizunaRing(u32 handle)
 GfMenuObjBladeKizunaRing::~GfMenuObjBladeKizunaRing() {
   mm::mtl::safeRelease(unknown28);
   mm::mtl::safeRelease(unknown30);
+}
+
+void GfMenuObjBladeKizunaRing::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  ui::UISelectObjList::CreateParam param;
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+  unknown28 = ui::UISelectObjList::create(param);
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 111 as in the original file: it is the line argument of operator new.
+#line 111
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(unknown001, main);
+  u32 ring = acc.searchChild("LAY_ring");
+// __LINE__ must be 117 as in the original file: it is the line argument of operator new.
+#line 117
+  RingListener *ringListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) RingListener(this);
+  ringListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(ring, ringListener);
+  if (ringListener != nullptr) {
+    ringListener->release();
+  }
+  attachExternalCall(unknown001, ring);
+  u32 detail = acc.searchChild("LAY_detail");
+// __LINE__ must be 122 as in the original file: it is the line argument of operator new.
+#line 122
+  DetailListener *detailListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DetailListener(this);
+  detailListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(detail, detailListener);
+  if (detailListener != nullptr) {
+    detailListener->release();
+  }
+  attachExternalCall(unknown001, detail);
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjBladeKizunaRing::finalize() { GfMenuObject::finalize(); }
@@ -119,6 +159,23 @@ void GfMenuObjBladeKizunaRing::setupName(ui::UIObjectAcc &acc) { GfMenuCharDataA
 void GfMenuObjBladeKizunaRing::setupDetail(ui::UIObjectAcc &acc) {
   GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("TXT_detail_title"), 2, 0, 0, 1, true);
   GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("TXT_detail_task"), 3, 0, 0, 1, true);
+}
+
+void GfMenuObjBladeKizunaRing::setupRing(ui::UIObjectAcc &acc, ui::UISelectObjList *list) {
+  mm::mtl::FixStr<32> name;
+  list->clear();
+  for (int level = 1; level <= 5; level++) {
+    for (int line = 0; line < 10; line++) {
+      name.format("IMG_ring_acv@%02d%02d", level, line + 1);
+      u32 icon = acc.searchChild(name.c_str());
+      GfMenuAchievementAdapter::createFromReferenceBlade(icon, 0, 0, line, level, true);
+      list->addObject(icon);
+    }
+  }
+  ui::UIObjectAcc face(acc.unknown10, "IMG_ring_face");
+  GfMenuCharDataAdapter::createFromReferenceBlade(face.unknown10, 3, 0, false);
+  face.availableInputTarget(false);
+  list->addObject(face.unknown10);
 }
 
 void GfMenuObjBladeKizunaRing::open() { GF_MENU_REQUEST_EVENT(unknown001, GfMenuTypes::unknown003_33); }

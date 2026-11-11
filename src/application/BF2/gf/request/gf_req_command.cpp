@@ -4,9 +4,12 @@
 #include "fw/fw_update_info.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_driver.h"
+#include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_fobj_manager.h"
+#include "gf/game/gf_game_load.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_save.h"
 #include "gf/game/gf_game_scene.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
@@ -14,14 +17,20 @@
 #include "gf/gf_manager.h"
 #include "gf/gf_pause.h"
 #include "gf/map/gf_map_manager.h"
+#include "gf/object/gf_obj_manager.h"
 #include "gf/request/gf_req_manager.h"
+#include "gf/request/gf_req_scom.h"
+#include "gf/scom/gf_scom_fade.h"
 #include "gf/script/gf_script_manager.h"
 #include "ml/time_count.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 
 namespace gf {
+struct SDataOption;
+struct SDataSave;
 
 // Inferred role: parameter of the save requests; original type name unknown.
 struct unknown001 : GfReqParam {
@@ -52,6 +61,12 @@ struct unknown005 : GfReqParam {
   GF_OBJ_HANDLE *unknown08; // Inferred role: handle; original member name unknown.
 };
 
+// Inferred role: parameter of the rebuild party weapon request; original type name unknown.
+struct unknown014 : GfReqParam {
+  u32 unknown00; // Inferred role: party; original member name unknown.
+  int unknown04; // Inferred role: blade slot; original member name unknown.
+};
+
 // Inferred role: parameter of the player pause request; original type name unknown.
 struct unknown006 : GfReqParam {
   f32 unknown00; // Inferred role: time; original member name unknown.
@@ -67,6 +82,26 @@ struct unknown008 : GfReqParam {
   mm::mtl::FixStr<32> unknown00; // Inferred role: script name; original member name unknown.
   u32 unknown24;                 // Inferred role: script slot; original member name unknown.
   bool unknown28;                // Inferred role: start; original member name unknown.
+};
+
+// Inferred role: parameter of the load request; original type name unknown.
+struct unknown010 : GfReqParam {
+  SAVESLOT unknown00;     // Inferred role: save slot; original member name unknown.
+  SDataSave *unknown08;   // Inferred role: game data to load; original member name unknown.
+  SDataOption *unknown10; // Inferred role: option data to load; original member name unknown.
+};
+
+// Inferred role: parameter of the change blade with blade set request; original type name unknown.
+struct unknown011 : GfReqParam {
+  u32 unknown00;  // Inferred role: party; original member name unknown.
+  int unknown04;  // Inferred role: blade set; original member name unknown.
+  bool unknown08; // Inferred role: force; original member name unknown.
+};
+
+// Inferred role: parameter of the change blade with blade request; original type name unknown.
+struct unknown012 : GfReqParam {
+  u32 unknown00; // Inferred role: party; original member name unknown.
+  u32 unknown04; // Inferred role: blade; original member name unknown.
 };
 
 void GfMapjumpInfo::setupForSaveData(u32 mapjumpId, const mm::Vec3 &position, const mm::Vec3 &rotation, bool isStartChapterSave) {
@@ -155,6 +190,24 @@ void GfReqCommand::execSaveOption(const GfReqParam *param) {
   save.execOptionSaveWithMicroThread();
 }
 
+void GfReqCommand::reqLoad(SAVESLOT slot, SDataSave *saveData, SDataOption *optionData) {
+#line 85
+  unknown010 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown010;
+  param->unknown00 = slot;
+  param->unknown08 = saveData;
+  param->unknown10 = optionData;
+  GfReqManager::addCommand(param, execLoad);
+}
+
+void GfReqCommand::execLoad(const GfReqParam *param) {
+  const unknown010 *load = static_cast<const unknown010 *>(param);
+  GfGameLoad gameLoad(load->unknown00);
+  gameLoad.execGameLoadWithMicroThread(*load->unknown08);
+  if (load->unknown10 != nullptr) {
+    gameLoad.execOptionLoadWithMicroThread(*load->unknown10);
+  }
+}
+
 u32 GfReqCommand::reqSoloParty(u32 driver) {
 #line 95
   unknown002 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown002();
@@ -168,6 +221,30 @@ void GfReqCommand::reqPartyBlade(u32 blade, u32 driver) {
   param->unknown00 = blade;
   param->unknown04 = driver;
   GfReqManager::addCommand(param, execPartyBlade);
+}
+
+u32 GfReqCommand::reqRebuildPartyWeapon(u32 blade) {
+#line 140
+  unknown014 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown014;
+  u32 partyId = GfGameParty::getPartyId(OBJECT_TYPE_BLADE, blade);
+  if (partyId == PARTY_UNKNOWN_4294967295) {
+    return 0xffffffff;
+  }
+  DataParamAcc acc(GfGameParty::getHandleDriver(partyId));
+  int bladeNum = GfDataDriver::getMaxSetBladeNum(acc.getValidDriverId());
+  int bladeSlot = -1;
+  for (int slot = 0; slot < bladeNum; slot++) {
+    if (acc.getBlade(slot, false) == blade) {
+      bladeSlot = slot;
+      break;
+    }
+  }
+  if (bladeSlot < 0) {
+    return 0xffffffff;
+  }
+  param->unknown00 = partyId;
+  param->unknown04 = bladeSlot;
+  return GfReqManager::addCommand(param, execRebuildPartyWeapon);
 }
 
 void GfReqCommand::reqChangeAttribute(u32 objectType, u32 blade, u32 attribute) {
@@ -280,6 +357,76 @@ void GfReqCommand::execStartScript(const GfReqParam *param) {
   GfScriptManager::loadScript(script->unknown24, script->unknown00.c_str());
   if (script->unknown28) {
     GfScriptManager::startScript(script->unknown24);
+  }
+}
+
+u32 GfReqCommand::reqChangeBladeWithSetId(u32 partyId, int bladeSet, bool isForce) {
+#line 221
+  unknown011 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown011;
+  param->unknown00 = partyId;
+  param->unknown04 = bladeSet;
+  param->unknown08 = isForce;
+  return GfReqManager::addCommand(param, execChangeBladeWithSetId);
+}
+
+void GfReqCommand::reqChangeBladeWithBladeId(u32 partyId, u32 blade) {
+#line 232
+  unknown012 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown012;
+  param->unknown00 = partyId;
+  param->unknown04 = blade;
+  GfReqManager::addCommand(param, execChangeBladeWithBladeId);
+}
+
+u32 GfReqCommand::reqChangeParty(const RQ_SETUP_PARTY_DRIVER &info) {
+  RQ_SETUP_PARTY party;
+  for (u32 index = 0; index < 10; index++) {
+    u32 driver = info.unknown00[index];
+    party.unknown00[index].unknown00 = driver;
+    if (driver != 0) {
+      DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
+      party.unknown00[index].unknown04 = acc.getBladeSet(false);
+      int bladeNum = GfDataDriver::getMaxSetBladeNum(driver);
+      for (int slot = 0; slot < bladeNum; slot++) {
+        party.unknown00[index].unknown08[slot] = acc.getBlade(slot, false);
+      }
+    }
+  }
+  party.unknowncc = info.unknown14;
+  party.unknownc8 = OBJECT_TYPE_PC;
+  return reqChangeParty(party);
+}
+
+u32 GfReqCommand::reqDestroyGf() {
+#line 756
+  GfReqParam *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfReqParam;
+  u32 handle = GfReqManager::addCommand(param, execDestroyGf);
+  GfReqManager::terminateCommand();
+  return handle;
+}
+
+void GfReqCommand::execDestroyGf(const GfReqParam *) {
+  SCOM_FADE::create(1, 30, mm::Col4::black);
+  GfSleep(30);
+  RQ_SETUP_PARTY party;
+  SCOM_DESTROY_PARTY_OBJ::create(party);
+  while (GfGameParty::isExistObj()) {
+    GfSleep(1);
+  }
+  GfObjManager *objManager = GfObjManager::get();
+  if (objManager != nullptr) {
+    for (int layer = 12; layer >= 0; layer--) {
+      objManager->destroyLayerObj(layer);
+      while (objManager->isExistLayerObj(layer)) {
+        GfSleep(1);
+      }
+    }
+    objManager = GfObjManager::get();
+    if (objManager != nullptr) {
+      objManager->destroyAllObj(false);
+      while (objManager->isExistGfObj(false)) {
+        GfSleep(1);
+      }
+    }
   }
 }
 

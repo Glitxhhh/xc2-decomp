@@ -1,10 +1,14 @@
 #include "gf/object/component/effect/gf_com_effect_caster.h"
 
+#include <string.h>
+
+#include "eflib/effect_send_param.h"
 #include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_clip.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/effect/effect_pack.h"
 #include "framework/effect/effect_point.h"
+#include "framework/object/updatable_object.h"
 #include "gf/asset/gf_asset_resource.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_weapon.h"
@@ -13,12 +17,25 @@
 #include "gf/object/component/animation/gf_com_evt_anim.h" // IWYU pragma: keep
 #include "gf/object/component/model/gf_com_model.h"        // IWYU pragma: keep
 #include "gf/object/gf_obj.h"
+#include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_mtl/delegate.h"
 
 // Named as the game's global symbol ASM_CB_NAME_EFFECT.
 const char *ASM_CB_NAME_EFFECT = "asm_effect";
 
 namespace gf {
+
+// Inferred helper: component-wise difference of two matrices; original name unknown.
+static mm::Mat44 unknown002(const mm::Mat44 &a, const mm::Mat44 &b) {
+  mm::Mat44 result;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      result.rows[i][j] = a.rows[i][j] - b.rows[i][j];
+    }
+  }
+  return result;
+}
 
 void GfComEffectCaster::registerAsmCallbackEffect(GF_OBJ_HANDLE *handle, anm::ResASM *resAsm, fw::EffectResData *effectData) {
   if (resAsm != nullptr && effectData != nullptr) {
@@ -82,6 +99,50 @@ bool GfComEffectCaster::getWeaponEffectPack(mm::mtl::FixedVector<fw::EffectPack 
   }
   return !packs.empty();
 }
+
+fw::EffectPack *GfComEffectCaster::getWeaponEffectPack(const char *name) {
+  if (strncmp(name, "cmn", 3) == 0) {
+    return nullptr;
+  }
+
+  u32 weapon = calcWeaponID();
+  for (u32 i = 0; i < unknown40.size(); i++) {
+    if (unknown40[i].unknown08 == weapon && unknown40[i].unknown00 != nullptr && unknown40[i].unknown00->searchEfb(name) != nullptr) {
+      fw::EffectPack *pack = unknown40[i].unknown00;
+      if (pack != nullptr) {
+        return pack;
+      }
+      break;
+    }
+  }
+
+  fw::EffectPack *pack = unknown38;
+  if (unknown1149c == 3 || unknown1149c == 4) {
+    GF_OBJ_HANDLE *parent = GfObjUtil::getParentHandle(static_cast<GfObj *>(unknown08)->unknownf8);
+    if (parent != unknown020) {
+      pack = getEffectPack(GfObjUtil::getAssetHandle(parent));
+    }
+  }
+  return pack;
+}
+
+void GfComEffectCaster::updateParam(GfComEffectCaster *caster, Param *param, f32 time, bool unknown) {
+  effect::SendParam sendParam;
+  calcMtxAndScale(caster, param, time, false, sendParam);
+  u32 tag = calcFollowAnnotetionTag(param, sendParam);
+  if (tag == 0) {
+    fw::EffectManager::get()->setParam(param->unknown58, &sendParam);
+  } else if (tag == 1) {
+    sendParam.unknowna3 = 0;
+    fw::EffectManager::get()->setParam(param->unknown58, &sendParam);
+  } else if (tag == 2) {
+    if (!param->unknownba) {
+      effectEnd(param->unknown58);
+    }
+  }
+}
+
+void GfComEffectCaster::getWpnMat(mm::Mat44 &matrix) { matrix = unknown002(unknown113d0, unknown11410); }
 
 fw::EffectPoint *GfComEffectCaster::getEffectPoint() { return unknown390; }
 
@@ -177,6 +238,26 @@ void GfComEffectCaster::effectEnd(u32 effect) {
   }
 }
 
+bool GfComEffectCaster::removeMountEffectEv(u32 effect) {
+  for (EventEfHandleTbl *tbl = unknownc3b0.begin(); tbl != unknownc3b0.end(); tbl++) {
+    if (tbl->unknown24 == effect) {
+      if (tbl->unknown41) {
+        if (unknown390 == nullptr) {
+          GfComModel *model = unknown08->getComponent<GfComModel>();
+          if (model != nullptr) {
+            model->destroyBoneReferenceFrame(tbl->unknown00.c_str());
+          }
+        } else {
+          unknown390->unknown88(tbl->unknown00.c_str());
+        }
+      }
+      unknownc3b0.erase(tbl);
+      return true;
+    }
+  }
+  return false;
+}
+
 GF_OBJ_HANDLE *GfComEffectCaster::getWeaponHandle(u16 weapon) {
   if (weapon == 3 || weapon == 4) {
     return GfGameUtil::getDriverWeaponRight(static_cast<GfObj *>(unknown08)->unknownf8);
@@ -184,7 +265,7 @@ GF_OBJ_HANDLE *GfComEffectCaster::getWeaponHandle(u16 weapon) {
   if (weapon == 5 || weapon == 6) {
     return GfGameUtil::getDriverWeaponLeft(static_cast<GfObj *>(unknown08)->unknownf8);
   }
-  return reinterpret_cast<GF_OBJ_HANDLE *>(-1);
+  return unknown020;
 }
 
 void GfComEffectCaster::getWpnMatOld1(mm::Mat44 &matrix) { matrix = unknown113d0; }

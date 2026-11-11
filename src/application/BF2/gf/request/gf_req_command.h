@@ -15,6 +15,8 @@ struct Vec3;
 namespace gf {
 struct GF_OBJ_HANDLE;
 struct GfReqParam;
+struct SDataOption;
+struct SDataSave;
 
 struct RQ_SETUP_BLADE {
   RQ_SETUP_BLADE();
@@ -113,12 +115,21 @@ static_assert(sizeof(GfMapjumpInfo) == 0x110, "");
 class GfReqCommand {
 public:
   static void reqPartyBlade(u32 blade, u32 driver);
-  static void reqRebuildPartyWeapon(u32 blade);
+  static void reqLoad(SAVESLOT slot, SDataSave *saveData, SDataOption *optionData);
+  static void execLoad(const GfReqParam *param);
+  static void reqChangeBladeWithBladeId(u32 partyId, u32 blade);
+  static void execChangeBladeWithBladeId(const GfReqParam *param);
+  static void execChangeBladeWithSetId(const GfReqParam *param);
+  static void execChangeParty(const GfReqParam *param);
+  static void execMapjump(const GfReqParam *param);
+  static void execDestroyGf(const GfReqParam *param);
+  static u32 reqRebuildPartyWeapon(u32 blade);
+  static void execRebuildPartyWeapon(const GfReqParam *param);
   static void reqChangeAttribute(u32 objectType, u32 blade, u32 attribute);
-  static void reqChangeParty(const RQ_SETUP_PARTY &info);
+  static u32 reqChangeParty(const RQ_SETUP_PARTY &info);
   static u32 reqChangeParty(const RQ_SETUP_PARTY_DRIVER &info);
   static u32 reqChangeBladeWithSetId(u32 partyId, int bladeSet, bool isForce);
-  static void reqDestroyGf();
+  static u32 reqDestroyGf();
   static u32 reqMapjump(const GfMapjumpInfo &info);
   static u32 reqWaitEvent(f32 time, GF_OBJ_HANDLE *handle);
   static u32 reqSave(SAVESLOT slot);

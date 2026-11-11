@@ -28,6 +28,7 @@ class GfAssetMultiBind;
 class GfComModel;
 class GfInitParam;
 class GfObj;
+class GfObjAcc;
 class GfObjProperty;
 class GfObjSetup;
 struct GfSetupParam;
@@ -43,6 +44,7 @@ enum GFATTACH {
 enum {
   GFOBJ_STATE_UNKNOWN_1 = 1, // Inferred role: gfobj state loading; original name unknown.
   GFOBJ_STATE_UNKNOWN_2 = 2, // Inferred role: gfobj state update; original name unknown.
+  GFOBJ_STATE_UNKNOWN_3 = 3, // Inferred role: gfobj state destroy, set by setStateDestroy; original name unknown.
 };
 
 struct GFOBJ_MOUNT {
@@ -186,6 +188,16 @@ public:
   u32 createGfObjHandle(const GFOBJ_INFO *info, u32 index, int multiBind);
   GF_OBJ_HANDLE *createGfObj(u32 objectType, const GfInitParam &param);
   void addFollowObj(GF_OBJ_HANDLE *handle);
+  void setStateDestroy(GF_OBJ_HANDLE *handle);
+  void destroyObjAsset(GF_ASSET_HANDLE *asset);
+  void getObjListForDebug(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &objs);
+  void checkDeleteFollowObj(GF_OBJ_HANDLE *handle);
+  bool getWaitingMultiBindObj(mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> &objs, u32 uniqId) const;
+  void setMultiBind(GF_OBJ_HANDLE *handle, u32 uniqId, u32 count, bool flag);
+  void setStateUpdate(GF_OBJ_HANDLE *handle);
+  bool isFinishLoadState(GfObjAcc &acc, bool unknown);
+  void destroyMultiBind(GF_OBJ_HANDLE *handle, u32 uniqId);
+  void createGfObjProperty(GF_OBJ_HANDLE *handle);
 
   bool unknown10; // Inferred role: initialized; original member name unknown.
   u32 unknown14;  // Inferred role: handle generation; original member name unknown.

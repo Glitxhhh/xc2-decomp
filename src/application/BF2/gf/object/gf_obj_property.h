@@ -89,6 +89,7 @@ static_assert(offsetof(unknown070, unknownc8) == 0xc8, "");
 
 class GfObjProperty {
 public:
+  static GfObjProperty *create(GF_OBJ_HANDLE *handle);
   GfObjPropertyMap *getMap();
   GfObjPropertyDriver *getDriver();
   GfObjPropertyBlade *getBlade();
