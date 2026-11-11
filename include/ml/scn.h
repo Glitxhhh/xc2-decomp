@@ -194,6 +194,8 @@ public:
   Scn(const ScnSetup *setup);
   static Scn *create(const ScnSetup *setup);
   void move();
+  void draw();
+  void tail();
   void setPause(bool isPause);
   void term();
   void callbackToListener(SCNCB type);

@@ -1,5 +1,6 @@
 #include "event/bgm_manager.h"
 
+#include "event/debug_manager.h"
 #include "event/extend.h"
 #include "event/frame_manager.h"
 #include "event/skip_manager.h"
@@ -87,6 +88,40 @@ void BgmManager::stop() {
 
 void BgmManager::setHandOver(bool isHandOver) { setFlag(FLAG_UNKNOWN_0, isHandOver); }
 
+void BgmManager::playDefaultBgm(f32 fadeFrame) {
+  if (fadeFrame >= 0.0f) {
+    gf::EventBgmSetup setup;
+    setup.unknown00 = "";
+    setup.unknown44 = 1.0f;
+    setup.unknown48 = 0.0f;
+    setup.unknown4c = fadeFrame * TO_SEC;
+    setup.unknown50 = 0.0f;
+    setup.unknown54 = 0.0f;
+    setup.unknown58 = 0.0f;
+    setup.unknown60 = true;
+    setup.unknown62 = true;
+    setup.unknown65 = true;
+    setup.unknown5c = 0.0f;
+    gf::GfGameEvent::playBgm(setup);
+  }
+  gf::EventBgmSetup setup;
+  setup.unknown00 = "";
+  setup.unknown44 = 1.0f;
+  setup.unknown48 = 0.0f;
+  setup.unknown4c = 0.0f;
+  setup.unknown50 = 0.0f;
+  setup.unknown54 = 0.0f;
+  setup.unknown58 = 0.0f;
+  setup.unknown5c = 0.0f;
+  setup.unknown60 = false;
+  setup.unknown62 = true;
+  setup.unknown63 = true;
+  setup.unknown64 = true;
+  setup.unknown65 = true;
+  gf::GfGameEvent::playBgm(setup);
+  unknown10 |= FLAG_UNKNOWN_5;
+}
+
 void BgmManager::changeVolume(f32 volume, f32 frame) {
   if ((unknown10 & FLAG_UNKNOWN_1) == 0) {
     return;
@@ -97,6 +132,35 @@ void BgmManager::changeVolume(f32 volume, f32 frame) {
   setup.unknown48 = frame * TO_SEC;
   setup.unknown44 = volume;
   gf::GfGameEvent::changeVolume(setup);
+}
+
+void BgmManager::setSyncFrame(f32 frame) {
+  if (unknown10 & FLAG_UNKNOWN_1) {
+    frame = __builtin_fmaxf(frame, 0.0f);
+    if (frame < gf::GfGameEvent::getPlayBgmTotalTime() * TO_FR) {
+      mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("bgm play offset %.1f", __builtin_fmaxf(frame + unknown68 - unknown6c, 0.0f));
+      gf::EventBgmSetup setup;
+      setup.unknown00 = "";
+      setup.unknown44 = 1.0f;
+      setup.unknown48 = 0.0f;
+      setup.unknown4c = 0.0f;
+      setup.unknown50 = 0.0f;
+      setup.unknown54 = 0.0f;
+      setup.unknown58 = 0.0f;
+      setup.unknown5c = 0.0f;
+      setup.unknown60 = false;
+      setup.unknown62 = true;
+      setup.unknown63 = true;
+      setup.unknown64 = true;
+      setup.unknown65 = true;
+      gf::GfGameEvent::playBgm(setup);
+      unknown10 |= FLAG_UNKNOWN_6;
+      unknown80 = frame;
+      unknown84 = 1;
+    } else {
+      stop();
+    }
+  }
 }
 
 f32 BgmManager::getStartedTotalFrame() const { return m_startedTotalFrame; }

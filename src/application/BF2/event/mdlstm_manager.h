@@ -2,6 +2,7 @@
 #include "event/i_manager.h"
 #include "event/mdlstm_data.h"
 #include "event/mdlstm_obj.h"
+#include "event/model_obj.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -15,7 +16,6 @@ class ALLOC_HANDLE;
 }
 
 namespace event {
-class ModelObj;
 
 class MdlstmManager : public IManager, public mm::mtl::Singleton<MdlstmManager> {
 public:
@@ -48,8 +48,27 @@ public:
   bool isReuseEnable() const;
   bool isLoadingPrio(f32 priority) const;
   bool searchByHandle(gf::GF_OBJ_HANDLE *handle) const;
+  void load(f32 frame, const char *path, u32 value, bool isActive);
+  void load(f32 frame, MODEL_TYPE type, u32 id, u32 value, bool isActive);
+  ModelObj *build(const char *path, u32 value);
+  ModelObj *build(MODEL_TYPE type, u32 id, u32 value);
 
 private:
+  // Inferred role: inserts the object into the frame ordered list; no game symbol, original name unknown.
+  void unknown001(MdlstmObj *obj) {
+    for (u32 i = 0; i < unknown3c020.size(); i++) {
+      if (!(unknown3c020[i]->unknown10 <= obj->unknown10)) {
+        while (i < unknown3c020.size()) {
+          MdlstmObj *next = unknown3c020[i];
+          unknown3c020[i] = obj;
+          obj = next;
+          i++;
+        }
+      }
+    }
+    unknown3c020.push_back(obj);
+  }
+
   u32 unknown10;                                                    // Inferred role: flags; original member name unknown.
   u32 unknown14;                                                    // Inferred role: reuse flags; original member name unknown.
   MdlstmObj unknown18[OBJ_UNKNOWN_1024];                            // Inferred role: objs; original member name unknown.

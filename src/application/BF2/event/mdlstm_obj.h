@@ -39,6 +39,8 @@ public:
   void finishDelay();
   void finishBusy();
   void load();
+  void exec(f32 minFrame, f32 maxFrame);
+  ModelObj *build();
   void dispose();
   bool isLoaded() const;
   bool isDisposeable(ModelObj *model) const;

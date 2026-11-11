@@ -1,15 +1,22 @@
+#include <ctype.h>
 #include <string.h>
 
 #include "framework/manager_object.h"
+#include "framework/resource/common_resource.h"
 #include "framework/sound/sound_manager.h"
 #include "fw/fw_pad.h"
+#include "fw/fw_update_info.h"
 #include "ml/controller_applet.h"
+#include "ml/dev_clock.h"
 #include "ml/dev_pad.h"
 #include "ml/dev_perf.h"
+#include "ml/ml_mem.h"
 #include "ml/work_cpu.h"
 #include "mm_mtl/bitflag.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_queue.h"
+#include "mm_mtl/fixstr.h"
+#include "mtl/alloc_handle.h"
 #include "types.h"
 
 namespace fw {
@@ -69,6 +76,39 @@ void PadManager::stopVibration() {
 void PadManager::setFilter(int padNo, IPadFilter *filter) { get()->m_filter[padNo] = filter; }
 
 int PadManager::getPadMax() { return ml::DevPad::getPadMax(); }
+
+void PadManager::makePadData(int padNo) {
+  IPadFilter *filter = m_filter[padNo];
+  f32 alx = ml::DevPad::getALX(padNo, false);
+  f32 aly = ml::DevPad::getALY(padNo, false);
+  f32 arx = ml::DevPad::getARX(padNo, false);
+  f32 ary = ml::DevPad::getARY(padNo, false);
+  u32 btn = ml::DevPad::getBtn(padNo);
+  u32 down = ml::DevPad::getDown(padNo);
+  u32 up = ml::DevPad::getUp(padNo);
+  u32 dbl = ml::DevPad::getDbl(padNo);
+  if (__builtin_isnan(alx)) {
+    alx = 0.0f;
+  }
+  if (__builtin_isnan(aly)) {
+    aly = 0.0f;
+  }
+  if (__builtin_isnan(arx)) {
+    arx = 0.0f;
+  }
+  if (__builtin_isnan(ary)) {
+    ary = 0.0f;
+  }
+  unknown80[padNo].unknown00 = filter->filterBtn(btn);
+  unknown80[padNo].unknown04 = filter->filterBtn(down);
+  unknown80[padNo].unknown08 = filter->filterBtn(up);
+  unknown80[padNo].unknown10 = filter->filterBtn(dbl);
+  unknown80[padNo].unknown1c = filter->filterALX(alx, aly);
+  unknown80[padNo].unknown20 = filter->filterALY(alx, aly);
+  unknown80[padNo].unknown24 = filter->filterARX(arx, ary);
+  unknown80[padNo].unknown28 = filter->filterARY(arx, ary);
+  replacePadData(padNo);
+}
 
 u32 PadManager::updateRepeat(int padNo, const PadData &pad, PadWorkArray &works, f32 deltaTime) {
   u32 repeat = pad.unknown04;
@@ -203,6 +243,26 @@ void PadManager::setALYThreshold(int padNo, f32 threshold) { get()->unknown80[pa
 
 void PadManager::setEnable(int padNo, bool isEnable) { get()->unknown3650.set(padNo, isEnable); }
 
+void PadManager::viBeginFrame() {
+  if (get() != nullptr) {
+    if (!isInitialized()) {
+      ml::DevClock::getClockNow(unknown3658);
+      return;
+    }
+
+    f32 time;
+    ml::DevClock::getTimeNow(time, unknown3658);
+    UpdateInfo info;
+    info.unknown00 = time;
+    info.unknown04 = time;
+    update(info);
+    ml::DevClock::getClockNow(unknown3658);
+    for (mm::mtl::FixedQueue<IPadListener *, LISTENER_UNKNOWN_16>::iterator it = unknown3678.begin(); it != unknown3678.end(); ++it) {
+      (*it)->unknown001();
+    }
+  }
+}
+
 void PadManager::enableDebugDraw(bool isEnable) {
   PadManager *manager = get();
   if (manager != nullptr) {
@@ -270,6 +330,28 @@ void PadManager::updateControlPadNo(int padNo) {
   ml::WorkCpu::setBackground(false);
   SoundManager::get()->pauseAll(false, 0.0f);
   unknown35f0[padNo] = -1;
+}
+
+void PadManager::initVibData() {
+  static const char *names[] = {"INVALID",      "AUDIO_BAM_1",  "AUDIO_BAM_2", "AUDIO_BOOM_1", "AUDIO_BOOM_2", "AUDIO_BOOM_3", "AUDIO_BUBOOM", "AUDIO_BUBUBU",
+                                "AUDIO_BUBU_1", "AUDIO_BUBU_2", "AUDIO_BU_1",  "AUDIO_BU_2",   "AUDIO_BU_3",   "BEAT_20",      "BEAT_40",      "DAMPED_1",
+                                "DAMPED_2",     "DAMPED_3",     "DAMPED_FM_1", "DAMPED_FM_2",  "DAMPED_LONG",  "SIMPLE_1",     "SIMPLE_2",     "SIMPLE_3"};
+  for (u32 i = 1; i < 24; i++) {
+    mm::mtl::FixStr<256> path;
+    path.format("/bnvib/%s.bnvib", names[i]);
+    long length = path.length();
+    char *chars = &path[0];
+    for (long j = 0; j != length; j++) {
+      chars[j] = tolower(chars[j]);
+    }
+    CommonResource *resource = CommonResource::blockRequest(ml::MlMem::getDebugMem(), path.c_str(), false);
+    if (resource != nullptr) {
+      if (resource->valid()) {
+        ml::DevPad::loadVibration(i, resource->getAssetData(), resource->getAssetSize());
+      }
+      resource->release();
+    }
+  }
 }
 
 const char *PadManager::getName() const { return "PadManager"; }

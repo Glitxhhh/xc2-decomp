@@ -5,7 +5,6 @@
 #include "mtl/alloc_handle.h"
 
 namespace event {
-class ModelObj;
 
 bool MdlstmManager::isReuseEnable() const { return (unknown14 & REUSE_FLAG_UNKNOWN_0) != 0; }
 
@@ -100,5 +99,52 @@ void MdlstmManager::setReuseEnable(bool isReuseEnable) {
 }
 
 void MdlstmManager::setReuseFlag(int reuseFlag) { unknown3e030 = reuseFlag; }
+
+void MdlstmManager::load(f32 frame, const char *path, u32 value, bool isActive) {
+  if (unknown10 & FLAG_UNKNOWN_0) {
+    MdlstmObj *obj = &unknown18[unknown3c018++];
+    obj->init(frame, path, value, isActive, unknown3e030);
+    unknown001(obj);
+  }
+}
+
+void MdlstmManager::load(f32 frame, MODEL_TYPE type, u32 id, u32 value, bool isActive) {
+  if (unknown10 & FLAG_UNKNOWN_0) {
+    MdlstmObj *obj = &unknown18[unknown3c018++];
+    obj->init(frame, type, id, value, isActive, unknown3e030);
+    unknown001(obj);
+  }
+}
+
+ModelObj *MdlstmManager::build(const char *path, u32 value) {
+  for (u32 i = 0; i < _3e028; i++) {
+    if (unknown3c020[i]->isBuildable(path, value)) {
+      return unknown3c020[i]->build();
+    }
+  }
+  return nullptr;
+}
+
+ModelObj *MdlstmManager::build(MODEL_TYPE type, u32 id, u32 value) {
+  for (u32 i = 0; i < _3e028; i++) {
+    if (unknown3c020[i]->isBuildable(type, id, value)) {
+      return unknown3c020[i]->build();
+    }
+  }
+  return nullptr;
+}
+
+void MdlstmManager::OnEventProc(MSG_TYPE type) {
+  switch (type) {
+  case MSG_TYPE_UNKNOWN_14:
+    update();
+    break;
+  case MSG_TYPE_UNKNOWN_12:
+    clear();
+    break;
+  default:
+    break;
+  }
+}
 
 } // namespace event

@@ -2,8 +2,8 @@
   {
     "name": "gf",
     "code": {
-      "total": 4336224,
-      "matching": 2739392,
+      "total": 4338912,
+      "matching": 2742080,
       "non_matching": 0
     }
   },
@@ -27,15 +27,15 @@
     "name": "event",
     "code": {
       "total": 725424,
-      "matching": 434488,
+      "matching": 445484,
       "non_matching": 0
     }
   },
   {
     "name": "framework",
     "code": {
-      "total": 486832,
-      "matching": 260620,
+      "total": 484112,
+      "matching": 264432,
       "non_matching": 0
     }
   },
@@ -106,7 +106,7 @@
   {
     "name": "mcl",
     "code": {
-      "total": 64840,
+      "total": 61120,
       "matching": 30588,
       "non_matching": 0
     }
@@ -168,6 +168,22 @@
     }
   },
   {
+    "name": "skt",
+    "code": {
+      "total": 7060,
+      "matching": 3512,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "apps",
+    "code": {
+      "total": 8448,
+      "matching": 2468,
+      "non_matching": 0
+    }
+  },
+  {
     "name": "dir",
     "code": {
       "total": 3372,
@@ -192,14 +208,6 @@
     }
   },
   {
-    "name": "skt",
-    "code": {
-      "total": 6996,
-      "matching": 712,
-      "non_matching": 0
-    }
-  },
-  {
     "name": "wndlib",
     "code": {
       "total": 18936,
@@ -218,7 +226,7 @@
   {
     "name": "Not started",
     "code": {
-      "total": 7900,
+      "total": 3140,
       "matching": 0,
       "non_matching": 0
     }
