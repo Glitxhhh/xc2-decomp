@@ -10,6 +10,7 @@
 #include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/delegate.h" // IWYU pragma: keep
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
@@ -245,6 +246,36 @@ bool GfMenuObjPartyForm2::seqTakePlate() {
     param.unknown0c = 1;
     param.unknown14 = 4;
     unknown300 = GfMenuObjUtil::startCtrl(taken.unknown10, param, nullptr);
+    unknown304 = GfMenuObjUtil::startCtrl(target.unknown10, param, nullptr);
+  }
+  if (GfMenuObjUtil::isBusyCtrl(unknown300)) {
+    return false;
+  }
+  if (GfMenuObjUtil::isBusyCtrl(unknown304)) {
+    return false;
+  }
+  unknown300 = -1;
+  unknown304 = -1;
+  return true;
+}
+
+bool GfMenuObjPartyForm2::seqMovePlate() {
+  if (unknown300 == -1 && unknown304 == -1) {
+    ui::UIObjectAcc taken(unknown40[unknown64].unknown00->getSelectObject());
+    ui::UIObjectAcc target(unknown40[unknown60].unknown00->getSelectObject());
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x80;
+    param.unknown00 = 0.5f;
+    param.unknown0c = 1;
+    param.unknown14 = 4;
+    mm::Pnt<s16> pos;
+    target.getPos(pos);
+    param.unknown26 = pos;
+    param.unknown18 = unknown300;
+    unknown300 = GfMenuObjUtil::startCtrl(taken.unknown10, param, nullptr);
+    taken.getPos(pos);
+    param.unknown26 = pos;
+    param.unknown18 = unknown304;
     unknown304 = GfMenuObjUtil::startCtrl(target.unknown10, param, nullptr);
   }
   if (GfMenuObjUtil::isBusyCtrl(unknown300)) {

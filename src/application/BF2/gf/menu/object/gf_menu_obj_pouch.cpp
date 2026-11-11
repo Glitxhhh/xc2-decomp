@@ -1,12 +1,16 @@
 #include "gf/menu/object/gf_menu_obj_pouch.h"
 
+#include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_item.h"
+#include "gf/data/gf_item_handle.h"
+#include "gf/game/item/gf_pouch_util.h"
 #include "gf/menu/adapter/gf_menu_enhance_adapter.h"
 #include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixstr.h"
@@ -17,7 +21,7 @@
 
 namespace gf {
 
-GfMenuObjPouch::GfMenuObjPouch(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(0) {}
+GfMenuObjPouch::GfMenuObjPouch(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(0), unknown4c(0) {}
 
 GfMenuObjPouch::~GfMenuObjPouch() {
   mm::mtl::safeRelease(unknown28);
@@ -113,5 +117,72 @@ void GfMenuObjPouch::DescriptionListener::reciveEvent(const ui::EventData &event
     setupDescription(acc, unknown20->unknown50);
   }
   ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+void GfMenuObjPouch::PouchListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1: {
+    GfMenuObjUtil::CursorParam param;
+    param.unknown00 = handle;
+    param.unknown04 = acc.searchChild("IMG_pouch_cursor");
+    param.unknown1a = 1;
+    param.unknown08 = "LAY_pouch_slot@%02d";
+    param.unknown20.unknown18 = 5;
+    unknown20->unknown38 = GfMenuObjUtil::createCursor(param);
+    GfMenuObject::disableInput(handle);
+    break;
+  }
+  case 6: {
+    u32 index = event.unknown08;
+    if (unknown20->unknown38->inputChange(index)) {
+      unknown20->unknown48 = index;
+      u16 item = GfPouchUtil::getPouch(0, index)->unknown04;
+      MenuItemInfo &info = unknown20->unknown50.get()->unknown0c;
+      info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_10;
+      info.unknown04 = item;
+      info.unknown08 = 1;
+      info.unknown0c = 0;
+    }
+    break;
+  }
+  case 8:
+    switch (event.unknown0c) {
+    case 1:
+      if (unknown20->unknown28->getSize() == 0) {
+        unknown20->unknown40->reset();
+        unknown20->unknown4c = 0x15;
+        GfMenuObjCommonText::open(unknown20->unknown40, unknown20->unknown4c, 0);
+        GfMenuObject::setCallContextEventHandler(unknown20->unknown40, handle);
+        GfMenuObject::disableInput(handle);
+      } else {
+        unknown164(handle, GfMenuTypes::unknown003_34);
+        unknown163(owner.searchChild("LAY_item_list"), GfMenuTypes::unknown003_33, 0);
+      }
+      break;
+    case 2:
+      unknown164(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34);
+      break;
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    unknown20->unknown38->open(0);
+    GfMenuObject::setupInputSelection(handle, unknown20->unknown48, 3);
+    GfMenuObject::enableInput(handle);
+    GfMenuObjOperationInfo::open(handle, 0, 0, 0);
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::disableInput(handle);
+    break;
+  case 0x41:
+    if (unknown20->unknown40 != nullptr && unknown20->unknown40->unknown0c == event.unknown08 && unknown20->unknown4c == 0x15) {
+      GfMenuObject::enableInput(handle);
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 } // namespace gf

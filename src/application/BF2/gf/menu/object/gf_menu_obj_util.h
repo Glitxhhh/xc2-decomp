@@ -8,6 +8,7 @@
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 
 namespace fw {
 enum VibrationID : int;
@@ -15,7 +16,6 @@ enum SoundCategory : int;
 } // namespace fw
 
 namespace ui {
-class UICtrlCursorSelect;
 class UISelectObjList;
 class UIListInfoBase;
 class UIObjectAcc;
@@ -97,8 +97,7 @@ public:
     f32 unknown1c;  // Inferred role: delay time; original member name unknown.
     int unknown20;  // Inferred role: move distance; original member name unknown.
     u8 _24[0x26 - 0x24];
-    s16 unknown26; // Inferred role: layout x offset; original member name unknown.
-    s16 unknown28; // Inferred role: layout y offset; original member name unknown.
+    mm::Pnt<s16> unknown26; // Inferred role: layout offset, added by the position method 0x80 (startCtrl reads x at 0x26 and y at 0x28); original member name unknown.
     u8 _2a[0x2c - 0x2a];
     f32 unknown2c; // Inferred role: scale; original member name unknown.
     u8 _30[0x34 - 0x30];
@@ -116,6 +115,20 @@ public:
     u8 _4c[0x50 - 0x4c];
     const char *unknown50; // Inferred role: motion data name; original member name unknown.
     const char *unknown58; // Inferred role: motion name; original member name unknown.
+  };
+
+  // Parameter of createCursor (_ZN2gf13GfMenuObjUtil12createCursorERNS0_11CursorParamE). Layout read by createCursor (0x00 handle, 0x04 cursor object, 0x08 format, 0x10 names, 0x18 count, 0x1a type,
+  // 0x20 CursorSetting); the constructor stores match the stack initialisation of the callers (GfMenuObjBladeSet::ReleaseSlotListener::reciveEvent).
+  struct CursorParam {
+    CursorParam() : unknown00(0), unknown04(0), unknown08(nullptr), unknown10(nullptr), unknown18(0), unknown1a(0), unknown20() {}
+
+    u32 unknown00;                                   // Inferred role: object whose children are the cursor targets; original member name unknown.
+    u32 unknown04;                                   // Inferred role: cursor object; original member name unknown.
+    const char *unknown08;                           // Inferred role: format of the target names, picked up with UISelectObjList::pickupObject; original member name unknown.
+    const char *const *unknown10;                    // Inferred role: target names, used when there is no format; original member name unknown.
+    u16 unknown18;                                   // Inferred role: number of target names; original member name unknown.
+    u16 unknown1a;                                   // Inferred role: cursor type, argument of CursorSetting::setType; original member name unknown.
+    ui::UICtrlCursorSelect::CursorSetting unknown20; // Inferred role: cursor setting; original member name unknown.
   };
 
   struct ImageParam {
@@ -193,6 +206,7 @@ public:
   static void createNumberPlugin(u32 handle, int number);
   static const unknown001 *getParamMenu();
   static f32 getCtrlMotionTime(const char *name, const char *motion);
+  static ui::UICtrlCursorSelect *createCursor(CursorParam &param);
   static void changeCursorTarget(ui::UICtrlCursorSelect *cursor, u32 handle, const char *format);
   static void changeCursorTarget(ui::UICtrlCursorSelect *cursor, u32 handle, const char **names, u16 count);
   static const char *getMenuMS(u32 id);
@@ -353,7 +367,6 @@ static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown18) == 0x18, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown1c) == 0x1c, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown26) == 0x26, "");
-static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown2c) == 0x2c, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown34) == 0x34, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown38) == 0x38, "");
@@ -361,5 +374,12 @@ static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown3c) == 0x3c, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown50) == 0x50, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown58) == 0x58, "");
 static_assert(sizeof(GfMenuObjUtil::CtrlParam) == 0x60, "");
+static_assert(offsetof(GfMenuObjUtil::CursorParam, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjUtil::CursorParam, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuObjUtil::CursorParam, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuObjUtil::CursorParam, unknown18) == 0x18, "");
+static_assert(offsetof(GfMenuObjUtil::CursorParam, unknown1a) == 0x1a, "");
+static_assert(offsetof(GfMenuObjUtil::CursorParam, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjUtil::CursorParam) == 0x48, "");
 
 } // namespace gf

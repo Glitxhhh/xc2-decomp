@@ -30,6 +30,7 @@
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
 #include "gf/game/quest/gf_quest_manager.h"
+#include "gf/gf_allocator.h"
 #include "gf/gf_info.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -1562,6 +1563,31 @@ f32 GfMenuObjUtil::getCtrlMotionTime(const char *name, const char *motion) {
     return -1.0f;
   }
   return 0.0f;
+}
+
+ui::UICtrlCursorSelect *GfMenuObjUtil::createCursor(CursorParam &param) {
+  ui::UISelectObjList::CreateParam createParam;
+  createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+  ui::UISelectObjList *list = ui::UISelectObjList::create(createParam);
+  if (list == nullptr) {
+    return nullptr;
+  }
+  if (param.unknown08 != nullptr) {
+    list->pickupObject(param.unknown00, param.unknown08, 1);
+  } else if (param.unknown10 != nullptr) {
+    ui::UIObjectAcc objectAcc(param.unknown00);
+    for (u16 i = 0; i < param.unknown18; i++) {
+      u32 child = objectAcc.searchChild(param.unknown10[i]);
+      if (child != 0) {
+        list->addContents(child);
+      }
+    }
+  }
+  list->getSize();
+  param.unknown20.setType(param.unknown1a);
+  ui::UICtrlCursorSelect *cursor = ui::UICtrlCursorSelect::create(param.unknown04, param.unknown20, list);
+  list->release();
+  return cursor;
 }
 
 void GfMenuObjUtil::changeCursorTarget(ui::UICtrlCursorSelect *cursor, u32 handle, const char *format) {

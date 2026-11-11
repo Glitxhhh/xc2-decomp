@@ -209,6 +209,7 @@ public:
   static u32 getBattleExp(const SDataDriver &dataDriver);
   static bool isEnableLevelUp(u32 driver);
   static bool isEnableLevelUp(const SDataDriver &dataDriver);
+  static void getEnableLevel(u32 &level, u32 &maxLevel, u32 driver);
   static u32 getExp(u32 driver);
   static u32 getBattleExp(u32 driver);
   static u32 getBattleExpNextLevelAll(u32 driver);

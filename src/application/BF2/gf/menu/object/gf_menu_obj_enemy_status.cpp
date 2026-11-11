@@ -12,6 +12,7 @@
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_col3.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
@@ -56,8 +57,8 @@ static void unknown013(u32 handle, u32 elem, u32 index) {
       param.unknown00 = 0.25f;
       param.unknown08 = 0x80;
       param.unknown0c = 1;
-      param.unknown26 = rect.x;
-      param.unknown28 = rect.y;
+      param.unknown26.x = rect.x;
+      param.unknown26.y = rect.y;
       GfMenuObjUtil::startCtrl(layout.unknown10, param, nullptr);
     }
   }
