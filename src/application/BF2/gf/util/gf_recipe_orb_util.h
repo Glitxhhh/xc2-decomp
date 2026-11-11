@@ -40,6 +40,7 @@ public:
   static bool isEnabaleOrbRecipeCategory(u32 recipe, const mm::mtl::FixedVector<OrbRecipe, 128> &items);
   static bool isEnabaleOrbRecipeRare(u32 recipe, const mm::mtl::FixedVector<OrbRecipe, 128> &items);
   static bool isEnableRecipe(u32 id);
+  static bool isExistItem(const mm::mtl::FixedVector<OrbRecipe, 128> &items, u32 id, u32 count);
   static u32 getRecipeID(u32 id);
   static u32 getEquipOrb(u32 id);
   static bool getRecipeInfo(RecipeInfo &info, u32 id);

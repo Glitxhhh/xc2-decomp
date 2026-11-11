@@ -47,6 +47,7 @@ public:
 
   void setTitle(const char *title);
   void attachWorkEvent(IWorkEvent *event, bool isFront);
+  WinView *getPointedView(const mm::Pnt<int> &pos);
   const mm::Pnt<int> &getFramePos(bool isBack) const;
   void addFramePos(const mm::Pnt<int> &pos);
   void addScroll(const mm::Pnt<int> &scroll);

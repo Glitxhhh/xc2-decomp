@@ -41,10 +41,8 @@ public:
 
   const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
 
-  u8 _48[0x50 - 0x48];
   GmkCollision unknown50; // Inferred role: collision; original member name unknown.
   f32 unknownc0;          // Inferred role: time since the party leader entered the lock; original member name unknown.
-  u8 _c4[0xd0 - 0xc4];
 };
 
 static_assert(sizeof(GmkFieldLock::BdatInfo) == 0xe, "");

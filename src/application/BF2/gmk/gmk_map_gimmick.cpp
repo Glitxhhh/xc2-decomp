@@ -217,3 +217,5 @@ template void mm::mtl::Vector<gmk::GmkMapGimmick>::expand(size_t, size_t);
 
 template void mm::mtl::Vector<gmk::GmkMapGimmick::BdatInfo>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkMapGimmick::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkMapGimmick>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkMapGimmick>::resize(size_t);

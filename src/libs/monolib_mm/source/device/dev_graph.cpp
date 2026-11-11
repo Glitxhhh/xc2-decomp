@@ -314,6 +314,15 @@ bool DevGraph::entryCb(DevGraphCB *callback) {
   return true;
 }
 
+bool DevGraph::removeCb(DevGraphCB *callback) {
+  DevGraph *graph = get();
+  if (graph == nullptr) {
+    return false;
+  }
+  graph->unknown1b8.remove(callback);
+  return true;
+}
+
 void DevGraph::renderSync() {
   DevGraph *graph = get();
   if (graph != nullptr) {

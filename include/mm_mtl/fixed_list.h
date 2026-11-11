@@ -1,4 +1,7 @@
 #pragma once
+#include <iterator>
+#include <type_traits>
+
 #include "mm/mm_std_base.h"
 #include "types.h"
 #include <new>
@@ -31,6 +34,12 @@ public:
 
   template <typename V, typename NodePtr> class node_iterator {
   public:
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef typename std::remove_const<V>::type value_type;
+    typedef s64 difference_type;
+    typedef V *pointer;
+    typedef V &reference;
+
     node_iterator(NodePtr node, FixedList *list) : m_node(node), mList(list) {}
 
     V &operator*() const {
@@ -42,6 +51,10 @@ public:
     V *operator->() const { return &m_node->mValue; }
     node_iterator &operator++() {
       m_node = mList->node(m_node->mNext);
+      return *this;
+    }
+    node_iterator &operator--() {
+      m_node = mList->node(m_node->mPrev);
       return *this;
     }
 
@@ -138,6 +151,22 @@ public:
     node(last)->mNext = added->mIndex;
     head()->mPrev = added->mIndex;
     added->mNext = head()->mIndex;
+  }
+
+  // __LINE__ must be 263 as in the original header: it is the line argument of the assert. The new node goes before it.
+  void insert(iterator it, const T &value) {
+#line 263
+    MM_ASSERT(m_free_index_top > 0);
+    Index index = mFreeIndices[m_free_index_top--];
+    ListNode *added = node(index);
+    new (&added->mValue) T(value);
+    added->mIndex = index;
+    Index prev = it.node()->mPrev;
+    added->mPrev = prev;
+    node(prev)->mNext = added->mIndex;
+    it.node()->mPrev = added->mIndex;
+    added->mNext = it.node()->mIndex;
+    m_num_nodes++;
   }
 
   // __LINE__ must be 274, 275 and 276 as in the original header: they are the line arguments of the asserts.

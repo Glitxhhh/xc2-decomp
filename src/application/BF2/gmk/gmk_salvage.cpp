@@ -503,3 +503,6 @@ template void mm::mtl::Vector<gmk::GmkSalvage::BdatInfo>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkSalvageLocator::BdatInfo>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkSalvageLocator::BdatInfo>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkSalvageLocator::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkSalvageLocator>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkSalvageLocator>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkSalvageLocator>::resize(size_t);

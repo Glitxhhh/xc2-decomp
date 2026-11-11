@@ -41,6 +41,14 @@ bool GfGameInsideBattleLock::isInside(const mm::Vec3 &position) {
   return false;
 }
 
+bool GfGameInsideBattleLock::isInside(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if (acc.getType() == OBJECT_TYPE_ENEMY) {
+    return get()->unknown08[handle];
+  }
+  return false;
+}
+
 struct GF_OBJ_HANDLE;
 
 void GfGameInsideBattleLock::destroy() { delete get(); }

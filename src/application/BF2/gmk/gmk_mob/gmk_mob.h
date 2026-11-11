@@ -168,6 +168,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_MOB; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
+  GmkMob() {}
   ~GmkMob() override { dispose(); }
   GmkType getGmkType() const override;
   bool isValid() const override;

@@ -2,8 +2,8 @@
   {
     "name": "gf",
     "code": {
-      "total": 4353624,
-      "matching": 2734156,
+      "total": 4336480,
+      "matching": 2736456,
       "non_matching": 0
     }
   },
@@ -11,15 +11,15 @@
     "name": "monolib_mm",
     "code": {
       "total": 1745356,
-      "matching": 537548,
+      "matching": 539784,
       "non_matching": 0
     }
   },
   {
     "name": "gmk",
     "code": {
-      "total": 743968,
-      "matching": 488160,
+      "total": 761836,
+      "matching": 507428,
       "non_matching": 0
     }
   },
@@ -27,22 +27,22 @@
     "name": "event",
     "code": {
       "total": 725424,
-      "matching": 434484,
+      "matching": 434488,
       "non_matching": 0
     }
   },
   {
     "name": "framework",
     "code": {
-      "total": 486828,
-      "matching": 259728,
+      "total": 486832,
+      "matching": 260620,
       "non_matching": 0
     }
   },
   {
     "name": "battle",
     "code": {
-      "total": 575168,
+      "total": 574584,
       "matching": 131636,
       "non_matching": 0
     }
@@ -66,8 +66,8 @@
   {
     "name": "anmlib",
     "code": {
-      "total": 195336,
-      "matching": 103248,
+      "total": 195192,
+      "matching": 103108,
       "non_matching": 0
     }
   },

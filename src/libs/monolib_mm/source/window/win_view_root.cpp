@@ -9,6 +9,7 @@
 #include "ml/win_view.h"
 #include "ml/work_root.h"
 #include "ml/work_util.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mtl/alloc_handle.h"
 
@@ -49,6 +50,22 @@ WinView *WinViewRoot::getRootView(WinView *view) {
     return view;
   }
   return getRootView(static_cast<WinView *>(parent));
+}
+
+WinView *WinViewRoot::getPointedView(const mm::Pnt<int> &pos) {
+  WinView *pointed = nullptr;
+  if (get() != nullptr) {
+    for (reslist<WorkObj *>::Node *node = get()->wkGetChild()->begin(); node != get()->wkGetChild()->end(); node = node->getNext()) {
+      WinView *view = static_cast<WinView *>(node->value);
+      if (!view->wkIsWaitException() && view->wkIsActive() && !view->wkIsShutdown()) {
+        WinView *child = view->getPointedView(pos);
+        if (child != nullptr) {
+          pointed = child;
+        }
+      }
+    }
+  }
+  return pointed;
 }
 
 WinProc *WinViewRoot::getCurrentProc() {

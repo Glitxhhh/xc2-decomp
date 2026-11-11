@@ -344,3 +344,6 @@ void GmkMob::debugDraw() const { isValid(); }
 template void mm::mtl::Vector<gmk::GmkMob::BdatInfo>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkMob::BdatInfo>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkMob::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkMob>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkMob>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkMob>::resize(size_t);

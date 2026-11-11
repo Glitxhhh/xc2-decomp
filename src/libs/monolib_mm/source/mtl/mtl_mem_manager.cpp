@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -875,7 +876,7 @@ template <int N> void AssetAllocator<N>::create(void *buffer, size_t size, const
   m_name = name != nullptr ? name : "no name";
   unknown30.clear();
   unknown8860.clear();
-  SMemChunk chunk = {nullptr, 0, 0, 0, static_cast<u32>(unknown110a8)};
+  SMemChunk chunk = {nullptr, 0, 0, 0, static_cast<int>(unknown110a8)};
   unknown30.push_back(chunk);
 }
 
@@ -926,7 +927,7 @@ template <int N> size_t AssetAllocator<N>::getAllocSize(const void *pointer) con
   size_t size = 0;
   for (typename mm::mtl::FixedList<SMemChunk, N>::const_iterator it = unknown8860.begin(); it != unknown8860.end(); ++it) {
     if (unknown001(it->unknown0c) == pointer) {
-      size = static_cast<size_t>(static_cast<int>(it->unknown10)) << 4;
+      size = static_cast<size_t>(it->unknown10) << 4;
       break;
     }
   }
@@ -991,6 +992,15 @@ template <int N> bool AssetAllocator<N>::getMemInfo1(MemoryInfo1 *info, u32 num)
     }
   }
   return count != 0;
+}
+
+template <int N> void AssetAllocator<N>::addFreeList(const SMemChunk &chunk) {
+  typename mm::mtl::FixedList<SMemChunk, N>::iterator it = std::lower_bound(unknown30.begin(), unknown30.end(), chunk);
+  if (unknown30.end() == it) {
+    unknown30.push_back(chunk);
+  } else {
+    unknown30.insert(it, chunk);
+  }
 }
 
 // The line argument of the allocation is the line of the original file.

@@ -136,8 +136,7 @@ public:
   f32 unknown2c0;                // Role and original member name unknown.
   u8 _2c4[0x2c8 - 0x2c4];
   void (GmkDoor::*unknown2c8)(f32); // Inferred role: seq; original member name unknown.
-  u8 _2d8[0x2e0 - 0x2d8];
-  GmkCtrlVolSe unknown2e0; // Inferred role: se; original member name unknown.
+  GmkCtrlVolSe unknown2e0;          // Inferred role: se; original member name unknown.
 };
 
 static_assert(sizeof(GmkDoor::BdatInfo) == 0x48, "");

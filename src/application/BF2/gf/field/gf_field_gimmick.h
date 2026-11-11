@@ -51,8 +51,6 @@ public:
 
   GfFieldGimmick(const GfSetupParam &param);
   void initialize(const GfSetupParam &param);
-  // Not decompiled yet: defining it emits the inline ~GfGmkLocatorAtlas and mm::mtl::destruct_n<GfGmkLocators>, whose
-  // loop does not match the game's copy yet.
   ~GfFieldGimmick();
   void finalize();
   void listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectType) override;

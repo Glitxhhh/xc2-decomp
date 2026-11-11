@@ -32,10 +32,28 @@ public:
     u16 unknown00; // Inferred role: telop message; original member name unknown.
   };
 
+  // Evidence: btl::UIManager::DispUniteComboUI (0x710008fb9c) builds it on the stack from its eight arguments; the elements are 4 bytes
+  // (index byte, u8 argument, u16 argument) and the size is the u64 at 0x18.
+  struct OpenUniteParam {
+    // Inferred role: combo step; original type name unknown.
+    struct unknown008 {
+      u8 unknown00;  // Inferred role: step index; original member name unknown.
+      u8 unknown01;  // Role and original member name unknown.
+      u16 unknown02; // Role and original member name unknown.
+    };
+
+    OpenUniteParam() : unknown00(0), unknown04(0) {}
+
+    int unknown00;                                 // Role and original member name unknown.
+    int unknown04;                                 // Role and original member name unknown.
+    mm::mtl::FixedVector<unknown008, 3> unknown08; // Inferred role: combo steps; original member name unknown.
+  };
+
   GfMenuObjBattleTelop(u32 handle);
   ~GfMenuObjBattleTelop() override;
   static void open(const OpenParam &param);
   static void close();
+  static void openUniteCombo(const OpenUniteParam &param);
   static void closeUniteCombo();
   void initialize() override;
   void finalize() override;
@@ -54,6 +72,9 @@ static_assert(offsetof(GfMenuObjBattleTelop::MainListener, unknown10) == 0x10, "
 static_assert(offsetof(GfMenuObjBattleTelop::MainListener::unknown004, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjBattleTelop::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjBattleTelop::MainListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjBattleTelop::OpenUniteParam::unknown008) == 0x04, "");
+static_assert(offsetof(GfMenuObjBattleTelop::OpenUniteParam, unknown08) == 0x08, "");
+static_assert(sizeof(GfMenuObjBattleTelop::OpenUniteParam) == 0x20, "");
 static_assert(offsetof(GfMenuObjBattleTelop, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjBattleTelop, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjBattleTelop, unknown2b8) == 0x2b8, "");

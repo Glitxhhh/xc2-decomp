@@ -81,3 +81,6 @@ template void mm::mtl::Vector<gmk::GmkFieldLock::BdatInfo>::expand(size_t, size_
 
 template void mm::mtl::Vector<gmk::GmkFieldLock::BdatInfo>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkFieldLock::BdatInfo>::resize(size_t);
+template void mm::mtl::Vector<gmk::GmkFieldLock>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkFieldLock>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkFieldLock>::resize(size_t);

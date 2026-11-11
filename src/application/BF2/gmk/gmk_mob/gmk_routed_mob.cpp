@@ -106,6 +106,18 @@ void GmkRoutedMob::create(const CreateInfo &info) {
   }
 }
 
+void GmkRoutedMob::dispose() {
+  disposeRouteNavis();
+  unknown50.dispose();
+  AGmkBase::dispose();
+}
+
+void GmkRoutedMob::disposeRouteNavis() {
+  if (!unknown120.empty()) {
+    unknown120.destroy();
+  }
+}
+
 void GmkRoutedMob::update(f32 deltaTime) {
   debugUpdateMmf();
   if (!isValid() || gf::GfGameManager::getControlMover() == gf::unknown020) {
@@ -144,3 +156,7 @@ GmkRouteNavi *GmkRoutedMob::findRouteNavi(gf::GF_OBJ_HANDLE *handle) const {
 }
 
 } // namespace gmk
+
+template void mm::mtl::Vector<gmk::GmkRoutedMob>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkRoutedMob>::extend(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkRoutedMob>::resize(size_t);

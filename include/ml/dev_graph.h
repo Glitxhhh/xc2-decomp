@@ -109,6 +109,7 @@ public:
   static void renderEnd();
   static void renderSync();
   static bool entryCb(DevGraphCB *callback);
+  static bool removeCb(DevGraphCB *callback);
   static void resetSize(s16 width, s16 height);
   static f32 getCost();
   static DevGraphQue *getGraphQue();

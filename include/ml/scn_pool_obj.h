@@ -26,6 +26,7 @@ public:
   void deleteObj();
   void update();
   void renderDebug(DebDraw *debDraw);
+  ScnObjCam *getCam(int screen);
   ScnObjCam *getCam(const WinView *view);
   reslist<ScnObj *> *getList(u16 type);
   const reslist<ScnObj *> *getList(u16 type) const;

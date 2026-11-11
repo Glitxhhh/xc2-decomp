@@ -46,6 +46,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_ENEMY; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
+  GmkRoutedEnemy();
   ~GmkRoutedEnemy() override;
   GmkType getGmkType() const override;
   const IGmkList *getBindedRoutePointList() const override;
@@ -62,6 +63,7 @@ public:
   GmkRouteNavi *findFreeRouteNavi() const;
   GmkRouteNavi *findRouteNavi(gf::GF_OBJ_HANDLE *handle) const;
   void createRouteNavis(u32 num);
+  void disposeRouteNavis();
   void onEnemyDead(gf::GF_OBJ_HANDLE *handle);
 
   const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }

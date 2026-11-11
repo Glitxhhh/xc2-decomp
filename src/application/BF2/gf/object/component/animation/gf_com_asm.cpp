@@ -2,17 +2,20 @@
 
 #include <string.h>
 
+#include "anm/anm_additive_info.h" // IWYU pragma: keep
 #include "anm/anm_asm_control.h"
 #include "anm/anm_qs_transform.h"
 #include "anm/anm_res_asm.h"
 #include "anm/anm_res_state_data.h"
 #include "anm/anm_state_machine.h"
+#include "anm/anm_string_ptr.h"
 #include "anm/anm_util.h"
 #include "framework/anim/anim_manager.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/component/gf_component.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/map.h"
 
 namespace anm {
 class Binding;
@@ -271,6 +274,16 @@ void GfComAsm::clearAdditiveState(AnimLayer layer) {
   if (stateMachine != nullptr) {
     stateMachine->clearAdditiveState();
   }
+}
+
+bool GfComAsm::isActiveAdditiveState(const char *state, AnimLayer layer) {
+  // The game reads the asm control after the layer test here, which getStateMachine does not (it takes the control by value).
+  if (layer < anm::ASMControl::LAYER_MAX && unknown10 != nullptr) {
+    anm::StateMachine &stateMachine = unknown10->unknown70[layer];
+    return stateMachine.unknown10.find(state) != stateMachine.unknown10.end();
+  }
+
+  return false;
 }
 
 bool GfComAsm::setWeightAdditiveState(const char *state, f32 weight, AnimLayer layer) {

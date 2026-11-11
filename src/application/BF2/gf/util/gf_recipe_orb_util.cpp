@@ -1,13 +1,25 @@
 #include "gf/util/gf_recipe_orb_util.h"
+
 #include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/event/gf_event.h"
 #include "gf/game/item/gf_item_box.h"
 #include "gf/util/gf_util.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 
 namespace gf {
+
+// Inferred role: predicate of isExistItem, an item with the same id and at least the count; original name unknown.
+struct unknown001 {
+  unknown001(u16 id, u16 count) : unknown00(id), unknown02(count) {}
+
+  bool operator()(const OrbRecipe &item) const { return item.unknown00 == unknown00 && item.unknown02 >= unknown02; }
+
+  u16 unknown00; // Inferred role: item id; original member name unknown.
+  u16 unknown02; // Inferred role: item count; original member name unknown.
+};
 
 const OrbRecipe *RecipeInfo::getResultRarity() const { return &m_resultRarity; }
 
@@ -48,6 +60,11 @@ bool GfRecipeOrbUtil::isEnabaleOrbRecipeRare(u32 recipe, const mm::mtl::FixedVec
     }
   }
   return false;
+}
+
+bool GfRecipeOrbUtil::isExistItem(const mm::mtl::FixedVector<OrbRecipe, 128> &items, u32 id, u32 count) {
+  const OrbRecipe *item = mm::mtl::find_if(items.begin(), items.end(), unknown001(id, count));
+  return item != items.end();
 }
 
 u32 GfRecipeOrbUtil::getRecipeID(u32 id) { return GfBdatItem::get()->getEmptyOrbRecipe(id); }

@@ -24,6 +24,8 @@ namespace gmk {
 
 template bool TGmkList<GmkRoutedEnemyPoint, GmkRoutedEnemyPoint::BdatInfo, 1347571269u, 4u, GmkRoutedEnemyPointGobCustom>::initGmkBdatInfo(GmkRoutedEnemyPoint::BdatInfo &, int &, const AGmkBase &);
 
+GmkRoutedEnemy::GmkRoutedEnemy() {}
+
 GmkType GmkRoutedEnemy::getGmkType() const { return GMK_TYPE; }
 
 bool GmkRoutedEnemy::isValid() const {
@@ -68,6 +70,12 @@ bool GmkRoutedEnemy::PopXformFinder::onPopGob(gf::GF_OBJ_HANDLE *handle) const {
   }
   unknown08->bindRouteNavi(handle, *navi);
   return true;
+}
+
+void GmkRoutedEnemy::disposeRouteNavis() {
+  if (!unknown1d8.empty()) {
+    unknown1d8.destroy();
+  }
 }
 
 void GmkRoutedEnemy::update(f32 deltaTime) {
@@ -214,3 +222,4 @@ template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint>::expand(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint>::extend(size_t, size_t);
 template void mm::mtl::Vector<gmk::GmkRoutedEnemyPoint>::resize(size_t);
 template void mm::mtl::Vector<gmk::GmkRoutedEnemy>::expand(size_t, size_t);
+template void mm::mtl::Vector<gmk::GmkRoutedEnemy>::resize(size_t);

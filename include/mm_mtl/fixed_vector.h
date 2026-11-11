@@ -2,7 +2,6 @@
 #include "mm/mm_std_base.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/construct.h"
-#include "mm_mtl/type_traits.h"
 #include <new>
 #include <stddef.h>
 
@@ -191,17 +190,6 @@ public:
   const T *at(size_t index) const { return reinterpret_cast<const T *>(&mBuffer[index * sizeof(T) / sizeof(Unit)]); }
 
 private:
-  static void copy(const T *first, const T *last, T *dest) {
-    if (is_pod<T>::unknown001) {
-      size_t count = last - first;
-      __builtin_memcpy(dest, first, count * sizeof(T));
-    } else {
-      while (first != last) {
-        *dest++ = *first++;
-      }
-    }
-  }
-
   static void construct(T *it, const T &value) {
     if (it != nullptr) {
       new (static_cast<void *>(it)) T(value);

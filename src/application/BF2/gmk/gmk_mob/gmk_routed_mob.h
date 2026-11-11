@@ -51,6 +51,7 @@ public:
   GmkRouteNavi *findFreeRouteNavi() const;
   GmkRouteNavi *findRouteNavi(gf::GF_OBJ_HANDLE *handle) const;
   void createRouteNavis(u32 num);
+  void disposeRouteNavis();
 
   GmkMobInsts unknown50;                                                            // Inferred role: mob instances; original member name unknown.
   mutable mm::mtl::Vector<std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi>> unknown120; // Inferred role: route navis with the game object they are bound to; original member name unknown.

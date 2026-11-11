@@ -96,6 +96,19 @@ template <typename T> void copy_n(const T *first, size_t n, T *result, int_to_ty
 
 } // namespace mtl_detail
 
+// The game has it as an out-of-line function for the element types whose assignment is large (mm::mtl::copy<GfMenuObjOperationInfo::InputObj>,
+// mm::mtl::copy<skt::CommandManager::PortInfo>); FixedVector::erase calls it.
+template <typename T> void copy(const T *first, const T *last, T *result) {
+  if (is_pod<T>::unknown001) {
+    size_t count = last - first;
+    __builtin_memcpy(result, first, count * sizeof(T));
+  } else {
+    while (first != last) {
+      *result++ = *first++;
+    }
+  }
+}
+
 // __LINE__ must be 393 as in the original header: it is the line argument of the assert.
 #line 392
 template <typename T> void move(const T *from, size_t n, T *result) {

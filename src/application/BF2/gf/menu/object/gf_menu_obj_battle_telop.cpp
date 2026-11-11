@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_battle_telop.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -30,6 +31,8 @@ static int unknown006(u32 handle, int ctrl, u32 direction, u32 type) {
 constexpr u16 unknown002 = 0x101;
 // Inferred role: ui event type; original name unknown.
 constexpr u16 unknown003 = 0x21;
+// Inferred role: ui event type; original name unknown.
+constexpr u16 unknown007 = 0x100;
 
 GfMenuObjBattleTelop::GfMenuObjBattleTelop(u32 handle) : GfMenuObject(handle), unknown24(0), unknown28(this), unknown2b8(false) {
   for (int i = 0; i < 3; i++) {
@@ -58,6 +61,22 @@ void GfMenuObjBattleTelop::open(const OpenParam &param) {
 }
 
 void GfMenuObjBattleTelop::close() { unknown147(unknown001, "LAY_telop", GfMenuTypes::unknown003_34); }
+
+void GfMenuObjBattleTelop::openUniteCombo(const OpenUniteParam &param) {
+  ui::UIObjectAcc acc(getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    // __LINE__ must be 97 as in the original file: it is the line argument of operator new.
+#line 97
+    OpenUniteParam *copy = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) OpenUniteParam();
+    if (copy != nullptr) {
+      *copy = param;
+      ui::EventData event;
+      event.unknown00 = unknown007;
+      event.unknown08_u64 = reinterpret_cast<u64>(copy);
+      sendEvent(acc.searchChild("LAY_fusion_combo"), event, 0.0f);
+    }
+  }
+}
 
 void GfMenuObjBattleTelop::closeUniteCombo() { unknown147(unknown001, "LAY_fusion_combo", unknown002); }
 

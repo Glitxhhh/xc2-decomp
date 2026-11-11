@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "ml/work_obj.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
@@ -21,6 +22,7 @@ public:
   static WinView *getCurrent();
   static WinView *getFullScreenView();
   static WinView *getRootView(WinView *view);
+  static WinView *getPointedView(const mm::Pnt<int> &pos);
   static WinProc *getCurrentProc();
   static void destroyProc(const WinProc *proc);
   static WinView *getView(u32 wid);

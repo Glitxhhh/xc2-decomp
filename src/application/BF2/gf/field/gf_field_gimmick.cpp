@@ -126,6 +126,8 @@ void GfFieldGimmick::initialize(const GfSetupParam &) {
   unknownf4a8 = true;
 }
 
+GfFieldGimmick::~GfFieldGimmick() { GfObjManager::removeListener(this); }
+
 void GfFieldGimmick::listenerGfObj(OBJEVT, GF_OBJ_HANDLE *, u32) {}
 
 void GfFieldGimmick::gevMapjump(GEV event, const MapjumpCallbackInfo &info) {

@@ -267,6 +267,7 @@ public:
 
   static const GmkType GMK_TYPE = GMK_TYPE_ENEMY; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
+  GmkEnemy() {}
   ~GmkEnemy() override { dispose(); }
   GmkType getGmkType() const override;
   bool isValid() const override;

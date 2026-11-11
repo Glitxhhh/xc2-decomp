@@ -45,7 +45,6 @@ struct unknown034 {
 class DevPad : public WorkObj, public mm::mtl::PtrSingleton<DevPad>, public DevGraphCB {
 public:
   DevPad(const char *name, WorkObj *parent);
-  ~DevPad() override;
   static void setWirelessPadMax(u32 max);
   static u32 getWirelessPadMax();
   static int getPadMax();

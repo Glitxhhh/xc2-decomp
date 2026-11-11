@@ -17,8 +17,11 @@ public:
     const char *unknown00; // Inferred role: file of the allocation; original member name unknown.
     u16 unknown08;         // Inferred role: line of the allocation; original member name unknown.
     u16 unknown0a;         // Role and original member name unknown.
-    u32 unknown0c;         // Inferred role: index of the first block of the chunk; original member name unknown.
-    u32 unknown10;         // Inferred role: number of blocks of the chunk; original member name unknown.
+    int unknown0c;         // Inferred role: index of the first block of the chunk; original member name unknown.
+    int unknown10;         // Inferred role: number of blocks of the chunk; original member name unknown.
+
+    // Inferred role: order of the free chunks, by index of the first block; original form unknown.
+    bool operator<(const SMemChunk &other) const { return unknown0c < other.unknown0c; }
   };
 
   void create(void *buffer, size_t size, const char *name) override;
