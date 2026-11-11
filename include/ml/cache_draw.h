@@ -83,6 +83,11 @@ public:
     mm::Vec3 unknown0c; // Inferred role: position; original member name unknown.
   };
 
+  struct DRPNT : unknown001 {
+    void flush(DebDraw *draw) override;
+    mm::Vec3 unknown0c; // Inferred role: position; original member name unknown.
+  };
+
   struct DPERS : unknown001 {
     void flush(DebDraw *draw) override;
     mm::Mat44 unknown0c; // Inferred role: matrix; original member name unknown.

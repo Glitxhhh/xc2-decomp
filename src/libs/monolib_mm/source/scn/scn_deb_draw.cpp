@@ -647,6 +647,8 @@ void DebDraw::renderPoint(const mm::Vec3 &position) {
   }
 }
 
+void CacheDraw::DRPNT::flush(DebDraw *draw) { draw->renderPoint(unknown0c); }
+
 void DebDraw::renderLine(const mm::Vec3 &start, const mm::Vec3 &end) {
   if (!unknown210->renderLine(start, end)) {
     begin(2, 1);

@@ -3,13 +3,42 @@
 #include "ml/critical_section.h"
 #include "ml/dev_clock.h"
 #include "ml/ml_mem.h"
+#include "ml/work_control.h"
+#include "ml/work_cpu.h"
 #include "ml/work_root.h"
+#include "ml/work_util.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
 
 s32 ErrViewer::s_nHandle;
+
+ErrViewer::ErrViewer() {
+  unknown258 = 0;
+  unknown270 = 0;
+  unknown278 = nullptr;
+  unknown260 = 0;
+  unknown268 = false;
+  unknown269 = false;
+  unknown26a = false;
+  unknown26b = false;
+  unknown26c = false;
+  unknown10 = new (WorkUtil::getWorkMem()) CriticalSection();
+  s_nHandle = 0;
+  WorkCpu::addBackgroundListener(this);
+}
+
+ErrViewer::~ErrViewer() {
+  if (unknown26b) {
+    WorkControl::pause(false, "SYS:ERR");
+  }
+  WorkCpu::removeBackgroundListener(this);
+  if (unknown10 != nullptr) {
+    delete unknown10;
+    unknown10 = nullptr;
+  }
+}
 
 bool ErrViewer::isValid(CERR_STRUCT *error) {
   ErrViewer *viewer = get();
