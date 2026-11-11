@@ -1270,6 +1270,19 @@ bool GfMenuObjUtil::getMenuFullOpenFlag() { return false; }
 
 bool GfMenuObjUtil::isCustomEnableBlade(u32 blade) { return GfDataUtil::getScenarioFlag() > SCENARIO_UNKNOWN_2000; }
 
+u32 GfMenuObjUtil::getFavoriteStat(u32 objType, u32 id, FAVORITE favorite) {
+  if (objType != OBJECT_TYPE_BLADE) {
+    if (objType != OBJECT_TYPE_PC || GfDataDriver::getFavorite(id, favorite) == 0) {
+      return 2;
+    }
+    return !GfDataDriver::isUsedFavorite(id, favorite);
+  }
+  if (GfDataBlade::getFavorite(id, favorite) == 0) {
+    return 2;
+  }
+  return !GfDataBlade::isUsedFavorite(id, favorite);
+}
+
 u16 GfMenuObjUtil::getBladeRareIconID(u32 blade) {
   u32 icon = ICON_WEAPON_TYPE_UNKNOWN_138 - 1;
   if (GfDataBlade::isValid(blade)) {

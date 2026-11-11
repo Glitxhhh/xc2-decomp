@@ -27,7 +27,9 @@
 #include "gf/field/gf_field_move_speed.h"
 #include "gf/field/gf_field_pitch_roll_controller.h"
 #include "gf/game/gf_game_mount.h"
+#include "gf/game/gf_game_util.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/object/gf_menu_obj_target_info.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
@@ -371,6 +373,20 @@ void GfComBehaviorEnemy::disposeMenuObj() {
     GfMenuObjTargetInfo::close(unknown130);
     mm::mtl::safeRelease(unknown130);
   }
+}
+
+void GfComBehaviorEnemy::createMenuObj() {
+  disposeMenuObj();
+  unknown130 = GfMenuCallContext::create();
+  GfMenuObjTargetInfo::OpenEnemyParam param;
+  param.unknown00 = static_cast<GfObj *>(unknown08)->unknownf8;
+  int offsetId = GfGameUtil::getUiOffsetId(param.unknown00);
+  param.unknown10.unknown10 = nullptr;
+  param.unknown10.unknown00 = mm::Vec3::zero.x;
+  param.unknown10.unknown04 = mm::Vec3::zero.y;
+  param.unknown10.unknown08 = mm::Vec3::zero.z;
+  GfMenuBdat::getMenuOffset(offsetId, param.unknown10);
+  GfMenuObjTargetInfo::openEnemy(unknown130, param);
 }
 
 void GfComBehaviorEnemy::validateBattleLock(bool isLock) {

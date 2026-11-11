@@ -5,6 +5,7 @@
 #include "gf/data/gf_item_handle.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
+#include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/quest/gf_quest_task.h"
 #include "gf/game/quest/gf_quest_task_param.h"
 #include "gf/game/quest/gf_quest_util.h"
@@ -53,6 +54,28 @@ void GfMenuObjQuestLog::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjQuestLog::lockLogOpen() { GfMenuFlag::set1(0x20, 1); }
 
 void GfMenuObjQuestLog::unlockLogOpen() { GfMenuFlag::set1(0x20, 0); }
+
+bool GfMenuObjQuestLog::seqOrderActivation() {
+  if (!unknown810) {
+    GfMenuManager::openCommonWindow(1);
+    unknown810 = true;
+  }
+  if (GfMenuManager::isOpenCommonWindow()) {
+    return false;
+  }
+  s16 result = GfMenuManager::getCommonWindowResult();
+  if (result == 0) {
+    QuestID quest;
+    unknown38->getQuest(quest);
+    GfQuestManager::setCurrentQuest(quest);
+  }
+  ui::UIObjectAcc acc(unknown18, "LAY_order");
+  ui::EventData event;
+  event.unknown00 = unknown006;
+  sendEvent(acc.unknown10, event, 0.0f);
+  unknown810 = false;
+  return true;
+}
 
 bool GfMenuObjQuestLog::seqLogNextEnd() {
   ui::UIObjectAcc acc(unknown18, "LAY_log");
@@ -427,6 +450,37 @@ void GfMenuObjQuestLog::TitleListener::reciveEvent(const ui::EventData &event, u
     unknown20->unknown28->unknown0c = quest;
     unknown20->unknown60.unknown005();
     unknown20->unknown60.unknown002(&GfMenuObjQuestLog::seqTitleStart);
+    acc.setDisp(true);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjQuestLog::OrderListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    disableInput(acc.unknown10);
+    break;
+  case unknown006:
+    unknown20->unknown38->unknown0c = QuestID();
+    termCallContext(acc.unknown10);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    unknown20->unknown818 = true;
+    ui::EventData title;
+    title.unknown0c = 0;
+    title.unknown00 = GfMenuTypes::unknown003_33;
+    title.unknown08 = event.unknown08;
+    sendEvent(acc.searchSibiling("LAY_title"), title, 0.0f);
+    unknown20->unknown38->unknown0c = toQuestID(event.unknown08);
+    unknown20->unknown580.unknown005();
+    unknown20->unknown580.unknown004(75);
+    unknown20->unknown580.unknown002(&GfMenuObjQuestLog::seqOrderStart);
     acc.setDisp(true);
     break;
   }

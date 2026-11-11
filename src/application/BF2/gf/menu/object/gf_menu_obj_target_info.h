@@ -35,6 +35,15 @@ public:
     u8 _54[0x60 - 0x54];
   };
 
+  // Layout from GfComBehaviorEnemy::createMenuObj (1.0.0: 0x710051701c), which builds it on the stack before openEnemy; the 0x30
+  // byte size is the one of its stack slot (the bytes after 0x28 are never written there).
+  struct OpenEnemyParam {
+    GF_OBJ_HANDLE *unknown00; // Inferred role: enemy object; original member name unknown.
+    u8 _08[0x10 - 0x08];
+    MenuOffset unknown10; // Inferred role: offset; original member name unknown.
+    u8 _28[0x30 - 0x28];
+  };
+
   GfMenuObjTargetInfo(u32 handle);
   ~GfMenuObjTargetInfo() override;
   void initialize() override;
@@ -42,6 +51,7 @@ public:
   void update() override;
   static void close(GfMenuCallContext *context);
   static void openOther(GfMenuCallContext *context, const OpenOtherParam &param);
+  static void openEnemy(GfMenuCallContext *context, const OpenEnemyParam &param);
   static void dispAllSymbol(bool disp);
   static void dispAllOther(bool disp);
   static void dispAllEnemy(bool disp);
@@ -57,5 +67,7 @@ static_assert(offsetof(GfMenuObjTargetInfo::OpenOtherParam, unknown40) == 0x40, 
 static_assert(offsetof(GfMenuObjTargetInfo::OpenOtherParam, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjTargetInfo::OpenOtherParam, unknown50) == 0x50, "");
 static_assert(sizeof(GfMenuObjTargetInfo::OpenOtherParam) == 0x60, "");
+static_assert(offsetof(GfMenuObjTargetInfo::OpenEnemyParam, unknown10) == 0x10, "");
+static_assert(sizeof(GfMenuObjTargetInfo::OpenEnemyParam) == 0x30, "");
 
 } // namespace gf

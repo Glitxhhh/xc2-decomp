@@ -126,10 +126,17 @@ public:
       u16 unknown02; // Role and original member name unknown.
     };
 
-    int unknown00;                           // Role and original member name unknown.
-    mm::mtl::FixedVector<u64, 30> unknown08; // Role and original member name unknown.
-    u64 unknown100;                          // Role and original member name unknown.
-    u32 unknown108;                          // Role and original member name unknown.
+    // Inferred role: element of unknown08; original type name unknown.
+    struct unknown002 {
+      u32 unknown00; // Inferred role: data object id; original member name unknown.
+      u16 unknown04; // Inferred role: field skill id; original member name unknown.
+      u8 unknown06;  // Inferred role: skill level; original member name unknown.
+    };
+
+    int unknown00;                                  // Role and original member name unknown.
+    mm::mtl::FixedVector<unknown002, 30> unknown08; // Role and original member name unknown.
+    u64 unknown100;                                 // Role and original member name unknown.
+    u32 unknown108;                                 // Role and original member name unknown.
     u8 _10c[0x110 - 0x10c];
     u64 unknown110;                                 // Role and original member name unknown.
     u64 unknown118;                                 // Role and original member name unknown.
@@ -139,8 +146,12 @@ public:
 
   explicit GfMenuFieldSkill(const GfSetupParam &param);
   ~GfMenuFieldSkill();
+  static bool isDisp();
   static bool isInitialized();
+  static void postUpdate(const fw::UpdateInfo &info);
+  static bool start(const StartParam &param);
   static bool isRunning();
+  static int getTotalSkillIndex(GfMenuFieldSkill *skill, u16 id);
 
   ai::Fsm unknown08;    // Inferred role: state machine; original member name unknown.
   StartParam unknown80; // Inferred role: start parameters; original member name unknown.
@@ -167,6 +178,9 @@ static_assert(offsetof(GfMenuFieldSkill, unknown210) == 0x210, "");
 static_assert(offsetof(GfMenuFieldSkill, unknown214) == 0x214, "");
 static_assert(offsetof(GfMenuFieldSkill, unknown218) == 0x218, "");
 static_assert(offsetof(GfMenuFieldSkill::StartParam, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuFieldSkill::StartParam::unknown002, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuFieldSkill::StartParam::unknown002, unknown06) == 0x06, "");
+static_assert(sizeof(GfMenuFieldSkill::StartParam::unknown002) == 0x08, "");
 static_assert(offsetof(GfMenuFieldSkill::StartParam, unknown100) == 0x100, "");
 static_assert(offsetof(GfMenuFieldSkill::StartParam, unknown120) == 0x120, "");
 static_assert(offsetof(GfMenuFieldSkill::StartParam, unknown130) == 0x130, "");
