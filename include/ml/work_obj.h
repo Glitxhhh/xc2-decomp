@@ -34,6 +34,8 @@ public:
   void wkRequestShutdown();
   void wkSetEvent(EVT event);
   void wkSetEventCurrent(EVT event);
+  template <class T> void wkSetEvent(EVT event, const T &param);
+  template <class T> void wkSetEventCurrent(EVT event, const T &param);
   void wkSetEventChild(EVT event);
   bool wkCheckTimeout(u32 time, bool isTimeout, const char *message);
   void wkReplaceHasChild(int childNum);

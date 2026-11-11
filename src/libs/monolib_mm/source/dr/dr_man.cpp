@@ -7,12 +7,23 @@
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_tex_stream_man.h"
 #include "dr/dr_draw_callback.h"
+#include "dr/dr_gpu_check_obj.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_mdl_base.h"
 #include "dr/dr_mdl_man.h"
+#include "dr/dr_mdl_obj.h"
+#include "dr/dr_mdo_ctl_cld_mdl.h"
+#include "dr/dr_mdo_ctl_dammy.h"
+#include "dr/dr_mdo_ctl_mpf.h"
+#include "dr/dr_mdo_ctl_nom.h"
+#include "dr/dr_mdo_ctl_pos.h"
+#include "dr/dr_mdo_ctl_seam_all.h"
+#include "dr/dr_mdo_grp_obj.h"
 #include "dr/dr_mdo_mpf_man.h"
 #include "dr/dr_mdo_sampler_man.h"
 #include "dr/dr_mdo_sml_shadow_man.h"
+#include "dr/dr_mdo_tex_simple_man.h"
+#include "dr/dr_mdo_texture_man.h"
 #include "dr/dr_mdo_vertex_man.h"
 #include "dr/dr_mdo_zsort.h"
 #include "dr/dr_pixl_man.h"
@@ -20,11 +31,13 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_pixl_tile_parm.h"
+#include "dr/dr_res_chank_list.h"
 #include "dr/dr_res_etc_uniform_obj.h"
 #include "dr/dr_res_occ_uniform_obj.h"
 #include "dr/dr_shd_lgt_global_ibl.h"
 #include "dr/dr_shd_lgt_man.h"
 #include "dr/dr_shd_man.h"
+#include "dr/dr_stm_read_obj.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_debug.h"
 #include "grlib/cglib_manager.h"
@@ -32,6 +45,7 @@
 
 namespace ml {
 class DrPixlShadowCacheObj;
+class DrGpuCheckBase;
 
 DrMan *DrMan::getIns() { return s_pTop; }
 
@@ -202,6 +216,139 @@ void DrMdlMan::delViewInfo(int cate) {
   for (DrMdlBase *mdl = unknown0a8[cate].unknown00; mdl != nullptr; mdl = mdl->unknown10) {
     mdl->unknown20 &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
   }
+}
+
+void DrMdlMan::setupEnd() {
+  s32 index = DrMan::s_nDblIdx;
+  unknown0e8[index].unknown00 = nullptr;
+  unknown0e8[index].unknown08 = nullptr;
+  unknown188[index].unknown00 = nullptr;
+  unknown188[index].unknown08 = nullptr;
+  unknown030->delObjList();
+  unknown028->update();
+  unknown010->update();
+  unknown008->update();
+  index = DrMan::s_nDblIdx;
+  for (DrStmReadObj *read = unknown1f8[index].unknown00; read != nullptr;) {
+    DrStmReadObj *next = read->unknown10;
+    unknown1f8[index].unknown001(read);
+    unknown1e8.unknown004(read);
+    read = next;
+  }
+  unknown1f8[index] = DrResChankList<DrStmReadObj>();
+  for (DrStmReadObj *read = unknown1e8.unknown00; read != nullptr;) {
+    bool isEnd = read->update();
+    DrStmReadObj *next = read->unknown10;
+    if (isEnd) {
+      unknown1e8.unknown001(read);
+      delete read;
+    }
+    read = next;
+  }
+}
+
+DrMdlObj *DrMdlMan::createMdl(const void *data, const char *name, int index) {
+  CS lock(DrMan::getCriticalSection());
+  DrMdlObj *mdl;
+  int type = headerChek(data);
+  switch (type) {
+  case 1:
+    mdl = new (unknown000->unknown10) DrMdoCtlNom(data, name, unknown000, index);
+    break;
+  case 2:
+    mdl = new (unknown000->unknown10) DrMdoCtlPos(data, name, unknown000, index);
+    break;
+  case 3:
+    mdl = new (unknown000->unknown10) DrMdoCtlMpf(data, name, unknown000, index);
+    break;
+  case 4:
+    mdl = new (unknown000->unknown10) DrMdoCtlSeamAll(data, name, unknown000, index);
+    break;
+  default:
+    if (type == 5) {
+      mdl = new (unknown000->unknown10) DrMdoCtlCldMdl(data, unknown000, index);
+    } else {
+      mdl = new (unknown000->unknown10) DrMdoCtlDammy(data, unknown000, index);
+    }
+    break;
+  }
+  unknown0e8[DrMan::s_nDblStockIdx].unknown004(mdl);
+  return mdl;
+}
+
+DrMdlObj *DrMdlMan::createInstantMdl(const void *data, const char *name, int index) {
+  CS lock(DrMan::getCriticalSection());
+  DrMdlObj *mdl;
+  int type = headerChek(data);
+  switch (type) {
+  case 1:
+    mdl = new (unknown000->unknown10) DrMdoCtlNom(data, name, unknown000, index);
+    break;
+  case 2:
+    mdl = new (unknown000->unknown10) DrMdoCtlPos(data, name, unknown000, index);
+    break;
+  case 3:
+    mdl = new (unknown000->unknown10) DrMdoCtlMpf(data, name, unknown000, index);
+    break;
+  case 4:
+    mdl = new (unknown000->unknown10) DrMdoCtlSeamAll(data, name, unknown000, index);
+    break;
+  default:
+    if (type == 5) {
+      mdl = new (unknown000->unknown10) DrMdoCtlCldMdl(data, unknown000, index);
+    } else {
+      mdl = new (unknown000->unknown10) DrMdoCtlDammy(data, unknown000, index);
+    }
+    break;
+  }
+  mdl->resourceInit();
+  mdl->setDblBuffAlpha(false);
+  mdl->setClipBoxMode(false);
+  unknown0a8[index].unknown004(mdl);
+  return mdl;
+}
+
+DrMdoGrpObj *DrMdlMan::createGrp(int num, u32 flags) {
+  CS lock(DrMan::getCriticalSection());
+  DrMdoGrpObj *grp = new (unknown000->unknown10) DrMdoGrpObj(num, flags);
+  unknown0e8[DrMan::s_nDblStockIdx].unknown004(grp);
+  return grp;
+}
+
+DrMdoGrpObj *DrMdlMan::createInstantGrp(int num, u32 flags) {
+  CS lock(DrMan::getCriticalSection());
+  DrMdoGrpObj *grp = new (unknown000->unknown10) DrMdoGrpObj(num, flags);
+  grp->resourceInit();
+  unknown0a8[num].unknown004(grp);
+  return grp;
+}
+
+DrGpuCheckBase *DrMdlMan::createGpuCheckObj(int type) {
+  CS lock(DrMan::getCriticalSection());
+  DrGpuCheckObj *check = new (unknown000->unknown10) DrGpuCheckObj(type, false);
+  unknown188[DrMan::s_nDblStockIdx].unknown004(check);
+  return check;
+}
+
+DrGpuCheckBase *DrMdlMan::createEffGpuCheckObj(int type) {
+  CS lock(DrMan::getCriticalSection());
+  DrGpuCheckObj *check = new (unknown000->unknown10) DrGpuCheckObj(type, true);
+  unknown148[type].unknown004(check);
+  return check;
+}
+
+DrStmReadObj *DrMdlMan::createStmLoadObj(const char *path) {
+  CS lock(DrMan::getCriticalSection());
+  DrStmReadCheck *read = new (unknown000->unknown10) DrStmReadCheck(path);
+  unknown1f8[DrMan::s_nDblStockIdx].unknown004(read);
+  return read;
+}
+
+DrStmReadObj *DrMdlMan::createStmSizeObj(u32 size) {
+  CS lock(DrMan::getCriticalSection());
+  DrStmReadCheck *read = new (unknown000->unknown10) DrStmReadCheck(size);
+  unknown1f8[DrMan::s_nDblStockIdx].unknown004(read);
+  return read;
 }
 
 void DrMdlMan::addMpfObj() {
@@ -541,3 +688,6 @@ void DrMan::bkgHomeMenu(bool isOpen) {
 }
 
 } // namespace ml
+
+// The game compiles DrMdlObj::setDblBuffAlpha and DrMdlObj::setClipBoxMode in this unit (0x7ce29c and 0x7ce2b8 follow createInstantMdl, which inlines them).
+#include "dr_mdl_obj.cpp"

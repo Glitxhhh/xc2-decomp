@@ -409,6 +409,25 @@ void vmHalt() {
   vmMlAssert("[VM] INFINITY_LOOP", __FILE__, __LINE__);
 }
 
+int vmSbChk(const char *pSb) {
+  if (pSb == 0) {
+    return 0;
+  }
+  if (pSb[0] != 'S') {
+    return 0;
+  }
+  if (pSb[1] != 'B') {
+    return 0;
+  }
+  if (pSb[2] != ' ') {
+    return 0;
+  }
+  if (pSb[3] != ' ') {
+    return 0;
+  }
+  return static_cast<u8>(pSb[4]) > 1;
+}
+
 // Inferred role: finds a package of the package table by its script binary; original name unknown.
 unknown008 *vmPackageSearch(sSbHeader *pSb) {
   for (int i = 0; i < 32; i++) {

@@ -2,16 +2,20 @@
 #include <stddef.h>
 
 #include "dr/dr_man.h"
+#include "dr/dr_res_chank_list.h"
 #include "types.h"
 
 namespace ml {
 class DrGpuCheckBase;
+class DrGpuCheckObj;
 class DrMdlBase;
 class DrMdlObj;
 class DrMdoGrpObj;
 class DrMdoMpfMan;
 class DrMdoSamplerMan;
 class DrMdoSmlShadowMan;
+class DrMdoTexSimpleMan;
+class DrMdoTextureMan;
 class DrMdoVertexMan;
 class DrMdoZSortMan;
 class DrPixlShadowCacheObj;
@@ -22,12 +26,6 @@ class DrStmReadObj;
 
 class DrMdlMan {
 public:
-  // Inferred role: list of models; original type name unknown.
-  struct unknown002 {
-    DrMdlBase *unknown00; // Inferred role: first model; original member name unknown.
-    DrMdlBase *unknown08; // Inferred role: last model; original member name unknown.
-  };
-
   // Inferred role: resource header start; original type name unknown.
   struct unknown003 {
     u32 unknown00; // Inferred role: magic; original member name unknown.
@@ -66,6 +64,7 @@ public:
     bool unknown0c; // Inferred role: seam model updated; original member name unknown.
   };
 
+  void setupEnd();
   void addMpfObj();
   void delMpfObj();
   void renderBegin();
@@ -106,44 +105,58 @@ public:
     return (unknown000->unknown1c9c & (1 << cate)) != 0;
   }
 
-  DrMan *unknown000;          // Inferred role: dr man; original member name unknown.
-  DrMdoVertexMan *unknown008; // Inferred role: vertex man; original member name unknown.
-  u8 _010[0x018 - 0x010];
-  DrMdoSamplerMan *unknown018; // Inferred role: sampler man; original member name unknown.
-  DrMdoMpfMan *unknown020;     // Inferred role: mpf man; original member name unknown.
-  u8 _028[0x030 - 0x028];
+  DrMan *unknown000;              // Inferred role: dr man; original member name unknown.
+  DrMdoVertexMan *unknown008;     // Inferred role: vertex man; original member name unknown.
+  DrMdoTextureMan *unknown010;    // Inferred role: texture man; original member name unknown.
+  DrMdoSamplerMan *unknown018;    // Inferred role: sampler man; original member name unknown.
+  DrMdoMpfMan *unknown020;        // Inferred role: mpf man; original member name unknown.
+  DrMdoTexSimpleMan *unknown028;  // Inferred role: simple texture man; original member name unknown.
   DrMdoSmlShadowMan *unknown030;  // Inferred role: small shadow man; original member name unknown.
   DrResOccUniformObj *unknown038; // Inferred role: occ uniform; original member name unknown.
   DrResEtcUniformObj *unknown040; // Inferred role: etc uniform; original member name unknown.
   u8 _048[0x050 - 0x048];
-  DrMdoZSortMan *unknown050[10]; // Inferred role: z sort men per category; original member name unknown.
-  u8 _0a0[0x0a8 - 0x0a0];
-  unknown002 unknown0a8[10]; // Inferred role: model lists per category; original member name unknown.
-  u8 _148[0x218 - 0x148];
-  DrMdoZSortMan *unknown218; // Inferred role: z sort man; original member name unknown.
-  unknown002 *unknown220;    // Inferred role: model list; original member name unknown.
+  DrMdoZSortMan *unknown050[4]; // Inferred role: z sort men per category; original member name unknown.
+  u8 _070[0x0a8 - 0x070];
+  DrResChankList<DrMdlBase> unknown0a8[4]; // Inferred role: models per view; original member name unknown.
+  DrResChankList<DrMdlBase> unknown0e8[2]; // Inferred role: models created per buffer; original member name unknown.
+  u8 _108[0x148 - 0x108];
+  DrResChankList<DrGpuCheckObj> unknown148[4]; // Inferred role: gpu check objects per view; original member name unknown.
+  DrResChankList<DrGpuCheckObj> unknown188[2]; // Inferred role: gpu check objects created per buffer; original member name unknown.
+  u8 _1a8[0x1e8 - 0x1a8];
+  DrResChankList<DrStmReadObj> unknown1e8;    // Inferred role: stream read objects; original member name unknown.
+  DrResChankList<DrStmReadObj> unknown1f8[2]; // Inferred role: stream read objects created per buffer; original member name unknown.
+  DrMdoZSortMan *unknown218;                  // Inferred role: z sort man; original member name unknown.
+  DrResChankList<DrMdlBase> *unknown220;      // Inferred role: model list; original member name unknown.
   u8 _228[0x230 - 0x228];
   unknown004 *unknown230; // Inferred role: current category render flags; original member name unknown.
   u32 unknown238;         // Inferred role: cate; original member name unknown.
   u32 unknown23c;         // Inferred role: groups disp; original member name unknown.
+  u8 _240[0x248 - 0x240];
 };
 
 static_assert(offsetof(DrMdlMan, unknown000) == 0x000, "");
 static_assert(offsetof(DrMdlMan, unknown008) == 0x008, "");
+static_assert(offsetof(DrMdlMan, unknown010) == 0x010, "");
 static_assert(offsetof(DrMdlMan, unknown018) == 0x018, "");
 static_assert(offsetof(DrMdlMan, unknown020) == 0x020, "");
+static_assert(offsetof(DrMdlMan, unknown028) == 0x028, "");
 static_assert(offsetof(DrMdlMan, unknown030) == 0x030, "");
 static_assert(offsetof(DrMdlMan, unknown038) == 0x038, "");
 static_assert(offsetof(DrMdlMan, unknown040) == 0x040, "");
 static_assert(offsetof(DrMdlMan, unknown050) == 0x050, "");
 static_assert(offsetof(DrMdlMan, unknown0a8) == 0x0a8, "");
+static_assert(offsetof(DrMdlMan, unknown0e8) == 0x0e8, "");
+static_assert(offsetof(DrMdlMan, unknown148) == 0x148, "");
+static_assert(offsetof(DrMdlMan, unknown188) == 0x188, "");
+static_assert(offsetof(DrMdlMan, unknown1e8) == 0x1e8, "");
+static_assert(offsetof(DrMdlMan, unknown1f8) == 0x1f8, "");
 static_assert(offsetof(DrMdlMan, unknown218) == 0x218, "");
 static_assert(offsetof(DrMdlMan, unknown220) == 0x220, "");
 static_assert(offsetof(DrMdlMan, unknown230) == 0x230, "");
 static_assert(offsetof(DrMdlMan, unknown238) == 0x238, "");
 static_assert(offsetof(DrMdlMan, unknown23c) == 0x23c, "");
+static_assert(sizeof(DrMdlMan) == 0x248, "");
 static_assert(sizeof(DrMdlMan::unknown004) == 0x0d, "");
-static_assert(sizeof(DrMdlMan::unknown002) == 0x10, "");
 static_assert(offsetof(DrMdlMan::unknown005, unknown1c) == 0x1c, "");
 static_assert(offsetof(DrMdlMan::unknown005, unknown24) == 0x24, "");
 static_assert(offsetof(DrMdlMan::unknown006, unknown1c) == 0x1c, "");

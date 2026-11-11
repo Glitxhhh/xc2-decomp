@@ -19,10 +19,10 @@ struct alignas(16) DevTouchInfo {
   DevTouchInfo();
   void initialize();
 
-  u64 unknown00; // Inferred role: contact data; original member name unknown.
-  s32 unknown08; // Inferred role: state; original member name unknown.
-  s32 unknown0c; // Inferred role: contact id; original member name unknown.
-  u16 unknown10; // Inferred role: flags; original member name unknown.
+  long unknown00; // Inferred role: clock at the start of the contact; original member name unknown.
+  f32 unknown08;  // Inferred role: seconds since the start of the contact; original member name unknown.
+  s32 unknown0c;  // Inferred role: contact id; original member name unknown.
+  u16 unknown10;  // Inferred role: flags; original member name unknown.
   u8 _12[0x20 - 0x12];
   mm::Vec2 unknown20; // Inferred role: initial position; original member name unknown.
   u8 _28[0x30 - 0x28];

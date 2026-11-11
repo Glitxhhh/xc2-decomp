@@ -5,10 +5,26 @@
 #include "mm_math/mm_vec3.h"
 #include "types.h"
 
+namespace mtl {
+class ALLOC_HANDLE;
+} // namespace mtl
+
+namespace grlib {
+class CGLibTriUniformArray;
+} // namespace grlib
+
 namespace ml {
 
 struct MdoWrkMatRes;
 struct MdsSeamEnvMapHead;
+
+// Inferred layout of the env map data; offsets are relative to the data.
+struct MdsSeamEnvMapData {
+  u8 _00[0x38];
+  u32 unknown38; // Inferred role: memory size; original member name unknown.
+};
+
+static_assert(offsetof(MdsSeamEnvMapData, unknown38) == 0x38, "");
 
 class DrResMdoSeamWrkEnv : public unknown133<DrResMdoSeamWrkEnv> {
 public:
@@ -22,11 +38,12 @@ public:
   void changeMemCall(const MdsSeamEnvMapHead *head);
   void setInfo(const mm::Vec3 &position, const mm::Vec3 &scale, bool isEnable, u32 flags);
   void release();
+  void setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniformArray *uniforms, mtl::ALLOC_HANDLE handle, const MdsSeamEnvMapHead *head, const MdsSeamEnvMapData *data);
 
   const MdsSeamEnvMapHead *unknown18; // Inferred role: env map header; original member name unknown.
-  u8 _20[0x28 - 0x20];
-  void *unknown28; // Inferred role: allocated bit table; original member name unknown.
-  u8 _30[0x38 - 0x30];
+  const MdsSeamEnvMapData *unknown20; // Inferred role: env map data; original member name unknown.
+  void *unknown28;                    // Inferred role: allocated bit table; original member name unknown.
+  u32 *unknown30;                     // Inferred role: render bit table; original member name unknown.
   u8 *m_displayWrk[2];
   int m_displayWrkSize[2];
   u32 unknown50; // Inferred role: env map index; original member name unknown.
@@ -43,6 +60,8 @@ public:
 };
 
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown28) == 0x28, "");
+static_assert(offsetof(DrResMdoSeamWrkEnv, unknown20) == 0x20, "");
+static_assert(offsetof(DrResMdoSeamWrkEnv, unknown30) == 0x30, "");
 
 static_assert(offsetof(DrResMdoSeamWrkEnv, unknown18) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamWrkEnv, m_displayWrk) == 0x38, "");

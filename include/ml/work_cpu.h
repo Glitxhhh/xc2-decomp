@@ -170,6 +170,7 @@ public:
   static void swapBank();
   static void beginFrame();
   static void beginUpdate();
+  static void endUpdate();
   static void setAfterUpdateRender(bool isAfterUpdateRender);
   static bool isHomeMenuEnable();
   static int reqHomeMenuDisable();

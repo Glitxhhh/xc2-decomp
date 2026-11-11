@@ -3,17 +3,23 @@
 
 #include "ml/critical_section.h"
 #include "ml/dev_graph.h"
+#include "ml/device.h"
+#include "ml/lib_main.h"
 #include "ml/reslist.h"
 #include "ml/win_view_root.h"
+#include "ml/work_control.h"
 #include "ml/work_cpu.h"
 #include "ml/work_obj.h"
 #include "ml/work_root.h"
 #include "ml/work_system.h"
+#include "ml/work_util.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
+#include "nn/os.h"
+#include "nn/time_span.h"
 #include "types.h"
 
 namespace ml {
@@ -22,6 +28,7 @@ namespace _wrootst {
 
 class WorkRoot : public WorkObj {
 public:
+  WorkRoot(const char *name, WorkObj *parent);
   void procParent();
   ~WorkRoot() override;
   bool wkStandbyLogout() override;
@@ -70,6 +77,71 @@ void WorkRootState::standbyWork() {
   entryWork();
   _wrootst::s_pWorkRoot->procParent();
   standbyWork(_wrootst::s_pWorkRoot);
+}
+
+void WorkRootState::initialize() {
+  _wrootst::s_bThreadRender = _wrootst::s_bThreadRenderReq;
+  {
+    CS cs(_wrootst::getCriticalSection());
+    _wrootst::s_aBitWID = static_cast<u32 *>(mtl::MemManager::allocate(WorkRootMem::getMemState(), 0x100, 4, false, "no name", 0));
+    _wrootst::s_apBitWID = static_cast<WorkObj **>(mtl::MemManager::allocate(WorkRootMem::getMemState(), 0x4000, 4, false, "no name", 0));
+    for (int i = 0; i < 0x40; i++) {
+      _wrootst::s_aBitWID[i] = 0;
+    }
+    for (int i = 0; i < 0x800; i++) {
+      _wrootst::s_apBitWID[i] = nullptr;
+    }
+  }
+  WorkUtil::createWork<_wrootst::WorkRoot>("WorkRoot", nullptr, false);
+  entryWork();
+  WorkCpu::create(_wrootst::s_pWorkRoot);
+  WorkControl::create(_wrootst::s_pWorkRoot);
+  Device::create();
+  LibMain::create();
+  WorkSystem::create();
+  do {
+    do {
+      standbyWork();
+    } while (Device::get() == nullptr);
+  } while (!Device::isColdStartReady());
+}
+
+void WorkRootState::finalize() {
+  if (_wrootst::s_pWorkRoot != nullptr) {
+    delete _wrootst::s_pWorkRoot;
+    _wrootst::s_pWorkRoot = nullptr;
+  }
+  CS cs(_wrootst::getCriticalSection());
+  if (_wrootst::s_aBitWID != nullptr) {
+    mtl::MemManager::deallocate(_wrootst::s_aBitWID, 0, false);
+    _wrootst::s_aBitWID = nullptr;
+  }
+  if (_wrootst::s_apBitWID != nullptr) {
+    mtl::MemManager::deallocate(_wrootst::s_apBitWID, 0, false);
+    _wrootst::s_apBitWID = nullptr;
+  }
+}
+
+u32 WorkRootState::allocWID(WorkObj *work) {
+  CS cs(_wrootst::getCriticalSection());
+  u32 wid = 0xffffffff;
+  for (u32 i = 0; i < 0x40; i++) {
+    u32 bits = _wrootst::s_aBitWID[i];
+    if (bits != 0xffffffff) {
+      u32 mask = 1;
+      for (u32 j = 0; j < 0x20; j++, mask <<= 1) {
+        if ((bits & mask) == 0) {
+          wid = j + i * 0x20;
+          _wrootst::s_aBitWID[i] |= mask;
+          _wrootst::s_apBitWID[wid] = work;
+          wid |= _wrootst::s_nWidCount++ << 20;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return wid;
 }
 
 bool WorkRootState::isUsedWID(u32 wid) {
@@ -262,6 +334,33 @@ void WorkRootState::tailWork(WorkObj *work) {
 void WorkRootState::updateWork() { updateWork(_wrootst::s_pWorkRoot); }
 
 void WorkRootState::tailWork() { tailWork(_wrootst::s_pWorkRoot); }
+
+bool WorkRootState::runSingle() {
+  while (WorkRoot::isErrorStop()) {
+    WorkCpu::resumeThread();
+    WorkCpu::backgroundProcess();
+    nn::os::SleepThread(nn::TimeSpan::FromNanoSeconds(1000000));
+  }
+  WorkCpu::beginFrame();
+  standbyWork();
+  if (_wrootst::s_bThreadRender) {
+    WorkCpu::beginRender();
+  }
+  WorkCpu::beginUpdate();
+  updateWork(_wrootst::s_pWorkRoot);
+  WorkCpu::endUpdate();
+  if (!_wrootst::s_bThreadRender) {
+    WorkCpu::beginRender();
+  }
+  WorkCpu::endRender();
+  tailWork(_wrootst::s_pWorkRoot);
+  WorkCpu::endFrame();
+  for (mm::mtl::FixedList<WorkObj *, 32>::iterator it = _wrootst::s_frameEnd.begin(); it != _wrootst::s_frameEnd.end(); ++it) {
+    (*it)->wkFrameEnd();
+  }
+  _wrootst::s_bThreadRender = _wrootst::s_bThreadRenderReq;
+  return _wrootst::s_pWorkRoot->unknown60.size() != 0;
+}
 
 void _wrootst::WorkRoot::procParent() {
   while (unknown1a8.size() != 0) {

@@ -63,6 +63,7 @@ public:
   u32 unknown20;        // Inferred role: update flags; original member name unknown.
 };
 
+static_assert(offsetof(DrMdlBase, unknown08) == 0x08, "");
 static_assert(offsetof(DrMdlBase, unknown10) == 0x10, "");
 static_assert(offsetof(DrMdlBase, unknown18) == 0x18, "");
 static_assert(offsetof(DrMdlBase, unknown1a) == 0x1a, "");

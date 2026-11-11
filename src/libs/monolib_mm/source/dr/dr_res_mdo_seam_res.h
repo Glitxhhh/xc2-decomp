@@ -36,6 +36,7 @@ public:
 
 static_assert(offsetof(DrResMdoSeamMemObj, m_buffer) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamMemObj, unknown24) == 0x24, "");
+static_assert(sizeof(DrResMdoSeamMemObj) == 0x28, "");
 
 // Inferred type: texture entry of the seam texture list data; the original type name is unknown.
 struct unknown134 {

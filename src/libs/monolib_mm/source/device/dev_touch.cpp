@@ -1,5 +1,6 @@
 #include "ml/dev_touch.h"
 
+#include "ml/dev_clock.h"
 #include "ml/lib_main.h"
 #include "ml/reslist.h"
 #include "ml/work_system.h"
@@ -37,6 +38,21 @@ void DevTouch::itUp(u32 index, f32 x, f32 y) { releseContact(index); }
 int DevTouch::getTouchCount() { return get()->unknown1c0.size(); }
 
 void DevTouch::updateDevice() {}
+
+void DevTouch::wkUpdate() {
+  updateDevice();
+  long now;
+  if (DevClock::getClockNow(now)) {
+    for (DevTouchInfo *it = unknown1c0.begin(); it != unknown1c0.end(); ++it) {
+      if (it->unknown00 == 0) {
+        it->unknown00 = now;
+      } else {
+        long elapsed = now - it->unknown00;
+        it->unknown08 = DevClock::getClock2Sec(elapsed);
+      }
+    }
+  }
+}
 
 bool DevTouch::isInitialized() {
   DevTouch *touch = get();

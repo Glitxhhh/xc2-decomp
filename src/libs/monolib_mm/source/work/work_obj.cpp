@@ -94,6 +94,28 @@ void WorkObj::wkSetEventChild(EVT event) {
   }
 }
 
+template <class T> void WorkObj::wkSetEvent(EVT event, const T &param) {
+  if (event == 0) {
+    unknowna0 |= 1;
+  } else {
+    unknowna8.add(event);
+    unknowna8.set(param);
+  }
+
+  for (reslist<WorkObj *>::Node *node = unknown60.begin(); node != unknown60.end(); node = node->getNext()) {
+    node->value->wkSetEvent(event, param);
+  }
+}
+
+template <class T> void WorkObj::wkSetEventCurrent(EVT event, const T &param) {
+  if (event == 0) {
+    unknowna0 |= 1;
+  } else {
+    unknowna8.add(event);
+    unknowna8.set(param);
+  }
+}
+
 bool WorkObj::wkCheckTimeout(u32 time, bool isTimeout, const char *message) {
   if (unknowna0 & 2) {
     return true;
@@ -236,6 +258,9 @@ bool WorkObj::wkStandbyLogout() {
   wkTimeoutInit();
   return true;
 }
+
+template void WorkObj::wkSetEvent<mm::mtl::FixStr<16>>(EVT event, const mm::mtl::FixStr<16> &param);
+template void WorkObj::wkSetEventCurrent<u32>(EVT event, const u32 &param);
 
 template class reslist<IWorkEvent *>;
 template class reslist<unsigned int>;

@@ -1,6 +1,11 @@
 #include "dr/dr_res_mdo_seam_wrk_env.h"
 
+#include <string.h>
+
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_mat.h"
+#include "grlib/cglib_uniform_array.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -30,6 +35,24 @@ void DrResMdoSeamWrkEnv::release() {
   m_displayWrkSize[1] = 0;
   unknown6c = 0;
   unknown60 = nullptr;
+}
+
+void DrResMdoSeamWrkEnv::setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniformArray *uniforms, mtl::ALLOC_HANDLE handle, const MdsSeamEnvMapHead *head, const MdsSeamEnvMapData *data) {
+  unknown58 = matRes;
+  unknown18 = head;
+  unknown20 = data;
+  unknown6c = 0;
+  unknown70 = data->unknown38;
+  m_displayWrk[0] = nullptr;
+  m_displayWrk[1] = nullptr;
+  m_displayWrkSize[0] = 0;
+  m_displayWrkSize[1] = 0;
+  matRes->unknowna0 = uniforms;
+  u32 size = (matRes->unknown30 / 32 + 1) * 4;
+  size += -size & 0x1f;
+  unknown28 = mtl::MemManager::allocate(handle, size, 0x20, false, "no name", 0);
+  unknown30 = static_cast<u32 *>(unknown28);
+  memset(unknown30, 0, size);
 }
 
 void DrResMdoSeamWrkEnv::setDispState() { unknown6c |= 1 << DrMan::s_nDblNowIdx; }

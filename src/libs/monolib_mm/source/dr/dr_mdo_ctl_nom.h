@@ -15,6 +15,7 @@ class CloudMdlDataObj;
 } // namespace cloud
 
 namespace ml {
+class DrMan;
 class DrResEtcPamObj;
 class DrResMdoLight;
 class DrResMdoMeshObj;
@@ -52,6 +53,7 @@ static_assert(offsetof(unknown099, unknown28) == 0x28, "");
 
 class DrMdoCtlNom : public DrMdlObj {
 public:
+  DrMdoCtlNom(const void *data, const char *path, DrMan *drMan, int viewNum);
   ~DrMdoCtlNom() override;
   void update() override;
   void dispOffUpdate() override;

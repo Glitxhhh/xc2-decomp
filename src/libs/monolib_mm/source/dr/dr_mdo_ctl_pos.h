@@ -14,6 +14,7 @@ namespace ml {
 class DrCalcClipMan;
 class DrCalcCpPlaneObj;
 class DrCalcViewWork;
+class DrMan;
 class DrPixlShadowObj;
 class DrResMdoInstMdlInfo;
 class DrResMdoPntAlphaMan;
@@ -79,6 +80,7 @@ static_assert(sizeof(MdoArgInst) == 0x10, "");
 
 class DrMdoCtlPos : public DrMdlObj {
 public:
+  DrMdoCtlPos(const void *data, const char *path, DrMan *drMan, int viewNum);
   // Inferred role: position resource header; original type name unknown.
   struct unknown017 {
     u8 _00[0x28 - 0x00];
@@ -186,6 +188,7 @@ public:
   u64 unknown368; // Inferred role: shadow cache mask; original member name unknown.
   u64 unknown370; // Inferred role: shadow cache render mask; original member name unknown.
   u32 unknown378; // Inferred role: shadow cache render count; original member name unknown.
+  u8 _37c[0x420 - 0x37c];
 };
 
 static_assert(offsetof(DrMdoCtlPos, unknown1a0) == 0x1a0, "");
@@ -220,6 +223,7 @@ static_assert(offsetof(DrMdoCtlPos, unknown360) == 0x360, "");
 static_assert(offsetof(DrMdoCtlPos, unknown368) == 0x368, "");
 static_assert(offsetof(DrMdoCtlPos, unknown370) == 0x370, "");
 static_assert(offsetof(DrMdoCtlPos, unknown378) == 0x378, "");
+static_assert(sizeof(DrMdoCtlPos) == 0x420, "");
 static_assert(sizeof(DrMdoCtlPos::unknown018) == 0x08, "");
 static_assert(offsetof(DrMdoCtlPos::unknown019, unknown04) == 0x04, "");
 static_assert(offsetof(DrMdoCtlPos::unknown019, unknown08) == 0x08, "");
