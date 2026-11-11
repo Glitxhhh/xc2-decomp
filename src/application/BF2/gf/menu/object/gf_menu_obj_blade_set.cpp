@@ -267,6 +267,80 @@ void GfMenuObjBladeSet::setupBladeSelect(ui::UIObjectAcc &acc, const GfMenuBlade
   }
 }
 
+bool GfMenuObjBladeSet::checkBladeSet(u32, u32 blade, GfMenuBladeList *list) {
+  u32 selected = list->getIndex(false);
+  if (list->getContents(list->getIndex(false)).unknown00 != 0) {
+    for (u32 i = 0; i < list->getSize(); i++) {
+      const MenuBladeInfo &info = list->getContents(i);
+      if (selected != i && info.unknown00 == blade) {
+        return true;
+      }
+    }
+  }
+  for (u32 i = 0; i < list->getSize(); i++) {
+    if (list->getContents(i).unknown00 == blade) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void GfMenuObjBladeSet::setupMercenariesCond(ui::UIObjectAcc &acc, u32 mission, GfMenuBladeList *list) {
+  mm::mtl::FixStr<32> name;
+  for (int i = 0; i < 3; i++) {
+    name.format("TXT_mer_prev_cond_index@%02d", i + 1);
+    GfMenuMissionAdapter *index = GfMenuMissionAdapter::create(acc.searchChild(name.c_str()), 0x11, mission, false);
+    index->unknown70 = i;
+    name.format("LAY_mer_prev_cond@%02d", i + 1);
+    index->unknown24 = acc.searchChild(name.c_str());
+    name.format("IMG_mer_prev_cond_icon@%02d", i + 1);
+    GfMenuMissionAdapter::create(acc.searchChild(name.c_str()), 0x12, mission, false)->unknown70 = i;
+    name.format("IMG_mer_prev_cond_chk@%02d", i + 1);
+    GfMenuMissionAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x18, mission, list, true)->unknown70 = i;
+    name.format("TXT_mer_prev_cond_num@%02d", i + 1);
+    GfMenuMissionAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x17, mission, list, true)->unknown70 = i;
+    name.format("TXT_mer_prev_cond_max@%02d", i + 1);
+    GfMenuMissionAdapter::create(acc.searchChild(name.c_str()), 0x16, mission, false)->unknown70 = i;
+    setupMercenariesCondParam(acc, mission, i, 1, "IMG_mer_prev_cond_wpn@%02d", "LAY_mer_prev_cond_wpn@%02d");
+    setupMercenariesCondParam(acc, mission, i, 2, "TXT_mer_prev_cond_pow@%02d", "LAY_mer_prev_cond_pow@%02d");
+    setupMercenariesCondParam(acc, mission, i, 3, "IMG_mer_prev_cond_type@%02d", "LAY_mer_prev_cond_type@%02d");
+    setupMercenariesCondParam(acc, mission, i, 4, "IMG_mer_prev_cond_gen@%02d", "LAY_mer_prev_cond_gen@%02d");
+    setupMercenariesCondParam(acc, mission, i, 5, "TXT_mer_prev_cond_arts_lv@%02d", "LAY_mer_prev_cond_arts@%02d");
+    setupMercenariesCondParam(acc, mission, i, 6, "TXT_mer_prev_cond_arts_lv@%02d", "LAY_mer_prev_cond_arts@%02d");
+  }
+  for (int i = 0; i < 3; i++) {
+    name.format("TXT_mer_prev_fs_name@%02d", i + 1);
+    GfMenuMissionAdapter *fsName = GfMenuMissionAdapter::create(acc.searchChild(name.c_str()), 0x10, mission, false);
+    fsName->unknown70 = i;
+    name.format("LAY_mer_prev_fs_num@%02d", i + 1);
+    fsName->unknown24 = acc.searchChild(name.c_str());
+    name.format("TXT_mer_prev_fs_lv@%02d", i + 1);
+    GfMenuMissionAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x25, mission, list, true)->unknown70 = i;
+    name.format("TXT_mer_prev_fs_num@%02d", i + 1);
+    GfMenuMissionAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x26, mission, list, true)->unknown70 = i;
+    name.format("TXT_mer_prev_fs_max@%02d", i + 1);
+    GfMenuMissionAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x27, mission, list, false)->unknown70 = i;
+  }
+}
+
+void GfMenuObjBladeSet::setupFormSlot(ui::UIObjectAcc &acc, const GfMenuBladeList *list) {
+  mm::mtl::FixStr<32> name;
+  GfMenuGameAdapter::create(acc.searchChild("IMG_bl_form_slot_btn_bg"), 9, true)->unknown50 = 0;
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("TXT_bl_form_slot_dr_name"), 2, 0, false);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("IMG_bl_form_slot_dr_face"), 3, 0, false);
+  name.format("IMG_bl_form_bl_face@%02d", 1);
+  GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 3, list, 0, false);
+  name.format("IMG_bl_form_bl_base@%02d", 1);
+  GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x38, list, 0, false);
+  name.format("IMG_bl_form_bl_face@%02d", 2);
+  GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 3, list, 1, false);
+  name.format("IMG_bl_form_bl_base@%02d", 2);
+  GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x38, list, 1, false);
+  name.format("IMG_bl_form_bl_face@%02d", 3);
+  GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 3, list, 2, false);
+  name.format("IMG_bl_form_bl_base@%02d", 3);
+  GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x38, list, 2, false);
+}
 void GfMenuObjBladeSet::setupMercenariesPreview(ui::UIObjectAcc &acc, GfMenuBladeList *list) {
   GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("TXT_mer_prev_bl_name"), 2, 0, false);
   GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("IMG_mer_prev_bl"), 0x36, 0, false);
@@ -361,6 +435,212 @@ void GfMenuObjBladeSet::MercenariesPreviewListener::reciveEvent(const ui::EventD
     break;
   case GfMenuTypes::unknown003_34:
     acc.setDisp(false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBladeSet::ReleaseListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case GfMenuTypes::unknown003_33:
+    unknown164(owner.searchChild("LAY_bl_release_slot"), GfMenuTypes::unknown003_33);
+    unknown163(owner.searchChild("LAY_bl_preview"), GfMenuTypes::unknown003_33, 0);
+    GfMenuObjOperationInfo::open(owner.searchChild("LAY_bl_form"), owner.searchChild("LAY_bl_form_slot"), 0, 0);
+    setFadeIn(handle);
+    break;
+  case GfMenuTypes::unknown003_34:
+    unknown164(owner.searchChild("LAY_bl_release_slot"), GfMenuTypes::unknown003_34);
+    unknown163(owner.searchChild("LAY_bl_preview"), GfMenuTypes::unknown003_34, 0);
+    unknown163(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34, 0);
+    GfMenuObjOperationInfo::close();
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBladeSet::FormListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1:
+  case 8:
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case GfMenuTypes::unknown003_33:
+    unknown164(owner.searchChild("LAY_bl_form_slot"), GfMenuTypes::unknown003_33);
+    unknown163(owner.searchChild("LAY_bl_preview"), GfMenuTypes::unknown003_33, 0);
+    GfMenuObjOperationInfo::open(owner.searchChild("LAY_bl_form"), owner.searchChild("LAY_bl_form_slot"), 0, 0);
+    setFadeIn(handle);
+    break;
+  case GfMenuTypes::unknown003_34:
+    unknown164(owner.searchChild("LAY_bl_form_slot"), GfMenuTypes::unknown003_34);
+    unknown163(owner.searchChild("LAY_bl_preview"), GfMenuTypes::unknown003_34, 0);
+    unknown163(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34, 0);
+    GfMenuObjOperationInfo::close();
+    break;
+  }
+}
+
+void GfMenuObjBladeSet::MercenariesSlotListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case GfMenuTypes::unknown003_257:
+    unknown164(owner.searchChild("LAY_mer_slot_bl"), GfMenuTypes::unknown003_257);
+    unknown163(owner.searchChild("LAY_mer_slot_menu"), GfMenuTypes::unknown003_257, 0);
+    break;
+  case GfMenuTypes::unknown003_34:
+    unknown164(owner.searchChild("LAY_mer_slot_menu"), GfMenuTypes::unknown003_34);
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_259:
+    unknown163(owner.searchChild("LAY_mer_slot_bl"), GfMenuTypes::unknown003_259, 0);
+    break;
+  case GfMenuTypes::unknown003_258:
+    unknown163(owner.searchChild("LAY_mer_slot_bl"), GfMenuTypes::unknown003_258, 0);
+    break;
+  case GfMenuTypes::unknown003_33:
+    unknown164(owner.searchChild("LAY_mer_slot_menu"), GfMenuTypes::unknown003_33);
+    acc.setDisp(true);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBladeSet::MercenariesListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1:
+    setupMercenaries(acc);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 8:
+    if (event.unknown0c == 0xc) {
+      if (!unknown20->unknown34) {
+        if (GfMenuReference::getReferenceBladeID(0) != 0) {
+          detailOpen(unknown20, owner, nullptr, 0);
+          unknown20->unknown34 = true;
+          GfMenuObject::disableInput(owner.searchChild(!unknown20->unknown35 ? "LAY_bl_select" : "LAY_mer_slot_bl"));
+        }
+      } else {
+        GfMenuObjCommonDetail::close(unknown20->unknown48);
+        unknown20->unknown34 = false;
+        GfMenuObject::enableInput(owner.searchChild(!unknown20->unknown35 ? "LAY_bl_select" : "LAY_mer_slot_bl"));
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    setEmptyTeamId();
+    unknown164(owner.searchChild("LAY_mer_slot"), GfMenuTypes::unknown003_33);
+    unknown163(owner.searchChild("LAY_mer_preview"), GfMenuTypes::unknown003_33, 0);
+    setFadeIn(handle);
+    break;
+  case GfMenuTypes::unknown003_34:
+    unknown164(owner.searchChild("LAY_mer_slot"), GfMenuTypes::unknown003_34);
+    unknown163(owner.searchChild("LAY_mer_preview"), GfMenuTypes::unknown003_34, 0);
+    GfMenuObjOperationInfo::close();
+    break;
+  }
+}
+
+void GfMenuObjBladeSet::MercenariesSlotMenuListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 6:
+    setMenuBtnStat(unknown20->unknown2c = event.unknown08, unknown20->unknown28, unknown20->unknown80);
+    break;
+  case 8:
+    switch (event.unknown0c) {
+    case 1: {
+      int menu = unknown20->unknown2c;
+      switch (menu) {
+      case 0: {
+        mm::mtl::FixedArray<u16, 6> members;
+        if (GfGameMercenaries::getMemberForMission(members, unknown20->unknown28, MERCENARY_SELECT_UNKNOWN_0)) {
+          for (u32 i = 0; i < 6; i++) {
+            unknown20->unknown80->getContents(i).unknown00 = members[i];
+          }
+          unknown164(owner.searchChild("LAY_mer_slot_bl"), GfMenuTypes::unknown003_260);
+          for (int i = 1; i <= 3; i++) {
+            GfMenuReference::setReferenceNumber(i, 1);
+          }
+        }
+        break;
+      }
+      case 1: {
+        unknown121 *preset = GfDataMercenaries::getPreset(unknown20->unknown30);
+        for (u32 i = 0; i < 6; i++) {
+          if (i < unknown20->unknown80->getSize()) {
+            preset->unknown00[i] = unknown20->unknown80->getContents(i).unknown00;
+          } else {
+            preset->unknown00[i] = 0;
+          }
+        }
+        break;
+      }
+      case 2: {
+        unknown121 *preset = GfDataMercenaries::getPreset(unknown20->unknown30);
+        for (u32 i = 0; i < 6; i++) {
+          unknown20->unknown80->getContents(i).unknown00 = preset->unknown00[i];
+        }
+        break;
+      }
+      }
+      GfMenuReference::setReferenceNumber(menu + 1, 4);
+      break;
+    }
+    case 9:
+      unknown164(owner.searchChild("LAY_mer_slot_bl"), GfMenuTypes::unknown003_33);
+      for (int i = 1; i <= 3; i++) {
+        GfMenuReference::setReferenceNumber(i, 1);
+      }
+      GfMenuObject::disableInput(handle);
+      break;
+    case 2:
+      GfMenuReference::setReferenceTeamID(0);
+      unknown164(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34);
+      GfMenuObject::disableInput(handle);
+      break;
+    }
+    break;
+  case 1:
+    GfMenuObject::disableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    unknown20->unknown35 = false;
+    unknown20->unknown2c = 0;
+    GfMenuObject::setupInputSelection(handle, 0, 3);
+    GfMenuObject::enableInput(handle);
+    mm::mtl::FixedArray<u16, 6> members;
+    GfMenuReference::setReferenceNumber(1, GfGameMercenaries::getMemberForMission(members, unknown20->unknown28, MERCENARY_SELECT_UNKNOWN_0) ? 3 : 2);
+    GfMenuReference::setReferenceNumber(2, 1);
+    GfMenuReference::setReferenceNumber(3, 1);
+    GfMenuObjOperationInfo::open(handle, 0, 0, 0);
+    acc.setDisp(true);
+    break;
+  }
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::disableInput(handle);
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_257:
+    setupMercenariesSlotMenu(acc);
     break;
   default:
     ui::UIObjectListener::reciveEvent(event, handle);

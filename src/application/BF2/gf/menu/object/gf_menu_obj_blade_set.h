@@ -37,6 +37,46 @@ public:
     GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class ReleaseListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class FormListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class MercenariesSlotListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class MercenariesListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class MercenariesSlotMenuListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjBladeSet(u32 handle);
   ~GfMenuObjBladeSet() override;
   enum eMode {
@@ -51,6 +91,8 @@ public:
   static int setFadeOut(u32 handle);
   static u32 setEmptyTeamId();
   static bool isMenuBtnEnable(int menu, u32 blade, const GfMenuBladeList *list);
+  static bool checkBladeSet(u32 unknown, u32 blade, GfMenuBladeList *list);
+  static void setupFormSlot(ui::UIObjectAcc &acc, const GfMenuBladeList *list);
   static void setMenuBtnStat(int menu, u32 blade, const GfMenuBladeList *list);
   static void setupMercenaries(ui::UIObjectAcc &acc);
   static void createBladeList(eMode mode, int driver, GfMenuBladeList *list);
@@ -98,6 +140,11 @@ public:
 
 static_assert(offsetof(GfMenuObjBladeSet::MainListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjBladeSet::MercenariesPreviewListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeSet::ReleaseListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeSet::FormListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeSet::MercenariesSlotListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeSet::MercenariesListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeSet::MercenariesSlotMenuListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjBladeSet::OpenParam, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjBladeSet, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjBladeSet, unknown28) == 0x28, "");

@@ -10,14 +10,19 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/list/gf_menu_id_list.h"
+#include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_mercenary_top.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
+#include "mm_math/mm_vec2.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
+#include "mm_mtl/vector.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
@@ -472,6 +477,155 @@ void GfMenuObjMercenaryForm::MainListener::reciveEvent(const ui::EventData &even
     param.unknown00 = 6;
     param.unknown0c = true;
     GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjMercenaryForm::FormListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown0c = 0;
+    unknown10 = 0;
+    GfMenuObjOperationInfo::setGuideText(0x25, 0);
+    GfMenuObjCmnStatus::openBlStatus(0, -1);
+    break;
+  case 3:
+    if (event.unknown08 == 0) {
+      break;
+    }
+    if (event.unknown08 == 2) {
+      unknown20->sendOpenEvent(acc.searchSibiling("LAY_leader"), 0, 0.0f);
+    }
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case GfMenuTypes::unknown003_258: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    param.unknown10 = 2;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    GfMenuObjCmnStatus::closeBlStatus();
+    break;
+  }
+  case GfMenuTypes::unknown003_259: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown04 = 0;
+    param.unknown00 = 6;
+    param.unknown10 = 1;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    unknown20->sendOpenEvent(acc.searchChild("LAY_form_list_bl"), 1, 0.0f);
+    GfMenuObjOperationInfo::setGuideText(0x25, 0);
+    GfMenuObjCmnStatus::openBlStatus(0, -1);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjMercenaryForm::BlImgListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  case 3:
+    break;
+  case GfMenuTypes::unknown003_33:
+    if (GfMenuReference::getReferenceBladeID(0) != 0) {
+      acc.setDisp(true);
+      acc.setAlpha(1.0f);
+      unknown20->unknown438.unknown005();
+      unknown20->unknown438.unknown002(&GfMenuObjMercenaryForm::seqOpenImage);
+    }
+    break;
+  case GfMenuTypes::unknown003_34: {
+    ui::UIObjectAcc image(acc.unknown10, "IMG_leader_bl_img");
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_out_r");
+    param.unknown14 = 2;
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(image.unknown10, param, nullptr);
+    break;
+  }
+  case GfMenuTypes::unknown003_256: {
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "mnu090_anim_leader";
+    param.unknown58 = "start";
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    GfMenuObjUtil::playSE(0xf);
+    break;
+  }
+  case GfMenuTypes::unknown003_257: {
+    {
+      mm::Vec2 scale = {1.0f, 1.0f};
+      acc.setScale(scale);
+    }
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "mnu090_anim_leader";
+    param.unknown58 = "end";
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    GfMenuObjUtil::playSE("se_fld_allmap_503");
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjMercenaryForm::StartListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_34: {
+    GfMenuObjMercenaryTop::OpenParam param;
+    param.unknown00 = 0;
+    GfMenuObjMercenaryTop::registOpenParam(param);
+    GfMenuObject::returnFSSubLayer(acc.unknown10, 2);
+    break;
+  }
+  case GfMenuTypes::unknown003_33: {
+    {
+      GfMenuBladeList *blades = unknown20->unknown28;
+      MenuBladeInfo info = blades->getContents(blades->getIndex(false));
+      blades = unknown20->unknown28;
+      blades->contents.erase(blades->getIndex(false) + blades->contents.begin());
+      blades->subSize(1);
+      blades->contentsChanged = true;
+      blades = unknown20->unknown28;
+      if (blades->getSize() == 0) {
+        blades->addContents(info);
+      } else {
+        blades->contents.insert(blades->contents.begin(), info);
+        blades->addSize(1);
+        blades->contentsChanged = true;
+      }
+    }
+    mm::mtl::FixStr<32> name;
+    unknown20->unknown78->clear();
+    for (u32 i = 0; i < 5; i++) {
+      if (i < unknown20->unknown28->getSize() - 1) {
+        name.format("LAY_mis_start_bl@%02d", i + 1);
+        unknown20->unknown78->addObject(acc.searchChild(name.c_str()));
+      }
+      acc.setDispChild(false, name.c_str());
+    }
+    acc.setDisp(true);
+    unknown20->unknown108.unknown005();
+    unknown20->unknown108.unknown002(&GfMenuObjMercenaryForm::seqDepartureStart);
     break;
   }
   default:
