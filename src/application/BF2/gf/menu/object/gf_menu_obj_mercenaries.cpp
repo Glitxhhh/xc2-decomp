@@ -21,6 +21,7 @@
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
@@ -576,6 +577,79 @@ void GfMenuObjMercenaries::LocationSelectListener::reciveEvent(const ui::EventDa
     GfMenuObject::disableInput(handle);
     acc.setDisp(false);
     break;
+  }
+}
+
+void GfMenuObjMercenaries::MissionFieldSkillListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupMissionFieldSkill(acc, unknown20->unknown50);
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::disableInput(handle);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 3: {
+    int type = event.unknown08;
+    if (type != 0) {
+      u32 mission = GfMenuReference::getReferenceMissionID();
+      switch (type) {
+      case 7:
+        moveFieldSkillStart(acc, mission, 0);
+        break;
+      case 8:
+        moveFieldSkillStart(acc, mission, 1);
+        break;
+      case 9:
+        moveFieldSkillStart(acc, mission, 2);
+        break;
+      case 10:
+        moveFieldSkillEnd(acc, mission, 0);
+        break;
+      case 11:
+        moveFieldSkillEnd(acc, mission, 1);
+        break;
+      case 12:
+        moveFieldSkillEnd(acc, mission, 2);
+        break;
+      }
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      ui::UIObjectAcc owner(unknown20->unknown18);
+      ui::UIObjectAcc mission(owner.searchChild("LAY_mission"));
+      mission.setAlpha(0.0f);
+      unknown002(unknown20->unknown18, "LAY_form");
+      int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 6, 0);
+      GfMenuObject::hookCtrlEvent(handle, ctrl);
+      GfMenuObject::disableInput(handle);
+    }
+    break;
+  case GfMenuTypes::unknown003_33: {
+    updateBladeList(unknown20->unknown50, GfMenuReference::getReferenceTeamID());
+    GfMenuObject::enableInput(handle);
+    acc.setDisp(true);
+    for (u32 i = 1; i <= 3; i++) {
+      mm::mtl::FixStr<32> name;
+      name.format("LAY_fs_act@%02d", i);
+      ui::UIObjectAcc fieldSkill(acc.searchChild(name.c_str()));
+      mm::Pnt<s16> pos;
+      fieldSkill.getPos(pos);
+      fieldSkill.setPos(mm::Pnt<s16>(0x500, pos.y));
+      name.format("IMG_fs_act_bg@%02d", i);
+      ui::UIObjectAcc background(acc.searchChild(name.c_str()));
+      background.setAlpha(0.0f);
+    }
+    unknown140(handle, 3, 7, 0.0f);
+    int ctrl = GfMenuObjUtil::setCommonFadeIn(handle, 5, 0);
+    GfMenuObject::hookCtrlEvent(handle, ctrl);
+    GfMenuObjOperationInfo::open(handle, 0, 0, 0);
+    break;
+  }
   }
 }
 

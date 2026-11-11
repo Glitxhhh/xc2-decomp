@@ -449,6 +449,100 @@ void GfMenuObjZoneMap::MainListener::reciveEvent(const ui::EventData &event, u32
   }
 }
 
+void GfMenuObjZoneMap::HelpListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupHelp(acc);
+    unknown20->unknown3125 = false;
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_260:
+    if (!unknown20->unknown3125) {
+      int ctrl = GfMenuObjUtil::setCommonFadeIn(handle, 1, 0);
+      GfMenuObject::hookCtrlEvent(handle, ctrl);
+      unknown20->unknown3125 = true;
+    } else {
+      int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 2, 0);
+      GfMenuObject::hookCtrlEvent(handle, ctrl);
+      unknown20->unknown3125 = false;
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjZoneMap::MapSelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupMapSelect(acc, unknown20->unknown28);
+    GfMenuObject::setupInputSelection(handle, 0, unknown20->unknown28->getSize());
+    GfMenuObject::enableInput(handle);
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    if (unknown20->unknown28->getSize() != 0) {
+      unknown20->unknown28->setIndex(index);
+      u32 map = unknown20->unknown28->getContents(index).unknown00;
+      refreshMapSelect(acc, unknown20->unknown28, unknown20->unknown30, map);
+      return;
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      if (unknown20->unknown28->getSize() != 0) {
+        u8 *bdat = unknown20->unknown33c8;
+        u32 top = Bdat::getIdTop(bdat);
+        u32 count = Bdat::getIdCount(bdat);
+        unknown20->unknown48->clear();
+        for (u32 i = 0; i < count; i++) {
+          Bdat::uVal group = Bdat::getVal(bdat, "menuGroup", top + i);
+          if (Bdat::getVal(bdat, "MAPJUMPID", top + i).valueU16 != 0) {
+            if (group.valueU16 == unknown20->unknown28->getContents(unknown20->unknown28->getIndex(false)).unknown00) {
+              MenuZoneMapInfo info;
+              info.unknown00 = top + i;
+              info.unknown04 = Bdat::getVal(bdat, "MSGID", top + i).valueU16;
+              unknown20->unknown48->addContents(info);
+            }
+          }
+        }
+        if (unknown20->unknown58.size() != 0) {
+          unknown20->unknown58.destroy();
+          unknown20->unknown58.setAllocator(getAllocator(ALLOCATOR_DEFAULT));
+        }
+        if (unknown20->unknown48->getSize() != 0) {
+          unknown20->unknown58.reserve(unknown20->unknown48->getSize());
+          unknown20->unknown58.fill(MapJumpInfo());
+        }
+        unknown164(owner.searchChild("LAY_zonemap"), GfMenuTypes::unknown003_258);
+        unknown163(owner.searchChild("LAY_point_sellect"), GfMenuTypes::unknown003_258, 0);
+        unknown163(handle, GfMenuTypes::unknown003_259, 0);
+      }
+    } else if (event.unknown0c == 2) {
+      unknown164(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34);
+      GfMenuObject::disableInput(owner.searchChild("LAY_zonemap"));
+      GfMenuObject::disableInput(owner.searchChild("LAY_point_sellect"));
+      GfMenuObject::disableInput(owner.searchChild("LAY_helpmenu"));
+      GfMenuObject::disableInput(handle);
+    }
+    return;
+  case GfMenuTypes::unknown003_258:
+    acc.setDisp(true);
+    GfMenuObject::enableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_259:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(handle);
+    break;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjZoneMap>(const mm::mtl::Delegate<bool()> *);

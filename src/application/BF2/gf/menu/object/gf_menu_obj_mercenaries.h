@@ -47,6 +47,15 @@ public:
     GfMenuObjMercenaries *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class MissionFieldSkillListener : public ui::UIObjectListener {
+  public:
+    MissionFieldSkillListener(GfMenuObjMercenaries *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjMercenaries *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   class MissionListener : public ui::UIObjectListener {
   public:
     MissionListener(GfMenuObjMercenaries *owner) : _0c(), unknown20(owner) {}
@@ -83,6 +92,7 @@ public:
   static void updateBladeList(GfMenuBladeList *list, u32 team);
   static void updateFieldSkillList(GfMenuFieldSkillList *list, const GfMenuBladeList *blades);
   static bool isExistFieldSkill(u32 mission, u32 index);
+  static void moveFieldSkillStart(ui::UIObjectAcc &acc, u32 mission, u32 index);
   static void moveFieldSkillEnd(ui::UIObjectAcc &acc, u32 mission, u32 index);
   static void setupMercenariesCondParam(ui::UIObjectAcc &acc, int index, u32 type, const char *adapterFormat, const char *iconFormat);
   static bool isInvokeFieldSkill(u32 mission, u32 team);

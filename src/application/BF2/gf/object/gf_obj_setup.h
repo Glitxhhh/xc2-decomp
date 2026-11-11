@@ -5,7 +5,6 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/object/gf_init_param.h"
 #include "mm_math/mm_vec3.h"
-#include "mm_math/mm_vec3_na.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 
@@ -186,7 +185,6 @@ public:
   int unknown70; // Inferred role: formation player id; original member name unknown.
   u8 _74[0x80 - 0x74];
   GfInitParamDriver unknown80; // Inferred role: copy of the init param; original member name unknown.
-  u8 _228[0x230 - 0x228];
 };
 
 static_assert(offsetof(GfObjSetupDriver, unknown6c) == 0x6c, "");
@@ -229,7 +227,6 @@ public:
   bool unknown78; // Inferred role: alternate; original member name unknown.
   u8 _79[0x80 - 0x79];
   GfInitParamWeapon unknown80; // Inferred role: copy of the init param; original member name unknown.
-  u8 _268[0x270 - 0x268];
 };
 
 // Evidence: the GfObjSetupWeapon constructor calls GfAppend::GfAppend on this+0x118 (GfInitParamWeapon::unknown98 of the copy) and assigns its mounts from GfInitParamWeapon::unknown98.

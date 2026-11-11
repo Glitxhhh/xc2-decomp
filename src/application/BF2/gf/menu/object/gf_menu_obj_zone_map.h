@@ -38,10 +38,27 @@ public:
     GfMenuObjZoneMap *unknown20; // Inferred role: owner; original member name unknown.
   };
 
-  // Inferred role: pair of values per map list entry, the second one reset to -1; original name unknown.
-  struct unknown001 {
+  class HelpListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjZoneMap *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class MapSelectListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjZoneMap *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  struct MapJumpInfo {
+    MapJumpInfo() : unknown00(0), unknown04(-1) {}
+
     s32 unknown00; // Role and original member name unknown.
-    s32 unknown04; // Role and original member name unknown.
+    s32 unknown04; // Role and original member name unknown, -1 when not set.
   };
 
   GfMenuObjZoneMap(u32 handle);
@@ -82,7 +99,7 @@ public:
   u8 _44[0x48 - 0x44];
   GfMenuZoneMapList *unknown48;                                       // Inferred role: points; original member name unknown.
   ui::UISelectObjList *unknown50;                                     // Inferred role: point objects; original member name unknown.
-  mm::mtl::Array<unknown001> unknown58;                               // Inferred role: map list entries; original member name unknown.
+  mm::mtl::Array<MapJumpInfo> unknown58;                              // Inferred role: map list entries; original member name unknown.
   bool unknown70;                                                     // Role and original member name unknown, cleared by the constructor.
   mm::mtl::FixStr<32> unknown74;                                      // Inferred role: map image name; original member name unknown.
   ui::UISelectObjList *unknown98;                                     // Inferred role: help objects; original member name unknown.

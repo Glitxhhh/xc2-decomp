@@ -29,6 +29,7 @@
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_list_info.h"
+#include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -178,6 +179,46 @@ void GfMenuObjDrArtsSet2::MainListener::reciveEvent(const ui::EventData &event, 
   case GfMenuTypes::unknown003_34:
     setFadeOut(acc.unknown10, 0, nullptr);
     break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjDrArtsSet2::LevelupListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  case 3: {
+    u32 arts = owner.searchChild("LAY_arts");
+    ui::EventData resume;
+    resume.unknown00 = GfMenuTypes::unknown003_258;
+    ui::UIManager::get()->requestObjectEvent(arts, resume, 0.0f);
+    acc.setDisp(false);
+    break;
+  }
+  case GfMenuTypes::unknown003_33: {
+    acc.setDisp(true);
+    {
+      ui::UIObjectAcc effect(acc.unknown10, "IMG_lvup_eff");
+      effect.startAnimation("fade_in", false);
+    }
+    ui::UIObjectAcc blur(acc.unknown10, "TXT_lvup_eff_blur");
+    ui::UIObjectAcc blur2(acc.unknown10, "TXT_lvup_eff_blur");
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "cmn_levelup_text_fadein";
+    param.unknown58 = "fade_in";
+    param.unknown14 = 10;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, "TXT_lvup_eff");
+    param.unknown50 = "cmn_levelup_text_fadein_blur";
+    int ctrl = GfMenuObjUtil::startCtrl(acc.unknown10, param, "TXT_lvup_eff_blur");
+    GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+    break;
+  }
   default:
     ui::UIObjectListener::reciveEvent(event, handle);
     break;

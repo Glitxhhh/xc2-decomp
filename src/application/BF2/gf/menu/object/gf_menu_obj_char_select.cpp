@@ -5,6 +5,7 @@
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
@@ -48,6 +49,10 @@ struct unknown006 {
 static unknown006 unknown007;
 // Inferred role: layer names of the driver and the three blades of the character select; original name unknown.
 static const char *const unknown008[4] = {"LAY_char_dr", "LAY_char_bl@01", "LAY_char_bl@02", "LAY_char_bl@03"};
+// Inferred role: common window ids confirming the special operations; original name unknown.
+static const u32 unknown009[4] = {0xb9, 0xba, 0xbb, 0xbc};
+// Inferred role: layer names of the status of the driver and the three blades of the character select; original name unknown.
+static const char *const unknown010[4] = {"LAY_status_dr", "LAY_status_bl@01", "LAY_status_bl@02", "LAY_status_bl@03"};
 
 GfMenuObjCharSelect::GfMenuObjCharSelect(u32 handle)
     : GfMenuObject(handle), unknown48(nullptr), unknown3f8(0), unknown3fc(0), unknown428(false), unknown429(false), unknown430(this), unknown6c0(false), unknown6d8(0), unknown6e8(-1),
@@ -709,6 +714,210 @@ void GfMenuObjCharSelect::CharDrMoveListener::reciveEvent(const ui::EventData &e
     }
   }
   ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+bool GfMenuObjCharSelect::seqSpUpdateParty() {
+  u32 driver = unknown28->getContents(unknown28->getIndex(false)).unknown00;
+  GfMenuDriverList::PartySetup setup;
+  setup.unknown18 = false;
+  setup.unknown14 = GfPartySelect::LIST_TYPE_PARTY_AND_RESERVER;
+  unknown28->setupFromParty(setup);
+  unknown28->setIndex(0);
+  for (u32 i = 0; i < unknown28->getSize(); i++) {
+    if (unknown28->getContents(i).unknown00 == driver) {
+      unknown28->setIndex(i);
+      break;
+    }
+  }
+  setPartyData(unknown3a8, unknown28);
+  return true;
+}
+
+bool GfMenuObjCharSelect::seqConfSpecial() {
+  ui::UIObjectAcc acc(unknown18, "LAY_char");
+  if (!unknown6c0) {
+    if (unknown748 == 3 && GfMenuObjUtil::isBladeLastOneInSlot(0x3f3, nullptr)) {
+      GfMenuManager::openCommonWindow(0xdf);
+      unknown430.unknown002(&GfMenuObjCharSelect::seqConfSpecialWaitError);
+      return true;
+    }
+    GfMenuManager::openCommonWindow(unknown009[unknown748]);
+    unknown6c0 = true;
+    return false;
+  }
+  if (GfMenuManager::isOpenCommonWindow()) {
+    return false;
+  }
+  s16 result = GfMenuManager::getCommonWindowResult();
+  if (result == 0) {
+    switch (unknown748) {
+    case 0:
+      unknown430.unknown002(&GfMenuObjCharSelect::seqSpHomuraToHikari);
+      break;
+    case 1:
+      unknown430.unknown002(&GfMenuObjCharSelect::seqSpHikariToHomura);
+      break;
+    case 2:
+      unknown430.unknown002(&GfMenuObjCharSelect::seqSpNiaChangeBl);
+      break;
+    case 3:
+      unknown430.unknown002(&GfMenuObjCharSelect::seqSpNiaChangeDr);
+      break;
+    default:
+      unknown430.unknown002(&GfMenuObjCharSelect::seqReturn);
+      return true;
+    }
+    unknown430.unknown004(2);
+    unknown430.unknown002(&GfMenuObjCharSelect::seqSpUpdateParty);
+    unknown430.unknown002(&GfMenuObjCharSelect::seqReturnChange);
+  } else {
+    unknown430.unknown002(&GfMenuObjCharSelect::seqReturn);
+  }
+  return true;
+}
+
+bool GfMenuObjCharSelect::seqStreamWait() {
+  mm::mtl::FixStr<32> name;
+  ui::UIObjectAcc acc(unknown18);
+  int bladeNum = getEquipBladeNum(GfMenuReference::getReferenceDriverID(0), unknown3a8);
+  if (bladeNum == 0) {
+    ui::UIObjectAcc layer(acc.searchChild("LAY_char_dr_solo"));
+    if (layer.isStreaming()) {
+      return false;
+    }
+  } else {
+    ui::UIObjectAcc layer(acc.searchChild("LAY_char_dr"));
+    if (layer.isStreaming()) {
+      return false;
+    }
+  }
+  for (u32 i = 0; i < 3; i++) {
+    name.format("IMG_char_bl_img@%02d", i + 1);
+    ui::UIObjectAcc image(acc.searchChild(name.c_str()));
+    if (image.isStreaming()) {
+      return false;
+    }
+  }
+  if (unknown768) {
+    return false;
+  }
+  setFadeIn(acc.searchChild("LAY_main"), 0);
+  return true;
+}
+
+void GfMenuObjCharSelect::setupCharSubMenu(ui::UIObjectAcc &acc, mm::mtl::FixedVector<u32, 5> &drivers, mm::mtl::FixedVector<u32, 3> &blades, mm::mtl::FixedVector<u32, 4> &hanas) {
+  u8 *driverBdat = GfDataBdat::getFP(BDAT_MNU_CHAR_DRIVER_ORDER);
+  for (u32 i = 0; i < 5; i++) {
+    mm::mtl::FixStr<32> name;
+    name.format("IMG_sub_menu_icon_dr@%02d", i + 1);
+    ui::UIObjectAcc icon(acc.searchChild(name.c_str()));
+    if (i < drivers.size()) {
+      icon.setImageIndex(getMenuIconID(Bdat::getVal(driverBdat, "layer", drivers[i]).valueU16));
+      icon.setDisp(true);
+    } else {
+      icon.setDisp(false);
+    }
+  }
+  mm::mtl::FixStr<32> name;
+  u8 *bladeBdat = GfDataBdat::getFP(BDAT_MNU_CHAR_BLADE_ORDER);
+  for (u32 i = 0; i < 3; i++) {
+    if (i < blades.size()) {
+      setupCharSubMenuBl(acc, Bdat::getVal(bladeBdat, "layer", blades[i]).valueU16, i);
+    } else {
+      name.format("IMG_sub_menu_icon_bl@%02d", i + 1);
+      ui::UIObjectAcc icon(acc.searchChild(name.c_str()));
+      icon.setDisp(false);
+    }
+  }
+  u8 *hanaBdat = GfDataBdat::getFP(BDAT_MNU_CHAR_HANA_ORDER);
+  for (u32 i = 0; i < 4; i++) {
+    if (i < hanas.size()) {
+      setupCharSubMenuHana(acc, Bdat::getVal(hanaBdat, "layer", hanas[i]).valueU16, i);
+    } else {
+      name.format("IMG_sub_menu_icon_hana@%02d", i + 1);
+      ui::UIObjectAcc icon(acc.searchChild(name.c_str()));
+      icon.setDisp(false);
+    }
+  }
+}
+
+u8 GfMenuObjCharSelect::refreshDriver(ui::UIObjectAcc acc, u32 driver) {
+  setPartyData(unknown3a8, unknown28);
+  adjustBladeList(unknown3a8, unknown50, unknown30, driver);
+  for (u32 i = 0; i < unknown28->getSize(); i++) {
+    if (unknown28->getContents(i).unknown00 == driver) {
+      unknown28->setIndex(i);
+      break;
+    }
+  }
+  u32 index = unknown28->getIndex(false);
+  u8 count = 0;
+  for (u32 i = 0; i < 3; i++) {
+    u32 blade = unknown3a8[index].unknown04[i];
+    ui::UIObjectAcc layer(acc.searchChild(unknown008[i + 1]));
+    ui::UIObjectAcc status(acc.searchChild(unknown010[i + 1]));
+    if (GfMenuObjUtil::isValidBlade(blade)) {
+      layer.setDisp(true);
+      status.setDisp(true);
+      count++;
+    } else {
+      layer.setDisp(false);
+      status.setDisp(false);
+    }
+  }
+  return count;
+}
+
+void GfMenuObjCharSelect::setupCharSelect(ui::UIObjectAcc &acc, GfMenuDriverList *list, mm::mtl::FixedArray<GfMenuBladeList *, 3> &blades) {
+  GfMenuDriverList::PartySetup partySetup;
+  partySetup.unknown18 = false;
+  partySetup.unknown14 = GfPartySelect::LIST_TYPE_PARTY_AND_RESERVER;
+  list->setupFromParty(partySetup);
+  if (list->getSize() != 0) {
+    GfMenuReference::setReferenceDriverID(0, list->getContents(0).unknown00);
+  }
+  for (u32 i = 0; i < 3; i++) {
+    GfMenuBladeList::DriverSetup setup;
+    setup.unknown14 = 1;
+    setup.unknown18 = list->getContents(list->getIndex(false)).unknown00;
+    if (setup.unknown18 == 0) {
+      blades[i]->clear();
+    } else {
+      blades[i]->setupFromDriver(setup);
+    }
+  }
+  GfMenuAdapterManager::beginAddAfter();
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("IMG_char_dr_img"), 0x1c, 0, false);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("IMG_char_dr_glow"), 0x1c, 0, false);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("IMG_char_dr_img_solo"), 0x1c, 0, false);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("IMG_char_dr_glow_solo"), 0x1c, 0, false);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("TXT_status_dr_name"), 2, 0, false);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("TXT_status_dr_class"), 0x24, 0, true);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("TXT_status_dr_lv_num"), 1, 0, true);
+  GfMenuCharDataAdapter::createFromReferenceDriver(acc.searchChild("TXT_status_dr_hp_num"), 0, 0, true);
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < 3; i++) {
+    name.format("IMG_char_bl_img@%02d", i + 1);
+    GfMenuCharDataAdapter *image = GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x36, blades[i], -1, false);
+    name.format("IMG_char_bl_glow@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x36, blades[i], -1, false);
+    ui::UIObjectAcc(acc.searchChild(name.c_str())).setAlpha(0.0f);
+    name.format("TXT_status_bl_name@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 2, blades[i], -1, false);
+    if (image != nullptr) {
+      image->unknown24 = acc.searchChild(unknown010[i + 1]);
+    }
+    name.format("IMG_status_bl_wpn_icon@%02d", i + 1);
+    ui::UIObjectAcc(acc.searchChild(name.c_str())).setDisp(false);
+    name.format("IMG_status_bl_elem_icon@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x2a, blades[i], -1, false);
+    GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x39, blades[i], -1, false);
+    name.format("IMG_status_bl_rank_rarity@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x55, blades[i], -1, false);
+    name.format("IMG_status_bl_rank@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromBladeList(acc.searchChild(name.c_str()), 0x54, blades[i], -1, false);
+  }
+  GfMenuAdapterManager::endAddAfter();
 }
 
 } // namespace gf

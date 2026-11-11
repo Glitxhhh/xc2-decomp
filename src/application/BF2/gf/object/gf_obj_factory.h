@@ -27,6 +27,7 @@ struct GF_OBJ_HANDLE;
 class GfComSound;
 class GfInitParamBelonging;
 class GfInitParamEnWeapon;
+class GfInitParamEnemy;
 class GfInitParamEventObj;
 class GfInitParamExtra;
 class GfInitParamFobj;
@@ -61,7 +62,7 @@ class GfObjFactory {
 public:
   static GF_OBJ_HANDLE *createGmkMapObj(const CBdatWrapper &bdat, int id);
   static GF_OBJ_HANDLE *createGmkTbox(const CBdatWrapper &bdat, int id);
-  static GF_OBJ_HANDLE *createGmkEnemy(int id, s8 param2, u16 param3, const mm::Vec3 &position, const mm::Vec3 &rotation, bool param6);
+  static GF_OBJ_HANDLE *createGmkEnemy(int id, s8 levelOffset, u16 priority, const mm::Vec3 &position, const mm::Vec3 &rotation, bool flag);
   static GF_OBJ_HANDLE *createGmkNpc(const CBdatWrapper &bdat, int id);
   static GF_OBJ_HANDLE *createGmkBlade(const CBdatWrapper &bdat, int id, int param3);
   static GF_OBJ_HANDLE *createGmkCollection(const CBdatWrapper &bdat, int id);
@@ -70,6 +71,7 @@ public:
   static GF_OBJ_HANDLE *createMap(const GfInitParamMapSeamless &param);
   static GF_OBJ_HANDLE *createDebugMap(const GfInitParamMap &param);
   static GF_OBJ_HANDLE *createMapObj(const GfInitParamGimmick &param);
+  static GF_OBJ_HANDLE *createEnemy(GfInitParamEnemy &param);
   static GF_OBJ_HANDLE *createEventObj(const GfInitParamEventObj &param);
   static GF_OBJ_HANDLE *createUiObj(const GfInitParamUiObj &param);
   static GF_OBJ_HANDLE *createMapLodAnim();

@@ -44,6 +44,9 @@ struct QuestParam {
 struct QuestTaskParam : QuestParam {
   QuestTaskParam(QuestID quest, u32 taskIndex, TASK_STATE state);
   QuestTaskParam(QuestID quest, u32 taskIndex, u32 purpose, TASK_STATE state);
+  // The game gives QuestTaskParam a non-trivial destructor (no out-of-line symbol: it is empty and inline): with a trivial one
+  // the exits of the task loops in GfQuestUtil::getScenarioTopic and getQuestIconType lose their cleanup destination flag.
+  ~QuestTaskParam() {}
 
   QuestID unknown04;    // Inferred role: quest; original member name unknown.
   u32 unknown08;        // Inferred role: purpose; original member name unknown.

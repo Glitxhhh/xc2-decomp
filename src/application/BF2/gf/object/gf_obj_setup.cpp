@@ -14,7 +14,6 @@
 #include "gf/object/gf_obj_manager.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_math.h"
-#include "mm_math/mm_vec3_na.h"
 
 namespace gf {
 

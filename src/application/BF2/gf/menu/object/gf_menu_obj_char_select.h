@@ -123,6 +123,10 @@ public:
   void finalize() override;
   bool seqSpHikariToHomura();
   bool seqSpHomuraToHikari();
+  bool seqSpUpdateParty();
+  bool seqConfSpecial();
+  static void setupCharSubMenu(ui::UIObjectAcc &acc, mm::mtl::FixedVector<u32, 5> &drivers, mm::mtl::FixedVector<u32, 3> &blades, mm::mtl::FixedVector<u32, 4> &hanas);
+  u8 refreshDriver(ui::UIObjectAcc acc, u32 driver);
   void update() override;
   bool seqStreamWaitStatDrBefore();
   bool seqStreamWaitStatBlBefore();

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "arc/arc_data.h"
+#include "bdat.h"
 #include "gf/asset/gf_asset_def.h"
 #include "gf/asset/gf_asset_factory.h"
 #include "gf/asset/gf_asset_manager.h"
@@ -10,6 +11,7 @@
 #include "gf/asset/gf_asset_resource.h"
 #include "gf/data/gf_bdat_chrbl.h"
 #include "gf/data/gf_bdat_chrdr.h"
+#include "gf/data/gf_bdat_chrenarrange.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
@@ -239,6 +241,38 @@ GF_OBJ_HANDLE *GfObjFactory::createMapLodAnim() {
   return handle;
 }
 
+GF_OBJ_HANDLE *GfObjFactory::createGmkMapObj(const CBdatWrapper &bdat, int id) {
+  CBdatWrapper mapObjList(GfDataBdat::getFP(BDAT_RSC_MAP_OBJ_LIST));
+  u32 resource = bdat.getValCheck("RSC_ID", id, gmk::BDAT_TYPE_U16);
+  GfInitParamGimmick param;
+  param.m_bladeID = resource & 0xffff;
+  param.unknown48 = GIMMICK_TYPE_NONE;
+  param.unknown18 = &mapObjList;
+  param.unknown44 = bdat.getValCheck("Priority", id, gmk::BDAT_TYPE_U8) & 0xff;
+  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_STRING));
+  param.unknown98 = Bdat::getFlagVal(mapObjList.unknown00, "flag", resource & 0xffff, "BigObj") != 0;
+  GF_OBJ_HANDLE *handle = createMapObj(param);
+  GfObjSetupGimmick *setup = GfObjUtil::getObjSetup<GfObjSetupGimmick>(handle);
+  const char *stateName = reinterpret_cast<const char *>(bdat.getValCheck("StateName", id, gmk::BDAT_TYPE_STRING));
+  if (stateName != nullptr && *stateName != '\0') {
+    setup->unknown70 = stateName;
+  }
+  if (Bdat::getMember(bdat.unknown00, "mapobjcol") != nullptr) {
+    setup->unknowna0 = Bdat::getFlagVal(bdat.unknown00, "flag", id, "mapobjcol") == 0;
+  }
+  return handle;
+}
+
+GF_OBJ_HANDLE *GfObjFactory::createGmkTbox(const CBdatWrapper &bdat, int id) {
+  CBdatWrapper tboxList(GfDataBdat::getFP(BDAT_RSC_TBOX_LIST));
+  u32 resource = bdat.getValCheck("RSC_ID", id, gmk::BDAT_TYPE_U16);
+  GfInitParamGimmick param;
+  param.m_bladeID = resource & 0xffff;
+  param.unknown18 = &tboxList;
+  param.unknown48 = GIMMICK_TYPE_TREASURE_BOX;
+  return createMapObj(param);
+}
+
 GF_OBJ_HANDLE *GfObjFactory::createGmkEvent(const CBdatWrapper &bdat, int id) {
   GfObjManager *manager = GfObjManager::get();
   if (manager == nullptr) {
@@ -314,6 +348,41 @@ GF_OBJ_HANDLE *GfObjFactory::createMobNull() {
   GfObjSetup::createSetupParam(handle, param);
   manager->callGfObjListener(IGfObjListener::OBJEVT_ENTRY, handle);
   return handle;
+}
+
+GF_OBJ_HANDLE *GfObjFactory::createGmkEnemy(int id, s8 levelOffset, u16 priority, const mm::Vec3 &position, const mm::Vec3 &rotation, bool flag) {
+  GfBdatChrEnArrange *arrange = GfBdatChrEnArrange::get();
+  u8 *enParam = GfDataBdat::getFP(BDAT_CHR_EN_PARAM);
+  CBdatWrapper enemyList(GfDataBdat::getFP(BDAT_RSC_EN));
+  u32 paramId = arrange->getChrEnArrangeParamID(id);
+  u32 resource = Bdat::getValCheck(enParam, "ResourceID", paramId & 0xffff, gmk::BDAT_TYPE_U16);
+  u32 level = (arrange->getChrEnArrangeLv(id) & 0xffff) + levelOffset;
+  GfInitParamEnemy param;
+  param.unknown81 = flag;
+  param.GfInitParam::m_bladeID = resource & 0xffff;
+  param.unknown44 = priority;
+  param.unknownae = levelOffset;
+  param.unknown18 = &enemyList;
+  param.unknown98 = paramId & 0xffff;
+  param.m_enArrangeID = id;
+  u16 clamped = level < 1000 ? level : 999;
+  if (static_cast<s32>(level) < 1) {
+    clamped = 1;
+  }
+  param.unknownac = clamped;
+  param.unknown60.x = position.x;
+  param.unknown60.y = position.y;
+  param.unknown60.z = position.z;
+  param.unknown70.x = rotation.x;
+  param.unknown70.y = rotation.y;
+  param.unknown70.z = rotation.z;
+  param.unknown80 = true;
+  GF_OBJ_HANDLE *handle = createEnemy(param);
+  if (handle != INVALID_HANDLE) {
+    mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(handle)->unknown30)->m_enArrangeID = id;
+    return handle;
+  }
+  return INVALID_HANDLE;
 }
 
 GF_OBJ_HANDLE *GfObjFactory::createFieldObj(const GfInitParamFobj &param) {

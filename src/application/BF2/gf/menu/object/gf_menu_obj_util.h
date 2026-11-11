@@ -290,6 +290,8 @@ public:
   static QuestID getCurrentQuest(u32 type);
   static bool getMenuFullOpenFlag();
   static bool isCustomEnableBlade(u32 blade);
+  static bool isCustomEnableDriver(u32 driver);
+  static bool isBladeLastOneInSlot(u32 blade, const GfMenuBladeList *list);
   static int convMenuDriverID(u32 driver);
   static int convMenuBladeID(u32 blade);
   static int getDriverClassBuffRatio(u32 driverClass, u32 index);
