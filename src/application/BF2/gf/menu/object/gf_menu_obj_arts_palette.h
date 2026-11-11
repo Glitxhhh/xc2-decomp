@@ -27,6 +27,16 @@ public:
     GfMenuObjArtsPalette *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class ReverseListener : public ui::UIObjectListener {
+  public:
+    ReverseListener(GfMenuObjArtsPalette *owner) : unknown0c(0), _10(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: number of reverse icons; original member name unknown.
+    u8 _10[0x1c - 0x10];
+    GfMenuObjArtsPalette *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjArtsPalette(u32 handle);
   ~GfMenuObjArtsPalette() override;
   static void startChainAttack();
@@ -63,5 +73,8 @@ static_assert(offsetof(GfMenuObjArtsPalette, unknown808) == 0x808, "");
 static_assert(sizeof(GfMenuObjArtsPalette) == 0x968, "");
 static_assert(offsetof(GfMenuObjArtsPalette::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjArtsPalette::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjArtsPalette::ReverseListener, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjArtsPalette::ReverseListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjArtsPalette::ReverseListener) == 0x28, "");
 
 } // namespace gf

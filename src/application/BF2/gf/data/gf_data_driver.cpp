@@ -262,6 +262,24 @@ bool GfDataDriver::isEnableEquipWeapon(const SDataDriver &dataDriver, u32 weapon
   return isEnable;
 }
 
+bool GfDataDriver::getSetBlade(mm::mtl::FixedVector<u16, 422> &blades, u32 driver) {
+  blades.clear();
+  DataParamAcc dataParamAcc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
+  if (!dataParamAcc.isValid()) {
+    return false;
+  }
+
+  int setBladeNum = getMaxSetBladeNum(driver);
+  for (int slot = 0; slot < setBladeNum; slot++) {
+    u32 blade = dataParamAcc.getBlade(slot, false);
+    if (!GfDataBlade::isDummyBlade(blade) && blade != 0) {
+      blades.push_back(blade);
+    }
+  }
+
+  return !blades.empty();
+}
+
 u16 GfDataDriver::getDriverWeapon(u32 driver) { return getDriverWeapon(*getSDataDriver(driver)); }
 
 u16 GfDataDriver::getDriverWeapon(const SDataDriver &dataDriver) {

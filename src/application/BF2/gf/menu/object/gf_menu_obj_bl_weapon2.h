@@ -31,6 +31,33 @@ public:
     GfMenuObjBlWeapon2 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class ItemSelectListener : public ui::UIObjectListener {
+  public:
+    ItemSelectListener(GfMenuObjBlWeapon2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjBlWeapon2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class WeaponListener : public ui::UIObjectListener {
+  public:
+    WeaponListener(GfMenuObjBlWeapon2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjBlWeapon2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class ChrChangeListener : public ui::UIObjectListener {
+  public:
+    ChrChangeListener(GfMenuObjBlWeapon2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjBlWeapon2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjBlWeapon2(u32 handle);
   ~GfMenuObjBlWeapon2() override;
 
@@ -61,6 +88,7 @@ public:
   bool seqStart();
   bool seqSrcLeave();
   bool seqSrcAppear();
+  bool seqSrcEffect();
   static void setupWeapon(ui::UIObjectAcc &acc, GfMenuItemList *list, GfMenuWeaponAdapter::ReferenceChip &chip);
   static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList, u32 isShop, u32 shop);
   bool seqDstResume();
@@ -76,9 +104,9 @@ public:
   GfMenuSequence<GfMenuObjBlWeapon2, 8> unknown58; // Inferred role: weapon change steps; original member name unknown.
   bool unknown2e8;                                 // Inferred role: control started flag; original member name unknown.
   u8 _2e9[0x2ec - 0x2e9];
-  u32 unknown2ec; // Role and original member name unknown, cleared by the constructor.
-  u32 unknown2f0; // Role and original member name unknown, cleared by the constructor.
-  u8 _2f4[0x2f8 - 0x2f4];
+  u32 unknown2ec;              // Role and original member name unknown, cleared by the constructor.
+  u32 unknown2f0;              // Role and original member name unknown, cleared by the constructor.
+  u32 unknown2f4;              // Inferred role: shop; original member name unknown.
   GfMenuBladeList *unknown2f8; // Inferred role: blades; original member name unknown.
   bool unknown300;             // Role and original member name unknown, cleared by the constructor.
   u8 _301[0x308 - 0x301];
@@ -90,6 +118,12 @@ static_assert(offsetof(GfMenuObjBlWeapon2::unknown002, unknown02) == 0x02, "");
 static_assert(sizeof(GfMenuObjBlWeapon2::unknown002) == 0x04, "");
 static_assert(offsetof(GfMenuObjBlWeapon2::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjBlWeapon2::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjBlWeapon2::ItemSelectListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBlWeapon2::ItemSelectListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjBlWeapon2::WeaponListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBlWeapon2::WeaponListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjBlWeapon2::ChrChangeListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBlWeapon2::ChrChangeListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown38) == 0x38, "");
@@ -99,6 +133,7 @@ static_assert(offsetof(GfMenuObjBlWeapon2, unknown58) == 0x58, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown2e8) == 0x2e8, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown2ec) == 0x2ec, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown2f0) == 0x2f0, "");
+static_assert(offsetof(GfMenuObjBlWeapon2, unknown2f4) == 0x2f4, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown2f8) == 0x2f8, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown300) == 0x300, "");
 static_assert(sizeof(GfMenuObjBlWeapon2) == 0x308, "");

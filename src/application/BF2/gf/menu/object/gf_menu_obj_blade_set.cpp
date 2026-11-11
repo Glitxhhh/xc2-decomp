@@ -3,6 +3,7 @@
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_mercenaries.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/adapter/gf_menu_game_adapter.h"
 #include "gf/menu/adapter/gf_menu_mercenaries_adapter.h"
@@ -21,6 +22,7 @@
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -32,6 +34,8 @@ static const u32 unknown001[] = {21, 19, 21, 21};
 static const char *const unknown002[] = {"LAY_bl_form", "LAY_release", "LAY_mer"};
 // Inferred role: slot layout names of each mode; original name unknown.
 static const char *const unknown003[] = {"LAY_bl_form_slot", "LAY_bl_release_slot", "LAY_mer_slot"};
+// Inferred role: call id of the blade set layout; original name unknown.
+constexpr u32 CALL_UNKNOWN_88 = 88;
 
 GfMenuObjBladeSet::GfMenuObjBladeSet(u32 handle)
     : GfMenuObject(handle), unknown24(0), unknown28(0), unknown2c(0), unknown30(0), unknown34(false), unknown35(true), unknown38(0), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr),
@@ -48,6 +52,137 @@ GfMenuObjBladeSet::~GfMenuObjBladeSet() {
   mm::mtl::safeRelease(unknown78);
   mm::mtl::safeRelease(unknown80);
   mm::mtl::safeRelease(unknown88);
+}
+
+void GfMenuObjBladeSet::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  unknown40 = GfMenuCallContext::create();
+  unknown48 = GfMenuCallContext::create();
+  unknown50 = GfMenuBladeList::create();
+  unknown60 = GfMenuBladeList::create();
+  unknown70 = GfMenuBladeList::create();
+  unknown80 = GfMenuBladeList::create();
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 190 as in the original file: it is the line argument of operator new.
+#line 190
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, main);
+  u32 bladeSelect = acc.searchChild("LAY_bl_select");
+// __LINE__ must be 195 as in the original file: it is the line argument of operator new.
+#line 195
+  BladeSelectListener *bladeSelectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BladeSelectListener(this);
+  bladeSelectListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(bladeSelect, bladeSelectListener);
+  if (bladeSelectListener != nullptr) {
+    bladeSelectListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, bladeSelect);
+  u32 form = acc.searchChild("LAY_bl_form");
+// __LINE__ must be 200 as in the original file: it is the line argument of operator new.
+#line 200
+  FormListener *formListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FormListener(this);
+  formListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(form, formListener);
+  if (formListener != nullptr) {
+    formListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, form);
+  u32 formSlot = acc.searchChild("LAY_bl_form_slot");
+// __LINE__ must be 205 as in the original file: it is the line argument of operator new.
+#line 205
+  FormSlotListener *formSlotListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FormSlotListener(this);
+  formSlotListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(formSlot, formSlotListener);
+  if (formSlotListener != nullptr) {
+    formSlotListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, formSlot);
+  u32 preview = acc.searchChild("LAY_bl_preview");
+// __LINE__ must be 210 as in the original file: it is the line argument of operator new.
+#line 210
+  PreviewListener *previewListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PreviewListener(this);
+  previewListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(preview, previewListener);
+  if (previewListener != nullptr) {
+    previewListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, preview);
+  u32 release = acc.searchChild("LAY_release");
+// __LINE__ must be 215 as in the original file: it is the line argument of operator new.
+#line 215
+  ReleaseListener *releaseListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReleaseListener(this);
+  releaseListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(release, releaseListener);
+  if (releaseListener != nullptr) {
+    releaseListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, release);
+  u32 releaseSlot = acc.searchChild("LAY_bl_release_slot");
+// __LINE__ must be 220 as in the original file: it is the line argument of operator new.
+#line 220
+  ReleaseSlotListener *releaseSlotListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReleaseSlotListener(this);
+  releaseSlotListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(releaseSlot, releaseSlotListener);
+  if (releaseSlotListener != nullptr) {
+    releaseSlotListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, releaseSlot);
+  u32 mercenaries = acc.searchChild("LAY_mer");
+// __LINE__ must be 225 as in the original file: it is the line argument of operator new.
+#line 225
+  MercenariesListener *mercenariesListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MercenariesListener(this);
+  mercenariesListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(mercenaries, mercenariesListener);
+  if (mercenariesListener != nullptr) {
+    mercenariesListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, mercenaries);
+  u32 mercenariesSlot = acc.searchChild("LAY_mer_slot");
+// __LINE__ must be 230 as in the original file: it is the line argument of operator new.
+#line 230
+  MercenariesSlotListener *mercenariesSlotListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MercenariesSlotListener(this);
+  mercenariesSlotListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(mercenariesSlot, mercenariesSlotListener);
+  if (mercenariesSlotListener != nullptr) {
+    mercenariesSlotListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, mercenariesSlot);
+  u32 mercenariesSlotBl = acc.searchChild("LAY_mer_slot_bl");
+// __LINE__ must be 235 as in the original file: it is the line argument of operator new.
+#line 235
+  MercenariesSlotBlListener *mercenariesSlotBlListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MercenariesSlotBlListener(this);
+  mercenariesSlotBlListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(mercenariesSlotBl, mercenariesSlotBlListener);
+  if (mercenariesSlotBlListener != nullptr) {
+    mercenariesSlotBlListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, mercenariesSlotBl);
+  u32 mercenariesSlotMenu = acc.searchChild("LAY_mer_slot_menu");
+// __LINE__ must be 240 as in the original file: it is the line argument of operator new.
+#line 240
+  MercenariesSlotMenuListener *mercenariesSlotMenuListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MercenariesSlotMenuListener(this);
+  mercenariesSlotMenuListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(mercenariesSlotMenu, mercenariesSlotMenuListener);
+  if (mercenariesSlotMenuListener != nullptr) {
+    mercenariesSlotMenuListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, mercenariesSlotMenu);
+  u32 mercenariesPreview = acc.searchChild("LAY_mer_preview");
+// __LINE__ must be 245 as in the original file: it is the line argument of operator new.
+#line 245
+  MercenariesPreviewListener *mercenariesPreviewListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MercenariesPreviewListener(this);
+  mercenariesPreviewListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(mercenariesPreview, mercenariesPreviewListener);
+  if (mercenariesPreviewListener != nullptr) {
+    mercenariesPreviewListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_88, mercenariesPreview);
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjBladeSet::finalize() { GfMenuObject::finalize(); }

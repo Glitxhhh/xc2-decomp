@@ -100,7 +100,7 @@ public:
     mm::Pnt<s16> unknown26; // Inferred role: layout offset, added by the position method 0x80 (startCtrl reads x at 0x26 and y at 0x28); original member name unknown.
     u8 _2a[0x2c - 0x2a];
     f32 unknown2c; // Inferred role: scale; original member name unknown.
-    u8 _30[0x34 - 0x30];
+    f32 unknown30; // Inferred role: second scale component, read with unknown2c when the method flag 0x100000 is set; original member name unknown.
     f32 unknown34; // Inferred role: rotation; original member name unknown.
     f32 unknown38; // Inferred role: brightness; original member name unknown.
     f32 unknown3c; // Inferred role: alpha; original member name unknown.
@@ -368,6 +368,7 @@ static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown1c) == 0x1c, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown26) == 0x26, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown2c) == 0x2c, "");
+static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown34) == 0x34, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown38) == 0x38, "");
 static_assert(offsetof(GfMenuObjUtil::CtrlParam, unknown3c) == 0x3c, "");
