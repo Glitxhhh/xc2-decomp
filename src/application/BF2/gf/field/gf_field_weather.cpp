@@ -23,32 +23,32 @@
 namespace gf {
 struct GF_OBJ_HANDLE;
 
-constexpr u32 WEATHER_LIST_MAX = 16;
-constexpr f32 WEATHER_RAND_SCALE = 100.0f;
-constexpr u32 WEATHER_TIME_BONUS_DAYTIME = 1 << TIME_RANGE_DAYTIME;
-constexpr u32 WEATHER_TIME_BONUS_NIGHTTIME = 1 << TIME_RANGE_NIGHTTIME;
-constexpr u32 WEATHER_TIME_BONUS_NONE = 1 << 8;
-constexpr u32 WEATHER_TIME_BONUS_RANGE_ALL = 1 << 15;
-constexpr f32 WEATHER_TIME_BONUS_SEC = 10.0f;
-constexpr f32 WEATHER_TIME_BONUS_ALL_SEC = 30.0f;
-constexpr u32 WEATHER_TIME_BONUS_RARE = 1 << 14;
-constexpr f32 WEATHER_RARE_RATE = 3.0f;
-constexpr f32 WEATHER_FADE_SEC = 4.0f;
-constexpr f32 WEATHER_START_PAST_SEC = 0.001f;
-constexpr f32 WEATHER_DEFAULT_EXIST_SEC = 10800.0f;
-constexpr u32 WEATHER_ATR_CLOUD2 = 1;
-constexpr u32 WEATHER_ATR_CLOUD2_LATE = 2;
-constexpr u16 CLOUD2_SCENARIO_START = 9010;
-constexpr u16 CLOUD2_LATE_SCENARIO_START = 9015;
-constexpr u16 CLOUD2_SCENARIO_END = 10048;
+constexpr u32 WEATHER_UNKNOWN_16 = 16;                            // Inferred role: weather list max; original name unknown.
+constexpr f32 unknown045 = 100.0f;                                // Inferred role: weather rand scale; original name unknown.
+constexpr u32 WEATHER_UNKNOWN_6 = 1 << TIME_RANGE_UNKNOWN_6;      // Inferred role: weather time bonus daytime; original name unknown.
+constexpr u32 WEATHER_TIME_UNKNOWN_7 = 1 << TIME_RANGE_UNKNOWN_7; // Inferred role: weather time bonus nighttime; original name unknown.
+constexpr u32 WEATHER_UNKNOWN_8 = 1 << 8;                         // Inferred role: weather time bonus none; original name unknown.
+constexpr u32 WEATHER_UNKNOWN_15 = 1 << 15;                       // Inferred role: weather time bonus range all; original name unknown.
+constexpr f32 unknown046 = 10.0f;                                 // Inferred role: weather time bonus sec; original name unknown.
+constexpr f32 unknown047 = 30.0f;                                 // Inferred role: weather time bonus all sec; original name unknown.
+constexpr u32 WEATHER_UNKNOWN_14 = 1 << 14;                       // Inferred role: weather time bonus rare; original name unknown.
+constexpr f32 unknown048 = 3.0f;                                  // Inferred role: weather rare rate; original name unknown.
+constexpr f32 unknown049 = 4.0f;                                  // Inferred role: weather fade sec; original name unknown.
+constexpr f32 unknown050 = 0.001f;                                // Inferred role: weather start past sec; original name unknown.
+constexpr f32 unknown051 = 10800.0f;                              // Inferred role: weather default exist sec; original name unknown.
+constexpr u32 WEATHER_UNKNOWN_1 = 1;                              // Inferred role: weather atr cloud2; original name unknown.
+constexpr u32 WEATHER_UNKNOWN_2 = 2;                              // Inferred role: weather atr cloud2 late; original name unknown.
+constexpr u16 CLOUD2_UNKNOWN_9010 = 9010;                         // Inferred role: cloud2 scenario start; original name unknown.
+constexpr u16 CLOUD2_UNKNOWN_9015 = 9015;                         // Inferred role: cloud2 late scenario start; original name unknown.
+constexpr u16 CLOUD2_UNKNOWN_10048 = 10048;                       // Inferred role: cloud2 scenario end; original name unknown.
 
 // Inferred role: time bonus of the time ranges set in both the condition bits and the current time range bits; original function name unknown.
 static f32 unknown003(const GfFieldTime *time, u32 timeBits) {
   f32 bonus = 0.0f;
-  for (u32 range = TIME_RANGE_MORNING; range < TIME_RANGE_DAYTIME; range++) {
+  for (u32 range = TIME_RANGE_UNKNOWN_0; range < TIME_RANGE_UNKNOWN_6; range++) {
     u32 rangeBit = 1 << range;
     if ((timeBits & rangeBit) != 0 && (time->getTimeRangeBits() & rangeBit) != 0) {
-      bonus = WEATHER_TIME_BONUS_SEC;
+      bonus = unknown046;
     }
   }
 
@@ -57,7 +57,7 @@ static f32 unknown003(const GfFieldTime *time, u32 timeBits) {
 
 namespace _gffwt {
 
-mm::mtl::FixedList<WeatherInfo *, WEATHER_LIST_MAX> s_list;
+mm::mtl::FixedList<WeatherInfo *, WEATHER_UNKNOWN_16> s_list;
 
 bool isCurrentWeatherEnd() {
   if (s_list.empty() || s_list.front()->isTimeEnd()) {
@@ -98,7 +98,7 @@ WEATYPE getCurrentWtrType(bool isPrevious) {
     return info->unknown08;
   }
 
-  return WEATYPE_INVALID;
+  return WEATYPE_UNKNOWN_21;
 }
 
 WEATHERID getCurrentMapWeatherID(bool isPrevious) {
@@ -160,7 +160,7 @@ f32 getCurrentFadeExistSec(bool isPrevious) {
 }
 
 void destroyList() {
-  for (mm::mtl::FixedList<WeatherInfo *, WEATHER_LIST_MAX>::iterator it = s_list.begin(); it != s_list.end(); ++it) {
+  for (mm::mtl::FixedList<WeatherInfo *, WEATHER_UNKNOWN_16>::iterator it = s_list.begin(); it != s_list.end(); ++it) {
     if (*it != nullptr) {
       delete *it;
       *it = nullptr;
@@ -184,29 +184,29 @@ f32 getTimeBonus(u32 timeBits) {
     return bonus;
   }
 
-  if (timeBits == WEATHER_TIME_BONUS_NIGHTTIME) {
-    if ((time->getTimeRangeBits() & WEATHER_TIME_BONUS_NIGHTTIME) == 0) {
+  if (timeBits == WEATHER_TIME_UNKNOWN_7) {
+    if ((time->getTimeRangeBits() & WEATHER_TIME_UNKNOWN_7) == 0) {
       return bonus;
     }
-  } else if (timeBits == WEATHER_TIME_BONUS_NONE) {
+  } else if (timeBits == WEATHER_UNKNOWN_8) {
     return bonus;
-  } else if (timeBits == WEATHER_TIME_BONUS_DAYTIME) {
-    if ((time->getTimeRangeBits() & WEATHER_TIME_BONUS_DAYTIME) == 0) {
+  } else if (timeBits == WEATHER_UNKNOWN_6) {
+    if ((time->getTimeRangeBits() & WEATHER_UNKNOWN_6) == 0) {
       return bonus;
     }
   } else {
     bonus = unknown003(time, timeBits);
-    if ((timeBits & WEATHER_TIME_BONUS_RANGE_ALL) != 0 && (time->getTimeRangeBits() & WEATHER_TIME_BONUS_RANGE_ALL) != 0) {
-      bonus += WEATHER_TIME_BONUS_ALL_SEC;
+    if ((timeBits & WEATHER_UNKNOWN_15) != 0 && (time->getTimeRangeBits() & WEATHER_UNKNOWN_15) != 0) {
+      bonus += unknown047;
     }
     return bonus;
   }
 
-  bonus = WEATHER_TIME_BONUS_SEC;
+  bonus = unknown046;
   return bonus;
 }
 
-f32 getWeatherRand() { return (1.0f - ml::mtRandf1()) * WEATHER_RAND_SCALE; }
+f32 getWeatherRand() { return (1.0f - ml::mtRandf1()) * unknown045; }
 
 WeatherInfo *getCurrentWeatherInfo() {
   if (s_list.size() != 1 || s_list.back()->unknown20 < 1.0f) {
@@ -237,7 +237,7 @@ WeatherInfo *getFadeoutWeatherInfo() {
 }
 
 void setPause(bool isPause) {
-  for (mm::mtl::FixedList<WeatherInfo *, WEATHER_LIST_MAX>::iterator it = s_list.begin(); it != s_list.end(); ++it) {
+  for (mm::mtl::FixedList<WeatherInfo *, WEATHER_UNKNOWN_16>::iterator it = s_list.begin(); it != s_list.end(); ++it) {
     (*it)->setPause(isPause);
   }
 }
@@ -281,7 +281,7 @@ static void unknown004(u32 map) {
   WeatherInfo *info = _gffwt::getFadeinWeatherInfo();
   if (info != nullptr) {
     if (info->unknown0c == WEATHER_F) {
-      existSec = WEATHER_DEFAULT_EXIST_SEC;
+      existSec = unknown051;
     } else {
       u32 timeEnd = GfDataMap::getWeatherTimeEnd(map, info->unknown0c);
       f32 sec = timeEnd * 10.0f * 60.0f;
@@ -324,7 +324,7 @@ static void unknown005(u32 prevMap, u32 map) {
     param.unknown14 = current->unknown14;
   }
   WEATYPE type = current->unknown08;
-  if (type == WEATYPE_DEFAULT) {
+  if (type == WEATYPE_UNKNOWN_0) {
     return;
   }
   for (int weather = WEATHER_A; weather <= WEATHER_F; weather++) {
@@ -340,7 +340,7 @@ static void unknown005(u32 prevMap, u32 map) {
 }
 
 GfFieldWeather::GfFieldWeather(const GfSetupParam &param)
-    : unknown08(false), unknown09(false), unknown0a(false), unknown74(WEATHER_NULL), unknown78(CLOUD_SEA_HANDLE(0)), unknown7c(CLOUD_SEA_REQUEST_NONE), unknown80(CLOUD_SEA_HANDLE(0)),
+    : unknown08(false), unknown09(false), unknown0a(false), unknown74(WEATHER_UNKNOWN_0), unknown78(CLOUD_SEA_HANDLE(0)), unknown7c(CLOUD_SEA_REQUEST_UNKNOWN_0), unknown80(CLOUD_SEA_HANDLE(0)),
       unknown84(true) {
   initialize(param);
 }
@@ -374,10 +374,10 @@ void GfFieldWeather::gevMapjump(GEV gev, const MapjumpCallbackInfo &info) {
 void GfFieldWeather::gevGameMapModel(GF_OBJ_HANDLE *, bool) {}
 
 void GfFieldWeather::gevPause(u32 resumeBits, u32 pauseBits) {
-  if ((pauseBits & PAUSE_BIT_SYSTEM) != 0) {
+  if ((pauseBits & PAUSE_BIT_UNKNOWN_0) != 0) {
     _gffwt::setPause(true);
   }
-  if ((resumeBits & PAUSE_BIT_SYSTEM) != 0) {
+  if ((resumeBits & PAUSE_BIT_UNKNOWN_0) != 0) {
     _gffwt::setPause(false);
   }
 }
@@ -391,7 +391,7 @@ void GfFieldWeather::execChangeWeather(const WeatherParam &param) {
 
   for (int weather = 4; weather > 0; weather--) {
     if (GfGameCond::isGameCond(GfDataMap::getWeatherForceConditionOn(map, static_cast<WEATHERID>(weather))) && !GfGameEvent::isMapWeatherEnable()) {
-      createWeather(map, static_cast<WEATHERID>(weather), WEATHER_FADE_SEC);
+      createWeather(map, static_cast<WEATHERID>(weather), unknown049);
       return;
     }
   }
@@ -404,7 +404,7 @@ void GfFieldWeather::execChangeWeather(const WeatherParam &param) {
     }
   }
   if (!_gffwt::isCurrentWeatherEnd() && param.unknown0c != 0) {
-    createWeather(param, WEATHER_FADE_SEC);
+    createWeather(param, unknown049);
     return;
   }
 
@@ -414,21 +414,21 @@ void GfFieldWeather::execChangeWeather(const WeatherParam &param) {
     }
 
     u32 timeBonus = GfDataMap::getWeatherTimeBonus(map, static_cast<WEATHERID>(weather));
-    if ((timeBonus & WEATHER_TIME_BONUS_RARE) != 0 && _gffwt::getWeatherRand() < WEATHER_RARE_RATE) {
-      createWeather(map, static_cast<WEATHERID>(weather), WEATHER_FADE_SEC);
+    if ((timeBonus & WEATHER_UNKNOWN_14) != 0 && _gffwt::getWeatherRand() < unknown048) {
+      createWeather(map, static_cast<WEATHERID>(weather), unknown049);
       break;
     }
 
     u32 popRate = GfDataMap::getWeatherPopRate(map, static_cast<WEATHERID>(weather));
-    if (GfDataMap::getWeatherType(map, static_cast<WEATHERID>(weather)) != WEATYPE_DEFAULT) {
+    if (GfDataMap::getWeatherType(map, static_cast<WEATHERID>(weather)) != WEATYPE_UNKNOWN_0) {
       f32 rate = popRate + _gffwt::getTimeBonus(timeBonus);
       if (rate < 0.0f) {
         rate = 0.0f;
-      } else if (rate > WEATHER_RAND_SCALE) {
-        rate = WEATHER_RAND_SCALE;
+      } else if (rate > unknown045) {
+        rate = unknown045;
       }
       if (_gffwt::getWeatherRand() < rate) {
-        createWeather(map, static_cast<WEATHERID>(weather), WEATHER_FADE_SEC);
+        createWeather(map, static_cast<WEATHERID>(weather), unknown049);
         return;
       }
     }
@@ -439,16 +439,16 @@ void GfFieldWeather::execChangeWeather(const WeatherParam &param) {
   if (attribute != 0) {
     u16 scenario = GfDataUtil::getScenarioFlag();
     bool isCloud2 = false;
-    if (attribute == WEATHER_ATR_CLOUD2_LATE) {
-      isCloud2 = scenario >= CLOUD2_LATE_SCENARIO_START && scenario < CLOUD2_SCENARIO_END;
-    } else if (attribute == WEATHER_ATR_CLOUD2) {
-      isCloud2 = scenario >= CLOUD2_SCENARIO_START && scenario < CLOUD2_SCENARIO_END;
+    if (attribute == WEATHER_UNKNOWN_2) {
+      isCloud2 = scenario >= CLOUD2_UNKNOWN_9015 && scenario < CLOUD2_UNKNOWN_10048;
+    } else if (attribute == WEATHER_UNKNOWN_1) {
+      isCloud2 = scenario >= CLOUD2_UNKNOWN_9010 && scenario < CLOUD2_UNKNOWN_10048;
     }
     if (isCloud2) {
       weather = GfDataMap::getWeatherIdByWeaType(map, WEATYPE_UNKNOWN_12);
     }
   }
-  createWeather(map, weather, WEATHER_FADE_SEC);
+  createWeather(map, weather, unknown049);
 }
 
 void GfFieldWeather::createWeather(u32 map, WEATHERID weather, f32 fadeSec) {
@@ -457,12 +457,12 @@ void GfFieldWeather::createWeather(u32 map, WEATHERID weather, f32 fadeSec) {
   }
 
   WEATYPE prevType = _gffwt::getCurrentWtrType(false);
-  WEATYPE type = weather == WEATHER_F ? WEATYPE_DEFAULT : GfDataMap::getWeatherType(map, weather);
+  WEATYPE type = weather == WEATHER_F ? WEATYPE_UNKNOWN_0 : GfDataMap::getWeatherType(map, weather);
   if (prevType == type && _gffwt::getCurrentMapID(false) == map && !_gffwt::isCurrentWeatherEnd()) {
     return;
   }
 
-  f32 existSec = WEATHER_DEFAULT_EXIST_SEC;
+  f32 existSec = unknown051;
   if (weather != WEATHER_F) {
     u32 timeEnd = GfDataMap::getWeatherTimeEnd(map, weather);
     f32 sec = timeEnd * 10.0f * 60.0f;
@@ -475,13 +475,13 @@ void GfFieldWeather::createWeather(u32 map, WEATHERID weather, f32 fadeSec) {
   if (_gffwt::s_list.size() == 1) {
     WeatherInfo *current = _gffwt::s_list.front();
     if (current->unknown08 == type && current->unknown18 == map) {
-      current->resetParam(WEATHER_START_PAST_SEC, existSec, fadeSec);
+      current->resetParam(unknown050, existSec, fadeSec);
       return;
     }
   }
 
 #line 724
-  WeatherInfo *info = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) WeatherInfo(type, map, weather, WEATHER_START_PAST_SEC, existSec, fadeSec);
+  WeatherInfo *info = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) WeatherInfo(type, map, weather, unknown050, existSec, fadeSec);
   _gffwt::s_list.push_back(info);
   if (_gffwt::s_list.front() != info) {
     _gffwt::s_list.front()->fadeoutEnv();
@@ -503,11 +503,11 @@ bool GfFieldWeather::isColud2Condition(u32 map) const {
   }
 
   u16 scenario = GfDataUtil::getScenarioFlag();
-  if (attribute == WEATHER_ATR_CLOUD2) {
-    return scenario >= CLOUD2_SCENARIO_START && scenario < CLOUD2_SCENARIO_END;
+  if (attribute == WEATHER_UNKNOWN_1) {
+    return scenario >= CLOUD2_UNKNOWN_9010 && scenario < CLOUD2_UNKNOWN_10048;
   }
-  if (attribute == WEATHER_ATR_CLOUD2_LATE) {
-    return scenario >= CLOUD2_LATE_SCENARIO_START && scenario < CLOUD2_SCENARIO_END;
+  if (attribute == WEATHER_UNKNOWN_2) {
+    return scenario >= CLOUD2_UNKNOWN_9015 && scenario < CLOUD2_UNKNOWN_10048;
   }
 
   return false;
@@ -534,7 +534,7 @@ void GfFieldWeather::execChangeCloud(u32 map) { setCloudSeaForDebug(map, GfDataM
 
 void GfFieldWeather::setCloudSeaForDebug(u32, CLOUD_SEA cloudSea) {
   if (get() != nullptr) {
-    get()->unknown7c = cloudSea != 0 ? CLOUD_SEA_REQUEST_HIGH : CLOUD_SEA_REQUEST_LOW;
+    get()->unknown7c = cloudSea != 0 ? CLOUD_SEA_REQUEST_UNKNOWN_2 : CLOUD_SEA_REQUEST_UNKNOWN_1;
   }
 }
 
@@ -542,7 +542,7 @@ WEATYPE GfFieldWeather::getCurrentWtrType(bool isPrevious) { return _gffwt::getC
 
 u32 GfFieldWeather::getCurrentWtrTypeBit(bool isPrevious) {
   WEATYPE type = getCurrentWtrType(isPrevious);
-  return type == WEATYPE_DEFAULT ? 0 : 1 << type;
+  return type == WEATYPE_UNKNOWN_0 ? 0 : 1 << type;
 }
 
 WEATHERID GfFieldWeather::getCurrentMapWeatherID(bool isPrevious) { return _gffwt::getCurrentMapWeatherID(isPrevious); }
@@ -601,13 +601,13 @@ void GfFieldWeather::createWeatherForce(WEATYPE type, f32 fadeSec, const char *e
   if (_gffwt::s_list.size() == 1) {
     WeatherInfo *current = _gffwt::s_list.front();
     if (effect == nullptr && current->unknown08 == type) {
-      current->resetParam(WEATHER_START_PAST_SEC, WEATHER_START_PAST_SEC, fadeSec);
+      current->resetParam(unknown050, unknown050, fadeSec);
       return;
     }
   }
 
 #line 783
-  WeatherInfo *info = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) WeatherInfo(type, GfGameManager::getMapID(), WEATHER_A, WEATHER_START_PAST_SEC, WEATHER_DEFAULT_EXIST_SEC, fadeSec);
+  WeatherInfo *info = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) WeatherInfo(type, GfGameManager::getMapID(), WEATHER_A, unknown050, unknown051, fadeSec);
   info->setForceEffect(effect);
   _gffwt::s_list.push_back(info);
   if (_gffwt::s_list.front() != info) {
@@ -625,11 +625,11 @@ void GfFieldWeather::createWeatherForce(WEATYPE type, f32 fadeSec, const char *e
 void GfFieldWeather::updateEvent(const fw::UpdateInfo &info) {
   while (!unknown10.empty()) {
     switch (unknown10.front()) {
-    case GEV_MAPJUMP_START:
+    case GEV_UNKNOWN_1:
       unknown005(unknown60.unknown08, unknown60.unknown04);
       unknown0a = false;
       break;
-    case GEV_MAPJUMP_DESTROY_FIELD:
+    case GEV_UNKNOWN_2:
       if (unknown60.unknown08 != unknown60.unknown04) {
         setCurrentRemainSecZero();
         updateWeather(info);
@@ -637,9 +637,9 @@ void GfFieldWeather::updateEvent(const fw::UpdateInfo &info) {
       applyNowMapWeather(unknown60.unknown08, unknown60.unknown04);
       unknown0a = true;
       break;
-    case GEV_MAPJUMP_CREATE_FIELD:
+    case GEV_UNKNOWN_5:
       if (GfGameManager::isStartGame()) {
-        createWeather(unknown001(GfGameManager::getMapID()).unknown00, WEATHER_FADE_SEC);
+        createWeather(unknown001(GfGameManager::getMapID()).unknown00, unknown049);
       }
       applyNowMapWeatherForMapModel(unknown60.unknown04);
       setCloudSea(unknown60.unknown04, GfDataMap::getCloudType(unknown60.unknown04));
@@ -652,17 +652,17 @@ void GfFieldWeather::updateEvent(const fw::UpdateInfo &info) {
 
   WEATHERID tempWeather = GfGameEnv::getTempWeather();
   WEATHERID prevTempWeather = unknown74;
-  if (tempWeather == WEATHER_NULL) {
-    if (prevTempWeather == WEATHER_NULL) {
+  if (tempWeather == WEATHER_UNKNOWN_0) {
+    if (prevTempWeather == WEATHER_UNKNOWN_0) {
       return;
     }
-    unknown74 = WEATHER_NULL;
+    unknown74 = WEATHER_UNKNOWN_0;
     applyNowMapWeather(unknown60.unknown08, unknown60.unknown04);
     return;
   }
 
   unknown74 = tempWeather;
-  if (prevTempWeather == WEATHER_NULL) {
+  if (prevTempWeather == WEATHER_UNKNOWN_0) {
     unknown004(GfGameManager::getMapID());
   }
   if (_gffwt::getCurrentMapWeatherID(false) != tempWeather) {
@@ -683,7 +683,7 @@ void GfFieldWeather::updateWeather(const fw::UpdateInfo &info) {
   }
 
   fw::UpdateInfo updateInfo = info;
-  if (GfPause::isPause(PAUSE_BIT_SYSTEM)) {
+  if (GfPause::isPause(PAUSE_BIT_UNKNOWN_0)) {
     updateInfo.unknown08 = GfGameManager::getFieldSpeed(updateInfo);
     updateInfo.unknown04 = updateInfo.unknown08 * updateInfo.unknown04;
   }
@@ -745,12 +745,12 @@ void GfFieldWeather::applyNowMapWeather(u32 prevMap, u32 map) {
 
 void GfFieldWeather::setCloudSea(u32, CLOUD_SEA cloudSea) {
   GfFieldWeather *weather = get();
-  weather->unknown7c = cloudSea != 0 ? CLOUD_SEA_REQUEST_HIGH : CLOUD_SEA_REQUEST_LOW;
+  weather->unknown7c = cloudSea != 0 ? CLOUD_SEA_REQUEST_UNKNOWN_2 : CLOUD_SEA_REQUEST_UNKNOWN_1;
 }
 
 void GfFieldWeather::setMapWeatherID(WEATHERID weather) {
   if (get() != nullptr) {
-    get()->createWeather(GfGameManager::getMapID(), weather, WEATHER_FADE_SEC);
+    get()->createWeather(GfGameManager::getMapID(), weather, unknown049);
   }
 }
 
@@ -760,7 +760,7 @@ bool GfFieldWeather::isWeatherSE() { return _gffwt::isCurrentSE(); }
 
 void GfFieldWeather::setWeatherForEvent(WEATYPE type, const char *effect) {
   if (get() != nullptr) {
-    get()->createWeatherForce(type, WEATHER_FADE_SEC, effect);
+    get()->createWeatherForce(type, unknown049, effect);
   }
 }
 
@@ -770,9 +770,9 @@ void GfFieldWeather::setWeather(WEATYPE type, bool isTimeLimited) {
     return;
   }
 
-  if (type == WEATYPE_DEFAULT) {
+  if (type == WEATYPE_UNKNOWN_0) {
     weather->unknown09 = !isTimeLimited;
-    weather->createWeather(GfGameManager::getMapID(), WEATHER_F, WEATHER_FADE_SEC);
+    weather->createWeather(GfGameManager::getMapID(), WEATHER_F, unknown049);
   }
   for (int id = WEATHER_A; id <= WEATHER_D; id++) {
     if (GfDataMap::getWeatherType(GfGameManager::getMapID(), static_cast<WEATHERID>(id)) == type) {
@@ -842,9 +842,9 @@ void GfFieldWeather::destroyCloudSeaCondition() {
 }
 
 void GfFieldWeather::applyCloudSelect() {
-  if (unknown7c != CLOUD_SEA_REQUEST_NONE) {
-    GfGameEnv::setCloudSea(unknown78, static_cast<CLOUD_SEA>(unknown7c != CLOUD_SEA_REQUEST_LOW));
-    unknown7c = CLOUD_SEA_REQUEST_NONE;
+  if (unknown7c != CLOUD_SEA_REQUEST_UNKNOWN_0) {
+    GfGameEnv::setCloudSea(unknown78, static_cast<CLOUD_SEA>(unknown7c != CLOUD_SEA_REQUEST_UNKNOWN_1));
+    unknown7c = CLOUD_SEA_REQUEST_UNKNOWN_0;
   }
 }
 
@@ -895,7 +895,7 @@ void GfFieldWeather::clear() {
 void GfFieldWeather::build(const GfSetupParam &param) {
   // __LINE__ must be 1330 as in the original file: it is the line argument of operator new.
 #line 1330
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldWeather(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfFieldWeather(param);
 }
 
 void GfFieldWeather::destroy() {

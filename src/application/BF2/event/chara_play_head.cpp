@@ -21,7 +21,7 @@ void CharaPlayHead::idle() {
     if (!mm::mtl::Singleton<SkipManager>::getPtr()->isSkip() && blendOutFlag != 0) {
       blend = type2blend(unknown20);
     }
-    unknown18->easeOut(gf::ANIM_LAYER_HEAD, stat, blend, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
+    unknown18->easeOut(gf::ANIM_LAYER_UNKNOWN_2, stat, blend, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
     unknown20 = 0;
     unknown24 = -1.0f;
     unknown28 = "";

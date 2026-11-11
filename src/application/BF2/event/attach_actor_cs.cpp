@@ -17,7 +17,7 @@
 namespace event {
 enum ATTACH_TYPE : int;
 
-AttachActorCS::AttachActorCS(const char *name) : AttachActorBase(name), unknowna0(gf::INVALID_HANDLE) {}
+AttachActorCS::AttachActorCS(const char *name) : AttachActorBase(name), unknowna0(gf::unknown020) {}
 
 AttachActorCS::~AttachActorCS() {
   while (!unknowna8.empty()) {

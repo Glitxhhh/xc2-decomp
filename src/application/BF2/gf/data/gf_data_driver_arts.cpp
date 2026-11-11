@@ -11,7 +11,7 @@
 
 namespace gf {
 
-constexpr u32 ARTS_LEVEL_MAX = 5;
+constexpr u32 ARTS_LEVEL_UNKNOWN_5 = 5; // Inferred role: arts level max; original name unknown.
 
 bool GfDataDriverArts::getEnableArts(mm::mtl::FixedArray<u32, 4> &enableArts, u32 driver, u32 weaponType) {
   for (u32 i = 0; i < enableArts.size(); i++) {
@@ -43,7 +43,7 @@ u32 GfDataDriverArts::getArtsLevel(u32 driver, u32 arts) { return GfDataDriver::
 
 u32 GfDataDriverArts::getNeedLevelupWp(u32 driver, u32 arts) {
   u32 level = GfDataDriver::getSDataDriver(driver)->unknown2f0[arts];
-  if (level >= ARTS_LEVEL_MAX) {
+  if (level >= ARTS_LEVEL_UNKNOWN_5) {
     return 0;
   }
 

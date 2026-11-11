@@ -63,7 +63,7 @@ struct unknown002 {
 
 // Inferred role: counts the blades of the party and the reserve, except one; no game symbol, original name unknown.
 static void unknown003(unknown002 &counts, u16 except) {
-  mm::mtl::FixedVector<u16, BLADE_COUNT> blades;
+  mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> blades;
   GfDataBlade::getListParty(blades);
   GfDataBlade::getListReserver(blades);
   GfDataBlade::removeSameBlade(blades);

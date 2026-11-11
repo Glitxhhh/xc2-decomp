@@ -105,7 +105,7 @@ void GfMenuObjEnBook::setupFamilyMsgList() {
     ui::UIListInfoBase::SetupParam param;
     param.unknown08 = count;
     param.unknown10 = true;
-    unknown40->setup(getAllocator(ALLOCATOR_DEFAULT), param);
+    unknown40->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
     unknown40->clear();
   }
   for (int i = 0; i < Bdat::getIdCount(bdat); i++) {

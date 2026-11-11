@@ -39,8 +39,8 @@ f32 GfComPropertyPc::getGravity() const {
 }
 
 const fw::Transform &GfComPropertyPc::getLocomotion() const {
-  static const fw::Transform identity = {mm::Vec3::zero, mm::Quat::identity};
-  const fw::Transform &locomotion = unknown110_2 ? m_locomotion : identity;
+  static const fw::Transform unknown014 = {mm::Vec3::zero, mm::Quat::identity}; // Inferred role: identity; original name unknown.
+  const fw::Transform &locomotion = unknown110_2 ? m_locomotion : unknown014;
   return locomotion;
 }
 

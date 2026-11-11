@@ -152,7 +152,7 @@ void GfFieldLod::debugDraw() {
 void GfFieldLod::build(const GfSetupParam &param) {
 // __LINE__ must be 2054 as in the original file: its value changes the instruction order.
 #line 2054
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldLod(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfFieldLod(param);
 }
 
 GfFieldLod::BdatInfo::BdatInfo(u16 bdatId) : unknown00(0), unknown04(0.0f), unknown08(0.0f), unknown0c(0), unknown0e{CondInfo(), CondInfo(), CondInfo()} {
@@ -249,7 +249,7 @@ void GfFieldLodColiAnim::disposePosInfos() {
   size_t count = unknown20.size();
   for (int i = 0; i < count; i++) {
     PosInfo &posInfo = unknown20[i];
-    if (posInfo.unknown50 != INVALID_HANDLE) {
+    if (posInfo.unknown50 != unknown020) {
       if (coliObject != nullptr && posInfo.unknown48 >= 0) {
         idcoli::IDColiParmsGrand coliParms(coliObject->m_coliObject);
         coliParms.getMoveObj(posInfo.unknown48).setUserData(nullptr);
@@ -264,7 +264,7 @@ void GfFieldLodColiAnim::disposePosInfos() {
 void GfFieldLodColiAnim::update(const fw::UpdateInfo &info) {
   if (unknown00.unknown00 != nullptr && unknown00.unknown10 != nullptr && !GfManager::isDestroyNow() && unknown20.size() != 0) {
     for (PosInfo &posInfo : unknown20) {
-      if (posInfo.unknown50 == INVALID_HANDLE) {
+      if (posInfo.unknown50 == unknown020) {
         posInfo.update(info);
       }
     }

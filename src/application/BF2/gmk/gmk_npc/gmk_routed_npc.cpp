@@ -57,7 +57,7 @@ bool GmkRoutedNpc::isDepopCondMatched() const {
 }
 
 bool GmkRoutedNpc::isPopDistCondMatched() const {
-  if (!isValid() || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (!isValid() || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return false;
   }
   const mm::Vec3 &position = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -69,7 +69,7 @@ bool GmkRoutedNpc::isPopDistCondMatched() const {
 }
 
 bool GmkRoutedNpc::isDepopDistCondMatched() const {
-  if (!isValid() || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (!isValid() || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return false;
   }
   const mm::Vec3 &position = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -82,7 +82,7 @@ bool GmkRoutedNpc::isDepopDistCondMatched() const {
 
 void GmkRoutedNpc::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     unbindToGameObj(handle);
     unknown78 = true;
     if (AGmkNpc::unknown18->unknown30 == handle) {
@@ -111,11 +111,11 @@ void GmkRoutedNpc::unbindToGameObj(gf::GF_OBJ_HANDLE *handle) const {
 
 gf::GF_OBJ_HANDLE *GmkRoutedNpc::getGobInst() const {
   if (AGmkNpc::unknown18 == nullptr) {
-    return gf::INVALID_HANDLE;
+    return gf::unknown020;
   }
   gf::GF_OBJ_HANDLE *handle = AGmkNpc::unknown18->unknown30;
   if (this != getBindedGmkInst(handle)) {
-    return gf::INVALID_HANDLE;
+    return gf::unknown020;
   }
   return handle;
 }
@@ -129,7 +129,7 @@ bool GmkRoutedNpc::isPopCondMatchedExceptDist() const {
 
 void GmkRoutedNpc::validateDisp() const {
   gf::GF_OBJ_HANDLE *handle = getGobInst();
-  if (handle != gf::INVALID_HANDLE) {
+  if (handle != gf::unknown020) {
     bool isDisp = unknown79 && debugIsDispGmkType(getGmkType());
     setEventDisp(handle, isDisp);
   }

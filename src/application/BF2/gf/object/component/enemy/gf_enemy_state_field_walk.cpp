@@ -285,7 +285,7 @@ void StateFieldWalk::seqWaitSyncLoco(GfComBehaviorEnemy &behavior, const fw::Upd
   if (obj != nullptr) {
     GfComAsm *comAsm = obj->getComponent<GfComAsm>();
     if (comAsm != nullptr) {
-      const char *stateName = comAsm->getStateName(ANIM_LAYER_BASE);
+      const char *stateName = comAsm->getStateName(ANIM_LAYER_UNKNOWN_0);
       if (stateName == nullptr) {
         return;
       }

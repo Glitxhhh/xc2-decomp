@@ -52,7 +52,7 @@ u32 calcFootCnt(GfComModel *model) {
 }
 
 bool GfComIK::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
-  if (message.unknown00 == MSG_DEBUG_ACTIVATE_COMPONENT_WINDOW) {
+  if (message.unknown00 == MSG_UNKNOWN_16777219) {
     procMsgActivateComponentDebugWindow(sender, static_cast<MsgDebugActivateComponentWindow &>(message));
     return true;
   }
@@ -63,7 +63,7 @@ bool GfComIK::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
 void GfComIK::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
 
 GfComIK::GfComIK() : unknown48(nullptr), unknown50(0), unknown68(nullptr) {
-  unknown10.unknown10.setAllocator(getAllocator(ALLOCATOR_DEFAULT));
+  unknown10.unknown10.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
   unknown58.unknown08 = this;
 }
 

@@ -83,7 +83,7 @@ const char *CharaUtil::getStat(gf::GfObj *obj) {
 
   gf::GfComAsm *animAsm = obj->getComponent<gf::GfComAsm>();
   if (animAsm != nullptr) {
-    return animAsm->getStateName(gf::ANIM_LAYER_BASE);
+    return animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0);
   }
 
   return "";
@@ -99,7 +99,7 @@ bool CharaUtil::checkStat(gf::GfObj *obj, const char *state) {
     if (animAsm == nullptr) {
       return false;
     }
-    name = animAsm->getStateName(gf::ANIM_LAYER_BASE) != nullptr ? animAsm->getStateName(gf::ANIM_LAYER_BASE) : "";
+    name = animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0) != nullptr ? animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0) : "";
   }
 
   return __builtin_strcmp(name, state) == 0;
@@ -119,7 +119,7 @@ bool CharaUtil::checkStat(gf::GfObj *obj, const char *state, const char *otherSt
   if (animAsm == nullptr) {
     return false;
   }
-  const char *name = animAsm->getStateName(gf::ANIM_LAYER_BASE) != nullptr ? animAsm->getStateName(gf::ANIM_LAYER_BASE) : "";
+  const char *name = animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0) != nullptr ? animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0) : "";
   if (__builtin_strcmp(name, state) == 0) {
     return true;
   }
@@ -136,7 +136,7 @@ bool CharaUtil::checkStatSeries(gf::GfObj *obj, const char *series) {
     if (animAsm == nullptr) {
       return false;
     }
-    name = animAsm->getStateName(gf::ANIM_LAYER_BASE) != nullptr ? animAsm->getStateName(gf::ANIM_LAYER_BASE) : "";
+    name = animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0) != nullptr ? animAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0) : "";
   }
 
   return __builtin_strstr(name, series) != nullptr;
@@ -267,13 +267,13 @@ void CharaUtil::adjestPosY(mm::Vec3 &position, mm::Vec3 *reference) {
 
 void CharaUtil::combat(gf::GfEvtModel *model, bool isBattle, bool isState) {
   gf::GF_EVT_MODEL type = model->unknown18;
-  if (model != nullptr && type == gf::GF_EVT_MODEL_DRIVER) {
+  if (model != nullptr && type == gf::GF_EVT_MODEL_UNKNOWN_0) {
     setWeaponMode(model, isBattle, isState);
-  } else if (model != nullptr && type == gf::GF_EVT_MODEL_BLADE) {
+  } else if (model != nullptr && type == gf::GF_EVT_MODEL_UNKNOWN_1) {
     setWeaponMode(model, isBattle, isState);
-  } else if (model != nullptr && type == gf::GF_EVT_MODEL_ENEMY) {
+  } else if (model != nullptr && type == gf::GF_EVT_MODEL_UNKNOWN_5) {
     setWeaponMode(model, isBattle, isState);
-  } else if (model != nullptr && type == gf::GF_EVT_MODEL_WEAPON) {
+  } else if (model != nullptr && type == gf::GF_EVT_MODEL_UNKNOWN_2) {
     setWeaponMode(model, isBattle, isState);
   }
 }

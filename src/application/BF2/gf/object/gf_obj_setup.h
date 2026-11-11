@@ -175,7 +175,7 @@ static_assert(sizeof(GfObjSetupMap) == 0x80, "");
 class GfObjSetupDriver : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
-  static const u32 OBJECT_TYPE = OBJECT_TYPE_DRIVER;
+  static const u32 OBJECT_TYPE = OBJECT_TYPE_PC;
 
   GfObjSetupDriver(const GfInitParamDriver &param);
   const mm::mtl::RTTI *getRTTI() const override;
@@ -339,9 +339,9 @@ class GfObjSetupBelonging : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
 
-  GfObjSetupBelonging(const GfInitParamBelonging &param) : GfObjSetup(param, OBJECT_TYPE_BELONGING), unknown6c(-1) {}
+  GfObjSetupBelonging(const GfInitParamBelonging &param) : GfObjSetup(param, OBJECT_TYPE_OPTION), unknown6c(-1) {}
   const mm::mtl::RTTI *getRTTI() const override;
-  static const u32 OBJECT_TYPE = OBJECT_TYPE_BELONGING;
+  static const u32 OBJECT_TYPE = OBJECT_TYPE_OPTION;
 
   u32 unknown6c; // Inferred role: mount index; original member name unknown.
 };
@@ -378,7 +378,7 @@ class GfObjSetupExtra : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
 
-  GfObjSetupExtra(const GfInitParamExtra &param) : GfObjSetup(param, OBJECT_TYPE_UNKNOWN_14), unknown6c(-1) {}
+  GfObjSetupExtra(const GfInitParamExtra &param) : GfObjSetup(param, OBJECT_TYPE_EXTRA), unknown6c(-1) {}
   const mm::mtl::RTTI *getRTTI() const override;
 
   u32 unknown6c; // Inferred role: mount index; original member name unknown.
@@ -391,7 +391,7 @@ class GfObjSetupFieldObj : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
 
-  GfObjSetupFieldObj(const GfInitParamFobj &param) : GfObjSetup(param, OBJECT_TYPE_FOBJ), unknown6c(-1), unknown70(0), unknown78(0), unknown7c(0), unknown80(0), unknown84(0), unknown88(0.0f) {}
+  GfObjSetupFieldObj(const GfInitParamFobj &param) : GfObjSetup(param, OBJECT_TYPE_FIELD_OBJ), unknown6c(-1), unknown70(0), unknown78(0), unknown7c(0), unknown80(0), unknown84(0), unknown88(0.0f) {}
   const mm::mtl::RTTI *getRTTI() const override;
 
   u32 unknown6c; // Inferred role: param id; original member name unknown.
@@ -417,7 +417,7 @@ class GfObjSetupMapLodAnim : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
 
-  GfObjSetupMapLodAnim(const GfInitParamMapLodAnim &param) : GfObjSetup(param, OBJECT_TYPE_UNKNOWN_2), unknown6c(0) {}
+  GfObjSetupMapLodAnim(const GfInitParamMapLodAnim &param) : GfObjSetup(param, OBJECT_TYPE_MAP_LOD), unknown6c(0) {}
   const mm::mtl::RTTI *getRTTI() const override;
 
   u16 unknown6c; // Inferred role: lod id; original member name unknown.

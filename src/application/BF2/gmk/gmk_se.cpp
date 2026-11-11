@@ -136,7 +136,7 @@ void GmkSe::updateInActiveList(f32 deltaTime) {
     return;
   }
   const Data *data = getData();
-  if (data->unknown00 <= 0.0f || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (data->unknown00 <= 0.0f || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return;
   }
   const mm::Vec3 &playerPos = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -214,7 +214,7 @@ void GmkSe::createInst() {
     return;
   }
   fw::SoundPack *pack = info->getSoundPack();
-  unknownf4 = fw::SoundManager::get()->playSe(info->unknown02, pack, info->unknown05 * 0.01f, gf::CATEGORY_GAME_ENV);
+  unknownf4 = fw::SoundManager::get()->playSe(info->unknown02, pack, info->unknown05 * 0.01f, gf::CATEGORY_ENV);
   if (unknownf4 == 0) {
     dispose();
     return;
@@ -336,7 +336,7 @@ void GmkSeLine::updateInActiveList(f32 deltaTime) {
     return;
   }
   const Data *data = getData();
-  if (data->unknown20 <= 0.0f || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (data->unknown20 <= 0.0f || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return;
   }
   unknown64 = 1000000000000.0f;
@@ -382,7 +382,7 @@ GmkSeLine::GmkSeLine() : IntrusiveListNode(), unknown58(false), unknown59(false)
 int GmkSeLine::getPointNum() const { return getData()->unknown1c - getData()->unknown0c; }
 
 bool GmkSeLine::isPlayerInsideAabb() const {
-  if (gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (gf::GfGameManager::getControlMover() == gf::unknown020) {
     return false;
   }
   const mm::Vec3 &position = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -412,7 +412,7 @@ void GmkSeLine::createInst() {
     return;
   }
   fw::SoundPack *pack = info->getSoundPack();
-  unknown5c = fw::SoundManager::get()->playSe(info->unknown02, pack, info->unknown05 * 0.01f, gf::CATEGORY_GAME_ENV);
+  unknown5c = fw::SoundManager::get()->playSe(info->unknown02, pack, info->unknown05 * 0.01f, gf::CATEGORY_ENV);
   if (unknown5c == 0) {
     dispose();
     return;

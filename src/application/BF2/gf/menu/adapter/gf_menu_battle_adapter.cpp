@@ -66,7 +66,7 @@ GfMenuBattleAdapter *GfMenuBattleAdapter::create(u32 handle, u32 type) {
     if (plugin != nullptr) {
       // __LINE__ must be 130 as in the original source: it is the line argument of operator new.
 #line 130
-      GfMenuBattleAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuBattleAdapter(plugin);
+      GfMenuBattleAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuBattleAdapter(plugin);
       adapter->unknown38.bind(adapter, info.update);
       plugin->release();
       return adapter;
@@ -244,7 +244,7 @@ bool GfMenuBattleAdapter::update_ReverseIconCol() {
 GfMenuBattleAdapter *GfMenuBattleAdapter::createFromReferenceIndex(u32 handle, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 type) {
   // __LINE__ must be 146 as in the original source: it is the line argument of operator new.
 #line 146
-  ReferenceIndexConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceIndexConverter(number);
+  ReferenceIndexConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceIndexConverter(number);
   GfMenuBattleAdapter *adapter = create(handle, type);
   adapter->unknown58 = converter;
   return adapter;

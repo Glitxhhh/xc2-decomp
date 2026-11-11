@@ -269,7 +269,7 @@ public:
   bool exec(const fw::UpdateInfo &info) override;
   static void create();
 
-  mm::mtl::FixedVector<u16, BLADE_COUNT> unknown20; // Inferred role: blades left to complete; original member name unknown.
+  mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> unknown20; // Inferred role: blades left to complete; original member name unknown.
 };
 
 static_assert(offsetof(SCOM_FSKILLMAX_FOR_DEBUG, unknown20) == 0x20, "");

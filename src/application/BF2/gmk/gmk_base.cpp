@@ -77,16 +77,16 @@ void AGmkBase::createBase(const CreateBaseInfo &info) { unknown08 = info; }
 
 void AGmkBase::bindToGameObj(gf::GF_OBJ_HANDLE *handle) const {
   gf::GfObjAcc acc(handle);
-  acc.setUserData(gf::OBJ_USER_DATA_GMK, reinterpret_cast<u64>(this));
+  acc.setUserData(gf::OBJ_USER_DATA_UNKNOWN_0, reinterpret_cast<u64>(this));
 }
 
 void AGmkBase::unbindToGameObj(gf::GF_OBJ_HANDLE *handle) const {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   gf::GfObjAcc acc(handle);
   if (acc.isValid()) {
-    acc.setUserData(gf::OBJ_USER_DATA_GMK, 0);
+    acc.setUserData(gf::OBJ_USER_DATA_UNKNOWN_0, 0);
   }
 }
 
@@ -116,7 +116,7 @@ void AGmkBase::debugDraw() const {
 }
 
 void AGmkBase::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
-  if (event != gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event != gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     return;
   }
   unbindToGameObj(handle);

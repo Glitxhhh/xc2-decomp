@@ -7,7 +7,7 @@ namespace gf {
 
 GfMenuObjCommonInfo::ParamBase *GfMenuObjCommonInfo::createParamAchivement(u32 param0, u32 param1, u32 param2) {
 #line 53
-  ParamAchivement *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ParamAchivement();
+  ParamAchivement *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ParamAchivement();
   if (param != nullptr) {
     param->unknown08 = 1;
     param->unknown0c = param0;

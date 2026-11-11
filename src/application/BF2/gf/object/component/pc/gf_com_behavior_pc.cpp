@@ -37,103 +37,103 @@ namespace pc {
 AccessPlugin *AccessPlugin::create() {
   // __LINE__ must be 31 as in the original header: it is the line argument of operator new.
 #line 31 "gf/object/component/pc/plugin/gf_pc_access_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) AccessPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) AccessPlugin();
 }
 
 AttachPlugin *AttachPlugin::create() {
   // __LINE__ must be 26 as in the original header: it is the line argument of operator new.
 #line 26 "gf/object/component/pc/plugin/gf_pc_attach_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) AttachPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) AttachPlugin();
 }
 
 ColVelCalculatorPlugin *ColVelCalculatorPlugin::create() {
   // __LINE__ must be 27 as in the original header: it is the line argument of operator new.
 #line 27 "gf/object/component/pc/plugin/gf_pc_col_velocity_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ColVelCalculatorPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ColVelCalculatorPlugin();
 }
 
 DeadColCheckPlugin *DeadColCheckPlugin::create() {
   // __LINE__ must be 27 as in the original header: it is the line argument of operator new.
 #line 27 "gf/object/component/pc/plugin/gf_pc_dead_col_check_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) DeadColCheckPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DeadColCheckPlugin();
 }
 
 FadePlugin *FadePlugin::create() {
   // __LINE__ must be 34 as in the original header: it is the line argument of operator new.
 #line 34 "gf/object/component/pc/plugin/gf_pc_fade_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) FadePlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FadePlugin();
 }
 
 FallDamagePlugin *FallDamagePlugin::create() {
   // __LINE__ must be 27 as in the original header: it is the line argument of operator new.
 #line 27 "gf/object/component/pc/plugin/gf_pc_fall_damage_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) FallDamagePlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FallDamagePlugin();
 }
 
 FallDistanceAchievPlugin *FallDistanceAchievPlugin::create() {
   // __LINE__ must be 26 as in the original header: it is the line argument of operator new.
 #line 26 "gf/object/component/pc/plugin/gf_pc_fall_distance_achiev_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) FallDistanceAchievPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FallDistanceAchievPlugin();
 }
 
 FallDistancePlugin *FallDistancePlugin::create() {
   // __LINE__ must be 26 as in the original header: it is the line argument of operator new.
 #line 26 "gf/object/component/pc/plugin/gf_pc_fall_distance_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) FallDistancePlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FallDistancePlugin();
 }
 
 FallIntoColiPlugin *FallIntoColiPlugin::create() {
   // __LINE__ must be 25 as in the original header: it is the line argument of operator new.
 #line 25 "gf/object/component/pc/plugin/gf_pc_fall_into_coli_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) FallIntoColiPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FallIntoColiPlugin();
 }
 
 LookAxisPlugin *LookAxisPlugin::create() {
   // __LINE__ must be 27 as in the original header: it is the line argument of operator new.
 #line 27 "gf/object/component/pc/plugin/gf_pc_look_axis_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LookAxisPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) LookAxisPlugin();
 }
 
 LurePlugin *LurePlugin::create() {
   // __LINE__ must be 29 as in the original header: it is the line argument of operator new.
 #line 29 "gf/object/component/pc/plugin/gf_pc_lure_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LurePlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) LurePlugin();
 }
 
 LookAtPlugin *LookAtPlugin::create() {
   // __LINE__ must be 39 as in the original header: it is the line argument of operator new.
 #line 39 "gf/object/component/pc/plugin/gf_pc_lookat_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LookAtPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) LookAtPlugin();
 }
 
 SlidePlugin *SlidePlugin::create() {
   // __LINE__ must be 26 as in the original header: it is the line argument of operator new.
 #line 26 "gf/object/component/pc/plugin/gf_pc_slide_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SlidePlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SlidePlugin();
 }
 
 TargetIKPlugin *TargetIKPlugin::create() {
   // __LINE__ must be 33 as in the original header: it is the line argument of operator new.
 #line 33 "gf/object/component/pc/plugin/gf_pc_target_ik_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) TargetIKPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) TargetIKPlugin();
 }
 
 TerrainDamagePlugin *TerrainDamagePlugin::create() {
   // __LINE__ must be 26 as in the original header: it is the line argument of operator new.
 #line 26 "gf/object/component/pc/plugin/gf_pc_terrain_damage_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) TerrainDamagePlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) TerrainDamagePlugin();
 }
 
 TimerPlugin *TimerPlugin::create() {
   // __LINE__ must be 25 as in the original header: it is the line argument of operator new.
 #line 25 "gf/object/component/pc/plugin/gf_pc_timer_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) TimerPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) TimerPlugin();
 }
 
 WaterInPlugin *WaterInPlugin::create() {
   // __LINE__ must be 25 as in the original header: it is the line argument of operator new.
 #line 25 "gf/object/component/pc/plugin/gf_pc_water_in_plugin.h"
-  return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) WaterInPlugin();
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) WaterInPlugin();
 }
 
 } // namespace pc

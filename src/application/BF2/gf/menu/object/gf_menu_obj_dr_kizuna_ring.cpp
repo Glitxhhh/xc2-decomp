@@ -51,7 +51,7 @@ void GfMenuObjDrKizunaRing::initialize() {
   u32 main = acc.searchChild("LAY_main");
 // __LINE__ must be 153 as in the original file: it is the line argument of operator new.
 #line 153
-  MainListener *mainListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   mainListener->addRef();
   ui::UIEventManager::get()->registObjectListener(main, mainListener);
   if (mainListener != nullptr) {
@@ -61,7 +61,7 @@ void GfMenuObjDrKizunaRing::initialize() {
   u32 ring = acc.searchChild("LAY_dr_main");
 // __LINE__ must be 159 as in the original file: it is the line argument of operator new.
 #line 159
-  RingListener *ringListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) RingListener(this);
+  RingListener *ringListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) RingListener(this);
   ringListener->addRef();
   ui::UIEventManager::get()->registObjectListener(ring, ringListener);
   if (ringListener != nullptr) {
@@ -70,7 +70,7 @@ void GfMenuObjDrKizunaRing::initialize() {
   u32 scale = acc.searchChild("LAY_scale");
 // __LINE__ must be 163 as in the original file: it is the line argument of operator new.
 #line 163
-  RingPadListener *ringPadListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) RingPadListener(this);
+  RingPadListener *ringPadListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) RingPadListener(this);
   ringPadListener->addRef();
   ui::UIEventManager::get()->registObjectListener(scale, ringPadListener);
   if (ringPadListener != nullptr) {
@@ -79,7 +79,7 @@ void GfMenuObjDrKizunaRing::initialize() {
   u32 skillInfo = acc.searchChild("LAY_skill_info");
 // __LINE__ must be 167 as in the original file: it is the line argument of operator new.
 #line 167
-  SkillDetailListener *skillDetailListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SkillDetailListener(this);
+  SkillDetailListener *skillDetailListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SkillDetailListener(this);
   skillDetailListener->addRef();
   ui::UIEventManager::get()->registObjectListener(skillInfo, skillDetailListener);
   if (skillDetailListener != nullptr) {
@@ -88,21 +88,21 @@ void GfMenuObjDrKizunaRing::initialize() {
   u32 stockSP = acc.searchChild("LAY_dr_stocksp");
 // __LINE__ must be 175 as in the original file: it is the line argument of operator new.
 #line 175
-  DriverStockSPListener *stockSPListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) DriverStockSPListener(this);
+  DriverStockSPListener *stockSPListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DriverStockSPListener(this);
   stockSPListener->addRef();
   ui::UIEventManager::get()->registObjectListener(stockSP, stockSPListener);
   if (stockSPListener != nullptr) {
     stockSPListener->release();
   }
   ui::UISelectObjList::CreateParam param;
-  param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown28 = ui::UISelectObjList::create(param);
   unknown48 = GfMenuCallContext::create();
   unknown50 = GfMenuCallContext::create();
   unknown300 = GfMenuCallContext::create();
   unknown308 = GfMenuItemList::create();
   ui::UIListInfoBase::SetupParam itemParam;
-  unknown308->setup(getAllocator(ALLOCATOR_DEFAULT), itemParam);
+  unknown308->setup(getAllocator(ALLOCATOR_UNKNOWN_0), itemParam);
   disableInput(acc.searchChild("LAY_dr_main"));
   disableInput(acc.searchChild("LAY_scale"));
   GfMenuObject::initialize();

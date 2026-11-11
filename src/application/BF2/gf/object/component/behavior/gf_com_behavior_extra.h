@@ -16,7 +16,7 @@ namespace gf {
 struct MsgObjectNotifyAsmCallback;
 
 enum {
-  MSG_PC_FIELD_NOTIFY_EXTRA = 0x1000021,
+  MSG_UNKNOWN_16777249 = 0x1000021, // Inferred role: msg pc field notify extra; original name unknown.
 };
 
 struct MsgPcFieldNotifyExtra : fw::Message {};

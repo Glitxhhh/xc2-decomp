@@ -39,14 +39,14 @@ GfMenuIDList::~GfMenuIDList() { ; }
 GfMenuIDList *GfMenuIDList::create() {
   // __LINE__ must be 52 as in the original source: it is the line argument of operator new.
 #line 52
-  GfMenuIDList *list = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuIDList();
+  GfMenuIDList *list = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuIDList();
   list->addRef();
   return list;
 }
 
 void GfMenuIDList::setupMercenaryZoneList(const SetupParam &param, bool isCondition) {
   SetupParam setupParam = param;
-  UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_DEFAULT), setupParam);
+  UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), setupParam);
   if (isCondition) {
     for (u32 i = 0; i < sizeof(unknown095) / sizeof(unknown095[0]); i++) {
       if (GfMenuObjUtil::getMenuCondition(unknown095[i].unknown04)) {
@@ -75,7 +75,7 @@ void GfMenuIDList::setupMissionListFromZone(const SetupParam &param, u32 zone) {
   mm::mtl::FixedVector<u16, 500> missions;
   GfGameMercenaries::getZoneMission(missions, zone);
   SetupParam setupParam = param;
-  UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_DEFAULT), setupParam);
+  UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), setupParam);
   if (isValid()) {
     MenuID id = {};
     for (u32 i = 0; i < missions.size(); i++) {
@@ -101,7 +101,7 @@ void GfMenuIDList::setupTeamList(const SetupParam &param) {
   for (u32 team = 1; team <= teamNum; team++) {
     teams.push_back(team);
   }
-  UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_DEFAULT), param);
+  UIListInfo<MenuID>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
   if (isValid()) {
     MenuID id = {};
     for (u32 i = 0; i < teams.size(); i++) {

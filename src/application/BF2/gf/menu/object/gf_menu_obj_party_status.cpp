@@ -125,7 +125,7 @@ int GfMenuObjPartyStatus::openPartyStatus(u32 handle, int member) {
     for (int i = 0; i < 3; i++) {
       mm::mtl::FixStr<32> name;
       name.format("LAY_mem%d", i + 1);
-      if (partyId == GfMenuObjUtil::getLeaderPartyID() || GfGameParty::getHandleDriver(partyId) != INVALID_HANDLE) {
+      if (partyId == GfMenuObjUtil::getLeaderPartyID() || GfGameParty::getHandleDriver(partyId) != unknown020) {
         acc.setDispChild(true, name.c_str());
       } else {
         acc.setDispChild(false, name.c_str());

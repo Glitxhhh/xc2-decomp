@@ -31,7 +31,7 @@ void StateFieldWaterDeadSink::update(GfComBehaviorPc *behavior, const fw::Update
   const WaterCommonParam *param = entry != nullptr ? static_cast<const WaterCommonParam *>(entry->param) : nullptr;
   unknown18 += info.unknown04;
   if (property->unknown110_4 || unknown18 >= param->sinkTime) {
-    reqState(STATE_ID_FIELD_WATER_DEAD_RISE);
+    reqState(STATE_ID_UNKNOWN_36);
   } else if (StateUtilField::getChildFrameHeight(*behavior) <= -param->sinkDepth) {
     property->unknown90 = 0.0f;
   } else {

@@ -160,11 +160,11 @@ struct unknown001 {
 
 // Inferred role: parts categories; original name unknown.
 static const unknown001 unknown002[] = {
-    {1, ItemType::HANA_ROLE},
-    {2, ItemType::HANA_ATR},
-    {3, ItemType::HANA_N_ARTS_SET},
-    {9, ItemType::HANA_ARTS_ENH},
-    {6, ItemType::HANA_ASSIST},
+    {1, ItemType::ITEM_TYPE_UNKNOWN_16},
+    {2, ItemType::ITEM_TYPE_UNKNOWN_17},
+    {3, ItemType::ITEM_TYPE_UNKNOWN_19},
+    {9, ItemType::ITEM_TYPE_UNKNOWN_18},
+    {6, ItemType::ITEM_TYPE_UNKNOWN_20},
 };
 
 void GfMenuObjHanaPartsMake::makeCategoryItemList(GfMenuIDList *idList, GfMenuItemList *itemList, u32 isEquip, u32 sort) {

@@ -54,15 +54,15 @@ enum CV_FIELD {
   CV_FIELD_UNKNOWN_27 = 27,
   CV_FIELD_UNKNOWN_29 = 29,
   CV_FIELD_UNKNOWN_30 = 30,
-  CV_FIELD_TIME_MORNING = 31,
-  CV_FIELD_TIME_NIGHT = 32,
+  CV_FIELD_UNKNOWN_31 = 31, // Inferred role: cv field time morning; original name unknown.
+  CV_FIELD_UNKNOWN_32 = 32, // Inferred role: cv field time night; original name unknown.
   CV_FIELD_UNKNOWN_36 = 36,
 };
 
 enum {
   VOICE_RESULT_UNKNOWN_0 = 0, // Inferred role: not started; original name unknown.
   VOICE_RESULT_UNKNOWN_1 = 1, // Inferred role: waiting to play; original name unknown.
-  VOICE_RESULT_PLAY = 2,
+  VOICE_RESULT_UNKNOWN_2 = 2, // Inferred role: voice result play; original name unknown.
   VOICE_RESULT_UNKNOWN_3 = 3, // Inferred role: finished; original name unknown.
 };
 

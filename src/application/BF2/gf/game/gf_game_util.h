@@ -16,7 +16,7 @@ struct Mat44;
 namespace gf {
 
 enum {
-  SCENARIO_FLAG_SAIKA_LENS_OFF = 0x1b70,
+  SCENARIO_UNKNOWN_7024 = 0x1b70, // Inferred role: scenario flag saika lens off; original name unknown.
 };
 
 struct GF_OBJ_HANDLE;

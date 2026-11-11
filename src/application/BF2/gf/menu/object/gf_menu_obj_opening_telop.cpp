@@ -27,7 +27,7 @@ static const char *const unknown005[] = {"IMG_center@%02d", "IMG_left@%02d", "IM
 
 GfMenuObjOpeningTelop::GfMenuObjOpeningTelop(u32 handle) : GfMenuObject(handle), unknown24(), unknown30(nullptr) {
   ui::UISelectObjList::CreateParam param;
-  param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown30 = ui::UISelectObjList::create(param);
 }
 
@@ -49,7 +49,7 @@ void GfMenuObjOpeningTelop::initialize() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
 // __LINE__ must be 158 as in the original file: it is the line argument of operator new.
 #line 158
-  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   listener->addRef();
   ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
   if (listener != nullptr) {

@@ -40,7 +40,7 @@ GfMenuShopAdapter *GfMenuShopAdapter::create(u32 handle, u32 type, u32 shop, boo
     if (plugin != nullptr) {
       // __LINE__ must be 123 as in the original source: it is the line argument of operator new.
 #line 123
-      GfMenuShopAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuShopAdapter(plugin, isUpdateAlways);
+      GfMenuShopAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuShopAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown58 = shop;
       plugin->release();
@@ -183,7 +183,7 @@ GfMenuShopAdapter *GfMenuShopAdapter::createFromReference(u32 handle, u32 type, 
   }
   // __LINE__ must be 139 as in the original source: it is the line argument of operator new.
 #line 139
-  ReferenceConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceConverter();
+  ReferenceConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceConverter();
   GfMenuShopAdapter *adapter = create(handle, type, GfMenuReference::getReferenceShopID(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;
@@ -208,7 +208,7 @@ GfMenuShopAdapter *GfMenuShopAdapter::createFromReference(u32 handle, u32 type, 
   }
   // __LINE__ must be 148 as in the original source: it is the line argument of operator new.
 #line 148
-  ReferenceNumberConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceNumberConverter(number);
+  ReferenceNumberConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceNumberConverter(number);
   GfMenuShopAdapter *adapter = create(handle, type, converter->getShopID(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;

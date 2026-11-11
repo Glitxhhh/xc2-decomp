@@ -97,7 +97,7 @@ void GfMenuObjBladeSet2::setupMain(ui::UIObjectAcc &acc) {
 void GfMenuObjBladeSet2::createDriverList(u32, GfMenuDriverList *list) {
   GfMenuDriverList::PartySetup setup;
   setup.unknown18 = false;
-  setup.unknown14 = GfPartySelect::LIST_TYPE_PARTY;
+  setup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_0;
   setup.unknown00.unknown08 = 5;
   list->setupFromParty(setup);
 }

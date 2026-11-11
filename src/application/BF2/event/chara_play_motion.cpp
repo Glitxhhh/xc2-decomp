@@ -94,7 +94,7 @@ void CharaPlayMotion::stop(gf::GfObj *obj) {
   gf::GfComEvtAnim *anim = obj->getComponent<gf::GfComEvtAnim>();
   if (anim != nullptr) {
     anim->stop();
-    anim->setSpeed(1.0f, gf::ANIM_LAYER_BASE);
+    anim->setSpeed(1.0f, gf::ANIM_LAYER_UNKNOWN_0);
   }
   unknown20->resetDynamics(0);
   unknown08 &= ~4;

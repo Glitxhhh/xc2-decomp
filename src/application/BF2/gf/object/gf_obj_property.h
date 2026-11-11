@@ -41,12 +41,12 @@ static_assert(offsetof(GfObjPropertyCharacter, unknown30) == 0x30, "");
 static_assert(offsetof(GfObjPropertyCharacter, unknown28) == 0x28, "");
 
 enum {
-  PROPERTY_MOVE_WALK = 0,
-  PROPERTY_MOVE_SWIM = 1,
-  PROPERTY_MOVE_SWIM_ON_CLOUD = 2,
-  PROPERTY_MOVE_CLIMB = 3,
-  PROPERTY_MOVE_ACTION = 4,
-  PROPERTY_MOVE_UNKNOWN_5 = 5, // Inferred role: blocks the follow warp like PROPERTY_MOVE_SWIM (TaskFieldCheckWarp::update); original name unknown.
+  PROPERTY_MOVE_UNKNOWN_0 = 0, // Inferred role: property move walk; original name unknown.
+  PROPERTY_MOVE_UNKNOWN_1 = 1, // Inferred role: property move swim; original name unknown.
+  PROPERTY_MOVE_UNKNOWN_2 = 2, // Inferred role: property move swim on cloud; original name unknown.
+  PROPERTY_MOVE_UNKNOWN_3 = 3, // Inferred role: property move climb; original name unknown.
+  PROPERTY_MOVE_UNKNOWN_4 = 4, // Inferred role: property move action; original name unknown.
+  PROPERTY_MOVE_UNKNOWN_5 = 5, // Inferred role: blocks the follow warp like PROPERTY_MOVE_UNKNOWN_1 (TaskFieldCheckWarp::update); original name unknown.
 };
 
 // Inferred role: obj property move; original type name unknown.

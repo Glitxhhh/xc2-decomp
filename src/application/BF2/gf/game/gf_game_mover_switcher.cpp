@@ -22,7 +22,7 @@ struct GF_OBJ_HANDLE;
 void GfGameMoverSwitcher::build(const GfSetupParam &) {
 // __LINE__ of the operator new call is 0x22 in the game.
 #line 34
-  GfGameMoverSwitcher *switcher = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameMoverSwitcher();
+  GfGameMoverSwitcher *switcher = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameMoverSwitcher();
   switcher->setup();
 }
 
@@ -79,7 +79,7 @@ void GfGameMoverSwitcher::switchMover() {
 }
 
 bool GfGameMoverSwitcher::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
-  if (message.unknown00 == MSG_GAME_SWITCH_CONTROL_MOVER) {
+  if (message.unknown00 == MSG_UNKNOWN_16777265) {
     procMsgGameSwitchControlMover(sender, static_cast<MsgGameSwitchControlMover &>(message));
     return true;
   }

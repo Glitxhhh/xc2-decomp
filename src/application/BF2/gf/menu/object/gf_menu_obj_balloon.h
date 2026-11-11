@@ -37,7 +37,7 @@ public:
   };
 
   struct OpenParam : NextParam {
-    OpenParam() : unknown10(nullptr), unknown18(0), unknown20(INVALID_HANDLE) {}
+    OpenParam() : unknown10(nullptr), unknown18(0), unknown20(unknown020) {}
 
     u8 *unknown10;            // Inferred role: name bdat; original member name unknown.
     u32 unknown18;            // Inferred role: name id; original member name unknown.

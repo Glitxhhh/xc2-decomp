@@ -21,7 +21,7 @@ namespace gmk {
 template bool TGmkList<GmkMapObj, GmkMapObj::BdatInfo, 1330659661u, 3u, GmkMapObjGob>::initGmkBdatInfo(GmkMapObj::BdatInfo &, int &, const AGmkBase &);
 template bool TGmkList<GmkRoutedMapObj, GmkMapObj::BdatInfo, 1330662738u, 7u, GmkRouteGob>::initGmkBdatInfo(GmkMapObj::BdatInfo &, int &, const AGmkBase &);
 
-GmkMapObj::GmkMapObj() : unknown48(gf::INVALID_HANDLE) {
+GmkMapObj::GmkMapObj() : unknown48(gf::unknown020) {
   unknown54 = 0.0f;
   unknown50 = true;
   unknown51 = false;
@@ -73,7 +73,7 @@ void GmkMapObj::dispose() {
 }
 
 void GmkMapObj::disposeGobInst(bool isFadeOut) {
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   if (isFadeOut && unknown54 > 0.0f) {
@@ -82,7 +82,7 @@ void GmkMapObj::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknown48);
     gmk::disposeGobInst(unknown48, 0.0f);
-    unknown48 = gf::INVALID_HANDLE;
+    unknown48 = gf::unknown020;
   }
 }
 
@@ -102,7 +102,7 @@ void GmkMapObj::update(f32 deltaTime) {
 }
 
 bool GmkMapObj::canPopGobInst() const {
-  if (unknown48 != gf::INVALID_HANDLE || !getBdatInfo()->isPopCondMatched(unknown08.unknown08->unknown00)) {
+  if (unknown48 != gf::unknown020 || !getBdatInfo()->isPopCondMatched(unknown08.unknown08->unknown00)) {
     return false;
   }
   if (unknown51 && !unknown52) {
@@ -126,14 +126,14 @@ void GmkMapObj::createGobInst() {
 }
 
 bool GmkMapObj::canDepopGobInst() const {
-  if (unknown48 != gf::INVALID_HANDLE && (getBdatInfo()->isDepopCondMatched(unknown08.unknown08->unknown00) || (unknown51 && !unknown52))) {
+  if (unknown48 != gf::unknown020 && (getBdatInfo()->isDepopCondMatched(unknown08.unknown08->unknown00) || (unknown51 && !unknown52))) {
     return true;
   }
   return false;
 }
 
 void GmkMapObj::validateDisp() const {
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   setEventDisp(unknown48, unknown50 && debugIsDispGmkType(getGmkType()));
@@ -141,12 +141,12 @@ void GmkMapObj::validateDisp() const {
 
 void GmkMapObj::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     disposeGobInst(false);
   }
 }
 
-GmkRoutedMapObj::GmkRoutedMapObj() : unknown50(gf::INVALID_HANDLE), unknown58(true) {}
+GmkRoutedMapObj::GmkRoutedMapObj() : unknown50(gf::unknown020), unknown58(true) {}
 
 void GmkRoutedMapObj::create(const CreateInfo &info) { GmkRoute::create(info); }
 
@@ -156,12 +156,12 @@ void GmkRoutedMapObj::dispose() {
 }
 
 void GmkRoutedMapObj::disposeGobInst() {
-  if (unknown50 == gf::INVALID_HANDLE) {
+  if (unknown50 == gf::unknown020) {
     return;
   }
   unbindToGameObj(unknown50);
   gf::GfObjUtil::destroy(unknown50);
-  unknown50 = gf::INVALID_HANDLE;
+  unknown50 = gf::unknown020;
 }
 
 void GmkRoutedMapObj::update(f32 deltaTime) {
@@ -180,7 +180,7 @@ void GmkRoutedMapObj::update(f32 deltaTime) {
 }
 
 bool GmkRoutedMapObj::canDepopGobInst() const {
-  if (unknown50 == gf::INVALID_HANDLE || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (unknown50 == gf::unknown020 || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return false;
   }
   const GmkMapObj::BdatInfo *info = getBdatInfo();
@@ -214,7 +214,7 @@ void GmkRoutedMapObj::createGobInst() {
 }
 
 void GmkRoutedMapObj::validateDisp() const {
-  if (unknown50 == gf::INVALID_HANDLE) {
+  if (unknown50 == gf::unknown020) {
     return;
   }
   setEventDisp(unknown50, unknown58 && debugIsDispGmkType(getGmkType()));
@@ -224,8 +224,8 @@ const IGmkList *GmkRoutedMapObj::getBindedRoutePointList() const { return unknow
 
 void GmkRoutedMapObj::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
-    this->unknown50 = gf::INVALID_HANDLE;
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
+    this->unknown50 = gf::unknown020;
   }
 }
 

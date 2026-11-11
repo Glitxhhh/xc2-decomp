@@ -15,7 +15,7 @@ void GfMenuMain::initialize(const GfSetupParam &param) { unknown08 = true; }
 
 GfMenuMain::~GfMenuMain() {}
 
-void GfMenuMain::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuMain(param); }
+void GfMenuMain::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuMain(param); }
 
 void GfMenuMain::destroy() {
   GfMenuMain *menu = get();

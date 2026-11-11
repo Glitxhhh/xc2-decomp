@@ -613,7 +613,7 @@ template <typename T> bool isGmkValidViewUnbound(const AGmkBase &gmk);
 
 // Inferred helper: checks the view of a game object that has a resource to wait for; original name unknown.
 static bool unknown005(gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE || gf::GfObjUtil::isSearchEmptyResource(handle)) {
+  if (handle == gf::unknown020 || gf::GfObjUtil::isSearchEmptyResource(handle)) {
     return true;
   }
   return isValidView(handle);
@@ -1067,7 +1067,7 @@ bool isInterestPosExist() {
   return false;
 }
 
-bool isPlayerExist() { return gf::GfGameManager::getControlMover() != gf::INVALID_HANDLE; }
+bool isPlayerExist() { return gf::GfGameManager::getControlMover() != gf::unknown020; }
 
 bool isCameraExist() { return ml::Scn::sys() != nullptr && ml::Scn::sys()->getCam(-1) != nullptr; }
 
@@ -1098,14 +1098,14 @@ bool toScreenPos(mm::Vec2 &screenPos, const mm::Vec3 &position) {
 }
 
 AGmkBase *getBindedGmkInst(gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return nullptr;
   }
   gf::GfObjAcc acc(handle);
-  if (!acc.isValid() || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UI_HIDDEN) || acc.getObj() == nullptr) {
+  if (!acc.isValid() || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UNKNOWN_17) || acc.getObj() == nullptr) {
     return nullptr;
   }
-  return reinterpret_cast<AGmkBase *>(acc.getUserData(gf::OBJ_USER_DATA_GMK));
+  return reinterpret_cast<AGmkBase *>(acc.getUserData(gf::OBJ_USER_DATA_UNKNOWN_0));
 }
 
 GmkType getBindedGmkInstType(gf::GF_OBJ_HANDLE *handle) {
@@ -1119,7 +1119,7 @@ GmkType getBindedGmkInstType(gf::GF_OBJ_HANDLE *handle) {
 void setEventDisp(gf::GF_OBJ_HANDLE *handle, bool isDisp) {
   gf::GfObjAcc acc(handle);
   if (acc.isValid()) {
-    acc.setDisp(gf::OBJDISP_GMK_EVENT, isDisp);
+    acc.setDisp(gf::OBJDISP_UNKNOWN_3, isDisp);
   }
 }
 
@@ -1254,11 +1254,11 @@ void createMenuObj(gf::GF_OBJ_HANDLE *handle) {
 u32 GmkTbox::getProgress() const { return gf::GfGameFlag::getLocal(2, unknown20.unknown18 + GAME_FLAG_UNKNOWN_31765); }
 
 u32 getBdatIdOfQuestTargetIcon(gf::GF_OBJ_HANDLE *handle, u16 iconType) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return 0xffffffff;
   }
   gf::GfObjAcc acc(handle);
-  if (!acc.isValid() || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UI_HIDDEN) || acc.getObj() == nullptr) {
+  if (!acc.isValid() || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UNKNOWN_17) || acc.getObj() == nullptr) {
     return 0xffffffff;
   }
   gf::QuestID questId = {iconType, 0};
@@ -1317,7 +1317,7 @@ bool canPopSquadMember(gf::GF_OBJ_HANDLE *handle) {
     return false;
   }
   gf::GfObjAcc acc(handle);
-  if (acc.isValidTransform() && !acc.isDestroy() && !acc.testFlag(gf::OBJ_FLAG_UI_HIDDEN)) {
+  if (acc.isValidTransform() && !acc.isDestroy() && !acc.testFlag(gf::OBJ_FLAG_UNKNOWN_17)) {
     gf::GfObj *obj = acc.getObj();
     if (obj == nullptr) {
       return false;
@@ -1358,7 +1358,7 @@ u32 getDefeatedNum(int enemy) { return gf::GfDataEnemy::getEnemySuppress(enemy);
 
 void disposeGobInst(gf::GF_OBJ_HANDLE *handle, f32 fadeTime) {
   gf::GfObjAcc acc(handle);
-  if (acc.getObj() == nullptr || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UI_HIDDEN)) {
+  if (acc.getObj() == nullptr || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UNKNOWN_17)) {
     return;
   }
   gf::SCOM_DESTROY_GAME_OBJ::create(handle, fadeTime, 0);
@@ -1366,7 +1366,7 @@ void disposeGobInst(gf::GF_OBJ_HANDLE *handle, f32 fadeTime) {
 
 void disposeGobInstWithAttr(gf::GF_OBJ_HANDLE *handle, u32 attribute, f32 fadeTime) {
   gf::GfObjAcc acc(handle);
-  if (acc.getObj() == nullptr || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UI_HIDDEN)) {
+  if (acc.getObj() == nullptr || acc.isDestroy() || acc.testFlag(gf::OBJ_FLAG_UNKNOWN_17)) {
     return;
   }
   gf::SCOM_DESTROY_GAME_OBJ::create(handle, fadeTime, attribute);
@@ -1418,12 +1418,12 @@ bool GmkScript::isScriptEnd() { return s_isScriptEnd; }
 
 bool GmkScript::isScriptExecuting() {
   const fw::ScriptManager *manager = fw::ScriptManager::get();
-  return manager->unknown20[gf::SCRIPT_SLOT_FIELD].isActive();
+  return manager->unknown20[gf::SCRIPT_SLOT_UNKNOWN_1].isActive();
 }
 
 const char *GmkScript::getExecutingScriptName() {
   const fw::ScriptManager *manager = fw::ScriptManager::get();
-  return manager->unknown20[gf::SCRIPT_SLOT_FIELD].unknown118.c_str();
+  return manager->unknown20[gf::SCRIPT_SLOT_UNKNOWN_1].unknown118.c_str();
 }
 
 void GmkScript::vmBeginScript() {
@@ -1451,16 +1451,16 @@ void GmkScript::beginScript() {
     return;
   }
   endScript();
-  fw::ScriptManager::get()->loadScript(gf::SCRIPT_SLOT_FIELD, unknown08.unknown00.c_str(), FILE_PRIO_UNKNOWN_7);
+  fw::ScriptManager::get()->loadScript(gf::SCRIPT_SLOT_UNKNOWN_1, unknown08.unknown00.c_str(), FILE_PRIO_UNKNOWN_7);
   vmSetStartId(unknown08.unknown24);
-  fw::ScriptManager::get()->unknown20[gf::SCRIPT_SLOT_FIELD].start();
+  fw::ScriptManager::get()->unknown20[gf::SCRIPT_SLOT_UNKNOWN_1].start();
   vmBeginScript();
   unknown30 = &GmkScript::seqWaitEndScript;
 }
 
 void GmkScript::seqWaitEndScript(f32) {
   const fw::ScriptManager *manager = fw::ScriptManager::get();
-  if (!manager->unknown20[gf::SCRIPT_SLOT_FIELD].isFinish()) {
+  if (!manager->unknown20[gf::SCRIPT_SLOT_UNKNOWN_1].isFinish()) {
     endScript();
   }
 }

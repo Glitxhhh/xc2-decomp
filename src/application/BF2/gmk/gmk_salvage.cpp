@@ -59,7 +59,7 @@ void GmkSalvage::debugDraw() const {
 bool GmkSalvageLocator::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
 
 GmkSalvageLocator::GmkSalvageLocator()
-    : unknown48(nullptr), unknown58(false), unknown60(nullptr), unknownc0(gf::INVALID_HANDLE), unknownc8(0), unknownd0(nullptr), unknownd8(0.0f), unknowndc(0.0f), unknowne0(0.0f), unknowne4(0.0f),
+    : unknown48(nullptr), unknown58(false), unknown60(nullptr), unknownc0(gf::unknown020), unknownc8(0), unknownd0(nullptr), unknownd8(0.0f), unknowndc(0.0f), unknowne0(0.0f), unknowne4(0.0f),
       unknowne8(-1), unknownec(0), unknownf0(0), unknownf1(false), unknownf2(false) {}
 
 void GmkSalvage::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) { unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2); }
@@ -72,7 +72,7 @@ bool GmkSalvage::BdatInfo::isCondMatched() const {
 }
 
 GmkSalvage::GmkSalvage()
-    : unknown48(nullptr), unknown58(gf::INVALID_HANDLE), unknown60(0.0f), unknown64(0.0f), unknown68(), unknown88(), unknowna8(nullptr), unknownb0(), unknownd0(0), unknownd1(0), unknownd8(),
+    : unknown48(nullptr), unknown58(gf::unknown020), unknown60(0.0f), unknown64(0.0f), unknown68(), unknown88(), unknowna8(nullptr), unknownb0(), unknownd0(0), unknownd1(0), unknownd8(),
       unknown128(true), unknown129(false) {}
 
 GmkType GmkSalvage::getGmkType() const { return GMK_TYPE; }
@@ -107,13 +107,13 @@ const GmkFormPc *GmkSalvage::getGmkFormPc() const {
 }
 
 void GmkSalvage::disposeGfObjHandle() {
-  if (unknown58 != gf::INVALID_HANDLE) {
+  if (unknown58 != gf::unknown020) {
     gf::GfObjAcc acc(unknown58);
     if (acc.isValid()) {
-      acc.setUserData(gf::OBJ_USER_DATA_GMK, 0);
+      acc.setUserData(gf::OBJ_USER_DATA_UNKNOWN_0, 0);
     }
     gf::GfObjUtil::destroy(unknown58);
-    unknown58 = gf::INVALID_HANDLE;
+    unknown58 = gf::unknown020;
   }
 }
 
@@ -155,7 +155,7 @@ void GmkSalvage::seqValidateGmkSalvageLocatorDetails(f32 deltaTime) {
 
 void GmkSalvage::seqUpdatePopDepop(f32 deltaTime) {
   if (getBdatInfo()->isCondMatched() && DistCond::isMatch(unknown60, unknown08.unknown08->unknown00)) {
-    if (unknown58 == gf::INVALID_HANDLE) {
+    if (unknown58 == gf::unknown020) {
       createGfObjHandle();
     }
   } else {
@@ -203,7 +203,7 @@ void GmkSalvage::seqUpdatePopDepop(f32 deltaTime) {
 
 void GmkSalvage::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     u32 enemyCount = unknownb0.size();
     if (enemyCount != 0) {
       bool isFound = false;
@@ -227,7 +227,7 @@ void GmkSalvage::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE 
         }
       }
     }
-    unknown58 = gf::INVALID_HANDLE;
+    unknown58 = gf::unknown020;
   }
 }
 
@@ -277,7 +277,7 @@ void GmkSalvage::dispose() {
 
 void GmkSalvage::validateDisp() const {
   bool isDisp = unknown128 && debugIsDispGmkType(getGmkType());
-  if (unknown58 != gf::INVALID_HANDLE) {
+  if (unknown58 != gf::unknown020) {
     setEventDisp(unknown58, isDisp);
   }
 }
@@ -314,7 +314,7 @@ GmkType GmkSalvageLocator::getGmkType() const { return GMK_TYPE; }
 
 void GmkSalvageLocator::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     disposeGobInst(false);
   }
 }
@@ -365,7 +365,7 @@ void GmkSalvageLocator::seqPop(f32 deltaTime) {
     break;
   case 2: {
     bool isWaitDepop = unknowne0 > 0.0f;
-    if (unknownc0 == gf::INVALID_HANDLE) {
+    if (unknownc0 == gf::unknown020) {
       if (!isWaitDepop) {
         createTboxGobInst();
       }
@@ -378,7 +378,7 @@ void GmkSalvageLocator::seqPop(f32 deltaTime) {
     }
   } break;
   case 4:
-    if (unknownc0 == gf::INVALID_HANDLE) {
+    if (unknownc0 == gf::unknown020) {
       createEnemyGobInst();
     }
     break;
@@ -406,7 +406,7 @@ void GmkSalvageLocator::dispose() {
 }
 
 void GmkSalvageLocator::disposeGobInst(bool isFadeOut) {
-  if (unknownc0 == gf::INVALID_HANDLE) {
+  if (unknownc0 == gf::unknown020) {
     return;
   }
   syncDepopTboxes();
@@ -415,7 +415,7 @@ void GmkSalvageLocator::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknownc0);
     gf::GfObjUtil::destroy(unknownc0);
-    unknownc0 = gf::INVALID_HANDLE;
+    unknownc0 = gf::unknown020;
   }
 }
 
@@ -452,7 +452,7 @@ void GmkSalvageLocator::createEnemyGobInst() {
   disposeGobInst(false);
   const Xform *xform = unknown08.unknown08;
   unknownc0 = gf::GfObjFactory::createGmkEnemy(unknownec, unknownf0, 2, xform->unknown00, xform->unknown10, true);
-  if (unknownc0 == gf::INVALID_HANDLE) {
+  if (unknownc0 == gf::unknown020) {
     return;
   }
   gf::GfObjSetupEnemy *setup = gf::GfObjUtil::getObjSetup<gf::GfObjSetupEnemy>(unknownc0);
@@ -464,7 +464,7 @@ void GmkSalvageLocator::createEnemyGobInst() {
 
 void GmkSalvageLocator::setTargetable(bool isTargetable) const {
   gf::GF_OBJ_HANDLE *handle = unknownc0;
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   unknown002(handle, isTargetable);

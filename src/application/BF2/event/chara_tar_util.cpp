@@ -10,7 +10,7 @@
 namespace event {
 
 mm::Vec3 CharaTarUtil::getCharaDefaultEyeVec(gf::GF_OBJ_HANDLE *handle) {
-  if (handle != gf::INVALID_HANDLE) {
+  if (handle != gf::unknown020) {
     switch (gf::GfObjUtil::getEyeRotControl(handle)) {
     case 1:
     case 4:

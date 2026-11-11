@@ -50,7 +50,7 @@ GfMenuWeaponAdapter *GfMenuWeaponAdapter::create(u32 handle, u32 type, u32 weapo
     if (plugin != nullptr) {
       // __LINE__ must be 191 as in the original source: it is the line argument of operator new.
 #line 191
-      GfMenuWeaponAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuWeaponAdapter(plugin, isUpdateAlways);
+      GfMenuWeaponAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuWeaponAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown58 = weapon;
       plugin->release();
@@ -131,7 +131,7 @@ bool GfMenuWeaponAdapter::update_Image(u32 weapon) {
 GfMenuWeaponAdapter *GfMenuWeaponAdapter::createFromBlade(u32 handle, u32 type, u32 blade, bool isUpdateAlways) {
   // __LINE__ must be 207 as in the original source: it is the line argument of operator new.
 #line 207
-  BladeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) BladeConverter(blade);
+  BladeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BladeConverter(blade);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -146,26 +146,26 @@ GfMenuWeaponAdapter *GfMenuWeaponAdapter::createFromCoverter(u32 handle, u32 typ
 GfMenuWeaponAdapter *GfMenuWeaponAdapter::createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 216 as in the original source: it is the line argument of operator new.
 #line 216
-  ReferenceBladeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceBladeConverter(index);
+  ReferenceBladeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceBladeConverter(index);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuWeaponAdapter *GfMenuWeaponAdapter::createFromBladeWithChipList(u32 handle, u32 type, u32 blade, GfMenuItemList *list, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 225 as in the original source: it is the line argument of operator new.
 #line 225
-  BladeWithChipListConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) BladeWithChipListConverter(blade, list, index);
+  BladeWithChipListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BladeWithChipListConverter(blade, list, index);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuWeaponAdapter *GfMenuWeaponAdapter::createFromReferenceChip(u32 handle, u32 type, const ReferenceChip &chip, bool isUpdateAlways) {
   // __LINE__ must be 234 as in the original source: it is the line argument of operator new.
 #line 234
-  ReferenceChipConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceChipConverter(chip);
+  ReferenceChipConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceChipConverter(chip);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 u32 GfMenuWeaponAdapter::BladeConverter::getWeaponID() {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, unknown08, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, unknown08, GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     return acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false);
   }
@@ -173,7 +173,7 @@ u32 GfMenuWeaponAdapter::BladeConverter::getWeaponID() {
 }
 
 u32 GfMenuWeaponAdapter::ReferenceBladeConverter::getWeaponID() {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, GfMenuReference::getReferenceBladeID(unknown08), GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, GfMenuReference::getReferenceBladeID(unknown08), GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     return acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false);
   }
@@ -181,7 +181,7 @@ u32 GfMenuWeaponAdapter::ReferenceBladeConverter::getWeaponID() {
 }
 
 u32 GfMenuWeaponAdapter::BladeWithChipListConverter::getWeaponID() {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, unknown08, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, unknown08, GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     u32 chip = unknown10->getContents(unknown10->getPageIndex(unknown18)).unknown04;
     if (chip != 0) {
@@ -192,7 +192,7 @@ u32 GfMenuWeaponAdapter::BladeWithChipListConverter::getWeaponID() {
 }
 
 u32 GfMenuWeaponAdapter::ReferenceChipConverter::getWeaponID() {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, GfMenuReference::getReferenceBladeID(unknown08), GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, GfMenuReference::getReferenceBladeID(unknown08), GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     if (unknown10.get() != nullptr && unknown10->unknown0c != 0) {
       return GfDataWeapon::getNewWeapon(acc.getEquipWeapon(EQUIP_WEAPON_SLOT_UNKNOWN_FFFFFFFF, false), unknown10->unknown0c);

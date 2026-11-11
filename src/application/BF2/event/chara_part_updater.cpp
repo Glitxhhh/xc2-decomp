@@ -4,7 +4,7 @@
 
 namespace event {
 
-CharaPartUpdater::CharaPartUpdater() : unknown08(gf::INVALID_HANDLE), unknown10(nullptr) {}
+CharaPartUpdater::CharaPartUpdater() : unknown08(gf::unknown020), unknown10(nullptr) {}
 
 void CharaPartUpdater::create(gf::GF_OBJ_HANDLE *handle, gf::GfEvtModel *model) {
   this->unknown08 = handle;
@@ -12,7 +12,7 @@ void CharaPartUpdater::create(gf::GF_OBJ_HANDLE *handle, gf::GfEvtModel *model) 
 }
 
 void CharaPartUpdater::destroy() {
-  unknown08 = gf::INVALID_HANDLE;
+  unknown08 = gf::unknown020;
   unknown10 = nullptr;
   unknown18.clear();
 }

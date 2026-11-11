@@ -158,12 +158,12 @@ void GmkDoor::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
 }
 
 u32 GmkDoorPhantomTargetInfo::getTargetType() const {
-  if (unknown00 == gf::INVALID_HANDLE) {
+  if (unknown00 == gf::unknown020) {
     return 0;
   }
   gf::GfObjAcc acc(unknown00);
   switch (acc.getType()) {
-  case gf::OBJECT_TYPE_DRIVER:
+  case gf::OBJECT_TYPE_PC:
   case gf::OBJECT_TYPE_BLADE:
     return 1;
   case gf::OBJECT_TYPE_ENEMY:
@@ -173,7 +173,7 @@ u32 GmkDoorPhantomTargetInfo::getTargetType() const {
   }
 }
 
-GmkDoor::GmkDoor() : unknown60(nullptr), unknown2b0(false), unknown2b1(false), unknown2b8(gf::INVALID_HANDLE), unknown2c0(0.0f), unknown2c8(nullptr) {}
+GmkDoor::GmkDoor() : unknown60(nullptr), unknown2b0(false), unknown2b1(false), unknown2b8(gf::unknown020), unknown2c0(0.0f), unknown2c8(nullptr) {}
 
 void GmkDoor::setProgress(Progress progress) {
   gf::GfGameFlag::setLocal(2, getGameFlagId(), progress);
@@ -275,7 +275,7 @@ void GmkDoor::update(f32 deltaTime) {
   const BdatInfo *info = getBdatInfo();
   unknown2b0 = false;
   if (info->isPopCondMatched()) {
-    if (unknown2b8 == gf::INVALID_HANDLE && info->isGfObjMustExist()) {
+    if (unknown2b8 == gf::unknown020 && info->isGfObjMustExist()) {
       createGfObjHandle();
     }
     if (unknown1c0.unknown78 == nullptr && unknown250.unknown50 == nullptr && info->isPhantomMustExist()) {
@@ -339,13 +339,13 @@ void GmkDoor::disposeGmkPhantom() {
 }
 
 void GmkDoor::disposeGfObjHandle() {
-  if (unknown2b8 != gf::INVALID_HANDLE) {
+  if (unknown2b8 != gf::unknown020) {
     gf::GfObjAcc acc(unknown2b8);
     if (acc.isValid()) {
-      acc.setUserData(gf::OBJ_USER_DATA_GMK, 0);
+      acc.setUserData(gf::OBJ_USER_DATA_UNKNOWN_0, 0);
     }
     gf::GfObjUtil::destroy(unknown2b8);
-    unknown2b8 = gf::INVALID_HANDLE;
+    unknown2b8 = gf::unknown020;
   }
 }
 
@@ -397,8 +397,8 @@ bool GmkDoor::isGmkFinished() const {
 
 void GmkDoor::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
-    unknown2b8 = gf::INVALID_HANDLE;
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
+    unknown2b8 = gf::unknown020;
   }
 }
 
@@ -470,7 +470,7 @@ void GmkDoor::openDoor(bool isImmediate) {
   }
   const BdatInfo *info = getBdatInfo();
   gf::GfFieldLod::get()->setAnimReverse(info->unknown06, false, isImmediate);
-  if (unknown2b8 != gf::INVALID_HANDLE) {
+  if (unknown2b8 != gf::unknown020) {
     unknown002(unknown2b8, false);
   }
   if (info->unknown0c != 0) {
@@ -496,7 +496,7 @@ void GmkDoor::closeDoor(bool isImmediate) {
   }
   const BdatInfo *info = getBdatInfo();
   gf::GfFieldLod::get()->setAnimReverse(info->unknown06, true, isImmediate);
-  if (unknown2b8 != gf::INVALID_HANDLE) {
+  if (unknown2b8 != gf::unknown020) {
     unknown002(unknown2b8, true);
   }
   if (info->unknown1c != 0) {
@@ -610,7 +610,7 @@ void GmkDoor::seqDoor_SpBooted(f32 deltaTime) {
 void GmkDoor::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
   const BdatInfo *info = getBdatInfo();
   if (info->unknown02 == 5) {
-    if (gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+    if (gf::GfGameManager::getControlMover() == gf::unknown020) {
       return;
     }
     const mm::Vec3 &position = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -632,7 +632,7 @@ void GmkDoor::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
 }
 
 GmkDoorPhantomManager::GmkDoorPhantomManager() {
-  gf::GfObjManager::addListener(this, OBJEVT_ALL);
+  gf::GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
   create();
 }
 
@@ -643,7 +643,7 @@ GmkDoorPhantomManager::~GmkDoorPhantomManager() {
 
 void GmkDoorPhantomManager::create() {
   dispose();
-  unknown08.setAllocator(gf::getAllocator(gf::ALLOCATOR_DEFAULT));
+  unknown08.setAllocator(gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0));
   int capacity = gf::GfObjManager::getGfObjCapacity(5);
   unknown08.reserve(capacity > 0 ? static_cast<u32>(capacity + 3) : 3);
 }
@@ -659,7 +659,7 @@ void GmkDoorPhantomManager::addTargetInfo(gf::GF_OBJ_HANDLE *handle) {
 }
 
 void GmkDoorPhantomManager::removeTargetInfo(gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   for (GmkDoorPhantomTargetInfo *it = unknown08.begin(); it != unknown08.end(); it++) {

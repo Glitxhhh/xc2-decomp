@@ -23,8 +23,8 @@ class GfAppendInfo;
 enum OPTMNT : u32 {
   OPTMNT_UNKNOWN_0 = 0,
   OPTMNT_UNKNOWN_1 = 1,
-  OPTMNT_WIRE = 2,
-  OPTMNT_BLADE = 3,
+  OPTMNT_UNKNOWN_2 = 2, // Inferred role: optmnt wire; original name unknown.
+  OPTMNT_UNKNOWN_3 = 3, // Inferred role: optmnt blade; original name unknown.
   OPTMNT_UNKNOWN_4 = 4,
   OPTMNT_UNKNOWN_FFFFFFFF = 0xffffffff,
 };

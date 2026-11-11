@@ -29,7 +29,7 @@ void GfMenuObjButtonChallenge::initialize() {
     attachExternalCall(unknown001, main);
 // __LINE__ must be 69 as in the original file: it is the line argument of operator new.
 #line 69
-    MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+    MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
     listener->addRef();
     ui::UIEventManager::get()->registObjectListener(main, listener);
     if (listener != nullptr) {

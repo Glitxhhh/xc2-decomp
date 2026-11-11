@@ -349,7 +349,7 @@ bool GfMenuObjUtil::isInBattle(GF_OBJ_HANDLE *handle) {
 
 int GfMenuObjUtil::convMenuDriverID(u32 driver) {
   u8 *bdat = GfDataBdat::getFP(BDAT_MNU_DR_IMAGE_ID);
-  DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
   int index = 0;
   if (acc.isValid()) {
     int top = Bdat::getIdTop(bdat);
@@ -372,7 +372,7 @@ int GfMenuObjUtil::convMenuDriverID(u32 driver) {
 
 int GfMenuObjUtil::convMenuBladeID(u32 blade) {
   u8 *bdat = GfDataBdat::getFP(BDAT_MNU_BL_IMAGE_ID);
-  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   int index = 0;
   if (acc.isValid()) {
     int top = Bdat::getIdTop(bdat);
@@ -401,7 +401,7 @@ int GfMenuObjUtil::convMenuBladeID(u32 blade) {
 
 int GfMenuObjUtil::getLeaderPartyType() {
   GF_OBJ_HANDLE *leader = GfGameParty::getLeader();
-  if (leader != INVALID_HANDLE) {
+  if (leader != unknown020) {
     return GfObjAcc(leader).getType();
   }
   return -1;
@@ -411,7 +411,7 @@ bool GfMenuObjUtil::isExitDriver(u32 partyId) {
   if (partyId >= PARTY_DRIVER_UNKNOWN_3) {
     partyId %= PARTY_DRIVER_UNKNOWN_3;
   }
-  return GfGameParty::getHandleDriver(partyId) != INVALID_HANDLE;
+  return GfGameParty::getHandleDriver(partyId) != unknown020;
 }
 
 u32 GfMenuObjUtil::setupPartyDriver(const mm::mtl::FixedVector<u16, 16> &drivers) {
@@ -443,7 +443,7 @@ bool GfMenuObjUtil::isBladeEnable(u32 partyId, int slot) {
 bool GfMenuObjUtil::isValidBlade(u32 blade) { return blade != 0 && !GfDataBlade::isDummyBlade(blade); }
 
 int GfMenuObjUtil::getSetBladeID(u32 partyId, int offset, bool isVirtual) {
-  DataParamAcc acc(OBJECT_TYPE_DRIVER, GfDataParty::getDriver(partyId), GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getDriver(partyId), GIMMICK_TYPE_UNKNOWN_0);
   int setId = 0;
   if (acc.isValid()) {
     if (offset == -1) {
@@ -454,7 +454,7 @@ int GfMenuObjUtil::getSetBladeID(u32 partyId, int offset, bool isVirtual) {
         setId = GfSelectBlade::getStartBattleSetId(partyId);
       }
       int slot = setId;
-      if (acc.getValidDriverId() == DRIVER_REX && setId - 3U < 2) {
+      if (acc.getValidDriverId() == DRIVER_UNKNOWN_1 && setId - 3U < 2) {
         if (acc.getBlade(0, false) == BLADE_HOMURA) {
           slot = 0;
         } else if (acc.getBlade(1, false) == BLADE_HOMURA) {
@@ -468,7 +468,7 @@ int GfMenuObjUtil::getSetBladeID(u32 partyId, int offset, bool isVirtual) {
         slot -= getBladeSlotMax();
       }
       setId = slot;
-      if (acc.getValidDriverId() == DRIVER_REX && acc.getBlade(slot, false) == BLADE_HOMURA) {
+      if (acc.getValidDriverId() == DRIVER_UNKNOWN_1 && acc.getBlade(slot, false) == BLADE_HOMURA) {
         setId = acc.getBladeSet(false);
         if (setId == 4) {
           setId = 4;
@@ -519,13 +519,13 @@ bool GfMenuObjUtil::isBladeContorolable(u32 partyId, int slot) {
 GF_OBJ_HANDLE *GfMenuObjUtil::getLeaderBladeHandle(bool isVirtual) {
   int bladeSet = 0;
   {
-    DataParamAcc acc(OBJECT_TYPE_DRIVER, GfDataParty::getDriver(0), GIMMICK_TYPE_NONE);
+    DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getDriver(0), GIMMICK_TYPE_UNKNOWN_0);
     if (acc.isValid()) {
       bladeSet = acc.getBladeSet(false);
     }
   }
   if (bladeSet == -1) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
   return GfGameParty::getHandleBlade(0, bladeSet);
 }
@@ -537,7 +537,7 @@ u32 GfMenuObjUtil::getBladeIDFromPartySlot(u32 partyId, int offset, bool isVirtu
     return 0;
   }
 
-  DataParamAcc acc(OBJECT_TYPE_DRIVER, GfDataParty::getDriver(partyId), GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getDriver(partyId), GIMMICK_TYPE_UNKNOWN_0);
   int slot = getSetBladeID(partyId, offset, isVirtual);
   u32 blade = 0;
   if (slot != -1) {
@@ -549,7 +549,7 @@ u32 GfMenuObjUtil::getBladeIDFromPartySlot(u32 partyId, int offset, bool isVirtu
 GF_OBJ_HANDLE *GfMenuObjUtil::getBladeHandleFromPartySlot(u32 partyId, int offset, bool isVirtual) {
   int slot = getSetBladeID(partyId, offset, isVirtual);
   if (slot == -1) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
   return GfGameParty::getHandleBlade(partyId, slot);
 }
@@ -561,7 +561,7 @@ GF_OBJ_HANDLE *GfMenuObjUtil::getBladeHandleFromPartyBackSlot(u32 partyId, int o
 GF_OBJ_HANDLE *GfMenuObjUtil::getBladeHandleOffset(u32 partyId, int offset) {
   int slot = getSetBladeID(partyId, offset, false);
   if (slot == -1) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
   return GfGameParty::getHandleBlade(partyId, slot);
 }
@@ -856,7 +856,7 @@ bool GfMenuObjUtil::isBladeLastOne(u32 blade, const GfMenuBladeList *list) {
 
 bool GfMenuObjUtil::hasHomura(u32 driver) {
   bool hasHomura = false;
-  DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     if (GfDataBlade::getCreator(BLADE_HOMURA) == driver) {
       hasHomura = !GfDataBlade::isActivateUnuse(BLADE_HOMURA);
@@ -916,7 +916,7 @@ ui::UIStr GfMenuObjUtil::getName(const DataParamAcc &acc) {
   u8 *bdat;
   u32 textId = 0;
   switch (acc.getObjType()) {
-  case OBJECT_TYPE_DRIVER:
+  case OBJECT_TYPE_PC:
     if (GfDataDriver::getName(bdat, textId, acc.getValidDriverId())) {
       name.setupMstxt(bdat, textId);
     }
@@ -1634,12 +1634,12 @@ QuestID GfMenuObjUtil::getCurrentQuest(u32 type) {
   QuestID quest;
   switch (type) {
   case 0:
-    quest = GfQuestManager::getProgressCurrentQuest(QTYPE_MAIN);
+    quest = GfQuestManager::getProgressCurrentQuest(QTYPE_UNKNOWN_1);
     break;
   case 1:
-    quest = GfQuestManager::getProgressCurrentQuest(QTYPE_NORMAL);
+    quest = GfQuestManager::getProgressCurrentQuest(QTYPE_UNKNOWN_3);
     if (quest.empty()) {
-      quest = GfQuestManager::getProgressCurrentQuest(QTYPE_BLADE);
+      quest = GfQuestManager::getProgressCurrentQuest(QTYPE_UNKNOWN_2);
     }
     break;
   }

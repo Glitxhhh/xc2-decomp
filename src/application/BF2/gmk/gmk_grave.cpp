@@ -21,7 +21,7 @@ template bool TGmkList<GmkGrave, GmkGrave::BdatInfo, 1447121479u, 4u, GmkGraveGo
 class GmkEnemy;
 class GmkRoutedEnemy;
 
-GmkGrave::GmkGrave() : unknown48(false), unknown50(gf::INVALID_HANDLE), unknown58(), unknown98(false) {}
+GmkGrave::GmkGrave() : unknown48(false), unknown50(gf::unknown020), unknown58(), unknown98(false) {}
 
 void GmkGrave::BdatInfo::create(u8 *bdat, int id, const AGmkBase &gmk) {
   dispose();
@@ -61,7 +61,7 @@ bool GmkGrave::BdatInfo::isDepopCondMatched(const mm::Vec3 &position) const { re
 void GmkGrave::BdatInfo::debugDraw(const AGmkBase &gmk) const {}
 
 void GmkGrave::disposeGobInst(bool isFadeOut) {
-  if (unknown50 == gf::INVALID_HANDLE) {
+  if (unknown50 == gf::unknown020) {
     return;
   }
   if (isFadeOut) {
@@ -69,7 +69,7 @@ void GmkGrave::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknown50);
     gf::GfObjUtil::destroy(unknown50);
-    unknown50 = gf::INVALID_HANDLE;
+    unknown50 = gf::unknown020;
   }
 }
 
@@ -109,14 +109,14 @@ void GmkGrave::update(f32 deltaTime) {
 }
 
 bool GmkGrave::canPopGobInst() const {
-  if (unknown50 != gf::INVALID_HANDLE || !unknown48) {
+  if (unknown50 != gf::unknown020 || !unknown48) {
     return false;
   }
   return getBdatInfo()->isPopCondMatched(unknown08.unknown08->unknown00);
 }
 
 bool GmkGrave::canDepopGobInst() const {
-  if (unknown50 == gf::INVALID_HANDLE) {
+  if (unknown50 == gf::unknown020) {
     return false;
   }
   if (!unknown48) {
@@ -134,7 +134,7 @@ bool GmkGrave::reqPopEnemy() const { return reqPopEnemy<GmkEnemy>() || reqPopEne
 
 void GmkGrave::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     disposeGobInst(false);
   }
 }

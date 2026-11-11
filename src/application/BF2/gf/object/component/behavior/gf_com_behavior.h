@@ -21,14 +21,14 @@ struct CallBackCache;
 class Plugin;
 
 enum {
-  MSG_PC_GET_LOOK_POINT = 0x1000008,
-  MSG_PC_FIELD_GET_ACCESS_TYPE = 0x100000c,
-  MSG_PC_FIELD_NOTIFY_ACTION = 0x100000d,
-  MSG_OBJECT_GET_VELOCITY = 0x1000046,
+  MSG_UNKNOWN_16777224 = 0x1000008, // Inferred role: msg pc get look point; original name unknown.
+  MSG_UNKNOWN_16777228 = 0x100000c, // Inferred role: msg pc field get access type; original name unknown.
+  MSG_UNKNOWN_16777229 = 0x100000d, // Inferred role: msg pc field notify action; original name unknown.
+  MSG_UNKNOWN_16777286 = 0x1000046, // Inferred role: msg object get velocity; original name unknown.
 };
 
 struct MsgPcGetLookPoint : fw::Message {
-  MsgPcGetLookPoint() : fw::Message(MSG_PC_GET_LOOK_POINT, 0x40), unknown10(mm::Vec3::zero), unknown20(false) {}
+  MsgPcGetLookPoint() : fw::Message(MSG_UNKNOWN_16777224, 0x40), unknown10(mm::Vec3::zero), unknown20(false) {}
 
   mm::Vec3 unknown10; // Inferred role: look point; original member name unknown.
   bool unknown20;     // Inferred role: valid; original member name unknown.
@@ -44,7 +44,7 @@ struct MsgObjectGetVelocity : fw::Message {
 static_assert(offsetof(MsgObjectGetVelocity, unknown10) == 0x10, "");
 
 struct MsgPcFieldNotifyAction : fw::Message {
-  MsgPcFieldNotifyAction(u32 action) : fw::Message(MSG_PC_FIELD_NOTIFY_ACTION, 0x40), unknown08(action) {}
+  MsgPcFieldNotifyAction(u32 action) : fw::Message(MSG_UNKNOWN_16777229, 0x40), unknown08(action) {}
 
   u32 unknown08; // Inferred role: action, 0 when the player accesses the object, 1 when the access ends; original member name unknown.
 };
@@ -52,7 +52,7 @@ struct MsgPcFieldNotifyAction : fw::Message {
 static_assert(offsetof(MsgPcFieldNotifyAction, unknown08) == 0x08, "");
 
 struct MsgPcFieldGetAccessType : fw::Message {
-  MsgPcFieldGetAccessType() : fw::Message(MSG_PC_FIELD_GET_ACCESS_TYPE, 0x40), unknown08(0), unknown0c(true), unknown0d(false) {}
+  MsgPcFieldGetAccessType() : fw::Message(MSG_UNKNOWN_16777228, 0x40), unknown08(0), unknown0c(true), unknown0d(false) {}
 
   u32 unknown08;  // Inferred role: access type; original member name unknown.
   bool unknown0c; // Inferred role: access enabled; original member name unknown.

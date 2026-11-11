@@ -57,9 +57,9 @@ f32 calcInputDiffAngleVel(GfComPropertyPc &property);
 class StateUtilField {
 public:
   enum Timing {
-    TIMING_UNDER_GROUND,
-    TIMING_GROUND,
-    TIMING_AIR,
+    TIMING_UNKNOWN_0, // Inferred role: timing under ground; original name unknown.
+    TIMING_UNKNOWN_1, // Inferred role: timing ground; original name unknown.
+    TIMING_UNKNOWN_2, // Inferred role: timing air; original name unknown.
   };
 
   static bool execAsmCmd(GfComAsm &comAsm, ASM_CMD_ID_FIELD id);

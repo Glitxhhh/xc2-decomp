@@ -9,7 +9,7 @@
 
 namespace event {
 
-CharaDysUpdater::CharaDysUpdater() : unknown08(), unknown10(gf::INVALID_HANDLE), unknown20(0.0f) {}
+CharaDysUpdater::CharaDysUpdater() : unknown08(), unknown10(gf::unknown020), unknown20(0.0f) {}
 
 void CharaDysUpdater::create(gf::GF_OBJ_HANDLE *handle) {
   this->unknown10 = handle;
@@ -18,7 +18,7 @@ void CharaDysUpdater::create(gf::GF_OBJ_HANDLE *handle) {
 }
 
 void CharaDysUpdater::destroy() {
-  unknown10 = gf::INVALID_HANDLE;
+  unknown10 = gf::unknown020;
   unknown20 = 0.0f;
 }
 

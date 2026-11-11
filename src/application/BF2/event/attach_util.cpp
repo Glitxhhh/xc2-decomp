@@ -17,7 +17,7 @@ class EffectCasterBase;
 namespace event {
 
 void AttachUtil::setCaster(bool isSet, gf::GF_OBJ_HANDLE *handle, u32 effect) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   if (isSet) {
@@ -29,7 +29,7 @@ void AttachUtil::setCaster(bool isSet, gf::GF_OBJ_HANDLE *handle, u32 effect) {
 }
 
 void AttachUtil::setMount(bool isSet, gf::GF_OBJ_HANDLE *handle, u32 effect, const char *bone, const mm::Vec3 &offset, bool isRotate, ATTACH_TYPE type) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   gf::GfComEffectCaster *caster = gf::GfObjUtil::getObj(handle)->getComponent<gf::GfComEffectCaster>();

@@ -4,7 +4,7 @@
 
 namespace gf {
 
-GfMobSlotManager::GfMobSlotManager() : unknown528(1e12f) { unknown408.setAllocator(getAllocator(ALLOCATOR_DEFAULT)); }
+GfMobSlotManager::GfMobSlotManager() : unknown528(1e12f) { unknown408.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0)); }
 
 void GfMobSlotManager::disposeMobInfos() { unknown000.clear(); }
 

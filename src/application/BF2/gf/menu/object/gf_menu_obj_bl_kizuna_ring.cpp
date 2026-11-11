@@ -130,7 +130,7 @@ bool GfMenuObjBlKizunaRing::seqEnd() {
 
 bool GfMenuObjBlKizunaRing::seqWaitVoice() {
   u32 result = GfGameVoice::getResult(unknown458);
-  if (result == VOICE_RESULT_UNKNOWN_1 || result == VOICE_RESULT_PLAY) {
+  if (result == VOICE_RESULT_UNKNOWN_1 || result == VOICE_RESULT_UNKNOWN_2) {
     return false;
   }
   ui::UIObjectAcc acc(unknown18);

@@ -167,7 +167,7 @@ void GfComModel::removeBoneReferenceFrame(const char *name, mm::mtl::IntrusivePt
 // __LINE__ must be 544 and 549 as in the original source: they are the line arguments of operator new and of the assert.
 mm::mtl::IntrusivePtr<fw::ReferenceFrame> GfComModel::createBoneReferenceFrameImpl(u16 bone) {
 #line 544
-  mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) fw::ReferenceFrame();
+  mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) fw::ReferenceFrame();
   bindReferenceFrameToBone(bone, frame);
   GfComTransform *com_trans = unknown08->getComponent<GfComTransform>();
 #line 549
@@ -188,7 +188,7 @@ void GfComModel::destroyBoneReferenceFrameImpl(mm::mtl::IntrusivePtr<fw::Referen
 // __LINE__ must be 580 and 583 as in the original source: they are the line arguments of operator new and of the assert.
 mm::mtl::IntrusivePtr<fw::ReferenceFrame> GfComModel::createMountReferenceFrameImpl(u16 mount) {
 #line 580
-  mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) fw::ReferenceFrame();
+  mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) fw::ReferenceFrame();
   GfComTransform *com_trans = unknown08->getComponent<GfComTransform>();
 #line 583
   MM_ASSERT(com_trans != NULL);

@@ -72,7 +72,7 @@ bool GmkRoutedEnemy::PopXformFinder::onPopGob(gf::GF_OBJ_HANDLE *handle) const {
 
 void GmkRoutedEnemy::update(f32 deltaTime) {
   debugUpdateMmf();
-  if (!isValid() || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (!isValid() || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return;
   }
   const mm::Vec3 &playerPosition = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -150,12 +150,12 @@ void GmkRoutedEnemyList::debugUpdateMmf() {
 }
 
 void GmkRoutedEnemy::unbindRouteNavi(gf::GF_OBJ_HANDLE *handle, bool isDispose) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   for (std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi> *it = unknown1d8.begin(); it != unknown1d8.end(); ++it) {
     if (it->first == handle) {
-      it->first = gf::INVALID_HANDLE;
+      it->first = gf::unknown020;
       if (isDispose) {
         it->second.dispose();
       }
@@ -176,7 +176,7 @@ void GmkRoutedEnemy::bindRouteNavi(gf::GF_OBJ_HANDLE *handle, GmkRouteNavi &navi
 
 GmkRouteNavi *GmkRoutedEnemy::findFreeRouteNavi() const {
   for (std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi> *it = unknown1d8.begin(); it != unknown1d8.end(); ++it) {
-    if (it->first == gf::INVALID_HANDLE) {
+    if (it->first == gf::unknown020) {
       return &it->second;
     }
   }
@@ -199,7 +199,7 @@ void GmkRoutedEnemy::onEnemyDead(gf::GF_OBJ_HANDLE *handle) {
 
 void GmkRoutedEnemy::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     unbindRouteNavi(handle, false);
     unknown50.removeGobInst(handle);
   }

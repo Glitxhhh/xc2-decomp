@@ -92,16 +92,16 @@ void CharaPlayAction::play(gf::GfObj *obj) {
       if (unknown30 == ACT_BATTLE) {
         if (unknown18 != nullptr) {
           switch (unknown18->unknown18) {
-          case gf::GF_EVT_MODEL_DRIVER:
+          case gf::GF_EVT_MODEL_UNKNOWN_0:
             unknown18->setWeaponBattleState();
             break;
-          case gf::GF_EVT_MODEL_BLADE:
+          case gf::GF_EVT_MODEL_UNKNOWN_1:
             unknown18->setWeaponBattleState();
             break;
-          case gf::GF_EVT_MODEL_WEAPON:
+          case gf::GF_EVT_MODEL_UNKNOWN_2:
             unknown18->setWeaponBattleState();
             break;
-          case gf::GF_EVT_MODEL_ENEMY:
+          case gf::GF_EVT_MODEL_UNKNOWN_5:
             unknown18->setWeaponBattleState();
             break;
           default:
@@ -115,16 +115,16 @@ void CharaPlayAction::play(gf::GfObj *obj) {
     } else if (unknown30 == ACT_BATTLE) {
       if (unknown18 != nullptr) {
         switch (unknown18->unknown18) {
-        case gf::GF_EVT_MODEL_DRIVER:
+        case gf::GF_EVT_MODEL_UNKNOWN_0:
           unknown18->setWeaponBattleCommand();
           break;
-        case gf::GF_EVT_MODEL_BLADE:
+        case gf::GF_EVT_MODEL_UNKNOWN_1:
           unknown18->setWeaponBattleCommand();
           break;
-        case gf::GF_EVT_MODEL_WEAPON:
+        case gf::GF_EVT_MODEL_UNKNOWN_2:
           unknown18->setWeaponBattleCommand();
           break;
-        case gf::GF_EVT_MODEL_ENEMY:
+        case gf::GF_EVT_MODEL_UNKNOWN_5:
           unknown18->setWeaponBattleCommand();
           break;
         default:

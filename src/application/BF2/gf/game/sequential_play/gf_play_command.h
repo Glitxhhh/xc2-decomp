@@ -46,47 +46,47 @@ struct GfSequentialPlaySignal {
 };
 
 enum PCOMTYPE {
-  PCOMTYPE_EVENT_FADE,
-  PCOMTYPE_PAUSE,
-  PCOMTYPE_STATE,
-  PCOMTYPE_WAIT,
-  PCOMTYPE_WAIT_EVENT,
-  PCOMTYPE_MAPJUMP,
-  PCOMTYPE_PLAYER_STOP,
-  PCOMTYPE_AFTER_EVENT_SCRIPT = 8,
-  PCOMTYPE_EVENT,
-  PCOMTYPE_CALLBACK_EVENT_SEQUENCE,
-  PCOMTYPE_OPEN_MENU,
-  PCOMTYPE_OPEN_MENU2,
-  PCOMTYPE_MENU_CHAPTER_SAVE,
-  PCOMTYPE_MENU_CHAPTER,
-  PCOMTYPE_MENU_CHAPTER_END,
-  PCOMTYPE_MENU_ZONE,
-  PCOMTYPE_MENU_DUMMY_TUTORIAL,
-  PCOMTYPE_MENU_QUEST_LIST,
-  PCOMTYPE_MENU_KIZUNARING = 0x15,
-  PCOMTYPE_MENU_PRECIOUS,
-  PCOMTYPE_MENU_COMMON,
-  PCOMTYPE_MENU_COMMON_FROM_PARAM,
-  PCOMTYPE_SALVAGE,
-  PCOMTYPE_COLLECT,
-  PCOMTYPE_FIELD_TBOX,
-  PCOMTYPE_FIELD_SEQ,
-  PCOMTYPE_WAIT_PLAYER_TO_START_GMK_TUTO,
-  PCOMTYPE_GMK_TUTORIAL_SEQ,
-  PCOMTYPE_GMK_CAMERA_SEQ,
-  PCOMTYPE_PLAYER_DEAD,
-  PCOMTYPE_TALK,
-  PCOMTYPE_QUEST_ORDER_UI,
-  PCOMTYPE_QUEST_COMPLETE_UI,
-  PCOMTYPE_RETURN_TITLE,
-  PCOMTYPE_BATTLE_START,
-  PCOMTYPE_EXECUTE_SIGNAL,
-  PCOMTYPE_MINI_GAME,
-  PCOMTYPE_CHAIN_ATTACK,
-  PCOMTYPE_ARTS_MOVIE,
-  PCOMTYPE_RESET_BLADE,
-  PCOMTYPE_MOVER_SWITCH,
+  PCOMTYPE_UNKNOWN_0,         // Inferred role: pcomtype event fade; original name unknown.
+  PCOMTYPE_UNKNOWN_1,         // Inferred role: pcomtype pause; original name unknown.
+  PCOMTYPE_UNKNOWN_2,         // Inferred role: pcomtype state; original name unknown.
+  PCOMTYPE_UNKNOWN_3,         // Inferred role: pcomtype wait; original name unknown.
+  PCOMTYPE_UNKNOWN_4,         // Inferred role: pcomtype wait event; original name unknown.
+  PCOMTYPE_UNKNOWN_5,         // Inferred role: pcomtype mapjump; original name unknown.
+  PCOMTYPE_UNKNOWN_6,         // Inferred role: pcomtype player stop; original name unknown.
+  PCOMTYPE_UNKNOWN_8 = 8,     // Inferred role: pcomtype after event script; original name unknown.
+  PCOMTYPE_UNKNOWN_9,         // Inferred role: pcomtype event; original name unknown.
+  PCOMTYPE_UNKNOWN_10,        // Inferred role: pcomtype callback event sequence; original name unknown.
+  PCOMTYPE_UNKNOWN_11,        // Inferred role: pcomtype open menu; original name unknown.
+  PCOMTYPE_UNKNOWN_12,        // Inferred role: pcomtype open menu2; original name unknown.
+  PCOMTYPE_UNKNOWN_13,        // Inferred role: pcomtype menu chapter save; original name unknown.
+  PCOMTYPE_UNKNOWN_14,        // Inferred role: pcomtype menu chapter; original name unknown.
+  PCOMTYPE_UNKNOWN_15,        // Inferred role: pcomtype menu chapter end; original name unknown.
+  PCOMTYPE_UNKNOWN_16,        // Inferred role: pcomtype menu zone; original name unknown.
+  PCOMTYPE_UNKNOWN_17,        // Inferred role: pcomtype menu dummy tutorial; original name unknown.
+  PCOMTYPE_UNKNOWN_18,        // Inferred role: pcomtype menu quest list; original name unknown.
+  PCOMTYPE_UNKNOWN_21 = 0x15, // Inferred role: pcomtype menu kizunaring; original name unknown.
+  PCOMTYPE_UNKNOWN_22,        // Inferred role: pcomtype menu precious; original name unknown.
+  PCOMTYPE_UNKNOWN_23,        // Inferred role: pcomtype menu common; original name unknown.
+  PCOMTYPE_UNKNOWN_24,        // Inferred role: pcomtype menu common from param; original name unknown.
+  PCOMTYPE_UNKNOWN_25,        // Inferred role: pcomtype salvage; original name unknown.
+  PCOMTYPE_UNKNOWN_26,        // Inferred role: pcomtype collect; original name unknown.
+  PCOMTYPE_UNKNOWN_27,        // Inferred role: pcomtype field tbox; original name unknown.
+  PCOMTYPE_UNKNOWN_28,        // Inferred role: pcomtype field seq; original name unknown.
+  PCOMTYPE_UNKNOWN_29,        // Inferred role: pcomtype wait player to start gmk tuto; original name unknown.
+  PCOMTYPE_UNKNOWN_30,        // Inferred role: pcomtype gmk tutorial seq; original name unknown.
+  PCOMTYPE_UNKNOWN_31,        // Inferred role: pcomtype gmk camera seq; original name unknown.
+  PCOMTYPE_UNKNOWN_32,        // Inferred role: pcomtype player dead; original name unknown.
+  PCOMTYPE_UNKNOWN_33,        // Inferred role: pcomtype talk; original name unknown.
+  PCOMTYPE_UNKNOWN_34,        // Inferred role: pcomtype quest order ui; original name unknown.
+  PCOMTYPE_UNKNOWN_35,        // Inferred role: pcomtype quest complete ui; original name unknown.
+  PCOMTYPE_UNKNOWN_36,        // Inferred role: pcomtype return title; original name unknown.
+  PCOMTYPE_UNKNOWN_37,        // Inferred role: pcomtype battle start; original name unknown.
+  PCOMTYPE_UNKNOWN_38,        // Inferred role: pcomtype execute signal; original name unknown.
+  PCOMTYPE_UNKNOWN_39,        // Inferred role: pcomtype mini game; original name unknown.
+  PCOMTYPE_UNKNOWN_40,        // Inferred role: pcomtype chain attack; original name unknown.
+  PCOMTYPE_UNKNOWN_41,        // Inferred role: pcomtype arts movie; original name unknown.
+  PCOMTYPE_UNKNOWN_42,        // Inferred role: pcomtype reset blade; original name unknown.
+  PCOMTYPE_UNKNOWN_43,        // Inferred role: pcomtype mover switch; original name unknown.
 };
 
 class GfPlayCom {
@@ -126,7 +126,7 @@ class GfPlayComPause : public GfPlayCom {
   GF_PLAY_COM("PlayComPause")
 
 public:
-  GfPlayComPause(u32 pauseBits) : GfPlayCom(PCOMTYPE_PAUSE, true), unknown10(pauseBits) {}
+  GfPlayComPause(u32 pauseBits) : GfPlayCom(PCOMTYPE_UNKNOWN_1, true), unknown10(pauseBits) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -141,7 +141,7 @@ class GfPlayComState : public GfPlayCom {
   GF_PLAY_COM("PlayComState")
 
 public:
-  GfPlayComState(GF_STATE state, bool isSequence) : GfPlayCom(PCOMTYPE_STATE, true), unknown10(state), unknown14(isSequence) {}
+  GfPlayComState(GF_STATE state, bool isSequence) : GfPlayCom(PCOMTYPE_UNKNOWN_2, true), unknown10(state), unknown14(isSequence) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -157,7 +157,7 @@ class GfPlayComWait : public GfPlayCom {
   GF_PLAY_COM("PlayComWait")
 
 public:
-  GfPlayComWait(f32 time) : GfPlayCom(PCOMTYPE_WAIT, false), unknown10(time) {}
+  GfPlayComWait(f32 time) : GfPlayCom(PCOMTYPE_UNKNOWN_3, false), unknown10(time) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -172,7 +172,7 @@ class GfPlayComWaitEvent : public GfPlayCom {
   GF_PLAY_COM("PlayComWaitEvent")
 
 public:
-  GfPlayComWaitEvent(f32 time, GF_OBJ_HANDLE *handle) : GfPlayCom(PCOMTYPE_WAIT_EVENT, false), unknown10(time), unknown18(handle), unknown20(-1) {}
+  GfPlayComWaitEvent(f32 time, GF_OBJ_HANDLE *handle) : GfPlayCom(PCOMTYPE_UNKNOWN_4, false), unknown10(time), unknown18(handle), unknown20(-1) {}
   void start() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
   static GfPlayComWaitEvent *create(f32 time, GF_OBJ_HANDLE *handle);
@@ -191,7 +191,7 @@ class GfPlayComMapjump : public GfPlayCom {
   GF_PLAY_COM("PlayComMapjump")
 
 public:
-  GfPlayComMapjump(const GfMapjumpInfo &info) : GfPlayCom(PCOMTYPE_MAPJUMP, false), unknown10(-1), unknown20(info) {}
+  GfPlayComMapjump(const GfMapjumpInfo &info) : GfPlayCom(PCOMTYPE_UNKNOWN_5, false), unknown10(-1), unknown20(info) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -207,7 +207,7 @@ class GfPlayComWaitBattleEnd : public GfPlayCom {
   GF_PLAY_COM("PlayComWaitBattleEnd")
 
 public:
-  GfPlayComWaitBattleEnd(u32 battle) : GfPlayCom(PCOMTYPE_PLAYER_STOP, true), unknown10(false), unknown18(battle) {}
+  GfPlayComWaitBattleEnd(u32 battle) : GfPlayCom(PCOMTYPE_UNKNOWN_6, true), unknown10(false), unknown18(battle) {}
   void start() override;
   void end() override;
   static GfPlayComWaitBattleEnd *create(u32 battle);
@@ -306,7 +306,7 @@ class GfPlayComCallbackEventSequence : public GfPlayCom {
   GF_PLAY_COM("PlayComCallbackEventSequence")
 
 public:
-  GfPlayComCallbackEventSequence(int sequence, bool isStart) : GfPlayCom(PCOMTYPE_CALLBACK_EVENT_SEQUENCE, false), unknown10(sequence), unknown14(isStart) {}
+  GfPlayComCallbackEventSequence(int sequence, bool isStart) : GfPlayCom(PCOMTYPE_UNKNOWN_10, false), unknown10(sequence), unknown14(isStart) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -340,7 +340,7 @@ class GfPlayComOpenMenu2 : public GfPlayCom {
   GF_PLAY_COM("GfPlayComOpenMenu")
 
 public:
-  GfPlayComOpenMenu2(u32 type, MAINMENU menu) : GfPlayCom(PCOMTYPE_OPEN_MENU2, false), unknown18(0), unknown1c(0) {
+  GfPlayComOpenMenu2(u32 type, MAINMENU menu) : GfPlayCom(PCOMTYPE_UNKNOWN_12, false), unknown18(0), unknown1c(0) {
     this->unknown10 = type;
     this->unknown14 = menu;
   }
@@ -361,7 +361,7 @@ class GfPlayComStartTutorial : public GfPlayCom {
   GF_PLAY_COM("GfPlayComStartTutorial")
 
 public:
-  GfPlayComStartTutorial(u32 tutorial) : GfPlayCom(PCOMTYPE_OPEN_MENU2, false), unknown10(tutorial) {}
+  GfPlayComStartTutorial(u32 tutorial) : GfPlayCom(PCOMTYPE_UNKNOWN_12, false), unknown10(tutorial) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -378,7 +378,7 @@ class GfPlayComMiniGame : public GfPlayCom {
   GF_PLAY_COM("GfPlayComMiniGame")
 
 public:
-  GfPlayComMiniGame() : GfPlayCom(PCOMTYPE_MINI_GAME, false) {}
+  GfPlayComMiniGame() : GfPlayCom(PCOMTYPE_UNKNOWN_39, false) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -391,7 +391,7 @@ class GfPlayComMenuChapterSave : public GfPlayCom {
   GF_PLAY_COM("PlayComMenuChapterSave")
 
 public:
-  GfPlayComMenuChapterSave(u32 chapter) : GfPlayCom(PCOMTYPE_MENU_CHAPTER_SAVE, false), unknown10(chapter) {}
+  GfPlayComMenuChapterSave(u32 chapter) : GfPlayCom(PCOMTYPE_UNKNOWN_13, false), unknown10(chapter) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -527,7 +527,7 @@ class GfPlayComMenuQuestList : public GfPlayCom {
   GF_PLAY_COM("PlayComMenuQuestList")
 
 public:
-  GfPlayComMenuQuestList() : GfPlayCom(PCOMTYPE_MENU_QUEST_LIST, false) {}
+  GfPlayComMenuQuestList() : GfPlayCom(PCOMTYPE_UNKNOWN_18, false) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -540,7 +540,7 @@ class GfPlayComMenuKizunaring : public GfPlayCom {
   GF_PLAY_COM("PlayComMenuKizunaring")
 
 public:
-  GfPlayComMenuKizunaring(u32 blade) : GfPlayCom(PCOMTYPE_MENU_KIZUNARING, false), unknown10(blade) {}
+  GfPlayComMenuKizunaring(u32 blade) : GfPlayCom(PCOMTYPE_UNKNOWN_21, false), unknown10(blade) {}
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -574,8 +574,8 @@ class GfPlayComSalvage : public GfPlayCom {
 
 public:
   enum STATE {
-    STATE_WAIT,
-    STATE_SALVAGE,
+    STATE_UNKNOWN_0, // Inferred role: state wait; original name unknown.
+    STATE_UNKNOWN_1, // Inferred role: state salvage; original name unknown.
   };
 
   GfPlayComSalvage(GF_OBJ_HANDLE *handle);
@@ -660,7 +660,7 @@ class GfPlayComWaitPlayerToStartGmkTuto : public GfPlayCom {
   GF_PLAY_COM("PlayComWaitPlayerToStartGmkTuto")
 
 public:
-  GfPlayComWaitPlayerToStartGmkTuto() : GfPlayCom(PCOMTYPE_WAIT_PLAYER_TO_START_GMK_TUTO, true) {}
+  GfPlayComWaitPlayerToStartGmkTuto() : GfPlayCom(PCOMTYPE_UNKNOWN_29, true) {}
   void start() override { unknown10 = 0.0f; }
   void end() override {}
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
@@ -717,7 +717,7 @@ class GfPlayComPlayerDead : public GfPlayCom, public mm::mtl::PtrSingleton<GfPla
 
 public:
   GfPlayComPlayerDead(GfPlayerDead dead)
-      : GfPlayCom(PCOMTYPE_PLAYER_DEAD, false), unknown20(dead), unknown24(0.0f), unknown28(0.0f), unknown2c(15.0f), unknown30(nullptr), unknown38(false), unknown39(false), unknown3a(false) {}
+      : GfPlayCom(PCOMTYPE_UNKNOWN_32, false), unknown20(dead), unknown24(0.0f), unknown28(0.0f), unknown2c(15.0f), unknown30(nullptr), unknown38(false), unknown39(false), unknown3a(false) {}
   void gevMapjump(GEV event, const MapjumpCallbackInfo &info) override;
   static bool isDead();
   static bool replaceDeadType(GfPlayerDead dead);
@@ -822,7 +822,7 @@ class GfPlayComReturnTitle : public GfPlayCom, public mm::mtl::PtrSingleton<GfPl
   GF_PLAY_COM("PlayComReturnTitle")
 
 public:
-  GfPlayComReturnTitle(const ParamReturnTitle &param) : GfPlayCom(PCOMTYPE_RETURN_TITLE, false), unknown18(param), unknown1c(0) {}
+  GfPlayComReturnTitle(const ParamReturnTitle &param) : GfPlayCom(PCOMTYPE_UNKNOWN_36, false), unknown18(param), unknown1c(0) {}
   void start() override;
   void end() override;
   static GfPlayComReturnTitle *create(const ParamReturnTitle &param);
@@ -839,7 +839,7 @@ class GfPlayComBattleStart : public GfPlayCom, public mm::mtl::PtrSingleton<GfPl
   GF_PLAY_COM("PlayComBattleStart")
 
 public:
-  GfPlayComBattleStart(bool isStart) : GfPlayCom(PCOMTYPE_BATTLE_START, false), unknown18(isStart), unknown1c(0.0f), unknown20(0) {}
+  GfPlayComBattleStart(bool isStart) : GfPlayCom(PCOMTYPE_UNKNOWN_37, false), unknown18(isStart), unknown1c(0.0f), unknown20(0) {}
   void start() override {}
   void end() override {}
   bool update(const fw::UpdateInfo &info, bool isCancel) override;

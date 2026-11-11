@@ -36,7 +36,7 @@ void GfMenuObjEventSubtitle::initialize() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
 // __LINE__ must be 71 as in the original file: its value changes the instruction order.
 #line 71
-  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   listener->addRef();
   ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
   if (listener != nullptr) {

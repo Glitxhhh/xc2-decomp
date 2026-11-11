@@ -58,7 +58,7 @@ void GfMenuObjDrArtsSet2::initialize() {
   u32 main = acc.searchChild("LAY_main");
 // __LINE__ must be 148 as in the original file: it is the line argument of operator new.
 #line 148
-  MainListener *mainListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   mainListener->addRef();
   ui::UIEventManager::get()->registObjectListener(main, mainListener);
   if (mainListener != nullptr) {
@@ -68,7 +68,7 @@ void GfMenuObjDrArtsSet2::initialize() {
   u32 wpn = acc.searchChild("LAY_wpn");
 // __LINE__ must be 154 as in the original file: it is the line argument of operator new.
 #line 154
-  WpnTypeListener *wpnTypeListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) WpnTypeListener(this);
+  WpnTypeListener *wpnTypeListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) WpnTypeListener(this);
   wpnTypeListener->addRef();
   ui::UIEventManager::get()->registObjectListener(wpn, wpnTypeListener);
   if (wpnTypeListener != nullptr) {
@@ -77,7 +77,7 @@ void GfMenuObjDrArtsSet2::initialize() {
   u32 arts = acc.searchChild("LAY_arts");
 // __LINE__ must be 158 as in the original file: it is the line argument of operator new.
 #line 158
-  ArtsListListener *artsListListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ArtsListListener(this);
+  ArtsListListener *artsListListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ArtsListListener(this);
   artsListListener->addRef();
   ui::UIEventManager::get()->registObjectListener(arts, artsListListener);
   if (artsListListener != nullptr) {
@@ -86,7 +86,7 @@ void GfMenuObjDrArtsSet2::initialize() {
   u32 lvupEff = acc.searchChild("LAY_lvup_eff");
 // __LINE__ must be 162 as in the original file: it is the line argument of operator new.
 #line 162
-  LevelupListener *levelupListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LevelupListener(this);
+  LevelupListener *levelupListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) LevelupListener(this);
   levelupListener->addRef();
   ui::UIEventManager::get()->registObjectListener(lvupEff, levelupListener);
   if (levelupListener != nullptr) {
@@ -101,13 +101,13 @@ void GfMenuObjDrArtsSet2::initialize() {
   unknown0d8 = GfMenuArtsList::create();
   ui::UIListInfoBase::SetupParam artsParam;
   artsParam.unknown08 = 4;
-  unknown0d8->setup(getAllocator(ALLOCATOR_DEFAULT), artsParam);
+  unknown0d8->setup(getAllocator(ALLOCATOR_UNKNOWN_0), artsParam);
   {
     ui::UIListInfoBase::SetupParam itemParam;
     itemParam.unknown08 = 3;
-    unknown0f0->setup(getAllocator(ALLOCATOR_DEFAULT), itemParam);
+    unknown0f0->setup(getAllocator(ALLOCATOR_UNKNOWN_0), itemParam);
   }
-  for (u32 item = ITEM_WP_UP_FIRST; item <= ITEM_WP_UP_LAST; item++) {
+  for (u32 item = ITEM_UNKNOWN_25405; item <= ITEM_UNKNOWN_25407; item++) {
     GfItem info = GfItemUtil::getInfo(item);
     if (info.unknown02 != 0) {
       MenuItemInfo menuItem;
@@ -520,7 +520,7 @@ bool GfMenuObjDrArtsSet2::seqSelectItem() {
 bool GfMenuObjDrArtsSet2::seqConfirmItem() {
   if (!unknown258) {
     u32 item = unknown0f0->getContents(unknown0f0->getIndex(false)).unknown04;
-    if (item >= ITEM_WP_UP_FIRST && item <= ITEM_WP_UP_LAST) {
+    if (item >= ITEM_UNKNOWN_25405 && item <= ITEM_UNKNOWN_25407) {
       // 0x6267 is the inferred base of the common text window ids of the weapon point items.
       u32 window = item - 0x6267;
       unknown0c0->reset();

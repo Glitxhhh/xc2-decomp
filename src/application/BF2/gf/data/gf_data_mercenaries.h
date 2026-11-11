@@ -18,7 +18,7 @@ struct GfRequestBladeData {
 
 static_assert(sizeof(GfRequestBladeData) == 0x10, "");
 
-constexpr u32 MERCENARIES_LEVEL_MAX = 5;
+constexpr u32 MERCENARIES_LEVEL_UNKNOWN_5 = 5; // Inferred role: mercenaries level max; original name unknown.
 
 // Inferred role: save data mercenaries team; original type name unknown.
 struct unknown120 {

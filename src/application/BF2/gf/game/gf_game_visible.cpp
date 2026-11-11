@@ -11,7 +11,7 @@ struct GF_OBJ_HANDLE; // IWYU pragma: keep
 void GfGameVisible::build(const GfSetupParam &) {
 // __LINE__ must be 40 as in the original file: it is the line argument of operator new.
 #line 40
-  GfGameVisible *visible = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameVisible();
+  GfGameVisible *visible = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameVisible();
   if (visible != nullptr) {
     visible->setup();
   }

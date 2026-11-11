@@ -56,11 +56,11 @@ void SelectWindow::open(SELECT_TYPE type, int textId, const int *selectIds, size
     for (size_t i = 0; i < count && i < param.unknown58.capacity(); i++) {
       param.unknown58.push_back(selectIds[i]);
     }
-    if (handle != gf::INVALID_HANDLE) {
+    if (handle != gf::unknown020) {
       gf::DataParamAcc paramAcc(handle);
       switch (paramAcc.getObjType()) {
-      case gf::OBJECT_TYPE_DRIVER:
-        gf::GfDataDriver::getName(param.unknown10, param.unknown18, paramAcc.isValid() && paramAcc.getObjType() == gf::OBJECT_TYPE_DRIVER ? paramAcc.getBdatId() : 0);
+      case gf::OBJECT_TYPE_PC:
+        gf::GfDataDriver::getName(param.unknown10, param.unknown18, paramAcc.isValid() && paramAcc.getObjType() == gf::OBJECT_TYPE_PC ? paramAcc.getBdatId() : 0);
         break;
       case gf::OBJECT_TYPE_BLADE:
         gf::GfDataBlade::getName(param.unknown10, param.unknown18, paramAcc.isValid() ? paramAcc.getBdatId() : 0);

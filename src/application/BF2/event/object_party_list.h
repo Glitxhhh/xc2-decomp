@@ -28,7 +28,7 @@ private:
   // INVALID_HANDLE when the index is out of range.
   static gf::GF_OBJ_HANDLE *unknown001(const mm::mtl::FixedVector<gf::GF_OBJ_HANDLE *, MEMBER_UNKNOWN_3> &list, u32 index) {
     if (index == 0 || index > list.size()) {
-      return gf::INVALID_HANDLE;
+      return gf::unknown020;
     }
     return list[index - 1];
   }

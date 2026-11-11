@@ -61,7 +61,7 @@ GfMenuGameAdapter *GfMenuGameAdapter::create(u32 handle, u32 type, bool isUpdate
     if (plugin != nullptr) {
       // __LINE__ must be 79 as in the original source: it is the line argument of operator new.
 #line 79
-      GfMenuGameAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuGameAdapter(plugin, isUpdateAlways);
+      GfMenuGameAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuGameAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       plugin->release();
       return adapter;
@@ -106,7 +106,7 @@ bool GfMenuGameAdapter::update_WeatherIcon() {
 
 bool GfMenuGameAdapter::update_CloudIcon() {
   setNumber(GfGameUtilCloudSea::getCloudSea() == 0);
-  return GfGameManager::getMapID() == MAP_GULA || GfGameManager::getMapID() == MAP_SUPERBIA;
+  return GfGameManager::getMapID() == MAP_UNKNOWN_6 || GfGameManager::getMapID() == MAP_UNKNOWN_10;
 }
 
 bool GfMenuGameAdapter::update_MapName() {
@@ -163,7 +163,7 @@ bool GfMenuGameAdapter::update_MercenariesLv() {
 }
 
 bool GfMenuGameAdapter::update_MercenariesPoint() {
-  if (GfDataMercenaries::getLevel() == MERCENARIES_LEVEL_MAX) {
+  if (GfDataMercenaries::getLevel() == MERCENARIES_LEVEL_UNKNOWN_5) {
     setNumber(0);
   } else {
     setNumberMax(GfDataMercenaries::getPointMax());

@@ -77,7 +77,7 @@ const mm::mtl::RTTI *ChainAttackCameraEntity::getRTTI() const { return &m_rtti; 
 
 const char *ChainAttackCameraEntity::getName() const { return "ChainAttackCameraEntity"; }
 
-ChainAttackCamera::ChainAttackCamera() : unknown70(0xf), unknown78(INVALID_HANDLE) {
+ChainAttackCamera::ChainAttackCamera() : unknown70(0xf), unknown78(unknown020) {
   unknown80.unknown08 = 0.0f;
   unknown80.unknown0c = 0.0f;
   unknown80.unknown14 = false;

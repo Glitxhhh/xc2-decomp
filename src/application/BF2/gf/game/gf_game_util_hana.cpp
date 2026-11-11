@@ -9,9 +9,9 @@
 
 namespace gf {
 
-constexpr u32 EXTEND_CIRCUIT_FIRST = 3;
-constexpr u32 POWER_RANK_MAX = 20;
-constexpr s32 ETHER_MAX = 999999999;
+constexpr u32 CIRCUIT_UNKNOWN_3 = 3;               // Inferred role: extend circuit first; original name unknown.
+constexpr u32 RANK_UNKNOWN_20 = 20;                // Inferred role: power rank max; original name unknown.
+constexpr s32 ETHER_UNKNOWN_999999999 = 999999999; // Inferred role: ether max; original name unknown.
 
 namespace {
 
@@ -40,8 +40,8 @@ template <u32 (*getNeedEther)(u32)> RESULT_HANA unknown002(u32 parts) {
 
   s32 rest = GfDataHana::getEther() - needEther;
   s32 ether = rest;
-  if (rest > ETHER_MAX) {
-    ether = ETHER_MAX;
+  if (rest > ETHER_UNKNOWN_999999999) {
+    ether = ETHER_UNKNOWN_999999999;
   }
 
   if (rest < 0) {
@@ -89,7 +89,7 @@ RESULT_HANA GfGameUtilHana::isOpenArtsCircuit(u32 blade, u32 circuit) {
 u32 GfGameUtilHana::getConvertToEther(u32 parts) {
   ItemProperty property;
   GfItemUtil::getProperty(property, parts, 0);
-  if (property.unknown08 >= ItemType::HANA_ROLE && property.unknown08 <= ItemType::HANA_ASSIST) {
+  if (property.unknown08 >= ItemType::ITEM_TYPE_UNKNOWN_16 && property.unknown08 <= ItemType::ITEM_TYPE_UNKNOWN_20) {
     return GfItemUtil::getItemBoxCountWithoutEquip(parts);
   }
   return 0;
@@ -98,7 +98,7 @@ u32 GfGameUtilHana::getConvertToEther(u32 parts) {
 RESULT_HANA GfGameUtilHana::execConvertToEther(u32 parts) {
   ItemProperty property;
   GfItemUtil::getProperty(property, parts, 0);
-  if (property.unknown08 >= ItemType::HANA_ROLE && property.unknown08 <= ItemType::HANA_ASSIST) {
+  if (property.unknown08 >= ItemType::ITEM_TYPE_UNKNOWN_16 && property.unknown08 <= ItemType::ITEM_TYPE_UNKNOWN_20) {
     if (GfItemUtil::getItemBoxCountWithoutEquip(parts) == 0) {
       return RESULT_HANA_UNKNOWN_8;
     }
@@ -137,7 +137,7 @@ RESULT_HANA GfGameUtilHana::openCondenserCircuit(u32 blade, u32 circuit) {
     return RESULT_HANA_UNKNOWN_4;
   }
 
-  u32 condenserCircuit = circuit + EXTEND_CIRCUIT_FIRST;
+  u32 condenserCircuit = circuit + CIRCUIT_UNKNOWN_3;
   if (GfDataHana::isOpenCircuit(blade, condenserCircuit)) {
     return RESULT_HANA_UNKNOWN_1;
   }
@@ -161,12 +161,12 @@ RESULT_HANA GfGameUtilHana::isOpenCondenserCircuit(u32 blade, u32 circuit) {
     return RESULT_HANA_UNKNOWN_4;
   }
 
-  return GfDataHana::isOpenCircuit(blade, circuit + EXTEND_CIRCUIT_FIRST) ? RESULT_HANA_UNKNOWN_0 : RESULT_HANA_UNKNOWN_10;
+  return GfDataHana::isOpenCircuit(blade, circuit + CIRCUIT_UNKNOWN_3) ? RESULT_HANA_UNKNOWN_0 : RESULT_HANA_UNKNOWN_10;
 }
 
 u32 GfGameUtilHana::getEtherForOpenCondenserCircuit(u32 blade, u32 circuit) {
   if (GfDataHana::isValid(blade)) {
-    return GfDataHana::getOpenCircuitEther(blade, circuit + EXTEND_CIRCUIT_FIRST);
+    return GfDataHana::getOpenCircuitEther(blade, circuit + CIRCUIT_UNKNOWN_3);
   }
 
   return 0;
@@ -215,7 +215,7 @@ RESULT_HANA GfGameUtilHana::execPowerRankup(u32 blade, u32 rank) {
     GfBdatBtl *bdatBattle = GfBdatBtl::get();
     do {
       currentRank++;
-      u32 needEther = bdatBattle->getBTL_HanaPowerEtherNum(currentRank, blade - BLADE_HANA_JS);
+      u32 needEther = bdatBattle->getBTL_HanaPowerEtherNum(currentRank, blade - BLADE_UNKNOWN_1005);
       bool isShort = ether < needEther;
       ether -= needEther;
       if (isShort) {
@@ -227,7 +227,7 @@ RESULT_HANA GfGameUtilHana::execPowerRankup(u32 blade, u32 rank) {
         GfDataHana::setEther(ether);
         return RESULT_HANA_UNKNOWN_0;
       }
-    } while (currentRank < POWER_RANK_MAX);
+    } while (currentRank < RANK_UNKNOWN_20);
   }
 
   return RESULT_HANA_UNKNOWN_6;
@@ -244,7 +244,7 @@ RESULT_HANA GfGameUtilHana::isExecPowerRankup(u32 blade, u32 rank) {
     GfBdatBtl *bdatBattle = GfBdatBtl::get();
     do {
       currentRank++;
-      u32 needEther = bdatBattle->getBTL_HanaPowerEtherNum(currentRank, blade - BLADE_HANA_JS);
+      u32 needEther = bdatBattle->getBTL_HanaPowerEtherNum(currentRank, blade - BLADE_UNKNOWN_1005);
       bool isShort = ether < needEther;
       ether -= needEther;
       if (isShort) {
@@ -254,7 +254,7 @@ RESULT_HANA GfGameUtilHana::isExecPowerRankup(u32 blade, u32 rank) {
       if (rank == currentRank) {
         return RESULT_HANA_UNKNOWN_0;
       }
-    } while (currentRank < POWER_RANK_MAX);
+    } while (currentRank < RANK_UNKNOWN_20);
   }
 
   return RESULT_HANA_UNKNOWN_6;
@@ -266,7 +266,7 @@ u32 GfGameUtilHana::getNeedEtherForExecPowerRankup(u32 blade, u32 rank) {
   if (currentRank < rank) {
     GfBdatBtl *bdatBattle = GfBdatBtl::get();
     for (u32 nextRank = currentRank + 1; nextRank <= rank; nextRank++) {
-      totalEther += bdatBattle->getBTL_HanaPowerEtherNum(nextRank, blade - BLADE_HANA_JS);
+      totalEther += bdatBattle->getBTL_HanaPowerEtherNum(nextRank, blade - BLADE_UNKNOWN_1005);
     }
   }
 

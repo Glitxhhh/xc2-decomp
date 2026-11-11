@@ -65,7 +65,7 @@ void GmkTbox::BdatInfo::debugDraw(const AGmkBase &gmk) const {}
 namespace {
 
 void setGobTargetable(gf::GF_OBJ_HANDLE *handle, bool isTargetable) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   unknown002(handle, isTargetable);
@@ -73,7 +73,7 @@ void setGobTargetable(gf::GF_OBJ_HANDLE *handle, bool isTargetable) {
 
 } // namespace
 
-GmkTbox::GmkTbox() : unknown48(gf::INVALID_HANDLE), unknown50(true), unknown54(0.0f), unknown58(0.0f) {}
+GmkTbox::GmkTbox() : unknown48(gf::unknown020), unknown50(true), unknown54(0.0f), unknown58(0.0f) {}
 
 int GmkTbox::getGameFlagId() const { return unknown20.unknown18 + GAME_FLAG_UNKNOWN_31765; }
 
@@ -98,7 +98,7 @@ void GmkTbox::dispose() {
 }
 
 void GmkTbox::disposeGobInst(bool isFadeOut) {
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   if (isFadeOut) {
@@ -106,7 +106,7 @@ void GmkTbox::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknown48);
     gf::GfObjUtil::destroy(unknown48);
-    unknown48 = gf::INVALID_HANDLE;
+    unknown48 = gf::unknown020;
   }
 }
 
@@ -125,7 +125,7 @@ void GmkTbox::update(f32 deltaTime) {
       disposeGobInst(true);
     }
   }
-  if (getBdatInfo()->unknown05 && getProgress() == PROGRESS_UNKNOWN_1 && unknown48 != gf::INVALID_HANDLE && unknown58 < unknown54) {
+  if (getBdatInfo()->unknown05 && getProgress() == PROGRESS_UNKNOWN_1 && unknown48 != gf::unknown020 && unknown58 < unknown54) {
     unknown58 += deltaTime;
     if (unknown54 <= unknown58) {
       gmk::disposeGobInst(unknown48, 1.0f);
@@ -134,7 +134,7 @@ void GmkTbox::update(f32 deltaTime) {
 }
 
 bool GmkTbox::canPopGobInst() const {
-  if (unknown48 != gf::INVALID_HANDLE) {
+  if (unknown48 != gf::unknown020) {
     return false;
   }
   if (getBdatInfo()->unknown05 && getProgress() == PROGRESS_UNKNOWN_1) {
@@ -165,7 +165,7 @@ void GmkTbox::createGobInst() {
 }
 
 bool GmkTbox::canDepopGobInst() const {
-  if (unknown48 != gf::INVALID_HANDLE && getBdatInfo()->isDepopCondMatched(unknown08.unknown08->unknown00)) {
+  if (unknown48 != gf::unknown020 && getBdatInfo()->isDepopCondMatched(unknown08.unknown08->unknown00)) {
     return true;
   }
   return false;
@@ -177,7 +177,7 @@ void GmkTbox::debugDraw() const {
 }
 
 void GmkTbox::validateDisp() const {
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   setEventDisp(unknown48, unknown50 && debugIsDispGmkType(getGmkType()));
@@ -185,7 +185,7 @@ void GmkTbox::validateDisp() const {
 
 void GmkTbox::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     disposeGobInst(false);
   }
 }

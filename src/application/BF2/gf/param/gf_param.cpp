@@ -38,7 +38,7 @@ const unknown001 unknown002[] = {
 void bindPadResources() {
   fw::PadResEventManager *manager = fw::PadResEventManager::get();
   if (manager != nullptr) {
-    manager->setup(5, getAllocator(ALLOCATOR_DEFAULT));
+    manager->setup(5, getAllocator(ALLOCATOR_UNKNOWN_0));
     fw::CommonResource *resource = GfStaticRes::search("/param/pad.pdp");
     if (resource != nullptr) {
       arc::CArcData archive(resource->getAssetData());

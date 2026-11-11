@@ -220,7 +220,7 @@ const AGmkBase *GmkDmgEffectList::getInst(u32 index) const { return &gmkInsts[in
 const AGmkBase *GmkDmgSeList::getInst(u32 index) const { return &gmkInsts[index]; }
 
 u32 GmkDmgPhantomTargetInfo::getTargetType() const {
-  if (unknown00 == gf::INVALID_HANDLE) {
+  if (unknown00 == gf::unknown020) {
     return 0;
   }
   if (unknown08 <= 0) {
@@ -228,7 +228,7 @@ u32 GmkDmgPhantomTargetInfo::getTargetType() const {
   }
   gf::GfObjAcc acc(unknown00);
   switch (acc.getType()) {
-  case gf::OBJECT_TYPE_DRIVER:
+  case gf::OBJECT_TYPE_PC:
   case gf::OBJECT_TYPE_BLADE:
     return 1;
   case gf::OBJECT_TYPE_ENEMY:
@@ -239,7 +239,7 @@ u32 GmkDmgPhantomTargetInfo::getTargetType() const {
 }
 
 bool GmkDmgPhantomTargetInfo::isTargetPlayer() const {
-  if (gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (gf::GfGameManager::getControlMover() == gf::unknown020) {
     return false;
   }
   return unknown00 == gf::GfGameManager::getControlMover();
@@ -319,7 +319,7 @@ GmkDmgSe *GmkDmgGimmick::getGmkDmgSe(u32 index) const {
 void GmkDmgGimmick::validateDisp() const { bool isDisp = unknown80 && debugIsDispGmkType(getGmkType()); }
 
 GmkDmgPhantomManager::GmkDmgPhantomManager() : unknown38(false) {
-  gf::GfObjManager::addListener(this, OBJEVT_ALL);
+  gf::GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
   gf::GfEvent::addEventCallback(this);
   create();
 }
@@ -332,7 +332,7 @@ GmkDmgPhantomManager::~GmkDmgPhantomManager() {
 
 void GmkDmgPhantomManager::create() {
   dispose();
-  unknown10.setAllocator(gf::getAllocator(gf::ALLOCATOR_DEFAULT));
+  unknown10.setAllocator(gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0));
   int capacity = gf::GfObjManager::getGfObjCapacity(5);
   unknown10.reserve(capacity > 0 ? static_cast<u32>(capacity + 3) : 3);
 }
@@ -358,7 +358,7 @@ void GmkDmgPhantomManager::addTargetInfo(gf::GF_OBJ_HANDLE *handle) {
 }
 
 void GmkDmgPhantomManager::removeTargetInfo(gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   for (GmkDmgPhantomTargetInfo *it = unknown10.begin(); it != unknown10.end(); it++) {

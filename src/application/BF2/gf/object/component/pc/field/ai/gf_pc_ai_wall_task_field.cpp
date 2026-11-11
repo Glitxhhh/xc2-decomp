@@ -46,7 +46,7 @@ void TaskFieldWallPrepare::onChangeActivate(BlackBoardField &blackBoard, const a
 void TaskFieldWallPrepare::onCreate(BlackBoardField &blackBoard, const ai::CreateEvent &event) {
   // __LINE__ must be 83 as in the original file: it is the line argument of the allocation.
 #line 83
-  unknown38.reset(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ai::Fsm(getAllocator(ALLOCATOR_DEFAULT)));
+  unknown38.reset(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ai::Fsm(getAllocator(ALLOCATOR_UNKNOWN_0)));
   unknown38->beginSetup(&unknown40, 3);
   unknown38->registerState<StateFieldWallAiWait>(0);
   unknown38->registerState<StateFieldWallAiPrepare>(1);

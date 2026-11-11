@@ -19,10 +19,10 @@ bool GfMenuObjCmnStatus::s_DispFlag[2];
 
 GfMenuObjCmnStatus::GfMenuObjCmnStatus(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr) {
   ui::UISelectObjList::CreateParam param;
-  param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown28 = ui::UISelectObjList::create(param);
   param = ui::UISelectObjList::CreateParam();
-  param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown30 = ui::UISelectObjList::create(param);
 }
 

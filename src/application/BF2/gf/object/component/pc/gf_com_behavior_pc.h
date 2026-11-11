@@ -28,15 +28,15 @@ class Agent;
 struct CallBackCache;
 
 enum {
-  MSG_PC_GET_STATE = 0x1000005,
-  MSG_PC_FIELD_WARP = 0x1000019,
-  MSG_PC_FIELD_CHANGE_CONTROL_MODE = 0x100001b,
+  MSG_PC_UNKNOWN_16777221 = 0x1000005, // Inferred role: msg pc get state; original name unknown.
+  MSG_PC_UNKNOWN_16777241 = 0x1000019, // Inferred role: msg pc field warp; original name unknown.
+  MSG_PC_UNKNOWN_16777243 = 0x100001b, // Inferred role: msg pc field change control mode; original name unknown.
 };
 
 // Layout evidence: StateFieldWaterNormal::procMsgPcFieldWaterWarp (0x7100561cbc) builds it on the stack and
 // GfComBehaviorPc::recieveMessage writes the id of the current state to the member at 0x8.
 struct MsgPcGetState : fw::Message {
-  MsgPcGetState() : fw::Message(MSG_PC_GET_STATE, 0x40), unknown08(ai::INVALID_STATE_ID) {}
+  MsgPcGetState() : fw::Message(MSG_PC_UNKNOWN_16777221, 0x40), unknown08(ai::INVALID_STATE_ID) {}
 
   u32 unknown08; // Inferred role: current state id; original member name unknown.
 };
@@ -46,7 +46,7 @@ static_assert(offsetof(MsgPcGetState, unknown08) == 0x08, "");
 // Layout evidence: GfGameRide::rideOn and getDown build it on the stack; GfComBehaviorPc::recieveMessage stores the
 // transform in the property (or warps now when the member at 0x30 is set) and sets the member at 0x31.
 struct MsgPcFieldWarp : fw::Message {
-  MsgPcFieldWarp() : fw::Message(MSG_PC_FIELD_WARP, 0x40), unknown30(true), unknown31(false) {}
+  MsgPcFieldWarp() : fw::Message(MSG_PC_UNKNOWN_16777241, 0x40), unknown30(true), unknown31(false) {}
 
   fw::Transform unknown10; // Inferred role: target transform; original member name unknown.
   bool unknown30;          // Inferred role: warp now; original member name unknown.
@@ -59,7 +59,7 @@ static_assert(offsetof(MsgPcFieldWarp, unknown31) == 0x31, "");
 
 // Layout evidence: GfGameRide::rideOn and getDown build it on the stack with the control mode in the member at 0x8.
 struct MsgPcFieldChangeControlMode : fw::Message {
-  explicit MsgPcFieldChangeControlMode(u32 mode) : fw::Message(MSG_PC_FIELD_CHANGE_CONTROL_MODE, 0x40), unknown08(mode) {}
+  explicit MsgPcFieldChangeControlMode(u32 mode) : fw::Message(MSG_PC_UNKNOWN_16777243, 0x40), unknown08(mode) {}
 
   u32 unknown08; // Inferred role: control mode; original member name unknown.
 };

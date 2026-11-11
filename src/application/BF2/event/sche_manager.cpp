@@ -55,7 +55,7 @@ void ScheManager::update() {
 }
 
 bool ScheManager::isPlay(Scheduler::ORDER order, gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     for (Scheduler **it = unknown18.begin(); it != unknown18.end(); it++) {
       if ((*it)->isPlay(order)) {
         return true;
@@ -74,11 +74,11 @@ bool ScheManager::isPlay(Scheduler::ORDER order, gf::GF_OBJ_HANDLE *handle) {
 
 void ScheManager::init() {
   gf::GF_OBJ_HANDLE *handle = mm::mtl::PtrSingleton<Manager>::get()->getObjHandle();
-  if (handle != gf::INVALID_HANDLE) {
+  if (handle != gf::unknown020) {
     push(handle, mm::mtl::PtrSingleton<Manager>::get()->getPlayParam(1));
   }
   gf::GF_OBJ_HANDLE *leader = gf::GfGameParty::getLeader();
-  if (leader != gf::INVALID_HANDLE) {
+  if (leader != gf::unknown020) {
     push(leader, 0);
   }
   unknown10 = 0;
@@ -111,7 +111,7 @@ bool ScheManager::isExist(gf::GF_OBJ_HANDLE *handle) {
 }
 
 void ScheManager::play(Scheduler::ORDER order, gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     for (Scheduler **it = unknown18.begin(); it != unknown18.end(); it++) {
       (*it)->play(order);
     }
@@ -146,18 +146,18 @@ void ScheManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
   case MSG_TYPE_UNKNOWN_1:
     init();
-    play(Scheduler::ORDER_UNKNOWN_0, gf::INVALID_HANDLE);
+    play(Scheduler::ORDER_UNKNOWN_0, gf::unknown020);
     unknown10 |= FLAG_UNKNOWN_0;
     break;
   case MSG_TYPE_UNKNOWN_7:
     if ((unknown10 & FLAG_UNKNOWN_1) == 0) {
-      play(Scheduler::ORDER_UNKNOWN_1, gf::INVALID_HANDLE);
+      play(Scheduler::ORDER_UNKNOWN_1, gf::unknown020);
       unknown10 |= FLAG_UNKNOWN_1;
     }
     break;
   case MSG_TYPE_UNKNOWN_12:
     if ((unknown10 & FLAG_UNKNOWN_2) == 0) {
-      play(Scheduler::ORDER_UNKNOWN_2, gf::INVALID_HANDLE);
+      play(Scheduler::ORDER_UNKNOWN_2, gf::unknown020);
       unknown10 |= FLAG_UNKNOWN_2;
     }
     break;

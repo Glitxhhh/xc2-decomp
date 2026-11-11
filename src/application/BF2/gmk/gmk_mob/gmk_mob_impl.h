@@ -15,7 +15,7 @@ void GmkMobInsts::create(const CreateInfo &info) {
   unknown00 = info;
   unknown18.create(CBdatWrapper{info.unknown08}, info.unknown10, *info.unknown00);
 #line 513
-  unknowna8 = new (gf::getAllocator(gf::ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) mm::mtl::Vector<gf::GF_OBJ_HANDLE *>();
+  unknowna8 = new (gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) mm::mtl::Vector<gf::GF_OBJ_HANDLE *>();
   createSquad(unknown18.unknown04);
   unknownc0 = &GmkMobInsts::seqUpdatePopDepop;
 }

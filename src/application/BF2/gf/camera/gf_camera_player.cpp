@@ -45,14 +45,14 @@ bool PlayerCamera::isResetClimb() {
 }
 
 void PlayerCamera::setTarget(GF_OBJ_HANDLE *target) {
-  if (target != INVALID_HANDLE) {
+  if (target != unknown020) {
     GfObjAcc acc(target);
     if (acc.getType() != OBJECT_TYPE_ENEMY) {
       return;
     }
   }
   if (unknowna8 != target) {
-    if (unknowna8 == INVALID_HANDLE) {
+    if (unknowna8 == unknown020) {
       if (PlayerCameraTarget::get() == nullptr) {
         return;
       }
@@ -90,7 +90,7 @@ bool PlayerCamera::isSaveFreeMode() const { return m_manual; }
 void PlayerCamera::resetClimb(ResetCameraWallTiming timing) {
   unknown124 = true;
   unknown52c4 = timing;
-  unknownf0 = timing == RESET_CAMERA_WALL_TIMING_UNDER_GROUND ? 0.6666667f : 0.23333335f;
+  unknownf0 = timing == RESET_CAMERA_WALL_TIMING_UNKNOWN_0 ? 0.6666667f : 0.23333335f;
 }
 
 f32 PlayerCamera::getYaw(const mm::Vec3 &position, const mm::Vec3 &target) {

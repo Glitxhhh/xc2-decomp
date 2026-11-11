@@ -33,49 +33,49 @@
 namespace gf {
 
 enum {
-  BLADE_REGULAR_FIRST = 1001,
-  BLADE_REGULAR_END = 1014,
-  BLADE_RARE_FIRST = 1014,
-  BLADE_COMMON_FIRST = 1197,
-  BLADE_COMMON_END = 1397,
-  BLADE_UI_COMMON_FIRST = 1397,
-  BLADE_UI_COMMON_END = 1401,
-  BLADE_ACT_COMMON_FIRST = 1401,
-  BLADE_ACT_COMMON_END = 1423,
+  BLADE_UNKNOWN_1001 = 1001,   // Inferred role: blade regular first; original name unknown.
+  BLADE_UNKNOWN_1014 = 1014,   // Inferred role: blade regular end; original name unknown.
+  BLADE_UNKNOWN_1014_2 = 1014, // Inferred role: blade rare first; original name unknown.
+  BLADE_UNKNOWN_1197 = 1197,   // Inferred role: blade common first; original name unknown.
+  BLADE_UNKNOWN_1397 = 1397,   // Inferred role: blade common end; original name unknown.
+  BLADE_UNKNOWN_1397_2 = 1397, // Inferred role: blade ui common first; original name unknown.
+  BLADE_UNKNOWN_1401 = 1401,   // Inferred role: blade ui common end; original name unknown.
+  BLADE_UNKNOWN_1401_2 = 1401, // Inferred role: blade act common first; original name unknown.
+  BLADE_UNKNOWN_1423 = 1423,   // Inferred role: blade act common end; original name unknown.
 };
 
 enum {
-  BLADE_ACT_FIRST = 1051,
-  BLADE_CHANGE_WEAPON = 1039,
-  BLADE_CHANGE_WEAPON_RANGE_FIRST = 1043,
+  BLADE_UNKNOWN_1051 = 1051, // Inferred role: blade act first; original name unknown.
+  BLADE_UNKNOWN_1039 = 1039, // Inferred role: blade change weapon; original name unknown.
+  BLADE_UNKNOWN_1043 = 1043, // Inferred role: blade change weapon range first; original name unknown.
 };
 
 enum {
-  BLADE_DUMMY_REGULAR_FIRST = 1012,
-  BLADE_DUMMY_REGULAR_SECOND = 1013,
-  BLADE_DUMMY_RARE = 1073,
+  BLADE_DUMMY_UNKNOWN_1012 = 1012, // Inferred role: blade dummy regular first; original name unknown.
+  BLADE_DUMMY_UNKNOWN_1013 = 1013, // Inferred role: blade dummy regular second; original name unknown.
+  BLADE_DUMMY_UNKNOWN_1073 = 1073, // Inferred role: blade dummy rare; original name unknown.
 };
 
-constexpr u32 BLADE_REGULAR_COUNT = BLADE_REGULAR_END - BLADE_REGULAR_FIRST;
-constexpr u32 BLADE_RARE_COUNT = 176;
-constexpr u32 BLADE_RARE_INDEX = 20;
-constexpr u32 BLADE_COMMON_COUNT = BLADE_ACT_COMMON_END - BLADE_COMMON_FIRST;
-constexpr u32 BLADE_ACT_COUNT = BLADE_ACT_COMMON_END - BLADE_ACT_COMMON_FIRST;
-constexpr u32 BLADE_HANA_COUNT = BLADE_HANA_JD - BLADE_HANA_JS + 1;
-constexpr u32 BLADE_CHANGE_WEAPON_RANGE_COUNT = 8;
-constexpr f32 SCALE_PERCENT = 0.01f;
-constexpr u32 CROWN_POINT_MAX = 5;
-constexpr u32 CROWN_POINT_MIN = 1;
-constexpr u32 NORMAL_TALK_COUNT = 32;
+constexpr u32 BLADE_UNKNOWN_13 = BLADE_UNKNOWN_1014 - BLADE_UNKNOWN_1001;         // Inferred role: blade regular count; original name unknown.
+constexpr u32 BLADE_UNKNOWN_176 = 176;                                            // Inferred role: blade rare count; original name unknown.
+constexpr u32 BLADE_UNKNOWN_20 = 20;                                              // Inferred role: blade rare index; original name unknown.
+constexpr u32 BLADE_COMMON_UNKNOWN_226 = BLADE_UNKNOWN_1423 - BLADE_UNKNOWN_1197; // Inferred role: blade common count; original name unknown.
+constexpr u32 BLADE_ACT_UNKNOWN_22 = BLADE_UNKNOWN_1423 - BLADE_UNKNOWN_1401_2;   // Inferred role: blade act count; original name unknown.
+constexpr u32 BLADE_HANA_UNKNOWN_3 = BLADE_UNKNOWN_1007 - BLADE_UNKNOWN_1005 + 1; // Inferred role: blade hana count; original name unknown.
+constexpr u32 BLADE_UNKNOWN_8 = 8;                                                // Inferred role: blade change weapon range count; original name unknown.
+constexpr f32 unknown021 = 0.01f;                                                 // Inferred role: scale percent; original name unknown.
+constexpr u32 CROWN_POINT_UNKNOWN_5 = 5;                                          // Inferred role: crown point max; original name unknown.
+constexpr u32 CROWN_POINT_UNKNOWN_1 = 1;                                          // Inferred role: crown point min; original name unknown.
+constexpr u32 TALK_UNKNOWN_32 = 32;                                               // Inferred role: normal talk count; original name unknown.
 
 namespace {
 
 // Inferred role: lists the named blades of a condition; original name unknown.
-template <typename Condition> bool unknown001(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades, Condition condition) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+template <typename Condition> bool unknown001(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades, Condition condition) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = GfDataBlade::getBladeID(i);
     if (blade != 0) {
-      DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+      DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
       if (acc.isValid() && condition(blade)) {
         const char *name = acc.getName();
         if (name != nullptr && name[0] != '\0') {
@@ -93,7 +93,7 @@ void unknown006(u32 driver, u32 blade, bool isNew);
 
 // Inferred role: activates the weapon type of a blade for a driver and releases its driver arts; original name unknown.
 void unknown005(u32 driver, u32 blade) {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   GfDataDriver::setActivateWeaponType(driver, acc.getWeaponType(-1, false));
   unknown006(driver, blade, false);
 }
@@ -111,7 +111,7 @@ constexpr u32 unknown991 = 0x44f;
 } // namespace
 
 void GfDataBlade::initSaveData(SDataGame &dataGame) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       u32 index = getBladeRelativeID(blade);
@@ -143,21 +143,21 @@ SDataBlade *GfDataBlade::getSDataBlade(u32 blade) {
 }
 
 u32 GfDataBlade::getBladeID(u32 index) {
-  if (index < BLADE_RARE_INDEX) {
-    u32 blade = index + BLADE_REGULAR_FIRST;
-    if (blade >= BLADE_REGULAR_END) {
+  if (index < BLADE_UNKNOWN_20) {
+    u32 blade = index + BLADE_UNKNOWN_1001;
+    if (blade >= BLADE_UNKNOWN_1014) {
       blade = 0;
     }
 
     return blade;
   }
 
-  if (index < BLADE_RARE_INDEX + BLADE_RARE_COUNT) {
-    u32 blade = index - BLADE_RARE_INDEX + BLADE_RARE_FIRST;
+  if (index < BLADE_UNKNOWN_20 + BLADE_UNKNOWN_176) {
+    u32 blade = index - BLADE_UNKNOWN_20 + BLADE_UNKNOWN_1014_2;
     return blade < GfBdatChrBl::get()->getChrBlEnd() ? blade : 0;
   }
 
-  return index < BLADE_COUNT ? index + BLADE_REGULAR_FIRST : 0;
+  return index < BLADE_UNKNOWN_422 ? index + BLADE_UNKNOWN_1001 : 0;
 }
 
 u32 GfDataBlade::getBladeWpnType(u32 blade) {
@@ -221,36 +221,36 @@ u32 GfDataBlade::getBLD_NameList(u32 blade) {
   return 0;
 }
 
-bool GfDataBlade::isCommonBlade(u32 blade) { return blade - BLADE_COMMON_FIRST < BLADE_COMMON_COUNT; }
+bool GfDataBlade::isCommonBlade(u32 blade) { return blade - BLADE_UNKNOWN_1197 < BLADE_COMMON_UNKNOWN_226; }
 
 u32 GfDataBlade::getCrownPoint(u32 blade) {
-  static const u16 crownPointWildcards[] = {63, 64, 65, 66};
+  static const u16 unknown022[] = {63, 64, 65, 66}; // Inferred role: crown point wildcards; original name unknown.
 
   if (isRegularBlade(blade)) {
-    return CROWN_POINT_MAX;
+    return CROWN_POINT_UNKNOWN_5;
   }
 
   if (isRareBlade(blade)) {
-    return CROWN_POINT_MAX;
+    return CROWN_POINT_UNKNOWN_5;
   }
 
   if (isCommonBlade(blade)) {
     GfBdatBtl *bdatBattle = GfBdatBtl::get();
     u32 kizunaringMax = getKizunaringMax(blade);
-    for (u32 i = 0; i < sizeof(crownPointWildcards) / sizeof(crownPointWildcards[0]); i++) {
-      if (kizunaringMax <= bdatBattle->getWildcardDatavalueU2(crownPointWildcards[i])) {
+    for (u32 i = 0; i < sizeof(unknown022) / sizeof(unknown022[0]); i++) {
+      if (kizunaringMax <= bdatBattle->getWildcardDatavalueU2(unknown022[i])) {
         return i + 1;
       }
     }
   }
 
-  return CROWN_POINT_MIN;
+  return CROWN_POINT_UNKNOWN_1;
 }
 
-bool GfDataBlade::isRegularBlade(u32 blade) { return blade - BLADE_REGULAR_FIRST < BLADE_REGULAR_COUNT; }
+bool GfDataBlade::isRegularBlade(u32 blade) { return blade - BLADE_UNKNOWN_1001 < BLADE_UNKNOWN_13; }
 
 bool GfDataBlade::isRareBlade(u32 blade) {
-  if (blade >= BLADE_RARE_FIRST) {
+  if (blade >= BLADE_UNKNOWN_1014_2) {
     return blade < GfBdatChrBl::get()->getChrBlEnd();
   }
 
@@ -279,14 +279,15 @@ void GfDataBlade::setHikariCurrent(bool hikariCurrent) {
 }
 
 bool GfDataBlade::isHomuriNameHikari() {
-  u32 flag = GfGameFlag::getLocal(1, FLAG_BLADE_HOMURI_NAME_HIKARI);
+  u32 flag = GfGameFlag::getLocal(1, FLAG_UNKNOWN_35323);
   return flag != 0;
 }
 
-void GfDataBlade::setHomuriNameHikari(bool homuriNameHikari) { GfGameFlag::setLocal(1, FLAG_BLADE_HOMURI_NAME_HIKARI, homuriNameHikari); }
+void GfDataBlade::setHomuriNameHikari(bool homuriNameHikari) { GfGameFlag::setLocal(1, FLAG_UNKNOWN_35323, homuriNameHikari); }
 
 u16 GfDataBlade::makeNormalTalkByPersonality(u32 personality) {
-  static const u16 normalTalks[NORMAL_TALK_COUNT] = {
+  static const u16 unknown023[TALK_UNKNOWN_32] = {
+      // Inferred role: normal talks; original name unknown.
       41525, 41525, 41526, 41527, 41528, 41528, 41529, 41529, 41530, 41530, 41531, 41531, 41532, 41532, 41533, 41533,
       41534, 41534, 41535, 41535, 41536, 41536, 41537, 41537, 41538, 41538, 41539, 41539, 41540, 41540, 41541, 41542,
   };
@@ -295,11 +296,11 @@ u16 GfDataBlade::makeNormalTalkByPersonality(u32 personality) {
   u16 normalTalk = 0;
   u32 index = 0;
   if (voice != 0) {
-    index = voice - PERSONALITY_VOICE_FIRST;
+    index = voice - VOICE_UNKNOWN_61;
   }
 
-  if (index < NORMAL_TALK_COUNT) {
-    normalTalk = normalTalks[index];
+  if (index < TALK_UNKNOWN_32) {
+    normalTalk = unknown023[index];
   }
 
   return normalTalk;
@@ -307,15 +308,15 @@ u16 GfDataBlade::makeNormalTalkByPersonality(u32 personality) {
 
 u32 GfDataBlade::getBladeRelativeID(u32 blade) {
   if (isRegularBlade(blade)) {
-    return blade - BLADE_REGULAR_FIRST;
+    return blade - BLADE_UNKNOWN_1001;
   }
 
-  if (blade - BLADE_RARE_FIRST < BLADE_RARE_COUNT) {
-    return blade - BLADE_RARE_FIRST + BLADE_RARE_INDEX;
+  if (blade - BLADE_UNKNOWN_1014_2 < BLADE_UNKNOWN_176) {
+    return blade - BLADE_UNKNOWN_1014_2 + BLADE_UNKNOWN_20;
   }
 
   if (isCommonBlade(blade)) {
-    return blade - BLADE_REGULAR_FIRST;
+    return blade - BLADE_UNKNOWN_1001;
   }
 
   return 0;
@@ -392,7 +393,7 @@ bool GfDataBlade::getCommonBladeName(const char *model) {
 }
 
 u32 GfDataBlade::addCommonBlade(const SDataBlade &dataBlade) {
-  for (u32 blade = BLADE_COMMON_FIRST; blade < BLADE_COMMON_END; blade++) {
+  for (u32 blade = BLADE_UNKNOWN_1197; blade < BLADE_UNKNOWN_1397; blade++) {
     if (isActivateUnuse(blade)) {
       *getSDataBlade(blade) = dataBlade;
       getSDataBlade(blade)->unknown06 = blade;
@@ -429,17 +430,17 @@ u32 GfDataBlade::getFavorite(u32 blade, FAVORITE favorite) {
   }
 
   SDataBlade *dataBlade = getSDataBlade(blade);
-  if (favorite >= FAVORITE_ITEM_0 && favorite <= FAVORITE_ITEM_1) {
-    return dataBlade->unknown666[favorite - FAVORITE_ITEM_0].unknown02;
+  if (favorite >= FAVORITE_UNKNOWN_2 && favorite <= FAVORITE_UNKNOWN_3) {
+    return dataBlade->unknown666[favorite - FAVORITE_UNKNOWN_2].unknown02;
   }
-  if (favorite >= FAVORITE_CATEGORY_0 && favorite <= FAVORITE_CATEGORY_1) {
-    return dataBlade->unknown666[favorite - FAVORITE_CATEGORY_0].unknown00;
+  if (favorite >= FAVORITE_UNKNOWN_0 && favorite <= FAVORITE_UNKNOWN_1) {
+    return dataBlade->unknown666[favorite - FAVORITE_UNKNOWN_0].unknown00;
   }
 
   return 0;
 }
 
-u32 GfDataBlade::getAchievementQuestPrefix(u32 blade, u32 line, u32 level) { return getBladeRelativeID(blade) * ACHIEVEMENT_PER_BLADE + line * ACHIEVEMENT_LEVEL_COUNT + level; }
+u32 GfDataBlade::getAchievementQuestPrefix(u32 blade, u32 line, u32 level) { return getBladeRelativeID(blade) * ACHIEVEMENT_UNKNOWN_50 + line * ACHIEVEMENT_UNKNOWN_5 + level; }
 
 void GfDataBlade::setupAchievQuest(AchievQuest &achievQuest) {
   achievQuest.unknown04 = 0;
@@ -460,19 +461,19 @@ void GfDataBlade::setupAchievQuest(AchievQuest &achievQuest) {
   achievQuest.unknown10 = taskType;
   u32 count;
   switch (taskType) {
-  case TASK_TYPE_BATTLE:
+  case TASK_TYPE_UNKNOWN_1:
     count = questListAcc->getBattleCount(taskId);
     break;
-  case TASK_TYPE_COLLECT:
+  case TASK_TYPE_UNKNOWN_3:
     count = questListAcc->getCollectCount(taskId);
     break;
-  case TASK_TYPE_USE:
+  case TASK_TYPE_UNKNOWN_4:
     count = questListAcc->getUseItemNumber(taskId);
     break;
-  case TASK_TYPE_FIELD_SKILL_COUNT:
+  case TASK_TYPE_UNKNOWN_11:
     count = questListAcc->getFieldSkillCountCount(taskId);
     break;
-  case TASK_TYPE_ACHIEVEMENT:
+  case TASK_TYPE_UNKNOWN_12:
     achievQuest.unknown08 = questListAcc->getAchievementCount(taskId);
     achievQuest.unknown0e = questListAcc->getAchievementStatsID(taskId);
     return;
@@ -485,10 +486,10 @@ void GfDataBlade::setupAchievQuest(AchievQuest &achievQuest) {
 
 void SDataIdea::setLevel(u32 idea, int level) {
   unknown00[idea].unknown04 = level;
-  unknown00[idea].unknown00 = level >= 0 && static_cast<u32>(level) <= IDEA_LEVEL_MAX ? GfBdatBlade::get()->getBLD_IdeaNeedPoint(level) : 0;
+  unknown00[idea].unknown00 = level >= 0 && static_cast<u32>(level) <= IDEA_LEVEL_UNKNOWN_10 ? GfBdatBlade::get()->getBLD_IdeaNeedPoint(level) : 0;
 }
 
-bool GfDataBlade::isValid(u32 blade) { return blade - BLADE_REGULAR_FIRST < BLADE_COUNT; }
+bool GfDataBlade::isValid(u32 blade) { return blade - BLADE_UNKNOWN_1001 < BLADE_UNKNOWN_422; }
 
 bool GfDataBlade::isActivateDriver(u32 blade) { return getSDataBlade(blade)->unknown04 != 0; }
 
@@ -500,7 +501,7 @@ u32 GfDataBlade::getSetDriver(u32 blade) {
   return getSDataBlade(blade)->unknown04;
 }
 
-bool GfDataBlade::isDummyBlade(u32 blade) { return (blade == BLADE_DUMMY_REGULAR_FIRST || blade == BLADE_DUMMY_REGULAR_SECOND) || blade == BLADE_DUMMY_RARE; }
+bool GfDataBlade::isDummyBlade(u32 blade) { return (blade == BLADE_DUMMY_UNKNOWN_1012 || blade == BLADE_DUMMY_UNKNOWN_1013) || blade == BLADE_DUMMY_UNKNOWN_1073; }
 
 bool GfDataBlade::setActivateMercenaryTeam(u32 blade) {
   getSDataBlade(blade)->unknown00 = 2;
@@ -514,7 +515,7 @@ bool GfDataBlade::isActivateUnuse(u32 blade) {
     return true;
   }
 
-  return getSDataBlade(blade)->unknown00 == BLADE_ACTIVATE_UNUSE;
+  return getSDataBlade(blade)->unknown00 == BLADE_ACTIVATE_UNKNOWN_0;
 }
 
 bool GfDataBlade::isActivateMercenaryTeam(u32 blade) {
@@ -522,34 +523,34 @@ bool GfDataBlade::isActivateMercenaryTeam(u32 blade) {
     return false;
   }
 
-  return getSDataBlade(blade)->unknown00 == BLADE_ACTIVATE_MERCENARY_TEAM;
+  return getSDataBlade(blade)->unknown00 == BLADE_ACTIVATE_UNKNOWN_2;
 }
 
 bool GfDataBlade::isAttachedParty(u32 blade) { return getSDataBlade(blade)->unknown89f != 0; }
 
-u32 GfDataBlade::getStartBlade() { return BLADE_REGULAR_FIRST; }
+u32 GfDataBlade::getStartBlade() { return BLADE_UNKNOWN_1001; }
 
-u32 GfDataBlade::getEndBlade() { return BLADE_REGULAR_END; }
+u32 GfDataBlade::getEndBlade() { return BLADE_UNKNOWN_1014; }
 
-u32 GfDataBlade::getStartRareBlade() { return BLADE_RARE_FIRST; }
+u32 GfDataBlade::getStartRareBlade() { return BLADE_UNKNOWN_1014_2; }
 
-u32 GfDataBlade::getStartCommonBlade() { return BLADE_COMMON_FIRST; }
+u32 GfDataBlade::getStartCommonBlade() { return BLADE_UNKNOWN_1197; }
 
-u32 GfDataBlade::getEndCommonBlade() { return BLADE_COMMON_END; }
+u32 GfDataBlade::getEndCommonBlade() { return BLADE_UNKNOWN_1397; }
 
 ActivateType GfDataBlade::getBladeActivateType(u32 blade) { return getBladeActivateType(*getSDataBlade(blade)); }
 
 ActivateType GfDataBlade::getBladeActivateType(const SDataBlade &dataBlade) {
-  ActivateType activateType = ACTIVATE_TYPE_UNUSE;
+  ActivateType activateType = ACTIVATE_TYPE_UNKNOWN_0;
   switch (dataBlade.unknown00) {
-  case BLADE_ACTIVATE_DRIVER:
-    activateType = ACTIVATE_TYPE_RESERVER;
+  case BLADE_ACTIVATE_UNKNOWN_1:
+    activateType = ACTIVATE_TYPE_UNKNOWN_1;
     if (dataBlade.unknown04 != 0) {
-      activateType = ACTIVATE_TYPE_PARTY;
+      activateType = ACTIVATE_TYPE_UNKNOWN_2;
     }
     break;
-  case BLADE_ACTIVATE_MERCENARY_TEAM:
-    activateType = ACTIVATE_TYPE_MERCENARY_TEAM;
+  case BLADE_ACTIVATE_UNKNOWN_2:
+    activateType = ACTIVATE_TYPE_UNKNOWN_3;
     break;
   default:
     break;
@@ -590,26 +591,26 @@ void GfDataBlade::resetAttachedParty(u32 blade) {
     dataBlade->unknown82c = GfBdatChrBl::get()->getChrBlDefWeapon(blade);
   }
 
-  GfEvent::callBladeActivate(blade, ACTIVATE_TYPE_UNUSE, ACTIVATE_TYPE_UNUSE);
+  GfEvent::callBladeActivate(blade, ACTIVATE_TYPE_UNKNOWN_0, ACTIVATE_TYPE_UNKNOWN_0);
 }
 
 u32 GfDataBlade::getEndRareBlade() { return GfBdatChrBl::get()->getChrBlEnd(); }
 
 u32 GfDataBlade::addCommonBladeWithPos(const SDataBlade &dataBlade, u32 pos) {
-  u32 blade = BLADE_COMMON_FIRST + pos;
+  u32 blade = BLADE_UNKNOWN_1197 + pos;
   *getSDataBlade(blade) = dataBlade;
   getSDataBlade(blade)->unknown06 = blade;
   setActivateReserver(blade);
   return blade;
 }
 
-u32 GfDataBlade::getStartUiCommonBlade() { return BLADE_UI_COMMON_FIRST; }
+u32 GfDataBlade::getStartUiCommonBlade() { return BLADE_UNKNOWN_1397_2; }
 
-u32 GfDataBlade::getEndUiCommonBlade() { return BLADE_UI_COMMON_END; }
+u32 GfDataBlade::getEndUiCommonBlade() { return BLADE_UNKNOWN_1401; }
 
-u32 GfDataBlade::getStartActCommonBlade() { return BLADE_ACT_COMMON_FIRST; }
+u32 GfDataBlade::getStartActCommonBlade() { return BLADE_UNKNOWN_1401_2; }
 
-u32 GfDataBlade::getEndActCommonBlade() { return BLADE_ACT_COMMON_END; }
+u32 GfDataBlade::getEndActCommonBlade() { return BLADE_UNKNOWN_1423; }
 
 bool GfDataBlade::isSetBlade(u32 blade) { return getSDataBlade(blade)->unknown04 != 0; }
 
@@ -636,7 +637,7 @@ u32 GfDataBlade::getBladeWeaponByRank(u32 blade, u32 chip) {
 
   GfBdatItem *bdatItem = GfBdatItem::get();
   u32 weaponTypeIndex = getSDataBlade(blade)->unknown821 - 1;
-  if (weaponTypeIndex < CHIP_CREATE_WEAPON_TYPE_COUNT) {
+  if (weaponTypeIndex < CHIP_CREATE_WEAPON_TYPE_UNKNOWN_16) {
     return bdatItem->getPcWpnChipCreateWpn(chip, weaponTypeIndex);
   }
 
@@ -650,7 +651,7 @@ const char *GfDataBlade::getResourceNameMotion(u32 blade) { return getSDataBlade
 const char *GfDataBlade::getResourceNameAddMotion(u32 blade) { return getSDataBlade(blade)->unknown75c.c_str(); }
 
 bool GfDataBlade::getBladeAddAnim(mm::mtl::FixStr<128> &animName, u32 blade, u32 weaponType) {
-  DataParamAcc dataParamAcc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc dataParamAcc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   if (!dataParamAcc.isValid()) {
     return false;
   }
@@ -700,7 +701,7 @@ u32 GfDataBlade::getGender(u32 blade) {
 
 u32 GfDataBlade::getQuestRace(u32 blade) {
   if (blade == 0) {
-    return QUEST_RACE_HUMAN;
+    return QUEST_RACE_UNKNOWN_1;
   }
 
   return getSDataBlade(blade)->unknown846;
@@ -719,7 +720,7 @@ bool GfDataBlade::isAnimal(u32 blade) {
     return false;
   }
 
-  return getSDataBlade(blade)->unknown846 == QUEST_RACE_ANIMAL;
+  return getSDataBlade(blade)->unknown846 == QUEST_RACE_UNKNOWN_2;
 }
 
 bool GfDataBlade::isMale(u32 blade) {
@@ -728,11 +729,11 @@ bool GfDataBlade::isMale(u32 blade) {
   }
 
   SDataBlade *dataBlade = getSDataBlade(blade);
-  if (dataBlade->unknown709 != GENDER_MALE) {
+  if (dataBlade->unknown709 != GENDER_UNKNOWN_1) {
     return false;
   }
 
-  return dataBlade->unknown846 == QUEST_RACE_HUMAN;
+  return dataBlade->unknown846 == QUEST_RACE_UNKNOWN_1;
 }
 
 bool GfDataBlade::isFemale(u32 blade) {
@@ -741,18 +742,18 @@ bool GfDataBlade::isFemale(u32 blade) {
   }
 
   SDataBlade *dataBlade = getSDataBlade(blade);
-  if (dataBlade->unknown709 != GENDER_FEMALE) {
+  if (dataBlade->unknown709 != GENDER_UNKNOWN_2) {
     return false;
   }
 
-  return dataBlade->unknown846 == QUEST_RACE_HUMAN;
+  return dataBlade->unknown846 == QUEST_RACE_UNKNOWN_1;
 }
 
 bool GfDataBlade::getNameWithFieldSkillForDebug(mm::mtl::FixStr<128> &, u32) { return false; }
 
 u32 GfDataBlade::getKeyReleaseLevel(u32 blade) { return getSDataBlade(blade)->unknown664; }
 
-u32 GfDataBlade::getRealBladeId(u32 blade) { return blade == BLADE_REAL_ALIAS ? BLADE_REAL_ALIAS_TARGET : blade; }
+u32 GfDataBlade::getRealBladeId(u32 blade) { return blade == BLADE_UNKNOWN_1050 ? BLADE_UNKNOWN_1022 : blade; }
 
 const char *GfDataBlade::getBaseEabWeaponName(u32 blade) {
   if (blade == 0) {
@@ -763,7 +764,7 @@ const char *GfDataBlade::getBaseEabWeaponName(u32 blade) {
   if (GfDataHana::isValid(blade) || isCommonBlade(blade)) {
     return unknown002[weaponType];
   }
-  if (blade - BLADE_ACT_FIRST < BLADE_ACT_COUNT) {
+  if (blade - BLADE_UNKNOWN_1051 < BLADE_ACT_UNKNOWN_22) {
     return unknown002[weaponType];
   }
   if (blade > unknown990 && blade != unknown991) {
@@ -782,7 +783,7 @@ const char *GfDataBlade::getBaseEfbWeaponName(u32 blade) {
   if (blade == BLADE_BYAKKO || GfDataHana::isValid(blade) || blade == BLADE_SAIKA || isCommonBlade(blade)) {
     return unknown002[weaponType];
   }
-  if (blade - BLADE_ACT_FIRST < BLADE_ACT_COUNT) {
+  if (blade - BLADE_UNKNOWN_1051 < BLADE_ACT_UNKNOWN_22) {
     return unknown002[weaponType];
   }
   if (blade > unknown990 && blade != unknown991) {
@@ -898,7 +899,7 @@ f32 GfDataBlade::getWpnScale(u32 blade) {
     return 1.0f;
   }
 
-  return getSDataBlade(blade)->unknown838 * SCALE_PERCENT;
+  return getSDataBlade(blade)->unknown838 * unknown021;
 }
 
 f32 GfDataBlade::getScale(u32 blade) {
@@ -906,7 +907,7 @@ f32 GfDataBlade::getScale(u32 blade) {
     return 1.0f;
   }
 
-  return getSDataBlade(blade)->unknown836 * SCALE_PERCENT;
+  return getSDataBlade(blade)->unknown836 * unknown021;
 }
 
 u32 GfDataBlade::getOffsetID(u32 blade) {
@@ -1059,7 +1060,7 @@ bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, SDa
     }
   }
 
-  if (dataBlade.unknown06 - BLADE_HANA_JS < BLADE_HANA_COUNT) {
+  if (dataBlade.unknown06 - BLADE_UNKNOWN_1005 < BLADE_HANA_UNKNOWN_3) {
     u32 condenserNum = GfDataHana::getCondenserNum(dataBlade.unknown06);
     for (u32 slot = 0; slot < condenserNum; slot++) {
       u32 parts = dataBlade.unknown68c.unknown4c[slot];
@@ -1112,7 +1113,7 @@ void GfDataBlade::setAttributeForDebug(u32 blade, u8 attribute) {
 unknown108 *GfDataBlade::getArts(u32 blade, u32 slot) { return &getSDataBlade(blade)->unknown3c[slot]; }
 
 u32 GfDataBlade::getArtsEnhance(u32 blade, u32 slot) {
-  if (blade - BLADE_HANA_JS < BLADE_HANA_COUNT) {
+  if (blade - BLADE_UNKNOWN_1005 < BLADE_HANA_UNKNOWN_3) {
     return getSDataBlade(blade)->unknown68c.unknown04[slot].unknown00;
   }
 
@@ -1121,8 +1122,8 @@ u32 GfDataBlade::getArtsEnhance(u32 blade, u32 slot) {
 
 unknown109 *GfDataBlade::getSkill(u32 blade, u32 slot) { return &getSDataBlade(blade)->unknown9c[slot]; }
 
-bool GfDataBlade::getListRegular(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 blade = BLADE_REGULAR_FIRST; blade < BLADE_REGULAR_END; blade++) {
+bool GfDataBlade::getListRegular(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 blade = BLADE_UNKNOWN_1001; blade < BLADE_UNKNOWN_1014; blade++) {
     if (!isDummyBlade(blade)) {
       blades.push_back(blade);
     }
@@ -1131,16 +1132,16 @@ bool GfDataBlade::getListRegular(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades)
   return !blades.empty();
 }
 
-bool GfDataBlade::getListRare(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 blade = BLADE_RARE_FIRST; blade < BLADE_ACT_FIRST; blade++) {
+bool GfDataBlade::getListRare(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 blade = BLADE_UNKNOWN_1014_2; blade < BLADE_UNKNOWN_1051; blade++) {
     blades.push_back(blade);
   }
 
   return !blades.empty();
 }
 
-bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       if (isActivateDriver(blade) && GfDataDriver::isActivateParty(getSetDriver(blade)) && GfDataParty::isExistBlade(blade) && !isDummyBlade(blade) && !isUnselect(blade)) {
@@ -1152,8 +1153,8 @@ bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
   return !blades.empty();
 }
 
-bool GfDataBlade::getListReserver(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+bool GfDataBlade::getListReserver(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       if (!isActivateUnuse(blade) && !isActivateMercenaryTeam(blade) && !GfDataDriver::isActivateParty(getSetDriver(blade)) && !isDummyBlade(blade) && !isUnselect(blade)) {
@@ -1165,21 +1166,21 @@ bool GfDataBlade::getListReserver(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades
   return !blades.empty();
 }
 
-bool GfDataBlade::getListUnuse(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
+bool GfDataBlade::getListUnuse(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
   return unknown001(blades, [](u32 blade) { return isActivateUnuse(blade) && !isDummyBlade(blade); });
 }
 
-bool GfDataBlade::getListUse(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
+bool GfDataBlade::getListUse(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
   return unknown001(blades, [](u32 blade) { return !isActivateUnuse(blade) && !isDummyBlade(blade) && !isUnselect(blade); });
 }
 
-bool GfDataBlade::getListForAchievement(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
+bool GfDataBlade::getListForAchievement(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
   return unknown001(blades, [](u32 blade) { return (!isActivateUnuse(blade) || isAttachedParty(blade)) && !isDummyBlade(blade) && !isUnselect(blade); });
 }
 
-bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades, bool unknown001, bool unknown002) {
+bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades, bool unknown001, bool unknown002) {
   blades.clear();
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       if (!unknown001 && (blade == BLADE_HIKARI || blade == BLADE_HOMURI)) {
@@ -1194,7 +1195,7 @@ bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades, b
   return !blades.empty();
 }
 
-bool GfDataBlade::getListReserverWithSolo(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
+bool GfDataBlade::getListReserverWithSolo(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
   getListReserver(blades);
   for (u16 *it = blades.begin(); it != blades.end();) {
     if (getSetDriver(*it) != 0) {
@@ -1207,8 +1208,8 @@ bool GfDataBlade::getListReserverWithSolo(mm::mtl::FixedVector<u16, BLADE_COUNT>
   return !blades.empty();
 }
 
-bool GfDataBlade::getlistCommon(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 blade = BLADE_COMMON_FIRST; blade < BLADE_COMMON_END; blade++) {
+bool GfDataBlade::getlistCommon(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 blade = BLADE_UNKNOWN_1197; blade < BLADE_UNKNOWN_1397; blade++) {
     if (!isActivateUnuse(blade) || isUnselect(blade)) {
       blades.push_back(blade);
     }
@@ -1217,8 +1218,8 @@ bool GfDataBlade::getlistCommon(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) 
   return !blades.empty();
 }
 
-bool GfDataBlade::getListLeave(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+bool GfDataBlade::getListLeave(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       if (!isActivateUnuse(blade) && isUnselect(blade) && !isDummyBlade(blade)) {
@@ -1232,8 +1233,8 @@ bool GfDataBlade::getListLeave(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
   return !blades.empty();
 }
 
-bool GfDataBlade::getListReserverAndUnuse(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+bool GfDataBlade::getListReserverAndUnuse(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       if (!isActivateDriver(blade) && !isDummyBlade(blade)) {
@@ -1245,8 +1246,8 @@ bool GfDataBlade::getListReserverAndUnuse(mm::mtl::FixedVector<u16, BLADE_COUNT>
   return !blades.empty();
 }
 
-bool GfDataBlade::getListPartyAll(mm::mtl::FixedVector<u16, BLADE_COUNT> &blades) {
-  for (u32 i = 0; i < BLADE_COUNT; i++) {
+bool GfDataBlade::getListPartyAll(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
     u32 blade = getBladeID(i);
     if (blade != 0) {
       if (isActivateDriver(blade) && GfDataDriver::isActivatePartyAll(getSetDriver(blade)) && !isDummyBlade(blade) && !isUnselect(blade)) {
@@ -1262,9 +1263,9 @@ u32 GfDataBlade::getCreateEvent(u32 blade) { return getSDataBlade(blade)->unknow
 
 u16 GfDataBlade::getNormalTalk(u32 blade) { return getSDataBlade(blade)->unknown84c; }
 
-u32 GfDataBlade::getActBlade2CommonBlade(u32 blade) { return blade - BLADE_ACT_FIRST >= BLADE_ACT_COUNT ? blade : blade + (BLADE_ACT_COMMON_FIRST - BLADE_ACT_FIRST); }
+u32 GfDataBlade::getActBlade2CommonBlade(u32 blade) { return blade - BLADE_UNKNOWN_1051 >= BLADE_ACT_UNKNOWN_22 ? blade : blade + (BLADE_UNKNOWN_1401_2 - BLADE_UNKNOWN_1051); }
 
-bool GfDataBlade::isNeedAttributeResource(u32 blade) { return isCommonBlade(blade) || blade - BLADE_ACT_FIRST < BLADE_ACT_COUNT || blade - BLADE_HANA_JS < BLADE_HANA_COUNT; }
+bool GfDataBlade::isNeedAttributeResource(u32 blade) { return isCommonBlade(blade) || blade - BLADE_UNKNOWN_1051 < BLADE_ACT_UNKNOWN_22 || blade - BLADE_UNKNOWN_1005 < BLADE_HANA_UNKNOWN_3; }
 
 u32 GfDataBlade::getTrustPoint(u32 blade) { return getSDataBlade(blade)->unknown34; }
 
@@ -1272,12 +1273,12 @@ GfIdea GfDataBlade::getTrustRank(u32 blade) { return getSDataBlade(blade)->unkno
 
 void GfDataBlade::setTrustPoint(u32 blade, u32 trustPoint) {
   getSDataBlade(blade)->unknown34 = trustPoint;
-  GfEvent::callDebugChangeIdea(DEBUG_CHANGE_IDEA_TRUST, blade, 0, 0);
+  GfEvent::callDebugChangeIdea(DEBUG_UNKNOWN_4, blade, 0, 0);
 }
 
 void GfDataBlade::setTrustRank(u32 blade, GfIdea trustRank) {
   getSDataBlade(blade)->unknown38 = trustRank;
-  GfEvent::callDebugChangeIdea(DEBUG_CHANGE_IDEA_TRUST, blade, 0, 0);
+  GfEvent::callDebugChangeIdea(DEBUG_UNKNOWN_4, blade, 0, 0);
 }
 
 u32 GfDataBlade::getParmor(u32 blade) {
@@ -1356,13 +1357,13 @@ u32 GfDataBlade::getBookedItemInfo(u32 blade) {
 bool GfDataBlade::isUsedFavorite(u32 blade, FAVORITE favorite) {
   SDataBlade *dataBlade = getSDataBlade(blade);
   switch (favorite) {
-  case FAVORITE_CATEGORY_0:
+  case FAVORITE_UNKNOWN_0:
     return dataBlade->unknown666[0].unknown04 != 0;
-  case FAVORITE_CATEGORY_1:
+  case FAVORITE_UNKNOWN_1:
     return dataBlade->unknown666[1].unknown04 != 0;
-  case FAVORITE_ITEM_0:
+  case FAVORITE_UNKNOWN_2:
     return dataBlade->unknown666[0].unknown06 != 0;
-  case FAVORITE_ITEM_1:
+  case FAVORITE_UNKNOWN_3:
     return dataBlade->unknown666[1].unknown06 != 0;
   default:
     return false;
@@ -1373,7 +1374,7 @@ u32 GfDataBlade::getFootStep(u32 blade) { return getSDataBlade(blade)->unknown84
 
 u32 GfDataBlade::getFootStepEffect(u32 blade) { return getSDataBlade(blade)->unknown849; }
 
-bool GfDataBlade::isBladeID(u32 blade) { return blade - BLADE_REGULAR_FIRST < BLADE_COUNT; }
+bool GfDataBlade::isBladeID(u32 blade) { return blade - BLADE_UNKNOWN_1001 < BLADE_UNKNOWN_422; }
 
 bool GfDataBlade::isReleaseLock(u32 blade) { return getSDataBlade(blade)->unknown847 != 0; }
 
@@ -1418,7 +1419,7 @@ u32 GfDataBlade::getBladeNumForMale() {
   if (blades.size() != 0) {
     u16 *it = blades.begin();
     do {
-      if (getGender(*it) == GENDER_MALE) {
+      if (getGender(*it) == GENDER_UNKNOWN_1) {
         count++;
       }
     } while (++it != blades.end());
@@ -1436,7 +1437,7 @@ u32 GfDataBlade::getBladeNumForFemale() {
   if (blades.size() != 0) {
     u16 *it = blades.begin();
     do {
-      if (getGender(*it) == GENDER_FEMALE) {
+      if (getGender(*it) == GENDER_UNKNOWN_2) {
         count++;
       }
     } while (++it != blades.end());
@@ -1454,7 +1455,7 @@ u32 GfDataBlade::getBladeNumForAnimal() {
   if (blades.size() != 0) {
     u16 *it = blades.begin();
     do {
-      if (getQuestRace(*it) == QUEST_RACE_ANIMAL) {
+      if (getQuestRace(*it) == QUEST_RACE_UNKNOWN_2) {
         count++;
       }
     } while (++it != blades.end());
@@ -1493,14 +1494,14 @@ const char *GfDataBlade::getFieldSkillVoice(u32 blade, u32 skill) {
   return nullptr;
 }
 
-bool GfDataBlade::isNeedChangeWeapon(u32 blade) { return blade - BLADE_CHANGE_WEAPON_RANGE_FIRST < BLADE_CHANGE_WEAPON_RANGE_COUNT || blade == BLADE_CHANGE_WEAPON; }
+bool GfDataBlade::isNeedChangeWeapon(u32 blade) { return blade - BLADE_UNKNOWN_1043 < BLADE_UNKNOWN_8 || blade == BLADE_UNKNOWN_1039; }
 
 bool GfDataBlade::isActivateParty(u32 blade) {
   if (blade == 0) {
     return false;
   }
 
-  if (getSDataBlade(blade)->unknown00 != BLADE_ACTIVATE_DRIVER) {
+  if (getSDataBlade(blade)->unknown00 != BLADE_ACTIVATE_UNKNOWN_1) {
     return false;
   }
 
@@ -1508,7 +1509,7 @@ bool GfDataBlade::isActivateParty(u32 blade) {
 }
 
 bool GfDataBlade::isActivateReserver(u32 blade) {
-  if (getSDataBlade(blade)->unknown00 != BLADE_ACTIVATE_DRIVER) {
+  if (getSDataBlade(blade)->unknown00 != BLADE_ACTIVATE_UNKNOWN_1) {
     return false;
   }
 

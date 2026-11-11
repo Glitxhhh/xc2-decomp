@@ -99,7 +99,7 @@ u32 GfMenuObjBalloon::openCommon(GfMenuCallContext *context, u32 call, GF_OBJ_HA
 }
 
 bool GfMenuObjBalloon::seqSave() {
-  unknown1dc = GfReqCommand::reqSave(SAVESLOT_DEFAULT);
+  unknown1dc = GfReqCommand::reqSave(SAVESLOT_UNKNOWN_22);
   GfMenuObjFade::dispSaving(true, 0);
   return true;
 }

@@ -17,7 +17,7 @@ GfMenuCallContext::GfMenuCallContext() : unknown10(0), unknown14(0), unknown40(f
 GfMenuCallContext::~GfMenuCallContext() {}
 
 GfMenuCallContext *GfMenuCallContext::create() {
-  GfMenuCallContext *context = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuCallContext();
+  GfMenuCallContext *context = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuCallContext();
   context->addRef();
   return context;
 }

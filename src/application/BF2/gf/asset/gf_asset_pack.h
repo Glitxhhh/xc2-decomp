@@ -25,7 +25,7 @@ struct GF_ASSET_HANDLE;
 struct GF_SLOT_HANDLE;
 
 struct GfAssetFilesInfo {
-  GfAssetFilesInfo() : unknown00(INVALID_ASSET_HANDLE), unknown08(ASSET_TYPE_BASE), unknown30(nullptr), unknown38(0), unknown3c(1), unknown40(0) {}
+  GfAssetFilesInfo() : unknown00(unknown018), unknown08(ASSET_TYPE_UNKNOWN_0), unknown30(nullptr), unknown38(0), unknown3c(1), unknown40(0) {}
 
   GF_ASSET_HANDLE *unknown00;                    // Inferred role: handle; original member name unknown.
   GfAssetType unknown08;                         // Inferred role: asset type; original member name unknown.

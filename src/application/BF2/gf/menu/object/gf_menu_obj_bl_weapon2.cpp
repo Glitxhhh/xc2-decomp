@@ -84,13 +84,13 @@ int GfMenuObjBlWeapon2::setFadeOut(u32 handle) {
 }
 
 bool GfMenuObjBlWeapon2::isSameWeapon(u32 blade, u32 chip) {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   u32 weapon = GfDataWeapon::getNewWeapon(acc.getEquipWeapon(-1, false), chip);
   return acc.getEquipWeapon(-1, false) == weapon;
 }
 
 bool GfMenuObjBlWeapon2::isDownWeapon(u32 blade, u32 chip) {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   u32 rank = GfDataWeapon::getRank(acc.getEquipWeapon(-1, false));
   return GfDataWeapon::getRank(GfDataWeapon::getNewWeapon(acc.getEquipWeapon(-1, false), chip)) < rank;
 }
@@ -235,7 +235,7 @@ void GfMenuObjBlWeapon2::setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *lis
   if (selectList->getSize() != 0 && list != nullptr) {
     if (isShop == 0) {
       GfMenuItemList::ItemBoxSetup setup;
-      setup.unknown14 = ItemType::PC_WPN_CHIP;
+      setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_1;
       setup.unknown00.unknown08 = selectList->getSize();
       setup.unknown00.unknown10 = true;
       list->setupFromBox(setup);

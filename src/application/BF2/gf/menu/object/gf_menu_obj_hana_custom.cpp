@@ -36,20 +36,20 @@ namespace gf {
 
 // Inferred role: item type of each equip list category; original name unknown.
 static const ItemType::Type unknown001[] = {
-    ItemType::HANA_ROLE,
-    ItemType::HANA_ATR,
-    ItemType::HANA_N_ARTS_SET,
-    ItemType::HANA_N_ARTS_SET,
-    ItemType::HANA_N_ARTS_SET,
-    ItemType::HANA_ASSIST,
-    ItemType::HANA_ASSIST,
-    ItemType::HANA_ASSIST,
-    ItemType::HANA_ARTS_ENH,
-    ItemType::HANA_ARTS_ENH,
-    ItemType::HANA_ARTS_ENH,
-    ItemType::HANA_ASSIST,
-    ItemType::HANA_ASSIST,
-    ItemType::HANA_ASSIST,
+    ItemType::ITEM_TYPE_UNKNOWN_16,
+    ItemType::ITEM_TYPE_UNKNOWN_17,
+    ItemType::ITEM_TYPE_UNKNOWN_19,
+    ItemType::ITEM_TYPE_UNKNOWN_19,
+    ItemType::ITEM_TYPE_UNKNOWN_19,
+    ItemType::ITEM_TYPE_UNKNOWN_20,
+    ItemType::ITEM_TYPE_UNKNOWN_20,
+    ItemType::ITEM_TYPE_UNKNOWN_20,
+    ItemType::ITEM_TYPE_UNKNOWN_18,
+    ItemType::ITEM_TYPE_UNKNOWN_18,
+    ItemType::ITEM_TYPE_UNKNOWN_18,
+    ItemType::ITEM_TYPE_UNKNOWN_20,
+    ItemType::ITEM_TYPE_UNKNOWN_20,
+    ItemType::ITEM_TYPE_UNKNOWN_20,
 };
 
 // Inferred role: column of the parts mode table of each hana blade; original name unknown.
@@ -123,39 +123,39 @@ void GfMenuObjHanaCustom::getEquipItem(u32 blade, u32 parts, MenuItemInfo &info)
   GfGameUtilHana::getEquip(equip, blade);
   switch (parts) {
   case 1:
-    info.unknown00 = ItemType::HANA_ROLE;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_16;
     info.unknown04 = equip.unknown00;
     break;
   case 2:
-    info.unknown00 = ItemType::HANA_ATR;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_17;
     info.unknown04 = equip.unknown02;
     break;
   case 3:
   case 4:
   case 5:
-    info.unknown00 = ItemType::HANA_N_ARTS_SET;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_19;
     info.unknown04 = equip.unknown28[parts - 3].unknown04;
     break;
   case 6:
   case 7:
   case 8:
-    info.unknown00 = ItemType::HANA_ASSIST;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_20;
     info.unknown04 = equip.unknown4c[parts - 6];
     break;
   case 9:
   case 10:
   case 11:
-    info.unknown00 = ItemType::HANA_ARTS_ENH;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_18;
     info.unknown04 = equip.unknown04[parts - 9].unknown04;
     break;
   case 12:
   case 13:
   case 14:
-    info.unknown00 = ItemType::HANA_ASSIST;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_20;
     info.unknown04 = equip.unknown52[parts - 12];
     break;
   default:
-    info.unknown00 = ItemType::NONE;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_0;
     info.unknown04 = 0;
     break;
   }
@@ -384,7 +384,7 @@ void GfMenuObjHanaCustom::refreshItemList(GfMenuItemList *list, ui::UISelectObjL
     ui::UIObjectAcc partsUse(acc.searchChild(useName.c_str()));
     partsUse.setDisp(isUsed);
     if (isUsed) {
-      DataParamAcc userAcc(OBJECT_TYPE_BLADE, user, GIMMICK_TYPE_NONE);
+      DataParamAcc userAcc(OBJECT_TYPE_BLADE, user, GIMMICK_TYPE_UNKNOWN_0);
       partsUse.setText(GfMenuObjUtil::getName(userAcc));
       GfMenuObjUtil::setColMulandAdd(partsUse.unknown10, user == blade ? "txt_normal" : "txt_disable");
     }
@@ -416,7 +416,7 @@ void GfMenuObjHanaCustom::refreshPartsList(ui::UIObjectAcc &acc, mm::mtl::FixedA
 void GfMenuObjHanaCustom::updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *selectList, mm::mtl::FixedArray<GfMenuIDList *, 7> &lists) {
   int blade = GfMenuReference::getReferenceBladeID(0);
   list->clear();
-  if (blade >= BLADE_HANA_JS && blade <= BLADE_HANA_JD) {
+  if (blade >= BLADE_UNKNOWN_1005 && blade <= BLADE_UNKNOWN_1007) {
     for (u32 i = 0; i < 7; i++) {
       lists[i]->clear();
     }
@@ -425,7 +425,7 @@ void GfMenuObjHanaCustom::updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *li
     int count = Bdat::getIdCount(bdat);
     for (int i = 0; i != count; i++) {
       MenuID id = {};
-      id.unknown00 = Bdat::getVal(bdat, unknown002[blade - BLADE_HANA_JS], i + top).valueU16;
+      id.unknown00 = Bdat::getVal(bdat, unknown002[blade - BLADE_UNKNOWN_1005], i + top).valueU16;
       if (id.unknown00 != 0) {
         int index;
         switch (id.unknown00) {

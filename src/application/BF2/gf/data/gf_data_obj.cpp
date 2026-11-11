@@ -33,45 +33,45 @@
 
 namespace gf {
 
-constexpr int SLOT_ARTS_COUNT = 3;
-constexpr u32 ARMOR_MAX = 100;
-constexpr f32 PERCENT = 0.01f;
-constexpr f32 PERCENT_SCALE = 100.0f;
-constexpr u32 DRIVER_HP_MAX = 9999;
-constexpr u32 DRIVER_STATUS_MAX = 999;
-constexpr u32 RATE_MAX = 100;
-constexpr f32 ENEMY_HP_MAX = 100000000.0f;
-constexpr f32 ENEMY_STATUS_MAX = 9999.0f;
-constexpr f32 ENEMY_AGILITY_MAX = 999.0f;
-constexpr f32 ENEMY_LUCK_MAX = 999.0f;
-constexpr f32 PERMILLE = 0.001f;
+constexpr int SLOT_UNKNOWN_3 = 3;         // Inferred role: slot arts count; original name unknown.
+constexpr u32 ARMOR_UNKNOWN_100 = 100;    // Inferred role: armor max; original name unknown.
+constexpr f32 unknown028 = 0.01f;         // Inferred role: percent; original name unknown.
+constexpr f32 unknown029 = 100.0f;        // Inferred role: percent scale; original name unknown.
+constexpr u32 DRIVER_UNKNOWN_9999 = 9999; // Inferred role: driver hp max; original name unknown.
+constexpr u32 DRIVER_UNKNOWN_999 = 999;   // Inferred role: driver status max; original name unknown.
+constexpr u32 RATE_UNKNOWN_100 = 100;     // Inferred role: rate max; original name unknown.
+constexpr f32 unknown032 = 100000000.0f;  // Inferred role: enemy hp max; original name unknown.
+constexpr f32 unknown033 = 9999.0f;       // Inferred role: enemy status max; original name unknown.
+constexpr f32 unknown034 = 999.0f;        // Inferred role: enemy agility max; original name unknown.
+constexpr f32 unknown035 = 999.0f;        // Inferred role: enemy luck max; original name unknown.
+constexpr f32 unknown036 = 0.001f;        // Inferred role: permille; original name unknown.
 
 enum {
-  ENHANCE_EFFECT_NONE,
-  ENHANCE_EFFECT_HP_MAX_PERCENT,
-  ENHANCE_EFFECT_STRENGTH_PERCENT,
-  ENHANCE_EFFECT_POWER_ETHER_PERCENT,
-  ENHANCE_EFFECT_DEX_PERCENT,
-  ENHANCE_EFFECT_AGILITY_PERCENT,
-  ENHANCE_EFFECT_LUCK_PERCENT,
-  ENHANCE_EFFECT_CRITICAL_RATE_PERCENT,
-  ENHANCE_EFFECT_P_ARMOR_PERCENT,
-  ENHANCE_EFFECT_E_ARMOR_PERCENT,
-  ENHANCE_EFFECT_GUARD_RATE_PERCENT,
-  ENHANCE_EFFECT_HP_MAX_ADD,
-  ENHANCE_EFFECT_STRENGTH_ADD,
-  ENHANCE_EFFECT_POWER_ETHER_ADD,
-  ENHANCE_EFFECT_DEX_ADD,
-  ENHANCE_EFFECT_AGILITY_ADD,
-  ENHANCE_EFFECT_LUCK_ADD,
-  ENHANCE_EFFECT_CRITICAL_RATE_ADD,
-  ENHANCE_EFFECT_P_ARMOR_ADD,
-  ENHANCE_EFFECT_E_ARMOR_ADD,
-  ENHANCE_EFFECT_GUARD_RATE_ADD,
-  ENHANCE_EFFECT_ARMOR_ADD = 146,
+  ENHANCE_EFFECT_UNKNOWN_0,         // Inferred role: enhance effect none; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_1,         // Inferred role: enhance effect hp max percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_2,         // Inferred role: enhance effect strength percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_3,         // Inferred role: enhance effect power ether percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_4,         // Inferred role: enhance effect dex percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_5,         // Inferred role: enhance effect agility percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_6,         // Inferred role: enhance effect luck percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_7,         // Inferred role: enhance effect critical rate percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_8,         // Inferred role: enhance effect p armor percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_9,         // Inferred role: enhance effect e armor percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_10,        // Inferred role: enhance effect guard rate percent; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_11,        // Inferred role: enhance effect hp max add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_12,        // Inferred role: enhance effect strength add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_13,        // Inferred role: enhance effect power ether add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_14,        // Inferred role: enhance effect dex add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_15,        // Inferred role: enhance effect agility add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_16,        // Inferred role: enhance effect luck add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_17,        // Inferred role: enhance effect critical rate add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_18,        // Inferred role: enhance effect p armor add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_19,        // Inferred role: enhance effect e armor add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_20,        // Inferred role: enhance effect guard rate add; original name unknown.
+  ENHANCE_EFFECT_UNKNOWN_146 = 146, // Inferred role: enhance effect armor add; original name unknown.
 };
 
-DataObjDriver::DataObjDriver(u32 id) : unknown10(nullptr), unknown18(INVALID_HANDLE), unknown20(nullptr), unknown28(), unknown3c(false) { setup(id); }
+DataObjDriver::DataObjDriver(u32 id) : unknown10(nullptr), unknown18(unknown020), unknown20(nullptr), unknown28(), unknown3c(false) { setup(id); }
 
 void DataObjDriver::setup(u32 id) {
   this->m_bdatId = id;
@@ -112,7 +112,7 @@ void DataObjDriver::setVirtualEquipWpn(u32 weapon, int slot) {
 
 void DataObjDriver::setVirtualEquipAcc(u32 slot, u32 accessory) {
   setupVirtualParam();
-  if (GfDataItem::getItemType(accessory) == ItemType::PC_EQUIP) {
+  if (GfDataItem::getItemType(accessory) == ItemType::ITEM_TYPE_UNKNOWN_2) {
     GfDataDriver::setEquipAcce(*unknown10, slot, accessory);
   }
 }
@@ -206,7 +206,7 @@ static void unknown001(u32 &value, const SDataDriver &dataDriver, u32 percentEff
     u16 *end = enhances.end();
     do {
       if (bdatBattle->getBTL_EnhanceEnhanceEffect(*enhance) == percentEffect) {
-        percent += bdatBattle->getBTL_EnhanceParam1(*enhance) * PERCENT;
+        percent += bdatBattle->getBTL_EnhanceParam1(*enhance) * unknown028;
       }
     } while (++enhance != end);
   }
@@ -217,15 +217,15 @@ static void unknown001(u32 &value, const SDataDriver &dataDriver, u32 percentEff
 u32 DataObjDriver::getHpMax(bool isVirtual) const {
   SDataDriver *dataDriver = get(isVirtual);
   u32 hpMax = dataDriver->unknown96;
-  unknown001(hpMax, *dataDriver, ENHANCE_EFFECT_HP_MAX_PERCENT, ENHANCE_EFFECT_HP_MAX_ADD);
-  f32 rate = GfDataDriver::getHpMaxRev(*dataDriver) * PERCENT;
+  unknown001(hpMax, *dataDriver, ENHANCE_EFFECT_UNKNOWN_1, ENHANCE_EFFECT_UNKNOWN_11);
+  f32 rate = GfDataDriver::getHpMaxRev(*dataDriver) * unknown028;
   hpMax += static_cast<u32>(hpMax * rate);
-  return hpMax > DRIVER_HP_MAX ? DRIVER_HP_MAX : hpMax;
+  return hpMax > DRIVER_UNKNOWN_9999 ? DRIVER_UNKNOWN_9999 : hpMax;
 }
 
 u32 DataObjDriver::getLevel(bool isVirtual) const {
   u32 level = GfDataDriver::getLevel(*get(isVirtual));
-  return level > DRIVER_LEVEL_MAX ? DRIVER_LEVEL_MAX : level;
+  return level > DRIVER_UNKNOWN_99 ? DRIVER_UNKNOWN_99 : level;
 }
 
 u32 DataObjDriver::getExp() const { return GfDataDriver::getExp(*get(false)); }
@@ -413,8 +413,8 @@ bool DataObjDriver::setDriverArts(u32 weaponType, int index, u32 arts) {
 u32 DataObjDriver::getDriverArtsLevel(u32 arts) const { return get(false)->unknown2f0[arts]; }
 
 void DataObjDriver::setDriverArtsLevel(u32 arts, u32 level) {
-  if (level > DRIVER_ARTS_LEVEL_MAX) {
-    level = DRIVER_ARTS_LEVEL_MAX;
+  if (level > DRIVER_ARTS_UNKNOWN_5) {
+    level = DRIVER_ARTS_UNKNOWN_5;
   }
 
   get(false)->unknown2f0[arts] = level;
@@ -425,11 +425,11 @@ u32 DataObjDriver::getClass(bool isVirtual) const { return GfDataDriver::getClas
 u32 DataObjDriver::getStrength(bool isVirtual) const {
   SDataDriver *dataDriver = get(isVirtual);
   u32 strength = get(isVirtual)->unknown98;
-  unknown001(strength, *dataDriver, ENHANCE_EFFECT_STRENGTH_PERCENT, ENHANCE_EFFECT_STRENGTH_ADD);
-  f32 rate = GfDataDriver::getStrengthRev(*dataDriver) * PERCENT;
+  unknown001(strength, *dataDriver, ENHANCE_EFFECT_UNKNOWN_2, ENHANCE_EFFECT_UNKNOWN_12);
+  f32 rate = GfDataDriver::getStrengthRev(*dataDriver) * unknown028;
   strength += static_cast<u32>(strength * rate);
-  if (strength > DRIVER_STATUS_MAX) {
-    strength = DRIVER_STATUS_MAX;
+  if (strength > DRIVER_UNKNOWN_999) {
+    strength = DRIVER_UNKNOWN_999;
   }
 
   return strength;
@@ -438,11 +438,11 @@ u32 DataObjDriver::getStrength(bool isVirtual) const {
 u32 DataObjDriver::getPowerEther(bool isVirtual) const {
   SDataDriver *dataDriver = get(isVirtual);
   u32 powerEther = get(isVirtual)->unknown9a;
-  unknown001(powerEther, *dataDriver, ENHANCE_EFFECT_POWER_ETHER_PERCENT, ENHANCE_EFFECT_POWER_ETHER_ADD);
-  f32 rate = GfDataDriver::getPowEtherRev(*dataDriver) * PERCENT;
+  unknown001(powerEther, *dataDriver, ENHANCE_EFFECT_UNKNOWN_3, ENHANCE_EFFECT_UNKNOWN_13);
+  f32 rate = GfDataDriver::getPowEtherRev(*dataDriver) * unknown028;
   powerEther += static_cast<u32>(powerEther * rate);
-  if (powerEther > DRIVER_STATUS_MAX) {
-    powerEther = DRIVER_STATUS_MAX;
+  if (powerEther > DRIVER_UNKNOWN_999) {
+    powerEther = DRIVER_UNKNOWN_999;
   }
 
   return powerEther;
@@ -451,11 +451,11 @@ u32 DataObjDriver::getPowerEther(bool isVirtual) const {
 u32 DataObjDriver::getDex(bool isVirtual) const {
   SDataDriver *dataDriver = get(isVirtual);
   u32 dex = get(isVirtual)->unknown9c;
-  unknown001(dex, *dataDriver, ENHANCE_EFFECT_DEX_PERCENT, ENHANCE_EFFECT_DEX_ADD);
-  f32 rate = GfDataDriver::getDexRev(*dataDriver) * PERCENT;
+  unknown001(dex, *dataDriver, ENHANCE_EFFECT_UNKNOWN_4, ENHANCE_EFFECT_UNKNOWN_14);
+  f32 rate = GfDataDriver::getDexRev(*dataDriver) * unknown028;
   dex += static_cast<u32>(dex * rate);
-  if (dex > DRIVER_STATUS_MAX) {
-    dex = DRIVER_STATUS_MAX;
+  if (dex > DRIVER_UNKNOWN_999) {
+    dex = DRIVER_UNKNOWN_999;
   }
 
   return dex;
@@ -464,11 +464,11 @@ u32 DataObjDriver::getDex(bool isVirtual) const {
 u32 DataObjDriver::getAgility(bool isVirtual) const {
   SDataDriver *dataDriver = get(isVirtual);
   u32 agility = get(isVirtual)->unknown9e;
-  unknown001(agility, *dataDriver, ENHANCE_EFFECT_AGILITY_PERCENT, ENHANCE_EFFECT_AGILITY_ADD);
-  f32 rate = GfDataDriver::getAgilityRev(*dataDriver) * PERCENT;
+  unknown001(agility, *dataDriver, ENHANCE_EFFECT_UNKNOWN_5, ENHANCE_EFFECT_UNKNOWN_15);
+  f32 rate = GfDataDriver::getAgilityRev(*dataDriver) * unknown028;
   agility += static_cast<u32>(agility * rate);
-  if (agility > DRIVER_STATUS_MAX) {
-    agility = DRIVER_STATUS_MAX;
+  if (agility > DRIVER_UNKNOWN_999) {
+    agility = DRIVER_UNKNOWN_999;
   }
 
   return agility;
@@ -477,11 +477,11 @@ u32 DataObjDriver::getAgility(bool isVirtual) const {
 u32 DataObjDriver::getLuck(bool isVirtual) const {
   SDataDriver *dataDriver = get(isVirtual);
   u32 luck = get(isVirtual)->unknowna0;
-  unknown001(luck, *dataDriver, ENHANCE_EFFECT_LUCK_PERCENT, ENHANCE_EFFECT_LUCK_ADD);
-  f32 rate = GfDataDriver::getLuckRev(*dataDriver) * PERCENT;
+  unknown001(luck, *dataDriver, ENHANCE_EFFECT_UNKNOWN_6, ENHANCE_EFFECT_UNKNOWN_16);
+  f32 rate = GfDataDriver::getLuckRev(*dataDriver) * unknown028;
   luck += static_cast<u32>(luck * rate);
-  if (luck > DRIVER_STATUS_MAX) {
-    luck = DRIVER_STATUS_MAX;
+  if (luck > DRIVER_UNKNOWN_999) {
+    luck = DRIVER_UNKNOWN_999;
   }
 
   return luck;
@@ -502,7 +502,7 @@ u32 DataObjDriver::getPArmor(bool isVirtual) const {
 
   u32 bladePArmor = dataObjBlade.getPArmor(isVirtual);
   u32 pArmor = get(isVirtual)->unknowna2 + bladePArmor;
-  return pArmor > ARMOR_MAX ? ARMOR_MAX : pArmor;
+  return pArmor > ARMOR_UNKNOWN_100 ? ARMOR_UNKNOWN_100 : pArmor;
 }
 
 bool DataObjBlade::isValid() const { return unknown08 != nullptr && unknown08->unknown06 != 0; }
@@ -536,7 +536,7 @@ static void unknown002(u32 &value, SDataBlade &dataBlade, u32 percentEffect, u32
     u16 *end = enhances.end();
     do {
       if (bdatBattle->getBTL_EnhanceEnhanceEffect(*enhance) == percentEffect) {
-        percent += bdatBattle->getBTL_EnhanceParam1(*enhance) * PERCENT;
+        percent += bdatBattle->getBTL_EnhanceParam1(*enhance) * unknown028;
       }
     } while (++enhance != end);
   }
@@ -554,8 +554,8 @@ u32 DataObjBlade::getPArmor(bool isVirtual) const {
     pArmor += bdatItem->getPcWpnPArmor(weapon);
   }
 
-  unknown002(pArmor, *get(isVirtual), ENHANCE_EFFECT_P_ARMOR_PERCENT, ENHANCE_EFFECT_P_ARMOR_ADD, isVirtualSetting() | unknown24);
-  unknown002(pArmor, *get(isVirtual), ENHANCE_EFFECT_NONE, ENHANCE_EFFECT_ARMOR_ADD, isVirtualSetting() | unknown24);
+  unknown002(pArmor, *get(isVirtual), ENHANCE_EFFECT_UNKNOWN_8, ENHANCE_EFFECT_UNKNOWN_18, isVirtualSetting() | unknown24);
+  unknown002(pArmor, *get(isVirtual), ENHANCE_EFFECT_UNKNOWN_0, ENHANCE_EFFECT_UNKNOWN_146, isVirtualSetting() | unknown24);
   return pArmor;
 }
 
@@ -574,7 +574,7 @@ u32 DataObjDriver::getEArmor(bool isVirtual) const {
 
   u32 bladeEArmor = dataObjBlade.getEArmor(isVirtual);
   u32 eArmor = dataDriver->unknowna4 + bladeEArmor;
-  return eArmor > ARMOR_MAX ? ARMOR_MAX : eArmor;
+  return eArmor > ARMOR_UNKNOWN_100 ? ARMOR_UNKNOWN_100 : eArmor;
 }
 
 u32 DataObjBlade::getEArmor(bool isVirtual) const {
@@ -585,8 +585,8 @@ u32 DataObjBlade::getEArmor(bool isVirtual) const {
     eArmor += bdatItem->getPcWpnEArmor(weapon);
   }
 
-  unknown002(eArmor, *get(isVirtual), ENHANCE_EFFECT_E_ARMOR_PERCENT, ENHANCE_EFFECT_E_ARMOR_ADD, isVirtualSetting() | unknown24);
-  unknown002(eArmor, *get(isVirtual), ENHANCE_EFFECT_NONE, ENHANCE_EFFECT_ARMOR_ADD, isVirtualSetting() | unknown24);
+  unknown002(eArmor, *get(isVirtual), ENHANCE_EFFECT_UNKNOWN_9, ENHANCE_EFFECT_UNKNOWN_19, isVirtualSetting() | unknown24);
+  unknown002(eArmor, *get(isVirtual), ENHANCE_EFFECT_UNKNOWN_0, ENHANCE_EFFECT_UNKNOWN_146, isVirtualSetting() | unknown24);
   return eArmor;
 }
 
@@ -608,8 +608,8 @@ u32 DataObjDriver::getCriticalRate(bool isVirtual) const {
     criticalRate += dataObjBlade.getCriticalRate(isVirtual);
   }
 
-  if (criticalRate > RATE_MAX) {
-    criticalRate = RATE_MAX;
+  if (criticalRate > RATE_UNKNOWN_100) {
+    criticalRate = RATE_UNKNOWN_100;
   }
 
   return criticalRate;
@@ -623,7 +623,7 @@ u32 DataObjBlade::getCriticalRate(bool isVirtual) const {
     criticalRate = bdatItem->getPcWpnCriRate(weapon);
   }
 
-  unknown002(criticalRate, *get(isVirtual), ENHANCE_EFFECT_CRITICAL_RATE_PERCENT, ENHANCE_EFFECT_CRITICAL_RATE_ADD, isVirtualSetting() | unknown24);
+  unknown002(criticalRate, *get(isVirtual), ENHANCE_EFFECT_UNKNOWN_7, ENHANCE_EFFECT_UNKNOWN_17, isVirtualSetting() | unknown24);
   return criticalRate;
 }
 
@@ -645,8 +645,8 @@ u32 DataObjDriver::getGuardRate(bool isVirtual) const {
     guardRate += dataObjBlade.getGuardRate(isVirtual);
   }
 
-  if (guardRate > RATE_MAX) {
-    guardRate = RATE_MAX;
+  if (guardRate > RATE_UNKNOWN_100) {
+    guardRate = RATE_UNKNOWN_100;
   }
 
   return guardRate;
@@ -660,7 +660,7 @@ u32 DataObjBlade::getGuardRate(bool isVirtual) const {
     guardRate = bdatItem->getPcWpnGuardRate(weapon);
   }
 
-  unknown002(guardRate, *get(isVirtual), ENHANCE_EFFECT_GUARD_RATE_PERCENT, ENHANCE_EFFECT_GUARD_RATE_ADD, isVirtualSetting() | unknown24);
+  unknown002(guardRate, *get(isVirtual), ENHANCE_EFFECT_UNKNOWN_10, ENHANCE_EFFECT_UNKNOWN_20, isVirtualSetting() | unknown24);
   return guardRate;
 }
 
@@ -780,8 +780,8 @@ u32 DataObjDriver::getNorAtkDmgMin(bool isVirtual) const {
 u32 DataObjBlade::getNorAtkDmgMin(bool isVirtual) const {
   f32 damage = getWeaponDamage(isVirtual);
   u32 ratio = GfBdatBlade::get()->getFLD_IdeaTableWpnRatio(GfDataBlade::getTrustRank(getBdatId()));
-  f32 baseDamage = damage * ratio * PERCENT;
-  return baseDamage * (1.0f - getWeaponStability(isVirtual) * PERCENT);
+  f32 baseDamage = damage * ratio * unknown028;
+  return baseDamage * (1.0f - getWeaponStability(isVirtual) * unknown028);
 }
 
 u32 DataObjDriver::getNorAtkDmgMax(bool isVirtual) const {
@@ -798,8 +798,8 @@ u32 DataObjDriver::getNorAtkDmgMax(bool isVirtual) const {
 u32 DataObjBlade::getNorAtkDmgMax(bool isVirtual) const {
   f32 damage = getWeaponDamage(isVirtual);
   u32 ratio = GfBdatBlade::get()->getFLD_IdeaTableWpnRatio(GfDataBlade::getTrustRank(getBdatId()));
-  f32 baseDamage = damage * ratio * PERCENT;
-  return baseDamage * (getWeaponStability(isVirtual) * PERCENT + 1.0f);
+  f32 baseDamage = damage * ratio * unknown028;
+  return baseDamage * (getWeaponStability(isVirtual) * unknown028 + 1.0f);
 }
 
 u32 DataObjDriver::getEquipAcce(u32 slot, bool isVirtual) const { return GfDataDriver::getEquipAcce(*get(isVirtual), slot); }
@@ -956,7 +956,7 @@ u32 DataObjDriver::getFavoriteCategory(FAVORITE favorite) const { return GfDataD
 
 u32 DataObjDriver::getFavoriteItem(FAVORITE favorite) const { return GfDataDriver::getFavorite(getBdatId(), favorite); }
 
-DataObjBlade::DataObjBlade(u32 id) : unknown08(nullptr), unknown10(INVALID_HANDLE), unknown18(nullptr), unknown24(false) { setup(id); }
+DataObjBlade::DataObjBlade(u32 id) : unknown08(nullptr), unknown10(unknown020), unknown18(nullptr), unknown24(false) { setup(id); }
 
 void DataObjBlade::setup(u32 id) {
   this->m_bdatId = id;
@@ -979,7 +979,7 @@ DataObjBlade::~DataObjBlade() {
 
 void DataObjBlade::setupVirtualParam() {
   if (unknown18 == nullptr) {
-    unknown18 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SDataBlade;
+    unknown18 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SDataBlade;
     *unknown18 = *unknown08;
     unknown08 = unknown18;
   }
@@ -1032,7 +1032,7 @@ u32 DataObjBlade::getFootStepEffect() const { return GfDataBlade::getFootStepEff
 u32 DataObjBlade::getGender() const { return get(false)->unknown709; }
 
 bool DataObjBlade::isDispInitExtraParts(u32 part) const {
-  if (part >= EXTRA_PARTS_COUNT) {
+  if (part >= PARTS_UNKNOWN_4) {
     return false;
   }
 
@@ -1152,7 +1152,7 @@ const char *DataObjBlade::getCamBone() const { return get(false)->unknown7e8; }
 
 u32 DataObjBlade::getEyeRotControl() const { return get(false)->unknown826; }
 
-DataObjPcWpn::DataObjPcWpn(u32 id) : unknown08(INVALID_HANDLE), m_bdatId(id) {}
+DataObjPcWpn::DataObjPcWpn(u32 id) : unknown08(unknown020), m_bdatId(id) {}
 
 DataObjPcWpn::DataObjPcWpn(GF_OBJ_HANDLE *handle) : unknown08(handle) {
   GfObjAcc objAcc(handle);
@@ -1170,7 +1170,7 @@ bool DataObjPcWpn::getName(u8 *&bdat, u32 &textId) const { return GfDataItem::ge
 u32 DataObjPcWpn::getBdatId() const { return m_bdatId; }
 
 u32 DataObjPcWpn::getAttribute(bool, int slot) const {
-  if (unknown08 == INVALID_HANDLE) {
+  if (unknown08 == unknown020) {
     return 0;
   }
 
@@ -1188,7 +1188,7 @@ u32 DataObjPcWpn::getEquipWeapon(bool, int) const { return m_bdatId; }
 u32 DataObjPcWpn::getWeaponType(bool, int) const { return GfBdatItem::get()->getPcWpnWpnType(getBdatId()); }
 
 int DataObjPcWpn::getBladeSet(bool isVirtual) const {
-  if (unknown08 == INVALID_HANDLE) {
+  if (unknown08 == unknown020) {
     return -1;
   }
 
@@ -1226,7 +1226,7 @@ DataObjEnemy::DataObjEnemy(GF_OBJ_HANDLE *handle) : unknown08(handle), m_SDataEn
   m_SDataEnemy = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(handle)->unknown30)->unknowna0;
 }
 
-DataObjEnemy::DataObjEnemy(u32 id) : unknown08(INVALID_HANDLE), m_SDataEnemy(nullptr), unknown18(id, 1) { m_SDataEnemy = &unknown18; }
+DataObjEnemy::DataObjEnemy(u32 id) : unknown08(unknown020), m_SDataEnemy(nullptr), unknown18(id, 1) { m_SDataEnemy = &unknown18; }
 
 DataObjEnemy::~DataObjEnemy() {}
 
@@ -1277,7 +1277,7 @@ static bool unknown003(f32 &value, u32 arrange, u32 percentEffect,
     u16 *enhance = enhances.begin();
     do {
       if (bdatBattle->getBTL_EnhanceEnhanceEffect(*enhance) == percentEffect) {
-        percent += bdatBattle->getBTL_EnhanceParam1(*enhance) * PERCENT;
+        percent += bdatBattle->getBTL_EnhanceParam1(*enhance) * unknown028;
       }
     } while (++enhance != enhances.end());
   }
@@ -1288,8 +1288,8 @@ static bool unknown003(f32 &value, u32 arrange, u32 percentEffect,
 
 u32 DataObjEnemy::getHpMax(bool) const {
   f32 hpMax = m_SDataEnemy->unknownac;
-  if (unknown003(hpMax, getBdatIdEnArrange(), ENHANCE_EFFECT_HP_MAX_PERCENT, ENHANCE_EFFECT_HP_MAX_ADD)) {
-    f32 rate = GfDataBlade::getHpMaxRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * PERCENT;
+  if (unknown003(hpMax, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_1, ENHANCE_EFFECT_UNKNOWN_11)) {
+    f32 rate = GfDataBlade::getHpMaxRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * unknown028;
     hpMax += hpMax * rate;
   }
 
@@ -1297,19 +1297,19 @@ u32 DataObjEnemy::getHpMax(bool) const {
   if (param != 0) {
     u32 rev = GfBdatChrEnParam::get()->getChrEnParamRevHpMaxRev(param);
     if (rev != 0) {
-      hpMax = rev * PERMILLE * hpMax;
+      hpMax = rev * unknown036 * hpMax;
     }
   }
 
-  if (hpMax > ENEMY_HP_MAX) {
-    hpMax = ENEMY_HP_MAX;
+  if (hpMax > unknown032) {
+    hpMax = unknown032;
   }
 
   return hpMax;
 }
 
 u32 DataObjEnemy::getHp() const {
-  if (unknown08 != INVALID_HANDLE) {
+  if (unknown08 != unknown020) {
     return GfObjUtil::getHp(unknown08);
   }
 
@@ -1318,8 +1318,8 @@ u32 DataObjEnemy::getHp() const {
 
 u32 DataObjEnemy::getStrength(bool) const {
   f32 strength = m_SDataEnemy->unknownb0;
-  if (unknown003(strength, getBdatIdEnArrange(), ENHANCE_EFFECT_STRENGTH_PERCENT, ENHANCE_EFFECT_STRENGTH_ADD)) {
-    f32 rate = GfDataBlade::getStrengthRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * PERCENT;
+  if (unknown003(strength, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_2, ENHANCE_EFFECT_UNKNOWN_12)) {
+    f32 rate = GfDataBlade::getStrengthRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * unknown028;
     strength += strength * rate;
   }
 
@@ -1327,12 +1327,12 @@ u32 DataObjEnemy::getStrength(bool) const {
   if (param != 0) {
     u32 rev = GfBdatChrEnParam::get()->getChrEnParamRevStrengthRev(param);
     if (rev != 0) {
-      strength = rev * PERMILLE * strength;
+      strength = rev * unknown036 * strength;
     }
   }
 
-  if (strength > ENEMY_STATUS_MAX) {
-    strength = ENEMY_STATUS_MAX;
+  if (strength > unknown033) {
+    strength = unknown033;
   }
 
   return strength;
@@ -1340,8 +1340,8 @@ u32 DataObjEnemy::getStrength(bool) const {
 
 u32 DataObjEnemy::getPowerEther(bool) const {
   f32 powerEther = m_SDataEnemy->unknownb2;
-  if (unknown003(powerEther, getBdatIdEnArrange(), ENHANCE_EFFECT_POWER_ETHER_PERCENT, ENHANCE_EFFECT_POWER_ETHER_ADD)) {
-    f32 rate = GfDataBlade::getPowerEtherRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * PERCENT;
+  if (unknown003(powerEther, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_3, ENHANCE_EFFECT_UNKNOWN_13)) {
+    f32 rate = GfDataBlade::getPowerEtherRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * unknown028;
     powerEther += powerEther * rate;
   }
 
@@ -1349,12 +1349,12 @@ u32 DataObjEnemy::getPowerEther(bool) const {
   if (param != 0) {
     u32 rev = GfBdatChrEnParam::get()->getChrEnParamRevPowEtherRev(param);
     if (rev != 0) {
-      powerEther = rev * PERMILLE * powerEther;
+      powerEther = rev * unknown036 * powerEther;
     }
   }
 
-  if (powerEther > ENEMY_STATUS_MAX) {
-    powerEther = ENEMY_STATUS_MAX;
+  if (powerEther > unknown033) {
+    powerEther = unknown033;
   }
 
   return powerEther;
@@ -1362,8 +1362,8 @@ u32 DataObjEnemy::getPowerEther(bool) const {
 
 u32 DataObjEnemy::getDex(bool) const {
   f32 dex = m_SDataEnemy->unknownb4;
-  if (unknown003(dex, getBdatIdEnArrange(), ENHANCE_EFFECT_DEX_PERCENT, ENHANCE_EFFECT_DEX_ADD)) {
-    f32 rate = GfDataBlade::getDexRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * PERCENT;
+  if (unknown003(dex, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_4, ENHANCE_EFFECT_UNKNOWN_14)) {
+    f32 rate = GfDataBlade::getDexRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * unknown028;
     dex += dex * rate;
   }
 
@@ -1371,12 +1371,12 @@ u32 DataObjEnemy::getDex(bool) const {
   if (param != 0) {
     u32 rev = GfBdatChrEnParam::get()->getChrEnParamRevDexRev(param);
     if (rev != 0) {
-      dex = rev * PERMILLE * dex;
+      dex = rev * unknown036 * dex;
     }
   }
 
-  if (dex > ENEMY_STATUS_MAX) {
-    dex = ENEMY_STATUS_MAX;
+  if (dex > unknown033) {
+    dex = unknown033;
   }
 
   return dex;
@@ -1384,8 +1384,8 @@ u32 DataObjEnemy::getDex(bool) const {
 
 u32 DataObjEnemy::getAgility(bool) const {
   f32 agility = m_SDataEnemy->unknownb6;
-  if (unknown003(agility, getBdatIdEnArrange(), ENHANCE_EFFECT_AGILITY_PERCENT, ENHANCE_EFFECT_AGILITY_ADD)) {
-    f32 rate = GfDataBlade::getAgilityRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * PERCENT;
+  if (unknown003(agility, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_5, ENHANCE_EFFECT_UNKNOWN_15)) {
+    f32 rate = GfDataBlade::getAgilityRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * unknown028;
     agility += agility * rate;
   }
 
@@ -1393,12 +1393,12 @@ u32 DataObjEnemy::getAgility(bool) const {
   if (param != 0) {
     u32 rev = GfBdatChrEnParam::get()->getChrEnParamRevAgilityRev(param);
     if (rev != 0) {
-      agility = rev * PERMILLE * agility;
+      agility = rev * unknown036 * agility;
     }
   }
 
-  if (agility > ENEMY_AGILITY_MAX) {
-    agility = ENEMY_AGILITY_MAX;
+  if (agility > unknown034) {
+    agility = unknown034;
   }
 
   return agility;
@@ -1406,8 +1406,8 @@ u32 DataObjEnemy::getAgility(bool) const {
 
 u32 DataObjEnemy::getLuck(bool) const {
   f32 luck = m_SDataEnemy->unknownb8;
-  if (unknown003(luck, getBdatIdEnArrange(), ENHANCE_EFFECT_LUCK_PERCENT, ENHANCE_EFFECT_LUCK_ADD)) {
-    f32 rate = GfDataBlade::getLuckRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * PERCENT;
+  if (unknown003(luck, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_6, ENHANCE_EFFECT_UNKNOWN_16)) {
+    f32 rate = GfDataBlade::getLuckRev(GfDataEnemy::getEquipBlade(getBdatIdEnArrange())) * unknown028;
     luck += luck * rate;
   }
 
@@ -1415,12 +1415,12 @@ u32 DataObjEnemy::getLuck(bool) const {
   if (param != 0) {
     u32 rev = GfBdatChrEnParam::get()->getChrEnParamRevLuckRev(param);
     if (rev != 0) {
-      luck = rev * PERMILLE * luck;
+      luck = rev * unknown036 * luck;
     }
   }
 
-  if (luck > ENEMY_LUCK_MAX) {
-    luck = ENEMY_LUCK_MAX;
+  if (luck > unknown035) {
+    luck = unknown035;
   }
 
   return luck;
@@ -1429,11 +1429,11 @@ u32 DataObjEnemy::getLuck(bool) const {
 u32 DataObjEnemy::getPArmor(bool) const {
   f32 pArmor = m_SDataEnemy->unknown5c;
   if (GfDataEnemy::getEquipBlade(getBdatIdEnArrange()) != 0) {
-    unknown003(pArmor, getBdatIdEnArrange(), ENHANCE_EFFECT_P_ARMOR_PERCENT, ENHANCE_EFFECT_P_ARMOR_ADD);
+    unknown003(pArmor, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_8, ENHANCE_EFFECT_UNKNOWN_18);
   }
 
-  if (pArmor > ARMOR_MAX) {
-    pArmor = ARMOR_MAX;
+  if (pArmor > ARMOR_UNKNOWN_100) {
+    pArmor = ARMOR_UNKNOWN_100;
   }
 
   return pArmor;
@@ -1442,11 +1442,11 @@ u32 DataObjEnemy::getPArmor(bool) const {
 u32 DataObjEnemy::getEArmor(bool) const {
   f32 eArmor = m_SDataEnemy->unknown5e;
   if (GfDataEnemy::getEquipBlade(getBdatIdEnArrange()) != 0) {
-    unknown003(eArmor, getBdatIdEnArrange(), ENHANCE_EFFECT_E_ARMOR_PERCENT, ENHANCE_EFFECT_E_ARMOR_ADD);
+    unknown003(eArmor, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_9, ENHANCE_EFFECT_UNKNOWN_19);
   }
 
-  if (eArmor > ARMOR_MAX) {
-    eArmor = ARMOR_MAX;
+  if (eArmor > ARMOR_UNKNOWN_100) {
+    eArmor = ARMOR_UNKNOWN_100;
   }
 
   return eArmor;
@@ -1455,11 +1455,11 @@ u32 DataObjEnemy::getEArmor(bool) const {
 u32 DataObjEnemy::getCriticalRate(bool) const {
   f32 criticalRate = m_SDataEnemy->unknown63;
   if (GfDataEnemy::getEquipBlade(getBdatIdEnArrange()) != 0) {
-    unknown003(criticalRate, getBdatIdEnArrange(), ENHANCE_EFFECT_CRITICAL_RATE_PERCENT, ENHANCE_EFFECT_CRITICAL_RATE_ADD);
+    unknown003(criticalRate, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_7, ENHANCE_EFFECT_UNKNOWN_17);
   }
 
-  if (criticalRate > RATE_MAX) {
-    criticalRate = RATE_MAX;
+  if (criticalRate > RATE_UNKNOWN_100) {
+    criticalRate = RATE_UNKNOWN_100;
   }
 
   return criticalRate;
@@ -1468,11 +1468,11 @@ u32 DataObjEnemy::getCriticalRate(bool) const {
 u32 DataObjEnemy::getGuardRate(bool) const {
   f32 guardRate = m_SDataEnemy->unknown64;
   if (GfDataEnemy::getEquipBlade(getBdatIdEnArrange()) != 0) {
-    unknown003(guardRate, getBdatIdEnArrange(), ENHANCE_EFFECT_GUARD_RATE_PERCENT, ENHANCE_EFFECT_GUARD_RATE_ADD);
+    unknown003(guardRate, getBdatIdEnArrange(), ENHANCE_EFFECT_UNKNOWN_10, ENHANCE_EFFECT_UNKNOWN_20);
   }
 
-  if (guardRate > RATE_MAX) {
-    guardRate = RATE_MAX;
+  if (guardRate > RATE_UNKNOWN_100) {
+    guardRate = RATE_UNKNOWN_100;
   }
 
   return guardRate;
@@ -1558,7 +1558,7 @@ u32 DataObjEnemy::getLevelGold() const {
   u32 level = getLevel(false);
   mm::clamp(level, bdatBtl->getGrowStart(), bdatBtl->getGrowEnd() - 1);
   f32 gold = bdatBtl->getGrowEnemyGold(level);
-  return gold * m_SDataEnemy->unknown12 / PERCENT_SCALE;
+  return gold * m_SDataEnemy->unknown12 / unknown029;
 }
 
 u32 DataObjEnemy::getLevelExp() const {
@@ -1566,7 +1566,7 @@ u32 DataObjEnemy::getLevelExp() const {
   u32 level = getLevel(false);
   mm::clamp(level, bdatBtl->getGrowStart(), bdatBtl->getGrowEnd() - 1);
   f32 exp = bdatBtl->getGrowEnemyExp(level);
-  return exp * GfBdatChrEnArrange::get()->getChrEnArrangeExpRev(getBdatId()) / PERCENT_SCALE;
+  return exp * GfBdatChrEnArrange::get()->getChrEnArrangeExpRev(getBdatId()) / unknown029;
 }
 
 u32 DataObjEnemy::getLevelWp() const {
@@ -1574,7 +1574,7 @@ u32 DataObjEnemy::getLevelWp() const {
   u32 level = getLevel(false);
   mm::clamp(level, bdatBtl->getGrowStart(), bdatBtl->getGrowEnd() - 1);
   f32 wp = bdatBtl->getGrowEnemyWP(level);
-  return wp * GfBdatChrEnArrange::get()->getChrEnArrangeWPRev(getBdatId()) / PERCENT_SCALE;
+  return wp * GfBdatChrEnArrange::get()->getChrEnArrangeWPRev(getBdatId()) / unknown029;
 }
 
 u32 DataObjEnemy::getLevelSp() const {
@@ -1582,7 +1582,7 @@ u32 DataObjEnemy::getLevelSp() const {
   u32 level = getLevel(false);
   mm::clamp(level, bdatBtl->getGrowStart(), bdatBtl->getGrowEnd() - 1);
   f32 sp = bdatBtl->getGrowEnemySP(level);
-  return sp * GfBdatChrEnArrange::get()->getChrEnArrangeSPRev(getBdatId()) / PERCENT_SCALE;
+  return sp * GfBdatChrEnArrange::get()->getChrEnArrangeSPRev(getBdatId()) / unknown029;
 }
 
 u32 DataObjEnemy::getGenus() const { return m_SDataEnemy->unknown99; }
@@ -1859,7 +1859,7 @@ SDataEnemy::SDataEnemy() : unknown04(0) { clear(); }
 
 DataObjNpc::DataObjNpc(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupNpc>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjNpc::DataObjNpc(u32 id) : unknown08(INVALID_HANDLE), m_bdatId(id) {}
+DataObjNpc::DataObjNpc(u32 id) : unknown08(unknown020), m_bdatId(id) {}
 
 bool DataObjNpc::isValid() const { return m_bdatId != 0; }
 
@@ -1885,7 +1885,7 @@ u32 DataObjNpc::getEyeRotControl() const { return GfDataNpc::getEyeRotControl(ge
 
 DataObjMap::DataObjMap(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMap>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjMap::DataObjMap(u32 id) : unknown08(INVALID_HANDLE), m_bdatId(id) {}
+DataObjMap::DataObjMap(u32 id) : unknown08(unknown020), m_bdatId(id) {}
 
 bool DataObjMap::isValid() const { return m_bdatId != 0; }
 
@@ -1895,7 +1895,7 @@ u32 DataObjMap::getBdatId() const { return m_bdatId; }
 
 DataObjMob::DataObjMob(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjMob::DataObjMob(u32 id) : unknown08(INVALID_HANDLE), m_bdatId(id) {}
+DataObjMob::DataObjMob(u32 id) : unknown08(unknown020), m_bdatId(id) {}
 
 bool DataObjMob::isValid() const { return m_bdatId != 0; }
 
@@ -1919,7 +1919,7 @@ u32 DataObjMob::getFootStepEffect() const { return GfDataMob::getFootStepEffect(
 
 DataObjUiObj::DataObjUiObj(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjUiObj::DataObjUiObj(u32 id) : unknown08(INVALID_HANDLE), m_bdatId(id) {}
+DataObjUiObj::DataObjUiObj(u32 id) : unknown08(unknown020), m_bdatId(id) {}
 
 bool DataObjUiObj::isValid() const { return m_bdatId != 0; }
 
@@ -1941,7 +1941,7 @@ DataObjGmk::DataObjGmk(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) {
   m_gimmickType = setup->unknown5c;
 }
 
-DataObjGmk::DataObjGmk(u32 id, GimmickType gimmickType) : unknown08(INVALID_HANDLE), m_bdatId(id), m_gimmickType(gimmickType) {}
+DataObjGmk::DataObjGmk(u32 id, GimmickType gimmickType) : unknown08(unknown020), m_bdatId(id), m_gimmickType(gimmickType) {}
 
 bool DataObjGmk::isValid() const { return m_bdatId != 0; }
 
@@ -1950,7 +1950,7 @@ const char *DataObjGmk::getName() const { return ""; }
 bool DataObjGmk::getName(u8 *&, u32 &) const { return false; }
 
 const char *DataObjGmk::getModelResourceName() const {
-  if (m_gimmickType == GIMMICK_TYPE_TREASURE_BOX) {
+  if (m_gimmickType == GIMMICK_TYPE_UNKNOWN_1) {
     return GfBdatRsc::get()->getRSC_TboxListModel(getBdatId());
   }
 
@@ -1958,7 +1958,7 @@ const char *DataObjGmk::getModelResourceName() const {
 }
 
 const char *DataObjGmk::getMotionResourceName() const {
-  if (m_gimmickType == GIMMICK_TYPE_TREASURE_BOX) {
+  if (m_gimmickType == GIMMICK_TYPE_UNKNOWN_1) {
     return GfBdatRsc::get()->getRSC_TboxListMotion(getBdatId());
   }
 
@@ -1968,7 +1968,7 @@ const char *DataObjGmk::getMotionResourceName() const {
 u32 DataObjGmk::getBdatId() const { return m_bdatId; }
 
 bool DataObjGmk::isDispInitExtraParts(u32) const {
-  if (m_gimmickType == GIMMICK_TYPE_TREASURE_BOX) {
+  if (m_gimmickType == GIMMICK_TYPE_UNKNOWN_1) {
     return false;
   }
 
@@ -1977,7 +1977,7 @@ bool DataObjGmk::isDispInitExtraParts(u32) const {
 
 DataObjBelonging::DataObjBelonging(GF_OBJ_HANDLE *handle) : unknown08(handle) { GfObjUtil::getObjSetup<GfObjSetupBelonging>(handle); }
 
-bool DataObjBelonging::isValid() const { return unknown08 != INVALID_HANDLE; }
+bool DataObjBelonging::isValid() const { return unknown08 != unknown020; }
 
 const char *DataObjBelonging::getName() const { return ""; }
 

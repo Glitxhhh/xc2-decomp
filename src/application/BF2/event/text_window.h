@@ -28,7 +28,7 @@ public:
   bool isDisp() const { return (unknown08 & FLAG_UNKNOWN_0) != 0; }
   void hide() {
     erase();
-    unknown218 = gf::INVALID_HANDLE;
+    unknown218 = gf::unknown020;
     unknown110 = "";
     unknown0c = "";
     unknown08 &= ~(FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1);

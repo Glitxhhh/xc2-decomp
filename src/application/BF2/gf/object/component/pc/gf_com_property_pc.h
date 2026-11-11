@@ -39,29 +39,29 @@ struct MoveParam;
 struct SlideParam;
 
 enum InputID {
-  INPUT_ID_DECIDE = 0,
-  INPUT_ID_LOCK = 1,
-  INPUT_ID_JUMP = 2,
-  INPUT_ID_WALL_RELEASE = 3,
-  INPUT_ID_LURE = 4,
-  INPUT_ID_BATTLE_START = 5,
-  INPUT_ID_BATTLE_END = 6,
-  INPUT_ID_ART_01 = 7,
-  INPUT_ID_ART_02 = 8,
-  INPUT_ID_ART_03 = 9,
-  INPUT_ID_BLADE_CHANGE_00 = 10,
-  INPUT_ID_BLADE_CHANGE_01 = 11,
-  INPUT_ID_BLADE_CHANGE_02 = 12,
-  INPUT_ID_KAKUSEI = 13,
-  INPUT_ID_REQUEST_PERMIT_01 = 14,
-  INPUT_ID_REQUEST_PERMIT_02 = 15,
-  INPUT_ID_SP_ATTACK = 16,
-  INPUT_ID_CHAIN_ATTACK = 17,
-  INPUT_ID_BATTLE_RESCUE = 18,
-  INPUT_ID_CHANGE_CAMERA_MODE = 19,
-  INPUT_ID_ORDER_RALLY = 20,
-  INPUT_ID_CHANGE_TARGET_R = 21,
-  INPUT_ID_CHANGE_TARGET_L = 22,
+  INPUT_ID_UNKNOWN_0 = 0,   // Inferred role: input id decide; original name unknown.
+  INPUT_ID_UNKNOWN_1 = 1,   // Inferred role: input id lock; original name unknown.
+  INPUT_ID_UNKNOWN_2 = 2,   // Inferred role: input id jump; original name unknown.
+  INPUT_ID_UNKNOWN_3 = 3,   // Inferred role: input id wall release; original name unknown.
+  INPUT_ID_UNKNOWN_4 = 4,   // Inferred role: input id lure; original name unknown.
+  INPUT_ID_UNKNOWN_5 = 5,   // Inferred role: input id battle start; original name unknown.
+  INPUT_ID_UNKNOWN_6 = 6,   // Inferred role: input id battle end; original name unknown.
+  INPUT_ID_UNKNOWN_7 = 7,   // Inferred role: input id art 01; original name unknown.
+  INPUT_ID_UNKNOWN_8 = 8,   // Inferred role: input id art 02; original name unknown.
+  INPUT_ID_UNKNOWN_9 = 9,   // Inferred role: input id art 03; original name unknown.
+  INPUT_ID_UNKNOWN_10 = 10, // Inferred role: input id blade change 00; original name unknown.
+  INPUT_ID_UNKNOWN_11 = 11, // Inferred role: input id blade change 01; original name unknown.
+  INPUT_ID_UNKNOWN_12 = 12, // Inferred role: input id blade change 02; original name unknown.
+  INPUT_ID_UNKNOWN_13 = 13, // Inferred role: input id kakusei; original name unknown.
+  INPUT_ID_UNKNOWN_14 = 14, // Inferred role: input id request permit 01; original name unknown.
+  INPUT_ID_UNKNOWN_15 = 15, // Inferred role: input id request permit 02; original name unknown.
+  INPUT_ID_UNKNOWN_16 = 16, // Inferred role: input id sp attack; original name unknown.
+  INPUT_ID_UNKNOWN_17 = 17, // Inferred role: input id chain attack; original name unknown.
+  INPUT_ID_UNKNOWN_18 = 18, // Inferred role: input id battle rescue; original name unknown.
+  INPUT_ID_UNKNOWN_19 = 19, // Inferred role: input id change camera mode; original name unknown.
+  INPUT_ID_UNKNOWN_20 = 20, // Inferred role: input id order rally; original name unknown.
+  INPUT_ID_UNKNOWN_21 = 21, // Inferred role: input id change target r; original name unknown.
+  INPUT_ID_UNKNOWN_22 = 22, // Inferred role: input id change target l; original name unknown.
 };
 
 } // namespace pc

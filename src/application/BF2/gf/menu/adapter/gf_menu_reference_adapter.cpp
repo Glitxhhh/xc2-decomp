@@ -22,7 +22,7 @@ GfMenuReferenceAdapter *GfMenuReferenceAdapter::create(u32 handle, mm::mtl::Intr
     if (plugin != nullptr) {
       // __LINE__ must be 52 as in the original source: it is the line argument of operator new.
 #line 52
-      GfMenuReferenceAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuReferenceAdapter(plugin, isUpdateAlways);
+      GfMenuReferenceAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuReferenceAdapter(plugin, isUpdateAlways);
       if (adapter != nullptr) {
         adapter->unknown30 = reference;
         plugin->release();

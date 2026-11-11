@@ -33,7 +33,7 @@ void Scheduler::setup() {
   if (obj == nullptr) {
     return;
   }
-  if (obj->unknown28 == gf::OBJECT_TYPE_DRIVER) {
+  if (obj->unknown28 == gf::OBJECT_TYPE_PC) {
     unknown0c |= USE_UNKNOWN_4 | USE_UNKNOWN_5;
   } else if (obj->unknown28 == gf::OBJECT_TYPE_NPC) {
     switch (unknown1c) {
@@ -95,7 +95,7 @@ void Scheduler::func_fld2evt(gf::GfObj *obj) {
   if ((unknown0c & USE_UNKNOWN_6) != 0) {
     unknown28.fadeout();
   }
-  unknown50[ORDER_UNKNOWN_0] = obj->unknown28 == gf::OBJECT_TYPE_DRIVER ? nullptr : &Scheduler::func_motionEnd;
+  unknown50[ORDER_UNKNOWN_0] = obj->unknown28 == gf::OBJECT_TYPE_PC ? nullptr : &Scheduler::func_motionEnd;
 }
 
 void Scheduler::func_evt2idle(gf::GfObj *obj) {
@@ -152,7 +152,7 @@ void Scheduler::func_look(gf::GfObj *obj) {
     return;
   }
   gf::GfObj *target = nullptr;
-  if (obj->unknown28 == gf::OBJECT_TYPE_DRIVER) {
+  if (obj->unknown28 == gf::OBJECT_TYPE_PC) {
     target = gf::GfObjUtil::getObj(Manager::get()->getObjHandle());
   } else if (obj->unknown28 == gf::OBJECT_TYPE_NPC) {
     target = gf::GfGameParty::getLeaderTransformObj();
@@ -185,8 +185,8 @@ void Scheduler::func_motion_loop(gf::GfObj *obj) {
   if ((unknown0c & USE_UNKNOWN_7) != 0) {
     gf::GfComAsm *anim = obj->getComponent<gf::GfComAsm>();
     if (unknown80-- > 0 && anim != nullptr) {
-      bool isLoop = anim->isLoop(gf::ANIM_LAYER_BASE);
-      const char *state = anim->getStateName(gf::ANIM_LAYER_BASE);
+      bool isLoop = anim->isLoop(gf::ANIM_LAYER_UNKNOWN_0);
+      const char *state = anim->getStateName(gf::ANIM_LAYER_UNKNOWN_0);
       if (!isLoop || __builtin_strcmp(state, "S_idle") == 0) {
         return;
       }

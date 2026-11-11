@@ -30,7 +30,7 @@ GfMenuPouchAdapter *GfMenuPouchAdapter::create(u32 handle, u32 type, u16 pouchIn
     if (plugin != nullptr) {
       // __LINE__ must be 183 as in the original source: it is the line argument of operator new.
 #line 183
-      GfMenuPouchAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuPouchAdapter(plugin, isUpdateAlways);
+      GfMenuPouchAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuPouchAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown60 = pouchIndex;
       adapter->unknown64 = driver;
@@ -58,7 +58,7 @@ bool GfMenuPouchAdapter::update_PouchRemainTime() {
 GfMenuPouchAdapter *GfMenuPouchAdapter::createFromReferenceIndex(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 driver, bool isUpdateAlways) {
   // __LINE__ must be 200 as in the original source: it is the line argument of operator new.
 #line 200
-  IConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceIndexConverter(number, driver);
+  IConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceIndexConverter(number, driver);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -75,14 +75,14 @@ GfMenuPouchAdapter *GfMenuPouchAdapter::createFromCoverter(u32 handle, u32 type,
 GfMenuPouchAdapter *GfMenuPouchAdapter::createFromReferenceDriver(u32 handle, u32 type, u32 pouchIndex, u32 driverIndex, bool isUpdateAlways) {
   // __LINE__ must be 207 as in the original source: it is the line argument of operator new.
 #line 207
-  ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverConverter(pouchIndex, driverIndex);
+  ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceDriverConverter(pouchIndex, driverIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuPouchAdapter *GfMenuPouchAdapter::createFromReferenceIndexReferenceDriver(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 driverIndex, bool isUpdateAlways) {
   // __LINE__ must be 214 as in the original source: it is the line argument of operator new.
 #line 214
-  IConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceIndexReferenceDriverConverter(number, driverIndex);
+  IConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceIndexReferenceDriverConverter(number, driverIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 

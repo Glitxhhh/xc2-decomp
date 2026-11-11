@@ -41,7 +41,7 @@ static_assert(offsetof(GfMenuRewriteNumber, unknown10) == 0x10, "");
 // __LINE__ must be 39 as in the original header (the line of the new expression): it is the line argument of operator new.
 #line 38
 inline GfMenuRewriteNumber *unknown168() {
-  GfMenuRewriteNumber *number = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuRewriteNumber();
+  GfMenuRewriteNumber *number = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuRewriteNumber();
   if (number != nullptr) {
     number->addRef();
   }

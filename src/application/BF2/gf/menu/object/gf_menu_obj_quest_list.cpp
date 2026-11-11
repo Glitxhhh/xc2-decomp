@@ -124,7 +124,7 @@ bool GfMenuObjQuestList::seqActivateSelect() {
     }
     GfMenuCallContext::GfMenuResult result;
     if (unknown0a0->popResult(result) && result.unknown00 == 0 && result.unknown04 == 0) {
-      if (GfQuestManager::getCurrentQuest(QTYPE_NONE).unknown00 == unknown340) {
+      if (GfQuestManager::getCurrentQuest(QTYPE_UNKNOWN_0).unknown00 == unknown340) {
         GfQuestManager::setCurrentQuestForScenario();
       } else {
         GfQuestManager::setCurrentQuest(toQuestID(unknown340));

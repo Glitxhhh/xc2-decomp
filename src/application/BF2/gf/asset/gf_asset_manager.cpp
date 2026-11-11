@@ -24,10 +24,10 @@ GfAssetManager::GfAssetManager(const GfSetupParam &param) : unknowndb918(0), m_s
 
 void GfAssetManager::initialize(const GfSetupParam &param) {
 #line 100
-  m_slotMapping = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfSlotMapping();
+  m_slotMapping = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfSlotMapping();
   param.unknown08->attachWorkEvent(this, false);
-  size_t size = mtl::MemManager::maxAllocSize(getAllocator(ALLOCATOR_ASSET)->getMemHandle()) & ~static_cast<size_t>(0x1fff);
-  m_slotMapping->setup(param, getAllocator(ALLOCATOR_ASSET), size);
+  size_t size = mtl::MemManager::maxAllocSize(getAllocator(ALLOCATOR_UNKNOWN_3)->getMemHandle()) & ~static_cast<size_t>(0x1fff);
+  m_slotMapping->setup(param, getAllocator(ALLOCATOR_UNKNOWN_3), size);
   GfFileSizePool::build(param);
   unknowne04c0 = true;
 }
@@ -36,7 +36,7 @@ GfAssetManager::~GfAssetManager() {}
 
 void GfAssetManager::build(const GfSetupParam &param) {
 #line 68
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfAssetManager(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfAssetManager(param);
 }
 
 void GfAssetManager::destroy() {
@@ -145,7 +145,7 @@ GfAssetPack *GfAssetManager::createAssetFiles(const GfAssetFilesInfo &info) {
   GfAssetPack *pack = nullptr;
   for (GfAssetPack *other : manager->unknowndb920) {
     if (other->unknown10 == value && !other->unknown238) {
-      if (info.unknown00 == INVALID_ASSET_HANDLE) {
+      if (info.unknown00 == unknown018) {
         return nullptr;
       }
       pack = other;
@@ -162,7 +162,7 @@ GfAssetPack *GfAssetManager::createAssetFiles(const GfAssetFilesInfo &info) {
     packInfo->setAssetPack(info.unknown08, pack);
     packInfo->unknown300 = info.unknown38;
   }
-  if (info.unknown08 != ASSET_TYPE_BASE && pack->isNeedLoad()) {
+  if (info.unknown08 != ASSET_TYPE_UNKNOWN_0 && pack->isNeedLoad()) {
     manager->m_slotMapping->requestSlotLoad(info.unknown00, pack);
   }
   callEventAssetPack(pack);
@@ -225,7 +225,7 @@ GfAssetPack *GfAssetManager::getAssetPack(GF_ASSET_HANDLE *handle, GfAssetType t
 GfAssetType GfAssetManager::getBaseAssetType(GF_ASSET_HANDLE *handle) {
   AssetPackInfo *info = getAssetPackInfo(handle);
   if (info == nullptr) {
-    return ASSET_TYPE_BASE;
+    return ASSET_TYPE_UNKNOWN_0;
   }
   return info->unknown308;
 }
@@ -240,7 +240,7 @@ GfSlotMapping *GfAssetManager::getSlotMapping() {
 
 GfAssetResource *GfAssetManager::getResource(GF_ASSET_HANDLE *handle, GfFileIdx index, GfAssetType type) {
   GfAssetResource *resource = nullptr;
-  if (handle != INVALID_ASSET_HANDLE && index != FILE_IDX_NONE) {
+  if (handle != unknown018 && index != FILE_IDX_UNKNOWN_FFFFFFFF) {
     AssetPackInfo *info = getAssetPackInfo(handle);
     if (info != nullptr) {
       resource = info->getResource(index);
@@ -266,7 +266,7 @@ GfAssetResource *GfAssetManager::getResource(GF_ASSET_HANDLE *handle, const char
 bool GfAssetManager::isLoading() { return get()->unknownce0b8.size() > 0; }
 
 u32 GfAssetManager::getTimeout(GF_ASSET_HANDLE *handle) {
-  if (handle == INVALID_ASSET_HANDLE) {
+  if (handle == unknown018) {
     return 0;
   }
   AssetPackInfo *info = getAssetPackInfo(handle);
@@ -278,7 +278,7 @@ u32 GfAssetManager::getTimeout(GF_ASSET_HANDLE *handle) {
 
 bool GfAssetManager::isLoaded(GF_ASSET_HANDLE *handle, mm::mtl::FixStr<128> *name) {
   bool loaded = true;
-  if (handle != INVALID_ASSET_HANDLE) {
+  if (handle != unknown018) {
     AssetPackInfo *info = getAssetPackInfo(handle);
     if (info != nullptr) {
       if (!info->isLoaded(name)) {
@@ -292,7 +292,7 @@ bool GfAssetManager::isLoaded(GF_ASSET_HANDLE *handle, mm::mtl::FixStr<128> *nam
 }
 
 void GfAssetManager::setupStreamObject(GF_ASSET_HANDLE *handle) {
-  if (handle != INVALID_ASSET_HANDLE) {
+  if (handle != unknown018) {
     AssetPackInfo *info = getAssetPackInfo(handle);
     if (info != nullptr) {
       info->setupStreamObject();
@@ -301,7 +301,7 @@ void GfAssetManager::setupStreamObject(GF_ASSET_HANDLE *handle) {
 }
 
 bool GfAssetManager::isStopLoad(GF_ASSET_HANDLE *handle) {
-  if (handle != INVALID_ASSET_HANDLE) {
+  if (handle != unknown018) {
     AssetPackInfo *info = getAssetPackInfo(handle);
     if (info != nullptr) {
       return info->isStopLoad();
@@ -329,7 +329,7 @@ bool GfAssetManager::isReload(GF_ASSET_HANDLE *handle) {
 GF_OBJ_HANDLE *GfAssetManager::getObj(GF_ASSET_HANDLE *handle) {
   AssetPackInfo *info = getAssetPackInfo(handle);
   if (info == nullptr) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
   return info->unknown2d8;
 }
@@ -408,11 +408,11 @@ bool GfAssetManager::isExistSameAsset(GF_ASSET_HANDLE *handle, const char *name)
   return info->getAssetPack(name) != nullptr;
 }
 
-void GfAssetManager::clear() { destroySlotCache(ASSET_TYPE_BASE); }
+void GfAssetManager::clear() { destroySlotCache(ASSET_TYPE_UNKNOWN_0); }
 
 u64 GfAssetManager::getTimeStamp(const char *name, GfAssetType type) {
   for (GfAssetPack *&pack : get()->unknowndb920) {
-    if (type == ASSET_TYPE_BASE || pack->getAssetType() == type) {
+    if (type == ASSET_TYPE_UNKNOWN_0 || pack->getAssetType() == type) {
       u64 timeStamp = pack->getTimeStamp(name);
       if (timeStamp != 0) {
         return timeStamp;

@@ -18,7 +18,7 @@
 
 namespace event {
 
-u32 StatusManager::getHomuriFlag() const { return gf::GfGameFlag::getLocal(1, gf::FLAG_BLADE_HOMURI_NAME_HIKARI); }
+u32 StatusManager::getHomuriFlag() const { return gf::GfGameFlag::getLocal(1, gf::FLAG_UNKNOWN_35323); }
 
 StatusManager::StatusManager() : unknown18(0) {}
 
@@ -87,7 +87,7 @@ void StatusManager::setGameFlag2(u32 flag, int value, u32 math) const {
 }
 
 void StatusManager::setExtDisp(u32 chara, const char *name, bool isDisp) const {
-  ObjectChara *object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_DRIVER, chara);
+  ObjectChara *object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_PC, chara);
   if (object == nullptr) {
     object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_BLADE, chara);
   }
@@ -103,7 +103,7 @@ void StatusManager::setExtDisp(u32 chara, const char *name, bool isDisp) const {
 }
 
 void StatusManager::setExtDispWeapon(u32 chara, const char *name, bool isDisp) const {
-  ObjectChara *object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_DRIVER, chara);
+  ObjectChara *object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_PC, chara);
   if (object == nullptr) {
     object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_BLADE, chara);
   }
@@ -113,7 +113,7 @@ void StatusManager::setExtDispWeapon(u32 chara, const char *name, bool isDisp) c
 }
 
 void StatusManager::setExtParam(u32 chara, const char *name, f32 value) const {
-  ObjectChara *object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_DRIVER, chara);
+  ObjectChara *object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_PC, chara);
   if (object == nullptr) {
     object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_BLADE, chara);
   }

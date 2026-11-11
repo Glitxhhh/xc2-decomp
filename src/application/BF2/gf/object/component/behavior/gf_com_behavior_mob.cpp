@@ -70,7 +70,7 @@ gmk::AGmkBase *GfComBehaviorMob::getBindedGmkInst() const { return gmk::getBinde
 bool GfComBehaviorMob::isSquadMember() const { return unknownc0.unknown001() && unknownc0.unknown28 != 0; }
 
 bool GfComBehaviorMob::isMove() const {
-  if (unknown250.unknown00.unknown00 == INVALID_HANDLE ||
+  if (unknown250.unknown00.unknown00 == unknown020 ||
       !(unknown250.unknown00.unknown0c >= 0.0f && unknown250.unknown00.unknown0c <= 3.1415927f && unknown250.unknown00.unknown10 >= 0.0f && unknown250.unknown00.unknown10 <= 3.1415927f &&
         unknown250.unknown00.unknown14 > 0.0f) ||
       unknown250.unknown6c) {
@@ -190,7 +190,7 @@ void GfComBehaviorMob::createFsm() {
 void GfComBehaviorMob::execTurnCmdToPos(const mm::Vec3 &position) {
   const mm::Vec3 &current = getPos();
   f32 angle = atan2f(position.x - current.x, position.z - current.z);
-  angle += unknown2c0.unknown00.unknown00 == INVALID_HANDLE ? 0.0f : unknown2c0.getCurAngle();
+  angle += unknown2c0.unknown00.unknown00 == unknown020 ? 0.0f : unknown2c0.getCurAngle();
   unknown250.create(TFieldExecCmdTurn<GfComAsm>::CreateInfo(static_cast<GfObj *>(unknown08)->unknownf8, angle));
 }
 
@@ -252,7 +252,7 @@ void GfComBehaviorMob::createSquadNavi() {
     }
     GfObjUtil::getObjSetup<GfObjSetupMob>(static_cast<GfObj *>(unknown08)->unknownf8);
     info.unknown08 = static_cast<GfObj *>(unknown08)->unknownf8;
-    if (info.unknown08 != INVALID_HANDLE && info.unknown00 != nullptr) {
+    if (info.unknown08 != unknown020 && info.unknown00 != nullptr) {
       unknownc0.create(info);
     }
   }

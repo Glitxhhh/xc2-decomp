@@ -68,7 +68,7 @@ bool GfMenuElementComboAdapter::update_ComboRouteCurrentDisp() {
 
 GfObjPropertyEnemy *GfMenuElementComboAdapter::getTargetProperty() {
   GF_OBJ_HANDLE *handle = GfMenuManager::getTargetObjHandle();
-  if (handle == INVALID_HANDLE) {
+  if (handle == unknown020) {
     return nullptr;
   }
   GfObjAcc acc(handle);

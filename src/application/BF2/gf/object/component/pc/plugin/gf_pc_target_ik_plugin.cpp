@@ -11,9 +11,9 @@
 namespace gf {
 namespace pc {
 
-constexpr f32 EPSILON = 0.000001f;
+constexpr f32 unknown018 = 0.000001f; // Inferred role: epsilon; original name unknown.
 
-TargetIKPlugin::TargetIKPlugin() : unknown10(INVALID_HANDLE), unknown20(nullptr), unknown30(mm::Vec3::unitZ), unknown40(1.0f), unknown44(1.0f) {}
+TargetIKPlugin::TargetIKPlugin() : unknown10(unknown020), unknown20(nullptr), unknown30(mm::Vec3::unitZ), unknown40(1.0f), unknown44(1.0f) {}
 
 TargetIKPlugin::~TargetIKPlugin() {}
 
@@ -22,9 +22,9 @@ void TargetIKPlugin::cleanup(GfComBehaviorPc &) { unknown18 = nullptr; }
 bool TargetIKPlugin::isActiveRange(GfComPropertyPc &property, const mm::Vec3 &target) {
   const unknown001 *param = getParam();
   mm::Vec3 direction(target.x - property.unknown160.x, 0.0f, target.z - property.unknown160.z);
-  if (!(mm::fabs(direction.x) <= EPSILON && mm::fabs(direction.z) <= EPSILON)) {
+  if (!(mm::fabs(direction.x) <= unknown018 && mm::fabs(direction.z) <= unknown018)) {
     f32 length = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-    if (length <= EPSILON) {
+    if (length <= unknown018) {
       direction = mm::Vec3::zero;
     } else {
       f32 inverse = 1.0f / length;
@@ -38,7 +38,7 @@ bool TargetIKPlugin::isActiveRange(GfComPropertyPc &property, const mm::Vec3 &ta
 }
 
 void TargetIKPlugin::procMsgGameChangeTarget(fw::MessageObject *object, MsgGameChangeTarget &message) {
-  if (message.unknown08 != INVALID_HANDLE) {
+  if (message.unknown08 != unknown020) {
     const unknown001 *param = getParam();
     if (unknown18.get() != nullptr) {
       unknown18->startTargetFade(param->unknown04);

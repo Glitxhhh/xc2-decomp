@@ -13,9 +13,9 @@ namespace gf {
 
 class GfInitParamDriver;
 
-constexpr u32 DRIVER_LEVEL_MAX = 99;
-constexpr u32 DRIVER_ARTS_LEVEL_MAX = 5;
-constexpr u32 SET_BLADE_NUM_MAX = 5;
+constexpr u32 DRIVER_UNKNOWN_99 = 99;    // Inferred role: driver level max; original name unknown.
+constexpr u32 DRIVER_ARTS_UNKNOWN_5 = 5; // Inferred role: driver arts level max; original name unknown.
+constexpr u32 SET_UNKNOWN_5 = 5;         // Inferred role: set blade num max; original name unknown.
 
 // Inferred role: save data driver weapon; original type name unknown.
 struct unknown114 {
@@ -83,18 +83,18 @@ struct SDataDriver {
 };
 
 enum ActivateType {
-  ACTIVATE_TYPE_UNUSE,
-  ACTIVATE_TYPE_RESERVER,
-  ACTIVATE_TYPE_PARTY,
-  ACTIVATE_TYPE_MERCENARY_TEAM,
+  ACTIVATE_TYPE_UNKNOWN_0, // Inferred role: activate type unuse; original name unknown.
+  ACTIVATE_TYPE_UNKNOWN_1, // Inferred role: activate type reserver; original name unknown.
+  ACTIVATE_TYPE_UNKNOWN_2, // Inferred role: activate type party; original name unknown.
+  ACTIVATE_TYPE_UNKNOWN_3, // Inferred role: activate type mercenary team; original name unknown.
 };
 
 enum DBSLOT {};
 enum FAVORITE {
-  FAVORITE_CATEGORY_0,
-  FAVORITE_CATEGORY_1,
-  FAVORITE_ITEM_0,
-  FAVORITE_ITEM_1,
+  FAVORITE_UNKNOWN_0, // Inferred role: favorite category 0; original name unknown.
+  FAVORITE_UNKNOWN_1, // Inferred role: favorite category 1; original name unknown.
+  FAVORITE_UNKNOWN_2, // Inferred role: favorite item 0; original name unknown.
+  FAVORITE_UNKNOWN_3, // Inferred role: favorite item 1; original name unknown.
 };
 
 static_assert(sizeof(unknown114) == 0x14, "");

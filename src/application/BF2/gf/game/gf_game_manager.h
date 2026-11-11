@@ -24,14 +24,14 @@ struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 
 enum {
-  OWNER_BONUS_UNKNOWN_1 = 1, // Inferred role: movement speed bonus in percent, read by gf::pc::MoveUtilField::getSpeedEffect; original name unknown.
-  OWNER_BONUS_FAVORITE_VALUE_MAX = 3,
-  OWNER_BONUS_IDEA_POINT = 4,
-  OWNER_BONUS_DEVELOP_POINT = 5,
+  OWNER_BONUS_UNKNOWN_1 = 1,   // Inferred role: movement speed bonus in percent, read by gf::pc::MoveUtilField::getSpeedEffect; original name unknown.
+  OWNER_BONUS_UNKNOWN_3 = 3,   // Inferred role: owner bonus favorite value max; original name unknown.
+  OWNER_BONUS_UNKNOWN_4 = 4,   // Inferred role: owner bonus idea point; original name unknown.
+  OWNER_BONUS_UNKNOWN_5 = 5,   // Inferred role: owner bonus develop point; original name unknown.
   OWNER_BONUS_UNKNOWN_9 = 9,   // Inferred role: reduction of the enemy sight radius in percent; original name unknown.
   OWNER_BONUS_UNKNOWN_10 = 10, // Inferred role: pick up range bonus of the dropitems in percent, read by GfFobjDropitem::canGetItem; original name unknown.
   OWNER_BONUS_UNKNOWN_11 = 11, // Inferred role: bonus in meters added to the access radius of lure targets, read by gf::pc::isActiveRangeLure; original name unknown.
-  OWNER_BONUS_BOOSTER_VALUE_MAX = 13,
+  OWNER_BONUS_UNKNOWN_13 = 13, // Inferred role: owner bonus booster value max; original name unknown.
 };
 
 struct OwnerBonus {

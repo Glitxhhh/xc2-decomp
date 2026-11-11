@@ -33,7 +33,7 @@ void GfMenuObjCommonJog::initialize() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
   if (main.isValid()) {
 #line 74
-    MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+    MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
     listener->addRef();
     ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
     if (listener != nullptr) {
@@ -43,7 +43,7 @@ void GfMenuObjCommonJog::initialize() {
     main.setDisp(false);
     disableInput(main.unknown10);
     ui::UISelectObjList::CreateParam param;
-    param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+    param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
     unknown28 = ui::UISelectObjList::create(param);
     unknown30 = ui::UISelectObjList::create(param);
     GfMenuObject::initialize();

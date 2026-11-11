@@ -59,9 +59,9 @@ void StateFieldBigJump::enter(GfComBehaviorPc *behavior, ai::State *previous) {
   } else {
     StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_HIGHJUMP);
     f32 time = 0.0f;
-    comAsm->getPlaybackTime(comAsm->getStateName(ANIM_LAYER_BASE), &time);
+    comAsm->getPlaybackTime(comAsm->getStateName(ANIM_LAYER_UNKNOWN_0), &time);
     time = time <= 0.01f ? 0.01f : time;
-    comAsm->setSpeed(time / unknown1c, ANIM_LAYER_BASE);
+    comAsm->setSpeed(time / unknown1c, ANIM_LAYER_UNKNOWN_0);
     unknown60 = true;
   }
 }
@@ -98,20 +98,20 @@ void StateFieldBigJump::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &
     GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
     if (!StateUtilField::isBigLandDistance(*behavior)) {
       StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_JUMP_END);
-      reqState(STATE_ID_FIELD_LAND);
+      reqState(STATE_ID_UNKNOWN_13);
     } else {
       StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_JUMPDMG);
-      reqState(STATE_ID_FIELD_LAND_BIG);
+      reqState(STATE_ID_UNKNOWN_14);
     }
   } else {
     if (unknown60) {
       GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
-      if (comAsm->isEnd(ANIM_LAYER_BASE)) {
+      if (comAsm->isEnd(ANIM_LAYER_UNKNOWN_0)) {
         StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_HIGHJUMP_01);
         f32 time = 0.0f;
-        comAsm->getPlaybackTime(comAsm->getStateName(ANIM_LAYER_BASE), &time);
+        comAsm->getPlaybackTime(comAsm->getStateName(ANIM_LAYER_UNKNOWN_0), &time);
         f32 duration = __builtin_fmaxf(unknown24 - unknown1c, 0.01f);
-        comAsm->setSpeed(time / duration, ANIM_LAYER_BASE);
+        comAsm->setSpeed(time / duration, ANIM_LAYER_UNKNOWN_0);
         unknown60 = false;
       }
     }

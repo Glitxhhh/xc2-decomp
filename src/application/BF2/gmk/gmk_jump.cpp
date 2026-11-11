@@ -43,7 +43,7 @@ bool GmkJump::BdatInfo::isPopCondMatched() const {
 
 void GmkJump::BdatInfo::debugDraw(const AGmkBase &gmk) const {}
 
-GmkJump::GmkJump() : _48(), unknown50(false), unknown58(gf::INVALID_HANDLE), unknown60(), unknown68(), unknown74(), unknown78(false), unknown79(true) {}
+GmkJump::GmkJump() : _48(), unknown50(false), unknown58(gf::unknown020), unknown60(), unknown68(), unknown74(), unknown78(false), unknown79(true) {}
 
 void GmkJump::create(const CreateInfo &info) {
   AGmkBase::create(info);
@@ -84,7 +84,7 @@ void GmkJump::disposeIcon(bool isFadeOut) {
 }
 
 void GmkJump::disposeGobInst(bool isFadeOut) {
-  if (unknown58 == gf::INVALID_HANDLE) {
+  if (unknown58 == gf::unknown020) {
     return;
   }
   if (isFadeOut) {
@@ -92,7 +92,7 @@ void GmkJump::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknown58);
     gf::GfObjUtil::destroy(unknown58);
-    unknown58 = gf::INVALID_HANDLE;
+    unknown58 = gf::unknown020;
   }
 }
 
@@ -137,7 +137,7 @@ void GmkJump::update(f32 deltaTime) {
 }
 
 bool GmkJump::canPopGobInst() const {
-  if (unknown58 != gf::INVALID_HANDLE || !unknown50) {
+  if (unknown58 != gf::unknown020 || !unknown50) {
     return false;
   }
   const mm::Vec3 &position = getData()->position;
@@ -145,7 +145,7 @@ bool GmkJump::canPopGobInst() const {
 }
 
 bool GmkJump::canDepopGobInst() const {
-  if (unknown58 == gf::INVALID_HANDLE) {
+  if (unknown58 == gf::unknown020) {
     return false;
   }
   if (!unknown50) {
@@ -209,7 +209,7 @@ void GmkJump::reqRecreateIcon() {
 
 void GmkJump::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     disposeGobInst(false);
   }
 }
@@ -218,7 +218,7 @@ void GmkJump::validateDisp() const {
   bool isDisp = unknown79 && debugIsDispGmkType(getGmkType());
   gf::GfObjAcc acc(unknown58);
   if (acc.isValid()) {
-    acc.setDisp(gf::OBJDISP_GMK_EVENT, isDisp);
+    acc.setDisp(gf::OBJDISP_UNKNOWN_3, isDisp);
   }
   if (unknown70 != 0) {
     fw::EffectManager::get()->setDisp(unknown70, isDisp);

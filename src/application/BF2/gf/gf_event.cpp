@@ -13,7 +13,7 @@ GfEvent::~GfEvent() {}
 void GfEvent::build(const GfSetupParam &param) {
   // __LINE__ must be 40 as in the original file: its value changes the instruction order.
 #line 40
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfEvent(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfEvent(param);
 }
 
 void GfEvent::destroy() {

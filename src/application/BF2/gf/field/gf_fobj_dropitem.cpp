@@ -56,7 +56,7 @@ static GfObjSetupFieldObj *unknown003(GF_OBJ_HANDLE *handle) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   if (info != nullptr && info->unknown30 != nullptr) {
     GfObj *obj = info->unknown18;
-    if (info->unknown30->unknown08 == obj->unknown28 && obj->unknown28 == OBJECT_TYPE_FOBJ) {
+    if (info->unknown30->unknown08 == obj->unknown28 && obj->unknown28 == OBJECT_TYPE_FIELD_OBJ) {
       setup = mm::mtl::dynamicCast<GfObjSetupFieldObj>(info->unknown30);
     }
   }
@@ -79,7 +79,7 @@ void GfFobjDropitem::bindToGfObj(GF_OBJ_HANDLE *handle) const {
 }
 
 void GfFobjDropitem::unbindToGfObj(GF_OBJ_HANDLE *handle) const {
-  if (handle != INVALID_HANDLE) {
+  if (handle != unknown020) {
     GfObjAcc acc(handle);
     if (acc.isValid()) {
       acc.setUserData(OBJ_USER_DATA_UNKNOWN_2, 0);
@@ -89,7 +89,7 @@ void GfFobjDropitem::unbindToGfObj(GF_OBJ_HANDLE *handle) const {
 
 void GfFobjDropitem::destroy() {
   disposeEffect();
-  if (unknown10 != INVALID_HANDLE) {
+  if (unknown10 != unknown020) {
     GfObjAcc acc(unknown10);
     if (acc.isValid()) {
       acc.setUserData(OBJ_USER_DATA_UNKNOWN_2, 0);
@@ -100,7 +100,7 @@ void GfFobjDropitem::destroy() {
 void GfFobjDropitem::setEventDisp(bool isDisp) {
   GfObjAcc acc(unknown10);
   if (acc.isValid()) {
-    acc.setDisp(OBJDISP_UNKNOWN_1, isDisp);
+    acc.setDisp(OBJDISP_UNKNOWN_0, isDisp);
   }
   if (unknown54 != 0) {
     fw::EffectManager::get()->setDisp(unknown54, isDisp);

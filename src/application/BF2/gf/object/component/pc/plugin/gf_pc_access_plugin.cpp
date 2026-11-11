@@ -37,7 +37,7 @@ bool isActiveRange(GfComPropertyPc &property, const AccessParam &param, GF_OBJ_H
   return isActive;
 }
 
-AccessPlugin::AccessPlugin() : unknown10(INVALID_HANDLE), unknown20(nullptr), unknown28(-1) {}
+AccessPlugin::AccessPlugin() : unknown10(unknown020), unknown20(nullptr), unknown28(-1) {}
 
 bool AccessPlugin::setup(GfComBehaviorPc &behavior) {
   unknown18 = fw::ParamManager::get()->unknown408[5];
@@ -46,18 +46,18 @@ bool AccessPlugin::setup(GfComBehaviorPc &behavior) {
 }
 
 void AccessPlugin::cleanup(GfComBehaviorPc &) {
-  if (unknown10 != INVALID_HANDLE) {
-    unknown10 = INVALID_HANDLE;
-    SCOM_ACCESS_TARGET::create(INVALID_HANDLE);
+  if (unknown10 != unknown020) {
+    unknown10 = unknown020;
+    SCOM_ACCESS_TARGET::create(unknown020);
   }
 }
 
 void AccessPlugin::onActivate() {}
 
 void AccessPlugin::onDeactivate() {
-  if (unknown10 != INVALID_HANDLE) {
-    unknown10 = INVALID_HANDLE;
-    SCOM_ACCESS_TARGET::create(INVALID_HANDLE);
+  if (unknown10 != unknown020) {
+    unknown10 = unknown020;
+    SCOM_ACCESS_TARGET::create(unknown020);
   }
 }
 

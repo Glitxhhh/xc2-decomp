@@ -35,10 +35,10 @@ public:
   static const u32 PLUGIN_INDEX = 11;
 
   enum Mode {
-    MODE_NONE,
-    MODE_FADE_IN,
-    MODE_BLACK,
-    MODE_FADE_OUT,
+    MODE_UNKNOWN_0, // Inferred role: mode none; original name unknown.
+    MODE_UNKNOWN_1, // Inferred role: mode fade in; original name unknown.
+    MODE_UNKNOWN_2, // Inferred role: mode black; original name unknown.
+    MODE_UNKNOWN_3, // Inferred role: mode fade out; original name unknown.
   };
 
   FadePlugin();

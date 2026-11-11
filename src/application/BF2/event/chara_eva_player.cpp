@@ -21,7 +21,7 @@ CharaEvaPlayer::CharaEvaPlayer()
       unknown60(0.0f, 0.0f, 0.0f), unknown70(0), unknown74(0), unknown78(0), unknown7c(1), unknown80(1), unknown84(1) {}
 
 void CharaEvaPlayer::setScaleWeapon(f32 scale) {
-  if (unknown18->unknown18 == gf::GF_EVT_MODEL_WEAPON) {
+  if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_2) {
     unknown10->setScaleWeapon(scale);
   }
 }
@@ -62,10 +62,10 @@ void CharaEvaPlayer::playAction(int type) {
 }
 
 void CharaEvaPlayer::setDispWeapon(int type) {
-  if (unknown18->unknown18 == gf::GF_EVT_MODEL_DRIVER) {
+  if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_0) {
     unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, false);
     unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, true);
-  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_BLADE) {
+  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_1) {
     unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, false);
     unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, true);
   }
@@ -74,12 +74,12 @@ void CharaEvaPlayer::setDispWeapon(int type) {
 
 void CharaEvaPlayer::setBattleWeapon(int type) {
   CharaWpnAsm::CMD cmd = static_cast<CharaWpnAsm::CMD>(type - 1);
-  if (unknown18->unknown18 == gf::GF_EVT_MODEL_WEAPON) {
+  if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_2) {
     unknown88.execCmd(unknown18, cmd, false, nullptr);
-  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_DRIVER) {
+  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_0) {
     unknown88.execCmd(unknown18, cmd, false, nullptr);
     unknowne0.execCmd(unknown18, cmd, true, nullptr);
-  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_BLADE) {
+  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_1) {
     unknown88.execCmd(unknown18, cmd, false, nullptr);
     unknowne0.execCmd(unknown18, cmd, true, nullptr);
   }
@@ -87,10 +87,10 @@ void CharaEvaPlayer::setBattleWeapon(int type) {
 }
 
 void CharaEvaPlayer::setMountWeapon(int type) {
-  if (unknown18->unknown18 == gf::GF_EVT_MODEL_DRIVER) {
+  if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_0) {
     unknown88.mount(unknown18, type > 1, false);
     unknowne0.mount(unknown18, type > 1, true);
-  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_BLADE) {
+  } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_1) {
     unknown88.mount(unknown18, type > 1, false);
     unknowne0.mount(unknown18, type > 1, true);
   }

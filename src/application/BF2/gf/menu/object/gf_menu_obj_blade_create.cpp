@@ -343,7 +343,7 @@ bool GfMenuObjBladeCreate::seqEnd() {
 }
 
 bool GfMenuObjBladeCreate::seqSave() {
-  unknown11b0 = GfReqCommand::reqSave(SAVESLOT_DEFAULT);
+  unknown11b0 = GfReqCommand::reqSave(SAVESLOT_UNKNOWN_22);
   GfMenuObjFade::dispSaving(true, 0);
   return true;
 }
@@ -547,7 +547,7 @@ bool GfMenuObjBladeCreate::seqCreateStart() {
   for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
     if (driver != unknown28.unknown40->getContents(i)) {
       GfObjAcc acc(unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(i)));
-      acc.setDisp(OBJDISP_UNKNOWN_1, false);
+      acc.setDisp(OBJDISP_UNKNOWN_0, false);
     }
   }
   const char *motion = nullptr;
@@ -565,11 +565,11 @@ bool GfMenuObjBladeCreate::seqCreateStart() {
 bool GfMenuObjBladeCreate::seqCreateStartEvent() {
   for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
     u32 id = unknown28.unknown40->getContents(i);
-    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_1, false);
+    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_0, false);
   }
   u32 event = GfDataBlade::getCreateEvent(unknown28.unknown28);
 #line 2938
-  unknown1118 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfSequentialPlaySignal();
+  unknown1118 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfSequentialPlaySignal();
   GfPlayFactory::createBlEvent(event, 1, unknown28.unknown28, unknown1118);
   unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitEvent);
   unknown28.unknownac8->delGfObj(unknown009, unknown28.unknownac8->getMapObjID(1));
@@ -618,13 +618,13 @@ bool GfMenuObjBladeCreate::seqCreatePlayBgmAfter() { return true; }
 
 bool GfMenuObjBladeCreate::isValidCrystal(u32 item) {
   int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
-  return GfItemUtil::isValidCrystal(item) && (item != ITEM_CRYSTAL_WADATSUMI || driver == 6);
+  return GfItemUtil::isValidCrystal(item) && (item != ITEM_UNKNOWN_45005 || driver == 6);
 }
 
 u32 GfMenuObjBladeCreate::getInvalidCrystalMsgID(u32 item) {
   int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false));
   u32 message;
-  if (item == ITEM_CRYSTAL_WADATSUMI && driver != 6) {
+  if (item == ITEM_UNKNOWN_45005 && driver != 6) {
     message = 0xd4;
   } else {
     message = 0;
@@ -709,7 +709,7 @@ bool GfMenuObjBladeCreate::seqResultEnd() {
   nextPage(unknown18, &unknown28, false);
   for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
     u32 id = unknown28.unknown40->getContents(i);
-    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_1, true);
+    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_0, true);
   }
   return true;
 }

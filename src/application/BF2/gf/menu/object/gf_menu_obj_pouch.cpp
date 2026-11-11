@@ -52,7 +52,7 @@ void GfMenuObjPouch::updateItemList(GfMenuItemList *list) {
   GfMenuItemList::ItemBoxSetup setup;
   setup.unknown28 = true;
   setup.unknown29 = true;
-  setup.unknown14 = ItemType::FAVORITE;
+  setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_10;
   setup.unknown00.unknown08 = 10;
   list->setupFromBox(setup);
 }

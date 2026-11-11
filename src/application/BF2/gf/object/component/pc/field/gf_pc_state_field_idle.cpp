@@ -36,13 +36,13 @@ void StateFieldIdle::leave(GfComBehaviorPc *behavior, ai::State *next) {
 void StateFieldIdle::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info) {
   GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
   GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
-  const char *stateName = comAsm->getStateName(ANIM_LAYER_BASE);
+  const char *stateName = comAsm->getStateName(ANIM_LAYER_UNKNOWN_0);
   StateUtil::setEnableLookIK(*behavior, stateName != nullptr && __builtin_strcmp(stateName, "S_idle") == 0);
   if (property->existInputXY() && StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_MOVE)) {
     if (StateUtilField::isInputInverseDir(*property)) {
-      reqState(STATE_ID_FIELD_IDLE_TURN);
+      reqState(STATE_ID_UNKNOWN_4);
     } else {
-      reqState(STATE_ID_FIELD_MOVE);
+      reqState(STATE_ID_UNKNOWN_7);
     }
   }
 }
@@ -73,7 +73,7 @@ bool StateFieldIdle::checkSpace(GfComBehaviorPc *behavior) const {
 
 void StateFieldIdle::procMsgPcFieldHighJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldHighJump &message) {
   message.unknown08 = true;
-  reqState(STATE_ID_FIELD_BIG_JUMP);
+  reqState(STATE_ID_UNKNOWN_17);
 }
 
 } // namespace pc

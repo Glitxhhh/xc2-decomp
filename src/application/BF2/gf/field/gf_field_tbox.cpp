@@ -33,8 +33,7 @@ enum SoundCategory : int;
 namespace gf {
 
 GfFieldTbox::GfFieldTbox(const GfSetupParam &param)
-    : unknown08(0.0f), unknown0c(0.0f), unknown10(false), unknown11(false), unknown12(false), unknown18(INVALID_HANDLE), unknown20(-1), unknown24(false), unknown28(nullptr), unknown38(0.0f),
-      unknown40() {
+    : unknown08(0.0f), unknown0c(0.0f), unknown10(false), unknown11(false), unknown12(false), unknown18(unknown020), unknown20(-1), unknown24(false), unknown28(nullptr), unknown38(0.0f), unknown40() {
   create(param);
 }
 
@@ -45,7 +44,7 @@ GfFieldTbox::~GfFieldTbox() {}
 bool GfFieldTbox::isDropitemsEmitted() const { return unknown40.m_dropitemsEmitted; }
 
 void GfFieldTbox::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
-  if (event == GEV_MAPJUMP_START) {
+  if (event == GEV_UNKNOWN_1) {
     end();
   }
 }
@@ -56,7 +55,7 @@ void GfFieldTbox::end() {
   unknown20 = -1;
   unknown24 = false;
   unknown28 = nullptr;
-  unknown18 = INVALID_HANDLE;
+  unknown18 = unknown020;
 }
 
 void GfFieldTbox::dispose() {
@@ -65,7 +64,7 @@ void GfFieldTbox::dispose() {
   unknown24 = false;
   unknown20 = -1;
   unknown28 = nullptr;
-  unknown18 = INVALID_HANDLE;
+  unknown18 = unknown020;
   if (unknown10) {
     unknown10 = false;
   }
@@ -80,7 +79,7 @@ void GfFieldTbox::update(f32 deltaTime) {
   unknown40.update(deltaTime);
 }
 
-void GfFieldTbox::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldTbox(param); }
+void GfFieldTbox::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfFieldTbox(param); }
 
 void GfFieldTbox::destroy() {
   GfFieldTbox *tbox = get();
@@ -153,7 +152,7 @@ void GfFieldTbox::seqWaitOpenFieldTbox(f32 deltaTime) {
   GfObjAcc acc(unknown18);
   GfComAsm *comAsm = acc.getObj()->getComponent<GfComAsm>();
   if (comAsm != nullptr) {
-    comAsm->execCmd(unknown24 ? "C_excavation" : "C_open", ANIM_LAYER_BASE);
+    comAsm->execCmd(unknown24 ? "C_excavation" : "C_open", ANIM_LAYER_UNKNOWN_0);
     fw::SoundManager::get()->playSe("se006", nullptr, 1.0f, static_cast<fw::SoundCategory>(0));
     if (unknown24) {
       GfObjAcc tboxAcc(unknown18);
@@ -219,7 +218,7 @@ void GfFieldTbox::seqWaitDigEnd(f32) {
   if (obj != nullptr) {
     GfComAsm *comAsm = obj->getComponent<GfComAsm>();
     if (comAsm != nullptr) {
-      const char *state = comAsm->getStateName(ANIM_LAYER_BASE);
+      const char *state = comAsm->getStateName(ANIM_LAYER_UNKNOWN_0);
       if (state != nullptr && strcmp(state, "S_open_00") != 0) {
         return;
       }

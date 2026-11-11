@@ -44,7 +44,7 @@ void GfMenuObjIdeaGram::setIdeaPointFromDriver(GfMenuCallContext *context, u32 d
 }
 
 void GfMenuObjIdeaGram::setIdeaPointFromData(GfMenuCallContext *context, const SDataIdea &data) {
-  for (u32 i = 0; i < SDataIdea::IDEA_MAX; i++) {
+  for (u32 i = 0; i < SDataIdea::IDEA_UNKNOWN_4; i++) {
     setIdeaPoint(context, i, data.unknown00[i].unknown00);
   }
 }

@@ -40,10 +40,10 @@ static void unknown002(GfAppendInfo &info, u32 bone, u32 rsc) {
   }
   GfBdatRsc *bdatRsc = GfBdatRsc::get();
 #line 544
-  GfAppend *append = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8)
+  GfAppend *append = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8)
       GfAppend(bdatRsc->getRscNpcWpnModel(rsc), bdatRsc->getRscNpcWpnMotion(rsc), info.unknown00[info.unknownb0].size(), rsc, 1.0f, info.unknownb0 != 0);
   GfAppend::MOUNT_INFO mount;
-  mount.unknown14 = OPTMNT_WIRE;
+  mount.unknown14 = OPTMNT_UNKNOWN_2;
   mount.unknown00 = unknown001[bone];
   append->addMount(mount);
   info.unknown00[info.unknownb0].push_back(append);
@@ -54,9 +54,9 @@ static void unknown003(GfAppendInfo &info, const GfInitParamDriver &param) {
   info.unknown001();
 #line 632
   GfAppend *append =
-      new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfAppend(GfDataDriver::getBelongingModelName(param), "", info.unknown00[info.unknownb0].size(), 0, 1.0f, info.unknownb0 != 0);
+      new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfAppend(GfDataDriver::getBelongingModelName(param), "", info.unknown00[info.unknownb0].size(), 0, 1.0f, info.unknownb0 != 0);
   GfAppend::MOUNT_INFO mount;
-  mount.unknown14 = OPTMNT_WIRE;
+  mount.unknown14 = OPTMNT_UNKNOWN_2;
   mount.unknown00 = GfDataDriver::getBelongingMountBone();
   append->addMount(mount);
   mount.unknown14 = OPTMNT_UNKNOWN_1;
@@ -70,10 +70,10 @@ static void unknown004(GfAppendInfo &info, u32 rsc, const char *bone) {
   info.unknown001();
   GfBdatRsc *bdatRsc = GfBdatRsc::get();
 #line 584
-  GfAppend *append = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8)
+  GfAppend *append = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8)
       GfAppend(bdatRsc->getRscNpcListModel(rsc), bdatRsc->getRscNpcListMotion(rsc), info.unknown00[info.unknownb0].size(), rsc, 1.0f, info.unknownb0 != 0);
   GfAppend::MOUNT_INFO mount;
-  mount.unknown14 = OPTMNT_WIRE;
+  mount.unknown14 = OPTMNT_UNKNOWN_2;
   mount.unknown00 = bone;
   append->addMount(mount);
   info.unknown00[info.unknownb0].push_back(append);
@@ -86,19 +86,19 @@ static void unknown005(GfAppendInfo &info, u32 rsc, const char *bone1, const cha
   }
   GfBdatRsc *bdatRsc = GfBdatRsc::get();
 #line 61
-  GfAppend *append = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8)
+  GfAppend *append = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8)
       GfAppend(bdatRsc->getRSC_PcWpnModel(rsc), bdatRsc->getRSC_PcWpnMotion(rsc), info.unknown00[info.unknownb0].size(), rsc, 1.0f, info.unknownb0 != 0);
   GfAppend::MOUNT_INFO mount;
   mount.unknown14 = OPTMNT_UNKNOWN_1;
   mount.unknown00 = bone1 != nullptr ? bone1 : "";
   append->addMount(mount);
-  mount.unknown14 = OPTMNT_WIRE;
+  mount.unknown14 = OPTMNT_UNKNOWN_2;
   mount.unknown00 = bone2 != nullptr ? bone2 : "";
   append->addMount(mount);
   mount.unknown14 = OPTMNT_UNKNOWN_4;
   mount.unknown00 = bone1 != nullptr ? bone1 : "";
   append->addMount(mount);
-  mount.unknown14 = OPTMNT_BLADE;
+  mount.unknown14 = OPTMNT_UNKNOWN_3;
   mount.unknown00 = bone3 != nullptr ? bone3 : "";
   append->addMount(mount);
   info.unknown00[info.unknownb0].push_back(append);
@@ -111,17 +111,17 @@ static void unknown006(GfAppendInfo *info, u32 rsc, GF_OBJ_HANDLE *owner) {
   }
   GfBdatRsc *bdatRsc = GfBdatRsc::get();
 #line 348
-  GfAppend *append = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8)
+  GfAppend *append = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8)
       GfAppend(bdatRsc->getRscEnWpnModel(rsc), bdatRsc->getRscEnWpnMotion(rsc), info->unknown00[info->unknownb0].size(), rsc, bdatRsc->getRscEnWpnScale(rsc) * 0.01f, info->unknownb0 != 0);
   GfAppend::MOUNT_INFO mount;
   mount.unknown14 = OPTMNT_UNKNOWN_1;
   mount.unknown00 = bdatRsc->getRscEnWpnMtpOutChara(rsc);
   append->addMount(mount);
-  mount.unknown14 = OPTMNT_WIRE;
+  mount.unknown14 = OPTMNT_UNKNOWN_2;
   mount.unknown00 = bdatRsc->getRscEnWpnMtpInChara(rsc);
   append->addMount(mount);
-  if (owner != INVALID_HANDLE) {
-    mount.unknown14 = OPTMNT_BLADE;
+  if (owner != unknown020) {
+    mount.unknown14 = OPTMNT_UNKNOWN_3;
     mount.unknown00 = bdatRsc->getRscEnWpnMtpOutChara(rsc);
     append->addMount(mount);
   }
@@ -146,9 +146,9 @@ static u32 unknown007(u32 driver) {
 
 // Inferred helper: driver of the weapon mount tables; original name unknown.
 static u32 unknown008(GFATTACH attach, u32 driver, u32 blade) {
-  if (attach == GFATTACH_WEAPON_EXTRA) {
+  if (attach == GFATTACH_UNKNOWN_3) {
     if (driver == 1 && blade == BLADE_HOMURA) {
-      return DRIVER_REX_2;
+      return DRIVER_UNKNOWN_11;
     }
     if (driver == 1 && blade == BLADE_UNKNOWN_1011) {
       return DRIVER_UNKNOWN_12;
@@ -161,7 +161,7 @@ static u32 unknown008(GFATTACH attach, u32 driver, u32 blade) {
 static u32 unknown009(GFATTACH attach, u32 driver, u32 blade) {
   u32 index = unknown008(attach, driver, blade);
   if (blade == BLADE_UNKNOWN_1040) {
-    index = DRIVER_JIKU_HOOD;
+    index = DRIVER_UNKNOWN_10;
   }
   return index;
 }
@@ -184,7 +184,7 @@ static u32 unknown010(u32 wpnType, u32 blade) {
 static u32 unknown011(u32 wpnType, u32 blade) {
   u32 index = unknown010(wpnType, blade);
   if (blade == BLADE_UNKNOWN_1040) {
-    index = DRIVER_JIKU_HOOD;
+    index = DRIVER_UNKNOWN_10;
   }
   return index;
 }
@@ -352,8 +352,8 @@ void GfAppendUtil::setupEventActEnemy(GFATTACH attach, GF_OBJ_HANDLE *handle, u3
     if (weapon != 0) {
       u32 rscR = bdatBattle->getWpn_EnRscR(weapon);
       u32 rscL = bdatBattle->getWpn_EnRscL(weapon);
-      unknown006(info, rscR, INVALID_HANDLE);
-      unknown006(info, rscL, INVALID_HANDLE);
+      unknown006(info, rscR, unknown020);
+      unknown006(info, rscL, unknown020);
     }
   }
   if (info->unknown00[info->unknownb0].empty()) {
@@ -400,7 +400,7 @@ void GfAppendUtil::setupEnemyBladeWithNoDriver(GFATTACH attach, GF_OBJ_HANDLE *h
 }
 
 void GfAppendUtil::setupBelonging(GF_OBJ_HANDLE *handle, u32 param2, u32 param3, u32 param4, u32 param5) {
-  GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_BELONGING);
+  GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_UNKNOWN_2);
   info->unknown001();
   if (param3 != 0) {
     unknown002(*info, param2, param3);
@@ -412,12 +412,12 @@ void GfAppendUtil::setupBelonging(GF_OBJ_HANDLE *handle, u32 param2, u32 param3,
 
 void GfAppendUtil::setupExtraModel(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *owner) {
   GfObjAcc acc(owner);
-  if (acc.getType() == OBJECT_TYPE_DRIVER) {
+  if (acc.getType() == OBJECT_TYPE_PC) {
     u32 rsc = GfDataDriver::getExtraMountNpcRsc(acc.getDriverId());
     if (rsc != 0) {
       const char *bone = GfDataDriver::getExtraMountBone(acc.getDriverId());
       if (bone != nullptr && *bone != '\0') {
-        GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_APPEND);
+        GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_UNKNOWN_1);
         if (info != nullptr) {
           unknown004(*info, rsc, bone);
         }
@@ -429,7 +429,7 @@ void GfAppendUtil::setupExtraModel(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *owner) 
 void GfAppendUtil::setupBelongingForDriver(GF_OBJ_HANDLE *handle, const GfInitParamDriver &param) {
   GfObjAcc acc(handle);
   GfDataDriver::getBelongingMountBone();
-  GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_BELONGING);
+  GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_UNKNOWN_2);
   if (info != nullptr) {
     unknown003(*info, param);
   }
@@ -454,8 +454,8 @@ void GfAppendHandles::setAlpha(f32 alpha) {
 void GfAppendHandles::destroy(mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &handles) {
   for (u32 index = 0; index < 10; index++) {
     GF_OBJ_HANDLE *handle = handles[index];
-    if (handle != INVALID_HANDLE) {
-      handles[index] = INVALID_HANDLE;
+    if (handle != unknown020) {
+      handles[index] = unknown020;
       GfObjUtil::destroy(handle);
     }
   }
@@ -469,7 +469,7 @@ void GfAppendHandles::destroy() {
 void GfAppendHandles::eraseHandle(mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &handles, GF_OBJ_HANDLE *handle) {
   for (u32 index = 0; index < 10; index++) {
     if (handles[index] == handle) {
-      handles[index] = INVALID_HANDLE;
+      handles[index] = unknown020;
       return;
     }
   }

@@ -5,7 +5,7 @@
 
 namespace gf {
 
-constexpr float VOLUME_SCALE = 255.0f;
+constexpr float unknown005 = 255.0f; // Inferred role: volume scale; original name unknown.
 
 struct SSoundUiOption {
   SSoundUiOption() { clear(); }
@@ -36,7 +36,7 @@ static_assert(offsetof(SSoundUiOption, _1c) == 0x1c, "");
 static_assert(sizeof(SSoundUiOption) == 0x1e, "");
 
 struct SDataOption {
-  SDataOption() : unknown00(SAVE_DATA_VERSION), _04(0), _08(0), _09(0), _0a(0), _0b(true), _0c() {}
+  SDataOption() : unknown00(SAVE_UNKNOWN_237915), _04(0), _08(0), _09(0), _0a(0), _0b(true), _0c() {}
 
   u32 unknown00; // Inferred role: version; original member name unknown.
   u32 _04;

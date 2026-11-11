@@ -64,7 +64,7 @@ void TaskFieldCheckWarp::update(BlackBoardField &blackBoard) {
     GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
     GfObjProperty *mainProperty = GfObjUtil::getProperty(formation->unknown1a0[formation->unknown1a0[property->unknown38].unknown00].unknown08);
     if (mainProperty->unknown18 != nullptr) {
-      if (mainProperty->unknown18->unknown00 == PROPERTY_MOVE_SWIM || mainProperty->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_5) {
+      if (mainProperty->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_1 || mainProperty->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_5) {
         return;
       }
       if (mainProperty->unknown18->unknown80) {
@@ -143,7 +143,7 @@ void TaskFieldCheckWarpFallDead::update(BlackBoardField &blackBoard) {
   GfComPropertyPc *property = blackBoard.unknown08;
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   GfObjProperty *mainProperty = GfObjUtil::getProperty(formation->unknown1a0[formation->unknown1a0[property->unknown38].unknown00].unknown08);
-  if (mainProperty->unknown18 == nullptr || mainProperty->unknown18->unknown00 == PROPERTY_MOVE_WALK) {
+  if (mainProperty->unknown18 == nullptr || mainProperty->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_0) {
     fw::Transform transform = formation->getFollowTransform(property->unknown38);
     transform.unknown00 = formation->unknown80[property->unknown38];
     property->unknown003(transform, 3);

@@ -9,12 +9,12 @@ enum CAMERA_PRIO : int;
 
 namespace gf {
 
-static constexpr fw::CAMERA_PRIO CAMERA_PRIO_SUB_VIEW = static_cast<fw::CAMERA_PRIO>(55);
+static constexpr fw::CAMERA_PRIO CAMERA_PRIO_UNKNOWN_55 = static_cast<fw::CAMERA_PRIO>(55); // Inferred role: camera prio sub view; original name unknown.
 
 static mm::Vec3 unknown001(0.0f, 2.0f, 10.0f); // Inferred role: default camera position; original name unknown.
 static mm::Vec3 unknown002(0.0f, 0.5f, 0.0f);  // Inferred role: default camera target; original name unknown.
 
-SubViewCamera::SubViewCamera() : fw::Camera(CAMERA_PRIO_SUB_VIEW), unknowna8(VIEWCAM_UNKNOWN_1), unknownb0(unknown001), unknownc0(unknown002) {}
+SubViewCamera::SubViewCamera() : fw::Camera(CAMERA_PRIO_UNKNOWN_55), unknowna8(VIEWCAM_UNKNOWN_1), unknownb0(unknown001), unknownc0(unknown002) {}
 
 SubViewCamera::~SubViewCamera() {}
 

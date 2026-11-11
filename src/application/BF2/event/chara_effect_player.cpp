@@ -16,12 +16,12 @@
 
 namespace event {
 
-CharaEffectPlayer::CharaEffectPlayer() : unknown08(0), unknown10(gf::INVALID_HANDLE) {}
+CharaEffectPlayer::CharaEffectPlayer() : unknown08(0), unknown10(gf::unknown020) {}
 
 void CharaEffectPlayer::create(gf::GF_OBJ_HANDLE *handle) { this->unknown10 = handle; }
 
 void CharaEffectPlayer::destroy() {
-  if (unknown10 == gf::INVALID_HANDLE) {
+  if (unknown10 == gf::unknown020) {
     if (unknown08 & FLAG_UNKNOWN_3) {
       stopAfterImage();
     }
@@ -35,12 +35,12 @@ void CharaEffectPlayer::destroy() {
       stopVolumeFade(VF_TYPE_UNKNOWN_0);
     }
   }
-  unknown10 = gf::INVALID_HANDLE;
+  unknown10 = gf::unknown020;
   unknown08 = 0;
 }
 
 void CharaEffectPlayer::stopAfterImage() {
-  if (unknown10 == gf::INVALID_HANDLE || !(unknown08 & FLAG_UNKNOWN_3)) {
+  if (unknown10 == gf::unknown020 || !(unknown08 & FLAG_UNKNOWN_3)) {
     return;
   }
 
@@ -56,7 +56,7 @@ void CharaEffectPlayer::stopAfterImage() {
 }
 
 void CharaEffectPlayer::stopVolumeFade(VF_TYPE type) {
-  if (unknown10 == gf::INVALID_HANDLE) {
+  if (unknown10 == gf::unknown020) {
     return;
   }
 
@@ -116,7 +116,7 @@ void CharaEffectPlayer::playVolumeFade(VF_TYPE type, int id, const mm::Vec3 &pos
   if (((unknown08 & fadeFlag) == 0 || unknown18[type] != id || !(__builtin_fabsf(position.x - unknown20[type].x) <= 1e-6f) || !(__builtin_fabsf(position.y - unknown20[type].y) <= 1e-6f) ||
        !(__builtin_fabsf(position.z - unknown20[type].z) <= 1e-6f) || !(__builtin_fabsf(scale.x - unknown40[type].x) <= 1e-6f) || !(__builtin_fabsf(scale.y - unknown40[type].y) <= 1e-6f) ||
        !(__builtin_fabsf(scale.z - unknown40[type].z) <= 1e-6f) || unknown60[type] != frame || unknown68[type] != rate || unknown70[type] != mode || unknown78[type] != speed) &&
-      unknown10 != gf::INVALID_HANDLE) {
+      unknown10 != gf::unknown020) {
     if (!mm::mtl::Singleton<CharaManager>::getPtr()->isStreamMode()) {
       gf::GfObjAcc acc(unknown10);
       mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("volumeFade %s %d", acc.getDebugName(), id);
@@ -152,7 +152,7 @@ void CharaEffectPlayer::playVolumeFade(VF_TYPE type, int id, const mm::Vec3 &pos
 
 void CharaEffectPlayer::playVolumeFadeAnim(VF_TYPE type, f32 rate, f32 frame) {
   u32 fadeFlag = type == VF_TYPE_UNKNOWN_1 ? FLAG_UNKNOWN_1 : FLAG_UNKNOWN_0;
-  if ((unknown08 & fadeFlag) == 0 || unknown10 == gf::INVALID_HANDLE) {
+  if ((unknown08 & fadeFlag) == 0 || unknown10 == gf::unknown020) {
     return;
   }
   unknown80[type].clear();

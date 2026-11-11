@@ -22,7 +22,7 @@ void GfMenuObjChapterTelop::initialize() {
   if (main.isValid()) {
 // __LINE__ must be 92 as in the original file: it is the line argument of operator new.
 #line 92
-    ListListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListListener(this);
+    ListListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListListener(this);
     listener->addRef();
     ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
     if (listener != nullptr) {

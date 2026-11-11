@@ -14,13 +14,13 @@ void GfAppendWire::endWire(f32 time) {
     unknown3c = 0.0f;
     unknown38 = 0.0f;
     unknown34 = 0;
-    unknown18 = INVALID_HANDLE;
+    unknown18 = unknown020;
     GfObjAcc acc(unknown08);
     acc.setAlphaNormal(0.0f);
   } else {
     unknown34 = 3;
     unknown3c = time;
-    unknown18 = INVALID_HANDLE;
+    unknown18 = unknown020;
   }
 }
 
@@ -63,11 +63,11 @@ void GfAppendWire::startWireWithBone(GF_OBJ_HANDLE *target, const char *bone, f3
 }
 
 GF_OBJ_HANDLE *GfAppendWire::getWireObject(GF_OBJ_HANDLE *handle) {
-  GfWeapon *belonging = GfMountManager::getAppendHandles(handle, GFATTACH_BELONGING);
+  GfWeapon *belonging = GfMountManager::getAppendHandles(handle, GFATTACH_UNKNOWN_2);
   if (belonging != nullptr) {
     return belonging->getCurrentHandles()[0];
   }
-  return INVALID_HANDLE;
+  return unknown020;
 }
 
 } // namespace gf

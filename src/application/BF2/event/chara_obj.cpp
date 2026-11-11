@@ -63,7 +63,7 @@ void CharaObj::start() {
     return;
   }
   mm::mtl::Singleton<GroupManager>::getPtr()->push(this);
-  if (unknownd40 != gf::INVALID_HANDLE) {
+  if (unknownd40 != gf::unknown020) {
     mm::mtl::Singleton<AlphaManager>::getPtr()->setAlpha(unknownd40, ALPHA_ATTR_UNKNOWN_1, 1.0f, 1.0f);
   }
   unknownde0.resetDynamics(0);
@@ -75,7 +75,7 @@ void CharaObj::start() {
 void CharaObj::end() {
   clear();
   if (unknownca4 != STATE_UNKNOWN_1) {
-    if (unknownd40 != gf::INVALID_HANDLE) {
+    if (unknownd40 != gf::unknown020) {
       mm::mtl::Singleton<AlphaManager>::getPtr()->setAlpha(unknownd40, ALPHA_ATTR_UNKNOWN_1, 0.0f, 1.0f);
     }
     mm::mtl::Singleton<GroupManager>::getPtr()->pop(this);
@@ -636,7 +636,7 @@ void CharaObj::setScaleWeapon(f32 scale) {
 }
 
 void CharaObj::updateScaleWeapon() {
-  if (unknownd48 != nullptr && unknownd48->unknown18 == gf::GF_EVT_MODEL_WEAPON) {
+  if (unknownd48 != nullptr && unknownd48->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_2) {
     static_cast<gf::GfEvtModelWeapon *>(unknownd48)->setScale(unknown3048);
   }
 }
@@ -654,7 +654,7 @@ void CharaObj::setDispJiji(bool isDisp) {
 }
 
 void CharaObj::updateDispJiji() {
-  if (unknownd48 != nullptr && unknownd48->unknown18 == gf::GF_EVT_MODEL_DRIVER) {
+  if (unknownd48 != nullptr && unknownd48->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_0) {
     bool isDisp = (unknownca0 & FLAG_UNKNOWN_7) != 0;
     if (gf::GfObjAcc(unknownd48->unknown20).getBdatId() == 1 && unknownd48 != nullptr) {
       static_cast<gf::GfEvtModelDriver *>(unknownd48)->setDispJiji(isDisp);

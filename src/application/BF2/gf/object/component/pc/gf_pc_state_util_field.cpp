@@ -76,7 +76,7 @@ f32 calcInputDiffAngleVel(GfComPropertyPc &property) {
   return 0.0f;
 }
 
-bool StateUtilField::execAsmCmd(GfComAsm &comAsm, ASM_CMD_ID_FIELD id) { return comAsm.execCmd(getASMCmdNameField(id), ANIM_LAYER_BASE); }
+bool StateUtilField::execAsmCmd(GfComAsm &comAsm, ASM_CMD_ID_FIELD id) { return comAsm.execCmd(getASMCmdNameField(id), ANIM_LAYER_UNKNOWN_0); }
 
 bool StateUtilField::testVechile(GfComBehaviorPc &behavior) { return GfGameRide::isVehicle(static_cast<GfObj *>(behavior.unknown08)->unknownf8); }
 
@@ -218,22 +218,22 @@ void StateUtilField::setSpecialActStatus(GfComBehaviorPc &behavior, bool isSpeci
 }
 
 bool StateUtilField::isWallUpMove(GfPropertyField::WALL_MOVE_MODE mode) {
-  return (mode == GfPropertyField::WALL_MOVE_MODE_UP || mode == GfPropertyField::WALL_MOVE_MODE_UP_RIGHT) | (mode == GfPropertyField::WALL_MOVE_MODE_UP_LEFT);
+  return (mode == GfPropertyField::WALL_MOVE_MODE_UNKNOWN_0 || mode == GfPropertyField::WALL_MOVE_MODE_UNKNOWN_1) | (mode == GfPropertyField::WALL_MOVE_MODE_UNKNOWN_7);
 }
 
 ASM_CMD_ID_FIELD StateUtilField::getAsmID(GfPropertyField::WALL_MOVE_MODE mode) {
   switch (mode) {
-  case GfPropertyField::WALL_MOVE_MODE_UP:
-  case GfPropertyField::WALL_MOVE_MODE_UP_RIGHT:
-  case GfPropertyField::WALL_MOVE_MODE_UP_LEFT:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_0:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_1:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_7:
     return ASM_CMD_ID_FIELD_CLIMBUP;
-  case GfPropertyField::WALL_MOVE_MODE_RIGHT:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_2:
     return ASM_CMD_ID_FIELD_CLIMBRIGHT;
-  case GfPropertyField::WALL_MOVE_MODE_DOWN_RIGHT:
-  case GfPropertyField::WALL_MOVE_MODE_DOWN:
-  case GfPropertyField::WALL_MOVE_MODE_DOWN_LEFT:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_3:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_4:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_5:
     return ASM_CMD_ID_FIELD_CLIMBDOWN;
-  case GfPropertyField::WALL_MOVE_MODE_LEFT:
+  case GfPropertyField::WALL_MOVE_MODE_UNKNOWN_6:
     return ASM_CMD_ID_FIELD_CLIMBLEFT;
   default:
     return ASM_CMD_ID_FIELD_CLIMBIDLE;
@@ -241,7 +241,7 @@ ASM_CMD_ID_FIELD StateUtilField::getAsmID(GfPropertyField::WALL_MOVE_MODE mode) 
 }
 
 bool StateUtilField::isMovableWall(GfComPropertyPc &property, GfPropertyField::WALL_MOVE_MODE mode) {
-  bool isMovable = mode >= GfPropertyField::WALL_MOVE_MODE_UP && mode <= GfPropertyField::WALL_MOVE_MODE_UP_LEFT;
+  bool isMovable = mode >= GfPropertyField::WALL_MOVE_MODE_UNKNOWN_0 && mode <= GfPropertyField::WALL_MOVE_MODE_UNKNOWN_7;
   if (property.unknown310.unknown10_7) {
     isMovable &= !isWallUpMove(mode);
   }
@@ -263,8 +263,9 @@ void StateUtilField::resetCameraForWall(GfComBehaviorPc &behavior, Timing timing
   if (!behavior.getProperty()->unknown111_2) {
     return;
   }
-  static const ResetCameraWallTiming CAMERA_TIMINGS[] = {RESET_CAMERA_WALL_TIMING_UNDER_GROUND, RESET_CAMERA_WALL_TIMING_GROUND, RESET_CAMERA_WALL_TIMING_AIR};
-  GfGamePlayerCamera::resetCameraClimb(CAMERA_TIMINGS[timing]);
+  static const ResetCameraWallTiming unknown015[] = {
+      RESET_CAMERA_WALL_TIMING_UNKNOWN_0, RESET_CAMERA_WALL_TIMING_UNKNOWN_1, RESET_CAMERA_WALL_TIMING_UNKNOWN_2}; // Inferred role: camera timings; original name unknown.
+  GfGamePlayerCamera::resetCameraClimb(unknown015[timing]);
 }
 
 void StateUtilField::notifySkillAct(GfComBehaviorPc &behavior, bool isSkillAct) {
@@ -275,7 +276,7 @@ void StateUtilField::notifySkillAct(GfComBehaviorPc &behavior, bool isSkillAct) 
       MsgPcFieldNotifySkillEvent message(!isSkillAct);
       static_cast<GfObj *>(behavior.unknown08)->sendMessage(obj, message);
       if (!isSkillAct) {
-        property->unknown310.unknown78 = INVALID_HANDLE;
+        property->unknown310.unknown78 = unknown020;
       }
     }
   }
@@ -289,7 +290,7 @@ void StateUtilField::notifyRiderEvent(GfComBehaviorPc &behavior, VehicleEvent ev
 void StateUtilField::requestGetOffRider(GfComBehaviorPc &behavior) {
   GfGameRide *ride = GfGameRide::get();
   if (ride != nullptr) {
-    MsgGameRideEvent message(RIDE_EVENT_GET_DOWN_FORCE);
+    MsgGameRideEvent message(RIDE_EVENT_UNKNOWN_2);
     static_cast<GfObj *>(behavior.unknown08)->sendMessage(ride, message);
   }
 }
@@ -341,7 +342,7 @@ bool StateUtilField::isSwimMoveFromAir(GfComPropertyPc &property) {
 bool StateUtilField::isWallFall(GfComPropertyPc &property) {
   property.getEnvSensor();
   GfComBehaviorPc *behavior = property.unknown08->getComponent<GfComBehaviorPc>();
-  return (StateUtil::getClimbWallInfo(*behavior) == nullptr) | property.unknown60.unknown08.test(INPUT_ID_WALL_RELEASE);
+  return (StateUtil::getClimbWallInfo(*behavior) == nullptr) | property.unknown60.unknown08.test(INPUT_ID_UNKNOWN_3);
 }
 
 bool StateUtilField::ignoreSlideJump(GfComPropertyPc &property, f32 time) { return time <= property.unknown001()->ignoreLandTime; }
@@ -381,7 +382,7 @@ void StateUtilField::setAsmSpeedSwim(GfComPropertyPc &property) {
   f32 ratio = mm::clamp(fabsf(range) > FLT_EPSILON ? (speed - param->velocityMin) / range : 0.0f, 0.0f, 1.0f);
   const WaterCommonParam *waterParam = property.unknown310.unknown002();
   f32 motionSpeed = ratio + (1.0f - ratio) * waterParam->swimMotionMin;
-  property.unknown08->getComponent<GfComAsm>()->setSpeed(motionSpeed, ANIM_LAYER_BASE);
+  property.unknown08->getComponent<GfComAsm>()->setSpeed(motionSpeed, ANIM_LAYER_UNKNOWN_0);
 }
 
 bool StateUtilField::isSlideStop(GfComPropertyPc &property) {
@@ -424,7 +425,7 @@ bool StateUtilField::testCloud(GfComPropertyPc &property) {
 }
 
 bool StateUtilField::isWallIdleMotion(GfComAsm &comAsm) {
-  const char *stateName = comAsm.getStateName(ANIM_LAYER_BASE);
+  const char *stateName = comAsm.getStateName(ANIM_LAYER_UNKNOWN_0);
   bool isIdle = false;
   if (stateName != nullptr) {
     if (__builtin_strcmp(stateName, "S_climbidle_base") == 0 || __builtin_strcmp(stateName, "S_climbidle_mirror") == 0) {
@@ -446,10 +447,10 @@ bool StateUtilField::isEnableWallPrepare(GfComPropertyPc &property) {
     return false;
   }
   GF_OBJ_HANDLE *handle = GfGamePlayerFormation::get()->unknown1a0[property.unknown38 - 2].unknown08;
-  if (handle == INVALID_HANDLE) {
+  if (handle == unknown020) {
     return false;
   }
-  return GfObjUtil::getProperty(handle)->unknown18->unknown00 == PROPERTY_MOVE_CLIMB;
+  return GfObjUtil::getProperty(handle)->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3;
 }
 
 bool StateUtilField::isWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position) {
@@ -474,11 +475,11 @@ bool StateUtilField::isNearPlayerWall(GfComPropertyPc &property, const mm::Vec3 
       continue;
     }
     GF_OBJ_HANDLE *handle = formation->unknown1a0[i].unknown08;
-    if (handle == INVALID_HANDLE) {
+    if (handle == unknown020) {
       continue;
     }
     const GfObjProperty *other = GfObjUtil::getProperty(handle);
-    if (other->unknown18->unknown00 == PROPERTY_MOVE_CLIMB) {
+    if (other->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3) {
       mm::Vec3 diff = position - other->unknown18->unknown10;
       if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= rangeSq) {
         return true;
@@ -492,7 +493,7 @@ bool StateUtilField::isNearPlayer(GfComPropertyPc &property, const mm::Vec3 &pos
   f32 rangeSq = range * range;
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   for (u64 i = 0; i < 6; i++) {
-    if (i != property.unknown38 && formation->unknown1a0[i].unknown08 != INVALID_HANDLE) {
+    if (i != property.unknown38 && formation->unknown1a0[i].unknown08 != unknown020) {
       mm::Vec3 diff = position - GfObjUtil::getProperty(formation->unknown1a0[i].unknown08)->unknown18->unknown10;
       if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= rangeSq) {
         return true;
@@ -615,7 +616,7 @@ GF_OBJ_HANDLE *StateUtilField::getLureTargetHandle(GfComBehaviorPc &behavior) {
     return plugin->unknown10;
   }
 
-  return INVALID_HANDLE;
+  return unknown020;
 }
 
 void StateUtilField::setLookAtFlag(GfComBehaviorPc &behavior, bool isEnable) {
@@ -626,7 +627,7 @@ void StateUtilField::setLookAtFlag(GfComBehaviorPc &behavior, bool isEnable) {
     property->unknown310.unknown10_1 = false;
   }
 
-  if (StateUtil::getTarget(behavior) == INVALID_HANDLE) {
+  if (StateUtil::getTarget(behavior) == unknown020) {
     LookAtPlugin *plugin = behavior.unknown001<LookAtPlugin>(5);
     if (plugin != nullptr) {
       plugin->setActivate(isEnable);

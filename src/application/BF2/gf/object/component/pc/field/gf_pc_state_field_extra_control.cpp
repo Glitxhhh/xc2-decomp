@@ -12,7 +12,7 @@ namespace pc {
 
 void StateFieldExtraControl::enter(GfComBehaviorPc *behavior, ai::State *previous) {
   unknown18 = MODE_UNKNOWN_FFFFFFFF;
-  const char *stateName = behavior->unknown08->getComponent<GfComAsm>()->getStateName(ANIM_LAYER_BASE);
+  const char *stateName = behavior->unknown08->getComponent<GfComAsm>()->getStateName(ANIM_LAYER_UNKNOWN_0);
   if (stateName != nullptr) {
     if (__builtin_strcmp(stateName, "S_idle") == 0) {
       setMode(behavior, MODE_UNKNOWN_2);

@@ -22,7 +22,7 @@ void GfMenuObjEventSkip::initialize() {
   if (ui::UIObjectAcc(main).isValid()) {
 // __LINE__ must be 72 as in the original file: it is the line argument of operator new.
 #line 72
-    ListListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListListener(this);
+    ListListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListListener(this);
     listener->addRef();
     ui::UIEventManager::get()->registObjectListener(main, listener);
     if (listener != nullptr) {

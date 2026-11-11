@@ -6,7 +6,7 @@
 namespace minigame {
 namespace tora {
 
-mytask::~mytask() { gf::getAllocator(gf::ALLOCATOR_DEFAULT)->deallocate(unknown00); }
+mytask::~mytask() { gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0)->deallocate(unknown00); }
 
 void *mytask::entry() { return entryEnd(); }
 

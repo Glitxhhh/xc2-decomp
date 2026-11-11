@@ -34,15 +34,15 @@ struct GfSetupParam;
 class GfVolumeFade;
 
 enum GFATTACH {
-  GFATTACH_WEAPON = 0,
-  GFATTACH_APPEND = 1,
-  GFATTACH_BELONGING = 2,
-  GFATTACH_WEAPON_EXTRA = 3,
+  GFATTACH_UNKNOWN_0 = 0, // Inferred role: gfattach weapon; original name unknown.
+  GFATTACH_UNKNOWN_1 = 1, // Inferred role: gfattach append; original name unknown.
+  GFATTACH_UNKNOWN_2 = 2, // Inferred role: gfattach belonging; original name unknown.
+  GFATTACH_UNKNOWN_3 = 3, // Inferred role: gfattach weapon extra; original name unknown.
 };
 
 enum {
-  GFOBJ_STATE_LOADING = 1,
-  GFOBJ_STATE_UPDATE = 2,
+  GFOBJ_STATE_UNKNOWN_1 = 1, // Inferred role: gfobj state loading; original name unknown.
+  GFOBJ_STATE_UNKNOWN_2 = 2, // Inferred role: gfobj state update; original name unknown.
 };
 
 struct GFOBJ_MOUNT {
@@ -118,11 +118,11 @@ static_assert(sizeof(GFOBJ_INFO) == 0x420, "");
 class IGfObjListener {
 public:
   enum OBJEVT {
-    OBJEVT_ALL,
-    OBJEVT_ENTRY,
-    OBJEVT_LOADED,
-    OBJEVT_DESTROY,
-    OBJEVT_REMOVE,
+    OBJEVT_UNKNOWN_0, // Inferred role: objevt all; original name unknown.
+    OBJEVT_UNKNOWN_1, // Inferred role: objevt entry; original name unknown.
+    OBJEVT_UNKNOWN_2, // Inferred role: objevt loaded; original name unknown.
+    OBJEVT_UNKNOWN_3, // Inferred role: objevt destroy; original name unknown.
+    OBJEVT_UNKNOWN_4, // Inferred role: objevt remove; original name unknown.
   };
 
   virtual void listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectType) = 0;

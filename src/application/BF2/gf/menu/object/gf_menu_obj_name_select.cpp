@@ -17,7 +17,7 @@ void GfMenuObjNameSelect::initialize() {
   ui::UIObjectAcc acc(unknown18, "LAY_main");
 // __LINE__ must be 52 as in the original file: it is the line argument of operator new.
 #line 52
-  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   listener->addRef();
   ui::UIEventManager::get()->registObjectListener(acc.unknown10, listener);
   if (listener != nullptr) {

@@ -85,7 +85,7 @@ bool GmkBlade::BdatInfo::isDepopCondMatched(const mm::Vec3 &position) const {
 GmkType GmkBlade::getGmkType() const { return GMK_TYPE; }
 
 void GmkBlade::validateDisp() const {
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   setEventDisp(unknown48, unknown55 && debugIsDispGmkType(getGmkType()));
@@ -105,16 +105,16 @@ void GmkBlade::bindToGameObj(gf::GF_OBJ_HANDLE *handle) const {
 }
 
 void GmkBlade::dispose() {
-  if (unknown48 != gf::INVALID_HANDLE) {
+  if (unknown48 != gf::unknown020) {
     unbindToGameObj(unknown48);
     gf::GfObjUtil::destroy(unknown48);
-    unknown48 = gf::INVALID_HANDLE;
+    unknown48 = gf::unknown020;
   }
   AGmkBase::dispose();
 }
 
 void GmkBlade::disposeGobInst(bool isFadeOut) {
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   if (isFadeOut) {
@@ -122,7 +122,7 @@ void GmkBlade::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknown48);
     gf::GfObjUtil::destroy(unknown48);
-    unknown48 = gf::INVALID_HANDLE;
+    unknown48 = gf::unknown020;
   }
 }
 
@@ -133,7 +133,7 @@ void GmkBlade::createGobInst() {
   disposeGobInst(false);
   CBdatWrapper bdat = {getBindedBdatFp()};
   unknown48 = gf::GfObjFactory::createGmkBlade(bdat, unknown20.unknown18, unknown50);
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   bindToGameObj(unknown48);
@@ -161,7 +161,7 @@ void GmkBlade::update(f32 deltaTime) {
 }
 
 bool GmkBlade::canPopGobInst() const {
-  if (unknown48 != gf::INVALID_HANDLE || unknown50 == 0) {
+  if (unknown48 != gf::unknown020 || unknown50 == 0) {
     return false;
   }
   return getBdatInfo()->isPopCondMatched(unknown08.unknown08->unknown00);
@@ -169,7 +169,7 @@ bool GmkBlade::canPopGobInst() const {
 
 void GmkBlade::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event != gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event != gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     return;
   }
   unbindToGameObj(handle);
@@ -180,7 +180,7 @@ void GmkBlade::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *h
 
 bool GmkBlade::canDepopGobInst() const {
   if (!unknown54) {
-    if (unknown48 == gf::INVALID_HANDLE) {
+    if (unknown48 == gf::unknown020) {
       return false;
     }
     if (unknown50 != 0) {

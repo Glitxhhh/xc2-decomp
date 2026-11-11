@@ -30,12 +30,12 @@ struct GF_OBJ_HANDLE;
 class GfMenuCallContext;
 
 enum {
-  MSG_PC_FIELD_NOTIFY_SKILL_EVENT = 0x100001d,
-  MSG_PC_GET_ELV_LIFT = 0x1000026,
+  MSG_PC_UNKNOWN_16777245 = 0x100001d, // Inferred role: msg pc field notify skill event; original name unknown.
+  MSG_PC_UNKNOWN_16777254 = 0x1000026, // Inferred role: msg pc get elv lift; original name unknown.
 };
 
 struct MsgPcFieldNotifySkillEvent : fw::Message {
-  explicit MsgPcFieldNotifySkillEvent(u32 event) : fw::Message(MSG_PC_FIELD_NOTIFY_SKILL_EVENT, 0x40), unknown08(event) {}
+  explicit MsgPcFieldNotifySkillEvent(u32 event) : fw::Message(MSG_PC_UNKNOWN_16777245, 0x40), unknown08(event) {}
 
   u32 unknown08; // Inferred role: event, 0 removes the icon of the jump or warp point; original member name unknown.
 };

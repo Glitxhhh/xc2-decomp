@@ -11,11 +11,11 @@
 namespace gf {
 
 #line 33
-PlayerCameraTarget *PlayerCameraTarget::create() { return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PlayerCameraTarget; }
+PlayerCameraTarget *PlayerCameraTarget::create() { return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PlayerCameraTarget; }
 
 PlayerCameraTarget::PlayerCameraTarget()
     : unknown20{mm::Vec3::zero, mm::Quat::identity}, unknown40(false), unknown41(false), unknown42(false), unknown43(false), unknown44(false), unknown45(false), unknown46(false), unknown48(0.0f),
-      unknown4c(0.0f), unknown50(mm::Vec3::unitY), unknown60(mm::Vec3::unitZ), unknown70(INVALID_HANDLE), unknown78(true), unknown79(false) {
+      unknown4c(0.0f), unknown50(mm::Vec3::unitY), unknown60(mm::Vec3::unitZ), unknown70(unknown020), unknown78(true), unknown79(false) {
   writeTargetInfo();
   GfEvent::addEventCallback(this);
 }

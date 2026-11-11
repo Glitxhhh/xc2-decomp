@@ -31,7 +31,7 @@ GfMenuOrderMgr::~GfMenuOrderMgr() {}
 void GfMenuOrderMgr::build(const GfSetupParam &param) {
   // __LINE__ must be 64 as in the original file: it is the line argument of operator new.
 #line 64
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuOrderMgr(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuOrderMgr(param);
 }
 
 void GfMenuOrderMgr::destroy() {

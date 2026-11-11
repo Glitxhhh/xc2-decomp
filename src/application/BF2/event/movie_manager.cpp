@@ -125,7 +125,7 @@ void MovieManager::play(const char *path, bool isFullSize, bool isAutoStop) {
     gf::GfMovieManager::get()->stop();
     gf::GfMovieManager::get()->close();
     gf::GfMovieManager *movie = gf::GfMovieManager::get();
-    gf::GfAllocator *allocator = gf::getAllocator(gf::ALLOCATOR_DEBUG);
+    gf::GfAllocator *allocator = gf::getAllocator(gf::ALLOCATOR_UNKNOWN_10);
     if (isFullSize) {
       movie->open(allocator, 1280, 720);
     } else {

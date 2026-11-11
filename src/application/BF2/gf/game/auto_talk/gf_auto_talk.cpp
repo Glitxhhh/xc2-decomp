@@ -233,7 +233,7 @@ GfAutoTalkManager::GfAutoTalkManager(const GfSetupParam &) : unknown28(nullptr) 
 void GfAutoTalkManager::build(const GfSetupParam &param) {
   // __LINE__ must be 470 as in the original file: it is the line argument of operator new.
 #line 470
-  GfAutoTalkManager *manager = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfAutoTalkManager(param);
+  GfAutoTalkManager *manager = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfAutoTalkManager(param);
   manager->create();
 }
 
@@ -308,7 +308,7 @@ bool GfAutoTalkManager::createAutoTalkList(int gmkSet) {
   if (info.unknown00 > 0 && info.unknown08 != nullptr && info.unknown10 != nullptr) {
     // __LINE__ must be 584 as in the original file: it is the line argument of operator new.
 #line 584
-    unknown10.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfAutoTalkList(&info));
+    unknown10.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfAutoTalkList(&info));
     return true;
   }
   return false;
@@ -332,7 +332,7 @@ void GfAutoTalkManager::seqUpdate(f32 deltaTime) {
 }
 
 void GfAutoTalkManager::gevReloadBdat(RELOAD_BDAT reload, u32) {
-  if (reload == RELOAD_BDAT_ALL) {
+  if (reload == RELOAD_BDAT_UNKNOWN_1) {
     create();
   }
 }

@@ -26,6 +26,7 @@ namespace gf {
 
 namespace _gfgvo {
 
+// The three constants keep the names of the game's symbols gf::_gfgvo::s_szVoicePath, s_szVoiceTest and s_szVoiceExt.
 const char *s_szVoicePath = "/stream/voice/";
 const char *s_szVoiceTest = "test/";
 const char *s_szVoiceExt = ".wav";
@@ -133,7 +134,7 @@ static_assert(sizeof(VoiceInfo::PJOB_WAIT_STOP) == 0x10, "");
 
 // Inferred role: tells whether a voice belongs to an object, by handle or by type and id; original name unknown.
 inline bool unknown007(const ParamObj &voice, const ParamObj &object) {
-  if (voice.unknown00 == INVALID_HANDLE) {
+  if (voice.unknown00 == unknown020) {
     return voice.unknown08 == object.unknown08 && voice.unknown0c == object.unknown0c;
   }
   return voice.unknown00 == object.unknown00;
@@ -196,7 +197,7 @@ u32 GfVoiceName::getObjType() const {
   if (unknown18 > 0) {
     id = getCharaId();
     if (id - 1 < 8) {
-      return OBJECT_TYPE_DRIVER;
+      return OBJECT_TYPE_PC;
     }
   }
   if (id - 0xb < 0x12) {
@@ -229,7 +230,7 @@ const char *GfVoiceName::getCharacterVoiceStr(GF_OBJ_HANDLE *handle) {
   return acc.getVoiceStr();
 }
 
-VoiceInfo::VoiceInfo() : unknown00(true), unknown04(CV_PRIO_UNKNOWN_0), unknown0c(0.0f), unknown10{INVALID_HANDLE, 0, 0}, unknown20(), unknown28(nullptr) { clear(); }
+VoiceInfo::VoiceInfo() : unknown00(true), unknown04(CV_PRIO_UNKNOWN_0), unknown0c(0.0f), unknown10{unknown020, 0, 0}, unknown20(), unknown28(nullptr) { clear(); }
 
 void VoiceInfo::clear() {
   if (unknown20.isValid()) {
@@ -241,7 +242,7 @@ void VoiceInfo::clear() {
   }
   unknown04 = CV_PRIO_UNKNOWN_0;
   unknown28 = nullptr;
-  unknown10 = {INVALID_HANDLE, 0, 0};
+  unknown10 = {unknown020, 0, 0};
   unknown08 = 0;
   unknown0c = 0.0f;
   destroyJob();
@@ -299,15 +300,15 @@ void VoiceInfo::addPlay(GAME_VOICE_HANDLE *voice, const ParamObj &object, const 
   if (!unknown30.full()) {
     unknown10 = object;
 #line 841
-    unknown30.push(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PJOB_PLAY(this, voice, object, name, priority));
+    unknown30.push(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PJOB_PLAY(this, voice, object, name, priority));
   }
 }
 
 void VoiceInfo::addPlay(GAME_VOICE_HANDLE *voice, const char *name, CV_PRIO priority) {
   if (!unknown30.full()) {
-    unknown10 = {INVALID_HANDLE, 0, 0};
+    unknown10 = {unknown020, 0, 0};
 #line 849
-    unknown30.push(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PJOB_PLAY(this, voice, unknown10, GfVoiceName(name), priority));
+    unknown30.push(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PJOB_PLAY(this, voice, unknown10, GfVoiceName(name), priority));
   }
 }
 
@@ -320,14 +321,14 @@ void VoiceInfo::addPlay(GAME_VOICE_HANDLE *voice, SoundHandle sound, const GfVoi
 void VoiceInfo::addStop(CV_PRIO priority) {
   if (!unknown30.full() && unknown20.isValid()) {
 #line 865
-    unknown30.push(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PJOB_STOP(this, priority));
+    unknown30.push(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PJOB_STOP(this, priority));
   }
 }
 
 void VoiceInfo::addWaitStop() {
   if (!unknown30.full() && unknown20.isValid()) {
 #line 873
-    unknown30.push(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PJOB_WAIT_STOP(this));
+    unknown30.push(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PJOB_WAIT_STOP(this));
   }
 }
 
@@ -335,7 +336,7 @@ bool VoiceInfo::PJOB_PLAY::exec() {
   GfSound *sound = GfSound::get();
   if (sound != nullptr) {
     DataParamAcc acc(unknown18);
-    fw::SoundCategory category = acc.getObjType() == OBJECT_TYPE_ENEMY ? CATEGORY_ENEMY_VOICE : CATEGORY_PLAYER_VOICE;
+    fw::SoundCategory category = acc.getObjType() == OBJECT_TYPE_ENEMY ? CATEGORY_ENE_VO : CATEGORY_VOICE;
     const mm::mtl::FixStr<16> &langPath = fw::LangUtil::getVoiceFolder();
     mm::mtl::FixStr<16> voicePath;
     GfGameVoice::getCharPath(voicePath, m_name.unknown00.c_str());
@@ -361,7 +362,7 @@ bool VoiceInfo::PJOB_WAIT_STOP::exec() { return !unknown08->unknown20.isValid();
 void GfGameVoice::build(const GfSetupParam &param) {
 // __LINE__ of the operator new call is 0x78 in the game.
 #line 120
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameVoice(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameVoice(param);
 }
 
 GfGameVoice::GfGameVoice(const GfSetupParam &param) : unknown08(false), unknown110(0) { initialize(param); }
@@ -371,7 +372,7 @@ GfGameVoice::~GfGameVoice() {}
 void GfGameVoice::initialize(const GfSetupParam &) {
   for (int i = 0; i < 6; i++) {
 #line 139
-    VoiceInfo *info = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) VoiceInfo();
+    VoiceInfo *info = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) VoiceInfo();
     unknown10.push_back(info);
   }
   unknown08 = true;
@@ -415,7 +416,7 @@ void GfGameVoice::update(const fw::UpdateInfo &info) {
 }
 
 VoiceInfo *GfGameVoice::getPlayInfo(const ParamObj &object) {
-  if (object.unknown00 != INVALID_HANDLE || object.unknown0c != 0) {
+  if (object.unknown00 != unknown020 || object.unknown0c != 0) {
     mm::mtl::FixedList<VoiceInfo *, 6>::iterator it = mm::mtl::find_if(unknown90.begin(), unknown90.end(), unknown008(object));
     if (unknown90.end() != it) {
       return *it;
@@ -458,7 +459,7 @@ GAME_VOICE_HANDLE *GfGameVoice::playVoice(const char *name) {
       VoiceInfo *info = voice->unknown10.front();
       voice->unknown10.pop_front();
       voice->unknown90.push_back(info);
-      info->addPlay(handle, sound->playVoice(path.c_str(), 1.0f, false, CATEGORY_PLAYER_VOICE), voiceName);
+      info->addPlay(handle, sound->playVoice(path.c_str(), 1.0f, false, CATEGORY_VOICE), voiceName);
       return handle;
     }
   }
@@ -480,7 +481,7 @@ GAME_VOICE_HANDLE *GfGameVoice::playNarrationVoice(const char *name) {
       VoiceInfo *info = voice->unknown10.front();
       voice->unknown10.pop_front();
       voice->unknown90.push_back(info);
-      info->addPlay(handle, sound->playVoice(path.c_str(), 1.0f, false, CATEGORY_NARE_VOICE), voiceName);
+      info->addPlay(handle, sound->playVoice(path.c_str(), 1.0f, false, CATEGORY_NAREVO), voiceName);
       return handle;
     }
   }
@@ -493,7 +494,7 @@ void GfGameVoice::getCharPath(mm::mtl::FixStr<16> &path, const char *name) {
 }
 
 void GfGameVoice::playStop(GF_OBJ_HANDLE *handle) {
-  if (handle != INVALID_HANDLE) {
+  if (handle != unknown020) {
     ParamObj object = {handle, 0, 0};
     VoiceInfo *info = get()->getPlayInfo(object);
     if (info != nullptr) {
@@ -519,7 +520,7 @@ int GfGameVoice::getResult(GAME_VOICE_HANDLE *voice) {
     return (*result).unknown18;
   }
   mm::mtl::FixedList<VoiceInfo *, 6>::iterator it = mm::mtl::find_if(self->unknown90.begin(), self->unknown90.end(), [voice](VoiceInfo *info) { return info->isEnableVoiceHandle(voice); });
-  return it != self->unknown90.end() ? VOICE_RESULT_PLAY : VOICE_RESULT_UNKNOWN_3;
+  return it != self->unknown90.end() ? VOICE_RESULT_UNKNOWN_2 : VOICE_RESULT_UNKNOWN_3;
 }
 
 void GfGameVoice::gevLayerPause(u32 layer, bool isPause) {
@@ -531,7 +532,7 @@ void GfGameVoice::gevLayerPause(u32 layer, bool isPause) {
 }
 
 void GfGameVoice::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
-  if (event == GEV_MAPJUMP_DESTROY_FIELD) {
+  if (event == GEV_UNKNOWN_2) {
     destroyVoiceAll();
   }
 }
@@ -580,7 +581,7 @@ GAME_VOICE_HANDLE *GfGameVoice::playVoice(GF_OBJ_HANDLE *handle, const char *nam
 }
 
 GAME_VOICE_HANDLE *GfGameVoice::playVoice(u32 type, u32 id, const char *name, CV_PRIO priority) {
-  ParamObj object = {INVALID_HANDLE, type, id};
+  ParamObj object = {unknown020, type, id};
   return playVoice(object, name, priority);
 }
 
@@ -592,17 +593,17 @@ GAME_VOICE_HANDLE *GfFieldVoice::playVoice(GF_OBJ_HANDLE *handle, CV_FIELD voice
 }
 
 GAME_VOICE_HANDLE *GfFieldVoice::playVoice(u32 type, u32 id, CV_FIELD voice, CV_PRIO priority) {
-  ParamObj object = {INVALID_HANDLE, type, id};
+  ParamObj object = {unknown020, type, id};
   return playVoice(object, voice, priority);
 }
 
 GAME_VOICE_HANDLE *GfFieldVoice::playVoice(const ParamObj &object, CV_FIELD voice, CV_PRIO priority) {
   DataParamAcc acc(object);
-  if (acc.getObjType() == OBJECT_TYPE_DRIVER || acc.getObjType() == OBJECT_TYPE_BLADE) {
+  if (acc.getObjType() == OBJECT_TYPE_PC || acc.getObjType() == OBJECT_TYPE_BLADE) {
     u32 middle = unknown001[voice];
     int variation;
     const u8 *numbers;
-    if (acc.getObjType() == OBJECT_TYPE_DRIVER) {
+    if (acc.getObjType() == OBJECT_TYPE_PC) {
       variation = ml::mtRand(unknown002[voice]);
       numbers = unknown003;
     } else {
@@ -625,8 +626,8 @@ GAME_VOICE_HANDLE *GfFieldVoice::playVoice(const ParamObj &object, CV_FIELD voic
 
 GAME_VOICE_HANDLE *GfFieldVoice::playVoice(const ParamObj &object, CV_FIELD voice, u32 middle, u32 variation, CV_PRIO priority) {
   DataParamAcc acc(object);
-  if (acc.getObjType() == OBJECT_TYPE_DRIVER || acc.getObjType() == OBJECT_TYPE_BLADE) {
-    const u8 *numbers = acc.getObjType() == OBJECT_TYPE_DRIVER ? unknown003 : unknown005;
+  if (acc.getObjType() == OBJECT_TYPE_PC || acc.getObjType() == OBJECT_TYPE_BLADE) {
+    const u8 *numbers = acc.getObjType() == OBJECT_TYPE_PC ? unknown003 : unknown005;
     u32 number = numbers[voice];
     mm::mtl::FixStr<16> name;
     name = acc.getVoiceStr();
@@ -636,7 +637,7 @@ GAME_VOICE_HANDLE *GfFieldVoice::playVoice(const ParamObj &object, CV_FIELD voic
     if (strcmp(acc.getVoiceStr(), "15") == 0) {
       name += "a";
     }
-    u32 id = acc.getObjType() == OBJECT_TYPE_DRIVER ? acc.getValidDriverId() : acc.getValidBdatId();
+    u32 id = acc.getObjType() == OBJECT_TYPE_PC ? acc.getValidDriverId() : acc.getValidBdatId();
     return GfGameVoice::playVoice(acc.getObjType(), id, name.c_str(), priority);
   }
   return nullptr;

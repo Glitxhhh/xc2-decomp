@@ -50,7 +50,7 @@ const mm::mtl::RTTI *GfObjSetupMapObj::getRTTI() const { return &m_rtti; }
 const mm::mtl::RTTI *GfObjSetupUiObj::getRTTI() const { return &m_rtti; }
 
 u32 GfObjSetup::getFootStep() const {
-  if (unknown08 == OBJECT_TYPE_DRIVER) {
+  if (unknown08 == OBJECT_TYPE_PC) {
     DataObjDriver driver(unknown10);
     return driver.getFootStep();
   }
@@ -62,7 +62,7 @@ u32 GfObjSetup::getFootStep() const {
 }
 
 u32 GfObjSetup::getFootStepEffect() const {
-  if (unknown08 == OBJECT_TYPE_DRIVER) {
+  if (unknown08 == OBJECT_TYPE_PC) {
     DataObjDriver driver(unknown10);
     return driver.getFootStepEffect();
   }
@@ -153,7 +153,7 @@ void GfObjSetup::setInitialScale(const mm::Vec3 &scale) {
 
 GfObjSetupDriver *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamDriver &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupDriver *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupDriver(param);
+  GfObjSetupDriver *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupDriver(param);
   info->unknown30 = setup;
   setup->unknown6c = param.unknown1a0;
   if (param.unknown80) {
@@ -169,7 +169,7 @@ GfObjSetupDriver *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfIn
 
 GfObjSetupBlade *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamBlade &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupBlade *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupBlade(param);
+  GfObjSetupBlade *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupBlade(param);
   info->unknown30 = setup;
   setup->unknown6c = param.unknown98;
   return setup;
@@ -179,7 +179,7 @@ GfObjSetupMap *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitP
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   // __LINE__ must be 166 as in the original file: it is the line argument of the allocation.
 #line 166
-  GfObjSetupMap *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupMap(param);
+  GfObjSetupMap *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupMap(param);
   info->unknown30 = setup;
   if (!param.unknown90) {
     setup->unknown6c = param.m_bladeID;
@@ -197,7 +197,7 @@ GfObjSetupMap *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitP
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   // __LINE__ must be 188 as in the original file: it is the line argument of the allocation.
 #line 188
-  GfObjSetupMap *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupMap(param);
+  GfObjSetupMap *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupMap(param);
   info->unknown30 = setup;
   setup->unknown74 = true;
   return setup;
@@ -205,14 +205,14 @@ GfObjSetupMap *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitP
 
 GfObjSetupMapLodAnim *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMapLodAnim &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupMapLodAnim *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupMapLodAnim(param);
+  GfObjSetupMapLodAnim *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupMapLodAnim(param);
   info->unknown30 = setup;
   return setup;
 }
 
 GfObjSetupNpc *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamNpc &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupNpc *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupNpc(param);
+  GfObjSetupNpc *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupNpc(param);
   info->unknown30 = setup;
   setup->unknown90 = param.unknown98;
   return setup;
@@ -220,7 +220,7 @@ GfObjSetupNpc *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitP
 
 GfObjSetupMob *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMob &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupMob *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupMob(param);
+  GfObjSetupMob *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupMob(param);
   info->unknown30 = setup;
   if (setup->unknown10 != 0) {
     u8 race = Bdat::getValCheck(GfDataBdat::getFP(BDAT_RSC_MOB_LIST), "Race", param.m_bladeID, 1);
@@ -241,7 +241,7 @@ GfObjSetupMob *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitP
 
 GfObjSetupGimmick *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamGimmick &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupGimmick *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupGimmick(param);
+  GfObjSetupGimmick *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupGimmick(param);
   info->unknown30 = setup;
   setup->unknown98 = param.unknown90;
   return setup;
@@ -249,7 +249,7 @@ GfObjSetupGimmick *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfI
 
 GfObjSetupFieldObj *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamFobj &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupFieldObj *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupFieldObj(param);
+  GfObjSetupFieldObj *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupFieldObj(param);
   info->unknown30 = setup;
   mm::mtl::FixStr<16> column;
   column.format("paramid%d", param.unknown94);
@@ -260,7 +260,7 @@ GfObjSetupFieldObj *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const Gf
 
 GfObjSetupWeapon *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamWeapon &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
-  GfObjSetupWeapon *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupWeapon(param);
+  GfObjSetupWeapon *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupWeapon(param);
   info->unknown30 = setup;
   setup->unknown6c = param.unknown94;
   setup->unknown74 = param.unknown98.getMountIndex();
@@ -272,7 +272,7 @@ GfObjSetupEnWeapon *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const Gf
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   // __LINE__ must be 360 as in the original file: it is the line argument of the allocation.
 #line 360
-  GfObjSetupEnWeapon *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupEnWeapon(param);
+  GfObjSetupEnWeapon *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupEnWeapon(param);
   info->unknown30 = setup;
   setup->unknown6c = param.unknown98.getMountIndex();
   return setup;
@@ -282,7 +282,7 @@ GfObjSetupBelonging *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const G
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   // __LINE__ must be 375 as in the original file: it is the line argument of the allocation.
 #line 375
-  GfObjSetupBelonging *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupBelonging(param);
+  GfObjSetupBelonging *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupBelonging(param);
   info->unknown30 = setup;
   setup->unknown6c = param.unknown90.getMountIndex();
   setup->unknown50 = param.unknown130 ? 1.0f : 0.0f;
@@ -293,7 +293,7 @@ GfObjSetupExtra *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfIni
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   // __LINE__ must be 391 as in the original file: it is the line argument of the allocation.
 #line 391
-  GfObjSetupExtra *setup = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfObjSetupExtra(param);
+  GfObjSetupExtra *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupExtra(param);
   info->unknown30 = setup;
   setup->unknown6c = param.unknown90.getMountIndex();
   return setup;

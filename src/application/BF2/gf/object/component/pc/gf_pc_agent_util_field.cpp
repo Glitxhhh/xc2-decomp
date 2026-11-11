@@ -95,13 +95,13 @@ bool AgentUtilField::calcParentPlayerPush(GfComPropertyPc &property, const mm::V
   }
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   bool isPush = false;
-  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_NUM; i++) {
+  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
     if (formation->unknown1a0[i].unknown10) {
       if (i == property.unknown38) {
         return isPush;
       }
       GfObjProperty *other = GfObjUtil::getProperty(formation->unknown1a0[i].unknown08);
-      if (other != nullptr && other->unknown18->unknown00 == PROPERTY_MOVE_CLIMB) {
+      if (other != nullptr && other->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3) {
         mm::Vec3 offset = other->unknown18->unknown10 - position;
         const mm::Vec3 &normal = wallInfo->unknown00.normal;
         f32 dot = offset.x * normal.x + offset.y * normal.y + offset.z * normal.z;
@@ -136,10 +136,10 @@ bool AgentUtilField::existNearChimbPlayer(GfComPropertyPc &property, const mm::V
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   const WallAiParam *param = getAIParamAdapter(property, PARAM_ID_FIELD_AI_UNKNOWN_5).get<WallAiParam>();
   bool isExist = false;
-  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_NUM; i++) {
+  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
     if (formation->unknown1a0[i].unknown10) {
       GfObjProperty *other = GfObjUtil::getProperty(formation->unknown1a0[i].unknown08);
-      if (other != nullptr && other->unknown18->unknown00 == PROPERTY_MOVE_CLIMB) {
+      if (other != nullptr && other->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3) {
         mm::Vec3 offset = other->unknown18->unknown10 - position;
         isExist |= sqrtf(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z) - param->nearRange < 0.0f;
       }
@@ -151,7 +151,7 @@ bool AgentUtilField::existNearChimbPlayer(GfComPropertyPc &property, const mm::V
 bool AgentUtilField::isWallJumpAnyPlayer() {
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   bool isWallJump = false;
-  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_NUM; i++) {
+  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
     if (formation->unknown1a0[i].unknown10) {
       GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[i].unknown08);
       if (obj != nullptr) {

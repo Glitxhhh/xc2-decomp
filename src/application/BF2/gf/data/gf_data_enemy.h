@@ -7,7 +7,7 @@
 
 namespace gf {
 
-constexpr u32 EXTRA_PARTS_COUNT = 4;
+constexpr u32 PARTS_UNKNOWN_4 = 4; // Inferred role: extra parts count; original name unknown.
 
 // Layout from GfDataEnemy::setupSDataEnemy (0x7100299478), which fills each member from a CHR_EnArrange,
 // CHR_EnParam or RSC_En column, and from the zeroing stores of SDataEnemy::clear (0x710029285c).

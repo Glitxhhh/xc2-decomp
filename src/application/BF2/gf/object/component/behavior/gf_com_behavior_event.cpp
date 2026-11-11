@@ -23,7 +23,7 @@ namespace gf {
 GfComBehaviorEvent::GfComBehaviorEvent() : unknown98(0) {}
 
 bool GfComBehaviorEvent::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
-  if (message.unknown00 != MSG_OBJECT_GET_VELOCITY) {
+  if (message.unknown00 != MSG_UNKNOWN_16777286) {
     return false;
   }
 

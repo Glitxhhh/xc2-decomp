@@ -10,10 +10,10 @@ namespace gf {
 namespace pc {
 
 enum {
-  STATS_FALL_DISTANCE = 0x15,
+  STATS_UNKNOWN_21 = 0x15, // Inferred role: stats fall distance; original name unknown.
 };
 
-constexpr f32 ACHIEV_FALL_DISTANCE_MIN = 10.0f;
+constexpr f32 unknown017 = 10.0f; // Inferred role: achiev fall distance min; original name unknown.
 
 FallDistanceAchievPlugin::FallDistanceAchievPlugin() : unknown10(nullptr), unknown18(0.0f) {}
 
@@ -30,8 +30,8 @@ void FallDistanceAchievPlugin::onActivate() { unknown18 = unknown10->unknown160.
 
 void FallDistanceAchievPlugin::onDeactivate() {
   f32 distance = unknown18 - unknown10->unknown160.y;
-  if (distance >= ACHIEV_FALL_DISTANCE_MIN) {
-    SCOM_ACHIEV_INC::create(STATS_FALL_DISTANCE, distance, 0);
+  if (distance >= unknown017) {
+    SCOM_ACHIEV_INC::create(STATS_UNKNOWN_21, distance, 0);
   }
 }
 

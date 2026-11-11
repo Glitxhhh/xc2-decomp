@@ -10,7 +10,7 @@ namespace event {
 
 // The constructor at 0x71000b9044 writes flags at +0x8, the handle at
 // +0x10, Vec3::zero at +0x20, and Vec2::zero at +0x30 through +0x70.
-CharaIKUpdater::CharaIKUpdater() : unknown08(), unknown0c(), unknown10(gf::INVALID_HANDLE), unknown18(0.0f), unknown20(mm::Vec3::zero) {
+CharaIKUpdater::CharaIKUpdater() : unknown08(), unknown0c(), unknown10(gf::unknown020), unknown18(0.0f), unknown20(mm::Vec3::zero) {
   f32 x = mm::Vec2::zero.x;
   f32 y = mm::Vec2::zero.y;
   unknown30.x = x;

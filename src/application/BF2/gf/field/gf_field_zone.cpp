@@ -15,7 +15,7 @@ void GfFieldZone::initialize(const GfSetupParam &param) {
 
 GfFieldZone::~GfFieldZone() {}
 
-void GfFieldZone::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldZone(param); }
+void GfFieldZone::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfFieldZone(param); }
 
 void GfFieldZone::destroy() {
   GfFieldZone *zone = get();
@@ -40,7 +40,7 @@ bool GfFieldZone::isInitialized() {
 void GfFieldZone::update(const fw::UpdateInfo &) {}
 
 void GfFieldZone::gevMapjump(GEV gev, const MapjumpCallbackInfo &) {
-  if (gev == GEV_MAPJUMP_DESTROY_FIELD) {
+  if (gev == GEV_UNKNOWN_2) {
     GfFieldZoneScript::destroyScript();
   }
 }

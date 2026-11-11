@@ -13,8 +13,8 @@ struct SDataEnemy;
 class IDataObj;
 
 enum GimmickType {
-  GIMMICK_TYPE_NONE = 0,
-  GIMMICK_TYPE_TREASURE_BOX = 1,
+  GIMMICK_TYPE_UNKNOWN_0 = 0, // Inferred role: gimmick type none; original name unknown.
+  GIMMICK_TYPE_UNKNOWN_1 = 1, // Inferred role: gimmick type treasure box; original name unknown.
 };
 
 struct ParamObj {
@@ -164,7 +164,7 @@ public:
   const char *getCamBone() const;
 
   u32 getValidBdatId() const { return isValid() ? getBdatId() : 0; }
-  u32 getValidDriverId() const { return isValid() && getObjType() == OBJECT_TYPE_DRIVER ? getBdatId() : 0; }
+  u32 getValidDriverId() const { return isValid() && getObjType() == OBJECT_TYPE_PC ? getBdatId() : 0; }
 
   IDataObj *unknown08;      // Inferred role: obj; original member name unknown.
   GF_OBJ_HANDLE *unknown10; // Inferred role: handle; original member name unknown.

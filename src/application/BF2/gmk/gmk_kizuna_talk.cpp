@@ -51,10 +51,10 @@ void GmkKizunaTalk::dispose() {
 }
 
 void GmkKizunaTalk::disposeGfObjHandle() {
-  if (unknown48 != gf::INVALID_HANDLE) {
+  if (unknown48 != gf::unknown020) {
     unbindToGameObj(unknown48);
     gf::GfObjUtil::destroy(unknown48);
-    unknown48 = gf::INVALID_HANDLE;
+    unknown48 = gf::unknown020;
   }
 }
 
@@ -79,7 +79,7 @@ void GmkKizunaTalk::update(f32 deltaTime) {
     return;
   }
   if (getBdatInfo()->isCondMatched() && DistCond::isMatch(unknown50.unknown00, unknown08.unknown08->unknown00)) {
-    if (unknown48 == gf::INVALID_HANDLE) {
+    if (unknown48 == gf::unknown020) {
       createGfObjHandle();
     }
   } else {
@@ -96,12 +96,12 @@ void GmkKizunaTalk::debugDraw() const {
 
 void GmkKizunaTalk::validateDisp() const {
   bool isDisp = unknown54 && debugIsDispGmkType(getGmkType());
-  if (unknown48 == gf::INVALID_HANDLE) {
+  if (unknown48 == gf::unknown020) {
     return;
   }
   gf::GfObjAcc acc(unknown48);
   if (acc.isValid()) {
-    acc.setDisp(gf::OBJDISP_GMK_EVENT, isDisp);
+    acc.setDisp(gf::OBJDISP_UNKNOWN_3, isDisp);
   }
 }
 

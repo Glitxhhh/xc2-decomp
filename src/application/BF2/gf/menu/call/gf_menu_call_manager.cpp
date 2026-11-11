@@ -5,7 +5,7 @@
 
 namespace gf {
 
-GfMenuCallManager::GfMenuCallManager(const GfSetupParam &param) : unknown08(), unknown228(getAllocator(ALLOCATOR_DEFAULT)), unknown1108() { reset(); }
+GfMenuCallManager::GfMenuCallManager(const GfSetupParam &param) : unknown08(), unknown228(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown1108() { reset(); }
 
 void GfMenuCallManager::reset() {
   for (u32 i = 0; i < CALL_UNKNOWN_135; i++) {
@@ -30,7 +30,7 @@ bool GfMenuCallManager::canCall(u32 call) const {
   return false;
 }
 
-void GfMenuCallManager::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuCallManager(param); }
+void GfMenuCallManager::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuCallManager(param); }
 
 void GfMenuCallManager::destroy() {
   if (get() != nullptr) {

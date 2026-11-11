@@ -17,7 +17,7 @@ GfMenuBladeList::~GfMenuBladeList() { ; }
 GfMenuBladeList *GfMenuBladeList::create() {
   // __LINE__ must be 49 as in the original source: it is the line argument of operator new.
 #line 49
-  GfMenuBladeList *list = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuBladeList();
+  GfMenuBladeList *list = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuBladeList();
   list->addRef();
   return list;
 }
@@ -179,7 +179,7 @@ void GfMenuBladeList::updateOwner() {
 void GfMenuBladeList::setupFromBladeList(const BladeListSetup &setup) {
   SetupParam param = setup.unknown00;
   const mm::mtl::FixedVector<u16, 422> *blades = setup.unknown18;
-  UIListInfo<MenuBladeInfo>::setup(getAllocator(ALLOCATOR_DEFAULT), param);
+  UIListInfo<MenuBladeInfo>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
   if (isValid()) {
     MenuBladeInfo info = {};
     for (u32 i = 0; i < blades->size(); i++) {

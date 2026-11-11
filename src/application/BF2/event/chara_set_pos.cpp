@@ -10,7 +10,7 @@
 namespace event {
 
 ICmd::RESULT CharaSetPos::update(const Param &param) {
-  if (unknown08 != gf::INVALID_HANDLE) {
+  if (unknown08 != gf::unknown020) {
     gf::GfObj *obj = gf::GfObjUtil::getObj(unknown08);
     if (obj == nullptr) {
       return RESULT_UNKNOWN_0;

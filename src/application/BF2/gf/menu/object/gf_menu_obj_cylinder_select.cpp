@@ -120,7 +120,7 @@ void GfMenuObjCylinderSelect::MainListener::reciveEvent(const ui::EventData &eve
     GfDataBdat::getFP(BDAT_ITM_SALVAGE_LIST);
     setup.unknown00.unknown08 = 10;
     setup.unknown00.unknown10 = true;
-    setup.unknown14 = ItemType::SALVAGE;
+    setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_5;
     unknown20->unknown28->setupFromBox(setup);
     if (unknown20->unknown28->getSize() == 0) {
       unknown20->unknown40->reset();
@@ -132,7 +132,7 @@ void GfMenuObjCylinderSelect::MainListener::reciveEvent(const ui::EventData &eve
         MenuItemInfo info = unknown20->unknown28->getContents(i);
         ItemProperty property;
         GfItemUtil::getProperty(property, info.unknown04, 0);
-        if (property.unknown00.test(ItemProperty::FLAG_QUEST) && info.unknown04 != item) {
+        if (property.unknown00.test(ItemProperty::FLAG_UNKNOWN_4) && info.unknown04 != item) {
           unknown20->unknown28->decItem(info, false);
         } else {
           i++;

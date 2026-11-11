@@ -22,10 +22,10 @@ namespace gf {
 namespace {
 
 enum {
-  ACHIEVEMENT_TYPE_BLADE = 9,
+  ACHIEVEMENT_UNKNOWN_9_2 = 9, // Inferred role: achievement type blade; original name unknown.
 };
 
-constexpr u32 TASK_CHECK_COUNT = 8;
+constexpr u32 CHECK_UNKNOWN_8 = 8; // Inferred role: task check count; original name unknown.
 
 } // namespace
 
@@ -43,8 +43,8 @@ GfQuestManager::GfQuestManager(const GfSetupParam &param) : unknown98(false), un
 
 void GfQuestManager::initialize(const GfSetupParam &) {
   s_bdat = GfBdatQuest::get();
-  s_event = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfQuestEvent();
-  s_target = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfQuestTarget();
+  s_event = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfQuestEvent();
+  s_target = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfQuestTarget();
   GfQuestUtil::clearOrderParentQuest();
   unknown408c0 = false;
   unknown408c1 = false;
@@ -54,7 +54,7 @@ void GfQuestManager::initialize(const GfSetupParam &) {
 
 GfQuestManager::~GfQuestManager() { s_pThis = nullptr; }
 
-void GfQuestManager::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfQuestManager(param); }
+void GfQuestManager::build(const GfSetupParam &param) { new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfQuestManager(param); }
 
 void GfQuestManager::destroy() {
   GfQuestManager *manager = get();
@@ -173,13 +173,13 @@ void GfQuestManager::updateOrderQuest() {
 }
 
 void GfQuestManager::updateAchievementTask() {
-  for (u32 count = 0; (count < TASK_CHECK_COUNT || unknown408c1) && !unknown2f9a8.empty(); count++) {
+  for (u32 count = 0; (count < CHECK_UNKNOWN_8 || unknown408c1) && !unknown2f9a8.empty(); count++) {
     QuestData data = unknown2f9a8.front();
     unknown2f9a8.pop_front();
     AchievQuest *achievQuest = GfDataQuest::getAchievQuest(data.unknown00);
     if (achievQuest != nullptr && GfKizunaringBlade::isCompleteLevel(*achievQuest)) {
       QSTATE state = GfQuestTask::updateQuestTask(data.unknown00);
-      if (state >= QSTATE_FIN_A) {
+      if (state >= QSTATE_UNKNOWN_2) {
         requestQuestComplete(data.unknown00, state);
       }
     }
@@ -189,12 +189,12 @@ void GfQuestManager::updateAchievementTask() {
 }
 
 void GfQuestManager::updateParallelTask() {
-  for (u32 count = 0; (count < TASK_CHECK_COUNT || unknown408c2) && !unknown3e418.empty(); count++) {
+  for (u32 count = 0; (count < CHECK_UNKNOWN_8 || unknown408c2) && !unknown3e418.empty(); count++) {
     QuestData data = unknown3e418.front();
     unknown3e418.pop_front();
-    if (GfQuestInfo::getState(data.unknown00) < QSTATE_FIN_A) {
+    if (GfQuestInfo::getState(data.unknown00) < QSTATE_UNKNOWN_2) {
       QSTATE state = GfQuestTask::updateQuestTask(data.unknown00);
-      if (state >= QSTATE_FIN_A) {
+      if (state >= QSTATE_UNKNOWN_2) {
         requestQuestComplete(data.unknown00, state);
       }
     }
@@ -206,7 +206,7 @@ void GfQuestManager::updateParallelTask() {
 void GfQuestManager::updateSortQuestTask() {
   QuestListAcc *questListAcc = QuestListAcc::get();
   for (mm::mtl::FixedQueue<QuestData, 8000>::iterator it = unknowna0.begin(), last = unknowna0.end(); it != last; ++it) {
-    if (questListAcc->getListQuestCategory((*it).unknown00) == QTYPE_NORMAL) {
+    if (questListAcc->getListQuestCategory((*it).unknown00) == QTYPE_UNKNOWN_3) {
       updateQuestTask(*it);
     }
   }
@@ -217,7 +217,7 @@ void GfQuestManager::updateSortQuestTask() {
   unknown2e370.clear();
 
   for (mm::mtl::FixedQueue<QuestData, 8000>::iterator it = unknowna0.begin(), last = unknowna0.end(); it != last; ++it) {
-    if (questListAcc->getListQuestCategory((*it).unknown00) != QTYPE_NORMAL) {
+    if (questListAcc->getListQuestCategory((*it).unknown00) != QTYPE_UNKNOWN_3) {
       updateQuestTask(*it);
     }
   }
@@ -237,7 +237,7 @@ void GfQuestManager::setupAchievementTaskCheck() {
 }
 
 void GfQuestManager::updateQuestProgress(const QuestData &data) {
-  if (GfQuestInfo::getState(data.unknown00) == QSTATE_ORDER) {
+  if (GfQuestInfo::getState(data.unknown00) == QSTATE_UNKNOWN_1) {
     cancelCondition(GfQuestInfo::getParentQuest(data.unknown00));
   }
 }
@@ -246,32 +246,32 @@ void GfQuestManager::applyQuestComplete(const CompQuest &compQuest) { checkQuest
 
 void GfQuestManager::flushEventParam(const QuestParam *param) {
   switch (param->unknown00) {
-  case QUEST_PARAM_TASK:
+  case QUEST_PARAM_UNKNOWN_0:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevChangeTaskState(*static_cast<const QuestTaskParam *>(param)); });
     break;
-  case QUEST_PARAM_COMPLETE:
+  case QUEST_PARAM_UNKNOWN_1:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevCompleteQuest(*static_cast<const QuestCompleteParam *>(param)); });
     break;
-  case QUEST_PARAM_CHANGE:
+  case QUEST_PARAM_UNKNOWN_2:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevChangeCurrentQuest(*static_cast<const QuestChangeParam *>(param)); });
     break;
-  case QUEST_PARAM_ORDER:
+  case QUEST_PARAM_UNKNOWN_3:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevOrderQuest(*static_cast<const QuestOrderParam *>(param)); });
     break;
-  case QUEST_PARAM_COMPLETE_CHILD:
+  case QUEST_PARAM_UNKNOWN_4:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevCompleteChildQuest(*static_cast<const QuestCompleteChildParam *>(param)); });
     break;
-  case QUEST_PARAM_PRE_COMPLETE:
+  case QUEST_PARAM_UNKNOWN_5:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevPreCompleteQuest(*static_cast<const QuestPreCompleteParam *>(param)); });
     break;
-  case QUEST_PARAM_STATE:
+  case QUEST_PARAM_UNKNOWN_6:
     mm::mtl::for_each(s_pThis->unknown08.begin(), s_pThis->unknown08.end(), [param](IQuestEvent *event) { event->qevChangeQuestState(*static_cast<const QuestStateParam *>(param)); });
     break;
   }
 }
 
 void GfQuestManager::refreshQuestTaskState() {
-  QuestID quest = getProgressCurrentQuest(QTYPE_NONE);
+  QuestID quest = getProgressCurrentQuest(QTYPE_UNKNOWN_0);
   if (quest.empty()) {
     return;
   }
@@ -294,7 +294,7 @@ void GfQuestManager::resetQuest(QuestID quest) {
   }
 
   GfQuestTask::clearTask(quest);
-  GfQuestInfo::setState(quest, QSTATE_NOT_ORDER);
+  GfQuestInfo::setState(quest, QSTATE_UNKNOWN_0);
   if (!GfQuestInfo::isParent(quest)) {
     mm::mtl::FixedQueue<QuestData, 8000>::iterator order = s_pThis->unknowna0.find(QuestData(quest));
     if (order != s_pThis->unknowna0.end()) {
@@ -330,14 +330,14 @@ void GfQuestManager::resetQuest(QuestID quest) {
     GfQuestManager *manager = s_pThis;
     mm::mtl::FixedQueue<QuestData, 8000> *quests = nullptr;
     switch (GfDataQuest::getListQuestCategory(quest)) {
-    case QTYPE_NORMAL:
+    case QTYPE_UNKNOWN_3:
       quests = &manager->unknown1e530;
       break;
-    case QTYPE_BLADE:
+    case QTYPE_UNKNOWN_2:
       quests = &manager->unknown16820;
       break;
-    case QTYPE_UNUSED:
-    case QTYPE_MERCENARIES:
+    case QTYPE_UNKNOWN_4:
+    case QTYPE_UNKNOWN_5:
       quests = &manager->unknown26240;
       break;
     }
@@ -350,7 +350,7 @@ void GfQuestManager::resetQuest(QuestID quest) {
   }
 
   QuestID child = GfQuestInfo::getChildQuestID(quest);
-  if (!child.empty() && child.unknown00 < QUEST_ID_END) {
+  if (!child.empty() && child.unknown00 < QUEST_ID_UNKNOWN_30000) {
     resetQuest(child);
   }
 }
@@ -374,7 +374,7 @@ void GfQuestManager::checkQuestComplete(QuestID quest, QSTATE state) {
     GfPlayFactory::createOneEvent(event);
   }
 
-  if (!next.empty() && next.unknown00 < QUEST_ID_END) {
+  if (!next.empty() && next.unknown00 < QUEST_ID_UNKNOWN_30000) {
     return;
   }
 
@@ -387,7 +387,7 @@ void GfQuestManager::checkQuestComplete(QuestID quest, QSTATE state) {
   }
 
   if (GfQuestInfo::isScenarioQuest(parent)) {
-    QuestID current = getCurrentQuest(QTYPE_NONE);
+    QuestID current = getCurrentQuest(QTYPE_UNKNOWN_0);
     if (current == parent) {
       s_pThis->setCurrentQuestScenario(toQuestID(0));
     }
@@ -396,13 +396,13 @@ void GfQuestManager::checkQuestComplete(QuestID quest, QSTATE state) {
 
 void GfQuestManager::eventCompleteChildQuest(QuestID quest) {
   if (!quest.empty()) {
-    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestCompleteChildParam(quest));
+    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestCompleteChildParam(quest));
   }
 }
 
 QuestID GfQuestManager::orderChildQuest(QuestID quest, u32 state) {
-  QuestID next = state == QSTATE_FIN_B ? GfDataQuest::getListNextQuestB(quest) : GfDataQuest::getListNextQuestA(quest);
-  if (!next.empty() && next.unknown00 < QUEST_ID_END) {
+  QuestID next = state == QSTATE_UNKNOWN_3 ? GfDataQuest::getListNextQuestB(quest) : GfDataQuest::getListNextQuestA(quest);
+  if (!next.empty() && next.unknown00 < QUEST_ID_UNKNOWN_30000) {
     acceptOrder(next);
   }
 
@@ -430,7 +430,7 @@ void GfQuestManager::setCompleteState(QuestID quest, QuestID child, QSTATE state
 
   QuestData data(quest);
   s_pThis->unknown2e160.push(data);
-  if (GfDataQuest::getListQuestCategory(data.unknown00) != QTYPE_MAIN && data.unknown00.unknown02 == 0) {
+  if (GfDataQuest::getListQuestCategory(data.unknown00) != QTYPE_UNKNOWN_1 && data.unknown00.unknown02 == 0) {
     SCOM_ACHIEV_INC::addTotalCount(1, 1);
     SCOM_ACHIEV_INC::create(1, 1, 0);
   }
@@ -439,10 +439,10 @@ void GfQuestManager::setCompleteState(QuestID quest, QuestID child, QSTATE state
 // Inlined into every caller: the game keeps an out-of-line copy this code does not match yet.
 inline QuestID GfQuestManager::getCurrentQuest(QTYPE type) {
   QuestID quest;
-  if (type == QTYPE_NONE) {
+  if (type == QTYPE_UNKNOWN_0) {
     QuestID select = GfDataQuest::getSelect();
     quest = select.empty() ? GfDataQuest::getScenario() : select;
-  } else if (type == QTYPE_MAIN) {
+  } else if (type == QTYPE_UNKNOWN_1) {
     quest = GfDataQuest::getScenario();
   } else {
     quest = GfDataQuest::getSelect();
@@ -456,7 +456,7 @@ inline QuestID GfQuestManager::getCurrentQuest(QTYPE type) {
 }
 
 void GfQuestManager::setCurrentQuestScenario(QuestID quest) {
-  QuestID oldQuest = getCurrentQuest(QTYPE_NONE);
+  QuestID oldQuest = getCurrentQuest(QTYPE_UNKNOWN_0);
   GfDataQuest::setScenario(quest);
   GfDataQuest::setSelect(toQuestID(0));
   if (!quest.empty()) {
@@ -501,10 +501,10 @@ bool GfQuestManager::getRewardItem(GfQuestReward &reward, QuestID quest, bool is
     }
   } else {
     rewardSet = 0;
-    if (GfQuestInfo::getState(parent) == QSTATE_FIN_A) {
+    if (GfQuestInfo::getState(parent) == QSTATE_UNKNOWN_2) {
       rewardSet = questListAcc->getListRewardSetA(parent);
     }
-    if (GfQuestInfo::getState(parent) == QSTATE_FIN_B) {
+    if (GfQuestInfo::getState(parent) == QSTATE_UNKNOWN_3) {
       rewardSet = questListAcc->getListRewardSetB(parent);
     }
   }
@@ -519,7 +519,7 @@ void GfQuestManager::getLinkQuest(mm::mtl::FixedVector<QuestID, 16> &quests, Que
 
   for (mm::mtl::FixedVector<QuestID, 16> *links = s_pThis->unknown40438.begin(), *last = s_pThis->unknown40438.end(); links != last; ++links) {
     if ((*links)[0] == quest) {
-      if (quest == getProgressCurrentQuest(QTYPE_NONE)) {
+      if (quest == getProgressCurrentQuest(QTYPE_UNKNOWN_0)) {
         quests = *links;
         return;
       }
@@ -545,12 +545,12 @@ QuestID GfQuestManager::getPrevCompleteQuest() {
 }
 
 void GfQuestManager::updateQuestTask(const QuestData &data) {
-  if (GfQuestInfo::getState(data.unknown00) >= QSTATE_FIN_A) {
+  if (GfQuestInfo::getState(data.unknown00) >= QSTATE_UNKNOWN_2) {
     return;
   }
 
   QSTATE state = GfQuestTask::updateQuestTask(data.unknown00);
-  if (state >= QSTATE_FIN_A) {
+  if (state >= QSTATE_UNKNOWN_2) {
     requestQuestComplete(data.unknown00, state);
   }
 }
@@ -559,11 +559,11 @@ QuestID GfQuestManager::getCurrentQuestSelect() { return GfDataQuest::getSelect(
 
 void GfQuestManager::setCurrentQuestSelect(QuestID quest) {
   QuestListAcc *questListAcc = s_bdat->unknown130;
-  QuestID oldQuest = getCurrentQuest(QTYPE_NONE);
+  QuestID oldQuest = getCurrentQuest(QTYPE_UNKNOWN_0);
   GfDataQuest::setSelect(quest);
   if (quest.empty()) {
     QuestID last = GfQuestUtil::getLastOrderParentQuest();
-    if (!last.empty() && GfDataQuest::getListQuestCategory(last) != QTYPE_MAIN && !(last == oldQuest)) {
+    if (!last.empty() && GfDataQuest::getListQuestCategory(last) != QTYPE_UNKNOWN_1 && !(last == oldQuest)) {
       quest.unknown00 = last.unknown00;
       quest.unknown02 = last.unknown02;
       GfDataQuest::setSelect(quest);
@@ -601,27 +601,27 @@ void GfQuestManager::resetBattleTaskForBattleEnd() {
 }
 
 void GfQuestManager::acceptOrder(QuestID quest) {
-  if (GfQuestInfo::getState(quest) >= QSTATE_FIN_A) {
-    GfQuestInfo::setState(quest, QSTATE_NOT_ORDER);
+  if (GfQuestInfo::getState(quest) >= QSTATE_UNKNOWN_2) {
+    GfQuestInfo::setState(quest, QSTATE_UNKNOWN_0);
   }
 
   if (!GfQuestInfo::isParent(quest)) {
     s_pThis->addEntryQuest(quest);
-    GfQuestInfo::setState(quest, QSTATE_ORDER);
+    GfQuestInfo::setState(quest, QSTATE_UNKNOWN_1);
     GfQuestTask::setupOrderTask(quest);
     return;
   }
 
   mm::mtl::FixedQueue<QuestData, 8000> *quests = nullptr;
   switch (GfDataQuest::getListQuestCategory(quest)) {
-  case QTYPE_NORMAL:
+  case QTYPE_UNKNOWN_3:
     quests = &unknown1e530;
     break;
-  case QTYPE_BLADE:
+  case QTYPE_UNKNOWN_2:
     quests = &unknown16820;
     break;
-  case QTYPE_UNUSED:
-  case QTYPE_MERCENARIES:
+  case QTYPE_UNKNOWN_4:
+  case QTYPE_UNKNOWN_5:
     quests = &unknown26240;
     break;
   }
@@ -634,8 +634,8 @@ void GfQuestManager::acceptOrder(QuestID quest) {
   }
 
   GfDataQuest::setOrderTimming(quest);
-  GfQuestInfo::setState(quest, QSTATE_ORDER);
-  if (GfDataQuest::getListQuestCategory(quest) == QTYPE_MAIN) {
+  GfQuestInfo::setState(quest, QSTATE_UNKNOWN_1);
+  if (GfDataQuest::getListQuestCategory(quest) == QTYPE_UNKNOWN_1) {
     setCurrentQuestScenario(quest);
   }
 }
@@ -643,7 +643,7 @@ void GfQuestManager::acceptOrder(QuestID quest) {
 QuestID GfQuestManager::getCurrentQuestScenario() { return GfDataQuest::getScenario(); }
 
 void GfQuestManager::setCurrentQuestForScenario() {
-  QuestID quest = GfQuestUtil::getLastOrderCategoryQuest(QTYPE_MAIN);
+  QuestID quest = GfQuestUtil::getLastOrderCategoryQuest(QTYPE_UNKNOWN_1);
   if (!quest.empty()) {
     setCurrentQuest(quest);
   }
@@ -676,7 +676,7 @@ void GfQuestManager::orderQuest(QuestID quest) {
 
 void GfQuestManager::eventOrderQuest(QuestID quest) {
   if (!quest.empty()) {
-    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestOrderParam(quest));
+    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestOrderParam(quest));
   }
 }
 
@@ -713,7 +713,7 @@ bool GfQuestManager::compEntryQuest::operator()(const QuestData &data) const {
     return true;
   }
 
-  if (category == QTYPE_ACHIEVEMENT) {
+  if (category == QTYPE_UNKNOWN_6) {
     if (quest.unknown02 == 0) {
       if (data.unknown00.unknown02 != 0) {
         return false;
@@ -725,7 +725,7 @@ bool GfQuestManager::compEntryQuest::operator()(const QuestData &data) const {
     AchievQuest *achievQuest = GfDataQuest::getAchievQuest(quest);
     AchievQuest *otherAchievQuest = GfDataQuest::getAchievQuest(data.unknown00);
     if (achievQuest != nullptr && otherAchievQuest != nullptr) {
-      if (otherAchievQuest->unknown12 != ACHIEVEMENT_TYPE_BLADE && achievQuest->unknown12 == ACHIEVEMENT_TYPE_BLADE) {
+      if (otherAchievQuest->unknown12 != ACHIEVEMENT_UNKNOWN_9_2 && achievQuest->unknown12 == ACHIEVEMENT_UNKNOWN_9_2) {
         return true;
       }
 
@@ -830,34 +830,34 @@ QuestID GfQuestManager::getLastOrder() { return s_pThis->unknown2e780; }
 
 void GfQuestManager::eventCompleteQuest(QuestID quest, QSTATE state) {
   if (!quest.empty()) {
-    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestCompleteParam(quest, state));
+    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestCompleteParam(quest, state));
   }
 }
 
 void GfQuestManager::eventPreCompleteQuest(QuestID quest) {
   if (!quest.empty()) {
-    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestPreCompleteParam(quest));
+    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestPreCompleteParam(quest));
   }
 }
 
 void GfQuestManager::eventChangeQuestState(QuestID quest, QSTATE oldState, QSTATE state) {
   bool isEmpty = quest.empty();
   if (state != oldState && !isEmpty) {
-    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestStateParam(quest, oldState, state));
+    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestStateParam(quest, oldState, state));
   }
 }
 
 void GfQuestManager::eventChangeTaskState(const QuestTaskParam &param) {
-  s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestTaskParam(param.unknown04, param.unknown0c, param.unknown18));
+  s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestTaskParam(param.unknown04, param.unknown0c, param.unknown18));
 }
 
 void GfQuestManager::eventChangeCurrentQuest(QuestID oldQuest, QuestID quest) {
   if (!(quest == oldQuest)) {
-    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestChangeParam(oldQuest, quest));
+    s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestChangeParam(oldQuest, quest));
   }
 }
 
-void GfQuestManager::eventAchievementCount(QuestID quest) { s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestOrderParam(quest)); }
+void GfQuestManager::eventAchievementCount(QuestID quest) { s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) QuestOrderParam(quest)); }
 
 void GfQuestManager::eventCheckTaskAll() {
   if (s_pThis == nullptr) {
@@ -901,7 +901,7 @@ void GfQuestManager::checkTaskByQuestID(u32 quest) {
 }
 
 void GfQuestManager::gevReloadBdat(RELOAD_BDAT reload, u32) {
-  if (reload == RELOAD_BDAT_ALL) {
+  if (reload == RELOAD_BDAT_UNKNOWN_1) {
     s_pThis->refreshOrderQuestList();
     GfQuestTask::refreshTaskCounters();
   }
@@ -933,7 +933,7 @@ void GfQuestManager::requestOrderQuestForce() {
 void GfQuestManager::gevBattleEnd() { SCOM_BATTLE_TASK_RESET::create(); }
 
 void GfQuestManager::gevPlayEvent(GEV event, u32 eventId) {
-  if (event == GEV_EVENT_END) {
+  if (event == GEV_UNKNOWN_9) {
     GfQuestTask::completeEventTask(eventId);
   }
 }
@@ -954,7 +954,7 @@ void GfQuestManager::gevChangeTimeRange(u32) { eventCheckTaskAll(); }
 void GfQuestManager::gevMercenariesMissionFlag(u32, u32, u32) { eventCheckTaskAll(); }
 
 void GfQuestManager::gevMapjump(GEV event, const MapjumpCallbackInfo &info) {
-  if (event == GEV_MAPJUMP_FADEIN && s_pThis != nullptr) {
+  if (event == GEV_UNKNOWN_6 && s_pThis != nullptr) {
     refreshQuestTaskState();
   }
 
@@ -972,12 +972,12 @@ void GfQuestManager::setCurrentQuest(QuestID quest) {
       quest.unknown02 = parent.unknown02;
     }
 
-    if (GfQuestInfo::getState(quest) != QSTATE_ORDER) {
+    if (GfQuestInfo::getState(quest) != QSTATE_UNKNOWN_1) {
       return;
     }
   }
 
-  if (GfDataQuest::getListQuestCategory(quest) == QTYPE_MAIN) {
+  if (GfDataQuest::getListQuestCategory(quest) == QTYPE_UNKNOWN_1) {
     s_pThis->setCurrentQuestScenario(quest);
   } else {
     s_pThis->setCurrentQuestSelect(quest);

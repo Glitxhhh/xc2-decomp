@@ -91,28 +91,28 @@ const mm::mtl::RTTI *GfComBehaviorEnemy::getRTTI() const { return &m_rtti; }
 
 bool GfComBehaviorEnemy::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
   switch (message.unknown00) {
-  case MSG_OBJECT_NOTIFY_DAMAGE:
+  case MSG_OBJECT_UNKNOWN_16777271:
     procMsgObjectNotifyDamage(sender, static_cast<MsgObjectNotifyDamage &>(message));
     return true;
-  case MSG_OBJECT_NOTIFY_DEAD:
+  case MSG_OBJECT_UNKNOWN_16777272:
     procMsgObjectNotifyDead(sender, static_cast<MsgObjectNotifyDead &>(message));
     return true;
-  case MSG_OBJECT_LURE:
+  case MSG_UNKNOWN_16777281:
     procMsgObjectLure(sender, static_cast<MsgObjectLure &>(message));
     return true;
-  case MSG_OBJECT_GET_VELOCITY:
+  case MSG_UNKNOWN_16777286:
     procMsgObjectGetVelocity(sender, static_cast<MsgObjectGetVelocity &>(message));
     return true;
   default:
     break;
   }
 
-  if (message.unknown00 == MSG_DEBUG_ACTIVATE_COMPONENT_WINDOW) {
+  if (message.unknown00 == MSG_UNKNOWN_16777219) {
     procMsgActivateComponentDebugWindow(sender, static_cast<MsgDebugActivateComponentWindow &>(message));
     return true;
   }
 
-  if (message.unknown00 == MSG_PC_GET_LOOK_POINT) {
+  if (message.unknown00 == MSG_UNKNOWN_16777224) {
     procMsgPcGetLookPoint(sender, static_cast<MsgPcGetLookPoint &>(message));
     return true;
   }
@@ -420,7 +420,7 @@ bool GfComBehaviorEnemy::extractLoco() {
       const anm::QsTransform &locomotion = comAsm->getLocomotion();
       mm::Quat rotation = mm::Quat::mul(locomotion.unknown10, transform->getRotation());
       transform->setRotation(rotation);
-      f32 speed = comAsm->getSpeed(ANIM_LAYER_BASE);
+      f32 speed = comAsm->getSpeed(ANIM_LAYER_UNKNOWN_0);
       mm::Vec3 offset = transform->getRotation().rotate(mm::Vec3(locomotion.unknown00.x, locomotion.unknown00.y, locomotion.unknown00.z)) * speed;
       transform->setPosition(transform->getPosition() + offset);
       return true;
@@ -554,8 +554,8 @@ void GfComBehaviorEnemy::updateField(const fw::UpdateInfo &info) {
     unknowna0.setState(enemy::STATE_ID_UNKNOWN_13);
   }
 
-  GfMountManager::getHandle(static_cast<GfObj *>(unknown08)->unknownf8, GFATTACH_WEAPON, OPTMNT_UNKNOWN_1);
-  GfMountManager::getHandle(static_cast<GfObj *>(unknown08)->unknownf8, GFATTACH_WEAPON, OPTMNT_BLADE);
+  GfMountManager::getHandle(static_cast<GfObj *>(unknown08)->unknownf8, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_1);
+  GfMountManager::getHandle(static_cast<GfObj *>(unknown08)->unknownf8, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_3);
 }
 
 template <typename T> void GfComBehaviorEnemy::reqChangeBattleToOtherMember() const {

@@ -48,7 +48,7 @@ void GfMenuObjButtonChallenge2::initialize() {
     attachExternalCall(unknown001, main.unknown10);
 // __LINE__ must be 139 as in the original file: it is the line argument of operator new.
 #line 139
-    MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+    MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
     listener->addRef();
     ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
     if (listener != nullptr) {
@@ -64,7 +64,7 @@ void GfMenuObjButtonChallenge2::initialize() {
         name.format("LAY_challenge_v2@%02d", i + 1);
 // __LINE__ must be 156 as in the original file: it is the line argument of operator new.
 #line 156
-        RingListener *ringListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) RingListener(this);
+        RingListener *ringListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) RingListener(this);
         ringListener->addRef();
         ui::UIEventManager::get()->registObjectListener(main.searchChild(name.c_str()), ringListener);
         if (ringListener != nullptr) {
@@ -95,7 +95,7 @@ void GfMenuObjButtonChallenge2::open(GfMenuCallContext *context, const OpenParam
     if (acc.isValid() && isValidParam(param)) {
 // __LINE__ must be 258 as in the original file: it is the line argument of operator new.
 #line 258
-      OpenParam *openParam = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) OpenParam();
+      OpenParam *openParam = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) OpenParam();
       if (openParam != nullptr) {
         *openParam = param;
         ui::EventData event;

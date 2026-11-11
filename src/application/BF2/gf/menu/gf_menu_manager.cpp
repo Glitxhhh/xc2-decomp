@@ -268,7 +268,7 @@ void GfMenuManager::update(const fw::UpdateInfo &) {
 void GfMenuManager::build(const GfSetupParam &param) {
   // __LINE__ must be 347 as in the original file: it is an argument of the allocation.
 #line 347
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuManager(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuManager(param);
 }
 
 void GfMenuManager::destroy() {
@@ -609,7 +609,7 @@ void GfMenuManager::applyGammaCorrectValue(f32 value) {
   renderParam.setGamma(gamma);
 }
 
-void GfMenuManager::applyOptionData(const SDataOption &option) { applyGammaCorrectValue(static_cast<f32>(option.unknown4c._1a) / VOLUME_SCALE); }
+void GfMenuManager::applyOptionData(const SDataOption &option) { applyGammaCorrectValue(static_cast<f32>(option.unknown4c._1a) / unknown005); }
 
 void GfMenuManager::setupGame() {
   if (GfMenuFlag::get1(0x31) == 0) {
@@ -646,23 +646,23 @@ f32 GfMenuManager::getUpdateDT() {
 GF_OBJ_HANDLE *GfMenuManager::getTargetObjHandle() {
   GfMenuManager *manager = get();
   if (manager == nullptr) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
   if (manager->unknown4090) {
     return manager->unknown40b8;
   }
-  return INVALID_HANDLE;
+  return unknown020;
 }
 
 GF_OBJ_HANDLE *GfMenuManager::getAccessObjHandle() {
   GfMenuManager *manager = get();
   if (manager == nullptr) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
   if (manager->unknown4090) {
     return manager->unknown40c0;
   }
-  return INVALID_HANDLE;
+  return unknown020;
 }
 
 bool GfMenuManager::isTargetChanged() {
@@ -707,10 +707,10 @@ void GfMenuManager::gevAccessTarget(GF_OBJ_HANDLE *handle) {
   GfObjAcc acc(handle);
   if (!acc.isValid()) {
     GfMenuObjActionWindow::close();
-    if (unknown40c0 != INVALID_HANDLE) {
+    if (unknown40c0 != unknown020) {
       unknown40c9 = true;
     }
-    unknown40c0 = INVALID_HANDLE;
+    unknown40c0 = unknown020;
   } else {
     GfMenuObjActionWindow::OpenParam param;
     param.unknown00 = handle;
@@ -745,7 +745,7 @@ void GfMenuManager::gevChangeTarget(GF_OBJ_HANDLE *handle) {
 
 void GfMenuManager::checkElementCombo() {
   GF_OBJ_HANDLE *handle = getTargetObjHandle();
-  if (handle == INVALID_HANDLE) {
+  if (handle == unknown020) {
     return;
   }
   GfObjAcc acc(handle);
@@ -793,7 +793,7 @@ void GfMenuManager::gevPlayEvent(GEV event, u32) {
   }
 
   switch (event) {
-  case GEV_EVENT_SEQUENCE_START:
+  case GEV_UNKNOWN_11:
     unknown40dc.clear();
     unknown40ca = false;
     GfMenuObjPartyGauge::close();
@@ -801,17 +801,17 @@ void GfMenuManager::gevPlayEvent(GEV event, u32) {
     GfMenuObjComboRoute::close();
     GfMenuObjChainAttack::closeResult();
     break;
-  case GEV_EVENT_SEQUENCE_END:
+  case GEV_UNKNOWN_12:
     if (ui::UIInputManager::get() != nullptr) {
       ui::UIInputManager::get()->enable();
     }
     break;
-  case GEV_EVENT_START_FRAME:
+  case GEV_UNKNOWN_13:
     unknown002();
     GfMenuObjPartyGauge::close();
     GfMenuObjChainAttack::closeResult();
     // fallthrough
-  case GEV_EVENT_END:
+  case GEV_UNKNOWN_9:
     GfMenuObjComboRoute::close();
     GfMenuObjPartyStatus::close(true);
     break;
@@ -822,17 +822,17 @@ void GfMenuManager::gevPlayEvent(GEV event, u32) {
 
 void GfMenuManager::gevSalvageStateChange(u32 state) {
   switch (state) {
-  case GfGameSalvage::STATE_ITEM_SELECT:
+  case GfGameSalvage::STATE_UNKNOWN_3:
     unknown40e4.set(1, false);
     unknown40e4.set(2, false);
     break;
-  case GfGameSalvage::STATE_SETUP_FADE_OUT:
+  case GfGameSalvage::STATE_UNKNOWN_4:
     GfMenuObjEnvironmentInfo::close();
     break;
-  case GfGameSalvage::STATE_SETUP_FADE_IN:
+  case GfGameSalvage::STATE_UNKNOWN_6:
     unknown002();
     break;
-  case GfGameSalvage::STATE_FINISH:
+  case GfGameSalvage::STATE_UNKNOWN_20:
     unknown40e4.set(1);
     unknown40e4.set(2);
     break;
@@ -842,13 +842,13 @@ void GfMenuManager::gevSalvageStateChange(u32 state) {
 }
 
 void GfMenuManager::gevPlayerControl(GEV event) {
-  if (event == GEV_PLAYER_CONTROL_LOCK) {
+  if (event == GEV_UNKNOWN_15) {
     GfMenuReference::clearPartyStatusLock();
     unknown40e4.set(1, false);
     unknown40e4.set(2, false);
     unknown40e4.set(3, false);
     unknown40ca = false;
-  } else if (event == GEV_PLAYER_CONTROL_FREE) {
+  } else if (event == GEV_UNKNOWN_14) {
     GfMenuMapInfo::setCurrentMap(GfGameManager::getMapID());
     unknown40e4.set(1);
     if (!unknown40dc.test(0)) {
@@ -873,7 +873,7 @@ void GfMenuManager::gevItemAdd(u32 item, int count) {
   }
 
   ItemType::Type type = GfDataItem::getItemType(item);
-  if (type >= ItemType::PC_WPN_CHIP && type <= ItemType::HANA_ASSIST) {
+  if (type >= ItemType::ITEM_TYPE_UNKNOWN_1 && type <= ItemType::ITEM_TYPE_UNKNOWN_20) {
     GfMenuFlag::set1(0x3a + type, 1);
   }
 }
@@ -1183,7 +1183,7 @@ void GfMenuManager::execMinimap(bool isExec) {
     GfMenuMinimap::setDisp(false);
     return;
   }
-  if (GfGameManager::getState() == GF_STATE_CONTROL && !GfGameManager::isEvent(false)) {
+  if (GfGameManager::getState() == GF_STATE_UNKNOWN_3 && !GfGameManager::isEvent(false)) {
     GfMenuMinimap::setDisp(true);
   }
 }

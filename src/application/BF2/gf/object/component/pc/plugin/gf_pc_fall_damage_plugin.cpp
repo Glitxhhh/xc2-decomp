@@ -8,7 +8,7 @@
 namespace gf {
 namespace pc {
 
-FallDamagePlugin::FallDamagePlugin() : unknown10(nullptr), unknown18(0.0f), unknown1c(false), unknown20(INVALID_HANDLE) {}
+FallDamagePlugin::FallDamagePlugin() : unknown10(nullptr), unknown18(0.0f), unknown1c(false), unknown20(unknown020) {}
 
 FallDamagePlugin::~FallDamagePlugin() {}
 

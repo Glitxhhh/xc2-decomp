@@ -10,19 +10,19 @@
 
 namespace gf {
 
-GfBdatUniqueMotion::Impl::Impl() : unknown00(getAllocator(ALLOCATOR_DEFAULT)), unknown28(getAllocator(ALLOCATOR_DEFAULT)) {}
+GfBdatUniqueMotion::Impl::Impl() : unknown00(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown28(getAllocator(ALLOCATOR_UNKNOWN_0)) {}
 
 GfBdatUniqueMotion::Impl::~Impl() {}
 
 #line 180
 GfBdatUniqueMotion::GfBdatUniqueMotion() {
-  unknown28.reset(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) Impl());
+  unknown28.reset(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) Impl());
   unknown28->build();
 }
 
 #line 190
 void GfBdatUniqueMotion::bdatRefresh() {
-  unknown28.reset(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) Impl());
+  unknown28.reset(new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) Impl());
   unknown28->build();
   GfGamePlayerUniqueScheduler::onReload();
 }

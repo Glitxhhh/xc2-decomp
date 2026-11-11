@@ -14,6 +14,7 @@
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_util.h"
 
+// Named as the game's global symbol ASM_CB_NAME_EFFECT.
 const char *ASM_CB_NAME_EFFECT = "asm_effect";
 
 namespace gf {

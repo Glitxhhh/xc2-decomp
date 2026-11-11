@@ -28,7 +28,7 @@ struct GF_OBJ_HANDLE;
 void GfMenuReference::build(const GfSetupParam &param) {
 // __LINE__ must be 67 as in the original file: its value changes the instruction order.
 #line 67
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuReference(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuReference(param);
 }
 
 void GfMenuReference::destroy() {
@@ -388,7 +388,7 @@ u32 GfMenuReference::getElementComboRootCurrent() {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
     GF_OBJ_HANDLE *handle = GfMenuManager::getTargetObjHandle();
-    if (handle != INVALID_HANDLE && GfObjAcc(handle).getType() == OBJECT_TYPE_ENEMY) {
+    if (handle != unknown020 && GfObjAcc(handle).getType() == OBJECT_TYPE_ENEMY) {
       GfObjProperty *property = GfObjUtil::getProperty(handle);
       if (property != nullptr) {
         GfObjPropertyEnemy *enemy = property->getEnemy();
@@ -602,7 +602,7 @@ u32 GfMenuReference::getReferenceBladeID(u32 index) {
 void GfMenuReference::setReferenceBladeIDFromDriver(u32 driver) {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
-    DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+    DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
     if (acc.isValid()) {
       reference->unknown4cc18[0] = acc.getBlade(0, false);
       reference->unknown4cc18[1] = acc.getBlade(1, false);
@@ -876,7 +876,7 @@ u32 GfMenuReference::getBladeVirtualEquipOrbSlot() {
 }
 
 GF_SEARCH_OBJ *GfMenuReference::createList(GF_SEARCH_OBJ *searchObj) {
-  if (searchObj != INVALID_SEARCH_OBJ) {
+  if (searchObj != unknown012) {
     REFLIST *list = new (unknown4070.unknown003()) REFLIST;
     list->unknown00 = searchObj;
     list->unknown08.clear();

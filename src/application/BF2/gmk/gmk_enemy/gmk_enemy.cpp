@@ -279,7 +279,7 @@ gf::GF_OBJ_HANDLE *GmkEnemyInsts::getGobInst(u32 index) const {
     }
     index -= num;
   }
-  return gf::INVALID_HANDLE;
+  return gf::unknown020;
 }
 
 GmkEnemyInsts::GmkEnemyInsts()
@@ -425,7 +425,7 @@ bool GmkEnemy::isPointInsideRandomWalk(const mm::Vec3 &position) const {
 
 void GmkEnemy::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     unknown48.removeGobInst(handle);
   }
 }

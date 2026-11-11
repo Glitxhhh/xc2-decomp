@@ -65,9 +65,9 @@ GmkType GmkElevatorLocator::getGmkType() const { return GMK_TYPE; }
 
 bool GmkElevatorLocator::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
 
-GmkElevator::GmkElevator() : unknown4b0(gf::INVALID_HANDLE), unknown4b8(nullptr), unknown4c8(false), unknown4c9(false), unknown4ca(false), unknown4cb(false), unknown4cc(0.0f) {
+GmkElevator::GmkElevator() : unknown4b0(gf::unknown020), unknown4b8(nullptr), unknown4c8(false), unknown4c9(false), unknown4ca(false), unknown4cb(false), unknown4cc(0.0f) {
   for (u32 i = 0; i < 4; i++) {
-    unknown290[i] = gf::INVALID_HANDLE;
+    unknown290[i] = gf::unknown020;
   }
 }
 
@@ -94,7 +94,7 @@ void GmkElevator::seqWaitToValidate_GfFieldLod(f32 deltaTime) {
   const gf::GfFieldLod::BdatInfo *lodInfo = lod->findBdatInfo(info->unknown06);
   if (lodInfo != nullptr) {
     u16 lodId = lodInfo->unknown00;
-    for (gf::GF_OBJ_HANDLE *const &handle : *gf::GfGameObj::getList(gf::OBJECT_TYPE_UNKNOWN_2)) {
+    for (gf::GF_OBJ_HANDLE *const &handle : *gf::GfGameObj::getList(gf::OBJECT_TYPE_MAP_LOD)) {
       gf::GfObjSetupMapLodAnim *setup = mm::mtl::dynamicCast<gf::GfObjSetupMapLodAnim>(gf::GfObjManager::getObjInfo(handle)->unknown30);
       if (setup->unknown6c == lodId) {
         unknown4b0 = handle;
@@ -385,7 +385,7 @@ bool GmkElevator::isPlayEnd(u16 lodId) {
 }
 
 void GmkElevator::setTargetableByItemType(ItemType type, bool isTargetable) {
-  if (unknown290[type] == gf::INVALID_HANDLE) {
+  if (unknown290[type] == gf::unknown020) {
     return;
   }
   if (canCreateGameEntity()) {
@@ -553,20 +553,20 @@ void GmkElevator::seqWaitToCloseUpShutter(f32 deltaTime) {
 
 void GmkElevator::clearGobInsts() {
   for (int i = 0; i < 4; i++) {
-    if (unknown290[i] != gf::INVALID_HANDLE) {
+    if (unknown290[i] != gf::unknown020) {
       gf::GfObjAcc acc(unknown290[i]);
       if (acc.isValid()) {
-        acc.setUserData(gf::OBJ_USER_DATA_GMK, 0);
+        acc.setUserData(gf::OBJ_USER_DATA_UNKNOWN_0, 0);
       }
       gf::GfObjUtil::destroy(unknown290[i]);
-      unknown290[i] = gf::INVALID_HANDLE;
+      unknown290[i] = gf::unknown020;
     }
   }
 }
 
 void GmkElevator::dispose() {
   clearRequests();
-  unknown4b0 = gf::INVALID_HANDLE;
+  unknown4b0 = gf::unknown020;
   unknown4b8 = nullptr;
   clearGobInsts();
   clearSe();

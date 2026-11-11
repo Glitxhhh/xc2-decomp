@@ -60,9 +60,9 @@ void GimmickCamera::updateParams() {
   setLookAt(unknownb0, target, unknownc0.z);
 }
 
-static constexpr fw::CAMERA_PRIO CAMERA_PRIO_GIMMICK = static_cast<fw::CAMERA_PRIO>(55);
+static constexpr fw::CAMERA_PRIO CAMERA_PRIO_UNKNOWN_55 = static_cast<fw::CAMERA_PRIO>(55); // Inferred role: camera prio gimmick; original name unknown.
 
-GimmickCamera::GimmickCamera() : GimmickCamera(CAMERA_PRIO_GIMMICK) {}
+GimmickCamera::GimmickCamera() : GimmickCamera(CAMERA_PRIO_UNKNOWN_55) {}
 
 f32 GimmickCamera::getPitch(const mm::Vec3 &direction, const mm::Vec3 &reference) {
   f32 yaw = getYaw(direction, reference);

@@ -34,7 +34,7 @@ GF_OBJ_HANDLE *GfAssetUtil::getObjHandle(GF_ASSET_HANDLE *handle) {
   if (info != nullptr) {
     return info->unknown2d8;
   }
-  return INVALID_HANDLE;
+  return unknown020;
 }
 
 void GfAssetUtil::getAssetHandleBySlotHandle(mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024> &assets, const mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024> &handles, GF_SLOT_HANDLE *slot) {

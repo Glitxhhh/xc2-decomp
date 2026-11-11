@@ -117,7 +117,7 @@ void GmkSquadNavi::create(const CreateInfo &info) {
 }
 
 void GmkSquadNavi::dispose() {
-  if (unknown10.unknown00 != nullptr && unknown10.unknown08 != gf::INVALID_HANDLE) {
+  if (unknown10.unknown00 != nullptr && unknown10.unknown08 != gf::unknown020) {
     unknown10.unknown00->removeGmkSquadNavi(this);
     unknown002();
   }

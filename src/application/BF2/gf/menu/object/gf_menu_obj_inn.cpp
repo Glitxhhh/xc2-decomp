@@ -38,7 +38,7 @@ GfMenuObjInn::~GfMenuObjInn() {
 
 bool GfMenuObjInn::isEnableLevelUp() {
   mm::mtl::FixedVector<u16, 16> drivers;
-  GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_PARTY_AND_RESERVER, 0);
+  GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_UNKNOWN_2, 0);
   for (u32 i = 0; i < drivers.size(); i++) {
     if (GfDataDriver::isEnableLevelUp(drivers[i])) {
       return true;

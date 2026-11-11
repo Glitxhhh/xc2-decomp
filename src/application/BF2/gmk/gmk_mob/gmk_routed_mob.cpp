@@ -28,12 +28,12 @@ GmkType GmkRoutedMob::getGmkType() const { return GMK_TYPE; }
 const IGmkList *GmkRoutedMob::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_UNKNOWN_20]; }
 
 void GmkRoutedMob::unbindRouteNavi(gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return;
   }
   for (std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi> *it = unknown120.begin(); it != unknown120.end(); ++it) {
     if (it->first == handle) {
-      it->first = gf::INVALID_HANDLE;
+      it->first = gf::unknown020;
       it->second.dispose();
       break;
     }
@@ -74,7 +74,7 @@ void GmkRoutedMob::debugDraw() const {
 }
 
 void GmkRoutedMob::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY && handle != gf::INVALID_HANDLE) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3 && handle != gf::unknown020) {
     unbindToGameObj(handle);
     unbindRouteNavi(handle);
     unknown50.removeGobInst(handle);
@@ -108,7 +108,7 @@ void GmkRoutedMob::create(const CreateInfo &info) {
 
 void GmkRoutedMob::update(f32 deltaTime) {
   debugUpdateMmf();
-  if (!isValid() || gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE) {
+  if (!isValid() || gf::GfGameManager::getControlMover() == gf::unknown020) {
     return;
   }
   const mm::Vec3 &playerPosition = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -127,7 +127,7 @@ void GmkRoutedMob::update(f32 deltaTime) {
 
 GmkRouteNavi *GmkRoutedMob::findFreeRouteNavi() const {
   for (std::pair<gf::GF_OBJ_HANDLE *, GmkRouteNavi> *it = unknown120.begin(); it != unknown120.end(); ++it) {
-    if (it->first == gf::INVALID_HANDLE) {
+    if (it->first == gf::unknown020) {
       return &it->second;
     }
   }

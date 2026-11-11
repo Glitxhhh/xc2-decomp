@@ -58,11 +58,11 @@ bool isUnuseBlade(u32 blade) {
     return GfDataUtil::getScenarioFlag() <= 0xbe7;
   case BLADE_BYAKKO:
     return GfDataUtil::getScenarioFlag() <= 0x7d9;
-  case BLADE_HANA_JS:
+  case BLADE_UNKNOWN_1005:
     return GfDataUtil::getScenarioFlag() <= 0x7f0;
-  case BLADE_HANA_JK:
+  case BLADE_UNKNOWN_1006:
     return GfDataUtil::getScenarioFlag() <= 0xfd5;
-  case BLADE_HANA_JD:
+  case BLADE_UNKNOWN_1007:
     return GfGameFlag::getLocal(1, 0x8a03) == 0;
   case BLADE_SUZAKU:
     return GfDataUtil::getScenarioFlag() <= 0xbc4;

@@ -43,6 +43,7 @@ public:
   void registComponentLocal(u32 index, ComponentObject *component);
   void removeComponentLocal(u32 index);
 
+  // Inferred name; shared by every component class for getComponent<T>.
   template <typename T> T *getComponent() const {
     ComponentObject *component = unknown38[T::COMPONENT_INDEX];
     if (component == nullptr) {

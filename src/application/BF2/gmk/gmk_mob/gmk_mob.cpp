@@ -97,7 +97,7 @@ bool GmkMobInsts::isGobInstExist() const {
   }
   size_t num = unknowna8->size();
   for (size_t i = 0; i < num; i++) {
-    if ((*unknowna8)[i] != gf::INVALID_HANDLE) {
+    if ((*unknowna8)[i] != gf::unknown020) {
       return true;
     }
   }
@@ -125,7 +125,7 @@ bool GmkMobInsts::canDepopGobInst(const mm::Vec3 &position) const {
 }
 
 void GmkMobInsts::removeGobInst(gf::GF_OBJ_HANDLE *handle) {
-  if (handle == gf::INVALID_HANDLE || unknowna8->size() == 0) {
+  if (handle == gf::unknown020 || unknowna8->size() == 0) {
     return;
   }
   for (gf::GF_OBJ_HANDLE **it = unknowna8->begin(); it != unknowna8->end(); ++it) {
@@ -244,7 +244,7 @@ void GmkMobInsts::disposeGobInsts(bool isFadeOut) {
     size_t num = unknowna8->size();
     for (size_t i = 0; i < num; i++) {
       gf::GF_OBJ_HANDLE *handle = (*unknowna8)[i];
-      if (handle != gf::INVALID_HANDLE) {
+      if (handle != gf::unknown020) {
         if (isFadeOut) {
           gmk::disposeGobInst(handle, 1.0f);
         } else {
@@ -267,7 +267,7 @@ void GmkMobInsts::createGobInsts() {
   CBdatWrapper bdat = {unknown00.unknown08};
   unknown58.create(bdat, unknown00.unknown10);
   unknowna8->destroy();
-  unknowna8->setAllocator(gf::getAllocator(gf::ALLOCATOR_DEFAULT));
+  unknowna8->setAllocator(gf::getAllocator(gf::ALLOCATOR_UNKNOWN_0));
   unknowna8->reserve(unknown58.unknown40);
 }
 
@@ -312,10 +312,10 @@ void GmkMobList::onResetUpdateGmkIndex() {
 }
 
 void GmkMob::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
-  if (event == gf::IGfObjListener::OBJEVT_DESTROY && handle != gf::INVALID_HANDLE) {
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3 && handle != gf::unknown020) {
     gf::GfObjAcc acc(handle);
     if (acc.isValid()) {
-      acc.setUserData(gf::OBJ_USER_DATA_GMK, 0);
+      acc.setUserData(gf::OBJ_USER_DATA_UNKNOWN_0, 0);
     }
     unknown48.removeGobInst(handle);
   }

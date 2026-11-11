@@ -63,7 +63,7 @@ static void unknown013(u32 handle, u32 elem, u32 index) {
   }
 }
 
-GfMenuObjEnemyStatus::GfMenuObjEnemyStatus(u32 handle) : GfMenuObject(handle), unknown28(INVALID_HANDLE), unknown100(-1) {}
+GfMenuObjEnemyStatus::GfMenuObjEnemyStatus(u32 handle) : GfMenuObject(handle), unknown28(unknown020), unknown100(-1) {}
 
 GfMenuObjEnemyStatus::~GfMenuObjEnemyStatus() {}
 
@@ -80,7 +80,7 @@ void GfMenuObjEnemyStatus::update() {
       GfObjAcc obj(unknown28);
       ui::EventData event;
       event.unknown00 = unknown008;
-      if (unknown28 == INVALID_HANDLE) {
+      if (unknown28 == unknown020) {
         event.unknown08 = 1;
       } else {
         event.unknown08 = obj.getType() != OBJECT_TYPE_ENEMY;

@@ -150,7 +150,7 @@ template <typename T> void GmkManager::collectGameObjs(mm::mtl::FixedList<gf::GF
       const T *gmk = static_cast<const T *>(list->getInst(index));
       if (gmk != nullptr && gmk->isValid()) {
         gf::GF_OBJ_HANDLE *handle = unknown010(*gmk);
-        if (handle != gf::INVALID_HANDLE) {
+        if (handle != gf::unknown020) {
           handles.push_back(handle);
         }
       }
@@ -177,7 +177,7 @@ template <typename T> void GmkManager::collectGameObjsUnbound(mm::mtl::FixedList
         u32 count = unknown012(insts);
         for (u32 handleIndex = 0; handleIndex < count; handleIndex++) {
           gf::GF_OBJ_HANDLE *handle = unknown013(insts, handleIndex);
-          if (handle != gf::INVALID_HANDLE) {
+          if (handle != gf::unknown020) {
             handles.push_back(handle);
           }
         }

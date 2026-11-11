@@ -245,7 +245,7 @@ ObjectChara *ObjectList::createGfObjPcByWalkID(const char *name, u32 walkID, u32
   if (flags == 0) {
     return createGfObj(name, driver);
   }
-  if (driver != gf::INVALID_HANDLE) {
+  if (driver != gf::unknown020) {
     return createGfObj(name, CHARA_TYPE_UNKNOWN_1, gf::GfObjAcc(driver).getBdatId(), param2, 0);
   }
   mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("create ghost charactor[%s]", name);
@@ -258,7 +258,7 @@ ObjectChara *ObjectList::createGfObjBlByWalkID(const char *name, u32 walkID, u32
   if (flags == 0) {
     return createGfObj(name, blade);
   }
-  if (blade != gf::INVALID_HANDLE) {
+  if (blade != gf::unknown020) {
     return createGfObj(name, CHARA_TYPE_UNKNOWN_2, gf::GfObjAcc(blade).getBdatId(), param2, 0);
   }
   mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("create ghost charactor[%s]", name);
@@ -311,7 +311,7 @@ gf::GF_OBJ_HANDLE *ObjectList::getBladeByDriver(u32 driverID) {
       return blade;
     }
   }
-  return gf::INVALID_HANDLE;
+  return gf::unknown020;
 }
 
 u32 ObjectList::getBladeIdByDriver(u32 driverID) const {
@@ -527,7 +527,7 @@ void ObjectList::listupObject(mm::mtl::FixedVector<u32, 256> &list, u32 type, bo
       continue;
     }
     gf::GF_OBJ_HANDLE *handle = static_cast<ObjectChara *>(object)->getCharaObj()->getHandle();
-    if (handle == gf::INVALID_HANDLE) {
+    if (handle == gf::unknown020) {
       continue;
     }
     gf::GfObjAcc acc(handle);

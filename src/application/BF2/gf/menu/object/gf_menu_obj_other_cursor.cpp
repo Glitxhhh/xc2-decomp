@@ -25,14 +25,14 @@ void GfMenuObjOtherCursor::initialize() {
   if (ui::UIObjectAcc(main).isValid()) {
 // __LINE__ must be 86 as in the original file: it is the line argument of operator new.
 #line 86
-    MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+    MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
     listener->addRef();
     ui::UIEventManager::get()->registObjectListener(main, listener);
     if (listener != nullptr) {
       listener->release();
     }
     unknown24 = main;
-    unknown30 = GfMenuPosAdapter::create(acc.searchChild("LAY_main"), INVALID_HANDLE, nullptr);
+    unknown30 = GfMenuPosAdapter::create(acc.searchChild("LAY_main"), unknown020, nullptr);
     unknown30->setPosOffsMode(1);
   }
   GfMenuObject::initialize();

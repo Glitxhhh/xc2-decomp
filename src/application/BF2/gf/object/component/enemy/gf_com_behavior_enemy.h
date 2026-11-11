@@ -43,11 +43,11 @@ struct MsgObjectNotifyDamage;
 struct MsgObjectNotifyDead;
 
 enum {
-  MSG_OBJECT_LURE = 0x1000041,
+  MSG_UNKNOWN_16777281 = 0x1000041, // Inferred role: msg object lure; original name unknown.
 };
 
 struct MsgObjectLure : fw::Message {
-  MsgObjectLure() : fw::Message(MSG_OBJECT_LURE, 0x40) {}
+  MsgObjectLure() : fw::Message(MSG_UNKNOWN_16777281, 0x40) {}
 };
 
 // Layout evidence: the constructor at 0x7100514074 initializes the members below in this order, the allocation in

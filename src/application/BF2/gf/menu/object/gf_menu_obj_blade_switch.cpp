@@ -29,7 +29,7 @@ void GfMenuObjBladeSwitch::initialize() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
 // __LINE__ must be 107 as in the original file: it is the line argument of operator new.
 #line 107
-  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   listener->addRef();
   ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
   if (listener != nullptr) {
@@ -50,12 +50,12 @@ void GfMenuObjBladeSwitch::update() {
   }
   bool isEnable = GfGameScene::get()->isEnableFieldBladeChange();
   GF_OBJ_HANDLE *leader = GfGameParty::getLeader();
-  if (leader == INVALID_HANDLE) {
+  if (leader == unknown020) {
     return;
   }
   GfObjAcc acc(leader);
   bool isActive = false;
-  if (acc.getType() == OBJECT_TYPE_DRIVER) {
+  if (acc.getType() == OBJECT_TYPE_PC) {
     u32 count = 0;
     for (int slot = 0; slot < 3; slot++) {
       count += GfMenuObjUtil::isValidBlade(GfDataDriver::getBlade(acc.getBdatId(), slot));

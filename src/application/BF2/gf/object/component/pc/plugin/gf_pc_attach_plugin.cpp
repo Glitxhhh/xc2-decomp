@@ -11,7 +11,7 @@
 namespace gf {
 namespace pc {
 
-AttachPlugin::AttachPlugin() : unknown0c(0), unknown10(INVALID_HANDLE), unknown18(nullptr), unknown20(mm::Vec3::zero), unknown30(mm::Quat::identity) {}
+AttachPlugin::AttachPlugin() : unknown0c(0), unknown10(unknown020), unknown18(nullptr), unknown20(mm::Vec3::zero), unknown30(mm::Quat::identity) {}
 
 AttachPlugin::~AttachPlugin() {}
 
@@ -30,9 +30,9 @@ void AttachPlugin::onActivate() {}
 void AttachPlugin::onDeactivate() { dettachObj(); }
 
 void AttachPlugin::dettachObj() {
-  if (unknown10 != INVALID_HANDLE) {
+  if (unknown10 != unknown020) {
     GfObjUtil::dettachGfObject(unknown10, static_cast<GfObj *>(unknown18->unknown08)->unknownf8);
-    unknown10 = INVALID_HANDLE;
+    unknown10 = unknown020;
     GfComDynamics *dynamics = unknown18->unknown08->getComponent<GfComDynamics>();
     if (dynamics != nullptr) {
       fw::Transform transform;

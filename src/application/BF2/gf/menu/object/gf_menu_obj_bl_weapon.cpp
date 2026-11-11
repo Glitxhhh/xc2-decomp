@@ -32,7 +32,7 @@ GfMenuObjBlWeapon::~GfMenuObjBlWeapon() {
 void GfMenuObjBlWeapon::finalize() { GfMenuObject::finalize(); }
 
 bool GfMenuObjBlWeapon::isSameWeapon(u32 blade, u32 chip) {
-  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   u32 weapon = GfDataWeapon::getNewWeapon(acc.getEquipWeapon(-1, false), chip);
   return acc.getEquipWeapon(-1, false) == weapon;
 }

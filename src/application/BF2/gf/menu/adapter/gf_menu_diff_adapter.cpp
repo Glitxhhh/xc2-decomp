@@ -27,7 +27,7 @@ GfMenuAdapter *GfMenuDiffAdapter::create(u32 handle, GfMenuAdapter *adapter, GfM
     if (plugin != nullptr) {
       // __LINE__ must be 54 as in the original source: it is the line argument of operator new.
 #line 54
-      GfMenuDiffAdapter *diffAdapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuDiffAdapter(plugin, isUpdateAlways);
+      GfMenuDiffAdapter *diffAdapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuDiffAdapter(plugin, isUpdateAlways);
       diffAdapter->unknown30.bind(diffAdapter, info.update);
       diffAdapter->unknown50 = adapter;
       diffAdapter->unknown58 = other;

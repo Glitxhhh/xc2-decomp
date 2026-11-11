@@ -142,7 +142,7 @@ bool GfMenuObjBladeRelease::seqEffReleaseA() {
     unknown4b0 = SCOM_FIELD_VOICE::createReleaseBlade(blade);
     isEnd = false;
     unknown2e8 = true;
-  } else if (!GfMenuObjUtil::isBusyCtrl(ctrl) && static_cast<int>(GfGameVoice::getResult(unknown4b0)) > VOICE_RESULT_PLAY) {
+  } else if (!GfMenuObjUtil::isBusyCtrl(ctrl) && static_cast<int>(GfGameVoice::getResult(unknown4b0)) > VOICE_RESULT_UNKNOWN_2) {
     isEnd = true;
     unknown4b0 = nullptr;
     unknown2e8 = false;
@@ -359,7 +359,7 @@ bool GfMenuObjBladeRelease::seqExecRelease() {
     if (param.unknown08 == 0) {
       param.unknown08 = 1;
     }
-    unknown450->setup(getAllocator(ALLOCATOR_DEFAULT), param);
+    unknown450->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
   }
   MenuItemInfo info;
   for (u32 i = 0; i < items.size(); i++) {
@@ -387,7 +387,7 @@ bool GfMenuObjBladeRelease::seqSubMenuOpen() {
     const MenuBladeInfo &blade = unknown30->getContents(unknown30->getIndex(false));
     unknown460->clear();
     unknown002(unknown460, unknown001_1);
-    if (!GfMenuObjUtil::isScenarioBlade(blade.unknown00) && blade.unknown00 != GfDataBlade::getStartCommonBlade() && !unknown478.empty() && GfItemUtil::getItemBoxCount(ITEM_UNKNOWN_6340) != 0 &&
+    if (!GfMenuObjUtil::isScenarioBlade(blade.unknown00) && blade.unknown00 != GfDataBlade::getStartCommonBlade() && !unknown478.empty() && GfItemUtil::getItemBoxCount(ITEM_UNKNOWN_25408) != 0 &&
         (unknown478.size() != 1 || unknown478.front() != blade.unknown04)) {
       unknown002(unknown460, unknown001_2);
     }
@@ -471,7 +471,7 @@ bool GfMenuObjBladeRelease::seqSubMenuDrChange() {
     unknown470->setIndex(result.unknown04);
     u32 target = blade.unknown00;
     GfDataBlade::setCreator(target, unknown470->getContents(unknown470->getIndex(false)).unknown00);
-    GfItemUtil::addItemBox(ITEM_UNKNOWN_6340, -1);
+    GfItemUtil::addItemBox(ITEM_UNKNOWN_25408, -1);
     unknown58.unknown002(&GfMenuObjBladeRelease::seqSubMenuOwnerChange);
   } else {
     unknown58.unknown002(&GfMenuObjBladeRelease::seqSubMenuOpen);

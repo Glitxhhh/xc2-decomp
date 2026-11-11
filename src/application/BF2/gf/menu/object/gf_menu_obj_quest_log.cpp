@@ -327,7 +327,7 @@ void GfMenuObjQuestLog::setupLog() {
   GfQuestInfo::getQuestTaskInfo(taskCount, completeCount, quest);
   unknown828 = taskCount;
   for (u32 index = 0; index < unknown828; index++) {
-    QuestTaskParam param(quest, index, TASK_STATE_NONE);
+    QuestTaskParam param(quest, index, TASK_STATE_UNKNOWN_0);
     if (GfQuestInfo::getTaskHide(param) == 1) {
       taskCount--;
     }
@@ -339,7 +339,7 @@ void GfMenuObjQuestLog::setupLog() {
 void GfMenuObjQuestLog::setupLogClear() {
   QuestID quest;
   unknown30->getQuest(quest);
-  QuestTaskParam param(quest, unknown40->unknown0c, TASK_STATE_NONE);
+  QuestTaskParam param(quest, unknown40->unknown0c, TASK_STATE_UNKNOWN_0);
   bool isComplete = GfQuestTask::isCompleteFlag(param);
   ui::UIObjectAcc acc(unknown18, "IMG_log_complete");
   acc.setImageIndex(!isComplete);
@@ -349,7 +349,7 @@ void GfMenuObjQuestLog::setupLogItem() {
   QuestID quest;
   GfQuestTaskLogResult result;
   unknown30->getQuest(quest);
-  QuestTaskParam param(quest, unknown40->unknown0c, TASK_STATE_NONE);
+  QuestTaskParam param(quest, unknown40->unknown0c, TASK_STATE_UNKNOWN_0);
   GfQuestUtil::getMsgQuestTaskLog(result, param);
   u32 item = result.unknown1c;
   ItemType::Type type = GfItemUtil::getType(item);
@@ -366,7 +366,7 @@ u32 GfMenuObjQuestLog::nextTaskIndex(u32 index) {
   QuestID quest;
   unknown30->getQuest(quest);
   for (u32 next = index + 1; next < unknown828; next++) {
-    QuestTaskParam param(quest, next, TASK_STATE_NONE);
+    QuestTaskParam param(quest, next, TASK_STATE_UNKNOWN_0);
     if (GfQuestInfo::getTaskHide(param) == 0) {
       return next;
     }

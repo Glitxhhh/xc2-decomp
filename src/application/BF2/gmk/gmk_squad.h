@@ -125,7 +125,7 @@ static_assert(sizeof(GmkSquad) == 0x118, "");
 class GmkSquadNavi : public mm::mtl::IntrusiveListNode<GmkSquadNavi> {
 public:
   struct CreateInfo {
-    CreateInfo() : unknown00(nullptr), unknown08(gf::INVALID_HANDLE) {
+    CreateInfo() : unknown00(nullptr), unknown08(gf::unknown020) {
       unknown10 = 0.1f;
       unknown14 = 1.0f;
     }
@@ -157,7 +157,7 @@ public:
 
   // Inferred helper: whether the navi is bound to a member of its squad; original name unknown.
   bool unknown001() const {
-    if (unknown10.unknown00 != nullptr && unknown10.unknown08 != gf::INVALID_HANDLE && unknown28 >= 0) {
+    if (unknown10.unknown00 != nullptr && unknown10.unknown08 != gf::unknown020 && unknown28 >= 0) {
       if (static_cast<u32>(unknown28) < unknown10.unknown00->unknown70) {
         return true;
       }
@@ -169,7 +169,7 @@ public:
   // Inferred helper: unbinds the navi from its squad; original name unknown.
   void unknown002() {
     unknown10.unknown00 = nullptr;
-    unknown10.unknown08 = gf::INVALID_HANDLE;
+    unknown10.unknown08 = gf::unknown020;
     unknown10.unknown10 = 0.1f;
     unknown10.unknown14 = 1.0f;
   }

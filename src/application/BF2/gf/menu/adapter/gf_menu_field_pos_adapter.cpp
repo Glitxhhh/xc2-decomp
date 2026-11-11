@@ -23,7 +23,7 @@ GfMenuFieldPosAdapter *GfMenuFieldPosAdapter::create(u32 handle, const mm::Vec3 
   if (plugin != nullptr) {
     // __LINE__ must be 51 as in the original source: it is the line argument of operator new.
 #line 51
-    GfMenuFieldPosAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuFieldPosAdapter(plugin);
+    GfMenuFieldPosAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuFieldPosAdapter(plugin);
     if (adapter != nullptr) {
       adapter->unknown30 = pos;
       adapter->unknown44 = handle;

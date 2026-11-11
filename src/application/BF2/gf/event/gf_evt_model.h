@@ -31,12 +31,12 @@ class GfInitParamWeapon;
 struct GF_OBJ_HANDLE;
 
 enum GF_EVT_MODEL {
-  GF_EVT_MODEL_DRIVER = 0,
-  GF_EVT_MODEL_BLADE = 1,
-  GF_EVT_MODEL_WEAPON = 2,
-  GF_EVT_MODEL_EVENT = 3,
-  GF_EVT_MODEL_NPC = 4,
-  GF_EVT_MODEL_ENEMY = 5,
+  GF_EVT_MODEL_UNKNOWN_0 = 0, // Inferred role: gf evt model driver; original name unknown.
+  GF_EVT_MODEL_UNKNOWN_1 = 1, // Inferred role: gf evt model blade; original name unknown.
+  GF_EVT_MODEL_UNKNOWN_2 = 2, // Inferred role: gf evt model weapon; original name unknown.
+  GF_EVT_MODEL_UNKNOWN_3 = 3, // Inferred role: gf evt model event; original name unknown.
+  GF_EVT_MODEL_UNKNOWN_4 = 4, // Inferred role: gf evt model npc; original name unknown.
+  GF_EVT_MODEL_UNKNOWN_5 = 5, // Inferred role: gf evt model enemy; original name unknown.
 };
 
 class GfEvtModel : public mm::mtl::ReferenceObject, public IGfObjListener {

@@ -43,7 +43,7 @@ static inline GfObjPropertyBlade *unknown003(GF_OBJ_HANDLE *handle) {
 }
 
 GfMenuGfObjAdapter::GfMenuGfObjAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways, bool isUpdateAfter)
-    : GfMenuAdapter(plugin, isUpdateAfter, isUpdateAlways), unknown48(INVALID_HANDLE), unknown70(0), unknown78(nullptr) {}
+    : GfMenuAdapter(plugin, isUpdateAfter, isUpdateAlways), unknown48(unknown020), unknown70(0), unknown78(nullptr) {}
 
 GfMenuGfObjAdapter::~GfMenuGfObjAdapter() {
   if (unknown78 != nullptr) {
@@ -200,7 +200,7 @@ bool GfMenuGfObjAdapter::update_EN_Aggressive(GF_OBJ_HANDLE *handle) {
   }
   GF_OBJ_HANDLE *enemy = acc.getHandle();
   GfGameUtil::UiEnemyStatusIconInfo info;
-  if (enemy != INVALID_HANDLE) {
+  if (enemy != unknown020) {
     info.create(enemy);
   }
   return info.unknown00;
@@ -213,7 +213,7 @@ bool GfMenuGfObjAdapter::update_EN_Link(GF_OBJ_HANDLE *handle) {
   }
   GF_OBJ_HANDLE *enemy = acc.getHandle();
   GfGameUtil::UiEnemyStatusIconInfo info;
-  if (enemy != INVALID_HANDLE) {
+  if (enemy != unknown020) {
     info.create(enemy);
   }
   return info.unknown01;
@@ -603,28 +603,28 @@ GfMenuGfObjAdapter *GfMenuGfObjAdapter::createFromCoverter(u32 handle, u32 type,
 GfMenuGfObjAdapter *GfMenuGfObjAdapter::createFromPartyDriver(u32 handle, u32 type, u8 partyId, bool isUpdateAlways) {
   // __LINE__ must be 289 as in the original source: it is the line argument of operator new.
 #line 289
-  PartyDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PartyDriverConverter(partyId);
+  PartyDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PartyDriverConverter(partyId);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuGfObjAdapter *GfMenuGfObjAdapter::createFromPartyBlade(u32 handle, u32 type, u8 partyId, int slot, bool isUpdateAlways, bool isVirtual) {
   // __LINE__ must be 296 as in the original source: it is the line argument of operator new.
 #line 296
-  PartyBladeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PartyBladeConverter(partyId, slot, isVirtual);
+  PartyBladeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PartyBladeConverter(partyId, slot, isVirtual);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuGfObjAdapter *GfMenuGfObjAdapter::createFromTargetEnemy(u32 handle, u32 type, bool isUpdateAlways) {
   // __LINE__ must be 303 as in the original source: it is the line argument of operator new.
 #line 303
-  TargetEnemyConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) TargetEnemyConverter;
+  TargetEnemyConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) TargetEnemyConverter;
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuGfObjAdapter *GfMenuGfObjAdapter::createFromReference(u32 handle, u32 type, mm::mtl::IntrusivePtr<IGfMenuReferenceGfObj> reference, bool isUpdateAlways) {
   // __LINE__ must be 310 as in the original source: it is the line argument of operator new.
 #line 310
-  ReferenceConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceConverter(reference);
+  ReferenceConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceConverter(reference);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -634,7 +634,7 @@ void GfMenuGfObjAdapter::update(const fw::UpdateInfo &info) {
   }
 
   if ((unknown20 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) != 0 && unknown50.isValid()) {
-    setDisp(unknown48 != INVALID_HANDLE ? unknown50(unknown48) : false);
+    setDisp(unknown48 != unknown020 ? unknown50(unknown48) : false);
     unknown20 &= ~FLAG_UNKNOWN_0;
   }
 }
@@ -700,7 +700,7 @@ GF_OBJ_HANDLE *GfMenuGfObjAdapter::ReferenceConverter::getGfObjHandle() {
   if (unknown08.get() != nullptr) {
     return unknown08.get()->unknown001();
   }
-  return INVALID_HANDLE;
+  return unknown020;
 }
 
 } // namespace gf

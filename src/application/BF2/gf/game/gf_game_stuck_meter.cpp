@@ -14,23 +14,23 @@
 
 namespace gf {
 
-GfGameDepopMeter::GfGameDepopMeter(const CreateInfo *info) : unknown10(INVALID_HANDLE), unknown18(true), unknown20(true), unknown30(mm::Vec3::zero), unknown40(false) {
+GfGameDepopMeter::GfGameDepopMeter(const CreateInfo *info) : unknown10(unknown020), unknown18(true), unknown20(true), unknown30(mm::Vec3::zero), unknown40(false) {
   if (info != nullptr) {
     create(*info);
   }
 }
 
 void GfGameDepopMeter::dispose() {
-  if (unknown10 != INVALID_HANDLE) {
+  if (unknown10 != unknown020) {
     GfGameDepopMeterManager::removeDepopMeter(this);
   }
-  unknown10 = INVALID_HANDLE;
+  unknown10 = unknown020;
   unknown40 = false;
   unknown18 = true;
 }
 
 void GfGameDepopMeter::update(f32 deltaTime) {
-  if (unknown10 == INVALID_HANDLE || !unknown20) {
+  if (unknown10 == unknown020 || !unknown20) {
     return;
   }
   GfObjAcc acc(unknown10);
@@ -64,7 +64,7 @@ void GfGameDepopMeterManager::create(u32 count) {
   if (get() != nullptr) {
     delete get();
   }
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameDepopMeterManager(count);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameDepopMeterManager(count);
 }
 
 void GfGameDepopMeterManager::dispose() {

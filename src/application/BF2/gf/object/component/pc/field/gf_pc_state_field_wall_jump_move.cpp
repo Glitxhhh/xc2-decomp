@@ -38,8 +38,8 @@ void StateFieldWallJumpMove::enter(GfComBehaviorPc *behavior, ai::State *previou
   unknown1c = __builtin_fmaxf(distance / static_cast<const WallCommonParam *>(property->unknown310.unknown08->unknown10[15].param)->jumpSpeed, 1.0f / 30.0f);
   GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
   f32 time = 0.0f;
-  comAsm->getPlaybackTime(comAsm->getStateName(ANIM_LAYER_BASE), &time);
-  comAsm->setSpeed(time / unknown1c, ANIM_LAYER_BASE);
+  comAsm->getPlaybackTime(comAsm->getStateName(ANIM_LAYER_UNKNOWN_0), &time);
+  comAsm->setSpeed(time / unknown1c, ANIM_LAYER_UNKNOWN_0);
 }
 
 void StateFieldWallJumpMove::leave(GfComBehaviorPc *behavior, ai::State *next) {}
@@ -62,8 +62,8 @@ void StateFieldWallJumpMove::update(GfComBehaviorPc *behavior, const fw::UpdateI
   property->unknown160.y = position.y;
   property->unknown160.x = position.x;
   property->unknown160.z = position.z;
-  if (unknown18 >= unknown1c && comAsm->isEnd(ANIM_LAYER_BASE) && StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_CLIMBJUMP_02)) {
-    reqState(STATE_ID_FIELD_WALL_JUMP_END);
+  if (unknown18 >= unknown1c && comAsm->isEnd(ANIM_LAYER_UNKNOWN_0) && StateUtilField::execAsmCmd(*comAsm, ASM_CMD_ID_FIELD_CLIMBJUMP_02)) {
+    reqState(STATE_ID_UNKNOWN_52);
   }
 }
 

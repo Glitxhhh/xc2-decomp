@@ -44,10 +44,10 @@ public:
 
   // Inferred role: ids of the states registered by setup; original enumerator names unknown.
   enum {
-    STATE_DRIVER_NOT_ACTIVE = 0,
-    STATE_AUTO_TARGET = 1,
-    STATE_ENEMY_TARGET = 2,
-    STATE_BATTLE_TARGET = 3,
+    STATE_UNKNOWN_0 = 0, // Inferred role: state driver not active; original name unknown.
+    STATE_UNKNOWN_1 = 1, // Inferred role: state auto target; original name unknown.
+    STATE_UNKNOWN_2 = 2, // Inferred role: state enemy target; original name unknown.
+    STATE_UNKNOWN_3 = 3, // Inferred role: state battle target; original name unknown.
   };
 
   GfGameTarget();
@@ -103,7 +103,7 @@ public:
   // Inferred role: tests that the state machine left StateDriverNotActive; original name unknown.
   static bool unknown002(const ai::Fsm &fsm) {
     const ai::State *state = fsm.getState();
-    return state != nullptr && state->unknown08 != STATE_DRIVER_NOT_ACTIVE;
+    return state != nullptr && state->unknown08 != STATE_UNKNOWN_0;
   }
 
   // Inferred role: first param of the list, without the checks of getParam; original name unknown.

@@ -38,12 +38,12 @@ struct GF_MOUNT_HANDLE;
 void GfGameObj::build(const GfSetupParam &param) {
   // __LINE__ must be 213 as in the original file: it is the line argument of the allocation.
 #line 213
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameObj(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameObj(param);
 }
 
 GfGameObj::GfGameObj(const GfSetupParam &param) : unknown55c68(nullptr), unknown55c70(false) {
   initialize(param);
-  GfObjManager::addListener(this, OBJEVT_ALL);
+  GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
 }
 
 GfGameObj::~GfGameObj() { GfObjManager::removeListener(this); }
@@ -64,8 +64,8 @@ void GfGameObj::destroy() {
   delete gameObj;
 }
 
-void GfGameObj::calcCameraFade(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list, const mm::Vec3 &cameraPosition) {
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::const_iterator it = list.begin(); it != list.end(); ++it) {
+void GfGameObj::calcCameraFade(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &list, const mm::Vec3 &cameraPosition) {
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::const_iterator it = list.begin(); it != list.end(); ++it) {
     GfObjAcc acc(*it);
     if (acc.getObj()->unknown118) {
       mm::Vec3 position = acc.getWorldTransformNoSync().unknown00;
@@ -82,12 +82,12 @@ void GfGameObj::calcCameraFade(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OB
 }
 
 void GfGameObj::enableGameObj(GfObjAcc &acc, bool isEnable) {
-  acc.setFlag(OBJ_FLAG_UNKNOWN_E, isEnable);
+  acc.setFlag(OBJ_FLAG_UNKNOWN_14, isEnable);
   acc.setCollisionChar(isEnable);
   acc.getObj()->setUpdateComponent(isEnable);
   if (!isEnable) {
     if (acc.isPartyObj()) {
-      if (GfGameParty::getPartyId(acc.getHandle()) != PARTY_ID_NONE && (acc.getType() == OBJECT_TYPE_DRIVER || acc.getType() == OBJECT_TYPE_BLADE)) {
+      if (GfGameParty::getPartyId(acc.getHandle()) != PARTY_UNKNOWN_4294967295 && (acc.getType() == OBJECT_TYPE_PC || acc.getType() == OBJECT_TYPE_BLADE)) {
         GfGameUtil::resetFormationParam(acc.getHandle());
       }
     }
@@ -105,8 +105,8 @@ void GfGameObj::removeGameObjCommon(GfObjAcc &acc) {
     }
   }
   enableGameObj(acc, false);
-  acc.setFlag(OBJ_FLAG_UI_HIDDEN, false);
-  if (acc.isReload() && !acc.hasParent() && GfObjUtil::getParentHandle(acc.getHandle()) == INVALID_HANDLE) {
+  acc.setFlag(OBJ_FLAG_UNKNOWN_17, false);
+  if (acc.isReload() && !acc.hasParent() && GfObjUtil::getParentHandle(acc.getHandle()) == unknown020) {
     GfObj *obj = acc.getObj();
     if (obj != nullptr && obj->getComponent<GfComTransform>() != nullptr) {
       GFOBJ_INFO *info = acc.unknown00;
@@ -131,15 +131,15 @@ void GfGameObj::removeGameObjCommon(GfObjAcc &acc) {
     if (!isReload && !acc.isRebuild()) {
       return;
     }
-    if (acc.testFlag(OBJ_FLAG_LOADED_WAIT) && (acc.getType() == OBJECT_TYPE_BLADE || acc.getType() == OBJECT_TYPE_PC_WEAPON)) {
-      acc.setFlag(OBJ_FLAG_LOADED_WAIT_OK, true);
+    if (acc.testFlag(OBJ_FLAG_UNKNOWN_8) && (acc.getType() == OBJECT_TYPE_BLADE || acc.getType() == OBJECT_TYPE_PC_WEAPON)) {
+      acc.setFlag(OBJ_FLAG_UNKNOWN_9, true);
     }
     return;
   }
   if (!isReload && !acc.isRebuild()) {
     return;
   }
-  if (!acc.testFlag(OBJ_FLAG_LOADED_WAIT)) {
+  if (!acc.testFlag(OBJ_FLAG_UNKNOWN_8)) {
     return;
   }
   if (acc.getType() != OBJECT_TYPE_BLADE && acc.getType() != OBJECT_TYPE_PC_WEAPON) {
@@ -149,10 +149,10 @@ void GfGameObj::removeGameObjCommon(GfObjAcc &acc) {
   int bladeSet = paramAcc.getBladeSet(false);
   if (acc.getType() == OBJECT_TYPE_BLADE) {
     GfObjSetupBlade *setup = mm::mtl::dynamicCast<GfObjSetupBlade>(GfObjManager::getObjInfo(acc.getHandle())->unknown30);
-    acc.setFlag(OBJ_FLAG_LOADED_WAIT_OK, bladeSet == setup->unknown6c);
+    acc.setFlag(OBJ_FLAG_UNKNOWN_9, bladeSet == setup->unknown6c);
   } else if (acc.getType() == OBJECT_TYPE_PC_WEAPON) {
     GfObjSetupWeapon *setup = mm::mtl::dynamicCast<GfObjSetupWeapon>(GfObjManager::getObjInfo(acc.getHandle())->unknown30);
-    acc.setFlag(OBJ_FLAG_LOADED_WAIT_OK, bladeSet == setup->unknown6c);
+    acc.setFlag(OBJ_FLAG_UNKNOWN_9, bladeSet == setup->unknown6c);
   }
 }
 
@@ -177,8 +177,8 @@ bool GfGameObj::fadeoutGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo
       inout.unknown14 = false;
       enableGameObj(acc, false);
     }
-    acc.setFlag(OBJ_FLAG_UI_HIDDEN, false);
-    if (!acc.testFlag(OBJ_FLAG_LOADED_WAIT) || acc.isRebuild()) {
+    acc.setFlag(OBJ_FLAG_UNKNOWN_17, false);
+    if (!acc.testFlag(OBJ_FLAG_UNKNOWN_8) || acc.isRebuild()) {
       if (!acc.isDestroy()) {
         GfObjUtil::destroy(inout.unknown00);
       }
@@ -201,29 +201,29 @@ bool GfGameObj::isInitialized() {
 
 bool GfGameObj::isExistEnemy() { return get()->unknown9050.size() != 0; }
 
-const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *GfGameObj::getListEnemyBlade() { return &get()->unknownd870; }
+const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListEnemyBlade() { return &get()->unknownd870; }
 
-bool GfGameObj::isGameObjWaiting(GF_OBJ_HANDLE *handle) { return GfObjUtil::testFlag(handle, OBJ_FLAG_WAIT); }
+bool GfGameObj::isGameObjWaiting(GF_OBJ_HANDLE *handle) { return GfObjUtil::testFlag(handle, OBJ_FLAG_UNKNOWN_16); }
 
 bool GfGameObj::isDestroyGameObj(GF_OBJ_HANDLE *handle) {
   GfObjAcc acc(handle);
   if (!acc.isValid()) {
     return true;
   }
-  return !acc.testFlag(OBJ_FLAG_UNKNOWN_E);
+  return !acc.testFlag(OBJ_FLAG_UNKNOWN_14);
 }
 
 bool GfGameObj::isValidGameObj(GF_OBJ_HANDLE *handle, bool isCheckState, mm::mtl::FixStr<128> *reason) {
   GfGameObj *gameObj = get();
   GfObjAcc acc(handle);
   if (isCheckState) {
-    for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+    for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
       if (it->unknown00 == handle) {
         return true;
       }
     }
   } else {
-    for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+    for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
       if ((*it).unknown00 == handle) {
         if (reason != nullptr) {
           reason->format("GfGameObj::Fadein[%s]", acc.getDebugName());
@@ -232,7 +232,7 @@ bool GfGameObj::isValidGameObj(GF_OBJ_HANDLE *handle, bool isCheckState, mm::mtl
       }
     }
   }
-  bool isValid = acc.testFlag(OBJ_FLAG_UNKNOWN_E);
+  bool isValid = acc.testFlag(OBJ_FLAG_UNKNOWN_14);
   if (reason == nullptr || isValid) {
     return isValid;
   }
@@ -256,7 +256,7 @@ bool GfGameObj::isEnterGameObj(GF_OBJ_HANDLE *handle) {
     return false;
   }
   GfGameObj *gameObj = get();
-  for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
     if (it->unknown00 == handle) {
       return true;
     }
@@ -270,7 +270,7 @@ void GfGameObj::setupEnterGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime) {
   }
   GfObjAcc acc(handle);
   GfGameObj *gameObj = get();
-  for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
     if (it->unknown00 == handle) {
       if (acc.getType() == OBJECT_TYPE_BLADE && GfDataBlade::isDummyBlade(acc.getBladeId())) {
         return;
@@ -293,12 +293,12 @@ void GfGameObj::setupEnterGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime) {
 GfObj *GfGameObj::getObj(GF_OBJ_HANDLE *handle) {
   GfGameObj *gameObj = get();
   GfObjAcc acc(handle);
-  for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
     if (it->unknown00 == handle) {
       return GfObjUtil::getObj(handle);
     }
   }
-  if (acc.testFlag(OBJ_FLAG_UNKNOWN_E)) {
+  if (acc.testFlag(OBJ_FLAG_UNKNOWN_14)) {
     return GfObjUtil::getObj(handle);
   }
   return nullptr;
@@ -335,8 +335,8 @@ bool GfGameObj::isEffectFadeEnd(const INOUT &inout, const GfObjAcc &acc) const {
   return false;
 }
 
-bool GfGameObj::isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list) const {
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::const_iterator it = list.begin(); it != list.end(); ++it) {
+bool GfGameObj::isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &list) const {
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::const_iterator it = list.begin(); it != list.end(); ++it) {
     GfObjAcc acc(*it);
     if (acc.isBattle()) {
       return true;
@@ -345,7 +345,7 @@ bool GfGameObj::isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST
   return false;
 }
 
-mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *GfGameObj::getListType(u32 objectType, GF_OBJ_HANDLE *handle) {
+mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListType(u32 objectType, GF_OBJ_HANDLE *handle) {
   switch (objectType) {
   case 0:
   case 0xe:
@@ -380,24 +380,24 @@ mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *GfGameObj::getListT
   }
 }
 
-const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *GfGameObj::getList(u32 objectType) { return get()->getListType(objectType, reinterpret_cast<GF_OBJ_HANDLE *>(-1)); }
+const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getList(u32 objectType) { return get()->getListType(objectType, reinterpret_cast<GF_OBJ_HANDLE *>(-1)); }
 
-void GfGameObj::getList(mm::mtl::FixedVector<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list, u32 objectType) {
+void GfGameObj::getList(mm::mtl::FixedVector<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &list, u32 objectType) {
   if (get() == nullptr) {
     return;
   }
-  const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *objects = getList(objectType);
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::const_iterator it = objects->begin(); it != objects->end(); ++it) {
+  const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *objects = getList(objectType);
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::const_iterator it = objects->begin(); it != objects->end(); ++it) {
     list.push_back(*it);
   }
 }
 
-void GfGameObj::getListEnemyBlade(mm::mtl::FixedVector<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &list) {
+void GfGameObj::getListEnemyBlade(mm::mtl::FixedVector<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &list) {
   if (get() == nullptr) {
     return;
   }
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &enemyBlades = get()->unknownd870;
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = enemyBlades.begin(); it != enemyBlades.end(); ++it) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemyBlades = get()->unknownd870;
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = enemyBlades.begin(); it != enemyBlades.end(); ++it) {
     list.push_back(*it);
   }
 }
@@ -455,24 +455,24 @@ bool GfGameObj::isEmpty() {
 void GfGameObj::postUpdate(const fw::UpdateInfo &info) { get()->updateObjectProperty(); }
 
 void GfGameObj::updateObjectProperty() {
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = unknown10.begin(); it != unknown10.end(); ++it) {
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = unknown10.begin(); it != unknown10.end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = unknown4830.begin(); it != unknown4830.end(); ++it) {
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = unknown4830.begin(); it != unknown4830.end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &enemies = GfObjUtil::isEnemyBlade(reinterpret_cast<GF_OBJ_HANDLE *>(-1)) ? unknownd870 : unknown9050;
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemies = GfObjUtil::isEnemyBlade(reinterpret_cast<GF_OBJ_HANDLE *>(-1)) ? unknownd870 : unknown9050;
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = unknown28930.begin(); it != unknown28930.end(); ++it) {
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = unknown28930.begin(); it != unknown28930.end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
 }
 
 void GfGameObj::updateObjectProperty(u32 objectType) {
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *list = getListType(objectType, reinterpret_cast<GF_OBJ_HANDLE *>(-1));
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = list->begin(); it != list->end(); ++it) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = getListType(objectType, reinterpret_cast<GF_OBJ_HANDLE *>(-1));
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = list->begin(); it != list->end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
 }
@@ -544,19 +544,19 @@ void GfGameObj::addInObj(GF_OBJ_HANDLE *handle, f32 fadeTime) {
   inout.unknown14 = false;
   inout.unknown16 = false;
   unknown3f1d0.push_back(inout);
-  acc.setFlag(OBJ_FLAG_UNKNOWN_F, true);
+  acc.setFlag(OBJ_FLAG_UNKNOWN_15, true);
   if (acc.getType() == OBJECT_TYPE_ENEMY) {
     acc.getObj()->setUpdateComponent(true);
   }
 }
 
 void GfGameObj::setupLeaveGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime) {
-  if (handle != INVALID_HANDLE) {
+  if (handle != unknown020) {
     GfGameObj *gameObj = get();
     GfObjAcc acc(handle);
     if (gameObj->addOutObj(handle, fadeTime, true)) {
       acc.setCollisionChar(false);
-      if (acc.testFlag(OBJ_FLAG_LOADED_WAIT)) {
+      if (acc.testFlag(OBJ_FLAG_UNKNOWN_8)) {
         if (acc.getType() == OBJECT_TYPE_BLADE) {
           mm::mtl::dynamicCast<GfObjSetupBlade>(GfObjManager::getObjInfo(handle)->unknown30)->unknown70 = true;
         } else if (acc.getType() == OBJECT_TYPE_PC_WEAPON) {
@@ -578,15 +578,15 @@ void GfGameObj::setupLeaveGameObjMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f
 }
 
 void GfGameObj::changeStopLayer(u32 objectType, bool isStop) {
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *list = get()->getListType(objectType, INVALID_HANDLE);
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = list->begin(); it != list->end(); ++it) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = get()->getListType(objectType, unknown020);
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = list->begin(); it != list->end(); ++it) {
     GfGameUtil::changeStopLayer(*it, isStop);
   }
 }
 
 void GfGameObj::changeStopLayerIgnoreEventObj(u32 layer, bool isIgnore) {
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> *list = get()->getListType(layer, INVALID_HANDLE);
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = list->begin(); it != list->end(); ++it) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = get()->getListType(layer, unknown020);
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = list->begin(); it != list->end(); ++it) {
     if (!GfObjUtil::getObjSetup(*it)->isEvent()) {
       GfGameUtil::changeStopLayer(*it, isIgnore);
     }
@@ -641,8 +641,8 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
     return count;
   }
   GfGameObj *gameObj = get();
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY> &enemies = GfObjUtil::isEnemyBlade(INVALID_HANDLE) ? gameObj->unknownd870 : gameObj->unknown9050;
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_OBJ_LIST_CAPACITY>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemies = GfObjUtil::isEnemyBlade(unknown020) ? gameObj->unknownd870 : gameObj->unknown9050;
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
     DataParamAcc paramAcc(*it);
     u32 bdatId = 0;
     if (paramAcc.isValid()) {
@@ -652,7 +652,7 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
       count++;
     }
   }
-  for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = unknown3f1d0.begin(); it != unknown3f1d0.end(); ++it) {
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown3f1d0.begin(); it != unknown3f1d0.end(); ++it) {
     DataParamAcc paramAcc((*it).unknown00);
     if (paramAcc.getObjType() == OBJECT_TYPE_ENEMY) {
       u32 bdatId = 0;
@@ -664,7 +664,7 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
       }
     }
   }
-  for (mm::mtl::FixedList<INOUT, GAME_OBJ_LIST_CAPACITY>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
     DataParamAcc paramAcc((*it).unknown00);
     if (paramAcc.getObjType() == OBJECT_TYPE_ENEMY) {
       u32 bdatId = 0;

@@ -50,7 +50,7 @@ GfMenuObjMainMenu2::GfMenuObjMainMenu2(u32 handle)
   unknown50 = GfMenuBladeList::create();
   // __LINE__ must be 186 as in the original source: it is the line argument of operator new.
 #line 186
-  unknown58 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SelectionChecker();
+  unknown58 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SelectionChecker();
   s_openMenuID = 0;
 }
 
@@ -241,7 +241,7 @@ void GfMenuObjMainMenu2::initChrChangeDr(ui::UIObjectAcc &acc, GfMenuDriverList 
   mm::mtl::FixStr<32> name;
   u32 count = change.countChild("LAY_chr_change_dr@%02d", 1);
   mm::mtl::FixedVector<u16, 16> drivers;
-  GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_PARTY, 0);
+  GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_UNKNOWN_0, 0);
   u32 driverCount = drivers.size();
   for (u32 i = 0; i < count;) {
     name.format("IMG_chr_change_dr_icon@%02d", i + 1);
@@ -319,7 +319,7 @@ void GfMenuObjMainMenu2::refreshCharChangeDr(ui::UIObjectAcc &acc, GfMenuDriverL
   u32 driverCount;
   {
     mm::mtl::FixedVector<u16, 16> drivers;
-    GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_PARTY, 0);
+    GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_UNKNOWN_0, 0);
     driverCount = drivers.size();
   }
   if (list->getSize() != 0) {

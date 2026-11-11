@@ -31,6 +31,6 @@ static_assert(offsetof(GfMenuReferenceNumber, unknown14) == 0x14, "");
 // Inferred helper: allocates a reference number; original name unknown.
 // __LINE__ must be 46 as in the original header: it is the line argument of operator new.
 #line 46
-inline GfMenuReferenceNumber *unknown160() { return new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuReferenceNumber(); }
+inline GfMenuReferenceNumber *unknown160() { return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuReferenceNumber(); }
 
 } // namespace gf

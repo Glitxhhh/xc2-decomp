@@ -307,7 +307,7 @@ void GfComBehaviorNpc::createNaviMeshObj() {
 GfComBehaviorNpc::GfComBehaviorNpc()
     : unknown98(), unknownb8(nullptr), unknownc0(mm::Vec3::zero), unknownd0(mm::Quat::identity), unknowne0(1.0e12f), unknowne4(1.0e12f), unknownf0(mm::Vec3::zero), unknown100(false),
       unknown101(false), unknown108(fw::Allocator::getProcAllocator()), unknown190(true), unknown198(nullptr), unknown1a0(), unknown1b0(nullptr), unknown1b8(), unknown1c0(nullptr),
-      unknown220(nullptr), unknown270(nullptr), unknown2a0(INVALID_HANDLE) {
+      unknown220(nullptr), unknown270(nullptr), unknown2a0(unknown020) {
   createNaviMeshObj();
 }
 
@@ -335,34 +335,34 @@ void GfComBehaviorNpc::cleanup() {
 bool GfComBehaviorNpc::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
   bool isHandled = false;
   switch (message.unknown00) {
-  case MSG_DEBUG_ACTIVATE_COMPONENT_WINDOW:
+  case MSG_UNKNOWN_16777219:
     isHandled = true;
     break;
-  case MSG_PC_GET_LOOK_POINT:
+  case MSG_UNKNOWN_16777224:
     procMsgPcGetLookPoint(sender, static_cast<MsgPcGetLookPoint &>(message));
     isHandled = true;
     break;
-  case MSG_PC_FIELD_GET_ACCESS_TYPE:
+  case MSG_UNKNOWN_16777228:
     procMsgPcFieldGetAccessType(sender, static_cast<MsgPcFieldGetAccessType &>(message));
     isHandled = true;
     break;
-  case MSG_PC_FIELD_NOTIFY_ACTION:
+  case MSG_UNKNOWN_16777229:
     procMsgPcFieldNotifyAction(sender, static_cast<MsgPcFieldNotifyAction &>(message));
     isHandled = true;
     break;
-  case MSG_GAME_TALK_ACTION:
+  case MSG_GAME_UNKNOWN_16777261:
     procMsgGameTalkAction(sender, static_cast<MsgGameTalkAction &>(message));
     isHandled = true;
     break;
-  case MSG_GAME_LIP_ACTION:
+  case MSG_GAME_UNKNOWN_16777262:
     procMsgGameLipAction(sender, static_cast<MsgGameLipAction &>(message));
     isHandled = true;
     break;
-  case MSG_GAME_SET_LIP_WEIGHT:
+  case MSG_GAME_UNKNOWN_16777263:
     procMsgGameSetLipWeight(sender, static_cast<MsgGameSetLipWeight &>(message));
     isHandled = true;
     break;
-  case MSG_OBJECT_GET_VELOCITY:
+  case MSG_UNKNOWN_16777286:
     procMsgObjectGetVelocity(sender, static_cast<MsgObjectGetVelocity &>(message));
     isHandled = true;
     break;
@@ -403,7 +403,7 @@ void GfComBehaviorNpc::update(const fw::UpdateInfo &info) {
   }
   if (GfGameManager::isBattle() && unknown98.unknown14 == 1) {
     GfObjAcc acc(static_cast<GfObj *>(unknown08)->unknownf8);
-    if (!acc.testFlag(OBJ_FLAG_UI_HIDDEN)) {
+    if (!acc.testFlag(OBJ_FLAG_UNKNOWN_17)) {
       SCOM_DESTROY_GAME_OBJ::create(static_cast<GfObj *>(unknown08)->unknownf8, 1.0f, false);
     }
   }
@@ -473,14 +473,14 @@ void GfComBehaviorNpc::init(bool param1) {
 }
 
 void GfComBehaviorNpc::execTurnCmd(f32 angle) {
-  angle += unknown350.unknown00.unknown00 == INVALID_HANDLE ? 0.0f : unknown350.getCurAngle();
+  angle += unknown350.unknown00.unknown00 == unknown020 ? 0.0f : unknown350.getCurAngle();
   unknown2e0.create(TFieldExecCmdTurn<GfComAsm>::CreateInfo(static_cast<GfObj *>(unknown08)->unknownf8, angle));
 }
 
 void GfComBehaviorNpc::execTurnCmd(f32 angle, f32 param2, f32 param3, f32 param4) {
   TFieldExecCmdTurn<GfComAsm>::CreateInfo info;
   info.unknown00 = static_cast<GfObj *>(unknown08)->unknownf8;
-  info.unknown08 = (unknown350.unknown00.unknown00 == INVALID_HANDLE ? 0.0f : unknown350.getCurAngle()) + angle;
+  info.unknown08 = (unknown350.unknown00.unknown00 == unknown020 ? 0.0f : unknown350.getCurAngle()) + angle;
   info.unknown0c = param3;
   info.unknown14 = param2;
   info.unknown18 = param4;
@@ -490,7 +490,7 @@ void GfComBehaviorNpc::execTurnCmd(f32 angle, f32 param2, f32 param3, f32 param4
 void GfComBehaviorNpc::execTurnCmdToPos(const mm::Vec3 &position) {
   const mm::Vec3 &current = getPos();
   f32 angle = atan2f(position.x - current.x, position.z - current.z);
-  angle += unknown350.unknown00.unknown00 == INVALID_HANDLE ? 0.0f : unknown350.getCurAngle();
+  angle += unknown350.unknown00.unknown00 == unknown020 ? 0.0f : unknown350.getCurAngle();
   unknown2e0.create(TFieldExecCmdTurn<GfComAsm>::CreateInfo(static_cast<GfObj *>(unknown08)->unknownf8, angle));
 }
 

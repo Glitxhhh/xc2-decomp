@@ -27,9 +27,9 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 
 enum ResetCameraWallTiming {
-  RESET_CAMERA_WALL_TIMING_UNDER_GROUND,
-  RESET_CAMERA_WALL_TIMING_GROUND,
-  RESET_CAMERA_WALL_TIMING_AIR,
+  RESET_CAMERA_WALL_TIMING_UNKNOWN_0, // Inferred role: reset camera wall timing under ground; original name unknown.
+  RESET_CAMERA_WALL_TIMING_UNKNOWN_1, // Inferred role: reset camera wall timing ground; original name unknown.
+  RESET_CAMERA_WALL_TIMING_UNKNOWN_2, // Inferred role: reset camera wall timing air; original name unknown.
 };
 
 class PlayerCamera : public fw::Camera {

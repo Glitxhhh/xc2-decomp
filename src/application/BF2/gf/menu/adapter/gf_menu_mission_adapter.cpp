@@ -425,7 +425,7 @@ bool GfMenuMissionAdapter::update_MissionFieldSkillColor() {
     if (team != nullptr) {
       for (u16 blade : team->unknown00) {
         if (blade != 0) {
-          DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+          DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
           if (acc.getFieldSkill(0, false) == fieldSkill || acc.getFieldSkill(1, false) == fieldSkill || acc.getFieldSkill(2, false) == fieldSkill) {
             setMulColor(nullptr);
             return true;
@@ -452,7 +452,7 @@ bool GfMenuMissionAdapter::update_MemberFieldSkillLv() {
   if (blade == 0) {
     return false;
   }
-  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
   u32 index;
   if (acc.getFieldSkill(0, false) == fieldSkill) {
     index = 0;
@@ -476,7 +476,7 @@ bool GfMenuMissionAdapter::update_MemberFieldSkillColor() {
     }
     u16 blade = team->unknown00[unknown60];
     if (blade != 0) {
-      DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_NONE);
+      DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
       if (acc.getFieldSkill(0, false) == fieldSkill || acc.getFieldSkill(1, false) == fieldSkill || acc.getFieldSkill(2, false) == fieldSkill) {
         setMulColor(nullptr);
       } else {
@@ -531,7 +531,7 @@ bool GfMenuMissionAdapter::update_MissionFieldSkillLevelCount() {
     }
     int level = 0;
     for (u32 i = 0; i < unknown68->getSize(); i++) {
-      DataParamAcc acc(OBJECT_TYPE_BLADE, unknown68->getContents(i).unknown00, GIMMICK_TYPE_NONE);
+      DataParamAcc acc(OBJECT_TYPE_BLADE, unknown68->getContents(i).unknown00, GIMMICK_TYPE_UNKNOWN_0);
       u32 index;
       if (acc.getFieldSkill(0, false) == fieldSkill) {
         index = 0;
@@ -558,7 +558,7 @@ bool GfMenuMissionAdapter::update_MissionFieldSkillBladeCount() {
     }
     int count = 0;
     for (u32 i = 0; i < unknown68->getSize(); i++) {
-      DataParamAcc acc(OBJECT_TYPE_BLADE, unknown68->getContents(i).unknown00, GIMMICK_TYPE_NONE);
+      DataParamAcc acc(OBJECT_TYPE_BLADE, unknown68->getContents(i).unknown00, GIMMICK_TYPE_UNKNOWN_0);
       if (acc.getFieldSkill(0, false) == fieldSkill || acc.getFieldSkill(1, false) == fieldSkill || acc.getFieldSkill(2, false) == fieldSkill) {
         count++;
       }
@@ -580,7 +580,7 @@ GfMenuMissionAdapter *GfMenuMissionAdapter::createFromCoverter(u32 handle, u32 t
 GfMenuMissionAdapter *GfMenuMissionAdapter::createFromList(u32 handle, u32 type, GfMenuIDList *list, u32 index, GfMenuBladeList *bladeList, bool isUpdateAlways) {
   // __LINE__ must be 261 as in the original source: it is the line argument of operator new.
 #line 261
-  ListConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListConverter(list, index);
+  ListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListConverter(list, index);
   GfMenuMissionAdapter *adapter = create(handle, type, converter->getMissionId(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;
@@ -595,7 +595,7 @@ GfMenuMissionAdapter *GfMenuMissionAdapter::createFromList(u32 handle, u32 type,
 GfMenuMissionAdapter *GfMenuMissionAdapter::createFromMissionList(u32 handle, u32 type, GfMenuMissionList *list, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 276 as in the original source: it is the line argument of operator new.
 #line 276
-  MissionListConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MissionListConverter(list, index);
+  MissionListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MissionListConverter(list, index);
   GfMenuMissionAdapter *adapter = create(handle, type, converter->getMissionId(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;
@@ -606,7 +606,7 @@ GfMenuMissionAdapter *GfMenuMissionAdapter::createFromMissionList(u32 handle, u3
 GfMenuMissionAdapter *GfMenuMissionAdapter::createFromReference(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, bool isUpdateAlways) {
   // __LINE__ must be 284 as in the original source: it is the line argument of operator new.
 #line 284
-  ReferenceConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceConverter(number);
+  ReferenceConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceConverter(number);
   GfMenuMissionAdapter *adapter = create(handle, type, converter->getMissionId(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;
@@ -617,7 +617,7 @@ GfMenuMissionAdapter *GfMenuMissionAdapter::createFromReference(u32 handle, u32 
 GfMenuMissionAdapter *GfMenuMissionAdapter::createFromReferenceMission(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 296 as in the original source: it is the line argument of operator new.
 #line 296
-  ReferenceMissionConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceMissionConverter();
+  ReferenceMissionConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceMissionConverter();
   GfMenuMissionAdapter *adapter = create(handle, type, GfMenuReference::getReferenceMissionID(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;
@@ -638,7 +638,7 @@ GfMenuMissionAdapter *GfMenuMissionAdapter::createFromBladeList(u32 handle, u32 
 GfMenuMissionAdapter *GfMenuMissionAdapter::createFromReferenceMissionBladeList(u32 handle, u32 type, int index, GfMenuBladeList *list, bool isUpdateAlways) {
   // __LINE__ must be 323 as in the original source: it is the line argument of operator new.
 #line 323
-  ReferenceMissionConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceMissionConverter();
+  ReferenceMissionConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceMissionConverter();
   GfMenuMissionAdapter *adapter = create(handle, type, GfMenuReference::getReferenceMissionID(), isUpdateAlways);
   if (adapter != nullptr) {
     adapter->unknown50 = converter;

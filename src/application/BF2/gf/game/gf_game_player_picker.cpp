@@ -9,14 +9,14 @@
 
 namespace gf {
 
-constexpr u32 PICK_MODIFIER_BUTTON = 0x10;
-constexpr u32 PICK_TOGGLE_BUTTON = 0x2;
-constexpr u32 SPEED_UP_BUTTONS = 0x3000;
-constexpr u32 SPEED_DOWN_BUTTONS = 0xc000;
-constexpr u32 SPEED_LEVEL_MAX = 3;
+constexpr u32 PICK_UNKNOWN_16 = 0x10;       // Inferred role: pick modifier button; original name unknown.
+constexpr u32 PICK_UNKNOWN_2 = 0x2;         // Inferred role: pick toggle button; original name unknown.
+constexpr u32 SPEED_UNKNOWN_12288 = 0x3000; // Inferred role: speed up buttons; original name unknown.
+constexpr u32 SPEED_UNKNOWN_49152 = 0xc000; // Inferred role: speed down buttons; original name unknown.
+constexpr u32 SPEED_UNKNOWN_3 = 3;          // Inferred role: speed level max; original name unknown.
 
 void GfGamePlayerPicker::build(const GfSetupParam &param) {
-  GfGamePlayerPicker *picker = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGamePlayerPicker();
+  GfGamePlayerPicker *picker = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGamePlayerPicker();
   picker->setup(param);
 }
 
@@ -41,8 +41,8 @@ void GfGamePlayerPicker::updateImpl(const fw::UpdateInfo &) {
   const fw::PadData *padData = fw::PadManager::getControlPadData(0);
   u32 hold = padData->unknown00;
   u32 trigger = padData->unknown04;
-  bool isToggle = (trigger & PICK_TOGGLE_BUTTON) != 0;
-  bool isLocked = (hold & PICK_MODIFIER_BUTTON) == 0 && !unknown24;
+  bool isToggle = (trigger & PICK_UNKNOWN_2) != 0;
+  bool isLocked = (hold & PICK_UNKNOWN_16) == 0 && !unknown24;
   if (isToggle && !isLocked && isEnableChange()) {
     unknown24 = !unknown24;
     if (unknown24) {
@@ -58,15 +58,15 @@ void GfGamePlayerPicker::updateImpl(const fw::UpdateInfo &) {
     return;
   }
 
-  if ((hold & PICK_MODIFIER_BUTTON) == 0) {
+  if ((hold & PICK_UNKNOWN_16) == 0) {
     unknown25 = true;
   }
 
-  if ((trigger & SPEED_UP_BUTTONS) != 0) {
-    if (unknown20 != SPEED_LEVEL_MAX) {
+  if ((trigger & SPEED_UNKNOWN_12288) != 0) {
+    if (unknown20 != SPEED_UNKNOWN_3) {
       unknown20++;
     }
-  } else if ((trigger & SPEED_DOWN_BUTTONS) != 0 && unknown20 != 0) {
+  } else if ((trigger & SPEED_UNKNOWN_49152) != 0 && unknown20 != 0) {
     unknown20--;
   }
 

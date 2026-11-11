@@ -36,7 +36,7 @@ GfMenuLifeAdapter *GfMenuLifeAdapter::create(ui::UIObjectPlugin *plugin, u8 inde
   }
   // __LINE__ must be 95 as in the original source: it is the line argument of operator new.
 #line 95
-  GfMenuLifeAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuLifeAdapter(plugin);
+  GfMenuLifeAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuLifeAdapter(plugin);
   if (adapter != nullptr) {
     adapter->unknown30 = index;
     adapter->unknown38.bind(adapter, update);

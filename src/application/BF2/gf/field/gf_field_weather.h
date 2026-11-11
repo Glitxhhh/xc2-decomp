@@ -18,9 +18,9 @@ struct GF_OBJ_HANDLE;
 class GfFieldWeather : public mm::mtl::PtrSingleton<GfFieldWeather> {
 public:
   enum CLOUD_SEA_REQUEST {
-    CLOUD_SEA_REQUEST_NONE,
-    CLOUD_SEA_REQUEST_LOW,
-    CLOUD_SEA_REQUEST_HIGH,
+    CLOUD_SEA_REQUEST_UNKNOWN_0, // Inferred role: cloud sea request none; original name unknown.
+    CLOUD_SEA_REQUEST_UNKNOWN_1, // Inferred role: cloud sea request low; original name unknown.
+    CLOUD_SEA_REQUEST_UNKNOWN_2, // Inferred role: cloud sea request high; original name unknown.
   };
 
   GfFieldWeather(const GfSetupParam &param);

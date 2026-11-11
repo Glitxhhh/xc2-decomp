@@ -215,7 +215,7 @@ GF_OBJ_HANDLE *StateUtil::getBuddyHandle(GfComBehaviorPc &behavior) {
   u32 playerId = behavior.getProperty()->unknown38;
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   if (formation == nullptr) {
-    return INVALID_HANDLE;
+    return unknown020;
   }
 
   u32 buddyId = (playerId & 1) != 0 ? playerId - 1 : playerId + 1;
@@ -290,7 +290,7 @@ void StateUtil::broadcastPlayer(GfComBehaviorPc &behavior, fw::Message &message)
 void StateUtil::broadcastMainChar(GfComBehaviorPc &behavior, fw::Message &message) {
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   behavior.unknown08->getComponent<GfComPropertyPc>();
-  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_NUM; i++) {
+  for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
     if (formation->unknown1a0[i].unknown10 && formation->unknown1a0[i].unknown08 != static_cast<GfObj *>(behavior.unknown08)->unknownf8) {
       GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[i].unknown08);
       if (obj != nullptr) {

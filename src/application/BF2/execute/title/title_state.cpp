@@ -40,11 +40,11 @@ void TitleStateLoad::update(TitleMain *main, const fw::UpdateInfo &info) {
   unknown18.reset();
   main->unknown158.unknown00 = 0;
   reqState(1);
-  main->unknowna4 = gf::SAVESLOT_NONE;
+  main->unknowna4 = gf::SAVESLOT_UNKNOWN_FFFFFFFF;
 }
 
 void TitleStateMainScreen::gevPlayEvent(gf::GEV event, u32 value) {
-  if (event == gf::GEV_EVENT_START_FRAME) {
+  if (event == gf::GEV_UNKNOWN_13) {
     unknown20 = 1;
   }
 }
@@ -115,9 +115,9 @@ void TitleStateMainScreen::enter(TitleMain *main, ai::State *previous) { gf::GfE
 void TitleStateMainScreen::leave(TitleMain *main, ai::State *next) { gf::GfEvent::removeEventCallback(this); }
 
 void TitleStatePlayGame::gevPlayEvent(gf::GEV event, u32 value) {
-  if (event == gf::GEV_EVENT_START_FRAME) {
+  if (event == gf::GEV_UNKNOWN_13) {
     unknown20 = 2;
-  } else if (event == gf::GEV_EVENT_SEQUENCE_END) {
+  } else if (event == gf::GEV_UNKNOWN_12) {
     unknown20 = 0;
   }
 }
@@ -201,7 +201,7 @@ void TitleStateToTitle::update(TitleMain *main, const fw::UpdateInfo &info) {
     TitleMain::sleep(1);
   }
   gf::GfManager::setupReturnTitle();
-  gf::GfManager::setExec(gf::EXEC_STATE_ADVERTIZE);
+  gf::GfManager::setExec(gf::EXEC_STATE_UNKNOWN_2);
   if (!main->unknown94) {
     reqState(1);
   } else {

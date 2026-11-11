@@ -17,20 +17,20 @@
 namespace gf {
 
 enum {
-  CREATE_CONFIG_SUB_RATIO_MINUS_3 = 1,
-  CREATE_CONFIG_SUB_RATIO_MINUS_2 = 2,
-  CREATE_CONFIG_SUB_RATIO_MINUS_1 = 3,
-  CREATE_CONFIG_SUB_RATIO_0 = 4,
-  CREATE_CONFIG_SUB_RATIO_1 = 5,
-  CREATE_CONFIG_SUB_RATIO_2 = 6,
-  CREATE_CONFIG_SUB_RATIO_3 = 7,
-  CREATE_CONFIG_SUB_RATIO_4 = 8,
-  CREATE_CONFIG_SUB_RATIO_5 = 9,
-  CREATE_CONFIG_RATIO_0 = 10,
-  CREATE_CONFIG_RATIO_1 = 11,
-  CREATE_CONFIG_RATIO_2 = 12,
-  CREATE_CONFIG_RATIO_3 = 13,
-  CREATE_CONFIG_RATIO_4 = 14,
+  CREATE_CONFIG_UNKNOWN_1 = 1,   // Inferred role: create config sub ratio minus 3; original name unknown.
+  CREATE_CONFIG_UNKNOWN_2 = 2,   // Inferred role: create config sub ratio minus 2; original name unknown.
+  CREATE_CONFIG_UNKNOWN_3 = 3,   // Inferred role: create config sub ratio minus 1; original name unknown.
+  CREATE_CONFIG_UNKNOWN_4 = 4,   // Inferred role: create config sub ratio 0; original name unknown.
+  CREATE_CONFIG_UNKNOWN_5 = 5,   // Inferred role: create config sub ratio 1; original name unknown.
+  CREATE_CONFIG_UNKNOWN_6 = 6,   // Inferred role: create config sub ratio 2; original name unknown.
+  CREATE_CONFIG_UNKNOWN_7 = 7,   // Inferred role: create config sub ratio 3; original name unknown.
+  CREATE_CONFIG_UNKNOWN_8 = 8,   // Inferred role: create config sub ratio 4; original name unknown.
+  CREATE_CONFIG_UNKNOWN_9 = 9,   // Inferred role: create config sub ratio 5; original name unknown.
+  CREATE_CONFIG_UNKNOWN_10 = 10, // Inferred role: create config ratio 0; original name unknown.
+  CREATE_CONFIG_UNKNOWN_11 = 11, // Inferred role: create config ratio 1; original name unknown.
+  CREATE_CONFIG_UNKNOWN_12 = 12, // Inferred role: create config ratio 2; original name unknown.
+  CREATE_CONFIG_UNKNOWN_13 = 13, // Inferred role: create config ratio 3; original name unknown.
+  CREATE_CONFIG_UNKNOWN_14 = 14, // Inferred role: create config ratio 4; original name unknown.
 };
 
 namespace _gfdac {
@@ -52,7 +52,7 @@ static_assert(sizeof(ml::fixed_size_alloc_inside<ACCMEM, 128>) == 0x4038, "");
 } // namespace _gfdac
 
 DataParamAcc::DataParamAcc(const ParamObj &paramObj) {
-  if (paramObj.unknown00 != INVALID_HANDLE) {
+  if (paramObj.unknown00 != unknown020) {
     setupObjHandle(paramObj.unknown00);
   } else {
     setupObjId(paramObj.unknown08, paramObj.unknown0c, static_cast<GimmickType>(0));
@@ -68,7 +68,7 @@ void DataParamAcc::setupObjHandle(GF_OBJ_HANDLE *handle) {
   case OBJECT_TYPE_MAP:
     obj = new (mem) DataObjMap(handle);
     break;
-  case OBJECT_TYPE_DRIVER:
+  case OBJECT_TYPE_PC:
     obj = new (mem) DataObjDriver(handle);
     break;
   case OBJECT_TYPE_BLADE:
@@ -94,7 +94,7 @@ void DataParamAcc::setupObjHandle(GF_OBJ_HANDLE *handle) {
   case OBJECT_TYPE_PC_WEAPON:
     obj = new (mem) DataObjPcWpn(handle);
     break;
-  case OBJECT_TYPE_BELONGING:
+  case OBJECT_TYPE_OPTION:
     obj = new (mem) DataObjBelonging(handle);
     break;
   default:
@@ -112,7 +112,7 @@ void DataParamAcc::setupObjId(u32 objectType, u32 id, GimmickType gimmickType) {
   case OBJECT_TYPE_MAP:
     obj = new (mem) DataObjMap(id);
     break;
-  case OBJECT_TYPE_DRIVER:
+  case OBJECT_TYPE_PC:
     obj = new (mem) DataObjDriver(id);
     break;
   case OBJECT_TYPE_BLADE:
@@ -133,7 +133,7 @@ void DataParamAcc::setupObjId(u32 objectType, u32 id, GimmickType gimmickType) {
   case OBJECT_TYPE_PC_WEAPON:
     obj = new (mem) DataObjPcWpn(id);
     break;
-  case OBJECT_TYPE_UI:
+  case OBJECT_TYPE_UI_OBJ:
     obj = new (mem) DataObjUiObj(id);
     break;
   default:
@@ -1200,47 +1200,47 @@ unknown079 DataIdeaAcc::getRatio(u32 level0, u32 level1, u32 level2, u32 level3,
   unknown079 result;
   result.unknown00 = static_cast<int>(total + (total > 0.0f ? 0.5f : -0.5f));
   if (result.unknown00 > 3) {
-    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_RATIO_4);
+    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_14);
   } else if (result.unknown00 > 2) {
-    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_RATIO_3);
+    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_13);
   } else if (result.unknown00 > 1) {
-    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_RATIO_2);
+    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_12);
   } else if (result.unknown00 > 0) {
-    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_RATIO_1);
+    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_11);
   } else {
-    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_RATIO_0);
+    result.unknown02 = bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_10);
   }
   return result;
 }
 
 f32 DataIdeaAcc::getSubRatio(u32 level, int offset, u32 idea) const {
   GfBdatBlade *bdatBlade = GfBdatBlade::get();
-  int diff = level - mm::clamp(getLevel(idea) + offset, 0, static_cast<int>(IDEA_LEVEL_MAX));
+  int diff = level - mm::clamp(getLevel(idea) + offset, 0, static_cast<int>(IDEA_LEVEL_UNKNOWN_10));
   if (diff >= 5) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_5) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_9) * 0.1f;
   }
   if (diff >= 4) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_4) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_8) * 0.1f;
   }
   if (diff >= 3) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_3) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_7) * 0.1f;
   }
   if (diff >= 2) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_2) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_6) * 0.1f;
   }
   if (diff >= 1) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_1) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_5) * 0.1f;
   }
   if (diff >= 0) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_0) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_4) * 0.1f;
   }
   if (diff >= -1) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_MINUS_1) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_3) * 0.1f;
   }
   if (diff >= -2) {
-    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_MINUS_2) * 0.1f;
+    return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_2) * 0.1f;
   }
-  return bdatBlade->getCreateConfigValue(CREATE_CONFIG_SUB_RATIO_MINUS_3) * 0.1f;
+  return bdatBlade->getCreateConfigValue(CREATE_CONFIG_UNKNOWN_1) * 0.1f;
 }
 
 } // namespace gf

@@ -53,7 +53,7 @@ bool GfMenuObjBlEquip::removeItem(ui::UIObjectAcc &acc, GfMenuItemList *equipLis
   GfEquipUtil::equipBladeOrb(blade, 0, slot, GfItemHandle(0));
   if (equipList != nullptr && slot < equipList->contents.size()) {
     MenuItemInfo &info = equipList->contents[slot];
-    info.unknown00 = ItemType::EQUIP_ORB;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_3;
     info.unknown04 = 0;
     info.unknown08 = 0;
     info.unknown0c = GfItemHandle(0);

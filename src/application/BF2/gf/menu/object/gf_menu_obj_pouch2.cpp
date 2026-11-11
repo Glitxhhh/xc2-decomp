@@ -76,7 +76,7 @@ void GfMenuObjPouch2::initialize() {
   u32 main = acc.searchChild("LAY_main");
 // __LINE__ must be 185 as in the original file: it is the line argument of operator new.
 #line 185
-  MainListener *mainListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   mainListener->addRef();
   ui::UIEventManager::get()->registObjectListener(main, mainListener);
   if (mainListener != nullptr) {
@@ -85,7 +85,7 @@ void GfMenuObjPouch2::initialize() {
   attachExternalCall(unknown005, main);
   u32 slot = acc.searchChild("LAY_eqp_fevitem");
 #line 191
-  SlotListener *slotListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) SlotListener(this);
+  SlotListener *slotListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SlotListener(this);
   slotListener->addRef();
   ui::UIEventManager::get()->registObjectListener(slot, slotListener);
   if (slotListener != nullptr) {
@@ -93,7 +93,7 @@ void GfMenuObjPouch2::initialize() {
   }
   u32 itemList = acc.searchChild("LAY_fvstock_fevitem");
 #line 195
-  ItemListListener *itemListListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ItemListListener(this);
+  ItemListListener *itemListListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ItemListListener(this);
   itemListListener->addRef();
   ui::UIEventManager::get()->registObjectListener(itemList, itemListListener);
   if (itemListListener != nullptr) {
@@ -101,7 +101,7 @@ void GfMenuObjPouch2::initialize() {
   }
   u32 filter = acc.searchChild("LAY_stock_filter2");
 #line 209
-  FilterListener2 *filterListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) FilterListener2(this);
+  FilterListener2 *filterListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) FilterListener2(this);
   filterListener->addRef();
   ui::UIEventManager::get()->registObjectListener(filter, filterListener);
   if (filterListener != nullptr) {
@@ -109,7 +109,7 @@ void GfMenuObjPouch2::initialize() {
   }
   u32 partyInfo = acc.searchChild("LAY_chr_fevinfo");
 #line 213
-  PartyInfoListener *partyInfoListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) PartyInfoListener(this);
+  PartyInfoListener *partyInfoListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PartyInfoListener(this);
   partyInfoListener->addRef();
   ui::UIEventManager::get()->registObjectListener(partyInfo, partyInfoListener);
   if (partyInfoListener != nullptr) {
@@ -117,7 +117,7 @@ void GfMenuObjPouch2::initialize() {
   }
   u32 result = acc.searchChild("LAY_result");
 #line 217
-  ResultListener *resultListener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ResultListener(this);
+  ResultListener *resultListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ResultListener(this);
   resultListener->addRef();
   ui::UIEventManager::get()->registObjectListener(result, resultListener);
   if (resultListener != nullptr) {
@@ -126,9 +126,9 @@ void GfMenuObjPouch2::initialize() {
   unknown28 = GfMenuItemList::create();
   ui::UIListInfoBase::SetupParam param;
   param.unknown08 = 3;
-  unknown28->setup(getAllocator(ALLOCATOR_DEFAULT), param);
+  unknown28->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
   ui::UISelectObjList::CreateParam createParam;
-  createParam.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown48 = ui::UISelectObjList::create(createParam);
   unknown40 = GfMenuItemList::create();
   unknown38 = unknown160();
@@ -232,7 +232,7 @@ void GfMenuObjPouch2::getFilterText(u32 filter, ui::UIStr &text) {
 void GfMenuObjPouch2::updateItemList(GfMenuItemList *list, ui::UISelectObjList *, u32 filter, u32 sort) {
   list->clear();
   GfMenuItemList::ItemBoxSetup setup;
-  setup.unknown14 = ItemType::FAVORITE;
+  setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_10;
   setup.unknown00.unknown08 = 8;
   setup.unknown00.unknown10 = true;
   setup.unknown28 = false;
@@ -277,7 +277,7 @@ void GfMenuObjPouch2::refreshSlot(ui::UIObjectAcc &acc, u32 index) {
     }
   }
   ui::UISelectObjList::CreateParam param;
-  param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   ui::UISelectObjList *list = ui::UISelectObjList::create(param);
   for (u32 slot = 0; slot < openCount; slot++) {
     mm::mtl::FixStr<32> slotName;
@@ -415,7 +415,7 @@ void GfMenuObjPouch2::setupFilter(ui::UIObjectAcc &acc, u32 filter) {
       if (i == 0) {
         number = 14;
       } else {
-        GfMenuItemUtil::getIconNumber(ItemType::FAVORITE, unknown002[i], number, false);
+        GfMenuItemUtil::getIconNumber(ItemType::ITEM_TYPE_UNKNOWN_10, unknown002[i], number, false);
       }
       icon.setImageIndex(number);
     }
@@ -491,21 +491,21 @@ GAME_VOICE_HANDLE *GfMenuObjPouch2::procFavFlag(ui::UIObjectAcc &acc, FavoriteFl
 void GfMenuObjPouch2::setFavFlag(u32 driver, u32 item, mm::mtl::FixedArray<FavoriteFlag, 4> &flags, const GfMenuBladeList *list) {
   flags[0].unknown00 = driver;
   flags[0].unknown04 = item;
-  flags[0].unknown08[0] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_DRIVER, driver, FAVORITE_CATEGORY_0);
-  flags[0].unknown08[1] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_DRIVER, driver, FAVORITE_CATEGORY_1);
-  flags[0].unknown08[2] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_DRIVER, driver, FAVORITE_ITEM_0);
-  flags[0].unknown08[3] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_DRIVER, driver, FAVORITE_ITEM_1);
-  DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+  flags[0].unknown08[0] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_PC, driver, FAVORITE_UNKNOWN_0);
+  flags[0].unknown08[1] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_PC, driver, FAVORITE_UNKNOWN_1);
+  flags[0].unknown08[2] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_PC, driver, FAVORITE_UNKNOWN_2);
+  flags[0].unknown08[3] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_PC, driver, FAVORITE_UNKNOWN_3);
+  DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
   for (u32 i = 0; i < 3; i++) {
     if (i < list->getSize()) {
       u32 blade = list->getContents(i).unknown00;
       flags[i + 1].unknown00 = blade;
       flags[i + 1].unknown04 = item;
       if (blade != 0) {
-        flags[i + 1].unknown08[0] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_CATEGORY_0);
-        flags[i + 1].unknown08[1] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_CATEGORY_1);
-        flags[i + 1].unknown08[2] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_ITEM_0);
-        flags[i + 1].unknown08[3] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_ITEM_1);
+        flags[i + 1].unknown08[0] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_UNKNOWN_0);
+        flags[i + 1].unknown08[1] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_UNKNOWN_1);
+        flags[i + 1].unknown08[2] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_UNKNOWN_2);
+        flags[i + 1].unknown08[3] = GfMenuObjUtil::getFavoriteStat(OBJECT_TYPE_BLADE, blade, FAVORITE_UNKNOWN_3);
       }
     } else {
       flags[i + 1].unknown00 = 0;
@@ -567,7 +567,7 @@ void GfMenuObjPouch2::updateSlotList(GfMenuItemList *list) {
     SDataPouch *pouch = GfPouchUtil::getPouch(driver, slot);
     if (pouch->_06 != 0) {
       MenuItemInfo info;
-      info.unknown00 = ItemType::FAVORITE;
+      info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_10;
       info.unknown04 = pouch->unknown04;
       info.unknown08 = info.unknown04 != 0;
       list->addContents(info);

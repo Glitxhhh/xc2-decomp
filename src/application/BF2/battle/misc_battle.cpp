@@ -182,7 +182,7 @@ void Misc::RandomVectorXZ(mm::Vec3 &vector) {
 }
 
 bool Misc::GetObjectTransform(gf::GF_OBJ_HANDLE *handle, mm::Vec3 &transform, TRANS_TYPE type) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return false;
   }
 
@@ -238,7 +238,7 @@ int Misc::GetPartyID(gf::GF_OBJ_HANDLE *handle) {
 
   for (int i = 0; i < 3; i++) {
     gf::GF_OBJ_HANDLE *driver = gf::GfGameParty::getHandleDriver(i);
-    if (driver == gf::INVALID_HANDLE) {
+    if (driver == gf::unknown020) {
       continue;
     }
     gf::GfObjAcc acc(driver);
@@ -312,7 +312,7 @@ bool Misc::CheckInRange(const mm::Vec3 &position, BattleCharacter *character, f3
 }
 
 bool Misc::CheckInRange(const mm::Vec3 &position, gf::GF_OBJ_HANDLE *handle, f32 range, bool isXZ) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return false;
   }
 
@@ -333,7 +333,7 @@ bool Misc::CheckInRange(const mm::Vec3 &position, gf::GF_OBJ_HANDLE *handle, f32
 }
 
 bool Misc::GetObjectDirection(gf::GF_OBJ_HANDLE *handle, mm::Vec3 &direction, bool isXZ) {
-  if (handle == gf::INVALID_HANDLE) {
+  if (handle == gf::unknown020) {
     return false;
   }
 

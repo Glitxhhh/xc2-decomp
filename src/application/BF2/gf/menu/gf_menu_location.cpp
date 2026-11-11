@@ -64,7 +64,7 @@ void GfMenuLocation::refreshLocatorFromQuest(u32 index, u32 type) {
     if (!GfMenuObjUtil::isQuestCompleted(*quest)) {
       u32 purpose = GfDataQuest::getListPurposeID(*quest);
       for (u32 task = 0; task < 4; task++) {
-        QuestTaskParam param(*quest, task, purpose, TASK_STATE_NONE);
+        QuestTaskParam param(*quest, task, purpose, TASK_STATE_UNKNOWN_0);
         if (param.unknown10 == 0) {
           break;
         }

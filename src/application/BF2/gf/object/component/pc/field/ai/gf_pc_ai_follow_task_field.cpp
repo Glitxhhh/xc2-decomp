@@ -27,7 +27,7 @@ bool isMainPcMove(GfComPropertyPc &property) {
   }
 
   u32 mainId = formation->unknown1a0[property.unknown38].unknown00;
-  if (mainId != PLAYER_ID_NONE) {
+  if (mainId != PLAYER_ID_UNKNOWN_4294967295) {
     GfObjProperty *mainProperty = GfObjUtil::getProperty(formation->unknown1a0[mainId].unknown08);
     if (mainProperty->unknown18 != nullptr) {
       return mainProperty->unknown18->unknown7f;
@@ -147,7 +147,7 @@ bool isFollowBuddyPc(const BlackBoardField &blackBoard) {
   GfComPropertyPc *property = blackBoard.unknown08;
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   GfObjProperty *mainProperty = GfObjUtil::getProperty(formation->unknown1a0[formation->unknown1a0[property->unknown38].unknown00].unknown08);
-  if (mainProperty->unknown18->unknown00 == PROPERTY_MOVE_CLIMB) {
+  if (mainProperty->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3) {
     return false;
   }
 

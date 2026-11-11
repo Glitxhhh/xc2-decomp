@@ -33,14 +33,14 @@
 
 namespace gf {
 
-constexpr u32 OBJ_ATTRIBUTE_TARGETABLE = 7;
-constexpr u16 COMMON_WINDOW_GRAVE = 0x33;
-const ml::FILE_PRIO GMK_TUTORIAL_FILE_PRIO = static_cast<ml::FILE_PRIO>(7);
+constexpr u32 OBJ_UNKNOWN_7_2 = 7;                                       // Inferred role: obj attribute targetable; original name unknown.
+constexpr u16 COMMON_UNKNOWN_51 = 0x33;                                  // Inferred role: common window grave; original name unknown.
+const ml::FILE_PRIO FILE_PRIO_UNKNOWN_7 = static_cast<ml::FILE_PRIO>(7); // Inferred role: gmk tutorial file prio; original name unknown.
 
-AFieldSeq::AFieldSeq(const GfSetupParam &) : unknown08(INVALID_HANDLE), unknown10(nullptr), m_end(false), unknown21(false) {}
+AFieldSeq::AFieldSeq(const GfSetupParam &) : unknown08(unknown020), unknown10(nullptr), m_end(false), unknown21(false) {}
 
 void AFieldSeq::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
-  if (event == GEV_MAPJUMP_START) {
+  if (event == GEV_UNKNOWN_1) {
     dispose();
   }
 }
@@ -56,12 +56,12 @@ void AFieldSeq::create(GF_OBJ_HANDLE *handle) {
 void AFieldSeq::dispose() {
   m_end = false;
   unknown21 = false;
-  unknown08 = INVALID_HANDLE;
+  unknown08 = unknown020;
   unknown10 = nullptr;
 }
 
 void AFieldSeq::update(f32 deltaTime) {
-  if (unknown08 != INVALID_HANDLE && unknown10) {
+  if (unknown08 != unknown020 && unknown10) {
     (this->*unknown10)(deltaTime);
   }
 }
@@ -70,9 +70,9 @@ void AFieldSeq::setTargetable(bool isTargetable) {
   GfObj *obj = GfObjUtil::getObj(unknown08);
   if (obj != nullptr) {
     if (isTargetable) {
-      obj->unknown110 |= OBJ_ATTRIBUTE_TARGETABLE;
+      obj->unknown110 |= OBJ_UNKNOWN_7_2;
     } else {
-      obj->unknown110 &= ~OBJ_ATTRIBUTE_TARGETABLE;
+      obj->unknown110 &= ~OBJ_UNKNOWN_7_2;
     }
   }
 }
@@ -145,11 +145,11 @@ void GfFieldMapGimmick::setDispOfParty(bool isDisp, bool isExceptMover) {
   for (u32 i = 0; i < 3; i++) {
     GF_OBJ_HANDLE *driver = GfGameParty::getHandleDriver(i);
     if (!isExceptMover || mover != driver) {
-      GfObjAcc(driver).setDisp(OBJDISP_UNKNOWN10, isDisp);
+      GfObjAcc(driver).setDisp(OBJDISP_UNKNOWN_4, isDisp);
     }
     GF_OBJ_HANDLE *blade = GfGameParty::getHandleBlade(i, -1);
     if (!isExceptMover || mover != blade) {
-      GfObjAcc(blade).setDisp(OBJDISP_UNKNOWN10, isDisp);
+      GfObjAcc(blade).setDisp(OBJDISP_UNKNOWN_4, isDisp);
     }
   }
 }
@@ -229,7 +229,7 @@ void GfFieldMapGimmick::clearSe() {
 bool GfFieldMapGimmick::isEnd() const { return AFieldSeq::isEnd() && !unknown210 && !unknown220 && !unknown238; }
 
 void GfFieldMapGimmick::update(f32 deltaTime) {
-  if (unknown08 == INVALID_HANDLE) {
+  if (unknown08 == unknown020) {
     return;
   }
   bool isEnded = isEnd();
@@ -314,10 +314,10 @@ void GfFieldMapGimmick::seqMapObj_nextwait(f32 deltaTime) {
   }
 }
 
-GfFieldGrave::GfFieldGrave(const GfSetupParam &) : unknown10(INVALID_HANDLE), unknown20(nullptr) {}
+GfFieldGrave::GfFieldGrave(const GfSetupParam &) : unknown10(unknown020), unknown20(nullptr) {}
 
 void GfFieldGrave::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
-  if (event == GEV_MAPJUMP_START) {
+  if (event == GEV_UNKNOWN_1) {
     dispose();
   }
 }
@@ -325,7 +325,7 @@ void GfFieldGrave::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
 void GfFieldGrave::create(GF_OBJ_HANDLE *handle) {
   dispose();
   this->unknown10 = handle;
-  GfMenuManager::openCommonWindow(COMMON_WINDOW_GRAVE);
+  GfMenuManager::openCommonWindow(COMMON_UNKNOWN_51);
   unknown20 = &GfFieldGrave::seqWaitToSelect;
 }
 
@@ -350,7 +350,7 @@ void GfFieldGrave::dispose() {
     GfMenuManager::closeCommonWindow();
   }
   m_end = false;
-  unknown10 = INVALID_HANDLE;
+  unknown10 = unknown020;
   unknown20 = nullptr;
 }
 
@@ -365,7 +365,7 @@ void GfFieldWarp::onFsSucceeded() {
   if (warp != nullptr) {
     GfObj *obj = GfObjUtil::getObj(unknown08);
     if (obj != nullptr) {
-      obj->unknown110 |= OBJ_ATTRIBUTE_TARGETABLE;
+      obj->unknown110 |= OBJ_UNKNOWN_7_2;
     }
     GfObj *mover = GfObjUtil::getObj(GfGameManager::getControlMover());
     if (mover != nullptr) {
@@ -392,7 +392,7 @@ void GfFieldWarp::onFsSucceeded() {
 void GfFieldGmkTutorial::build(const GfSetupParam &) {
   // __LINE__ must be 1226 as in the original file: its value changes the instruction order.
 #line 1226
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFieldGmkTutorial();
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfFieldGmkTutorial();
 }
 
 void GfFieldGmkTutorial::destroy() {
@@ -410,14 +410,14 @@ void GfFieldGmkTutorial::create(const char *name, u32 tutorial) {
   dispose();
   unknown0c = name;
   this->unknown50 = tutorial;
-  fw::ScriptManager::get()->loadScript(unknown08, name, GMK_TUTORIAL_FILE_PRIO);
+  fw::ScriptManager::get()->loadScript(unknown08, name, FILE_PRIO_UNKNOWN_7);
   fw::ScriptManager::get()->unknown20[unknown08].start();
 }
 
 bool GfFieldGmkTutorial::isEnd() const { return fw::ScriptManager::get()->unknown20[unknown08].isFinish(); }
 
 void GfFieldGmkTutorial::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
-  if (event == GEV_MAPJUMP_START) {
+  if (event == GEV_UNKNOWN_1) {
     dispose();
   }
 }

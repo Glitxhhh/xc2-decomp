@@ -23,7 +23,7 @@ struct GF_OBJ_HANDLE;
 
 namespace event {
 
-TextWindow::TextWindow() : unknown08(0), unknown218(gf::INVALID_HANDLE), unknown220(nullptr) {}
+TextWindow::TextWindow() : unknown08(0), unknown218(gf::unknown020), unknown220(nullptr) {}
 
 void TextWindow::clear() {
   if (unknown220 != nullptr) {
@@ -32,7 +32,7 @@ void TextWindow::clear() {
   }
   unknown110 = "";
   unknown0c = "";
-  unknown218 = gf::INVALID_HANDLE;
+  unknown218 = gf::unknown020;
   unknown08 = 0;
 }
 
@@ -91,11 +91,11 @@ void TextWindow::write(const char *text, const char *name, u8 *bdat, u32 textId,
     param.unknown00 = bdat;
     param.unknown08 = textId;
     param.unknown20 = handle;
-    if (handle != gf::INVALID_HANDLE) {
+    if (handle != gf::unknown020) {
       gf::DataParamAcc paramAcc(handle);
       switch (paramAcc.getObjType()) {
-      case gf::OBJECT_TYPE_DRIVER:
-        gf::GfDataDriver::getName(param.unknown10, param.unknown18, paramAcc.isValid() && paramAcc.getObjType() == gf::OBJECT_TYPE_DRIVER ? paramAcc.getBdatId() : 0);
+      case gf::OBJECT_TYPE_PC:
+        gf::GfDataDriver::getName(param.unknown10, param.unknown18, paramAcc.isValid() && paramAcc.getObjType() == gf::OBJECT_TYPE_PC ? paramAcc.getBdatId() : 0);
         break;
       case gf::OBJECT_TYPE_BLADE:
         gf::GfDataBlade::getName(param.unknown10, param.unknown18, paramAcc.isValid() ? paramAcc.getBdatId() : 0);

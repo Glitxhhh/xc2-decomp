@@ -53,7 +53,7 @@ static GfMenuArtsAdapter::TypeInfo TYPE_INFOS[] = {
 GfMenuArtsAdapter *GfMenuArtsAdapter::createFromList(u32 handle, u32 type, GfMenuArtsList *list, int listIndex, u32 driver, bool isUpdateAlways) {
   // __LINE__ must be 287 as in the original source: it is the line argument of operator new.
 #line 287
-  ListConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListConverter(list, listIndex, driver);
+  ListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListConverter(list, listIndex, driver);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -72,14 +72,14 @@ GfMenuArtsAdapter *GfMenuArtsAdapter::createFromCoverter(u32 handle, u32 type, I
 GfMenuArtsAdapter *GfMenuArtsAdapter::createFromListReferenceDriver(u32 handle, u32 type, GfMenuArtsList *list, int listIndex, u32 driverIndex, bool isUpdateAlways) {
   // __LINE__ must be 296 as in the original source: it is the line argument of operator new.
 #line 296
-  ListReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ListReferenceDriverConverter(list, listIndex, driverIndex);
+  ListReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListReferenceDriverConverter(list, listIndex, driverIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuArtsAdapter *GfMenuArtsAdapter::createFromReferenceDriverSlot(u32 handle, u32 type, u32 driverIndex, u32 slot, bool isUpdateAlways) {
   // __LINE__ must be 314 as in the original source: it is the line argument of operator new.
 #line 314
-  ReferenceDriverSlotConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverSlotConverter(driverIndex, slot);
+  ReferenceDriverSlotConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceDriverSlotConverter(driverIndex, slot);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -100,7 +100,7 @@ GfMenuArtsAdapter *GfMenuArtsAdapter::create(u32 handle, u32 type, u32 arts, u32
     if (plugin != nullptr) {
       // __LINE__ must be 374 as in the original source: it is the line argument of operator new.
 #line 374
-      GfMenuArtsAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuArtsAdapter(plugin, isUpdateAlways);
+      GfMenuArtsAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuArtsAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown58 = arts;
       adapter->unknown5c = driver;
@@ -326,7 +326,7 @@ bool GfMenuArtsAdapter::update_ArtsIconReleseLv() {
     return false;
   }
   u32 cap = GfDataDriverArts::getLevelCap(unknown58, unknown64);
-  DataParamAcc acc(OBJECT_TYPE_DRIVER, unknown5c, GIMMICK_TYPE_NONE);
+  DataParamAcc acc(OBJECT_TYPE_PC, unknown5c, GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     setNumber(cap <= acc.getLevel(false));
     return true;
@@ -486,7 +486,7 @@ void GfMenuArtsAdapter::ReferenceDriverSlotConverter::getArtsInfo(MenuArtsInfo &
   u32 driver = GfMenuReference::getReferenceDriverID(driverIndex);
   u32 weaponType;
   {
-    DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+    DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
     if (!acc.isValid()) {
       return;
     }

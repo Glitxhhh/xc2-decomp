@@ -35,7 +35,7 @@ template bool TGmkList<GmkPrecious, GmkPrecious::BdatInfo, 1396920912u, 2u, GmkP
 
 template class TGmkActiveList<GmkPrecious>;
 
-GmkPrecious::GmkPrecious() : IntrusiveListNode(), unknown58(gf::INVALID_HANDLE), unknown60(0), unknown68(nullptr), unknown70{0.0f}, unknown74(true) {}
+GmkPrecious::GmkPrecious() : IntrusiveListNode(), unknown58(gf::unknown020), unknown60(0), unknown68(nullptr), unknown70{0.0f}, unknown74(true) {}
 
 // Inferred role: pick up area of the pc param list; original type name unknown.
 struct unknown091 {
@@ -118,7 +118,7 @@ void GmkPrecious::dispose() {
 }
 
 void GmkPrecious::disposeGobInst(bool isFadeOut) {
-  if (unknown58 == gf::INVALID_HANDLE) {
+  if (unknown58 == gf::unknown020) {
     return;
   }
   if (intoNode() && TGmkActiveList<GmkPrecious>::get() != nullptr) {
@@ -129,7 +129,7 @@ void GmkPrecious::disposeGobInst(bool isFadeOut) {
   } else {
     unbindToGameObj(unknown58);
     gf::GfObjUtil::destroy(unknown58);
-    unknown58 = gf::INVALID_HANDLE;
+    unknown58 = gf::unknown020;
   }
 }
 
@@ -158,7 +158,7 @@ bool GmkPrecious::isPopCondMatched() const {
 
 void GmkPrecious::validateDisp() const {
   bool isDisp = unknown74 && debugIsDispGmkType(getGmkType());
-  if (unknown58 != gf::INVALID_HANDLE) {
+  if (unknown58 != gf::unknown020) {
     setEventDisp(unknown58, isDisp);
   }
   if (unknown60 != 0) {
@@ -184,7 +184,7 @@ void GmkPrecious::update(f32 deltaTime) {
     disposeEffectIcon(true);
     disposeMenuIcon();
   }
-  if (unknown58 != gf::INVALID_HANDLE && unknown68 == nullptr) {
+  if (unknown58 != gf::unknown020 && unknown68 == nullptr) {
     createMenuIcon();
   }
   updateMenuIcon();
@@ -196,7 +196,7 @@ void GmkPrecious::update(f32 deltaTime) {
 }
 
 void GmkPrecious::updateInActiveList(f32 deltaTime) {
-  if (gf::GfGameManager::getControlMover() == gf::INVALID_HANDLE || isObtained() || gf::GfGameManager::isBattle() || !gf::GfGameManager::isEnableGetFieldPrecious()) {
+  if (gf::GfGameManager::getControlMover() == gf::unknown020 || isObtained() || gf::GfGameManager::isBattle() || !gf::GfGameManager::isEnableGetFieldPrecious()) {
     return;
   }
   const mm::Vec3 &moverPosition = gf::GfObjUtil::getObj(gf::GfGameManager::getControlMover())->getComponent<gf::GfComTransform>()->getPosition();
@@ -215,7 +215,7 @@ void GmkPrecious::updateInActiveList(f32 deltaTime) {
 
 void GmkPrecious::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event != gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event != gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     return;
   }
   disposeGobInst(false);

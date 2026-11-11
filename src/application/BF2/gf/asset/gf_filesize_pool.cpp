@@ -27,7 +27,7 @@ GfFileSizePool::~GfFileSizePool() {}
 
 void GfFileSizePool::build(const GfSetupParam &param) {
 #line 61
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfFileSizePool(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfFileSizePool(param);
 }
 
 void GfFileSizePool::destroy() {
@@ -117,7 +117,7 @@ u64 GfFileSizePool::requestFileSize(const char *path) {
   }
   u64 handle = getHandleFromFileName(index, path);
 #line 172
-  mm::mtl::FixStr<128> *name = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) mm::mtl::FixStr<128>();
+  mm::mtl::FixStr<128> *name = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) mm::mtl::FixStr<128>();
   *name = path;
   unknown001 entry;
   entry.unknown00 = handle;
@@ -137,7 +137,7 @@ void GfFileSizePool::recalcFileSizeCache(u64 handle, const char *path) {
   }
   entry.unknown00 = handle;
 #line 197
-  entry.unknown08 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) mm::mtl::FixStr<128>();
+  entry.unknown08 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) mm::mtl::FixStr<128>();
   *entry.unknown08 = path;
   entry.unknown10 = -2;
   unknown1b028.push(entry);

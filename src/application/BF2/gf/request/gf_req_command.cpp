@@ -132,7 +132,7 @@ void RQ_SETUP_PARTY::replaceActBlade() {
 
 u32 GfReqCommand::reqSave(SAVESLOT slot) {
 #line 68
-  unknown001 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown001();
+  unknown001 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown001();
   param->unknown00 = slot;
   return GfReqManager::addCommand(param, execSave);
 }
@@ -145,8 +145,8 @@ void GfReqCommand::execSave(const GfReqParam *param) {
 
 u32 GfReqCommand::reqSaveOption() {
 #line 76
-  unknown001 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown001();
-  param->unknown00 = SAVESLOT_NONE;
+  unknown001 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown001();
+  param->unknown00 = SAVESLOT_UNKNOWN_FFFFFFFF;
   return GfReqManager::addCommand(param, execSaveOption);
 }
 
@@ -157,14 +157,14 @@ void GfReqCommand::execSaveOption(const GfReqParam *param) {
 
 u32 GfReqCommand::reqSoloParty(u32 driver) {
 #line 95
-  unknown002 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown002();
+  unknown002 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown002();
   param->unknown00 = driver;
   return GfReqManager::addCommand(param, execSoloParty);
 }
 
 void GfReqCommand::reqPartyBlade(u32 blade, u32 driver) {
 #line 104
-  unknown003 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown003();
+  unknown003 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown003();
   param->unknown00 = blade;
   param->unknown04 = driver;
   GfReqManager::addCommand(param, execPartyBlade);
@@ -172,7 +172,7 @@ void GfReqCommand::reqPartyBlade(u32 blade, u32 driver) {
 
 void GfReqCommand::reqChangeAttribute(u32 objectType, u32 blade, u32 attribute) {
 #line 113
-  unknown004 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown004();
+  unknown004 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown004();
   param->unknown00 = objectType;
   param->unknown04 = blade;
   param->unknown08 = attribute;
@@ -183,7 +183,7 @@ void GfReqCommand::execChangeAttributeForDebug(const GfReqParam *) {}
 
 u32 GfReqCommand::reqWaitEvent(f32 time, GF_OBJ_HANDLE *handle) {
 #line 125
-  unknown005 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown005;
+  unknown005 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown005;
   param->unknown00 = time;
   param->unknown08 = handle;
   return GfReqManager::addCommand(param, execWaitEvent);
@@ -200,7 +200,7 @@ void GfReqCommand::execWaitEvent(const GfReqParam *param) {
   }
   f32 remain = static_cast<const unknown005 *>(param)->unknown00 - 0.5f - timer.getSecLap();
   while (remain > 0.0f) {
-    if (!GfPause::isPause(PAUSE_BIT_FIELD_TIME)) {
+    if (!GfPause::isPause(PAUSE_BIT_UNKNOWN_4)) {
       remain -= GfReqManager::getUpdateInfo()->unknown04;
     }
     GfSleep(1);
@@ -227,7 +227,7 @@ u32 GfReqCommand::reqPlayerPause(f32 time) {
     return 0xffffffff;
   }
 #line 804
-  unknown006 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown006;
+  unknown006 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown006;
   param->unknown00 = time;
   return GfReqManager::addCommand(param, execPlayerPause);
 }
@@ -247,16 +247,16 @@ void GfReqCommand::execPlayerPause(const GfReqParam *param) {
 
 void GfReqCommand::reqToolMode(bool isTool) {
 #line 835
-  unknown007 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown007;
+  unknown007 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown007;
   param->unknown00 = isTool;
   GfReqManager::addCommand(param, execToolMode);
 }
 
 void GfReqCommand::execToolMode(const GfReqParam *param) {
   if (static_cast<const unknown007 *>(param)->unknown00) {
-    GfManager::setExec(EXEC_STATE_TOOL);
+    GfManager::setExec(EXEC_STATE_UNKNOWN_4);
   } else {
-    GfManager::setExec(EXEC_STATE_DEBUG);
+    GfManager::setExec(EXEC_STATE_UNKNOWN_0);
   }
   u32 mapjumpId = GfMapManager::getMapJumpID();
   if (mapjumpId == 0) {
@@ -268,7 +268,7 @@ void GfReqCommand::execToolMode(const GfReqParam *param) {
 
 void GfReqCommand::reqStartScript(u32 slot, const char *name, bool isStart) {
 #line 861
-  unknown008 *param = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) unknown008;
+  unknown008 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown008;
   param->unknown00 = name;
   param->unknown28 = isStart;
   param->unknown24 = slot;

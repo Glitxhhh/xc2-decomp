@@ -38,7 +38,7 @@ bool isActiveRangeLure(GfComPropertyPc &property, const AccessParam &param, GF_O
   return isActive;
 }
 
-LurePlugin::LurePlugin() : unknown10(INVALID_HANDLE), unknown20(nullptr) {}
+LurePlugin::LurePlugin() : unknown10(unknown020), unknown20(nullptr) {}
 
 bool LurePlugin::setup(GfComBehaviorPc &behavior) {
   unknown18 = fw::ParamManager::get()->unknown408[7];
@@ -51,8 +51,8 @@ void LurePlugin::cleanup(GfComBehaviorPc &) {}
 void LurePlugin::onActivate() {}
 
 void LurePlugin::onDeactivate() {
-  if (unknown10 != INVALID_HANDLE) {
-    unknown10 = INVALID_HANDLE;
+  if (unknown10 != unknown020) {
+    unknown10 = unknown020;
   }
 }
 
@@ -67,11 +67,11 @@ const AccessParam *LurePlugin::getParam() const {
 
 void LurePlugin::update(GfComBehaviorPc &behavior, const fw::UpdateInfo &info) {
   GF_OBJ_HANDLE *target = StateUtil::getTarget(behavior);
-  if (target != INVALID_HANDLE) {
+  if (target != unknown020) {
     const AccessParam *param = getParam();
     GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
     if (!isActiveRangeLure(*property, *param, target)) {
-      target = INVALID_HANDLE;
+      target = unknown020;
     }
   }
   if (unknown10 != target) {

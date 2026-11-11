@@ -43,7 +43,7 @@ namespace gf {
 GfMenuObjZoneMap::GfMenuObjZoneMap(u32 handle)
     : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(1.0f), unknown48(nullptr), unknown50(nullptr), unknown70(false), unknown98(nullptr), unknown3100(0),
       unknown3124(false), unknown3125(false), unknown3128(nullptr), unknown3130(this), unknown33c0(false), unknown33c8(nullptr), unknown33d0(0) {
-  unknown58.setAllocator(getAllocator(ALLOCATOR_DEFAULT));
+  unknown58.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
 }
 
 GfMenuObjZoneMap::~GfMenuObjZoneMap() {
@@ -513,7 +513,7 @@ void GfMenuObjZoneMap::MapSelectListener::reciveEvent(const ui::EventData &event
         }
         if (unknown20->unknown58.size() != 0) {
           unknown20->unknown58.destroy();
-          unknown20->unknown58.setAllocator(getAllocator(ALLOCATOR_DEFAULT));
+          unknown20->unknown58.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
         }
         if (unknown20->unknown48->getSize() != 0) {
           unknown20->unknown58.reserve(unknown20->unknown48->getSize());

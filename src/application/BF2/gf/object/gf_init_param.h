@@ -55,7 +55,7 @@ public:
   GfInitParam() : GfInitParam(1, 0) {}
 
   GfInitParam(u32 category, u32 layer)
-      : unknown08(0), unknown0c(category), m_bladeID(0), unknown18(nullptr), unknown20(0xffffffff), unknown24(VIEWCAM_UNKNOWN_0), unknown28(-1), unknown30(INVALID_HANDLE), unknown38(INVALID_HANDLE),
+      : unknown08(0), unknown0c(category), m_bladeID(0), unknown18(nullptr), unknown20(0xffffffff), unknown24(VIEWCAM_UNKNOWN_0), unknown28(-1), unknown30(unknown020), unknown38(unknown020),
         unknown40(layer), unknown44(0), unknown48(0), unknown4c(1.0f), unknown50(1.0f), unknown80(false), unknown81(true), unknown82(false), unknown83(false), unknown84(false), unknown88(nullptr) {}
 
   virtual bool isAllWeapon() const { return false; }
@@ -149,13 +149,13 @@ public:
     u8 _06[0x08 - 0x06];
   };
 
-  static const u32 WEAPON_MAX = 32;
+  static const u32 WEAPON_UNKNOWN_32 = 32; // Inferred role: weapon max; original name unknown.
 
   bool isAllWeapon() const override;
 
   u8 _90[0x98 - 0x90];
-  mm::mtl::FixedVector<unknown031, WEAPON_MAX> unknown98; // Inferred role: weapons; original member name unknown.
-  bool unknown1a0;                                        // Inferred role: ride; original member name unknown.
+  mm::mtl::FixedVector<unknown031, WEAPON_UNKNOWN_32> unknown98; // Inferred role: weapons; original member name unknown.
+  bool unknown1a0;                                               // Inferred role: ride; original member name unknown.
   bool m_allWeapon;
   bool unknown1a2; // Inferred role: Jiji display, set by GfGameEvent::createDriver outside GfGameManager::isInMetJIJI; original member name unknown.
   u8 _1a3[0x1a8 - 0x1a3];
@@ -209,7 +209,7 @@ public:
 
   GfInitParamEnemy()
       : GfInitParam(OBJECT_TYPE_ENEMY, 4), unknown90(nullptr), unknown98(0), m_enArrangeID(0), m_bladeID(0), unknowna4(0), unknowna8(0), unknownac(1), unknownae(0), unknownaf(0),
-        unknownb0(GFATTACH_WEAPON) {
+        unknownb0(GFATTACH_UNKNOWN_0) {
     unknown08 = unknown030_4;
     unknown82 = true;
     unknown88 = nullptr;
@@ -283,7 +283,7 @@ class GfInitParamGimmick : public GfInitParam {
 public:
   GfInitParamGimmick() : GfInitParam(OBJECT_TYPE_GIMMICK, 4), unknown90(nullptr), unknown98(false) {
     unknown88 = nullptr;
-    unknown48 = GIMMICK_TYPE_NONE;
+    unknown48 = GIMMICK_TYPE_UNKNOWN_0;
   }
 
   void *unknown90; // Role and original member name unknown; copied into GfObjSetupGimmick.
@@ -296,7 +296,7 @@ class GfInitParamMapObj : public GfInitParam {};
 
 class GfInitParamFobj : public GfInitParam {
 public:
-  GfInitParamFobj() : GfInitParam(OBJECT_TYPE_FOBJ, 4) {
+  GfInitParamFobj() : GfInitParam(OBJECT_TYPE_FIELD_OBJ, 4) {
     unknown88 = nullptr;
     unknown94 = 0;
     unknown81 = false;
@@ -367,7 +367,7 @@ static_assert(offsetof(GfInitParamEnWeapon, unknown130) == 0x130, "");
 
 class GfInitParamBelonging : public GfInitParam {
 public:
-  GfInitParamBelonging() : GfInitParam(OBJECT_TYPE_BELONGING, 6), unknown120(false), unknown128(nullptr), unknown130(true) {}
+  GfInitParamBelonging() : GfInitParam(OBJECT_TYPE_OPTION, 6), unknown120(false), unknown128(nullptr), unknown130(true) {}
 
   GfAppend unknown90; // Inferred role: append; original member name unknown.
   u16 unknown118;     // Inferred role: first parameter of GfAppendUtil::setupBelonging; original member name unknown.

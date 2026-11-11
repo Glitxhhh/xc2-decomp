@@ -23,20 +23,20 @@ void StateFieldIdle::leave(GfComBehaviorEnemy *behavior, ai::State *next) {
   GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
   if (comAsm != nullptr) {
     if (unknown08 == STATE_ID_UNKNOWN_4) {
-      comAsm->execCmd("C_specialA_02", ANIM_LAYER_BASE);
+      comAsm->execCmd("C_specialA_02", ANIM_LAYER_UNKNOWN_0);
     } else if (unknown08 == STATE_ID_UNKNOWN_5) {
-      comAsm->execCmd("C_specialB_02", ANIM_LAYER_BASE);
+      comAsm->execCmd("C_specialB_02", ANIM_LAYER_UNKNOWN_0);
     }
   }
 }
 
 void StateFieldIdle::update(GfComBehaviorEnemy *behavior, const fw::UpdateInfo &info) {
   unknown20.update(info.unknown04);
-  if (unknown20.unknown00 == INVALID_HANDLE || unknown20.unknown08.empty() || unknown20.unknown34) {
+  if (unknown20.unknown00 == unknown020 || unknown20.unknown08.empty() || unknown20.unknown34) {
     if (unknown20.unknown35 && unknown5c < 0.0f) {
       GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
       if (comAsm != nullptr) {
-        const char *stateName = comAsm->getStateName(ANIM_LAYER_BASE);
+        const char *stateName = comAsm->getStateName(ANIM_LAYER_UNKNOWN_0);
         if (stateName != nullptr) {
           comAsm->getPlaybackTime(stateName, &unknown5c);
         }

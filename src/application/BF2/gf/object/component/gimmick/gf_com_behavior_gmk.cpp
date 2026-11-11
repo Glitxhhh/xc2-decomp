@@ -46,19 +46,19 @@ const mm::mtl::RTTI *GfComBehaviorGmk::getRTTI() const { return &m_rtti; }
 
 bool GfComBehaviorGmk::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
   switch (message.unknown00) {
-  case MSG_PC_GET_LOOK_POINT:
+  case MSG_UNKNOWN_16777224:
     procMsgPcGetLookPoint(sender, static_cast<MsgPcGetLookPoint &>(message));
     return true;
-  case MSG_PC_FIELD_GET_ACCESS_TYPE:
+  case MSG_UNKNOWN_16777228:
     procMsgPcFieldGetAccessType(sender, static_cast<MsgPcFieldGetAccessType &>(message));
     return true;
-  case MSG_PC_FIELD_NOTIFY_ACTION:
+  case MSG_UNKNOWN_16777229:
     procMsgPcFieldNotifyAction(sender, static_cast<MsgPcFieldNotifyAction &>(message));
     return true;
-  case MSG_PC_FIELD_NOTIFY_SKILL_EVENT:
+  case MSG_PC_UNKNOWN_16777245:
     procMsgPcFieldNotifySkillEvent(sender, static_cast<MsgPcFieldNotifySkillEvent &>(message));
     return true;
-  case MSG_PC_GET_ELV_LIFT:
+  case MSG_PC_UNKNOWN_16777254:
     procMsgPcGetElvLift(sender, static_cast<MsgPcGetElvLift &>(message));
     return true;
   default:
@@ -76,7 +76,7 @@ void GfComBehaviorGmk::procMsgPcFieldNotifyAction(fw::MessageObject *sender, Msg
     GfObjAcc acc(static_cast<GfObj *>(unknown08)->unknownf8);
     // The game calls both and drops the results, likely the arguments of a debug message removed from the release build.
     acc.isDestroy();
-    acc.testFlag(OBJ_FLAG_UNKNOWN_E);
+    acc.testFlag(OBJ_FLAG_UNKNOWN_14);
     return;
   }
 

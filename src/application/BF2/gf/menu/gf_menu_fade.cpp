@@ -30,7 +30,7 @@ GfMenuFade::~GfMenuFade() {}
 void GfMenuFade::build(const GfSetupParam &param) {
 // __LINE__ must be 51 as in the original file: its value changes the instruction order.
 #line 51
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuFade(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuFade(param);
 }
 
 void GfMenuFade::destroy() {

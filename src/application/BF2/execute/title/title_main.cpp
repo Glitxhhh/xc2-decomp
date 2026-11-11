@@ -45,8 +45,8 @@ template <typename T> nn::os::FiberType *MicroUpdater<T>::fnMicroUpdate(void *) 
 namespace tl {
 
 TitleMain::TitleMain()
-    : unknown08(fw::FrameworkMemory::getAllocator(5)), unknown80(nullptr), unknown94(false), unknown95(false), unknown98(0), unknowna0(false), unknowna4(gf::SAVESLOT_NONE), unknown130(nullptr),
-      unknown138(nullptr), unknown168(0), unknown170(gf::INVALID_CATEGORY_HANDLE), unknown178(false) {}
+    : unknown08(fw::FrameworkMemory::getAllocator(5)), unknown80(nullptr), unknown94(false), unknown95(false), unknown98(0), unknowna0(false), unknowna4(gf::SAVESLOT_UNKNOWN_FFFFFFFF),
+      unknown130(nullptr), unknown138(nullptr), unknown168(0), unknown170(gf::unknown019), unknown178(false) {}
 
 TitleMain::~TitleMain() {}
 
@@ -144,7 +144,7 @@ void TitleMain::update(const fw::UpdateInfo &info) {
     if (main->unknowna0) {
       gf::GfSound *sound = gf::GfSound::get();
       if (sound != nullptr && !sound->isPlaying(main->unknown98)) {
-        main->unknown98 = sound->playBgm("stream/bgm/m02.wav", 1.0f, false, -1, gf::CATEGORY_EVENT_BGM);
+        main->unknown98 = sound->playBgm("stream/bgm/m02.wav", 1.0f, false, -1, gf::CATEGORY_EVT_BGM);
       }
     }
     MicroUpdater<TitleMain> *updater = main->unknown80;
@@ -196,13 +196,13 @@ bool TitleMain::isStateSelect() const {
 void TitleMain::setMaskVolume(f32 volume, f32 fadeTime) {
   gf::GfSound *sound = gf::GfSound::get();
   if (sound != nullptr) {
-    if (unknown170 == gf::INVALID_CATEGORY_HANDLE) {
+    if (unknown170 == gf::unknown019) {
       unknown170 = sound->createCategoryHandle();
-      if (unknown170 == gf::INVALID_CATEGORY_HANDLE) {
+      if (unknown170 == gf::unknown019) {
         return;
       }
     }
-    sound->setCategoryVolume(unknown170, gf::CATEGORY_GAME_BGM, volume, fadeTime);
+    sound->setCategoryVolume(unknown170, gf::CATEGORY_BGM, volume, fadeTime);
   }
 }
 
@@ -253,7 +253,7 @@ void TitleMain::playTitleEvent(u32 event) {
 u32 TitleMain::getPlayTitleEvent() { return unknown168; }
 
 void TitleMain::getGameClearFlagFromSaveData() {
-  if (unknown130->unknown00 == gf::SAVE_DATA_VERSION && gf::GfGameFlag::getLocal(unknown130->unknown10.unknownfbbc4, 1, 0xd77e) != 0) {
+  if (unknown130->unknown00 == gf::SAVE_UNKNOWN_237915 && gf::GfGameFlag::getLocal(unknown130->unknown10.unknownfbbc4, 1, 0xd77e) != 0) {
     unknown178 = true;
   }
 }

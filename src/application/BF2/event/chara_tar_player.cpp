@@ -10,7 +10,7 @@
 
 namespace event {
 
-CharaTarPlayer::CharaTarPlayer() : unknown08(gf::INVALID_HANDLE), unknown10(nullptr), unknown18(0) {}
+CharaTarPlayer::CharaTarPlayer() : unknown08(gf::unknown020), unknown10(nullptr), unknown18(0) {}
 
 void CharaTarPlayer::create(gf::GF_OBJ_HANDLE *handle, CharaIKUpdater *ik) {
   this->unknown08 = handle;
@@ -81,7 +81,7 @@ void CharaTarPlayer::update(f32 delta) {
 
 void CharaTarPlayer::setTargetPos(const mm::Vec3 &position) { unknownb0 = position; }
 
-CharaTarPlayerMot::CharaTarPlayerMot() : unknown08(gf::INVALID_HANDLE), unknown10(nullptr), unknown18(0), unknown1c(REQUEST_UNKNOWN_0), unknown20(0.0f), unknown24(false), unknown280() {}
+CharaTarPlayerMot::CharaTarPlayerMot() : unknown08(gf::unknown020), unknown10(nullptr), unknown18(0), unknown1c(REQUEST_UNKNOWN_0), unknown20(0.0f), unknown24(false), unknown280() {}
 
 void CharaTarPlayerMot::create(gf::GF_OBJ_HANDLE *handle, CharaWeightPlayer *weight) {
   this->unknown08 = handle;
@@ -132,7 +132,7 @@ void CharaTarPlayerMot::update(f32 delta) {
       break;
     case REQUEST_UNKNOWN_3:
       for (u32 i = 0; i < AIMMOT_UNKNOWN_6; i++) {
-        unknown10->easeOut(gf::ANIM_LAYER_HEAD, CharaTarUtil::aimmotType2stat(i), unknown20, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
+        unknown10->easeOut(gf::ANIM_LAYER_UNKNOWN_2, CharaTarUtil::aimmotType2stat(i), unknown20, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
       }
       for (u32 i = 0; i < AIMMOT_UNKNOWN_6; i++) {
         unknown280[i] = 0.0f;
@@ -173,10 +173,10 @@ void CharaTarPlayerMot::update(f32 delta) {
     }
     const char *stat = CharaTarUtil::aimmotType2stat(i);
     if (prevWeights[i] > 0.0f && unknown280[i] <= 0.0f) {
-      unknown10->easeOut(gf::ANIM_LAYER_HEAD, stat, 0.0f, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
+      unknown10->easeOut(gf::ANIM_LAYER_UNKNOWN_2, stat, 0.0f, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
     }
     if (prevWeights[i] <= 0.0f && unknown280[i] > 0.0f) {
-      unknown10->easeIn(gf::ANIM_LAYER_HEAD, stat, 0.0f, 1.0f, 1.0f, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
+      unknown10->easeIn(gf::ANIM_LAYER_UNKNOWN_2, stat, 0.0f, 1.0f, 1.0f, CV_TYPE_UNKNOWN_2, WEIGHT_LAYER_UNKNOWN_0);
     }
     if (unknown280[i] > 0.0f) {
       unknown10->setAddWeight(stat, unknown280[i], WEIGHT_LAYER_UNKNOWN_0);

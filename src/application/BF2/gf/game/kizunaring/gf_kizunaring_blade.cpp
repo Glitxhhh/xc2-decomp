@@ -32,7 +32,7 @@ void GfKizunaringBlade::orderAchievement(u32 blade, u32 line, u32 level) {
   }
 
   u32 keyReleaseLevel = GfDataBlade::getKeyReleaseLevel(blade);
-  if (line != ACHIEVEMENT_LINE_KEY && level > keyReleaseLevel) {
+  if (line != ACHIEVEMENT_UNKNOWN_9 && level > keyReleaseLevel) {
     return;
   }
 
@@ -41,7 +41,7 @@ void GfKizunaringBlade::orderAchievement(u32 blade, u32 line, u32 level) {
     return;
   }
 
-  if (line == ACHIEVEMENT_LINE_KEY) {
+  if (line == ACHIEVEMENT_UNKNOWN_9) {
     if (!GfQuestInfo::isQuestFin(achievQuest.unknown00) && !GfQuestInfo::isQuestOrder(achievQuest.unknown00)) {
       GfQuestManager::openOrder(achievQuest.unknown00, false);
     }
@@ -179,9 +179,9 @@ u16 GfKizunaringBlade::getAchievementResultEnhance(u32 blade, u32 line, u32 leve
   u32 index;
   GfDataAchievement::getAchievementType(type, index, line);
   u16 enhance = 0;
-  if (type == ACHIEVEMENT_TYPE_ARTS) {
+  if (type == ACHIEVEMENT_TYPE_UNKNOWN_0) {
     enhance = GfDataBladeArts::getEnhance(dataParamAcc.getBladeArts(index, false), level);
-  } else if (type == ACHIEVEMENT_TYPE_SKILL) {
+  } else if (type == ACHIEVEMENT_TYPE_UNKNOWN_1) {
     enhance = GfDataBladeSkill::getEnhance(dataParamAcc.getBladeSkill(index, false), level);
   }
 
@@ -194,7 +194,7 @@ bool GfKizunaringBlade::isNetabareOK(u32 blade, u32 line, u32 level) {
   if (!achievQuest->unknown00.empty()) {
     QuestID nextQuest = GfDataQuest::getListNextQuestA(achievQuest->unknown00);
     QuestListAcc *questListAcc = QuestListAcc::get();
-    QuestTaskParam taskParam(nextQuest, 0, TASK_STATE_NONE);
+    QuestTaskParam taskParam(nextQuest, 0, TASK_STATE_UNKNOWN_0);
     u32 condition = questListAcc->getTaskTaskCondition1(taskParam.unknown08);
     if (condition != 0) {
       return GfGameCond::isGameCond(condition);
@@ -257,11 +257,11 @@ bool GfKizunaringBlade::getAchievementResultMsg(u8 *&bdat, u32 &textId, u32 blad
   u32 index;
   GfDataAchievement::getAchievementType(type, index, line);
   bool hasMsg = false;
-  if (type == ACHIEVEMENT_TYPE_ARTS) {
+  if (type == ACHIEVEMENT_TYPE_UNKNOWN_0) {
     hasMsg = GfDataBladeArts::getEnhanceCaption(bdat, textId, dataParamAcc.getBladeArts(index, false), level);
-  } else if (type == ACHIEVEMENT_TYPE_SKILL) {
+  } else if (type == ACHIEVEMENT_TYPE_UNKNOWN_1) {
     hasMsg = GfDataBladeSkill::getEnhanceCaption(bdat, textId, dataParamAcc.getBladeSkill(index, false), level);
-  } else if (type == ACHIEVEMENT_TYPE_FIELD_SKILL) {
+  } else if (type == ACHIEVEMENT_TYPE_UNKNOWN_2) {
     hasMsg = GfDataFieldSkill::getCaption(bdat, textId, dataParamAcc.getFieldSkill(index, false));
   }
 

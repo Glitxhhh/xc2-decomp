@@ -20,7 +20,7 @@ enum OPTMNT : u32;
 
 class GfAppend {
 public:
-  static const u32 MOUNT_MAX = 4;
+  static const u32 MOUNT_UNKNOWN_4 = 4; // Inferred role: mount max; original name unknown.
 
   struct MOUNT_INFO {
     mm::mtl::FixStr<16> unknown00; // Inferred role: bone; original member name unknown.
@@ -38,7 +38,7 @@ public:
   u16 getMountIndex() const;
   u16 getRscID() const;
 
-  mm::mtl::FixedVector<MOUNT_INFO, MOUNT_MAX> unknown00; // Inferred role: mounts; original member name unknown.
+  mm::mtl::FixedVector<MOUNT_INFO, MOUNT_UNKNOWN_4> unknown00; // Inferred role: mounts; original member name unknown.
   const char *m_modelName;
   const char *m_motionName;
   u16 m_mountIndex;

@@ -7,7 +7,7 @@
 
 namespace gf {
 
-GfComCollider::GfComCollider() : unknown18(getAllocator(ALLOCATOR_DEFAULT)) { unknown40.unknown08 = this; }
+GfComCollider::GfComCollider() : unknown18(getAllocator(ALLOCATOR_UNKNOWN_0)) { unknown40.unknown08 = this; }
 
 GfComCollider::~GfComCollider() {}
 

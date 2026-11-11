@@ -175,7 +175,7 @@ public:
   virtual const char *getName() const;
   virtual bool getName(u8 *&bdat, u32 &textId) const;
   virtual u32 getBdatId() const;
-  virtual u32 getObjType() const { return OBJECT_TYPE_DRIVER; }
+  virtual u32 getObjType() const { return OBJECT_TYPE_PC; }
   virtual SDataIdea *getIdea() const;
   virtual u32 getDataType() const;
   virtual u32 getHp() const;
@@ -636,7 +636,7 @@ public:
   virtual const char *getModelResourceName() const;
   virtual const char *getMotionResourceName() const;
   virtual u32 getBdatId() const;
-  virtual u32 getObjType() const { return OBJECT_TYPE_BELONGING; }
+  virtual u32 getObjType() const { return OBJECT_TYPE_OPTION; }
 
   GF_OBJ_HANDLE *unknown08; // Inferred role: handle; original member name unknown.
 };

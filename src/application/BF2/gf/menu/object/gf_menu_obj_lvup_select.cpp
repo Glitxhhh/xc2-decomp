@@ -43,7 +43,7 @@ void GfMenuObjLvupSelect::update() {
 void GfMenuObjLvupSelect::updateBonusExp() {
   u32 driver = GfMenuReference::getReferenceDriverID(0);
   if (driver != 0) {
-    DataParamAcc acc(OBJECT_TYPE_DRIVER, driver, GIMMICK_TYPE_NONE);
+    DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
     if (acc.isValid()) {
       u32 battleExp;
       u32 exp = acc.getExp();

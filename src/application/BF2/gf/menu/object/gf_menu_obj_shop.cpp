@@ -424,7 +424,7 @@ void GfMenuObjShop::MainListener::reciveEvent(const ui::EventData &event, u32 ha
             ui::UIObjectAcc(acc.unknown10, "TXT_exc_reward_quest_task").setText(ui::UIStr(logBdat, logId));
           }
           QuestID quest = GfQuestManager::getOrderQuestId(purpose);
-          unknown20->unknown548 = QuestTaskParam(quest, taskIndex, purpose, TASK_STATE_NONE);
+          unknown20->unknown548 = QuestTaskParam(quest, taskIndex, purpose, TASK_STATE_UNKNOWN_0);
           isQuest = 1;
           acc.setDispChild(true, "TXT_exc_task_index_quest");
           taskType = 1;

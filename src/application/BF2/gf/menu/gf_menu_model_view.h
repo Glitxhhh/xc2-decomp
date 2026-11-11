@@ -76,7 +76,7 @@ public:
   struct unknown002 {
     u32 unknown00 = 0; // Inferred role: effect handle; original member name unknown.
     u8 _04[0x08 - 0x04];
-    GF_OBJ_HANDLE *unknown08 = INVALID_HANDLE; // Inferred role: effect owner, invalid handle when unused; original member name unknown.
+    GF_OBJ_HANDLE *unknown08 = unknown020; // Inferred role: effect owner, invalid handle when unused; original member name unknown.
   };
 
   GfMenuModelView(u32 handle, u32 row);

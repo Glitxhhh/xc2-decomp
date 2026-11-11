@@ -79,7 +79,7 @@ GfMenuAchievementAdapter *GfMenuAchievementAdapter::create(u32 handle, u32 type,
     if (plugin != nullptr) {
       // __LINE__ must be 190 as in the original source: it is the line argument of operator new.
 #line 190
-      GfMenuAchievementAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuAchievementAdapter(plugin, isUpdateAlways);
+      GfMenuAchievementAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuAchievementAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown5c = blade;
       adapter->unknown60 = line;
@@ -102,7 +102,7 @@ bool GfMenuAchievementAdapter::update_AchievementCategory() {
 }
 
 bool GfMenuAchievementAdapter::update_AchievementTitle() {
-  if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_UNKNOWN_1) {
+  if (unknown60 == ACHIEVEMENT_UNKNOWN_9 && unknown64 == KEY_UNKNOWN_1) {
     return false;
   }
   if (GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64) == 0) {
@@ -128,7 +128,7 @@ bool GfMenuAchievementAdapter::update_AchievementResult() {
     ui::UIStr text(bdat, textId);
     text.unknown12 = enhance;
     setText(text);
-  } else if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 >= 2 && unknown64 <= 5) {
+  } else if (unknown60 == ACHIEVEMENT_UNKNOWN_9 && unknown64 >= 2 && unknown64 <= 5) {
     u32 index = unknown64;
     u32 linkNum = GfDataBlade::getLinkChNum(unknown5c);
     if (linkNum == 3 && index == 3) {
@@ -139,7 +139,7 @@ bool GfMenuAchievementAdapter::update_AchievementResult() {
     }
     u32 nameId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_KEY_ACHIEVE), "name", index).valueU16;
     setText(ui::UIStr(GfDataBdat::getFP(BDAT_FLD_QUEST_ACHIEVEMENT), nameId));
-  } else if (unknown60 != ACHIEVEMENT_LINE_KEY && GfDataHana::isValid(unknown5c)) {
+  } else if (unknown60 != ACHIEVEMENT_UNKNOWN_9 && GfDataHana::isValid(unknown5c)) {
     textId = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_POUCH), "name", POUCH_MSG_UNKNOWN_3).valueU16;
     bdat = GfDataBdat::getFP(BDAT_MENU_MS);
     setText(ui::UIStr(bdat, textId));
@@ -187,7 +187,7 @@ bool GfMenuAchievementAdapter::update_AchievementSetAbilityLevel() {
 bool GfMenuAchievementAdapter::update_AchievementTypeIcon() {
   u32 release = GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64);
   int icon;
-  if (unknown60 == ACHIEVEMENT_LINE_KEY) {
+  if (unknown60 == ACHIEVEMENT_UNKNOWN_9) {
     if (unknown64 == KEY_UNKNOWN_1) {
       return false;
     }
@@ -202,13 +202,13 @@ bool GfMenuAchievementAdapter::update_AchievementTypeIcon() {
     icon = 10;
     if (GfDataAchievement::getAchievementType(type, index, unknown60)) {
       switch (type) {
-      case ACHIEVEMENT_TYPE_ARTS:
+      case ACHIEVEMENT_TYPE_UNKNOWN_0:
         icon = 12;
         break;
-      case ACHIEVEMENT_TYPE_SKILL:
+      case ACHIEVEMENT_TYPE_UNKNOWN_1:
         icon = 13;
         break;
-      case ACHIEVEMENT_TYPE_FIELD_SKILL:
+      case ACHIEVEMENT_TYPE_UNKNOWN_2:
         icon = 14;
         break;
       default:
@@ -226,18 +226,18 @@ bool GfMenuAchievementAdapter::update_AchievementCategoryIcon() {
   }
   ACHIEVEMENT_TYPE type;
   u32 index;
-  if (GfDataAchievement::getAchievementType(type, index, unknown60) && type == ACHIEVEMENT_TYPE_KEY && unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_UNKNOWN_1) {
+  if (GfDataAchievement::getAchievementType(type, index, unknown60) && type == ACHIEVEMENT_TYPE_UNKNOWN_3 && unknown60 == ACHIEVEMENT_UNKNOWN_9 && unknown64 == KEY_UNKNOWN_1) {
     return false;
   }
   int icon;
   switch (type) {
-  case ACHIEVEMENT_TYPE_ARTS:
+  case ACHIEVEMENT_TYPE_UNKNOWN_0:
     icon = 0;
     break;
-  case ACHIEVEMENT_TYPE_SKILL:
+  case ACHIEVEMENT_TYPE_UNKNOWN_1:
     icon = 3;
     break;
-  case ACHIEVEMENT_TYPE_FIELD_SKILL:
+  case ACHIEVEMENT_TYPE_UNKNOWN_2:
     icon = 1;
     break;
   default:
@@ -274,13 +274,13 @@ bool GfMenuAchievementAdapter::update_AchievementSkillName() {
   u8 *bdat;
   u32 textId;
   switch (type) {
-  case ACHIEVEMENT_TYPE_ARTS:
+  case ACHIEVEMENT_TYPE_UNKNOWN_0:
     GfDataBladeArts::getName(bdat, textId, skill);
     break;
-  case ACHIEVEMENT_TYPE_SKILL:
+  case ACHIEVEMENT_TYPE_UNKNOWN_1:
     GfDataBladeSkill::getName(bdat, textId, skill);
     break;
-  case ACHIEVEMENT_TYPE_FIELD_SKILL:
+  case ACHIEVEMENT_TYPE_UNKNOWN_2:
     GfDataFieldSkill::getName(bdat, textId, skill);
     break;
   default:
@@ -401,14 +401,14 @@ GfMenuAchievementAdapter *GfMenuAchievementAdapter::createFromCoverter(u32 handl
 GfMenuAchievementAdapter *GfMenuAchievementAdapter::createFromReferenceBlade(u32 handle, u32 type, u32 bladeIndex, u16 line, u16 level, bool isUpdateAlways) {
   // __LINE__ must be 221 as in the original source: it is the line argument of operator new.
 #line 221
-  ReferenceBladeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceBladeConverter(bladeIndex, line, level);
+  ReferenceBladeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceBladeConverter(bladeIndex, line, level);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuAchievementAdapter *GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(u32 handle, u32 type, u32 bladeIndex, u16 lineIndex, u16 levelIndex, bool isUpdateAlways) {
   // __LINE__ must be 229 as in the original source: it is the line argument of operator new.
 #line 229
-  ReferenceBladeLineLevelConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceBladeLineLevelConverter(bladeIndex, lineIndex, levelIndex);
+  ReferenceBladeLineLevelConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceBladeLineLevelConverter(bladeIndex, lineIndex, levelIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -438,7 +438,7 @@ void GfMenuAchievementAdapter::update(const fw::UpdateInfo &info) {
 }
 
 bool GfMenuAchievementAdapter::update_AchievementReleaseFlagDisp() {
-  if (unknown60 == ACHIEVEMENT_LINE_KEY && unknown64 == KEY_UNKNOWN_1) {
+  if (unknown60 == ACHIEVEMENT_UNKNOWN_9 && unknown64 == KEY_UNKNOWN_1) {
     return false;
   }
   u32 release = GfKizunaringBlade::getReleaseAchievement(unknown5c, unknown60, unknown64);

@@ -63,17 +63,17 @@ inline void unknown002(gf::GF_OBJ_HANDLE *handle, bool isTargetable) {
   if (acc.isValid()) {
     gf::GfObjSetupGimmick *setup = mm::mtl::dynamicCast<gf::GfObjSetupGimmick>(gf::GfObjManager::getObjInfo(handle)->unknown30);
     if (isTargetable) {
-      setup->unknown6c |= gf::OBJ_ATTRIBUTE_TARGET_MASK;
+      setup->unknown6c |= gf::OBJ_UNKNOWN_7;
     } else {
-      setup->unknown6c &= ~gf::OBJ_ATTRIBUTE_TARGET_MASK;
+      setup->unknown6c &= ~gf::OBJ_UNKNOWN_7;
     }
   }
   gf::GfObj *obj = acc.getObj();
   if (obj != nullptr) {
     if (isTargetable) {
-      obj->unknown110 |= gf::OBJ_ATTRIBUTE_TARGET_MASK;
+      obj->unknown110 |= gf::OBJ_UNKNOWN_7;
     } else {
-      obj->unknown110 &= ~gf::OBJ_ATTRIBUTE_TARGET_MASK;
+      obj->unknown110 &= ~gf::OBJ_UNKNOWN_7;
     }
   }
 }

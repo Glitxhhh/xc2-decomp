@@ -70,7 +70,7 @@ void GmkWarp::BdatInfo::debugDraw(const AGmkBase &gmk) const {}
 
 GmkWarp::GmkWarp() : _48(), unknown68(), unknown6c(false), unknown6d(true) {
   for (u32 i = 0; i < POINT_UNKNOWN_2; i++) {
-    unknown50[i] = gf::INVALID_HANDLE;
+    unknown50[i] = gf::unknown020;
   }
   for (u32 i = 0; i < POINT_UNKNOWN_2; i++) {
     unknown60[i] = 0;
@@ -97,10 +97,10 @@ void GmkWarp::clearIcons() {
 
 void GmkWarp::clearGobInsts() {
   for (u32 i = 0; i < POINT_UNKNOWN_2; i++) {
-    if (unknown50[i] != gf::INVALID_HANDLE) {
+    if (unknown50[i] != gf::unknown020) {
       unbindToGameObj(unknown50[i]);
       gf::GfObjUtil::destroy(unknown50[i]);
-      unknown50[i] = gf::INVALID_HANDLE;
+      unknown50[i] = gf::unknown020;
     }
   }
 }
@@ -137,7 +137,7 @@ void GmkWarp::disposeIcon(u32 index, bool isFadeOut) {
 void GmkWarp::validateDisp() const {
   bool isDisp = unknown6d && debugIsDispGmkType(getGmkType());
   for (u32 i = 0; i < POINT_UNKNOWN_2; i++) {
-    if (unknown50[i] != gf::INVALID_HANDLE) {
+    if (unknown50[i] != gf::unknown020) {
       setEventDisp(unknown50[i], isDisp);
     }
   }
@@ -177,12 +177,12 @@ void GmkWarp::reqRecreateIcon() {
 
 void GmkWarp::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);
-  if (event != gf::IGfObjListener::OBJEVT_DESTROY) {
+  if (event != gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
     return;
   }
   for (u32 i = 0; i < POINT_UNKNOWN_2; i++) {
     if (unknown50[i] == handle) {
-      unknown50[i] = gf::INVALID_HANDLE;
+      unknown50[i] = gf::unknown020;
       break;
     }
   }

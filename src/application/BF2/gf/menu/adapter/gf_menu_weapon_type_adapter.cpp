@@ -60,7 +60,7 @@ GfMenuWeaponTypeAdapter *GfMenuWeaponTypeAdapter::create(u32 handle, u32 type, u
     if (plugin != nullptr) {
       // __LINE__ must be 203 as in the original source: it is the line argument of operator new.
 #line 203
-      GfMenuWeaponTypeAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuWeaponTypeAdapter(plugin, isUpdateAlways);
+      GfMenuWeaponTypeAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuWeaponTypeAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown58 = driver;
       adapter->unknown5c = weaponType;
@@ -399,7 +399,7 @@ GfMenuWeaponTypeAdapter *GfMenuWeaponTypeAdapter::createFromReferenceDriverWpnTy
                                                                                    bool isUpdateAlways) {
   // __LINE__ must be 234 as in the original source: it is the line argument of operator new.
 #line 234
-  ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverConverter(driver, wpnType, artsIndex);
+  ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceDriverConverter(driver, wpnType, artsIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
@@ -407,7 +407,7 @@ GfMenuWeaponTypeAdapter *GfMenuWeaponTypeAdapter::createFromReferenceDriverWpnTy
                                                                                             mm::mtl::IntrusivePtr<GfMenuReferenceNumber> artsIndex, bool isUpdateAlways) {
   // __LINE__ must be 242 as in the original source: it is the line argument of operator new.
 #line 242
-  ReferenceDriverWeaponTypeConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceDriverWeaponTypeConverter(driver, wpnType, artsIndex);
+  ReferenceDriverWeaponTypeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceDriverWeaponTypeConverter(driver, wpnType, artsIndex);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 

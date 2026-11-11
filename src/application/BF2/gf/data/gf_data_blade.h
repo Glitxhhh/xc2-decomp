@@ -13,10 +13,10 @@
 
 namespace gf {
 
-constexpr u32 BLADE_ID_FIRST = 1001;
-constexpr u32 BLADE_COUNT = 422;
-constexpr int TRUST_RANK_MAX = 6;
-constexpr int FLAG_BLADE_HOMURI_NAME_HIKARI = 0x89fb;
+constexpr u32 BLADE_ID_UNKNOWN_1001 = 1001; // Inferred role: blade id first; original name unknown.
+constexpr u32 BLADE_UNKNOWN_422 = 422;      // Inferred role: blade count; original name unknown.
+constexpr int RANK_UNKNOWN_6 = 6;           // Inferred role: trust rank max; original name unknown.
+constexpr int FLAG_UNKNOWN_35323 = 0x89fb;  // Inferred role: flag blade homuri name hikari; original name unknown.
 
 enum GfIdea {};
 
@@ -79,22 +79,22 @@ static_assert(offsetof(unknown112, unknown06) == 0x06, "");
 static_assert(sizeof(unknown112) == 0x08, "");
 
 enum {
-  BLADE_ACTIVATE_UNUSE = 0,
-  BLADE_ACTIVATE_DRIVER = 1,
-  BLADE_ACTIVATE_MERCENARY_TEAM = 2,
+  BLADE_ACTIVATE_UNKNOWN_0 = 0, // Inferred role: blade activate unuse; original name unknown.
+  BLADE_ACTIVATE_UNKNOWN_1 = 1, // Inferred role: blade activate driver; original name unknown.
+  BLADE_ACTIVATE_UNKNOWN_2 = 2, // Inferred role: blade activate mercenary team; original name unknown.
 };
 
 enum {
-  GENDER_MALE = 1,
-  GENDER_FEMALE = 2,
+  GENDER_UNKNOWN_1 = 1, // Inferred role: gender male; original name unknown.
+  GENDER_UNKNOWN_2 = 2, // Inferred role: gender female; original name unknown.
 };
 
 enum {
-  QUEST_RACE_HUMAN = 1,
-  QUEST_RACE_ANIMAL = 2,
+  QUEST_RACE_UNKNOWN_1 = 1, // Inferred role: quest race human; original name unknown.
+  QUEST_RACE_UNKNOWN_2 = 2, // Inferred role: quest race animal; original name unknown.
 };
 
-constexpr u32 PERSONALITY_VOICE_FIRST = 61;
+constexpr u32 VOICE_UNKNOWN_61 = 61; // Inferred role: personality voice first; original name unknown.
 
 struct SDataBlade {
   u16 unknown00;       // Inferred role: activate; original member name unknown.

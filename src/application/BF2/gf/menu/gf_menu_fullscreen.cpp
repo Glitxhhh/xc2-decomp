@@ -30,7 +30,7 @@ void GfMenuFullScreen::initialize(const GfSetupParam &param) { unknown08 = true;
 void GfMenuFullScreen::build(const GfSetupParam &param) {
 // __LINE__ must be 89 as in the original file: it is the line argument of operator new.
 #line 89
-  GfMenuFullScreen *fullScreen = new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfMenuFullScreen(param);
+  GfMenuFullScreen *fullScreen = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuFullScreen(param);
   for (u16 i = 0; i < LAYER_UNKNOWN_4; i++) {
     fullScreen->resetLayer(i);
   }

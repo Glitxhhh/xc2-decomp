@@ -137,7 +137,7 @@ void ObjectUtil::drawChara(const char *name, const mm::Vec3 &position, const mm:
     s32 textY = y - 10;
     fw::debug::drawFontColor(mm::Col4(1.0f, 1.0f, 1.0f, 1.0f));
     fw::debug::drawFont(textX, textY, name);
-    if (handle != gf::INVALID_HANDLE) {
+    if (handle != gf::unknown020) {
       gf::GfObjAcc acc(handle);
       fw::debug::drawFont(x + 15, textY, "ID:%d", acc.getBdatId());
     }
@@ -179,7 +179,7 @@ void ObjectUtil::drawState(const mm::Vec3 &position, f32 height, gf::GF_OBJ_HAND
   }
   gf::GfComAsm *comAsm = obj->getComponent<gf::GfComAsm>();
   if (comAsm != nullptr) {
-    state = comAsm->getStateName(gf::ANIM_LAYER_BASE);
+    state = comAsm->getStateName(gf::ANIM_LAYER_UNKNOWN_0);
   }
   if (state == nullptr) {
     return;

@@ -10,7 +10,7 @@ namespace gf {
 
 struct GfSetupParam;
 
-constexpr u32 MSG_GAME_SWITCH_CONTROL_MOVER = 0x1000031;
+constexpr u32 MSG_UNKNOWN_16777265 = 0x1000031; // Inferred role: msg game switch control mover; original name unknown.
 
 // Layout evidence: StateUtilField::requestBattleStart (0x710054e6a8) builds it with the id 0x1000031 and 1 in the member at 0x8;
 // GfGameMoverSwitcher::recieveMessage compares that member with 1.

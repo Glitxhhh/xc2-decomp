@@ -10,9 +10,9 @@ enum CAMERA_PRIO : int;
 
 namespace gf {
 
-static constexpr fw::CAMERA_PRIO CAMERA_PRIO_FALL_DEAD = static_cast<fw::CAMERA_PRIO>(55);
+static constexpr fw::CAMERA_PRIO CAMERA_PRIO_UNKNOWN_55 = static_cast<fw::CAMERA_PRIO>(55); // Inferred role: camera prio fall dead; original name unknown.
 
-GfGameFallDeadCamera::GfGameFallDeadCamera() : fw::Camera(CAMERA_PRIO_FALL_DEAD), unknownb0(mm::Vec3::zero) {}
+GfGameFallDeadCamera::GfGameFallDeadCamera() : fw::Camera(CAMERA_PRIO_UNKNOWN_55), unknownb0(mm::Vec3::zero) {}
 
 GfGameFallDeadCamera::~GfGameFallDeadCamera() {}
 

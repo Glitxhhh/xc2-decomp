@@ -21,12 +21,12 @@ class Binding;
 namespace gf {
 
 bool GfComAsm::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
-  if (message.unknown00 == MSG_OBJECT_SET_ASM_PLAYBACK_SPEED) {
+  if (message.unknown00 == MSG_OBJECT_UNKNOWN_16777287) {
     procMsgObjectSetAsmPlaybackSpeed(sender, static_cast<MsgObjectSetAsmPlaybackSpeed &>(message));
     return true;
   }
 
-  if (message.unknown00 == MSG_DEBUG_ACTIVATE_COMPONENT_WINDOW) {
+  if (message.unknown00 == MSG_UNKNOWN_16777219) {
     procMsgActivateComponentDebugWindow(sender, static_cast<MsgDebugActivateComponentWindow &>(message));
     return true;
   }
@@ -38,7 +38,7 @@ void GfComAsm::procMsgObjectSetAsmPlaybackSpeed(fw::MessageObject *sender, MsgOb
 
 void GfComAsm::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
 
-GfComAsm::GfComAsm() : unknown10(nullptr), unknown148(getAllocator(ALLOCATOR_DEFAULT)), unknown180(nullptr) {
+GfComAsm::GfComAsm() : unknown10(nullptr), unknown148(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown180(nullptr) {
   unknown138.unknown08 = this;
   unknown170.unknown08 = this;
 }
@@ -189,13 +189,13 @@ void GfComAsm::executeCallback() {
   for (u32 i = 0; i < unknown148.size(); i++) {
     const anm::AsmAnnotetion *annotation = unknown148[i].unknown08;
     u32 index;
-    for (index = 1; index < CALLBACK_MAX; index++) {
+    for (index = 1; index < CALLBACK_UNKNOWN_5; index++) {
       if (unknown70[index].unknown08.isValid() && strcmp(unknown70[index].unknown00, annotation->unknown00) == 0) {
         break;
       }
     }
 
-    if (index < CALLBACK_MAX) {
+    if (index < CALLBACK_UNKNOWN_5) {
       unknown70[index].unknown08(this, unknown148[i]);
     } else if (unknown70[0].unknown08.isValid()) {
       unknown70[0].unknown08(this, unknown148[i]);
@@ -360,8 +360,8 @@ const anm::QsTransform &GfComAsm::getLocomotion() const {
     return unknown10->unknown380;
   }
 
-  static const anm::QsTransform identity(mm::Vec3::zero, mm::Quat::identity, mm::Vec3::unit);
-  return identity;
+  static const anm::QsTransform unknown019(mm::Vec3::zero, mm::Quat::identity, mm::Vec3::unit); // Inferred role: identity; original name unknown.
+  return unknown019;
 }
 
 void GfComAsm::setVariable(const char *name, f32 value) {

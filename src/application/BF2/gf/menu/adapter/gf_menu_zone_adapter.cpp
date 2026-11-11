@@ -50,7 +50,7 @@ GfMenuZoneAdapter *GfMenuZoneAdapter::create(u32 handle, u32 type, u16 zone, boo
     if (plugin != nullptr) {
       // __LINE__ must be 125 as in the original source: it is the line argument of operator new.
 #line 125
-      GfMenuZoneAdapter *adapter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) GfMenuZoneAdapter(plugin, isUpdateAlways);
+      GfMenuZoneAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuZoneAdapter(plugin, isUpdateAlways);
       adapter->unknown30.bind(adapter, info.update);
       adapter->unknown58 = zone;
       plugin->release();
@@ -175,14 +175,14 @@ GfMenuZoneAdapter *GfMenuZoneAdapter::createFromCoverter(u32 handle, u32 type, I
 GfMenuZoneAdapter *GfMenuZoneAdapter::createFromReferenceZone(u32 handle, u32 type, bool isUpdateAlways) {
   // __LINE__ must be 153 as in the original source: it is the line argument of operator new.
 #line 153
-  ReferenceZoneConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceZoneConverter();
+  ReferenceZoneConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceZoneConverter();
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuZoneAdapter *GfMenuZoneAdapter::createFromReference(u32 handle, u32 type, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, bool isUpdateAlways) {
   // __LINE__ must be 161 as in the original source: it is the line argument of operator new.
 #line 161
-  ReferenceNumberConverter *converter = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) ReferenceNumberConverter(number);
+  ReferenceNumberConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceNumberConverter(number);
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 

@@ -46,15 +46,15 @@ void StateFieldOnWall::leave(GfComBehaviorPc *behavior, ai::State *next) {
   GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
   property->unknown310.unknown10_5 = false;
   StateUtil::setEnvSensor(*behavior, 0x100, false);
-  if (next != nullptr && next->unknown08 != STATE_ID_FIELD_WALL_PREPARE_JUMP) {
+  if (next != nullptr && next->unknown08 != STATE_ID_UNKNOWN_48) {
     StateUtilField::setAccessFlag(*behavior, false);
-    u32 type = next->unknown08 == STATE_ID_FIELD_FALL ? 2 : 1;
+    u32 type = next->unknown08 == STATE_ID_UNKNOWN_15 ? 2 : 1;
     MsgPcFieldNotifyWall message;
     message.unknown10 = unknown20.unknown00;
     message.unknown30.unknown00 = property->unknown160;
     message.unknown30.unknown10 = property->unknown170;
     message.unknown50 = type;
-    if (next->unknown08 == STATE_ID_FIELD_WALL_CLIMB_END) {
+    if (next->unknown08 == STATE_ID_UNKNOWN_43) {
       EnviromentSensor::GroundInfo *ground = StateUtil::getClimbEndGroundInfo(*behavior);
       if (ground != nullptr) {
         message.unknown30.unknown00.y = ground->unknown00.y;
@@ -71,22 +71,22 @@ void StateFieldOnWall::leave(GfComBehaviorPc *behavior, ai::State *next) {
 void StateFieldOnWall::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info) {
   GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
   if (StateUtilField::isWallDetach(*property) && StateUtilField::execAsmCmd(*behavior->unknown08->getComponent<GfComAsm>(), ASM_CMD_ID_FIELD_DOWNLANDING_01)) {
-    reqState(STATE_ID_FIELD_WALL_LAND);
+    reqState(STATE_ID_UNKNOWN_44);
     return;
   }
 
   GfObj *target = StateUtilField::getAccessTarget(*behavior);
-  if (target != nullptr && property->unknown60.unknown08.test(INPUT_ID_DECIDE)) {
+  if (target != nullptr && property->unknown60.unknown08.test(INPUT_ID_UNKNOWN_0)) {
     MsgPcFieldGetAccessType message;
     static_cast<GfObj *>(behavior->unknown08)->sendMessage(target, message);
     if (message.unknown08 == 3) {
-      reqState(STATE_ID_FIELD_WALL_PREPARE_JUMP);
+      reqState(STATE_ID_UNKNOWN_48);
       return;
     }
   }
 
   if (StateUtilField::isWallFall(*property) && StateUtilField::execAsmCmd(*behavior->unknown08->getComponent<GfComAsm>(), ASM_CMD_ID_FIELD_FALL)) {
-    reqState(STATE_ID_FIELD_FALL);
+    reqState(STATE_ID_UNKNOWN_15);
     return;
   }
 
@@ -99,7 +99,7 @@ void StateFieldOnWall::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &i
 }
 
 bool StateFieldOnWall::recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) {
-  if (message.unknown00 == MSG_PC_FIELD_WALL_JUMP) {
+  if (message.unknown00 == MSG_PC_FIELD_UNKNOWN_16777235) {
     procMsgPcFieldWallJump(static_cast<GfComBehaviorPc *>(owner), sender, static_cast<MsgPcFieldWallJump &>(message));
     return true;
   }
@@ -110,7 +110,7 @@ bool StateFieldOnWall::recieveMessage(void *owner, fw::MessageObject *sender, fw
 void StateFieldOnWall::procMsgPcFieldWallJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldWallJump &message) {
   if (StateUtilField::execAsmCmd(*behavior->unknown08->getComponent<GfComAsm>(), ASM_CMD_ID_FIELD_CLIMBJUMP_00)) {
     message.unknown08 = true;
-    reqState(STATE_ID_FIELD_WALL_JUMP_START);
+    reqState(STATE_ID_UNKNOWN_50);
   }
 }
 

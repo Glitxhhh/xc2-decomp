@@ -9,7 +9,7 @@
 namespace gf {
 
 struct MenuItemInfo {
-  MenuItemInfo() : unknown00(ItemType::NONE), unknown04(0), unknown08(0), unknown0c(0) {}
+  MenuItemInfo() : unknown00(ItemType::ITEM_TYPE_UNKNOWN_0), unknown04(0), unknown08(0), unknown0c(0) {}
 
   ItemType::Type unknown00; // Inferred role: type; original member name unknown.
   u32 unknown04;            // Inferred role: item; original member name unknown.
@@ -38,7 +38,7 @@ public:
   };
 
   struct ItemBoxSetup {
-    ItemBoxSetup() : unknown14(ItemType::NONE), unknown18(nullptr), unknown20(0), unknown28(true), unknown29(true), unknown2a(false), unknown2b(false) {}
+    ItemBoxSetup() : unknown14(ItemType::ITEM_TYPE_UNKNOWN_0), unknown18(nullptr), unknown20(0), unknown28(true), unknown29(true), unknown2a(false), unknown2b(false) {}
 
     SetupParam unknown00;     // Inferred role: param; original member name unknown.
     ItemType::Type unknown14; // Inferred role: item type of the item box; original member name unknown.

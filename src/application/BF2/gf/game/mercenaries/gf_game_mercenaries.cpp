@@ -51,7 +51,7 @@ GfGameMercenaries::~GfGameMercenaries() {}
 void GfGameMercenaries::build(const GfSetupParam &param) {
   // __LINE__ must be 72 as in the original file: its value changes the instruction order.
 #line 72
-  new (getAllocator(ALLOCATOR_SYSTEM), __FILE__, __LINE__, 8) GfGameMercenaries(param);
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameMercenaries(param);
 }
 
 void GfGameMercenaries::destroy() {
@@ -128,7 +128,7 @@ void GfGameMercenaries::findMemberForMission(u16 blade) {
 }
 
 void GfGameMercenaries::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
-  if (event == GEV_MAPJUMP_END && get() != nullptr) {
+  if (event == GEV_UNKNOWN_7 && get() != nullptr) {
     get()->unknown788 = false;
   }
 }
@@ -367,7 +367,7 @@ void GfGameMercenaries::execMissionReward(u32 mission) {
   }
   u16 ideaPoint = getRewardIdeaPoint(mission);
   if (ideaPoint != 0) {
-    SCOM_ADD_IDEA::create(INVALID_HANDLE, getRewardIdeaType(mission), ideaPoint);
+    SCOM_ADD_IDEA::create(unknown020, getRewardIdeaType(mission), ideaPoint);
   }
   {
     GfQuestReward reward;
@@ -492,7 +492,7 @@ u32 GfGameMercenaries::getRewardFSkillHosei(u32 mission) {
   int level3 = 0;
   int level1 = 0;
   for (u32 i = 0; i < 6; i++) {
-    DataParamAcc acc(OBJECT_TYPE_BLADE, team->unknown00[i], GIMMICK_TYPE_NONE);
+    DataParamAcc acc(OBJECT_TYPE_BLADE, team->unknown00[i], GIMMICK_TYPE_UNKNOWN_0);
     if (acc.isValid()) {
       for (u32 slot = 0; slot < 3; slot++) {
         if (skill1 != 0 && acc.getFieldSkill(slot, false) == skill1) {
@@ -576,11 +576,11 @@ void GfGameMercenaries::execMissionAchievementForBlade(u32 mission) {
 }
 
 void GfGameMercenaries::applyMercenariesLevel(const QuestCompleteParam &param) {
-  static const u16 levelWildcards[] = {0, 53, 54, 55, 56, 0};
+  static const u16 unknown019[] = {0, 53, 54, 55, 56, 0}; // Inferred role: level wildcards; original name unknown.
   GfBdatBtl *bdatBtl = GfBdatBtl::get();
   u32 level = GfDataMercenaries::getLevel();
   for (u32 i = 1; i <= 6; i++) {
-    if (bdatBtl->getWildcardDatavalueU2(levelWildcards[i - 1]) == param.unknown04.unknown00 && level < i) {
+    if (bdatBtl->getWildcardDatavalueU2(unknown019[i - 1]) == param.unknown04.unknown00 && level < i) {
       level = i;
     }
   }
@@ -618,7 +618,7 @@ bool GfGameMercenaries::getMemberForMission(mm::mtl::FixedArray<u16, 6> &members
   }
   QuestListAcc *questListAcc = QuestListAcc::get();
   for (u32 task = 0; task < 4; task++) {
-    if (questListAcc->getTaskTaskType(purpose, task) != TASK_TYPE_REQUEST_BLADE) {
+    if (questListAcc->getTaskTaskType(purpose, task) != TASK_TYPE_UNKNOWN_9) {
       continue;
     }
     u32 requestBlade = questListAcc->getTaskTaskID(purpose, task);

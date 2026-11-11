@@ -61,7 +61,7 @@ void GfMenuObjEvTheater::updateSubMsgList() {
       {
         ui::UIListInfoBase::SetupParam param;
         param.unknown08 = unknown30->getSize();
-        unknown28->setup(getAllocator(ALLOCATOR_DEFAULT), param);
+        unknown28->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
       }
       for (int i = 0; i < Bdat::getIdCount(bdat); i++) {
         MsgID id = {};
@@ -76,7 +76,7 @@ void GfMenuObjEvTheater::updateSubMsgList() {
       {
         ui::UIListInfoBase::SetupParam param;
         param.unknown08 = unknown30->getSize();
-        unknown28->setup(getAllocator(ALLOCATOR_DEFAULT), param);
+        unknown28->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
       }
       for (int i = 0; i < Bdat::getIdCount(bdat); i++) {
         MsgID id = {};

@@ -720,7 +720,7 @@ bool GfMenuObjCharSelect::seqSpUpdateParty() {
   u32 driver = unknown28->getContents(unknown28->getIndex(false)).unknown00;
   GfMenuDriverList::PartySetup setup;
   setup.unknown18 = false;
-  setup.unknown14 = GfPartySelect::LIST_TYPE_PARTY_AND_RESERVER;
+  setup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_2;
   unknown28->setupFromParty(setup);
   unknown28->setIndex(0);
   for (u32 i = 0; i < unknown28->getSize(); i++) {
@@ -871,7 +871,7 @@ u8 GfMenuObjCharSelect::refreshDriver(ui::UIObjectAcc acc, u32 driver) {
 void GfMenuObjCharSelect::setupCharSelect(ui::UIObjectAcc &acc, GfMenuDriverList *list, mm::mtl::FixedArray<GfMenuBladeList *, 3> &blades) {
   GfMenuDriverList::PartySetup partySetup;
   partySetup.unknown18 = false;
-  partySetup.unknown14 = GfPartySelect::LIST_TYPE_PARTY_AND_RESERVER;
+  partySetup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_2;
   list->setupFromParty(partySetup);
   if (list->getSize() != 0) {
     GfMenuReference::setReferenceDriverID(0, list->getContents(0).unknown00);

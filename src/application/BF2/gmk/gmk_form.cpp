@@ -75,7 +75,7 @@ void GmkForm::dispose() { unknown00 = 0; }
 void GmkForm::apply(f32 snapDistance) {
   for (u32 i = 0; i < 3; i++) {
     gf::GF_OBJ_HANDLE *driver = gf::GfGameParty::getHandleDriver(i);
-    if (driver != gf::INVALID_HANDLE) {
+    if (driver != gf::unknown020) {
       gf::GfObjSetupDriver *setup = gf::GfObjUtil::getObjSetup<gf::GfObjSetupDriver>(driver);
       mm::Vec3 position;
       f32 rotationY;
@@ -92,7 +92,7 @@ void GmkForm::apply(f32 snapDistance) {
       }
     }
     gf::GF_OBJ_HANDLE *blade = gf::GfGameParty::getHandleBlade(i, -1);
-    if (blade != gf::INVALID_HANDLE) {
+    if (blade != gf::unknown020) {
       gf::GfObjSetupBlade *setup = gf::GfObjUtil::getObjSetup<gf::GfObjSetupBlade>(blade);
       mm::Vec3 position;
       f32 rotationY;

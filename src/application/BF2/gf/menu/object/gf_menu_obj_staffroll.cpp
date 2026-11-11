@@ -18,7 +18,7 @@ constexpr u32 unknown001 = 0x85;
 
 GfMenuObjStaffroll::GfMenuObjStaffroll(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown58(0), unknown5c(0), unknown60(0), unknown64(0.0f), unknown68(0.0f), unknown6c(false) {
   ui::UISelectObjList::CreateParam param;
-  param.allocator = getAllocator(ALLOCATOR_DEFAULT);
+  param.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown70 = ui::UISelectObjList::create(param);
 }
 
@@ -31,7 +31,7 @@ void GfMenuObjStaffroll::initialize() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
 // __LINE__ must be 107 as in the original file: it is the line argument of operator new.
 #line 107
-  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
   listener->addRef();
   ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
   if (listener != nullptr) {
