@@ -26,17 +26,52 @@ class GfMenuObjDrKizunaRing : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjDrKizunaRing *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];
+    u8 _1c[0x20 - 0x1c];
+    GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class RingListener : public ui::UIObjectListener {
+  public:
+    RingListener(GfMenuObjDrKizunaRing *owner) : unknown0c(0), _10(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: cursor needs no sound after the first selection; original member name unknown.
+    u8 _10[0x1c - 0x10];
+    u8 _1c[0x20 - 0x1c];
+    GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class RingPadListener : public ui::UIObjectListener {
+  public:
+    RingPadListener(GfMenuObjDrKizunaRing *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    u8 _1c[0x20 - 0x1c];
+    GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class SkillDetailListener : public ui::UIObjectListener {
+  public:
+    SkillDetailListener(GfMenuObjDrKizunaRing *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    u8 _1c[0x20 - 0x1c];
     GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   class DriverStockSPListener : public ui::UIObjectListener {
   public:
+    DriverStockSPListener(GfMenuObjDrKizunaRing *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];
+    u8 _1c[0x20 - 0x1c];
     GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -48,6 +83,9 @@ public:
   static void setupMain(ui::UIObjectAcc &acc);
   static void setupDriverSkillInfo(ui::UIObjectAcc &acc);
   static void setupSkillDetail(ui::UIObjectAcc &acc);
+  static void setupRing(ui::UIObjectAcc &acc);
+  static void setupRingList(ui::UIObjectAcc &acc, ui::UISelectObjList *list);
+  static void refreshRing(ui::UIObjectAcc &acc);
 
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);
@@ -59,8 +97,11 @@ public:
   static bool isScreenLR(u32 screen);
   static void setupCircle(ui::UIObjectAcc &, u32);
   bool seqCircleAnime();
+  bool seqComplete();
   bool seqEndAnime();
   bool seqExecSkill();
+  bool seqOpenAnime();
+  bool seqSkillAnime();
   bool seqUnlockAnime();
   bool seqWait();
 

@@ -3,13 +3,17 @@
 #include "bdat.h"
 #include "framework/effect/effect_caster.h"
 #include "framework/effect/effect_manager.h"
+#include "framework/effect/effect_pack.h"
 #include "framework/reference_frame.h"
+#include "framework/resource/common_resource.h"
 #include "fw/fw_model_object.h"
+#include "fw/fw_render_resource.h"
 #include "fw/fw_transform.h"
 #include "gf/camera/gimmick/gf_camera_gimmick.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/model_view/gf_menu_model_view_camera.h"
 #include "gf/object/component/animation/gf_com_asm.h"
@@ -22,12 +26,83 @@
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/reference_object.h"
 #include "mm_mtl/rtti.h"
 #include "scn/scn_obj_acc.h"
+#include "ui/ui_object_acc.h"
+#include "ui/ui_util.h"
 
 namespace gf {
+
+fw::Transform GfMenuModelView::s_DefTransform;
+
+GfMenuModelView::GfMenuModelView(u32 handle, u32 row) : unknown08(row), unknown0c(handle), unknown18(nullptr), unknown20(nullptr), unknown9a0(nullptr), unknown9a8(), unknownaa8(false) {
+  ui::UIObjectAcc acc(handle);
+  s_DefTransform.unknown00 = mm::Vec3::zero;
+  s_DefTransform.unknown10 = mm::Quat::identity;
+  unknown10 = acc.getRenderIndex();
+
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_MODEL_VIEW);
+  GfMenuBdat::isValidBdatID(bdat, row);
+  mm::mtl::FixStr<128> path;
+  unknown18 = nullptr;
+  unknown20 = nullptr;
+  if (bdat != nullptr) {
+    bool hasCamera = false;
+    const char *cameraFile = Bdat::getVal(bdat, "camera_file", row).valueString;
+    if (*cameraFile != '\0') {
+      path.format("camera/%s.%s", cameraFile, "gcp");
+      unknown18 = fw::CommonResource::request(ui::UIUtil::getResourceAllocator(), path.c_str(), 10, false);
+      hasCamera = true;
+    }
+    const char *effectFile = Bdat::getVal(bdat, "efp_file", row).valueString;
+    if (*effectFile != '\0') {
+      path.format("effect/bc/%s.%s", effectFile, "wiefb");
+      unknown20 = fw::RenderResource::request(ui::UIUtil::getResourceAllocator(), path.c_str(), 10);
+    } else if (!hasCamera) {
+      unknownaa8 = true;
+    }
+  } else {
+    unknownaa8 = true;
+  }
+  for (u32 i = 0; i < 16; i++) {
+    unknown9a8[i].unknown00 = 0;
+    unknown9a8[i].unknown08 = INVALID_HANDLE;
+  }
+  unknown930.setAllocator(getAllocator(ALLOCATOR_DEFAULT));
+}
+
+GfMenuModelView::~GfMenuModelView() {
+  unknownab0 = nullptr;
+  if (fw::EffectManager::get() != nullptr && unknown9a0 != nullptr) {
+    for (u32 i = 0; i < 16; i++) {
+      if (unknown9a8[i].unknown00 != 0) {
+        fw::EffectManager::get()->remove(unknown9a8[i].unknown00);
+        unknown9a8[i].unknown00 = 0;
+        unknown9a8[i].unknown08 = INVALID_HANDLE;
+      }
+    }
+    mm::mtl::safeRelease(unknown9a0);
+  }
+  for (u32 i = 0; i < unknown28.size(); i++) {
+    GfObjFactory::destroyObj(unknown28[i].unknown00);
+  }
+  fw::CameraManager *manager = fw::CameraManager::get();
+  if (manager != nullptr) {
+    fw::CameraLayer &layer = manager->unknown20[unknown10 + 1];
+    for (u32 i = 0; i < unknown930.size(); i++) {
+      if (unknown930[i]->unknowna0) {
+        layer.pop(unknown930[i], 0.0f);
+        unknown930[i] = nullptr;
+      }
+    }
+  }
+  mm::mtl::safeRelease(unknown18);
+  mm::mtl::safeRelease(unknown20);
+}
 
 fw::Transform &GfMenuModelView::getObjectTransformLocal(GF_OBJ_HANDLE *handle) {
   static fw::Transform transform;
