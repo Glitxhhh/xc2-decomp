@@ -2,6 +2,7 @@
 
 #include <math.h>
 
+#include "fw/fw_transform.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj_handle.h"
@@ -21,7 +22,7 @@ void TargetIKPlugin::cleanup(GfComBehaviorPc &) { unknown18 = nullptr; }
 
 bool TargetIKPlugin::isActiveRange(GfComPropertyPc &property, const mm::Vec3 &target) {
   const unknown001 *param = getParam();
-  mm::Vec3 direction(target.x - property.unknown160.x, 0.0f, target.z - property.unknown160.z);
+  mm::Vec3 direction(target.x - property.unknown160.unknown00.x, 0.0f, target.z - property.unknown160.unknown00.z);
   if (!(mm::fabs(direction.x) <= unknown018 && mm::fabs(direction.z) <= unknown018)) {
     f32 length = sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
     if (length <= unknown018) {
@@ -32,7 +33,7 @@ bool TargetIKPlugin::isActiveRange(GfComPropertyPc &property, const mm::Vec3 &ta
     }
   }
 
-  mm::Vec3 axis = property.unknown170.rotate(unknown30);
+  mm::Vec3 axis = property.unknown160.unknown10.rotate(unknown30);
   f32 cosine = mm::clamp(direction.x * axis.x + direction.y * axis.y + direction.z * axis.z, -1.0f, 1.0f);
   return mm::acos(cosine) * mm::RAD_TO_DEG <= param->unknown00;
 }

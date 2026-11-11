@@ -24,8 +24,8 @@ void StateFieldWallMove::leave(GfComBehaviorPc *behavior, ai::State *next) {
   if (property->unknown310.unknown10_6) {
     MsgPcFieldNotifyWall message;
     message.unknown10 = property->unknown310.unknown130.unknown00;
-    message.unknown30.unknown00 = property->unknown160;
-    message.unknown30.unknown10 = property->unknown170;
+    message.unknown30.unknown00 = property->unknown160.unknown00;
+    message.unknown30.unknown10 = property->unknown160.unknown10;
     message.unknown50 = 3;
     StateUtilField::sendMessageWallChilds(*property, message);
   }

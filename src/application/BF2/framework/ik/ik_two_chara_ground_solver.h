@@ -7,6 +7,10 @@
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
+namespace anm {
+class Pose;
+} // namespace anm
+
 namespace mm {
 struct Vec3;
 
@@ -18,13 +22,24 @@ class RTTI;
 namespace fw {
 
 class FootPlacementIKSolver;
+class ReferenceFrame;
 struct Transform;
 class ParamAdapter;
 struct UpdateInfo;
 
 class TwoCharaGroundSolver : public IkSolver {
 public:
+  // Layout evidence: gf::GfComIK::createTwoCharaGroundIK builds it on the stack (0x18 bytes).
+  struct Description {
+    f32 unknown00;         // Inferred role: constructor argument of GfComIK::createTwoCharaGroundIK; original member name unknown.
+    u32 unknown04;         // Inferred role: foot count of the owner; original member name unknown.
+    const char *unknown08; // Inferred role: first bone name of GfComIK::createTwoCharaGroundIK; original member name unknown.
+    const char *unknown10; // Inferred role: second bone name of GfComIK::createTwoCharaGroundIK; original member name unknown.
+  };
+
   static mm::mtl::RTTI m_rtti;
+
+  static TwoCharaGroundSolver *create(const Description &description, mm::mtl::IntrusivePtr<ReferenceFrame> &frame, anm::Pose &pose, IKGroundInterface *ground);
 
   TwoCharaGroundSolver();
   ~TwoCharaGroundSolver() override;
@@ -61,6 +76,8 @@ public:
   IKGroundInterface *unknownc0; // Inferred role: ground interface; original member name unknown.
 };
 
+static_assert(offsetof(TwoCharaGroundSolver::Description, unknown10) == 0x10, "");
+static_assert(sizeof(TwoCharaGroundSolver::Description) == 0x18, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknown20) == 0x20, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknown58) == 0x58, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknown90) == 0x90, "");

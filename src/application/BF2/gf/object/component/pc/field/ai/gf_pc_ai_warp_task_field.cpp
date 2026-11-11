@@ -52,8 +52,7 @@ bool TaskFieldCheckWarp::testCondition(const BlackBoardField &blackBoard) {
 
 void TaskFieldCheckWarp::update(BlackBoardField &blackBoard) {
   GfComPropertyPc *property = blackBoard.unknown08;
-  const fw::ParamList *paramList = property->unknown300.operator->();
-  const WarpParam *param = paramList->unknown0c > 2 ? static_cast<const WarpParam *>(paramList->unknown10[2].param) : nullptr;
+  const WarpParam *param = property->unknown006();
   if (blackBoard.unknown200.test(0)) {
     unknown38 += blackBoard.unknown18->unknown04;
   } else {
@@ -73,10 +72,10 @@ void TaskFieldCheckWarp::update(BlackBoardField &blackBoard) {
     }
     fw::Transform transform = formation->getFollowTransform(property->unknown38);
     transform.unknown00 = formation->unknown80[property->unknown38];
-    if (unknown38 >= param->stackTime || fabsf(transform.unknown00.y - property->unknown160.y) >= param->distanceVert) {
+    if (unknown38 >= param->stackTime || fabsf(transform.unknown00.y - property->unknown160.unknown00.y) >= param->distanceVert) {
       property->unknown003(transform, 0);
     } else {
-      mm::Vec3 diff = transform.unknown00 - property->unknown160;
+      mm::Vec3 diff = transform.unknown00 - property->unknown160.unknown00;
       diff.y = 0.0f;
       if (sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z) >= param->distanceHorz) {
         property->unknown003(transform, 0);
@@ -95,7 +94,7 @@ void TaskFieldCheckWarp::update(BlackBoardField &blackBoard) {
     if (AgentUtilField::calcParentPlayerPush(*property, transform.unknown00, wallParam->escapeRange, &push)) {
       return;
     }
-    mm::Vec3 diff = transform.unknown00 - property->unknown160;
+    mm::Vec3 diff = transform.unknown00 - property->unknown160.unknown00;
     if (fabsf(diff.y) >= param->distanceVertWall) {
       property->unknown003(transform, 1);
     } else {

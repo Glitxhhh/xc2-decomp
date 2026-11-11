@@ -55,6 +55,18 @@ public:
     u32 unknown14;        // Inferred role: shop; original member name unknown.
   };
 
+  struct ItemShopExcSetup {
+    ItemShopExcSetup() : unknown14(0) {}
+
+    SetupParam unknown00; // Inferred role: param; original member name unknown.
+    u32 unknown14;        // Inferred role: exchange task; original member name unknown.
+  };
+
+  struct QuestRewardSetup {
+    SetupParam unknown00; // Inferred role: param; original member name unknown.
+    u32 unknown14;        // Inferred role: reward set; original member name unknown.
+  };
+
   GfMenuItemList();
   ~GfMenuItemList() override;
   static GfMenuItemList *create();
@@ -100,6 +112,8 @@ public:
   void setupFromHanaParts(const HanaPartsSetup &setup);
   void setupFromBox(const ItemBoxSetup &setup);
   void setupFromShop(const ItemShopSetup &setup);
+  void setupFromShopExcTask(const ItemShopExcSetup &setup);
+  void setupFromQuestReward(const QuestRewardSetup &setup);
 };
 
 static_assert(offsetof(GfMenuItemList::HanaPartsSetup, unknown14) == 0x14, "");
@@ -113,6 +127,10 @@ static_assert(offsetof(GfMenuItemList::ItemBoxSetup, unknown2b) == 0x2b, "");
 static_assert(sizeof(GfMenuItemList::ItemBoxSetup) == 0x30, "");
 static_assert(offsetof(GfMenuItemList::ItemShopSetup, unknown14) == 0x14, "");
 static_assert(sizeof(GfMenuItemList::ItemShopSetup) == 0x18, "");
+static_assert(offsetof(GfMenuItemList::ItemShopExcSetup, unknown14) == 0x14, "");
+static_assert(sizeof(GfMenuItemList::ItemShopExcSetup) == 0x18, "");
+static_assert(offsetof(GfMenuItemList::QuestRewardSetup, unknown14) == 0x14, "");
+static_assert(sizeof(GfMenuItemList::QuestRewardSetup) == 0x18, "");
 
 static_assert(offsetof(GfMenuItemList::FiltertInfo, unknown04) == 0x4, "");
 static_assert(offsetof(GfMenuItemList::FiltertInfo, unknown05) == 0x5, "");

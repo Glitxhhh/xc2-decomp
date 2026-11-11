@@ -76,6 +76,13 @@ public:
 
 class SoundResSourceManager : public mm::mtl::PtrSingleton<SoundResSourceManager> {
 public:
+  // Layout evidence: SoundResSourceManager::playSe (1.0.0: 0x71001ac394) sets the member at 0x0 to 1.0f in a stack slot, passes the struct to
+  // the delegate and multiplies the volume by it; GfComBehaviorPc::callbackSound stores a player volume in it. The game never shows an
+  // allocation of the struct (both stack slots have 8 bytes of room), so its size is not proven.
+  struct CustomInfo {
+    f32 unknown00; // Inferred role: volume rate; original member name unknown.
+  };
+
   SoundResSourceManager();
   ~SoundResSourceManager() override;
   static void clearAll();
@@ -93,5 +100,6 @@ static_assert(offsetof(SoundResSourceManager, unknown08) == 0x08, "");
 static_assert(offsetof(SoundResSourceManager, unknown20) == 0x20, "");
 static_assert(offsetof(SoundResSourceManager, unknown48) == 0x48, "");
 static_assert(sizeof(SoundResSourceManager) == 0x50, "");
+static_assert(offsetof(SoundResSourceManager::CustomInfo, unknown00) == 0x00, "");
 
 } // namespace fw

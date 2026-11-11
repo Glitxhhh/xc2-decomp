@@ -1,6 +1,7 @@
 #include "gf/object/component/pc/field/ai/gf_pc_ai_wall_task_field.h"
 
 #include "fw/fw_param_manager.h"
+#include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/component/pc/field/gf_pc_param_field.h"
@@ -120,7 +121,7 @@ bool TaskFieldWallEscape::testCondition(const BlackBoardField &blackBoard) {
     return false;
   }
 
-  return AgentUtilField::calcParentPlayerPush(*property, property->unknown160, param->escapeRange, &unknown40);
+  return AgentUtilField::calcParentPlayerPush(*property, property->unknown160.unknown00, param->escapeRange, &unknown40);
 }
 
 void TaskFieldWallEscape::update(BlackBoardField &blackBoard) {

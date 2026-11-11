@@ -27,7 +27,7 @@ bool isActiveRange(GfComPropertyPc &property, const AccessParam &param, GF_OBJ_H
     if (message.unknown0c) {
       GfObjAcc acc(obj);
       const mm::Vec3 &position = acc.getWorldTransform().unknown00;
-      mm::Vec3 center = property.unknown160 + property.unknown170.rotate(mm::Vec3::unitZ * param.offsetFront);
+      mm::Vec3 center = property.unknown160.unknown00 + property.unknown160.unknown10.rotate(mm::Vec3::unitZ * param.offsetFront);
       mm::Vec3 difference = position - center;
       bool isInHeight = AccessParam::unknown001(difference.y, param.accessUpper, -param.accessDown);
       f32 distance = sqrtf(difference.x * difference.x + 0.0f + difference.z * difference.z);

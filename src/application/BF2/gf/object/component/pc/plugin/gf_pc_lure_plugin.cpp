@@ -27,7 +27,7 @@ bool isActiveRangeLure(GfComPropertyPc &property, const AccessParam &param, GF_O
   if (obj != nullptr && GfObjUtil::getObjType(target) == OBJECT_TYPE_ENEMY) {
     GfObjAcc acc(obj);
     const mm::Vec3 &position = acc.getWorldTransform().unknown00;
-    mm::Vec3 center = property.unknown160 + property.unknown170.rotate(mm::Vec3::unitZ * param.offsetFront);
+    mm::Vec3 center = property.unknown160.unknown00 + property.unknown160.unknown10.rotate(mm::Vec3::unitZ * param.offsetFront);
     mm::Vec3 difference = position - center;
     bool isInHeight = AccessParam::unknown001(difference.y, param.accessUpper, -param.accessDown);
     s16 ownerBonus = GfGameManager::getOwnerBonus()->unknown00[OWNER_BONUS_UNKNOWN_11];

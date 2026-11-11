@@ -7,7 +7,6 @@
 #include "gf/object/component/pc/gf_pc_property_battle.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
 #include "gf/object/component/property/gf_com_property.h"
-#include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
 #include "mm_mtl/intrusive_ptr.h"
@@ -37,6 +36,7 @@ struct MsgPcFieldWarpCancel;
 namespace pc {
 struct MoveParam;
 struct SlideParam;
+struct WarpParam;
 
 enum InputID {
   INPUT_ID_UNKNOWN_0 = 0,   // Inferred role: input id decide; original name unknown.
@@ -80,6 +80,7 @@ public:
   const mm::mtl::RTTI *getRTTI() const override;
   bool recieveMessage(fw::MessageObject *sender, fw::Message &message) override;
   f32 getGravity() const;
+  void flush();
   const fw::Transform &getLocomotion() const;
   void setPadControl(bool padControl);
   void resetParams();
@@ -109,6 +110,12 @@ public:
     return paramList->unknown0c > 1 ? static_cast<const pc::MoveParam *>(paramList->unknown10[1].param) : nullptr;
   }
 
+  // Inferred role: warp param of the pc param list entry 2 ("warp"), null when the list is shorter; original name unknown.
+  const pc::WarpParam *unknown006() const {
+    const fw::ParamList *paramList = unknown300.operator->();
+    return paramList->unknown0c > 2 ? static_cast<const pc::WarpParam *>(paramList->unknown10[2].param) : nullptr;
+  }
+
   // Inferred role: moving, from the velocity or the value at 0xc0 (shared by gf::pc::isMainPcMove and isBuddyPcMove); original
   // name unknown.
   bool unknown002() const {
@@ -127,9 +134,12 @@ public:
   }
 
   u32 unknown38; // Inferred role: player id set by MsgPcFieldNotifyChangePlayerID; original member name unknown.
-  u8 _3c[0x60 - 0x3c];
-  Input unknown60; // Inferred role: input; original member name unknown.
-  Input unknown6c; // Inferred role: previous input; original member name unknown.
+  u8 _3c[0x40 - 0x3c];
+  f32 unknown40; // Inferred role: head height, the head collision position is only computed above FLT_EPSILON; original member name unknown.
+  u8 _44[0x50 - 0x44];
+  mm::Vec3 unknown50; // Inferred role: head collision position; original member name unknown.
+  Input unknown60;    // Inferred role: input; original member name unknown.
+  Input unknown6c;    // Inferred role: previous input; original member name unknown.
   u8 _78[0x80 - 0x78];
   mm::Vec3 unknown80; // Inferred role: velocity; original member name unknown.
   f32 unknown90;      // Inferred role: vertical speed; original member name unknown.
@@ -151,7 +161,7 @@ public:
   u32 unknown110_5 : 1; // Inferred role: water warp enabled, tested by AIAgentField::procMsgPcFieldNotifyWaterWarp; original member name unknown.
   u32 unknown110_6 : 1; // Inferred role: battle action running, cleared by StateBattle::Leave; original member name unknown.
   u32 unknown110_7 : 1; // Inferred role: on slide; original member name unknown.
-  u32 : 1;
+  u32 unknown111_0 : 1; // Role and original member name unknown; tested by GfComBehaviorPc::procMsgGameChangeTarget.
   u32 unknown111_1 : 1; // Inferred role: selects mode 2 in getMode; original member name unknown.
   u32 unknown111_2 : 1; // Inferred role: pad control; original member name unknown.
   u32 unknown111_3 : 1; // Inferred role: dead; original member name unknown.
@@ -159,7 +169,8 @@ public:
   u32 unknown111_5 : 1; // Inferred role: poisoned, selects the poison slow of the field param; original member name unknown.
   u32 unknown111_6 : 1; // Inferred role: head detect for the switcher, set by StateUtil::setEnableHeadDetectForSwitcher; original member name unknown.
   u32 unknown111_7 : 1; // Inferred role: cleared with the battle control flag by StateBattle::Leave; original member name unknown.
-  u32 : 10;
+  u32 unknown112_0 : 1; // Inferred role: skips integrateMove; original member name unknown.
+  u32 : 9;
   u32 unknown113_2 : 1; // Inferred role: warp requested, cleared by MsgPcFieldWarpCancel; original member name unknown.
   u32 : 5;
   s32 unknown114; // Inferred role: ground type, 3 in water (the field AI then reads the water params); original member name unknown.
@@ -170,9 +181,8 @@ public:
   fw::Transform unknown130; // Inferred role: warp target transform; original member name unknown.
   u32 unknown150;           // Inferred role: warp type; original member name unknown.
   u8 _154[0x160 - 0x154];
-  mm::Vec3 unknown160; // Inferred role: position; original member name unknown.
-  mm::Quat unknown170; // Inferred role: rotation; original member name unknown.
-  mm::Vec3 unknown180; // Inferred role: previous position, compared with the position by gf::pc::isStack; original member name unknown.
+  fw::Transform unknown160; // Inferred role: position and rotation; original member name unknown.
+  mm::Vec3 unknown180;      // Inferred role: previous position, compared with the position by gf::pc::isStack; original member name unknown.
   u8 _190[0x1c0 - 0x190];
   mm::Vec3 unknown1c0; // Inferred role: up axis, unitY rotated by the rotation in syncDirection; original member name unknown.
   u8 _1d0[0x1e0 - 0x1d0];
@@ -197,6 +207,8 @@ public:
 };
 
 static_assert(offsetof(GfComPropertyPc, unknown38) == 0x38, "");
+static_assert(offsetof(GfComPropertyPc, unknown40) == 0x40, "");
+static_assert(offsetof(GfComPropertyPc, unknown50) == 0x50, "");
 static_assert(offsetof(GfComPropertyPc, unknown60) == 0x60, "");
 static_assert(offsetof(GfComPropertyPc, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfComPropertyPc, unknown80) == 0x80, "");
@@ -214,7 +226,7 @@ static_assert(offsetof(GfComPropertyPc, unknown120) == 0x120, "");
 static_assert(offsetof(GfComPropertyPc, unknown130) == 0x130, "");
 static_assert(offsetof(GfComPropertyPc, unknown150) == 0x150, "");
 static_assert(offsetof(GfComPropertyPc, unknown160) == 0x160, "");
-static_assert(offsetof(GfComPropertyPc, unknown170) == 0x170, "");
+static_assert(offsetof(GfComPropertyPc, unknown160.unknown10) == 0x170, "");
 static_assert(offsetof(GfComPropertyPc, unknown180) == 0x180, "");
 static_assert(offsetof(GfComPropertyPc, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(GfComPropertyPc, unknown1e0) == 0x1e0, "");

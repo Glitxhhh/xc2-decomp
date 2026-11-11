@@ -1,6 +1,7 @@
 #include "gf/object/component/pc/plugin/gf_pc_fall_distance_achiev_plugin.h"
 
 #include "framework/object/updatable_object.h"
+#include "fw/fw_transform.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/scom/gf_scom_achiev.h"
@@ -26,18 +27,18 @@ bool FallDistanceAchievPlugin::setup(GfComBehaviorPc &behavior) {
 
 void FallDistanceAchievPlugin::cleanup(GfComBehaviorPc &) {}
 
-void FallDistanceAchievPlugin::onActivate() { unknown18 = unknown10->unknown160.y; }
+void FallDistanceAchievPlugin::onActivate() { unknown18 = unknown10->unknown160.unknown00.y; }
 
 void FallDistanceAchievPlugin::onDeactivate() {
-  f32 distance = unknown18 - unknown10->unknown160.y;
+  f32 distance = unknown18 - unknown10->unknown160.unknown00.y;
   if (distance >= unknown017) {
     SCOM_ACHIEV_INC::create(STATS_UNKNOWN_21, distance, 0);
   }
 }
 
 void FallDistanceAchievPlugin::update(GfComBehaviorPc &, const fw::UpdateInfo &) {
-  if (unknown10->unknown160.y > unknown18) {
-    unknown18 = unknown10->unknown160.y;
+  if (unknown10->unknown160.unknown00.y > unknown18) {
+    unknown18 = unknown10->unknown160.unknown00.y;
   }
 }
 

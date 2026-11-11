@@ -1,4 +1,5 @@
 #pragma once
+#include "gf/object/gf_obj_handle.h"
 #include <stddef.h>
 
 #include "mm_math/mm_vec3.h"
@@ -58,6 +59,10 @@ static_assert(sizeof(GfAppend) == 0x88, "");
 
 class GfAppendHandles {
 public:
+  GfAppendHandles() : unknowna8(false) {
+    unknown08.assign(unknown020);
+    unknown58.assign(unknown020);
+  }
   virtual ~GfAppendHandles() {}
   void destroy();
   void destroy(mm::mtl::FixedArray<GF_OBJ_HANDLE *, 10> &handles);

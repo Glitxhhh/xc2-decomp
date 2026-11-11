@@ -239,6 +239,7 @@ public:
   void cleanup();
   void changeLayer(u32 oldLayer, u32 newLayer) override;
   void setEnableSensor(bool isEnable);
+  void flushEnv(const fw::Transform &transform);
   void resolveTransform();
   const fw::Transform &getTransform();
   const mm::mtl::RTTI *getRTTI() const override;

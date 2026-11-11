@@ -11,25 +11,33 @@
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
 #include "gf/game/quest/gf_quest_manager.h"
+#include "gf/game/quest/gf_quest_task.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/game/sequential_play/gf_sequential_play.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_fade.h"
+#include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
+#include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_bl_weapon2.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_sort.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/scom/gf_scom_achiev.h"
+#include "gf/util/gf_item_util.h"
 #include "mm_math/mm_col4.h"
 #include "mm_mtl/delegate.h"
+#include "mm_mtl/fixstr.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/ui_object_acc.h"
@@ -49,6 +57,16 @@ constexpr u16 unknown004 = 0xb0;
 constexpr u32 unknown005 = 0x59;
 // Inferred role: achievement statistics id counting inn stays; original name unknown.
 constexpr u32 unknown006 = 0x23;
+GfMenuObjShop::GfMenuObjShop(u32 handle)
+    : GfMenuObject(handle), unknown24(0), unknown34(0), unknown38(0), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(false), unknown59(false), unknown60(), unknownc0(0),
+      unknownc8(nullptr), unknownd0(0), unknownd8(nullptr), unknowne0(nullptr), unknowne8(nullptr), unknownf8(), unknown130(), unknown148(0), unknown14c(0), unknown168(), unknown238(),
+      unknown248(this), unknown4dc(false), unknown4f0(nullptr), unknown504(-1), unknown548(QuestID(), 0, 0, TASK_STATE_UNKNOWN_0), unknown568(0), unknown570(nullptr), unknown578(nullptr) {
+  unknown130.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
+  for (u32 i = 0; i < 8; i++) {
+    unknown508[i] = nullptr;
+  }
+  unknown578 = GfMenuCallContext::create();
+}
 
 u32 GfMenuObjShop::getSellItemTypeMax() { return 0xd; }
 
@@ -294,6 +312,25 @@ bool GfMenuObjShop::seqStartLevelUp() {
   return true;
 }
 
+void GfMenuObjShop::refreshFilterIcon() {
+  ui::UIObjectAcc filter(unknown18, "LAY_store_sell_filter");
+  mm::mtl::FixStr<32> name;
+  if (unknown60.size() != 0) {
+    u32 i = 0;
+    do {
+      u32 selected = unknownc0;
+      name.format("IMG_store_sell_filter_icon@%02d", i + 1);
+      ui::UIObjectAcc icon(filter.searchChild(name.c_str()));
+      if (i == selected) {
+        icon.setMulColor("sys_select");
+      } else {
+        icon.loadDefColor();
+      }
+      i++;
+    } while (i < unknown60.size());
+  }
+}
+
 bool GfMenuObjShop::seqEnd() {
   ui::UIObjectAcc main(unknown18, "LAY_main");
   GfSequentialPlay::pauseOff();
@@ -325,7 +362,7 @@ void GfMenuObjShop::setFilterIndex() {
 
 bool GfMenuObjShop::seqEndRecipeIndexOpen() {
   ui::UIObjectAcc acc(unknown18, "LAY_orb_rcp");
-  switch (unknownfc) {
+  switch (unknownf8.unknown04) {
   case 0:
     acc.setDispChild(true, "TXT_orb_rcp_type_rare_index");
     break;
@@ -545,6 +582,328 @@ void GfMenuObjShop::CommonListener::reciveEvent(const ui::EventData &event, u32 
   }
   }
   ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+void GfMenuObjShop::setGuideText(u32 id) {
+  if (unknown38 != id) {
+    ui::UIObjectAcc acc(unknown18, "TXT_common_guide");
+    {
+      u32 name = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_MSG_OPERATION_GUIDE), "name", id).valueU16;
+      ui::UIStr text(GfDataBdat::getFP(BDAT_MENU_OPERATION_GUIDE), name);
+      acc.setText(text);
+    }
+    acc.setDisp(true);
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_in_l");
+    param.unknown14 = 8;
+    param.unknown11 = true;
+    param.unknown00 = 0.2f;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    unknown38 = id;
+  }
+}
+
+void GfMenuObjShop::setupExcItem() {
+  ui::UIObjectAcc acc(unknown18, "LAY_exc_objective");
+  mm::mtl::FixStr<32> name;
+  GfMenuItemList::ItemShopExcSetup setup;
+  setup.unknown14 = unknown150->getContents(unknown150->getIndex(false)).unknown00;
+  setup.unknown00.unknown08 = 5;
+  unknown158->clear();
+  unknown158->setupFromShopExcTask(setup);
+  u32 have = 0;
+  u32 total = 0;
+  for (u32 i = 0; i < unknown158->getSize(); i++) {
+    MenuItemInfo &info = unknown158->getContents(i);
+    unknown168[17 + i]->unknown162(GfMenuItemUtil::getItemNum(info.unknown00, info.unknown04));
+    unknown168[17 + i]->unknown10 = 0;
+    unknown168[17 + i]->unknown14 = 999;
+    int number = unknown168[17 + i]->unknown0c;
+    s16 need = info.unknown08;
+    number = number < need ? number : need;
+    total += need;
+    have += number;
+    name.format("TXT_exc_obj_item_cost@%02d", i + 1);
+    ui::UIObjectAcc cost(acc.unknown10, name.c_str());
+    if (cost.isValid()) {
+      if (unknown168[17 + i]->unknown0c < info.unknown08) {
+        GfMenuObjUtil::setColMulandAdd(cost.unknown10, "txt_warning");
+      } else {
+        GfMenuObjUtil::setColDefault(cost.unknown10);
+      }
+    }
+  }
+  u32 remain = total;
+  if (have <= total) {
+    remain = have;
+  }
+  unknown168[6]->unknown14 = total;
+  unknown168[6]->unknown0c = remain;
+  unknown168[7]->unknown0c = total;
+}
+
+void GfMenuObjShop::refreshExcReward() {
+  if (unknown150 != nullptr) {
+    ui::UIObjectAcc item(unknown18, "LAY_exc_reward_item");
+    ui::UIObjectAcc quest(unknown18, "LAY_exc_reward_quest");
+    u32 task = unknown150->getContents(unknown150->getIndex(false)).unknown00;
+    u32 value;
+    bool isHide = false;
+    if (!getExcTaskReward(task, value, unknown160, isHide)) {
+      if (!getExcTaskQuestAdditionalValue(task, value)) {
+        item.setDisp(false);
+        quest.setDisp(false);
+      } else {
+        item.setDisp(false);
+        quest.setDisp(!isHide);
+        u32 limit;
+        u32 count;
+        u32 questItem;
+        u32 category;
+        if (!unknown548.unknown04.empty() && GfQuestTask::getTaskCount(unknown548, limit, count, questItem, category)) {
+          unknown168[24]->unknown166(limit);
+          unknown168[24]->unknown162(count);
+          unknown168[25]->unknown162(limit);
+        }
+      }
+    } else {
+      unknown168[23]->unknown162(value);
+      item.setDisp(!isHide);
+      quest.setDisp(false);
+    }
+    ui::UIObjectAcc(unknown18, "TXT_exc_reward_quest_index").setDisp(quest.isDisp());
+    ui::UIObjectAcc(unknown18, "TXT_exc_reward_item_index").setDisp(item.isDisp());
+    ui::UIObjectAcc(unknown18, "LAY_exc_reward_secret").setDisp(isHide);
+  }
+}
+
+bool GfMenuObjShop::seqWaitExchange() {
+  if (GfMenuManager::isOpenCommonWindow()) {
+    return false;
+  }
+  s16 result = GfMenuManager::getCommonWindowResult();
+  if (result == 0) {
+    unknown4e0 = 1;
+    unknown4e4 = 0;
+    GfGameUtilShop::execChangeItem(unknown150->getContents(unknown150->getIndex(false)).unknown00, unknown30);
+    setupExcItem();
+    unknown59 = true;
+    refreshExcReward();
+    unknown500 = 1;
+  } else {
+    unknown500 = 2;
+  }
+  unknown4dc = false;
+  return true;
+}
+
+bool GfMenuObjShop::seqStartRecipeIndexOpen() {
+  ui::UIObjectAcc acc(unknown18, "LAY_orb_rcp");
+  acc.setDispChild(false, "LAY_orb_rcp_index_rare");
+  acc.setDispChild(false, "LAY_orb_rcp_index_cate");
+  switch (unknownf8.unknown04) {
+  case 0:
+    acc.setDispChild(true, "LAY_orb_rcp_index_rare");
+    acc.setDispChild(false, "TXT_orb_rcp_type_rare_index");
+    break;
+  case 1:
+    acc.setDispChild(true, "LAY_orb_rcp_index_cate");
+    acc.setDispChild(false, "TXT_orb_rcp_type_cate_index");
+    break;
+  }
+  unknown248.addAnimJob(acc.searchChild("IMG_orb_rcp_index_base"), "fadein");
+  unknown248.unknown002(&GfMenuObjShop::seqEndRecipeIndexOpen);
+  return true;
+}
+
+bool GfMenuObjShop::seqItemGet() {
+  if (unknown500 != 1) {
+    return true;
+  }
+  if (!unknown4dc) {
+    unknown578->reset();
+    switch (unknown28) {
+    case 3:
+      if (unknown148 != 0) {
+        ui::UIListInfoBase::SetupParam param;
+        unknown160->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
+        MenuItemInfo info;
+        info.unknown04 = unknown148;
+        info.unknown00 = GfItemUtil::getType(info.unknown04);
+        info.unknown08 = 1;
+        unknown160->addItem(info, false);
+        unknown578->reset();
+        GfMenuObjCommonText::openGetItem(unknown578, unknown160);
+        unknown148 = 0;
+      }
+      break;
+    case 1:
+      if (unknown160->getSize() != 0) {
+        unknown578->reset();
+        GfMenuObjCommonText::openGetItem(unknown578, unknown160);
+      }
+      break;
+    }
+    if (!unknown578->isActive()) {
+      unknown4dc = false;
+      return true;
+    }
+    GfMenuObjUtil::playSE(10);
+    unknown4dc = true;
+  }
+  if (!unknown578->isTerm()) {
+    return false;
+  }
+  unknown4dc = false;
+  return true;
+}
+
+bool GfMenuObjShop::canGetExcTaskReward(u32 id) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_SHOP_CHANGE_TASK);
+  if (bdat == nullptr || !GfMenuBdat::isValidBdatID(bdat, id)) {
+    return false;
+  }
+  u16 rewardSet = Bdat::getVal(bdat, "Reward", id).valueU16;
+  if (!rewardSet) {
+    return true;
+  }
+  GfQuestReward reward;
+  if (!GfQuestUtil::getReward(reward, rewardSet, false)) {
+    return true;
+  }
+  for (u32 i = QUEST_REWARD_UNKNOWN_8; i < sizeof(reward.unknown00) / sizeof(reward.unknown00[0]); i++) {
+    if (reward.unknown00[i].unknown44 != 0 && !GfItemUtil::isEnableAddItemBox(reward.unknown00[i].unknown44, reward.unknown00[i].m_developZone)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool GfMenuObjShop::getExcTaskReward(u32 id, u32 &value, GfMenuItemList *list, bool &isHide) {
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_SHOP_CHANGE_TASK);
+  if (bdat != nullptr && GfMenuBdat::isValidBdatID(bdat, id)) {
+    isHide = Bdat::getVal(bdat, "HideReward", id).valueS16 != 0;
+    list->clear();
+    u16 rewardSet = Bdat::getVal(bdat, "Reward", id).valueU16;
+    if (rewardSet) {
+      {
+        GfMenuItemList::QuestRewardSetup setup;
+        setup.unknown00.unknown08 = 4;
+        setup.unknown14 = rewardSet;
+        list->setupFromQuestReward(setup);
+      }
+      GfQuestReward reward;
+      if (GfQuestUtil::getReward(reward, rewardSet, false)) {
+        value = reward.unknown00[QUEST_REWARD_UNKNOWN_0].unknown44_u32;
+        if (value != 0) {
+          return true;
+        }
+        return list->getSize() != 0;
+      }
+    }
+  }
+  return false;
+}
+
+void GfMenuObjShop::setupIndex(u32 handle, const char *name, u32 count) {
+  ui::UIObjectAcc acc(handle);
+  if (acc.isValid()) {
+    mm::mtl::FixStr<32> path;
+    for (u32 i = 0; i < count; i++) {
+      path.format("TXT_%s_index@%02d", name, i + 1);
+      u32 text = acc.searchChild(path.c_str());
+      if (text == 0) {
+        break;
+      }
+      path.format("IMG_%s_index_l@%02d", name, i + 1);
+      {
+        ui::UIObjectAcc left(handle, path.c_str());
+        if (!left.isValid()) {
+          break;
+        }
+        GfMenuObjUtil::setDockPos(left.unknown10, text, 1, false);
+        GfMenuObjUtil::addPos(left.unknown10, -8, 0);
+      }
+      path.format("IMG_%s_index_r@%02d", name, i + 1);
+      ui::UIObjectAcc right(handle, path.c_str());
+      if (!right.isValid()) {
+        break;
+      }
+      GfMenuObjUtil::setDockPos(right.unknown10, text, 2, false);
+      GfMenuObjUtil::addPos(right.unknown10, 8, 0);
+    }
+  }
+}
+
+bool GfMenuObjShop::seqWaitOrbCreate() {
+  if (GfMenuManager::isOpenCommonWindow()) {
+    return false;
+  }
+  s16 result = GfMenuManager::getCommonWindowResult();
+  if (result != 0) {
+    unknown500 = 2;
+  } else {
+    u32 item = unknowne8->getContents(unknowne8->getIndex(false)).unknown04;
+    mm::mtl::FixedVector<OrbRecipe, 128> items;
+    bool canCreate;
+    if (unknownf8.unknown04 == 2) {
+      canCreate = GfRecipeOrbUtil::isEnableRecipe(unknownf8.unknown00);
+      if (canCreate) {
+        const mm::mtl::FixedVector<OrbRecipe, 8> *results = unknownf8.getResultItems();
+        for (u32 i = 0; i < results->size(); i++) {
+          OrbRecipe recipe;
+          recipe.unknown00 = (*results)[i].unknown00;
+          recipe.unknown02 = (*results)[i].unknown02;
+          items.push_back(recipe);
+        }
+      }
+    } else {
+      for (u32 i = 0; i < unknownf0->getSize(); i++) {
+        if (unknown130[i] != 0) {
+          OrbRecipe recipe;
+          recipe.unknown00 = unknownf0->getContents(i).unknown04;
+          recipe.unknown02 = unknown130[i];
+          items.push_back(recipe);
+        }
+      }
+      canCreate = GfRecipeOrbUtil::isEnabaleOrbRecipe(unknownf8.unknown00, items);
+    }
+    if (canCreate) {
+      GfRecipeOrbUtil::execOrbRecipe(item, &items);
+      MenuItemInfo info = unknowne8->getContents(unknowne8->getIndex(false));
+      info.unknown08 = 1;
+      unknown148 = GfRecipeOrbUtil::getEquipOrb(info.unknown04);
+      unknowne8->decItem(info, false);
+      {
+        ui::UIObjectAcc acc(unknown18, "LAY_orb_item_list");
+        GfMenuObject::resetInputSelection(acc.unknown10);
+        GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknowne8);
+      }
+      unknown4e0 = 1;
+      unknown4e4 = 0;
+      GfMenuObjUtil::playSE(0x1a);
+    }
+    unknown500 = 1;
+  }
+  unknown4dc = false;
+  return true;
+}
+
+void GfMenuObjShop::updateOrbRecipe() {
+  ui::UIObjectAcc acc(unknown18, "LAY_orb");
+  unknownf8.unknown001();
+  if (unknowne8->getSize() != 0) {
+    u32 recipe = GfRecipeOrbUtil::getRecipeID(unknowne8->getContents(unknowne8->getIndex(false)).unknown04);
+    if (recipe != 0) {
+      RecipeInfo info;
+      if (GfRecipeOrbUtil::getRecipeInfo(info, recipe)) {
+        unknownf8 = info;
+      }
+    }
+  }
+  ui::EventData event;
+  event.unknown00 = 0x43;
+  GfMenuObject::sendEvent(acc.searchSibiling("LAY_orb_rcp"), event, 0.0f);
 }
 
 } // namespace gf

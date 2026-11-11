@@ -141,6 +141,7 @@ public:
   static void broadcastPlayerAll(GfComBehaviorPc &behavior, fw::Message &message);
   static void sendMessageGfObj(GfComBehaviorPc &behavior, GF_OBJ_HANDLE *handle, fw::Message &message);
   static void playVibration(GfComBehaviorPc &behavior, fw::VibrationID id);
+  static void reflectionAdsorption(GfComBehaviorPc &behavior);
 };
 
 } // namespace pc

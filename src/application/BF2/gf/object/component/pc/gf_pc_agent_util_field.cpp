@@ -48,7 +48,7 @@ f32 AgentUtilField::setFollowInput(f32 distance, navi::NvmshAcObj *naviObject, G
 }
 
 void AgentUtilField::setFollowWallEndInput(const mm::Vec3 &position, GfComPropertyPc &property) {
-  mm::Vec3 offset = position - property.unknown160;
+  mm::Vec3 offset = position - property.unknown160.unknown00;
   property.unknown60.unknown04 = offset.x * property.unknown1c0.x + offset.y * property.unknown1c0.y + offset.z * property.unknown1c0.z >= 0.0f ? 1.0f : -1.0f;
   f32 side = offset.x * property.unknown200.x + offset.y * property.unknown200.y + offset.z * property.unknown200.z;
   if (side >= 0.0f) {
@@ -126,7 +126,7 @@ bool AgentUtilField::calcParentPlayerPush(GfComPropertyPc &property, const mm::V
 bool AgentUtilField::isEnableWallMove(GfComPropertyPc &property, const mm::Vec2 &input) {
   f32 up = input.y * (input.y >= 0.0f ? property.unknown310.unknown3c : property.unknown310.unknown40);
   f32 side = input.x * property.unknown310.unknown44;
-  mm::Vec3 position = property.unknown1c0 * up + property.unknown200 * side + property.unknown160;
+  mm::Vec3 position = property.unknown1c0 * up + property.unknown200 * side + property.unknown160.unknown00;
   const WallAiParam *param = getAIParamAdapter(property, PARAM_ID_FIELD_AI_UNKNOWN_5).get<WallAiParam>();
   mm::Vec3 push;
   return !calcParentPlayerPush(property, position, param->nearRange, &push);

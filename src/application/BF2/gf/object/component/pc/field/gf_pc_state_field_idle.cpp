@@ -5,6 +5,7 @@
 
 #include "framework/object/updatable_object.h"
 #include "fw/fw_coli_check.h"
+#include "fw/fw_transform.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
@@ -60,7 +61,7 @@ bool StateFieldIdle::checkSpace(GfComBehaviorPc *behavior) const {
     config.unknown10 = 0;
     config.unknown04 = 0x80000076;
     f32 length = space - 0.5f;
-    mm::Vec3 base = property->unknown160 + property->unknown1c0 * 0.6f;
+    mm::Vec3 base = property->unknown160.unknown00 + property->unknown1c0 * 0.6f;
     length = fmaxf(length, 0.01f);
     mm::Vec3 start = base + property->unknown1e0 * 0.5f;
     mm::Vec3 end = base + property->unknown1e0 * length;

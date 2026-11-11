@@ -4,6 +4,7 @@
 
 #include "framework/object/updatable_object.h"
 #include "fw/fw_param_manager.h"
+#include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/behavior/movement/gf_move_fall.h"
@@ -31,7 +32,7 @@ void StateFieldBigJump::enter(GfComBehaviorPc *behavior, ai::State *previous) {
   GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
   const MsgPcFieldNotifyBigJump *info = property->unknown310.getBigJumpInfo();
   f32 gravity = static_cast<const GfMoveFallControler::Param *>(property->unknown310.unknown08->unknown10[8].param)->accel;
-  unknown30 = property->unknown160;
+  unknown30 = property->unknown160.unknown00;
   f32 height = info->unknown10.y >= unknown30.y ? (info->unknown10.y - unknown30.y) + info->unknown24 : info->unknown24;
   f32 speed = __builtin_fmaxf(info->unknown28, 0.03f);
   unknown1c = speed;
@@ -41,7 +42,7 @@ void StateFieldBigJump::enter(GfComBehaviorPc *behavior, ai::State *previous) {
   f32 rise = (gravity + gravity) * diff;
   unknown20 = __builtin_fmaxf((unknown28 - sqrtf(speedSquared - rise)) / gravity, 0.0f);
   unknown24 = __builtin_fmaxf((unknown28 + sqrtf(unknown28 * unknown28 - rise)) / gravity, 0.0f);
-  unknown40 = property->unknown170;
+  unknown40 = property->unknown160.unknown10;
   f32 scale = 1.0f / sqrtf(unknown40.x * unknown40.x + unknown40.y * unknown40.y + unknown40.z * unknown40.z + unknown40.w * unknown40.w);
   unknown40.x = unknown40.x * scale;
   unknown40.y = scale * unknown40.y;
@@ -86,14 +87,14 @@ void StateFieldBigJump::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &
   f32 gravity = static_cast<const GfMoveFallControler::Param *>(property->unknown310.unknown004(8).unknown00->param)->accel;
   const MsgPcFieldNotifyBigJump *jump = property->unknown310.getBigJumpInfo();
   if (unknown18 >= unknown24) {
-    property->unknown160 = jump->unknown10;
+    property->unknown160.unknown00 = jump->unknown10;
     f32 angle = jump->unknown20 * 0.5f;
     f32 sine = sinf(angle);
     f32 cosine = cosf(angle);
-    property->unknown170.x = 0.0f;
-    property->unknown170.y = sine;
-    property->unknown170.z = 0.0f;
-    property->unknown170.w = cosine;
+    property->unknown160.unknown10.x = 0.0f;
+    property->unknown160.unknown10.y = sine;
+    property->unknown160.unknown10.z = 0.0f;
+    property->unknown160.unknown10.w = cosine;
     property->syncDirection();
     GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
     if (!StateUtilField::isBigLandDistance(*behavior)) {
@@ -125,12 +126,12 @@ void StateFieldBigJump::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &
       target.w = cosf(angle);
       target.x = 0.0f;
       target.z = 0.0f;
-      property->unknown170 = mm::slerp(unknown40, target, weight);
+      property->unknown160.unknown10 = mm::slerp(unknown40, target, weight);
       property->syncDirection();
       position = unknown30 * (1.0f - weight) + jump->unknown10 * weight;
     }
     position.y = y;
-    property->unknown160 = position;
+    property->unknown160.unknown00 = position;
   }
 }
 

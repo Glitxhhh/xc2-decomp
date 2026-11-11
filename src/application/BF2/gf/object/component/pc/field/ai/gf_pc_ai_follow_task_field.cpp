@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "fw/fw_param_manager.h"
+#include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_player_formation.h"
@@ -46,11 +47,11 @@ bool TaskFieldFollowTarget::testCondition(const BlackBoardField &blackBoard) {
 void TaskFieldFollowTarget::update(BlackBoardField &blackBoard) {
   GfComPropertyPc *property = blackBoard.unknown08;
   navi::NvmshAcObj *naviObject = blackBoard.unknown10;
-  naviObject->setBeginPos(property->unknown160);
+  naviObject->setBeginPos(property->unknown160.unknown00);
   naviObject->setEndPos(blackBoard.unknown20);
-  mm::Vec3 targetDiff(blackBoard.unknown20.x - property->unknown160.x, 0.0f, blackBoard.unknown20.z - property->unknown160.z);
+  mm::Vec3 targetDiff(blackBoard.unknown20.x - property->unknown160.unknown00.x, 0.0f, blackBoard.unknown20.z - property->unknown160.unknown00.z);
   blackBoard.unknown30 = sqrtf(targetDiff.x * targetDiff.x + targetDiff.y * targetDiff.y + targetDiff.z * targetDiff.z);
-  mm::Vec3 leaderDiff(blackBoard.unknown40.x - property->unknown160.x, 0.0f, blackBoard.unknown40.z - property->unknown160.z);
+  mm::Vec3 leaderDiff(blackBoard.unknown40.x - property->unknown160.unknown00.x, 0.0f, blackBoard.unknown40.z - property->unknown160.unknown00.z);
   blackBoard.unknown50 = sqrtf(leaderDiff.x * leaderDiff.x + leaderDiff.y * leaderDiff.y + leaderDiff.z * leaderDiff.z);
 }
 

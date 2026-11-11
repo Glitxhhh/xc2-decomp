@@ -160,8 +160,8 @@ void AIAgentField::update(const fw::UpdateInfo &info, GfComPropertyPc &property)
                      offset.x * side.y + offset.y * up.y + offset.z * front.y + 0.0f,
                      offset.x * side.z + offset.y * up.z + offset.z * front.z + 0.0f);
     mm::Vec3 target = blackBoard->unknown60 + rotated;
-    if (fw::NaviUtil::testNaviStraightLine(blackBoard->unknown1f0, property.unknown160, target, 1.0f, 3.0f) == 0) {
-      blackBoard->unknown1f0 = property.unknown160;
+    if (fw::NaviUtil::testNaviStraightLine(blackBoard->unknown1f0, property.unknown160.unknown00, target, 1.0f, 3.0f) == 0) {
+      blackBoard->unknown1f0 = property.unknown160.unknown00;
     }
   }
   unknown08.execute();

@@ -3,6 +3,7 @@
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_append_info.h"
@@ -227,6 +228,64 @@ GfAppendInfo *GfGameMountBlade::getAppendInfo() {
   return GfObjUtil::getAppendInfo(unknown10, unknown2c);
 }
 
+GfMountManager::GfMountManager(const GfSetupParam &param) : unknown1a38(0), unknown1a40(false) { initialize(param); }
+
+void GfMountManager::initialize(const GfSetupParam &) {
+  GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
+  unknown1a38 = 0;
+  unknown1a40 = true;
+}
+
+void GfMountManager::build(const GfSetupParam &param) {
+// __LINE__ must be 55 as in the original file: it is an argument of the allocation.
+#line 55
+  new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMountManager(param);
+}
+
+void GfMountManager::destroy() {
+  GfMountManager *manager = get();
+  manager->finalize();
+  delete manager;
+}
+
+GF_MOUNT_HANDLE *GfMountManager::createMount(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *blade, GFATTACH attach, OPTMNT type) {
+  GfMountManager *manager = get();
+// __LINE__ must be 107, 111 and 113 as in the original file: they are arguments of the allocations.
+#line 107
+  GfWeapon *weapon = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfWeapon;
+  GfGameMount *mount;
+  if (attach == GFATTACH_UNKNOWN_1) {
+#line 111
+    mount = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfGameMount(handle, weapon, type, attach);
+  } else {
+#line 113
+    mount = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfGameMountBlade(handle, weapon, type, attach, blade);
+  }
+  MINFO info = {mount, manager->createHandle()};
+  manager->unknown10.push_back(info);
+  return info.unknown08;
+}
+
+GF_MOUNT_HANDLE *GfMountManager::createMount(GF_OBJ_HANDLE *handle, GFATTACH attach, OPTMNT type) { return createMount(handle, unknown020, attach, type); }
+
+void GfMountManager::sendMessage(GF_OBJ_HANDLE *handle, GFATTACH attach, fw::MessageObject *receiver, fw::Message &message) {
+  GfGameMount *mount = getMount(GfObjUtil::getMountHandle(handle, attach));
+  if (mount != nullptr) {
+    mount->unknown18->sendMessage(receiver, message);
+  }
+}
+
+void GfMountManager::addMountHandle(GF_MOUNT_HANDLE *mountHandle, GF_OBJ_HANDLE *handle) {
+  if (mountHandle != reinterpret_cast<GF_MOUNT_HANDLE *>(-1) && handle != unknown020) {
+    GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
+    if (info != nullptr) {
+      GfGameMount *mount = getMount(mountHandle);
+      mount->addRef();
+      info->unknownb8[mount->unknown2c].unknown00 = mountHandle;
+    }
+  }
+}
+
 GfMountManager::~GfMountManager() {}
 
 GfGameMount *GfMountManager::getMount(GF_MOUNT_HANDLE *mountHandle) {
@@ -352,16 +411,14 @@ GF_OBJ_HANDLE *GfMountManager::getOptionLeft(GF_OBJ_HANDLE *handle, GFATTACH att
   return unknown020;
 }
 
-void GfMountManager::setAlphaMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f32 alpha) {
-  GfGameMount *mount = getMount(GfObjUtil::getMountHandle(handle, attach));
-  if (mount == nullptr) {
-    return;
-  }
-  for (u32 index = 0; index < 10; index++) {
-    GF_OBJ_HANDLE *weapon = mount->unknown18->getCurrentHandles()[index];
-    if (weapon != unknown020) {
-      GfObjAcc acc(weapon);
-      acc.setAlphaNormal(alpha);
+void GfMountManager::listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32) {
+  if (event == OBJEVT_UNKNOWN_4) {
+    for (int attach = GFATTACH_UNKNOWN_0; attach <= GFATTACH_UNKNOWN_3; attach++) {
+      removeMountHandle(handle, static_cast<GFATTACH>(attach));
+    }
+  } else if (event == OBJEVT_UNKNOWN_3) {
+    for (int attach = GFATTACH_UNKNOWN_0; attach <= GFATTACH_UNKNOWN_3; attach++) {
+      execDetachMount(handle, static_cast<GFATTACH>(attach));
     }
   }
 }
@@ -375,6 +432,12 @@ void GfMountManager::execDetachMount(GF_OBJ_HANDLE *handle, GFATTACH attach) {
   execMount(handle, attach, OPTMNT_UNKNOWN_0);
   mount->unknown28 = true;
   mount->unknown20 = type;
+}
+
+void GfMountManager::gevGameObjEnter(GF_OBJ_HANDLE *handle) {
+  for (int attach = GFATTACH_UNKNOWN_0; attach <= GFATTACH_UNKNOWN_3; attach++) {
+    get()->execAttachMount(handle, static_cast<GFATTACH>(attach));
+  }
 }
 
 void GfMountManager::execAttachMount(GF_OBJ_HANDLE *handle, GFATTACH attach) {
@@ -404,6 +467,27 @@ void GfMountManager::execAttachMount(GF_OBJ_HANDLE *handle, GFATTACH attach) {
 }
 
 void GfMountManager::gevGameObjLeave(GF_OBJ_HANDLE *) {}
+
+void GfMountManager::setAlphaMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f32 alpha) {
+  GfGameMount *mount = getMount(GfObjUtil::getMountHandle(handle, attach));
+  if (mount == nullptr) {
+    return;
+  }
+  for (u32 index = 0; index < 10; index++) {
+    GF_OBJ_HANDLE *weapon = mount->unknown18->getCurrentHandles()[index];
+    if (weapon != unknown020) {
+      GfObjAcc acc(weapon);
+      acc.setAlphaNormal(alpha);
+    }
+  }
+}
+
+void GfMountManager::setScaleMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f32 scale) {
+  GfGameMount *mount = getMount(GfObjUtil::getMountHandle(handle, attach));
+  if (mount != nullptr) {
+    mount->setScaleMount(scale);
+  }
+}
 
 } // namespace gf
 

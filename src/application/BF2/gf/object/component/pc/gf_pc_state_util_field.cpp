@@ -279,7 +279,7 @@ bool StateUtilField::isMovableWall(GfComPropertyPc &property, GfPropertyField::W
   }
   if (isWallUpMove(mode) && sensor->unknown25_0) {
     f32 height = __builtin_fmaxf(property.unknown310.unknown3c + 1.3f, 0.0f);
-    return !(sensor->unknown1f0.unknown00.y - property.unknown160.y <= height);
+    return !(sensor->unknown1f0.unknown00.y - property.unknown160.unknown00.y <= height);
   }
   return true;
 }
@@ -326,7 +326,7 @@ bool StateUtilField::isBackMove(GfComPropertyPc &property) {
 
 bool StateUtilField::isInterruptionWater(GfComPropertyPc &property) {
   f32 depth = property.unknown118 - property.unknown2f0;
-  return 0.2f <= property.unknown160.y - depth;
+  return 0.2f <= property.unknown160.unknown00.y - depth;
 }
 
 f32 StateUtilField::calcFallSpeed(GfComPropertyPc &property) {
@@ -347,7 +347,7 @@ bool StateUtilField::isBigLandDistance(GfComBehaviorPc &behavior) {
   if (plugin != nullptr) {
     GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
     const MoveParam *param = property->unknown005();
-    return plugin->calcDistance(property->unknown160) + 0.01f >= param->landBigDist;
+    return plugin->calcDistance(property->unknown160.unknown00) + 0.01f >= param->landBigDist;
   }
 
   return false;
@@ -378,7 +378,7 @@ bool StateUtilField::isFallFromSlideState(GfComPropertyPc &property) {
     return true;
   }
   const SlideParam *param = property.unknown001();
-  return property.unknown160.y - sensor->unknown30.unknown00.y >= param->fallDistance;
+  return property.unknown160.unknown00.y - sensor->unknown30.unknown00.y >= param->fallDistance;
 }
 
 void StateUtilField::setAsmSpeedSlideBrake(GfComPropertyPc &property) { property.unknown08->getComponent<GfComAsm>()->setVariable("V_speed", property.unknownc0 * 60.0f * 60.0f / 1000.0f); }
@@ -459,7 +459,7 @@ void StateUtilField::setChildFrameHeight(GfComponent &component, f32 height) {
 
 mm::Vec3 StateUtilField::calcWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position, const mm::Plane &plane) {
   mm::Vec3 result = position;
-  if (position.y >= property.unknown160.y) {
+  if (position.y >= property.unknown160.unknown00.y) {
     f32 offset = property.unknown310.unknown1c + property.unknown310.unknown4c;
     result = position + plane.normal * offset;
   } else {
@@ -507,7 +507,7 @@ bool StateUtilField::isEnableWallPrepare(GfComPropertyPc &property) {
 }
 
 bool StateUtilField::isWallPreparePosition(GfComPropertyPc &property, const mm::Vec3 &position) {
-  mm::Vec3 diff(property.unknown160.x - position.x, 0.0f, property.unknown160.z - position.z);
+  mm::Vec3 diff(property.unknown160.unknown00.x - position.x, 0.0f, property.unknown160.unknown00.z - position.z);
   f32 lengthSq = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
   const WallAiParam *param = AgentUtilField::getAIParamAdapter(property, PARAM_ID_FIELD_AI_UNKNOWN_5).get<WallAiParam>();
   return lengthSq <= param->prepareRange * param->prepareRange;
@@ -562,7 +562,7 @@ bool StateUtilField::isWallDetach(GfComPropertyPc &property) {
     return false;
   }
   const mm::Plane &plane = sensor->unknown30.unknown10;
-  const mm::Vec3 &position = property.unknown160;
+  const mm::Vec3 &position = property.unknown160.unknown00;
   f32 dot = position.x * plane.normal.x + position.y * plane.normal.y + position.z * plane.normal.z;
   return plane.distance + dot < -property.unknown310.unknown38;
 }
@@ -581,7 +581,7 @@ bool StateUtilField::isWallAdsorption(GfComPropertyPc &property) {
       packet.unknown24 = sensorParam->obstacleSearchLength;
       packet.unknown30 = sensor->unknown290;
       packet.unknown38 = &wall;
-      EnviromentSensor::searchHorizon(property.unknown160, &packet);
+      EnviromentSensor::searchHorizon(property.unknown160.unknown00, &packet);
       if (((packet.unknown34 >> 6) & 1) && wall.unknown60.unknown24_4) {
         property.unknown310.unknown130 = wall.unknown60;
         property.unknown310.unknown10_6 = true;
