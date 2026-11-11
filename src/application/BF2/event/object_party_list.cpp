@@ -11,8 +11,8 @@ struct GF_OBJ_HANDLE;
 
 namespace event {
 
-mm::mtl::FixedVector<gf::GF_OBJ_HANDLE *, ObjectPartyList::MEMBER_COUNT> ObjectPartyList::s_drlist;
-mm::mtl::FixedVector<gf::GF_OBJ_HANDLE *, ObjectPartyList::MEMBER_COUNT> ObjectPartyList::s_bllist;
+mm::mtl::FixedVector<gf::GF_OBJ_HANDLE *, ObjectPartyList::MEMBER_UNKNOWN_3> ObjectPartyList::s_drlist;
+mm::mtl::FixedVector<gf::GF_OBJ_HANDLE *, ObjectPartyList::MEMBER_UNKNOWN_3> ObjectPartyList::s_bllist;
 
 bool ObjectPartyList::isInvalidChara(gf::GF_OBJ_HANDLE *handle) { return handle == gf::INVALID_HANDLE; }
 

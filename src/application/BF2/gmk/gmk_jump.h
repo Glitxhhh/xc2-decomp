@@ -31,7 +31,7 @@ public:
     u16 unknown04; // Inferred role: name radius; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_JUMP;
+  static const GmkType GMK_TYPE = GMK_TYPE_JUMP; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   struct Data {
     mm::Vec3 position;

@@ -81,7 +81,7 @@ public:
     LOD_SWITCH_UNKNOWN_2 = 2, // Role and original enumerator name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_DOOR;
+  static const GmkType GMK_TYPE = GMK_TYPE_DOOR; // Inferred name; shared by every gimmick class for the TGmkList templates.
   static mm::mtl::RTTI m_rtti;
 
   GmkDoor();

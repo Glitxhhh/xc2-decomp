@@ -44,8 +44,8 @@ void GfGmkLocatorAtlas::createBdatInfos() {
   for (int i = 0; i < count; i++) {
     BdatInfo &info = unknown30[i];
     int id = unknown58 + i;
-    info.unknown00 = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "level_name", id, gmk::BDAT_TYPE_STRING));
-    info.unknown08 = Bdat::getValCheck(bdat, "level_priority", id, gmk::BDAT_TYPE_U16);
+    info.unknown00 = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "level_name", id, gmk::BDAT_TYPE_UNKNOWN_7));
+    info.unknown08 = Bdat::getValCheck(bdat, "level_priority", id, gmk::BDAT_TYPE_UNKNOWN_2);
   }
 }
 

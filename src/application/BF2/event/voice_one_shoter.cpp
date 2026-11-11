@@ -20,16 +20,16 @@ void VoiceOneShoter::stop(f32 frame) {
 }
 
 void VoiceOneShoter::pause(bool isPause) {
-  if (isPause == ((unknown08 & FLAG_PAUSE) != 0)) {
+  if (isPause == ((unknown08 & FLAG_UNKNOWN_0) != 0)) {
     return;
   }
   for (u32 i = 0; i < unknown10.size(); i++) {
     fw::SoundManager::get()->pause(unknown10[i], isPause, 0.0f);
   }
   if (isPause) {
-    unknown08 |= FLAG_PAUSE;
+    unknown08 |= FLAG_UNKNOWN_0;
   } else {
-    unknown08 &= ~FLAG_PAUSE;
+    unknown08 &= ~FLAG_UNKNOWN_0;
   }
 }
 

@@ -62,7 +62,7 @@ void VoicePlayer::draw() {
     fw::debug::drawFontColor(mm::Col4(1.0f, 0.5f, 0.5f, 1.0f));
     fw::debug::drawFont(x, 180, "now");
     fw::debug::drawFont(x + 45, 180, mm::mtl::Singleton<Extend>::getPtr()->filename(unknown474.c_str()));
-    if ((unknown08 & FLAG_DELAY) != 0) {
+    if ((unknown08 & FLAG_UNKNOWN_0) != 0) {
       fw::debug::drawFont(x + 230, 180, "delay");
     }
     if (fw::SoundManager::get()->isPreparing(unknown4b8)) {
@@ -123,14 +123,14 @@ f32 VoicePlayer::getTotalFrame() const {
 
 void VoicePlayer::setMultipleMode(bool isMultipleMode) {
   if (isMultipleMode) {
-    unknown08 |= FLAG_MULTIPLE_MODE;
+    unknown08 |= FLAG_UNKNOWN_4;
   } else {
-    unknown08 &= ~FLAG_MULTIPLE_MODE;
+    unknown08 &= ~FLAG_UNKNOWN_4;
   }
 }
 
 void VoicePlayer::preload(f32 frame, const char *path) {
-  while (unknown0c.size() >= static_cast<int>(KEY_COUNT)) {
+  while (unknown0c.size() >= static_cast<int>(KEY_UNKNOWN_8)) {
     unknown0c.erase(unknown0c.begin());
   }
   unknown0c.push_back(Key(frame, path));
@@ -140,8 +140,8 @@ bool VoicePlayer::play(const char *path, f32 delay, IVoiceEvent *event) {
   if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkip()) {
     return false;
   }
-  bool isPause = (unknown08 & FLAG_PAUSE) != 0;
-  if ((unknown08 & FLAG_MULTIPLE_MODE) == 0) {
+  bool isPause = (unknown08 & FLAG_UNKNOWN_3) != 0;
+  if ((unknown08 & FLAG_UNKNOWN_4) == 0) {
     stop(10.0f);
   } else {
     clr();
@@ -153,9 +153,9 @@ bool VoicePlayer::play(const char *path, f32 delay, IVoiceEvent *event) {
       this->unknown474 = unknown428;
       if (delay <= 0.0f) {
         fw::SoundManager::get()->startVoice(unknown4b8);
-        unknown08 &= ~FLAG_DELAY;
+        unknown08 &= ~FLAG_UNKNOWN_0;
       } else {
-        unknown08 |= FLAG_DELAY;
+        unknown08 |= FLAG_UNKNOWN_0;
         this->unknown470 = delay;
       }
     }
@@ -165,11 +165,11 @@ bool VoicePlayer::play(const char *path, f32 delay, IVoiceEvent *event) {
     if (delay <= 0.0f) {
       unknown4b8 = VoiceUtil::playVoice(path, 1.0f, false);
       this->unknown474 = path;
-      unknown08 &= ~FLAG_DELAY;
+      unknown08 &= ~FLAG_UNKNOWN_0;
     } else {
       unknown4b8 = 0;
       this->unknown474 = path;
-      unknown08 |= FLAG_DELAY;
+      unknown08 |= FLAG_UNKNOWN_0;
       this->unknown470 = delay;
     }
     stopWaiting();
@@ -192,11 +192,11 @@ void VoicePlayer::clr() {
   unknown474 = "";
   unknown4c0 = nullptr;
   unknown470 = 0.0f;
-  unknown08 &= ~(FLAG_DELAY | FLAG_STARTED | FLAG_START_FAILED);
+  unknown08 &= ~(FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1 | FLAG_UNKNOWN_2);
 }
 
 void VoicePlayer::pause(bool isPause) {
-  if (isPause == ((unknown08 & FLAG_PAUSE) != 0)) {
+  if (isPause == ((unknown08 & FLAG_UNKNOWN_3) != 0)) {
     return;
   }
   for (size_t i = 0; i < unknown2d0.size(); i++) {
@@ -212,9 +212,9 @@ void VoicePlayer::pause(bool isPause) {
     }
   }
   if (isPause) {
-    unknown08 |= FLAG_PAUSE;
+    unknown08 |= FLAG_UNKNOWN_3;
   } else {
-    unknown08 &= ~FLAG_PAUSE;
+    unknown08 &= ~FLAG_UNKNOWN_3;
   }
 }
 

@@ -42,7 +42,7 @@ void StatusManager::log(const char *tag, const char *format, ...) {
 }
 
 const char *StatusManager::math2str(u32 math) const {
-  if (math == MATH_SET) {
+  if (math == MATH_EQUAL) {
     return "=";
   }
   if (math == MATH_ADD) {
@@ -53,7 +53,7 @@ const char *StatusManager::math2str(u32 math) const {
 
 void StatusManager::setGameFlag8(u32 flag, int value, u32 math) const {
   switch (math) {
-  case MATH_SET:
+  case MATH_EQUAL:
     gf::GfGameFlag::setLocal(8, flag, mm::clamp(value, 0, 255));
     break;
   case MATH_ADD:
@@ -64,7 +64,7 @@ void StatusManager::setGameFlag8(u32 flag, int value, u32 math) const {
 
 void StatusManager::setGameFlag4(u32 flag, int value, u32 math) const {
   switch (math) {
-  case MATH_SET:
+  case MATH_EQUAL:
     gf::GfGameFlag::setLocal(4, flag, mm::clamp(value, 0, 15));
     break;
   case MATH_ADD:
@@ -77,7 +77,7 @@ void StatusManager::setGameFlag1(u32 flag, int value) const { gf::GfGameFlag::se
 
 void StatusManager::setGameFlag2(u32 flag, int value, u32 math) const {
   switch (math) {
-  case MATH_SET:
+  case MATH_EQUAL:
     gf::GfGameFlag::setLocal(2, flag, mm::clamp(value, 0, 3));
     break;
   case MATH_ADD:
@@ -97,7 +97,7 @@ void StatusManager::setExtDisp(u32 chara, const char *name, bool isDisp) const {
   if (object == nullptr) {
     object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_ENEMY, chara);
   }
-  if (object != nullptr && object->getType() == OBJTYPE_CHARA) {
+  if (object != nullptr && object->getType() == OBJTYPE_UNKNOWN_2) {
     object->getCharaObj()->setExtDisp(name, isDisp);
   }
 }
@@ -107,7 +107,7 @@ void StatusManager::setExtDispWeapon(u32 chara, const char *name, bool isDisp) c
   if (object == nullptr) {
     object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_BLADE, chara);
   }
-  if (object != nullptr && object->getType() == OBJTYPE_CHARA) {
+  if (object != nullptr && object->getType() == OBJTYPE_UNKNOWN_2) {
     object->getCharaObj()->setExtDispWeapon(name, isDisp);
   }
 }
@@ -123,7 +123,7 @@ void StatusManager::setExtParam(u32 chara, const char *name, f32 value) const {
   if (object == nullptr) {
     object = mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_ENEMY, chara);
   }
-  if (object != nullptr && object->getType() == OBJTYPE_CHARA) {
+  if (object != nullptr && object->getType() == OBJTYPE_UNKNOWN_2) {
     object->getCharaObj()->setExtParam(name, value);
   }
 }
@@ -142,10 +142,10 @@ void StatusManager::setHomuriFlag(int flag) {
 
 void StatusManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT:
+  case MSG_TYPE_UNKNOWN_4:
     init();
     break;
-  case MSG_TYPE_CLEAR:
+  case MSG_TYPE_UNKNOWN_12:
     clear();
     break;
   default:

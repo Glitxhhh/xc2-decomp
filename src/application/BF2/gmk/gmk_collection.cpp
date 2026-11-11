@@ -31,14 +31,14 @@ template bool TGmkList<GmkCollection, GmkCollection::BdatInfo, 1413696579u, 5u, 
 
 GmkCollection::GmkCollection() : unknown48(gf::INVALID_HANDLE), unknown50(0), unknown54(0.0f), unknown58(nullptr), unknown68(0.0f), unknown6c(true) {}
 
-constexpr int WILDCARD_COLLECTION_POP_DIST_ROW = 1;
+constexpr int WILDCARD_UNKNOWN_1 = 1; // Inferred role: wildcard collection pop dist row; original name unknown.
 
 void GmkCollection::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown08.unknown08 = bdat.getValCheck("POP_TIME", id, BDAT_TYPE_U32);
-  unknown18.unknown08 = bdat.getValCheck("popWeather", id, BDAT_TYPE_U8);
-  unknown00 = bdat.getValCheck("nameRadius", id, BDAT_TYPE_U16);
-  unknown02 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
-  f32 popDist = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_COLLECTION_POP_DIST_ROW, BDAT_TYPE_F32).valueF32;
+  unknown08.unknown08 = bdat.getValCheck("POP_TIME", id, BDAT_TYPE_UNKNOWN_3);
+  unknown18.unknown08 = bdat.getValCheck("popWeather", id, BDAT_TYPE_UNKNOWN_1);
+  unknown00 = bdat.getValCheck("nameRadius", id, BDAT_TYPE_UNKNOWN_2);
+  unknown02 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
+  f32 popDist = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_UNKNOWN_1, BDAT_TYPE_UNKNOWN_8).valueF32;
   unknown28.unknown00 = popDist * popDist;
 }
 
@@ -68,7 +68,7 @@ bool GmkCollectionList::BdatInfo::create() {
     unknown00 = -1;
     return false;
   }
-  unknown04 = Bdat::getValCheck(mapList, "m_repoptime", unknown00, BDAT_TYPE_U8);
+  unknown04 = Bdat::getValCheck(mapList, "m_repoptime", unknown00, BDAT_TYPE_UNKNOWN_1);
   return true;
 }
 
@@ -198,7 +198,7 @@ void GmkCollection::create(const CreateInfo &info) {
     isTargetable = gf::GfGameFlag::getLocal(1, getGameFlagId()) == 0;
   }
   setTargetable(isTargetable);
-  f32 popDist = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_COLLECTION_POP_DIST_ROW, BDAT_TYPE_F32).valueF32;
+  f32 popDist = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_UNKNOWN_1, BDAT_TYPE_UNKNOWN_8).valueF32;
   unknown54 = popDist * popDist;
 }
 

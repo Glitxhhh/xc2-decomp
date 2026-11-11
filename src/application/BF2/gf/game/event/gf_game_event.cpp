@@ -51,10 +51,10 @@ constexpr size_t EVENT_MEM_SIZE = 0x2300000;
 
 // Inferred table: gimmick type of each event display type; original name unknown.
 const u8 unknown001[EVTDISP_NUM] = {
-    gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,  gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,
-    gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,    gmk::GMK_TYPE_INVALID,  gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID,
-    gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_INVALID, gmk::GMK_TYPE_COLLECTION, gmk::GMK_TYPE_SALVAGE,    gmk::GMK_TYPE_PRECIOUS, gmk::GMK_TYPE_TBOX,    gmk::GMK_TYPE_EFFECT,
-    gmk::GMK_TYPE_SE,      gmk::GMK_TYPE_JUMP,    gmk::GMK_TYPE_WARP,       gmk::GMK_TYPE_DMG_EFFECT, gmk::GMK_TYPE_DMG_SE,
+    gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59,
+    gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59,
+    gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_UNKNOWN_59, gmk::GMK_TYPE_COLLECTION, gmk::GMK_TYPE_SALVAGE,    gmk::GMK_TYPE_PRECIOUS,   gmk::GMK_TYPE_TBOX,       gmk::GMK_TYPE_EFFECT,
+    gmk::GMK_TYPE_SE,         gmk::GMK_TYPE_JUMP,       gmk::GMK_TYPE_WARP,       gmk::GMK_TYPE_DMG_EFFECT, gmk::GMK_TYPE_DMG_SE,
 };
 
 // Inferred role: cutscene sequence category ("CS " in the event category names); original name unknown.
@@ -358,7 +358,7 @@ void GfGameEvent::applySetDisp(EVTDISP type) {
   }
   if (type >= EVTDISP_COLLECTION) {
     gmk::GmkType gmkType = static_cast<gmk::GmkType>(unknown001[type]);
-    if (gmkType != gmk::GMK_TYPE_INVALID) {
+    if (gmkType != gmk::GMK_TYPE_UNKNOWN_59) {
       GfGameUtil::setDispByGmkType(gmkType, isDisp(type));
     }
   } else {

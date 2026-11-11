@@ -132,13 +132,13 @@ void GfFieldCollect::seqDo(f32) {
     u8 *collectionBdat = collection->getBindedBdatFp();
     info.unknown28 = collectionBdat;
     info.unknown30 = collection->unknown20.unknown18;
-    info.unknown20 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTime", info.unknown30, gmk::BDAT_TYPE_F32));
-    info.unknown24 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTimeRand", info.unknown30, gmk::BDAT_TYPE_F32));
+    info.unknown20 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTime", info.unknown30, gmk::BDAT_TYPE_UNKNOWN_8));
+    info.unknown24 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTimeRand", info.unknown30, gmk::BDAT_TYPE_UNKNOWN_8));
   }
   createDropitemEmitter(info);
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA);
-  f32 waitTime = Bdat::getValCheck(bdat, 0, 5, gmk::BDAT_TYPE_F32).valueF32;
-  f32 distance = Bdat::getValCheck(bdat, 0, 6, gmk::BDAT_TYPE_F32).valueF32;
+  f32 waitTime = Bdat::getValCheck(bdat, 0, 5, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+  f32 distance = Bdat::getValCheck(bdat, 0, 6, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   for (u32 i = 0; i < unknown1d0.size(); i++) {
     info.unknown1c += waitTime;
     info.unknown18 = distance * (i + 1);

@@ -56,10 +56,10 @@ void VolumeManager::update() {
 
 void VolumeManager::render() {
   u32 dispFlags = this->unknown14;
-  if ((dispFlags & DISP_FLAG_DISP) == 0) {
+  if ((dispFlags & DISP_FLAG_UNKNOWN_0) == 0) {
     return;
   }
-  s32 width = (dispFlags & DISP_FLAG_DETAIL) != 0 ? 820 : 380;
+  s32 width = (dispFlags & DISP_FLAG_UNKNOWN_1) != 0 ? 820 : 380;
   s32 x = ml::DevGraph::getRootWidth() - width;
   s32 left = x - 10;
   s32 height = ml::DevGraph::getRootHeight();
@@ -75,7 +75,7 @@ void VolumeManager::render() {
   fw::debug::drawFont(posX + 20, height - 100, "EVTBGM");
   fw::debug::drawFont(posX, barY, "%.2f", gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(1)));
   posX += 60;
-  if ((dispFlags & DISP_FLAG_DETAIL) != 0) {
+  if ((dispFlags & DISP_FLAG_UNKNOWN_1) != 0) {
     fw::debug::drawSquare2D(mm::Rect<s32>(posX + 10, barY, 6, static_cast<s32>(gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(2)) * -30.0f)), mm::Col4(1.0f, 0.5f, 0.5f, 1.0f));
     fw::debug::drawFont(posX + 20, height - 105, "VOI");
     fw::debug::drawFont(posX, barY, "%.2f", gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(2)));
@@ -109,7 +109,7 @@ void VolumeManager::render() {
   fw::debug::drawFont(posX + 20, height - 105, "EVTCS");
   fw::debug::drawFont(posX, barY, "%.2f", gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(9)));
   posX += 60;
-  if ((dispFlags & DISP_FLAG_DETAIL) != 0) {
+  if ((dispFlags & DISP_FLAG_UNKNOWN_1) != 0) {
     fw::debug::drawSquare2D(mm::Rect<s32>(posX + 10, barY, 6, static_cast<s32>(gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(11)) * -30.0f)), mm::Col4(1.0f, 0.5f, 0.5f, 1.0f));
     fw::debug::drawFont(posX + 20, height - 105, "EVTVO");
     fw::debug::drawFont(posX, barY, "%.2f", gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(11)));
@@ -118,7 +118,7 @@ void VolumeManager::render() {
   fw::debug::drawSquare2D(mm::Rect<s32>(posX + 10, barY, 6, static_cast<s32>(gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(12)) * -30.0f)), mm::Col4(1.0f, 0.5f, 0.5f, 1.0f));
   fw::debug::drawFont(posX + 20, height - 105, "EVTSE");
   fw::debug::drawFont(posX, barY, "%.2f", gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(12)));
-  if ((dispFlags & DISP_FLAG_DETAIL) != 0) {
+  if ((dispFlags & DISP_FLAG_UNKNOWN_1) != 0) {
     posX += 60;
     fw::debug::drawSquare2D(mm::Rect<s32>(posX + 10, barY, 6, static_cast<s32>(gf::GfGameEvent::getCategoryVolume(static_cast<fw::SoundCategory>(13)) * -30.0f)), mm::Col4(1.0f, 0.5f, 0.5f, 1.0f));
     fw::debug::drawFont(posX + 20, height - 105, "CHRSE");
@@ -139,7 +139,7 @@ void VolumeManager::render() {
   unknown50.draw();
 }
 
-void VolumeManager::setSeamlessVolume(bool isEnable, f32 volume, u32 target, const mm::mtl::FixedArray<f32, VolumeSeamless::RESET_VOLUME_COUNT> *resetVolumes) {
+void VolumeManager::setSeamlessVolume(bool isEnable, f32 volume, u32 target, const mm::mtl::FixedArray<f32, VolumeSeamless::RESET_VOLUME_UNKNOWN_13> *resetVolumes) {
   unknown50.set(isEnable, volume, target, resetVolumes);
 }
 
@@ -165,26 +165,26 @@ void VolumeManager::startSkipVolume() { unknowna0.start(); }
 
 void VolumeManager::endSkipVolume() { unknowna0.end(); }
 
-void VolumeManager::setDisp(bool isDisp) { setDispFlag(DISP_FLAG_DISP, isDisp); }
+void VolumeManager::setDisp(bool isDisp) { setDispFlag(DISP_FLAG_UNKNOWN_0, isDisp); }
 
-bool VolumeManager::isDisp() const { return (unknown14 & DISP_FLAG_DISP) != 0; }
+bool VolumeManager::isDisp() const { return (unknown14 & DISP_FLAG_UNKNOWN_0) != 0; }
 
-void VolumeManager::setDispDetail(bool isDisp) { setDispFlag(DISP_FLAG_DETAIL, isDisp); }
+void VolumeManager::setDispDetail(bool isDisp) { setDispFlag(DISP_FLAG_UNKNOWN_1, isDisp); }
 
-bool VolumeManager::isDispDetail() const { return (unknown14 & DISP_FLAG_DETAIL) != 0; }
+bool VolumeManager::isDispDetail() const { return (unknown14 & DISP_FLAG_UNKNOWN_1) != 0; }
 
 void VolumeManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT_BEGIN:
+  case MSG_TYPE_UNKNOWN_1:
     init();
     break;
-  case MSG_TYPE_UPDATE_SEQUENCE:
+  case MSG_TYPE_UNKNOWN_2:
     clear();
     break;
-  case MSG_TYPE_UPDATE:
+  case MSG_TYPE_UNKNOWN_14:
     update();
     break;
-  case MSG_TYPE_RENDER_POST:
+  case MSG_TYPE_UNKNOWN_17:
     render();
     break;
   default:

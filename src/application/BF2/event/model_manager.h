@@ -10,7 +10,7 @@ class ModelObj;
 
 class ModelManager : public IManager, public mm::mtl::Singleton<ModelManager> {
 public:
-  static constexpr u32 MODEL_COUNT = 1024;
+  static constexpr u32 MODEL_UNKNOWN_1024 = 1024; // Inferred role: model count; original name unknown.
 
   ModelManager();
   virtual ~ModelManager() {}
@@ -24,7 +24,7 @@ public:
   virtual void OnEventProc(MSG_TYPE type);
 
 private:
-  mm::mtl::FixedVector<ModelObj *, MODEL_COUNT> unknown10; // Inferred role: models; original member name unknown.
+  mm::mtl::FixedVector<ModelObj *, MODEL_UNKNOWN_1024> unknown10; // Inferred role: models; original member name unknown.
 };
 
 static_assert(sizeof(ModelManager) == 0x2018, "");

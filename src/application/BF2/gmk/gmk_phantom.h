@@ -68,14 +68,14 @@ public:
 class GmkPhantom : public mm::mtl::IntrusiveListNode<GmkPhantom>, public fw::ColiUserData {
 public:
   enum ShapeType {
-    SHAPE_TYPE_NONE = 0,
-    SHAPE_TYPE_SPHERE = 1,
-    SHAPE_TYPE_CAPSULE = 2,
-    SHAPE_TYPE_BOX = 3,
+    SHAPE_TYPE_UNKNOWN_0 = 0, // Inferred role: none; original name unknown.
+    SHAPE_TYPE_UNKNOWN_1 = 1, // Inferred role: sphere; original name unknown.
+    SHAPE_TYPE_UNKNOWN_2 = 2, // Inferred role: capsule; original name unknown.
+    SHAPE_TYPE_UNKNOWN_3 = 3, // Inferred role: box; original name unknown.
   };
 
   struct CreateInfo {
-    CreateInfo() : unknown00(SHAPE_TYPE_NONE), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown40(nullptr), unknown48(false) {
+    CreateInfo() : unknown00(SHAPE_TYPE_UNKNOWN_0), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown40(nullptr), unknown48(false) {
       for (u32 i = 0; i < 3; i++) {
         unknown30[i] = 0.0f;
       }
@@ -119,7 +119,7 @@ static_assert(sizeof(GmkPhantom) == 0x90, "");
 class GmkPhantomSimple {
 public:
   struct CreateInfo {
-    CreateInfo() : unknown00(GmkPhantom::SHAPE_TYPE_NONE), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f) {
+    CreateInfo() : unknown00(GmkPhantom::SHAPE_TYPE_UNKNOWN_0), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f) {
       for (u32 i = 0; i < 3; i++) {
         unknown30[i] = 0.0f;
       }

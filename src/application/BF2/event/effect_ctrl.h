@@ -14,7 +14,7 @@ enum ATTACH_TYPE : int;
 
 class EffectCtrl {
 public:
-  static constexpr u32 HANDLE_COUNT = 64;
+  static constexpr u32 HANDLE_UNKNOWN_64 = 64; // Inferred role: handle count; original name unknown.
 
   EffectCtrl();
   virtual ~EffectCtrl() {}
@@ -70,10 +70,10 @@ private:
     unknown204 = 0;
   }
 
-  u32 unknown08;                                     // Inferred role: handle; original member name unknown.
-  mm::mtl::FixedVector<u32, HANDLE_COUNT> unknown10; // Inferred role: handles; original member name unknown.
-  mm::mtl::FixStr<64> unknown118;                    // Inferred role: name; original member name unknown.
-  u32 unknown15c;                                    // Inferred role: attribute; original member name unknown.
+  u32 unknown08;                                          // Inferred role: handle; original member name unknown.
+  mm::mtl::FixedVector<u32, HANDLE_UNKNOWN_64> unknown10; // Inferred role: handles; original member name unknown.
+  mm::mtl::FixStr<64> unknown118;                         // Inferred role: name; original member name unknown.
+  u32 unknown15c;                                         // Inferred role: attribute; original member name unknown.
   mm::Vec3 m_pos;
   mm::Vec3 m_rot;
   mm::Vec3 m_scale;

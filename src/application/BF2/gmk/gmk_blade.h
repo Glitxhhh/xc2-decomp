@@ -40,7 +40,7 @@ public:
     DistHvCond unknown28;       // Inferred role: depop dist; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_BLADE;
+  static const GmkType GMK_TYPE = GMK_TYPE_BLADE; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkBlade() : unknown48(gf::INVALID_HANDLE), unknown50(0), unknown54(false), unknown55(true) {}
   ~GmkBlade() override { dispose(); }

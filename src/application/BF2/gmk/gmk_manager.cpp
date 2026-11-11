@@ -116,9 +116,10 @@ struct Col4;
 
 namespace gmk {
 
-const ml::FILE_PRIO GMK_SCRIPT_FILE_PRIO = static_cast<ml::FILE_PRIO>(7);
+const ml::FILE_PRIO FILE_PRIO_UNKNOWN_7 = static_cast<ml::FILE_PRIO>(7); // Inferred role: gmk script file prio; original name unknown.
 
-static const char *const s_gmkFileNames[] = {
+// Inferred role: file name (BDAT member prefix) of each gimmick type; original name unknown.
+static const char *const unknown014[] = {
     "enemy",       "enemy",    "enemy", "npc",        "npc",        "npc",        "mapObj",     "mapObj", "mapObj", "tbox",      "event",     "enemy",         "fieldLock", "effect",     "effect",
     "se",          "se",       "se",    "mob",        "mob",        "mob",        "landmark",   nullptr,  nullptr,  "formPc",    "formPc",    "formPcEv",      "formPcEv",  "collection", "areaBgm",
     "areaWeather", "salvage",  nullptr, "mapGimmick", "precious",   "grave",      "kizunaTalk", "jump",   "warp",   "squad",     "squad",     "door",          "elevator",  "elevator",   "mapJump",
@@ -231,7 +232,7 @@ GmkManager::GmkManager() : unknown58(nullptr), unknown190(nullptr), unknown198(u
 GmkManager::~GmkManager() { dispose(); }
 
 const char *GmkManager::getFilenameByType(int gmkSetId, GmkType type) const {
-  const char *column = s_gmkFileNames[type];
+  const char *column = unknown014[type];
   if (column == nullptr) {
     return nullptr;
   }
@@ -239,17 +240,17 @@ const char *GmkManager::getFilenameByType(int gmkSetId, GmkType type) const {
   if (Bdat::getMember(bdat, column) == nullptr) {
     return nullptr;
   }
-  return reinterpret_cast<const char *>(Bdat::getValCheck(bdat, column, gmkSetId, BDAT_TYPE_STRING));
+  return reinterpret_cast<const char *>(Bdat::getValCheck(bdat, column, gmkSetId, BDAT_TYPE_UNKNOWN_7));
 }
 
 const char *GmkManager::getSheetnameByType(int gmkSetId, GmkType type) const {
   mm::mtl::FixStr<256> column;
-  column.format("%s_bdat", s_gmkFileNames[type]);
+  column.format("%s_bdat", unknown014[type]);
   u8 *bdat = unknown190;
   if (Bdat::getMember(bdat, column.c_str()) == nullptr) {
     return nullptr;
   }
-  return reinterpret_cast<const char *>(Bdat::getValCheck(bdat, column.c_str(), gmkSetId, BDAT_TYPE_STRING));
+  return reinterpret_cast<const char *>(Bdat::getValCheck(bdat, column.c_str(), gmkSetId, BDAT_TYPE_UNKNOWN_7));
 }
 
 int GmkManager::getMapBdatId(int gmkSetId) const {
@@ -259,7 +260,7 @@ int GmkManager::getMapBdatId(int gmkSetId) const {
   if (gmkSetId < top || gmkSetId >= top + count) {
     return -1;
   }
-  return static_cast<u16>(Bdat::getValCheck(bdat, "mapId", gmkSetId, BDAT_TYPE_U16));
+  return static_cast<u16>(Bdat::getValCheck(bdat, "mapId", gmkSetId, BDAT_TYPE_UNKNOWN_2));
 }
 
 const AGmkBase *GmkManager::findFirstGmkInstByBdatId(GmkType type, int bdatId) const {
@@ -553,7 +554,7 @@ void GmkSetOfSalvageChildren::createGmkLists(int gmkSetId) {
   if (Bdat::getMember(bdat, "salvage") == nullptr) {
     return;
   }
-  const char *fileName = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "salvage", gmkSetId, BDAT_TYPE_STRING));
+  const char *fileName = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "salvage", gmkSetId, BDAT_TYPE_UNKNOWN_7));
   if (fileName == nullptr || fileName[0] == '\0') {
     return;
   }
@@ -652,7 +653,7 @@ bool GmkSet::isGmkInstValidView(const AGmkBase &gmk) {
 bool GmkSet::createMapBdat(int map) {
   unknown40.dispose();
   GmkBdat::CreateInfo info;
-  const char *name = reinterpret_cast<const char *>(Bdat::getValCheck(GmkManager::get()->unknown190, "bdat", map, BDAT_TYPE_STRING));
+  const char *name = reinterpret_cast<const char *>(Bdat::getValCheck(GmkManager::get()->unknown190, "bdat", map, BDAT_TYPE_UNKNOWN_7));
   if (name == nullptr || name[0] == '\0') {
     return false;
   }
@@ -677,10 +678,10 @@ void GmkSet::createGmkLists(int gmkSetId) {
   unknown1b8[GMK_TYPE_ROUTED_ENEMY_POINT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutedEnemyPointList(1);
   unknown1b8[GMK_TYPE_NPC] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkNpcList(0);
   unknown1b8[GMK_TYPE_ROUTED_NPC] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutedNpcList(0);
-  unknown1b8[GMK_TYPE_NPC_ROUTE_POINT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
+  unknown1b8[GMK_TYPE_UNKNOWN_5] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
   unknown1b8[GMK_TYPE_MAP_OBJ] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkMapObjList(8);
   unknown1b8[GMK_TYPE_ROUTED_MAP_OBJ] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutedMapObjList(4);
-  unknown1b8[GMK_TYPE_MAP_OBJ_ROUTE_POINT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
+  unknown1b8[GMK_TYPE_UNKNOWN_8] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
   unknown1b8[GMK_TYPE_TBOX] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkTboxList(8);
   unknown1b8[GMK_TYPE_EVENT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkEventList(8);
   unknown1b8[GMK_TYPE_BATTLE_LOCK] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkBattleLockList(8);
@@ -692,14 +693,14 @@ void GmkSet::createGmkLists(int gmkSetId) {
   unknown1b8[GMK_TYPE_SE_LINE_POINT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkSeLinePointList(1);
   unknown1b8[GMK_TYPE_MOB] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkMobList(8);
   unknown1b8[GMK_TYPE_ROUTED_MOB] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutedMobList(4);
-  unknown1b8[GMK_TYPE_MOB_ROUTE_POINT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
+  unknown1b8[GMK_TYPE_UNKNOWN_20] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
   unknown1b8[GMK_TYPE_LANDMARK] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkLandmarkList(8);
   unknown1b8[GMK_TYPE_ROUTE] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRouteList(1);
   unknown1b8[GMK_TYPE_ROUTE_POINT] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkRoutePointList(1);
   unknown1b8[GMK_TYPE_FORM_PC] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkFormPcList(1);
   unknown1b8[GMK_TYPE_FORM_PCNPC] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkFormPcnpcList(1);
-  unknown1b8[GMK_TYPE_FORM_PC_EV] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkFormPcEvList(1);
-  unknown1b8[GMK_TYPE_FORM_PCNPC_EV] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkFormPcnpcEvList(1);
+  unknown1b8[GMK_TYPE_UNKNOWN_26] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkFormPcEvList(1);
+  unknown1b8[GMK_TYPE_UNKNOWN_27] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkFormPcnpcEvList(1);
   unknown1b8[GMK_TYPE_COLLECTION] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkCollectionList(1);
   unknown1b8[GMK_TYPE_AREA_BGM] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkAreaBgmList(1);
   unknown1b8[GMK_TYPE_AREA_WEATHER] = new (fw::FrameworkMemory::getMem(5), nullptr, 0, 4, false) GmkAreaWeatherList(1);
@@ -1110,7 +1111,7 @@ AGmkBase *getBindedGmkInst(gf::GF_OBJ_HANDLE *handle) {
 GmkType getBindedGmkInstType(gf::GF_OBJ_HANDLE *handle) {
   AGmkBase *gmk = getBindedGmkInst(handle);
   if (gmk == nullptr) {
-    return GMK_TYPE_INVALID;
+    return GMK_TYPE_UNKNOWN_59;
   }
   return gmk->getGmkType();
 }
@@ -1217,13 +1218,13 @@ u32 getBindedFsId(const AGmkBase &gmk) {
   if (type == GMK_TYPE_TBOX) {
     const GmkTbox &tbox = static_cast<const GmkTbox &>(gmk);
     const char *column = "FSID";
-    if (tbox.getBdatInfo()->unknown02 && tbox.getProgress() == GmkTbox::PROGRESS_CLOSED) {
+    if (tbox.getBdatInfo()->unknown02 && tbox.getProgress() == GmkTbox::PROGRESS_UNKNOWN_0) {
       column = "FSID2";
     }
-    return Bdat::getValCheck(gmk.getBindedBdatFp(), column, gmk.unknown20.unknown18, BDAT_TYPE_U16);
+    return Bdat::getValCheck(gmk.getBindedBdatFp(), column, gmk.unknown20.unknown18, BDAT_TYPE_UNKNOWN_2);
   }
   if (type == GMK_TYPE_JUMP || type == GMK_TYPE_WARP || type == GMK_TYPE_MAP_GIMMICK) {
-    return Bdat::getValCheck(gmk.getBindedBdatFp(), "FSID", gmk.unknown20.unknown18, BDAT_TYPE_U16);
+    return Bdat::getValCheck(gmk.getBindedBdatFp(), "FSID", gmk.unknown20.unknown18, BDAT_TYPE_UNKNOWN_2);
   }
   return 0;
 }
@@ -1250,7 +1251,7 @@ void createMenuObj(gf::GF_OBJ_HANDLE *handle) {
   }
 }
 
-u32 GmkTbox::getProgress() const { return gf::GfGameFlag::getLocal(2, unknown20.unknown18 + GAME_FLAG_PROGRESS); }
+u32 GmkTbox::getProgress() const { return gf::GfGameFlag::getLocal(2, unknown20.unknown18 + GAME_FLAG_UNKNOWN_31765); }
 
 u32 getBdatIdOfQuestTargetIcon(gf::GF_OBJ_HANDLE *handle, u16 iconType) {
   if (handle == gf::INVALID_HANDLE) {
@@ -1268,15 +1269,15 @@ u32 getBdatIdOfQuestTargetIcon(u32 iconType) {
   u8 *bdat = gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA);
   switch (iconType) {
   case 1:
-    return Bdat::getValCheck(bdat, 1, 0xf, BDAT_TYPE_U16).valueU16;
+    return Bdat::getValCheck(bdat, 1, 0xf, BDAT_TYPE_UNKNOWN_2).valueU16;
   case 2:
-    return Bdat::getValCheck(bdat, 1, 0x10, BDAT_TYPE_U16).valueU16;
+    return Bdat::getValCheck(bdat, 1, 0x10, BDAT_TYPE_UNKNOWN_2).valueU16;
   case 3:
-    return Bdat::getValCheck(bdat, 1, 0x11, BDAT_TYPE_U16).valueU16;
+    return Bdat::getValCheck(bdat, 1, 0x11, BDAT_TYPE_UNKNOWN_2).valueU16;
   case 4:
-    return Bdat::getValCheck(bdat, 1, 0x12, BDAT_TYPE_U16).valueU16;
+    return Bdat::getValCheck(bdat, 1, 0x12, BDAT_TYPE_UNKNOWN_2).valueU16;
   case 6:
-    return Bdat::getValCheck(bdat, 1, 0x13, BDAT_TYPE_U16).valueU16;
+    return Bdat::getValCheck(bdat, 1, 0x13, BDAT_TYPE_UNKNOWN_2).valueU16;
   default:
     return 0xffffffff;
   }
@@ -1376,7 +1377,7 @@ bool canObtainPreciousItem() { return gf::GfGameManager::isEnableGetFieldPreciou
 bool canCreateBattleLock() { return gf::GfGameManager::isEnableCreateBattleLock(); }
 
 bool canDisposeBattleLock() {
-  if (gf::GfDataUtil::getScenarioFlag() == SCENARIO_FLAG_KEEP_BATTLE_LOCK_IN_BATTLE) {
+  if (gf::GfDataUtil::getScenarioFlag() == SCENARIO_FLAG_UNKNOWN_7039) {
     return !gf::GfGameManager::isBattle();
   }
   return true;
@@ -1450,7 +1451,7 @@ void GmkScript::beginScript() {
     return;
   }
   endScript();
-  fw::ScriptManager::get()->loadScript(gf::SCRIPT_SLOT_FIELD, unknown08.unknown00.c_str(), GMK_SCRIPT_FILE_PRIO);
+  fw::ScriptManager::get()->loadScript(gf::SCRIPT_SLOT_FIELD, unknown08.unknown00.c_str(), FILE_PRIO_UNKNOWN_7);
   vmSetStartId(unknown08.unknown24);
   fw::ScriptManager::get()->unknown20[gf::SCRIPT_SLOT_FIELD].start();
   vmBeginScript();
@@ -1472,7 +1473,7 @@ void GmkScript::update(f32 deltaTime) {
 
 void GmkPhantomSimple::CreateInfo::validateByAGmkBase(const AGmkBase &gmk) {
   u32 shapeType = gmk.unknown08.unknown10->unknown0c;
-  if (shapeType == SHAPE_TYPE_POINT) {
+  if (shapeType == SHAPE_TYPE_UNKNOWN_1) {
     // Inferred: a point shape has no phantom; the game only reads the list create info, likely for a stripped debug message.
     gmk.unknown08.unknown00->getCreateInfo();
     return;
@@ -1481,13 +1482,13 @@ void GmkPhantomSimple::CreateInfo::validateByAGmkBase(const AGmkBase &gmk) {
   unknown10 = gmk.unknown08.unknown08->unknown00;
   unknown20 = gmk.unknown08.unknown08->unknown10;
   switch (unknown00) {
-  case GmkPhantom::SHAPE_TYPE_SPHERE:
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_1:
     unknown30[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
     if (unknown30[0] < 0.0f) {
       unknown30[0] = -unknown30[0];
     }
     break;
-  case GmkPhantom::SHAPE_TYPE_CAPSULE:
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_2:
     unknown30[0] = gmk.unknown08.unknown08->unknown20.y;
     unknown30[1] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
     for (u32 i = 0; i < 2; i++) {
@@ -1496,7 +1497,7 @@ void GmkPhantomSimple::CreateInfo::validateByAGmkBase(const AGmkBase &gmk) {
       }
     }
     break;
-  case GmkPhantom::SHAPE_TYPE_BOX:
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_3:
     unknown30[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
     unknown30[1] = gmk.unknown08.unknown08->unknown20.y * 0.5f;
     unknown30[2] = gmk.unknown08.unknown08->unknown20.z * 0.5f;
@@ -1524,20 +1525,20 @@ void GmkPhantomSimple::create(const CreateInfo &info) {
   coliInfo.unknown04 = fw::COLI_TYPE_STATIC;
   coliInfo.unknown14 = 0x100000;
   switch (info.unknown00) {
-  case GmkPhantom::SHAPE_TYPE_SPHERE: {
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_1: {
     fw::unknown131 shape(info.unknown30[0]);
     coliInfo.unknown80 = &shape;
     unknown50 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
   }
-  case GmkPhantom::SHAPE_TYPE_CAPSULE: {
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_2: {
     fw::unknown132 shape(info.unknown30[0], info.unknown30[1]);
     shape.unknown0c = false;
     coliInfo.unknown80 = &shape;
     unknown50 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
   }
-  case GmkPhantom::SHAPE_TYPE_BOX: {
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_3: {
     fw::unknown133 shape(mm::Vec3(info.unknown30[0], info.unknown30[1], info.unknown30[2]));
     shape.unknown10.unknown10 = false;
     coliInfo.unknown80 = &shape;
@@ -1580,20 +1581,20 @@ void GmkPhantom::create(const CreateInfo &info) {
   coliInfo.unknown14 = 0x100000;
   coliInfo.unknown20 = this;
   switch (info.unknown00) {
-  case SHAPE_TYPE_SPHERE: {
+  case SHAPE_TYPE_UNKNOWN_1: {
     fw::unknown131 shape(info.unknown30[0]);
     coliInfo.unknown80 = &shape;
     unknown78 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
   }
-  case SHAPE_TYPE_CAPSULE: {
+  case SHAPE_TYPE_UNKNOWN_2: {
     fw::unknown132 shape(info.unknown30[0], info.unknown30[1]);
     shape.unknown0c = false;
     coliInfo.unknown80 = &shape;
     unknown78 = fw::ColiObject::createColiPhantom(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
   }
-  case SHAPE_TYPE_BOX: {
+  case SHAPE_TYPE_UNKNOWN_3: {
     fw::unknown133 shape(mm::Vec3(info.unknown30[0], info.unknown30[1], info.unknown30[2]));
     shape.unknown10.unknown10 = false;
     coliInfo.unknown80 = &shape;
@@ -1703,8 +1704,8 @@ GmkPhantomManager::~GmkPhantomManager() {}
 namespace gmk {
 
 ScenarioFlagCond::ScenarioFlagCond(const CBdatWrapper &bdat, int id, const AGmkBase &gmk) {
-  u16 scenarioFlagMin = bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_U16);
-  u16 scenarioFlagMax = bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_U16);
+  u16 scenarioFlagMin = bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2);
+  u16 scenarioFlagMax = bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2);
   if (scenarioFlagMax >= scenarioFlagMin) {
     unknown00 = scenarioFlagMin;
     unknown02 = scenarioFlagMax;
@@ -1715,14 +1716,14 @@ ScenarioFlagCond::ScenarioFlagCond(const CBdatWrapper &bdat, int id, const char 
   u16 scenarioFlagMin;
   u16 scenarioFlagMax;
   if (prefix == nullptr) {
-    scenarioFlagMin = bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_U16);
-    scenarioFlagMax = bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_U16);
+    scenarioFlagMin = bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2);
+    scenarioFlagMax = bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2);
   } else {
     mm::mtl::FixStr<32> name;
     name.format("%s%s", prefix, "ScenarioFlagMin");
-    scenarioFlagMin = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U16);
+    scenarioFlagMin = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_2);
     name.format("%s%s", prefix, "ScenarioFlagMax");
-    scenarioFlagMax = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U16);
+    scenarioFlagMax = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_2);
   }
   if (scenarioFlagMax >= scenarioFlagMin) {
     unknown00 = scenarioFlagMin;
@@ -1736,9 +1737,9 @@ bool ScenarioFlagCond::isMatch() const {
 }
 
 QuestFlagCond::QuestFlagCond(const CBdatWrapper &bdat, int id, const AGmkBase &gmk) {
-  u16 questFlag = bdat.getValCheck("QuestFlag", id, BDAT_TYPE_U16);
-  u8 questFlagMin = bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_U8);
-  u8 questFlagMax = bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_U8);
+  u16 questFlag = bdat.getValCheck("QuestFlag", id, BDAT_TYPE_UNKNOWN_2);
+  u8 questFlagMin = bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_UNKNOWN_1);
+  u8 questFlagMax = bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_UNKNOWN_1);
   if (questFlagMax >= questFlagMin) {
     unknown00 = questFlag;
     unknown02 = questFlagMin;
@@ -1751,17 +1752,17 @@ QuestFlagCond::QuestFlagCond(const CBdatWrapper &bdat, int id, const char *prefi
   u8 questFlagMin;
   u8 questFlagMax;
   if (prefix == nullptr) {
-    questFlag = bdat.getValCheck("QuestFlag", id, BDAT_TYPE_U16);
-    questFlagMin = bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_U8);
-    questFlagMax = bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_U8);
+    questFlag = bdat.getValCheck("QuestFlag", id, BDAT_TYPE_UNKNOWN_2);
+    questFlagMin = bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_UNKNOWN_1);
+    questFlagMax = bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_UNKNOWN_1);
   } else {
     mm::mtl::FixStr<32> name;
     name.format("%s%s", prefix, "QuestFlag");
-    questFlag = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U16);
+    questFlag = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_2);
     name.format("%s%s", prefix, "QuestFlagMin");
-    questFlagMin = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U8);
+    questFlagMin = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_1);
     name.format("%s%s", prefix, "QuestFlagMax");
-    questFlagMax = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U8);
+    questFlagMax = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_1);
   }
   if (questFlagMax >= questFlagMin) {
     unknown00 = questFlag;
@@ -1866,10 +1867,10 @@ bool WeatherCond::isMatch() const { return (gf::GfFieldWeather::getCurrentMapWea
 
 bool CloudCond::isMatch() const {
   int cloudSea = gf::GfFieldWeather::getCurrentCloudSea();
-  if (unknown08 == TYPE_NO_CLOUD_SEA) {
+  if (unknown08 == TYPE_UNKNOWN_0) {
     return cloudSea == 0;
   }
-  if (unknown08 == TYPE_CLOUD_SEA) {
+  if (unknown08 == TYPE_UNKNOWN_1) {
     return cloudSea == 1;
   }
   return false;
@@ -1948,13 +1949,13 @@ BootedGmkCond::BootedGmkCond(const CBdatWrapper &bdat, int id, const char *prefi
   } else {
     name.format("%sgimmickType", prefix);
   }
-  u8 type = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U8);
+  u8 type = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_1);
   if (prefix == nullptr) {
     name = "gimmickID";
   } else {
     name.format("%sgimmickID", prefix);
   }
-  u16 gmkId = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_U16);
+  u16 gmkId = bdat.getValCheck(name.c_str(), id, BDAT_TYPE_UNKNOWN_2);
   createIfEnable(type, gmkId);
 }
 

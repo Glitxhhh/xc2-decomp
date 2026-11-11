@@ -117,7 +117,7 @@ void StateFieldWalk::enter(GfComBehaviorEnemy *behavior, ai::State *previous) {
     }
   }
 
-  unknown98 = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, unknown003, gmk::BDAT_TYPE_F32).valueF32;
+  unknown98 = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, unknown003, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   validateMoveSpeed(*behavior);
   unknown58 = seq;
 }

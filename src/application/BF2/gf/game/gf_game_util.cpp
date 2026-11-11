@@ -188,7 +188,7 @@ f32 GfGameUtil::getUiNameDist(GF_OBJ_HANDLE *handle) {
   case OBJECT_TYPE_ENEMY:
     return GfFieldManager::getEnemyBaloonRadius();
   case OBJECT_TYPE_NPC:
-    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_F32).valueF32;
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   case OBJECT_TYPE_GIMMICK:
     break;
   default:
@@ -205,20 +205,20 @@ f32 GfGameUtil::getUiNameDist(GF_OBJ_HANDLE *handle) {
     gmk::GmkTbox *tbox = static_cast<gmk::GmkTbox *>(gmkInst);
     const gmk::GmkTbox::BdatInfo *info = tbox->getBdatInfo();
     if (info->unknown02) {
-      return tbox->getProgress() == gmk::GmkTbox::PROGRESS_CLOSED ? info->unknown04 : info->unknown03;
+      return tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_0 ? info->unknown04 : info->unknown03;
     }
     return info->unknown03;
   }
   case gmk::GMK_TYPE_EVENT:
-    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xe, gmk::BDAT_TYPE_F32).valueF32;
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xe, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   case gmk::GMK_TYPE_COLLECTION:
     return static_cast<gmk::GmkCollection *>(gmkInst)->getBdatInfo()->unknown00;
   case gmk::GMK_TYPE_SALVAGE:
   case gmk::GMK_TYPE_KIZUNA_TALK:
-    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_F32).valueF32;
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   case gmk::GMK_TYPE_SALVAGE_LOCATOR:
     if (static_cast<gmk::GmkSalvageLocator *>(gmkInst)->getData()->unknown00 == 2) {
-      return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_F32).valueF32;
+      return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xd, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
     }
     return -1.0f;
   case gmk::GMK_TYPE_MAP_GIMMICK: {
@@ -229,7 +229,7 @@ f32 GfGameUtil::getUiNameDist(GF_OBJ_HANDLE *handle) {
     return mapGimmick->getBdatInfo()->unknown02;
   }
   case gmk::GMK_TYPE_GRAVE:
-    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0x29, gmk::BDAT_TYPE_F32).valueF32;
+    return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0x29, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   case gmk::GMK_TYPE_JUMP:
     return static_cast<gmk::GmkJump *>(gmkInst)->getBdatInfo()->unknown04;
   case gmk::GMK_TYPE_WARP:

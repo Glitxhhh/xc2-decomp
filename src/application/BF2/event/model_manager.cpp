@@ -15,7 +15,7 @@ void ModelManager::update() {
 }
 
 void ModelManager::OnEventProc(MSG_TYPE type) {
-  if (type == MSG_TYPE_UPDATE && !unknown10.empty()) {
+  if (type == MSG_TYPE_UNKNOWN_14 && !unknown10.empty()) {
     for (u32 i = 0; i < unknown10.size(); i++) {
       unknown10[i]->update();
     }

@@ -69,7 +69,7 @@ template <typename T> void StateReaction<T>::seqWaitTurnToPcEnd(T &behavior, con
 }
 
 template <typename T> void StateReaction<T>::beginReaction(const T &behavior) {
-  const char *command = reinterpret_cast<const char *>(Bdat::getValCheck(Bdat::getFP("FLD_NpcMobMotionId"), "cmdName", behavior.unknown006(), gmk::BDAT_TYPE_STRING));
+  const char *command = reinterpret_cast<const char *>(Bdat::getValCheck(Bdat::getFP("FLD_NpcMobMotionId"), "cmdName", behavior.unknown006(), gmk::BDAT_TYPE_UNKNOWN_7));
   unknown18.create(TFieldExecCmd<GfComAsm>::CreateInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8, command));
 }
 

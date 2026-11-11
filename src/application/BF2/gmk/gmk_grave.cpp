@@ -25,16 +25,16 @@ GmkGrave::GmkGrave() : unknown48(false), unknown50(gf::INVALID_HANDLE), unknown5
 
 void GmkGrave::BdatInfo::create(u8 *bdat, int id, const AGmkBase &gmk) {
   dispose();
-  unknown00 = Bdat::getValCheck(bdat, "en_popID", id, BDAT_TYPE_U16);
+  unknown00 = Bdat::getValCheck(bdat, "en_popID", id, BDAT_TYPE_UNKNOWN_2);
   u8 *mapList = gf::GfDataBdat::getFP(gf::BDAT_FLD_MAPLIST);
   if (mapList != nullptr) {
     int map = gf::GfGameManager::getMapID();
     if (map >= Bdat::getIdTop(mapList) && Bdat::getIdTop(mapList) + Bdat::getIdCount(mapList) > map) {
-      u8 displayRadius = Bdat::getValCheck(mapList, "ene_disp_r", map, BDAT_TYPE_U8);
-      u8 displayHeight = Bdat::getValCheck(mapList, "ene_disp_h", map, BDAT_TYPE_U8);
+      u8 displayRadius = Bdat::getValCheck(mapList, "ene_disp_r", map, BDAT_TYPE_UNKNOWN_1);
+      u8 displayHeight = Bdat::getValCheck(mapList, "ene_disp_h", map, BDAT_TYPE_UNKNOWN_1);
       unknown04.set(displayRadius, displayHeight);
-      u8 releaseRadius = Bdat::getValCheck(mapList, "ene_release_r", map, BDAT_TYPE_U8);
-      u8 releaseHeight = Bdat::getValCheck(mapList, "ene_release_h", map, BDAT_TYPE_U8);
+      u8 releaseRadius = Bdat::getValCheck(mapList, "ene_release_r", map, BDAT_TYPE_UNKNOWN_1);
+      u8 releaseHeight = Bdat::getValCheck(mapList, "ene_release_h", map, BDAT_TYPE_UNKNOWN_1);
       unknown0c.set(displayRadius + releaseRadius, displayHeight + releaseHeight);
       const GmkSet *set = gmk.unknown08.unknown00->getCreateInfo().unknown08;
       u8 *enemyBdat;
@@ -47,7 +47,7 @@ void GmkGrave::BdatInfo::create(u8 *bdat, int id, const AGmkBase &gmk) {
           return;
         }
       }
-      unknown02 = Bdat::getValCheck(enemyBdat, "ene1ID", unknown00, BDAT_TYPE_U16);
+      unknown02 = Bdat::getValCheck(enemyBdat, "ene1ID", unknown00, BDAT_TYPE_UNKNOWN_2);
       return;
     }
   }

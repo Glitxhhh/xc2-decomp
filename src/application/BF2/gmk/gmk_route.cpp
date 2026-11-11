@@ -117,11 +117,11 @@ void GmkRouteNavi::dispose() {
 
 void GmkRouteNavi::initIsReverse() {
   u32 flags = getRoute()->getData()->unknown0c;
-  if ((flags & (GmkRoute::FLAG_FORWARD | GmkRoute::FLAG_REVERSE)) == (GmkRoute::FLAG_FORWARD | GmkRoute::FLAG_REVERSE)) {
+  if ((flags & (GmkRoute::FLAG_UNKNOWN_1 | GmkRoute::FLAG_UNKNOWN_2)) == (GmkRoute::FLAG_UNKNOWN_1 | GmkRoute::FLAG_UNKNOWN_2)) {
     unknowna4 = ml::mtRandf1() > 0.5f;
-  } else if (flags & GmkRoute::FLAG_FORWARD) {
+  } else if (flags & GmkRoute::FLAG_UNKNOWN_1) {
     unknowna4 = false;
-  } else if (flags & GmkRoute::FLAG_REVERSE) {
+  } else if (flags & GmkRoute::FLAG_UNKNOWN_2) {
     unknowna4 = true;
   }
 }
@@ -312,7 +312,7 @@ bool GmkRouteNavi::getPosDirOnCurve(mm::Vec3 &position, mm::Vec3 &direction, u32
 
 u32 GmkRoute::getRoutePointNum() const { return getData()->unknown04 - getData()->unknown00; }
 
-bool GmkRoute::isClosed() const { return (getData()->unknown0c & FLAG_CLOSED) != 0; }
+bool GmkRoute::isClosed() const { return (getData()->unknown0c & FLAG_UNKNOWN_0) != 0; }
 
 void GmkRouteNavi::update(const UpdateInfo &info) {
   if (isValid() && unknown70) {
@@ -409,7 +409,7 @@ f32 GmkRouteNavi::getWidthRatio() const {
 bool GmkRouteNavi::isRouteCurve(int index) const {
   const GmkRoute *route = getRoute();
   const GmkRoutePoint *point = route->getRoutePoint(index);
-  if (point != nullptr && (point->getData()->unknown1c & GmkRoutePoint::FLAG_LINE) != 0) {
+  if (point != nullptr && (point->getData()->unknown1c & GmkRoutePoint::FLAG_UNKNOWN_0) != 0) {
     return false;
   }
   if (!route->isClosed() && (index == static_cast<int>(route->getRoutePointNum()) - 1 || index == 0)) {

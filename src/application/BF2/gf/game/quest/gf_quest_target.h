@@ -31,7 +31,7 @@ struct TargetInfo {
 
   TargetInfo()
       : unknown00(INVALID_HANDLE), unknown08(0), unknown0c(), unknown10(0), unknown14(false), unknown18(0), unknown1c(COLLECT_CATEGORY_UNKNOWN_0), unknown20(0), unknown24(0),
-        unknown28(gmk::GMK_TYPE_INVALID) {}
+        unknown28(gmk::GMK_TYPE_UNKNOWN_59) {}
 
   // Inferred helper: sets a reach place target; original name unknown.
   void unknown008(u32 category, u32 placeId, QuestID quest, u32 mapId, bool isCheckCurrent) {

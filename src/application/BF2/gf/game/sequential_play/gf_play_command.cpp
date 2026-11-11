@@ -1210,7 +1210,7 @@ GfPlayComFieldTbox::GfPlayComFieldTbox(GF_OBJ_HANDLE *handle) : GfPlayCom(PCOMTY
   unknown28 = GfQuestUtil::getCurrentTBoxWithEvent(handle);
   gmk::AGmkBase *gmk = gmk::getBindedGmkInst(handle);
   if (gmk != nullptr && gmk->getGmkType() == gmk::GMK_TYPE_TBOX && static_cast<gmk::GmkTbox *>(gmk)->getBdatInfo()->unknown02 &&
-      static_cast<gmk::GmkTbox *>(gmk)->getProgress() == gmk::GmkTbox::PROGRESS_CLOSED) {
+      static_cast<gmk::GmkTbox *>(gmk)->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_0) {
     unknown28 = toQuestID(0);
   }
 }

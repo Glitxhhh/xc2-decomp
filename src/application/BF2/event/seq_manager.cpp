@@ -37,31 +37,31 @@
 
 namespace event {
 
-constexpr u32 CATEGORY_CAPTURE = 5;
-constexpr u32 SCRIPT_SLOT_EVENT = 2;
+constexpr u32 CATEGORY_UNKNOWN_5 = 5;    // Inferred role: category capture; original name unknown.
+constexpr u32 SCRIPT_SLOT_UNKNOWN_2 = 2; // Inferred role: script slot event; original name unknown.
 
 // Inferred role: names of the sequence categories; original name unknown.
 static const char *const unknown002[] = {"NONE", "TEV", "FEV", "SEV", "CS ", "MOV"};
 
 ICmd::RESULT SeqManager::play_start::update(const Param &param) {
   if (param.getFrame() <= 0) {
-    gf::SCOM_SCRIPT::create(SCRIPT_SLOT_EVENT, param.val(1).getStr(), false);
+    gf::SCOM_SCRIPT::create(SCRIPT_SLOT_UNKNOWN_2, param.val(1).getStr(), false);
     SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
-    seq->unknown170 &= ~FLAG_NEXT;
+    seq->unknown170 &= ~FLAG_UNKNOWN_2;
     seq->unknown178 = "play start";
   }
-  if (gf::GfScriptManager::isScriptLoadError(SCRIPT_SLOT_EVENT)) {
-    gf::GfScriptManager::destroyScript(SCRIPT_SLOT_EVENT);
-    static_cast<SeqManager *>(param.val(0).getUserdata())->unknown170 |= FLAG_SCRIPT_ERROR;
+  if (gf::GfScriptManager::isScriptLoadError(SCRIPT_SLOT_UNKNOWN_2)) {
+    gf::GfScriptManager::destroyScript(SCRIPT_SLOT_UNKNOWN_2);
+    static_cast<SeqManager *>(param.val(0).getUserdata())->unknown170 |= FLAG_UNKNOWN_0;
   }
-  return RESULT_WAIT;
+  return RESULT_UNKNOWN_0;
 }
 
 ICmd::RESULT SeqManager::start::update(const Param &param) {
   if (param.getFrame() <= 0) {
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start";
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::start_notice::update(const Param &param) {
@@ -72,14 +72,14 @@ ICmd::RESULT SeqManager::start_notice::update(const Param &param) {
   if (eventId != 0) {
     gf::GfEvent::callEventPlay(gf::GEV_EVENT_END, eventId);
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::exec_fadeout::update(const Param &param) {
   bool isSkip = param.val(1).getBool();
   if (param.getFrame() <= 0) {
     SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
-    mm::mtl::Singleton<FadeManager>::getPtr()->request(FadePlanner::TYPE_ED_FADE_OUT);
+    mm::mtl::Singleton<FadeManager>::getPtr()->request(FadePlanner::TYPE_UNKNOWN_2);
     mm::mtl::Singleton<VolumeManager>::get().startSeamlessVolume(seq->unknown2710.unknown9c);
     seq->unknown178 = "exec fadeout";
   }
@@ -88,7 +88,7 @@ ICmd::RESULT SeqManager::exec_fadeout::update(const Param &param) {
   if (isSkip && !isFading) {
     mm::mtl::Singleton<FadeManager>::getPtr()->playEventSkip(false, 30);
     mm::mtl::Singleton<SkipManager>::getPtr()->skip(false, 0.0f);
-    result = RESULT_END;
+    result = RESULT_UNKNOWN_1;
   }
   return result;
 }
@@ -98,9 +98,9 @@ ICmd::RESULT SeqManager::start_change::update(const Param &param) {
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start change";
   }
   if (param.val(1).getS32() != 0 && !mm::mtl::Singleton<StatusManager>::getPtr()->changeFromBdat(param.val(1).getS32())) {
-    return RESULT_WAIT;
+    return RESULT_UNKNOWN_0;
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::start_env_seam::update(const Param &param) {
@@ -109,21 +109,21 @@ ICmd::RESULT SeqManager::start_env_seam::update(const Param &param) {
     mm::mtl::Singleton<EnvManager>::getPtr()->loadTransferEnvironment(eventId);
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start envseam";
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::start_capture_wait::update(const Param &param) {
   if (param.getFrame() <= 0) {
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start capture wait";
   }
-  return param.getFrame() >= 30 ? RESULT_END : RESULT_WAIT;
+  return param.getFrame() >= 30 ? RESULT_UNKNOWN_1 : RESULT_UNKNOWN_0;
 }
 
 ICmd::RESULT SeqManager::start_streaming1::update(const Param &param) {
   if (param.getFrame() <= 0) {
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start stream1";
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::end_eff::update(const Param &param) {
@@ -149,21 +149,21 @@ ICmd::RESULT SeqManager::start_loading::update(const Param &param) {
     seq->unknown178 = "start loading";
   }
   if (!unknown08) {
-    return RESULT_WAIT;
+    return RESULT_UNKNOWN_0;
   }
   if (mm::mtl::Singleton<ResManager>::getPtr()->isLoading() || mm::mtl::Singleton<EffectManager>::getPtr()->isLoading() || mm::mtl::Singleton<SeManager>::get().isLoading() ||
       mm::mtl::Singleton<LipsyncManager>::getPtr()->isLoading() || mm::mtl::Singleton<MstxtManager>::getPtr()->isLoading()) {
-    return RESULT_WAIT;
+    return RESULT_UNKNOWN_0;
   }
   if (mm::mtl::Singleton<ObjectManager>::getPtr()->isLoading()) {
-    return RESULT_WAIT;
+    return RESULT_UNKNOWN_0;
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::start_weather::update(const Param &param) {
   if (param.getFrame() > 0) {
-    return RESULT_END;
+    return RESULT_UNKNOWN_1;
   }
   const char *clock = param.val(1).getStr();
   bool isClockStop = param.val(2).getBool();
@@ -182,7 +182,7 @@ ICmd::RESULT SeqManager::start_weather::update(const Param &param) {
     mm::mtl::Singleton<EnvManager>::getPtr()->setCloudSea(static_cast<EVT_cloudtype>(cloud));
   }
   static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start weather";
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::exec_grass::update(const Param &param) {
@@ -192,7 +192,7 @@ ICmd::RESULT SeqManager::exec_grass::update(const Param &param) {
     int type = param.val(1).getS32();
     if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipVolume() || mm::mtl::Singleton<DebugManager>::getPtr()->isPlayCancel()) {
       mm::mtl::Singleton<FadeManager>::getPtr()->play(true, 0, FadeCtrl::PRIO_LOW, 0);
-      return RESULT_END;
+      return RESULT_UNKNOWN_1;
     }
     parmAcc.setGlassBr(true, type);
     seq->unknown178 = "exec grass";
@@ -203,9 +203,9 @@ ICmd::RESULT SeqManager::exec_grass::update(const Param &param) {
   }
   if (param.getFrame() > endFrame + 1) {
     parmAcc.setGlassBr(false, 0);
-    return RESULT_END;
+    return RESULT_UNKNOWN_1;
   }
-  return RESULT_WAIT;
+  return RESULT_UNKNOWN_0;
 }
 
 ICmd::RESULT SeqManager::start_areajump::update(const Param &param) {
@@ -241,9 +241,9 @@ ICmd::RESULT SeqManager::end_change::update(const Param &param) {
   }
   int status = param.val(1).getS32();
   if (status != 0 && !mm::mtl::Singleton<DebugManager>::getPtr()->isPlayCancel() && !mm::mtl::Singleton<StatusManager>::getPtr()->changeFromBdat(status)) {
-    return RESULT_WAIT;
+    return RESULT_UNKNOWN_0;
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::end_env_seam::update(const Param &param) {
@@ -251,7 +251,7 @@ ICmd::RESULT SeqManager::end_env_seam::update(const Param &param) {
     mm::mtl::Singleton<EnvManager>::getPtr()->loadTransferEnvironment(1);
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "end envseam";
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::end_fadewait::update(const Param &param) {
@@ -265,7 +265,7 @@ ICmd::RESULT SeqManager::end_fadein::update(const Param &param) {
   if (param.getFrame() <= 0) {
     static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "end fadein";
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::end_notice::update(const Param &param) {
@@ -276,16 +276,16 @@ ICmd::RESULT SeqManager::end_notice::update(const Param &param) {
   if (eventId != 0) {
     gf::GfEvent::callEventPlay(gf::GEV_EVENT_PLAY_END, eventId);
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT SeqManager::end::update(const Param &param) {
   if (param.getFrame() <= 0) {
     SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
-    seq->unknown170 |= FLAG_END;
+    seq->unknown170 |= FLAG_UNKNOWN_1;
     seq->unknown178 = "end";
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 SeqManager::SeqManager() : unknown170(0), unknown174(0) {}
@@ -308,7 +308,7 @@ void SeqManager::play(const char *name) {
 void SeqManager::login() {
   unknown2850 = 1;
   ml::DevSetting::setAutoSleepExtended(static_cast<ml::SleepExtendType>(1));
-  unknown170 &= ~FLAG_LOGIN;
+  unknown170 &= ~FLAG_UNKNOWN_3;
 }
 
 void SeqManager::logout() {
@@ -333,7 +333,7 @@ bool SeqManager::checkCapture(const SeqInfo &info) {
     return false;
   }
   SeqInfo link(info.unknowne8);
-  return link.unknown54 == CATEGORY_CAPTURE;
+  return link.unknown54 == CATEGORY_UNKNOWN_5;
 }
 
 void SeqManager::update() { unknown200.update(); }
@@ -351,7 +351,7 @@ bool SeqManager::isSetupSceneEnd() const {
 }
 
 void SeqManager::render() {
-  if (!(unknown174 & DISP_FLAG_DISP) || unknown200.isEmpty()) {
+  if (!(unknown174 & DISP_FLAG_UNKNOWN_0) || unknown200.isEmpty()) {
     return;
   }
   int width = ml::DevGraph::getRootWidth();
@@ -374,15 +374,15 @@ void SeqManager::render() {
 
 void SeqManager::setDisp(bool isDisp) {
   if (isDisp) {
-    unknown174 |= DISP_FLAG_DISP;
+    unknown174 |= DISP_FLAG_UNKNOWN_0;
   } else {
-    unknown174 &= ~DISP_FLAG_DISP;
+    unknown174 &= ~DISP_FLAG_UNKNOWN_0;
   }
 }
 
-bool SeqManager::isDisp() const { return (unknown174 & DISP_FLAG_DISP) != 0; }
+bool SeqManager::isDisp() const { return (unknown174 & DISP_FLAG_UNKNOWN_0) != 0; }
 
-template void CmdQueue<SeqManager::QUEUE_COUNT, 0>::push_back(ICmd *cmd, const CmdParam &param);
-template CmdQueue<SeqManager::QUEUE_COUNT, 0>::~CmdQueue();
+template void CmdQueue<SeqManager::QUEUE_UNKNOWN_32, 0>::push_back(ICmd *cmd, const CmdParam &param);
+template CmdQueue<SeqManager::QUEUE_UNKNOWN_32, 0>::~CmdQueue();
 
 } // namespace event

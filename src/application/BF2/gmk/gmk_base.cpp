@@ -29,12 +29,12 @@ bool AGmkBase::canCreateGameEntity() const {
 
 f32 AGmkBase::getYSnapRayLength() const {
   switch (unknown08.unknown10->unknown0c) {
-  case SHAPE_TYPE_POINT:
-  case SHAPE_TYPE_BOX:
+  case SHAPE_TYPE_UNKNOWN_1:
+  case SHAPE_TYPE_UNKNOWN_3:
     return unknown08.unknown08->unknown20.y;
-  case SHAPE_TYPE_SPHERE:
+  case SHAPE_TYPE_UNKNOWN_2:
     return unknown08.unknown08->unknown20.x;
-  case SHAPE_TYPE_CAPSULE:
+  case SHAPE_TYPE_UNKNOWN_4:
     return unknown08.unknown08->unknown20.x + unknown08.unknown08->unknown20.y;
   default:
     return 1.0f;
@@ -99,7 +99,7 @@ int AGmkBase::findBdatRowIndex() const {
   int top = Bdat::getIdTop(bdat);
   int count = Bdat::getIdCount(bdat);
   for (int id = top; id < top + count; id++) {
-    const char *rowName = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "name", id, BDAT_TYPE_STRING));
+    const char *rowName = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "name", id, BDAT_TYPE_UNKNOWN_7));
     if (rowName != nullptr && __builtin_strcmp(rowName, name) == 0) {
       return id;
     }

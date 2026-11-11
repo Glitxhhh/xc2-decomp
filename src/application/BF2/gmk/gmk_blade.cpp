@@ -19,21 +19,21 @@ namespace gmk {
 
 template bool TGmkList<GmkBlade, GmkBlade::BdatInfo, 1145130050u, 4u, GmkBladeGob>::initGmkBdatInfo(GmkBlade::BdatInfo &, int &, const AGmkBase &);
 
-constexpr u16 BATTLE_REACTION_DEPOP = 0;
-constexpr u16 BATTLE_REACTION_HIDE = 1;
+constexpr u16 BATTLE_REACTION_UNKNOWN_0 = 0; // Inferred role: battle reaction depop; original name unknown.
+constexpr u16 BATTLE_REACTION_UNKNOWN_1 = 1; // Inferred role: battle reaction hide; original name unknown.
 
 void GmkBlade::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown00 = bdat.getValCheck("BladeSizeCheck", id, BDAT_TYPE_U8);
-  unknown06 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_U16), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_U16));
-  u16 timeRange = bdat.getValCheck("TimeRange", id, BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("BladeSizeCheck", id, BDAT_TYPE_UNKNOWN_1);
+  unknown06 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2));
+  u16 timeRange = bdat.getValCheck("TimeRange", id, BDAT_TYPE_UNKNOWN_2);
   unknown10.unknown08 = timeRange;
-  unknown02 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
-  unknown04 = bdat.getValCheck("BattleReaction", id, BDAT_TYPE_U16);
-  u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_U16);
-  u16 visibleY = bdat.getValCheck("Visible_Y", id, BDAT_TYPE_U16);
+  unknown02 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
+  unknown04 = bdat.getValCheck("BattleReaction", id, BDAT_TYPE_UNKNOWN_2);
+  u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_UNKNOWN_2);
+  u16 visibleY = bdat.getValCheck("Visible_Y", id, BDAT_TYPE_UNKNOWN_2);
   unknown20.set(visibleXZ, visibleY);
-  u16 invisibleXZ = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_XZ", id, BDAT_TYPE_U16), visibleXZ);
-  u16 invisibleY = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_Y", id, BDAT_TYPE_U16), visibleY);
+  u16 invisibleXZ = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_XZ", id, BDAT_TYPE_UNKNOWN_2), visibleXZ);
+  u16 invisibleY = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_Y", id, BDAT_TYPE_UNKNOWN_2), visibleY);
   unknown28.set(invisibleXZ, invisibleY);
 }
 
@@ -47,13 +47,13 @@ bool GmkBlade::BdatInfo::isPopCondMatched(const mm::Vec3 &position) const {
   if (unknown02 != 0 && !gf::GfGameCond::isGameCond(unknown02)) {
     return false;
   }
-  if (gf::GfGameManager::isBattle() && unknown04 == BATTLE_REACTION_HIDE) {
+  if (gf::GfGameManager::isBattle() && unknown04 == BATTLE_REACTION_UNKNOWN_1) {
     return false;
   }
   if (!unknown20.isMatch(position)) {
     return false;
   }
-  if (gf::GfGameManager::isBattle() && unknown04 == BATTLE_REACTION_DEPOP) {
+  if (gf::GfGameManager::isBattle() && unknown04 == BATTLE_REACTION_UNKNOWN_0) {
     return false;
   }
   return true;
@@ -69,7 +69,7 @@ bool GmkBlade::BdatInfo::isPopCommonCondMatched() const {
   if (unknown02 != 0 && !gf::GfGameCond::isGameCond(unknown02)) {
     return false;
   }
-  if (gf::GfGameManager::isBattle() && unknown04 == BATTLE_REACTION_HIDE) {
+  if (gf::GfGameManager::isBattle() && unknown04 == BATTLE_REACTION_UNKNOWN_1) {
     return false;
   }
   return true;

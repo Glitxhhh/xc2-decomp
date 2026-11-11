@@ -265,7 +265,7 @@ public:
     GmkEnemy *unknown08; // Inferred role: owner; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_ENEMY;
+  static const GmkType GMK_TYPE = GMK_TYPE_ENEMY; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   ~GmkEnemy() override { dispose(); }
   GmkType getGmkType() const override;

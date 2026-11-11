@@ -108,14 +108,14 @@ void GfFieldTbox::start(GF_OBJ_HANDLE *handle) {
     gmk::GmkType type = gmk->getGmkType();
     if (type == gmk::GMK_TYPE_TBOX) {
       gmk::GmkTbox *tbox = static_cast<gmk::GmkTbox *>(gmk);
-      unknown20 = Bdat::getValCheck(tbox->getBindedBdatFp(), "RSC_ID", tbox->unknown20.unknown18, gmk::BDAT_TYPE_U16) & 0xffff;
-      unknown24 = tbox->getBdatInfo()->unknown02 && tbox->getProgress() == gmk::GmkTbox::PROGRESS_CLOSED;
+      unknown20 = Bdat::getValCheck(tbox->getBindedBdatFp(), "RSC_ID", tbox->unknown20.unknown18, gmk::BDAT_TYPE_UNKNOWN_2) & 0xffff;
+      unknown24 = tbox->getBdatInfo()->unknown02 && tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_0;
     } else if (type == gmk::GMK_TYPE_SALVAGE_LOCATOR) {
-      unknown20 = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_SALVAGE_ITEM_SET), "RSC_ID", static_cast<gmk::GmkSalvageLocator *>(gmk)->unknowne8, gmk::BDAT_TYPE_U16) & 0xffff;
+      unknown20 = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_SALVAGE_ITEM_SET), "RSC_ID", static_cast<gmk::GmkSalvageLocator *>(gmk)->unknowne8, gmk::BDAT_TYPE_UNKNOWN_2) & 0xffff;
     }
     u8 *bdat = GfDataBdat::getFP(BDAT_RSC_TBOX_LIST);
-    unknown08 = gmk::toBdatF32(Bdat::getValCheck(bdat, "FS_starttime", unknown20, gmk::BDAT_TYPE_F32));
-    unknown0c = gmk::toBdatF32(Bdat::getValCheck(bdat, "TBOX_open_starttime", unknown20, gmk::BDAT_TYPE_F32));
+    unknown08 = gmk::toBdatF32(Bdat::getValCheck(bdat, "FS_starttime", unknown20, gmk::BDAT_TYPE_UNKNOWN_8));
+    unknown0c = gmk::toBdatF32(Bdat::getValCheck(bdat, "TBOX_open_starttime", unknown20, gmk::BDAT_TYPE_UNKNOWN_8));
     unknown28 = &GfFieldTbox::seqWaitCheckFs;
   }
 }
@@ -196,10 +196,10 @@ void GfFieldTbox::seqWaitOpenFieldTbox(f32 deltaTime) {
       locator->reqDisposeTboxGobInst(5.0f);
     }
     u8 *bdat = GfDataBdat::getFP(BDAT_RSC_TBOX_LIST);
-    info.unknown00.y += gmk::toBdatF32(Bdat::getValCheck(bdat, "baseHeight", unknown20, gmk::BDAT_TYPE_F32));
-    info.unknown18 += gmk::toBdatF32(Bdat::getValCheck(bdat, "box_distance", unknown20, gmk::BDAT_TYPE_F32));
-    info.unknown20 = gmk::toBdatF32(Bdat::getValCheck(bdat, "initWaitTime", unknown20, gmk::BDAT_TYPE_F32));
-    info.unknown24 = gmk::toBdatF32(Bdat::getValCheck(bdat, "initWaitTimeRand", unknown20, gmk::BDAT_TYPE_F32));
+    info.unknown00.y += gmk::toBdatF32(Bdat::getValCheck(bdat, "baseHeight", unknown20, gmk::BDAT_TYPE_UNKNOWN_8));
+    info.unknown18 += gmk::toBdatF32(Bdat::getValCheck(bdat, "box_distance", unknown20, gmk::BDAT_TYPE_UNKNOWN_8));
+    info.unknown20 = gmk::toBdatF32(Bdat::getValCheck(bdat, "initWaitTime", unknown20, gmk::BDAT_TYPE_UNKNOWN_8));
+    info.unknown24 = gmk::toBdatF32(Bdat::getValCheck(bdat, "initWaitTimeRand", unknown20, gmk::BDAT_TYPE_UNKNOWN_8));
     unknown40.create(info);
     gmk::AGmkBase *tbox = gmk::getBindedGmkInst(unknown18);
     if (tbox != nullptr) {

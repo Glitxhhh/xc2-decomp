@@ -16,9 +16,9 @@ public:
   static f32 MILD;
 
   enum {
-    FLAG_DIRECT = 0,
-    FLAG_MANUAL = 1,
-    FLAG_MAX = 32,
+    FLAG_UNKNOWN_0 = 0,   // Inferred role: direct flag; original name unknown.
+    FLAG_UNKNOWN_1 = 1,   // Inferred role: manual flag; original name unknown.
+    FLAG_UNKNOWN_32 = 32, // Inferred role: max flag; original name unknown.
   };
 
   CharaLensPlayer();
@@ -32,7 +32,7 @@ public:
   const mm::Vec2 &getTarget() const;
 
 private:
-  mm::mtl::unknown027<FLAG_MAX> unknown08; // Inferred role: flags; original member name unknown.
+  mm::mtl::unknown027<FLAG_UNKNOWN_32> unknown08; // Inferred role: flags; original member name unknown.
   alignas(16) mm::Vec2 m_target;
   u8 _18[0x20 - 0x18];
   mm::Vec2 unknown20; // Inferred role: manual target; original member name unknown.

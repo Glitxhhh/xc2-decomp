@@ -147,7 +147,7 @@ int GmkRoutedNpc::getBindedBdatId() const { return GmkRoute::unknown20.unknown18
 
 u8 *GmkRoutedNpc::getBindedBdatFp() const { return GmkRoute::unknown08.unknown00->getBindedBdatFp(); }
 
-const IGmkList *GmkRoutedNpc::getBindedRoutePointList() const { return GmkRoute::unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_NPC_ROUTE_POINT]; }
+const IGmkList *GmkRoutedNpc::getBindedRoutePointList() const { return GmkRoute::unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_UNKNOWN_5]; }
 
 } // namespace gmk
 

@@ -19,15 +19,15 @@ namespace event {
 
 namespace {
 
-const f32 PI = 3.1415927f;
-const f32 PI2 = 6.2831855f;
+const f32 unknown018 = 3.1415927f; // Inferred role: pi; original name unknown.
+const f32 unknown019 = 6.2831855f; // Inferred role: pi2; original name unknown.
 
 f32 normalizeRotation(f32 rotation, f32 base) {
-  while (rotation < base - PI) {
-    rotation += PI2;
+  while (rotation < base - unknown018) {
+    rotation += unknown019;
   }
-  while (base + PI < rotation) {
-    rotation -= PI2;
+  while (base + unknown018 < rotation) {
+    rotation -= unknown019;
   }
   return rotation;
 }

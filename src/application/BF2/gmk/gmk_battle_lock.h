@@ -23,7 +23,7 @@ public:
     u8 unknown00; // Inferred role: selects the second effect variant when zero; original member name unknown. The size of this structure is unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_BATTLE_LOCK;
+  static const GmkType GMK_TYPE = GMK_TYPE_BATTLE_LOCK; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkBattleLock();
   ~GmkBattleLock() override { dispose(); }

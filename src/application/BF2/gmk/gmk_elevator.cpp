@@ -38,27 +38,27 @@ template bool TGmkList<GmkElevator, GmkElevator::BdatInfo, 1414941765u, 2u, GmkE
 template bool TGmkList<GmkElevatorLocator, GmkElevatorLocator::BdatInfo, 1129073733u, 2u, GmkElevatorLocatorGob>::initGmkBdatInfo(GmkElevatorLocator::BdatInfo &, int &, const AGmkBase &);
 
 void GmkElevator::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown00 = bdat.getValCheck("OP_Condition", id, BDAT_TYPE_U16);
-  unknown02 = bdat.getValCheck("callnameRadius", id, BDAT_TYPE_U16);
-  unknown04 = bdat.getValCheck("liftnameRadius", id, BDAT_TYPE_U16);
-  unknown06 = bdat.getValCheck("LIFTLOD", id, BDAT_TYPE_U16);
-  unknown08 = bdat.getValCheck("shtALOD", id, BDAT_TYPE_U16);
-  unknown0a = bdat.getValCheck("shtBLOD", id, BDAT_TYPE_U16);
-  unknown0c = bdat.getValCheck("switchALOD", id, BDAT_TYPE_U16);
-  unknown0e = bdat.getValCheck("switchBLOD", id, BDAT_TYPE_U16);
-  unknown10 = bdat.getValCheck("switchSE", id, BDAT_TYPE_U16);
-  unknown12 = bdat.getValCheck("shutterSE", id, BDAT_TYPE_U16);
-  unknown14 = bdat.getValCheck("LiftStartSE", id, BDAT_TYPE_U16);
-  unknown16 = bdat.getValCheck("LiftLoopSE", id, BDAT_TYPE_U16);
-  unknown18 = bdat.getValCheck("LiftStopSE", id, BDAT_TYPE_U16);
-  unknown1a = bdat.getValCheck("LiftMinVolDist", id, BDAT_TYPE_U8);
-  unknown1b = bdat.getValCheck("LiftMaxVolDist", id, BDAT_TYPE_U8);
+  unknown00 = bdat.getValCheck("OP_Condition", id, BDAT_TYPE_UNKNOWN_2);
+  unknown02 = bdat.getValCheck("callnameRadius", id, BDAT_TYPE_UNKNOWN_2);
+  unknown04 = bdat.getValCheck("liftnameRadius", id, BDAT_TYPE_UNKNOWN_2);
+  unknown06 = bdat.getValCheck("LIFTLOD", id, BDAT_TYPE_UNKNOWN_2);
+  unknown08 = bdat.getValCheck("shtALOD", id, BDAT_TYPE_UNKNOWN_2);
+  unknown0a = bdat.getValCheck("shtBLOD", id, BDAT_TYPE_UNKNOWN_2);
+  unknown0c = bdat.getValCheck("switchALOD", id, BDAT_TYPE_UNKNOWN_2);
+  unknown0e = bdat.getValCheck("switchBLOD", id, BDAT_TYPE_UNKNOWN_2);
+  unknown10 = bdat.getValCheck("switchSE", id, BDAT_TYPE_UNKNOWN_2);
+  unknown12 = bdat.getValCheck("shutterSE", id, BDAT_TYPE_UNKNOWN_2);
+  unknown14 = bdat.getValCheck("LiftStartSE", id, BDAT_TYPE_UNKNOWN_2);
+  unknown16 = bdat.getValCheck("LiftLoopSE", id, BDAT_TYPE_UNKNOWN_2);
+  unknown18 = bdat.getValCheck("LiftStopSE", id, BDAT_TYPE_UNKNOWN_2);
+  unknown1a = bdat.getValCheck("LiftMinVolDist", id, BDAT_TYPE_UNKNOWN_1);
+  unknown1b = bdat.getValCheck("LiftMaxVolDist", id, BDAT_TYPE_UNKNOWN_1);
   unknown1c = Bdat::getFlagVal(bdat.unknown00, "flag", id, "lift_reverse") != 0;
-  unknown20 = toBdatF32(bdat.getValCheck("call_liftspeed", id, BDAT_TYPE_F32));
-  unknown24 = bdat.getValCheck("missMSG_ID", id, BDAT_TYPE_U16);
-  unknown28 = static_cast<s16>(bdat.getValCheck("elevator_nextwait", id, BDAT_TYPE_S16));
-  unknown2c = bdat.getValCheck("liftAMapJumpId", id, BDAT_TYPE_U16);
-  unknown2e = bdat.getValCheck("liftBMapJumpId", id, BDAT_TYPE_U16);
+  unknown20 = toBdatF32(bdat.getValCheck("call_liftspeed", id, BDAT_TYPE_UNKNOWN_8));
+  unknown24 = bdat.getValCheck("missMSG_ID", id, BDAT_TYPE_UNKNOWN_2);
+  unknown28 = static_cast<s16>(bdat.getValCheck("elevator_nextwait", id, BDAT_TYPE_UNKNOWN_5));
+  unknown2c = bdat.getValCheck("liftAMapJumpId", id, BDAT_TYPE_UNKNOWN_2);
+  unknown2e = bdat.getValCheck("liftBMapJumpId", id, BDAT_TYPE_UNKNOWN_2);
 }
 
 GmkType GmkElevatorLocator::getGmkType() const { return GMK_TYPE; }
@@ -121,9 +121,9 @@ void GmkElevator::seqInit(f32 deltaTime) {
     for (int i = 0; i < 4; i++) {
       const AGmkBase *gmk = getGmkBaseByItemType(static_cast<ItemType>(i));
       switch (gmk->unknown08.unknown10->unknown0c) {
-      case SHAPE_TYPE_SPHERE:
-      case SHAPE_TYPE_BOX:
-      case SHAPE_TYPE_CAPSULE:
+      case SHAPE_TYPE_UNKNOWN_2:
+      case SHAPE_TYPE_UNKNOWN_3:
+      case SHAPE_TYPE_UNKNOWN_4:
         unknown50[i].create(*gmk, this, false);
         break;
       default: {

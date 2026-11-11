@@ -28,7 +28,7 @@ public:
     const char *unknown08; // Inferred role: name; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_LANDMARK;
+  static const GmkType GMK_TYPE = GMK_TYPE_LANDMARK; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkLandmark();
   ~GmkLandmark() override;

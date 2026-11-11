@@ -40,19 +40,19 @@ void TextWindow::update() {
   if (!isDisp()) {
     return;
   }
-  if ((unknown08 & FLAG_CLOSE) == 0) {
+  if ((unknown08 & FLAG_UNKNOWN_1) == 0) {
     gf::GfMenuCallContext::GfMenuResult result = {};
     if (unknown220->popResult(result) && result.unknown04 == 1) {
-      unknown08 |= FLAG_CLOSE;
+      unknown08 |= FLAG_UNKNOWN_1;
       unknown228 = 4;
     }
   }
-  if ((unknown08 & FLAG_CLOSE) != 0) {
+  if ((unknown08 & FLAG_UNKNOWN_1) != 0) {
     if (unknown228-- > 0 && !TextManager::get().isCutChangeFrame()) {
       return;
     }
     erase();
-    unknown08 &= ~FLAG_WRITE;
+    unknown08 &= ~FLAG_UNKNOWN_0;
   }
 }
 
@@ -120,9 +120,9 @@ void TextWindow::write(const char *text, const char *name, u8 *bdat, u32 textId,
   this->unknown110 = text;
   this->unknown0c = name;
   this->unknown218 = handle;
-  unknown08 = (unknown08 & ~(FLAG_WRITE | FLAG_CLOSE)) | FLAG_WRITE;
+  unknown08 = (unknown08 & ~(FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) | FLAG_UNKNOWN_0;
 }
 
-bool TextWindow::isWriting() const { return (unknown08 & (FLAG_WRITE | FLAG_CLOSE)) == FLAG_WRITE; }
+bool TextWindow::isWriting() const { return (unknown08 & (FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1)) == FLAG_UNKNOWN_0; }
 
 } // namespace event

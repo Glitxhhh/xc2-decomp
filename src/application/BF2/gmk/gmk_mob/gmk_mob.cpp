@@ -19,26 +19,27 @@ namespace gmk {
 template bool TGmkList<GmkMob, GmkMob::BdatInfo, 4345677u, 2u, GmkMobGob>::initGmkBdatInfo(GmkMob::BdatInfo &, int &, const AGmkBase &);
 
 void GmkMobInsts::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown02 = bdat.getValCheck("Group", id, BDAT_TYPE_U16);
-  unknown04 = bdat.getValCheck("squadId", id, BDAT_TYPE_U16);
+  unknown02 = bdat.getValCheck("Group", id, BDAT_TYPE_UNKNOWN_2);
+  unknown04 = bdat.getValCheck("squadId", id, BDAT_TYPE_UNKNOWN_2);
   if (unknown02 == 0) {
-    unknown12 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_U16), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_U16));
-    unknown16 = QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_U16), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_U8), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_U8));
-    u16 timeRange = bdat.getValCheck("TimeRange", id, BDAT_TYPE_U16);
+    unknown12 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2));
+    unknown16 =
+        QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_UNKNOWN_1), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_UNKNOWN_1));
+    u16 timeRange = bdat.getValCheck("TimeRange", id, BDAT_TYPE_UNKNOWN_2);
     unknown20.unknown08 = timeRange;
-    unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
+    unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
   }
-  unknown06 = bdat.getValCheck("Mot", id, BDAT_TYPE_U16);
-  unknown08 = static_cast<u16>(bdat.getValCheck("Collision", id, BDAT_TYPE_U16));
-  unknown0a = bdat.getValCheck("ReactionRange", id, BDAT_TYPE_U16);
-  unknown0c = static_cast<u16>(bdat.getValCheck("ReactionPercent", id, BDAT_TYPE_U16));
-  unknown0e = bdat.getValCheck("ReactionMot", id, BDAT_TYPE_U16);
-  unknown10 = bdat.getValCheck("BattleReaction", id, BDAT_TYPE_U16);
-  u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_U16);
-  u16 visibleY = bdat.getValCheck("Visible_Y", id, BDAT_TYPE_U16);
+  unknown06 = bdat.getValCheck("Mot", id, BDAT_TYPE_UNKNOWN_2);
+  unknown08 = static_cast<u16>(bdat.getValCheck("Collision", id, BDAT_TYPE_UNKNOWN_2));
+  unknown0a = bdat.getValCheck("ReactionRange", id, BDAT_TYPE_UNKNOWN_2);
+  unknown0c = static_cast<u16>(bdat.getValCheck("ReactionPercent", id, BDAT_TYPE_UNKNOWN_2));
+  unknown0e = bdat.getValCheck("ReactionMot", id, BDAT_TYPE_UNKNOWN_2);
+  unknown10 = bdat.getValCheck("BattleReaction", id, BDAT_TYPE_UNKNOWN_2);
+  u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_UNKNOWN_2);
+  u16 visibleY = bdat.getValCheck("Visible_Y", id, BDAT_TYPE_UNKNOWN_2);
   unknown30.set(visibleXZ, visibleY);
-  u16 invisibleXZ = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_XZ", id, BDAT_TYPE_U16), visibleXZ);
-  u16 invisibleY = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_Y", id, BDAT_TYPE_U16), visibleY);
+  u16 invisibleXZ = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_XZ", id, BDAT_TYPE_UNKNOWN_2), visibleXZ);
+  u16 invisibleY = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_Y", id, BDAT_TYPE_UNKNOWN_2), visibleY);
   unknown38.set(invisibleXZ, invisibleY);
 }
 

@@ -79,7 +79,7 @@ void CharaPlayMotion::term() {
   if (obj != nullptr) {
     stop(obj);
   }
-  unknown18->setFootIK(true, CharaIKUpdater::FOOT_TYPE_2);
+  unknown18->setFootIK(true, CharaIKUpdater::FOOT_TYPE_UNKNOWN_2);
   if (CharaManager::getPtr()->isStreamMode() && unknown28 != nullptr) {
     MotstmManager::getPtr()->free(unknown28);
   }

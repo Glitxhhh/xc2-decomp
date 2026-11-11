@@ -21,7 +21,7 @@ class GmkRouteNavi;
 
 class GmkRoutedNpc : public GmkRoute, public AGmkNpc {
 public:
-  static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_NPC;
+  static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_NPC; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkRoutedNpc() : unknown70(nullptr), unknown78(true), unknown79(true), unknown80(mm::Vec3::zero), unknown90(mm::Quat::zero) {}
   ~GmkRoutedNpc() override;

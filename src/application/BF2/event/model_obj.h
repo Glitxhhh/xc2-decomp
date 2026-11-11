@@ -14,15 +14,15 @@ struct Mat44;
 namespace event {
 
 enum MODEL_TYPE {
-  MODEL_TYPE_PATH = 0,
-  MODEL_TYPE_NONE = 3,
+  MODEL_TYPE_UNKNOWN_0 = 0, // Inferred role: path; original name unknown.
+  MODEL_TYPE_UNKNOWN_3 = 3, // Inferred role: none; original name unknown.
 };
 
 class ModelObj : public IResEvent {
 public:
   enum {
-    FLAG_PRIORITY = 1 << 0,
-    FLAG_SAME = 1 << 1,
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: priority flag; original name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: same flag; original name unknown.
   };
 
   virtual ~ModelObj();

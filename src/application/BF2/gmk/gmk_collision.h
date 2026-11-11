@@ -18,7 +18,7 @@ class AGmkBase;
 class GmkCollision : public fw::ColiUserData, public fw::IColiEventListener {
 public:
   struct CreateInfo {
-    CreateInfo() : unknown00(GmkPhantom::SHAPE_TYPE_NONE), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown30(false) {
+    CreateInfo() : unknown00(GmkPhantom::SHAPE_TYPE_UNKNOWN_0), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown30(false) {
       for (u32 i = 0; i < 3; i++) {
         unknown34[i] = 0.0f;
       }

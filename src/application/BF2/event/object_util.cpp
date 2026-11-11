@@ -31,13 +31,13 @@ bool ObjectUtil::isBackSide(const mm::Vec3 &position) {
 }
 
 const char *ObjectUtil::num2str(u32 number) {
-  static const char *const NUMBERS[] = {"", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-  return NUMBERS[number];
+  static const char *const unknown020[] = {"", "2", "3", "4", "5", "6", "7", "8", "9", "10"}; // Inferred role: numbers; original name unknown.
+  return unknown020[number];
 }
 
 const char *ObjectUtil::num2strMulti(u32 number) {
-  static const char *const NUMBERS[] = {"", "２", "３", "４", "５", "６", "７", "８", "９", "１０"};
-  return NUMBERS[number];
+  static const char *const unknown021[] = {"", "２", "３", "４", "５", "６", "７", "８", "９", "１０"}; // Inferred role: numbers; original name unknown.
+  return unknown021[number];
 }
 
 int ObjectUtil::getElementCount(const char *string) {

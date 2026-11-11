@@ -53,11 +53,11 @@ void GfFieldLookIk::create(GF_OBJ_HANDLE *handle, const CBdatWrapper &bdat, int 
 
   dispose();
   unknown00 = handle;
-  u8 lookAt = bdat.getValCheck("LookAt", id, gmk::BDAT_TYPE_U8);
+  u8 lookAt = bdat.getValCheck("LookAt", id, gmk::BDAT_TYPE_UNKNOWN_1);
   if (lookAt == 0) {
     unknown1c = false;
   } else {
-    unknown0c = static_cast<u16>(bdat.getValCheck("LookAtRange", id, gmk::BDAT_TYPE_U16));
+    unknown0c = static_cast<u16>(bdat.getValCheck("LookAtRange", id, gmk::BDAT_TYPE_UNKNOWN_2));
     if (lookAt > 2) {
       dispose();
       return;

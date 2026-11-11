@@ -44,18 +44,19 @@ struct unknown091 {
   f32 unknown08; // Inferred role: depth below; original member name unknown.
 };
 
-constexpr int WILDCARD_PRECIOUS_POP_DIST_ROW = 34;
+constexpr int WILDCARD_UNKNOWN_34 = 34; // Inferred role: wildcard precious pop dist row; original name unknown.
 
 void GmkPrecious::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
   dispose();
-  unknown00 = bdat.getValCheck("itmID", id, BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("itmID", id, BDAT_TYPE_UNKNOWN_2);
   gf::GfItemUtil::isPrecious(unknown00);
-  unknown02 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
-  unknown04 = bdat.getValCheck("QuestID", id, BDAT_TYPE_U16);
-  unknown06 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_U16), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_U16));
-  unknown0a = QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_U16), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_U8), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_U8));
-  unknown10.unknown08 = bdat.getValCheck("POP_TIME", id, BDAT_TYPE_U32);
-  unknown20.unknown08 = bdat.getValCheck("popWeather", id, BDAT_TYPE_U8);
+  unknown02 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
+  unknown04 = bdat.getValCheck("QuestID", id, BDAT_TYPE_UNKNOWN_2);
+  unknown06 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2));
+  unknown0a =
+      QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_UNKNOWN_1), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_UNKNOWN_1));
+  unknown10.unknown08 = bdat.getValCheck("POP_TIME", id, BDAT_TYPE_UNKNOWN_3);
+  unknown20.unknown08 = bdat.getValCheck("popWeather", id, BDAT_TYPE_UNKNOWN_1);
 }
 
 void GmkPrecious::BdatInfo::dispose() { unknown00 = 0; }
@@ -85,7 +86,7 @@ int GmkPrecious::getGameFlagId() const { return unknown20.unknown18 + 0xb7ef; }
 
 void GmkPrecious::create(const CreateInfo &info) {
   AGmkBase::create(info);
-  f32 popDist = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_PRECIOUS_POP_DIST_ROW, BDAT_TYPE_F32).valueF32;
+  f32 popDist = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_UNKNOWN_34, BDAT_TYPE_UNKNOWN_8).valueF32;
   unknown70.unknown00 = popDist * popDist;
 }
 

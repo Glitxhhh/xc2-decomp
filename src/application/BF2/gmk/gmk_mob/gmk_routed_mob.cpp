@@ -25,7 +25,7 @@ GmkRoutedMob::GmkRoutedMob() {}
 
 GmkType GmkRoutedMob::getGmkType() const { return GMK_TYPE; }
 
-const IGmkList *GmkRoutedMob::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_MOB_ROUTE_POINT]; }
+const IGmkList *GmkRoutedMob::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_UNKNOWN_20]; }
 
 void GmkRoutedMob::unbindRouteNavi(gf::GF_OBJ_HANDLE *handle) {
   if (handle == gf::INVALID_HANDLE) {

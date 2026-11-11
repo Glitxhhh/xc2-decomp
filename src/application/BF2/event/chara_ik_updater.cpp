@@ -31,65 +31,65 @@ void CharaIKUpdater::create(gf::GF_OBJ_HANDLE *handle) {
   if (obj != nullptr) {
     CharaFacialUtil::getLensLimit(unknown40, unknown50, unknown60, unknown70, obj);
   }
-  unknown08.set(FLAG_ALL_IK, true);
-  unknown08.set(FLAG_FOOT_IK_0, true);
-  unknown08.set(FLAG_FOOT_IK_1, true);
-  unknown08.set(FLAG_FOOT_IK_2, true);
-  unknown08.set(FLAG_TARGET_IK, false);
-  unknown08.set(FLAG_LENS_IK, false);
+  unknown08.set(FLAG_UNKNOWN_0, true);
+  unknown08.set(FLAG_UNKNOWN_1, true);
+  unknown08.set(FLAG_UNKNOWN_2, true);
+  unknown08.set(FLAG_UNKNOWN_3, true);
+  unknown08.set(FLAG_UNKNOWN_4, false);
+  unknown08.set(FLAG_UNKNOWN_6, false);
 }
 
 void CharaIKUpdater::render(const mm::Vec3 &position, f32 height) { gf::GfObjUtil::getObj(unknown10); }
 
 void CharaIKUpdater::setAllIK(bool isEnable) {
-  unknown08.set(FLAG_ALL_IK, isEnable);
+  unknown08.set(FLAG_UNKNOWN_0, isEnable);
   unknown18 = 0.0f;
-  unknown0c.set(REQUEST_ALL_IK);
-  unknown0c.set(REQUEST_FOOT_IK);
-  unknown0c.set(REQUEST_TARGET_IK);
-  unknown0c.set(REQUEST_TARGET_POS);
-  unknown0c.set(REQUEST_LENS_IK);
+  unknown0c.set(REQUEST_UNKNOWN_0);
+  unknown0c.set(REQUEST_UNKNOWN_1);
+  unknown0c.set(REQUEST_UNKNOWN_2);
+  unknown0c.set(REQUEST_UNKNOWN_3);
+  unknown0c.set(REQUEST_UNKNOWN_4);
 }
 
 void CharaIKUpdater::setFootIK(bool isEnable, FOOT_TYPE type) {
   switch (type) {
-  case FOOT_TYPE_0:
-    unknown08.set(FLAG_FOOT_IK_0, isEnable);
+  case FOOT_TYPE_UNKNOWN_0:
+    unknown08.set(FLAG_UNKNOWN_1, isEnable);
     break;
-  case FOOT_TYPE_1:
-    unknown08.set(FLAG_FOOT_IK_1, isEnable);
+  case FOOT_TYPE_UNKNOWN_1:
+    unknown08.set(FLAG_UNKNOWN_2, isEnable);
     break;
-  case FOOT_TYPE_2:
-    unknown08.set(FLAG_FOOT_IK_2, isEnable);
+  case FOOT_TYPE_UNKNOWN_2:
+    unknown08.set(FLAG_UNKNOWN_3, isEnable);
     break;
   }
-  unknown0c.set(REQUEST_FOOT_IK);
+  unknown0c.set(REQUEST_UNKNOWN_1);
 }
 
 void CharaIKUpdater::setTargetIK(bool isEnable, f32 frame, bool isNoSpine) {
   if (isEnable) {
     unknown18 = frame;
-    unknown08.set(FLAG_TARGET_IK, true);
-    unknown08.set(FLAG_TARGET_IK_NO_SPINE, isNoSpine);
-    unknown0c.set(REQUEST_TARGET_IK);
-  } else if (unknown08.test(FLAG_TARGET_IK)) {
-    unknown08.set(FLAG_TARGET_IK, false);
-    unknown08.set(FLAG_TARGET_IK_NO_SPINE, isNoSpine);
+    unknown08.set(FLAG_UNKNOWN_4, true);
+    unknown08.set(FLAG_UNKNOWN_5, isNoSpine);
+    unknown0c.set(REQUEST_UNKNOWN_2);
+  } else if (unknown08.test(FLAG_UNKNOWN_4)) {
+    unknown08.set(FLAG_UNKNOWN_4, false);
+    unknown08.set(FLAG_UNKNOWN_5, isNoSpine);
     unknown18 = frame;
-    unknown0c.set(REQUEST_TARGET_IK);
+    unknown0c.set(REQUEST_UNKNOWN_2);
   }
 }
 
 void CharaIKUpdater::setTargetPos(const mm::Vec3 &position) {
   unknown20 = position;
-  unknown0c.set(REQUEST_TARGET_POS);
+  unknown0c.set(REQUEST_UNKNOWN_3);
 }
 
 void CharaIKUpdater::setLensIK(bool isEnable, f32 x, f32 y) {
   unknown30.x = x;
   unknown30.y = y;
-  unknown08.set(FLAG_LENS_IK, isEnable);
-  unknown0c.set(REQUEST_LENS_IK);
+  unknown08.set(FLAG_UNKNOWN_6, isEnable);
+  unknown0c.set(REQUEST_UNKNOWN_4);
 }
 
 bool CharaIKUpdater::checkField(gf::GfObj *obj) {

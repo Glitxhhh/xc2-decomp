@@ -89,7 +89,7 @@ bool GfComBehaviorMob::isMove() const {
       if (gmk == nullptr) {
         return false;
       }
-      return gmk->unknown08.unknown10->unknown0c != gmk::SHAPE_TYPE_POINT;
+      return gmk->unknown08.unknown10->unknown0c != gmk::SHAPE_TYPE_UNKNOWN_1;
     }
   }
 

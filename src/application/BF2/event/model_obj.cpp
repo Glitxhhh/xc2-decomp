@@ -15,13 +15,13 @@ void ModelObj::setReserve(u32 index, bool isReserve) {
 bool ModelObj::isReserve(int index) { return (unknown134 & (index >= 0 ? 1 << index : 0x7fffffff)) != 0; }
 
 bool ModelObj::isSame(const char *path, bool isPriority, u32 id) {
-  if (unknown0c != MODEL_TYPE_PATH) {
+  if (unknown0c != MODEL_TYPE_UNKNOWN_0) {
     return false;
   }
   if (__builtin_strcmp(this->unknown18.c_str(), path) != 0) {
     return false;
   }
-  if (((unknown08 & FLAG_PRIORITY) != 0) != isPriority) {
+  if (((unknown08 & FLAG_UNKNOWN_0) != 0) != isPriority) {
     return false;
   }
   return unknown5c == id;
@@ -54,10 +54,10 @@ void ModelObj::update() {
 }
 
 bool ModelObj::isSame() {
-  if (unknown0c != MODEL_TYPE_NONE) {
+  if (unknown0c != MODEL_TYPE_UNKNOWN_3) {
     return false;
   }
-  return (unknown08 & FLAG_SAME) != 0;
+  return (unknown08 & FLAG_UNKNOWN_1) != 0;
 }
 
 } // namespace event

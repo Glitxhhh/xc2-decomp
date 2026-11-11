@@ -13,7 +13,7 @@ namespace event {
 
 class DataManager : public IManager, public mm::mtl::Singleton<DataManager> {
 public:
-  static constexpr u32 SCENE_COUNT = 16;
+  static constexpr u32 SCENE_UNKNOWN_16 = 16; // Inferred role: scene count; original name unknown.
 
   struct OfsInfo {
     OfsInfo(const char *name);
@@ -70,10 +70,10 @@ private:
     return unknown001(mat, 0.0f, 0.0f, -1.0f) + pos;
   }
 
-  mm::mtl::FixedVector<OfsInfo *, SCENE_COUNT> unknown10; // Inferred role: scenes; original member name unknown.
-  mm::mtl::FixStr<64> unknown98;                          // Inferred role: scene name; original member name unknown.
-  mm::mtl::FixStr<64> unknowndc;                          // Inferred role: current scene name; original member name unknown.
-  OfsInfo *unknown120;                                    // Inferred role: current; original member name unknown.
+  mm::mtl::FixedVector<OfsInfo *, SCENE_UNKNOWN_16> unknown10; // Inferred role: scenes; original member name unknown.
+  mm::mtl::FixStr<64> unknown98;                               // Inferred role: scene name; original member name unknown.
+  mm::mtl::FixStr<64> unknowndc;                               // Inferred role: current scene name; original member name unknown.
+  OfsInfo *unknown120;                                         // Inferred role: current; original member name unknown.
 };
 
 static_assert(sizeof(DataManager::OfsInfo) == 0x170, "");

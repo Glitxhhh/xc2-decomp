@@ -17,16 +17,16 @@ namespace event {
 class MdlstmObj : public IResEvent {
 public:
   enum STATE {
-    STATE_NONE,
-    STATE_INIT,
-    STATE_LOAD,
-    STATE_LOADING,
-    STATE_LOADED,
-    STATE_MODEL,
-    STATE_DELAY,
-    STATE_BUSY,
-    STATE_ACTIVE,
-    STATE_DISPOSE,
+    STATE_UNKNOWN_0, // Inferred role: none; original name unknown.
+    STATE_UNKNOWN_1, // Inferred role: init; original name unknown.
+    STATE_UNKNOWN_2, // Inferred role: load; original name unknown.
+    STATE_UNKNOWN_3, // Inferred role: loading; original name unknown.
+    STATE_UNKNOWN_4, // Inferred role: loaded; original name unknown.
+    STATE_UNKNOWN_5, // Inferred role: model; original name unknown.
+    STATE_UNKNOWN_6, // Inferred role: delay; original name unknown.
+    STATE_UNKNOWN_7, // Inferred role: busy; original name unknown.
+    STATE_UNKNOWN_8, // Inferred role: active; original name unknown.
+    STATE_UNKNOWN_9, // Inferred role: dispose; original name unknown.
   };
 
   MdlstmObj();

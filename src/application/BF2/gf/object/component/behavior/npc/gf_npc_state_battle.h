@@ -64,7 +64,7 @@ template <typename T> void StateBattle<T>::onEnter(void *owner, ai::State *previ
 }
 
 template <typename T> void StateBattle<T>::seqApplyBattleMot(T &behavior, const fw::UpdateInfo &info) {
-  const char *command = reinterpret_cast<const char *>(Bdat::getValCheck(Bdat::getFP("FLD_NpcMobMotionId"), "cmdName", behavior.unknown007(), gmk::BDAT_TYPE_STRING));
+  const char *command = reinterpret_cast<const char *>(Bdat::getValCheck(Bdat::getFP("FLD_NpcMobMotionId"), "cmdName", behavior.unknown007(), gmk::BDAT_TYPE_UNKNOWN_7));
   unknown18.create(TFieldExecCmd<GfComAsm>::CreateInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8, command));
   unknown50 = &StateBattle::seqUpdateBattleMot;
 }

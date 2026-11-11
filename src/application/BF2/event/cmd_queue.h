@@ -56,15 +56,15 @@ template <size_t N, int Type> void CmdQueue<N, Type>::update() {
       it->unknown120++;
     }
     switch (result) {
-    case ICmd::RESULT_WAIT:
+    case ICmd::RESULT_UNKNOWN_0:
       goto end;
-    case ICmd::RESULT_END:
+    case ICmd::RESULT_UNKNOWN_1:
       it->unknown08->term();
       mItems.erase(it);
       it = mItems.begin();
       index = 0;
       break;
-    case ICmd::RESULT_NEXT:
+    case ICmd::RESULT_UNKNOWN_2:
       ++it;
       nextCount++;
       ++index;

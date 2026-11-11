@@ -4,8 +4,8 @@ namespace event {
 
 bool CharaWalkCalculator::s_initializeAcc;
 bool CharaWalkCalculator::s_initializeDec;
-f32 CharaWalkCalculator::s_lengthAcc[2][LENGTH_COUNT];
-f32 CharaWalkCalculator::s_lengthDec[2][LENGTH_COUNT];
+f32 CharaWalkCalculator::s_lengthAcc[2][LENGTH_UNKNOWN_50];
+f32 CharaWalkCalculator::s_lengthDec[2][LENGTH_UNKNOWN_50];
 
 CharaWalkCalculator::CharaWalkCalculator()
     : unknown00(0), unknown10(0.0f, 0.0f, 0.0f), unknown20(0.0f, 0.0f, 0.0f), unknown30(0.0f), unknown40(0.0f, 0.0f, 0.0f), unknown50(0.0f, 0.0f, 0.0f), unknown60(30.0f), unknown64(0.0f),
@@ -66,7 +66,7 @@ f32 CharaWalkCalculator::getDecSpeed(bool isRun, f32 frame) {
 }
 
 void CharaWalkCalculator::update(f32 delta) {
-  if ((unknown00 & FLAG_ACTIVE) != 0) {
+  if ((unknown00 & FLAG_UNKNOWN_0) != 0) {
     unknown70 = calcPos(unknown84);
     f32 frame = unknown84;
     unknown80 = calcSpeed(frame);

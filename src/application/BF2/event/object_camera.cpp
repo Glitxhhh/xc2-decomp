@@ -12,10 +12,10 @@
 
 namespace event {
 
-ObjectCamera::ObjectCamera(const char *name, u32 id) : Object(OBJTYPE_CAMERA, name), unknown68(nullptr), unknown70(id), unknown4e0(0), unknown4e4(0) {
+ObjectCamera::ObjectCamera(const char *name, u32 id) : Object(OBJTYPE_UNKNOWN_3, name), unknown68(nullptr), unknown70(id), unknown4e0(0), unknown4e4(0) {
   unknown68 = mm::mtl::Singleton<CamManager>::getPtr()->createCam(id);
-  unknown80 = PosAxis(PosAxis::AXIS_POS, unknown68->getPos());
-  unknown2b0 = TarAxis(TarAxis::AXIS_POS, unknown68->getTarget());
+  unknown80 = PosAxis(PosAxis::AXIS_UNKNOWN_1, unknown68->getPos());
+  unknown2b0 = TarAxis(TarAxis::AXIS_UNKNOWN_1, unknown68->getTarget());
 }
 
 ObjectCamera::~ObjectCamera() {

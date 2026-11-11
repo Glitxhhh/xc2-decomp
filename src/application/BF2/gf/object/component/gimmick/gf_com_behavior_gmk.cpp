@@ -211,7 +211,7 @@ void GfComBehaviorGmk::createMenuObj() {
     param.unknown40 = 0;
     param.unknown3c = true;
     param.unknown48 = GfDataBdat::getFP(BDAT_FLD_SALVAGEPOINT);
-    param.unknown50 = static_cast<u16>(Bdat::getValCheck(bdat, "SalvagePointName", id, gmk::BDAT_TYPE_U16));
+    param.unknown50 = static_cast<u16>(Bdat::getValCheck(bdat, "SalvagePointName", id, gmk::BDAT_TYPE_UNKNOWN_2));
     break;
   case gmk::GMK_TYPE_KIZUNA_TALK:
     param.unknown3c = true;

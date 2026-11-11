@@ -13,8 +13,8 @@ MotstmManager::MotstmManager() : unknown10(), unknown14(0), unknown18("streaming
 void MotstmManager::create(mtl::ALLOC_HANDLE handle) {
   unknown18.create(mm::mtl::Singleton<MemoryManager>::getPtr()->getSysHandle(), handle);
   unknown18.pause(true);
-  unknown10.set(FLAG_CREATE);
-  unknown10.set(FLAG_PAUSE);
+  unknown10.set(FLAG_UNKNOWN_0);
+  unknown10.set(FLAG_UNKNOWN_2);
 }
 
 void MotstmManager::loadStream(const char *name) {
@@ -33,39 +33,39 @@ void MotstmManager::clear() {
 }
 
 void MotstmManager::start() {
-  if (unknown10.test(FLAG_CREATE)) {
-    unknown10.set(FLAG_START);
+  if (unknown10.test(FLAG_UNKNOWN_0)) {
+    unknown10.set(FLAG_UNKNOWN_1);
   }
 }
 
 void MotstmManager::stop() {
-  if (unknown10.test(FLAG_CREATE)) {
+  if (unknown10.test(FLAG_UNKNOWN_0)) {
     unknown18.stopStream();
   }
 }
 
 bool MotstmManager::isBusy() {
-  if (unknown10.test(FLAG_CREATE)) {
+  if (unknown10.test(FLAG_UNKNOWN_0)) {
     return unknown18.isBusy();
   }
   return false;
 }
 
 void MotstmManager::render() {
-  if (unknown10.test(FLAG_CREATE) && isDisp()) {
+  if (unknown10.test(FLAG_UNKNOWN_0) && isDisp()) {
     mm::mtl::Singleton<FrameManager>::getPtr();
   }
 }
 
 void MotstmManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_UPDATE:
+  case MSG_TYPE_UNKNOWN_14:
     update();
     break;
-  case MSG_TYPE_RENDER:
+  case MSG_TYPE_UNKNOWN_16:
     render();
     break;
-  case MSG_TYPE_CLEAR:
+  case MSG_TYPE_UNKNOWN_12:
     clear();
     break;
   default:
@@ -83,12 +83,12 @@ bool MotstmManager::isFailure() const { return unknown18.isFailure(); }
 
 void MotstmManager::setDisp(bool isDisp) {
   if (isDisp) {
-    unknown14 |= DISP_FLAG_DISP;
+    unknown14 |= DISP_FLAG_UNKNOWN_0;
   } else {
-    unknown14 &= ~DISP_FLAG_DISP;
+    unknown14 &= ~DISP_FLAG_UNKNOWN_0;
   }
 }
 
-bool MotstmManager::isDisp() const { return (unknown14 & DISP_FLAG_DISP) != 0; }
+bool MotstmManager::isDisp() const { return (unknown14 & DISP_FLAG_UNKNOWN_0) != 0; }
 
 } // namespace event

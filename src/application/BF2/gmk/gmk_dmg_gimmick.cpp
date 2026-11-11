@@ -44,22 +44,22 @@ void GmkDmgGimmick::debugDraw() const {
   isValid();
 }
 
-const fw::SoundCategory DMG_SE_CATEGORY = static_cast<fw::SoundCategory>(7);
+const fw::SoundCategory SOUND_CATEGORY_UNKNOWN_7 = static_cast<fw::SoundCategory>(7); // Inferred role: dmg se category; original name unknown.
 
 void GmkDmgGimmick::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
   unknown1c = BootedGmkCond(bdat, id, "DEPOP_");
-  unknown02 = bdat.getValCheck("DEPOP_Condition", id, BDAT_TYPE_U16);
-  unknown04 = toBdatF32(bdat.getValCheck("DMG_interval", id, BDAT_TYPE_F32));
-  unknown08 = bdat.getValCheck("Pc_dmg", id, BDAT_TYPE_U8);
-  unknown09 = bdat.getValCheck("EN_dmg", id, BDAT_TYPE_U8);
-  unknown10 = reinterpret_cast<const char *>(bdat.getValCheck("effect_name", id, BDAT_TYPE_STRING));
-  unknown18 = bdat.getValCheck("SE_name", id, BDAT_TYPE_U8);
-  unknown19 = bdat.getValCheck("volumeMAX", id, BDAT_TYPE_U8);
-  unknown1a = bdat.getValCheck("volumeMIN", id, BDAT_TYPE_U8);
-  u16 effectDispRadius = bdat.getValCheck("effect_disp_r", id, BDAT_TYPE_U16);
+  unknown02 = bdat.getValCheck("DEPOP_Condition", id, BDAT_TYPE_UNKNOWN_2);
+  unknown04 = toBdatF32(bdat.getValCheck("DMG_interval", id, BDAT_TYPE_UNKNOWN_8));
+  unknown08 = bdat.getValCheck("Pc_dmg", id, BDAT_TYPE_UNKNOWN_1);
+  unknown09 = bdat.getValCheck("EN_dmg", id, BDAT_TYPE_UNKNOWN_1);
+  unknown10 = reinterpret_cast<const char *>(bdat.getValCheck("effect_name", id, BDAT_TYPE_UNKNOWN_7));
+  unknown18 = bdat.getValCheck("SE_name", id, BDAT_TYPE_UNKNOWN_1);
+  unknown19 = bdat.getValCheck("volumeMAX", id, BDAT_TYPE_UNKNOWN_1);
+  unknown1a = bdat.getValCheck("volumeMIN", id, BDAT_TYPE_UNKNOWN_1);
+  u16 effectDispRadius = bdat.getValCheck("effect_disp_r", id, BDAT_TYPE_UNKNOWN_2);
   unknown20.unknown00 = static_cast<f32>(effectDispRadius) * static_cast<f32>(effectDispRadius);
-  u8 effectReleaseRadius = bdat.getValCheck("effect_release_r", id, BDAT_TYPE_U8);
+  u8 effectReleaseRadius = bdat.getValCheck("effect_release_r", id, BDAT_TYPE_UNKNOWN_1);
   f32 effectReleaseDistance = effectDispRadius + effectReleaseRadius;
   unknown24.unknown00 = effectReleaseDistance * effectReleaseDistance;
 }
@@ -82,9 +82,9 @@ void GmkDmgSe::createGmkPhantom() const {
     return;
   }
   switch (unknown08.unknown10->unknown0c) {
-  case SHAPE_TYPE_SPHERE:
-  case SHAPE_TYPE_BOX:
-  case SHAPE_TYPE_CAPSULE:
+  case SHAPE_TYPE_UNKNOWN_2:
+  case SHAPE_TYPE_UNKNOWN_3:
+  case SHAPE_TYPE_UNKNOWN_4:
     unknown50.create(*this, nullptr, false);
     break;
   default:
@@ -97,7 +97,7 @@ void GmkDmgSe::createSeInst(fw::SoundPack *pack, u32 id) const {
     return;
   }
   disposeSeInst(false);
-  unknowne4 = fw::SoundManager::get()->playSe(id, pack, 1.0f, DMG_SE_CATEGORY);
+  unknowne4 = fw::SoundManager::get()->playSe(id, pack, 1.0f, SOUND_CATEGORY_UNKNOWN_7);
   if (unknowne4 != 0) {
     const mm::Vec3 &position = unknown08.unknown08->unknown00;
     fw::SoundManager::get()->setPos(unknowne4, position);

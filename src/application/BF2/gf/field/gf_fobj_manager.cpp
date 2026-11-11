@@ -38,8 +38,8 @@ void GfFobjManager::initialize(const GfSetupParam &) {
   unknown9088.create(effectInfo);
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA);
   GfFobjSeManager::CreateInfo seInfo;
-  seInfo.unknown00 = Bdat::getValCheck(bdat, 0, WILDCARD_FOBJ_SE_INTERVAL_ROW, gmk::BDAT_TYPE_F32).valueF32;
-  seInfo.unknown04 = Bdat::getValCheck(bdat, 1, WILDCARD_FOBJ_SE_MAX_ROW, gmk::BDAT_TYPE_U16).valueU16;
+  seInfo.unknown00 = Bdat::getValCheck(bdat, 0, WILDCARD_FOBJ_SE_INTERVAL_ROW, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+  seInfo.unknown04 = Bdat::getValCheck(bdat, 1, WILDCARD_FOBJ_SE_MAX_ROW, gmk::BDAT_TYPE_UNKNOWN_2).valueU16;
   unknown90d0.create(seInfo);
   unknown9058 = true;
 }

@@ -33,7 +33,7 @@ void GfGameTalk::update(const fw::UpdateInfo &) {}
 
 bool GfGameTalk::isPlaying() { return event::Manager::get()->isPlay(); }
 
-bool GfGameTalk::isError() { return (event::Manager::get()->unknown18 & event::Manager::FLAG_PLAY_END) != 0; }
+bool GfGameTalk::isError() { return (event::Manager::get()->unknown18 & event::Manager::FLAG_UNKNOWN_1) != 0; }
 
 void GfGameTalk::play(const GfSetupPfTalk &talk) {
   u8 *list = Bdat::getFP("EVT_listList");

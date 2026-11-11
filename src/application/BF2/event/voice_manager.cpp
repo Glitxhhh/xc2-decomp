@@ -24,20 +24,20 @@ void VoiceManager::update() {
 }
 
 void VoiceManager::render() {
-  if ((unknown14 & DISP_FLAG_DISP) != 0) {
+  if ((unknown14 & DISP_FLAG_UNKNOWN_0) != 0) {
     unknown230.draw();
   }
 }
 
 void VoiceManager::setAutoVoiceMode(bool isAutoVoiceMode, const char *directory, const char *name) {
   unknown18.create(isAutoVoiceMode, directory, name);
-  setFlag(FLAG_AUTO_VOICE_MODE, isAutoVoiceMode);
+  setFlag(FLAG_UNKNOWN_0, isAutoVoiceMode);
 }
 
 void VoiceManager::setMultipleMode(bool isMultipleMode) { unknown230.setMultipleMode(isMultipleMode); }
 
 void VoiceManager::preloadAuto(f32 frame, const char *name) {
-  if ((unknown10 & FLAG_AUTO_VOICE_MODE) == 0) {
+  if ((unknown10 & FLAG_UNKNOWN_0) == 0) {
     return;
   }
   const char *path = unknown18.makePath(name);
@@ -54,7 +54,7 @@ void VoiceManager::preload(f32 frame, const char *name) {
 
 bool VoiceManager::play(const char *name, f32 delay, IVoiceEvent *event) {
   bool isLipsync = mm::mtl::Singleton<LipsyncManager>::getPtr()->setTarget(name);
-  setFlag(FLAG_LIPSYNC, isLipsync);
+  setFlag(FLAG_UNKNOWN_1, isLipsync);
   if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkip()) {
     return isLipsync;
   }
@@ -71,37 +71,37 @@ bool VoiceManager::playOneshot(const char *name, f32 volume) {
 }
 
 void VoiceManager::pause(bool isPause) {
-  setFlag(FLAG_PAUSE, isPause);
+  setFlag(FLAG_UNKNOWN_2, isPause);
   unknown230.pause(isPause);
   unknown6f8.pause(isPause);
 }
 
 void VoiceManager::setDisp(bool isDisp) {
   if (isDisp) {
-    unknown14 |= DISP_FLAG_DISP;
+    unknown14 |= DISP_FLAG_UNKNOWN_0;
   } else {
-    unknown14 &= ~DISP_FLAG_DISP;
+    unknown14 &= ~DISP_FLAG_UNKNOWN_0;
   }
 }
 
-bool VoiceManager::isDisp() const { return (unknown14 & DISP_FLAG_DISP) != 0; }
+bool VoiceManager::isDisp() const { return (unknown14 & DISP_FLAG_UNKNOWN_0) != 0; }
 
 void VoiceManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT:
+  case MSG_TYPE_UNKNOWN_4:
     clear();
     break;
-  case MSG_TYPE_START_SCENE:
-  case MSG_TYPE_START_PAGE:
+  case MSG_TYPE_UNKNOWN_7:
+  case MSG_TYPE_UNKNOWN_8:
     startScene();
     break;
-  case MSG_TYPE_CLEAR:
+  case MSG_TYPE_UNKNOWN_12:
     clear();
     break;
-  case MSG_TYPE_UPDATE:
+  case MSG_TYPE_UNKNOWN_14:
     update();
     break;
-  case MSG_TYPE_RENDER:
+  case MSG_TYPE_UNKNOWN_16:
     render();
     break;
   default:

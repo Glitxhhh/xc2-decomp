@@ -24,14 +24,14 @@ namespace gmk {
 
 template bool TGmkList<GmkJump, GmkJump::BdatInfo, 1347245386u, 3u, GmkJumpGobCustom>::initGmkBdatInfo(GmkJump::BdatInfo &, int &, const AGmkBase &);
 
-constexpr int WILDCARD_JUMP_ICON_DIST_ROW = 1;
-constexpr u32 ICON_FADE_OUT_FRAME = 5;
-const fw::EF_CATEGORY ICON_EFFECT_CATEGORY = static_cast<fw::EF_CATEGORY>(1);
+constexpr int WILDCARD_UNKNOWN_1_2 = 1;                                        // Inferred role: wildcard jump icon dist row; original name unknown.
+constexpr u32 ICON_FADE_OUT_UNKNOWN_5 = 5;                                     // Inferred role: icon fade out frame; original name unknown.
+const fw::EF_CATEGORY EF_CATEGORY_UNKNOWN_1 = static_cast<fw::EF_CATEGORY>(1); // Inferred role: icon effect category; original name unknown.
 
 void GmkJump::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
-  unknown02 = bdat.getValCheck("jumpType", id, BDAT_TYPE_U8);
-  unknown04 = bdat.getValCheck("nameRadius", id, BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
+  unknown02 = bdat.getValCheck("jumpType", id, BDAT_TYPE_UNKNOWN_1);
+  unknown04 = bdat.getValCheck("nameRadius", id, BDAT_TYPE_UNKNOWN_2);
 }
 
 bool GmkJump::BdatInfo::isPopCondMatched() const {
@@ -51,13 +51,13 @@ void GmkJump::create(const CreateInfo &info) {
   if (mapList != nullptr) {
     int map = gf::GfGameManager::getMapID();
     if (map >= Bdat::getIdTop(mapList) && Bdat::getIdTop(mapList) + Bdat::getIdCount(mapList) > map) {
-      u8 displayRadius = Bdat::getValCheck(mapList, "ene_disp_r", map, BDAT_TYPE_U8);
-      u8 displayHeight = Bdat::getValCheck(mapList, "ene_disp_h", map, BDAT_TYPE_U8);
+      u8 displayRadius = Bdat::getValCheck(mapList, "ene_disp_r", map, BDAT_TYPE_UNKNOWN_1);
+      u8 displayHeight = Bdat::getValCheck(mapList, "ene_disp_h", map, BDAT_TYPE_UNKNOWN_1);
       unknown60.set(displayRadius, displayHeight);
-      u8 releaseRadius = Bdat::getValCheck(mapList, "ene_release_r", map, BDAT_TYPE_U8);
-      u8 releaseHeight = Bdat::getValCheck(mapList, "ene_release_h", map, BDAT_TYPE_U8);
+      u8 releaseRadius = Bdat::getValCheck(mapList, "ene_release_r", map, BDAT_TYPE_UNKNOWN_1);
+      u8 releaseHeight = Bdat::getValCheck(mapList, "ene_release_h", map, BDAT_TYPE_UNKNOWN_1);
       unknown68.set(displayRadius + releaseRadius, displayHeight + releaseHeight);
-      f32 iconDistance = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_JUMP_ICON_DIST_ROW, BDAT_TYPE_F32).valueF32;
+      f32 iconDistance = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_UNKNOWN_1_2, BDAT_TYPE_UNKNOWN_8).valueF32;
       unknown74.unknown00 = iconDistance * iconDistance;
       return;
     }
@@ -76,7 +76,7 @@ void GmkJump::disposeIcon(bool isFadeOut) {
     return;
   }
   if (isFadeOut) {
-    fw::EffectManager::get()->fadeOutDead(unknown70, ICON_FADE_OUT_FRAME);
+    fw::EffectManager::get()->fadeOutDead(unknown70, ICON_FADE_OUT_UNKNOWN_5);
   } else {
     fw::EffectManager::get()->remove(unknown70);
   }
@@ -180,7 +180,7 @@ void GmkJump::createIcon() {
   if (unknown70 == 0) {
     return;
   }
-  fw::EffectManager::get()->setCategory(unknown70, ICON_EFFECT_CATEGORY);
+  fw::EffectManager::get()->setCategory(unknown70, EF_CATEGORY_UNKNOWN_1);
   validateIconPos();
 }
 

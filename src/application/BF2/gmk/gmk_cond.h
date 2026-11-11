@@ -101,8 +101,8 @@ static_assert(offsetof(WeatherCond, unknown08) == 0x8, "");
 class CloudCond {
 public:
   enum Type {
-    TYPE_NO_CLOUD_SEA = 0,
-    TYPE_CLOUD_SEA = 1,
+    TYPE_UNKNOWN_0 = 0, // Inferred role: no cloud sea; original name unknown.
+    TYPE_UNKNOWN_1 = 1, // Inferred role: cloud sea; original name unknown.
   };
 
   CloudCond() : unknown08(static_cast<Type>(-1)) {}

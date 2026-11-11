@@ -104,13 +104,13 @@ void AFieldSeq::seqWaitUIEnd(f32) {
 }
 
 void GfFieldMapGimmick::BdatInfo::create(CBdatWrapper bdat, int id) {
-  unknown00 = bdat.getValCheck("OP_Condition", id, gmk::BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("OP_Condition", id, gmk::BDAT_TYPE_UNKNOWN_2);
   unknown06 = gmk::BootedGmkCond(bdat, id, "OP_");
   unknown0a = gmk::ScenarioFlagCond(bdat, id, "OP_");
   unknown0e = gmk::QuestFlagCond(bdat, id, "OP_");
-  unknown18.unknown08 = static_cast<u16>(bdat.getValCheck("OP_Time", id, gmk::BDAT_TYPE_U16));
-  unknown28.unknown08 = bdat.getValCheck("OP_weather", id, gmk::BDAT_TYPE_U8);
-  unknown02 = bdat.getValCheck("camGim_ATR", id, gmk::BDAT_TYPE_U8);
+  unknown18.unknown08 = static_cast<u16>(bdat.getValCheck("OP_Time", id, gmk::BDAT_TYPE_UNKNOWN_2));
+  unknown28.unknown08 = bdat.getValCheck("OP_weather", id, gmk::BDAT_TYPE_UNKNOWN_1);
+  unknown02 = bdat.getValCheck("camGim_ATR", id, gmk::BDAT_TYPE_UNKNOWN_1);
   unknown03 = Bdat::getFlagVal(bdat.unknown00, "flag", id, "gmkCamPos") != 0;
   unknown04 = Bdat::getFlagVal(bdat.unknown00, "flag", id, "nowaitGmkCam") != 0;
 }
@@ -167,7 +167,7 @@ void GfFieldMapGimmick::create(GF_OBJ_HANDLE *handle) {
         accInfo.validate(*gmk);
         unknown68.create(accInfo);
       }
-      const char *camName = reinterpret_cast<const char *>(bdat.getValCheck("gmkCamName", id, gmk::BDAT_TYPE_STRING));
+      const char *camName = reinterpret_cast<const char *>(bdat.getValCheck("gmkCamName", id, gmk::BDAT_TYPE_UNKNOWN_7));
       if (camName == nullptr || *camName == '\0') {
         return;
       }
@@ -190,7 +190,7 @@ void GfFieldMapGimmick::create(GF_OBJ_HANDLE *handle) {
     }
     MenuCommonWindowParam param;
     param.unknown10 = GfDataBdat::getFP(BDAT_FLD_HELPMS);
-    param.unknown18 = static_cast<u16>(bdat.getValCheck("missMSG_ID", id, gmk::BDAT_TYPE_U16));
+    param.unknown18 = static_cast<u16>(bdat.getValCheck("missMSG_ID", id, gmk::BDAT_TYPE_UNKNOWN_2));
     GfPlayFactory::createCommonMessage(param);
   }
   dispose();

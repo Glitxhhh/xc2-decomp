@@ -75,7 +75,7 @@ public:
     u16 unknown00; // Inferred role: condition; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_SALVAGE;
+  static const GmkType GMK_TYPE = GMK_TYPE_SALVAGE; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkSalvage();
   ~GmkSalvage() override { dispose(); }
@@ -176,7 +176,7 @@ public:
     u8 unknown00; // Role and original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_SALVAGE_LOCATOR;
+  static const GmkType GMK_TYPE = GMK_TYPE_SALVAGE_LOCATOR; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkSalvageLocator();
   ~GmkSalvageLocator() override { dispose(); }

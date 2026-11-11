@@ -22,8 +22,8 @@ GmkCollision::GmkCollision(const CreateInfo *info) : unknown50(nullptr), unknown
 void GmkCollision::create(const CreateInfo &info) {
   dispose();
   unknown10 = info;
-  if (unknown10.unknown30 && unknown10.unknown00 != GmkPhantom::SHAPE_TYPE_CAPSULE && unknown10.unknown00 != GmkPhantom::SHAPE_TYPE_BOX) {
-    unknown10.unknown00 = GmkPhantom::SHAPE_TYPE_CAPSULE;
+  if (unknown10.unknown30 && unknown10.unknown00 != GmkPhantom::SHAPE_TYPE_UNKNOWN_2 && unknown10.unknown00 != GmkPhantom::SHAPE_TYPE_UNKNOWN_3) {
+    unknown10.unknown00 = GmkPhantom::SHAPE_TYPE_UNKNOWN_2;
     unknown10.unknown34[1] = unknown10.unknown34[0];
   }
   fw::ColiCharacterInfo coliInfo;
@@ -36,20 +36,20 @@ void GmkCollision::create(const CreateInfo &info) {
   coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_ENTER;
   coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_LEAVE;
   switch (info.unknown00) {
-  case GmkPhantom::SHAPE_TYPE_SPHERE: {
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_1: {
     fw::unknown131 shape(info.unknown34[0]);
     coliInfo.unknown80 = &shape;
     unknown58 = fw::ColiObject::createColiCharacter(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
   }
-  case GmkPhantom::SHAPE_TYPE_CAPSULE: {
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_2: {
     fw::unknown132 shape(info.unknown34[0], info.unknown34[1]);
     shape.unknown0c = info.unknown30;
     coliInfo.unknown80 = &shape;
     unknown58 = fw::ColiObject::createColiCharacter(coliInfo, mm::mtl::IntrusivePtr<fw::ReferenceFrame>());
     break;
   }
-  case GmkPhantom::SHAPE_TYPE_BOX: {
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_3: {
     fw::unknown133 shape(mm::Vec3(info.unknown34[0], info.unknown34[1], info.unknown34[2]));
     shape.unknown10.unknown10 = info.unknown30;
     coliInfo.unknown80 = &shape;
@@ -74,14 +74,14 @@ void GmkCollision::create(const AGmkBase &gmk, bool flag) {
   info.unknown10 = gmk.unknown08.unknown08->unknown00;
   info.unknown20 = gmk.unknown08.unknown08->unknown10;
   switch (info.unknown00) {
-  case GmkPhantom::SHAPE_TYPE_SPHERE:
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_1:
     info.unknown34[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
     break;
-  case GmkPhantom::SHAPE_TYPE_CAPSULE:
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_2:
     info.unknown34[0] = gmk.unknown08.unknown08->unknown20.y;
     info.unknown34[1] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
     break;
-  case GmkPhantom::SHAPE_TYPE_BOX:
+  case GmkPhantom::SHAPE_TYPE_UNKNOWN_3:
     info.unknown34[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
     info.unknown34[1] = gmk.unknown08.unknown08->unknown20.y * 0.5f;
     info.unknown34[2] = gmk.unknown08.unknown08->unknown20.z * 0.5f;

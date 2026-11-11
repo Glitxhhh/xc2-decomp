@@ -123,14 +123,14 @@ u32 ChainAttackCamera::lottery(u8 camType) {
   s32 count = Bdat::getIdCount(bdat);
   mm::mtl::FixedVector<u32, 64> candidates;
   for (s32 id = top; id < top + count; id++) {
-    u8 enSize = Bdat::getValCheck(bdat, "EnSize", id, gmk::BDAT_TYPE_U8);
-    if ((enSize & unknown70) != 0 && static_cast<u8>(Bdat::getValCheck(bdat, "CamType", id, gmk::BDAT_TYPE_U8)) == camType) {
+    u8 enSize = Bdat::getValCheck(bdat, "EnSize", id, gmk::BDAT_TYPE_UNKNOWN_1);
+    if ((enSize & unknown70) != 0 && static_cast<u8>(Bdat::getValCheck(bdat, "CamType", id, gmk::BDAT_TYPE_UNKNOWN_1)) == camType) {
       candidates.push_back(id);
     }
   }
   if (candidates.size() == 0) {
     for (s32 id = top; id < top + count; id++) {
-      if (static_cast<u8>(Bdat::getValCheck(bdat, "CamType", id, gmk::BDAT_TYPE_U8)) == camType) {
+      if (static_cast<u8>(Bdat::getValCheck(bdat, "CamType", id, gmk::BDAT_TYPE_UNKNOWN_1)) == camType) {
         candidates.push_back(id);
       }
     }

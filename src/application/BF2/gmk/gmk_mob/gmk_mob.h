@@ -166,7 +166,7 @@ public:
     GmkMob *unknown08; // Inferred role: owner; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_MOB;
+  static const GmkType GMK_TYPE = GMK_TYPE_MOB; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   ~GmkMob() override { dispose(); }
   GmkType getGmkType() const override;

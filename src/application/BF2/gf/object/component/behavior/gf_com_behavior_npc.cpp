@@ -60,22 +60,22 @@ namespace gf {
 constexpr int unknown001 = 0xa396; // Inferred role: first game flag of the talk bonus states; original name unknown.
 
 void GfComBehaviorNpc::BdatInfo::create(const CBdatWrapper &bdat, int id, const GfComBehaviorNpc &npc) {
-  unknown00 = bdat.getValCheck("ShopID", id, gmk::BDAT_TYPE_U16);
-  u16 closeRange = bdat.getValCheck("CloseRange", id, gmk::BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("ShopID", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 closeRange = bdat.getValCheck("CloseRange", id, gmk::BDAT_TYPE_UNKNOWN_2);
   unknown04 = static_cast<f32>(closeRange * closeRange);
-  unknown08 = static_cast<f32>(static_cast<u16>(bdat.getValCheck("MoveSpeed", id, gmk::BDAT_TYPE_U16)));
-  u16 reactionRange = bdat.getValCheck("ReactionRange", id, gmk::BDAT_TYPE_U16);
+  unknown08 = static_cast<f32>(static_cast<u16>(bdat.getValCheck("MoveSpeed", id, gmk::BDAT_TYPE_UNKNOWN_2)));
+  u16 reactionRange = bdat.getValCheck("ReactionRange", id, gmk::BDAT_TYPE_UNKNOWN_2);
   unknown0c = static_cast<f32>(reactionRange * reactionRange);
-  unknown10 = bdat.getValCheck("ReactionPercent", id, gmk::BDAT_TYPE_U16);
-  unknown12 = bdat.getValCheck("ReactionMot", id, gmk::BDAT_TYPE_U16);
-  unknown14 = bdat.getValCheck("BattleReaction", id, gmk::BDAT_TYPE_U16);
-  unknown16 = bdat.getValCheck("BattleMot", id, gmk::BDAT_TYPE_U16);
+  unknown10 = bdat.getValCheck("ReactionPercent", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown12 = bdat.getValCheck("ReactionMot", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown14 = bdat.getValCheck("BattleReaction", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown16 = bdat.getValCheck("BattleMot", id, gmk::BDAT_TYPE_UNKNOWN_2);
 
   gmk::AGmkBase *gmk = npc.getBindedGmkInst();
   switch (gmk->getGmkType()) {
   case gmk::GMK_TYPE_NPC:
   case gmk::GMK_TYPE_ROUTED_NPC:
-    unknown18 = bdat.getValCheck("EventID", id, gmk::BDAT_TYPE_U16);
+    unknown18 = bdat.getValCheck("EventID", id, gmk::BDAT_TYPE_UNKNOWN_2);
     break;
   case gmk::GMK_TYPE_BLADE:
     if (static_cast<gmk::GmkBlade *>(gmk)->unknown50 != 0) {

@@ -214,10 +214,10 @@ GF_OBJ_HANDLE *GfFobjDropitem::emitDropgold(u8 paramIndex, u32 gold) {
   GfFobjManager::getDropitemParams();
   GfInitParamFobj initParam;
   u8 *wildcard = GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA);
-  u32 limit1 = Bdat::getValCheck(wildcard, 0, unknown004, gmk::BDAT_TYPE_F32).valueF32;
-  u32 limit2 = Bdat::getValCheck(wildcard, 0, unknown005, gmk::BDAT_TYPE_F32).valueF32;
-  u32 limit3 = Bdat::getValCheck(wildcard, 0, unknown006, gmk::BDAT_TYPE_F32).valueF32;
-  u32 limit4 = Bdat::getValCheck(wildcard, 0, unknown007, gmk::BDAT_TYPE_F32).valueF32;
+  u32 limit1 = Bdat::getValCheck(wildcard, 0, unknown004, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+  u32 limit2 = Bdat::getValCheck(wildcard, 0, unknown005, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+  u32 limit3 = Bdat::getValCheck(wildcard, 0, unknown006, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+  u32 limit4 = Bdat::getValCheck(wildcard, 0, unknown007, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
   if (gold < limit1) {
     initParam.m_bladeID = 10;
   } else if (gold < limit2) {

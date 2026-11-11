@@ -18,15 +18,15 @@ ICmd::RESULT RandPlayer::Warp::update(const Param &param) {
   if (param.getFrame() == 0) {
     gf::GfGameParty::judgeRandomTalkWarp();
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT RandPlayer::Wait::update(const Param &param) {
   Object *object = RandUtil::searchByID(param.val(0).getS32());
-  if (param.getFrame() < 60 && object->getType() == OBJTYPE_CHARA && !gf::GfObjUtil::isStanbyTalkingPlayer(static_cast<ObjectChara *>(object)->getCharaObj()->getHandle())) {
-    return RESULT_WAIT;
+  if (param.getFrame() < 60 && object->getType() == OBJTYPE_UNKNOWN_2 && !gf::GfObjUtil::isStanbyTalkingPlayer(static_cast<ObjectChara *>(object)->getCharaObj()->getHandle())) {
+    return RESULT_UNKNOWN_0;
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 ICmd::RESULT RandPlayer::Reset::update(const Param &param) {
@@ -38,16 +38,16 @@ ICmd::RESULT RandPlayer::Reset::update(const Param &param) {
     f32 z = param.val(4).getF32();
     bool isTar = param.val(5).getBool();
     Object *object = RandUtil::searchByID(id);
-    if (isReset && object->getType() == OBJTYPE_CHARA) {
+    if (isReset && object->getType() == OBJTYPE_UNKNOWN_2) {
       CharaObj *chara = static_cast<ObjectChara *>(object)->getCharaObj();
       if (isTar) {
-        chara->setTar(TarAxis(TarAxis::AXIS_POS, x, y, z), -1.0f, static_cast<EVT_tarcvtype>(1), static_cast<EVT_aimtype>(0), -1.0f, -1.0f);
+        chara->setTar(TarAxis(TarAxis::AXIS_UNKNOWN_1, x, y, z), -1.0f, static_cast<EVT_tarcvtype>(1), static_cast<EVT_aimtype>(0), -1.0f, -1.0f);
       } else {
         chara->resetTar();
       }
     }
   }
-  return RESULT_END;
+  return RESULT_UNKNOWN_1;
 }
 
 RandPlayer::RandPlayer() : unknown978(0) {}
@@ -58,14 +58,14 @@ void RandPlayer::clear() {
 }
 
 void RandPlayer::update() {
-  if ((unknown978 & FLAG_PLAY) != 0) {
+  if ((unknown978 & FLAG_UNKNOWN_0) != 0) {
     unknown28.update();
     if (unknown28.isEmpty()) {
-      unknown978 &= ~FLAG_PLAY;
+      unknown978 &= ~FLAG_UNKNOWN_0;
     }
   }
 }
 
-bool RandPlayer::isPlaying() const { return (unknown978 & FLAG_PLAY) != 0; }
+bool RandPlayer::isPlaying() const { return (unknown978 & FLAG_UNKNOWN_0) != 0; }
 
 } // namespace event

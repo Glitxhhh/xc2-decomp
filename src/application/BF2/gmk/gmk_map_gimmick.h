@@ -36,7 +36,7 @@ public:
     BootedGmkCond unknown28; // Inferred role: booted gmk; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_MAP_GIMMICK;
+  static const GmkType GMK_TYPE = GMK_TYPE_MAP_GIMMICK; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkMapGimmick();
   ~GmkMapGimmick() override { dispose(); }

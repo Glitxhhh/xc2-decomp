@@ -62,7 +62,7 @@ GmkSalvageLocator::GmkSalvageLocator()
     : unknown48(nullptr), unknown58(false), unknown60(nullptr), unknownc0(gf::INVALID_HANDLE), unknownc8(0), unknownd0(nullptr), unknownd8(0.0f), unknowndc(0.0f), unknowne0(0.0f), unknowne4(0.0f),
       unknowne8(-1), unknownec(0), unknownf0(0), unknownf1(false), unknownf2(false) {}
 
-void GmkSalvage::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) { unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16); }
+void GmkSalvage::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) { unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2); }
 
 bool GmkSalvage::BdatInfo::isCondMatched() const {
   if (unknown00 != 0 && !gf::GfGameCond::isGameCond(unknown00)) {
@@ -257,9 +257,9 @@ void GmkSalvage::create(const CreateInfo &info) {
   const int unknown002 = 58; // Inferred role: wildcard data row of the second distance; original name unknown.
   AGmkBase::create(info);
   u8 *wildcard = gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA);
-  f32 distance = Bdat::getValCheck(wildcard, 0, unknown001, BDAT_TYPE_F32).valueF32;
+  f32 distance = Bdat::getValCheck(wildcard, 0, unknown001, BDAT_TYPE_UNKNOWN_8).valueF32;
   unknown60 = distance * distance;
-  distance = Bdat::getValCheck(wildcard, 0, unknown002, BDAT_TYPE_F32).valueF32;
+  distance = Bdat::getValCheck(wildcard, 0, unknown002, BDAT_TYPE_UNKNOWN_8).valueF32;
   unknown64 = distance * distance;
   unknown48 = &GmkSalvage::seqValidateGmkSalvageLocatorDetails;
 }
@@ -456,7 +456,7 @@ void GmkSalvageLocator::createEnemyGobInst() {
     return;
   }
   gf::GfObjSetupEnemy *setup = gf::GfObjUtil::getObjSetup<gf::GfObjSetupEnemy>(unknownc0);
-  setup->validateBy_pop_act_type(Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_SALVAGE_ENEMY_SET), "pop_act_type", unknowne8, BDAT_TYPE_U8));
+  setup->validateBy_pop_act_type(Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_SALVAGE_ENEMY_SET), "pop_act_type", unknowne8, BDAT_TYPE_UNKNOWN_1));
   bindToGameObj(unknownc0);
   unknownf1 = false;
   unknownf2 = false;

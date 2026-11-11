@@ -33,7 +33,7 @@ public:
     mutable GmkRouteNavi *unknown10; // Inferred role: route navi found by findPosRot; original member name unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_MOB;
+  static const GmkType GMK_TYPE = GMK_TYPE_ROUTED_MOB; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkRoutedMob();
   ~GmkRoutedMob() override;

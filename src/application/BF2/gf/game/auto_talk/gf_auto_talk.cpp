@@ -165,7 +165,7 @@ void GfAutoTalk::createMenuObj() {
   param.unknown20 = (*mob->unknown48.unknowna8)[0];
   int mobId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(param.unknown20)->unknown30)->unknown10;
   if (mobId > 0) {
-    GfMenuBdat::getMenuOffset(static_cast<u16>(Bdat::getValCheck(GfDataBdat::getFP(BDAT_RSC_MOB_LIST), "OffsetID", mobId, gmk::BDAT_TYPE_U16)), param.unknown30);
+    GfMenuBdat::getMenuOffset(static_cast<u16>(Bdat::getValCheck(GfDataBdat::getFP(BDAT_RSC_MOB_LIST), "OffsetID", mobId, gmk::BDAT_TYPE_UNKNOWN_2)), param.unknown30);
   } else {
     param.unknown30.unknown10 = nullptr;
     param.unknown30.unknown00 = mm::Vec3::zero.x;
@@ -289,7 +289,7 @@ bool GfAutoTalkManager::createAutoTalkList(int gmkSet) {
   GfAutoTalkList::CreateInfo info;
   info.unknown00 = gmkSet;
   u8 *bdat = gmk::GmkManager::get()->unknown190;
-  const char *name = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "autoTalk", gmkSet, gmk::BDAT_TYPE_STRING));
+  const char *name = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "autoTalk", gmkSet, gmk::BDAT_TYPE_UNKNOWN_7));
   if (name == nullptr || *name == '\0') {
     return false;
   }
@@ -297,7 +297,7 @@ bool GfAutoTalkManager::createAutoTalkList(int gmkSet) {
   if (info.unknown08 == nullptr) {
     return false;
   }
-  name = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "autoTalk_ms", gmkSet, gmk::BDAT_TYPE_STRING));
+  name = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, "autoTalk_ms", gmkSet, gmk::BDAT_TYPE_UNKNOWN_7));
   if (name == nullptr || *name == '\0') {
     return false;
   }

@@ -10,10 +10,10 @@ void QuestManager::clear() { unknown10 = 0; }
 
 void QuestManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT:
+  case MSG_TYPE_UNKNOWN_4:
     clear();
     break;
-  case MSG_TYPE_CLEAR:
+  case MSG_TYPE_UNKNOWN_12:
     clear();
     break;
   default:
@@ -25,6 +25,6 @@ u32 QuestManager::getState(u32 quest) { return gf::GfQuestEvent::getQuestState(q
 
 bool QuestManager::getComp(u32 quest, u32 taskIndex) { return gf::GfQuestEvent::getQuestComp(quest, taskIndex); }
 
-bool QuestManager::isActive() const { return (unknown10 & FLAG_ACTIVE) != 0; }
+bool QuestManager::isActive() const { return (unknown10 & FLAG_UNKNOWN_0) != 0; }
 
 } // namespace event

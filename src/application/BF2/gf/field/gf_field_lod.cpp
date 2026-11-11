@@ -69,7 +69,7 @@ void GfFieldLodEffect::createAsset(int bdatId) {
   }
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_LODLIST);
   for (u32 i = 0; i < sizeof(unknown00) / sizeof(unknown00[0]); i++) {
-    const char *name = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, unknown004[i], bdatId, gmk::BDAT_TYPE_STRING));
+    const char *name = reinterpret_cast<const char *>(Bdat::getValCheck(bdat, unknown004[i], bdatId, gmk::BDAT_TYPE_UNKNOWN_7));
     if (name != nullptr && name[0] != '\0') {
       void *asset = fw::EffectManager::get()->search(name, pack);
       if (asset != nullptr) {
@@ -77,7 +77,7 @@ void GfFieldLodEffect::createAsset(int bdatId) {
       }
     }
   }
-  unknown28 = Bdat::getValCheck(bdat, "effect_skipframe", bdatId, gmk::BDAT_TYPE_U16);
+  unknown28 = Bdat::getValCheck(bdat, "effect_skipframe", bdatId, gmk::BDAT_TYPE_UNKNOWN_2);
 }
 
 void GfFieldLodEffect::disposeAsset() {
@@ -164,34 +164,34 @@ GfFieldLod::BdatInfo::BdatInfo(u16 bdatId) : unknown00(0), unknown04(0.0f), unkn
 void GfFieldLod::BdatInfo::create(u16 bdatId) {
   unknown0c = bdatId;
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_LODLIST);
-  unknown00 = Bdat::getValCheck(bdat, "LODID", bdatId, gmk::BDAT_TYPE_U16);
-  unknown04 = gmk::toBdatF32(Bdat::getValCheck(bdat, "LOD_fadeIN_TIME", bdatId, gmk::BDAT_TYPE_F32));
-  unknown08 = gmk::toBdatF32(Bdat::getValCheck(bdat, "LOD_fadeOUT_TIME", bdatId, gmk::BDAT_TYPE_F32));
+  unknown00 = Bdat::getValCheck(bdat, "LODID", bdatId, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown04 = gmk::toBdatF32(Bdat::getValCheck(bdat, "LOD_fadeIN_TIME", bdatId, gmk::BDAT_TYPE_UNKNOWN_8));
+  unknown08 = gmk::toBdatF32(Bdat::getValCheck(bdat, "LOD_fadeOUT_TIME", bdatId, gmk::BDAT_TYPE_UNKNOWN_8));
   mm::mtl::FixStr<32> name;
   for (u64 i = 0; i < 3; i++) {
     CondInfo &cond = unknown0e[i];
     cond.unknown0a = false;
     name.format("ScenarioFlagMin%d", i + 1);
-    u16 scenarioFlagMin = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_U16);
+    u16 scenarioFlagMin = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_UNKNOWN_2);
     name.format("ScenarioFlagMax%d", i + 1);
-    u16 scenarioFlagMax = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_U16);
+    u16 scenarioFlagMax = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_UNKNOWN_2);
     gmk::ScenarioFlagCond scenarioCond(scenarioFlagMin, scenarioFlagMax);
     if (scenarioCond.unknown00 <= scenarioCond.unknown02) {
       cond.unknown00 = scenarioCond;
     }
     name.format("QuestFlag%d", i + 1);
-    u16 questFlag = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_U16);
+    u16 questFlag = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_UNKNOWN_2);
     name.format("QuestFlagMin%d", i + 1);
-    u8 questFlagMin = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_U8);
+    u8 questFlagMin = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_UNKNOWN_1);
     name.format("QuestFlagMax%d", i + 1);
-    u8 questFlagMax = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_U8);
+    u8 questFlagMax = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_UNKNOWN_1);
     gmk::QuestFlagCond questCond(questFlag, questFlagMin, questFlagMax);
     if (questCond.unknown02 > questCond.unknown03) {
       break;
     }
     cond.unknown04 = questCond;
     name.format("Condition%d", i + 1);
-    cond.unknown08 = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_U16);
+    cond.unknown08 = Bdat::getValCheck(bdat, name.c_str(), bdatId, gmk::BDAT_TYPE_UNKNOWN_2);
   }
 }
 
@@ -217,7 +217,7 @@ void GfFieldLod::initialize(const GfSetupParam &) {
   unknown808 = Bdat::getIdTop(bdat);
   int count = Bdat::getIdCount(bdat);
   for (int i = 0; i < count; i++) {
-    unknown08[i] = Bdat::getValCheck(bdat, "LODID", i + unknown808, gmk::BDAT_TYPE_U16);
+    unknown08[i] = Bdat::getValCheck(bdat, "LODID", i + unknown808, gmk::BDAT_TYPE_UNKNOWN_2);
   }
   unknown80c = true;
   validateByInitData();
@@ -341,7 +341,7 @@ void GfFieldLodColiAnim::validateVeSe(const GfFieldLod &lod) {
     int bdatId = lod.findBdatIdByLodId(posInfo.unknown40);
     if (bdatId > Bdat::getIdTop(bdat)) {
       posInfo.unknown08.createAsset(bdatId);
-      f32 popDist = gmk::toBdatF32(Bdat::getValCheck(bdat, "effect_pop_dist", bdatId, gmk::BDAT_TYPE_F32));
+      f32 popDist = gmk::toBdatF32(Bdat::getValCheck(bdat, "effect_pop_dist", bdatId, gmk::BDAT_TYPE_UNKNOWN_8));
       f32 range = popDist;
       if (popDist == 0.0f) {
         for (u32 state = 0; state < 5; state++) {

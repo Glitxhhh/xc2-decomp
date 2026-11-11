@@ -38,18 +38,19 @@ GmkSe::GmkSe() : IntrusiveListNode(), unknown60(nullptr), unknownf0(false), unkn
 void GmkSe::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
   unknown00 = Bdat::getFlagVal(bdat.unknown00, "flag", id, "se_type") != 0;
   unknown01 = Bdat::getFlagVal(bdat.unknown00, "flag", id, "play_once") != 0;
-  unknown02 = bdat.getValCheck("seName", id, BDAT_TYPE_U16);
-  unknown04 = bdat.getValCheck("volumeMAX", id, BDAT_TYPE_U8);
-  unknown05 = bdat.getValCheck("volumeMIN", id, BDAT_TYPE_U8);
-  unknown0a = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_U16), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_U16));
-  unknown0e = QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_U16), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_U8), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_U8));
-  unknown06 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
-  u16 popTime = bdat.getValCheck("SEpopTime", id, BDAT_TYPE_U16);
+  unknown02 = bdat.getValCheck("seName", id, BDAT_TYPE_UNKNOWN_2);
+  unknown04 = bdat.getValCheck("volumeMAX", id, BDAT_TYPE_UNKNOWN_1);
+  unknown05 = bdat.getValCheck("volumeMIN", id, BDAT_TYPE_UNKNOWN_1);
+  unknown0a = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2));
+  unknown0e =
+      QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_UNKNOWN_1), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_UNKNOWN_1));
+  unknown06 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
+  u16 popTime = bdat.getValCheck("SEpopTime", id, BDAT_TYPE_UNKNOWN_2);
   unknown18.unknown08 = popTime;
-  unknown28.unknown08 = bdat.getValCheck("wtrSEType", id, BDAT_TYPE_U8);
+  unknown28.unknown08 = bdat.getValCheck("wtrSEType", id, BDAT_TYPE_UNKNOWN_1);
   unknown38 = BootedGmkCond(bdat, id, nullptr);
   unknown3c = BootedGmkCond(bdat, id, "OP_");
-  unknown08 = bdat.getValCheck("InRoom_volume", id, BDAT_TYPE_U8);
+  unknown08 = bdat.getValCheck("InRoom_volume", id, BDAT_TYPE_UNKNOWN_1);
 }
 
 bool GmkSe::BdatInfo::isPopCondMatched() const {
@@ -184,7 +185,7 @@ void GmkSe::validateMute() const {
 }
 
 void GmkSe::createGmkPhantom() {
-  if (canCreateGameEntity() && static_cast<u32>(AGmkBase::unknown08.unknown10->unknown0c - SHAPE_TYPE_SPHERE) < 3) {
+  if (canCreateGameEntity() && static_cast<u32>(AGmkBase::unknown08.unknown10->unknown0c - SHAPE_TYPE_UNKNOWN_2) < 3) {
     unknown60.create(*this, nullptr, false);
   }
 }

@@ -19,16 +19,16 @@ class ModelObj;
 
 class MdlstmManager : public IManager, public mm::mtl::Singleton<MdlstmManager> {
 public:
-  static constexpr u32 OBJ_COUNT = 1024;
+  static constexpr u32 OBJ_UNKNOWN_1024 = 1024; // Inferred role: obj count; original name unknown.
 
   enum {
-    FLAG_CREATE = 1 << 0,
-    FLAG_START = 1 << 1,
-    FLAG_UNKNOWN4 = 1 << 2, // Role and original name unknown.
+    FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: create flag; original name unknown.
+    FLAG_UNKNOWN_1 = 1 << 1, // Inferred role: start flag; original name unknown.
+    FLAG_UNKNOWN_2 = 1 << 2, // Role and original name unknown.
   };
 
   enum {
-    REUSE_FLAG_ENABLE = 1 << 0,
+    REUSE_FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: enable flag; original name unknown.
   };
 
   MdlstmManager();
@@ -50,11 +50,11 @@ public:
   bool searchByHandle(gf::GF_OBJ_HANDLE *handle) const;
 
 private:
-  u32 unknown10;                                             // Inferred role: flags; original member name unknown.
-  u32 unknown14;                                             // Inferred role: reuse flags; original member name unknown.
-  MdlstmObj unknown18[OBJ_COUNT];                            // Inferred role: objs; original member name unknown.
-  u32 unknown3c018;                                          // Inferred role: object count; original member name unknown.
-  mm::mtl::FixedVector<MdlstmObj *, OBJ_COUNT> unknown3c020; // Inferred role: active objs; original member name unknown.
+  u32 unknown10;                                                    // Inferred role: flags; original member name unknown.
+  u32 unknown14;                                                    // Inferred role: reuse flags; original member name unknown.
+  MdlstmObj unknown18[OBJ_UNKNOWN_1024];                            // Inferred role: objs; original member name unknown.
+  u32 unknown3c018;                                                 // Inferred role: object count; original member name unknown.
+  mm::mtl::FixedVector<MdlstmObj *, OBJ_UNKNOWN_1024> unknown3c020; // Inferred role: active objs; original member name unknown.
   u32 _3e028;
   u32 _3e02c;
   int unknown3e030; // Inferred role: reuse flag; original member name unknown.

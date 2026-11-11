@@ -37,7 +37,7 @@ bool StmPackData::open() {
 }
 
 void StmPackData::read(void *buffer, size_t size, size_t offset) {
-  unknown08 |= FLAG_BUSY;
+  unknown08 |= FLAG_UNKNOWN_0;
   ml::DevFileParamTh param;
   param.unknown40 = buffer;
   param.unknown4c = offset;
@@ -47,7 +47,7 @@ void StmPackData::read(void *buffer, size_t size, size_t offset) {
   ml::DevFileTh::rfRead(unknown90, param);
 }
 
-bool StmPackData::isBusy() const { return (unknown08 & FLAG_BUSY) || ml::DevFileTh::rfIsBusy(unknown90); }
+bool StmPackData::isBusy() const { return (unknown08 & FLAG_UNKNOWN_0) || ml::DevFileTh::rfIsBusy(unknown90); }
 
 bool StmPackData::isSuccess() const { return unknown90 != nullptr && !isBusy(); }
 
@@ -55,7 +55,7 @@ bool StmPackData::isFailure() const { return unknown90 == nullptr; }
 
 bool StmPackData::OnFileEvent(ml::EventFileTh *event) {
   if (event->type == ml::EventFileTh::TYPE_COMPLETE) {
-    unknown08 &= ~FLAG_BUSY;
+    unknown08 &= ~FLAG_UNKNOWN_0;
     return true;
   }
   return false;

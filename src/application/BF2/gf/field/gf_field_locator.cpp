@@ -56,7 +56,7 @@ void LocatorBat_EnemyID::create(QuestID quest, u16 enemyId) {
   dispose();
   unknown08 = quest;
   unknown14 = enemyId;
-  u8 zoneId = Bdat::getValCheck(GfDataBdat::getFP(BDAT_CHR_EN_ARRANGE), "ZoneID", unknown14, gmk::BDAT_TYPE_U8);
+  u8 zoneId = Bdat::getValCheck(GfDataBdat::getFP(BDAT_CHR_EN_ARRANGE), "ZoneID", unknown14, gmk::BDAT_TYPE_UNKNOWN_1);
   if (zoneId) {
     m_mapBdatId = zoneId;
     unknown18 = GfFieldGimmick::getBdatIdFrom_FLD_maplist_To_RSC_GmkSetList(getMapBdatId());
@@ -92,10 +92,10 @@ void LocatorBat_EnemyGroupID::create(QuestID quest, u16 enemyGroupId) {
   mm::mtl::FixStr<16> name;
   for (int i = 1; i < 9; i++) {
     name.format("EnemyID%d", i);
-    u16 enemyId = Bdat::getValCheck(group, name.c_str(), enemyGroupId, gmk::BDAT_TYPE_U16);
+    u16 enemyId = Bdat::getValCheck(group, name.c_str(), enemyGroupId, gmk::BDAT_TYPE_UNKNOWN_2);
     if (enemyId != 0) {
       unknown20.push_back(enemyId);
-      u8 zoneId = Bdat::getValCheck(arrange, "ZoneID", enemyId, gmk::BDAT_TYPE_U8);
+      u8 zoneId = Bdat::getValCheck(arrange, "ZoneID", enemyId, gmk::BDAT_TYPE_UNKNOWN_1);
       if (!zoneId) {
         zoneId = GfGameManager::getMapID();
       }
@@ -106,7 +106,7 @@ void LocatorBat_EnemyGroupID::create(QuestID quest, u16 enemyGroupId) {
     dispose();
     return;
   }
-  u8 zoneId = Bdat::getValCheck(arrange, "ZoneID", unknown20.front(), gmk::BDAT_TYPE_U8);
+  u8 zoneId = Bdat::getValCheck(arrange, "ZoneID", unknown20.front(), gmk::BDAT_TYPE_UNKNOWN_1);
   if (zoneId) {
     m_mapBdatId = zoneId;
     unknown18 = GfFieldGimmick::getBdatIdFrom_FLD_maplist_To_RSC_GmkSetList(getMapBdatId());
@@ -167,8 +167,8 @@ void LocatorTalk_NpcID::create(QuestID quest, u16 mapId, u16 npcId) {
 }
 
 LocatorTalk_NpcID::LocatorTalk_NpcID(QuestID quest, u8 *bdat, int id) : unknown14(0), unknown18(0), m_posNum(0), m_pos(mm::Vec3::zero) {
-  u16 mapId = Bdat::getValCheck(bdat, "MapID", id, gmk::BDAT_TYPE_U16);
-  u16 npcId = Bdat::getValCheck(bdat, "NpcID", id, gmk::BDAT_TYPE_U16);
+  u16 mapId = Bdat::getValCheck(bdat, "MapID", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 npcId = Bdat::getValCheck(bdat, "NpcID", id, gmk::BDAT_TYPE_UNKNOWN_2);
   if (mapId && npcId) {
     create(quest, mapId, npcId);
   }
@@ -221,9 +221,9 @@ void LocatorReach::create(QuestID quest, int reachId) {
   dispose();
   unknown08 = quest;
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_QUEST_REACH);
-  unknown14 = Bdat::getValCheck(bdat, "Category", reachId, gmk::BDAT_TYPE_U8);
-  unknown16 = Bdat::getValCheck(bdat, "PlaceID", reachId, gmk::BDAT_TYPE_U16);
-  m_mapBdatId = static_cast<u16>(Bdat::getValCheck(bdat, "MapID", reachId, gmk::BDAT_TYPE_U16));
+  unknown14 = Bdat::getValCheck(bdat, "Category", reachId, gmk::BDAT_TYPE_UNKNOWN_1);
+  unknown16 = Bdat::getValCheck(bdat, "PlaceID", reachId, gmk::BDAT_TYPE_UNKNOWN_2);
+  m_mapBdatId = static_cast<u16>(Bdat::getValCheck(bdat, "MapID", reachId, gmk::BDAT_TYPE_UNKNOWN_2));
   GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA);
   int mapId = getMapBdatId();
   unknown001(GfQuestTarget::getIconTypeReachPlace(unknown14, unknown16, unknown08, mapId, true));
@@ -266,7 +266,7 @@ void LocatorTbox::update() {
     unknown002(unknown18, gmk::GmkTbox::GMK_TYPE, unknown14);
     if (unknown18.isValid()) {
       const gmk::GmkTbox *tbox = static_cast<const gmk::GmkTbox *>(unknown18.unknown38);
-      if (!tbox->getBdatInfo()->isPopCondMatchedExceptDist() || tbox->getProgress() == gmk::GmkTbox::PROGRESS_OPENED) {
+      if (!tbox->getBdatInfo()->isPopCondMatchedExceptDist() || tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_1) {
         return;
       }
       m_pos = unknown18.unknown38->unknown08.unknown08->unknown00;
@@ -295,7 +295,7 @@ void LocatorTalk_DummyGroup::create(QuestID quest, u16 mapId, u16 npcId, u16 dum
   mm::mtl::FixStr<16> name;
   for (int i = 1; i < 10; i++) {
     name.format("NpcID%d", i);
-    u16 id = Bdat::getValCheck(bdat, name.c_str(), dummyGroup, gmk::BDAT_TYPE_U16);
+    u16 id = Bdat::getValCheck(bdat, name.c_str(), dummyGroup, gmk::BDAT_TYPE_UNKNOWN_2);
     if (id) {
       unknown20.push_back(id);
     }
@@ -359,7 +359,7 @@ u32 LocatorPrecious::getPosNum() const { return m_pos.size(); }
 
 const mm::Vec3 *LocatorPrecious::getPos(u32 index) const { return &m_pos[index]; }
 
-LocatorGimmick::LocatorGimmick(QuestID quest, u16 gimmickId) : unknown14(gmk::GMK_TYPE_INVALID), unknown18(0), m_posNum(0), m_pos(mm::Vec3::zero) {
+LocatorGimmick::LocatorGimmick(QuestID quest, u16 gimmickId) : unknown14(gmk::GMK_TYPE_UNKNOWN_59), unknown18(0), m_posNum(0), m_pos(mm::Vec3::zero) {
   if (!quest.empty() && gimmickId != 0) {
     create(quest, gimmickId);
   }
@@ -369,14 +369,14 @@ void LocatorGimmick::create(QuestID quest, u16 gimmickId) {
   dispose();
   unknown08 = quest;
   u8 *bdat = GfDataBdat::getFP(BDAT_FLD_QUEST_GIMMICK);
-  m_mapBdatId = static_cast<u16>(Bdat::getValCheck(bdat, "MapID", gimmickId, gmk::BDAT_TYPE_U16));
-  u16 doorId = Bdat::getValCheck(bdat, "DoorGimmickID", gimmickId, gmk::BDAT_TYPE_U16);
-  u16 elevatorId = Bdat::getValCheck(bdat, "ElevatorGimmickID", gimmickId, gmk::BDAT_TYPE_U16);
-  u16 jumpId = Bdat::getValCheck(bdat, "JumpGimmickID", gimmickId, gmk::BDAT_TYPE_U16);
-  u16 mapGimmickId = Bdat::getValCheck(bdat, "MapGimmickID", gimmickId, gmk::BDAT_TYPE_U16);
-  u16 warpId = Bdat::getValCheck(bdat, "WarpGimmickID", gimmickId, gmk::BDAT_TYPE_U16);
-  u16 salvagePointId = Bdat::getValCheck(bdat, "SalvagePointID", gimmickId, gmk::BDAT_TYPE_U16);
-  u16 tboxPopId = Bdat::getValCheck(bdat, "TboxPopID", gimmickId, gmk::BDAT_TYPE_U16);
+  m_mapBdatId = static_cast<u16>(Bdat::getValCheck(bdat, "MapID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2));
+  u16 doorId = Bdat::getValCheck(bdat, "DoorGimmickID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 elevatorId = Bdat::getValCheck(bdat, "ElevatorGimmickID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 jumpId = Bdat::getValCheck(bdat, "JumpGimmickID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 mapGimmickId = Bdat::getValCheck(bdat, "MapGimmickID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 warpId = Bdat::getValCheck(bdat, "WarpGimmickID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 salvagePointId = Bdat::getValCheck(bdat, "SalvagePointID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 tboxPopId = Bdat::getValCheck(bdat, "TboxPopID", gimmickId, gmk::BDAT_TYPE_UNKNOWN_2);
   if (doorId) {
     unknown14 = gmk::GmkDoor::GMK_TYPE;
     unknown18 = doorId;
@@ -404,12 +404,12 @@ void LocatorGimmick::create(QuestID quest, u16 gimmickId) {
 void LocatorGimmick::dispose() {
   m_posNum = 0;
   unknown18 = 0;
-  unknown14 = gmk::GMK_TYPE_INVALID;
+  unknown14 = gmk::GMK_TYPE_UNKNOWN_59;
 }
 
 void LocatorGimmick::update() {
   m_posNum = 0;
-  if (unknown14 == gmk::GMK_TYPE_INVALID || unknown18 == 0) {
+  if (unknown14 == gmk::GMK_TYPE_UNKNOWN_59 || unknown18 == 0) {
     return;
   }
   unknown001(GfQuestInfo::isScenarioQuest(unknown08) ? 1 : 3);
@@ -420,7 +420,7 @@ void LocatorGimmick::update() {
   switch (unknown14) {
   case gmk::GmkTbox::GMK_TYPE: {
     const gmk::GmkTbox *tbox = static_cast<const gmk::GmkTbox *>(gmk);
-    if (!tbox->getBdatInfo()->isPopCondMatchedExceptDist() || tbox->getProgress() == gmk::GmkTbox::PROGRESS_OPENED) {
+    if (!tbox->getBdatInfo()->isPopCondMatchedExceptDist() || tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_1) {
       return;
     }
     m_pos = gmk->unknown08.unknown08->unknown00;
@@ -563,9 +563,9 @@ void GfFieldLocator::createByQuest(const CreateInfoByQuest &info) {
   switch (info.unknown04) {
   case TASK_TYPE_BATTLE: {
     u8 *bdat = GfDataBdat::getFP(BDAT_FLD_QUEST_BATTLE);
-    u16 enemyId = Bdat::getValCheck(bdat, "EnemyID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 enemyGroupId = Bdat::getValCheck(bdat, "EnemyGroupID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 enemySpeciesId = Bdat::getValCheck(bdat, "EnemySpeciesID", info.unknown08, gmk::BDAT_TYPE_U16);
+    u16 enemyId = Bdat::getValCheck(bdat, "EnemyID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 enemyGroupId = Bdat::getValCheck(bdat, "EnemyGroupID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 enemySpeciesId = Bdat::getValCheck(bdat, "EnemySpeciesID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
     if (enemyId) {
       unknown18 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LocatorBat_EnemyID(info.unknown00, enemyId);
     } else if (enemyGroupId) {
@@ -579,10 +579,10 @@ void GfFieldLocator::createByQuest(const CreateInfoByQuest &info) {
   }
   case TASK_TYPE_COLLECT: {
     u8 *bdat = GfDataBdat::getFP(BDAT_FLD_QUEST_COLLECT);
-    u16 tboxId = Bdat::getValCheck(bdat, "TresureID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 enemyId = Bdat::getValCheck(bdat, "EnemyID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 npcId = Bdat::getValCheck(bdat, "NpcID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 itemId = Bdat::getValCheck(bdat, "ItemID", info.unknown08, gmk::BDAT_TYPE_U16);
+    u16 tboxId = Bdat::getValCheck(bdat, "TresureID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 enemyId = Bdat::getValCheck(bdat, "EnemyID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 npcId = Bdat::getValCheck(bdat, "NpcID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 itemId = Bdat::getValCheck(bdat, "ItemID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
     if (tboxId) {
       unknown18 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LocatorTbox(info.unknown00, tboxId);
     } else if (enemyId) {
@@ -609,9 +609,9 @@ void GfFieldLocator::createByQuest(const CreateInfoByQuest &info) {
     break;
   case TASK_TYPE_TALK: {
     u8 *bdat = GfDataBdat::getFP(BDAT_FLD_QUEST_TALK);
-    u16 mapId = Bdat::getValCheck(bdat, "MapID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 npcId = Bdat::getValCheck(bdat, "NpcID", info.unknown08, gmk::BDAT_TYPE_U16);
-    u16 dummyGroup = Bdat::getValCheck(bdat, "DummyGroup", info.unknown08, gmk::BDAT_TYPE_U16);
+    u16 mapId = Bdat::getValCheck(bdat, "MapID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 npcId = Bdat::getValCheck(bdat, "NpcID", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
+    u16 dummyGroup = Bdat::getValCheck(bdat, "DummyGroup", info.unknown08, gmk::BDAT_TYPE_UNKNOWN_2);
     if (npcId || dummyGroup) {
       if (dummyGroup) {
         unknown18 = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) LocatorTalk_DummyGroup(info.unknown00, mapId, npcId, dummyGroup);
@@ -685,7 +685,7 @@ void GfFieldLocator::update() {
   }
 }
 
-bool GfFieldLocator::isIconIdPreorder(int iconId) { return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 1, 0x10, gmk::BDAT_TYPE_U16).valueU16 == iconId; }
+bool GfFieldLocator::isIconIdPreorder(int iconId) { return Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 1, 0x10, gmk::BDAT_TYPE_UNKNOWN_2).valueU16 == iconId; }
 
 } // namespace gf
 

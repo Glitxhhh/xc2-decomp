@@ -78,7 +78,7 @@ void CharaPlayMotionABC::term() {
     if (obj != nullptr) {
       stopMotion(obj);
     }
-    unknown18->setFootIK(true, CharaIKUpdater::FOOT_TYPE_2);
+    unknown18->setFootIK(true, CharaIKUpdater::FOOT_TYPE_UNKNOWN_2);
     unknown08 &= ~1;
   }
 }

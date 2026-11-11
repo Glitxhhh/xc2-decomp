@@ -47,7 +47,7 @@ template <typename T> void StateAreaMove<T>::onEnter(void *owner, ai::State *pre
     switch (gmk->getGmkType()) {
     case gmk::GMK_TYPE_NPC:
     case gmk::GMK_TYPE_MOB:
-      if (gmk->unknown08.unknown10->unknown0c != gmk::SHAPE_TYPE_POINT) {
+      if (gmk->unknown08.unknown10->unknown0c != gmk::SHAPE_TYPE_UNKNOWN_1) {
         unknown50 = &StateAreaMove::seqInitGoalPos;
         return;
       }

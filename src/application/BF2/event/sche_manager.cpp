@@ -40,7 +40,7 @@ void ScheManager::update() {
   do {
     isErased = false;
     for (Scheduler **it = unknown18.begin(); it != unknown18.end(); it++) {
-      if ((*it)->isPlay(Scheduler::ORDER_EVT2FLD)) {
+      if ((*it)->isPlay(Scheduler::ORDER_UNKNOWN_2)) {
         continue;
       }
       if (*it != nullptr) {
@@ -144,24 +144,24 @@ bool ScheManager::chkUse(Scheduler::USE use, gf::GF_OBJ_HANDLE *handle) {
 
 void ScheManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT_BEGIN:
+  case MSG_TYPE_UNKNOWN_1:
     init();
-    play(Scheduler::ORDER_FLD2EVT, gf::INVALID_HANDLE);
-    unknown10 |= FLAG_FLD2EVT;
+    play(Scheduler::ORDER_UNKNOWN_0, gf::INVALID_HANDLE);
+    unknown10 |= FLAG_UNKNOWN_0;
     break;
-  case MSG_TYPE_START_SCENE:
-    if ((unknown10 & FLAG_EVT2IDLE) == 0) {
-      play(Scheduler::ORDER_EVT2IDLE, gf::INVALID_HANDLE);
-      unknown10 |= FLAG_EVT2IDLE;
+  case MSG_TYPE_UNKNOWN_7:
+    if ((unknown10 & FLAG_UNKNOWN_1) == 0) {
+      play(Scheduler::ORDER_UNKNOWN_1, gf::INVALID_HANDLE);
+      unknown10 |= FLAG_UNKNOWN_1;
     }
     break;
-  case MSG_TYPE_CLEAR:
-    if ((unknown10 & FLAG_EVT2FLD) == 0) {
-      play(Scheduler::ORDER_EVT2FLD, gf::INVALID_HANDLE);
-      unknown10 |= FLAG_EVT2FLD;
+  case MSG_TYPE_UNKNOWN_12:
+    if ((unknown10 & FLAG_UNKNOWN_2) == 0) {
+      play(Scheduler::ORDER_UNKNOWN_2, gf::INVALID_HANDLE);
+      unknown10 |= FLAG_UNKNOWN_2;
     }
     break;
-  case MSG_TYPE_UPDATE_POST:
+  case MSG_TYPE_UNKNOWN_15:
     update();
     break;
   default:

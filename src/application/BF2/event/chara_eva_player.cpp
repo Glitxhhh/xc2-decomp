@@ -27,13 +27,13 @@ void CharaEvaPlayer::setScaleWeapon(f32 scale) {
 }
 
 void CharaEvaPlayer::playTar(bool isPlay, const mm::Vec3 &tar) {
-  if ((unknown08 & FLAG_CHARA) == 0) {
+  if ((unknown08 & FLAG_UNKNOWN_0) == 0) {
     return;
   }
   if (isPlay) {
-    unknown10->setTar(TarAxis(TarAxis::AXIS_POS, tar), -1.0f, static_cast<EVT_tarcvtype>(0), static_cast<EVT_aimtype>(0), -1.0f, -1.0f);
+    unknown10->setTar(TarAxis(TarAxis::AXIS_UNKNOWN_1, tar), -1.0f, static_cast<EVT_tarcvtype>(0), static_cast<EVT_aimtype>(0), -1.0f, -1.0f);
   } else {
-    unknown10->setTar(TarAxis(TarAxis::AXIS_POS, tar), 0.0f, static_cast<EVT_tarcvtype>(0), static_cast<EVT_aimtype>(0), -1.0f, -1.0f);
+    unknown10->setTar(TarAxis(TarAxis::AXIS_UNKNOWN_1, tar), 0.0f, static_cast<EVT_tarcvtype>(0), static_cast<EVT_aimtype>(0), -1.0f, -1.0f);
   }
   unknown50 = isPlay;
   this->unknown60 = tar;
@@ -44,7 +44,7 @@ void CharaEvaPlayer::playAction(int type) {
     return;
   }
   gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->unknown20);
-  if (obj == nullptr || (unknown08 & FLAG_CHARA) == 0) {
+  if (obj == nullptr || (unknown08 & FLAG_UNKNOWN_0) == 0) {
     return;
   }
   stopAction();
@@ -63,11 +63,11 @@ void CharaEvaPlayer::playAction(int type) {
 
 void CharaEvaPlayer::setDispWeapon(int type) {
   if (unknown18->unknown18 == gf::GF_EVT_MODEL_DRIVER) {
-    unknown10->setHideWeapon(WPNHIDEID_EVA, type > 1, false);
-    unknown10->setHideWeapon(WPNHIDEID_EVA, type > 1, true);
+    unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, false);
+    unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, true);
   } else if (unknown18->unknown18 == gf::GF_EVT_MODEL_BLADE) {
-    unknown10->setHideWeapon(WPNHIDEID_EVA, type > 1, false);
-    unknown10->setHideWeapon(WPNHIDEID_EVA, type > 1, true);
+    unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, false);
+    unknown10->setHideWeapon(WPNHIDEID_UNKNOWN_1, type > 1, true);
   }
   unknown7c = type;
 }

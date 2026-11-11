@@ -7,7 +7,7 @@
 namespace event {
 class ModelObj;
 
-bool MdlstmManager::isReuseEnable() const { return (unknown14 & REUSE_FLAG_ENABLE) != 0; }
+bool MdlstmManager::isReuseEnable() const { return (unknown14 & REUSE_FLAG_UNKNOWN_0) != 0; }
 
 bool MdlstmManager::isLoadingPrio(f32 priority) const {
   for (MdlstmObj *const *it = unknown3c020.begin(); it != unknown3c020.end(); ++it) {
@@ -72,13 +72,13 @@ f32 MdlstmManager::getNextCutFrame(f32 frame) {
 }
 
 void MdlstmManager::create(mtl::ALLOC_HANDLE handle) {
-  unknown10 = FLAG_UNKNOWN4;
+  unknown10 = FLAG_UNKNOWN_2;
   unknown3c018 = 0;
   _3e028 = 0;
   _3e02c = 0;
   unknown3e030 = 0;
   mm::mtl::Singleton<MdlstmData>::getPtr()->clear();
-  unknown10 |= FLAG_CREATE;
+  unknown10 |= FLAG_UNKNOWN_0;
 }
 
 void MdlstmManager::render() {}
@@ -86,16 +86,16 @@ void MdlstmManager::render() {}
 void MdlstmManager::addReplaceInfo(const MdlstmData::Info &info) { mm::mtl::Singleton<MdlstmData>::getPtr()->addReplaceInfo(info); }
 
 void MdlstmManager::start() {
-  if (unknown10 & FLAG_CREATE) {
-    unknown10 |= FLAG_START;
+  if (unknown10 & FLAG_UNKNOWN_0) {
+    unknown10 |= FLAG_UNKNOWN_1;
   }
 }
 
 void MdlstmManager::setReuseEnable(bool isReuseEnable) {
   if (isReuseEnable) {
-    unknown14 |= REUSE_FLAG_ENABLE;
+    unknown14 |= REUSE_FLAG_UNKNOWN_0;
   } else {
-    unknown14 &= ~REUSE_FLAG_ENABLE;
+    unknown14 &= ~REUSE_FLAG_UNKNOWN_0;
   }
 }
 

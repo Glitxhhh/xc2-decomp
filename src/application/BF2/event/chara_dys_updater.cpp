@@ -23,16 +23,16 @@ void CharaDysUpdater::destroy() {
 }
 
 void CharaDysUpdater::update(f32 delta) {
-  if (unknown08.test(FLAG_RESET_DYNAMICS)) {
+  if (unknown08.test(FLAG_UNKNOWN_0)) {
     resetDynamics(unknown10);
     if (unknown18-- <= 0) {
-      unknown08.set(FLAG_RESET_DYNAMICS, false);
+      unknown08.set(FLAG_UNKNOWN_0, false);
     }
   }
-  if (unknown08.test(FLAG_RESET_MOVEMENT)) {
+  if (unknown08.test(FLAG_UNKNOWN_1)) {
     resetMovement(unknown10);
     if (unknown1c-- <= 0) {
-      unknown08.set(FLAG_RESET_MOVEMENT, false);
+      unknown08.set(FLAG_UNKNOWN_1, false);
     }
   }
   setDynamicsBlendWeight(unknown10, unknown20);
@@ -79,13 +79,13 @@ void CharaDysUpdater::setDynamicsBlendWeight(gf::GF_OBJ_HANDLE *handle, f32 weig
 
 void CharaDysUpdater::resetDynamics(int frame) {
   resetDynamics(unknown10);
-  unknown08.set(FLAG_RESET_DYNAMICS, true);
+  unknown08.set(FLAG_UNKNOWN_0, true);
   unknown18 = frame;
 }
 
 void CharaDysUpdater::resetMovement(int frame) {
   resetMovement(unknown10);
-  unknown08.set(FLAG_RESET_MOVEMENT, true);
+  unknown08.set(FLAG_UNKNOWN_1, true);
   unknown1c = frame;
 }
 

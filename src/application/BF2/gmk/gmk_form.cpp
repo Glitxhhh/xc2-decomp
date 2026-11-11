@@ -22,7 +22,7 @@ extern template bool GmkForm::create<GmkFormPc, GmkFormPcnpc>(const GmkFormPc &)
 template bool GmkForm::create<GmkFormPcEv, GmkFormPcnpcEv>(const GmkFormPcEv &);
 
 GmkForm::GmkForm(const CreateInfo *info) : unknown00(0) {
-  for (u32 i = 0; i < MAX_NUM; i++) {
+  for (u32 i = 0; i < MAX_UNKNOWN_6; i++) {
     unknown10[i] = mm::Vec3::zero;
     unknown70[i] = 0.0f;
   }
@@ -45,7 +45,7 @@ bool GmkForm::create(const CreateInfo &info) {
       }
     }
   } else {
-    const IGmkList *list = set->unknown1b8[GMK_TYPE_FORM_PC_EV];
+    const IGmkList *list = set->unknown1b8[GMK_TYPE_UNKNOWN_26];
     if (list != nullptr && list->getInstNum() > index) {
       const GmkFormPcEv *formPc = static_cast<const GmkFormPcEv *>(list->getInst(index));
       if (formPc != nullptr && create<GmkFormPcEv, GmkFormPcnpcEv>(*formPc)) {

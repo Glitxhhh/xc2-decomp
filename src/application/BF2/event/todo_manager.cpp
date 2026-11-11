@@ -112,20 +112,20 @@ void TodoManager::redo() {
 
 void TodoManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT:
+  case MSG_TYPE_UNKNOWN_4:
     clear();
     break;
-  case MSG_TYPE_START_SCENE:
-  case MSG_TYPE_START_PAGE:
+  case MSG_TYPE_UNKNOWN_7:
+  case MSG_TYPE_UNKNOWN_8:
     clear();
     break;
-  case MSG_TYPE_CLEAR:
+  case MSG_TYPE_UNKNOWN_12:
     clear();
     break;
-  case MSG_TYPE_UPDATE:
+  case MSG_TYPE_UNKNOWN_14:
     update();
     break;
-  case MSG_TYPE_RENDER:
+  case MSG_TYPE_UNKNOWN_16:
     render();
     break;
   default:
@@ -135,12 +135,12 @@ void TodoManager::OnEventProc(MSG_TYPE type) {
 
 void TodoManager::setDisp(bool isDisp) {
   if (isDisp) {
-    unknown14 |= FLAG_DISP;
+    unknown14 |= FLAG_UNKNOWN_0;
   } else {
-    unknown14 &= ~FLAG_DISP;
+    unknown14 &= ~FLAG_UNKNOWN_0;
   }
 }
 
-bool TodoManager::isDisp() const { return (unknown14 & FLAG_DISP) != 0; }
+bool TodoManager::isDisp() const { return (unknown14 & FLAG_UNKNOWN_0) != 0; }
 
 } // namespace event

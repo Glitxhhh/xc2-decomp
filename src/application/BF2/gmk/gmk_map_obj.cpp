@@ -30,15 +30,15 @@ GmkMapObj::GmkMapObj() : unknown48(gf::INVALID_HANDLE) {
 }
 
 void GmkMapObj::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_U16);
-  u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_U16);
-  u16 visibleY = bdat.getValCheck("Visible_Y", id, BDAT_TYPE_U16);
+  unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
+  u16 visibleXZ = bdat.getValCheck("Visible_XZ", id, BDAT_TYPE_UNKNOWN_2);
+  u16 visibleY = bdat.getValCheck("Visible_Y", id, BDAT_TYPE_UNKNOWN_2);
   unknown04.set(visibleXZ, visibleY);
-  u16 invisibleXZ = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_XZ", id, BDAT_TYPE_U16), visibleXZ);
-  u16 invisibleY = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_Y", id, BDAT_TYPE_U16), visibleY);
+  u16 invisibleXZ = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_XZ", id, BDAT_TYPE_UNKNOWN_2), visibleXZ);
+  u16 invisibleY = DistHvCond::clampDepopDist(bdat.getValCheck("Invisible_Y", id, BDAT_TYPE_UNKNOWN_2), visibleY);
   unknown0c.set(invisibleXZ, invisibleY);
   if (Bdat::getMember(bdat.unknown00, "Priority") != nullptr) {
-    unknown02 = bdat.getValCheck("Priority", id, BDAT_TYPE_U8);
+    unknown02 = bdat.getValCheck("Priority", id, BDAT_TYPE_UNKNOWN_1);
   }
 }
 
@@ -220,7 +220,7 @@ void GmkRoutedMapObj::validateDisp() const {
   setEventDisp(unknown50, unknown58 && debugIsDispGmkType(getGmkType()));
 }
 
-const IGmkList *GmkRoutedMapObj::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_MAP_OBJ_ROUTE_POINT]; }
+const IGmkList *GmkRoutedMapObj::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_UNKNOWN_8]; }
 
 void GmkRoutedMapObj::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);

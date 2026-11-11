@@ -14,30 +14,30 @@
 
 namespace event {
 
-static constexpr u32 PAUSE_BITS_ACC_FRAME = 0x13f4;
-static constexpr u32 PAUSE_BITS_STREAM_STOP = 0x1d80a;
+static constexpr u32 PAUSE_BITS_UNKNOWN_5108 = 0x13f4;    // Inferred role: pause bits acc frame; original name unknown.
+static constexpr u32 PAUSE_BITS_UNKNOWN_120842 = 0x1d80a; // Inferred role: pause bits stream stop; original name unknown.
 
 f32 FrameManager::getFrame() const { return m_frame; }
 
-bool FrameManager::isPause(PAUSE_TYPE type) const { return (unknown18 & (type == PAUSE_TYPE_ALL ? ~0u : 1u << type)) != 0; }
+bool FrameManager::isPause(PAUSE_TYPE type) const { return (unknown18 & (type == PAUSE_TYPE_UNKNOWN_17_2 ? ~0u : 1u << type)) != 0; }
 
 const FrameInfo &FrameManager::frameInfo() {
   unknown1170.unknown00 = m_frame;
   f32 delta = unknown13c - m_frame;
-  if (isPause(PAUSE_TYPE_ALL)) {
+  if (isPause(PAUSE_TYPE_UNKNOWN_17_2)) {
     delta = 0.0f;
   }
   u32 pauseBits = unknown18;
   unknown1170.unknown04 = delta;
   unknown1170.unknown08 = delta;
-  if ((pauseBits & PAUSE_BITS_ACC_FRAME) != 0 && delta <= 0.0f) {
+  if ((pauseBits & PAUSE_BITS_UNKNOWN_5108) != 0 && delta <= 0.0f) {
     unknown1170.unknown08 = __builtin_fmaxf(unknown160, 0.0f) + 1.0f;
   }
   unknown1170.unknown0c = delta;
-  if ((unknown10 & FLAG_STREAM_MODE) == 0) {
+  if ((unknown10 & FLAG_UNKNOWN_0) == 0) {
     unknown1170.unknown0c = __builtin_fmaxf(unknown160, 0.0f) + 1.0f;
   }
-  if ((pauseBits & PAUSE_BITS_STREAM_STOP) != 0) {
+  if ((pauseBits & PAUSE_BITS_UNKNOWN_120842) != 0) {
     unknown1170.unknown0c = 0.0f;
   }
   unknown1170.unknown10 = unknown160;
@@ -47,19 +47,19 @@ const FrameInfo &FrameManager::frameInfo() {
 f32 FrameManager::getTotalFrame() const { return m_totalFrame; }
 
 void FrameManager::requestFrame(f32 frame) {
-  unknown10 |= FLAG_REQUEST_FRAME;
+  unknown10 |= FLAG_UNKNOWN_7;
   unknown154 = frame;
 }
 
 void FrameManager::setLockFrame(bool isLock, f32 frame) {
-  setFlag(FLAG_LOCK_FRAME, isLock);
+  setFlag(FLAG_UNKNOWN_3, isLock);
   unknown14c = frame;
 }
 
 FrameManager::FrameManager()
-    : unknown10(0), unknown18(0), m_frame(0.0f), m_totalFrame(0.0f), unknown138(0.0f), unknown13c(0.0f), unknown144(0.0f), m_maxFrame(DEFAULT_MAX_FRAME), m_accType(ACC_TYPE_NORMAL), unknown1170() {
-  unknown14 = DISP_FLAG_SYNCFRAME;
-  for (u32 i = 0; i < PAUSE_TYPE_COUNT; i++) {
+    : unknown10(0), unknown18(0), m_frame(0.0f), m_totalFrame(0.0f), unknown138(0.0f), unknown13c(0.0f), unknown144(0.0f), m_maxFrame(unknown003), m_accType(ACC_TYPE_UNKNOWN_1), unknown1170() {
+  unknown14 = DISP_FLAG_UNKNOWN_1;
+  for (u32 i = 0; i < PAUSE_TYPE_UNKNOWN_17; i++) {
     unknown20[i] = reinterpret_cast<gf::GF_PAUSE_HANDLE *>(-1);
   }
 }
@@ -70,7 +70,7 @@ void FrameManager::login() {
 }
 
 void FrameManager::initPage() {
-  m_maxFrame = DEFAULT_MAX_FRAME;
+  m_maxFrame = unknown003;
   m_pageName = "";
   m_pageID = 0;
   m_frame = 0.0f;
@@ -81,12 +81,12 @@ void FrameManager::initPage() {
   unknown168.clear();
   unknown138 = m_totalFrame;
   unknown160 = 0.0f;
-  unknown10 |= FLAG_PAGE_START;
+  unknown10 |= FLAG_UNKNOWN_8;
   CpuManager::get().start();
 }
 
 void FrameManager::render() {
-  if (!(unknown14 & DISP_FLAG_DISP)) {
+  if (!(unknown14 & DISP_FLAG_UNKNOWN_0)) {
     return;
   }
   s32 height = ml::DevGraph::getRootHeight();
@@ -121,30 +121,30 @@ void FrameManager::render() {
 
 void FrameManager::tail() {
   u32 dispFlags = unknown14;
-  if (dispFlags & DISP_FLAG_USE_ACC_PRINT) {
+  if (dispFlags & DISP_FLAG_UNKNOWN_5) {
     frameInfo();
   }
-  if ((dispFlags & DISP_FLAG_SYNCFRAME) && ((unknown10 & FLAG_PAGE_START) || m_frame != unknown13c) && m_pageName.c_str()[0] != '\0') {
+  if ((dispFlags & DISP_FLAG_UNKNOWN_1) && ((unknown10 & FLAG_UNKNOWN_8) || m_frame != unknown13c) && m_pageName.c_str()[0] != '\0') {
     mm::mtl::Singleton<CopydataManager>::getPtr();
   }
-  if (unknown14 & DISP_FLAG_PAGE) {
+  if (unknown14 & DISP_FLAG_UNKNOWN_2) {
     if (!mm::mtl::Singleton<SkipManager>::getPtr()->isSkip() && unknown1184++ > 9) {
-      unknown14 &= ~DISP_FLAG_PAGE;
+      unknown14 &= ~DISP_FLAG_UNKNOWN_2;
     }
   }
-  unknown10 &= ~(FLAG_CAPTURE_FRAME | FLAG_PAGE_START);
+  unknown10 &= ~(FLAG_UNKNOWN_6 | FLAG_UNKNOWN_8);
 }
 
 void FrameManager::tailAlways() {
-  if (unknown10 & FLAG_BACKUP_FRAME) {
+  if (unknown10 & FLAG_UNKNOWN_10) {
     f32 frame = unknown13c;
-    unknown10 &= ~FLAG_BACKUP_FRAME;
+    unknown10 &= ~FLAG_UNKNOWN_10;
     unknown140 = frame;
     return;
   }
-  if (unknown10 & FLAG_RESTORE_FRAME) {
+  if (unknown10 & FLAG_UNKNOWN_11) {
     f32 frame = unknown140;
-    unknown10 &= ~FLAG_RESTORE_FRAME;
+    unknown10 &= ~FLAG_UNKNOWN_11;
     unknown13c = frame;
   }
   this->m_frame = unknown13c;
@@ -153,19 +153,19 @@ void FrameManager::tailAlways() {
   }
 }
 
-void FrameManager::setStreamMode(bool isStreamMode) { setFlag(FLAG_STREAM_MODE, isStreamMode); }
+void FrameManager::setStreamMode(bool isStreamMode) { setFlag(FLAG_UNKNOWN_0, isStreamMode); }
 
-void FrameManager::setCsSndAccEnable(bool isEnable) { setFlag(FLAG_CS_SND_ACC_ENABLE, isEnable); }
+void FrameManager::setCsSndAccEnable(bool isEnable) { setFlag(FLAG_UNKNOWN_1, isEnable); }
 
-void FrameManager::setCpuAccEnable(bool isEnable) { setFlag(FLAG_CPU_ACC_ENABLE, isEnable); }
+void FrameManager::setCpuAccEnable(bool isEnable) { setFlag(FLAG_UNKNOWN_2, isEnable); }
 
 void FrameManager::setInfomation(const char *pageName, int pageID, f32 maxFrame) {
-  bool isMakeCapture = (unknown10 & FLAG_MAKE_CAPTURE_FRAME) != 0;
+  bool isMakeCapture = (unknown10 & FLAG_UNKNOWN_4) != 0;
   m_pageName = pageName;
   m_pageID = pageID;
   m_maxFrame = __builtin_fmaxf(maxFrame, 0.0f);
   if (isMakeCapture && Manager::get()->getStartPageID() <= pageID) {
-    unknown10 |= FLAG_CAPTURE_FRAME_SET;
+    unknown10 |= FLAG_UNKNOWN_5;
     unknown150 = m_maxFrame - 1.0f;
   }
 }
@@ -175,7 +175,7 @@ const char *FrameManager::getPageName() const { return m_pageName.c_str(); }
 int FrameManager::getPageID() const { return m_pageID; }
 
 void FrameManager::pauseClearAll() {
-  for (u32 i = 0; i < PAUSE_TYPE_COUNT; i++) {
+  for (u32 i = 0; i < PAUSE_TYPE_UNKNOWN_17; i++) {
     pause(static_cast<PAUSE_TYPE>(i), false);
   }
 }
@@ -194,9 +194,9 @@ void FrameManager::setFrame(f32 frame) {
 
 f32 FrameManager::getMaxFrame() const { return m_maxFrame; }
 
-void FrameManager::setMakeCaptureFrame(bool isMake) { setFlag(FLAG_MAKE_CAPTURE_FRAME, isMake); }
+void FrameManager::setMakeCaptureFrame(bool isMake) { setFlag(FLAG_UNKNOWN_4, isMake); }
 
-bool FrameManager::isCaptureFrame() const { return (unknown10 & FLAG_CAPTURE_FRAME) != 0; }
+bool FrameManager::isCaptureFrame() const { return (unknown10 & FLAG_UNKNOWN_6) != 0; }
 
 void FrameManager::setSkipAbleFrame(f32 frame) {
   unknown158 = frame;
@@ -236,18 +236,18 @@ void FrameManager::shiftFrame(f32 frame) {
   if (this->m_frame < frame) {
     f32 lastFrame = unknown168.back().unknown00;
     shiftRight(false, lastFrame > frame ? frame : lastFrame);
-    unknown14 |= DISP_FLAG_PAGE;
+    unknown14 |= DISP_FLAG_UNKNOWN_2;
     unknown1184 = 0;
   } else if (this->m_frame > frame) {
     shiftLeft(false, frame > 0.0f ? frame : 0.0f);
   }
 }
 
-void FrameManager::setAccframe(bool isAcc, ACC_TYPE type) { m_accType = isAcc ? type : ACC_TYPE_NONE; }
+void FrameManager::setAccframe(bool isAcc, ACC_TYPE type) { m_accType = isAcc ? type : ACC_TYPE_UNKNOWN_0; }
 
 ACC_TYPE FrameManager::getAccType() const { return m_accType; }
 
-void FrameManager::queryCutList(mm::mtl::FixedVector<f32, KEY_FRAME_COUNT> &cutList) const {
+void FrameManager::queryCutList(mm::mtl::FixedVector<f32, KEY_FRAME_UNKNOWN_512> &cutList) const {
   cutList.clear();
   for (size_t i = 0; i < unknown168.size(); i++) {
     if (unknown168[i].unknown04) {
@@ -256,22 +256,22 @@ void FrameManager::queryCutList(mm::mtl::FixedVector<f32, KEY_FRAME_COUNT> &cutL
   }
 }
 
-void FrameManager::setDisp(bool isDisp) { setDispFlag(DISP_FLAG_DISP, isDisp); }
+void FrameManager::setDisp(bool isDisp) { setDispFlag(DISP_FLAG_UNKNOWN_0, isDisp); }
 
-bool FrameManager::isDisp() const { return (unknown14 & DISP_FLAG_DISP) != 0; }
+bool FrameManager::isDisp() const { return (unknown14 & DISP_FLAG_UNKNOWN_0) != 0; }
 
-void FrameManager::setUseSkip(bool isUse) { setDispFlag(DISP_FLAG_USE_SKIP, isUse); }
+void FrameManager::setUseSkip(bool isUse) { setDispFlag(DISP_FLAG_UNKNOWN_3, isUse); }
 
-void FrameManager::setUseStop3D(bool isUse) { setDispFlag(DISP_FLAG_USE_STOP3D, isUse); }
+void FrameManager::setUseStop3D(bool isUse) { setDispFlag(DISP_FLAG_UNKNOWN_4, isUse); }
 
-void FrameManager::setUseAccPrint(bool isUse) { setDispFlag(DISP_FLAG_USE_ACC_PRINT, isUse); }
+void FrameManager::setUseAccPrint(bool isUse) { setDispFlag(DISP_FLAG_UNKNOWN_5, isUse); }
 
-bool FrameManager::isUseAccPrint() const { return (unknown14 & DISP_FLAG_USE_ACC_PRINT) != 0; }
+bool FrameManager::isUseAccPrint() const { return (unknown14 & DISP_FLAG_UNKNOWN_5) != 0; }
 
-void FrameManager::setSyncframe(bool isSync) { setDispFlag(DISP_FLAG_SYNCFRAME, isSync); }
+void FrameManager::setSyncframe(bool isSync) { setDispFlag(DISP_FLAG_UNKNOWN_1, isSync); }
 
-bool FrameManager::isSyncframe() const { return (unknown14 & DISP_FLAG_SYNCFRAME) != 0; }
+bool FrameManager::isSyncframe() const { return (unknown14 & DISP_FLAG_UNKNOWN_1) != 0; }
 
-bool FrameManager::isWaiting() const { return (unknown10 & FLAG_WAITING) != 0; }
+bool FrameManager::isWaiting() const { return (unknown10 & FLAG_UNKNOWN_9) != 0; }
 
 } // namespace event

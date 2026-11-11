@@ -176,7 +176,7 @@ public:
       }
       f32 x = cameraPosition.x - gmk->AGmkBase::unknown08.unknown08->unknown00.x;
       f32 z = cameraPosition.z - gmk->AGmkBase::unknown08.unknown08->unknown00.z;
-      if (x * x + z * z > DEBUG_DISTANCE * DEBUG_DISTANCE) {
+      if (x * x + z * z > unknown005 * unknown005) {
         continue;
       }
       gmk->debugUpdateMmf();
@@ -197,7 +197,7 @@ public:
       }
       f32 x = cameraPosition.x - gmk->AGmkBase::unknown08.unknown08->unknown00.x;
       f32 z = cameraPosition.z - gmk->AGmkBase::unknown08.unknown08->unknown00.z;
-      if (x * x + z * z > DEBUG_DISTANCE * DEBUG_DISTANCE) {
+      if (x * x + z * z > unknown005 * unknown005) {
         continue;
       }
       gmk->debugDraw();
@@ -208,7 +208,7 @@ public:
   friend class gf::GfFieldGimmick;
 
 protected:
-  static constexpr f32 DEBUG_DISTANCE = 100.0f;
+  static constexpr f32 unknown005 = 100.0f; // Inferred role: debug distance; original name unknown.
 
   virtual void createGmk(void *data);
   bool initGmkBdatInfo(BDAT_INFO &bdatInfo, int &index, const AGmkBase &gmk);

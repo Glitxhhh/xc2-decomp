@@ -35,7 +35,7 @@ public:
     int unknown0c; // Inferred role: last member index; original member name unknown. The size of this structure is unknown.
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_SQUAD_LEADER;
+  static const GmkType GMK_TYPE = GMK_TYPE_SQUAD_LEADER; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkSquadLeader() : unknown48(nullptr) {}
   ~GmkSquadLeader() override { dispose(); }
@@ -62,7 +62,7 @@ public:
     void create(CBdatWrapper, int, const AGmkBase &) {}
   };
 
-  static const GmkType GMK_TYPE = GMK_TYPE_SQUAD_MEMBER;
+  static const GmkType GMK_TYPE = GMK_TYPE_SQUAD_MEMBER; // Inferred name; shared by every gimmick class for the TGmkList templates.
 
   GmkSquadMember() : unknown48(nullptr) {}
   ~GmkSquadMember() override { dispose(); }

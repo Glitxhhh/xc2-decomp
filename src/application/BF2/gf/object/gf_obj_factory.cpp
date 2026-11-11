@@ -246,17 +246,17 @@ GF_OBJ_HANDLE *GfObjFactory::createMapLodAnim() {
 
 GF_OBJ_HANDLE *GfObjFactory::createGmkMapObj(const CBdatWrapper &bdat, int id) {
   CBdatWrapper mapObjList(GfDataBdat::getFP(BDAT_RSC_MAP_OBJ_LIST));
-  u32 resource = bdat.getValCheck("RSC_ID", id, gmk::BDAT_TYPE_U16);
+  u32 resource = bdat.getValCheck("RSC_ID", id, gmk::BDAT_TYPE_UNKNOWN_2);
   GfInitParamGimmick param;
   param.m_bladeID = resource & 0xffff;
   param.unknown48 = GIMMICK_TYPE_NONE;
   param.unknown18 = &mapObjList;
-  param.unknown44 = bdat.getValCheck("Priority", id, gmk::BDAT_TYPE_U8) & 0xff;
-  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_STRING));
+  param.unknown44 = bdat.getValCheck("Priority", id, gmk::BDAT_TYPE_UNKNOWN_1) & 0xff;
+  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_UNKNOWN_7));
   param.unknown98 = Bdat::getFlagVal(mapObjList.unknown00, "flag", resource & 0xffff, "BigObj") != 0;
   GF_OBJ_HANDLE *handle = createMapObj(param);
   GfObjSetupGimmick *setup = GfObjUtil::getObjSetup<GfObjSetupGimmick>(handle);
-  const char *stateName = reinterpret_cast<const char *>(bdat.getValCheck("StateName", id, gmk::BDAT_TYPE_STRING));
+  const char *stateName = reinterpret_cast<const char *>(bdat.getValCheck("StateName", id, gmk::BDAT_TYPE_UNKNOWN_7));
   if (stateName != nullptr && *stateName != '\0') {
     setup->unknown70 = stateName;
   }
@@ -268,7 +268,7 @@ GF_OBJ_HANDLE *GfObjFactory::createGmkMapObj(const CBdatWrapper &bdat, int id) {
 
 GF_OBJ_HANDLE *GfObjFactory::createGmkTbox(const CBdatWrapper &bdat, int id) {
   CBdatWrapper tboxList(GfDataBdat::getFP(BDAT_RSC_TBOX_LIST));
-  u32 resource = bdat.getValCheck("RSC_ID", id, gmk::BDAT_TYPE_U16);
+  u32 resource = bdat.getValCheck("RSC_ID", id, gmk::BDAT_TYPE_UNKNOWN_2);
   GfInitParamGimmick param;
   param.m_bladeID = resource & 0xffff;
   param.unknown18 = &tboxList;
@@ -283,7 +283,7 @@ GF_OBJ_HANDLE *GfObjFactory::createGmkEvent(const CBdatWrapper &bdat, int id) {
   }
   GfInitParamGimmick param;
   param.m_bladeID = id;
-  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_STRING));
+  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_UNKNOWN_7));
   GF_OBJ_HANDLE *handle = manager->createGfObj(OBJECT_TYPE_GIMMICK, param);
   manager->addHandle(handle);
   GfObjSetup::createSetupParam(handle, param);
@@ -299,7 +299,7 @@ GF_OBJ_HANDLE *GfObjFactory::createGmkCollection(const CBdatWrapper &bdat, int i
   }
   GfInitParamGimmick param;
   param.m_bladeID = id;
-  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_STRING));
+  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_UNKNOWN_7));
   GF_OBJ_HANDLE *handle = manager->createGfObj(OBJECT_TYPE_GIMMICK, param);
   manager->addHandle(handle);
   GfObjSetup::createSetupParam(handle, param);
@@ -315,7 +315,7 @@ GF_OBJ_HANDLE *GfObjFactory::createGmkMapGimmick(const CBdatWrapper &bdat, int i
   }
   GfInitParamGimmick param;
   param.m_bladeID = id;
-  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_STRING));
+  param.unknown90 = reinterpret_cast<void *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_UNKNOWN_7));
   param.unknown40 = 0;
   GF_OBJ_HANDLE *handle = manager->createGfObj(OBJECT_TYPE_GIMMICK, param);
   manager->addHandle(handle);
@@ -358,7 +358,7 @@ GF_OBJ_HANDLE *GfObjFactory::createGmkEnemy(int id, s8 levelOffset, u16 priority
   u8 *enParam = GfDataBdat::getFP(BDAT_CHR_EN_PARAM);
   CBdatWrapper enemyList(GfDataBdat::getFP(BDAT_RSC_EN));
   u32 paramId = arrange->getChrEnArrangeParamID(id);
-  u32 resource = Bdat::getValCheck(enParam, "ResourceID", paramId & 0xffff, gmk::BDAT_TYPE_U16);
+  u32 resource = Bdat::getValCheck(enParam, "ResourceID", paramId & 0xffff, gmk::BDAT_TYPE_UNKNOWN_2);
   u32 level = (arrange->getChrEnArrangeLv(id) & 0xffff) + levelOffset;
   GfInitParamEnemy param;
   param.unknown81 = flag;

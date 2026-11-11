@@ -163,16 +163,16 @@ void MemoryManager::update() {}
 
 void MemoryManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT_BEGIN:
+  case MSG_TYPE_UNKNOWN_1:
     login();
     break;
-  case MSG_TYPE_UPDATE_SEQUENCE:
+  case MSG_TYPE_UNKNOWN_2:
     clear();
     break;
-  case MSG_TYPE_INIT:
+  case MSG_TYPE_UNKNOWN_4:
     clearHighestMemHeap();
     break;
-  case MSG_TYPE_RENDER:
+  case MSG_TYPE_UNKNOWN_16:
     render();
     break;
   default:
@@ -192,12 +192,12 @@ u32 MemoryManager::getResMemSize() const { return m_resMemSize; }
 
 void MemoryManager::setDisp(bool isDisp) {
   if (isDisp) {
-    unknown10 |= FLAG_DISP;
+    unknown10 |= FLAG_UNKNOWN_0;
   } else {
-    unknown10 &= ~FLAG_DISP;
+    unknown10 &= ~FLAG_UNKNOWN_0;
   }
 }
 
-bool MemoryManager::isDisp() const { return (unknown10 & FLAG_DISP) != 0; }
+bool MemoryManager::isDisp() const { return (unknown10 & FLAG_UNKNOWN_0) != 0; }
 
 } // namespace event

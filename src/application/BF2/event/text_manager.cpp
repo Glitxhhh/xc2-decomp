@@ -18,10 +18,10 @@ void TextManager::reply(const char *label, int textId, CharaObj *chara) {
   if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipFast()) {
     return;
   }
-  if (mm::mtl::Singleton<DebugManager>::getPtr()->isFailureSkip() || (unknown10 & FLAG_CAPTION) != 0) {
+  if (mm::mtl::Singleton<DebugManager>::getPtr()->isFailureSkip() || (unknown10 & FLAG_UNKNOWN_0) != 0) {
     return;
   }
-  unknown10 = (unknown10 & ~(FLAG_PLAY | FLAG_WRITE | FLAG_ERASE)) | FLAG_PLAY;
+  unknown10 = (unknown10 & ~(FLAG_UNKNOWN_7 | FLAG_UNKNOWN_8 | FLAG_UNKNOWN_9)) | FLAG_UNKNOWN_7;
   unknown378 = fw::BdatManager::getFp(label);
   this->unknown380 = textId;
   this->unknown384 = "";
@@ -37,7 +37,7 @@ void TextManager::reply(const char *label, int textId, CharaObj *chara) {
   if (chara == nullptr) {
     return;
   }
-  if ((unknown10 & FLAG_AUTO_TALK_MODE) != 0 && chara->getActionLastFrame() <= 0.0f) {
+  if ((unknown10 & FLAG_UNKNOWN_1) != 0 && chara->getActionLastFrame() <= 0.0f) {
     chara->playAutoAction(-1.0f);
   }
   unknown5d0->playAutoTalk(-1.0f);
@@ -45,8 +45,8 @@ void TextManager::reply(const char *label, int textId, CharaObj *chara) {
 }
 
 bool TextManager::isReplying() const {
-  if ((unknown10 & FLAG_PLAY) != 0) {
-    if ((unknown10 & FLAG_WRITE) == 0) {
+  if ((unknown10 & FLAG_UNKNOWN_7) != 0) {
+    if ((unknown10 & FLAG_UNKNOWN_8) == 0) {
       return true;
     }
     if (unknown128.isWriting()) {
@@ -57,14 +57,14 @@ bool TextManager::isReplying() const {
 }
 
 void TextManager::replyEnd(CharaObj *chara) {
-  if ((unknown10 & FLAG_AUTO_TALK_MODE) != 0) {
+  if ((unknown10 & FLAG_UNKNOWN_1) != 0) {
     chara->playAutoAction(1.0f);
   }
   chara->playAutoTalk(1.0f);
   chara->playTalk(false, 1.0f, true, true, -1.0f, -1.0f, -1.0f, -1.0f);
 }
 
-bool TextManager::isCutChangeFrame() const { return (unknown10 & FLAG_CUT_CHANGE_FRAME) != 0; }
+bool TextManager::isCutChangeFrame() const { return (unknown10 & FLAG_UNKNOWN_5) != 0; }
 
 TextManager::TextManager() : unknown10(0), unknown14(0), unknown378(nullptr), unknown5d0(nullptr) {}
 
@@ -94,7 +94,7 @@ void TextManager::init() {
 }
 
 void TextManager::write(const char *text, u8 *bdat, u32 textId, const char *name, gf::GF_OBJ_HANDLE *handle) {
-  if ((unknown10 & FLAG_CAPTION) != 0) {
+  if ((unknown10 & FLAG_UNKNOWN_0) != 0) {
     unknown18.write(text, bdat, textId, unknown370);
   } else {
     unknown128.write(text, name, bdat, textId, handle);
@@ -102,12 +102,12 @@ void TextManager::write(const char *text, u8 *bdat, u32 textId, const char *name
 }
 
 void TextManager::stop() {
-  if ((unknown10 & FLAG_CAPTION) != 0) {
+  if ((unknown10 & FLAG_UNKNOWN_0) != 0) {
     unknown18.hide();
   } else {
     unknown128.hide();
   }
-  unknown10 &= ~(FLAG_LOCK_FRAME | FLAG_PLAY | FLAG_WRITE | FLAG_ERASE);
+  unknown10 &= ~(FLAG_UNKNOWN_6 | FLAG_UNKNOWN_7 | FLAG_UNKNOWN_8 | FLAG_UNKNOWN_9);
 }
 
 void TextManager::render() {
@@ -116,7 +116,7 @@ void TextManager::render() {
   }
   unknown18.render();
   unknown128.render();
-  if ((unknown10 & FLAG_PLAY) == 0) {
+  if ((unknown10 & FLAG_UNKNOWN_7) == 0) {
     return;
   }
   s32 height = ml::DevGraph::getRootHeight();
@@ -148,52 +148,52 @@ void TextManager::render() {
 void TextManager::setup(bool isCaption) {
   unknown18.hide();
   unknown128.hide();
-  setFlag(FLAG_CAPTION, isCaption);
+  setFlag(FLAG_UNKNOWN_0, isCaption);
   update();
 }
 
 void TextManager::setDefaultTalkerMode(bool isDefault, CharaObj *chara) { unknown5d8 = isDefault ? chara : nullptr; }
 
-void TextManager::setAutoTalkMode(bool isAutoTalkMode) { setFlag(FLAG_AUTO_TALK_MODE, isAutoTalkMode); }
+void TextManager::setAutoTalkMode(bool isAutoTalkMode) { setFlag(FLAG_UNKNOWN_1, isAutoTalkMode); }
 
-void TextManager::setAutoVoiceMode(bool isAutoVoiceMode) { setFlag(FLAG_AUTO_VOICE_MODE, isAutoVoiceMode); }
+void TextManager::setAutoVoiceMode(bool isAutoVoiceMode) { setFlag(FLAG_UNKNOWN_2, isAutoVoiceMode); }
 
-void TextManager::setBladeNameMode(bool isBladeNameMode) { setFlag(FLAG_BLADE_NAME_MODE, isBladeNameMode); }
+void TextManager::setBladeNameMode(bool isBladeNameMode) { setFlag(FLAG_UNKNOWN_3, isBladeNameMode); }
 
 void TextManager::setReplaceMode(bool isReplaceMode, const char *name) {
   if (isReplaceMode) {
-    unknown10 |= FLAG_REPLACE_MODE;
+    unknown10 |= FLAG_UNKNOWN_4;
     unknown5e0 = name;
   } else {
-    unknown10 &= ~FLAG_REPLACE_MODE;
+    unknown10 &= ~FLAG_UNKNOWN_4;
     unknown5e0 = "";
   }
 }
 
-void TextManager::setCutChangeFrame() { unknown10 |= FLAG_CUT_CHANGE_FRAME; }
+void TextManager::setCutChangeFrame() { unknown10 |= FLAG_UNKNOWN_5; }
 
-void TextManager::setDisp(bool isDisp) { setDispFlag(DISP_FLAG_DISP, isDisp); }
+void TextManager::setDisp(bool isDisp) { setDispFlag(DISP_FLAG_UNKNOWN_0, isDisp); }
 
-bool TextManager::isDisp() const { return (unknown14 & DISP_FLAG_DISP) != 0; }
+bool TextManager::isDisp() const { return (unknown14 & DISP_FLAG_UNKNOWN_0) != 0; }
 
-void TextManager::setUseSkip(bool isUse) { setDispFlag(DISP_FLAG_USE_SKIP, isUse); }
+void TextManager::setUseSkip(bool isUse) { setDispFlag(DISP_FLAG_UNKNOWN_1, isUse); }
 
 void TextManager::OnEventProc(MSG_TYPE type) {
   switch (type) {
-  case MSG_TYPE_INIT:
+  case MSG_TYPE_UNKNOWN_4:
     init();
     break;
-  case MSG_TYPE_CLEAR:
+  case MSG_TYPE_UNKNOWN_12:
     clear();
     break;
-  case MSG_TYPE_UPDATE:
+  case MSG_TYPE_UNKNOWN_14:
     update();
     break;
-  case MSG_TYPE_RENDER:
+  case MSG_TYPE_UNKNOWN_16:
     render();
     break;
-  case MSG_TYPE_TAIL:
-    unknown10 &= ~FLAG_CUT_CHANGE_FRAME;
+  case MSG_TYPE_UNKNOWN_18:
+    unknown10 &= ~FLAG_UNKNOWN_5;
     break;
   default:
     break;
