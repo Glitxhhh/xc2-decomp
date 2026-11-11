@@ -86,6 +86,8 @@ setup
 
 `setup` extracts the 1.0.0 executable from the XCI, checks its hash, and converts it into `work/main_100.elf`, an ELF with relocations applied and the full symbol table. Everything under `work/` is ignored by git and must never be committed.
 
+`setup --bdat` additionally extracts the BDAT tables of the 1.0.0 base game from the same program NCA into `work/bdat/` (`common*.bdat`, `lookat.bdat` and one subdirectory per language) and fails if the archive or the file count does not check out. It needs about 12 GB of temporary disk space under `work/`.
+
 </details>
 
 <details>
@@ -217,7 +219,7 @@ Abbreviations and names imposed by the game's symbols:
 | `tools/hygiene.py`, `tools/check_title.sh` | Pull request checks: files that must not be committed, commit message form of the title |
 | `tools/tidy.py` | clang-tidy on the lines a change adds (dead stores, uninitialised reads, identical branches) |
 | `tools/tests/` | Unit tests of the pull request check scripts |
-| `tools/setup.sh` | Extract the executable from the XCI |
+| `tools/setup.sh`, `tools/extract_bdat.py` | Extract the executable (and with `--bdat` the BDAT tables) from the XCI |
 | `tools/nso2elf.py`, `tools/nso_syms.py` | NSO to ELF conversion, symbol dump |
 | `.github/workflows/` | Continuous integration: `pr.yml` checks every pull request, `main.yml` builds `main` and seeds the caches, `progress.yml` publishes the progress |
 | `tools/ghidra/` | Ghidra scripts |
