@@ -5,6 +5,7 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/shd_util.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 #include "types.h"
 
@@ -58,6 +59,16 @@ void DrShdLgtGlobalIBL::updateUB_ToProxySpace(u8 *work, int viewNum) {
     const DrLightObjGlobalIBL *obj = view.unknown40[i].unknown10;
     grlib::ShdMat44TransposeMat44(reinterpret_cast<f32 *>(work), obj == nullptr ? mm::Mat44::identity : obj->unknown3d0);
     work += sizeof(mm::Mat44);
+  }
+}
+
+void DrShdLgtGlobalIBL::getSHAverage(mm::Vec3 &average, u32 index) const {
+  const unknown001 &view = unknown10[unknown00->unknown1c98];
+  average.x = view.unknown340[index * 3].rows[3][3];
+  average.y = view.unknown340[index * 3 + 1].rows[3][3];
+  average.z = view.unknown340[index * 3 + 2].rows[3][3];
+  if (average.isError()) {
+    average = mm::Vec3::zero;
   }
 }
 

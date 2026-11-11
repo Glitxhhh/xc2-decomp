@@ -62,6 +62,7 @@ static_assert(offsetof(wkPixlManRes, unknown178) == 0x178, "");
 static_assert(offsetof(wkPixlManRes, unknown180) == 0x180, "");
 static_assert(offsetof(wkPixlManRes, unknown188) == 0x188, "");
 static_assert(offsetof(wkPixlManRes, unknown194) == 0x194, "");
+static_assert(offsetof(wkPixlManRes, unknown198) == 0x198, "");
 static_assert(offsetof(wkPixlManRes, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(wkPixlManRes, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(wkPixlManRes, unknown1b8) == 0x1b8, "");

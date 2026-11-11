@@ -174,10 +174,10 @@ public:
   ScnObjAccResMaterial(ScnObjModel *model);
   void setDrMdl(ScnObjModel *model);
   DrResMdoMat *getMatRes(int index);
-  MdsMatInfoHeader *getMatData(int index);
+  const MdsMatInfoHeader *getMatData(int index);
 
 private:
-  MdsMatInfoHeader *m_matData;
+  const MdsMatInfoHeader *m_matData;
   DrResMdoMat *m_matEntries;
   u32 m_matCount;
 };

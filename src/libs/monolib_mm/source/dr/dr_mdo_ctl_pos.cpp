@@ -344,4 +344,41 @@ void DrMdoCtlPos::shadowRender() {
   }
 }
 
+void DrMdoCtlPos::nomTreeShadowRenderMdl(const MdsPosRangeTreeData *tree, DrPixlShadowObj *shadow) {
+  DrCalcViewWork *viewWork = unknown348;
+  f32 x = viewWork->unknown400.x - tree->unknown00[0];
+  f32 y = viewWork->unknown400.y - tree->unknown00[1];
+  f32 z = viewWork->unknown400.z - tree->unknown00[2];
+  if (x * x + y * y + z * z > tree->unknown10) {
+    return;
+  }
+  if (!shadow->clipTypeChk(*reinterpret_cast<const mm::Vec3 *>(tree->unknown00), tree->unknown0c)) {
+    return;
+  }
+  u32 count = tree->unknown1c;
+  if (count != 0) {
+    const u16 *child = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown1a8) + tree->unknown14);
+    for (u32 i = 0; i < count; i++) {
+      nomTreeShadowRenderMdl(unknown1c8 + *child++, shadow);
+    }
+  }
+  if (tree->unknown1e != 0) {
+    nomTreeListShadowRenderMdl(tree, shadow);
+  }
+}
+
+void DrMdoCtlPos::updateInstPosDispCall(const u32 *flags) {
+  unknown703 *dispCall = unknown30->unknown130;
+  if (dispCall != nullptr && dispCall->unknown00 > 0) {
+    _MdoWrkDispCallTemp *temp = dispCall->unknown08;
+    const MdsMatDispCCData *data = dispCall->unknown10;
+    for (s32 i = 0; i < dispCall->unknown00; i++, data++, temp++) {
+      if ((flags[data->unknown04 >> 5] & (1 << (data->unknown04 & 31))) && checkCallBackParam(temp, data)) {
+        unknown240[data->unknown04 >> 4] |= 1 << ((data->unknown04 & 0xf) << 1);
+        unknown240[data->unknown04 >> 4] |= 1 << (((data->unknown04 & 0xf) << 1) | 1);
+      }
+    }
+  }
+}
+
 } // namespace ml

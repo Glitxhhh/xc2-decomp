@@ -387,7 +387,6 @@ public:
   void updateTexutreSeam();
   void updateVertexSeam();
 
-  u8 _190[0x1a8 - 0x190];
   unknown061 *unknown1a8;                                  // Inferred role: seam resource header; original member name unknown.
   unknown094<DrResMdoSeamTexture> unknown1b0;              // Inferred role: texture pool; original member name unknown.
   unknown094<DrResMdoSeamTexList> unknown1e8;              // Inferred role: texture list pool; original member name unknown.

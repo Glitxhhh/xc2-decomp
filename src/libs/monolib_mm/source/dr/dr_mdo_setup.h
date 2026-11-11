@@ -15,6 +15,7 @@ class DrShdDataList;
 struct MdoWrkMatSetupArg;
 struct MdsMatInfoHeader;
 struct MdsMpfMatInfoHeader;
+struct MdsMatTechnique;
 
 struct MdsMatVariableTbl {
   u16 unknown00; // Inferred role: variable type; original member name unknown.
@@ -94,6 +95,7 @@ public:
   void changeShaderPos();
   void getSetupMaterial(MdoWrkMatSetupArg &arg, const MdsMatInfoHeader *header, int mode);
   void createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat);
+  void setShader(DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatTechnique *technique, u32 matIndex, int mdlIndex, u32 bufferIndex);
   void updateUniformBlock(const u32 *flags);
   void createMpfMatUniformBlock(const MdsMpfMatExtData *data, int index);
   void updateMpfMatUniformBlock();
@@ -188,7 +190,7 @@ public:
   u8 unknown179;                           // Inferred role: seam flag; original member name unknown.
   s16 unknown17a;                          // Inferred role: uniform index; original member name unknown.
   s16 unknown17c;                          // Inferred role: material index; original member name unknown.
-  u16 unknown17e;                          // Inferred role: previous material index; original member name unknown.
+  s16 unknown17e;                          // Inferred role: previous material index; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoSetup, unknown170) == 0x170, "");

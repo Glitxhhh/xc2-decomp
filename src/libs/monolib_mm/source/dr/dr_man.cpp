@@ -691,3 +691,6 @@ void DrMan::bkgHomeMenu(bool isOpen) {
 
 // The game compiles DrMdlObj::setDblBuffAlpha and DrMdlObj::setClipBoxMode in this unit (0x7ce29c and 0x7ce2b8 follow createInstantMdl, which inlines them).
 #include "dr_mdl_obj.cpp"
+
+// The game compiles DrMdoGrpObj in this unit too (0x7cf5e4 follows DrMdlObj::OnCloseAttriMenu): its create functions inline DrMan::getCriticalSection.
+#include "dr_mdo_grp_obj.cpp"

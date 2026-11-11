@@ -252,7 +252,7 @@ void ScnObjAccResMaterial::setDrMdl(ScnObjModel *model) {
 
 DrResMdoMat *ScnObjAccResMaterial::getMatRes(int index) { return &m_matEntries[index]; }
 
-MdsMatInfoHeader *ScnObjAccResMaterial::getMatData(int index) { return &m_matData[index]; }
+const MdsMatInfoHeader *ScnObjAccResMaterial::getMatData(int index) { return &m_matData[index]; }
 
 ScnObjAccResSubMesh::ScnObjAccResSubMesh() : m_meshObj(nullptr) {}
 

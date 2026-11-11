@@ -37,6 +37,14 @@ f32 calcHaltonSequence(u32 index, u32 base) {
 
 } // namespace _dcvwk
 
+int DrCalcViewWork::unistatic_preProjMat(f32 *work, bool isJitter) {
+  mm::Mat44 matrix;
+  matrix.unknown009(unknown00, unknown280);
+  matrix.unknown009(matrix, isJitter ? unknown180 : unknown380);
+  grlib::ShdMat44TransposeMat44(work, matrix);
+  return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_68];
+}
+
 void DrCalcViewWork::shadowBegin(const mm::Mat44 &matrix) {
   unknownc0 = matrix;
   unknownc0.rows[3][0] = unknownc0.rows[3][1] = 0.0f;
@@ -264,6 +272,24 @@ int DrCalcViewWork::unistatic_screenSize(f32 *work, bool isJitter) {
   }
   grlib::ShdF32SetVec4(work, &value.x);
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_62];
+}
+
+int DrCalcViewWork::unistatic_lightCol(f32 *work) {
+  DrLightMan *lightMan = unknown700->unknown588;
+  s32 count = lightMan->unknown168;
+  s32 used = count < 3 ? count : 2;
+  const mm::Col3 *color = lightMan->unknown16c;
+  for (s32 i = 0; i < used; i++, color++) {
+    work[i * 4 + 0] = color->r;
+    work[i * 4 + 1] = color->g;
+    work[i * 4 + 2] = color->b;
+  }
+  for (s32 i = used; i < 2; i++) {
+    work[i * 4 + 0] = 0.0f;
+    work[i * 4 + 1] = 0.0f;
+    work[i * 4 + 2] = 0.0f;
+  }
+  return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_29];
 }
 
 int DrCalcViewWork::unistatic_mpf_Fade(f32 *work) {

@@ -140,10 +140,9 @@ public:
   void createThicknessRenderDisplayListSub(bool isFirst);
   void createZBuffRenderDisplayList();
   void callPosRender(u32 renderType);
+  void updateInstPosDispCall(const u32 *flags);
+  void nomTreeListShadowRenderMdl(const MdsPosRangeTreeData *tree, DrPixlShadowObj *shadow);
 
-  u8 _190[0x1a0 - 0x190];
-  u32 unknown1a0; // Inferred role: render count; original member name unknown.
-  u8 _1a4[0x1a8 - 0x1a4];
   const unknown017 *unknown1a8;          // Inferred role: position resource header; original member name unknown.
   const unknown018 *unknown1b0;          // Inferred role: lod range per position; original member name unknown.
   const unknown019 *unknown1b8;          // Inferred role: lod entries; original member name unknown.
@@ -159,8 +158,9 @@ public:
   void **unknown228;             // Inferred role: allocated buffers; original member name unknown.
   void *unknown230;              // Inferred role: allocated memory; original member name unknown.
   s32 unknown238;                // Inferred role: allocated buffer count; original member name unknown.
-  u8 _23c[0x248 - 0x23c];
-  s32 unknown248; // Inferred role: render buffer offset; original member name unknown.
+  u8 _23c[0x240 - 0x23c];
+  u32 *unknown240; // Inferred role: display call flags of the positions; original member name unknown.
+  s32 unknown248;  // Inferred role: render buffer offset; original member name unknown.
   u8 _24c[0x250 - 0x24c];
   DrResMdoPosAddList *unknown250;  // Inferred role: add list; original member name unknown.
   DrResMdoInstMdlInfo *unknown258; // Inferred role: inst mdl info; original member name unknown.
@@ -203,6 +203,7 @@ static_assert(offsetof(DrMdoCtlPos, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(DrMdoCtlPos, unknown1e8) == 0x1e8, "");
 static_assert(offsetof(DrMdoCtlPos, unknown218) == 0x218, "");
 static_assert(offsetof(DrMdoCtlPos, unknown238) == 0x238, "");
+static_assert(offsetof(DrMdoCtlPos, unknown240) == 0x240, "");
 static_assert(offsetof(DrMdoCtlPos, unknown248) == 0x248, "");
 static_assert(offsetof(DrMdoCtlPos, unknown250) == 0x250, "");
 static_assert(offsetof(DrMdoCtlPos, unknown258) == 0x258, "");

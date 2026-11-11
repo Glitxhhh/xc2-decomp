@@ -113,9 +113,7 @@ public:
     beginSetup();
   }
 
-  DrResChkList *(*unknown190)[8]; // Inferred role: render list per mdl and render type; original member name unknown.
-  DrResChkList *unknown198;       // Inferred role: render list entries; original member name unknown.
-  u8 _1a0[0x1b8 - 0x1a0];
+  u8 _1a8[0x1b8 - 0x1a8];
   unknown099 *unknown1b8; // Inferred role: alpha sort work; original member name unknown.
   u8 _1c0[0x1c8 - 0x1c0];
   DrResMdoMorpObj *unknown1c8;    // Inferred role: morph object; original member name unknown.

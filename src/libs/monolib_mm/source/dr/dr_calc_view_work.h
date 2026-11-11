@@ -48,6 +48,8 @@ public:
   int unistatic_mpf_Fade(f32 *work);
   int unistatic_digher_val(f32 *work, bool isJitter);
   int unistatic_screenSize(f32 *work, bool isJitter);
+  int unistatic_lightCol(f32 *work);
+  int unistatic_preProjMat(f32 *work, bool isJitter);
 
   mm::Mat44 unknown00; // Inferred role: inv view; original member name unknown.
   mm::Mat44 unknown40; // Inferred role: view; original member name unknown.

@@ -65,6 +65,128 @@ void DrMdoMat::resetNodeAnmWrkRes(const u8 *data, MdoWrkMatRes *matRes) {
   }
 }
 
+void DrMdoMat::resetBillMdlInfo(MdoWrkMatRes *matRes, const u8 *data, bool isInstance) {
+  const unknown022 *header = reinterpret_cast<const unknown022 *>(data);
+  if (header->unknown00 & (unknown022::FLAG_UNKNOWN_1 | unknown022::FLAG_UNKNOWN_2)) {
+    const unknown714 *table = reinterpret_cast<const unknown714 *>(data + header->unknown74);
+    if (header->unknown00 & unknown022::FLAG_UNKNOWN_1) {
+      matRes->unknown120->unknown18 = reinterpret_cast<const unknown719 *>(data + table->unknown00);
+      matRes->unknown120->unknown20 = reinterpret_cast<const unknown720 *>(data + table->unknown08);
+    }
+    if (header->unknown00 & unknown022::FLAG_UNKNOWN_2) {
+      if (isInstance) {
+        matRes->unknown160_1->unknown08 = data + table->unknown10;
+        return;
+      }
+      matRes->unknown160->unknown10 = data + table->unknown10;
+    }
+  }
+}
+
+void DrMdoMat::resetMpfMaterial(MdoWrkMatRes *matRes, const u8 *matData, const u8 *vertexData, const u8 *mdlData, const u8 *texData) {
+  matRes->unknown10 = matData;
+  matRes->unknown08 = texData;
+  matRes->unknown00 = vertexData;
+  matRes->unknown28 = reinterpret_cast<const MdsMatInfoHeader *>(matData + reinterpret_cast<const MdsMatTopHeader *>(matData)->unknown00);
+  if (matRes->unknownf0 != 0) {
+    matRes->unknownd0->changeMemTexList(texData);
+  }
+  initMdlInfo(mdlData, matRes);
+  if (matRes->unknown00 != nullptr && matRes->unknownc8 != nullptr) {
+    matRes->unknownc8->changeMemVertex(matRes->unknown00);
+  }
+}
+
+void DrMdoMat::resetBaseMapMaterial(MdoWrkMatRes *matRes, const u8 *matData, const u8 *mdlData, const u8 *vertexData, const u8 *shaderData, const u8 *texData, int skipTexList) {
+  const MdsMatTopHeader *header = reinterpret_cast<const MdsMatTopHeader *>(matData);
+  const MdsMatTechnique *techniques = reinterpret_cast<const MdsMatTechnique *>(matData + header->unknown28);
+  initMdlInfo(mdlData, matRes);
+  matRes->unknown10 = matData;
+  matRes->unknown08 = texData;
+  matRes->unknown00 = vertexData;
+  matRes->unknown70 = techniques;
+  matRes->unknown78 = matData;
+  matRes->unknown28 = reinterpret_cast<const MdsMatInfoHeader *>(matData + header->unknown00);
+  if (header->unknown20 != 0) {
+    matRes->unknown40 = reinterpret_cast<const unknown010 *>(matData + header->unknown20);
+  }
+  DrResMdoMat *names = matRes->unknownc0;
+  const MdsMatInfoHeader *infos = matRes->unknown28;
+  for (int i = 0; i < matRes->unknown30; i++) {
+    names->setName(reinterpret_cast<const char *>(matRes->unknown10 + infos->unknown00));
+    names++;
+    infos++;
+  }
+  if (header->unknown14 != 0) {
+    matRes->unknown38 = reinterpret_cast<const f32 *>(matRes->unknown10 + header->unknown10);
+  }
+  if (header->unknown34 != 0) {
+    matRes->unknown128->unknown00 = matData + header->unknown34;
+  }
+  if (header->unknown44 & MdsMatTopHeader::FLAG_UNKNOWN_1) {
+    resetDispCallRes(matData, header->unknown4c, matRes);
+  }
+  if (header->unknown44 & MdsMatTopHeader::FLAG_UNKNOWN_2) {
+    resetFurShaderRes(matData, header->unknown50, matRes);
+  }
+  resetNodeAnmWrkRes(mdlData, matRes);
+  resetBillMdlInfo(matRes, mdlData, false);
+  if (skipTexList == 0 && matRes->unknownf0 != 0) {
+    matRes->unknownd0->changeMemTexList(matRes->unknown08);
+  }
+  if (matRes->unknown00 != nullptr && matRes->unknownc8 != nullptr) {
+    matRes->unknownc8->changeMemVertex(matRes->unknown00);
+  }
+  if (header->unknown44 & MdsMatTopHeader::FLAG_UNKNOWN_3) {
+    matRes->unknown48 = matData + reinterpret_cast<const unknown718 *>(matData + header->unknown54)->unknown00;
+  }
+  matRes->unknown80->changeMemShader(shaderData, matData, techniques);
+}
+
+void DrMdoMat::resetInstMapMaterial(MdoWrkMatRes *matRes, const u8 *matData, const u8 *mdlData, const u8 *shaderData, const u8 *texData, int skipTexList) {
+  const MdsMatTopHeader *header = reinterpret_cast<const MdsMatTopHeader *>(matData);
+  const MdsMatTechnique *techniques = reinterpret_cast<const MdsMatTechnique *>(matData + header->unknown28);
+  initMdlInfo(mdlData, matRes);
+  matRes->unknown08 = texData;
+  matRes->unknown10 = matData;
+  matRes->unknown70 = techniques;
+  matRes->unknown78 = matData;
+  matRes->unknown28 = reinterpret_cast<const MdsMatInfoHeader *>(matData + header->unknown00);
+  if (header->unknown20 != 0) {
+    matRes->unknown40 = reinterpret_cast<const unknown010 *>(matData + header->unknown20);
+  }
+  DrResMdoMat *names = matRes->unknownc0;
+  const MdsMatInfoHeader *infos = matRes->unknown28;
+  for (int i = 0; i < matRes->unknown30; i++) {
+    names->setName(reinterpret_cast<const char *>(matRes->unknown10 + infos->unknown00));
+    names++;
+    infos++;
+  }
+  if (header->unknown14 != 0) {
+    matRes->unknown38 = reinterpret_cast<const f32 *>(matRes->unknown10 + header->unknown10);
+  }
+  if (header->unknown34 != 0) {
+    matRes->unknown128->unknown00 = matData + header->unknown34;
+  }
+  if (header->unknown44 & MdsMatTopHeader::FLAG_UNKNOWN_1) {
+    resetDispCallRes(matData, header->unknown4c, matRes);
+  }
+  if (header->unknown44 & MdsMatTopHeader::FLAG_UNKNOWN_2) {
+    resetFurShaderRes(matData, header->unknown50, matRes);
+  }
+  resetNodeAnmWrkRes(mdlData, matRes);
+  resetBillMdlInfo(matRes, mdlData, true);
+  if (skipTexList == 0 && matRes->unknownf0 != 0) {
+    matRes->unknownd0->changeMemTexList(matRes->unknown08);
+  }
+  if (header->unknown44 & MdsMatTopHeader::FLAG_UNKNOWN_3) {
+    matRes->unknown48 = matData + reinterpret_cast<const unknown718 *>(matData + header->unknown54)->unknown00;
+  }
+  if (matRes->unknown80 != nullptr) {
+    matRes->unknown80->changeMemShader(shaderData, matData, techniques);
+  }
+}
+
 int DrMdoMat::getDispCallRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes *matRes) {
   const unknown704 *table = reinterpret_cast<const unknown704 *>(data + offset);
   if (work != nullptr) {

@@ -69,8 +69,9 @@ public:
   u8 _138[0x160 - 0x138];
   f32 unknown160; // Inferred role: sun shadow strength; original member name unknown.
   u8 _164[0x168 - 0x164];
-  u32 unknown168; // Inferred role: stocked dir light count; original member name unknown.
-  u8 _16c[0x1b8 - 0x16c];
+  u32 unknown168;         // Inferred role: stocked dir light count; original member name unknown.
+  mm::Col3 unknown16c[3]; // Inferred role: colors of the stocked directional lights; original member name unknown.
+  u8 _190[0x1b8 - 0x190];
   bool unknown1b8; // Inferred role: sun shadow stock; original member name unknown.
   bool unknown1b9; // Inferred role: sun shadow enable; original member name unknown.
 };
@@ -90,6 +91,7 @@ static_assert(offsetof(DrLightMan, unknown100) == 0x100, "");
 static_assert(offsetof(DrLightMan, unknown108) == 0x108, "");
 static_assert(offsetof(DrLightMan, unknown10c) == 0x10c, "");
 static_assert(offsetof(DrLightMan, unknown120) == 0x120, "");
+static_assert(offsetof(DrLightMan, unknown16c) == 0x16c, "");
 static_assert(offsetof(DrLightMan, unknown12c) == 0x12c, "");
 static_assert(offsetof(DrLightMan, unknown160) == 0x160, "");
 static_assert(offsetof(DrLightMan, unknown168) == 0x168, "");

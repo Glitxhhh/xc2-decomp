@@ -19,6 +19,7 @@ public:
     VAR_TYPE_UNKNOWN_24 = 24,
     VAR_TYPE_UNKNOWN_25 = 25,
     VAR_TYPE_UNKNOWN_26 = 26,
+    VAR_TYPE_UNKNOWN_29 = 29,
     VAR_TYPE_UNKNOWN_30 = 30,
     VAR_TYPE_UNKNOWN_45 = 45, // Inferred role: billboard def; original name unknown.
     VAR_TYPE_UNKNOWN_46 = 46, // Inferred role: billboard y vec; original name unknown.
@@ -27,6 +28,7 @@ public:
     VAR_TYPE_UNKNOWN_58 = 58,
     VAR_TYPE_UNKNOWN_59 = 59,
     VAR_TYPE_UNKNOWN_62 = 62,
+    VAR_TYPE_UNKNOWN_68 = 68,
     VAR_TYPE_UNKNOWN_73 = 73,   // Inferred role: jitter; original name unknown.
     VAR_TYPE_UNKNOWN_77 = 77,   // Inferred role: light not use; original name unknown.
     VAR_TYPE_UNKNOWN_93 = 93,   // Inferred role: dither tmaa val; original name unknown.

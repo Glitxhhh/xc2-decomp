@@ -18,7 +18,7 @@ public:
   void defMpfZPreRender();
   void defMpfrender();
 
-  u8 _190[0x200 - 0x190];
+  u8 _1a8[0x200 - 0x1a8];
 };
 
 static_assert(sizeof(DrMdoCtlMpf) == 0x200, "");
