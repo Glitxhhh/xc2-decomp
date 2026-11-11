@@ -42,6 +42,7 @@ template <typename T, size_t N> class FixedVector {
 
 public:
   FixedVector() : m_size(0) {}
+  FixedVector(const FixedVector &other) : m_size(0) { *this = other; }
   ~FixedVector() { clear(); }
 
   T &front() { return *at(0); }
@@ -171,13 +172,16 @@ public:
     return *this;
   }
 
+  // __LINE__ must be 270 and 275 as in the original header: they are the line arguments of the asserts.
   void assign(const T *first, const T *last) {
+#line 270
     MM_ASSERT(first <= last);
     clear();
     if (first == last) {
       return;
     }
     size_t newSize = last - first;
+#line 275
     MM_ASSERT(newSize <= N);
     copy_construct_n(first, newSize, begin());
     m_size = newSize;

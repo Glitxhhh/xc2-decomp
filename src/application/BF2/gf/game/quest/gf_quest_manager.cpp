@@ -288,6 +288,73 @@ void GfQuestManager::requestQuestComplete(QuestID quest, QSTATE state) {
   }
 }
 
+void GfQuestManager::resetQuest(QuestID quest) {
+  if (s_pThis == nullptr) {
+    return;
+  }
+
+  GfQuestTask::clearTask(quest);
+  GfQuestInfo::setState(quest, QSTATE_NOT_ORDER);
+  if (!GfQuestInfo::isParent(quest)) {
+    mm::mtl::FixedQueue<QuestData, 8000>::iterator order = s_pThis->unknowna0.find(QuestData(quest));
+    if (order != s_pThis->unknowna0.end()) {
+      s_pThis->unknowna0.erase(order);
+
+      mm::mtl::FixedQueue<QuestData, 1024>::iterator parallel = s_pThis->unknown3e418.find(QuestData(quest));
+      if (parallel != s_pThis->unknown3e418.end()) {
+        s_pThis->unknown3e418.erase(parallel);
+      }
+
+      mm::mtl::FixedQueue<QuestData, 1024>::iterator reduceHp = s_pThis->unknown3f428.find(QuestData(quest));
+      if (reduceHp != s_pThis->unknown3f428.end()) {
+        s_pThis->unknown3f428.erase(reduceHp);
+      }
+    } else {
+      mm::mtl::FixedQueue<QuestData, 15000>::iterator achievement = s_pThis->unknown7db0.find(QuestData(quest));
+      if (achievement != s_pThis->unknown7db0.end()) {
+        s_pThis->unknown7db0.erase(achievement);
+      }
+
+      mm::mtl::FixedQueue<QuestData, 15000>::iterator achievementCheck = s_pThis->unknown2f9a8.find(QuestData(quest));
+      if (achievementCheck != s_pThis->unknown2f9a8.end()) {
+        s_pThis->unknown2f9a8.erase(achievementCheck);
+      }
+    }
+  } else {
+    QuestID select = GfDataQuest::getSelect();
+    if (select == quest) {
+      s_pThis->setCurrentQuestSelect(toQuestID(0));
+    }
+
+    GfQuestUtil::removeOrderParentQuest(quest);
+    GfQuestManager *manager = s_pThis;
+    mm::mtl::FixedQueue<QuestData, 8000> *quests = nullptr;
+    switch (GfDataQuest::getListQuestCategory(quest)) {
+    case QTYPE_NORMAL:
+      quests = &manager->unknown1e530;
+      break;
+    case QTYPE_BLADE:
+      quests = &manager->unknown16820;
+      break;
+    case QTYPE_UNUSED:
+    case QTYPE_MERCENARIES:
+      quests = &manager->unknown26240;
+      break;
+    }
+
+    if (quests != nullptr) {
+      quests->push(QuestData(quest));
+    }
+
+    requestRefreshQuestTaskState();
+  }
+
+  QuestID child = GfQuestInfo::getChildQuestID(quest);
+  if (!child.empty() && child.unknown00 < QUEST_ID_END) {
+    resetQuest(child);
+  }
+}
+
 void GfQuestManager::requestRefreshQuestTaskState() {
   if (s_pThis != nullptr) {
     s_pThis->unknown408c0 = true;
@@ -445,6 +512,24 @@ bool GfQuestManager::getRewardItem(GfQuestReward &reward, QuestID quest, bool is
   return GfQuestUtil::getReward(reward, rewardSet, isRandom);
 }
 
+void GfQuestManager::getLinkQuest(mm::mtl::FixedVector<QuestID, 16> &quests, QuestID quest) {
+  if (s_pThis == nullptr || quest.empty()) {
+    return;
+  }
+
+  for (mm::mtl::FixedVector<QuestID, 16> *links = s_pThis->unknown40438.begin(), *last = s_pThis->unknown40438.end(); links != last; ++links) {
+    if ((*links)[0] == quest) {
+      if (quest == getProgressCurrentQuest(QTYPE_NONE)) {
+        quests = *links;
+        return;
+      }
+      break;
+    }
+  }
+
+  quests.push_back(quest);
+}
+
 // Inlined into every caller: the game keeps an out-of-line copy this code does not match yet.
 inline QuestID GfQuestManager::getProgressCurrentQuest(QTYPE type) {
   QuestID progress = GfQuestInfo::getProgressQuest(getCurrentQuest(type));
@@ -593,6 +678,32 @@ void GfQuestManager::eventOrderQuest(QuestID quest) {
   if (!quest.empty()) {
     s_pThis->unknown2e788.push_back(new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) QuestOrderParam(quest));
   }
+}
+
+void GfQuestManager::reqistLinkQuest(QuestID quest) {
+  if (quest.unknown02 != 0) {
+    return;
+  }
+
+  QuestID linked;
+  u32 linkedQuest = QuestListAcc::get()->getListLinkedQuestID(quest);
+  linked.unknown00 = linkedQuest;
+  linked.unknown02 = linkedQuest >> 16;
+  if (linked.empty()) {
+    return;
+  }
+
+  for (mm::mtl::FixedVector<QuestID, 16> *links = unknown40438.begin(), *last = unknown40438.end(); links != last; ++links) {
+    if ((*links)[0] == linked) {
+      links->push_back(quest);
+      return;
+    }
+  }
+
+  mm::mtl::FixedVector<QuestID, 16> links;
+  links.push_back(linked);
+  links.push_back(quest);
+  unknown40438.push_back(links);
 }
 
 bool GfQuestManager::compEntryQuest::operator()(const QuestData &data) const {
