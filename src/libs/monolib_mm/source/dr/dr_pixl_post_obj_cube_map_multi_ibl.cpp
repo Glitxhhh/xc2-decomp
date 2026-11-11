@@ -6,6 +6,31 @@
 #include "dr/dr_shd_cube_cap_filter.h"
 #include "mm_mtl/fixed_array.h"
 
+// Spherical harmonics helpers of the unit (second order, 9 coefficients). The game keeps them in the namespace
+// _cubemap_multi_ibl_ (_ZN19_cubemap_multi_ibl_5shMulEPff).
+namespace _cubemap_multi_ibl_ {
+
+void shMul(f32 *sh, f32 scale) {
+  for (int i = 0; i < 9; i++) {
+    sh[i] = sh[i] * scale;
+  }
+}
+
+void shMulAdd(f32 *sh, const f32 *add, f32 scale) {
+  for (u32 i = 0; i < 9; i++) {
+    sh[i] += add[i] * scale;
+  }
+}
+
+void shLerp(f32 *sh, const f32 *a, const f32 *b, f32 t) {
+  f32 inverse = 1.0f - t;
+  for (int i = 0; i < 9; i++) {
+    sh[i] = inverse * a[i] + b[i] * t;
+  }
+}
+
+} // namespace _cubemap_multi_ibl_
+
 namespace ml {
 
 DrPixlPostObjCubeMapMultiIBL::~DrPixlPostObjCubeMapMultiIBL() {
