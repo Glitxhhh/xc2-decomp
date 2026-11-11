@@ -42,6 +42,9 @@ constexpr u32 unknown007 = 0x37;
 // Inferred role: total close call id; original name unknown.
 constexpr u32 unknown008 = 0x38;
 
+// Inferred role: ui event type, enables or disables the input; original name unknown.
+constexpr u16 unknown009 = 0x10b;
+
 GfMenuObjFieldSkill::~GfMenuObjFieldSkill() {
   unknown50 = nullptr;
   unknown38 = nullptr;
@@ -267,6 +270,34 @@ void GfMenuObjFieldSkill::MainListener::reciveEvent(const ui::EventData &event, 
   }
 }
 
+void GfMenuObjFieldSkill::InputListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  case 8:
+    if (event.unknown0c == 1) {
+      GfMenuObject::addResultCallContext(acc.unknown10, 2, 0);
+      GfMenuObject::disableInput(acc.unknown10);
+    }
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::disableInput(acc.unknown10);
+    GfMenuObject::termCallContext(acc.unknown10);
+    break;
+  case unknown009:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableInput(acc.unknown10);
+    } else {
+      GfMenuObject::disableInput(acc.unknown10);
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjFieldSkill>(const mm::mtl::Delegate<bool()> *);

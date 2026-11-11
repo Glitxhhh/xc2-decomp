@@ -223,6 +223,22 @@ void GfMenuObjDrKizunaRing::MainListener::reciveEvent(const ui::EventData &event
   }
 }
 
+void GfMenuObjDrKizunaRing::DriverStockSPListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupDriverSkillInfo(owner);
+    break;
+  case 8:
+  case 0x105:
+  case 0x106:
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjDrKizunaRing, 8>>(const mm::mtl::Delegate<bool()> *);

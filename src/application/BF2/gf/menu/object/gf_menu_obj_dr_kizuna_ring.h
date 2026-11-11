@@ -32,6 +32,14 @@ public:
     GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class DriverStockSPListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjDrKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjDrKizunaRing(u32 handle);
   ~GfMenuObjDrKizunaRing() override;
 
@@ -78,6 +86,7 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjDrKizunaRing::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjDrKizunaRing::DriverStockSPListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjDrKizunaRing, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjDrKizunaRing, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjDrKizunaRing, unknown38) == 0x38, "");

@@ -5,6 +5,7 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -20,6 +21,14 @@ struct GF_SCOM_HANDLE;
 
 class GfMenuObjBlKizunaRing : public GfMenuObject {
 public:
+  class BladeSkillInfoListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBlKizunaRing *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   struct OpenParam {
     u16 unknown00; // Inferred role: open mode; original member name unknown.
     u32 unknown04; // Inferred role: blade; original member name unknown.
@@ -84,6 +93,7 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjBlKizunaRing::OpenParam, unknown04) == 0x04, "");
+static_assert(offsetof(GfMenuObjBlKizunaRing::BladeSkillInfoListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjBlKizunaRing::OpenParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjBlKizunaRing, unknown30) == 0x30, "");

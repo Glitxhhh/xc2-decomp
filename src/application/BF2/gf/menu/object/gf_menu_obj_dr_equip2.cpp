@@ -104,4 +104,13 @@ void GfMenuObjDrEquip2::MainListener::reciveEvent(const ui::EventData &event, u3
   }
 }
 
+void GfMenuObjDrEquip2::EquipItemListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  if (event.unknown00 == 1) {
+    setupEquipItem(acc, unknown20->unknown30);
+  } else {
+    ui::UIObjectListener::reciveEvent(event, handle);
+  }
+}
 } // namespace gf

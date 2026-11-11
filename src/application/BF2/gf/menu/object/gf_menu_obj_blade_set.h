@@ -24,6 +24,19 @@ public:
     GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class PreviewListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
+  class MercenariesPreviewListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeSet *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjBladeSet(u32 handle);
   ~GfMenuObjBladeSet() override;
   enum eMode {
@@ -51,6 +64,7 @@ public:
   static void setCompleteBtnStat(int menu, u32 mission, const GfMenuBladeList *list);
   static void setupBladeSelect(ui::UIObjectAcc &acc, const GfMenuBladeList *list, GfMenuBladeList *slotList);
   static void setupMercenariesPreview(ui::UIObjectAcc &acc, GfMenuBladeList *list);
+  static void setupMercenariesCond(ui::UIObjectAcc &acc, u32 mission, GfMenuBladeList *list);
   void initialize() override;
   void finalize() override;
   void update() override;
@@ -83,6 +97,7 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjBladeSet::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeSet::MercenariesPreviewListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjBladeSet::OpenParam, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjBladeSet, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjBladeSet, unknown28) == 0x28, "");

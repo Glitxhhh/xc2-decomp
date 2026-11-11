@@ -22,6 +22,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_scom.h"
+#include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
@@ -579,6 +580,135 @@ void GfMenuObjCharSelect::MainListener::reciveEvent(const ui::EventData &event, 
     ui::UIObjectListener::reciveEvent(event, handle);
     break;
   }
+}
+
+void GfMenuObjCharSelect::DetailListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown0c = 0;
+    break;
+  case 8:
+    if (event.unknown0c == 2) {
+      GfMenuObjMainMenu2::setSubIndexText(unknown0c == 0 ? 2 : 3);
+    }
+    break;
+  case GfMenuTypes::unknown003_33: {
+    int type = event.unknown08;
+    acc.setDisp(true);
+    GfMenuObjMainMenu2::setSubIndexText(type == 0 ? 0x12 : 0x13);
+    enableInput(acc.unknown10);
+    unknown0c = type;
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjCharSelect::StatusListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case 0x105: {
+    acc.getPos(unknown20->unknown6d4);
+    mm::Rect<s16> rect;
+    switch (event.unknown08) {
+    case 0x1d:
+    case 0x20: {
+      const char *name = event.unknown08 == 0x1d ? "drindex_atst" : "drindex_acs";
+      ui::UIObjectAcc main(owner.searchChild("LAY_main"));
+      main.getLayoutRect(name, rect);
+      mm::Pnt<s16> pos;
+      pos.x = rect.x;
+      pos.y = rect.y;
+      acc.setPos(pos);
+      break;
+    }
+    case 0x1e: {
+      ui::UIObjectAcc main(owner.searchChild("LAY_main"));
+      main.getLayoutRect("drindex_atst", rect);
+      mm::Pnt<s16> pos;
+      pos.x = -(unknown20->unknown6d4.x + rect.width);
+      pos.y = rect.y;
+      acc.setPos(pos);
+      break;
+    }
+    }
+    break;
+  }
+  case 0x106:
+    acc.setPos(unknown20->unknown6d4);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjCharSelect::CharDrListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(unknown20->unknown18);
+  if (event.unknown00 != 1) {
+    if (event.unknown00 == 3) {
+      if (event.unknown08 == 0) {
+        return;
+      }
+      if (event.unknown08 == 1) {
+        unknown007.unknown01 = false;
+        enableInput(acc.searchChild("LAY_char"));
+      }
+    }
+    ui::UIObjectListener::reciveEvent(event, handle);
+  }
+}
+
+void GfMenuObjCharSelect::CharDrSoloListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(unknown20->unknown18);
+  if (event.unknown00 != 1) {
+    if (event.unknown00 == 3) {
+      if (event.unknown08 == 0) {
+        return;
+      }
+      if (event.unknown08 == 1) {
+        unknown007.unknown01 = false;
+        enableInput(acc.searchChild("LAY_char"));
+      }
+    }
+    ui::UIObjectListener::reciveEvent(event, handle);
+  }
+}
+
+void GfMenuObjCharSelect::CharBlMoveListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  if (event.unknown00 == 1) {
+    return;
+  }
+  if (event.unknown00 == 3) {
+    if (event.unknown08 == 0) {
+      return;
+    }
+    if (event.unknown08 == 1) {
+      unknown007.unknown00 = false;
+    }
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+void GfMenuObjCharSelect::CharDrMoveListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  if (event.unknown00 == 1) {
+    return;
+  }
+  if (event.unknown00 == 3) {
+    if (event.unknown08 == 0) {
+      return;
+    }
+    if (event.unknown08 == 1) {
+      unknown007.unknown00 = false;
+    }
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
 }
 
 } // namespace gf

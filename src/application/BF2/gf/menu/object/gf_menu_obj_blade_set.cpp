@@ -331,4 +331,41 @@ void GfMenuObjBladeSet::MainListener::reciveEvent(const ui::EventData &event, u3
   }
 }
 
+void GfMenuObjBladeSet::PreviewListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupBladePreview(acc);
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    acc.setDisp(false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBladeSet::MercenariesPreviewListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupMercenariesPreview(acc, unknown20->unknown80);
+    setupMercenariesCond(acc, unknown20->unknown28, unknown20->unknown80);
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    acc.setDisp(false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf

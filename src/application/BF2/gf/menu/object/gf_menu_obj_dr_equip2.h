@@ -34,6 +34,14 @@ public:
     GfMenuObjDrEquip2 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class EquipItemListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjDrEquip2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjDrEquip2(u32 handle);
   ~GfMenuObjDrEquip2() override;
   static void sendEvent(u32 handle, u32 type, u32 param);
@@ -61,6 +69,7 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjDrEquip2::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjDrEquip2::EquipItemListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjDrEquip2, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjDrEquip2, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjDrEquip2, unknown30) == 0x30, "");

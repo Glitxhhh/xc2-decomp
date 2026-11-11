@@ -25,6 +25,11 @@ public:
     GfMenuObjEvTheater *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class ScreenListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjEvTheater(u32 handle);
   ~GfMenuObjEvTheater() override;
   void initialize() override;

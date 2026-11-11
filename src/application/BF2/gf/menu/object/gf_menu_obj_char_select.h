@@ -4,6 +4,7 @@
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
@@ -28,6 +29,47 @@ public:
 
     u8 _0c[0x20 - 0x0c];
     GfMenuObjCharSelect *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class DetailListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: detail kind, 0 driver and 1 blade; original member name unknown.
+  };
+
+  class StatusListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjCharSelect *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class CharDrListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjCharSelect *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class CharDrSoloListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjCharSelect *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class CharBlMoveListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
+  class CharDrMoveListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
   };
 
   ~GfMenuObjCharSelect() override;
@@ -126,8 +168,9 @@ public:
   u8 _42a[0x430 - 0x42a];
   GfMenuSequence<GfMenuObjCharSelect, 8> unknown430; // Inferred role: character select steps; original member name unknown.
   bool unknown6c0;                                   // Inferred role: character select steps request flag; original member name unknown.
-  u8 _6c1[0x6d8 - 0x6c1];
-  u32 unknown6d8; // Role and original member name unknown, cleared by the constructor.
+  u8 _6c1[0x6d4 - 0x6c1];
+  mm::Pnt<s16> unknown6d4; // Inferred role: position of the status layer saved by StatusListener; original member name unknown.
+  u32 unknown6d8;          // Role and original member name unknown, cleared by the constructor.
   u8 _6dc[0x6e0 - 0x6dc];
   GfMenuCallContext *unknown6e0; // Inferred role: call context; original member name unknown.
   int unknown6e8;                // Role and original member name unknown, -1 at start.
@@ -151,6 +194,10 @@ static_assert(offsetof(GfMenuObjCharSelect::OpenCustomizeParam, unknown04) == 0x
 static_assert(sizeof(GfMenuObjCharSelect::OpenCustomizeParam) == 0x08, "");
 static_assert(offsetof(GfMenuObjCharSelect::unknown003, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjCharSelect::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjCharSelect::DetailListener, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjCharSelect::StatusListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjCharSelect::CharDrListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjCharSelect::CharDrSoloListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjCharSelect::unknown003) == 0x08, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown30) == 0x30, "");
@@ -162,6 +209,7 @@ static_assert(offsetof(GfMenuObjCharSelect, unknown400) == 0x400, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown428) == 0x428, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown430) == 0x430, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown6c0) == 0x6c0, "");
+static_assert(offsetof(GfMenuObjCharSelect, unknown6d4) == 0x6d4, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown6d8) == 0x6d8, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown6e0) == 0x6e0, "");
 static_assert(offsetof(GfMenuObjCharSelect, unknown6e8) == 0x6e8, "");

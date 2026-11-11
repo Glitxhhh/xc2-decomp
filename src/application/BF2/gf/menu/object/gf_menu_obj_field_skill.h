@@ -24,6 +24,11 @@ public:
     GfMenuObjFieldSkill *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class InputListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   struct OpenSkillInfoParam {
     u32 unknown00_0 : 16; // Inferred role: skill; original member name unknown.
     u32 unknown00_16 : 8; // Inferred role: level; original member name unknown.

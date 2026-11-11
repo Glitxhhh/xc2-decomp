@@ -12,6 +12,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -137,6 +138,16 @@ bool GfMenuObjBlKizunaRing::seqWaitVoice() {
   return true;
 }
 
+void GfMenuObjBlKizunaRing::BladeSkillInfoListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  if (event.unknown00 == 1) {
+    setupBladeSkillInfo(acc);
+    acc.setDisp(true);
+  } else {
+    ui::UIObjectListener::reciveEvent(event, handle);
+  }
+}
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjBlKizunaRing, 8>>(const mm::mtl::Delegate<bool()> *);
