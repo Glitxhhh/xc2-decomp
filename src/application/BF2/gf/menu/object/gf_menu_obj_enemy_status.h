@@ -49,6 +49,7 @@ public:
   static void disp(bool isDisp);
   void initialize() override;
   void finalize() override;
+  void update() override;
 
   u8 _24[0x28 - 0x24];
   GF_OBJ_HANDLE *unknown28; // Inferred role: enemy handle read by the main listener, -1 at start; original member name unknown.

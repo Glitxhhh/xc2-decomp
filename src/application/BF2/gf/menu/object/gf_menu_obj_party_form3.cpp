@@ -163,6 +163,13 @@ void GfMenuObjPartyForm3::MainListener::reciveEvent(const ui::EventData &event, 
   }
 }
 
+void GfMenuObjPartyForm3::BGListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  if (event.unknown00 != 1) {
+    ui::UIObjectListener::reciveEvent(event, handle);
+  }
+}
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjPartyForm3>(const mm::mtl::Delegate<bool()> *);

@@ -15,10 +15,11 @@ class GfMenuObjComboRoute : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjComboRoute *owner) : unknown0c(0), _10(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
     u32 unknown0c; // Inferred role: root shown flag; original member name unknown.
-    u8 _10[0x20 - 0x10];
+    u8 _10[0x1c - 0x10];
     GfMenuObjComboRoute *unknown20; // Inferred role: owner; original member name unknown.
   };
 

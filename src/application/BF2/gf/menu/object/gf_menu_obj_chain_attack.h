@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 #include "ui/input/ui_input_layer.h"
 
 namespace gf {
@@ -11,6 +12,13 @@ class GfMenuCallContext;
 
 class GfMenuObjChainAttack : public GfMenuObject, public ui::IUIInputSelectionChecker {
 public:
+  class ExtendListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: shown flag; original member name unknown.
+  };
+
   struct ResultParam {
     u8 unknown00;  // Inferred role: event parameter; original member name unknown.
     u32 unknown04; // Inferred role: event parameter; original member name unknown.

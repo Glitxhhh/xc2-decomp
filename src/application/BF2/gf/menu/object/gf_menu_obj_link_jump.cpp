@@ -87,4 +87,26 @@ void GfMenuObjLinkJump::listenerCategorySelect(const ui::EventData &event) {
 
 void GfMenuObjLinkJump::open() { unknown143(unknown001, GfMenuTypes::unknown003_33); }
 
+void GfMenuObjLinkJump::RootListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    ui::EventData sendData;
+    sendData.unknown00 = GfMenuTypes::unknown003_33;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_notify"), sendData, 0.0f);
+    unknown20->unknown78 = false;
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 9 && !unknown20->unknown78) {
+      ui::EventData sendData;
+      sendData.unknown00 = GfMenuTypes::unknown003_33;
+      GfMenuObject::sendEvent(acc.searchChild("LAY_category_list"), sendData, 0.0f);
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf

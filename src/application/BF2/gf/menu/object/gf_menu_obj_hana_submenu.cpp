@@ -1,13 +1,17 @@
 #include "gf/menu/object/gf_menu_obj_hana_submenu.h"
 
+#include "gf/data/gf_bdat_id.h"
+#include "gf/data/gf_data_bdat.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_char_select.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/plugin/ui_object_dock_plugin.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -40,6 +44,20 @@ int GfMenuObjHanaSubmenu::setFadeOut(u32 handle) {
 }
 
 void GfMenuObjHanaSubmenu::returnHanaSubMenu() { GF_MENU_REQUEST_EVENT(unknown001, unknown002); }
+
+void GfMenuObjHanaSubmenu::setupSubmenu(ui::UIObjectAcc &acc) {
+  GfDataBdat::getFP(BDAT_MENU_SUB_CONTENTS_MS);
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < 3; i++) {
+    name.format("IMG_sub_menu_bl_icon@%02d", i + 1);
+    ui::UIObjectAcc icon(acc.searchChild(name.c_str()));
+    icon.setImageIndex(i);
+    name.format("LAY_sub_menu_bl_text@%02d", i + 1);
+    ui::UIObjectDockPlugin *plugin = ui::UIObjectDockPlugin::create(acc.searchChild(name.c_str()), 0, 0, icon.unknown10);
+    plugin->unknown24 = 1;
+    mm::mtl::safeRelease(plugin);
+  }
+}
 
 void GfMenuObjHanaSubmenu::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
   ui::UIObjectAcc acc(handle);

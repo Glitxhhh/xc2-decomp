@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_blade_kizuna_ring.h"
 
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
+#include "gf/menu/adapter/gf_menu_achievement_adapter.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
@@ -114,6 +115,11 @@ int GfMenuObjBladeKizunaRing::setFadeOut(u32 handle) {
 void GfMenuObjBladeKizunaRing::close() { GF_MENU_REQUEST_EVENT(unknown001, GfMenuTypes::unknown003_34); }
 
 void GfMenuObjBladeKizunaRing::setupName(ui::UIObjectAcc &acc) { GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("TXT_name"), 2, 0, false); }
+
+void GfMenuObjBladeKizunaRing::setupDetail(ui::UIObjectAcc &acc) {
+  GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("TXT_detail_title"), 2, 0, 0, 1, true);
+  GfMenuAchievementAdapter::createFromReferenceBladeLineLevel(acc.searchChild("TXT_detail_task"), 3, 0, 0, 1, true);
+}
 
 void GfMenuObjBladeKizunaRing::open() { GF_MENU_REQUEST_EVENT(unknown001, GfMenuTypes::unknown003_33); }
 

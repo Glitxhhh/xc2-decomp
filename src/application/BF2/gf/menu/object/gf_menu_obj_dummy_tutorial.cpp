@@ -1,11 +1,15 @@
 #include "gf/menu/object/gf_menu_obj_dummy_tutorial.h"
 
 #include "gf/menu/gf_menu_reference_number.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
+
+// Inferred role: attached call id; original name unknown.
+constexpr u32 unknown001 = 0x79;
 
 GfMenuObjDummyTutorial::GfMenuObjDummyTutorial(u32 handle) : GfMenuObject(handle) {}
 
@@ -14,6 +18,19 @@ GfMenuObjDummyTutorial::~GfMenuObjDummyTutorial() { unknown28 = nullptr; }
 void GfMenuObjDummyTutorial::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjDummyTutorial::update() { GfMenuObject::update(); }
+
+void GfMenuObjDummyTutorial::open(GfMenuCallContext *context, const OpenParam &param) {
+  if (GfMenuObjUtil::checkCCStart(context)) {
+    ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+    if (acc.isValid()) {
+      ui::EventData event;
+      event.unknown00 = GfMenuTypes::unknown003_33;
+      event.unknown08_u16 = param.unknown00;
+      GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+      GfMenuObject::startCallContext(context, unknown001, acc.unknown10);
+    }
+  }
+}
 
 void GfMenuObjDummyTutorial::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
   ui::UIObjectAcc acc(handle);

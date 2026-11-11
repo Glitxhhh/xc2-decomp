@@ -106,4 +106,12 @@ void GfMenuObjPouch::MainListener::reciveEvent(const ui::EventData &event, u32 h
   }
 }
 
+void GfMenuObjPouch::DescriptionListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  if (event.unknown00 == 1) {
+    setupDescription(acc, unknown20->unknown50);
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
 } // namespace gf

@@ -6,13 +6,16 @@
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
@@ -148,6 +151,28 @@ void GfMenuObjOption::initOptionData(SDataOption &option) {
   option.unknown4c._1a = getGammaValue(levels[index].unknown00, levels[index].unknown01);
 }
 
+void GfMenuObjOption::ItemSettingListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    GfMenuObject::enableInput(acc.unknown10);
+    GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    break;
+  case GfMenuTypes::unknown003_34:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(acc.unknown10);
+    GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjOption>(const mm::mtl::Delegate<bool()> *);

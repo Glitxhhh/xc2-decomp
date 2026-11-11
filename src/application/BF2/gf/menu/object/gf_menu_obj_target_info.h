@@ -2,6 +2,7 @@
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 #include <stddef.h>
 
 namespace gf {
@@ -11,6 +12,11 @@ class GfMenuCallContext;
 
 class GfMenuObjTargetInfo : public GfMenuObject {
 public:
+  class EnemyListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   // Layout from GfComBehaviorGmk::createMenuObj (1.0.0: 0x710052ab0c), which builds it on the stack before openOther; the 0x60 byte
   // size is the one of its stack slot (the bytes after 0x54 are never written there).
   struct OpenOtherParam {

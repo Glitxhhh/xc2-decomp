@@ -9,6 +9,7 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_model_view.h"
+#include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_msg_list.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -236,4 +237,58 @@ void GfMenuObjEnBook::MainListener::reciveEvent(const ui::EventData &event, u32 
   }
 }
 
+void GfMenuObjEnBook::IndexListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case GfMenuTypes::unknown003_33: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 0;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjEnBook::LocationSelListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+  case 8:
+    break;
+  case GfMenuTypes::unknown003_33: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 0;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf

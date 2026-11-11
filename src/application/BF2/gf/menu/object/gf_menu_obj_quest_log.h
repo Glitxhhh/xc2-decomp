@@ -6,6 +6,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace mm {
 namespace mtl {
@@ -24,6 +25,14 @@ struct QuestTaskParam;
 
 class GfMenuObjQuestLog : public GfMenuObject {
 public:
+  class TitleListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjQuestLog *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjQuestLog(u32 handle);
   ~GfMenuObjQuestLog() override;
   // Inferred helper: fades out the title text and an optional subtitle child; original name unknown.
@@ -70,6 +79,7 @@ public:
   bool seqCompleteWait();
   bool seqCompleteWaitCtrl();
   bool seqTitleEndWait();
+  bool seqTitleStart();
   bool seqTitleFadeInScenario();
   bool seqTitleFadeInText();
   bool seqLogOut();
@@ -119,6 +129,7 @@ static_assert(offsetof(GfMenuObjQuestLog, unknown58) == 0x58, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown59) == 0x59, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown5b) == 0x5b, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown60) == 0x60, "");
+static_assert(offsetof(GfMenuObjQuestLog::TitleListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown2f0) == 0x2f0, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown580) == 0x580, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown580.unknown278) == 0x7f8, "");

@@ -24,6 +24,16 @@ public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
   };
 
+  class IndexListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
+  class LocationSelListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjEnBook(u32 handle);
   ~GfMenuObjEnBook() override;
   void initialize() override;

@@ -30,6 +30,7 @@ public:
   static int setFadeIn(u32 handle);
   static int setFadeOut(u32 handle);
   static void setTime(ui::UIObjectTimePlugin *plugin, GameTime &time);
+  static void refreshSelect(ui::UIObjectAcc &acc, u32 select);
   void initialize() override;
   void finalize() override;
   void update() override;

@@ -1,4 +1,5 @@
 #include "gf/menu/object/gf_menu_obj_target_info.h"
+#include "gf/menu/gf_menu_types.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/ui_manager.h"
@@ -54,4 +55,29 @@ void GfMenuObjTargetInfo::startOpen(u32 handle, u32 object, int param0, int para
   }
 }
 
+void GfMenuObjTargetInfo::EnemyListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case GfMenuTypes::unknown003_256: {
+    ui::UIObjectAcc enemy(acc.searchDuplicatedChild("LAY_ene_main", event.unknown10));
+    if (enemy.isValid()) {
+      enemy.setDisp(true);
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_257: {
+    ui::UIObjectAcc enemy(acc.searchDuplicatedChild("LAY_ene_main", event.unknown10));
+    if (enemy.isValid()) {
+      enemy.setTerm();
+      GfMenuObject::termCallContext(enemy.unknown10);
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
 } // namespace gf

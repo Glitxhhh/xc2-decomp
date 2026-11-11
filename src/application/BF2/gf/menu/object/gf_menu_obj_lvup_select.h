@@ -21,6 +21,11 @@ public:
     GfMenuObjLvupSelect *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class DrImgListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   GfMenuObjLvupSelect(u32 handle);
   ~GfMenuObjLvupSelect() override;
   static void openLevelSelect(GfMenuCallContext *context, u32 level);

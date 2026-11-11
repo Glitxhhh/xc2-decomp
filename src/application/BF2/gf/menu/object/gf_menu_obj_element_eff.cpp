@@ -1,8 +1,10 @@
 #include "gf/menu/object/gf_menu_obj_element_eff.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -13,6 +15,21 @@ constexpr u32 unknown001 = 0x17;
 GfMenuObjElementEff::GfMenuObjElementEff(u32 handle) : GfMenuObject(handle), unknown28(this), unknown2b8(-1), unknown2bc(0), unknown2c0(0) {}
 
 GfMenuObjElementEff::~GfMenuObjElementEff() {}
+
+void GfMenuObjElementEff::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+  attachExternalCall(unknown001, main);
+// __LINE__ must be 62 as in the original file: it is the line argument of operator new.
+#line 62
+  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  listener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, listener);
+  if (listener != nullptr) {
+    listener->release();
+  }
+  GfMenuObject::initialize();
+}
 
 void GfMenuObjElementEff::finalize() { GfMenuObject::finalize(); }
 

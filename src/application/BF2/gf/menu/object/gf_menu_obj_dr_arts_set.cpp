@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_dr_arts_set.h"
 
+#include "gf/menu/adapter/gf_menu_weapon_type_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
@@ -44,6 +45,11 @@ int GfMenuObjDrArtsSet::setFadeOut(u32 handle) {
   int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 1, 0);
   GfMenuObject::hookCtrlEvent(handle, ctrl);
   return ctrl;
+}
+
+void GfMenuObjDrArtsSet::setupWpnType(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number) {
+  GfMenuWeaponTypeAdapter::createFromReferenceDriverWpnType(acc.searchChild("TXT_cate_name"), 0, 0, number, 0, false);
+  GfMenuWeaponTypeAdapter::createFromReferenceDriverWpnType(acc.searchChild("TXT_cate_wp_num"), 2, 0, number, 0, true);
 }
 
 bool GfMenuObjDrArtsSet::attach(GfMenuCallContext *context) { return unknown153(context, unknown001); }

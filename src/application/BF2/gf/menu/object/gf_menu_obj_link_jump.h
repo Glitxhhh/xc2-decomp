@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 struct EventData;
@@ -16,6 +17,14 @@ namespace gf {
 
 class GfMenuObjLinkJump : public GfMenuObject {
 public:
+  class RootListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjLinkJump *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   // Inferred role: list shown on one side of the screen; original type name unknown.
   struct unknown002 {
     u32 unknown00; // Inferred role: UI object handle; original member name unknown.
@@ -47,6 +56,7 @@ static_assert(offsetof(GfMenuObjLinkJump::unknown002, unknown08) == 0x08, "");
 static_assert(offsetof(GfMenuObjLinkJump::unknown002, unknown10) == 0x10, "");
 static_assert(offsetof(GfMenuObjLinkJump::unknown002, unknown18) == 0x18, "");
 static_assert(sizeof(GfMenuObjLinkJump::unknown002) == 0x20, "");
+static_assert(offsetof(GfMenuObjLinkJump::RootListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjLinkJump, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjLinkJump, unknown68) == 0x68, "");
 static_assert(offsetof(GfMenuObjLinkJump, unknown70) == 0x70, "");

@@ -24,6 +24,14 @@ public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
   };
 
+  class DescriptionListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjPouch *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjPouch(u32 handle);
   ~GfMenuObjPouch() override;
   static void sendEvent(u32 handle, u32 type, u32 param);
@@ -52,5 +60,6 @@ static_assert(offsetof(GfMenuObjPouch, unknown38) == 0x38, "");
 static_assert(offsetof(GfMenuObjPouch, unknown40) == 0x40, "");
 static_assert(offsetof(GfMenuObjPouch, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjPouch, unknown50) == 0x50, "");
+static_assert(offsetof(GfMenuObjPouch::DescriptionListener, unknown20) == 0x20, "");
 
 } // namespace gf

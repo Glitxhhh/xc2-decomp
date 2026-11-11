@@ -110,4 +110,43 @@ bool GfMenuObjChainAttack::isEnableSelect(u32 handle, int index) {
   return true;
 }
 
+void GfMenuObjChainAttack::ExtendListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    unknown0c = 0;
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 3:
+    break;
+  case GfMenuTypes::unknown003_33:
+    if (unknown0c == 0) {
+      acc.setDisp(true);
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_in_l_early");
+      param.unknown04 = 1;
+      param.unknown11 = true;
+      param.unknown14 = 8;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+      unknown0c = 1;
+    }
+    break;
+  case GfMenuTypes::unknown003_34:
+    if (unknown0c == 1) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_out_r_early");
+      param.unknown11 = true;
+      param.unknown04 = 2;
+      param.unknown14 = 10;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+      unknown0c = 0;
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf

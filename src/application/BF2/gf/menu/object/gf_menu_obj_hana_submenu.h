@@ -5,6 +5,10 @@
 #include "types.h"
 #include "ui/event/ui_object_listener.h"
 
+namespace ui {
+class UIObjectAcc;
+} // namespace ui
+
 namespace gf {
 class GfMenuCallContext;
 
@@ -21,6 +25,7 @@ public:
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);
   static int setFadeOut(u32 handle);
+  static void setupSubmenu(ui::UIObjectAcc &acc);
   void initialize() override;
   void finalize() override;
   void update() override;

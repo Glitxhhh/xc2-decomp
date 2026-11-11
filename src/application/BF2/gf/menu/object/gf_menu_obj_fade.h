@@ -3,6 +3,7 @@
 
 #include "gf/menu/gf_menu_object.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace mm {
 struct Col4;
@@ -12,6 +13,14 @@ namespace gf {
 
 class GfMenuObjFade : public GfMenuObject {
 public:
+  class LoadingListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjFade *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   struct StartParam {
     u8 unknown00;  // Inferred role: fade layer index (IMG_fade%02d); original member name unknown.
     u16 unknown02; // Inferred role: event parameter, copied as is; original member name unknown.
@@ -31,10 +40,11 @@ public:
   static void start(const StartParam &param);
   static void getFadeColor(u8 type, mm::Col4 &color);
 
-  u32 unknown24;  // Role and original member name unknown, zeroed by the constructor.
-  bool unknown28; // Role and original member name unknown, cleared by the constructor.
+  u32 unknown24; // Role and original member name unknown, zeroed by the constructor.
+  s8 unknown28;  // Inferred role: loading display count; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjFade::LoadingListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjFade::StartParam, unknown02) == 0x02, "");
 static_assert(offsetof(GfMenuObjFade::StartParam, unknown04) == 0x04, "");
 static_assert(offsetof(GfMenuObjFade::StartParam, unknown10) == 0x10, "");

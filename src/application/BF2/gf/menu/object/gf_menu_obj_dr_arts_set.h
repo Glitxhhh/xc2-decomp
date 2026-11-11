@@ -8,6 +8,7 @@
 #include "ui/event/ui_object_listener.h"
 
 namespace ui {
+class UIObjectAcc;
 class UICtrlCursorSelect;
 class UICtrlSlideSelect;
 class UISelectObjList;
@@ -30,6 +31,7 @@ public:
   static void sendEvent(u32 handle, u32 type, u32 param);
   static int setFadeIn(u32 handle);
   static int setFadeOut(u32 handle);
+  static void setupWpnType(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number);
   void initialize() override;
   void finalize() override;
   void update() override;

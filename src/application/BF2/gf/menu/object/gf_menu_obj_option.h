@@ -6,6 +6,7 @@
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/fixed_vector.h"
 #include "types.h"
+#include "ui/event/ui_object_listener.h"
 
 namespace ui {
 class UICtrlCursorSelect;
@@ -18,6 +19,11 @@ class GfMenuCallContext;
 
 class GfMenuObjOption : public GfMenuObject {
 public:
+  class ItemSettingListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   // Inferred role: current and maximum level of an option item; original type name unknown.
   struct Level {
     u8 unknown00; // Inferred role: current level; original member name unknown.

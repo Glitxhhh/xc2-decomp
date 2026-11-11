@@ -416,4 +416,24 @@ void GfMenuObjQuestLog::completeTask(const QuestTaskParam &param) {
   }
 }
 
+void GfMenuObjQuestLog::TitleListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    QuestID quest = toQuestID(event.unknown08);
+    unknown20->unknown28->unknown0c = quest;
+    unknown20->unknown60.unknown005();
+    unknown20->unknown60.unknown002(&GfMenuObjQuestLog::seqTitleStart);
+    acc.setDisp(true);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf

@@ -28,6 +28,14 @@ public:
     GfMenuObjPartyForm3 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class BGListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjPartyForm3 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   bool seqWaitOpenEnd();
   struct OpenParam {
     u16 unknown00; // Role and original member name unknown.
@@ -73,6 +81,7 @@ static_assert(offsetof(GfMenuObjPartyForm3, unknown44) == 0x44, "");
 static_assert(offsetof(GfMenuObjPartyForm3, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjPartyForm3, unknown80) == 0x80, "");
 static_assert(offsetof(GfMenuObjPartyForm3::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjPartyForm3::BGListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjPartyForm3::MainListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjPartyForm3, unknown310) == 0x310, "");
 static_assert(offsetof(GfMenuObjPartyForm3, unknown318) == 0x318, "");

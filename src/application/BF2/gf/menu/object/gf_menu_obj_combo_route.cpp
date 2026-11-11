@@ -1,9 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_combo_route.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -22,6 +24,21 @@ GfMenuObjComboRoute::GfMenuObjComboRoute(u32 handle) : GfMenuObject(handle) {
 }
 
 GfMenuObjComboRoute::~GfMenuObjComboRoute() { ; }
+
+void GfMenuObjComboRoute::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 81 as in the original file: it is the line argument of operator new.
+#line 81
+  MainListener *listener = new (getAllocator(ALLOCATOR_DEFAULT), __FILE__, __LINE__, 8) MainListener(this);
+  listener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, listener);
+  if (listener != nullptr) {
+    listener->release();
+  }
+  attachExternalCall(unknown001, main);
+  GfMenuObject::initialize();
+}
 
 void GfMenuObjComboRoute::finalize() { GfMenuObject::finalize(); }
 

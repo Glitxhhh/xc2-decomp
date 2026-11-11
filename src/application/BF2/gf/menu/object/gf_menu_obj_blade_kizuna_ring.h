@@ -39,6 +39,7 @@ public:
   static int setFadeIn(u32 handle);
   static int setFadeOut(u32 handle);
   static void setupName(ui::UIObjectAcc &acc);
+  static void setupDetail(ui::UIObjectAcc &acc);
   static int getAchievementList(mm::mtl::FixedVector<Achievement, 50> &list);
   GfMenuObjBladeKizunaRing(u32 handle);
   ~GfMenuObjBladeKizunaRing() override;

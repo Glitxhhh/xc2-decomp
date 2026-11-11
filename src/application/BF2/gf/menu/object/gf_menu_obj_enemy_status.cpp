@@ -1,9 +1,13 @@
 #include "gf/menu/object/gf_menu_obj_enemy_status.h"
 
 #include "bdat.h"
+#include "gf/data/gf_object_type.h"
+#include "gf/menu/adapter/gf_menu_adapter.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
@@ -64,6 +68,29 @@ GfMenuObjEnemyStatus::GfMenuObjEnemyStatus(u32 handle) : GfMenuObject(handle), u
 GfMenuObjEnemyStatus::~GfMenuObjEnemyStatus() {}
 
 void GfMenuObjEnemyStatus::finalize() { GfMenuObject::finalize(); }
+
+void GfMenuObjEnemyStatus::update() {
+  GF_OBJ_HANDLE *target = GfMenuManager::getTargetObjHandle();
+  if (unknown28 != target) {
+    for (u32 i = 0; i < unknown30.unknown00.size(); i++) {
+      unknown30.unknown00[i]->changeGfObj(target);
+    }
+    {
+      ui::UIObjectAcc acc(unknown18, "LAY_main");
+      GfObjAcc obj(unknown28);
+      ui::EventData event;
+      event.unknown00 = unknown008;
+      if (unknown28 == INVALID_HANDLE) {
+        event.unknown08 = 1;
+      } else {
+        event.unknown08 = obj.getType() != OBJECT_TYPE_ENEMY;
+      }
+      GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+    }
+    unknown28 = target;
+  }
+  GfMenuObject::update();
+}
 
 void GfMenuObjEnemyStatus::close() { GF_MENU_REQUEST_EVENT(unknown001, unknown002); }
 
