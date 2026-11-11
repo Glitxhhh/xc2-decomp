@@ -25,13 +25,9 @@ struct alignas(16) DevTouchInfo {
   u16 unknown10;  // Inferred role: flags; original member name unknown.
   u8 _12[0x20 - 0x12];
   mm::Vec2 unknown20; // Inferred role: initial position; original member name unknown.
-  u8 _28[0x30 - 0x28];
   mm::Vec2 unknown30; // Inferred role: position; original member name unknown.
-  u8 _38[0x40 - 0x38];
   mm::Vec2 unknown40; // Inferred role: previous position; original member name unknown.
-  u8 _48[0x50 - 0x48];
   mm::Vec2 unknown50; // Inferred role: move; original member name unknown.
-  u8 _58[0x60 - 0x58];
 };
 
 static_assert(offsetof(DevTouchInfo, unknown0c) == 0x0c, "");

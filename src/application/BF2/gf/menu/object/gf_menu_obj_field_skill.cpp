@@ -83,7 +83,7 @@ void GfMenuObjFieldSkill::applyImageParam(u32 handle) {
     acc.setLayout(shadow.unknown10, "character");
     GfMenuObjUtil::ImageParam param;
     if (GfMenuObjUtil::getImageParam(1, id, param, 1)) {
-      alignas(16) mm::Vec2 scale;
+      mm::Vec2 scale;
       blade.getScale(scale);
       scale.x = param.unknown04 * scale.x;
       scale.y = param.unknown04 * scale.y;

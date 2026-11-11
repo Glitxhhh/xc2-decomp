@@ -94,7 +94,7 @@ bool GfMenuObjBladeRelease::seqOpenImage() {
     isEnd = true;
     GfMenuObjUtil::ImageParam param;
     if (GfMenuObjUtil::getImageParam(1, blade, param, 1)) {
-      alignas(16) mm::Vec2 scale;
+      mm::Vec2 scale;
       image.getScale(scale);
       scale.x = param.unknown04 * scale.x;
       scale.y = param.unknown04 * scale.y;

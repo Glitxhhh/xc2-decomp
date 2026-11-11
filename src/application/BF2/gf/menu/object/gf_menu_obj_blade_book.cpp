@@ -28,7 +28,7 @@
 namespace gf {
 
 GfMenuObjBladeBook::GfMenuObjBladeBook(u32 handle)
-    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(this), unknown2d0(false), unknown2d8(nullptr), unknown2e0(0, 0), unknown2f0() {}
+    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(this), unknown2d0(false), unknown2d8(nullptr), unknown2e0(0, 0), unknown2f0(0.0f, 0.0f) {}
 
 GfMenuObjBladeBook::~GfMenuObjBladeBook() {
   mm::mtl::safeRelease(unknown38);

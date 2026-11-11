@@ -1,7 +1,7 @@
 #pragma once
 #include "framework/message/message_object.h"
 #include "fw/fw_transform.h"
-#include "mm_math/mm_vec2.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -28,8 +28,11 @@ struct MsgPcFieldNotifyChangePlayerID : fw::Message {
 struct FormationParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
 
-  mm::Vec2 offsets[5];
+  // FormationParam::createReflection registers a 0x28 byte struct (five OffsetX/OffsetY float pairs), so the pairs are 8 bytes wide: not mm::Vec2.
+  mm::Pnt<f32> offsets[5];
 };
+
+static_assert(sizeof(FormationParam) == 0x28, "");
 
 struct WarpForRandomTalkParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);

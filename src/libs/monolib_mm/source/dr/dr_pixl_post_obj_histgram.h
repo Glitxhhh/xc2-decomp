@@ -2,7 +2,6 @@
 #include <stddef.h>
 
 #include "dr/dr_pixl_post_obj.h"
-#include "mm_math/mm_vec2.h"
 #include "types.h"
 
 namespace ml {
@@ -11,11 +10,18 @@ class DrResUseQueryObj;
 
 class DrPixlPostObjHistgram : public DrPixlPostObj {
 public:
+  // Inferred role: lower and upper luminance of a section; original type name unknown. The game returns it in
+  // s0 and s1 (a homogeneous float aggregate), so it is a trivial 8 byte pair, not the 16 byte mm::Vec2.
+  struct unknown001 {
+    f32 unknown00; // Inferred role: lower luminance; original member name unknown.
+    f32 unknown04; // Inferred role: upper luminance; original member name unknown.
+  };
+
   ~DrPixlPostObjHistgram();
   void update();
   void render();
   f32 calcLuminanceAve(f32 rate, bool isLow) const;
-  mm::Vec2 getSection(u32 index) const;
+  unknown001 getSection(u32 index) const;
   f32 getMaxLuminance() const;
   int getSectionNum() const;
   f32 getPercentage(u32 index) const;

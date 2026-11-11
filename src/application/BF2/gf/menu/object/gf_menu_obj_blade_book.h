@@ -55,7 +55,7 @@ public:
   mm::Pnt<s16> unknown2e0;       // Role and original member name unknown, cleared by the constructor.
   u8 _2e4[0x2f0 - 0x2e4];
   mm::Vec2 unknown2f0; // Role and original member name unknown, cleared by the constructor.
-  u8 _2f8[0x310 - 0x2f8];
+  u8 _300[0x310 - 0x300];
 };
 
 static_assert(offsetof(GfMenuObjBladeBook, unknown28) == 0x28, "");

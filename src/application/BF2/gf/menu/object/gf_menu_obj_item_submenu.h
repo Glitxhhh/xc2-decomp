@@ -44,7 +44,8 @@ public:
   void finalize() override;
   void update() override;
 
-  u8 _24[0x2c - 0x24];
+  f32 unknown24; // Inferred role: icon scale; original member name unknown.
+  f32 unknown28; // Inferred role: selected icon scale; original member name unknown.
   u32 unknown2c; // Role and original member name unknown, zeroed by the constructor.
 };
 
@@ -52,6 +53,8 @@ static_assert(offsetof(GfMenuObjItemSubmenu::MainListener, unknown20) == 0x20, "
 static_assert(sizeof(GfMenuObjItemSubmenu::MainListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjItemSubmenu::SubmenuListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjItemSubmenu::SubmenuListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjItemSubmenu, unknown24) == 0x24, "");
+static_assert(offsetof(GfMenuObjItemSubmenu, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjItemSubmenu, unknown2c) == 0x2c, "");
 
 } // namespace gf

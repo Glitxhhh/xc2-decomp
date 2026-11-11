@@ -39,8 +39,10 @@
 #include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_plane.h"
+#include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
+#include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
 
@@ -89,6 +91,29 @@ bool StateUtilField::testAutoRun(GfComPropertyPc &property) { return property.un
 bool StateUtilField::isTurnEndRange(GfComPropertyPc &property) {
   f32 angle = calcInputDiffAngle(property);
   return property.unknown310.unknown001()->turnEndAngle >= angle;
+}
+
+bool StateUtilField::isTurnRange(GfComPropertyPc &property, mm::mtl::FixedQueue<mm::Vec2, 2> &queue) {
+  const FieldParam *param = property.unknown310.unknown006();
+  f32 threshold = param->turnInputThreshold;
+  f32 inputX = property.unknown60.unknown00 >= -threshold && property.unknown60.unknown00 <= threshold ? 0.0f : property.unknown60.unknown00;
+  f32 inputY = property.unknown60.unknown04 >= -threshold && property.unknown60.unknown04 <= threshold ? 0.0f : property.unknown60.unknown04;
+  mm::Vec3 direction(inputX, inputY, 0.0f);
+  if (!(fabsf(direction.x) <= 0.000001f) || !(fabsf(direction.y) <= 0.000001f) || !(fabsf(direction.z) <= 0.000001f)) {
+    direction.unknown001();
+    if (queue.full()) {
+      queue.pop_front();
+    }
+    queue.push(mm::Vec2(direction.x, direction.y));
+    if (queue.size() == 2) {
+      mm::Vec2 &current = queue[1];
+      mm::Vec2 &previous = queue[0];
+      f32 cosine = previous.x * current.x + previous.y * current.y;
+      f32 angle = mm::acos(mm::clamp(cosine, -1.0f, 1.0f));
+      return param->turnAngle <= angle;
+    }
+  }
+  return false;
 }
 
 bool StateUtilField::isInputInverseDir(GfComPropertyPc &property) {

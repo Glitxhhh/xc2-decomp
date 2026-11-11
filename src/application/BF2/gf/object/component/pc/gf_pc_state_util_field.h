@@ -6,10 +6,12 @@
 #include "gf/object/component/pc/gf_pc_asm_cmd_id_field.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
 #include "mm_math/mm_plane.h"
+#include "mm_mtl/fixed_queue.h"
 #include "types.h"
 
 namespace mm {
 struct Vec3;
+struct Vec2;
 } // namespace mm
 
 namespace gf {
@@ -90,6 +92,7 @@ public:
   static bool isEndSlipPosuture(GfComBehaviorPc &behavior);
   static bool isStartSlidePosuture(GfComBehaviorPc &behavior);
   static bool isTurnEndRange(GfComPropertyPc &property);
+  static bool isTurnRange(GfComPropertyPc &property, mm::mtl::FixedQueue<mm::Vec2, 2> &queue);
   static bool isBackRange(GfComPropertyPc &property);
   static bool isBackRangeAir(GfComPropertyPc &property);
   static bool ignoreOnGroundJump(GfComPropertyPc &property, f32 time);

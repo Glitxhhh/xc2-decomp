@@ -97,21 +97,21 @@ f32 DrPixlPostObjHistgram::calcLuminanceAve(f32 rate, bool isLow) const {
   for (u32 i = 0; i < static_cast<u32>(getSectionNum()); i++) {
     total += m_percentage[i];
     if (rate <= total) {
-      mm::Vec2 section = getSection(i);
-      return isLow ? section.x : section.y;
+      unknown001 section = getSection(i);
+      return isLow ? section.unknown00 : section.unknown04;
     }
   }
   return 0.0f;
 }
 
-mm::Vec2 DrPixlPostObjHistgram::getSection(u32 index) const {
-  mm::Vec2 section;
+DrPixlPostObjHistgram::unknown001 DrPixlPostObjHistgram::getSection(u32 index) const {
+  unknown001 section;
   if (index == 0) {
-    section.x = 0.0f;
+    section.unknown00 = 0.0f;
   } else {
-    section.x = m_maxLuminance[index - 1];
+    section.unknown00 = m_maxLuminance[index - 1];
   }
-  section.y = m_maxLuminance[index];
+  section.unknown04 = m_maxLuminance[index];
   return section;
 }
 

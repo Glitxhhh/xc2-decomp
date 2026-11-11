@@ -3,7 +3,7 @@
 
 #include "dr/dr_calc_clip_work_plane.h"
 #include "dr/dr_pixl_shadow_obj.h"
-#include "mm_math/mm_vec2.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_math/mm_vec3.h"
 #include "types.h"
 
@@ -26,8 +26,8 @@ public:
   u8 _2b4[0x300 - 0x2b4];
   mm::Vec3 unknown300; // Inferred role: clip line start; original member name unknown.
   u8 _310[0x338 - 0x310];
-  mm::Vec2 unknown338; // Inferred role: clip distances; original member name unknown.
-  f32 unknown340;      // Inferred role: scale; original member name unknown.
+  mm::Pnt<f32> unknown338; // Inferred role: clip distances; original member name unknown.
+  f32 unknown340;          // Inferred role: scale; original member name unknown.
 };
 
 static_assert(offsetof(DrPixlShadowObjDir, unknown1a0) == 0x1a0, "");
