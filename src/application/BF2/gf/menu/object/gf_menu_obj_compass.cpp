@@ -23,7 +23,7 @@ constexpr u32 unknown002 = 0x43;
 // Inferred role: control of the battle frame and opened flag when the compass is closed; original name unknown.
 static const GfMenuObjCompass::MainListener::unknown005 unknown006 = {-1, 0};
 
-mm::mtl::FixedVector<GfMenuObjCompass::unknown004, 32> GfMenuObjCompass::m_IconObjList;
+mm::mtl::FixedVector<GfMenuObjCompass::IconObj, 32> GfMenuObjCompass::m_IconObjList;
 
 GfMenuObjCompass::GfMenuObjCompass(u32 handle) : GfMenuObject(handle) { m_IconObjList.clear(); }
 

@@ -10,6 +10,13 @@ GfMenuStrLinker::GfMenuStrLinker(mm::mtl::IAllocator *allocator) : unknown08(all
 
 GfMenuStrLinker::~GfMenuStrLinker() {}
 
+u16 GfMenuStrLinker::addString(const ui::UIStr &string) {
+  u32 id = unknownc10.front();
+  unknown10[id].copy(string);
+  unknownc10.erase(unknownc10.begin());
+  return id;
+}
+
 void GfMenuStrLinker::delString(u16 id) {
   if (id < STRING_UNKNOWN_128) {
     unknown10[id].release();

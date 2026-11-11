@@ -200,4 +200,7 @@ template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>
 template void
 mm::mtl::Delegate<void(gf::GfComEvtAnim *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComEffectCaster>(const mm::mtl::Delegate<void(gf::GfComEvtAnim *, const gf::CallBackCache &)> *,
                                                                                                                  gf::GfComEvtAnim *, const gf::CallBackCache &);
+template mm::mtl::IntrusivePtr<fw::ReferenceFrame>
+mm::mtl::Delegate<mm::mtl::IntrusivePtr<fw::ReferenceFrame>(const char *)>::memberFuncInvoker<gf::GfComModel>(const mm::mtl::Delegate<mm::mtl::IntrusivePtr<fw::ReferenceFrame>(const char *)> *,
+                                                                                                              const char *);
 template void mm::mtl::Delegate<void(const char *)>::memberFuncInvoker<gf::GfComModel>(const mm::mtl::Delegate<void(const char *)> *, const char *);

@@ -613,3 +613,5 @@ template void gf::PluginManager::destroyPlugin<gf::pc::FallDistanceAchievPlugin>
 
 template void mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)>::memberFuncInvoker<gf::GfComBehaviorPc>(const mm::mtl::Delegate<void(gf::GfComAsm *, const gf::CallBackCache &)> *,
                                                                                                                          gf::GfComAsm *, const gf::CallBackCache &);
+template void mm::mtl::Delegate<void(const fw::ResSoundData &, fw::SoundResSourceManager::CustomInfo *)>::memberFuncInvoker<gf::GfComBehaviorPc>(
+    const mm::mtl::Delegate<void(const fw::ResSoundData &, fw::SoundResSourceManager::CustomInfo *)> *, const fw::ResSoundData &, fw::SoundResSourceManager::CustomInfo *);

@@ -27,8 +27,8 @@ public:
     GfMenuObjCompass *unknown20; // Inferred role: owner; original member name unknown.
   };
 
-  // Inferred role: entry of the compass icon list; original name unknown.
-  struct unknown004 {
+  // Entry of the compass icon list; the name comes from the symbol of mm::mtl::FixedVector<gf::GfMenuObjCompass::IconObj, 32>.
+  struct IconObj {
     u32 unknown00; // Inferred role: icon object handle; original member name unknown.
     u32 unknown04; // Inferred role: locator ids; original member name unknown.
     u32 unknown08; // Role and original member name unknown.
@@ -44,12 +44,12 @@ public:
   void finalize() override;
   void update() override;
 
-  static mm::mtl::FixedVector<unknown004, 32> m_IconObjList;
+  static mm::mtl::FixedVector<IconObj, 32> m_IconObjList;
 };
 
 static_assert(offsetof(GfMenuObjCompass::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjCompass::MainListener) == 0x28, "");
-static_assert(sizeof(GfMenuObjCompass::unknown004) == 0x10, "");
+static_assert(sizeof(GfMenuObjCompass::IconObj) == 0x10, "");
 static_assert(sizeof(GfMenuObjCompass) == 0x28, "");
 
 } // namespace gf

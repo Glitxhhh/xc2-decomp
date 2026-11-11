@@ -253,6 +253,27 @@ void GfGameSpeed::setIntervalSpeed(f32 speed, f32 time) {
   gameSpeed->unknown10 = time;
 }
 
+void GfGameSpeed::setLayerSpeed(u32 layer, f32 speed) {
+  GfGameSpeed *gameSpeed = get();
+  switch (layer) {
+  case 1:
+    gameSpeed->setSpeed(GF_SPEED_UNKNOWN_4, speed);
+    break;
+  case 4:
+    gameSpeed->setSpeed(GF_SPEED_UNKNOWN_3, speed);
+    break;
+  case 7:
+    gameSpeed->setSpeed(GF_SPEED_UNKNOWN_5, speed);
+    break;
+  case 10:
+    gameSpeed->setSpeed(GF_SPEED_UNKNOWN_6, speed);
+    break;
+  case 0:
+    gameSpeed->setSpeed(GF_SPEED_UNKNOWN_2, speed);
+    break;
+  }
+}
+
 void GfGameSpeed::setSpeed(GF_SPEED type, f32 speed) {
   f32 value = speed < 0.0f ? 1.0f : speed;
   if (unknown14[type].unknown00 != value) {

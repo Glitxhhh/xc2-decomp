@@ -140,6 +140,14 @@ public:
 
   const char *c_str() const { return mData; }
   char &operator[](int index) { return mData[index]; }
+
+  // Inferred role: element access with a bounds assert; no game symbol, original name unknown.
+  // __LINE__ must be 302 as in the original header: it is the line argument of the assert.
+#line 301
+  char &unknown002(int nIdx) {
+    MM_ASSERT(nIdx < m_nLen);
+    return mData[nIdx];
+  }
   bool operator<(const FixStr &rhs) const { return strcmp(mData, rhs.mData) < 0; }
   bool empty() const { return m_nLen == 0; }
   int capacity() const { return LEN - 1; }
