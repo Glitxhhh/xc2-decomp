@@ -1,8 +1,25 @@
 #include "rcha/rcha_ex.h"
 
+#include "ml/ml_mem.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
+#include "mtl/alloc_handle.h"
+
+CRchaEx::CRchaEx() : unknown19a0(false) {
+  for (int i = 0; i < NAME_COUNT; i++) {
+    unknown19a4[i] = -1;
+  }
+}
+
+bool CRchaEx::hasAnm(const void *data) {
+  if (data == nullptr) {
+    return false;
+  }
+  CRchaEx anm;
+  anm.setup(ml::MlMem::getDebugMem(), data);
+  return anm.unknown19a0;
+}
 
 void CRchaEx::clear() {
   RchaNode::clear();

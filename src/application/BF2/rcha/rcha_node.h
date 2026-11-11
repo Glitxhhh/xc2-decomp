@@ -13,7 +13,7 @@ public:
   static const int TRACK_MAX = 48;
 
   RchaNode();
-  virtual ~RchaNode();
+  virtual ~RchaNode() {}
   virtual bool setup(mtl::ALLOC_HANDLE handle, const void *data);
   virtual void clear();
   u32 hashStr(const char *name) const;

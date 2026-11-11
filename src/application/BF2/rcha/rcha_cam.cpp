@@ -1,7 +1,24 @@
 #include "rcha/rcha_cam.h"
 
+#include "ml/ml_mem.h"
 #include "mm_math/mm_vec3.h"
+#include "mtl/alloc_handle.h"
 #include "rcha/rcha_anm.h"
+
+RchaCam::RchaCam() : unknown19a0(false) {
+  for (int i = 0; i < NAME_COUNT; i++) {
+    unknown19a4[i] = -1;
+  }
+}
+
+bool RchaCam::hasAnm(const void *data) {
+  if (data == nullptr) {
+    return false;
+  }
+  RchaCam anm;
+  anm.setup(ml::MlMem::getDebugMem(), data);
+  return anm.unknown19a0;
+}
 
 int RchaCam::getValueInt(int slot, f32 frame, int defaultValue) const {
   if (unknown19a4[slot] >= 0) {

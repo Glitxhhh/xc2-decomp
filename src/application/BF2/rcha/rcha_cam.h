@@ -47,8 +47,8 @@ public:
   };
 
   RchaCam();
-  virtual ~RchaCam();
   virtual bool setup(mtl::ALLOC_HANDLE handle, const void *data);
+  static bool hasAnm(const void *data);
   f32 getValue(int slot, f32 frame, f32 defaultValue) const;
   int getValueInt(int slot, f32 frame, int defaultValue) const;
   bool getPos(mm::Vec3 *pos, f32 frame) const;

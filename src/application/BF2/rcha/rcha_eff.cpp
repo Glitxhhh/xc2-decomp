@@ -1,8 +1,25 @@
 #include "rcha/rcha_eff.h"
 
+#include "ml/ml_mem.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
+#include "mtl/alloc_handle.h"
 #include "rcha/rcha_anm.h"
+
+RchaEff::RchaEff() : unknown19a0(false) {
+  for (int i = 0; i < NAME_COUNT; i++) {
+    unknown19a4[i] = -1;
+  }
+}
+
+bool RchaEff::hasAnm(const void *data) {
+  if (data == nullptr) {
+    return false;
+  }
+  RchaEff anm;
+  anm.setup(ml::MlMem::getDebugMem(), data);
+  return anm.unknown19a0;
+}
 
 void RchaEff::clear() { RchaNode::clear(); }
 

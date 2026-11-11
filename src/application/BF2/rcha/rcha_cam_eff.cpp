@@ -1,6 +1,23 @@
 #include "rcha/rcha_cam_eff.h"
 
+#include "ml/ml_mem.h"
+#include "mtl/alloc_handle.h"
 #include "rcha/rcha_anm.h"
+
+RchaCamEff::RchaCamEff() : unknown19a0(false) {
+  for (int i = 0; i < NAME_COUNT; i++) {
+    unknown19a4[i] = -1;
+  }
+}
+
+bool RchaCamEff::hasAnm(const void *data) {
+  if (data == nullptr) {
+    return false;
+  }
+  RchaCamEff anm;
+  anm.setup(ml::MlMem::getDebugMem(), data);
+  return anm.unknown19a0;
+}
 
 int RchaCamEff::getValueInt(int slot, f32 frame, int defaultValue) const {
   if (unknown19a4[slot] >= 0) {

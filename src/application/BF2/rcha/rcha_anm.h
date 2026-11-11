@@ -12,6 +12,7 @@ class RchaAnm {
 public:
   f32 getValue(f32 frame) const;
   int getValueInt(f32 frame) const;
+  ~RchaAnm() { unknown001(); }
 
   // Inferred role: releases the buffer when it is owned, as the destructor, clear and setup of RchaNode do; original
   // name unknown.

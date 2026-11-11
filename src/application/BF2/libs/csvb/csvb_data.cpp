@@ -64,13 +64,13 @@ bool CCsvbData::Load(mtl::ALLOC_HANDLE handle, const void *data, u32 size) {
   if (!CCsvbUtility::GetCsvbInfo(info, data, size, false)) {
     return false;
   }
-  m_rowCount = info.unknown04;
+  m_rowCount = info.unknown00.unknown04;
   if (m_rowCount != 0) {
     unknown08 = static_cast<unknown001 *>(CCsvbUtility::CreateCsvbRows(handle, info.unknown10, m_rowCount, false));
   }
-  unknown10 = info.unknown06;
+  unknown10 = info.unknown00.unknown06;
   if (unknown10 != 0) {
-    unknown20 = info.unknown0c;
+    unknown20 = info.unknown00.unknown0c;
     if (unknown20 != 0) {
       unknown28 = static_cast<char *>(mtl::MemManager::allocate(handle, unknown20, 4, false, "no name", 0));
       memcpy(unknown28, info.unknown28, unknown20);
@@ -101,13 +101,13 @@ bool CCsvbData::Load(mm::mtl::IAllocator *allocator, const void *data, u32 size)
     return false;
   }
   unknown30 = allocator;
-  m_rowCount = info.unknown04;
+  m_rowCount = info.unknown00.unknown04;
   if (m_rowCount != 0) {
     unknown08 = static_cast<unknown001 *>(CCsvbUtility::CreateCsvbRows(allocator, info.unknown10, m_rowCount, false));
   }
-  unknown10 = info.unknown06;
+  unknown10 = info.unknown00.unknown06;
   if (unknown10 != 0) {
-    unknown20 = info.unknown0c;
+    unknown20 = info.unknown00.unknown0c;
     if (unknown20 != 0) {
       unknown28 = static_cast<char *>(allocator->allocate(unknown20, 8));
       memcpy(unknown28, info.unknown28, unknown20);

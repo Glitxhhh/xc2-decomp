@@ -67,8 +67,10 @@ static_assert(offsetof(VwProcessMan, unknown10) == 0x10, "");
 static_assert(offsetof(VwProcessMan, unknown30) == 0x30, "");
 static_assert(sizeof(VwProcessMan) == 0x40, "");
 
-// Layout evidence: VwTaskRoot::Reset 0x7100141eb4 and VwTaskManager::Create (the object is 0x70 bytes).
-class VwTaskRoot : public VwProcessMan {
+// Layout evidence: VwTaskRoot::Reset 0x7100141eb4 and VwTaskManager::Create (the object is 0x70 bytes). The constructor
+// does not store a vtable of its own and VwTaskManager::Release destroys it through VwProcessMan::~VwProcessMan
+// directly, so the manager is a member at offset 0 rather than a base class.
+class VwTaskRoot {
 public:
   VwTaskRoot();
   void Release();
@@ -79,6 +81,7 @@ public:
   void DebugDraw(ml::WinView *view);
   void DebugDrawRecursive(VwProcess *process, ml::WinView *view, int &depth);
 
+  VwProcessMan unknown00; // Inferred role: process manager; original member name unknown.
   u8 _40[0x50 - 0x40];
   VwProcess *unknown50; // Inferred role: root process; original member name unknown.
   VwProcess *unknown58; // Inferred role: root process; original member name unknown.

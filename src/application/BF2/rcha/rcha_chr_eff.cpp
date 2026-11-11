@@ -1,7 +1,24 @@
 #include "rcha/rcha_chr_eff.h"
 
+#include "ml/ml_mem.h"
 #include "mm_math/mm_vec3.h"
+#include "mtl/alloc_handle.h"
 #include "rcha/rcha_anm.h"
+
+RchaChrEff::RchaChrEff() : unknown19a0(false) {
+  for (int i = 0; i < NAME_COUNT; i++) {
+    unknown19a4[i] = -1;
+  }
+}
+
+bool RchaChrEff::hasAnm(const void *data) {
+  if (data == nullptr) {
+    return false;
+  }
+  RchaChrEff anm;
+  anm.setup(ml::MlMem::getDebugMem(), data);
+  return anm.unknown19a0;
+}
 
 bool RchaChrEff::getVolumeFade(int &type, f32 frame) const { return unknown001(type, CHREFF_VOLUME_FADE, frame); }
 
