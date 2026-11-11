@@ -19,6 +19,11 @@ public:
     int unknown0c; // Inferred role: shown flag; original member name unknown.
   };
 
+  class StartListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+  };
+
   struct ResultParam {
     u8 unknown00;  // Inferred role: event parameter; original member name unknown.
     u32 unknown04; // Inferred role: event parameter; original member name unknown.
@@ -57,5 +62,6 @@ static_assert(sizeof(GfMenuObjChainAttack) == 0x58, "");
 
 static_assert(offsetof(GfMenuObjChainAttack::ResultParam, unknown04) == 0x4, "");
 static_assert(sizeof(GfMenuObjChainAttack::ResultParam) == 0x8, "");
+static_assert(sizeof(GfMenuObjChainAttack::StartListener) == 0x10, "");
 
 } // namespace gf

@@ -4,6 +4,7 @@
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_lvup_select.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -183,6 +184,132 @@ void GfMenuObjLvupMain::MainListener::reciveEvent(const ui::EventData &event, u3
     ui::UIObjectListener::reciveEvent(event, handle);
     break;
   }
+}
+
+void GfMenuObjLvupMain::MenuListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown28);
+    acc.setDisp(false);
+    return;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableFSInput(0);
+    }
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff) {
+      u32 previous = event.unknown0c;
+      mm::mtl::FixStr<32> name;
+      if (previous != 0xffffffff) {
+        name.format("IMG_mode_slbase@%02d", previous + 1);
+        ui::UIObjectAcc base(unknown20->unknown28->getObject(previous), name.c_str());
+        base.setImageIndex(0);
+      }
+      name.format("IMG_mode_slbase@%02d", index + 1);
+      ui::UIObjectAcc base(unknown20->unknown28->getObject(index), name.c_str());
+      base.setImageIndex(1);
+      unknown20->unknown28->setIndex(index);
+    }
+    return;
+  }
+  case 8:
+    if (event.unknown08_u64 >> 32 == 1) {
+      int type = event.unknown08_u64;
+      if (type == 3) {
+        closeFSLayer(acc.unknown10, true, true);
+        unknown20->unknown48 = 3;
+      } else if (type == 1 || type == 2) {
+        sendOpenEvent(acc.searchSibiling("LAY_lv_driverset"), 0, 0.0f);
+        unknown20->unknown30->setIndex(0);
+        unknown20->unknown48 = type;
+        sendCloseEvent(acc.unknown10, 0, 0.0f);
+        disableFSInput();
+      } else {
+        unknown20->unknown48 = type;
+      }
+    }
+    return;
+  case 0x21: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown00 = 6;
+    param.unknown04 = 0;
+    param.unknown10 = 1;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    return;
+  }
+  case 0x22: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown00 = 6;
+    param.unknown04 = 1;
+    param.unknown10 = 2;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    return;
+  }
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+void GfMenuObjLvupMain::SelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDispChild(false, "IMG_lv_drcursor");
+    GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
+    GfMenuObjOperationInfo::setGuideText(0x2a, 2);
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff) {
+      u32 previous = event.unknown0c;
+      unknown20->unknown38->setIndex(index);
+      unknown20->unknown30->setIndex(index);
+      acc.setDispChild(true, "IMG_lv_drcursor");
+      if (previous != 0xffffffff && index != previous) {
+        GfMenuObjUtil::playSECommonCursor();
+      }
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      if (!GfDataDriver::isEnableLevelUp(unknown20->unknown30->getContents(unknown20->unknown30->getIndex(false)).unknown00)) {
+        GfMenuObjUtil::playSECommon(2);
+      } else if (unknown20->unknown48 == 2) {
+        ui::EventData sendData;
+        sendData.unknown00 = 0x100;
+        sendEventToParent(acc.unknown10, sendData, 0.0f);
+        GfMenuObjUtil::playSECommonDecide();
+        disableFSInput();
+      }
+    } else if (event.unknown0c == 2) {
+      GfMenuObjCommonText::open(unknown20->unknown2f0, 0xa5, 0);
+      GfMenuObject::setCallContextEventHandler(unknown20->unknown2f0, acc.unknown10);
+    }
+    return;
+  case 0x21:
+    resetInputSelection(acc.unknown10);
+    setupInputSelectionFromList(acc.unknown10, *unknown20->unknown30);
+    enableFSInput(1);
+    unknown20->unknown48 = 2;
+    return;
+  case 0x22:
+    acc.setDispChild(false, "IMG_lv_drcursor");
+    return;
+  case 0x41:
+    if ((event.unknown10 | event.unknown14) == 0) {
+      u32 call = event.unknown08;
+      if (unknown20->unknown2f0->unknown0c == call) {
+        unknown20->unknown50.unknown005();
+        unknown20->unknown50.unknown002(&GfMenuObjLvupMain::seqClose);
+        disableFSInput();
+      }
+    }
+    return;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
 }
 
 } // namespace gf

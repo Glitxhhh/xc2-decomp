@@ -249,7 +249,7 @@ bool StateUtilField::isMovableWall(GfComPropertyPc &property, GfPropertyField::W
   if (!isMovable) {
     return false;
   }
-  if (!sensor->unknown24_1 || sensor->unknown150.unknown90 == -1) {
+  if (!sensor->unknown24_1 || sensor->unknown150.unknown90 == unknown020) {
     return true;
   }
   if (isWallUpMove(mode) && sensor->unknown25_0) {
@@ -388,6 +388,34 @@ void StateUtilField::setAsmSpeedSwim(GfComPropertyPc &property) {
 bool StateUtilField::isSlideStop(GfComPropertyPc &property) {
   const SlideParam *param = property.unknown001();
   return property.unknownc0 <= param->stopVel;
+}
+
+void StateUtilField::setSlideDirForce(GfComPropertyPc &property) {
+  EnviromentSensor *sensor = property.getEnvSensor();
+  mm::Vec3 direction;
+  if (sensor->unknown24_0) {
+    direction = sensor->unknown30.unknown40;
+  } else {
+    direction = mm::Vec3::zero;
+  }
+  if (!(fabsf(direction.x) <= 0.000001f) || !(fabsf(direction.y) <= 0.000001f) || !(fabsf(direction.z) <= 0.000001f)) {
+    direction.unknown001();
+    property.unknownd0 = direction;
+  } else {
+    EnviromentSensor::GroundInfo *ground = StateUtil::getGroundInfo(*property.unknown08->getComponent<GfComBehaviorPc>());
+    if (ground != nullptr) {
+      const mm::Vec3 &normal = ground->unknown10.normal;
+      mm::Vec3 down(-mm::Vec3::unitY.x, -mm::Vec3::unitY.y, -mm::Vec3::unitY.z);
+      f32 dot = normal.x * down.x + normal.y * down.y + normal.z * down.z;
+      mm::Vec3 slope = down - normal * dot;
+      if (!(fabsf(slope.x) <= 0.000001f) || !(fabsf(slope.y) <= 0.000001f) || !(fabsf(slope.z) <= 0.000001f)) {
+        slope.unknown001();
+        property.unknownd0 = slope;
+        return;
+      }
+    }
+    property.unknownd0 = property.unknown1e0;
+  }
 }
 
 f32 StateUtilField::getChildFrameHeight(GfComponent &component) {

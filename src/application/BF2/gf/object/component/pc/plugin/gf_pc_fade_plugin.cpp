@@ -42,9 +42,9 @@ void FadePlugin::changeMode(Mode mode) {
   this->unknown0c = mode;
   unknown10 = 0.0f;
   if (mode == MODE_UNKNOWN_1) {
-    SCOM_FADE::create(FADE_UNKNOWN_1, param->fadeTime * unknown016, mm::Col4::zero);
+    SCOM_FADE::create(FADE_UNKNOWN_1, param->fadeOutTime * unknown016, mm::Col4::zero);
   } else if (mode == MODE_UNKNOWN_3) {
-    SCOM_FADE::create(FADE_UNKNOWN_1, param->fadeTime * unknown016, mm::Col4::black);
+    SCOM_FADE::create(FADE_UNKNOWN_1, param->fadeOutTime * unknown016, mm::Col4::black);
   }
 }
 
@@ -55,17 +55,17 @@ void FadePlugin::update(GfComBehaviorPc &, const fw::UpdateInfo &info) {
   unknown10 += info.unknown04;
   switch (unknown0c) {
   case MODE_UNKNOWN_3:
-    if (unknown10 >= param->fadeOutTime) {
+    if (unknown10 >= param->fadeInTime) {
       changeMode(MODE_UNKNOWN_2);
     }
     break;
   case MODE_UNKNOWN_2:
-    if (unknown10 >= param->blackTime) {
+    if (unknown10 >= param->blackOutTime) {
       changeMode(MODE_UNKNOWN_1);
     }
     break;
   case MODE_UNKNOWN_1:
-    if (unknown10 >= param->fadeTime) {
+    if (unknown10 >= param->fadeOutTime) {
       setActivate(false);
     }
     break;

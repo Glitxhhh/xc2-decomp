@@ -110,6 +110,46 @@ bool GfMenuObjChainAttack::isEnableSelect(u32 handle, int index) {
   return true;
 }
 
+void GfMenuObjChainAttack::StartListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::termCallContext(acc.unknown10);
+    }
+    break;
+  case GfMenuTypes::unknown003_33: {
+    ui::UIObjectAcc base(acc.unknown10, "IMG_start_base");
+    base.startAnimationFromID(1, false);
+    GfMenuObject::hookAnimationEvent(acc.unknown10, base.unknown10);
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_in_r");
+    param.unknown11 = true;
+    param.unknown14 = 8;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, "TXT_start_caption");
+    GfMenuObjUtil::playSE(0x33);
+    acc.setDisp(true);
+    break;
+  }
+  case 0xc: {
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_out_l");
+    param.unknown11 = true;
+    param.unknown14 = 10;
+    param.unknown04 = 1;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjChainAttack::ExtendListener::reciveEvent(const ui::EventData &event, u32 handle) {
   ui::UIObjectAcc acc(handle);
   switch (event.unknown00) {

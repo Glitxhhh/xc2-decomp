@@ -3,13 +3,16 @@
 #include <string.h>
 
 #include "gf/data/gf_data_save.h"
+#include "gf/menu/adapter/gf_menu_pos_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/call/gf_menu_call_manager.h"
 #include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/gf_menu_str_linker.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
@@ -17,6 +20,9 @@
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 #include "ui/ui_util.h"
+
+// Inferred role: window, text, window image, extended window image and tail layout names of the talk and select balloons; original name unknown.
+static const char *const unknown003[][5] = {{"LAY_talk_win", "LAY_text", "IMG_win", "IMG_win_ex", "IMG_tail00"}, {"LAY_select_win", "LAY_text_sel", "IMG_win_sel", "IMG_win_ex_sel", "IMG_tail00_sel"}};
 
 // Inferred role: layouts duplicated by openCommon; original name unknown.
 static const char *const unknown001[] = {"LAY_talk_main", "LAY_select_main"};
@@ -79,6 +85,53 @@ u32 GfMenuObjBalloon::getFeeling(const ui::UIStr &string) {
     return 2;
   }
   return 0;
+}
+
+void GfMenuObjBalloon::setup(u32 object, GF_OBJ_HANDLE *handle, const MenuOffset &offset, bool isUpdate, u32 type, bool isAutoTalk) {
+  ui::UIObjectAcc acc(object);
+  {
+    ui::UIObjectAcc window(acc.unknown10, unknown003[type][0]);
+    if (isUpdate) {
+      GfMenuPosAdapter::createWorld(window.unknown10, handle, &offset);
+    } else {
+      GfMenuPosAdapter *adapter = GfMenuPosAdapter::create(window.unknown10, handle, &offset);
+      adapter->setPosOffsMode(1);
+      adapter->setPosAdjustScreen(isAutoTalk);
+    }
+  }
+  u32 image = 0;
+  {
+    ui::UIObjectAcc text(acc.unknown10, unknown003[type][1]);
+    if (text.isValid()) {
+      ui::UIObjectAcc win(acc.unknown10, unknown003[type][2]);
+      if (win.isValid()) {
+        GfMenuObjUtil::FitOption option;
+        GfMenuObjUtil::createFitPlugin(win.unknown10, text.unknown10, 0x20, 0x20, option);
+        image = win.unknown10;
+      }
+      ui::UIObjectAcc winEx(acc.unknown10, unknown003[type][3]);
+      if (winEx.isValid()) {
+        GfMenuObjUtil::FitOption option;
+        GfMenuObjUtil::createFitPlugin(winEx.unknown10, text.unknown10, 0x20, 0x20, option);
+      }
+    }
+  }
+  if (ui::UIObjectAcc(image).isValid()) {
+    ui::UIObjectAcc tail(acc.unknown10, unknown003[type][4]);
+    if (tail.isValid()) {
+      GfMenuObjUtil::createDockPlugin(tail.unknown10, image, 3, mm::Pnt<s16>(0x10, -0x15), 0);
+    }
+  }
+  if (type == 0) {
+    ui::UIObjectAcc cursor(acc.unknown10, "IMG_cur00");
+    ui::UIObjectAcc text(acc.unknown10, "LAY_text");
+    if (cursor.isValid() && text.isValid()) {
+      s16 width;
+      s16 height;
+      cursor.getSize(true, width, height);
+      GfMenuObjUtil::createDockPlugin(cursor.unknown10, text.unknown10, 7, mm::Pnt<s16>(2, -height), 0);
+    }
+  }
 }
 
 u32 GfMenuObjBalloon::openCommon(GfMenuCallContext *context, u32 call, GF_OBJ_HANDLE *handle, const MenuOffset &offset, u32 type, bool isAutoTalk) {

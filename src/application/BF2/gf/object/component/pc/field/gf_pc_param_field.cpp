@@ -62,5 +62,27 @@ fw::Reflection *createReflectionFieldAI() {
   return reflection;
 }
 
+void FadeParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 40
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(FadeParam));
+#line 41
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("fadeInTime", offsetof(FadeParam, fadeInTime), 0.0f, 1.0f, 0.3f));
+#line 42
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("blackOutTime", offsetof(FadeParam, blackOutTime), 0.0f, 1.0f, 0.3f));
+#line 43
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("fadeOutTime", offsetof(FadeParam, fadeOutTime), 0.0f, 1.0f, 0.3f));
+  reflection->setReflectionStruct(index, value);
+}
+
+void ForceWarpAiParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 113
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(ForceWarpAiParam));
+#line 114
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("baseWaitTime", offsetof(ForceWarpAiParam, baseWaitTime), 0.0f, 100.0f, 0.3f));
+#line 115
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("waitTimeRange", offsetof(ForceWarpAiParam, waitTimeRange), 0.0f, 100.0f, 0.3f));
+  reflection->setReflectionStruct(index, value);
+}
+
 } // namespace pc
 } // namespace gf

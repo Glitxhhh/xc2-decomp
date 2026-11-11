@@ -19,9 +19,28 @@ class GfMenuObjLinkJump : public GfMenuObject {
 public:
   class RootListener : public ui::UIObjectListener {
   public:
+    RootListener(GfMenuObjLinkJump *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjLinkJump *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class CategoryListener : public ui::UIObjectListener {
+  public:
+    CategoryListener(GfMenuObjLinkJump *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjLinkJump *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class NotifyListener : public ui::UIObjectListener {
+  public:
+    NotifyListener(GfMenuObjLinkJump *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
     GfMenuObjLinkJump *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -42,6 +61,7 @@ public:
   void update() override;
   static void close();
   void changeCategory(int index);
+  void setupListObject(u32 index);
   void listenerCategorySelect(const ui::EventData &event);
 
   u8 _24[0x28 - 0x24];
@@ -57,6 +77,11 @@ static_assert(offsetof(GfMenuObjLinkJump::unknown002, unknown10) == 0x10, "");
 static_assert(offsetof(GfMenuObjLinkJump::unknown002, unknown18) == 0x18, "");
 static_assert(sizeof(GfMenuObjLinkJump::unknown002) == 0x20, "");
 static_assert(offsetof(GfMenuObjLinkJump::RootListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjLinkJump::RootListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjLinkJump::CategoryListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjLinkJump::CategoryListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjLinkJump::NotifyListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjLinkJump::NotifyListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjLinkJump, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjLinkJump, unknown68) == 0x68, "");
 static_assert(offsetof(GfMenuObjLinkJump, unknown70) == 0x70, "");

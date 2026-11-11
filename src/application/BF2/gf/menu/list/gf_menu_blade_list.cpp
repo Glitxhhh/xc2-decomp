@@ -2,7 +2,11 @@
 
 #include <functional>
 
+#include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_param_acc.h"
+#include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/list/gf_menu_sort_type.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -176,6 +180,23 @@ void GfMenuBladeList::updateOwner() {
   }
 }
 
+void GfMenuBladeList::getBladeFromDriver(u32 driver, mm::mtl::FixedVector<u16, 422> &blades, bool option) {
+  DataParamAcc acc(OBJECT_TYPE_PC, driver, GIMMICK_TYPE_UNKNOWN_0);
+  if (acc.isValid()) {
+    u32 blade = acc.getBlade(-1, false);
+    u32 slotMax = GfMenuObjUtil::getBladeSlotMax();
+    if (GfMenuObjUtil::isValidBlade(blade)) {
+      blades.push_back(blade);
+      for (u32 slot = 1; slot < slotMax; slot++) {
+        u32 slotBlade = GfMenuObjUtil::getBladeIDFromDriverSlot(acc.getValidDriverId(), slot);
+        if (option || GfMenuObjUtil::isValidBlade(slotBlade)) {
+          blades.push_back(slotBlade);
+        }
+      }
+    }
+  }
+}
+
 void GfMenuBladeList::setupFromBladeList(const BladeListSetup &setup) {
   SetupParam param = setup.unknown00;
   const mm::mtl::FixedVector<u16, 422> *blades = setup.unknown18;
@@ -185,6 +206,34 @@ void GfMenuBladeList::setupFromBladeList(const BladeListSetup &setup) {
     for (u32 i = 0; i < blades->size(); i++) {
       info.unknown00 = *blades->at(i);
       info.unknown04 = GfDataBlade::getCreator(blades->unknown001(i));
+      addContents(info);
+    }
+  }
+}
+
+void GfMenuBladeList::setupFromBook(const BladeBookSetup &setup) {
+  SetupParam param = setup.unknown00;
+  mm::mtl::FixedVector<u16, 422> blades;
+  for (u32 blade = BLADE_HOMURA; blade < BLADE_UNKNOWN_1012; blade++) {
+    if (blade != BLADE_HOMURI) {
+      blades.push_back(blade);
+    }
+  }
+  for (u32 blade = BLADE_WADATSUMI; blade < 0x41b; blade++) {
+    if (blade == 0x419 || blade == BLADE_UNKNOWN_1050) {
+      continue;
+    }
+    if (!GfGameManager::isClearGame() && blade >= 0x412 && blade <= 0x418) {
+      continue;
+    }
+    blades.push_back(blade);
+  }
+  UIListInfo<MenuBladeInfo>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
+  if (isValid()) {
+    MenuBladeInfo info = {};
+    for (u32 i = 0; i < blades.size(); i++) {
+      info.unknown00 = *blades.at(i);
+      info.unknown04 = GfDataBlade::getCreator(blades.unknown001(i));
       addContents(info);
     }
   }

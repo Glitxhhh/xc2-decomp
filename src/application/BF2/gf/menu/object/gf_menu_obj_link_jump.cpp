@@ -1,5 +1,6 @@
 #include "gf/menu/object/gf_menu_obj_link_jump.h"
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
 #include "mm_mtl/reference_object.h"
@@ -8,6 +9,7 @@
 #include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/ctrl/ui_ctrl_revolve_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
@@ -38,6 +40,39 @@ void GfMenuObjLinkJump::update() { GfMenuObject::update(); }
 
 void GfMenuObjLinkJump::close() {}
 
+void GfMenuObjLinkJump::initialize() {
+  ui::UIObjectAcc root(unknown18, "LAY_root");
+  if (root.isValid()) {
+// __LINE__ must be 72 as in the original file: it is the line argument of operator new.
+#line 72
+    RootListener *rootListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) RootListener(this);
+    rootListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(root.unknown10, rootListener);
+    if (rootListener != nullptr) {
+      rootListener->release();
+    }
+// __LINE__ must be 73 as in the original file: it is the line argument of operator new.
+#line 73
+    CategoryListener *categoryListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) CategoryListener(this);
+    categoryListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(root.searchChild("LAY_category_list"), categoryListener);
+    if (categoryListener != nullptr) {
+      categoryListener->release();
+    }
+// __LINE__ must be 74 as in the original file: it is the line argument of operator new.
+#line 74
+    NotifyListener *notifyListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) NotifyListener(this);
+    notifyListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(root.searchChild("LAY_notify"), notifyListener);
+    if (notifyListener != nullptr) {
+      notifyListener->release();
+    }
+    setupListObject(0);
+    setupListObject(1);
+    ui::UIObjectAcc(unknown18, "IMG_bg").setAlpha(0.5f);
+    GfMenuObject::initialize();
+  }
+}
 void GfMenuObjLinkJump::changeCategory(int index) {
   ui::UIObjectAcc main(unknown18, "LAY_main");
   if (main.isValid()) {

@@ -23,10 +23,14 @@ namespace pc {
 struct FadeParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
 
+  f32 fadeInTime;
+  f32 blackOutTime;
   f32 fadeOutTime;
-  f32 blackTime;
-  f32 fadeTime;
 };
+
+static_assert(offsetof(FadeParam, blackOutTime) == 0x04, "");
+static_assert(offsetof(FadeParam, fadeOutTime) == 0x08, "");
+static_assert(sizeof(FadeParam) == 0x0c, "");
 
 class FadePlugin : public Plugin {
   GF_PLUGIN(GfComBehaviorPc)

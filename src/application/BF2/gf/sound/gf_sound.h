@@ -165,7 +165,12 @@ public:
       f32 unknown10; // Inferred role: time; original member name unknown.
     };
 
-    CategoryVolume();
+    // The game constructor (0x71005d6094) stores the 18 volumes twice, once for the member initialisation and once for this clear loop.
+    CategoryVolume() : unknown168(-1), unknown16c(true) {
+      for (Volume &volume : unknown00) {
+        volume.clear();
+      }
+    }
 
     Volume unknown00[CATEGORY_UNKNOWN_18]; // Inferred role: volumes; original member name unknown.
     int unknown168;                        // Inferred role: index; original member name unknown.

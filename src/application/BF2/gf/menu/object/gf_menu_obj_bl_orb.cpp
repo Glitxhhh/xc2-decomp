@@ -1,10 +1,14 @@
 #include "gf/menu/object/gf_menu_obj_bl_orb.h"
 
+#include "gf/data/gf_item_handle.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
+#include "gf/util/gf_equip_util.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
@@ -109,6 +113,142 @@ void GfMenuObjBlOrb::MainListener::reciveEvent(const ui::EventData &event, u32 h
     ui::UIObjectListener::reciveEvent(event, handle);
     break;
   }
+}
+
+void GfMenuObjBlOrb::SlotListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff) {
+      unknown20->unknown28->setIndex(index);
+      unknown20->unknown50->unknown162(unknown20->unknown38->getContents(unknown20->unknown38->getIndex(false)).unknown04);
+    }
+    acc.setDispChild(index != 0xffffffff, "IMG_item_cursor");
+    return;
+  }
+  case 8: {
+    u64 param = event.unknown08_u64;
+    u32 blade = GfMenuReference::getReferenceBladeID(unknown20->unknown24);
+    if (static_cast<u32>(param) != 0xffffffff) {
+      u32 type = param >> 32;
+      if (type == 1) {
+        disableInput(acc.unknown10);
+        ui::EventData sendData;
+        sendData.unknown00 = 0x21;
+        sendEvent(acc.searchSibiling("LAY_item_select"), sendData, 0.0f);
+      } else if (type == 9) {
+        if (GfEquipUtil::getEquipBladeOrb(blade, static_cast<u32>(param)) != 0) {
+          if (unknown20->unknown2f0 == nullptr) {
+            unknown20->unknown2f0 = GfMenuCallContext::create();
+          }
+          unknown20->unknown2f0->reset();
+          GfMenuObjCommonText::open(unknown20->unknown2f0, 0x1e, 0);
+          GfMenuObject::setCallContextEventHandler(unknown20->unknown2f0, acc.unknown10);
+          unknown20->suspendInput();
+        }
+      }
+    }
+    return;
+  }
+  case 0x41: {
+    u32 blade = GfMenuReference::getReferenceBladeID(unknown20->unknown24);
+    if (unknown20->unknown2f0->unknown0c == event.unknown08) {
+      if (event.unknown10 == 0) {
+        GfEquipUtil::equipBladeOrb(blade, 0, unknown20->unknown28->getIndex(false), GfItemHandle(0));
+      }
+      unknown20->resumeInput();
+      if (unknown20->unknown2f0 != nullptr) {
+        unknown20->unknown2f0->release();
+        unknown20->unknown2f0 = nullptr;
+      }
+    }
+    return;
+  }
+  case 0x100:
+    GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
+    enableInput(acc.unknown10);
+    return;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+void GfMenuObjBlOrb::ItemListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    disableInput(acc.unknown10);
+    return;
+  case 3:
+    if (event.unknown08 == 1) {
+      enableInput(acc.unknown10);
+    }
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff) {
+      unknown20->unknown38->setIndex(index);
+      unknown20->unknown40->setIndex(unknown20->unknown38->getIndex(true));
+      unknown20->unknown50->unknown162(unknown20->unknown38->getContents(unknown20->unknown38->getIndex(false)).unknown04);
+    }
+    acc.setDispChild(index != 0xffffffff, "IMG_item_cursor");
+    return;
+  }
+  case 8: {
+    int type = event.unknown0c;
+    MenuItemInfo &item = unknown20->unknown38->getContents(unknown20->unknown38->getIndex(false));
+    u32 blade = GfMenuReference::getReferenceBladeID(unknown20->unknown24);
+    if (type == 1) {
+      u32 result = GfMenuItemUtil::canEquipOrb(item.unknown04, blade, unknown20->unknown28->getIndex(false));
+      if (result == 0) {
+        unknown20->unknown38->getSize();
+        GfEquipUtil::equipBladeOrb(blade, item.unknown04, unknown20->unknown28->getIndex(false), GfItemHandle(0));
+      } else {
+        u32 window = GfMenuItemUtil::getEquipErrorCmnWindowID(result);
+        if (window != 0) {
+          if (unknown20->unknown2f0 == nullptr) {
+            unknown20->unknown2f0 = GfMenuCallContext::create();
+          }
+          unknown20->unknown2f0->reset();
+          GfMenuObjCommonText::open(unknown20->unknown2f0, window, 0);
+          GfMenuObject::setCallContextEventHandler(unknown20->unknown2f0, acc.unknown10);
+          unknown20->suspendInput();
+        }
+      }
+    } else if (type == 2) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 2;
+      param.unknown00 = 0.5f;
+      param.unknown04 = 2;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+      disableInput(acc.unknown10);
+      ui::EventData sendData;
+      sendData.unknown00 = 0x100;
+      sendEvent(acc.searchSibiling("LAY_slot"), sendData, 0.0f);
+    }
+    return;
+  }
+  case 0x21: {
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 1;
+    param.unknown00 = 0.5f;
+    param.unknown04 = 1;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
+    return;
+  }
+  case 0x41:
+    GfMenuReference::getReferenceBladeID(unknown20->unknown24);
+    if (unknown20->unknown2f0->unknown0c == event.unknown08) {
+      unknown20->resumeInput();
+    }
+    return;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
 }
 
 } // namespace gf
