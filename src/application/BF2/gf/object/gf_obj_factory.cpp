@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+#include "anm/anm_reference_object.h"
+#include "anm/anm_res_asm.h"
 #include "arc/arc_data.h"
 #include "bdat.h"
 #include "gf/asset/gf_asset_def.h"
@@ -40,6 +42,7 @@
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/reference_object.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/unique_ptr.h"
 
@@ -498,6 +501,13 @@ GF_OBJ_HANDLE *GfObjFactory::createEnWeapon(GfInitParamEnWeapon &param) {
   GfObjUtil::addDebugName(handle);
   manager->callGfObjListener(IGfObjListener::OBJEVT_ENTRY, handle);
   return handle;
+}
+
+GfExtendPacking::GfExtendPacking() : GfExtendResource(1), unknown10(nullptr), unknown18(nullptr) {}
+
+GfExtendPacking::~GfExtendPacking() {
+  anm::unknown001(unknown10);
+  mm::mtl::safeRelease(unknown18);
 }
 
 void addExtendPackingSoundTrigger(GF_ASSET_HANDLE *handle, GfFileIdx index, GfExtendPacking *packing) {

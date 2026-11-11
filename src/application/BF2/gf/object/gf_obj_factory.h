@@ -13,6 +13,7 @@ namespace mm {
 struct Vec3;
 
 namespace mtl {
+class ReferenceObject;
 class RTTI;
 } // namespace mtl
 } // namespace mm
@@ -38,16 +39,17 @@ class GfInitParamMob;
 class GfInitParamUiObj;
 struct GF_ASSET_HANDLE;
 
-// Layout from its constructor, destructor and registerSoundTrigger. The game's destructor is out of line
-// (D1/D2 at 0x710058464c); it is not declared here until it is decompiled.
+// Layout from its constructor, destructor and registerSoundTrigger.
 class GfExtendPacking : public GfExtendResource {
 public:
   static mm::mtl::RTTI m_rtti;
 
+  GfExtendPacking();
+  ~GfExtendPacking() override;
   const mm::mtl::RTTI *getRTTI() const override;
 
-  anm::ResASM *unknown10; // Inferred role: asm resource, released through its anmlib reference count by the destructor; original member name unknown.
-  u8 _18[0x20 - 0x18];
+  anm::ResASM *unknown10;              // Inferred role: asm resource, released through its anmlib reference count by the destructor; original member name unknown.
+  mm::mtl::ReferenceObject *unknown18; // Inferred role: object released by the destructor; original member name unknown.
   mm::mtl::FixedQueue<fw::SoundResTriggerImporter::unknown001 *, 8> unknown20; // Inferred role: sound triggers registered by registerSoundTrigger; original member name unknown.
 };
 

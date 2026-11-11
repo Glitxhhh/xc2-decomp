@@ -8,6 +8,8 @@
 
 namespace gf {
 
+GfMenuFieldSkill::~GfMenuFieldSkill() { mm::mtl::safeRelease(unknown1f8); }
+
 ai::State *GfMenuFieldSkill::StateIdle::create(void *buffer) { return new (buffer) StateIdle; }
 
 const char *GfMenuFieldSkill::StateIdle::getName() const { return "StateIdle"; }
@@ -32,7 +34,7 @@ void GfMenuFieldSkill::StateStart::onEnter(void *owner, ai::State *previous) {
 void GfMenuFieldSkill::StateStart::onLeave(void *owner, ai::State *next) {}
 
 void GfMenuFieldSkill::StateStart::onStep(void *owner, const void *param) {
-  switch (static_cast<GfMenuFieldSkill *>(owner)->unknown80) {
+  switch (static_cast<GfMenuFieldSkill *>(owner)->unknown80.unknown00) {
   case 0:
     reqState(2);
     break;

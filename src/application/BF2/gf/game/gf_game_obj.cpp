@@ -27,6 +27,7 @@
 #include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/rtti.h"
@@ -704,6 +705,20 @@ void GfGameObj::setupEnterGameObjMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f
     }
   }
 }
+
+GfGameObjEnemy::GfGameObjEnemy() {}
+
+GfGameObjEnemy::~GfGameObjEnemy() {}
+
+bool GfGameObjEnemy::isGenusLink(GF_OBJ_HANDLE *handle) {
+  GfGameObjEnemy *enemy = get();
+  if (enemy != nullptr && !GfObjAcc(handle).isBattle()) {
+    return mm::mtl::find(enemy->unknown1890.begin(), enemy->unknown1890.end(), handle) != enemy->unknown1890.end();
+  }
+  return false;
+}
+
+bool GfGameObjEnemy::empty() const { return unknown08.empty(); }
 
 } // namespace gf
 
