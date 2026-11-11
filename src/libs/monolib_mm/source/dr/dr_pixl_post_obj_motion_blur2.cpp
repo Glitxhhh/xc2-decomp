@@ -4,11 +4,13 @@
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_vtx_vertex.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
 
@@ -21,9 +23,34 @@ template <typename T> inline void unknown001(T *&object) {
   }
 }
 
+DrPixlPostObjMotionBlur2::DrPixlPostObjMotionBlur2(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan)
+    : DrPixlPostObj(drMan, pixlMan, postMan), unknown20(nullptr), unknown28(nullptr), unknown30(nullptr), unknown60(0), unknown64(true) {
+  unknown28 = new (unknown00->unknown0c) DrPixlRenderTarget(unknown00);
+  unknown30 = new (unknown00->unknown0c) DrPixlRenderTarget(unknown00);
+  unknown38 = new (unknown00->unknown0c) DrPixlRenderTarget(unknown00);
+  unknown48 = new (unknown00->unknown0c) DrPixlRenderTarget(unknown00);
+  unknown40 = new (unknown00->unknown0c) DrPixlRenderTarget(unknown00);
+  unknown20 = new (unknown00->unknown0c) DrPixlRenderTarget(unknown00);
+  for (s32 i = 0; i < 2; i++) {
+    unknown50[i] = new (unknown00->unknown0c) grlib::CGLibVtxVertex();
+  }
+  calcBludBuffColorBuff();
+  unknown18 = 0.0f;
+  unknown1c = 0.0f;
+}
+
+void DrPixlPostObjMotionBlur2::debugRender() {
+  if (unknown00->unknown120[unknown00->unknown1c98]->isMotBlur2() && unknown00->unknown120[unknown00->unknown1c98]->unknown1000) {
+    s32 width = unknown00->unknown5b8->unknown28;
+    s32 height = unknown00->unknown5b8->unknown2c;
+    unknown00->unknown78->debugRender(*unknown48->unknown70, 0, 0, width, height, false, false, 0.2f, true);
+  }
+}
+
 DrPixlPostObjMotionBlur2::~DrPixlPostObjMotionBlur2() {
-  unknown001(unknown50);
-  unknown001(unknown58);
+  for (int i = 0; i < 2; i++) {
+    unknown001(unknown50[i]);
+  }
   unknown001(unknown28);
   unknown001(unknown30);
   unknown001(unknown38);

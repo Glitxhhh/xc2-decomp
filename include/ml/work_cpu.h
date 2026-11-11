@@ -164,6 +164,7 @@ public:
   static int createGroupHandle(u32 count);
   static bool entryJobThread(int handle, u32 (*function)(void *, void *), u32 priority, void *argument, void *userData, CPUID cpu, bool isDebug, bool isBackground);
   static u32 getResult(int handle);
+  static bool getWaitingJob(TJOB *&job, WorkCpuThread *thread);
   static void endFrame();
   static void endRender();
   void updateMessage();

@@ -3,6 +3,7 @@
 #include "dr_pixl_post_obj.cpp"
 #include "dr_pixl_post_obj_bloom.cpp"
 #include "dr_pixl_post_obj_histgram.cpp"
+#include "dr_pixl_post_obj_motion_blur.cpp"
 #include "dr_pixl_post_obj_tone_map.cpp"
 #include "dr_pixl_post_parm.cpp"
 #include "dr_pixl_render_target.cpp"

@@ -1,5 +1,9 @@
 #include <stdlib.h>
 
+void AdjustLaunchDlgCpp() {}
+
+void DebugWindowBattleCpp() {}
+
 namespace main_detail {
 
 bool strToInt(const char *string, int &value) {

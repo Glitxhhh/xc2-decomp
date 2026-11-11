@@ -541,6 +541,36 @@ void ScnObjAccVolumeFade::setRatio(f32 ratio, int index) {
   }
 }
 
+// Inferred role: copies the volume fade parameters into a vanish effect work and flags them as changed; original name unknown.
+static void unknown002(MdoWrkVanishEffect *effect, const VolumeFadeParams &params) {
+  memmove(effect->unknown00, params.unknown00, sizeof(params.unknown00));
+  effect->unknown40 = params.unknown40;
+  effect->unknown50 = params.unknown50;
+  memmove(effect->unknown60, params.unknown60, sizeof(params.unknown60));
+  memmove(effect->unknown74, params.unknown74, sizeof(params.unknown74));
+  memmove(effect->unknown88, params.unknown88, sizeof(params.unknown88));
+  effect->unknown9c = params.unknown9c;
+  effect->unknowna0 = params.unknowna0;
+  effect->unknowna8 = params.unknowna4;
+  effect->unknownd4 |= 0xeff;
+}
+
+void ScnObjAccVolumeFade::setParams(const VolumeFadeParams &params, int index) {
+  if (m_drMdl == nullptr) {
+    return;
+  }
+  if (index >= 0) {
+    MdoWrkVanishEffect *effect = m_drMdl->getVanishEffectWrk(index, DrMan::s_nDblIdx);
+    if (effect != nullptr) {
+      unknown002(effect, params);
+    }
+  } else {
+    for (u32 i = 0; i < m_drMdl->getVanishEffectMax(); i++) {
+      unknown002(m_drMdl->getVanishEffectWrk(i, DrMan::s_nDblIdx), params);
+    }
+  }
+}
+
 ScnObjAccRimBloom::ScnObjAccRimBloom() : m_drMdl(nullptr) {}
 
 ScnObjAccRimBloom::ScnObjAccRimBloom(ScnObjModel *model) : m_drMdl(static_cast<ScnObjModelDrSys *>(model)->unknown3d8) {}

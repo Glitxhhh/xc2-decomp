@@ -53,6 +53,7 @@ public:
     DR_TEX_USE_MODE_UNKNOWN_2, // Inferred role: middle; original name unknown.
   };
 
+  virtual ~DrCalcStmListObj();
   void release();
   void setupInfo(const u8 *header, bool isSetup);
   void setHeaderInfo(const u8 *header);
@@ -84,8 +85,12 @@ public:
   void chacheDefClear();
   void update();
   void callUpdate(DrStmListAfterArg &arg);
+  void afterUpdate(DrStmListAfterArg &arg);
+  void apiUpdate();
 
-  u8 _00[0x28];
+  DrCalcStmListObj *unknown08; // Inferred role: previous object; original member name unknown.
+  DrCalcStmListObj *unknown10; // Inferred role: next object; original member name unknown.
+  u8 _18[0x28 - 0x18];
   DrCalcTexStmObj **unknown28; // Inferred role: tex stream objects; original member name unknown.
   unknown035 *unknown30[2];    // Inferred role: res; original member name unknown.
   void *unknown40;             // Inferred role: file handle; original member name unknown.
@@ -121,6 +126,8 @@ public:
   bool (DrCalcStmListObj::*unknown200)(); // Inferred role: request state function; original member name unknown.
 };
 
+static_assert(offsetof(DrCalcStmListObj, unknown08) == 0x08, "");
+static_assert(offsetof(DrCalcStmListObj, unknown10) == 0x10, "");
 static_assert(offsetof(DrCalcStmListObj, unknown28) == 0x28, "");
 static_assert(offsetof(DrCalcStmListObj, unknown40) == 0x40, "");
 static_assert(offsetof(DrCalcStmListObj, unknown8c) == 0x8c, "");

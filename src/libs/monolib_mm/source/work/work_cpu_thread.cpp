@@ -12,6 +12,8 @@
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "mtl/alloc_handle.h"
+#include "nn/os.h"
+#include "nn/time_span.h"
 
 namespace ml {
 
@@ -151,6 +153,54 @@ bool WorkCpuThread::getJobThread(TJOB *&job, bool isBackground) {
     m_aboutJobNumC--;
   }
   return true;
+}
+
+u32 WorkCpuThread::threadFunc(void *argument) {
+  WorkCpuThread *thread = static_cast<WorkCpuThread *>(argument);
+  while (thread->m_threadID == 0) {
+    nn::os::SleepThread(nn::TimeSpan::FromNanoSeconds(1000000));
+  }
+  CPUID cpu = thread->m_CPUID;
+  CPUID renderCpu = WorkCpu::getRenderCPUID();
+  TJOB *job = nullptr;
+  for (;;) {
+    if (cpu != CPUID_UNKNOWN_1) {
+      ThreadUtil::setCpuThread(ThreadUtil::getCurrentHandle(), cpu);
+    }
+    if (thread->m_beginTerm) {
+      break;
+    }
+    do {
+      if (!thread->getJobThread(job, false)) {
+        WorkCpu::getWaitingJob(job, thread);
+      }
+      TJOB *current = job;
+      if (current == nullptr) {
+        break;
+      }
+      long clock;
+      DevClock::getClockNow(clock);
+      current->unknown20 = current->unknown00(current->unknown10, current->unknown18);
+      f32 time;
+      DevClock::getTimeNow(time, clock);
+      thread->unknown1e0 += time;
+      DevClock::getClockNow(thread->unknown1d8);
+      current->unknown38 = cpu;
+      thread->terminateWorkingJob(current);
+      DevClock::getClockNow(_mlwcpu::s_aHearBeat[cpu - 1]);
+    } while (!thread->unknown671);
+    if (cpu == CPUID_UNKNOWN_1) {
+      return 0;
+    }
+    thread->waitEvent();
+    if (thread->m_beginTerm) {
+      return 0;
+    }
+    if (cpu == renderCpu && WorkRoot::isErrorLog()) {
+      WorkRootState::renderWork();
+    }
+  }
+  return 0;
 }
 
 u32 WorkCpuThread::getAboutJobNumC() const { return m_aboutJobNumC; }

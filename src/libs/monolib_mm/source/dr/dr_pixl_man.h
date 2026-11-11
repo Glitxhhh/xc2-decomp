@@ -6,6 +6,7 @@
 namespace grlib {
 class CGLibDblUniformBlock;
 class CGLibDepthTarget;
+class CGLibRenderArrayCubeMap;
 class CGLibRenderTarget;
 class CGLibTextureBuffer;
 } // namespace grlib
@@ -25,11 +26,14 @@ struct wkPixlManRes {
   DrPixlRenderTarget *unknown138;       // Inferred role: active color buff; original member name unknown.
   DrPixlRenderTarget *unknown140;       // Inferred role: hdr buff; original member name unknown.
   DrPixlRenderTarget *unknown148;       // Inferred role: back face depth texture; original member name unknown.
-  u8 _150[0x170 - 0x150];
-  DrPixlDeferred *unknown170;  // Inferred role: deferred; original member name unknown.
-  DrPixlShadowMan *unknown178; // Inferred role: shadow man; original member name unknown.
-  DrPixlPostMan *unknown180;   // Inferred role: post man; original member name unknown.
-  f32 unknown188;              // Inferred role: tone strength, first value of setToneStr; original member name unknown.
+  DrPixlRenderTarget *unknown150;       // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown158;       // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown160;       // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown168;       // Inferred role: render target; original member name unknown.
+  DrPixlDeferred *unknown170;           // Inferred role: deferred; original member name unknown.
+  DrPixlShadowMan *unknown178;          // Inferred role: shadow man; original member name unknown.
+  DrPixlPostMan *unknown180;            // Inferred role: post man; original member name unknown.
+  f32 unknown188;                       // Inferred role: tone strength, first value of setToneStr; original member name unknown.
   u8 _18c[0x194 - 0x18c];
   f32 unknown194; // Inferred role: tone ave min; original member name unknown.
   f32 unknown198; // Inferred role: tone ave max; original member name unknown.
@@ -41,11 +45,18 @@ struct wkPixlManRes {
   u8 _1c8[0x1d0 - 0x1c8];
   grlib::CGLibRenderTarget *unknown1d0; // Inferred role: main render target; original member name unknown.
   u32 unknown1d8;                       // Inferred role: flags; original member name unknown.
-  u8 _1dc[0x1f8 - 0x1dc];
+  u8 _1dc[0x1e0 - 0x1dc];
+  DrPixlRenderTarget *unknown1e0;             // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown1e8;             // Inferred role: render target; original member name unknown.
+  grlib::CGLibRenderArrayCubeMap *unknown1f0; // Inferred role: cube map array; original member name unknown.
 };
 
 static_assert(offsetof(wkPixlManRes, unknown130) == 0x130, "");
 static_assert(offsetof(wkPixlManRes, unknown148) == 0x148, "");
+static_assert(offsetof(wkPixlManRes, unknown150) == 0x150, "");
+static_assert(offsetof(wkPixlManRes, unknown158) == 0x158, "");
+static_assert(offsetof(wkPixlManRes, unknown160) == 0x160, "");
+static_assert(offsetof(wkPixlManRes, unknown168) == 0x168, "");
 static_assert(offsetof(wkPixlManRes, unknown170) == 0x170, "");
 static_assert(offsetof(wkPixlManRes, unknown178) == 0x178, "");
 static_assert(offsetof(wkPixlManRes, unknown180) == 0x180, "");
@@ -57,12 +68,17 @@ static_assert(offsetof(wkPixlManRes, unknown1b8) == 0x1b8, "");
 static_assert(offsetof(wkPixlManRes, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(wkPixlManRes, unknown1d0) == 0x1d0, "");
 static_assert(offsetof(wkPixlManRes, unknown1d8) == 0x1d8, "");
+static_assert(offsetof(wkPixlManRes, unknown1e0) == 0x1e0, "");
+static_assert(offsetof(wkPixlManRes, unknown1e8) == 0x1e8, "");
+static_assert(offsetof(wkPixlManRes, unknown1f0) == 0x1f0, "");
 static_assert(sizeof(wkPixlManRes) == 0x1f8, "");
 
 class DrPixlShadowObj;
 
 class DrPixlMan {
 public:
+  DrPixlMan(DrMan *drMan);
+  void createColorBuffer();
   // Inferred role: res flag; original type name unknown.
   enum unknown001 {
     unknown001_32 = 0x20, // Inferred role: res flag shadow display list; original name unknown.
@@ -103,6 +119,7 @@ public:
   void resetLightBuffOnly();
   void createShadowParmDisplayList(wkPixlManRes *res);
   void setupCate(int cate);
+  void delViewInfo(int index);
   void updateShadowDisplayList();
   DrPixlRenderTarget *getResponsiveAAMask();
   grlib::CGLibDepthTarget *getSeparateTransDepthObj();
@@ -151,6 +168,7 @@ public:
   void callShadowCacheVariance();
   void callFgShadowCacheUpdate();
   void fastRender();
+  void renderDownBaseColor();
   void lastCapRender();
   void setFinalViewPort();
   void setMainSRGBRenderTarget();

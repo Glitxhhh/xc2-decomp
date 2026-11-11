@@ -16,6 +16,7 @@ class DrPixlShadowObjDir;
 
 class DrPixlShadowMan {
 public:
+  ~DrPixlShadowMan();
   void releaseShadow(DrPixlShadowObj *shadow);
   DrPixlShadowObj *createDirCacheShadow(DrLightObj *light, int index);
   void setAddShadowObj(DrPixlShadowObjDir *shadow);

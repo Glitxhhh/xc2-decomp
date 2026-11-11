@@ -1,5 +1,7 @@
 #include "dr/dr_pixl_man.h"
 
+#include <string.h>
+
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_ap_gx_type.h"
 #include "dr/dr_calc_man.h"
@@ -24,6 +26,7 @@
 #include "grlib/cglib_depth_ctl.h"
 #include "grlib/cglib_depth_target.h"
 #include "grlib/cglib_polygon.h"
+#include "grlib/cglib_render_array.h"
 #include "grlib/cglib_render_target.h"
 #include "grlib/cglib_shader.h"
 #include "grlib/cglib_state.h"
@@ -269,6 +272,115 @@ void DrPixlMan::offScreenAlphaRender() {
   apCache->setTexture(*unknown7f0->unknown1d0->unknown70, location1);
   shdList->renderQuads();
   DrAPGxType::setupAlphaChanel(false);
+}
+
+void DrPixlMan::delViewInfo(int index) {
+  unknown7f0 = &unknown10[index];
+  unknown10[index].unknown1d8 = 0;
+  for (int i = 0; i < 19; i++) {
+    for (int j = 0; j < 2; j++) {
+      grlib::CGLibRenderTarget *target = unknown7f0->unknown00[i][j];
+      if (target != nullptr) {
+        target->releaseWork();
+        delete target;
+        unknown7f0->unknown00[i][j] = nullptr;
+      }
+    }
+  }
+  grlib::CGLibRenderTarget *target = unknown7f0->unknown148;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown148 = nullptr;
+  }
+  target = unknown7f0->unknown150;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown150 = nullptr;
+  }
+  target = unknown7f0->unknown158;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown158 = nullptr;
+  }
+  target = unknown7f0->unknown160;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown160 = nullptr;
+  }
+  target = unknown7f0->unknown168;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown168 = nullptr;
+  }
+  grlib::CGLibDepthTarget *depth;
+  for (int j = 0; j < 2; j++) {
+    depth = unknown7f0->unknown1a0[j];
+    if (depth != nullptr) {
+      delete depth;
+      unknown7f0->unknown1a0[j] = nullptr;
+    }
+  }
+  depth = unknown7f0->unknown1b0;
+  if (depth != nullptr) {
+    delete depth;
+    unknown7f0->unknown1b0 = nullptr;
+  }
+  depth = unknown7f0->unknown1b8;
+  if (depth != nullptr) {
+    delete depth;
+    unknown7f0->unknown1b8 = nullptr;
+  }
+  depth = unknown7f0->unknown1c0;
+  if (depth != nullptr) {
+    delete depth;
+    unknown7f0->unknown1c0 = nullptr;
+  }
+  target = unknown7f0->unknown1e0;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown1e0 = nullptr;
+  }
+  target = unknown7f0->unknown1e8;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown1e8 = nullptr;
+  }
+  grlib::CGLibRenderArrayCubeMap *cubeMap = unknown7f0->unknown1f0;
+  if (cubeMap != nullptr) {
+    cubeMap->releaseWork();
+    delete cubeMap;
+    unknown7f0->unknown1f0 = nullptr;
+  }
+  target = unknown7f0->unknown1d0;
+  if (target != nullptr) {
+    target->releaseWork();
+    delete target;
+    unknown7f0->unknown1d0 = nullptr;
+  }
+  DrPixlDeferred *deferred = unknown7f0->unknown170;
+  if (deferred != nullptr) {
+    delete deferred;
+    unknown7f0->unknown170 = nullptr;
+  }
+  DrPixlShadowMan *shadowMan = unknown7f0->unknown178;
+  if (shadowMan != nullptr) {
+    delete shadowMan;
+    unknown7f0->unknown178 = nullptr;
+  }
+  DrPixlPostMan *postMan = unknown7f0->unknown180;
+  if (postMan != nullptr) {
+    delete postMan;
+    unknown7f0->unknown180 = nullptr;
+  }
+  memset(unknown7f0, 0, sizeof(wkPixlManRes));
+  unknown7f0 = unknown10;
 }
 
 void DrPixlMan::lastUpdate() { unknown7f8->update(); }

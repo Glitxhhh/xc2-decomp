@@ -39,6 +39,7 @@ class DrResUseQueryObj;
 
 class DrPixlPostMan {
 public:
+  ~DrPixlPostMan();
   enum Flag {
     FLAG_UNKNOWN_0 = 0x1,       // Inferred role: 3d lut; original name unknown.
     FLAG_UNKNOWN_1 = 0x2,       // Inferred role: tone maping; original name unknown.

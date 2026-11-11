@@ -316,7 +316,8 @@ public:
   s32 unknownfe4; // Inferred role: render mode; original member name unknown.
   u8 _0fe8[0x0ff0 - 0x0fe8];
   mm::Vec3 unknownff0; // Inferred role: sp blur target; original member name unknown.
-  u8 _1000[0x101c - 0x1000];
+  bool unknown1000;    // Inferred role: debug blur mask render; original member name unknown.
+  u8 _1001[0x101c - 0x1001];
   f32 unknown101c; // Inferred role: unbranch to depth quarter size scale parameter; original member name unknown.
   u8 _1020[0x1024 - 0x1020];
   bool unknown1024; // Inferred role: shw raytrace temporal; original member name unknown.
@@ -479,6 +480,7 @@ static_assert(offsetof(DrPixlPostParm, unknownfbc) == 0x0fbc, "");
 static_assert(offsetof(DrPixlPostParm, unknownfc0) == 0x0fc0, "");
 static_assert(offsetof(DrPixlPostParm, unknownfc8) == 0x0fc8, "");
 static_assert(offsetof(DrPixlPostParm, unknownff0) == 0x0ff0, "");
+static_assert(offsetof(DrPixlPostParm, unknown1000) == 0x1000, "");
 static_assert(offsetof(DrPixlPostParm, unknown101c) == 0x101c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1024) == 0x1024, "");
 static_assert(offsetof(DrPixlPostParm, unknown1025) == 0x1025, "");

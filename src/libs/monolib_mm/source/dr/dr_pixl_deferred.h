@@ -15,6 +15,7 @@ class DrPixlRenderTarget;
 
 class DrPixlDeferred {
 public:
+  ~DrPixlDeferred();
   void displayUpdate();
   void globalIBLRender();
   void lastDeferredRender();

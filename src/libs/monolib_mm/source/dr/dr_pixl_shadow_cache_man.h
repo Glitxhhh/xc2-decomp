@@ -1,10 +1,13 @@
 #pragma once
 #include <stddef.h>
 
-#include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_depth_target.h"
 #include "grlib/cglib_uniform_array.h"
 #include "types.h"
+
+namespace grlib {
+class CGLibDblUniformBlock;
+} // namespace grlib
 
 namespace mm {
 struct Vec3;
@@ -24,6 +27,7 @@ public:
   static_assert(offsetof(SHCACHE_WORK_TBL, unknown5940) == 0x5940, "");
   static_assert(sizeof(SHCACHE_WORK_TBL) == 0x6140, "");
 
+  ~DrPixlShadowCacheMan();
   bool isShadowMap() const;
   void callShadowCacheUpdate(bool isAll);
   void callShadowCacheVariance();
