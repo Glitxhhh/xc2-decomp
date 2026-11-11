@@ -52,11 +52,7 @@ bool DrMdoMpfMan::delMpfObj() {
   return count < 2;
 }
 
-u8 *DrMdoMpfMan::getTempMemTbl(int size) {
-  u8 *table = unknown3d10 + unknown3d20;
-  unknown3d20 += size;
-  return table;
-}
+void *DrMdoMpfMan::getTempMemTbl(int size) { return unknown001(size); }
 
 void DrMdoMpfMan::releaseList(_MPFWorkAutoInf *work) {
   _MPFWorkAutoInf *first = work->unknown28;

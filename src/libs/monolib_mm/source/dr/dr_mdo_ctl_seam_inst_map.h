@@ -21,6 +21,7 @@ class DrMdoCtlSeamInstMap : public DrMdoCtlSeamLowMap {
 public:
   DrMdoCtlSeamInstMap(int viewNum);
   void releaseInstMap();
+  void initInstMapParts(DrResMdoSeamWrkInst *inst, DrResMdoSeamWrkInst *linked);
   void releaseFreeSeamInst(DrResMdoSeamWrkInst *inst);
   DrResMdoSeamWrkInst *createFreeSeamInst();
   void updateInstMap(MdoArgSeamUpdate &arg);

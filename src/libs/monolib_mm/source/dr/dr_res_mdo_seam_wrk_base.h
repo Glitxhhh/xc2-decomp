@@ -24,6 +24,7 @@ struct MdoWrkMatRes;
 struct MdsSeamBaseMapHead;
 struct MdsSeamOfsTexTblData;
 class DrResMdoSeamParmRead;
+struct unknown700;
 
 class DrResMdoSeamWrkBase : public unknown133<DrResMdoSeamWrkBase> {
 public:
@@ -38,12 +39,14 @@ public:
   void callShadowCacheBaseUpdate(u64 mask);
   void beginRender();
   void endRender();
+  void setVertexCache(u32 index, DrResMdoSeamMemObj *memObj, int size, DrMdoCtlSeamBaseMap *ctl);
   void selectVertex(int index);
   void releaseCache(DrMdoCtlSeamBaseMap *ctl);
   bool seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl);
   void seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamBaseMap *ctl);
 
-  u8 _18[0x68 - 0x18];
+  const unknown700 *unknown18; // Inferred role: base map entry; original member name unknown.
+  u8 _20[0x68 - 0x20];
   MdoWrkMatRes *unknown68;              // Inferred role: material work; original member name unknown.
   void *unknown70;                      // Inferred role: allocated buffer; original member name unknown.
   DrResMdoSeamWrkBaseVertex *unknown78; // Inferred role: vertices; original member name unknown.
@@ -77,6 +80,7 @@ public:
   s16 unknown17e;             // Inferred role: vertex count; original member name unknown.
 };
 
+static_assert(offsetof(DrResMdoSeamWrkBase, unknown18) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown68) == 0x68, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown78) == 0x78, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown84) == 0x84, "");

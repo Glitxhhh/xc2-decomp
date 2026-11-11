@@ -561,6 +561,9 @@ public:
   void renderRect(int x, int y, int width, int height);
   void renderRectFill(int x, int y, int width, int height);
   void renderRectFill(const mm::Rect<int> &first, const mm::Rect<int> &second);
+  void renderRectUp(const mm::Rect<int> &rect);
+  void renderRectUpFill(const mm::Rect<int> &rect);
+  void renderRectDownFill(const mm::Rect<int> &rect);
   void renderDiamondFill(const mm::Rect<int> &rect);
   void renderPrim(const mm::PrimBase *prim);
   void renderPrimFill(const mm::PrimBase *prim);

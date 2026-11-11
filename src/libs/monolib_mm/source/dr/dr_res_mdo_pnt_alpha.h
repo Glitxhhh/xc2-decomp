@@ -32,6 +32,7 @@ static_assert(sizeof(DrResMdoPntAlpha) == 0x10, "");
 class DrResMdoPntAlphaMan {
 public:
   static s32 getWrkSize(s32 unknown001);
+  static int setWrk(DrResMdoPntAlphaMan *&man, int count, u8 *work);
   void setup(DrResMdoPntAlpha *unknown001, DrResMdoPntAlpha **unknown002, s32 unknown003);
   f32 getAlphaObj(const void *unknown001, bool unknown002);
   void setAlphaReset(const void *unknown001, bool unknown002);

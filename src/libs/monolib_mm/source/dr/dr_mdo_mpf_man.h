@@ -23,9 +23,16 @@ public:
   void bindInstanceBuffAsVertex(u32 stream, u32 offset, u32 stride, u32 divisor);
   void addMpfObj();
   bool delMpfObj();
-  u8 *getTempMemTbl(int size);
+  void *getTempMemTbl(int size);
   void releaseList(_MPFWorkAutoInf *work);
   void debugListCheck(_MPFWorkAutoInf *work, int type);
+
+  // Inferred helper: the body of getTempMemTbl inlined by the callers of another source file; original name unknown.
+  void *unknown001(int size) {
+    u8 *table = unknown3d10 + unknown3d20;
+    unknown3d20 += size;
+    return table;
+  }
 
   u8 _00[0x08 - 0x00];
   s32 unknown08; // Inferred role: mpf object count; original member name unknown.

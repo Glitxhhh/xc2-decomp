@@ -64,6 +64,10 @@ public:
   bool checkLBFrame(const mm::Rect<int> &rect, const mm::Pnt<int> &pos) const;
   bool checkRBFrame(const mm::Rect<int> &rect, const mm::Pnt<int> &pos) const;
   mm::Rect<int> getFrame2ViewRect(const mm::Rect<int> &rect) const;
+  mm::Rect<int> getFrameRect(bool isBack) const;
+  // Inferred helper: frame rect computed by the WinViewFrame code that WinView::getFrameRect and WinView::getFrameAbsRect inline;
+  // the out-of-line getFrameRect above compiles differently (see blockers.json); defined in win_view.h after WinView; original name unknown.
+  inline mm::Rect<int> unknown001(bool isBack) const;
 
   WinView *m_info;
   mm::Col4 unknown08;     // Inferred role: color; original member name unknown.

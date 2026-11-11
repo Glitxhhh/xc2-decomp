@@ -18,6 +18,7 @@ class DrMdoMpfMan;
 class DrResMdoSeamWrkPosMpf;
 struct MdoWrkMatRes;
 struct MdsMpfObjData;
+struct unknown722;
 struct _wkMpfAutoBuff;
 
 // Inferred layout of the mpf map resource header; offsets are relative to the header.
@@ -74,9 +75,9 @@ public:
   void setMpfPoliCache(int id, DrResMdoSeamMemObj *memObj);
   void setupMpfPoliWork(int index);
 
-  DrResMdoSeamMemObj *unknown18; // Inferred role: memory object; original member name unknown.
-  DrMdoMpfMan *unknown20;        // Inferred role: mpf manager; original member name unknown.
-  u8 _28[0x30 - 0x28];
+  DrResMdoSeamMemObj *unknown18;      // Inferred role: memory object; original member name unknown.
+  DrMdoMpfMan *unknown20;             // Inferred role: mpf manager; original member name unknown.
+  const unknown722 *unknown28;        // Inferred role: mpf map entry; original member name unknown.
   const MdsSeamMpfMapHead *unknown30; // Inferred role: mpf map header; original member name unknown.
   const MdsMpfObjData *unknown38;     // Inferred role: object data; original member name unknown.
   const unknown002 *unknown40;        // Inferred role: etc position table; original member name unknown.
@@ -114,6 +115,7 @@ public:
 static_assert(offsetof(DrResMdoSeamWrkMpf, unknown08) == 0x08, "");
 static_assert(offsetof(DrResMdoSeamWrkMpf, unknown18) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamWrkMpf, unknown20) == 0x20, "");
+static_assert(offsetof(DrResMdoSeamWrkMpf, unknown28) == 0x28, "");
 static_assert(offsetof(DrResMdoSeamWrkMpf, unknown30) == 0x30, "");
 static_assert(offsetof(DrResMdoSeamWrkMpf, unknown48) == 0x48, "");
 static_assert(offsetof(DrResMdoSeamWrkMpf, unknown4c) == 0x4c, "");

@@ -13,6 +13,7 @@ public:
   enum unknown001 {
     unknown001_0 = 0,   // Inferred role: none; original name unknown.
     unknown001_3 = 3,   // Inferred role: unsigned integer; original name unknown.
+    unknown001_4 = 4,   // Inferred role: pointer; original name unknown.
     unknown001_16 = 16, // Inferred role: string; original name unknown.
   };
 
@@ -44,6 +45,11 @@ public:
   void set(const u32 &value) {
     m_queue[m_index].type = unknown001_3;
     memcpy(m_queue[m_index].data, &value, sizeof(value));
+  }
+
+  void set(const void *pointer) {
+    m_queue[m_index].type = unknown001_4;
+    memcpy(m_queue[m_index].data, &pointer, sizeof(pointer));
   }
 
   void set(const mm::mtl::FixStr<16> &string) { set(string.c_str()); }

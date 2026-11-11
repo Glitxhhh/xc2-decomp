@@ -8,31 +8,43 @@ namespace ml {
 
 class DrResMdoSeamWrkBase;
 class DrResMdoSeamWrkInst;
+class DrResMdoSeamMemObj;
 class DrResMdoSeamWrkMpf;
 
 // Inferred type: read request of the seam; the original type name is unknown.
 struct _wkSeamReadWait {
-  u8 _00[0x08];
-  s16 unknown08; // Inferred role: resource index; original member name unknown.
-  s16 unknown0a; // Inferred role: resource kind; original member name unknown.
-  u8 _0c[0x10 - 0x0c];
+  void *unknown00; // Inferred role: work; original member name unknown.
+  u16 unknown08;   // Inferred role: resource index; original member name unknown.
+  s16 unknown0a;   // Inferred role: resource kind; original member name unknown.
+  u8 unknown0c;    // Inferred role: unknown, copied to the read call; original member name unknown.
+  u8 _0d[0x10 - 0x0d];
 };
 
 static_assert(offsetof(_wkSeamReadWait, unknown08) == 0x08, "");
 static_assert(offsetof(_wkSeamReadWait, unknown0a) == 0x0a, "");
+static_assert(offsetof(_wkSeamReadWait, unknown0c) == 0x0c, "");
 static_assert(sizeof(_wkSeamReadWait) == 0x10, "");
 
 // Inferred type: read call of the seam; the original type name is unknown.
 struct _wkSeamReadCall {
-  u8 _00[0x18];
-  s16 unknown18; // Inferred role: resource index; original member name unknown.
-  u8 _1a[0x1e - 0x1a];
-  s16 unknown1e; // Inferred role: resource kind; original member name unknown.
-  u8 _20[0x28 - 0x20];
+  DrResMdoSeamMemObj *unknown00; // Inferred role: memory object; original member name unknown.
+  void *unknown08;               // Inferred role: work; original member name unknown.
+  void *unknown10;               // Inferred role: linked work, set by the instance map; original member name unknown.
+  u16 unknown18;                 // Inferred role: resource index; original member name unknown.
+  u16 unknown1a;                 // Inferred role: unknown, copied from the read request; original member name unknown.
+  u16 unknown1c;                 // Inferred role: file handle index; original member name unknown.
+  s16 unknown1e;                 // Inferred role: resource kind; original member name unknown.
+  s32 unknown20;                 // Inferred role: read size; original member name unknown.
+  u8 _24[0x28 - 0x24];
 };
 
+static_assert(offsetof(_wkSeamReadCall, unknown08) == 0x08, "");
+static_assert(offsetof(_wkSeamReadCall, unknown10) == 0x10, "");
 static_assert(offsetof(_wkSeamReadCall, unknown18) == 0x18, "");
+static_assert(offsetof(_wkSeamReadCall, unknown1a) == 0x1a, "");
+static_assert(offsetof(_wkSeamReadCall, unknown1c) == 0x1c, "");
 static_assert(offsetof(_wkSeamReadCall, unknown1e) == 0x1e, "");
+static_assert(offsetof(_wkSeamReadCall, unknown20) == 0x20, "");
 static_assert(sizeof(_wkSeamReadCall) == 0x28, "");
 
 // Inferred type: bit tables of the read packet; the original type name is unknown.

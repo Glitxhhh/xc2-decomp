@@ -20,13 +20,15 @@ struct unknown700 {
   f32 unknown0c[3]; // Inferred role: minimum position of the area; original member name unknown.
   u8 _18[0x28 - 0x18];
   u32 unknown28; // Inferred role: flags; original member name unknown.
-  u8 _2c[0x38 - 0x2c];
+  u8 _2c[0x34 - 0x2c];
+  u32 unknown34; // Inferred role: data offset; original member name unknown.
   s32 unknown38; // Inferred role: memory size; original member name unknown.
   u8 _3c[0x4c - 0x3c];
 };
 
 static_assert(offsetof(unknown700, unknown0c) == 0x0c, "");
 static_assert(offsetof(unknown700, unknown28) == 0x28, "");
+static_assert(offsetof(unknown700, unknown34) == 0x34, "");
 static_assert(offsetof(unknown700, unknown38) == 0x38, "");
 static_assert(sizeof(unknown700) == 0x4c, "");
 

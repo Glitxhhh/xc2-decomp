@@ -43,15 +43,7 @@ u32 DrMdoCtlSeam::isRead(int index) const {
   return 0;
 }
 
-void DrMdoCtlSeam::setErrCode(int code, int param) {
-  unknowncae[unknowncac] = code;
-  unknowncb8[unknowncac] = param;
-  s16 next = unknowncac + 1;
-  if (next > 3) {
-    next = 0;
-  }
-  unknowncac = next;
-}
+void DrMdoCtlSeam::setErrCode(int code, int param) { unknown004(code, param); }
 
 void DrMdoCtlSeam::releaseFreeSeamTexture(DrResMdoSeamTexture *texture, bool isAll) {
   if (isAll) {
@@ -73,14 +65,7 @@ void DrMdoCtlSeam::releaseFreeSeamTexture(DrResMdoSeamTexture *texture, bool isA
   }
 }
 
-int DrMdoCtlSeam::calcSemaAlignment(u32 size, u32 alignment) {
-  u32 remainder = size % alignment;
-  int padding = 0;
-  if (remainder != 0) {
-    padding = alignment - remainder;
-  }
-  return padding + size;
-}
+int DrMdoCtlSeam::calcSemaAlignment(u32 size, u32 alignment) { return unknown005(size, alignment); }
 
 void DrMdoCtlSeam::releaseFreeSeamMemObj(DrResMdoSeamMemObj *mem) { unknown6e0.releaseFreeObj(mem); }
 

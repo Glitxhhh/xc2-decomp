@@ -91,7 +91,7 @@ int drawFontGetWidth(const char *format, ...) {
   return ml::DevGraph::fontGetWidth(text, ml::FONT_STYLE_UNKNOWN_0, ml::DebDraw::getCacheDraw()->unknown6054);
 }
 
-f32 drawFontGetHeight() { return ml::DevGraph::fontGetHeight(ml::FONT_STYLE_UNKNOWN_0, ml::DebDraw::getCacheDraw()->unknown6058); }
+int drawFontGetHeight() { return ml::DevGraph::fontGetHeight(ml::FONT_STYLE_UNKNOWN_0, ml::DebDraw::getCacheDraw()->unknown6058); }
 
 bool drawFontScale(f32 x, f32 y) { return ml::DebDraw::getCacheDraw()->fontScale(x, y); }
 

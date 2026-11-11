@@ -18,6 +18,10 @@ public:
   const WinView *getView1() const;
   const WinView *getView2() const;
   mm::Rect<int> getWorkRect1(bool isBack) const;
+  mm::Rect<int> getScissorRect1() const;
+  mm::Rect<int> getScissorRect2() const;
+  void setup(WinView *view, bool isHorizontal, WinView *view1, WinView *view2);
+  void apply();
   void limit();
 
   WinView *unknown00; // Inferred role: frame view; original member name unknown.

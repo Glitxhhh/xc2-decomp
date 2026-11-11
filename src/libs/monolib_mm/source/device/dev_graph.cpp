@@ -30,10 +30,8 @@ CriticalSection &getCriticalSection() {
 
 } // namespace dg
 
-DevGraph::~DevGraph() {}
-
-int DevGraph::fontGetWidth(const char *text, FONT_STYLE style, f32 scale) {
-  int width;
+u32 DevGraph::fontGetWidth(const char *text, FONT_STYLE style, f32 scale) {
+  u32 width;
   DevGraph *graph = get();
   if (graph != nullptr) {
     width = graph->fontGetWidthSys(text, style, scale);
@@ -42,8 +40,8 @@ int DevGraph::fontGetWidth(const char *text, FONT_STYLE style, f32 scale) {
   return width;
 }
 
-f32 DevGraph::fontGetHeight(FONT_STYLE style, f32 scale) {
-  f32 height;
+u32 DevGraph::fontGetHeight(FONT_STYLE style, f32 scale) {
+  u32 height;
   DevGraph *graph = get();
   if (graph != nullptr) {
     height = graph->fontGetHeightSys(style, scale);

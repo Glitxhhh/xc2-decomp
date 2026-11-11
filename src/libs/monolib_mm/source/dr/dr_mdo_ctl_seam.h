@@ -87,13 +87,37 @@ struct unknown060 {
   u32 unknown08;         // Inferred role: object max; original member name unknown.
 };
 
-// Inferred role: seam texture list table entry; original type name unknown.
+// Inferred role: offset and size of a data block of the seam resource (texture list, vertex, position and poli tables); original type name unknown.
 struct unknown136 {
-  u32 unknown00; // Inferred role: texture list data offset; original member name unknown.
-  s32 unknown04; // Inferred role: texture list data size; original member name unknown.
+  u32 unknown00; // Inferred role: data offset; original member name unknown.
+  s32 unknown04; // Inferred role: data size; original member name unknown.
 };
 
+static_assert(offsetof(unknown136, unknown04) == 0x4, "");
 static_assert(sizeof(unknown136) == 0x8, "");
+
+// Inferred role: instance map entry of the seam resource; original type name unknown.
+struct unknown721 {
+  u8 _00[0x34];
+  u32 unknown34; // Inferred role: data offset; original member name unknown.
+  s32 unknown38; // Inferred role: data size; original member name unknown.
+  u8 _3c[0x40 - 0x3c];
+};
+
+static_assert(offsetof(unknown721, unknown34) == 0x34, "");
+static_assert(offsetof(unknown721, unknown38) == 0x38, "");
+static_assert(sizeof(unknown721) == 0x40, "");
+
+// Inferred role: mpf map entry of the seam resource; original type name unknown.
+struct unknown722 {
+  u8 _00[0x34];
+  u32 unknown34; // Inferred role: data offset; original member name unknown.
+  s32 unknown38; // Inferred role: data size; original member name unknown.
+};
+
+static_assert(offsetof(unknown722, unknown34) == 0x34, "");
+static_assert(offsetof(unknown722, unknown38) == 0x38, "");
+static_assert(sizeof(unknown722) == 0x3c, "");
 
 // Inferred role: seam resource header; original type name unknown.
 struct unknown061 {
@@ -101,7 +125,7 @@ struct unknown061 {
   s32 m_seamBaseMdlMax;
   u32 unknown1c; // Inferred role: offset of the base map data; original member name unknown.
   u32 m_seamInstMdlMax;
-  u8 _24[0x28 - 0x24];
+  u32 unknown24; // Inferred role: offset of the instance map entries; original member name unknown.
   u32 m_seamColiMax;
   u8 _2c[0x44 - 0x2c];
   u32 m_seamShaderMax;
@@ -112,17 +136,24 @@ struct unknown061 {
   u32 unknown5c; // Inferred role: offset of the offset texture table; original member name unknown.
   u8 _60[0x64 - 0x60];
   u32 m_seamMpfMdlMax;
-  u8 _68[0x6c - 0x68];
+  u32 unknown68; // Inferred role: offset of the mpf map entries; original member name unknown.
   u32 m_seamEtcPosDataMax;
-  u8 _70[0x74 - 0x70];
+  u32 unknown70; // Inferred role: offset of the instance position table; original member name unknown.
   u32 m_seamMpfPosDataMax;
-  u8 _78[0x84 - 0x78];
+  u32 unknown78; // Inferred role: offset of the mpf etc table; original member name unknown.
+  u8 _7c[0x84 - 0x7c];
   u32 unknown84; // Inferred role: offset of the environment data; original member name unknown.
-  u8 _88[0x94 - 0x88];
+  u8 _88[0x8c - 0x88];
+  u32 unknown8c; // Inferred role: offset of the light entries; original member name unknown.
+  u8 _90[0x94 - 0x90];
   u32 unknown94; // Inferred role: offset of the texture list table; original member name unknown.
   u8 _98[0xa8 - 0x98];
   u32 unknowna8; // Inferred role: offset of the clip data; original member name unknown.
-  u8 _ac[0xe8 - 0xac];
+  u8 _ac[0xc8 - 0xac];
+  u32 unknownc8; // Inferred role: offset of the mpf poli table; original member name unknown.
+  u8 _cc[0xd0 - 0xcc];
+  u32 unknownd0; // Inferred role: offset of the base vertex table; original member name unknown.
+  u8 _d4[0xe8 - 0xd4];
   u32 unknowne8; // Inferred role: offset of the cloud model data; original member name unknown.
 };
 
@@ -138,6 +169,13 @@ static_assert(offsetof(unknown061, m_seamEtcPosDataMax) == 0x6c, "");
 static_assert(offsetof(unknown061, m_seamMpfPosDataMax) == 0x74, "");
 static_assert(offsetof(unknown061, unknown94) == 0x94, "");
 static_assert(offsetof(unknown061, unknown5c) == 0x5c, "");
+static_assert(offsetof(unknown061, unknown24) == 0x24, "");
+static_assert(offsetof(unknown061, unknown68) == 0x68, "");
+static_assert(offsetof(unknown061, unknown70) == 0x70, "");
+static_assert(offsetof(unknown061, unknown78) == 0x78, "");
+static_assert(offsetof(unknown061, unknown8c) == 0x8c, "");
+static_assert(offsetof(unknown061, unknownc8) == 0xc8, "");
+static_assert(offsetof(unknown061, unknownd0) == 0xd0, "");
 static_assert(offsetof(unknown061, unknown84) == 0x84, "");
 static_assert(offsetof(unknown061, unknowna8) == 0xa8, "");
 static_assert(offsetof(unknown061, unknowne8) == 0xe8, "");
@@ -304,6 +342,27 @@ public:
   u32 isRead(int index) const;
   void setErrCode(int code, int param);
   static int calcSemaAlignment(u32 size, u32 alignment);
+
+  // Inferred helper: the body of setErrCode inlined by the callers of another source file; original name unknown.
+  void unknown004(int code, int param) {
+    unknowncae[unknowncac] = code;
+    unknowncb8[unknowncac] = param;
+    s16 next = unknowncac + 1;
+    if (next > 3) {
+      next = 0;
+    }
+    unknowncac = next;
+  }
+
+  // Inferred helper: the body of calcSemaAlignment inlined by the callers of another source file; original name unknown.
+  static int unknown005(u32 size, u32 alignment) {
+    u32 remainder = size % alignment;
+    int padding = 0;
+    if (remainder != 0) {
+      padding = alignment - remainder;
+    }
+    return padding + size;
+  }
   void seamZPrePassBegin();
   void seamZPrePassEnd();
   void seamThicknessPassBegin(bool isFirst);
@@ -447,8 +506,8 @@ public:
   bool unknowncc8;                 // Inferred role: unknown state, cleared by the constructor; original member name unknown.
   DrResMdoSeamRead unknowncd0;     // Inferred role: seam reader; original member name unknown.
   DrResMdoSeamParmRead unknownd30; // Inferred role: seam read parameters; original member name unknown.
-  u8 _1370[0x14b0 - 0x1370];
-  u32 unknown14b0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  _wkSeamReadCall unknown1370[8];  // Inferred role: read calls; original member name unknown.
+  s32 unknown14b0;                 // Inferred role: read call num; original member name unknown.
   u8 _14b4[0x14c0 - 0x14b4];
   u64 unknown14c0; // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u32 unknown14c8; // Inferred role: unknown, cleared by the constructor; original member name unknown.
@@ -500,6 +559,7 @@ static_assert(offsetof(DrMdoCtlSeam, unknowncc8) == 0xcc8, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncd0) == 0xcd0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownd30) == 0xd30, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown14b0) == 0x14b0, "");
+static_assert(offsetof(DrMdoCtlSeam, unknown1370) == 0x1370, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown14c0) == 0x14c0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown14d0) == 0x14d0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown1510) == 0x1510, "");

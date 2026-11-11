@@ -231,6 +231,13 @@ void DebDraw::setForceRenderQueue(bool isForce) {
   unknown210->setForceRenderQueue(isForce);
 }
 
+void DebDraw::renderRectUpFill(const mm::Rect<int> &rect) {
+  begin(9, 1);
+  add(rect);
+  end();
+  renderRectUp(rect);
+}
+
 void DebDraw::fontColor(const mm::Col4 &color) { unknown210->fontColor(color); }
 
 void DebDraw::fontBack(const mm::Col4 &color) { unknown210->fontBack(color); }

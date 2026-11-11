@@ -4,13 +4,19 @@
 #include "dr/dr_res_mdo_seam_res.h"
 #include "types.h"
 
+namespace mtl {
+class ALLOC_HANDLE;
+} // namespace mtl
+
 namespace ml {
 class DrMdoCtlSeamInstMap;
 class DrPixlShadowCacheObj;
 class DrPixlShadowObj;
 class DrResMdoSeamWrkPosInst;
 struct MdoWrkMatRes;
+struct unknown721;
 class DrResMdoVertex;
+class DrResMdoInstAnmObj;
 
 class DrResMdoSeamWrkInst : public unknown133<DrResMdoSeamWrkInst> {
 public:
@@ -38,8 +44,9 @@ public:
   void seachDefShadowInstMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamInstMap *ctl);
   bool seachShadowInstMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamInstMap *ctl);
   unknown002 *getMdlInfo();
+  bool setEtcPosCache(mtl::ALLOC_HANDLE handle, int index, DrResMdoSeamMemObj *memObj, const DrResMdoInstAnmObj *anm);
 
-  u8 _18[0x20 - 0x18];
+  const unknown721 *unknown18; // Inferred role: instance map entry; original member name unknown.
   const unknown001 *unknown20; // Inferred role: instance map header; original member name unknown.
   u8 _28[0x50 - 0x28];
   MdoWrkMatRes *unknown50;   // Inferred role: material work; original member name unknown.
@@ -83,6 +90,7 @@ public:
 };
 
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown20) == 0x20, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown18) == 0x18, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown50) == 0x50, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown68) == 0x68, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown84) == 0x84, "");
