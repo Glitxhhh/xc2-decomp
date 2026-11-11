@@ -4,6 +4,7 @@
 #include "gf/data/gf_data_save.h"
 #include "gf/game/gf_game_party.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 
@@ -51,6 +52,7 @@ struct RQ_SETUP_PARTY {
     }
   }
 
+  void getAllBlade(mm::mtl::FixedVector<u32, 16> &blades) const;
   void replaceActBlade();
 
   Member unknown00[10]; // Inferred role: members; original member name unknown.

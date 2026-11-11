@@ -1,6 +1,11 @@
 #include "gf/util/gf_recipe_orb_util.h"
 #include "gf/data/gf_bdat_item.h"
+#include "gf/data/gf_data_item.h"
+#include "gf/event/gf_event.h"
+#include "gf/game/item/gf_item_box.h"
+#include "gf/util/gf_util.h"
 #include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
 
 namespace gf {
 
@@ -85,6 +90,40 @@ bool GfRecipeOrbUtil::getRecipeInfo(RecipeInfo &info, u32 id) {
     return false;
   }
   return true;
+}
+
+void GfRecipeOrbUtil::execOrbRecipe(u32 item, const mm::mtl::FixedVector<OrbRecipe, 128> *items) {
+  GfBdatItem *bdatItem = GfBdatItem::get();
+  u32 recipe = bdatItem->getEmptyOrbRecipe(item);
+  mm::mtl::FixStr<128> name;
+  name = util::debugUTF8ToSJIS(GfDataItem::getName(item));
+  mm::mtl::FixedVector<OrbRecipe, 128> boxItems;
+  if (items == nullptr) {
+    getRecipeItemsByItemBox(boxItems, recipe);
+    items = &boxItems;
+  }
+  isEnabaleOrbRecipe(recipe, *items);
+  u32 orb = bdatItem->getEmptyOrbEquipItemID(item);
+  GfBdatItem *orbBdatItem = GfBdatItem::get();
+  GfDataItem::getItemType(item);
+  if (orbBdatItem->getEmptyOrbRecipe(item) != 0) {
+    for (const OrbRecipe *recipeItem = items->begin(); recipeItem != items->end(); recipeItem++) {
+      u32 recipeItemId = recipeItem->unknown00;
+      if (recipeItemId != 0) {
+        u32 recipeItemNumber = recipeItem->unknown02;
+        if (recipeItemNumber != 0 && GfItemBox::decItem(recipeItemId, recipeItemNumber)) {
+          GfEvent::callItemAdd(recipeItemId, -recipeItemNumber);
+        }
+      }
+    }
+  }
+  if (GfItemBox::decItem(item, 1)) {
+    GfEvent::callItemAdd(item, -1);
+  }
+  if (!GfDataItem::isNoMultiple(orb) && GfItemBox::addItem(orb, 1)) {
+    GfDataItem::setNoMultiple(orb, true);
+    GfEvent::callItemAdd(orb, 1);
+  }
 }
 
 bool GfRecipeOrbUtil::isEnableRecipe(u32 id) {

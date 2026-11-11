@@ -81,10 +81,10 @@ bool GfGamePlayerFormation::isFarRandomTalk(GF_OBJ_HANDLE *handle) {
   }
   const WarpForRandomTalkParam *param = getWarpForRandomTalkParam();
   mm::Vec3 delta = unknowne0[0].unknown00 - unknowne0[playerId].unknown00;
-  if (fabsf(delta.y) >= param->height) {
+  if (fabsf(delta.y) >= param->distVert) {
     return true;
   }
-  f32 distanceSq = param->distance * param->distance;
+  f32 distanceSq = param->distHorz * param->distHorz;
   return delta.x * delta.x + delta.z * delta.z >= distanceSq;
 }
 
@@ -119,7 +119,7 @@ void GfGamePlayerFormation::drawDebugRandomTalk() {
   const WarpForRandomTalkParam *param = getWarpForRandomTalkParam();
   mm::Mat44 matrix;
   matrix.unknown007(unknowne0[0].unknown00);
-  fw::debug::drawCylinderLine(matrix, param->height * 2.0f, param->distance, mm::Col4::cyan, 8);
+  fw::debug::drawCylinderLine(matrix, param->distVert * 2.0f, param->distHorz, mm::Col4::cyan, 8);
 }
 
 void GfGamePlayerFormation::changeFormation(u32 formation) {

@@ -2,6 +2,9 @@
 
 #include "battle/utility_battle.h"
 #include "fw/fw_update_info.h"
+#include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_driver.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_fobj_manager.h"
 #include "gf/game/gf_game_save.h"
@@ -15,6 +18,7 @@
 #include "gf/script/gf_script_manager.h"
 #include "ml/time_count.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 
 namespace gf {
@@ -82,6 +86,47 @@ void GfMapjumpInfo::setupForSaveData(u32 mapjumpId, const mm::Vec3 &position, co
 RQ_SETUP_BLADE::RQ_SETUP_BLADE() : unknown00(0), unknown02(0) {
   for (u32 slot = 0; slot < 5; slot++) {
     unknown04[slot] = 0;
+  }
+}
+
+void RQ_SETUP_PARTY::getAllBlade(mm::mtl::FixedVector<u32, 16> &blades) const {
+  for (u32 index = 0; index < 10; index++) {
+    const Member &member = unknown00[index];
+    int setBladeNum = GfDataDriver::getMaxSetBladeNum(member.unknown00);
+    for (int slot = 0; slot < setBladeNum; slot++) {
+      if (member.unknown08[slot] != 0) {
+        blades.push_back(member.unknown08[slot]);
+      }
+    }
+  }
+}
+
+// Inferred role: replaces an act blade by its common blade, copying the save data when the common one is not set up; original name unknown.
+static u32 unknown009(u32 blade) {
+  u32 commonBlade = GfDataBlade::getActBlade2CommonBlade(blade);
+  if (commonBlade != blade) {
+    SDataBlade *commonData = GfDataBlade::getSDataBlade(commonBlade);
+    if (commonData->unknown06 == 0) {
+      *commonData = *GfDataBlade::getSDataBlade(blade);
+      commonData->unknown06 = commonBlade;
+    }
+    blade = commonBlade;
+  }
+  return blade;
+}
+
+void RQ_SETUP_PARTY::replaceActBlade() {
+  if (unknownc8 == OBJECT_TYPE_BLADE) {
+    unknowncc = unknown009(unknowncc);
+  }
+  if (unknownd0 == OBJECT_TYPE_BLADE) {
+    unknownd4 = unknown009(unknownd4);
+  }
+  for (u32 index = 0; index < 10; index++) {
+    u16 *blade = &unknown00[index].unknown08[0];
+    for (u32 slot = 0; slot < 5; slot++, blade++) {
+      *blade = unknown009(*blade);
+    }
   }
 }
 

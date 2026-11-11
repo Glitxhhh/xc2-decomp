@@ -50,6 +50,11 @@ public:
     bool unknown2b;           // Inferred role: skip items equipped by a character; original member name unknown.
   };
 
+  struct ItemShopSetup {
+    SetupParam unknown00; // Inferred role: param; original member name unknown.
+    u32 unknown14;        // Inferred role: shop; original member name unknown.
+  };
+
   GfMenuItemList();
   ~GfMenuItemList() override;
   static GfMenuItemList *create();
@@ -94,6 +99,7 @@ public:
   void addItem(const MenuItemInfo &info, bool isAddItemBox);
   void setupFromHanaParts(const HanaPartsSetup &setup);
   void setupFromBox(const ItemBoxSetup &setup);
+  void setupFromShop(const ItemShopSetup &setup);
 };
 
 static_assert(offsetof(GfMenuItemList::HanaPartsSetup, unknown14) == 0x14, "");
@@ -105,6 +111,8 @@ static_assert(offsetof(GfMenuItemList::ItemBoxSetup, unknown29) == 0x29, "");
 static_assert(offsetof(GfMenuItemList::ItemBoxSetup, unknown2a) == 0x2a, "");
 static_assert(offsetof(GfMenuItemList::ItemBoxSetup, unknown2b) == 0x2b, "");
 static_assert(sizeof(GfMenuItemList::ItemBoxSetup) == 0x30, "");
+static_assert(offsetof(GfMenuItemList::ItemShopSetup, unknown14) == 0x14, "");
+static_assert(sizeof(GfMenuItemList::ItemShopSetup) == 0x18, "");
 
 static_assert(offsetof(GfMenuItemList::FiltertInfo, unknown04) == 0x4, "");
 static_assert(offsetof(GfMenuItemList::FiltertInfo, unknown05) == 0x5, "");

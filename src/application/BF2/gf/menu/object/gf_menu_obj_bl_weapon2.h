@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/menu/adapter/gf_menu_weapon_adapter.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/intrusive_ptr.h"
@@ -8,6 +9,7 @@
 #include "ui/event/ui_object_listener.h"
 
 namespace ui {
+class UIObjectAcc;
 class UISelectObjList;
 } // namespace ui
 
@@ -59,6 +61,8 @@ public:
   bool seqStart();
   bool seqSrcLeave();
   bool seqSrcAppear();
+  static void setupWeapon(ui::UIObjectAcc &acc, GfMenuItemList *list, GfMenuWeaponAdapter::ReferenceChip &chip);
+  static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList, u32 isShop, u32 shop);
   bool seqDstResume();
   bool seqEnd();
 

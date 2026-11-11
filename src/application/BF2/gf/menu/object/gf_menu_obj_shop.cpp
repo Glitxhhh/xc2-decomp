@@ -493,6 +493,60 @@ void GfMenuObjShop::MainListener::reciveEvent(const ui::EventData &event, u32 ha
   ui::UIObjectListener::reciveEvent(event, handle);
 }
 
+void GfMenuObjShop::CommonListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(acc.unknown10);
+    unknown0c = -1;
+    break;
+  case 3:
+    if (event.unknown08 == 2) {
+      unknown20->sendExitEvent(0);
+      acc.setDisp(false);
+    }
+    break;
+  case GfMenuTypes::unknown003_33: {
+    acc.setDisp(true);
+    {
+      ui::UIObjectAcc bg(acc.unknown10, "IMG_common_bg");
+      bg.startAnimation("fade_in", false);
+    }
+    acc.setDispChild(true, "LAY_index");
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "cmn_fade_motion_up_down";
+    param.unknown58 = "fade_in_up";
+    param.unknown11 = true;
+    param.unknown14 = 8;
+    param.unknown04 = 1;
+    int ctrl = GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_index");
+    GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+    unknown0c = ctrl;
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    {
+      ui::UIObjectAcc bg(acc.unknown10, "IMG_common_bg");
+      bg.startAnimation("fade_out", false);
+    }
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "cmn_fade_motion_up_down";
+    param.unknown58 = "fade_out_up";
+    param.unknown11 = true;
+    param.unknown14 = 10;
+    param.unknown04 = 2;
+    int ctrl = GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_index");
+    GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+    unknown0c = ctrl;
+    break;
+  }
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjShop, 8>>(const mm::mtl::Delegate<bool()> *);

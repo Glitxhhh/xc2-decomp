@@ -24,6 +24,7 @@
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_blade_name.h"
 #include "gf/menu/object/gf_menu_obj_blade_set2.h"
+#include "gf/menu/object/gf_menu_obj_cmn_status.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
@@ -36,6 +37,7 @@
 #include "gf/util/gf_item_util.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_math.h"
+#include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_ptr.h"
@@ -89,6 +91,26 @@ static void unknown010(GfMenuModelView *view, u32 driver, u32 index) {
 
 // Inferred role: checks that a crystal object of the model view exists; original name unknown.
 static bool unknown013(GfMenuModelView *view, u32 index) { return view->checkGfObj(unknown009, view->getMapObjID(index)); }
+
+// Inferred role: starts the opening control of a page of the creation screen; original name unknown.
+static void unknown014(u32 handle) {
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown08 = 1;
+  param.unknown00 = 0.5f;
+  param.unknown04 = 1;
+  GfMenuObjUtil::startCtrl(handle, param, nullptr);
+}
+
+// Inferred role: starts the closing control of a page of the creation screen; original name unknown.
+static void unknown015(u32 handle) {
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown08 = 2;
+  param.unknown14 = 2;
+  param.unknown00 = 0.25f;
+  param.unknown04 = 2;
+  GfMenuObjUtil::startCtrl(handle, param, nullptr);
+}
+
 void GfMenuObjBladeCreate::registOpenParam(const OpenParam &param) {
   GfMenuTypes::Param layerParam;
   layerParam.set(param);
@@ -715,6 +737,162 @@ void GfMenuObjBladeCreate::MainListener::reciveEvent(const ui::EventData &event,
     }
     break;
   }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBladeCreate::ResultListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableFSInput(5);
+      GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
+      GfMenuObjOperationInfo::setGuideDisp(false);
+      unknown20->unknown11c0 = GfMenuObjUtil::playBGM(0x14, false, CATEGORY_MENU_BGM);
+    }
+    break;
+  case 8:
+    if (event.unknown0c == 1) {
+      unknown20->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqResultStart);
+      GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+      GfMenuObject::disableFSInput();
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    unknown014(acc.unknown10);
+    GfMenuObjCmnStatus::openBlStatus(2, -1);
+    {
+      ui::UIObjectAcc image(acc.unknown10, "IMG_result_bl_img");
+      u32 blade = GfMenuReference::getReferenceBladeID(0);
+      acc.setLayout(image.unknown10, "blade");
+      GfMenuObjUtil::ImageParam imageParam;
+      if (GfMenuObjUtil::getImageParam(1, blade, imageParam, 1)) {
+        mm::Vec2 scale;
+        image.getScale(scale);
+        scale.x = imageParam.unknown04 * scale.x;
+        scale.y = imageParam.unknown04 * scale.y;
+        image.setScale(scale);
+        GfMenuObjUtil::addPos(image.unknown10, imageParam.unknown00, imageParam.unknown02);
+      }
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_in_r");
+      param.unknown04 = 1;
+      param.unknown14 = 8;
+      GfMenuObjUtil::startCtrl(image.unknown10, param, nullptr);
+    }
+    GfMenuObjUtil::playJingle(GfDataBlade::isCommonBlade(GfMenuReference::getReferenceBladeID(0)) ? 0xd : 0xc);
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObjCmnStatus::closeBlStatus();
+    unknown015(acc.unknown10);
+    break;
+  }
+}
+
+void GfMenuObjBladeCreate::BoosterNumListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    unknown0c = 0;
+    unknown10 = 1;
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableFSInput(6);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    } else if (event.unknown08 == 2) {
+      ui::EventData end;
+      end.unknown0c = 0;
+      end.unknown00 = GfMenuTypes::unknown003_259;
+      end.unknown08 = unknown10;
+      GfMenuObject::sendEvent(acc.getParentHandle(), end, 0.0f);
+    }
+    break;
+  case 6: {
+    int index = event.unknown08;
+    int prev = event.unknown0c;
+    if (index != -1) {
+      unknown20->unknown1188->unknown162(index + 1);
+      unknown20->updateIdea(false);
+    }
+    if (prev != -1 && index != prev) {
+      GfMenuObjUtil::playSE(0x19);
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      unknown20->updateIdea(true);
+      unknown10 = 1;
+      GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
+    } else if (event.unknown0c == 2) {
+      GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
+      unknown20->unknown1188->unknown162(0);
+      unknown20->updateIdea(false);
+    }
+    GfMenuObjUtil::playSECommonFromInput(event.unknown0c);
+    break;
+  case GfMenuTypes::unknown003_33:
+    if (unknown0c == 0) {
+      unknown014(acc.unknown10);
+      unknown0c = 1;
+      unknown10 = 0;
+      const unknown005 &idea = unknown20->unknown28.unknown50->getContents(unknown20->unknown28.unknown50->getIndex(false));
+      u32 level = idea.unknown08;
+      if (level > 5) {
+        level = 5;
+      }
+      unknown20->unknown1188->unknown10 = 1;
+      unknown20->unknown1188->unknown14 = level;
+      unknown20->unknown1188->unknown162(1);
+      GfMenuObject::resetInputSelection(acc.unknown10);
+      GfMenuObject::setupInputSelection(acc.unknown10, 0, level);
+    }
+    unknown20->setGuideText(0x39);
+    break;
+  case GfMenuTypes::unknown003_34:
+    if (unknown0c == 1) {
+      GfMenuObject::disableFSInput();
+      GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+      unknown015(acc.unknown10);
+      unknown0c = 0;
+    }
+    break;
+  }
+}
+
+void GfMenuObjBladeCreate::IdeagramListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    unknown0c = 0;
+    break;
+  case GfMenuTypes::unknown003_33:
+    if (unknown0c == 0) {
+      unknown014(acc.unknown10);
+      unknown0c = 1;
+    }
+    break;
+  case GfMenuTypes::unknown003_34:
+    if (unknown0c == 1) {
+      unknown015(acc.unknown10);
+      unknown0c = 0;
+    }
+    break;
   default:
     ui::UIObjectListener::reciveEvent(event, handle);
     break;

@@ -1,8 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_bl_weapon2.h"
 
+#include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_weapon.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
+#include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_reference.h"
@@ -200,6 +203,64 @@ bool GfMenuObjBlWeapon2::seqEnd() {
   openCharChange();
   unknown2e8 = false;
   return true;
+}
+
+void GfMenuObjBlWeapon2::setupWeapon(ui::UIObjectAcc &acc, GfMenuItemList *list, GfMenuWeaponAdapter::ReferenceChip &chip) {
+  GfMenuWeaponAdapter *adapter = GfMenuWeaponAdapter::createFromReferenceBlade(acc.searchChild("TXT_wpname_@01"), 0, 0, false);
+  if (adapter != nullptr) {
+    adapter->unknown24 = acc.searchChild("LAY_bl_weapon_text@01");
+  }
+  GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("IMG_wpn_img@01"), 0x59, 0, true);
+  GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("IMG_wpn_img_eff@01"), 0x59, 0, true);
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "TXT_wptype_@01", false);
+  GfMenuWeaponAdapter::createFromReferenceBlade(acc.searchChild("TXT_wp_text_@01"), 6, 0, false);
+  GfMenuObjUtil::createSyncPlugin(acc.searchChild("TXT_wp_text_no_eff@01"), acc.searchChild("TXT_wp_text_@01"), 0x40);
+  adapter = GfMenuWeaponAdapter::createFromReferenceChip(acc.searchChild("TXT_wpname_@02"), 0, chip, false);
+  if (adapter != nullptr) {
+    adapter->unknown24 = acc.searchChild("LAY_bl_weapon_text@02");
+  }
+  GfMenuCharDataAdapter *charAdapter = GfMenuCharDataAdapter::createFromReferenceBlade(acc.searchChild("IMG_wpn_img@02"), 0x59, 0, true);
+  if (charAdapter != nullptr) {
+    charAdapter->unknown79 = 1;
+  }
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "TXT_wp_chip_@02", false);
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "TXT_wptype_@02", false);
+  GfMenuObjUtil::setChildDisp(acc.unknown10, "TXT_wp_plus_@02", false);
+  GfMenuWeaponAdapter::createFromReferenceChip(acc.searchChild("TXT_wp_text_@02"), 6, chip, false);
+  GfMenuObjUtil::createSyncPlugin(acc.searchChild("TXT_wp_text_no_eff@02"), acc.searchChild("TXT_wp_text_@02"), 0x40);
+}
+
+void GfMenuObjBlWeapon2::setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList, u32 isShop, u32 shop) {
+  selectList->pickupObject(acc.unknown10, "LAY_ch_listtag@%02d", 1);
+  if (selectList->getSize() != 0 && list != nullptr) {
+    if (isShop == 0) {
+      GfMenuItemList::ItemBoxSetup setup;
+      setup.unknown14 = ItemType::PC_WPN_CHIP;
+      setup.unknown00.unknown08 = selectList->getSize();
+      setup.unknown00.unknown10 = true;
+      list->setupFromBox(setup);
+    } else {
+      GfMenuItemList::ItemShopSetup setup;
+      setup.unknown00.unknown08 = selectList->getSize();
+      setup.unknown14 = shop;
+      list->setupFromShop(setup);
+    }
+    mm::mtl::FixStr<32> name;
+    for (u32 i = 0; i < selectList->getSize(); i++) {
+      name.format("IMG_itemicon_@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 2, list, i, false);
+      name.format("IMG_ch_reaicon@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 7, list, i, false);
+      name.format("TXT_chipname_@%02d", i + 1);
+      GfMenuItemAdapter *adapter = GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0, list, i, false);
+      name.format("LAY_ch_listtag_item@%02d", i + 1);
+      adapter->unknown24 = acc.searchChild(name.c_str());
+      name.format("TXT_shstnum_@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 3, list, i, false);
+      name.format("TXT_price@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 5, list, i, false);
+    }
+  }
 }
 
 void GfMenuObjBlWeapon2::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {

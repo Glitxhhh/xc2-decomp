@@ -43,6 +43,8 @@ public:
   static u32 getRecipeID(u32 id);
   static u32 getEquipOrb(u32 id);
   static bool getRecipeInfo(RecipeInfo &info, u32 id);
+  static bool isEnabaleOrbRecipe(u32 recipe, const mm::mtl::FixedVector<OrbRecipe, 128> &items);
+  static void execOrbRecipe(u32 item, const mm::mtl::FixedVector<OrbRecipe, 128> *items);
 };
 
 } // namespace gf

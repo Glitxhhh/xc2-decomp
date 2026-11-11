@@ -34,8 +34,8 @@ struct FormationParam {
 struct WarpForRandomTalkParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
 
-  f32 height;
-  f32 distance;
+  f32 distVert;
+  f32 distHorz;
 };
 
 const FormationParam *getFormationParam(u32 formation);

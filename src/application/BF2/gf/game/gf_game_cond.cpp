@@ -14,6 +14,7 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/field/gf_field_time.h"
 #include "gf/field/gf_field_weather.h"
+#include "gf/game/achiev/gf_achiev_manager.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/game/quest/gf_achiev_quest.h"
 #include "gf/game/quest/gf_quest_id.h"
@@ -517,6 +518,51 @@ bool GfGameCond::isIdea(u32 condition, u32 blade, mm::mtl::FixedArray<bool, IDEA
   }
 
   return !isFailed;
+}
+
+bool GfGameCond::isAchievement(u32 condition, u32 blade) {
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  u32 achievementSet = s_bdatCond->getConditionAchievementAchievementSetID(condition);
+  if (achievementSet == 0) {
+    return false;
+  }
+
+  mm::mtl::FixedVector<u16, 422> blades;
+  if (blade == 0) {
+    GfAchievManager *achievManager = GfAchievManager::get();
+    if (achievManager != nullptr && !achievManager->getBladeByAchievementSet(blades, achievementSet)) {
+      return true;
+    }
+  } else {
+    blades.push_back(blade);
+  }
+
+  u32 value = s_bdatCond->getConditionAchievementValue(condition);
+  if (value == 0) {
+    return false;
+  }
+
+  u32 index = value - 1;
+  u32 achievement = questListAcc->getFLD_AchievementSetAchievementID(achievementSet, index);
+  if (achievement == 0) {
+    return false;
+  }
+
+  u32 task = questListAcc->getFLD_AchievementListTask(achievement);
+  if (task == 0) {
+    return false;
+  }
+
+  for (u16 *candidate = blades.begin(), *end = blades.end(); candidate != end; candidate++) {
+    for (u32 line = 0; line < ACHIEVEMENT_LINE_COUNT; line++) {
+      SDataBladeAchievement *achievInfo = GfDataBlade::getAchievInfo(*candidate, line);
+      if (achievInfo->unknown00 == achievementSet && achievInfo->unknown04[index].unknown00.unknown00 == task && (achievInfo->unknown04[index].unknown0c & 1) != 0) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 static bool isBladeFieldSkillLevel(u32 blade, u32 fieldSkill, u32 level) {

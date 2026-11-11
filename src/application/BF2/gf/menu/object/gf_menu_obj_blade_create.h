@@ -47,7 +47,8 @@ public:
   struct unknown005 {
     u8 _00[0x04 - 0x00];
     int unknown04; // Inferred role: idea bdat id; original member name unknown.
-    u8 _08[0x10 - 0x08];
+    s16 unknown08; // Inferred role: idea level; original member name unknown.
+    u8 _0a[0x10 - 0x0a];
   };
 
   struct PageContext {
@@ -64,6 +65,37 @@ public:
     ui::UIListInfo<unknown005> *unknown50; // Inferred role: idea list; original member name unknown.
     u8 _58[0xac8 - 0x58];
     GfMenuModelView *unknownac8; // Inferred role: model view; original member name unknown.
+  };
+
+  class ResultListener : public ui::UIObjectListener {
+  public:
+    ResultListener(GfMenuObjBladeCreate *owner, PageContext *context) : _0c(), unknown20(owner), unknown28(context) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeCreate *unknown20; // Inferred role: owner; original member name unknown.
+    PageContext *unknown28;          // Inferred role: page state of the owner; original member name unknown.
+  };
+
+  class BoosterNumListener : public ui::UIObjectListener {
+  public:
+    BoosterNumListener(GfMenuObjBladeCreate *owner) : unknown0c(0), unknown10(0), _14(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: number select opened flag; original member name unknown.
+    int unknown10; // Inferred role: number confirmed flag; original member name unknown.
+    u8 _14[0x20 - 0x14];
+    GfMenuObjBladeCreate *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class IdeagramListener : public ui::UIObjectListener {
+  public:
+    IdeagramListener(GfMenuObjBladeCreate *owner) : unknown0c(0), _10(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: opened flag; original member name unknown.
+    u8 _10[0x20 - 0x10];
+    GfMenuObjBladeCreate *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   static void registOpenParam(const OpenParam &param);
@@ -171,5 +203,16 @@ static_assert(offsetof(GfMenuObjBladeCreate, unknown1150) == 0x1150, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown11c0) == 0x11c0, "");
 static_assert(offsetof(GfMenuObjBladeCreate, unknown11c4) == 0x11c4, "");
 static_assert(sizeof(GfMenuObjBladeCreate) == 0x11d0, "");
+static_assert(offsetof(GfMenuObjBladeCreate::unknown005, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuObjBladeCreate::ResultListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBladeCreate::ResultListener, unknown28) == 0x28, "");
+static_assert(sizeof(GfMenuObjBladeCreate::ResultListener) == 0x30, "");
+static_assert(offsetof(GfMenuObjBladeCreate::BoosterNumListener, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjBladeCreate::BoosterNumListener, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuObjBladeCreate::BoosterNumListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBladeCreate::BoosterNumListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjBladeCreate::IdeagramListener, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjBladeCreate::IdeagramListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBladeCreate::IdeagramListener) == 0x28, "");
 
 } // namespace gf
