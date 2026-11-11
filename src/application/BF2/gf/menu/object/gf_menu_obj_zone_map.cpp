@@ -98,6 +98,8 @@ void GfMenuObjZoneMap::setDispIconNode(ui::UIObjectAcc &acc, u32 node) {
   }
 }
 
+void GfMenuObjZoneMap::sendEvent(u32 handle, u32 type, u32 param) { unknown163(handle, type, param); }
+
 int GfMenuObjZoneMap::setFadeOut(u32 handle) {
   int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 2, 0);
   GfMenuObject::hookCtrlEvent(handle, ctrl);

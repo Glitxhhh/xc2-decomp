@@ -8,6 +8,8 @@ namespace gf {
 // Layout seen in GfMenuObjItemList::initialize: vtable, reference count, then the list at 0x10 (object size 0x18).
 template <typename T> class GfMenuReferenceList : public mm::mtl::ReferenceObject {
 public:
+  ~GfMenuReferenceList() override { unknown10.reset(); }
+
   mm::mtl::IntrusivePtr<T> unknown10; // Inferred role: referenced list; original member name unknown.
 };
 

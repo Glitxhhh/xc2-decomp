@@ -2,7 +2,9 @@
 
 #include <math.h>
 
+#include "bdat.h"
 #include "gf/data/gf_bdat_btl.h"
+#include "gf/data/gf_bdat_chrbl.h"
 #include "gf/data/gf_bdat_cond.h"
 #include "gf/data/gf_bdat_msg.h"
 #include "gf/data/gf_bdat_quest.h"
@@ -16,6 +18,7 @@
 #include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/quest/gf_quest_task_param.h"
+#include "gf/util/gf_util.h"
 #include "mm_mtl/fixstr.h"
 
 namespace gf {
@@ -854,6 +857,37 @@ bool GfDataMercenaries::isTeamMemberEmpty(u32 teamID) {
     }
   }
 
+  return true;
+}
+
+bool GfDataMercenaries::getTeamNameByTeamIDForDebug(mm::mtl::FixStr<128> &name, u32 teamID) {
+  if (teamID != 0) {
+    unknown120 *team = getTeamByTeamID(teamID);
+    if (team != nullptr) {
+      u16 leader = team->unknown00[0];
+      if (leader != 0) {
+        name = "";
+        if (!GfDataBlade::isCommonBlade(leader)) {
+          u32 textId = GfBdatChrBl::get()->getChrBlMerceName(leader);
+          u8 *bdat = GfBdatMsg::getFpMerceName();
+          if (textId != 0) {
+            const char *text = Bdat::getMSText(bdat, textId);
+            if (text != nullptr) {
+              name = util::debugUTF8ToSJIS(text);
+            }
+          }
+        }
+
+        if (name.length() == 0) {
+          name.format("%s隊", util::debugUTF8ToSJIS(GfDataBlade::getName(leader, 0)));
+        }
+
+        return true;
+      }
+    }
+  }
+
+  name.format("第%d傭兵部隊", teamID);
   return true;
 }
 

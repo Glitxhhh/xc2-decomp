@@ -17,6 +17,7 @@ struct UpdateInfo;
 namespace gf {
 
 class GfComAsm;
+class GfComEvtAnim;
 struct CallBackCache;
 class Plugin;
 
@@ -38,6 +39,8 @@ static_assert(offsetof(MsgPcGetLookPoint, unknown10) == 0x10, "");
 static_assert(offsetof(MsgPcGetLookPoint, unknown20) == 0x20, "");
 
 struct MsgObjectGetVelocity : fw::Message {
+  MsgObjectGetVelocity() : fw::Message(MSG_UNKNOWN_16777286, 0x40), unknown10(mm::Vec3::zero) {}
+
   mm::Vec3 unknown10; // Inferred role: velocity; original member name unknown.
 };
 
@@ -76,6 +79,8 @@ public:
   virtual void procAnimCallback(GfComAsm *comAsm, const CallBackCache &cache) {}
 
   void callbackAnim(GfComAsm *comAsm, const CallBackCache &cache);
+  void callbackAnimForEvent(GfComEvtAnim *evtAnim, const CallBackCache &cache);
+  bool procAsmCallbackCommon(const CallBackCache &cache);
 
   // Inferred helper: plugin at index when it has the type T; original name unknown.
   template <typename T> T *unknown001(u32 index) const {

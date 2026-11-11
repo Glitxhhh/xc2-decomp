@@ -224,6 +224,12 @@ void GfMasterVolume::finalize() {
   }
 }
 
+void GfSound::update(const fw::UpdateInfo &info) {
+  calcCategoryVolume(info);
+  updateSeParamList(info);
+  unknown11 = false;
+}
+
 void GfSound::updateSeParamList(const fw::UpdateInfo &) {
   fw::SoundManager *soundManager = fw::SoundManager::get();
   if (soundManager == nullptr) {

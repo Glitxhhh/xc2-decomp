@@ -80,6 +80,7 @@ public:
   void clearTex();
   static void setupPoint(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects);
   static void setupHelp(ui::UIObjectAcc &acc);
+  static void sendEvent(u32 handle, u32 type, u32 param);
   static bool chkFloor(u32 map, u32 floor);
   static u32 setupIconTableSub(ui::UIObjectAcc &acc, mm::mtl::FixedVector<u32, 256> &icons, u32 type, mm::Pnt<s16> pos, mm::Vec2 scale);
   static const char *getIconNodeName(u32 type);

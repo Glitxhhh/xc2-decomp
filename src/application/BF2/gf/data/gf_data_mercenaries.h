@@ -136,6 +136,7 @@ public:
   static bool getRequestBladeTextForDebug(mm::mtl::FixStr<128> &text, const GfRequestBladeData &requestBladeData);
   static bool isTeamMemberFill(u32 teamID);
   static bool isTeamMemberEmpty(u32 teamID);
+  static bool getTeamNameByTeamIDForDebug(mm::mtl::FixStr<128> &name, u32 teamID);
   static u8 getTeamMemberNum(u32 teamID);
   static bool getRequestCondition(GfRequestBladeData &requestBladeData, u32 mission, u32 task);
   static void setFullEnableOrderMissionForDebug();

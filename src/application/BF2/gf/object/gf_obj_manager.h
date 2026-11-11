@@ -162,6 +162,7 @@ public:
   void loadedMultiBind(GF_OBJ_HANDLE *handle, u32 uniqId);
   void unloadedMultiBind(GF_OBJ_HANDLE *handle, u32 uniqId);
   void addDestroyObj(GF_OBJ_HANDLE *handle, bool isImmediate);
+  void destroyAssetObj(GF_OBJ_HANDLE *handle);
   void addApplyParam(GF_OBJ_HANDLE *handle);
   bool isSuspendUpdate() const;
   bool hasReloadObjForDebug();

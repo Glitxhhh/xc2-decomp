@@ -38,6 +38,8 @@ enum SoundVarMoveStatus : int {
   SOUND_VAR_MOVE_STATUS_UNKNOWN_1,
 };
 
+extern const char *SND_VAR_WATER_THRESOULD_NAME;
+
 const char *getSoundVariableName(SoundVariable variable);
 const char *getMaterialVariableName(int variable);
 const char *getWallVariableName(SoundVariableWall variable);
@@ -61,6 +63,8 @@ public:
   void playSe2D(const char *name, f32 volume, bool, bool);
   int getAttributeVariable() const;
   void setAttributeVariable(int attribute);
+  // Inferred helper: sets a sound variable; original name unknown. The game inlines it into FootStepPlugin::setAnkleHeight and update.
+  void unknown001(const char *name, int value) { unknown10.setVariable(name, value); }
 
   fw::SoundVariableTable unknown10; // Inferred role: sound variables; original member name unknown.
 };

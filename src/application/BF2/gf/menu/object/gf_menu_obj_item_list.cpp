@@ -27,3 +27,5 @@ void GfMenuObjItemList::finalize() { GfMenuObject::finalize(); }
 void GfMenuObjItemList::update() { GfMenuObject::update(); }
 
 } // namespace gf
+
+template class gf::GfMenuReferenceList<gf::GfMenuItemList>;

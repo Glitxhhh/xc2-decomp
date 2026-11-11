@@ -39,6 +39,21 @@ bool GfFieldZone::isInitialized() {
 
 void GfFieldZone::update(const fw::UpdateInfo &) {}
 
+void GfFieldZone::addEvent(IEventZone *event) {
+  GfFieldZone *zone = get();
+  if (zone->unknown08.find(event) == zone->unknown08.end()) {
+    zone->unknown08.push(event);
+  }
+}
+
+void GfFieldZone::removeEvent(IEventZone *event) {
+  GfFieldZone *zone = get();
+  mm::mtl::FixedQueue<IEventZone *, EVENT_UNKNOWN_16>::iterator it = zone->unknown08.find(event);
+  if (it != zone->unknown08.end()) {
+    zone->unknown08.erase(it);
+  }
+}
+
 void GfFieldZone::gevMapjump(GEV gev, const MapjumpCallbackInfo &) {
   if (gev == GEV_UNKNOWN_2) {
     GfFieldZoneScript::destroyScript();

@@ -1,9 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_idea_gram.h"
 
 #include "gf/data/gf_data_idea.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
 
@@ -11,6 +13,9 @@ namespace gf {
 
 // Inferred role: call id of the idea gram layout; original name unknown.
 constexpr u32 CALL_UNKNOWN_57 = 57;
+
+// Inferred role: call id the idea gram moves to when it closes; original name unknown.
+constexpr u32 CALL_UNKNOWN_58 = 58;
 
 GfMenuObjIdeaGram::GfMenuObjIdeaGram(u32 handle) : GfMenuObject(handle) {}
 
@@ -25,6 +30,44 @@ void GfMenuObjIdeaGram::initialize() {
 void GfMenuObjIdeaGram::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjIdeaGram::update() { GfMenuObject::update(); }
+
+void GfMenuObjIdeaGram::open(GfMenuCallContext *context, const OpenParam &param) {
+  ui::UIObjectAcc acc(getAttachedObject(CALL_UNKNOWN_57));
+  if (acc.isValid() && !acc.isTerm() && GfMenuObjUtil::checkCCStart(context)) {
+    ui::UIObjectAcc main(acc.duplicateChild("LAY_main"));
+    if (main.isValid()) {
+      ui::UIObjectAcc layout(param.unknown00);
+      if (layout.isValid()) {
+        layout.setLayout(main.unknown10, param.unknown08);
+      }
+// __LINE__ must be 397 as in the original file: it is the line argument of operator new.
+#line 397
+      MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener();
+      listener->addRef();
+      ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
+      if (listener != nullptr) {
+        listener->release();
+      }
+      ui::EventData event;
+      event.unknown0c = 0;
+      event.unknown00 = 0x21;
+      event.unknown08 = param.unknown10;
+      ui::UIManager::get()->requestObjectEvent(main.unknown10, event, 0.0f);
+      startCallContext(context, CALL_UNKNOWN_57, main.unknown10);
+    }
+  }
+}
+
+void GfMenuObjIdeaGram::close(GfMenuCallContext *context, f32 time) {
+  if (GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_57)) {
+    ui::EventData event;
+    event.unknown0c = 0;
+    event.unknown00 = 0x22;
+    event.unknown08_f32 = time;
+    ui::UIManager::get()->requestObjectEvent(context->unknown14, event, 0.0f);
+    nextCallContext(context, CALL_UNKNOWN_58);
+  }
+}
 
 void GfMenuObjIdeaGram::setIdeaPoint(GfMenuCallContext *context, u8 type, u32 point) {
   if (context != nullptr && context->unknown10 == CALL_UNKNOWN_57) {
