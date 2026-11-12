@@ -1,5 +1,6 @@
 #include "gmk/gmk_mob/gmk_mob.h"
 
+#include "bdat.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/gf_allocator.h"
@@ -10,6 +11,7 @@
 #include "gmk/gmk_list_impl.h"        // IWYU pragma: keep
 #include "gmk/gmk_mob/gmk_mob_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_squad.h"
+#include "ml/rand.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/vector.h"
@@ -55,6 +57,46 @@ bool GmkMobInsts::BdatInfo::isMobPopDistCondMatched(const mm::Vec3 &position) co
   f32 z = interestPos.z - position.z;
   f32 distSq = x * x + y * y + z * z;
   return !(getMobPopDistSq() < distSq);
+}
+
+void GmkMobInsts::PopInfo::create(CBdatWrapper bdat, int id) {
+  // Inferred role: mob id columns of FLD_MobGroupList; original name unknown.
+  static const char *const unknown001[] = {"MOBID1", "MOBID2", "MOBID3", "MOBID4", "MOBID5", "MOBID6", "MOBID7", "MOBID8"};
+  dispose();
+  unknown00 = bdat.getValCheck("ScaleMin", id, BDAT_TYPE_UNKNOWN_1);
+  unknown01 = bdat.getValCheck("ScaleMax", id, BDAT_TYPE_UNKNOWN_1);
+  unknown02 = bdat.getValCheck("MotSpeedMin", id, BDAT_TYPE_UNKNOWN_1);
+  unknown03 = bdat.getValCheck("MotSpeedMax", id, BDAT_TYPE_UNKNOWN_1);
+  unknown04 = bdat.getValCheck("Group", id, BDAT_TYPE_UNKNOWN_2);
+  unknown0c = bdat.getValCheck("Mot", id, BDAT_TYPE_UNKNOWN_2);
+  unknown0e = bdat.getValCheck("MountPoint", id, BDAT_TYPE_UNKNOWN_2);
+  unknown10 = bdat.getValCheck("MountObject", id, BDAT_TYPE_UNKNOWN_2);
+  unknown12 = bdat.getValCheck("MountPoint2", id, BDAT_TYPE_UNKNOWN_2);
+  unknown14 = bdat.getValCheck("MountObject2", id, BDAT_TYPE_UNKNOWN_2);
+  unknown44 = static_cast<u16>(bdat.getValCheck("squadId", id, BDAT_TYPE_UNKNOWN_2));
+  if (unknown04 != 0) {
+    unknown08 = static_cast<u8>(Bdat::getValCheck(Bdat::getFP("FLD_NpcGroupId"), "memberNum", unknown04, BDAT_TYPE_UNKNOWN_1));
+  }
+  u16 mobId = bdat.getValCheck("MobID", id, BDAT_TYPE_UNKNOWN_2);
+  u16 mobGroupId = bdat.getValCheck("MOBGroupID", id, BDAT_TYPE_UNKNOWN_2);
+  if (!mobId) {
+    if (mobGroupId != 0) {
+      u8 *groupList = Bdat::getFP("FLD_MobGroupList");
+      for (u32 i = 0; i < 8; i++) {
+        u16 mob = Bdat::getValCheck(groupList, unknown001[i], mobGroupId, BDAT_TYPE_UNKNOWN_2);
+        if (mob) {
+          unknown18.push_back(mob);
+        }
+      }
+    } else {
+      unknown18.push_back(0);
+    }
+  } else {
+    unknown18.push_back(mobId);
+  }
+  u32 popMin = static_cast<u8>(bdat.getValCheck("PopMin", id, BDAT_TYPE_UNKNOWN_1));
+  u32 popMax = static_cast<u8>(bdat.getValCheck("PopMax", id, BDAT_TYPE_UNKNOWN_1));
+  unknown40 = ml::mtRand(popMin, popMax + 1);
 }
 
 void GmkMobInsts::PopInfo::dispose() {

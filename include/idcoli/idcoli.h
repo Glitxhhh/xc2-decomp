@@ -345,11 +345,14 @@ static_assert(sizeof(CHCLBaseData) == 0x50, "");
 
 struct CHCLBaseInfo {
   u16 unknown00; // Inferred role: primitive type; original member name unknown.
-  u8 _02[0x0c - 0x02];
+  u8 _02[0x06 - 0x02];
+  u16 unknown06; // Inferred role: index of the link bone matrix; original member name unknown.
+  u8 _08[0x0c - 0x08];
   u32 unknown0c; // Inferred role: index of the grand record; original member name unknown.
   u8 _10[0x18 - 0x10];
 };
 
+static_assert(offsetof(CHCLBaseInfo, unknown06) == 0x6, "");
 static_assert(offsetof(CHCLBaseInfo, unknown0c) == 0xc, "");
 static_assert(sizeof(CHCLBaseInfo) == 0x18, "");
 

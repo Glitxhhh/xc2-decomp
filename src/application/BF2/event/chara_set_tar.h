@@ -12,6 +12,8 @@ struct GF_OBJ_HANDLE;
 namespace event {
 
 class CharaSetTar : public ICmd {
+  friend class CharaPlayWink;
+
 public:
   void idle();
   virtual RESULT update(const Param &param);

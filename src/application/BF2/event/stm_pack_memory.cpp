@@ -99,6 +99,13 @@ void StmPackMemory::freeCut() {
     unknown20 = unknown30.front().unknown38;
   }
 }
+void StmPackMemory::loadCut(void *buffer, size_t size, size_t firstFile, size_t lastFile, size_t firstPage, size_t lastPage, int prio) {
+  size_t dataOfs = getLoadStream()->unknown88.getDataOfs(firstFile);
+  getLoadStream()->unknown98.read(buffer, size, dataOfs);
+  StmPackRes res(buffer, size, dataOfs, firstFile, lastFile, firstPage, lastPage, prio, unknown5858, unknown58e8);
+  unknown5858++;
+  unknown30.push_back(res);
+}
 
 bool StmPackMemory::waitCut() {
   if (getLoadStream()->unknown98.isBusy()) {

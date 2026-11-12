@@ -208,7 +208,7 @@ void GmkDmgEffect::applyEffectParam() const {
     return;
   }
   effect::SendParam param;
-  unknown005(param.unknown00, unknown08.unknown08->unknown10);
+  param.unknown00.unknown011(unknown08.unknown08->unknown10);
   mm::Vec3 position = unknown08.unknown08->unknown00;
   param.unknown00.rows[3][0] += position.x;
   param.unknown00.rows[3][1] += position.y;

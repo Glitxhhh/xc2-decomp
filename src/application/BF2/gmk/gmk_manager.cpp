@@ -1549,7 +1549,7 @@ void GmkPhantomSimple::create(const CreateInfo &info) {
     break;
   }
   mm::Mat44 matrix;
-  unknown005(matrix, info.unknown20);
+  matrix.unknown011(info.unknown20);
   mm::Vec3 position = info.unknown10;
   matrix.rows[3][0] += position.x;
   matrix.rows[3][1] += position.y;
@@ -1605,7 +1605,7 @@ void GmkPhantom::create(const CreateInfo &info) {
     break;
   }
   mm::Mat44 matrix;
-  unknown005(matrix, info.unknown20);
+  matrix.unknown011(info.unknown20);
   mm::Vec3 position = info.unknown10;
   matrix.rows[3][0] += position.x;
   matrix.rows[3][1] += position.y;

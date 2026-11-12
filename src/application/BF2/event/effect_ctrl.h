@@ -1,8 +1,10 @@
 #pragma once
 #include <stddef.h>
 
+#include "eflib/effect_send_param.h"
 #include "event/i_attach_actor.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
@@ -68,6 +70,14 @@ private:
     unknown1f0 = mm::Vec3::zero;
     unknown200 = false;
     unknown204 = 0;
+  }
+
+  // Inferred helper: fills the parameters sent to the effect manager; original name unknown.
+  void unknown001(effect::SendParam &param) const {
+    param.unknown00.unknown011(m_rot);
+    param.unknown00.setTrans(mm::Vec3(m_pos));
+    param.unknown60 = m_scale;
+    param.unknown40 = m_color;
   }
 
   u32 unknown08;                                          // Inferred role: handle; original member name unknown.

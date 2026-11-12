@@ -167,6 +167,41 @@ void IDColiMove::calcCheckParams(const mm::Vec3 &move) {
   unknown1b4 = sqrtf(unknown190.x * unknown190.x + unknown190.y * unknown190.y + unknown190.z * unknown190.z);
 }
 
+bool IDColiMove::testWallCheck() {
+  for (int i = 2; i >= 0; i--) {
+    unknown10.unknownd8[i] = 0;
+  }
+  IDColiInput input;
+  IDColiInputUtil::getSphere(input, unknown150, unknown1b8, true);
+  input.unknowna0 = unknown04;
+  unknown10.unknown030();
+  unknown10.unknownf8 = nullptr;
+  unknown10.unknown100 = nullptr;
+  bool isHit = false;
+  if (unknown01) {
+    for (IDColiObj *object = IDColiManager::get()->unknown08[0].m_head; object != nullptr; object = object->unknown10) {
+      isHit |= static_cast<IDColiObjGrand *>(object)->unknown053(unknown10, input, true);
+    }
+  }
+  if (unknown02) {
+    for (IDColiObj *object = IDColiManager::get()->unknown08[3].m_head; object != nullptr; object = object->unknown10) {
+      isHit |= static_cast<IDColiObjGrdChar *>(object)->testWallSphere(unknown10, input);
+    }
+  }
+  if (unknown00) {
+    IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[0]);
+    tree.startTreeAaBbMode(input.unknown00, input.unknown10);
+    ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
+    for (; list != nullptr; list = tree.unknown033()) {
+      for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
+        IDColiObjCharCheck *object = static_cast<IDColiObjCharCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
+        isHit |= object->testResultSphere(unknown10, input);
+      }
+    }
+  }
+  return isHit;
+}
+
 void IDColiMove::calcDownVec() {
   unknown150.y -= unknown1b8;
   unknown190 = mm::Vec3(unknown150.x, unknown150.y + unknown1b8 * 2.0f, unknown150.z);

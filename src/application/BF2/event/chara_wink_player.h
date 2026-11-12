@@ -7,6 +7,8 @@ namespace event {
 class CharaWeightPlayer;
 
 class CharaWinkPlayer {
+  friend class CharaPlayWink;
+
 public:
   typedef void (CharaWinkPlayer::*State)();
 
