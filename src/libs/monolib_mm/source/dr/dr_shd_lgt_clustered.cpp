@@ -7,8 +7,16 @@
 #include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
+
+DrShdLgtClustered::~DrShdLgtClustered() {
+  if (unknown660 != nullptr) {
+    mtl::MemManager::deallocate(unknown660, 0, false);
+    unknown660 = nullptr;
+  }
+}
 
 const DrShdLgtClustered::unknown001 *DrShdLgtClustered::getClusterSetting(u32 cate) const { return &c_ClusterSettings[(unknown18 << 1) | (cate != 0)]; }
 

@@ -1,11 +1,13 @@
 #include "ml/dev_file_th.h"
 
+#include "device/dev_file_archiver.h"
 #include "device/nx/dev_file_nx_th.h"
 #include "ml/dev_file_accessor.h"
 #include "ml/dev_file_job_th.h"
 #include "ml/file_handle_th.h"
 #include "ml/lib_main.h"
 #include "ml/reslist.h"
+#include "ml/thread.h"
 #include "ml/work_obj.h"
 #include "ml/work_root.h"
 #include "ml/work_system.h"
@@ -213,6 +215,15 @@ void DevFileTh::Impl::setSuspend(bool suspend) {}
 bool DevFileTh::Impl::isSuspend() const { return false; }
 
 bool DevFileTh::Impl::isInitialized() { return m_initialized; }
+
+void DevFileTh::Impl::start() {
+  for (size_t i = 0; i < unknown08808.size(); i++) {
+    Thread *thread = *unknown08808.at(i);
+    if (thread != nullptr) {
+      thread->resume();
+    }
+  }
+}
 
 namespace {
 
@@ -467,6 +478,13 @@ void DevFileTh::addMediaPath(MEDIA media, const char *path, int priority) {
   }
 }
 
+void DevFileTh::removeArchive(MEDIA media, const char *name) {
+  DevFileArchiver *archiver = DevFileArchiver::get();
+  if (archiver != nullptr) {
+    archiver->removeArchive(media, name);
+  }
+}
+
 bool DevFileTh::removeFileJob(DevFileJob *job) { return true; }
 
 bool DevFileTh::getReadingInfo(mm::mtl::FixStr<256> &name, f32 &ratio) {
@@ -547,6 +565,13 @@ bool DevFileTh::checkValidFileBlock(const char *path) { return getFileSize(path,
 void DevFileTh::sendCommand(const char *command, const char *argument) {}
 
 void DevFileTh::wkUpdate() {}
+
+void DevFileTh::wkTail() {
+  DevFileTh *file = get();
+  if (file != nullptr) {
+    file->unknown1c0->tail();
+  }
+}
 
 bool DevFileTh::icbError(CERR_STRUCT *error) { return true; }
 

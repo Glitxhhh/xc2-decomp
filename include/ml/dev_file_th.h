@@ -21,6 +21,8 @@ class IAllocator;
 
 namespace ml {
 
+class Thread;
+
 class DevFileAccessor;
 class DevFileJobTh;
 class DevFileJob;
@@ -153,6 +155,8 @@ public:
     void rfCancel(FileHandleTh *handle);
     bool isBusy();
     bool isLoading(FileHandleTh *handle);
+    void start();
+    void tail();
     bool isLapTimeForDebug() { return false; }
     static void enableLapTimeForDebug(bool enable) {}
 
@@ -167,7 +171,9 @@ public:
     mm::mtl::FixedList<DevFileJobTh *, 640> unknown00000; // Inferred role: waiting jobs; original member name unknown.
     mm::mtl::FixedList<DevFileJobTh *, 640> unknown02d20; // Inferred role: loading jobs; original member name unknown.
     mm::mtl::FixedList<DevFileJobTh *, 640> unknown05a40; // Inferred role: finished jobs; original member name unknown.
-    u8 _08760[0x588b0 - 0x8760];
+    u8 _08760[0x8808 - 0x8760];
+    mm::mtl::FixedVector<Thread *, 8> unknown08808; // Inferred role: file loader threads; original member name unknown.
+    u8 _08850[0x588b0 - 0x8850];
     DevFileAccessor *unknown588b0[8]; // Inferred role: accessor per media; original member name unknown.
     DevFileAccessor *unknown588f0[8]; // Inferred role: archive accessor per media; original member name unknown.
     u8 _58930[0x58934 - 0x58930];
@@ -213,6 +219,7 @@ public:
   static void initializeEnv(const char *path);
   static void initializePath(const char *path, bool flag);
   static void addMediaPath(MEDIA media, const char *path, int priority);
+  static void removeArchive(MEDIA media, const char *name);
   static bool removeFileJob(DevFileJob *job);
   static bool getReadingInfo(mm::mtl::FixStr<256> &name, f32 &ratio);
   static bool getWritingInfo(mm::mtl::FixStr<256> &name, f32 &ratio);
@@ -243,6 +250,7 @@ public:
 
 static_assert(offsetof(DevFileTh::Impl, unknown02d20) == 0x2d20, "");
 static_assert(offsetof(DevFileTh::Impl, unknown05a40) == 0x5a40, "");
+static_assert(offsetof(DevFileTh::Impl, unknown08808) == 0x8808, "");
 static_assert(offsetof(DevFileTh::Impl, unknown588b0) == 0x588b0, "");
 static_assert(offsetof(DevFileTh::Impl, unknown588f0) == 0x588f0, "");
 static_assert(offsetof(DevFileTh::Impl, m_initialized) == 0x58934, "");

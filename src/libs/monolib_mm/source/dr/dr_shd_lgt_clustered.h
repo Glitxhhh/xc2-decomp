@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "dr/dr_res_fetch.h"
 #include "dr/dr_shd_lgt_dynamic.h"
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "types.h"
@@ -29,11 +30,11 @@ public:
 
   // Inferred role: view info; original type name unknown.
   struct unknown002 {
-    grlib::CGLibDblUniformBlock unknown00; // Inferred role: pnt light; original member name unknown.
-    grlib::CGLibDblUniformBlock unknown38; // Inferred role: spt light; original member name unknown.
-    grlib::CGLibDblUniformBlock unknown70; // Inferred role: pointer list; original member name unknown.
-    grlib::CGLibDblUniformBlock unknowna8; // Inferred role: light list; original member name unknown.
-    u8 _e0[0x118 - 0xe0];
+    grlib::CGLibDblUniformBlock unknown00;  // Inferred role: pnt light; original member name unknown.
+    grlib::CGLibDblUniformBlock unknown38;  // Inferred role: spt light; original member name unknown.
+    grlib::CGLibDblUniformBlock unknown70;  // Inferred role: pointer list; original member name unknown.
+    grlib::CGLibDblUniformBlock unknowna8;  // Inferred role: light list; original member name unknown.
+    grlib::CGLibDblUniformBlock unknowne0;  // Inferred role: cluster uniform; original member name unknown.
     grlib::CGLibDblUniformBlock unknown118; // Inferred role: param; original member name unknown.
     s32 unknown150;                         // Inferred role: pnt light count; original member name unknown.
     s32 unknown154;                         // Inferred role: spt light count; original member name unknown.
@@ -74,8 +75,10 @@ public:
   static const unknown001 c_ClusterSettings[4]; // Name from the game symbol _ZN2ml17DrShdLgtClustered17c_ClusterSettingsE; also in torna and xc1de.
 
   bool unknown18;          // Inferred role: is low resolution; original member name unknown.
-  unknown002 unknown20[3]; // Inferred role: view infos; original member name unknown.
-  u8 _4d0[0x6b0 - 0x4d0];
+  unknown002 unknown20[4]; // Inferred role: view infos; original member name unknown.
+  void *unknown660;        // Inferred role: allocated cluster work; original member name unknown.
+  u8 _668[0x6a0 - 0x668];
+  DrResFetch unknown6a0; // Inferred role: light vertex fetch; original member name unknown.
 };
 
 static_assert(offsetof(DrShdLgtClustered::unknown002, unknown150) == 0x150, "");
@@ -83,6 +86,8 @@ static_assert(offsetof(DrShdLgtClustered::unknown002, unknown154) == 0x154, "");
 static_assert(sizeof(DrShdLgtClustered::unknown002) == 0x190, "");
 static_assert(offsetof(DrShdLgtClustered, unknown18) == 0x18, "");
 static_assert(offsetof(DrShdLgtClustered, unknown20) == 0x20, "");
+static_assert(offsetof(DrShdLgtClustered, unknown660) == 0x660, "");
+static_assert(offsetof(DrShdLgtClustered, unknown6a0) == 0x6a0, "");
 static_assert(sizeof(DrShdLgtClustered) == 0x6b0, "");
 
 } // namespace ml
