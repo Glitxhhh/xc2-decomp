@@ -9,6 +9,9 @@ namespace gf {
 
 constexpr u32 PARTS_UNKNOWN_4 = 4; // Inferred role: extra parts count; original name unknown.
 
+// Inferred role: bit 9 of SDataEnemy::unknown04 (field damage, unknown05_1), read through the 32-bit word by GmkDmgPhantomManager::listenerGfObj; original name unknown.
+constexpr u32 ENEMY_FLAG_UNKNOWN_9 = 1 << 9;
+
 // Inferred role: bit 10 of SDataEnemy::unknown04, set by setupSDataEnemy from GfBdatRsc::isRscEnGenusFlaggimmicktype; original name unknown.
 constexpr u32 ENEMY_FLAG_UNKNOWN_10 = 1 << 10;
 

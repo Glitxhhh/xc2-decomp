@@ -1,5 +1,7 @@
 #include "event/chara_walk_calculator.h"
 
+#include <math.h>
+
 namespace event {
 
 bool CharaWalkCalculator::s_initializeAcc;
@@ -12,6 +14,44 @@ CharaWalkCalculator::CharaWalkCalculator()
       unknown84(0.0f) {}
 
 void CharaWalkCalculator::clear() { unknown00 = 0; }
+
+void CharaWalkCalculator::setup(TYPE type, const mm::Vec3 &from, const mm::Vec3 &to) {
+  mm::Vec3 delta = to - from;
+  unknown00 = FLAG_UNKNOWN_0;
+  switch (type) {
+  case TYPE_UNKNOWN_1:
+    unknown00 = FLAG_UNKNOWN_0 | FLAG_UNKNOWN_2 | FLAG_UNKNOWN_3;
+    break;
+  case TYPE_UNKNOWN_2:
+    unknown00 = FLAG_UNKNOWN_0 | FLAG_UNKNOWN_2;
+    break;
+  case TYPE_UNKNOWN_3:
+    unknown00 = FLAG_UNKNOWN_0 | FLAG_UNKNOWN_3;
+    break;
+  case TYPE_UNKNOWN_4:
+    unknown00 = FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1 | FLAG_UNKNOWN_2 | FLAG_UNKNOWN_3;
+    break;
+  case TYPE_UNKNOWN_5:
+    unknown00 = FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1 | FLAG_UNKNOWN_2;
+    break;
+  case TYPE_UNKNOWN_6:
+    unknown00 = FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1 | FLAG_UNKNOWN_3;
+    break;
+  }
+  unknown10 = from;
+  unknown20 = to;
+  unknown30 = sqrtf(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+  unknown40 = delta;
+  if (!(fabsf(delta.x) <= 0.000001f && fabsf(delta.y) <= 0.000001f && fabsf(delta.z) <= 0.000001f)) {
+    unknown40.unknown001();
+  }
+  unknown50 = mm::Vec3(unknown40.x, 0.0f, unknown40.z);
+  unknown60 = getBlend((unknown00 & FLAG_UNKNOWN_1) != 0);
+  unknown64 = calcTotalFrame(sqrtf(delta.x * delta.x + delta.z * delta.z));
+  unknown70 = from;
+  unknown80 = 0.0f;
+  unknown84 = 0.0f;
+}
 
 f32 CharaWalkCalculator::getBlend(bool isRun) { return isRun ? 20.0f : 10.0f; }
 

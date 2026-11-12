@@ -1,17 +1,22 @@
 #include "gmk/gmk_dmg_gimmick.h"
 
 #include "eflib/effect_send_param.h"
+#include "framework/coli/coli_object.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/sound/sound_manager.h"
 #include "gf/data/gf_bdat_wrapper.h"
+#include "gf/data/gf_data_enemy.h"
+#include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/field/gf_field_manager.h"
 #include "gf/field/gf_field_sound.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_player_formation.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_set.h"
@@ -366,6 +371,50 @@ void GmkDmgPhantomManager::removeTargetInfo(gf::GF_OBJ_HANDLE *handle) {
       unknown10.erase(it);
       return;
     }
+  }
+}
+
+void GmkDmgPhantomManager::listenerGfObj(OBJEVT event, gf::GF_OBJ_HANDLE *handle, u32 objectType) {
+  gf::GfObjAcc acc(handle);
+  if (objectType == gf::OBJECT_TYPE_PC || objectType == gf::OBJECT_TYPE_BLADE) {
+    u32 playerId = gf::GfGamePlayerFormation::get()->findPlayer(handle);
+    if (playerId == gf::PLAYER_ID_UNKNOWN_4294967295) {
+      return;
+    }
+    if (!gf::GfGamePlayerFormation::get()->unknown1a0[playerId].unknown10) {
+      return;
+    }
+  } else {
+    if (objectType != gf::OBJECT_TYPE_ENEMY) {
+      return;
+    }
+    gf::DataParamAcc dataParam(handle);
+    const gf::SDataEnemy *data = dataParam.getSDataEnemy();
+    if (data == nullptr) {
+      return;
+    }
+    if ((data->unknown04 & gf::ENEMY_FLAG_UNKNOWN_9) == 0) {
+      return;
+    }
+  }
+  if (event == OBJEVT_UNKNOWN_2) {
+    addTargetInfo(handle);
+  } else if (event == OBJEVT_UNKNOWN_3) {
+    removeTargetInfo(handle);
+  }
+}
+
+void GmkDmgPhantomManager::gevPartyMover(gf::GF_OBJ_HANDLE *handle, bool isJoin) {
+  u32 objectType = gf::GfObjUtil::getObjType(handle);
+  if (objectType != gf::OBJECT_TYPE_PC && objectType != gf::OBJECT_TYPE_BLADE) {
+    return;
+  }
+  if (isJoin) {
+    if (gf::GfGameManager::isPartyMover(handle)) {
+      addTargetInfo(handle);
+    }
+  } else {
+    removeTargetInfo(handle);
   }
 }
 

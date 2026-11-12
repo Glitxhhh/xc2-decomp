@@ -22,6 +22,7 @@ namespace event {
 class IManiCallback;
 
 enum MANI_TYPE {
+  MANI_TYPE_UNKNOWN_0 = 0, // Inferred role: clear; original name unknown.
   MANI_TYPE_UNKNOWN_1 = 1, // Inferred role: pos; original name unknown.
   MANI_TYPE_UNKNOWN_2 = 2, // Inferred role: rot; original name unknown.
   MANI_TYPE_UNKNOWN_3 = 3, // Inferred role: tar; original name unknown.

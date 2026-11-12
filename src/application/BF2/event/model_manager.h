@@ -1,12 +1,11 @@
 #pragma once
 #include "event/i_manager.h"
+#include "event/model_obj.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
 namespace event {
-
-class ModelObj;
 
 class ModelManager : public IManager, public mm::mtl::Singleton<ModelManager> {
 public:
@@ -18,8 +17,12 @@ public:
   void render();
   ModelObj *createModel(int index);
   ModelObj *createModel(const char *path, bool isPriority, u32 id, int index);
+  ModelObj *createModel(const char *path, const ModelObj::DESC &desc, bool isPriority, u32 id, int index);
+  ModelObj *createModel(MODEL_TYPE type, u32 modelId, const ModelObj::OPTION &option, bool isPriority, u32 id, int index);
   ModelObj *searchModel(u32 index);
   ModelObj *searchModel(u32 index, const char *path, bool isPriority, u32 id);
+  ModelObj *searchModel(u32 index, const char *path, const ModelObj::DESC &desc, bool isPriority, u32 id);
+  ModelObj *searchModel(u32 index, MODEL_TYPE type, u32 modelId, const ModelObj::OPTION &option, bool isPriority, u32 id);
   void destroyModel(ModelObj *model, int index);
   virtual void OnEventProc(MSG_TYPE type);
 

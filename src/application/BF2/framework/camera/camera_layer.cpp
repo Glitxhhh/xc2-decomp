@@ -1,6 +1,7 @@
 #include "fw/fw_camera.h"
 #include "ml/scn.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
@@ -48,6 +49,11 @@ void CameraLayer::pushPlugin(mm::mtl::IntrusivePtr<CameraPlugin> &plugin) {
 void CameraLayer::popPlugin(mm::mtl::IntrusivePtr<CameraPlugin> &plugin) {
   unknown20.erase(plugin.get());
   plugin->release();
+}
+
+mm::Vec3 CameraLayer::getCameraPosition() const {
+  mm::Mat44 matrix = unknown40;
+  return matrix.unknown003().unknown004();
 }
 
 } // namespace fw

@@ -39,6 +39,56 @@ bool ManiManager::exist(mm::mtl::FixedVector<Item, ITEM_UNKNOWN_512> &items, IMa
   return false;
 }
 
+void ManiManager::removeManipulate(IManiCallback *callback) {
+  if (!unknown18.test(FLAG_UNKNOWN_0) || !unknown1c.test(DEBUG_FLAG_UNKNOWN_0)) {
+    return;
+  }
+  if (!exist(unknown20, callback)) {
+    return;
+  }
+  for (Item *it = unknown20.begin(); it != unknown20.end(); ++it) {
+    if (it->unknown00 == callback) {
+      unknown20.erase(it);
+      break;
+    }
+  }
+  if (unknown20.empty()) {
+    clearManipulate();
+  }
+}
+
+void ManiManager::changeManipulate(MANI_TYPE type) {
+  switch (type) {
+  case MANI_TYPE_UNKNOWN_0:
+    clearManipulate();
+    break;
+  case MANI_TYPE_UNKNOWN_1: {
+    mm::mtl::FixedVector<Item, ITEM_UNKNOWN_512> items = unknown20;
+    clearManipulate();
+    for (u32 i = 0; i < items.size(); i++) {
+      addManipulate(items[i].unknown00, MANI_TYPE_UNKNOWN_1);
+    }
+    break;
+  }
+  case MANI_TYPE_UNKNOWN_2: {
+    mm::mtl::FixedVector<Item, ITEM_UNKNOWN_512> items = unknown20;
+    clearManipulate();
+    for (u32 i = 0; i < items.size(); i++) {
+      addManipulate(items[i].unknown00, MANI_TYPE_UNKNOWN_2);
+    }
+    break;
+  }
+  case MANI_TYPE_UNKNOWN_3: {
+    mm::mtl::FixedVector<Item, ITEM_UNKNOWN_512> items = unknown20;
+    clearManipulate();
+    for (u32 i = 0; i < items.size(); i++) {
+      addManipulate(items[i].unknown00, MANI_TYPE_UNKNOWN_3);
+    }
+    break;
+  }
+  }
+}
+
 void ManiManager::create() {
   if (!unknown18.test(FLAG_UNKNOWN_1)) {
     Manager::get()->getScn()->getView(-1)->attachWorkEvent(this, false);
