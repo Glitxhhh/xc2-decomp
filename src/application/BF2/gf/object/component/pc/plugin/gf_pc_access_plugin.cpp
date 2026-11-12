@@ -6,6 +6,7 @@
 #include "gf/game/gf_game_manager.h"
 #include "gf/object/component/behavior/gf_com_behavior.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
+#include "gf/object/component/pc/gf_pc_property_field.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
@@ -65,6 +66,13 @@ const AccessParam *AccessPlugin::getParam(u32 index) const {
   const fw::ParamList *list = unknown18.operator->();
   const fw::ParamList::unknown005 *entry = index < list->unknown0c ? &list->unknown10[index] : nullptr;
   return entry != nullptr ? static_cast<const AccessParam *>(entry->param) : nullptr;
+}
+
+u32 AccessPlugin::getParamIndex(GfComPropertyPc &property) const {
+  if (property.unknown113_7) {
+    return property.unknown310.unknown10_4 | 2;
+  }
+  return property.unknown310.unknown10_4;
 }
 
 } // namespace pc

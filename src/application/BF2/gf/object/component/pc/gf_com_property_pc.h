@@ -172,11 +172,12 @@ public:
   u32 unknown112_0 : 1; // Inferred role: skips integrateMove; original member name unknown.
   u32 : 9;
   u32 unknown113_2 : 1; // Inferred role: warp requested, cleared by MsgPcFieldWarpCancel; original member name unknown.
-  u32 : 5;
-  s32 unknown114; // Inferred role: ground type, 3 in water (the field AI then reads the water params); original member name unknown.
-  f32 unknown118; // Inferred role: water height compared by StateUtilField::isInterruptionWater; original member name unknown.
-  f32 unknown11c; // Inferred role: water depth; original member name unknown.
-  s32 unknown120; // Inferred role: mode compared with 1 by StateFieldWaterDeadDive::enter; original member name unknown.
+  u32 : 4;
+  u32 unknown113_7 : 1; // Inferred role: selects the second pair of access params (AccessPlugin::getParamIndex); original member name unknown.
+  s32 unknown114;       // Inferred role: ground type, 3 in water (the field AI then reads the water params); original member name unknown.
+  f32 unknown118;       // Inferred role: water height compared by StateUtilField::isInterruptionWater; original member name unknown.
+  f32 unknown11c;       // Inferred role: water depth; original member name unknown.
+  s32 unknown120;       // Inferred role: mode compared with 1 by StateFieldWaterDeadDive::enter; original member name unknown.
   u8 _124[0x130 - 0x124];
   fw::Transform unknown130; // Inferred role: warp target transform; original member name unknown.
   u32 unknown150;           // Inferred role: warp type; original member name unknown.

@@ -16,6 +16,7 @@ enum RELOAD_BDAT {
 enum GEV {
   GEV_UNKNOWN_1 = 1,   // Inferred role: gev mapjump start; original name unknown.
   GEV_UNKNOWN_2 = 2,   // Inferred role: gev mapjump destroy field; original name unknown.
+  GEV_UNKNOWN_3 = 3,   // Inferred role: gev mapjump dispose field; original name unknown.
   GEV_UNKNOWN_4 = 4,   // Inferred role: gev mapjump change map; original name unknown.
   GEV_UNKNOWN_5 = 5,   // Inferred role: gev mapjump create field; original name unknown.
   GEV_UNKNOWN_6 = 6,   // Inferred role: gev mapjump fadein; original name unknown.

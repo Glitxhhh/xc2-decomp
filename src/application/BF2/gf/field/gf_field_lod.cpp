@@ -5,6 +5,7 @@
 #include "bdat.h"
 #include "framework/coli/coli_manager.h"
 #include "framework/effect/effect_manager.h"
+#include "fw/fw_model_object.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_game_flag.h"
@@ -17,6 +18,7 @@
 #include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_bdat.h"
 #include "idcoli/idcoli.h"
+#include "ml/dev_graph.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/vector.h" // IWYU pragma: keep
@@ -116,6 +118,83 @@ int GfFieldLod::findBdatIdByLodId(u16 lodId) const {
   return unknown808 - 1;
 }
 
+const GfFieldLod::BdatInfo *GfFieldLod::findBdatInfo(int bdatId) const {
+  if (unknown810.size() != 0) {
+    for (const BdatInfo *info = unknown810.begin(); info != unknown810.end(); info++) {
+      if (info->unknown0c == bdatId) {
+        return info;
+      }
+    }
+  }
+  return nullptr;
+}
+
+GfFieldLod::BdatInfo *GfFieldLod::_findBdatInfo(int bdatId) {
+  if (unknown810.size() != 0) {
+    for (BdatInfo *info = unknown810.begin(); info != unknown810.end(); info++) {
+      if (info->unknown0c == bdatId) {
+        return info;
+      }
+    }
+  }
+  return nullptr;
+}
+
+bool GfFieldLod::findTransform(mm::Mat44 &matrix, int bdatId) const {
+  if (unknown840.unknown00.unknown00 != nullptr && unknown840.unknown00.unknown10 != nullptr) {
+    ml::ScnObjAccSeamPos seamPos(unknown840.unknown00.unknown00);
+    int num = seamPos.getMax();
+    u16 lodId = unknown08[bdatId - unknown808];
+    for (int i = 0; i < num; i++) {
+      ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+      if (partsPos.isPosMatrix() && lodId == partsPos.getID()) {
+        partsPos.getMatrix(matrix);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void GfFieldLod::setLodSwitchId(int bdatId, u32 switchId) {
+  if (unknown840.unknown00.unknown00 != nullptr && unknown840.unknown00.unknown10 != nullptr) {
+    u16 lodId = unknown08[bdatId - unknown808];
+    ml::ScnObjAccSeamPos seamPos(unknown840.unknown00.unknown00);
+    int num = seamPos.getMax();
+    for (int i = 0; i < num; i++) {
+      ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+      if (lodId == partsPos.getID()) {
+        partsPos.setSwitchID(switchId);
+      }
+    }
+  }
+}
+
+bool GfFieldLod::setAnimReverse(int bdatId, bool isReverse, bool isSkip) {
+  GfGameFlag::setLocal(1, bdatId + unknown002 - unknown808, isReverse);
+  if (unknown840.unknown00.unknown00 == nullptr || unknown840.unknown00.unknown10 == nullptr) {
+    return false;
+  }
+  if (!unknown888) {
+    BdatInfo *info = _findBdatInfo(bdatId);
+    if (info != nullptr) {
+      info->dirtyCache();
+    }
+  }
+  return unknown840.play(unknown08[bdatId - unknown808], isReverse, isSkip);
+}
+
+void GfFieldLod::setPlaySpeed(int bdatId, f32 speed) {
+  if (!unknown888) {
+    BdatInfo *info = _findBdatInfo(bdatId);
+    if (info != nullptr) {
+      info->dirtyCache();
+    }
+  }
+  u16 lodId = unknown08[bdatId - unknown808];
+  unknown840.setPlaySpeed(lodId, speed);
+}
+
 f32 GfFieldLod::getPlaySpeed(int bdatId) const {
   u16 lodId = unknown08[bdatId - unknown808];
   return unknown840.getPlaySpeed(lodId);
@@ -126,9 +205,142 @@ bool GfFieldLod::isPlayAnimEnd(int bdatId) const {
   return unknown840.isPlayEnd(lodId);
 }
 
+bool GfFieldLod::isPlayAnimLoop(int bdatId) const {
+  u16 lodId = unknown08[bdatId - unknown808];
+  return unknown840.isPlayLoop(lodId);
+}
+
 f32 GfFieldLod::getAnimEndTime(int bdatId) const {
   u16 lodId = unknown08[bdatId - unknown808];
   return unknown840.getAnimEndTime(lodId);
+}
+
+void GfFieldLod::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
+  switch (event) {
+  case GEV_UNKNOWN_2:
+    updateBdatInfosImmidiate();
+    break;
+  case GEV_UNKNOWN_3:
+    disposeColiAnim();
+    break;
+  case GEV_UNKNOWN_5: {
+    validateBySaveData();
+    fw::ModelObject *modelObject = GfMapManager::getModelObject();
+    if (modelObject != nullptr) {
+      ml::ScnObjModel *model = modelObject->getInterface();
+      if (model != nullptr) {
+        createColiAnim(model, false);
+      }
+    }
+    validateVeSe();
+    break;
+  }
+  default:
+    break;
+  }
+}
+
+void GfFieldLod::createColiAnim(ml::ScnObjModel *model, bool isDebugDraw) {
+  if (model == nullptr) {
+    return;
+  }
+  disposeColiAnim();
+  GfFieldLodColiAnim::CreateInfo info;
+  info.unknown00 = model;
+  fw::ColiObject *coliObject = GfMapManager::getColiObject();
+  if (coliObject != nullptr) {
+    info.unknown08 = coliObject->m_coliObject;
+  }
+  info.unknown10 = this;
+  info.unknown18 = isDebugDraw;
+  unknown840.create(info);
+  createBdatInfos();
+  unknown840.validateVeSe(*this);
+}
+
+void GfFieldLod::disposeColiAnim() {
+  disposeBdatInfos();
+  unknown840.dispose();
+}
+
+void GfFieldLod::finalize() {
+  disposeColiAnim();
+  unknown80c = false;
+}
+
+void GfFieldLod::destroy() {
+  GfFieldLod *lod = get();
+  lod->finalize();
+  delete lod;
+}
+
+void GfFieldLod::validateBySaveData() {
+  u8 *bdat = GfDataBdat::getFP(BDAT_FLD_LODLIST);
+  int top = Bdat::getIdTop(bdat);
+  int count = Bdat::getIdCount(bdat);
+  for (int i = 0; i < count; i++) {
+    u32 isFadeIn = GfGameFlag::getLocal(1, unknown003 + i);
+    get()->setFade(top + i, isFadeIn != 0, false);
+    u32 isReverse = GfGameFlag::getLocal(1, unknown002 + i);
+    get()->setAnimReverse(top + i, isReverse != 0, true);
+  }
+}
+
+void GfFieldLod::disposeBdatInfos() { unknown810.destroy(); }
+
+void GfFieldLod::updateBdatInfos() {
+  if (!unknown889) {
+    size_t size = unknown810.size();
+    unknown888 = true;
+    size_t count = size;
+    if (count > 4) {
+      count = 4;
+    }
+    for (size_t i = 0; i < count; i++, unknown838++) {
+      if (size <= unknown838) {
+        unknown838 = 0;
+      }
+      unknown810[unknown838].update();
+    }
+    unknown888 = false;
+  }
+}
+
+void GfFieldLod::updateBdatInfosImmidiate() {
+  size_t count = unknown810.size();
+  for (size_t i = 0; i < count; i++) {
+    unknown810[i].update();
+  }
+}
+
+void GfFieldLod::validateVeSe() {
+  size_t count = unknown810.size();
+  for (int i = 0; i < count; i++) {
+    BdatInfo &info = unknown810[i];
+    unknown840.setFade(unknown08[info.unknown0c - unknown808], !isFadeOut(info.unknown0c), 0.0f);
+  }
+}
+
+void GfFieldLod::validateByInitData() {
+  u8 *bdat = GfDataBdat::getFP(BDAT_FLD_LODLIST);
+  int top = Bdat::getIdTop(bdat);
+  int count = Bdat::getIdCount(bdat);
+  for (int i = 0; i < count; i++) {
+    int bdatId = top + i;
+    int visible = Bdat::getFlagVal(bdat, "flag", bdatId, "Visible");
+    get()->setFade(bdatId, visible != 0, true);
+    int animReverse = Bdat::getFlagVal(bdat, "flag", bdatId, "AnimReverse");
+    get()->setAnimReverse(bdatId, animReverse != 0, true);
+  }
+}
+
+void GfFieldLod::update(const fw::UpdateInfo &info) {
+  GfFieldLod *lod = get();
+  if (lod == nullptr || !lod->unknown80c) {
+    return;
+  }
+  lod->updateBdatInfos();
+  get()->unknown840.update(info);
 }
 
 bool GfFieldLod::isAnimReverse(int bdatId) const { return GfGameFlag::getLocal(1, bdatId + unknown002 - unknown808) != 0; }
@@ -231,10 +443,7 @@ GfFieldLodColiAnim::GfFieldLodColiAnim(const CreateInfo *info) {
 
 void GfFieldLodColiAnim::create(const CreateInfo &info) {
   disposePosInfos();
-  unknown00.unknown18 = info.unknown18;
-  unknown00.unknown10 = info.unknown10;
-  unknown00.unknown08 = info.unknown08;
-  unknown00.unknown00 = info.unknown00;
+  unknown00 = info;
   createPosInfos(info.unknown18);
 }
 
@@ -314,6 +523,21 @@ void GfFieldLodColiAnim::setPlaySpeed(u16 lodId, f32 speed) {
   }
 }
 
+bool GfFieldLodColiAnim::isPlayLoop(u16 lodId) const {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  int num = seamPos.getMax();
+  for (int i = 0; i < num; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (lodId != partsPos.getID()) {
+      continue;
+    }
+    if (partsPos.isLoop()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 f32 GfFieldLodColiAnim::getPlaySpeed(u16 lodId) const {
   ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
   int num = seamPos.getMax();
@@ -324,6 +548,61 @@ f32 GfFieldLodColiAnim::getPlaySpeed(u16 lodId) const {
     }
   }
   return 1.0f;
+}
+
+f32 GfFieldLodColiAnim::getAnimEndTime(u16 lodId) const {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  int num = seamPos.getMax();
+  for (int i = 0; i < num; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (lodId != partsPos.getID()) {
+      continue;
+    }
+    if (partsPos.isPosAnm()) {
+      return partsPos.getPosMaxFrame() * ml::DevGraph::getFrameSyncSec();
+    }
+    if (partsPos.isNodeAnm()) {
+      return partsPos.getNodeMaxFrame() * ml::DevGraph::getFrameSyncSec();
+    }
+  }
+  return 0.0f;
+}
+
+bool GfFieldLodColiAnim::isPlayEnd(u16 lodId) const {
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  size_t count = unknown20.size();
+  for (size_t i = 0; i < count; i++) {
+    const PosInfo &posInfo = unknown20[i];
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(posInfo.unknown44);
+    if (lodId != partsPos.getID() || partsPos.isLoop()) {
+      continue;
+    }
+    if (partsPos.isPosAnm()) {
+      if (posInfo.unknown69) {
+        if (partsPos.getPosFrame() <= 0.0f) {
+          return true;
+        }
+      }
+      if (!posInfo.unknown69) {
+        if (partsPos.getPosMaxFrame() <= partsPos.getPosFrame()) {
+          return true;
+        }
+      }
+    }
+    if (partsPos.isNodeAnm()) {
+      if (posInfo.unknown69) {
+        if (partsPos.getNodeFrame() <= 0.0f) {
+          return true;
+        }
+      }
+      if (!posInfo.unknown69) {
+        if (partsPos.getNodeMaxFrame() <= partsPos.getNodeFrame()) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 void GfFieldLodColiAnim::clearEffectInsts() {

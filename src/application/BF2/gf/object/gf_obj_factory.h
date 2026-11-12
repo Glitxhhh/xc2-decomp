@@ -27,6 +27,7 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 class GfComSound;
 class GfInitParamBelonging;
+class GfInitParamBlade;
 class GfInitParamEnWeapon;
 class GfInitParamEnemy;
 class GfInitParamEventObj;
@@ -73,6 +74,7 @@ public:
   static GF_OBJ_HANDLE *createMap(const GfInitParamMapSeamless &param);
   static GF_OBJ_HANDLE *createDebugMap(const GfInitParamMap &param);
   static GF_OBJ_HANDLE *createMapObj(const GfInitParamGimmick &param);
+  static GF_OBJ_HANDLE *createBlade(GfInitParamBlade &param);
   static GF_OBJ_HANDLE *createEnemy(GfInitParamEnemy &param);
   static GF_OBJ_HANDLE *createEventObj(const GfInitParamEventObj &param);
   static GF_OBJ_HANDLE *createUiObj(const GfInitParamUiObj &param);

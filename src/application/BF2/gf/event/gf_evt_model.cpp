@@ -3,16 +3,21 @@
 #include <new>
 #include <string.h>
 
+#include "gf/event/gf_event.h"
 #include "gf/game/event/gf_game_event.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/gf_menu_manager.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/animation/gf_com_evt_anim.h"
 #include "gf/object/component/animation/gf_com_pack_anim.h"
+#include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_util.h"
@@ -269,6 +274,19 @@ const mm::mtl::RTTI *GfEvtModel::getRTTI() const { return &m_rtti; }
 
 void GfEvtModel::setMount(GfEvtModel *parent, const char *bone) { setMount(parent, bone, mm::Vec3::zero, mm::Vec3::zero); }
 
+u32 GfEvtModel::changeLayerUI(u32 layer) {
+  switch (layer) {
+  case 7:
+    return 10;
+  case 8:
+    return 11;
+  case 9:
+    return 12;
+  default:
+    return layer;
+  }
+}
+
 bool GfEvtModel::isValid() const { return GfObjUtil::isValid(unknown20); }
 
 void GfEvtModel::update(const fw::UpdateInfo &) {}
@@ -504,7 +522,29 @@ void GfEvtModelDriver::setWeaponBattleMount() { GfMountManager::execMount(unknow
 
 void GfEvtModelDriver::setWeaponFieldMount() { GfMountManager::execMount(unknown20, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_2); }
 
+GfEvtModelBlade::GfEvtModelBlade(GfInitParamBlade &param) : GfEvtModel(GF_EVT_MODEL_UNKNOWN_1, param.m_bladeID), unknown298(getAllocator(ALLOCATOR_UNKNOWN_0)) {
+  if (GfMenuManager::isOpenFullScreen() && GfGameManager::isInnerState(GF_STATE_UNKNOWN_6)) {
+    param.unknown40 = changeLayerUI(param.unknown40);
+  }
+  unknown20 = GfObjFactory::createBlade(param);
+  unknown298.beginSetup(this, 4);
+  unknown298.registerState<StateIdleField>(unknown012);
+  unknown298.registerState<StateIdleBattle>(unknown013);
+  unknown298.registerState<StateStartBattle>(unknown003);
+  unknown298.registerState<StateEndBattle>(unknown004);
+  unknown298.endSetup();
+  unknown298.setState(unknown012);
+}
+
 GfEvtModelBlade::~GfEvtModelBlade() { unknown298.cleanup(); }
+
+GfEvtModelBlade *GfEvtModelBlade::create(GfInitParamBlade &param) {
+  // __LINE__ must be 754 as in the original source: it is the line argument of operator new.
+#line 754
+  GfEvtModelBlade *model = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfEvtModelBlade(param);
+  model->addRef();
+  return model;
+}
 
 const mm::mtl::RTTI *GfEvtModelBlade::getRTTI() const { return &m_rtti; }
 
@@ -541,6 +581,20 @@ void GfEvtModelBlade::setStateWeapon(bool isBattle) { unknown298.setState(isBatt
 void GfEvtModelBlade::setWeaponBattleMount() { GfMountManager::execMount(unknown20, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_1); }
 
 void GfEvtModelBlade::setWeaponFieldMount() { GfMountManager::execMount(unknown20, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_2); }
+
+GfEvtModelEnemy::GfEvtModelEnemy(GfInitParamEnemy &param) : GfEvtModel(GF_EVT_MODEL_UNKNOWN_5, param.GfInitParam::m_bladeID), unknown298(getAllocator(ALLOCATOR_UNKNOWN_0)) {
+  if (GfMenuManager::isOpenFullScreen() && GfGameManager::isInnerState(GF_STATE_UNKNOWN_6)) {
+    param.unknown40 = changeLayerUI(param.unknown40);
+  }
+  unknown20 = GfObjFactory::createEnemy(param);
+  unknown298.beginSetup(this, 4);
+  unknown298.registerState<StateIdleField>(unknown012);
+  unknown298.registerState<StateIdleBattle>(unknown013);
+  unknown298.registerState<StateStartBattle>(unknown003);
+  unknown298.registerState<StateEndBattle>(unknown004);
+  unknown298.endSetup();
+  unknown298.setState(unknown012);
+}
 
 GfEvtModelEnemy::~GfEvtModelEnemy() { unknown298.cleanup(); }
 
@@ -886,19 +940,58 @@ ai::State *GfEvtModelBlade::StateStartBattle::create(void *buffer) { return new 
 
 const char *GfEvtModelBlade::StateStartBattle::getName() const { return "StateStartBattle"; }
 
+void GfEvtModelBlade::StateStartBattle::onEnter(void *owner, ai::State *previous) { enter(static_cast<GfEvtModelBlade *>(owner), previous); }
+
 void GfEvtModelBlade::StateStartBattle::onLeave(void *owner, ai::State *next) {}
 
 void GfEvtModelBlade::StateStartBattle::onStep(void *owner, const void *param) { update(static_cast<GfEvtModelBlade *>(owner), *static_cast<const fw::UpdateInfo *>(param)); }
 
+void GfEvtModelBlade::StateStartBattle::enter(GfEvtModelBlade *model, ai::State *previous) {
+  mm::mtl::FixStr<32> command;
+  GfGameUtil::makeCommandBattle(command, true);
+  mm::mtl::FixStr<32> state;
+  GfGameUtil::makeStateBattle(state, model->unknown20, true);
+  unknown009(model->unknown20, command.c_str(), state.c_str());
+  if (GfMountManager::getMountType(model->unknown20, GFATTACH_UNKNOWN_0) != OPTMNT_UNKNOWN_1) {
+    GfMountManager::execMount(model->unknown20, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_1);
+  }
+}
+
+void GfEvtModelBlade::StateStartBattle::update(GfEvtModelBlade *model, const fw::UpdateInfo &info) {
+  if (model->isAnimEnd()) {
+    unknown011(model->unknown20, "C_btidle");
+    reqState(unknown013);
+  }
+}
+
 ai::State *GfEvtModelBlade::StateEndBattle::create(void *buffer) { return new (buffer) StateEndBattle; }
 
 const char *GfEvtModelBlade::StateEndBattle::getName() const { return "StateEndBattle"; }
+
+void GfEvtModelBlade::StateEndBattle::onEnter(void *owner, ai::State *previous) { enter(static_cast<GfEvtModelBlade *>(owner), previous); }
 
 void GfEvtModelBlade::StateEndBattle::onLeave(void *owner, ai::State *next) { leave(static_cast<GfEvtModelBlade *>(owner), next); }
 
 void GfEvtModelBlade::StateEndBattle::onStep(void *owner, const void *param) { update(static_cast<GfEvtModelBlade *>(owner), *static_cast<const fw::UpdateInfo *>(param)); }
 
 void GfEvtModelBlade::StateEndBattle::leave(GfEvtModelBlade *model, ai::State *next) { GfMountManager::execMount(model->unknown20, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_2); }
+
+void GfEvtModelBlade::StateEndBattle::enter(GfEvtModelBlade *model, ai::State *previous) {
+  if (GfMountManager::getMountType(model->unknown20, GFATTACH_UNKNOWN_0) != OPTMNT_UNKNOWN_2) {
+    mm::mtl::FixStr<32> command;
+    GfGameUtil::makeCommandBattle(command, false);
+    mm::mtl::FixStr<32> state;
+    GfGameUtil::makeStateBattle(state, model->unknown20, false);
+    unknown009(model->unknown20, command.c_str(), state.c_str());
+  }
+}
+
+void GfEvtModelBlade::StateEndBattle::update(GfEvtModelBlade *model, const fw::UpdateInfo &info) {
+  if (model->isAnimEnd()) {
+    unknown011(model->unknown20, "C_idle");
+    reqState(unknown012);
+  }
+}
 
 ai::State *GfEvtModelEnemy::StateStartBattle::create(void *buffer) { return new (buffer) StateStartBattle; }
 

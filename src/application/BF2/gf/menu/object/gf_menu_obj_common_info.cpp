@@ -25,6 +25,8 @@ GfMenuObjCommonInfo::GfMenuObjCommonInfo(u32 handle) : GfMenuObject(handle) {}
 
 GfMenuObjCommonInfo::~GfMenuObjCommonInfo() { GfMenuManyObjects::destroy<CommonInfo>(GfMenuManyObjects::unknown001_6); }
 
+void GfMenuObjCommonInfo::initialize() {}
+
 void GfMenuObjCommonInfo::finalize() {}
 
 void GfMenuObjCommonInfo::update() {}

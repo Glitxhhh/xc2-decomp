@@ -70,8 +70,11 @@ public:
     GfComCollider *unknown08; // Inferred role: owner; original member name unknown.
   };
 
+  struct SetupInfo;
+
   GfComCollider();
   ~GfComCollider() override;
+  void setup(const SetupInfo &info);
   void cleanup();
   void createColiCharacter(u32 index, const fw::ColiCharacterInfo &info, mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame);
   template <typename Info, typename Creator> void createColi(const Creator &creator, u32 index, const Info &info, mm::mtl::IntrusivePtr<fw::ReferenceFrame> &frame);

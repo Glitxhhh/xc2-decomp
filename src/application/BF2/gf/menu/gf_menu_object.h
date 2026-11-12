@@ -104,7 +104,7 @@ public:
   static void disableFSSwitching();
   static void overrideFadeOutTime(u32 frame);
   static void clearLayerStatck(u32 handle, u16 group);
-  static void registTimer(u32 handle, u16 id, f32 time, bool repeat);
+  static u32 registTimer(u32 handle, u16 id, f32 time, bool repeat);
   static void releaseTimer(u32 handle);
   static void setTimerSpeedFactor(u32 handle, f32 speedFactor);
   static void setText(u32 handle, u16 id);

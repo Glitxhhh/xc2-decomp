@@ -222,6 +222,7 @@ public:
     void update(GfEvtModelBlade *model, const fw::UpdateInfo &info);
   };
 
+  explicit GfEvtModelBlade(GfInitParamBlade &param);
   static GfEvtModelBlade *create(GfInitParamBlade &param);
   ~GfEvtModelBlade() override;
   const mm::mtl::RTTI *getRTTI() const override;

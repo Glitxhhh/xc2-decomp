@@ -13,6 +13,7 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_manager.h"
+#include "gf/game/quest/gf_quest_task.h"
 #include "gf/game/quest/gf_quest_task_param.h"
 #include "gf/game/quest/gf_quest_util.h"
 #include "gf/gf_allocator.h"
@@ -327,6 +328,69 @@ void GfGameMercenaries::qevOrderQuest(const QuestOrderParam &param) {
   u32 mission = GfDataMercenaries::getMissionByQuestID(param.unknown04);
   if (mission != 0 && GfDataMercenaries::getMissionFlag(mission) == 1) {
     setMissionFlag(mission, 2);
+  }
+}
+
+void GfGameMercenaries::gevMercenariesMissionFlag(u32 mission, u32 flag, u32 value) {
+  if (flag == 1 && value == 0) {
+    SCOM_POPUP::createMercenaryAdd(mission);
+  }
+}
+
+bool GfGameMercenaries::isTeamEnableMission(u32 teamID, u32 mission) {
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  if (GfDataMercenaries::isValidTeamID(teamID)) {
+    unknown120 *members = GfDataMercenaries::getTeamMember(teamID);
+    u32 purpose = GfDataMercenaries::getMissionPurposeID(mission);
+    if (purpose != 0) {
+      u32 state = 1;
+      if (questListAcc->getTaskPreCondition(purpose) != 0) {
+        state = 4;
+      }
+      for (u32 task = 0; task < QUEST_UNKNOWN_4; task++) {
+        u32 current = state;
+        if (GfQuestTask::isEnableTaskCondition(QuestTaskParam(QuestID(), task, purpose, TASK_STATE_UNKNOWN_0))) {
+          if (questListAcc->getTaskTaskType(purpose, task) == 0) {
+            continue;
+          }
+          if (questListAcc->getTaskTaskType(purpose, task) == TASK_TYPE_UNKNOWN_9) {
+            u32 request = questListAcc->getTaskTaskID(purpose, task);
+            if (request == 0 || questListAcc->getRequestBladeRequestNumber(request) == 0) {
+              continue;
+            }
+            u32 count = 0;
+            for (u32 i = 0; i < 6; i++) {
+              if (GfDataMercenaries::isEnableMissionBlade(members->unknown00[i], request)) {
+                count++;
+              }
+            }
+            if (count != 0 && questListAcc->getRequestBladeRequestNumber(request) <= count) {
+              current = 0;
+            }
+          }
+        }
+        if (current != 0 && current != 4) {
+          return false;
+        }
+      }
+      return !GfDataMercenaries::isTeamMemberEmpty(teamID);
+    }
+  }
+  return false;
+}
+
+void GfGameMercenaries::updateMissionAutoStart() {
+  GfGameMercenaries *mercenaries = get();
+  if (mercenaries != nullptr) {
+    QuestListAcc *questListAcc = QuestListAcc::get();
+    for (const u16 &mission : mercenaries->unknown380) {
+      u32 flag = GfDataMercenaries::getMissionFlag(mission);
+      if ((flag == 0 || flag > 3) && (flag != 4 || questListAcc->getFLD_MercenariesMissionRepeatable(mission) != 0)) {
+        if (GfGameCond::isGameCond(questListAcc->getFLD_MercenariesMissionAutoStart(mission))) {
+          setMissionFlag(mission, 1);
+        }
+      }
+    }
   }
 }
 
