@@ -4,6 +4,8 @@
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_adapter.h"
 #include "gf/menu/adapter/gf_menu_battle_adapter.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
+#include "gf/menu/adapter/gf_menu_gfobj_adapter.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_acc.h"
@@ -29,6 +31,59 @@ GfMenuObjPartyStatus2::~GfMenuObjPartyStatus2() { mm::mtl::safeRelease(unknown28
 void GfMenuObjPartyStatus2::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjPartyStatus2::update() { GfMenuObject::update(); }
+
+void GfMenuObjPartyStatus2::setupPartyStatus(ui::UIObjectAcc &acc, GfMenuRewriteNumber *number) {
+  mm::mtl::FixStr<32> name;
+  for (u32 index = 0; index < 3; index++) {
+    name.format("TXT_dr_name@%02d", index + 1);
+    GfMenuCharDataAdapter *driverName = GfMenuCharDataAdapter::createFromPartyDriver(acc.searchChild(name.c_str()), 2, index, true);
+    name.format("LAY_dr@%02d", index + 1);
+    driverName->unknown24 = acc.searchChild(name.c_str());
+    name.format("TXT_dr_lv_num@%02d", index + 1);
+    GfMenuCharDataAdapter::createFromPartyDriver(acc.searchChild(name.c_str()), 1, index, true);
+    name.format("TXT_dr_hp_num@%02d", index + 1);
+    GfMenuGfObjAdapter *hpNumber = GfMenuGfObjAdapter::createFromPartyDriver(acc.searchChild(name.c_str()), 0, index, true);
+    if (hpNumber != nullptr) {
+      hpNumber->setNumberInterpolateMode(0.2f);
+      hpNumber->setRewriteNumber(number);
+    }
+    name.format("LAY_dr_hp@%02d", index + 1);
+    ui::UIObjectAcc layout(acc.unknown10, name.c_str());
+    name.format("IMG_dr_hp_bar@%02d", index + 1);
+    u32 handle = acc.searchChild(name.c_str());
+    ui::UIObjectAcc bar(handle);
+    GfMenuGfObjAdapter *hpBar = GfMenuGfObjAdapter::createFromPartyDriver(handle, 0, index, true);
+    if (hpBar != nullptr) {
+      hpBar->setNumberInterpolateMode(0.2f);
+      hpBar->setRewriteNumber(number);
+    }
+    bar.setExtType(1);
+    bar.setAddColor("dr_hp_normal");
+    addNumberEventCondition(acc.unknown10, name.c_str(), 0, index + 1, 0.2f);
+    u32 duplicate = layout.duplicateChild(name.c_str());
+    ui::UIObjectAcc damageBar(duplicate);
+    if (damageBar.isValid()) {
+      GfMenuGfObjAdapter *damage = GfMenuGfObjAdapter::createFromPartyDriver(duplicate, 0, index, true);
+      if (damage != nullptr) {
+        damage->setNumberInterpolateMode(0.6f);
+        damage->setRewriteNumber(number);
+      }
+      damageBar.setExtType(1);
+      damageBar.setAddColor("red");
+      damageBar.setAlpha(0.5f);
+      damageBar.setDispPriority(bar.getDispPriority() - 1);
+    }
+    name.format("IMG_dr_exp_bar@%02d", index + 1);
+    u32 expHandle = acc.searchChild(name.c_str());
+    ui::UIObjectAcc exp(expHandle);
+    GfMenuCharDataAdapter *expAdapter = GfMenuCharDataAdapter::createFromPartyDriver(expHandle, 0x16, index, true);
+    if (expAdapter != nullptr) {
+      expAdapter->setNumberInterpolateMode(0.2f);
+      expAdapter->setRewriteNumber(number);
+    }
+    exp.setExtType(1);
+  }
+}
 
 void GfMenuObjPartyStatus2::sendEvent(u32 handle, u32 type, u32 param) {
   if (handle != 0) {

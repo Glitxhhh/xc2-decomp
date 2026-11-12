@@ -9,6 +9,7 @@
 #include "gf/game/event/gf_evt_bgm.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_scene.h"
+#include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/gf_pause.h"
 #include "gf/util/gf_util.h"
@@ -542,6 +543,16 @@ enum {
   MAPJUMP_UNKNOWN_2 = 2, // Inferred role: mapjump type field destroy; original name unknown.
 };
 
+// __LINE__ must be 308, 309, 310, 311 and 312 as in the original file: they are the line arguments of the allocations.
+GfFieldBgm::GfFieldBgm() : m_rscBossBattleBgmID(0), unknown94(0), m_rscBattleBgmID(3), m_rscGimmickBgmID(0), m_gimmickBgmID(-1), unknowna4(0), m_disableFieldBgmChange(false), unknowna9(false) {
+#line 308
+  unknown08.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) BgmField(this));
+  unknown08.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) BgmBattle(this));
+  unknown08.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) BgmBattleBoss(this));
+  unknown08.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) BgmGimmick(this));
+  unknown08.push_back(new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) BgmEvent(this));
+}
+
 u32 GfFieldBgm::getRscFieldBgmID() const {
   u32 map = GfGameManager::getMapID();
   if (map != 0) {
@@ -657,6 +668,28 @@ void GfFieldBgm::gevPause(u32 resumeBits, u32 pauseBits) {
       track->setPause(false);
     }
   }
+}
+
+bool GfFieldBgm::getBgmFileInfo(BgmFileInfo &info, const char *name) const {
+  mm::mtl::FixStr<64> fileName = util::getNoPathExtName(name);
+  GfBdatBgm *bdat = GfBdatBgm::get();
+  for (u32 id = bdat->getBgmConditionStart(), end = bdat->getBgmConditionEnd(); id < end; id++) {
+    for (u32 index = 0; index < 4; index++) {
+      bdat->getBgmConditionCondition(id, index);
+      u32 bgmID = bdat->getBgmConditionBgmID(id, index);
+      if (bgmID != 0) {
+        mm::mtl::FixStr<64> bgmName = util::getNoPathExtName(bdat->getBgmListfilename(bgmID));
+        if (strcmp(fileName.c_str(), bgmName.c_str()) == 0) {
+          info.unknown00 = id;
+          info.unknown08 = index;
+          info.unknown0c = _gffsn::isFieldBgmList(id);
+          info.unknown04 = bgmID;
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 bool GfFieldBgm::isBossBgmCopied() const {

@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_mercenary_top.h"
 
 #include "gf/data/gf_data_mercenaries.h"
+#include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
@@ -10,6 +11,7 @@
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/list/gf_menu_id_list.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
@@ -27,6 +29,8 @@ constexpr u32 unknown001 = 0x34;
 constexpr u16 unknown002 = 0x100;
 // Inferred role: common window id; original name unknown.
 constexpr u16 unknown003 = 0x9e;
+// Inferred role: mission stop text window id; original name unknown.
+constexpr u32 unknown004 = 0x22;
 
 GfMenuObjMercenaryTop::GfMenuObjMercenaryTop(u32 handle)
     : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(1.0f), unknown60(nullptr), unknown68(nullptr), unknown70(nullptr),
@@ -115,6 +119,55 @@ void GfMenuObjMercenaryTop::updateTargetTeam() {
   }
 }
 
+void GfMenuObjMercenaryTop::refreshMissionList() {
+  ui::UIObjectAcc list(unknown18, "LAY_mis_sel_list");
+  if (list.isValid()) {
+    mm::mtl::FixStr<32> name;
+    for (u32 index = 0; index < unknown70->getSize(); index++) {
+      u32 number = index + 1;
+      name.format("TXT_mis_sel_title@%02d", number);
+      ui::UIObjectAcc title(list.unknown10, name.c_str());
+      name.format("TXT_mis_sel_time@%02d", number);
+      ui::UIObjectAcc time(list.unknown10, name.c_str());
+      name.format("TXT_mis_sel_time_inf@%02d", number);
+      ui::UIObjectAcc timeInfo(list.unknown10, name.c_str());
+      u32 mission = unknown30->getContents(unknown30->getPageIndex(index)).unknown00;
+      if (GfDataMercenaries::isMissionOrderTeam(mission)) {
+        GfMenuObjUtil::setColMulandAdd(title.unknown10, "txt_highlight");
+        title.setBorderWeight(1.0f);
+        time.setBorderWeight(1.0f);
+        timeInfo.setBorderWeight(1.0f);
+      } else if (mission == 0 || !GfMenuObjUtil::checkMissionCond(mission, unknown38)) {
+        GfMenuObjUtil::setColMulandAdd(title.unknown10, "txt_disable");
+        title.setBorderWeight(1.0f);
+        time.setBorderWeight(1.0f);
+        timeInfo.setBorderWeight(1.0f);
+      } else {
+        GfMenuObjUtil::setColDefault(title.unknown10);
+        title.setBorderWeight(-0.5f);
+        time.setBorderWeight(-0.5f);
+        timeInfo.setBorderWeight(-0.5f);
+      }
+      if (unknown30->getIndex(true) == index) {
+        GfRequestBladeData request = {};
+        for (u32 condition = 0; condition < 3; condition++) {
+          name.format("TXT_mis_sel_cond_txt@%02d", condition + 1);
+          ui::UIObjectAcc text(list.unknown10, name.c_str());
+          name.format("IMG_mis_sel_cond_icon@%02d", condition + 1);
+          ui::UIObjectAcc icon(list.unknown10, name.c_str());
+          if (GfDataMercenaries::getRequestCondition(request, mission, condition) && (request.unknown0c == 0 ? 1 : request.unknown0c) <= GfMenuObjUtil::getMissionCondBladeCount(request, unknown38)) {
+            GfMenuObjUtil::setColDefault(text.unknown10);
+            icon.setAddColor("mer_cond_ok");
+          } else {
+            GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_warning");
+            icon.setAddColor("mer_cond_ng");
+          }
+        }
+      }
+    }
+  }
+}
+
 bool GfMenuObjMercenaryTop::seqCanNotOrder() {
   bool isEnd;
   if (!unknown330) {
@@ -123,6 +176,33 @@ bool GfMenuObjMercenaryTop::seqCanNotOrder() {
     unknown330 = true;
   } else if (!GfMenuManager::isOpenCommonWindow()) {
     GfMenuManager::getCommonWindowResult();
+    unknown0a0.unknown002(&GfMenuObjMercenaryTop::seqExit);
+    isEnd = true;
+    unknown330 = false;
+  } else {
+    isEnd = false;
+  }
+  return isEnd;
+}
+
+bool GfMenuObjMercenaryTop::seqUnitBreak() {
+  bool isEnd;
+  if (!unknown330) {
+    u32 mission = unknown30->getContents(unknown30->getIndex(false)).unknown00;
+    u32 leader = GfDataMercenaries::getTeamLeader(GfDataMercenaries::getTeamIDByMissionID(mission));
+    unknown338->reset();
+    GfMenuObjCommonText::openMissionStop(unknown338, unknown004, leader);
+    isEnd = false;
+    unknown330 = true;
+  } else if (!unknown338->isActive()) {
+    GfMenuCallContext::GfMenuResult result;
+    if (unknown338->popResult(result) && result.unknown00 == 0 && result.unknown04 == 0) {
+      u32 mission = GfMenuReference::getReferenceMissionID();
+      u32 team = GfDataMercenaries::getTeamIDByMissionID(mission);
+      GfGameMercenaries::cancelMission(mission);
+      GfGameMercenaries::clearTeamMember(team);
+      updateTargetTeam();
+    }
     unknown0a0.unknown002(&GfMenuObjMercenaryTop::seqExit);
     isEnd = true;
     unknown330 = false;

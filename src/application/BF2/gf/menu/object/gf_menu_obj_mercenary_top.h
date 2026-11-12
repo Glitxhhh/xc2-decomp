@@ -42,8 +42,10 @@ public:
   void sendCloseEvent(u32 handle, int type);
   void listenerCtrl(const ui::EventData &event);
   bool seqExit();
+  void refreshMissionList();
   void updateBladeList();
   void updateTargetTeam();
+  bool seqUnitBreak();
   bool seqCanNotOrder();
   static void setDispUnitReady(u32 handle, u32 index);
   static void setDispUnitProgress(u32 handle, u32 index);

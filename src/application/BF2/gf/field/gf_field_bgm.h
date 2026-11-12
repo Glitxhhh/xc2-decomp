@@ -172,12 +172,14 @@ static_assert(sizeof(ExecFadeParam) == 0x20, "");
 
 class BgmBattle : public BgmTrack, public mm::mtl::PtrSingleton<BgmBattle> {
 public:
+  explicit BgmBattle(GfFieldBgm *owner);
   const char *getTrackName() const override;
   void update(const fw::UpdateInfo &info) override;
 };
 
 class BgmBattleBoss : public BgmTrack, public mm::mtl::PtrSingleton<BgmBattleBoss> {
 public:
+  explicit BgmBattleBoss(GfFieldBgm *owner);
   const char *getTrackName() const override;
   void update(const fw::UpdateInfo &info) override;
 };
@@ -201,12 +203,14 @@ static_assert(sizeof(BgmEvent) == 0x728, "");
 
 class BgmField : public BgmTrack, public mm::mtl::PtrSingleton<BgmField> {
 public:
+  explicit BgmField(GfFieldBgm *owner);
   const char *getTrackName() const override;
   void update(const fw::UpdateInfo &info) override;
 };
 
 class BgmGimmick : public BgmTrack, public mm::mtl::PtrSingleton<BgmGimmick> {
 public:
+  explicit BgmGimmick(GfFieldBgm *owner);
   const char *getTrackName() const override;
   void update(const fw::UpdateInfo &info) override;
 };
@@ -225,6 +229,7 @@ public:
   u32 getRscGimmickBgmID() const;
   bool isDisableFieldBgmChange() const;
   bool isBossBgmCopied() const;
+  bool getBgmFileInfo(BgmFileInfo &info, const char *name) const;
   void setRscBattleBgmID(u32 id);
   void setGimmickBgmID(u32 id);
   void gevBattleEnd();

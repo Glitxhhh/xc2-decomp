@@ -6,6 +6,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_driver.h"
+#include "gf/data/gf_data_hana.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/game/gf_game_party.h"
@@ -13,6 +14,7 @@
 #include "gf/util/gf_equip_util.h"
 #include "gf/util/gf_item_util.h"
 #include "gf/util/gf_recipe_orb_util.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 #include "ui/ui_str.h"
 
@@ -210,6 +212,71 @@ u32 GfMenuItemUtil::searchEquipOrb(u32 orb, GfItemHandle handle, u32 *slot) {
         }
         return blade;
       }
+    }
+  }
+  return 0;
+}
+
+u32 GfMenuItemUtil::searchEquipHanaParts(u32 type, u32 parts, GfItemHandle handle) {
+  if (parts == 0) {
+    return 0;
+  }
+  mm::mtl::FixedVector<u16, 422> blades;
+  if (!GfDataBlade::getListUse(blades)) {
+    return 0;
+  }
+  for (u32 i = 0; i < blades.size(); i++) {
+    u32 blade = blades[i];
+    if (blade == 0 || !GfDataHana::isValid(blade)) {
+      continue;
+    }
+    EquipHana *equip = GfDataHana::getEquipParts(blade);
+    switch (type) {
+    case 1:
+      if (equip->unknown00 == parts && equip->unknown58 == handle.value) {
+        return blade;
+      }
+      break;
+    case 2:
+      if (equip->unknown02 == parts && equip->unknown5c == handle.value) {
+        return blade;
+      }
+      break;
+    case 3:
+    case 4:
+    case 5:
+      for (u32 j = 0; j < 3; j++) {
+        if (equip->unknown28[j].unknown04 == parts && equip->unknown28[j].unknown0a == handle.value) {
+          return blade;
+        }
+      }
+      break;
+    case 6:
+    case 7:
+    case 8:
+    case 12:
+    case 13:
+    case 14:
+      for (u32 j = 0; j < 3; j++) {
+        if (equip->unknown4c[j] == parts && equip->unknown60[j] == handle.value) {
+          return blade;
+        }
+      }
+      for (u32 j = 0; j < 3; j++) {
+        if (equip->unknown52[j] == parts && equip->unknown6c[j] == handle.value) {
+          return blade;
+        }
+      }
+      break;
+    case 9:
+    case 10:
+    case 11:
+      for (u32 j = 0; j < 3; j++) {
+        if (equip->unknown04[j].unknown04 == parts && equip->unknown04[j].unknown0a == handle.value) {
+          return blade;
+        }
+      }
+      break;
     }
   }
   return 0;

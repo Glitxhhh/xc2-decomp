@@ -148,6 +148,19 @@ bool GfFieldTime::isTimeStop() const { return (unknown0c & (TIME_STOP_BIT_UNKNOW
 
 void GfFieldTime::saveRealTime() { getRealTime(unknown18); }
 
+void GfFieldTime::updateElapseTime(const fw::UpdateInfo &) {
+  RealTime realTime;
+  getRealTime(realTime);
+  s32 diff = diffRealTimeSec(realTime, unknown20);
+  if (diff > 0) {
+    ElapseTime elapseTime;
+    elapseTime.unknown00_0 = diff % SECONDS_PER_UNKNOWN_3600 % SECONDS_UNKNOWN_60;
+    elapseTime.unknown00_6 = diff % SECONDS_PER_UNKNOWN_3600 / SECONDS_UNKNOWN_60;
+    elapseTime.unknown01_4 = diff / SECONDS_PER_UNKNOWN_3600;
+    m_elapseTime = unknown10 + elapseTime;
+  }
+}
+
 s32 GfFieldTime::diffRealTimeSec(const RealTime &realTime, const RealTime &baseRealTime) const {
   s32 diff = (realTime.unknown02_0 - baseRealTime.unknown02_0) + (realTime.unknown02_6 - baseRealTime.unknown02_6) * SECONDS_UNKNOWN_60 +
              (realTime.unknown03_4 - baseRealTime.unknown03_4) * SECONDS_PER_UNKNOWN_3600 + (realTime.unknown04_6 - baseRealTime.unknown04_6) * SECONDS_PER_UNKNOWN_86400;
@@ -242,12 +255,12 @@ ElapseTime operator+(const ElapseTime &elapseTime, const ElapseTime &otherElapse
   s32 minute = elapseTime.unknown00_6 + otherElapseTime.unknown00_6;
   s32 second = elapseTime.unknown00_0 + otherElapseTime.unknown00_0;
   while (second >= 60) {
-    second -= 60;
     minute++;
+    second -= 60;
   }
   while (minute >= 60) {
-    minute -= 60;
     hour++;
+    minute -= 60;
   }
 
   ElapseTime result;

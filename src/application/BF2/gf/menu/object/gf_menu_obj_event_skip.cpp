@@ -2,6 +2,7 @@
 
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
@@ -51,6 +52,91 @@ void GfMenuObjEventSkip::open(GfMenuCallContext *context) {
       sendEvent(object, event, 0.0f);
       GfMenuObjUtil::playSE(3);
     }
+  }
+}
+
+void GfMenuObjEventSkip::ListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    ui::UIObjectAcc text(handle, "TXT_pause");
+    GfMenuObjUtil::setDockPos(acc.searchChild("IMG_accent_l"), text.unknown10, 1, false);
+    GfMenuObjUtil::addPos(acc.searchChild("IMG_accent_l"), -16, 0);
+    GfMenuObjUtil::setDockPos(acc.searchChild("IMG_accent_r"), text.unknown10, 2, false);
+    GfMenuObjUtil::addPos(acc.searchChild("IMG_accent_r"), 16, 0);
+    acc.setDisp(false);
+    disableInput(acc.unknown10);
+    break;
+  }
+  case 2:
+    termCallContext(handle);
+    acc.setDisp(false);
+    acc.setTerm();
+    break;
+  case 3:
+    switch (unknown0c) {
+    case 0: {
+      ui::UIObjectAcc pause(handle, "LAY_pause");
+      if (pause.isValid()) {
+        pause.setAlpha(0.0f);
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown00 = 1.0f;
+        param.unknown08 = 1;
+        int ctrl = GfMenuObjUtil::startCtrl(pause.unknown10, param, nullptr);
+        if (ctrl >= 0) {
+          hookCtrlEvent(handle, ctrl);
+        }
+        unknown0c = 1;
+      }
+      break;
+    }
+    case 1: {
+      ui::UIObjectAcc pause(handle, "LAY_pause");
+      if (pause.isValid()) {
+        pause.setAlpha(1.0f);
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown00 = 1.0f;
+        param.unknown08 = 2;
+        int ctrl = GfMenuObjUtil::startCtrl(pause.unknown10, param, nullptr);
+        if (ctrl >= 0) {
+          hookCtrlEvent(handle, ctrl);
+        }
+        unknown0c = 0;
+      }
+      break;
+    }
+    }
+    break;
+  case 8:
+    if (event.unknown0c == 1) {
+      addResultCallContext(handle, 0, 0);
+      GfMenuObjEventSkip::close();
+    } else if (event.unknown0c == 9 || event.unknown0c == 2) {
+      addResultCallContext(handle, 1, 0);
+      GfMenuObjEventSkip::close();
+    }
+    GfMenuObjUtil::playSECommonFromInput(event.unknown0c);
+    break;
+  case 0x21: {
+    acc.setDisp(true);
+    unknown0c = 1;
+    ui::EventData sendData;
+    sendData.unknown00 = 3;
+    sendEvent(handle, sendData, 0.0f);
+    enableInput(acc.unknown10);
+    GfMenuObjOperationInfo::open(handle, 0, 0, 0);
+    GfMenuObjOperationInfo::setGuideDisp(false);
+    break;
+  }
+  case 0x22:
+    termCallContext(handle);
+    disableInput(acc.unknown10);
+    GfMenuObjOperationInfo::close();
+    acc.setDisp(false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
   }
 }
 

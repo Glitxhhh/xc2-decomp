@@ -76,6 +76,64 @@ void GfMenuObjChainIcon::closeAll() {
   }
 }
 
+void GfMenuObjChainIcon::ListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  case 0x21: {
+    ui::UIObjectAcc icon(acc.searchDuplicatedChild("LAY_chain_icon_root", event.unknown08_u16));
+    if (icon.isValid()) {
+      acc.setDisp(true);
+      icon.setDisp(true);
+      GfMenuObjUtil::setChildDisp(icon.unknown10, "LAY_main", true);
+      GfMenuObjUtil::CtrlParam ctrl;
+      ctrl.unknown00 = 1.0f;
+      ctrl.unknown08 = 0x20;
+      ctrl.unknown20 = 60;
+      ctrl.unknown04 = (event.unknown08_u16 << 8) | 1;
+      int id = GfMenuObjUtil::startCtrl(icon.unknown10, ctrl, nullptr);
+      hookCtrlEvent(acc.unknown10, id);
+      ui::UIObjectAcc image(icon.unknown10, "IMG_icon");
+      image.startAnimation("fadein", false);
+    }
+    break;
+  }
+  case 0x22: {
+    ui::UIObjectAcc icon(acc.searchDuplicatedChild("LAY_chain_icon_root", event.unknown08_u16));
+    if (icon.isValid()) {
+      removeObject(icon);
+    }
+    break;
+  }
+  case 3: {
+    u32 param = event.unknown08;
+    if (param == 0) {
+      break;
+    }
+    ui::UIObjectAcc icon(acc.searchDuplicatedChild("LAY_chain_icon_root", param >> 8));
+    if (icon.isValid()) {
+      if ((param & 0xff) == 1) {
+        GfMenuObjUtil::CtrlParam ctrl;
+        ctrl.unknown00 = 0.25f;
+        ctrl.unknown08 = 0x22;
+        ctrl.unknown20 = 15;
+        ctrl.unknown04 = (param & 0xffff00) | 2;
+        int id = GfMenuObjUtil::startCtrl(icon.unknown10, ctrl, nullptr);
+        hookCtrlEvent(acc.unknown10, id);
+      } else if ((param & 0xff) == 2) {
+        removeObject(icon);
+      }
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjChainIcon::setupScreen(u32 handle, int, int, int, int) { GfMenuObjUtil::setChildDisp(handle, "LAY_main", true); }
 
 } // namespace gf
