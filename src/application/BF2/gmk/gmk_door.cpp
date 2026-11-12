@@ -2,6 +2,7 @@
 
 #include "bdat.h"
 #include "framework/coli/coli_object.h"
+#include "framework/debug/debug_draw.h"
 #include "framework/sound/sound_manager.h"
 #include "fw/fw_coli_check.h"
 #include "gf/data/gf_bdat_wrapper.h"
@@ -28,6 +29,8 @@
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_phantom.h"
+#include "mm_math/mm_col3.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
@@ -439,6 +442,18 @@ bool GmkDoor::isDoorOpened() const {
   const BdatInfo *info = getBdatInfo();
   gf::GfFieldLod *lod = gf::GfFieldLod::get();
   return !lod->isAnimReverse(info->unknown06);
+}
+
+void GmkDoor::debugDraw() const {
+  if (isValid()) {
+    if (getBdatInfo()->unknown02 == 5) {
+      const Xform *xform = unknown08.unknown08;
+      mm::Vec3 end = unknown095(mm::Vec3::unitZ, xform->unknown10) + xform->unknown00;
+      mm::Col4 color(mm::Col3::yellow.r, mm::Col3::yellow.g, mm::Col3::yellow.b, 1.0f);
+      fw::debug::drawArrow(xform->unknown00, end, color);
+    }
+    isDoorOpened();
+  }
 }
 
 void GmkDoor::createSe(bool isMapPack, u16 seId, u8 distance) {

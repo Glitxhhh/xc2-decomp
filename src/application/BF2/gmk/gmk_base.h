@@ -122,6 +122,17 @@ inline mm::Vec3 unknown017(mm::Vec3 vector, f32 angle) {
   return result;
 }
 
+// Inferred helper: rotation of a vector by Euler angles, the debug drawings of the door and the salvage locator; original name unknown.
+inline mm::Vec3 unknown095(mm::Vec3 vector, mm::Vec3 rotation) {
+  mm::Mat44 matrix;
+  matrix.setRotXYZ(rotation);
+  mm::Vec3 result;
+  result.x = vector.x * matrix.rows[0][0] + vector.y * matrix.rows[1][0] + vector.z * matrix.rows[2][0] + matrix.rows[3][0];
+  result.y = vector.x * matrix.rows[0][1] + vector.y * matrix.rows[1][1] + vector.z * matrix.rows[2][1] + matrix.rows[3][1];
+  result.z = vector.x * matrix.rows[0][2] + vector.y * matrix.rows[1][2] + vector.z * matrix.rows[2][2] + matrix.rows[3][2];
+  return result;
+}
+
 class AGmkBase {
 public:
   struct CreateBaseInfo {

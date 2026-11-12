@@ -1,6 +1,7 @@
 #include "gmk/gmk_salvage.h"
 
 #include "bdat.h"
+#include "framework/debug/debug_draw.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
@@ -16,6 +17,8 @@
 #include "gmk/gmk_cond.h"
 #include "gmk/gmk_form_pc.h"
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
+#include "mm_math/mm_col3.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/rtti.h"
@@ -416,6 +419,14 @@ void GmkSalvageLocator::disposeGobInst(bool isFadeOut) {
     unbindToGameObj(unknownc0);
     gf::GfObjUtil::destroy(unknownc0);
     unknownc0 = gf::unknown020;
+  }
+}
+
+void GmkSalvageLocator::debugDraw() const {
+  if (isValid()) {
+    mm::Vec3 end = unknown095(mm::Vec3::unitZ, unknown08.unknown08->unknown10) + unknown08.unknown08->unknown00;
+    mm::Col4 color(mm::Col3::green.r, mm::Col3::green.g, mm::Col3::green.b, 1.0f);
+    fw::debug::drawArrow(unknown08.unknown08->unknown00, end, color);
   }
 }
 

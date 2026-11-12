@@ -52,6 +52,59 @@ int ObjectUtil::getElementCount(const char *string) {
   return count;
 }
 
+void ObjectUtil::getElement(mm::mtl::FixStr<128> &element, const char *string, int index, int group) {
+  while (group > 0) {
+    if (string == nullptr || *string == '\0') {
+      element = "";
+      return;
+    }
+    string = __builtin_strchr(string, '|');
+    if (string != nullptr) {
+      string++;
+      group--;
+    }
+  }
+  if (string != nullptr && *string != '\0') {
+    const char *end = __builtin_strchr(string, '|');
+    if (end == nullptr) {
+      end = string + __builtin_strlen(string);
+    }
+    char character;
+    while (index > 0) {
+      if (string == nullptr) {
+        element = "";
+        return;
+      }
+      character = *string;
+      if (string >= end || character == '\0') {
+        break;
+      }
+      string = __builtin_strchr(string, ' ');
+      if (string != nullptr) {
+        string++;
+        index--;
+      }
+    }
+    if (string != nullptr) {
+      character = *string;
+    }
+    if (string != nullptr && character != '\0') {
+      const char *number = string;
+      while (character != '\0' && isNumber(character)) {
+        number++;
+        character = *number;
+      }
+      size_t length = number - string;
+      char buffer[256];
+      __builtin_memset(buffer, 0, sizeof(buffer));
+      __builtin_memcpy(buffer, string, length);
+      element = buffer;
+      return;
+    }
+  }
+  element = "";
+}
+
 s32 ObjectUtil::getElementS32(const char *string, int index, int group) {
   mm::mtl::FixStr<128> element;
   getElement(element, string, index, group);

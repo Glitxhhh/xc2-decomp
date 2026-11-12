@@ -14,6 +14,7 @@
 #include "gmk/gmk_route_navi.h"
 #include "gmk/gmk_set.h"
 #include "ml/rand.h"
+#include "mm_math/mm_col3.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_math.h"
@@ -484,6 +485,21 @@ void GmkRoute::debugUpdateMmf() {}
 void GmkRoutePoint::create(const CreateInfo &info) { AGmkBase::create(info); }
 
 void GmkRoutePoint::dispose() { AGmkBase::dispose(); }
+
+void GmkRoutePoint::debugDraw() const {
+  isValid();
+  if (isValid()) {
+    mm::Col4 color;
+    color.r = mm::Col3::cyan.r;
+    color.g = mm::Col3::cyan.g;
+    color.b = mm::Col3::cyan.b;
+    color.a = 0.8f;
+    const Data *data = getData();
+    mm::Vec3 start(data->unknown00.x + data->unknown10, data->unknown00.y + data->unknown14, data->unknown00.z + data->unknown18);
+    mm::Vec3 end(data->unknown00.x - data->unknown10, data->unknown00.y - data->unknown14, data->unknown00.z - data->unknown18);
+    fw::debug::drawLine(start, end, color);
+  }
+}
 
 void GmkRoutePoint::debugUpdateMmf() {}
 
