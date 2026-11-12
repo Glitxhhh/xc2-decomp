@@ -214,6 +214,13 @@ bool DrMdlMan::getTextureStreamInfo(u32 &size, u32 &count, const void *data, boo
   return true;
 }
 
+void DrMdlMan::addViewInfo(int cate) {
+  unknown050[cate] = new (unknown000->unknown0c) DrMdoZSortMan(unknown000);
+  for (DrMdlBase *mdl = unknown0a8[cate].unknown00; mdl != nullptr; mdl = mdl->unknown10) {
+    mdl->unknown20 &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
+  }
+}
+
 void DrMdlMan::delViewInfo(int cate) {
   if (unknown050[cate] != nullptr) {
     delete unknown050[cate];

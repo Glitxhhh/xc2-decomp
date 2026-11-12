@@ -92,6 +92,7 @@ public:
   void simpleShadowRender();
   static int headerChek(const void *data);
   static bool getTextureStreamInfo(u32 &size, u32 &count, const void *data, bool isMiddle);
+  void addViewInfo(int cate);
   void delViewInfo(int cate);
   DrMdlObj *createMdl(const void *data, const char *name, int index);
   DrMdlObj *createInstantMdl(const void *data, const char *name, int index);
