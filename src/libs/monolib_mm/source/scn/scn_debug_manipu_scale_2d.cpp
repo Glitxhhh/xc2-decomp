@@ -29,6 +29,7 @@ ScnDebugManipuScale2D::ScnDebugManipuScale2D(Scn *scn, const mm::Mat44 *matrix, 
     unknownb0.m_back->unknown00.unknown00 = position;
   }
   unknown360 = 0;
+  unknown364 = 0;
 }
 
 ScnDebugManipuScale2D::~ScnDebugManipuScale2D() {}

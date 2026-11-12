@@ -8,6 +8,7 @@
 #include "dr/dr_ini_sys.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_parm.h"
+#include "dr/dr_res_list.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
@@ -70,20 +71,6 @@ struct unknown008 {
   u8 _0c[0x18 - 0x0c];
 };
 
-// Inferred role: appends an object to the end of a list; original name unknown.
-void unknown009(DrEnvColiObj *&first, DrEnvColiObj *&last, DrEnvColiObj *object) {
-  if (last == nullptr) {
-    first = object;
-    last = object;
-    object->unknown00 = nullptr;
-  } else {
-    last->unknown08 = object;
-    object->unknown00 = last;
-    last = object;
-  }
-  object->unknown08 = nullptr;
-}
-
 // Inferred role: deletes every object of a list; original name unknown.
 void unknown010(DrEnvColiObj *&first, DrEnvColiObj *&last) {
   DrEnvColiObj *object = first;
@@ -108,7 +95,7 @@ DrEnvColiObj::COLITEST DrEnvColiObj::s_pColiTest[5] = {
 
 DrEnvColiObj *DrEnvColiMan::createObj(const void *data) {
   DrEnvColiObj *object = new (unknown30->unknown10) DrEnvColiObj(unknown30, data);
-  unknown009(unknown10[DrMan::s_nDblStockIdx][0], unknown10[DrMan::s_nDblStockIdx][1], object);
+  unknown101(unknown10[DrMan::s_nDblStockIdx][0], unknown10[DrMan::s_nDblStockIdx][1], object);
   return object;
 }
 
@@ -119,7 +106,7 @@ void DrEnvColiMan::update() {
   DrEnvColiObj *object = unknown10[DrMan::s_nDblIdx][0];
   while (object != nullptr) {
     DrEnvColiObj *next = object->unknown08;
-    unknown009(unknown00, unknown08, object);
+    unknown101(unknown00, unknown08, object);
     object = next;
     isChanged = true;
   }
@@ -478,7 +465,7 @@ u32 DrEnvColiObj::isDeleteCall() const { return unknown38 & (1 << DrMan::s_nDblI
 u32 DrEnvColiObj::isDeleteAll() const { return unknown38 & 3; }
 
 bool DrEnvColiObj::envcoli_box(const u8 *data, const mm::Vec3 &position, f32 margin, const mm::Vec3 *axes) {
-  const unknown004 *box = reinterpret_cast<const unknown004 *>(data);
+  const struct unknown004 *box = reinterpret_cast<const struct unknown004 *>(data);
   f32 cx = box->unknown30[0];
   f32 cy = box->unknown30[1];
   f32 cz = box->unknown30[2];
@@ -511,7 +498,7 @@ bool DrEnvColiObj::envcoli_box(const u8 *data, const mm::Vec3 &position, f32 mar
 }
 
 bool DrEnvColiObj::envcoli_sphere(const u8 *data, const mm::Vec3 &position, f32 margin, const mm::Vec3 *center) {
-  const unknown001 *sphere = reinterpret_cast<const unknown001 *>(data);
+  const struct unknown001 *sphere = reinterpret_cast<const struct unknown001 *>(data);
   f32 dx = position.x - center->x;
   f32 dy = position.y - center->y;
   f32 dz = position.z - center->z;
@@ -520,7 +507,7 @@ bool DrEnvColiObj::envcoli_sphere(const u8 *data, const mm::Vec3 &position, f32 
 }
 
 bool DrEnvColiObj::envcoli_cylinder(const u8 *data, const mm::Vec3 &position, f32 margin, const mm::Vec3 *axes) {
-  const unknown004 *cylinder = reinterpret_cast<const unknown004 *>(data);
+  const struct unknown004 *cylinder = reinterpret_cast<const struct unknown004 *>(data);
   f32 cx = cylinder->unknown30[0];
   f32 cy = cylinder->unknown30[1];
   f32 cz = cylinder->unknown30[2];
@@ -545,7 +532,7 @@ bool DrEnvColiObj::envcoli_cylinder(const u8 *data, const mm::Vec3 &position, f3
 }
 
 bool DrEnvColiObj::envcoli_notrot_box(const u8 *data, const mm::Vec3 &position, f32 margin, const mm::Vec3 *center) {
-  const unknown003 *box = reinterpret_cast<const unknown003 *>(data);
+  const struct unknown003 *box = reinterpret_cast<const struct unknown003 *>(data);
   f32 dx = position.x - center->x;
   f32 dy = position.y - center->y;
   f32 dz = position.z - center->z;

@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#include "dr/dr_man.h"
 #include "dr/dr_mpf_work_auto_inf.h"
 #include "grlib/cglib_ctl_vertex.h"
 #include "mtl/mem_manager.h"
@@ -143,5 +144,31 @@ void DrMdoMpfMan::freeMemWork(_MPFWorkAutoInf *work) {
     unknowne0 = work;
   }
 }
+
+void DrMdoMpfMan::getTempCalcTbl(_MPFWorkAutoPos **tables, int count) {
+  for (int i = 0; i < count; i++) {
+    tables[i] = &unknown3d18[i];
+  }
+}
+
+void DrMdoMpfMan::update() {
+  u32 flags = unknown3d30;
+  unknown3d30 = flags | 1;
+  if ((flags & 2) == 0) {
+    return;
+  }
+  unknown3d30 &= ~2;
+  if (!unknown00->unknown1d7c) {
+    f32 speed = unknown3d24 * 0.4f * unknown00->unknown1c8c;
+    if (speed != 0.0f) {
+      for (int i = 0; i < getMpfWindMax(); i++) {
+        unknown100[i].calcUpdate(1.0f, speed, 1.0f);
+      }
+    }
+  }
+  updateUniformWork();
+}
+
+void DrMdoMpfMan::bindInstanceBuffAsSSBO(u32 index, u32 offset, u32 size) { unknown98.setStorageBuffer(index, offset, size); }
 
 } // namespace ml

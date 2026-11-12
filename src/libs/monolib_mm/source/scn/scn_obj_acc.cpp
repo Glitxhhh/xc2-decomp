@@ -571,6 +571,24 @@ void ScnObjAccVolumeFade::setParams(const VolumeFadeParams &params, int index) {
   }
 }
 
+f32 ScnObjAccVolumeFade::getRatio(u32 index) const {
+  f32 ratio = 0.0f;
+  if (m_drMdl != nullptr) {
+    MdoWrkVanishEffect *base = m_drMdl->getVanishEffectWrk(index, 2);
+    if (base != nullptr) {
+      MdoWrkVanishEffect *effect = m_drMdl->getVanishEffectWrk(index, DrMan::s_nDblIdx);
+      if (!(effect->unknownd4 & 0x100)) {
+        effect = m_drMdl->getVanishEffectWrk(index, DrMan::s_nDblStockIdx);
+        if (!(effect->unknownd4 & 0x100)) {
+          return base->unknowna4;
+        }
+      }
+      ratio = effect->unknowna4;
+    }
+  }
+  return ratio;
+}
+
 ScnObjAccRimBloom::ScnObjAccRimBloom() : m_drMdl(nullptr) {}
 
 ScnObjAccRimBloom::ScnObjAccRimBloom(ScnObjModel *model) : m_drMdl(static_cast<ScnObjModelDrSys *>(model)->unknown3d8) {}
@@ -685,6 +703,33 @@ ScnObjAccMdlParticle::ScnObjAccMdlParticle(ScnObjModel *model) {
 void ScnObjAccMdlParticle::setActive(bool isActive, u32 index) {
   if (m_vtxMeshObj != nullptr) {
     m_vtxMeshObj->setActive(isActive, index);
+  }
+}
+
+void ScnObjAccMdlParticle::setParams(const MdlVtxParticle &params) {
+  DrResMdoVtxMeshObj *vtxMesh = m_vtxMeshObj;
+  if (vtxMesh != nullptr) {
+    vtxMesh->unknown100 = params.unknown00;
+    vtxMesh->unknown104 = params.unknown04;
+    vtxMesh->unknown108 = params.unknown08;
+    vtxMesh->unknown10c = params.unknown0c;
+    vtxMesh->unknown110 = params.unknown10;
+    vtxMesh->unknown114 = params.unknown14;
+    vtxMesh->unknown120 = params.unknown20;
+    vtxMesh->unknown124 = params.unknown24;
+    vtxMesh->unknown128 = params.unknown28;
+    vtxMesh->unknown12c = params.unknown2c;
+    vtxMesh->unknown130 = params.unknown30;
+    if (vtxMesh->unknown124 > 1.0f) {
+      vtxMesh->unknown124 = 1.0f;
+    } else if (vtxMesh->unknown124 < 0.0f) {
+      vtxMesh->unknown124 = 0.0f;
+    }
+    if (vtxMesh->unknown128 > 1.0f) {
+      vtxMesh->unknown128 = 1.0f;
+    } else if (vtxMesh->unknown128 < 0.0f) {
+      vtxMesh->unknown128 = 0.0f;
+    }
   }
 }
 

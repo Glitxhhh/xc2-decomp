@@ -52,6 +52,7 @@ public:
     }
   };
 
+  DrCalcClipMan(DrMan *man, DrCalcViewWork *viewWork);
   ~DrCalcClipMan();
   void release();
   void update();

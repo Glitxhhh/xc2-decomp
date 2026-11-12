@@ -13,6 +13,7 @@ class DrMan;
 
 class DrCalcViewWork {
 public:
+  DrCalcViewWork(DrMan *man);
   void begin(int loop);
   void end();
   f32 getPixlLen(f32 depth, f32 length) const;
@@ -85,7 +86,7 @@ public:
   mm::Vec3 unknown770; // Inferred role: prev view pos; original member name unknown.
   u8 _780[0x7b0 - 0x780];
   grlib::CGLibDblUniformBlock unknown7b0; // Inferred role: static uniform; original member name unknown.
-  u8 _7e8[0x820 - 0x7e8];
+  grlib::CGLibDblUniformBlock unknown7e8; // Inferred role: uniform block, destroyed by the destructor; original member name unknown.
   grlib::CGLibDblUniformBlock unknown820; // Inferred role: fog uniform; original member name unknown.
   grlib::CGLibDblUniformBlock unknown858; // Inferred role: toon uniform; original member name unknown.
   grlib::CGLibDblUniformBlock unknown890; // Inferred role: toon2 uniform; original member name unknown.
@@ -106,6 +107,7 @@ public:
   u8 _af8[0xb00 - 0xaf8];
   f32 unknownb00[4]; // Inferred role: dither tmaa values; original member name unknown.
   f32 unknownb10[2]; // Inferred role: dither param; original member name unknown.
+  u8 _b18[0xc60 - 0xb18];
 };
 
 static_assert(offsetof(DrCalcViewWork, unknown40) == 0x40, "");
@@ -127,6 +129,7 @@ static_assert(offsetof(DrCalcViewWork, unknown590) == 0x590, "");
 static_assert(offsetof(DrCalcViewWork, unknown700) == 0x700, "");
 static_assert(offsetof(DrCalcViewWork, unknown770) == 0x770, "");
 static_assert(offsetof(DrCalcViewWork, unknown7b0) == 0x7b0, "");
+static_assert(offsetof(DrCalcViewWork, unknown7e8) == 0x7e8, "");
 static_assert(offsetof(DrCalcViewWork, unknown820) == 0x820, "");
 static_assert(offsetof(DrCalcViewWork, unknown858) == 0x858, "");
 static_assert(offsetof(DrCalcViewWork, unknown890) == 0x890, "");
@@ -142,5 +145,6 @@ static_assert(offsetof(DrCalcViewWork, unknownae0) == 0xae0, "");
 static_assert(offsetof(DrCalcViewWork, unknownaf0) == 0xaf0, "");
 static_assert(offsetof(DrCalcViewWork, unknownb00) == 0xb00, "");
 static_assert(offsetof(DrCalcViewWork, unknownb10) == 0xb10, "");
+static_assert(sizeof(DrCalcViewWork) == 0xc60, "");
 
 } // namespace ml

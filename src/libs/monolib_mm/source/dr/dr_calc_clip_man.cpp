@@ -11,6 +11,9 @@
 
 namespace ml {
 
+DrCalcClipMan::DrCalcClipMan(DrMan *man, DrCalcViewWork *viewWork)
+    : unknown00(man), unknown08(viewWork), unknown10(), unknown20(), unknown40(), unknown50(), unknown70(nullptr), unknown78(0), unknown7c(0) {}
+
 DrCalcClipMan::~DrCalcClipMan() { release(); }
 
 void DrCalcClipMan::release() {

@@ -75,4 +75,6 @@ void DevFileArchiver::finalize() {
 
 } // namespace ml
 
+template class ml::DevFileDictionary<int, ml::DevFileDicAllocator, -1, -2, true>;
+
 template mm::mtl::PtrSingleton<ml::DevFileArchiver>::~PtrSingleton();

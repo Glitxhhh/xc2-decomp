@@ -164,6 +164,7 @@ static_assert(offsetof(DrMdoCtlMpfWork, unknown38) == 0x38, "");
 class DrMdoCtlMpfWindCalc {
 public:
   void init();
+  void calcUpdate(f32 unknown1, f32 unknown2, f32 unknown3);
 
   mm::Vec3 unknown00[3]; // Inferred role: joint positions; original member name unknown.
   mm::Vec3 unknown30[3]; // Inferred role: joint velocities; original member name unknown.

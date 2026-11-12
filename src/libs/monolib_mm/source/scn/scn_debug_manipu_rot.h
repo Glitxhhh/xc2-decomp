@@ -32,10 +32,12 @@ public:
   u8 _974[0x990 - 0x974];
   f32 unknown990; // Inferred role: unknown, 70.0f set by the constructor; original member name unknown.
   f32 unknown994; // Inferred role: unknown, 80.0f set by the constructor; original member name unknown.
+  u8 _998[0x9b0 - 0x998];
 };
 
 static_assert(offsetof(ScnDebugManipuRot, unknown970) == 0x970, "");
 static_assert(offsetof(ScnDebugManipuRot, unknown990) == 0x990, "");
 static_assert(offsetof(ScnDebugManipuRot, unknown994) == 0x994, "");
+static_assert(sizeof(ScnDebugManipuRot) == 0x9b0, "");
 
 } // namespace ml

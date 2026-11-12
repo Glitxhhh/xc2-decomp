@@ -35,6 +35,7 @@ class DrResFilterData;
 class DrShdMan;
 class IDrDrawCallback;
 class DrPixlMan;
+class DrPixlMdlSampler;
 class DrPixlPostParm;
 class Scn;
 class WinProc;
@@ -224,13 +225,13 @@ public:
   mm::mtl::FixedArray<DrIBLMan *, 4> unknown140;         // Inferred role: ibl mans; original member name unknown.
   mm::mtl::FixedArray<DrGlobalIBLMan *, 4> unknown160;   // Inferred role: global ibl mans; original member name unknown.
   DrPixlTileParm *unknown180;                            // Inferred role: tile parm; original member name unknown.
-  u8 _0188[0x0190 - 0x0188];
-  DR_VIEW_PARAM unknown190[2][4]; // Inferred role: additional render system view params; original member name unknown.
-  s32 unknown350[2];              // Inferred role: additional render system counts; original member name unknown.
-  u32 unknown358[2][4];           // Inferred role: deleted render system ids; original member name unknown.
-  s32 unknown378[2];              // Inferred role: deleted render system counts; original member name unknown.
-  DR_CAPTURE_PARAM unknown380[2]; // Inferred role: capture requests; original member name unknown.
-  u32 unknown3b0;                 // Inferred role: capture request mask; original member name unknown.
+  DrPixlMdlSampler *unknown188;                          // Inferred role: model sampler; original member name unknown.
+  DR_VIEW_PARAM unknown190[2][4];                        // Inferred role: additional render system view params; original member name unknown.
+  s32 unknown350[2];                                     // Inferred role: additional render system counts; original member name unknown.
+  u32 unknown358[2][4];                                  // Inferred role: deleted render system ids; original member name unknown.
+  s32 unknown378[2];                                     // Inferred role: deleted render system counts; original member name unknown.
+  DR_CAPTURE_PARAM unknown380[2];                        // Inferred role: capture requests; original member name unknown.
+  u32 unknown3b0;                                        // Inferred role: capture request mask; original member name unknown.
   u8 _03b4[0x03b8 - 0x03b4];
   DR_MODEL_TEXTURE unknown3b8[2][4]; // Inferred role: model textures; original member name unknown.
   u32 unknown438[2];                 // Inferred role: model texture update masks; original member name unknown.
@@ -307,7 +308,8 @@ public:
   u8 _1d76[0x1d7a - 0x1d76];
   bool unknown1d7a; // Inferred role: shadow map override; original member name unknown.
   bool unknown1d7b; // Inferred role: mdl dbl pause; original member name unknown.
-  u8 _1d7c[0x1d80 - 0x1d7c];
+  bool unknown1d7c; // Inferred role: skips the mpf wind update; original member name unknown.
+  u8 _1d7d[0x1d80 - 0x1d7d];
   bool unknown1d80; // Inferred role: clip; original member name unknown.
   u8 _1d81[0x1d8c - 0x1d81];
   bool unknown1d8c; // Inferred role: flag, copied to unknown1d8d at the end of the setup; original member name unknown.

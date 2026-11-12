@@ -4,8 +4,14 @@
 #include "grlib/cglib_dec_shd_ext_tbl.h"
 #include "types.h"
 
+namespace grlib {
+class CGLibTextureBuffer;
+} // namespace grlib
+
 namespace ml {
+class DrResMdoSampler;
 class DrShdMdoDecRes;
+struct MdsMatTextureInfo;
 
 class DrShdMdoDecExtTbl : public grlib::CGLibDecShdExtTbl {
 public:
@@ -15,6 +21,7 @@ public:
   u32 getValGlobalParam(int index);
   void bindShader();
   void setShaderParamAdd(u32 *param, u32 *globalParam);
+  void setTextureList(const MdsMatTextureInfo *infos, grlib::CGLibTextureBuffer **textures, DrResMdoSampler *sampler);
 
   DrShdMdoDecRes *unknown18; // Inferred role: dec res; original member name unknown.
   u32 *unknown20;            // Inferred role: shader param add; original member name unknown.

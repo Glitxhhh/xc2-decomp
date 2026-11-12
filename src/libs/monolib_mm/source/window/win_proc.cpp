@@ -86,6 +86,20 @@ WinView *WinProc::pssGetView(u32 wid) {
   return static_cast<WinView *>(WorkRootState::getWork(unknown1a8.begin()->value));
 }
 
+bool WinProc::pssDetachView() {
+  for (reslist<u32>::iterator it = unknown1a8.begin(); it != unknown1a8.end(); ++it) {
+    if (WinViewRoot::get() != nullptr) {
+      u32 wid = *it;
+      WinView *view = static_cast<WinView *>(WorkRootState::getWork(wid));
+      if (view != nullptr && (WorkRootState::getWork(WinViewRoot::get(), wid) != nullptr || WorkRootState::isEntryWork(wid, WinViewRoot::get()))) {
+        view->detachRenderWork(this);
+      }
+    }
+  }
+  unknown1a8.clear();
+  return true;
+}
+
 const WinView *WinProc::pssGetView(u32 wid) const {
   if (wid != 0xffffffff) {
     return static_cast<WinView *>(WorkRootState::getWork(wid));
