@@ -142,6 +142,13 @@ void GmkRoutedEnemyList::update(f32 deltaTime) {
   TGmkList::update(deltaTime);
 }
 
+bool GmkRoutedEnemyList::updateImmediate() {
+  if (!TGmkList::updateImmediate()) {
+    return false;
+  }
+  return unknown240.updateImmediate();
+}
+
 void GmkRoutedEnemyList::setUpdateGmkNumPerFrame(u32 num) {
   TGmkList::setUpdateGmkNumPerFrame(num);
   unknown240.setUpdateGmkNumPerFrame(num);

@@ -43,6 +43,7 @@ public:
 
   TwoCharaGroundSolver();
   ~TwoCharaGroundSolver() override;
+  bool createImpl(const Description &description, mm::mtl::IntrusivePtr<ReferenceFrame> &frame, anm::Pose &pose, IKGroundInterface *ground);
   FootPlacementIKSolver *createFootPlacementIKMain(IKFootIndex index, ParamAdapter param, const char *footName, const char *kneeName, const char *hipName, bool isMirror);
   FootPlacementIKSolver *createFootPlacementIKSub(IKFootIndex index, ParamAdapter param, const char *footName, const char *kneeName, const char *hipName, bool isMirror);
   void calcMainBodyTransform(Transform *result);

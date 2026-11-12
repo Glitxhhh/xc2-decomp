@@ -2,9 +2,12 @@
 
 #include "anm/anm_pose.h"
 #include "framework/ik/ik_foot_placement_solver.h"
+#include "framework/memory/allocator.h"
+#include "framework/memory/framework_memory.h"
 #include "framework/reference_frame.h"
 #include "fw/fw_param_manager.h"
 #include "fw/fw_transform.h"
+#include "mm_mtl/reference_object.h"
 
 namespace anm {
 struct QsTransform;
@@ -22,6 +25,17 @@ TwoCharaGroundSolver::TwoCharaGroundSolver()
       unknownba(true), unknownbb(true), unknownc0(nullptr) {}
 
 TwoCharaGroundSolver::~TwoCharaGroundSolver() {}
+
+TwoCharaGroundSolver *TwoCharaGroundSolver::create(const Description &description, mm::mtl::IntrusivePtr<ReferenceFrame> &frame, anm::Pose &pose, IKGroundInterface *ground) {
+#line 34
+  TwoCharaGroundSolver *solver = new (Allocator::getProcAllocator(), 16, __FILE__, __LINE__) TwoCharaGroundSolver();
+  solver->addRef();
+  if (!solver->createImpl(description, frame, pose, ground)) {
+    mm::mtl::safeRelease(solver);
+    return nullptr;
+  }
+  return solver;
+}
 
 FootPlacementIKSolver *TwoCharaGroundSolver::createFootPlacementIKMain(IKFootIndex index, ParamAdapter param, const char *footName, const char *kneeName, const char *hipName, bool isMirror) {
   if (index >= unknown20.size()) {

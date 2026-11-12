@@ -127,6 +127,31 @@ void GmkRouteNavi::initIsReverse() {
   }
 }
 
+bool GmkRouteNavi::initAtRandom(InitResult &result) {
+  if (!isValid()) {
+    return false;
+  }
+  const GmkRoute *route = getRoute();
+  if (route == nullptr) {
+    return false;
+  }
+  u32 pointNum = route->getRoutePointNum();
+  if (pointNum <= 1) {
+    return false;
+  }
+  u32 index;
+  if (unknowna4) {
+    index = ml::mtRand(0, pointNum - 1);
+  } else {
+    index = ml::mtRand(1, pointNum);
+  }
+  f32 ratio = ml::mtRandf1();
+  if (!route->isClosed() && ((unknowna4 && index == 0) || (!unknowna4 && pointNum - 1 == index))) {
+    ratio = 0.0f;
+  }
+  return init(result, index, ratio);
+}
+
 void GmkRouteNavi::seqInit(const UpdateInfo &info) {
   if (!isValid()) {
     return;

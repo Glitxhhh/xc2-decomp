@@ -1,5 +1,7 @@
 #include "gmk/gmk_npc/gmk_routed_npc.h"
 
+#include <math.h>
+
 #include "gf/game/gf_game_manager.h"
 #include "gf/object/component/behavior/gf_com_behavior_npc.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -11,6 +13,7 @@
 #include "gmk/gmk_cond.h"
 #include "gmk/gmk_gob_event_listener_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_npc/gmk_npc_manager.h"
+#include "gmk/gmk_npc/gmk_routed_npc_impl.h" // IWYU pragma: keep
 #include "gmk/gmk_route_navi.h"
 #include "gmk/gmk_set.h"
 #include "mm_math/mm_vec3.h"
@@ -134,6 +137,30 @@ bool GmkRoutedNpc::isPopCondMatchedExceptDist() const {
     return isPopCondMatched();
   }
   return false;
+}
+
+bool GmkRoutedNpc::findPopPosRot(mm::Vec3 &position, mm::Vec3 &rotation) const {
+  f32 angle;
+  if (!unknown78) {
+    position = unknown80;
+    mm::Vec3 forward = unknown90.rotate(mm::Vec3(0.0f, 0.0f, 1.0f));
+    angle = atan2f(forward.x, forward.z);
+  } else {
+    unknown78 = false;
+    GmkRouteNavi::InitResult result;
+    if (!unknown70->initAtRandom(result)) {
+      return false;
+    }
+    position = result.position;
+    if (!result.direction.unknown003()) {
+      result.direction.unknown001();
+    }
+    angle = atan2f(result.direction.x, result.direction.z);
+  }
+  rotation.y = angle;
+  rotation.z = 0.0f;
+  rotation.x = 0.0f;
+  return true;
 }
 
 void GmkRoutedNpc::validateDisp() const {

@@ -77,4 +77,30 @@ void SkipManager::setSkipFastEnable(bool isEnable) {
   }
 }
 
+void SkipManager::OnEventProc(MSG_TYPE type) {
+  switch (type) {
+  case MSG_TYPE_UNKNOWN_1:
+    clear();
+    break;
+  case MSG_TYPE_UNKNOWN_2:
+    skip(false, 0.0f);
+    if (isSkipVolume()) {
+      setSkipVolume(false);
+    }
+    clear();
+    break;
+  case MSG_TYPE_UNKNOWN_14:
+    update();
+    break;
+  case MSG_TYPE_UNKNOWN_18:
+    tail();
+    break;
+  case MSG_TYPE_UNKNOWN_12:
+    if (unknown10 & FLAG_UNKNOWN_2) {
+      setSkipFastEnable(false);
+    }
+    break;
+  }
+}
+
 } // namespace event

@@ -477,6 +477,13 @@ void GmkEnemyList::update(f32 deltaTime) {
   TGmkList::update(deltaTime);
 }
 
+bool GmkEnemyList::updateImmediate() {
+  if (!TGmkList::updateImmediate()) {
+    return false;
+  }
+  return unknown240.updateImmediate();
+}
+
 const AGmkBase *GmkEnemyList::getInst(u32 index) const { return &gmkInsts[index]; }
 
 void GmkEnemyList::setUpdateGmkNumPerFrame(u32 num) {

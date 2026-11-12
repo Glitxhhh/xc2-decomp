@@ -2,6 +2,7 @@
 
 #include "event/frame_manager.h"
 #include "event/memory_manager.h"
+#include "event/skip_manager.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/singleton.h"
 #include "mtl/alloc_handle.h"
@@ -49,6 +50,18 @@ bool MotstmManager::isBusy() {
     return unknown18.isBusy();
   }
   return false;
+}
+
+void MotstmManager::update() {
+  if (!mm::mtl::Singleton<SkipManager>::getPtr()->isSkipFast() && unknown10.test(FLAG_UNKNOWN_0)) {
+    bool isPause = !unknown10.test(FLAG_UNKNOWN_1);
+    if (unknown10.test(FLAG_UNKNOWN_2) != isPause) {
+      unknown18.pause(isPause);
+      unknown10.set(FLAG_UNKNOWN_2, isPause);
+    }
+    unknown18.update();
+    unknown18.tail();
+  }
 }
 
 void MotstmManager::render() {

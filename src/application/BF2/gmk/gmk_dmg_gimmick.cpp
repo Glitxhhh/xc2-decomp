@@ -323,6 +323,62 @@ GmkDmgSe *GmkDmgGimmick::getGmkDmgSe(u32 index) const {
 
 void GmkDmgGimmick::validateDisp() const { bool isDisp = unknown80 && debugIsDispGmkType(getGmkType()); }
 
+void GmkDmgGimmick::seqUpdatePopDepop(f32 deltaTime) {
+  const BdatInfo *info = getBdatInfo();
+  bool isPop = info->isCondMatched();
+  bool wasPop = unknown50;
+  unknown50 = isPop;
+  if (isPop != wasPop) {
+    u32 phantomNum = getData()->unknown02 - getData()->unknown00;
+    for (u32 i = 0; i < phantomNum; i++) {
+      GmkDmgPhantom *phantom = getGmkDmgPhantom(i);
+      if (phantom != nullptr) {
+        if (isPop) {
+          phantom->createGmkPhantom(this);
+        } else {
+          phantom->disposeGmkPhantom();
+        }
+      }
+    }
+  }
+  u32 effectNum = getData()->unknown06 - getData()->unknown04;
+  for (u32 i = 0; i < effectNum; i++) {
+    GmkDmgEffect *effect = getGmkDmgEffect(i);
+    if (effect != nullptr) {
+      const mm::Vec3 &position = effect->unknown08.unknown08->unknown00;
+      if (!isPop) {
+        effect->disposeEffectInst(true);
+      } else if (effect->unknown4c == 0) {
+        if (unknown58 != nullptr && DistCond::isMatch(info->unknown20.unknown00, position)) {
+          effect->createEffectInst(unknown58);
+        }
+      } else if (!DistCond::isMatch(info->unknown24.unknown00, position)) {
+        effect->disposeEffectInst(true);
+      }
+    }
+  }
+  u32 seNum = getData()->unknown0a - getData()->unknown08;
+  for (u32 i = 0; i < seNum; i++) {
+    GmkDmgSe *se = getGmkDmgSe(i);
+    if (se != nullptr) {
+      if (isPop != wasPop) {
+        if (isPop) {
+          se->createGmkPhantom();
+        } else {
+          se->unknown50.dispose();
+        }
+      }
+      if (se->unknown50.unknown001() && isPop) {
+        if (se->unknowne4 == 0) {
+          se->createSeInst(unknown60, info->unknown18);
+        }
+      } else {
+        se->disposeSeInst(true);
+      }
+    }
+  }
+}
+
 GmkDmgPhantomManager::GmkDmgPhantomManager() : unknown38(false) {
   gf::GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
   gf::GfEvent::addEventCallback(this);

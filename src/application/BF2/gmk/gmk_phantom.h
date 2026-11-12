@@ -99,6 +99,9 @@ public:
   void update(const GmkPhantomCheckResults &results);
   const mm::mtl::RTTI *getRTTI() const override { return &m_rtti; }
 
+  // Inferred helper: true when there is no phantom or something is inside it; original name unknown.
+  bool unknown001() const { return unknown78 == nullptr || unknown83; }
+
   CreateInfo unknown20;      // Inferred role: create info; original member name unknown.
   const char *unknown70;     // Inferred role: name; original member name unknown.
   fw::ColiObject *unknown78; // Inferred role: phantom; original member name unknown.

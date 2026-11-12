@@ -97,6 +97,10 @@ struct alignas(16) Vec3 {
     *this = result;
   }
 
+  // Inferred role: true when every component is within 1e-6 of zero; original name unknown.
+  // Evidence: gmk::GmkRoutedNpc::findPopPosRot (1.0.0: 0x71005fa980) and gmk::getYSnapPosRot (0x71005e472c).
+  bool unknown003() const { return fabsf(x) <= 0.000001f && fabsf(y) <= 0.000001f && fabsf(z) <= 0.000001f; }
+
   f32 x;
   f32 y;
   f32 z;
