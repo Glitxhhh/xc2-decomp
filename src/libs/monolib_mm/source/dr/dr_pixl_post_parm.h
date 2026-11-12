@@ -209,7 +209,7 @@ public:
   u8 _01cc[0x01cd - 0x01cc];
   bool unknown1cd; // Inferred role: obj mot blur; original member name unknown.
   bool unknown1ce; // Inferred role: app blur; original member name unknown.
-  u8 _01cf[0x01d0 - 0x01cf];
+  bool unknown1cf; // Inferred role: motion blur 2 high level mode; original member name unknown.
   bool unknown1d0; // Inferred role: sp blur; original member name unknown.
   u8 _01d1[0x01d4 - 0x01d1];
   f32 unknown1d4; // Inferred role: mot blur strength; original member name unknown.
@@ -219,7 +219,8 @@ public:
   f32 unknown1f0; // Inferred role: blur sp parm; original member name unknown.
   u8 _01f4[0x01fc - 0x01f4];
   bool m_motBlur2;
-  u8 _01fd[0x0218 - 0x01fd];
+  u8 _01fd[0x0214 - 0x01fd];
+  f32 unknown214;  // Inferred role: motion blur 2 strength of the blur parameter; original member name unknown.
   bool unknown218; // Inferred role: dof; original member name unknown.
   bool unknown219; // Inferred role: dof override; original member name unknown.
   bool unknown21a; // Inferred role: dof h lv mode; original member name unknown.
@@ -432,12 +433,14 @@ static_assert(offsetof(DrPixlPostParm, unknown19c) == 0x019c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ca) == 0x01ca, "");
 static_assert(offsetof(DrPixlPostParm, unknown1cd) == 0x01cd, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ce) == 0x01ce, "");
+static_assert(offsetof(DrPixlPostParm, unknown1cf) == 0x01cf, "");
 static_assert(offsetof(DrPixlPostParm, unknown1d0) == 0x01d0, "");
 static_assert(offsetof(DrPixlPostParm, unknown1d4) == 0x01d4, "");
 static_assert(offsetof(DrPixlPostParm, unknown1d8) == 0x01d8, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ec) == 0x01ec, "");
 static_assert(offsetof(DrPixlPostParm, unknown1f0) == 0x01f0, "");
 static_assert(offsetof(DrPixlPostParm, m_motBlur2) == 0x01fc, "");
+static_assert(offsetof(DrPixlPostParm, unknown214) == 0x0214, "");
 static_assert(offsetof(DrPixlPostParm, unknown218) == 0x0218, "");
 static_assert(offsetof(DrPixlPostParm, unknown219) == 0x0219, "");
 static_assert(offsetof(DrPixlPostParm, unknown21a) == 0x021a, "");

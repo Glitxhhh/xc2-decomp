@@ -33,6 +33,16 @@ void DrResEtcParams::update() {
   }
 }
 
+f32 DrResEtcParams::getValParams() const {
+  if (unknown00 & (4 << DrMan::s_nDblStockIdx)) {
+    return unknown0c[DrMan::s_nDblStockIdx];
+  }
+  if (unknown00 & (1 << DrMan::s_nDblStockIdx)) {
+    return unknown04[DrMan::s_nDblStockIdx];
+  }
+  return m_params;
+}
+
 DrResEtcPamObj::~DrResEtcPamObj() {}
 
 int DrResEtcPamObj::setup(const u8 *data, u8 *work) {

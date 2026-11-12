@@ -381,4 +381,23 @@ void DrMdoCtlPos::updateInstPosDispCall(const u32 *flags) {
   }
 }
 
+void DrMdoCtlPos::createInstUniformBlock(const u32 *flags) {
+  updateAnim(unknowndc * m_drMan->unknown1c8c, flags, nullptr);
+  updateMatFstCallBack();
+  updateMatCallBack(flags);
+  updateTimerCalc(flags);
+  s32 matNum = unknown30->unknown30;
+  updateUniformBlock(flags);
+  updateInstPosDispCall(flags);
+  s32 nowIdx = DrMan::s_nDblNowIdx;
+  for (s32 i = 0; i < matNum; i++) {
+    s32 bit = nowIdx + i * 2;
+    if (flags[i >> 5] & (1 << (i & 0x1f))) {
+      if (unknown240[bit >> 5] & (1 << (bit & 0x1f))) {
+        unknown240[bit >> 5] &= ~(1 << (bit & 0x1f));
+      }
+    }
+  }
+}
+
 } // namespace ml

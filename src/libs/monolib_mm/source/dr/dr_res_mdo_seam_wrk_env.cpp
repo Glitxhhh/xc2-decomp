@@ -37,6 +37,20 @@ void DrResMdoSeamWrkEnv::release() {
   unknown60 = nullptr;
 }
 
+bool DrResMdoSeamWrkEnv::update(const mm::Vec3 &position, bool isOpen) {
+  unknown6c &= ~0x10;
+  if (unknown58 == nullptr) {
+    return false;
+  }
+  if (isOpen) {
+    return true;
+  }
+  if (unknown60->unknown24 & 2) {
+    unknown6c |= 0x10;
+  }
+  return false;
+}
+
 void DrResMdoSeamWrkEnv::setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniformArray *uniforms, mtl::ALLOC_HANDLE handle, const MdsSeamEnvMapHead *head, const MdsSeamEnvMapData *data) {
   unknown58 = matRes;
   unknown18 = head;

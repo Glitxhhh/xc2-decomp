@@ -32,6 +32,7 @@ public:
   virtual ~DrResMdoSeamWrkEnv();
   void setDispState();
   u32 chkDispState();
+  bool update(const mm::Vec3 &position, bool isOpen);
   u8 *getDisplayWrk();
   int getDisplayWrkSize();
   void setDisplayWrk(u8 *work, int size);

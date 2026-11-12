@@ -37,6 +37,21 @@ void DrResMdoPntAlpha::create(const void *unknown001) {
   unknown00 = unknown004_1;
 }
 
+void DrResMdoPntAlpha::update(f32 speed) {
+  unknown00 &= ~unknown004_2;
+  if (unknown00 & unknown004_4) {
+    unknown04 += speed;
+    if (unknown04 > 1.0f) {
+      unknown04 = 1.0f;
+    }
+  } else {
+    unknown04 -= speed;
+    if (unknown04 < 0.0f) {
+      unknown04 = 0.0f;
+    }
+  }
+}
+
 s32 DrResMdoPntAlphaMan::getWrkSize(s32 unknown001) { return unknown001 * (sizeof(DrResMdoPntAlpha) + sizeof(DrResMdoPntAlpha *)) + sizeof(DrResMdoPntAlphaMan); }
 
 void DrResMdoPntAlphaMan::setup(DrResMdoPntAlpha *unknown001, DrResMdoPntAlpha **unknown002, s32 unknown003) {

@@ -252,6 +252,14 @@ void ScnRenderDrSysParmAcc::setDoFBlend(f32 dofBlend) { unknown08->setDoFBlend(d
 
 void ScnRenderDrSysParmAcc::setDofHLvMode(bool dofHLvMode) { unknown08->setDOFHlv(dofHLvMode); }
 
+void ScnRenderDrSysParmAcc::setDofPixlLv(s32 dofPixlLv) {
+  if (dofPixlLv < 0 || dofPixlLv > 2) {
+    unknown08->setDoFPixlLv(0);
+  } else {
+    unknown08->setDoFPixlLv(dofPixlLv);
+  }
+}
+
 void ScnRenderDrSysParmAcc::setDOFAutoFocus(bool dofAutoFocus) { unknown08->setDOFAutoFocus(dofAutoFocus); }
 
 void ScnRenderDrSysParmAcc::setDOFFocusNum(s32 dofFocusNum) {
@@ -555,6 +563,13 @@ void ScnRenderDrSysParmAcc::createAddRenderView(ScnRenderDrViewCtrl *viewCtrl) {
 }
 
 void ScnRenderDrSysParmAcc::deleteAddRenderView(ScnRenderDrViewCtrl *viewCtrl) { unknown00->deleteAddRenderSystem(viewCtrl->unknown08 + 1); }
+
+void ScnRenderDrSysParmAcc::setModelTexture(const ScnRenderDrMdlTexture &texture) {
+  DR_MODEL_TEXTURE param;
+  param.unknown00 = texture.unknown00;
+  param.unknown08 = texture.unknown0c;
+  unknown00->setModelTexture(&param, texture.unknown08);
+}
 
 void ScnRenderDrSysParmAcc::resetModelTexture(u32 index) { unknown00->resetModelTexture(index); }
 

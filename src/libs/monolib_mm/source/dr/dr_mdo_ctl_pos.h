@@ -140,6 +140,7 @@ public:
   void createZBuffRenderDisplayList();
   void callPosRender(u32 renderType);
   void updateInstPosDispCall(const u32 *flags);
+  void createInstUniformBlock(const u32 *flags);
   void nomTreeListShadowRenderMdl(const MdsPosRangeTreeData *tree, DrPixlShadowObj *shadow);
 
   const unknown017 *unknown1a8;          // Inferred role: position resource header; original member name unknown.

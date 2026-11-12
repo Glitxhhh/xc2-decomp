@@ -30,6 +30,8 @@ class DrPixlPostObj {
 public:
   DrPixlPostObj(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan);
   static float gaussianDistribution(float x, float y, float rho);
+  static void getSampleOffsets_GaussBlur_Horizontally(f32 a, f32 b, int count, f32 *offsets, f32 c, f32 d);
+  static void getSampleOffsets_GaussBlur_Verticaly(f32 a, f32 b, int count, f32 *offsets, f32 c, f32 d);
   static void getSampleOffsetDownScale4x4(int width, int height, float *offsets);
   static void calc1PixlOfs(float &x, float &y);
   static void getSampleOffsets_DownScale2x2(int width, int height, float *offsets);

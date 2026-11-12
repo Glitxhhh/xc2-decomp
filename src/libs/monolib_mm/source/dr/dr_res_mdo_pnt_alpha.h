@@ -18,6 +18,7 @@ public:
   f32 getObjAlpha(bool unknown001);
   void setAlphaReset(bool unknown001);
   void create(const void *unknown001);
+  void update(f32 speed);
 
   u32 unknown00;         // Inferred role: state flags; original member name unknown.
   f32 unknown04;         // Inferred role: current alpha; original member name unknown.
