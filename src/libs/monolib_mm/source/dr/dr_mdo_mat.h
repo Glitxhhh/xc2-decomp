@@ -849,6 +849,8 @@ public:
   void updateMatCallBack(const u32 *flags);
   void updateTimerCalc(const u32 *flags);
 
+  static const f32 MDL_SCALE_PARAMS; // Name from the game symbol _ZN2ml8DrMdoMat16MDL_SCALE_PARAMSE; the game value is 0x3f13cd3f (0.57735055f).
+
   static void (DrMdoMat::*s_pCallFstMatVal[])(const MdsMatInfoHeader *header, int valueIndex, int matIndex);
   static void (DrMdoMat::*s_pCallMatVal[])(const MdsMatInfoHeader *header, int valueIndex, int matIndex);
 

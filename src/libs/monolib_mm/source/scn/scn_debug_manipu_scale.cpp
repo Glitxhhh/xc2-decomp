@@ -12,4 +12,20 @@ ScnDebugManipuScale::ScnDebugManipuScale(Scn *scn, const mm::Mat44 *matrix, cons
 
 ScnDebugManipuScale::~ScnDebugManipuScale() {}
 
+void ScnDebugManipuScale::setRadius(f32 radius) {}
+
+bool ScnDebugManipuScale::checkMouseButtonUp(EventView *event) {
+  if (!unknown20) {
+    return false;
+  }
+  unknown388 = 7;
+  if (unknown18 != 0) {
+    unknown18 = 0;
+    return true;
+  }
+  return false;
+}
+
+void ScnDebugManipuScale::update() {}
+
 } // namespace ml

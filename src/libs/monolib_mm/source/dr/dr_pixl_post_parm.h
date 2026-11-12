@@ -361,7 +361,11 @@ public:
   f32 unknown109c; // Inferred role: wetness value, its ini default is the fallback of DrIniSys::getWetnessSetting; original member name unknown.
   u8 _10a0[0x10c0 - 0x10a0];
   u32 unknown10c0; // Inferred role: rain drop fade frames; original member name unknown.
-  u8 _10c4[0x10fc - 0x10c4];
+  u8 _10c4[0x10d4 - 0x10c4];
+  f32 unknown10d4; // Inferred role: first area parameter, set from the seam resource area table; original member name unknown.
+  f32 unknown10d8; // Inferred role: second area parameter, set from the seam resource area table; original member name unknown.
+  f32 unknown10dc; // Inferred role: third area parameter, set from the seam resource area table; original member name unknown.
+  u8 _10e0[0x10fc - 0x10e0];
   bool unknown10fc; // Inferred role: attri menu closed; original member name unknown.
   u8 _10fd[0x10fe - 0x10fd];
   bool unknown10fe; // Inferred role: disp reduction; original member name unknown.
@@ -516,6 +520,8 @@ static_assert(offsetof(DrPixlPostParm, unknown1084) == 0x1084, "");
 static_assert(offsetof(DrPixlPostParm, m_weatherFrame) == 0x1088, "");
 static_assert(offsetof(DrPixlPostParm, unknown109c) == 0x109c, "");
 static_assert(offsetof(DrPixlPostParm, unknown10c0) == 0x10c0, "");
+static_assert(offsetof(DrPixlPostParm, unknown10d4) == 0x10d4, "");
+static_assert(offsetof(DrPixlPostParm, unknown10dc) == 0x10dc, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fc) == 0x10fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fe) == 0x10fe, "");
 static_assert(offsetof(DrPixlPostParm, unknown1105) == 0x1105, "");

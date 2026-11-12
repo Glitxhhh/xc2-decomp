@@ -24,7 +24,9 @@ class CloudMdlDataObj;
 } // namespace cloud
 
 namespace grlib {
+class CGLibTriUniformBlock;
 class CGLibVtxInstans;
+template <typename T> class CGLibUniformArray;
 } // namespace grlib
 
 namespace ml {
@@ -122,6 +124,29 @@ static_assert(offsetof(unknown722, unknown34) == 0x34, "");
 static_assert(offsetof(unknown722, unknown38) == 0x38, "");
 static_assert(sizeof(unknown722) == 0x3c, "");
 
+// Inferred role: area of the seam resource, a box with three parameters; original type name unknown.
+struct unknown750 {
+  f32 unknown00;    // Inferred role: first parameter; original member name unknown.
+  f32 unknown04;    // Inferred role: second parameter; original member name unknown.
+  f32 unknown08[3]; // Inferred role: box maximum; original member name unknown.
+  f32 unknown14[3]; // Inferred role: box minimum; original member name unknown.
+  f32 unknown20;    // Inferred role: third parameter; original member name unknown.
+  u8 _24[0x30 - 0x24];
+};
+
+static_assert(offsetof(unknown750, unknown08) == 0x08, "");
+static_assert(offsetof(unknown750, unknown14) == 0x14, "");
+static_assert(offsetof(unknown750, unknown20) == 0x20, "");
+static_assert(sizeof(unknown750) == 0x30, "");
+
+// Inferred role: area table header of the seam resource; original type name unknown.
+struct unknown751 {
+  s32 unknown00; // Inferred role: area count; original member name unknown.
+  u32 unknown04; // Inferred role: offset of the areas from this header; original member name unknown.
+};
+
+static_assert(offsetof(unknown751, unknown04) == 0x04, "");
+
 // Inferred role: seam resource header; original type name unknown.
 struct unknown061 {
   u8 _00[0x18];
@@ -134,7 +159,7 @@ struct unknown061 {
   u32 m_seamShaderMax;
   u8 _48[0x50 - 0x48];
   u32 m_seamVertexMax;
-  u8 _54[0x58 - 0x54];
+  u32 unknown54; // Inferred role: offset of the vertex table; original member name unknown.
   u32 m_seamTextureMax;
   u32 unknown5c; // Inferred role: offset of the offset texture table; original member name unknown.
   u8 _60[0x64 - 0x60];
@@ -144,7 +169,8 @@ struct unknown061 {
   u32 unknown70; // Inferred role: offset of the instance position table; original member name unknown.
   u32 m_seamMpfPosDataMax;
   u32 unknown78; // Inferred role: offset of the mpf etc table; original member name unknown.
-  u8 _7c[0x84 - 0x7c];
+  u8 _7c[0x80 - 0x7c];
+  u32 unknown80; // Inferred role: offset of the area table; original member name unknown.
   u32 unknown84; // Inferred role: offset of the environment data; original member name unknown.
   u8 _88[0x8c - 0x88];
   u32 unknown8c; // Inferred role: offset of the light entries; original member name unknown.
@@ -173,6 +199,7 @@ static_assert(offsetof(unknown061, m_seamMpfPosDataMax) == 0x74, "");
 static_assert(offsetof(unknown061, unknown94) == 0x94, "");
 static_assert(offsetof(unknown061, unknown5c) == 0x5c, "");
 static_assert(offsetof(unknown061, unknown24) == 0x24, "");
+static_assert(offsetof(unknown061, unknown54) == 0x54, "");
 static_assert(offsetof(unknown061, unknown68) == 0x68, "");
 static_assert(offsetof(unknown061, unknown70) == 0x70, "");
 static_assert(offsetof(unknown061, unknown78) == 0x78, "");
@@ -340,6 +367,7 @@ static_assert(sizeof(DrResBitTbl) == 0x10, "");
 class DrMdoCtlSeam : public DrMdlObj {
 public:
   DrMdoCtlSeam(int viewNum);
+  DrResMdoSeamColi *getColiRes(int index);
   void *getColiListTbl();
   u32 getColiListMax();
   u32 isRead(int index) const;
@@ -378,6 +406,7 @@ public:
   void releaseFreeSeamMemObj(DrResMdoSeamMemObj *mem);
   void releaseFreeSeamTexList(DrResMdoSeamTexList *texList, bool isAll);
   void releaseFreeSeamVertex(DrResMdoSeamVertex *vertex, bool isAll);
+  void releaseFreeSeamCollision(DrResMdoSeamColi *coli, bool isAll);
   DrResMdoSeamMemObj *createFreeSeamMemObj4K(u32 size);
   DrResMdoSeamMemObj *createFreeSeamMemObjBack4K(u32 size);
   DrResMdoSeamColi *createFreeSeamCollision();
@@ -389,6 +418,7 @@ public:
   void calcFastUpdate();
   void updateTexutreSeam();
   void updateVertexSeam();
+  bool calcNormSeamMapMaterial(u32 *bits);
 
   unknown061 *unknown1a8;                                  // Inferred role: seam resource header; original member name unknown.
   unknown094<DrResMdoSeamTexture> unknown1b0;              // Inferred role: texture pool; original member name unknown.
@@ -417,16 +447,16 @@ public:
   u32 m_coliListMax[2];
   DrResEtcTexList *unknown658; // Inferred role: texture list; original member name unknown.
   u8 _660[0x698 - 0x660];
-  DrResMdoInstAnmObj unknown698; // Inferred role: inst anm object; original member name unknown.
-  unknown060 unknown6c8;         // Inferred role: etc pos list; original member name unknown.
-  const unknown097 *unknown6d8;  // Inferred role: global IBL list; original member name unknown.
-  DrResMdoSeamMemMan unknown6e0; // Inferred role: seam memory manager; original member name unknown.
-  u8 _b28[0xb30 - 0xb28];
-  cloud::CloudMdlDataObj *unknownb30; // Inferred role: cloud model data; original member name unknown.
-  MdoWrkMatRes *unknownb38;           // Inferred role: saved mat res; original member name unknown.
-  void *unknownb40;                   // Inferred role: memory pool buffer; original member name unknown.
-  u8 _b48[0xb50 - 0xb48];
-  u32 *unknownb50; // Inferred role: base map read bits; original member name unknown.
+  DrResMdoInstAnmObj unknown698;                                     // Inferred role: inst anm object; original member name unknown.
+  unknown060 unknown6c8;                                             // Inferred role: etc pos list; original member name unknown.
+  const unknown097 *unknown6d8;                                      // Inferred role: global IBL list; original member name unknown.
+  DrResMdoSeamMemMan unknown6e0;                                     // Inferred role: seam memory manager; original member name unknown.
+  grlib::CGLibUniformArray<grlib::CGLibTriUniformBlock> *unknownb28; // Inferred role: mdl uniforms; original member name unknown.
+  cloud::CloudMdlDataObj *unknownb30;                                // Inferred role: cloud model data; original member name unknown.
+  MdoWrkMatRes *unknownb38;                                          // Inferred role: saved mat res; original member name unknown.
+  void *unknownb40;                                                  // Inferred role: memory pool buffer; original member name unknown.
+  void *unknownb48;                                                  // Inferred role: memory buffer released with the memory pool buffer; original member name unknown.
+  u32 *unknownb50;                                                   // Inferred role: base map read bits; original member name unknown.
   u8 _b58[0xb60 - 0xb58];
   DrResBitTbl unknownb60; // Inferred role: base map render bits; original member name unknown.
   u32 *unknownb70;        // Inferred role: low map read bits; original member name unknown.
@@ -436,7 +466,9 @@ public:
   u32 *unknownb90; // Inferred role: mpf map read bits; original member name unknown.
   u8 _b98[0xba0 - 0xb98];
   u32 *unknownba0; // Inferred role: env map read bits; original member name unknown.
-  u8 _ba8[0xbc0 - 0xba8];
+  u8 _ba8[0xbb0 - 0xba8];
+  u32 *unknownbb0; // Inferred role: collision read bits; original member name unknown.
+  u8 _bb8[0xbc0 - 0xbb8];
   u32 *unknownbc0; // Inferred role: light read bits; original member name unknown.
   u8 _bc8[0xbd0 - 0xbc8];
   u16 *unknownbd0; // Inferred role: vertex use flags per seam index; original member name unknown.
@@ -543,6 +575,7 @@ static_assert(offsetof(DrMdoCtlSeam, unknownc50) == 0xc50, "");
 static_assert(offsetof(DrMdoCtlSeam, m_coliListMax) == 0x650, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncac) == 0xcac, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncae) == 0xcae, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownbb0) == 0xbb0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknowncb8) == 0xcb8, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown3e0) == 0x3e0, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown420) == 0x420, "");
@@ -551,7 +584,9 @@ static_assert(offsetof(DrMdoCtlSeam, unknown630) == 0x630, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown658) == 0x658, "");
 static_assert(offsetof(DrMdoCtlSeam, unknown6d8) == 0x6d8, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownb30) == 0xb30, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownb28) == 0xb28, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownb40) == 0xb40, "");
+static_assert(offsetof(DrMdoCtlSeam, unknownb48) == 0xb48, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownc2e) == 0xc2e, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownc34) == 0xc34, "");
 static_assert(offsetof(DrMdoCtlSeam, unknownc88) == 0xc88, "");

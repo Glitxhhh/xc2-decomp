@@ -3,6 +3,10 @@
 
 #include "types.h"
 
+namespace grlib {
+class CGLibTriUniformArray;
+} // namespace grlib
+
 namespace mm {
 struct Mat44;
 } // namespace mm
@@ -52,6 +56,7 @@ public:
   DrResMdoMeshObj();
   ~DrResMdoMeshObj();
   bool updateDisplayCheck(bool isDisp);
+  void updateUniforom(grlib::CGLibTriUniformArray *uniforms, bool isOld);
   int setup(const u8 *resource, u8 *work);
   int getIdx(const char *name) const;
   static int calcWorkSize(const u8 *resource);

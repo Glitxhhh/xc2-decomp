@@ -37,6 +37,14 @@ DrPixlPostObjToneMap::~DrPixlPostObjToneMap() {
   unknown70.release();
 }
 
+void DrPixlPostObjToneMap::createMeasureLuminance() {
+  if ((unknownb4 & 0x10) == 0) {
+    creaetMeasureLuminaceByRenderTarget();
+  } else {
+    createMeasureLuminanceByCompute();
+  }
+}
+
 void DrPixlPostObjToneMap::createSclDow() {
   unknown18[0]->setRenderTarget();
   DrShdDataList *shdList = unknown00->unknown80->unknown00;

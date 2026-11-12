@@ -26,6 +26,8 @@
 
 namespace ml {
 
+const f32 DrMdoMat::MDL_SCALE_PARAMS = 0.57735055f;
+
 void DrMdoMat::initMdlInfo(const u8 *data, MdoWrkMatRes *matRes) {
   const unknown022 *header = reinterpret_cast<const unknown022 *>(data);
   matRes->unknown18 = data;

@@ -19,6 +19,7 @@ public:
   void debugInfo() override;
   void calcLgtMat();
   bool setAddObjPos(const mm::Vec3 &position, f32 value);
+  bool clipAddTypeChk(const mm::Vec3 &position, f32 value);
 
   DrCalcClipWorkPlane unknown1a0; // Inferred role: clip planes; original member name unknown.
   u8 _270[0x2b0 - 0x270];

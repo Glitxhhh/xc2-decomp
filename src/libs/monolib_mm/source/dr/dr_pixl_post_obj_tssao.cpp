@@ -6,11 +6,53 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
 #include "grlib/cglib_ctl_shader.h"
-#include "grlib/cglib_render_target.h"
 #include "mm_math/mm_vec4.h"
 #include "mm_mtl/fixed_array.h"
 
 namespace ml {
+
+DrPixlPostObjTSSAO::~DrPixlPostObjTSSAO() {
+  if (unknown48 != nullptr) {
+    delete unknown48;
+    unknown48 = nullptr;
+  }
+  if (unknown68 != nullptr) {
+    delete unknown68;
+    unknown68 = nullptr;
+  }
+  if (unknown60 != nullptr) {
+    delete unknown60;
+    unknown60 = nullptr;
+  }
+  if (unknown40 != nullptr) {
+    delete unknown40;
+    unknown40 = nullptr;
+  }
+  if (unknown38 != nullptr) {
+    delete unknown38;
+    unknown38 = nullptr;
+  }
+  if (unknown28[0] != nullptr) {
+    delete unknown28[0];
+    unknown28[0] = nullptr;
+  }
+  if (unknown50[0] != nullptr) {
+    delete unknown50[0];
+    unknown50[0] = nullptr;
+  }
+  if (unknown28[1] != nullptr) {
+    delete unknown28[1];
+    unknown28[1] = nullptr;
+  }
+  if (unknown50[1] != nullptr) {
+    delete unknown50[1];
+    unknown50[1] = nullptr;
+  }
+  if (unknown20 != nullptr) {
+    delete unknown20;
+    unknown20 = nullptr;
+  }
+}
 
 void DrPixlPostObjTSSAO::calcFragCoordToUV(mm::Vec4 &uv, f32 width, f32 height) {
   uv.x = 1.0f / width;
