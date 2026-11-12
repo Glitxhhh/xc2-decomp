@@ -35,10 +35,13 @@ public:
   struct unknown001 {
     mm::mtl::Vector<GfFieldLocator> unknown00;                    // Inferred role: locators; original member name unknown.
     u32 unknown28;                                                // Inferred role: data num; original member name unknown.
+    u32 unknown2c;                                                // Inferred role: number of locators already added to the compass; original member name unknown.
     mm::mtl::FixedVector<OrderInfo, ORDER_UNKNOWN_128> unknown30; // Inferred role: orders; original member name unknown.
   };
 
   GfMenuLocation(const GfSetupParam &param);
+  static void build(const GfSetupParam &param);
+  static void destroy();
   void updateDataNum(u32 type);
   void refreshLocatorFromQuest(u32 index, u32 type);
   static bool isInitialized();
@@ -56,6 +59,7 @@ public:
 
 static_assert(sizeof(GfMenuLocation::OrderInfo) == 0x8, "");
 static_assert(offsetof(GfMenuLocation::unknown001, unknown28) == 0x28, "");
+static_assert(offsetof(GfMenuLocation::unknown001, unknown2c) == 0x2c, "");
 static_assert(offsetof(GfMenuLocation::unknown001, unknown30) == 0x30, "");
 static_assert(sizeof(GfMenuLocation::unknown001) == 0x438, "");
 static_assert(offsetof(GfMenuLocation, unknown10) == 0x10, "");

@@ -119,6 +119,14 @@ void GfGameSearchObj::destroyObj(GF_SEARCH_OBJ *searchObj) {
   }
 }
 
+void GfGameSearchObj::update(const fw::UpdateInfo &) {
+  GfGameSearchObj *search = get();
+  search->unknowne940.unknown001();
+  for (mm::mtl::FixedList<GF_SEARCH_OBJ *, 64>::iterator it = search->unknown2438.begin(); it != search->unknown2438.end(); ++it) {
+    search->updateObj(*it);
+  }
+}
+
 } // namespace gf
 
 template class ml::fixed_size_alloc_inside<gf::GfGameSearchObj::GFSEARCH_INFO, 64>;

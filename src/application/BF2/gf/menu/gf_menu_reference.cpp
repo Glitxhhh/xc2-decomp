@@ -2,8 +2,10 @@
 
 #include <new>
 
+#include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_search_obj.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
@@ -929,6 +931,35 @@ void GfMenuReference::clearPartyStatusLock() {
     reference->unknown4cf08.clear();
   }
   GfMenuObjPartyStatus::lock(false);
+}
+
+int GfMenuReference::getBladeSetIDFromParty(u32 partyId, u32 slot) {
+  DataParamAcc acc(GfGameParty::getHandleDriver(partyId));
+  int result = -1;
+  if (acc.isValid()) {
+    u32 slotMax = GfMenuObjUtil::getBladeSlotMax();
+    if (slot < slotMax) {
+      int setId = acc.getBladeSet(false);
+      if (GfMenuManager::isBattleState(0) || GfMenuManager::isBattleState(1)) {
+        setId = GfSelectBlade::getStartBattleSetId(partyId);
+      }
+      if (acc.getValidDriverId() == DRIVER_UNKNOWN_1 && (setId == 3 || setId == 4)) {
+        if (acc.getBlade(0, false) == BLADE_HOMURA) {
+          setId = 0;
+        } else if (acc.getBlade(1, false) == BLADE_HOMURA) {
+          setId = 1;
+        } else if (acc.getBlade(2, false) == BLADE_HOMURA) {
+          setId = 2;
+        }
+      }
+      u32 index = setId + slot;
+      if (index >= slotMax) {
+        index -= slotMax;
+      }
+      result = index;
+    }
+  }
+  return result;
 }
 
 } // namespace gf

@@ -6,12 +6,14 @@
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_item.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/list/gf_menu_sort_type.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
+#include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/vector.h"
 
 namespace gf {
@@ -402,6 +404,33 @@ void GfMenuItemList::setupFromHanaParts(const HanaPartsSetup &setup) {
         info.unknown04 = id;
         info.unknown08 = GfItemUtil::getItemBoxCount(id);
         addContents(info);
+      }
+    }
+  }
+}
+
+void GfMenuItemList::setupFromQuestReward(const QuestRewardSetup &setup) {
+  mm::mtl::FixedVector<MenuItemInfo, 4> items;
+  GfQuestReward reward;
+  if (setup.unknown14 != 0 && GfQuestUtil::getReward(reward, setup.unknown14, false)) {
+    for (u32 slot = QUEST_REWARD_UNKNOWN_8; slot <= QUEST_REWARD_UNKNOWN_11; slot++) {
+      u16 item = reward.unknown00[slot].unknown44;
+      if (item != 0) {
+        MenuItemInfo info;
+        info.unknown00 = GfDataItem::getItemType(item);
+        info.unknown04 = item;
+        info.unknown08 = reward.unknown00[slot].m_developZone;
+        items.push_back(info);
+      }
+    }
+    if (items.size() == 0) {
+      clear();
+    } else {
+      UIListInfo<MenuItemInfo>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), setup.unknown00);
+      if (isValid()) {
+        for (u32 i = 0; i < items.size(); i++) {
+          addContents(items[i]);
+        }
       }
     }
   }

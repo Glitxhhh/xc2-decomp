@@ -11,6 +11,10 @@
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
+namespace fw {
+struct UpdateInfo;
+} // namespace fw
+
 namespace gf {
 
 struct GF_OBJ_HANDLE;
@@ -106,6 +110,8 @@ public:
   void finalize();
   void destroyList(mm::mtl::FixedList<GfSearchInfo *, 256> *list);
   static GF_SEARCH_OBJ *createObj(const GfSearchParam &param);
+  static void update(const fw::UpdateInfo &info);
+  void updateObj(GF_SEARCH_OBJ *searchObj);
   static void destroyObj(GF_SEARCH_OBJ *searchObj);
   static void setEnable(GF_SEARCH_OBJ *searchObj, bool isEnable);
   static bool isEnable(GF_SEARCH_OBJ *searchObj);

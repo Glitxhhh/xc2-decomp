@@ -201,6 +201,7 @@ public:
   static void setPartyStatusLock(u32 index, bool isLock);
   static void clearPartyStatusLock();
   static void setPaletteModeReverse(bool isReverse);
+  static int getBladeSetIDFromParty(u32 partyId, u32 slot);
 
   ml::fixed_size_alloc_inside<MENUREF_OBJ, 512> unknown08; // Inferred role: referenced object pool; original member name unknown.
   ml::fixed_size_alloc_inside<REFLIST, 32> unknown4070;    // Inferred role: reference list pool; original member name unknown.

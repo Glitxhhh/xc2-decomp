@@ -10,6 +10,7 @@
 #include "types.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
+#include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/plugin/ui_object_text_plugin.h"
 #include "ui/ui_object_acc.h"
 
@@ -43,6 +44,33 @@ void GfMenuObjCompass::dispInBattle(bool isDisp) {
       event.unknown00 = 0x101;
       event.unknown08 = isDisp;
       sendEvent(handle, event, 0.0f);
+    }
+  }
+}
+
+void GfMenuObjCompass::addLocator(const LocatorParam &param) {
+  u32 handle = getAttachedObject(unknown002);
+  if (ui::UIObjectAcc(handle).isValid()) {
+    if (!ui::UIObjectAcc(handle).isTerm()) {
+      ui::UIObjectAcc root(handle);
+      ui::UIObjectAcc icon(root.duplicateChild("LAY_icon"));
+      if (icon.isValid()) {
+        icon.setDispPriority(icon.getDispPriority() + 4 - param.unknown00);
+        {
+          ui::UIObjectAcc length(icon.searchChild("TXT_len"));
+          if (length.isValid()) {
+            ui::UIObjectNumberPlugin *plugin = ui::UIObjectNumberPlugin::create(length.unknown10);
+            if (plugin != nullptr) {
+              plugin->release();
+            }
+          }
+        }
+        IconObj obj;
+        obj.unknown00 = icon.unknown10;
+        obj.unknown04 = param;
+        obj.unknown0c = 2;
+        m_IconObjList.push_back(obj);
+      }
     }
   }
 }

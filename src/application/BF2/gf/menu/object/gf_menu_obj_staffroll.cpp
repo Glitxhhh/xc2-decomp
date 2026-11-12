@@ -5,13 +5,19 @@
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_types.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 #include "ui/ui_util.h"
 
 namespace gf {
+
+// Inferred role: name of the text object of each column alignment; original name unknown.
+const char *const unknown002[] = {"TXT_left", "TXT_center", "TXT_right", "TXT_right2"};
 
 // Inferred role: attached call id; original name unknown.
 constexpr u32 unknown001 = 0x85;
@@ -48,6 +54,60 @@ void GfMenuObjStaffroll::finalize() {
     unknown78.destroy();
   }
   GfMenuObject::finalize();
+}
+
+u32 GfMenuObjStaffroll::createText(u32 index, const CreditReader::Column &column) {
+  mm::mtl::FixStr<32> name;
+  const char *size;
+  if (column.unknown04 < 22) {
+    size = "_px20";
+  } else if (column.unknown04 < 24) {
+    size = "_px22";
+  } else if (column.unknown04 < 28) {
+    size = "_px24";
+  } else {
+    size = "_px28";
+  }
+  if (index == 1 && column.unknown08 == 0) {
+    index = 3;
+  }
+  name.format("%s%s", unknown002[index], size);
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  ui::UIObjectAcc text(main.duplicateChild(name.c_str()));
+  if (!text.isValid()) {
+    return 0;
+  }
+  switch (column.unknown08) {
+  case 0:
+    text.setTextAlignH(0);
+    break;
+  case 1:
+    text.setTextAlignH(1);
+    break;
+  case 2:
+    text.setTextAlignH(2);
+    break;
+  }
+  text.setBorderWeight(-0.5f);
+  text.setSlopeRot(-12.0f);
+  if (column.unknown00) {
+    text.setBorderWeight(1.0f);
+    text.setAddColor("white");
+  }
+  text.setText(ui::UIStr(column.unknown10, false));
+  text.setDisp(true);
+  return text.unknown10;
+}
+
+void GfMenuObjStaffroll::start(f32 time, int type) {
+  ui::UIObjectAcc acc(getAttachedObject(unknown001));
+  if (acc.isValid()) {
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    event.unknown08_f32 = time;
+    event.unknown0c = type;
+    sendEvent(acc.unknown10, event, 0.0f);
+  }
 }
 
 void GfMenuObjStaffroll::fadeout() { unknown144(unknown001, GfMenuTypes::unknown003_34); }

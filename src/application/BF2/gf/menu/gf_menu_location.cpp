@@ -13,7 +13,9 @@
 #include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/quest/gf_quest_task.h"
 #include "gf/game/quest/gf_quest_task_param.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_fullscreen.h"
+#include "gf/menu/object/gf_menu_obj_compass.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_acc.h"
 #include "mm_math/mm_vec3.h"
@@ -36,6 +38,13 @@ static const unknown002 unknown003[] = {{415, 455}, {416, 456}, {417, 457}};
 // Inferred role: number of entries of the locator type to icon table; original name unknown.
 constexpr u32 unknown004 = sizeof(unknown003) / sizeof(unknown003[0]);
 
+// Inferred role: capacity of the locators of each locator type; original name unknown.
+static const u32 unknown005[GfMenuLocation::LOCATOR_TYPE_UNKNOWN_4] = {4, 4, 1, 16};
+// Inferred role: number of locators of each locator type shown on the compass; original name unknown.
+static const u32 unknown006[GfMenuLocation::LOCATOR_TYPE_UNKNOWN_4] = {5, 5, 1, 2};
+// Role unknown; the game passes 50 for the last locator type and 0 for the others; original name unknown.
+constexpr int OFFSET_UNKNOWN_50 = 50;
+
 bool GfMenuLocation::isInitialized() {
   GfMenuLocation *location = get();
   if (location != nullptr) {
@@ -45,6 +54,56 @@ bool GfMenuLocation::isInitialized() {
 }
 
 GfMenuLocation::GfMenuLocation(const GfSetupParam &param) : unknown10(), unknown10f0(0) {}
+
+void GfMenuLocation::build(const GfSetupParam &param) {
+// __LINE__ must be 74 as in the original file: it is the line argument of operator new.
+#line 74
+  GfMenuLocation *location = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfMenuLocation(param);
+  for (u32 type = 0; type < LOCATOR_TYPE_UNKNOWN_4; type++) {
+    unknown001 &group = location->unknown10[type];
+    group.unknown28 = 0;
+    group.unknown00.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
+    group.unknown00.reserve(unknown005[type]);
+    group.unknown2c = 0;
+  }
+  location->unknown08 = true;
+  location->unknown10f0 = 0;
+}
+
+void GfMenuLocation::destroy() {
+  GfMenuLocation *location = get();
+  for (u32 type = 0; type < LOCATOR_TYPE_UNKNOWN_4; type++) {
+    if (location->unknown10[type].unknown00.capacity() != 0) {
+      location->unknown10[type].unknown00.destroy();
+    }
+  }
+  delete location;
+}
+
+void GfMenuLocation::updateLocator() {
+  GfMenuLocation *location = get();
+  if (location != nullptr) {
+    for (u32 type = 0; type < LOCATOR_TYPE_UNKNOWN_4; type++) {
+      unknown001 &group = location->unknown10[type];
+      for (size_t i = 0; i < group.unknown00.size(); i++) {
+        group.unknown00[i].update();
+      }
+      location->updateDataNum(type);
+      if (group.unknown2c < group.unknown28) {
+        int count = group.unknown28 - group.unknown2c;
+        int i;
+        for (i = 0; i < count && group.unknown2c + i + 1 <= unknown006[type]; i++) {
+          GfMenuObjCompass::LocatorParam param;
+          param.unknown00 = type;
+          param.unknown02 = group.unknown2c + i;
+          param.unknown04 = type == 3 ? OFFSET_UNKNOWN_50 : 0;
+          GfMenuObjCompass::addLocator(param);
+        }
+        group.unknown2c += i;
+      }
+    }
+  }
+}
 
 u32 GfMenuLocation::getLocatorDataNum(u32 type) {
   GfMenuLocation *location = get();
