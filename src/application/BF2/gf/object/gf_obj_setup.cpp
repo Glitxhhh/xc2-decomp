@@ -13,6 +13,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_obj_manager.h"
+#include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_math.h"
 
@@ -215,6 +216,27 @@ GfObjSetupMapLodAnim *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const 
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   GfObjSetupMapLodAnim *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupMapLodAnim(param);
   info->unknown30 = setup;
+  return setup;
+}
+
+GfObjSetupEnemy *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamEnemy &param) {
+  GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
+  // __LINE__ must be 216 as in the original file: it is the line argument of the allocation.
+#line 216
+  GfObjSetupEnemy *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupEnemy(param);
+  info->unknown30 = setup;
+  setup->unknown6c = param.unknown98;
+  setup->m_enArrangeID = param.m_enArrangeID != 0 ? param.m_enArrangeID : 1;
+  if (param.unknowna8 != 0) {
+    setup->unknowna8 = param.unknowna8;
+  }
+  // __LINE__ must be 227 as in the original file: it is the line argument of the allocation.
+#line 227
+  setup->unknowna0 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SDataEnemy(setup->m_enArrangeID, param.unknownac);
+  GfObjSetupEnemy *owner = GfObjUtil::getObjSetup<GfObjSetupEnemy>(param.unknown38);
+  if (owner != nullptr && setup->unknowna0->unknown41 != 0) {
+    owner->unknowna0->unknown41 = setup->unknowna0->unknown41;
+  }
   return setup;
 }
 

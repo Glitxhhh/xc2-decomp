@@ -30,6 +30,7 @@ class GfObjSetupBlade;
 class GfObjSetupDriver;
 class GfObjSetupEnWeapon;
 class GfObjSetupEventObj;
+class GfObjSetupEnemy;
 class GfObjSetupExtra;
 class GfObjSetupFieldObj;
 class GfObjSetupGimmick;
@@ -90,6 +91,7 @@ public:
   static GfObjSetupMap *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMapSeamless &param);
   static GfObjSetupMap *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMap &param);
   static GfObjSetupMapLodAnim *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMapLodAnim &param);
+  static GfObjSetupEnemy *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamEnemy &param);
   static GfObjSetupNpc *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamNpc &param);
   static GfObjSetupMob *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMob &param);
   static GfObjSetupGimmick *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamGimmick &param);

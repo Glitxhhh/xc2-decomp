@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/gf_allocator.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
@@ -45,6 +46,7 @@ static_assert(offsetof(GfMenuReferenceDriverFavoriteItem, unknown10) == 0x10, ""
 
 class GfMenuReferenceBladeEquipItem : public IGfMenuReferenceItem {
 public:
+  GfMenuReferenceBladeEquipItem(u32 blade, u32 slot) : unknown0c(blade), unknown10(slot) {}
   void getItem(MenuItemInfo &info) const override;
 
   u32 unknown0c; // Inferred role: reference blade index; original member name unknown.
@@ -53,6 +55,11 @@ public:
 
 static_assert(offsetof(GfMenuReferenceBladeEquipItem, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfMenuReferenceBladeEquipItem, unknown10) == 0x10, "");
+
+// Inferred helper: allocates a reference blade equip item; original name unknown.
+// __LINE__ must be 172 as in the original header: it is the line argument of operator new.
+#line 172
+inline GfMenuReferenceBladeEquipItem *unknown161(u32 blade, u32 slot) { return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuReferenceBladeEquipItem(blade, slot); }
 
 class GfMenuReferenceBladeFavoriteItem : public IGfMenuReferenceItem {
 public:

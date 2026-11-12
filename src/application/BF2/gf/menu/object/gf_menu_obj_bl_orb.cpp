@@ -1,18 +1,25 @@
 #include "gf/menu/object/gf_menu_obj_bl_orb.h"
 
+#include "gf/data/gf_data_item.h"
 #include "gf/data/gf_item_handle.h"
+#include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_enhance_adapter.h"
+#include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_item_util.h"
 #include "gf/menu/gf_menu_reference.h"
+#include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/util/gf_equip_util.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -32,6 +39,122 @@ GfMenuObjBlOrb::~GfMenuObjBlOrb() {
   mm::mtl::safeRelease(unknown48);
   mm::mtl::safeRelease(unknown2f0);
   unknown50 = nullptr;
+}
+
+void GfMenuObjBlOrb::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  if (main.isValid()) {
+    unknown24 = 0;
+    u32 blade = GfMenuReference::getReferenceBladeID(0);
+// __LINE__ must be 87 as in the original file: it is the line argument of operator new.
+#line 87
+    MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+    mainListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(main.unknown10, mainListener);
+    if (mainListener != nullptr) {
+      mainListener->release();
+    }
+    attachExternalCall(unknown001, main.unknown10);
+    {
+      ui::UIObjectAcc slot(main.unknown10, "LAY_slot");
+      u32 equipOrbMax = GfEquipUtil::getEquipOrbMax(blade);
+// __LINE__ must be 100 as in the original file: it is the line argument of operator new.
+#line 100
+      SlotListener *slotListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SlotListener(this);
+      slotListener->addRef();
+      ui::UIEventManager::get()->registObjectListener(slot.unknown10, slotListener);
+      if (slotListener != nullptr) {
+        slotListener->release();
+      }
+      if (equipOrbMax == 0) {
+        slot.setDisp(false);
+      } else {
+        {
+          ui::UISelectObjList::CreateParam createParam = {};
+          createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+          unknown28 = ui::UISelectObjList::create(createParam);
+        }
+        unknown28->pickupObject(slot.unknown10, "LAY_slot_item@%02d", 1);
+        if (unknown28->getSize() != 0) {
+          ui::UICtrlCursorSelect::CursorSetting setting;
+          mm::mtl::FixStr<32> name;
+          setting.unknown18 = 5;
+          setting.unknown1a = 8;
+          setting.unknown1c = 8;
+          setting.setType(0);
+          unknown30 = ui::UICtrlCursorSelect::create(slot.searchChild("IMG_slot_cursor"), setting, unknown28);
+          slot.setDispChild(true, "IMG_slot_cursor");
+          setupInputSelection(slot.unknown10, 0, equipOrbMax);
+          for (u32 i = 0; i < unknown28->getSize(); i++) {
+            ui::UIObjectAcc item(unknown28->getObject(i));
+            if (i < equipOrbMax) {
+              mm::mtl::IntrusivePtr<IGfMenuReferenceItem> reference(unknown161(blade, i));
+              name.format("TXT_slot_item_name@%02d", i + 1);
+              GfMenuItemAdapter *adapter = GfMenuItemAdapter::createFromReference(item.searchChild(name.c_str()), 0, reference, false);
+              name.format("LAY_slot_item_body@%02d", i + 1);
+              adapter->unknown24 = item.searchChild(name.c_str());
+              name.format("TXT_slot_item_enhance@%02d", i + 1);
+              GfMenuEnhanceAdapter::createFromReferenceItem(item.searchChild(name.c_str()), 0, reference, false);
+            } else {
+              item.setDisp(false);
+            }
+          }
+        }
+      }
+    }
+    {
+      ui::UIObjectAcc itemSelect(main.unknown10, "LAY_item_select");
+// __LINE__ must be 177 as in the original file: it is the line argument of operator new.
+#line 177
+      ItemListener *itemListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ItemListener(this);
+      itemListener->addRef();
+      ui::UIEventManager::get()->registObjectListener(itemSelect.unknown10, itemListener);
+      if (itemListener != nullptr) {
+        itemListener->release();
+      }
+      {
+        ui::UISelectObjList::CreateParam createParam = {};
+        createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+        unknown40 = ui::UISelectObjList::create(createParam);
+      }
+      unknown40->pickupObject(itemSelect.unknown10, "LAY_item@%02d", 1);
+      if (unknown40->getSize() != 0) {
+        {
+          GfMenuItemList::ItemBoxSetup setup;
+          mm::mtl::FixStr<32> name;
+          unknown38 = GfMenuItemList::create();
+          setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_3;
+          setup.unknown00.unknown08 = unknown40->getSize();
+          unknown38->setupFromBox(setup);
+          unknown38->setIndex(0);
+          for (u32 i = 0; i < unknown40->getSize(); i++) {
+            ui::UIObjectAcc item(unknown40->getObject(i));
+            if (item.isValid()) {
+              GfMenuItemAdapter::createFromList(item.unknown10, 8, unknown38, i, false);
+              name.format("TXT_item_name@%02d", i + 1);
+              GfMenuItemAdapter *adapter = GfMenuItemAdapter::createFromList(item.searchChild(name.c_str()), 0, unknown38, i, false);
+              adapter->unknown24 = item.unknown10;
+              name.format("TXT_item_num@%02d", i + 1);
+              GfMenuItemAdapter::createFromList(item.searchChild(name.c_str()), 3, unknown38, i, false);
+            }
+          }
+        }
+        GfMenuObjUtil::createVScrollBarPlugin(itemSelect.searchChild("IMG_item_list_scr_bar"), unknown38, "IMG_item_list_scr_base", true);
+        if (unknown38->getSize() != 0) {
+          ui::UICtrlCursorSelect::CursorSetting setting;
+          setting.unknown18 = 1;
+          setting.unknown1a = 4;
+          setting.setType(0);
+          unknown48 = ui::UICtrlCursorSelect::create(itemSelect.searchChild("IMG_item_list_cursor"), setting, unknown40);
+          itemSelect.setDispChild(true, "IMG_item_list_cursor");
+          setupInputSelectionFromList(itemSelect.unknown10, *unknown38);
+        }
+      }
+      GfMenuEnhanceAdapter::createFromItemList(itemSelect.searchChild("TXT_detail_enhance_text"), 0, unknown38, -1, false);
+    }
+    unknown50 = unknown160();
+    GfMenuObject::initialize();
+  }
 }
 
 void GfMenuObjBlOrb::finalize() { GfMenuObject::finalize(); }

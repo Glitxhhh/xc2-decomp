@@ -23,9 +23,19 @@ class GfMenuObjBlWeapon : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjBlWeapon *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];          // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjBlWeapon *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class ItemListener : public ui::UIObjectListener {
+  public:
+    ItemListener(GfMenuObjBlWeapon *owner) : unknown0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 unknown0c[0x1c - 0x0c];
     GfMenuObjBlWeapon *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -73,6 +83,8 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjBlWeapon::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjBlWeapon::ItemListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBlWeapon::ItemListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjBlWeapon, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjBlWeapon, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjBlWeapon, unknown30) == 0x30, "");
