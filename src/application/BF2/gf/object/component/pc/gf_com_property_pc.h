@@ -134,7 +134,7 @@ public:
   }
 
   u32 unknown38; // Inferred role: player id set by MsgPcFieldNotifyChangePlayerID; original member name unknown.
-  u8 _3c[0x40 - 0x3c];
+  u32 unknown3c; // Inferred role: unknown; compared with 2 by StateUtilField::requestBattleStart; original member name unknown.
   f32 unknown40; // Inferred role: head height, the head collision position is only computed above FLT_EPSILON; original member name unknown.
   u8 _44[0x50 - 0x44];
   mm::Vec3 unknown50; // Inferred role: head collision position; original member name unknown.
@@ -208,6 +208,7 @@ public:
 };
 
 static_assert(offsetof(GfComPropertyPc, unknown38) == 0x38, "");
+static_assert(offsetof(GfComPropertyPc, unknown3c) == 0x3c, "");
 static_assert(offsetof(GfComPropertyPc, unknown40) == 0x40, "");
 static_assert(offsetof(GfComPropertyPc, unknown50) == 0x50, "");
 static_assert(offsetof(GfComPropertyPc, unknown60) == 0x60, "");

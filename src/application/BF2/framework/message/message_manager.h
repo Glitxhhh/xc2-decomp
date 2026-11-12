@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "framework/framework.h"
 #include "framework/manager_object.h"
 #include "framework/message/message_object.h"
 #include "framework/pointer_map.h"
@@ -95,5 +96,15 @@ static_assert(offsetof(MessageManager::Impl, unknown40) == 0x40, "");
 static_assert(offsetof(MessageManager::Impl, unknown50) == 0x50, "");
 static_assert(sizeof(MessageManager::Impl) == 0xc0, "");
 static_assert(offsetof(MessageManager, unknown18) == 0x18, "");
+
+template <typename T> void MessageObject::unknown009(MessageObject *receiver, f32 delay, int value) {
+  if (MessageManager::get() != nullptr) {
+// The game compiles this allocation from line 61 of framework/message/message_object.h (its file string and line are
+// arguments of operator new); the helper's original definition there is not reconstructed yet.
+#line 61 "framework/message/message_object.h"
+    T *message = new (Framework::getAllocator(), 4, __FILE__, __LINE__) T(value);
+    MessageManager::get()->push(this, receiver, message, delay);
+  }
+}
 
 } // namespace fw

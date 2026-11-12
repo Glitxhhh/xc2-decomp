@@ -3,12 +3,15 @@
 #include <float.h>
 #include <math.h>
 
+#include "framework/memory/framework_memory.h"
+#include "framework/message/message_manager.h"
 #include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/reference_frame.h"
 #include "fw/fw_param_manager.h"
 #include "fw/fw_transform.h"
 #include "gf/camera/gf_camera_player.h"
+#include "gf/game/gf_game_mover_switcher.h"
 #include "gf/game/gf_game_player_camera.h"
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/game/gf_game_ride.h"
@@ -291,6 +294,26 @@ void StateUtilField::resetCameraForWall(GfComBehaviorPc &behavior, Timing timing
   static const ResetCameraWallTiming unknown015[] = {
       RESET_CAMERA_WALL_TIMING_UNKNOWN_0, RESET_CAMERA_WALL_TIMING_UNKNOWN_1, RESET_CAMERA_WALL_TIMING_UNKNOWN_2}; // Inferred role: camera timings; original name unknown.
   GfGamePlayerCamera::resetCameraClimb(unknown015[timing]);
+}
+
+bool StateUtilField::requestBattleStart(GfComPropertyPc &property) {
+  if (property.unknown3c != 2) {
+    return false;
+  }
+
+  if (GfGameRide::testRideOn()) {
+    GfGameRide *ride = GfGameRide::get();
+    if (ride != nullptr) {
+      static_cast<GfObj *>(property.unknown08)->unknown009<MsgGameRideEvent>(ride, 0.0f, RIDE_EVENT_UNKNOWN_1);
+    }
+  } else {
+    GfGameMoverSwitcher *switcher = GfGameMoverSwitcher::get();
+    if (switcher != nullptr) {
+      static_cast<GfObj *>(property.unknown08)->unknown009<MsgGameSwitchControlMover>(switcher, 0.0f, 1);
+    }
+  }
+
+  return true;
 }
 
 void StateUtilField::notifySkillAct(GfComBehaviorPc &behavior, bool isSkillAct) {

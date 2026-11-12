@@ -65,6 +65,7 @@ public:
   };
 
   static bool execAsmCmd(GfComAsm &comAsm, ASM_CMD_ID_FIELD id);
+  static bool requestBattleStart(GfComPropertyPc &property);
   static bool testVechile(GfComBehaviorPc &behavior);
   static void setEnableFallIntoColi(GfComBehaviorPc &behavior, bool isEnable);
   static bool isWalkMode(GfComPropertyPc &property);

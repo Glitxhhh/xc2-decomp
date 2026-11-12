@@ -177,6 +177,31 @@ void MovieManager::preloadAuto(const char *name, bool isFullSize) {
   preload(path.c_str(), isFullSize);
 }
 
+void MovieManager::preload(const char *path, bool isFullSize) {
+  if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkip()) {
+    close();
+    return;
+  }
+  if (!(unknown10 & FLAG_UNKNOWN_1) || !isSame(unknown14.c_str(), path) || unknown118 != isFullSize) {
+    gf::GfMovieManager::get()->stop();
+    gf::GfMovieManager::get()->close();
+    gf::GfMovieManager *movie = gf::GfMovieManager::get();
+    gf::GfAllocator *allocator = gf::getAllocator(gf::ALLOCATOR_UNKNOWN_10);
+    if (isFullSize) {
+      movie->open(allocator, 1280, 720);
+    } else {
+      movie->open(allocator);
+    }
+    if (!gf::GfMovieManager::get()->set_file(mm::mtl::Singleton<Extend>::getPtr()->webm(path))) {
+      gf::GfMovieManager::get()->close();
+      return;
+    }
+    unknown10 = (unknown10 & ~(FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1 | FLAG_UNKNOWN_6)) | FLAG_UNKNOWN_0 | FLAG_UNKNOWN_1;
+    unknown14 = path;
+    unknown118 = isFullSize;
+  }
+}
+
 bool MovieManager::isSame(const char *path, const char *otherPath) {
   mm::mtl::FixStr<256> rootedPath;
   if (path[0] != '\0' && path[0] != '/') {

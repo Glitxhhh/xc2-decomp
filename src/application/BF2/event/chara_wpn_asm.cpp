@@ -1,6 +1,7 @@
 #include "event/chara_wpn_asm.h"
 
 #include "gf/event/gf_evt_model.h"
+#include "gf/object/gf_obj_util.h"
 
 namespace event {
 
@@ -13,6 +14,25 @@ void CharaWpnAsm::clear() {
   unknown10 = nullptr;
   unknown18 = nullptr;
   unknown50 = MOT_UNKNOWN_1;
+}
+
+void CharaWpnAsm::update(f32 speed) {
+  if (unknown10 == nullptr || gf::GfObjUtil::getObj(unknown10->unknown20) == nullptr) {
+    clear();
+    return;
+  }
+  if ((unknown08 & FLAG_UNKNOWN_0) != 0 && isPlayEnd(unknown10, (unknown08 & FLAG_UNKNOWN_2) != 0)) {
+    unknown08 &= ~FLAG_UNKNOWN_0;
+  }
+  if ((unknown08 & FLAG_UNKNOWN_0) == 0 && !unknown28.empty()) {
+    play(unknown10, unknown28.front(), (unknown08 & FLAG_UNKNOWN_2) != 0, unknown18);
+    unknown28.erase(unknown28.begin());
+    if (!unknown28.empty()) {
+      unknown08 |= FLAG_UNKNOWN_0;
+    }
+  }
+  setSpeed(unknown10, unknown20, (unknown08 & FLAG_UNKNOWN_2) != 0);
+  unknown20 = speed;
 }
 
 bool CharaWpnAsm::isPlayEnd(gf::GfEvtModel *model, bool isLeft) {

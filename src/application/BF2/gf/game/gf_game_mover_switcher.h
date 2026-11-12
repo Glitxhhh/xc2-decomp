@@ -15,6 +15,8 @@ constexpr u32 MSG_UNKNOWN_16777265 = 0x1000031; // Inferred role: msg game switc
 // Layout evidence: StateUtilField::requestBattleStart (0x710054e6a8) builds it with the id 0x1000031 and 1 in the member at 0x8;
 // GfGameMoverSwitcher::recieveMessage compares that member with 1.
 struct MsgGameSwitchControlMover : fw::Message {
+  explicit MsgGameSwitchControlMover(u32 kind) : fw::Message(MSG_UNKNOWN_16777265, 0), unknown08(kind) {}
+
   u32 unknown08; // Inferred role: switch kind, 1 starts a battle; original member name unknown.
 };
 

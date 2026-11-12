@@ -47,6 +47,7 @@
 #include "gf/object/gf_obj_util.h"
 #include "gf/scom/gf_scom_obj.h"
 #include "gf/script/gf_script_manager.h"
+#include "gmk/gmk_acc.h"
 #include "gmk/gmk_anti_blade_area.h"
 #include "gmk/gmk_area_bgm.h"
 #include "gmk/gmk_area_weather.h"
@@ -1960,6 +1961,43 @@ BootedGmkCond::BootedGmkCond(const CBdatWrapper &bdat, int id, const char *prefi
 }
 
 void BootedGmkCond::dispose() { unknown00 = 0; }
+
+bool BootedGmkCond::isMatch() const {
+  GmkAcc::CreateInfoByBdatId info;
+  switch (unknown00) {
+  case 1:
+    info.unknown00 = GMK_TYPE_MAP_GIMMICK;
+    break;
+  case 2:
+    info.unknown00 = GMK_TYPE_DOOR;
+    break;
+  case 3:
+    info.unknown00 = GMK_TYPE_ELEVATOR;
+    break;
+  case 4:
+    info.unknown00 = GMK_TYPE_WARP;
+    break;
+  case 5:
+    info.unknown00 = GMK_TYPE_JUMP;
+    break;
+  case 6:
+    info.unknown00 = GMK_TYPE_DMG_GIMMICK;
+    break;
+  default:
+    return false;
+  }
+  info.unknown04 = unknown02;
+  GmkAcc acc(info);
+  bool isMatched = false;
+  if (acc.isValid()) {
+    if (unknown00 == 1) {
+      isMatched = !static_cast<const GmkMapGimmick *>(acc.unknown38)->isNotSolved();
+    } else if (unknown00 == 2) {
+      isMatched = static_cast<const GmkDoor *>(acc.unknown38)->isGmkFinished();
+    }
+  }
+  return isMatched;
+}
 
 } // namespace gmk
 

@@ -60,19 +60,16 @@ public:
 
   mm::mtl::FixedVector<mm::mtl::IntrusivePtr<FootPlacementIKSolver>, 6> unknown20; // Inferred role: main foot solvers; original member name unknown.
   mm::mtl::FixedVector<mm::mtl::IntrusivePtr<FootPlacementIKSolver>, 6> unknown58; // Inferred role: sub foot solvers; original member name unknown.
-  f32 unknown90;                                                                   // Inferred role: unknown; original member name unknown.
-  u32 unknown94;                                                                   // Inferred role: unknown; original member name unknown.
-  u64 unknown98;                                                                   // Inferred role: unknown; original member name unknown.
-  u64 unknowna0;                                                                   // Inferred role: unknown; original member name unknown.
-  u32 unknowna8;                                                                   // Inferred role: ground fit enable; original member name unknown.
-  f32 unknownac;                                                                   // Inferred role: unknown; original member name unknown.
-  f32 unknownb0;                                                                   // Inferred role: unknown; original member name unknown.
-  u16 unknownb4;                                                                   // Inferred role: main body bone index; original member name unknown.
-  u16 unknownb6;                                                                   // Inferred role: sub body bone index; original member name unknown.
-  bool unknownb8;                                                                  // Inferred role: placement enabled; original member name unknown.
-  bool unknownb9;                                                                  // Inferred role: unknown; original member name unknown.
-  bool unknownba;                                                                  // Inferred role: main placement enabled; original member name unknown.
-  bool unknownbb;                                                                  // Inferred role: sub placement enabled; original member name unknown.
+  Description unknown90; // Inferred role: copy of the description of createImpl (copied as one 0x18 byte block); original member name unknown.
+  u32 unknowna8;         // Inferred role: ground fit enable; original member name unknown.
+  f32 unknownac;         // Inferred role: unknown; original member name unknown.
+  f32 unknownb0;         // Inferred role: unknown; original member name unknown.
+  u16 unknownb4;         // Inferred role: main body bone index; original member name unknown.
+  u16 unknownb6;         // Inferred role: sub body bone index; original member name unknown.
+  bool unknownb8;        // Inferred role: placement enabled; original member name unknown.
+  bool unknownb9;        // Inferred role: unknown; original member name unknown.
+  bool unknownba;        // Inferred role: main placement enabled; original member name unknown.
+  bool unknownbb;        // Inferred role: sub placement enabled; original member name unknown.
   u8 _bc[0xc0 - 0xbc];
   IKGroundInterface *unknownc0; // Inferred role: ground interface; original member name unknown.
 };
@@ -82,8 +79,6 @@ static_assert(sizeof(TwoCharaGroundSolver::Description) == 0x18, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknown20) == 0x20, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknown58) == 0x58, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknown90) == 0x90, "");
-static_assert(offsetof(TwoCharaGroundSolver, unknown98) == 0x98, "");
-static_assert(offsetof(TwoCharaGroundSolver, unknowna0) == 0xa0, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknownac) == 0xac, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknownb0) == 0xb0, "");
 static_assert(offsetof(TwoCharaGroundSolver, unknownb4) == 0xb4, "");
