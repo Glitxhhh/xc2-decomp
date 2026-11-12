@@ -11,6 +11,7 @@
 #include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/gf_obj.h"
 #include "mm/mm_std_base.h"
+#include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/bitflag.h"
 #include "mm_mtl/rtti.h"
@@ -79,6 +80,24 @@ void TaskFieldWallPrepare::update(BlackBoardField &blackBoard) {
 }
 
 bool TaskFieldWallFollow::testCondition(const BlackBoardField &blackBoard) { return blackBoard.unknown08->unknown310.unknown10_5; }
+
+void TaskFieldWallFollow::update(BlackBoardField &blackBoard) {
+  GfComPropertyPc *property = blackBoard.unknown08;
+  fw::Transform transform;
+  if (AgentUtilField::getWallFollowTransform(blackBoard, &transform)) {
+    mm::Vec2 input = AgentUtilField::calcFollowWallInput(transform.unknown00, *property);
+    if (AgentUtilField::isEnableWallMove(*property, input)) {
+      property->unknown60.unknown00 = input.x;
+      property->unknown60.unknown04 = input.y;
+      return;
+    }
+  }
+  if (AgentUtilField::isWallEndMove(blackBoard)) {
+    AgentUtilField::setFollowWallEndInput(blackBoard.unknown90, *property);
+  } else {
+    AgentUtilField::setIdleInput(*property);
+  }
+}
 
 void TaskFieldWallFall::onEvent(ai::BlackBoard &blackBoard, const ai::Event &event) {
   BlackBoardField *pBB = mm::mtl::dynamicCast<BlackBoardField>(&blackBoard);

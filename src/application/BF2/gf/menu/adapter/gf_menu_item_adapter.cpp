@@ -18,6 +18,8 @@
 #include "gf/util/gf_item_util.h"
 #include "mm_mtl/fixstr.h"
 #include "ui/plugin/ui_object_time_plugin.h"
+#include "ui/ui_object_acc.h"
+#include "ui/ui_object_plugin.h"
 #include "ui/ui_str.h"
 
 namespace gf {
@@ -29,6 +31,33 @@ const QUEST_REWARD unknown001[] = {QUEST_REWARD_UNKNOWN_8, QUEST_REWARD_UNKNOWN_
 
 } // namespace
 
+static GfMenuItemAdapter::TypeInfo TYPE_INFOS[] = {
+    {&GfMenuItemAdapter::update_Name, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuItemAdapter::update_Icon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuItemAdapter::update_IconAll, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuItemAdapter::update_Count, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuItemAdapter::update_CountMax, {GfMenuAdapter::unknown004_0, 0, 999}},
+    {&GfMenuItemAdapter::update_Price, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuItemAdapter::update_SellPrice, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuItemAdapter::update_RareIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuItemAdapter::update_EquipableColor, {GfMenuAdapter::unknown004_8, 0, 0}},
+    {&GfMenuItemAdapter::update_Caption, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuItemAdapter::update_CategoryIcon, {GfMenuAdapter::unknown004_1, 0, 0}},
+    {&GfMenuItemAdapter::update_GetAreaText, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuItemAdapter::update_SubCategoryText, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuItemAdapter::update_EffectTime, {GfMenuAdapter::unknown004_7, 3, 0}},
+    {&GfMenuItemAdapter::update_EffectText, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuItemAdapter::update_useEnergy, {GfMenuAdapter::unknown004_0, 0, 9999}},
+    {&GfMenuItemAdapter::update_needEther, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuItemAdapter::update_dustEther, {GfMenuAdapter::unknown004_0, 0, 999999999}},
+    {&GfMenuItemAdapter::update_PArmor, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuItemAdapter::update_EArmor, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuItemAdapter::update_revise, {GfMenuAdapter::unknown004_0, 0, 100}},
+    {&GfMenuItemAdapter::update_dispRevise, {GfMenuAdapter::unknown004_3, 0, 0}},
+    {&GfMenuItemAdapter::update_roleText, {GfMenuAdapter::unknown004_2, 0, 0}},
+    {&GfMenuItemAdapter::update_canStack, {GfMenuAdapter::unknown004_3, 0, 0}},
+};
+
 GfMenuItemAdapter::GfMenuItemAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways) : GfMenuAdapter(plugin, false, isUpdateAlways), unknown68(nullptr) {}
 
 GfMenuItemAdapter::~GfMenuItemAdapter() {
@@ -36,6 +65,24 @@ GfMenuItemAdapter::~GfMenuItemAdapter() {
     delete unknown68;
     unknown68 = nullptr;
   }
+}
+
+GfMenuItemAdapter *GfMenuItemAdapter::create(u32 handle, u32 type, const MenuItemInfo &info, bool isUpdateAlways) {
+  ui::UIObjectAcc acc(handle);
+  if (acc.isValid()) {
+    TypeInfo &typeInfo = TYPE_INFOS[type];
+    ui::UIObjectPlugin *plugin = createPlugin(handle, typeInfo.setup);
+    if (plugin != nullptr) {
+      // __LINE__ must be 641 as in the original source: it is the line argument of operator new.
+#line 641
+      GfMenuItemAdapter *adapter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuItemAdapter(plugin, isUpdateAlways);
+      adapter->unknown48.bind(adapter, typeInfo.update);
+      adapter->unknown38 = info;
+      plugin->release();
+      return adapter;
+    }
+  }
+  return nullptr;
 }
 
 bool GfMenuItemAdapter::update_Name(const MenuItemInfo &info) {

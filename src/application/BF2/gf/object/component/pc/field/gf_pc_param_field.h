@@ -158,10 +158,16 @@ static_assert(offsetof(WallAiParam, escapeRange) == 0x10, "");
 static_assert(offsetof(WallAiParam, delay) == 0x18, "");
 static_assert(sizeof(WallAiParam) == 0x1c, "");
 
-// Layout not reconstructed yet; the "unique_idle" entry of the field param list built by createReflectionField.
+// Field names and offsets from the reflection built by gf::pc::UniqueIdleParam::createReflection.
 struct UniqueIdleParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
+
+  f32 interval;
+  f32 probability;
 };
+
+static_assert(offsetof(UniqueIdleParam, probability) == 0x04, "");
+static_assert(sizeof(UniqueIdleParam) == 0x08, "");
 
 fw::Reflection *createReflectionField();
 fw::Reflection *createReflectionFieldAI();

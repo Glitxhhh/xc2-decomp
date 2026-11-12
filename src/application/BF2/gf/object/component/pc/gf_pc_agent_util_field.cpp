@@ -47,6 +47,24 @@ f32 AgentUtilField::setFollowInput(f32 distance, navi::NvmshAcObj *naviObject, G
   return funcFollowInput<FollowBuddyPcParam, PARAM_ID_FIELD_AI_UNKNOWN_2, PARAM_ID_FIELD_AI_UNKNOWN_3>(distance, naviObject, property);
 }
 
+mm::Vec2 AgentUtilField::calcFollowWallInput(const mm::Vec3 &position, GfComPropertyPc &property) {
+  mm::Vec2 input = mm::Vec2::zero;
+  mm::Vec3 offset = position - property.unknown160.unknown00;
+  f32 up = offset.x * property.unknown1c0.x + offset.y * property.unknown1c0.y + offset.z * property.unknown1c0.z;
+  if (up >= 0.0f) {
+    input.y = up >= property.unknown310.unknown3c ? 1.0f : 0.0f;
+  } else {
+    input.y = up <= -property.unknown310.unknown40 ? -1.0f : 0.0f;
+  }
+  f32 side = offset.x * property.unknown200.x + offset.y * property.unknown200.y + offset.z * property.unknown200.z;
+  if (side >= 0.0f) {
+    input.x = side >= property.unknown310.unknown44 ? 1.0f : 0.0f;
+  } else {
+    input.x = side <= -property.unknown310.unknown44 ? -1.0f : 0.0f;
+  }
+  return input;
+}
+
 void AgentUtilField::setFollowWallEndInput(const mm::Vec3 &position, GfComPropertyPc &property) {
   mm::Vec3 offset = position - property.unknown160.unknown00;
   property.unknown60.unknown04 = offset.x * property.unknown1c0.x + offset.y * property.unknown1c0.y + offset.z * property.unknown1c0.z >= 0.0f ? 1.0f : -1.0f;

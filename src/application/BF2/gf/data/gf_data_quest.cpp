@@ -4,11 +4,14 @@
 #include "gf/data/gf_bdat_cond.h"
 #include "gf/data/gf_bdat_msg.h"
 #include "gf/data/gf_bdat_quest.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_manager.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/game/gf_game_cond.h"
+#include "gf/game/quest/gf_achiev_quest.h"
 #include "gf/game/quest/gf_quest_task_param.h"
+#include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_vector.h"
 
 namespace gf {
@@ -338,6 +341,38 @@ void GfDataQuest::setSelect(QuestID select) {
 }
 
 QuestID GfDataQuest::getSelect() { return GfDataManager::getDataGame()->unknown1097e8; }
+
+AchievQuest *GfDataQuest::getAchievQuest(QuestID quest) {
+  if (quest.unknown02 == 0) {
+    return nullptr;
+  }
+  getListPRTQuestID(quest);
+  u16 blade = getAchievementBlade(quest.unknown02);
+  if (blade == 0) {
+    return nullptr;
+  }
+  SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
+  u32 line = getAchievementLine(quest.unknown02);
+  u32 level = getAchievementLevel(quest.unknown02) - 1;
+  switch (line) {
+  case 0:
+  case 1:
+  case 2:
+    return &dataBlade.unknownc4[line].unknown04[level];
+  case 3:
+  case 4:
+  case 5:
+    return &dataBlade.unknown274[line - 3].unknown04[level];
+  case 6:
+  case 7:
+  case 8:
+    return &dataBlade.unknown424[line - 6].unknown04[level];
+  case 9:
+    return &dataBlade.unknown5d4.unknown04[level];
+  default:
+    return nullptr;
+  }
+}
 
 bool GfDataQuest::getHanyouFlg(u32 &flag, u32 &flagMin, u32 &flagMax, const QuestTaskParam &param) {
   QuestListAcc *questListAcc = QuestListAcc::get();

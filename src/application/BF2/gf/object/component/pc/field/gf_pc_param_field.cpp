@@ -140,6 +140,20 @@ void FollowMainPcParam::createReflection(fw::Reflection *reflection, const char 
   reflection->setReflectionStruct(index, value);
 }
 
+void FollowBuddyPcParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 56
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(FollowBuddyPcParam));
+#line 57
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("stopDist", offsetof(FollowBuddyPcParam, stopDist), 0.0f, 1000.0f, 0.2f));
+#line 58
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("powMinDist", offsetof(FollowBuddyPcParam, powMinDist), 0.0f, 1000.0f, 0.4f));
+#line 59
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("powMaxDist", offsetof(FollowBuddyPcParam, powMaxDist), 0.0f, 1000.0f, 2.5f));
+#line 60
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("walkDistStopFollower", offsetof(FollowBuddyPcParam, walkDistStopFollower), 0.0f, 1000.0f, 3.0f));
+  reflection->setReflectionStruct(index, value);
+}
+
 void WaterCommonParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
 #line 67
   fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(WaterCommonParam));
@@ -201,6 +215,18 @@ void WallCommonParam::createReflection(fw::Reflection *reflection, const char *n
   reflection->setReflectionStruct(index, value);
 }
 
+void WallMoveParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 97
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(WallMoveParam));
+#line 98
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("upSpeed", offsetof(WallMoveParam, upSpeed), 0.0f, 100.0f, 5.85f));
+#line 99
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("sideSpeed", offsetof(WallMoveParam, sideSpeed), 0.0f, 100.0f, 3.0f));
+#line 100
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("downSpeed", offsetof(WallMoveParam, downSpeed), 0.0f, 100.0f, 7.8f));
+  reflection->setReflectionStruct(index, value);
+}
+
 void WallAiParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
 #line 103
   fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(WallAiParam));
@@ -218,6 +244,16 @@ void WallAiParam::createReflection(fw::Reflection *reflection, const char *name,
   value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("nearRange", offsetof(WallAiParam, nearRange), 0.0f, 100.0f, 2.0f));
 #line 110
   value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueU32("delay", offsetof(WallAiParam, delay), 0u, 10u, 2u));
+  reflection->setReflectionStruct(index, value);
+}
+
+void UniqueIdleParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 118
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(UniqueIdleParam));
+#line 119
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("interval", offsetof(UniqueIdleParam, interval), 0.0f, 100.0f, 10.0f));
+#line 120
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("probability", offsetof(UniqueIdleParam, probability), 0.0f, 1.0f, 0.5f));
   reflection->setReflectionStruct(index, value);
 }
 

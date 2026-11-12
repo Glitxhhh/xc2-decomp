@@ -333,6 +333,8 @@ void GfGameSalvage::execRaffle(const RaffleInfo &info) {
   mm::mtl::PtrSingleton<gmk::GmkManager>::get()->traverseGmkInst(gmk::GMK_TYPE_SALVAGE, traverser);
 }
 
+void GfGameSalvage::execPop() { static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->unknowna8))->popByRaffleResult(); }
+
 bool GfGameSalvage::getEventOrigin(mm::Mat44 &matrix) const {
   gmk::GmkSalvage *salvage = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->unknowna8));
   if (salvage->unknowna8 != nullptr) {

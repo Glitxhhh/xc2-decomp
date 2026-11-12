@@ -88,6 +88,7 @@ public:
   void disposeGfObjHandle();
   void disposeRaffle(bool isFadeOut);
   void createRaffle(const RaffleInfo &info);
+  void popByRaffleResult();
   void seqUpdatePopDepop(f32 deltaTime);
   void seqValidateGmkSalvageLocatorDetails(f32 deltaTime);
   void disposeTboxes(bool isFadeOut);
