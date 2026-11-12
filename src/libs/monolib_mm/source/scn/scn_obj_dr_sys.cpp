@@ -14,6 +14,7 @@
 #include "ml/scn.h"
 #include "ml/scn_obj_model.h"
 #include "ml/scn_pool_obj.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
@@ -257,6 +258,30 @@ ScnObjModelDrSysStandard::~ScnObjModelDrSysStandard() {
 }
 
 void ScnObjModelDrSysStandard::update() { ScnObjModelDrSys::update(); }
+
+// Inferred role: scales the rows of a world matrix by the scale of the transform of a model; original name unknown.
+static void unknown001(mm::Mat44 &matrix, const ScnObjModel &model) {
+  const AttrTransform *trans = model.getTrans(false);
+  matrix.rows[0][0] = trans->unknown20.x * matrix.rows[0][0];
+  matrix.rows[0][1] = trans->unknown20.x * matrix.rows[0][1];
+  matrix.rows[0][2] = trans->unknown20.x * matrix.rows[0][2];
+  matrix.rows[1][0] = trans->unknown20.y * matrix.rows[1][0];
+  matrix.rows[1][1] = trans->unknown20.y * matrix.rows[1][1];
+  matrix.rows[1][2] = trans->unknown20.y * matrix.rows[1][2];
+  matrix.rows[2][0] = trans->unknown20.z * matrix.rows[2][0];
+  matrix.rows[2][1] = trans->unknown20.z * matrix.rows[2][1];
+  matrix.rows[2][2] = trans->unknown20.z * matrix.rows[2][2];
+}
+
+void ScnObjModelDrSysStandard::apply() {
+  ScnObjModelDrSys::apply();
+  if (unknown3d8 != nullptr) {
+    mm::Mat44 matrix(getTrans(false)->unknown70);
+    unknown001(matrix, *this);
+    unknown3d8->setMatrix(matrix);
+    unknown3d8->setOffsetPos(getOffsetInfo(false)->unknown00);
+  }
+}
 
 void ScnObjModelDrSysStandard::tail() { ScnObjModel::tail(); }
 

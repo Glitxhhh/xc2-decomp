@@ -82,6 +82,28 @@ bool DrLightObj::isCacheShadow() const { return (unknown1c & FLAG_UNKNOWN_2) != 
 
 DrLightObjAmb::DrLightObjAmb() {}
 
+namespace {
+
+// Inferred role: copies 16 floats into a matrix; shared by the setMat of the light objects; original name unknown.
+void unknown031(mm::Mat44 &destination, const f32 *matrix) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      destination.rows[i][j] = matrix[i * 4 + j];
+    }
+  }
+}
+
+// Inferred role: normalized direction of a light matrix (its third row negated); shared by DrLightObjDir::setMat and
+// DrLightObjSpt::setMat; original name unknown.
+void unknown032(mm::Vec3 &direction, const mm::Mat44 &matrix) {
+  direction = mm::Vec3(matrix.rows[0][0] * 0.0f + matrix.rows[1][0] * 0.0f - matrix.rows[2][0],
+                       matrix.rows[0][1] * 0.0f + matrix.rows[1][1] * 0.0f - matrix.rows[2][1],
+                       matrix.rows[0][2] * 0.0f + matrix.rows[1][2] * 0.0f - matrix.rows[2][2]);
+  direction.unknown001();
+}
+
+} // namespace
+
 DrLightObjAmb::~DrLightObjAmb() { releaseAmb(); }
 
 void DrLightObjAmb::releaseAmb() {}
@@ -95,6 +117,11 @@ void DrLightObjDir::setDir(const mm::Vec3 &direction) {
   f32 yaw = atan2f(direction.x, -direction.z);
   unknown30.setRotXYZ(mm::Vec3(pitch, -yaw, 0.0f));
   unknown70 = direction;
+}
+
+void DrLightObjDir::setMat(const f32 *matrix) {
+  unknown031(unknown30, matrix);
+  unknown032(unknown70, unknown30);
 }
 
 void DrLightObjDir::setDirShadow(bool isEnable, int index) {
@@ -156,12 +183,27 @@ void DrLightObjPnt::setMat(const mm::Mat44 &matrix) {
 }
 
 void DrLightObjPnt::setMat(const f32 *matrix) {
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      unknown30.rows[i][j] = matrix[i * 4 + j];
-    }
-  }
+  unknown031(unknown30, matrix);
   m_pos = unknown30.unknown004();
+}
+
+void DrLightObjPnt::initPnt() {
+  unknownb0 = 1.0f;
+  m_pos.x = 0.0f;
+  unknown90.r = 1.0f;
+  unknowna4 = 1.0f;
+  unknownac = 0.1f;
+  m_pos.y = 0.0f;
+  unknown90.g = 1.0f;
+  m_pos.z = 0.0f;
+  m_size = 5.0f;
+  unknowna0 = true;
+  unknowna8 = 1.0f;
+  unknown90.b = 1.0f;
+  unknown18 = TYPE_UNKNOWN_2;
+  unknown30 = mm::Mat44::identity;
+  unknownb4[0] = 0.0f;
+  unknownb4[1] = 0.0f;
 }
 
 void DrLightObjPnt::deletePntShadow() { releasePnt(); }
@@ -178,15 +220,8 @@ void DrLightObjPnt::releasePnt() {
 }
 
 void DrLightObjSpt::setMat(const f32 *matrix) {
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      unknown30.rows[i][j] = matrix[i * 4 + j];
-    }
-  }
-  unknown90 = mm::Vec3(unknown30.rows[0][0] * 0.0f + unknown30.rows[1][0] * 0.0f - unknown30.rows[2][0],
-                       unknown30.rows[0][1] * 0.0f + unknown30.rows[1][1] * 0.0f - unknown30.rows[2][1],
-                       unknown30.rows[0][2] * 0.0f + unknown30.rows[1][2] * 0.0f - unknown30.rows[2][2]);
-  unknown90.unknown001();
+  unknown031(unknown30, matrix);
+  unknown032(unknown90, unknown30);
   m_pos = unknown30.unknown004();
 }
 

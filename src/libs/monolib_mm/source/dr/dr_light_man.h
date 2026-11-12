@@ -16,6 +16,8 @@ class DrShdLgtMan;
 
 class DrLightMan {
 public:
+  DrLightMan(DrMan *drMan);
+  ~DrLightMan();
   void render();
   void renderDir();
   void renderPnt();
@@ -34,10 +36,15 @@ public:
   void releaseAllDirLight();
   void releasePntLight(DrLightObjPnt *light);
   void releaseSptLight(DrLightObjSpt *light);
+  DrLightObjDir *createDirLight();
+  void releaseAll();
   DrLightObjPnt *createInstantPntLight();
   DrLightObjSpt *createInstantSptLight();
   void releaseInstantPntLight(DrLightObjPnt *light);
   void releaseInstantSptLight(DrLightObjSpt *light);
+  void debugRender();
+  void renderDebugPnt();
+  void renderDebugSpt();
   void updateAmb();
   void updatePnt();
   void updateSpt();
@@ -101,5 +108,18 @@ static_assert(offsetof(DrLightMan, unknown160) == 0x160, "");
 static_assert(offsetof(DrLightMan, unknown168) == 0x168, "");
 static_assert(offsetof(DrLightMan, unknown1b8) == 0x1b8, "");
 static_assert(offsetof(DrLightMan, unknown1b9) == 0x1b9, "");
+
+// Inferred role: deletes every object of a list linked through unknown10 and empties the list; shared by DrLightMan::releaseAll and
+// DrEnvironmentMan::releaseAll; original name unknown.
+template <class T> void unknown2100(T *&first, T *&last) {
+  T *object = first;
+  while (object != nullptr) {
+    T *next = object->unknown10;
+    delete object;
+    object = next;
+  }
+  first = nullptr;
+  last = nullptr;
+}
 
 } // namespace ml

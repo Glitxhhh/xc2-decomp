@@ -51,27 +51,11 @@ DrEnvironmentObj::DrEnvironmentObj(DrMan *drMan, DrLightMan *lightMan, DrFogMan 
 
 void DrEnvironmentMan::releaseObj(DrEnvironmentObj *obj) { obj->release(); }
 
-namespace {
-
-// Inferred role: deletes every object of a list; original name unknown.
-void unknown002(DrEnvironmentObj *&head, DrEnvironmentObj *&tail) {
-  DrEnvironmentObj *obj = head;
-  while (obj != nullptr) {
-    DrEnvironmentObj *next = obj->unknown10;
-    delete obj;
-    obj = next;
-  }
-  head = nullptr;
-  tail = nullptr;
-}
-
-} // namespace
-
 void DrEnvironmentMan::releaseAll() {
-  unknown002(unknown28[0], unknown28[1]);
-  unknown002(unknown28[2], unknown28[3]);
-  unknown002(unknown58, unknown60);
-  unknown002(unknown48, unknown50);
+  unknown2100(unknown28[0], unknown28[1]);
+  unknown2100(unknown28[2], unknown28[3]);
+  unknown2100(unknown58, unknown60);
+  unknown2100(unknown48, unknown50);
 }
 
 DrEnvironmentMan::DrEnvironmentMan(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan, int screen)
@@ -717,3 +701,5 @@ void (DrEnvironmentObjLgt::*DrEnvironmentObjLgt::s_pCallFogCall[])(DrFogObjGbl *
 #include "dr_environment_tex.cpp"
 #include "dr_environment_time.cpp"
 #include "dr_light_obj.cpp"
+// DrLightMan inlines functions of the light objects (isCullON, constructors): keep their definitions visible in this unit.
+#include "dr_light_man.cpp"

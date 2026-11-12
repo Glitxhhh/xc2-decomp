@@ -23,6 +23,11 @@ LangType convertLangType(const char *code);
 
 } // namespace setting_detail
 
+class DevSettingUtil {
+public:
+  static LangType convertLangType(const char *code);
+};
+
 // Inferred role: device interface setting; original type name unknown.
 class unknown075 {
 public:

@@ -79,6 +79,26 @@ void WorkRootState::standbyWork() {
   standbyWork(_wrootst::s_pWorkRoot);
 }
 
+void WorkRootState::standbyWork(WorkObj *work) {
+  work->wkStandby();
+  for (reslist<WorkObj *>::Node *node = work->wkGetChild()->begin(); node != work->wkGetChild()->end(); node = node->getNext()) {
+    standbyWork(node->value);
+  }
+  reslist<WorkObj *>::iterator it = work->wkGetChild()->begin();
+  while (it != work->wkGetChild()->end()) {
+    reslist<WorkObj *>::iterator next = it;
+    ++next;
+    if ((*it)->unknown4c == WorkObj::WKSTATE_UNKNOWN_5) {
+      work->wkRemoveChild(*it);
+      if (*it != nullptr) {
+        delete *it;
+        *it = nullptr;
+      }
+    }
+    it = next;
+  }
+}
+
 void WorkRootState::initialize() {
   _wrootst::s_bThreadRender = _wrootst::s_bThreadRenderReq;
   {
@@ -142,6 +162,18 @@ u32 WorkRootState::allocWID(WorkObj *work) {
     }
   }
   return wid;
+}
+
+WorkObj *WorkRootState::getWork(u32 wid) {
+  CS cs(_wrootst::getCriticalSection());
+  if (wid == 0xffffffff) {
+    return nullptr;
+  }
+  WorkObj *work = _wrootst::s_apBitWID[wid & 0xffff];
+  if (work != nullptr && work->unknown50 != wid) {
+    return nullptr;
+  }
+  return work;
 }
 
 bool WorkRootState::isUsedWID(u32 wid) {

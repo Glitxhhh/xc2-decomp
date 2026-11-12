@@ -57,4 +57,6 @@ bool DevSetting::isAutoSleepExtended() {
   return false;
 }
 
+LangType DevSettingUtil::convertLangType(const char *code) { return setting_detail::convertLangType(code); }
+
 } // namespace ml
