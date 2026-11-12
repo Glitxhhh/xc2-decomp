@@ -3,12 +3,15 @@
 #include <string.h>
 
 #include "framework/lang_util.h"
+#include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/game/salvage/gf_salvage_voice.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 #include "gf/sound/gf_sound.h"
 #include "ml/rand.h"
 #include "mm_mtl/algorithm.h"
@@ -228,6 +231,20 @@ void GfVoiceName::addNumber2keta(mm::mtl::FixStr<16> &name, u32 number) {
 const char *GfVoiceName::getCharacterVoiceStr(GF_OBJ_HANDLE *handle) {
   DataParamAcc acc(handle);
   return acc.getVoiceStr();
+}
+
+GAME_VOICE_HANDLE *GfSalvageVoice::playResultVoice(GF_OBJ_HANDLE *handle, CV_SALVAGE_RESULT voice) {
+  DataParamAcc acc(handle);
+  if (acc.getObjType() == OBJECT_TYPE_PC && acc.getValidDriverId() == DRIVER_UNKNOWN_1) {
+    mm::mtl::FixStr<16> name;
+    name = acc.getVoiceStr();
+    GfVoiceName::addNumber2keta(name, 60);
+    GfVoiceName::addNumber2keta(name, 1);
+    GfVoiceName::addNumber2keta(name, voice + 12);
+    ParamObj object = {handle, 0, 0};
+    return GfGameVoice::playVoice(object, name.c_str(), CV_PRIO_UNKNOWN_1);
+  }
+  return nullptr;
 }
 
 VoiceInfo::VoiceInfo() : unknown00(true), unknown04(CV_PRIO_UNKNOWN_0), unknown0c(0.0f), unknown10{unknown020, 0, 0}, unknown20(), unknown28(nullptr) { clear(); }

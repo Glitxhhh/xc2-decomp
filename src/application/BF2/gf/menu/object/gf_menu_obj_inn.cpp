@@ -55,6 +55,26 @@ void GfMenuObjInn::update() {
   GfMenuObject::update();
 }
 
+void GfMenuObjInn::setupDriverAdapter(ui::UIObjectAcc &acc, const GfMenuDriverList *list) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < 5; i++) {
+    name.format("TXT_dr_name@%02d", i + 1);
+    GfMenuCharDataAdapter *adapter = GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 2, list, i, false);
+    name.format("LAY_dr_prop@%02d", i + 1);
+    adapter->unknown24 = acc.searchChild(name.c_str());
+    name.format("TXT_dr_lv@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 1, list, i, true);
+    name.format("IMG_dr_bustup@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 0x1d, list, i, false);
+    name.format("TXT_dr_hpmax@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 0, list, i, true);
+    name.format("TXT_dr_exp@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 0x13, list, i, true);
+    name.format("TXT_dr_lv_up@%02d", i + 1);
+    GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 0x18, list, i, true);
+  }
+}
+
 void GfMenuObjInn::setupLvSelectAdapter(ui::UIObjectAcc &acc, ui::UISelectObjList *list) {
   mm::mtl::FixStr<32> name;
   name = "LAY_lv_select_num@01";

@@ -48,6 +48,7 @@ public:
   bool seqFadeOut();
   bool seqFadeOutWait();
   void update() override;
+  static void setupDriverAdapter(ui::UIObjectAcc &acc, const GfMenuDriverList *list);
   static void setupLvSelectAdapter(ui::UIObjectAcc &acc, ui::UISelectObjList *list);
   static void detailOpen(GfMenuObjInn *object, ui::UIObjectAcc &acc, const char *layout, u32 driver);
   static void setupLvUpAdapter(ui::UIObjectAcc &acc);
