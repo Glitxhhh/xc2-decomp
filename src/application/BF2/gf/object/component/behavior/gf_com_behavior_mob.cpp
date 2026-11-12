@@ -3,11 +3,14 @@
 #include <math.h>
 
 #include "ai/ai_state.h"
+#include "bdat.h"
 #include "framework/coli/coli_object.h"
+#include "framework/memory/allocator.h"
 #include "framework/navi/navi_manager.h"
 #include "framework/object/updatable_object.h"
 #include "framework/reference_frame.h"
 #include "fw/fw_transform.h"
+#include "gf/data/gf_bdat_wrapper.h"
 #include "gf/object/component/behavior/mob/gf_mob_state_idle.h"
 #include "gf/object/component/behavior/mob/gf_mob_state_move.h"
 #include "gf/object/component/behavior/mob/gf_mob_state_squad_member.h"
@@ -23,6 +26,7 @@
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_base.h"
+#include "gmk/gmk_bdat.h"
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_mob/gmk_mob.h"
 #include "gmk/gmk_mob/gmk_routed_mob.h"
@@ -33,10 +37,25 @@
 #include "navi/nvmsh_ac_obj.h"
 
 namespace gf {
+void GfComBehaviorMob::BdatInfo::create(const CBdatWrapper &bdat, int id) {
+  u16 reactionRange = bdat.getValCheck("ReactionRange", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown00 = static_cast<f32>(reactionRange * reactionRange);
+  unknown04 = bdat.getValCheck("ReactionPercent", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown06 = bdat.getValCheck("ReactionMot", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  unknown08 = bdat.getValCheck("BattleReaction", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  if (Bdat::getMember(bdat.unknown00, "BattleMot") != nullptr) {
+    unknown0a = bdat.getValCheck("BattleMot", id, gmk::BDAT_TYPE_UNKNOWN_2);
+  }
+}
 
 void GfComBehaviorMob::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}
 
 void GfComBehaviorMob::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message) { message.unknown10 = unknown100; }
+
+GfComBehaviorMob::GfComBehaviorMob()
+    : unknown98(), unknowna8(nullptr), unknownb0(0), unknownb8(nullptr), unknown100(mm::Vec3::zero), unknown110(mm::Vec3::zero), unknown120(mm::Quat::identity), unknown130(nullptr),
+      unknown190(nullptr), unknown1e0(nullptr), unknown210(unknown020), unknown2c0(nullptr), unknown5328(fw::Allocator::getProcAllocator()), unknown53b0(true), unknown53b8(nullptr),
+      unknown53d0(1.0e12f), unknown53d4(1.0e12f), unknown53d8(false) {}
 
 GfComBehaviorMob::~GfComBehaviorMob() { cleanup(); }
 

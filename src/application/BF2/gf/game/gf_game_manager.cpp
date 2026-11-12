@@ -72,6 +72,7 @@
 #include "gf/request/gf_scom.h"
 #include "gf/sound/gf_sound.h"
 #include "mm_math/mm_col4.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_list.h"
@@ -993,6 +994,16 @@ const mm::Vec3 &GfGameManager::getControlMoverPosition() {
     return moverAcc.getWorldTransform().unknown00;
   }
   return mm::Vec3::zero;
+}
+
+mm::Vec3 GfGameManager::getControlMoverRotation() {
+  GfObjAcc moverAcc(getControlMover());
+  if (!moverAcc.isValidTransform()) {
+    return mm::Vec3::zero;
+  }
+  mm::Vec3 rotation;
+  mm::quatToEuler(moverAcc.getWorldTransform().unknown10, rotation);
+  return rotation;
 }
 
 bool GfGameManager::isEnemyChangeBattleOK() {

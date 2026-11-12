@@ -510,6 +510,8 @@ GfExtendPacking::~GfExtendPacking() {
   mm::mtl::safeRelease(unknown18);
 }
 
+const mm::mtl::RTTI *GfExtendPacking::getRTTI() const { return &m_rtti; }
+
 void addExtendPackingSoundTrigger(GF_ASSET_HANDLE *handle, GfFileIdx index, GfExtendPacking *packing) {
   if (packing != nullptr) {
     GfAssetResource *resource = GfAssetManager::getResource(handle, index, ASSET_TYPE_UNKNOWN_0);

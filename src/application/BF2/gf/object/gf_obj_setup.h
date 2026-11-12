@@ -34,6 +34,7 @@ class GfObjSetupExtra;
 class GfObjSetupFieldObj;
 class GfObjSetupGimmick;
 class GfObjSetupMap;
+class GfObjSetupMapObj;
 class GfObjSetupMapLodAnim;
 class GfObjSetupMob;
 class GfObjSetupNpc;
@@ -98,6 +99,7 @@ public:
   static GfObjSetupBelonging *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamBelonging &param);
   static GfObjSetupExtra *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamExtra &param);
   static GfObjSetupEventObj *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamEventObj &param);
+  static GfObjSetupMapObj *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMapObj &param);
   static GfObjSetupUiObj *createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamUiObj &param);
 
   bool isEvent() const {
@@ -300,6 +302,7 @@ public:
   static mm::mtl::RTTI m_rtti;
   static const u32 OBJECT_TYPE = OBJECT_TYPE_ENEMY;
 
+  GfObjSetupEnemy(const GfInitParamEnemy &param);
   ~GfObjSetupEnemy();
   const mm::mtl::RTTI *getRTTI() const override;
   u32 getEnArrangeID() const override;
@@ -315,8 +318,8 @@ public:
   SDataEnemy *unknowna0; // Inferred role: data enemy; original member name unknown.
   int unknowna8;         // Inferred role: row id of BDAT_FLD_ENACT_MOVE; original member name unknown.
   f32 unknownac;         // Inferred role: change battle delay, copied by GfComBehaviorEnemy::createBehField; original member name unknown.
-  u8 _b0[0xb2 - 0xb0];
-  bool unknownb2; // Role and original member name unknown.
+  u16 unknownb0;         // Role and original member name unknown.
+  bool unknownb2;        // Role and original member name unknown.
   u8 _b3[0xb4 - 0xb3];
   u32 unknownb4; // Inferred role: saved hp; original member name unknown.
   u32 unknownb8; // Inferred role: blade; original member name unknown.
@@ -330,6 +333,7 @@ static_assert(offsetof(GfObjSetupEnemy, unknown74) == 0x74, "");
 static_assert(offsetof(GfObjSetupEnemy, unknown98) == 0x98, "");
 static_assert(offsetof(GfObjSetupEnemy, unknowna0) == 0xa0, "");
 static_assert(offsetof(GfObjSetupEnemy, unknowna8) == 0xa8, "");
+static_assert(offsetof(GfObjSetupEnemy, unknownb0) == 0xb0, "");
 static_assert(offsetof(GfObjSetupEnemy, unknownac) == 0xac, "");
 static_assert(offsetof(GfObjSetupEnemy, unknownb2) == 0xb2, "");
 static_assert(offsetof(GfObjSetupEnemy, unknownb8) == 0xb8, "");
@@ -431,6 +435,7 @@ class GfObjSetupMapObj : public GfObjSetup {
 public:
   static mm::mtl::RTTI m_rtti;
 
+  GfObjSetupMapObj(const GfInitParamMapObj &param) : GfObjSetup(param, OBJECT_TYPE_MOB) {}
   const mm::mtl::RTTI *getRTTI() const override;
 };
 

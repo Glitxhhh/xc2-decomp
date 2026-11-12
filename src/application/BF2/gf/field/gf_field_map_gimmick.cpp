@@ -25,6 +25,7 @@
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_grave.h"
+#include "gmk/gmk_jump.h"
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_map_gimmick.h"
 #include "gmk/gmk_warp.h"
@@ -358,6 +359,48 @@ void GfFieldGrave::update(f32 deltaTime) {
   if (unknown20) {
     (this->*unknown20)(deltaTime);
   }
+}
+
+void GfFieldJump::onFsSucceeded() {
+  gmk::GmkJump *jump = static_cast<gmk::GmkJump *>(gmk::getBindedGmkInst(unknown08));
+  if (jump != nullptr) {
+    GfObj *obj = GfObjUtil::getObj(unknown08);
+    if (obj != nullptr) {
+      obj->unknown110 |= OBJ_UNKNOWN_7;
+    }
+    GfObj *mover = GfObjUtil::getObj(GfGameManager::getControlMover());
+    if (mover != nullptr) {
+      GfObj *self = GfObjUtil::getObj(unknown08);
+      if (self != nullptr) {
+        switch (jump->getBdatInfo()->unknown02) {
+        case 0: {
+          MsgPcFieldNotifyWallJump message;
+          message.unknown10 = jump->unknown097()->unknown00[1];
+          message.unknown20 = jump->getBindedBdatFp();
+          message.unknown28 = jump->unknown20.unknown18;
+          message.unknown2c = jump->unknown20.unknown18;
+          self->sendMessage(mover, message);
+          return;
+        }
+        case 1: {
+          MsgPcFieldNotifyBigJump message;
+          message.unknown10 = jump->unknown097()->unknown00[1];
+          message.unknown20 = jump->unknown097()->unknown00[1].unknown0c;
+          message.unknown24 = jump->unknown097()->unknown20;
+          message.unknown28 = jump->unknown097()->unknown24;
+          message.unknown30 = jump->getBindedBdatFp();
+          message.unknown38 = jump->unknown20.unknown18;
+          message.unknown3c = jump->unknown20.unknown18;
+          self->sendMessage(mover, message);
+          return;
+        }
+        default:
+          break;
+        }
+      }
+    }
+  }
+  dispose();
 }
 
 void GfFieldWarp::onFsSucceeded() {

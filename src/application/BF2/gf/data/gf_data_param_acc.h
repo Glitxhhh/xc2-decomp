@@ -193,6 +193,7 @@ public:
   bool addPoint(u32 idea, u32 point);
   void setPointForDebug(u32 idea, u32 point);
   u32 getPoint(u32 idea) const;
+  u32 getMaximumIdeaLevel() const;
   unknown079 getRatio(u32 level0, u32 level1, u32 level2, u32 level3, int offset0, int offset1, int offset2, int offset3) const;
   f32 getSubRatio(u32 level, int offset, u32 idea) const;
 

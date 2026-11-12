@@ -112,6 +112,14 @@ void FieldParam::createReflection(fw::Reflection *reflection, const char *name, 
   reflection->setReflectionStruct(index, value);
 }
 
+void JumpAIParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 63
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(JumpAIParam));
+#line 64
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("minVel", offsetof(JumpAIParam, minVel), 0.0f, 1000.0f, 1.5f));
+  reflection->setReflectionStruct(index, value);
+}
+
 void FollowMainPcParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
 #line 46
   fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(FollowMainPcParam));

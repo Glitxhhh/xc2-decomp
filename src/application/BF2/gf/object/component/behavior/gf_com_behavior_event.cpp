@@ -31,6 +31,23 @@ bool GfComBehaviorEvent::recieveMessage(fw::MessageObject *sender, fw::Message &
   return true;
 }
 
+void GfComBehaviorEvent::setup() {
+  GfComEvtAnim *evtAnim = unknown08->getComponent<GfComEvtAnim>();
+  if (evtAnim != nullptr) {
+    evtAnim->unknown10.unknown70[0].unknown00 = "system";
+    evtAnim->unknown10.unknown70[0].unknown08.bind<GfComBehavior>(this, &GfComBehavior::callbackAnimForEvent);
+  }
+
+  unknown10.beginSetup(*this, 4);
+  unknown10.unknown001<FootIkControllerPlugin>(3, true);
+  unknown10.endSetup();
+
+  FootIkControllerPlugin *plugin = unknown001<FootIkControllerPlugin>(3);
+  if (plugin != nullptr) {
+    plugin->setActivate(true);
+  }
+}
+
 const mm::mtl::RTTI *GfComBehaviorEvent::getRTTI() const { return &m_rtti; }
 void GfComBehaviorEvent::cleanup() { unknown10.cleanup(); }
 

@@ -8,12 +8,15 @@
 #include "fw/fw_transform.h"
 #include "gf/asset/gf_asset_manager.h"
 #include "gf/object/component/animation/gf_com_asm.h"
+#include "gf/object/component/behavior/gf_com_behavior_mob.h"
+#include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "gmk/gmk_acc.h"
 #include "gmk/gmk_route_navi.h"
+#include "gmk/gmk_squad.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
@@ -160,4 +163,34 @@ bool execEndSchedule(fw::ComponentObject &component) {
   return false;
 }
 
+// Inferred helper: squad of the behavior component T of an object; original name unknown.
+template <typename T> static gmk::GmkSquad *unknown002(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  GfObj *obj = acc.getObj();
+  if (obj != nullptr) {
+    T *behavior = obj->getComponent<T>();
+    if (behavior != nullptr) {
+      return behavior->unknown009();
+    }
+  }
+  return nullptr;
+}
+
+template <typename T> bool GfFieldLocalSteer::TIsTargetNotSameSquad<T>::operator()(const GfFieldLocalSteer &steer, GF_OBJ_HANDLE *handle) const {
+  gmk::GmkSquad *squad = unknown002<T>(steer.unknown00.unknown00);
+  if (squad == nullptr) {
+    return true;
+  }
+  if (squad == unknown002<T>(handle)) {
+    gmk::GmkSquadLeader *leader = squad->getBindedGmkSquadLeader();
+    if (leader != nullptr && leader->getData()->unknown00 == 1) {
+      return false;
+    }
+  }
+  return true;
+}
+
 } // namespace gf
+
+template class gf::GfFieldLocalSteer::TIsTargetNotSameSquad<gf::GfComBehaviorEnemy>;
+template class gf::GfFieldLocalSteer::TIsTargetNotSameSquad<gf::GfComBehaviorMob>;

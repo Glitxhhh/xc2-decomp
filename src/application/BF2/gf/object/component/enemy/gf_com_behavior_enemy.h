@@ -12,6 +12,7 @@
 #include "gf/object/component/enemy/gf_behavior_enemy_field.h"
 #include "gf/object/component/enemy/gf_enemy_state_id.h"
 #include "gf/object/component/gf_com_transform.h"
+#include "gmk/gmk_squad.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
@@ -137,6 +138,9 @@ public:
 
   // Inferred helper: moves the field behavior toward its goal; original name unknown.
   void unknown003(f32 deltaTime) { unknown140.moveToGoal(deltaTime); }
+
+  // Inferred helper: squad of the squad navi of the field behavior; original name unknown.
+  gmk::GmkSquad *unknown009() const { return unknown140.unknown50.unknown10.unknown00; }
 
   ai::Hfsm unknowna0;                                   // Inferred role: state machine; original member name unknown.
   bool unknown128;                                      // Inferred role: state machine is not set up, true by default; original member name unknown.

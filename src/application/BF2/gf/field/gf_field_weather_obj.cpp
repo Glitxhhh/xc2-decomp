@@ -98,6 +98,44 @@ WeatherSnd::WeatherSnd() : unknown10(WEATYPE_UNKNOWN_0), unknown14(false), unkno
 
 bool WeatherSnd::isPlay() const { return unknown08.isValid(); }
 
+void WeatherSnd::create(WEATYPE type) {
+  GfSound *sound = GfSound::get();
+  if (sound == nullptr) {
+    return;
+  }
+
+  if (unknown10 != type) {
+    unknown14 = false;
+  }
+  unknown10 = type;
+  if (type == WEATYPE_UNKNOWN_0 || unknown14 || !GfFieldWeather::isDispWeather() || GfGameManager::isFadeout()) {
+    return;
+  }
+
+  const char *name = GfDataMap::getWeatherSndName(type);
+  if (name == nullptr) {
+    return;
+  }
+
+  if (*name == '\0') {
+    unknown14 = true;
+    return;
+  }
+
+  SoundParam param(0, name);
+  param.unknown38 = CATEGORY_WEATHER;
+  unknown08 = sound->playSe(param);
+  if (!unknown08.isValid()) {
+    unknown14 = true;
+  }
+  const char *beginName = GfDataMap::getWeatherSndBeginName(type);
+  if (beginName != nullptr && *beginName != '\0') {
+    SoundParam beginParam(0, beginName);
+    beginParam.unknown38 = CATEGORY_WEATHER;
+    sound->playSe(beginParam);
+  }
+}
+
 void WeatherSnd::destroy() {
   SoundHandle &handle = unknown08;
   if (handle.isValid()) {

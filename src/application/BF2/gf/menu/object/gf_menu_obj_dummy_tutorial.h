@@ -15,9 +15,11 @@ class GfMenuObjDummyTutorial : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjDummyTutorial *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];
+    u8 _1c[0x20 - 0x1c];
     GfMenuObjDummyTutorial *unknown20; // Inferred role: owner; original member name unknown.
   };
 

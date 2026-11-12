@@ -86,6 +86,12 @@ struct SoundParam {
     }
   }
 
+  SoundParam(u32 id, const char *name) : unknown00(0) {
+    clear();
+    unknown00 = id;
+    unknown04 = name;
+  }
+
   void clear();
   void setupTransformGlobal(const mm::Vec3 &position);
   void setupTransformObj(GF_OBJ_HANDLE *handle, const mm::Vec3 &offset);

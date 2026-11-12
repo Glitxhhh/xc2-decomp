@@ -73,12 +73,11 @@ inline f32 asin(f32 r) {
   return asinf(r);
 }
 
-__attribute__((always_inline)) inline Vec3 matrixToEuler(const Mat44 &matrix) {
+__attribute__((always_inline)) inline void matrixToEuler(const Mat44 &matrix, Vec3 &euler) {
   f32 r = matrix.rows[2][1];
   // __LINE__ must be 581 as in the original header: it is the line argument of the assert.
 #line 581
   MM_ASSERT(mm::fabs(r) < 1.001f);
-  Vec3 euler;
   if (mm::fabs(r) >= 1.0f) {
     euler.x = -r > 0.0f ? 1.5707964f : -1.5707964f;
   } else {
@@ -89,13 +88,18 @@ __attribute__((always_inline)) inline Vec3 matrixToEuler(const Mat44 &matrix) {
       euler.z = atan2f(matrix.rows[0][1], matrix.rows[1][1]);
       euler.y = atan2f(matrix.rows[2][0], matrix.rows[2][2]);
     } else {
-      euler.y = 0.0f;
       euler.z = -atan2f(matrix.rows[0][2], matrix.rows[0][0]);
+      euler.y = 0.0f;
     }
   } else {
-    euler.y = 0.0f;
     euler.z = atan2f(matrix.rows[0][2], matrix.rows[0][0]);
+    euler.y = 0.0f;
   }
+}
+
+__attribute__((always_inline)) inline Vec3 matrixToEuler(const Mat44 &matrix) {
+  Vec3 euler;
+  matrixToEuler(matrix, euler);
   return euler;
 }
 
@@ -155,10 +159,16 @@ inline void unknown001(Mat44 &matrix, const Quat &quat) {
   matrix.rows[3][3] = 1.0f;
 }
 
-__attribute__((always_inline)) inline Vec3 quatToEuler(const Quat &quat) {
+__attribute__((always_inline)) inline void quatToEuler(const Quat &quat, Vec3 &euler) {
   Mat44 matrix;
   quatToMatrix(matrix, quat);
-  return matrixToEuler(matrix);
+  matrixToEuler(matrix, euler);
+}
+
+__attribute__((always_inline)) inline Vec3 quatToEuler(const Quat &quat) {
+  Vec3 euler;
+  quatToEuler(quat, euler);
+  return euler;
 }
 
 inline bool isFinite(f32 r) { return isValidFloat(r); }

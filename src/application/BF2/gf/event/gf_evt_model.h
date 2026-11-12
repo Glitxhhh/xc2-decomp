@@ -370,6 +370,8 @@ class GfEvtModelNpc : public GfEvtModel {
 public:
   static mm::mtl::RTTI m_rtti;
 
+  GfEvtModelNpc(GfInitParamNpc &param);
+
   static GfEvtModelNpc *create(GfInitParamNpc &param);
   const mm::mtl::RTTI *getRTTI() const override;
 };

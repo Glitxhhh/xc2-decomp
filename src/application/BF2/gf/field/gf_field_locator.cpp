@@ -359,6 +359,32 @@ u32 LocatorPrecious::getPosNum() const { return m_pos.size(); }
 
 const mm::Vec3 *LocatorPrecious::getPos(u32 index) const { return &m_pos[index]; }
 
+void LocatorPrecious::update() {
+  if (unknown20 != 0) {
+    m_pos.clear();
+    for (gmk::GmkAcc *acc = unknown28.begin(); acc != unknown28.end(); acc++) {
+      if (!acc->isValid()) {
+        create(unknown08, unknown20);
+        return;
+      }
+      const gmk::GmkPrecious *precious = static_cast<const gmk::GmkPrecious *>(acc->unknown38);
+      if (!precious->isObtained() && precious->getBdatInfo()->isPopCondMatched()) {
+        m_pos.push_back(acc->unknown38->unknown08.unknown08->unknown00);
+      }
+    }
+  }
+}
+
+void LocatorPrecious::onTraverse(const gmk::AGmkBase &gmk) {
+  const gmk::GmkPrecious &precious = static_cast<const gmk::GmkPrecious &>(gmk);
+  if (gmk.isValid() && precious.getBdatInfo()->unknown00 == unknown20 && !precious.isObtained()) {
+    gmk::GmkAcc::CreateInfo info;
+    info.validate(gmk);
+    unknown28.push_back(gmk::GmkAcc(info));
+    m_pos.push_back(gmk.unknown08.unknown08->unknown00);
+  }
+}
+
 LocatorGimmick::LocatorGimmick(QuestID quest, u16 gimmickId) : unknown14(gmk::GMK_TYPE_UNKNOWN_59), unknown18(0), m_posNum(0), m_pos(mm::Vec3::zero) {
   if (!quest.empty() && gimmickId != 0) {
     create(quest, gimmickId);

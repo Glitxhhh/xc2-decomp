@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "bdat.h"
+#include "fw/fw_transform.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
@@ -122,6 +123,13 @@ GfObjSetupEnemy::~GfObjSetupEnemy() {
     delete unknownc0;
     unknownc0 = nullptr;
   }
+}
+
+void GfObjSetup::setInitialTransform(const fw::Transform &transform) {
+  unknown20.x = transform.unknown00.x;
+  unknown20.y = transform.unknown00.y;
+  unknown20.z = transform.unknown00.z;
+  mm::quatToEuler(transform.unknown10, unknown30);
 }
 
 void GfObjSetup::setInitialTransform(const mm::Mat44 &matrix) {
@@ -247,6 +255,15 @@ GfObjSetupGimmick *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfI
   return setup;
 }
 
+GfObjSetupMapObj *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamMapObj &param) {
+  GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
+  // __LINE__ must be 309 as in the original file: it is the line argument of the allocation.
+#line 309
+  GfObjSetupMapObj *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupMapObj(param);
+  info->unknown30 = setup;
+  return setup;
+}
+
 GfObjSetupFieldObj *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfInitParamFobj &param) {
   GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
   GfObjSetupFieldObj *setup = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjSetupFieldObj(param);
@@ -297,6 +314,18 @@ GfObjSetupExtra *GfObjSetup::createSetupParam(GF_OBJ_HANDLE *handle, const GfIni
   info->unknown30 = setup;
   setup->unknown6c = param.unknown90.getMountIndex();
   return setup;
+}
+
+GfObjSetupEnemy::GfObjSetupEnemy(const GfInitParamEnemy &param)
+    : GfObjSetup(param, OBJECT_TYPE_ENEMY), unknown6c(param.m_enArrangeID), m_enArrangeID(param.unknown98), unknown98(false), unknowna0(nullptr), unknowna8(0), unknownac(0.0f), unknownb0(0),
+      unknownb2(false), unknownb4(0), unknownb8(param.m_bladeID), unknownc0(nullptr) {
+  unknown74 = "S_idle";
+  if (unknownb8 != 0) {
+    // __LINE__ must be 662 as in the original file: it is the line argument of the allocation.
+#line 662
+    unknownc0 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SDataBlade;
+    GfDataBlade::setupSDataBlade(*unknownc0, unknownb8, false);
+  }
 }
 
 } // namespace gf

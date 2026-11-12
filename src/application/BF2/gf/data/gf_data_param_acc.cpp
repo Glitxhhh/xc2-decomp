@@ -11,8 +11,10 @@
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 #include "ml/fixed_size_alloc.h"
+#include "ml/rand.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/fixed_vector.h"
 
 namespace gf {
 
@@ -1192,6 +1194,36 @@ void DataIdeaAcc::setPointForDebug(u32 idea, u32 point) {
   if (this->unknown00 != nullptr) {
     this->unknown00->setPoint(idea, point);
   }
+}
+
+u32 DataIdeaAcc::getMaximumIdeaLevel() const {
+  if (unknown00 == nullptr) {
+    return 0;
+  }
+  mm::mtl::FixedVector<u32, 5> ideas;
+  for (u32 idea = 0; idea < 4; idea++) {
+    u32 level = getLevel(idea);
+    if (ideas.empty()) {
+      ideas.push_back(idea);
+    } else {
+      for (const u32 *it = ideas.begin(); it != ideas.end(); it++) {
+        u32 other = getLevel(*it);
+        if (other > level) {
+          ideas.clear();
+          ideas.push_back(idea);
+          break;
+        }
+        if (other == level) {
+          ideas.push_back(idea);
+        }
+      }
+    }
+  }
+  if (ideas.size() > 1) {
+    u32 random = ml::mtRand(ideas.size() * 100);
+    return ideas[random / 100];
+  }
+  return ideas[0];
 }
 
 unknown079 DataIdeaAcc::getRatio(u32 level0, u32 level1, u32 level2, u32 level3, int offset0, int offset1, int offset2, int offset3) const {
