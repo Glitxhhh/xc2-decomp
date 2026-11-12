@@ -28,11 +28,21 @@ static_assert(offsetof(AccessParam, accessUpper) == 0x08, "");
 static_assert(offsetof(AccessParam, accessDown) == 0x0c, "");
 static_assert(sizeof(AccessParam) == 0x10, "");
 
-// Parameters of gf_param_access.cpp; the layouts are not reconstructed yet.
-
+// Field names and offsets from the reflection built by gf::LookParam::createReflection.
 struct LookParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
+
+  f32 lookAngle;
+  f32 targetMoveTime;
+  f32 fadeInTime;
+  f32 changeTargetTime;
+  f32 fadeOutTime;
+  f32 changeBehaviorTime;
 };
+
+static_assert(offsetof(LookParam, fadeInTime) == 0x08, "");
+static_assert(offsetof(LookParam, changeBehaviorTime) == 0x14, "");
+static_assert(sizeof(LookParam) == 0x18, "");
 
 struct ItemGetParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);

@@ -71,6 +71,8 @@ struct MsgObjectNotifyDead;
 struct MsgObjectNotifyDamage;
 struct MsgObjectNotifyHealHp;
 struct MsgGameChangeTarget;
+struct MsgObjectAlpha;
+struct MsgObjectNotifyChangeAttribute;
 
 class GfComProperty : public GfComponent {
 public:
@@ -93,6 +95,9 @@ public:
   void procMsgObjectSetHp(fw::MessageObject *object, MsgObjectSetHp &message);
   void procMsgObjectStopAutoHeal(fw::MessageObject *object, MsgObjectStopAutoHeal &message);
   void procMsgObjectLimitHP(fw::MessageObject *object, MsgObjectLimitHP &message);
+  void procMsgObjectAlpha(fw::MessageObject *object, MsgObjectAlpha &message);
+  void procMsgObjectNotifyChangeAttribute(fw::MessageObject *object, MsgObjectNotifyChangeAttribute &message);
+  void setAlpha(u32 type, f32 alpha);
 
   mm::mtl::IntrusivePtr<GfStatusProperty> unknown10;   // Inferred role: status; original member name unknown.
   mm::mtl::UniquePtr<GfTargetProperty> unknown18;      // Inferred role: target; original member name unknown.

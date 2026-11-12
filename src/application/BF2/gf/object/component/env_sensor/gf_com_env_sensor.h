@@ -19,6 +19,7 @@ class RTTI;
 
 namespace fw {
 class MessageObject;
+class Reflection;
 struct Transform;
 } // namespace fw
 
@@ -100,6 +101,8 @@ public:
   // Field names and offsets from the reflection built by gf::EnviromentSensor::Parameter::createReflection; the names are
   // the reflection strings of the game.
   struct Parameter {
+    static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
+
     f32 searchVertUp;
     f32 searchVertDown;
     f32 obstacleHeightBase;

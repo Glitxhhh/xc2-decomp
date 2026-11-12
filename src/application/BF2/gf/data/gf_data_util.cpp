@@ -1,8 +1,10 @@
 #include "gf/data/gf_data_util.h"
 
+#include "gf/data/gf_bdat_chrbl.h"
 #include "gf/data/gf_bdat_chrdr.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_manager.h"
 #include "gf/data/gf_data_map.h"
@@ -183,5 +185,29 @@ bool GfDataUtil::isClearGameCheck() { return GfGameFlag::getLocal(1, FLAG_UNKNOW
 void GfDataUtil::setClearGameCheck() { GfGameFlag::setLocal(1, FLAG_UNKNOWN_55166, 1); }
 
 bool GfDataUtil::isVandammeDead() { return getScenarioFlag() >= SCENARIO_UNKNOWN_3048; }
+
+void GfDataUtil::refreshBladeSaveData() {
+  GfBdatChrBl *bdatBlade = GfBdatChrBl::get();
+  u32 start = bdatBlade->getChrBlStart();
+  u32 end = bdatBlade->getChrBlEnd();
+  for (u32 blade = start; blade < end; blade++) {
+    SDataBlade &dataBlade = GfDataBlade::getSDataBlade(blade);
+    if (blade != dataBlade.unknown06) {
+      GfDataBlade::setupSDataBlade(dataBlade, blade, false);
+    }
+  }
+}
+
+void GfDataUtil::refreshBdatParam() {
+  for (u32 i = 0; i < BLADE_UNKNOWN_422; i++) {
+    u32 blade = GfDataBlade::getBladeID(i);
+    if (blade != 0) {
+      GfDataBlade::setupSDataBlade(GfDataBlade::getSDataBlade(blade), blade, true);
+    }
+  }
+  for (u32 driver = DRIVER_UNKNOWN_1; driver <= DRIVER_UNKNOWN_9; driver++) {
+    GfDataDriver::calcDriverBaseParamByLevel(GfDataDriver::getSDataDriver(driver));
+  }
+}
 
 } // namespace gf

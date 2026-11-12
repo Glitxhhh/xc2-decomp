@@ -20,6 +20,24 @@ void AccessParam::createReflection(fw::Reflection *reflection, const char *name,
   reflection->setReflectionStruct(index, value);
 }
 
+void LookParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
+#line 20
+  fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(LookParam));
+#line 21
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("lookAngle", offsetof(LookParam, lookAngle), 0.0f, 180.0f, 140.0f));
+#line 22
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("targetMoveTime", offsetof(LookParam, targetMoveTime), 0.0f, 100.0f, 0.2f));
+#line 23
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("fadeInTime", offsetof(LookParam, fadeInTime), 0.0f, 100.0f, 0.5f));
+#line 24
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("changeTargetTime", offsetof(LookParam, changeTargetTime), 0.0f, 100.0f, 0.8f));
+#line 25
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("fadeOutTime", offsetof(LookParam, fadeOutTime), 0.0f, 100.0f, 0.8f));
+#line 26
+  value->add(new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueF32("changeBehaviorTime", offsetof(LookParam, changeBehaviorTime), 0.01f, 100.0f, 0.3f));
+  reflection->setReflectionStruct(index, value);
+}
+
 void ItemGetParam::createReflection(fw::Reflection *reflection, const char *name, u32 index) {
 #line 29
   fw::ReflectionValueStruct *value = new (fw::Allocator::getDebAllocator(), 16, __FILE__, __LINE__) fw::ReflectionValueStruct(name, sizeof(ItemGetParam));

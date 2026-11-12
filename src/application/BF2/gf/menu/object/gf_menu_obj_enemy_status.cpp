@@ -2,7 +2,10 @@
 
 #include "bdat.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_adapter.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
+#include "gf/menu/adapter/gf_menu_gfobj_adapter.h"
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_types.h"
@@ -17,6 +20,7 @@
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 
@@ -40,6 +44,8 @@ constexpr u16 unknown009 = 3;
 constexpr u16 unknown010 = 0xc;
 // Inferred role: ui event type, updates the reaction, the arts name or the combo debuff; original name unknown.
 constexpr u16 unknown011 = 0xd;
+// Inferred role: attached call id; original name unknown.
+constexpr u32 unknown014 = 0x15;
 
 // Inferred role: no control running on the reaction icon and the pulse effect; original name unknown.
 static const GfMenuObjEnemyStatus::MainListener::unknown006 unknown012 = {-1, -1};
@@ -64,9 +70,135 @@ static void unknown013(u32 handle, u32 elem, u32 index) {
   }
 }
 
+// Inferred role: keeps a created adapter in the list of the adapters following the enemy, when there is room; original name unknown.
+static void unknown015(GfMenuObjEnemyStatus *status, unknown135 *adapter) {
+  if (adapter != nullptr && status->unknown30.unknown00.size() != status->unknown30.unknown00.capacity()) {
+    status->unknown30.unknown00.push_back(adapter);
+  }
+}
+
+// Inferred role: same as unknown015 for the sites where the game tests the adapter before its conversion to the list element; original name unknown.
+template <typename T> static void unknown016(GfMenuObjEnemyStatus *status, T *adapter) {
+  if (adapter != nullptr && status->unknown30.unknown00.size() != status->unknown30.unknown00.capacity()) {
+    status->unknown30.unknown00.push_back(adapter);
+  }
+}
+
 GfMenuObjEnemyStatus::GfMenuObjEnemyStatus(u32 handle) : GfMenuObject(handle), unknown28(unknown020), unknown100(-1) {}
 
 GfMenuObjEnemyStatus::~GfMenuObjEnemyStatus() {}
+
+void GfMenuObjEnemyStatus::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  attachExternalCall(unknown004, unknown18);
+  u32 main = acc.searchChild("LAY_main");
+  if (ui::UIObjectAcc(main).isValid()) {
+    attachExternalCall(unknown001, main);
+    attachExternalCall(unknown014, main);
+// __LINE__ must be 102 as in the original file: it is the line argument of operator new.
+#line 102
+    MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+    listener->addRef();
+    ui::UIEventManager::get()->registObjectListener(main, listener);
+    if (listener != nullptr) {
+      listener->release();
+    }
+  }
+  {
+    ui::UIObjectAcc img(acc.searchChild("IMG_bg"));
+    unknown016(this, GfMenuGfObjAdapter::create(img.unknown10, 0x20, unknown020, true));
+  }
+  {
+    ui::UIObjectAcc img(acc.searchChild("IMG_hpgauge"));
+    if (img.isValid()) {
+      GfMenuGfObjAdapter *adapter = GfMenuGfObjAdapter::create(img.unknown10, 0, unknown020, true);
+      if (adapter != nullptr) {
+        adapter->setNumberInterpolateMode(0.25f);
+        unknown015(this, adapter);
+      }
+      unknown015(this, GfMenuGfObjAdapter::create(img.unknown10, 1, unknown020, true));
+      img.setExtType(1);
+    }
+  }
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("IMG_acticon"), 0xb, unknown020, true));
+  {
+    ui::UIObjectAcc img(acc.searchChild("IMG_linkicon"));
+    if (img.isValid()) {
+      unknown015(this, GfMenuGfObjAdapter::create(img.unknown10, 0xc, unknown020, true));
+      img.setImageIndex(1);
+    }
+  }
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("TXT_lv"), 7, unknown020, true));
+  unknown015(this, GfMenuCharDataAdapter::createFromGfObj(acc.searchChild("TXT_name"), 2, unknown020, false));
+  unknown016(this, GfMenuGfObjAdapter::create(acc.searchChild("LAY_arts_name"), 9, unknown020, true));
+  addNumberEventCondition(main, "LAY_arts_name", 5, 0);
+  {
+    ui::UIObjectAcc elem(acc.unknown10, "LAY_elem2");
+// __LINE__ must be 178 as in the original file: it is the line argument of operator new.
+#line 178
+    ElemListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ElemListener(this);
+    listener->addRef();
+    ui::UIEventManager::get()->registObjectListener(elem.unknown10, listener);
+    if (listener != nullptr) {
+      listener->release();
+    }
+    unknown015(this, GfMenuGfObjAdapter::create(elem.unknown10, 0x14, unknown020, true));
+    addDispEventCondition(elem.unknown10, nullptr, 1, 0, false);
+    unknown015(this, GfMenuGfObjAdapter::create(elem.searchChild("TXT_elem_eff"), 10, unknown020, true));
+    unknown015(this, GfMenuGfObjAdapter::create(elem.searchChild("IMG_elem_lv_icon"), 0x15, unknown020, true));
+    unknown015(this, GfMenuGfObjAdapter::create(elem.searchChild("IMG_elem_lv_icon_base"), 0x15, unknown020, true));
+    {
+      ui::UIObjectAcc time(elem.unknown10, "IMG_elem_time");
+      unknown015(this, GfMenuGfObjAdapter::create(time.unknown10, 0x13, unknown020, true));
+      unknown015(this, GfMenuGfObjAdapter::create(time.unknown10, 0x16, unknown020, true));
+      time.setExtType(2);
+    }
+    {
+      ui::UIObjectAcc suspend(elem.unknown10, "IMG_elem_time_suspend");
+      unknown015(this, GfMenuGfObjAdapter::create(suspend.unknown10, 0x13, unknown020, true));
+      suspend.setExtType(2);
+      unknown015(this, GfMenuGfObjAdapter::create(elem.searchChild("LAY_elem_time_suspend"), 0x18, unknown020, true));
+      addDispEventCondition(elem.unknown10, "LAY_elem_time_suspend", 2, 0, false);
+    }
+    {
+      ui::UIObjectAcc debuff(acc.unknown10, "LAY_debuff");
+      debuff.setDisp(false);
+    }
+  }
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("IMG_infoicon"), 4, unknown020, true));
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("IMG_reaction_icon"), 0xe, unknown020, true));
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("IMG_reaction_icon_eff"), 0xe, unknown020, true));
+  addNumberEventCondition(main, "IMG_reaction_icon", 3, 0);
+  addDispEventCondition(main, "IMG_reaction_icon", 3, 0, false);
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("TXT_reaction"), 0xf, unknown020, true));
+  unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("IMG_reaction_gauge"), 0x10, unknown020, true));
+  ui::UIObjectAcc(acc.searchChild("IMG_reaction_gauge")).setExtType(1);
+  {
+    ui::UIObjectAcc suspend(acc.unknown10, "IMG_reaction_time_suspend");
+    unknown015(this, GfMenuGfObjAdapter::create(suspend.unknown10, 0x10, unknown020, true));
+    suspend.setExtType(1);
+    unknown015(this, GfMenuGfObjAdapter::create(acc.searchChild("LAY_reaction_time_suspend"), 0x11, unknown020, true));
+    addDispEventCondition(main, "LAY_reaction_time_suspend", 4, 0, false);
+  }
+  GfMenuObjUtil::createFollowDispPlugin(acc.searchChild("LAY_reaction"), acc.searchChild("IMG_reaction_icon"));
+  {
+    ui::UIObjectAcc state(acc.unknown10, "LAY_state");
+    GfMenuGfObjAdapter *adapter = GfMenuGfObjAdapter::create(acc.searchChild("IMG_state_weak_elem_icon"), 0x19, unknown020, true);
+    adapter->unknown24 = acc.searchChild("LAY_state_weak_elem");
+    unknown015(this, adapter);
+  }
+  {
+    ui::UIObjectAcc debuff(acc.unknown10, "LAY_combo_debuff");
+    unknown016(this, GfMenuGfObjAdapter::create(debuff.unknown10, 0x1f, unknown020, true));
+    debuff.setDisp(false);
+    addNumberEventCondition(main, "LAY_combo_debuff", 6, 0);
+  }
+  ui::UIObjectAcc elem(unknown18, "LAY_elem");
+  if (elem.isValid()) {
+    elem.setDisp(false);
+  }
+  GfMenuObject::initialize();
+}
 
 void GfMenuObjEnemyStatus::finalize() { GfMenuObject::finalize(); }
 
@@ -299,6 +431,53 @@ void GfMenuObjEnemyStatus::MainListener::reciveEvent(const ui::EventData &event,
           GfMenuObjUtil::stopCtrl(ctrl);
           suspend.setDisp(false);
         }
+      }
+      break;
+    }
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjEnemyStatus::ElemListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    break;
+  case unknown011: {
+    u32 param0 = event.unknown08;
+    switch (event.unknown0c) {
+    case 1:
+      if (param0 == 5) {
+        acc.setAddColor("white");
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown08 = 0x4000000;
+        param.unknown00 = 0.5f;
+        param.unknown40_col3 = GfMenuObjUtil::getPresetColor("black");
+        GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+      }
+      break;
+    case 2: {
+      ui::UIObjectAcc suspend(acc.unknown10, "LAY_elem_time_suspend");
+      if (param0 == 5) {
+        suspend.setDisp(true);
+        suspend.setAlpha(0.0f);
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown08 = 4;
+        param.unknown00 = 0.5f;
+        param.unknown3c = 1.0f;
+        param.unknown10 = true;
+        param.unknown0c = 3;
+        unknown20->unknown100 = GfMenuObjUtil::startCtrl(suspend.unknown10, param, nullptr);
+      } else if (unknown20->unknown100 != -1) {
+        GfMenuObjUtil::stopCtrl(unknown20->unknown100);
+        unknown20->unknown100 = -1;
+        suspend.setDisp(false);
       }
       break;
     }

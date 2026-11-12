@@ -158,26 +158,6 @@ static_assert(offsetof(WallAiParam, escapeRange) == 0x10, "");
 static_assert(offsetof(WallAiParam, delay) == 0x18, "");
 static_assert(sizeof(WallAiParam) == 0x1c, "");
 
-// Field names and offsets from the reflection built by gf::pc::WarpParam::createReflection.
-struct WarpParam {
-  static void createReflection(fw::Reflection *reflection, const char *name, u32 index);
-
-  f32 distanceHorz;
-  f32 distanceVert;
-  f32 stackTime;
-  f32 naviSearchUp;
-  f32 naviSearchDown;
-  f32 fadeTime;
-  f32 wallSearchDist;
-  f32 distanceHorzWall;
-  f32 distanceVertWall;
-};
-
-static_assert(offsetof(WarpParam, stackTime) == 0x08, "");
-static_assert(offsetof(WarpParam, distanceHorzWall) == 0x1c, "");
-static_assert(offsetof(WarpParam, distanceVertWall) == 0x20, "");
-static_assert(sizeof(WarpParam) == 0x24, "");
-
 // Layout not reconstructed yet; the "unique_idle" entry of the field param list built by createReflectionField.
 struct UniqueIdleParam {
   static void createReflection(fw::Reflection *reflection, const char *name, u32 index);

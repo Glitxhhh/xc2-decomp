@@ -1,11 +1,14 @@
 #include "gf/menu/object/gf_menu_obj_battle_telop.h"
 
 #include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/fixstr.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
@@ -44,6 +47,36 @@ GfMenuObjBattleTelop::~GfMenuObjBattleTelop() {
   for (int i = 0; i < 3; i++) {
     unknown2c0[i] = nullptr;
   }
+}
+
+void GfMenuObjBattleTelop::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+// __LINE__ must be 133 as in the original file: it is the line argument of operator new.
+#line 133
+  MainListener *telop = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  telop->addRef();
+  ui::UIEventManager::get()->registObjectListener(main.searchChild("LAY_telop"), telop);
+  if (telop != nullptr) {
+    telop->release();
+  }
+// __LINE__ must be 136 as in the original file: it is the line argument of operator new.
+#line 136
+  UniteComboListener *combo = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) UniteComboListener(this);
+  combo->addRef();
+  ui::UIEventManager::get()->registObjectListener(main.searchChild("LAY_fusion_combo"), combo);
+  if (combo != nullptr) {
+    combo->release();
+  }
+  attachExternalCall(unknown001, main.unknown10);
+  {
+    ui::UIObjectAcc bonus(main.unknown10, "LAY_fusion_bonus");
+    mm::mtl::FixStr<32> name;
+    for (u32 i = 0; i < 3; i++) {
+      name.format("TXT_fusion_bonus_param@%02d", i + 1);
+      GfMenuReferenceAdapter::create(bonus.searchChild(name.c_str()), unknown2c0[i], false);
+    }
+  }
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjBattleTelop::finalize() { GfMenuObject::finalize(); }

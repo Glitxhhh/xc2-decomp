@@ -65,8 +65,19 @@ public:
   ReflectionValueF32(const char *name, s64 offset, f32 minimum, f32 maximum, f32 value) : ReflectionValuePodF32(name, offset, minimum, maximum, value) {}
 };
 
+class ReflectionValueU32 : public ReflectionValuePod<u32, static_cast<ValueType>(2)> {
+public:
+  ReflectionValueU32(const char *name, s64 offset, u32 minimum, u32 maximum, u32 value) : ReflectionValuePod<u32, static_cast<ValueType>(2)>(name, offset, minimum, maximum, value) {}
+};
+
+class ReflectionValueS32 : public ReflectionValuePod<int, static_cast<ValueType>(5)> {
+public:
+  ReflectionValueS32(const char *name, s64 offset, int minimum, int maximum, int value) : ReflectionValuePod<int, static_cast<ValueType>(5)>(name, offset, minimum, maximum, value) {}
+};
+
 class ReflectionValueFlag : public ReflectionValue {
 public:
+  ReflectionValueFlag(const char *name, u32 mask, bool value) : ReflectionValue(name, static_cast<ValueType>(8)), unknown78(mask), unknown7c(value) {}
   virtual void writeDefaultFlag(u32 &flags) const;
 
   u32 unknown78;  // Inferred role: flag mask; original member name unknown.
@@ -103,6 +114,11 @@ static_assert(offsetof(ReflectionValueStruct, unknown90) == 0x90, "");
 
 class ReflectionValueBitset32 : public ReflectionValue {
 public:
+  ReflectionValueBitset32(const char *name, s64 offset) : ReflectionValue(name, static_cast<ValueType>(7), offset) { unknown68 = 4; }
+  void add(ReflectionValueFlag *flag) {
+    flag->addRef();
+    unknown78.push_back(flag);
+  }
   ~ReflectionValueBitset32() override {
     while (!unknown78.empty()) {
       ReflectionValueFlag *value = unknown78.begin().get();

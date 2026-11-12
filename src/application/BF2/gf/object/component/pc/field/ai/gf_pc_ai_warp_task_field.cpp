@@ -10,6 +10,7 @@
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/gf_pc_agent_util_field.h"
 #include "gf/object/component/pc/gf_pc_property_field.h"
+#include "gf/object/component/pc/param/gf_pc_param.h"
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
 #include "mm/mm_std_base.h"

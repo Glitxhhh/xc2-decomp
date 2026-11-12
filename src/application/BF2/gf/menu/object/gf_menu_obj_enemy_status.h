@@ -42,6 +42,15 @@ public:
     GfMenuObjEnemyStatus *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class ElemListener : public ui::UIObjectListener {
+  public:
+    ElemListener(GfMenuObjEnemyStatus *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjEnemyStatus *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjEnemyStatus(u32 handle);
   ~GfMenuObjEnemyStatus() override;
   static void open(const OpenParam &param);
@@ -65,5 +74,7 @@ static_assert(offsetof(GfMenuObjEnemyStatus, unknown100) == 0x100, "");
 static_assert(sizeof(GfMenuObjEnemyStatus) == 0x108, "");
 static_assert(offsetof(GfMenuObjEnemyStatus::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjEnemyStatus::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjEnemyStatus::ElemListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjEnemyStatus::ElemListener) == 0x28, "");
 
 } // namespace gf

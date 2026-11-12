@@ -3,6 +3,7 @@
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/object/component/effect/gf_com_effect_caster.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/component/property/gf_env_property.h"
@@ -13,6 +14,17 @@
 #include "mm_mtl/unique_ptr.h"
 
 namespace gf {
+namespace {
+
+// Inferred role: ground material of a surface, its kind selecting a variation that depends on the time of day; original name unknown.
+s32 unknown001(const s32 &material, const s32 &kind) {
+  if (kind == 0 || (kind == 1 && !GfGameManager::isNight())) {
+    return material;
+  }
+  return kind + 12;
+}
+
+} // namespace
 
 u32 GfEffectGround::getWaterHeightStateImpl(f32 height, f32 first, f32 second) {
   if (height < first) {
@@ -89,6 +101,31 @@ bool GfEffectGround::getGroundEffectFileNameImpl(u32 type, u32 effectType, u32 m
     }
   }
   return false;
+}
+
+u32 GfEffectGround::getGroundMaterial(GfEnvProperty *env, const GfComEffectCaster *caster) {
+  if (env->unknown2d0 & 1) {
+    s32 material = unknown001(env->unknown2b8, env->unknown2bc);
+    GfEnvProperty *callerEnv = static_cast<GfObj *>(caster->unknown08)->getComponent<GfComProperty>()->unknown28.get();
+    if (callerEnv != nullptr && (callerEnv->unknown2d0 & 1) && !(callerEnv->unknown2b4 < caster->unknown24)) {
+      switch (material) {
+      case 1:
+        material = 16;
+        break;
+      case 11:
+        material = 17;
+        break;
+      case 13:
+        material = 18;
+        break;
+      }
+    }
+    return material;
+  }
+  if (env->unknown2d0 & 2) {
+    return unknown001(env->unknown00[0].unknown34, env->unknown00[0].unknown48);
+  }
+  return 0;
 }
 
 } // namespace gf
