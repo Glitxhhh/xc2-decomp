@@ -35,7 +35,7 @@ public:
     s32 unknownb0; // Inferred role: wait reset value; original member name unknown.
   };
 
-  static bool standby();
+  static void standby();
   static bool isValid(CERR_STRUCT *error);
   static void reqCancel(CERR_STRUCT *error);
   bool isExistError() const;

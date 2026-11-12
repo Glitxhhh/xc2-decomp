@@ -64,6 +64,44 @@ int WorkCpuThread::getJobNum() const {
   return unknown1f0.size();
 }
 
+bool WorkCpuThread::addJobThreadList(reslist<TJOB *> *list, u32 mode) {
+  CS cs(*unknown1e8);
+  bool isAdded = false;
+  if (mode == 2) {
+    for (reslist<TJOB *>::Node *node = list->begin(); node != list->end(); node = node->getNext()) {
+      if (node->value->unknown30 == m_CPUID) {
+        unknown1f0.push_back(node->value);
+        unknown1c4++;
+        if (node->value->unknown30 == 0) {
+          m_aboutJobNumC++;
+        }
+        isAdded = true;
+      }
+    }
+  } else if (mode == 1) {
+    for (reslist<TJOB *>::Node *node = list->begin(); node != list->end(); node = node->getNext()) {
+      if (node->value->unknown30 == 0) {
+        unknown1f0.push_back(node->value);
+        unknown1c4++;
+        if (node->value->unknown30 == 0) {
+          m_aboutJobNumC++;
+        }
+        isAdded = true;
+      }
+    }
+  } else {
+    for (reslist<TJOB *>::Node *node = list->begin(); node != list->end(); node = node->getNext()) {
+      unknown1f0.push_back(node->value);
+      unknown1c4++;
+      if (node->value->unknown30 == 0) {
+        m_aboutJobNumC++;
+      }
+      isAdded = true;
+    }
+  }
+  return isAdded;
+}
+
 void WorkCpuThread::setEvent(bool isSignal) {
   if (unknown1b8 != nullptr) {
     unknown1b8->setSignalEvent(isSignal);

@@ -87,6 +87,8 @@ public:
 
   void debugRender(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, bool isAlpha, bool isDepth, f32 scale, bool isFlip);
   void debugRender(int type, int x, int y, int width, int height, bool isAlpha);
+  // Game symbol _ZN2ml9DrPixlMan13debugRender3DERKN5grlib18CGLibTextureBufferEiiiifb (0x848c8c, not decompiled yet); the parameter roles are inferred.
+  void debugRender3D(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, f32 depth, bool isFlip);
   void debugRenderCube(const grlib::CGLibTextureBuffer &texture, u32 face, u32 level, bool isAlpha, int x, int y, int width, int height, bool isGamma, f32 scale);
   void captureMainFrameBuffer(grlib::CGLibTextureBuffer *buffer, u32 width, u32 height);
   void debugRenderCh(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, u32 channel);

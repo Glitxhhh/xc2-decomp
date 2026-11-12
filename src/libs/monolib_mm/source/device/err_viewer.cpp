@@ -2,6 +2,7 @@
 
 #include "ml/critical_section.h"
 #include "ml/dev_clock.h"
+#include "ml/dev_graph.h"
 #include "ml/ml_mem.h"
 #include "ml/work_control.h"
 #include "ml/work_cpu.h"
@@ -65,6 +66,47 @@ void ErrViewer::reqCancel(CERR_STRUCT *error) {
       }
     }
   }
+}
+
+void ErrViewer::standby() {
+  ErrViewer *viewer = get();
+  if (viewer == nullptr) {
+    return;
+  }
+  if (viewer->unknown258 == 0) {
+    viewer->setup();
+    viewer->unknown268 = true;
+    DevGraph::addOuterRender(fnRender);
+    viewer->unknown258++;
+  } else if (viewer->unknown258 == 2) {
+    DevGraph::removeOuterRender(fnRender);
+    viewer->unknown268 = false;
+    viewer->term();
+    viewer->unknown26a = true;
+    viewer->unknown258++;
+    viewer->callbackError(static_cast<ERR_CALL>(0));
+    return;
+  } else if (viewer->unknown258 != 1) {
+    viewer->callbackError(static_cast<ERR_CALL>(0));
+    return;
+  }
+  viewer->upErrViewer();
+  if (viewer->unknown269) {
+    CS lock(*viewer->unknown10);
+    for (mm::mtl::FixedList<ERRINFO *, 32>::iterator it = viewer->unknown18.begin(); it != viewer->unknown18.end(); ++it) {
+      if ((*it)->unknown18 != nullptr) {
+        mtl::MemManager::deallocate((*it)->unknown18, 0, false);
+        (*it)->unknown18 = nullptr;
+      }
+      if (*it != nullptr) {
+        delete *it;
+        *it = nullptr;
+      }
+    }
+    viewer->unknown18.clear();
+    viewer->unknown258++;
+  }
+  viewer->callbackError(static_cast<ERR_CALL>(0));
 }
 
 bool ErrViewer::isExistError() const {
@@ -185,6 +227,15 @@ void ErrViewer::term() {
   if (unknown278 != nullptr) {
     mtl::MemManager::deallocate(unknown278, 0, false);
     unknown278 = nullptr;
+  }
+}
+
+void ErrViewer::bkgHomeMenu(bool isEnter) {}
+
+void ErrViewer::bkgHomeMenuDenied() {
+  if (!WorkCpu::isHomeMenuEnable()) {
+    DevClock::getClockNow(unknown260);
+    unknown26c = true;
   }
 }
 

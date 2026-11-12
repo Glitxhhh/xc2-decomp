@@ -87,7 +87,9 @@ struct MdsMatInfoHeader {
     unknown015_13 = 1 << 13, // Inferred role: unknown, selects the mesh parts shadow shaders; original name unknown.
     unknown015_15 = 1 << 15, // Inferred role: seam material; original name unknown.
     unknown015_16 = 1 << 16, // Inferred role: uv animation; original name unknown.
+    unknown015_17 = 1 << 17, // Inferred role: animation of the category at unknown34; original name unknown.
     unknown015_18 = 1 << 18, // Inferred role: material animation; original name unknown.
+    unknown015_19 = 1 << 19, // Inferred role: plane matrix animation of the category at unknown3c; original name unknown.
   };
 
   u32 unknown00; // Inferred role: offset of the material name; original member name unknown.
@@ -112,9 +114,9 @@ struct MdsMatInfoHeader {
   u8 unknown2a; // Inferred role: culling type; original member name unknown.
   u8 _2b[0x30 - 0x2b];
   u32 unknown30; // Inferred role: uv animation category; original member name unknown.
-  u8 _34[0x38 - 0x34];
+  u32 unknown34; // Inferred role: animation category applied directly to the values (flag 17); original member name unknown.
   u32 unknown38; // Inferred role: material animation category; original member name unknown.
-  u8 _3c[0x40 - 0x3c];
+  u32 unknown3c; // Inferred role: plane matrix animation category (flag 19); original member name unknown.
   u32 unknown40; // Inferred role: value offset; original member name unknown.
   u8 _44[0x4c - 0x44];
   u32 unknown4c; // Inferred role: shader table offset; original member name unknown.

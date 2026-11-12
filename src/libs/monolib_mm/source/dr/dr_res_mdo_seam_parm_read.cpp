@@ -1,11 +1,14 @@
 #include "dr/dr_res_mdo_seam_parm_read.h"
 
+#include <string.h>
+
 namespace ml {
 
 DrResMdoSeamParmRead::DrResMdoSeamParmRead() {
   unknown00 = 0;
   unknown50 = mm::Vec3(0.0f, 0.0f, 0.0f);
   unknown62c = 0;
+  unknown62d = 0;
   unknown40 = 0;
 }
 
@@ -59,6 +62,44 @@ void DrResMdoSeamParmRead::setStockLight(int index) {
     unknown5d8 = count + 1;
     unknown118[count] = index;
   }
+}
+
+void DrResMdoSeamParmRead::begin(wkSeamReadPacDataInf *packet) {
+  m_stockEnvMdl = 0;
+  unknown5fe = 0;
+  unknown5fa = 0;
+  unknown5f6 = 0;
+  unknown5f2 = 0;
+  unknown5ee = 0;
+  unknown5e8 = 0;
+  unknown5ea = 0;
+  unknown5e0 = 0;
+  unknown5e2 = 0;
+  unknown5e4 = 0;
+  unknown5e6 = 0;
+  unknown5d8 = 0;
+  unknown5da = 0;
+  unknown5dc = 0;
+  unknown5de = 0;
+  unknown5d0 = 0;
+  unknown5d2 = 0;
+  unknown5d4 = 0;
+  unknown5d6 = 0;
+  unknown602 = 0;
+  unknown604 = 0;
+  unknown606 = 0;
+  unknown608 = 0;
+  unknown600 = 0xffff;
+  unknown5fc = 0xffff;
+  unknown5f8 = 0xffff;
+  unknown5f4 = 0xffff;
+  unknown5f0 = 0xffff;
+  unknown5ec = 0xffff;
+  unknown630 = packet;
+  memset(packet->unknown08, 0, packet->unknown00);
+  unknown40 = 0;
+  unknown62c = 0;
+  unknown00 &= ~0xd;
 }
 
 void DrResMdoSeamParmRead::resetTexture() { unknown5e2 = 0; }

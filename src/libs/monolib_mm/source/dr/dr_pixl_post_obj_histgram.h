@@ -7,6 +7,9 @@
 namespace ml {
 
 class DrResUseQueryObj;
+class DrMan;
+class DrPixlMan;
+class DrPixlPostMan;
 
 class DrPixlPostObjHistgram : public DrPixlPostObj {
 public:
@@ -17,8 +20,10 @@ public:
     f32 unknown04; // Inferred role: upper luminance; original member name unknown.
   };
 
+  DrPixlPostObjHistgram(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan);
   ~DrPixlPostObjHistgram();
   void update();
+  void resetMaxLuminance(f32 maxLuminance);
   void render();
   f32 calcLuminanceAve(f32 rate, bool isLow) const;
   unknown001 getSection(u32 index) const;

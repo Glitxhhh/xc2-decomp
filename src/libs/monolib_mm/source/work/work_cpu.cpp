@@ -12,6 +12,7 @@
 #include "ml/work_cpu_thread.h"
 #include "ml/work_root.h"
 #include "ml/work_util.h"
+#include "mm/mm_std_base.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 
@@ -222,6 +223,26 @@ CPUID WorkCpu::getCurrentCPUID() {
   return ThreadUtil::getCurrentCPUID();
 }
 
+bool WorkCpu::isStackAdr(void *address, CPUID cpuId) {
+  WorkCpu *cpu = get();
+  if (cpu != nullptr) {
+    for (u32 i = 0; i < cpu->m_cpuNum; i++) {
+      WorkCpuThread *thread = cpu->unknown1740[i];
+      if (thread != nullptr && (cpuId == CPUID_UNKNOWN_0 || thread->getCPUID() == cpuId)) {
+        u64 stackAddress;
+        u64 stackSize;
+        thread->getStackInfo(stackAddress, stackSize);
+        u64 target = reinterpret_cast<u64>(address);
+        if (stackAddress <= target && stackAddress + stackSize > target) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
 bool WorkCpu::getStackInfo(u64 threadId, u64 &address, u64 &size) {
   WorkCpu *cpu = get();
   if (cpu == nullptr) {
@@ -237,6 +258,122 @@ bool WorkCpu::getStackInfo(u64 threadId, u64 &address, u64 &size) {
   }
 
   return true;
+}
+
+u64 WorkCpu::getThreadId(CPUID cpuId) {
+  WorkCpu *cpu = get();
+  if (cpu == nullptr) {
+    return 0;
+  }
+
+  if (cpuId == CPUID_UNKNOWN_1) {
+    return cpu->unknown2020;
+  }
+
+  for (u32 i = 1; i < cpu->m_cpuNum; i++) {
+    WorkCpuThread *thread = cpu->unknown1740[i];
+    if (thread == nullptr) {
+      continue;
+    }
+    if (thread->getCPUID() == cpuId) {
+      return thread->getThreadID();
+    }
+  }
+
+  return 0;
+}
+
+bool WorkCpu::isStackOverFlow() {
+  WorkCpu *cpu = get();
+  if (cpu != nullptr) {
+    u64 threadId = ThreadUtil::getCurrentID();
+    for (u64 i = 0; i < cpu->m_cpuNum; i++) {
+      WorkCpuThread *thread = cpu->unknown1740[i];
+      if (thread != nullptr && thread->getThreadID() == threadId) {
+        return thread->isStackOverFlow();
+      }
+    }
+    ThreadUtil::getCurrentCPUID();
+  }
+
+  return false;
+}
+
+CPUID WorkCpu::getJobCPUID() {
+  WorkCpu *cpu = get();
+  CPUID result = CPUID_UNKNOWN_0;
+  u32 minJobNum = 10000;
+  for (u32 i = 0; i < cpu->m_cpuNum; i++) {
+    WorkCpuThread *thread = cpu->unknown1740[i];
+    if (i == 0 && cpu->unknown1738 == DO_THREAD_UNKNOWN_2) {
+      continue;
+    }
+    u32 jobNum = thread->getJobNum();
+    if (minJobNum > jobNum) {
+      result = thread->getCPUID();
+      minJobNum = jobNum;
+    }
+  }
+
+  return result;
+}
+
+WorkCpu::GRPLIST *WorkCpu::getListGrp(int handle) {
+  MM_VERIFY(_mlwcpu::getListGrpLock().isLocked());
+  for (mm::mtl::FixedList<GRPLIST, 128>::iterator it = unknown280.begin(); it != unknown280.end(); ++it) {
+    if (it->unknown00 == handle) {
+      return &*it;
+    }
+  }
+
+  return nullptr;
+}
+
+void WorkCpu::wakeup(int cpu) {
+  WorkCpu *instance = get();
+  if (instance == nullptr) {
+    return;
+  }
+  WorkCpuThread *mainThread = instance->unknown1740[0];
+  if (mainThread == nullptr) {
+    return;
+  }
+
+  if (instance->unknown1738 == DO_THREAD_UNKNOWN_0) {
+    {
+      CS lock(_mlwcpu::getListGrpLock());
+      for (mm::mtl::FixedList<GRPLIST, 128>::iterator it = instance->unknown280.begin(); it != instance->unknown280.end(); ++it) {
+        if (cpu == -1 || it->unknown00 == cpu) {
+          GRPLIST *group = instance->getListGrp(cpu);
+          for (u32 i = 0; i < get()->m_cpuNum; i++) {
+            mainThread->addJobThreadList(group->unknown08[i], 1);
+          }
+          for (u32 i = 0; i < get()->m_cpuNum; i++) {
+            instance->unknown1740[i]->addJobThreadList(group->unknown08[i], 2);
+          }
+        }
+      }
+    }
+    mainThread->updateDirect(false);
+  } else {
+    bool isAdded[16] = {};
+    {
+      CS lock(_mlwcpu::getListGrpLock());
+      for (mm::mtl::FixedList<GRPLIST, 128>::iterator it = instance->unknown280.begin(); it != instance->unknown280.end(); ++it) {
+        if (cpu == -1 || it->unknown00 == cpu) {
+          GRPLIST *group = instance->getListGrp(cpu);
+          for (u32 i = 0; i < get()->m_cpuNum; i++) {
+            isAdded[i] = instance->unknown1740[i]->addJobThreadList(group->unknown08[i], 0);
+          }
+        }
+      }
+    }
+    for (u32 i = 1; i < instance->m_cpuNum; i++) {
+      if (isAdded[i]) {
+        instance->unknown1740[i]->setEvent(true);
+      }
+    }
+  }
 }
 
 f32 WorkCpu::getJobCost(CPUID cpuId) { return getCpuThread(cpuId)->getJobCost(); }
@@ -298,6 +435,19 @@ void WorkCpu::setAfterUpdateRender(bool isAfterUpdateRender) {
       cpu->unknown1b0 |= 0x10;
     } else {
       cpu->unknown1b0 &= ~0x10;
+    }
+  }
+}
+
+void WorkCpu::endUpdate() {
+  WorkCpu *cpu = get();
+  if (cpu != nullptr) {
+    cpu->unknown1b0 |= 0x20;
+    if (!WorkRootState::isThreadRender()) {
+      if (cpu->unknown1758 != -1) {
+        sync(cpu->unknown1758, WKCPU_SYNC_UNKNOWN_1, CPUID_UNKNOWN_0);
+      }
+      swapBank();
     }
   }
 }

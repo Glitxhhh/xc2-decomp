@@ -1,5 +1,7 @@
 #include "dr/dr_pixl_post_obj_histgram.h"
 
+#include <math.h>
+
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_man.h"
@@ -10,8 +12,43 @@
 #include "grlib/cglib_render_target.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
+
+DrPixlPostObjHistgram::DrPixlPostObjHistgram(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan) : DrPixlPostObj(drMan, pixlMan, postMan) {
+  unknown18 = nullptr;
+  unknowna4 = 0;
+  unknowna8 = 1;
+  unknownac = 100000.0f;
+  unknownb0 = 0.0f;
+  unknownb4 = getSectionNum();
+  unknownb8 = false;
+  unknown18 = new (unknown00->unknown0c) DrResUseQueryObj();
+  resetMaxLuminance(32.0f);
+}
+
+void DrPixlPostObjHistgram::resetMaxLuminance(f32 maxLuminance) {
+  if (unknowna8 == 0) {
+    for (int i = 0; i < 10; i++) {
+      m_maxLuminance[i] = maxLuminance / 10.0f * static_cast<f32>(i + 1);
+    }
+  } else if (unknowna8 == 1) {
+    f32 minLog = logf(1.0f / 256.0f) / logf(2.0f);
+    f32 maxLog = logf(maxLuminance) / logf(2.0f);
+    for (int i = 0; i < 10; i++) {
+      m_maxLuminance[i] = exp2f((maxLog - minLog) * (static_cast<f32>(i) / 10.0f) + minLog);
+    }
+  }
+  m_maxLuminance[9] = maxLuminance;
+  m_maxLuminance[10] = 100000.0f;
+  for (int i = 0; i < getSectionNum(); i++) {
+    m_percentage[i] = 0.0f;
+  }
+  for (int i = 0; i < getSectionNum(); i++) {
+    unknown78[i] = 0;
+  }
+}
 
 DrPixlPostObjHistgram::~DrPixlPostObjHistgram() {
   DrResUseQueryObj *query = unknown18;

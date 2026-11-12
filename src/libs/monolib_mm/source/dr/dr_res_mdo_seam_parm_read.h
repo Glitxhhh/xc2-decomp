@@ -93,6 +93,7 @@ public:
   void resetTexture();
   void resetHeightLvTexture();
   DrResMdoSeamParmRead();
+  void begin(wkSeamReadPacDataInf *packet);
   void setStockVertex(f32 level, int index);
   void setStockTexture(f32 level, int index);
   bool isReadInfo(const _wkSeamReadWait &wait);
@@ -126,33 +127,38 @@ public:
   u16 unknown5d4;                                // Inferred role: stock low model num; original member name unknown.
   u16 unknown5d6;                                // Inferred role: stock mpf model num; original member name unknown.
   u16 unknown5d8;                                // Inferred role: stock light num; original member name unknown.
-  u8 _5da[0x5e2 - 0x5da];
-  u16 unknown5e2; // Inferred role: stock texture list num; original member name unknown.
-  u8 _5e4[0x5e8 - 0x5e4];
-  u16 unknown5e8; // Inferred role: stock height texture num; original member name unknown.
-  u16 unknown5ea; // Inferred role: highest vertex index; original member name unknown.
-  u16 unknown5ec; // Inferred role: lowest vertex index; original member name unknown.
-  u16 unknown5ee; // Inferred role: highest texture index; original member name unknown.
-  u16 unknown5f0; // Inferred role: lowest texture index; original member name unknown.
-  u16 unknown5f2; // Inferred role: highest base map vertex index; original member name unknown.
-  u16 unknown5f4; // Inferred role: lowest base map vertex index; original member name unknown.
-  u16 unknown5f6; // Inferred role: highest instance map position index; original member name unknown.
-  u16 unknown5f8; // Inferred role: lowest instance map position index; original member name unknown.
-  u16 unknown5fa; // Inferred role: highest mpf poli index; original member name unknown.
-  u16 unknown5fc; // Inferred role: lowest mpf poli index; original member name unknown.
-  u16 unknown5fe; // Inferred role: highest mpf instance index; original member name unknown.
-  u16 unknown600; // Inferred role: lowest mpf instance index; original member name unknown.
-  u16 unknown602; // Inferred role: stock base map vertex work num; original member name unknown.
-  u16 unknown604; // Inferred role: stock instance map position work num; original member name unknown.
-  u16 unknown606; // Inferred role: stock mpf instance work num; original member name unknown.
-  u16 unknown608; // Inferred role: stock mpf poli work num; original member name unknown.
+  u16 unknown5da;                                // Inferred role: cleared by begin; original member name unknown.
+  u16 unknown5dc;                                // Inferred role: cleared by begin; original member name unknown.
+  u16 unknown5de;                                // Inferred role: cleared by begin; original member name unknown.
+  u16 unknown5e0;                                // Inferred role: cleared by begin; original member name unknown.
+  u16 unknown5e2;                                // Inferred role: stock texture list num; original member name unknown.
+  u16 unknown5e4;                                // Inferred role: cleared by begin; original member name unknown.
+  u16 unknown5e6;                                // Inferred role: cleared by begin; original member name unknown.
+  u16 unknown5e8;                                // Inferred role: stock height texture num; original member name unknown.
+  u16 unknown5ea;                                // Inferred role: highest vertex index; original member name unknown.
+  u16 unknown5ec;                                // Inferred role: lowest vertex index; original member name unknown.
+  u16 unknown5ee;                                // Inferred role: highest texture index; original member name unknown.
+  u16 unknown5f0;                                // Inferred role: lowest texture index; original member name unknown.
+  u16 unknown5f2;                                // Inferred role: highest base map vertex index; original member name unknown.
+  u16 unknown5f4;                                // Inferred role: lowest base map vertex index; original member name unknown.
+  u16 unknown5f6;                                // Inferred role: highest instance map position index; original member name unknown.
+  u16 unknown5f8;                                // Inferred role: lowest instance map position index; original member name unknown.
+  u16 unknown5fa;                                // Inferred role: highest mpf poli index; original member name unknown.
+  u16 unknown5fc;                                // Inferred role: lowest mpf poli index; original member name unknown.
+  u16 unknown5fe;                                // Inferred role: highest mpf instance index; original member name unknown.
+  u16 unknown600;                                // Inferred role: lowest mpf instance index; original member name unknown.
+  u16 unknown602;                                // Inferred role: stock base map vertex work num; original member name unknown.
+  u16 unknown604;                                // Inferred role: stock instance map position work num; original member name unknown.
+  u16 unknown606;                                // Inferred role: stock mpf instance work num; original member name unknown.
+  u16 unknown608;                                // Inferred role: stock mpf poli work num; original member name unknown.
   u8 _60a[0x610 - 0x60a];
   _wkSeamReadCall *unknown610; // Inferred role: read calls; original member name unknown.
   s32 unknown618;              // Inferred role: read call num; original member name unknown.
   u8 _61c[0x620 - 0x61c];
   _wkSeamReadWait *unknown620; // Inferred role: read waits; original member name unknown.
   s32 unknown628;              // Inferred role: read wait num; original member name unknown.
-  u16 unknown62c;              // Inferred role: cleared by the constructor; original member name unknown.
+  u8 unknown62c;               // Inferred role: cleared by the constructor and begin; original member name unknown.
+  u8 unknown62d;               // Inferred role: cleared by the constructor; original member name unknown.
   u8 _62e[0x630 - 0x62e];
   wkSeamReadPacDataInf *unknown630; // Inferred role: read packet; original member name unknown.
 };

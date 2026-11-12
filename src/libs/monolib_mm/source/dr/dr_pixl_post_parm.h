@@ -352,7 +352,10 @@ public:
   bool unknown1061; // Inferred role: selects the IBL pixl objs; original member name unknown.
   u8 _1062[0x1064 - 0x1062];
   f32 unknown1064; // Inferred role: toon gradation value set from the ambient light data; original member name unknown.
-  u8 _1068[0x107c - 0x1068];
+  u8 _1068[0x1074 - 0x1068];
+  bool unknown1074; // Inferred role: 3D LUT debug display flag, read by DrPixlPostObj3dLut::debugRender; original member name unknown.
+  u8 _1075[0x1078 - 0x1075];
+  s32 unknown1078;  // Inferred role: 3D LUT debug display slice, read by DrPixlPostObj3dLut::debugRender; original member name unknown.
   s32 unknown107c;  // Inferred role: light num; original member name unknown.
   bool unknown1080; // Inferred role: in out; original member name unknown.
   u8 _1081[0x1084 - 0x1081];
@@ -517,6 +520,8 @@ static_assert(offsetof(DrPixlPostParm, unknown103d) == 0x103d, "");
 static_assert(offsetof(DrPixlPostParm, unknown103e) == 0x103e, "");
 static_assert(offsetof(DrPixlPostParm, unknown1061) == 0x1061, "");
 static_assert(offsetof(DrPixlPostParm, unknown1064) == 0x1064, "");
+static_assert(offsetof(DrPixlPostParm, unknown1074) == 0x1074, "");
+static_assert(offsetof(DrPixlPostParm, unknown1078) == 0x1078, "");
 static_assert(offsetof(DrPixlPostParm, unknown107c) == 0x107c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1080) == 0x1080, "");
 static_assert(offsetof(DrPixlPostParm, unknown1084) == 0x1084, "");

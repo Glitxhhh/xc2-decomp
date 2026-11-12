@@ -34,7 +34,10 @@ enum WKCPU_SYNC {
   WKCPU_SYNC_UNKNOWN_1, // Inferred role: wait; original name unknown.
 };
 
-enum DO_THREAD {};
+enum DO_THREAD {
+  DO_THREAD_UNKNOWN_0 = 0, // Inferred role: jobs are run by the main cpu thread; original name unknown.
+  DO_THREAD_UNKNOWN_2 = 2, // Inferred role: the main cpu thread is not used for jobs; original name unknown.
+};
 
 struct TJOB {
   u32 (*unknown00)(void *, void *); // Inferred role: job function; original member name unknown.
@@ -93,7 +96,14 @@ public:
     u32 unknown04; // Inferred role: sort key; original member name unknown.
   };
 
+  // Name from the game symbol of mm::mtl::FixedList<ml::WorkCpu::GRPLIST, 128>::erase.
+  struct GRPLIST {
+    s32 unknown00;                 // Inferred role: group handle; original member name unknown.
+    reslist<TJOB *> *unknown08[3]; // Inferred role: job list of each cpu; original member name unknown.
+  };
+
   WorkCpu(const char *name, WorkObj *parent);
+
   static WorkCpu *create(WorkObj *parent);
   static bool isInitialized();
   static void stallRender();
@@ -115,6 +125,7 @@ public:
   static CPUID getSubWorkCPUID();
   static CPUID getCurrentCPUID();
   static u64 getThreadId(CPUID cpuId);
+  static bool isStackAdr(void *address, CPUID cpuId);
   static bool getStackInfo(u64 threadId, u64 &address, u64 &size);
   static f32 getJobCost(CPUID cpuId);
   static bool isSuspendThread(CPUID cpuId);
@@ -166,6 +177,9 @@ public:
   static u32 getResult(int handle);
   static bool getWaitingJob(TJOB *&job, WorkCpuThread *thread);
   static void endFrame();
+  static CPUID getJobCPUID();
+  GRPLIST *getListGrp(int handle);
+  static bool isStackOverFlow();
   static void endRender();
   void updateMessage();
   static void swapBank();
@@ -191,9 +205,9 @@ public:
   mtl::ALLOC_HANDLE unknown1b4; // Inferred role: mem work; original member name unknown.
   mtl::ALLOC_HANDLE unknown1b8; // Inferred role: mem stack; original member name unknown.
   u32 m_cpuNum;
-  reslist<IThreadValue *> unknown1c0[3]; // Inferred role: thread values swapped per cpu; original member name unknown.
-  u8 _280[0x1738 - 0x280];
-  DO_THREAD unknown1738; // Inferred role: thread; original member name unknown.
+  reslist<IThreadValue *> unknown1c0[3];       // Inferred role: thread values swapped per cpu; original member name unknown.
+  mm::mtl::FixedList<GRPLIST, 128> unknown280; // Inferred role: job groups; original member name unknown.
+  DO_THREAD unknown1738;                       // Inferred role: thread; original member name unknown.
   DO_THREAD m_thread;
   WorkCpuThread *unknown1740[3]; // Inferred role: cpu threads; original member name unknown.
   s32 unknown1758;               // Inferred role: render wakeup cpu; original member name unknown.
@@ -231,6 +245,7 @@ public:
 static_assert(offsetof(WorkCpu, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(WorkCpu, m_cpuNum) == 0x1bc, "");
 static_assert(offsetof(WorkCpu, unknown1c0) == 0x1c0, "");
+static_assert(offsetof(WorkCpu, unknown280) == 0x280, "");
 static_assert(offsetof(WorkCpu, unknown1738) == 0x1738, "");
 static_assert(offsetof(WorkCpu, unknown1740) == 0x1740, "");
 static_assert(offsetof(WorkCpu, unknown1758) == 0x1758, "");
