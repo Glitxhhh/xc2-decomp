@@ -82,6 +82,21 @@ struct alignas(16) Vec3 {
     }
   }
 
+  // Inferred role: normalizes through a temporary, zero when shorter than 1e-6; original name unknown.
+  // Evidence: inlined in gf::GimmickCamera::getYaw and gf::FusionComboCamera::getYaw.
+  void unknown002() {
+    f32 length = sqrtf(x * x + y * y + z * z);
+    Vec3 result;
+    if (length <= 0.000001f) {
+      result = Vec3(zero);
+    } else {
+      result.x = x * (1.0f / length);
+      result.y = y * (1.0f / length);
+      result.z = z * (1.0f / length);
+    }
+    *this = result;
+  }
+
   f32 x;
   f32 y;
   f32 z;

@@ -4,16 +4,21 @@
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/game/gf_game_util_hana.h"
+#include "gf/menu/adapter/gf_menu_hana_adapter.h"
+#include "gf/menu/adapter/gf_menu_hana_parts_adapter.h"
+#include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_hana_custom.h"
 #include "gf/menu/object/gf_menu_obj_hana_submenu.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/util/gf_item_util.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_color.h"
 #include "ui/event/ui_event_data.h"
@@ -70,9 +75,47 @@ int GfMenuObjHanaPartsCrystal::setFadeOut(u32 handle) {
   return ctrl;
 }
 
+void GfMenuObjHanaPartsCrystal::setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    name.format("TXT_recpartsname@%02d", i + 1);
+    GfMenuItemAdapter *adapter = GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0, list, i, false);
+    if (adapter != nullptr) {
+      name.format("LAY_reclist_tag@%02d", i + 1);
+      adapter->unknown24 = acc.searchChild(name.c_str());
+    }
+    name.format("IMG_recpartslicon@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 2, list, i, false);
+    name.format("TXT_reclist_ptnum@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 3, list, i, false);
+    name.format("TXT_reclist_stcnum@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0x11, list, i, false);
+  }
+  GfMenuObjHanaCustom::setupItemInfo(acc, list);
+}
+
 void GfMenuObjHanaPartsCrystal::setupNumSelect(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> price) {
   GfMenuReferenceAdapter::create(acc.searchChild("TXT_num_select_value"), number, true);
   GfMenuReferenceAdapter::create(acc.searchChild("TXT_num_select_total_price"), price, true);
+}
+
+void GfMenuObjHanaPartsCrystal::setupPartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects) {
+  mm::mtl::FixStr<32> name;
+  objects->clear();
+  objects->pickupObject(acc.unknown10, "LAY_mplist_tag@%02d", 1);
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    name.format("TXT_partsname@%02d", i + 1);
+    GfMenuHanaPartsAdapter *adapter = GfMenuHanaPartsAdapter::createFromList(acc.searchChild(name.c_str()), 0, list, i, false);
+    if (adapter != nullptr) {
+      name.format("LAY_mplist_tag@%02d", i + 1);
+      adapter->unknown24 = acc.searchChild(name.c_str());
+    }
+    name.format("IMG_partsicon@%02d", i + 1);
+    GfMenuHanaPartsAdapter::createFromList(acc.searchChild(name.c_str()), 1, list, i, false);
+  }
+  GfMenuHanaAdapter::createFromReferenceIndex(acc.searchChild("TXT_mplist_etnum"), 0, 0, true);
+  ui::UIObjectAcc picture(acc.searchChild("IMG_mplist_pic"));
+  picture.startAnimation("loop", false);
 }
 
 void GfMenuObjHanaPartsCrystal::updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects) {

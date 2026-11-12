@@ -37,7 +37,11 @@ public:
   };
 
   struct TeamSetup {
-    TeamSetup() : unknown14(0), unknown18(0), unknown1c(true) {}
+    TeamSetup() {
+      unknown1c = true;
+      unknown14 = 0;
+      unknown18 = 0;
+    }
 
     SetupParam unknown00; // Inferred role: param; original member name unknown.
     u32 unknown14;        // Inferred role: source; original member name unknown.

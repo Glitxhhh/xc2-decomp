@@ -1,5 +1,8 @@
 #include "gf/menu/object/gf_menu_obj_party_form3.h"
 
+#include "gf/game/gf_game_cond.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
+#include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_reference_number.h"
@@ -11,6 +14,7 @@
 #include "gf/menu/object/gf_menu_obj_party_status.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/ui_object_acc.h"
@@ -45,6 +49,30 @@ void GfMenuObjPartyForm3::registOpenParam(const OpenParam &param) {
 }
 
 void GfMenuObjPartyForm3::setupBGLayout(ui::UIObjectAcc &, u32, bool) {}
+
+void GfMenuObjPartyForm3::setupDriverSelect(ui::UIObjectAcc &acc, GfMenuDriverList *list, u32 first, u32 second, mm::mtl::FixedArray<mm::mtl::IntrusivePtr<GfMenuReferenceNumber>, 7> &numbers) {
+  setupDriverLayout(acc, first, second, numbers, 0);
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < 7; i++) {
+    name.format("LAY_dr@%02d", i + 1);
+    ui::UIObjectAcc layer(acc.searchChild(name.c_str()));
+    if (i < second + first) {
+      name.format("IMG_dr_bustup@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 3, list, i, false);
+      name.format("TXT_dr_status_lv_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 1, list, i, false);
+      name.format("TXT_dr_status_hp_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 0, list, i, false);
+      name.format("IMG_dr_bl_icon@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(acc.searchChild(name.c_str()), 0x1b, list, i, false);
+      name.format("IMG_dr_party_no@%02d", i + 1);
+      GfMenuReferenceAdapter::create(acc.searchChild(name.c_str()), numbers[i], false);
+      if (i == 0) {
+        layer.setDispChild(GfGameCond::isGameCond(0xa9d), "IMG_dr_lock@01");
+      }
+    }
+  }
+}
 
 void GfMenuObjPartyForm3::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 

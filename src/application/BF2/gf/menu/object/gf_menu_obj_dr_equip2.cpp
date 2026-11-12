@@ -1,13 +1,17 @@
 #include "gf/menu/object/gf_menu_obj_dr_equip2.h"
 
+#include "gf/data/gf_data_item.h"
 #include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_reference_item.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_char_select.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/util/gf_equip_util.h"
+#include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
@@ -66,6 +70,57 @@ int GfMenuObjDrEquip2::setFadeOut(u32 handle, u32 type) {
   }
   GfMenuObject::hookCtrlEvent(handle, ctrl);
   return ctrl;
+}
+
+void GfMenuObjDrEquip2::updateEquipItemList(GfMenuItemList *list, u32 driverIndex) {
+  u32 driver = GfMenuReference::getReferenceDriverID(driverIndex);
+  list->clear();
+  for (u32 slot = 0; slot < 2; slot++) {
+    MenuItemInfo info;
+    info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_2;
+    info.unknown04 = GfEquipUtil::getEquipDriverAcce(driver, slot);
+    info.unknown08 = info.unknown04 != 0;
+    list->addContents(info);
+  }
+}
+
+void GfMenuObjDrEquip2::setupSlot(ui::UIObjectAcc &acc, GfMenuItemList *list, u32 driverIndex) {
+  updateEquipItemList(list, driverIndex);
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < 2; i++) {
+    name.format("IMG_slot_icon@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 2, list, i, false);
+  }
+  for (u32 i = 0; i < 2; i++) {
+    name.format("IMG_slot_select@%02d", i + 1);
+    GfMenuObjUtil::setChildDisp(acc.unknown10, name.c_str(), false);
+    name.format("IMG_slot_hold@%02d", i + 1);
+    GfMenuObjUtil::setChildDisp(acc.unknown10, name.c_str(), false);
+  }
+}
+
+void GfMenuObjDrEquip2::setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects) {
+  objects->pickupObject(acc.unknown10, "LAY_item@%02d", 1);
+  if (objects->getSize() != 0 && list != nullptr) {
+    GfMenuItemList::ItemBoxSetup setup;
+    setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_2;
+    setup.unknown28 = false;
+    setup.unknown00.unknown08 = objects->getSize();
+    setup.unknown00.unknown10 = true;
+    list->setupFromBox(setup);
+    mm::mtl::FixStr<32> name;
+    for (u32 i = 0; i < objects->getSize(); i++) {
+      name.format("IMG_item_tag_icon@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 2, list, i, false);
+      name.format("TXT_item_tag@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0, list, i, false);
+      name.format("IMG_item_rarity@%02d", i + 1);
+      GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 7, list, i, false);
+      name.format("IMG_item_tag_select@%02d", i + 1);
+      GfMenuObjUtil::setChildDisp(acc.unknown10, name.c_str(), false);
+    }
+    GfMenuItemAdapter::createFromList(acc.searchChild("TXT_item_list_info"), 9, list, -1, false);
+  }
 }
 
 void GfMenuObjDrEquip2::setupEquipItem(ui::UIObjectAcc &acc, GfMenuItemList *list) {

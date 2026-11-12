@@ -51,6 +51,9 @@ public:
   void finalize() override;
   void update() override;
   static void setupEquipItem(ui::UIObjectAcc &acc, GfMenuItemList *list);
+  static void updateEquipItemList(GfMenuItemList *list, u32 driverIndex);
+  static void setupSlot(ui::UIObjectAcc &acc, GfMenuItemList *list, u32 driverIndex);
+  static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects);
 
   u32 unknown24;  // Role and original member name unknown, cleared by the constructor.
   bool unknown28; // Role and original member name unknown, cleared by the constructor.

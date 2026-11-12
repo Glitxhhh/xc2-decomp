@@ -7,6 +7,7 @@
 #include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/adapter/gf_menu_hana_adapter.h"
 #include "gf/menu/adapter/gf_menu_hana_parts_adapter.h"
+#include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference_number.h"
@@ -14,6 +15,7 @@
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_char_select.h"
+#include "gf/menu/object/gf_menu_obj_hana_custom.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_sort.h"
@@ -150,6 +152,27 @@ void GfMenuObjHanaPartsMake::setupPartsList(ui::UIObjectAcc &acc, GfMenuIDList *
     name.format("IMG_partsicon@%02d01", i + 1);
     GfMenuHanaPartsAdapter::createFromList(acc.searchChild(name.c_str()), 1, list, i, false);
   }
+}
+
+void GfMenuObjHanaPartsMake::setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    name.format("TXT_sbpartsname@%02d", i + 1);
+    GfMenuItemAdapter *adapter = GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0, list, i, false);
+    if (adapter != nullptr) {
+      name.format("LAY_sbparts_num@%02d", i + 1);
+      adapter->unknown24 = acc.searchChild(name.c_str());
+    }
+    name.format("IMG_sbpartsicon@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 2, list, i, false);
+    name.format("TXT_sbparts_num@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 3, list, i, true);
+    name.format("TXT_sbparts_etlnum@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0x10, list, i, false);
+    name.format("TXT_reclist_stcnum@%02d", i + 1);
+    GfMenuItemAdapter::createFromList(acc.searchChild(name.c_str()), 0x11, list, i, false);
+  }
+  GfMenuObjHanaCustom::setupItemInfo(acc, list);
 }
 
 // Inferred role: parts type and item type of a parts category; original name unknown.

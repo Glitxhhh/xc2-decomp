@@ -39,20 +39,6 @@ static inline mm::Vec3 unknown001(f32 pitch, f32 yaw, f32 roll) {
   return quat.rotate(mm::Vec3::unitZ);
 }
 
-// Inferred role: normalizes a vector through a temporary, zero when shorter than 1e-6; original name unknown.
-static inline void unknown002(mm::Vec3 &vector) {
-  f32 length = sqrtf(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
-  mm::Vec3 result;
-  if (length <= 0.000001f) {
-    result = mm::Vec3(mm::Vec3::zero);
-  } else {
-    result.x = vector.x * (1.0f / length);
-    result.y = vector.y * (1.0f / length);
-    result.z = vector.z * (1.0f / length);
-  }
-  vector = result;
-}
-
 void GimmickCamera::updateParams() {
   mm::Vec3 target = unknown001(unknownc0.x, unknownc0.y, 0.0f);
   target += unknownb0;
@@ -88,8 +74,8 @@ f32 GimmickCamera::getYaw(const mm::Vec3 &direction, const mm::Vec3 &reference) 
   if ((fabsf(from.x) <= 0.000001f && fabsf(from.z) <= 0.000001f) || (fabsf(to.x) <= 0.000001f && fabsf(to.z) <= 0.000001f)) {
     return 0.0f;
   }
-  unknown002(from);
-  unknown002(to);
+  from.unknown002();
+  to.unknown002();
   f32 cosine = to.x * from.x + to.y * from.y + to.z * from.z;
   mm::clampRef(cosine, -1.0f, 1.0f);
   f32 angle = mm::acos(cosine);

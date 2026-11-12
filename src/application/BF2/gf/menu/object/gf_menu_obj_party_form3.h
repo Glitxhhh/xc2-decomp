@@ -51,6 +51,8 @@ public:
   void finalize() override;
   void update() override;
   static void setupBGLayout(ui::UIObjectAcc &, u32, bool);
+  static void setupDriverSelect(ui::UIObjectAcc &acc, GfMenuDriverList *list, u32 first, u32 second, mm::mtl::FixedArray<mm::mtl::IntrusivePtr<GfMenuReferenceNumber>, 7> &numbers);
+  static void setupDriverLayout(ui::UIObjectAcc &acc, u32 first, u32 second, mm::mtl::FixedArray<mm::mtl::IntrusivePtr<GfMenuReferenceNumber>, 7> &numbers, u32 mode);
   void refreshRemoveAddOperation(u32 handle, int index);
   bool seqAnnounceChange();
 

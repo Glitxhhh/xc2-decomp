@@ -39,6 +39,8 @@ public:
   static u32 getCrystalItemCount(u32 item);
   static RESULT_HANA crystalParts(u32 type, u32 parts);
   static void setupNumSelect(ui::UIObjectAcc &acc, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> price);
+  static void setupPartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects);
+  static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects);
   static void updatePartsList(ui::UIObjectAcc &acc, GfMenuIDList *list, ui::UISelectObjList *objects);
   static void refreshItemList(GfMenuItemList *list, ui::UISelectObjList *objects, u32 unknown);
   static void updateItemList(GfMenuItemList *list, ItemType::Type type);
