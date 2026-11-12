@@ -146,4 +146,5 @@ bool GfMenuObjChapterTelop::seqWaitChapterEnd() {
 
 } // namespace gf
 
+template bool gf::GfMenuSequence<gf::GfMenuObjChapterTelop, 4>::wait();
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjChapterTelop, 4>>(const mm::mtl::Delegate<bool()> *);

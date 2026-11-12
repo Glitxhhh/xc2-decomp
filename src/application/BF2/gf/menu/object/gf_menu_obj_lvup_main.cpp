@@ -314,4 +314,5 @@ void GfMenuObjLvupMain::SelectListener::reciveEvent(const ui::EventData &event, 
 
 } // namespace gf
 
+template bool gf::GfMenuSequence<gf::GfMenuObjLvupMain, 8>::wait();
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjLvupMain, 8>>(const mm::mtl::Delegate<bool()> *);

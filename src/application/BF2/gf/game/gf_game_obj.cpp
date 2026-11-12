@@ -725,4 +725,5 @@ bool GfGameObjEnemy::empty() const { return unknown08.empty(); }
 template mm::mtl::PtrSingleton<gf::GfGameObj>::~PtrSingleton();
 template mm::mtl::FixedList<gf::GfGameObj::INOUT, 1024>::iterator mm::mtl::FixedList<gf::GfGameObj::INOUT, 1024>::erase(mm::mtl::FixedList<gf::GfGameObj::INOUT, 1024>::iterator);
 template mm::mtl::PtrSingleton<gf::GfGameObjEnemy>::~PtrSingleton();
+template mm::mtl::FixedList<gf::GfGameObjEnemy::GINFO, 64>::iterator mm::mtl::FixedList<gf::GfGameObjEnemy::GINFO, 64>::erase(mm::mtl::FixedList<gf::GfGameObjEnemy::GINFO, 64>::iterator);
 template mm::mtl::FixedList<gf::ObjMsg, 256>::iterator mm::mtl::FixedList<gf::ObjMsg, 256>::erase(mm::mtl::FixedList<gf::ObjMsg, 256>::iterator it);

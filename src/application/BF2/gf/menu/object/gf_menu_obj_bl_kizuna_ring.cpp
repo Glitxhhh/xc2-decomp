@@ -378,5 +378,6 @@ void GfMenuObjBlKizunaRing::BladeSkillInfoListener::reciveEvent(const ui::EventD
 }
 } // namespace gf
 
+template bool gf::GfMenuSequence<gf::GfMenuObjBlKizunaRing, 8>::wait();
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjBlKizunaRing, 8>>(const mm::mtl::Delegate<bool()> *);
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBlKizunaRing>(const mm::mtl::Delegate<bool()> *);

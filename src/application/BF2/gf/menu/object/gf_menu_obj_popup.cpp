@@ -160,6 +160,7 @@ void GfMenuObjPopup::closeAll() { GfMenuManyObjects::closeAll<PopupInfo>(GfMenuM
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjPopup>(const mm::mtl::Delegate<bool()> *);
+template bool gf::GfMenuSequence<gf::GfMenuObjPopup, 8>::wait();
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjPopup, 8>>(const mm::mtl::Delegate<bool()> *);
 
 template void gf::GfMenuManyObjects::remove<gf::GfMenuObjPopup::PopupInfo>(u32, u32);

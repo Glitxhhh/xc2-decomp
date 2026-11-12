@@ -480,5 +480,6 @@ bool GfMenuObjBladeSet2::seqReturnBlSlot() {
 
 } // namespace gf
 
+template bool gf::GfMenuSequence<gf::GfMenuObjBladeSet2, 8>::wait();
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjBladeSet2, 8>>(const mm::mtl::Delegate<bool()> *);
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjBladeSet2>(const mm::mtl::Delegate<bool()> *);

@@ -34,6 +34,15 @@ void GfMenuObjBlDetail::open(GfMenuCallContext *context) {
   }
 }
 
+void GfMenuObjBlDetail::close(GfMenuCallContext *context, bool flag) {
+  if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_80)) {
+    ui::EventData event;
+    event.unknown00 = 0x22;
+    event.unknown08 = flag;
+    GfMenuObject::sendEvent(context->unknown14, event, 0.0f);
+  }
+}
+
 void GfMenuObjBlDetail::nextPage(GfMenuCallContext *context) {
   if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_80)) {
     ui::EventData event;
@@ -46,6 +55,15 @@ void GfMenuObjBlDetail::prevPage(GfMenuCallContext *context) {
   if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_80)) {
     ui::EventData event;
     event.unknown00 = 0x103;
+    GfMenuObject::sendEvent(context->unknown14, event, 0.0f);
+  }
+}
+
+void GfMenuObjBlDetail::disp(GfMenuCallContext *context, bool flag) {
+  if (context != nullptr && GfMenuObjUtil::checkCCNext(context, CALL_UNKNOWN_80)) {
+    ui::EventData event;
+    event.unknown00 = 0x104;
+    event.unknown08 = flag;
     GfMenuObject::sendEvent(context->unknown14, event, 0.0f);
   }
 }

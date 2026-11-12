@@ -55,6 +55,15 @@ public:
     GfMenuObjShop *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class OrbListListener : public ui::UIObjectListener {
+  public:
+    OrbListListener(GfMenuObjShop *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjShop *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjShop(u32 handle);
   ~GfMenuObjShop() override;
   static void open(GfMenuCallContext *context, const OpenParam &param);
@@ -162,6 +171,8 @@ static_assert(sizeof(GfMenuObjShop::MainListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjShop::CommonListener, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfMenuObjShop::CommonListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjShop::CommonListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjShop::OrbListListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjShop::OrbListListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjShop, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjShop, unknown2c) == 0x2c, "");
 static_assert(offsetof(GfMenuObjShop, unknown30) == 0x30, "");

@@ -3,8 +3,10 @@
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_util.h"
+#include "gf/data/gf_item_handle.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/game/gf_game_util_shop.h"
@@ -38,8 +40,10 @@
 #include "mm_math/mm_col4.h"
 #include "mm_mtl/delegate.h"
 #include "mm_mtl/fixstr.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_list_info.h"
+#include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 
@@ -57,6 +61,8 @@ constexpr u16 unknown004 = 0xb0;
 constexpr u32 unknown005 = 0x59;
 // Inferred role: achievement statistics id counting inn stays; original name unknown.
 constexpr u32 unknown006 = 0x23;
+// Inferred role: common window asking to create the selected orb; original name unknown.
+constexpr u16 unknown007 = 0xa3;
 GfMenuObjShop::GfMenuObjShop(u32 handle)
     : GfMenuObject(handle), unknown24(0), unknown34(0), unknown38(0), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(false), unknown59(false), unknown60(), unknownc0(0),
       unknownc8(nullptr), unknownd0(0), unknownd8(nullptr), unknowne0(nullptr), unknowne8(nullptr), unknownf8(), unknown130(), unknown148(0), unknown14c(0), unknown168(), unknown238(),
@@ -580,6 +586,138 @@ void GfMenuObjShop::CommonListener::reciveEvent(const ui::EventData &event, u32 
     unknown0c = ctrl;
     break;
   }
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
+void GfMenuObjShop::OrbListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff) {
+      u32 previous = event.unknown0c;
+      unknown20->unknowne8->setIndex(index);
+      u32 page = unknown20->unknowne8->getIndex(true);
+      unknown20->unknown50->setIndex(page);
+      u32 orb = GfRecipeOrbUtil::getEquipOrb(unknown20->unknowne8->getContents(unknown20->unknowne8->getIndex(false)).unknown04);
+      MenuItemInfo &item = unknown20->unknown238->unknown0c;
+      item.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_3;
+      item.unknown04 = orb;
+      item.unknown08 = 1;
+      item.unknown0c = GfItemHandle(0);
+      unknown20->updateOrbRecipe();
+      unknown20->unknown59 = true;
+      if (previous != 0xffffffff && index != previous) {
+        GfMenuObjUtil::playSECommonCursor();
+      }
+    }
+    return;
+  }
+  case 8: {
+    int type = event.unknown0c;
+    bool isClose;
+    if (type == 1) {
+      u32 error = GfMenuItemUtil::canCreateOrb(unknown20->unknowne8->getContents(unknown20->unknowne8->getIndex(false)).unknown04);
+      if (error != 0) {
+        GfMenuObjUtil::playSECommon(2);
+        if (error == 1) {
+          GfMenuManager::openCommonWindow(unknown003);
+        } else if (error == 2) {
+          GfMenuManager::openCommonWindow(unknown004);
+        }
+        return;
+      }
+      switch (unknown20->unknownf8.unknown04) {
+      case 0: {
+        u32 recipe = acc.searchSibiling("LAY_orb_rcp");
+        GfMenuObjUtil::playSECommonDecide();
+        if (recipe != 0) {
+          if (unknown20->unknownf0->getSize() != 0) {
+            unknown20->unknownf0->setIndex(0);
+          }
+          unknown20->sendEnableEvent(recipe);
+        }
+        break;
+      }
+      case 1: {
+        u32 recipe = acc.searchSibiling("LAY_orb_rcp");
+        GfMenuObjUtil::playSECommonDecide();
+        if (recipe != 0) {
+          if (unknown20->unknownf0->getSize() != 0) {
+            unknown20->unknownf0->setIndex(0);
+          }
+          unknown20->sendEnableEvent(recipe);
+        }
+        break;
+      }
+      case 2:
+        GfMenuManager::openCommonWindow(unknown007);
+        unknown20->unknown4f8 = acc.unknown10;
+        unknown20->unknown248.unknown005();
+        unknown20->unknown248.unknown002(&GfMenuObjShop::seqWaitOrbCreate);
+        unknown20->unknown248.unknown002(&GfMenuObjShop::seqItemGet);
+        unknown20->unknown248.unknown002(&GfMenuObjShop::seqEndDialog);
+        GfMenuObjUtil::playSECommonDecide();
+        break;
+      default:
+        GfMenuObjUtil::playSECommonDecide();
+        return;
+      }
+      isClose = false;
+    } else if (type == 2) {
+      if (unknown20->unknown34 == 2) {
+        return;
+      }
+      GfMenuObjUtil::playSECommonCancel();
+      isClose = true;
+    } else if (type == 0x11) {
+      GfMenuObjSort::open(acc.unknown10, acc.searchChild("TXT_orb_item_sort_label"), 8, unknown20->unknown14c);
+      isClose = false;
+    } else {
+      return;
+    }
+    GfMenuObject::disableInput(acc.unknown10);
+    GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+    if (unknown20->unknownc8 != nullptr) {
+      unknown20->unknownc8->release();
+      unknown20->unknownc8 = nullptr;
+    }
+    acc.setDispChild(false, "IMG_orb_item_cursor");
+    if (isClose) {
+      unknown20->sendCloseEvent(0);
+    }
+    return;
+  }
+  case 0x40: {
+    GfMenuObject::enableInput(acc.unknown10);
+    GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    unknown20->setGuideText(0x3f);
+    unknown20->updateOrbRecipe();
+    unknown20->unknown59 = true;
+    unknown20->sendOpenEvent(acc.searchSibiling("LAY_orb_rcp"), 0);
+    GfMenuObjOperationInfo::setActionEnable(acc.unknown10, 2, unknown20->unknown34 != 2);
+    break;
+  }
+  case 0x42:
+    GfMenuObject::enableInput(acc.unknown10);
+    GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    GfMenuObjOperationInfo::setActionEnable(acc.unknown10, 2, unknown20->unknown34 != 2);
+    return;
+  case 0x148:
+    GfMenuObject::enableInput(handle);
+    GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    if (unknown20->unknown14c != event.unknown08) {
+      u16 sort = GfMenuObjSort::getSortID(8, event.unknown08);
+      unknown20->unknowne8->sort(sort, false);
+      unknown20->unknown14c = event.unknown08;
+    }
+    GfMenuObject::resetInputSelection(acc.unknown10);
+    GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknowne8);
+    return;
   }
   ui::UIObjectListener::reciveEvent(event, handle);
 }

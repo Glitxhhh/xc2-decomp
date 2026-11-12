@@ -173,6 +173,17 @@ constexpr u32 PARTY_UNKNOWN_3_2 = 3;                 // Inferred role: party dri
 
 static const u32 unknown037[NATION_UNKNOWN_8] = {3, 6, 9, 10, 14, 12, 13, 15}; // Inferred role: nation locations; original name unknown.
 
+// Inferred role: row of BDAT_FLD_WILDCARD_DATA holding the action window message of each gimmick type, -1 when the type has none; original name unknown.
+static const int unknown038[gmk::GMK_TYPE_NUM] = {-1, -1, -1, 21, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 24,
+                                                  -1, -1, 22, 23, -1, -1, 29, 28, 27, 26, -1, -1, 36, 25, -1, -1, -1, -1, 21, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+enum {
+  ACTIONWINDOW_UNKNOWN_21 = 21, // Inferred role: row of the npc action window message with a model; original name unknown.
+  ACTIONWINDOW_UNKNOWN_23 = 23, // Inferred role: row of the treasure box action window message; original name unknown.
+  ACTIONWINDOW_UNKNOWN_28 = 28, // Inferred role: row of the npc action window message without a model; original name unknown.
+  ACTIONWINDOW_UNKNOWN_45 = 45, // Inferred role: row of the unopened dug treasure box action window message; original name unknown.
+};
+
 bool GfGameUtil::isUiGfObjHandleValid(GF_OBJ_HANDLE *handle) {
   if (handle == unknown020) {
     return false;
@@ -180,6 +191,58 @@ bool GfGameUtil::isUiGfObjHandleValid(GF_OBJ_HANDLE *handle) {
 
   GfObjAcc objAcc(handle);
   return objAcc.isValid() && !objAcc.isDestroy() && !objAcc.testFlag(OBJ_FLAG_UNKNOWN_17);
+}
+
+void GfGameUtil::UiActionWindowInfo::create(GF_OBJ_HANDLE *handle) {
+  unknown00 = nullptr;
+  unknown08 = -1;
+  if (!isUiGfObjHandleValid(handle)) {
+    return;
+  }
+
+  GfObjAcc objAcc(handle);
+  unknown00 = Bdat::getFP("fld_actionwindow");
+  u8 *bdat = GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA);
+  switch (objAcc.getType()) {
+  case OBJECT_TYPE_NPC: {
+    int row = objAcc.isValidModel() ? ACTIONWINDOW_UNKNOWN_21 : ACTIONWINDOW_UNKNOWN_28;
+    unknown08 = Bdat::getValCheck(bdat, 1, row, gmk::BDAT_TYPE_UNKNOWN_2).valueU16;
+    break;
+  }
+  case OBJECT_TYPE_GIMMICK: {
+    gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
+    if (gmkInst == nullptr) {
+      return;
+    }
+
+    switch (gmkInst->getGmkType()) {
+    case gmk::GMK_TYPE_TBOX: {
+      int row = ACTIONWINDOW_UNKNOWN_23;
+      if (static_cast<gmk::GmkTbox *>(gmkInst)->getBdatInfo()->unknown02) {
+        if (static_cast<gmk::GmkTbox *>(gmkInst)->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_0) {
+          row = ACTIONWINDOW_UNKNOWN_45;
+        }
+      }
+      unknown08 = Bdat::getValCheck(bdat, 1, row, gmk::BDAT_TYPE_UNKNOWN_2).valueU16;
+      break;
+    }
+    case gmk::GMK_TYPE_MAP_GIMMICK:
+      unknown08 = static_cast<u16>(Bdat::getValCheck(gmkInst->getBindedBdatFp(), "actionwindowID", gmkInst->unknown20.unknown18, gmk::BDAT_TYPE_UNKNOWN_2));
+      break;
+    default: {
+      int row = unknown038[gmkInst->getGmkType()];
+      if (Bdat::getIdTop(bdat) > row || row >= Bdat::getIdTop(bdat) + Bdat::getIdCount(bdat)) {
+        return;
+      }
+      unknown08 = Bdat::getValCheck(bdat, 1, row, gmk::BDAT_TYPE_UNKNOWN_2).valueU16;
+      break;
+    }
+    }
+    break;
+  }
+  default:
+    return;
+  }
 }
 
 f32 GfGameUtil::getUiNameDist(GF_OBJ_HANDLE *handle) {

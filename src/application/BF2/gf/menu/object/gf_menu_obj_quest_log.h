@@ -8,12 +8,6 @@
 #include "types.h"
 #include "ui/event/ui_object_listener.h"
 
-namespace mm {
-namespace mtl {
-class ReferenceObject;
-} // namespace mtl
-} // namespace mm
-
 namespace gf {
 
 class GfMenuCallContext;
@@ -38,6 +32,15 @@ public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
     u8 _0c[0x20 - 0x0c];
+    GfMenuObjQuestLog *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class CompleteListener : public ui::UIObjectListener {
+  public:
+    CompleteListener(GfMenuObjQuestLog *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
     GfMenuObjQuestLog *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -124,9 +127,9 @@ public:
   int unknown814;  // Inferred role: control id of the log info; original member name unknown.
   bool unknown818; // Inferred role: order activation request flag; original member name unknown.
   u8 _819[0x820 - 0x819];
-  mm::mtl::ReferenceObject *unknown820; // Inferred role: reference-counted object; type and original member name unknown.
-  u32 unknown828;                       // Inferred role: task count of the quest; original member name unknown.
-  u32 unknown82c;                       // Role and original member name unknown, cleared by the constructor.
+  GfMenuCallContext *unknown820; // Inferred role: call context of the reward; original member name unknown.
+  u32 unknown828;                // Inferred role: task count of the quest; original member name unknown.
+  u32 unknown82c;                // Role and original member name unknown, cleared by the constructor.
 };
 
 static_assert(offsetof(GfMenuObjQuestLog, unknown28) == 0x28, "");
@@ -141,6 +144,7 @@ static_assert(offsetof(GfMenuObjQuestLog, unknown5b) == 0x5b, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown60) == 0x60, "");
 static_assert(offsetof(GfMenuObjQuestLog::TitleListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjQuestLog::OrderListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjQuestLog::CompleteListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown2f0) == 0x2f0, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown580) == 0x580, "");
 static_assert(offsetof(GfMenuObjQuestLog, unknown580.unknown278) == 0x7f8, "");

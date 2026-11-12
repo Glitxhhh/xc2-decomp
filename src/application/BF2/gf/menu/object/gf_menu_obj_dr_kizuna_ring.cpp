@@ -456,5 +456,6 @@ void GfMenuObjDrKizunaRing::DriverStockSPListener::reciveEvent(const ui::EventDa
 }
 } // namespace gf
 
+template bool gf::GfMenuSequence<gf::GfMenuObjDrKizunaRing, 8>::wait();
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuSequence<gf::GfMenuObjDrKizunaRing, 8>>(const mm::mtl::Delegate<bool()> *);
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjDrKizunaRing>(const mm::mtl::Delegate<bool()> *);
