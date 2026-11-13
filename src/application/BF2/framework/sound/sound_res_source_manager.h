@@ -14,11 +14,13 @@ class StringPtr;
 namespace mm {
 namespace mtl {
 class IAllocator;
+template <typename Signature> class Delegate;
 } // namespace mtl
 } // namespace mm
 
 namespace fw {
 class SoundVariableTable;
+enum SoundCategory : int;
 
 // Layouts from SoundResSourceManager::endPush and playSe (1.0.0: 0x71001abeac, 0x71001ac394).
 struct ResSoundData {
@@ -89,6 +91,7 @@ public:
   static void beginPush(u32 count, mm::mtl::IAllocator *allocator);
   static void endPush();
   static void pushResource(const ResSoundSource *source);
+  static u32 playSe(const char *name, f32 volume, const SoundVariableTable &table, SoundCategory category, const mm::mtl::Delegate<void(const ResSoundData &, CustomInfo *)> &callback);
   static void stopSe(u32 handle, f32 time);
 
   mm::mtl::Map<anm::StringPtr, const ResSoundSourceBase *> unknown08; // Inferred role: sources by name; original member name unknown.
