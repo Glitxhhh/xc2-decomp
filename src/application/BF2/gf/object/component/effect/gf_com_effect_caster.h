@@ -171,6 +171,7 @@ public:
   static const u32 COMPONENT_INDEX = 7;
 
   static void registerAsmCallbackEffect(GF_OBJ_HANDLE *handle, anm::ResASM *resAsm, fw::EffectResData *effectData);
+  void cleanup();
   bool getEfpMatrix(const char *name, mm::Mat44 &matrix);
   void calcMtxAndScale(GfComEffectCaster *caster, Param *param, f32 time, bool unknown, effect::SendParam &sendParam);
   void updateParam(GfComEffectCaster *caster, Param *param, f32 time, bool unknown);

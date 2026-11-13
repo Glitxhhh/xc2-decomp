@@ -390,6 +390,10 @@ public:
   static u32 getKeyReleaseLevel(u32 blade);
   static u32 getSkillLineId(u32 blade, u32 line);
   static bool setAchievReleaseLevel(u32 blade, u32 line, u32 level);
+  // Return type inferred: GfKizunaringBlade::releaseAchievement compares the result with the level unsigned (cmp w0, w20; b.hs at 0x7100363c48).
+  static u32 getAchievReleaseLevel(u32 blade, u32 line);
+  // Return type inferred: GfBladeCreate::isEnableAddBlade (0x7100301f64) only tests w0 against zero.
+  static u32 getEnableCountForCreateBlade();
   static bool getTaskSkillMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line);
   static bool getTaskTitleMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line, u32 level);
   static bool getTaskResultMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line, u32 level);

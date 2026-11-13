@@ -20,7 +20,7 @@
 #include "mtl/alloc_handle.h"
 
 namespace fw {
-enum CAMERA_TYPE : int;
+enum CAMERA_TYPE : unsigned int;
 } // namespace fw
 
 namespace event {

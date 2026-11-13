@@ -1,8 +1,10 @@
 #include "gf/game/blade/gf_blade_manager.h"
 
 #include "gf/data/gf_bdat_item.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_blade_create.h"
 #include "gf/data/gf_data_item.h"
+#include "gf/game/blade/gf_blade_create.h"
 #include "gf/gf_allocator.h"
 #include "gf/util/gf_item_util.h"
 #include "ml/rand.h"
@@ -64,6 +66,32 @@ bool GfBladeManager::isBindRareBladeCrystal(u32 item) {
   }
 
   return GfBdatItem::get() != nullptr && GfBdatItem::get()->getCrystalListBladeID(item) != 0;
+}
+
+// The game compiles GfBladeCreate in this unit: its functions (0x71003011a0 to 0x7100303c54, with their unnamed helpers up to 0x7100306d74) follow
+// GfBladeManager::isBindRareBladeCrystal (0x7100301148) and precede this unit's deferred PtrSingleton<GfBladeManager> destructors (0x7100306d74).
+void GfBladeCreate::clear() { GfBladeCreateInfo::clear(); }
+
+void GfBladeCreate::setupDriver(u32 driver) { unknown00 = driver; }
+
+bool GfBladeCreate::setupCoreCrystal(u32 crystal) {
+  if (!GfItemUtil::isValidCrystal(crystal)) {
+    return false;
+  }
+  unknown04 = crystal;
+  return true;
+}
+
+bool GfBladeCreate::isEnableAddBlade() const { return GfDataBlade::getEnableCountForCreateBlade() != 0; }
+
+bool GfBladeCreate::isResultRare() const { return unknown244 || unknowna4c != 0; }
+
+bool GfBladeCreate::getResultBlade(SDataBlade &blade) const {
+  if (!unknowna3a) {
+    return false;
+  }
+  setupSDataBlade(blade, *this);
+  return true;
 }
 
 } // namespace gf

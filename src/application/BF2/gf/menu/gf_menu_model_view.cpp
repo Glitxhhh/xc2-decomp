@@ -26,6 +26,7 @@
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
@@ -34,6 +35,10 @@
 #include "scn/scn_obj_acc.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_util.h"
+
+namespace fw {
+enum CAMERA_TYPE : unsigned int;
+} // namespace fw
 
 namespace gf {
 
@@ -292,6 +297,22 @@ u32 GfMenuModelView::addCamera(mm::mtl::IntrusivePtr<fw::Camera> camera) {
   return index;
 }
 
+void GfMenuModelView::pushCamera(u32 index, f32 time) {
+  if (index < unknown930.size()) {
+    if (!unknown930[index]->unknowna0 && fw::CameraManager::get() != nullptr) {
+      fw::CameraManager::get()->push(static_cast<fw::CAMERA_TYPE>(unknown10 + 1), unknown930[index], time);
+      unknown958.push_back(index);
+    }
+  }
+}
+
+void GfMenuModelView::popCamera(f32 time) {
+  if (fw::CameraManager::get() != nullptr) {
+    fw::CameraManager::get()->pop(static_cast<fw::CAMERA_TYPE>(unknown10 + 1), unknown930[unknown958.back()], time);
+    unknown958.pop_back();
+  }
+}
+
 void GfMenuModelView::changeCamera(u32 index, f32 time) {
   popCamera(0.0f);
   pushCamera(index, time);
@@ -465,6 +486,20 @@ bool GfMenuModelView::checkGfObj(u32 type, u32 id) {
     }
   }
   return false;
+}
+
+GfMenuModelView::CtrlParam::CtrlParam(GF_OBJ_HANDLE *handle, f32 duration, bool unknown) : unknown00(handle), unknown0a(0), unknown0c(duration), unknown10(unknown) {
+  GfObjAcc acc(handle);
+  const fw::Transform &transform = getObjectTransformLocal(unknown00);
+  m_movePosX = transform.unknown00.x;
+  m_movePosY = transform.unknown00.y;
+  m_movePosZ = transform.unknown00.z;
+  m_moveRotY = mm::quatToEuler(transform.unknown10).y;
+  m_moveSclX = acc.getModelScaleXYZ().x;
+  m_moveSclY = acc.getModelScaleXYZ().y;
+  m_moveSclZ = acc.getModelScaleXYZ().z;
+  m_moveAlpha = acc.getAlpha(OBJ_ALPHA_UNKNOWN_0);
+  m_moveVanish = getVanishRatio(handle);
 }
 
 void GfMenuModelView::CtrlParam::setMovePosX(f32 value) {

@@ -26,6 +26,7 @@ namespace fw {
 struct UpdateInfo;
 
 enum CAMERA_PRIO : int;
+enum CAMERA_TYPE : unsigned int;
 
 class CameraLayer;
 
@@ -128,6 +129,12 @@ public:
   }
 
   virtual void update(const UpdateInfo &info);
+
+  // Inlined in this game; Xenoblade Chronicles: Definitive Edition has both out of line with the same bodies (umaddl of the type by 0xd0, then the layer's call):
+  // _ZN2fw13CameraManager4pushENS_11CAMERA_TYPEERN2mm3mtl12IntrusivePtrINS_6CameraEEEf and
+  // _ZN2fw13CameraManager3popENS_11CAMERA_TYPEERN2mm3mtl12IntrusivePtrINS_6CameraEEEf.
+  void push(CAMERA_TYPE type, mm::mtl::IntrusivePtr<Camera> &camera, f32 time) { unknown20[type].push(camera, time); }
+  void pop(CAMERA_TYPE type, mm::mtl::IntrusivePtr<Camera> &camera, f32 time) { unknown20[type].pop(camera, time); }
 
   u8 _18[0x20 - 0x18];
   CameraLayer unknown20[LAYER_UNKNOWN_4];         // Inferred role: layers; original member name unknown.

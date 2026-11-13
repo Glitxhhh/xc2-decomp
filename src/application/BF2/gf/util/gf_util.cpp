@@ -120,6 +120,8 @@ void getEulerRotateModel(mm::Vec3 &euler, const mm::Quat &quat) {
   }
 }
 
+void getEulerRotateCamera(mm::Vec3 &euler, const mm::Quat &quat) { mm::quatToEuler(quat, euler); }
+
 bool isInsideView(const mm::Vec3 &position, f32 radius) {
   for (u32 i = 0; i < GfInfo::PLANE_UNKNOWN_6; i++) {
     const mm::Plane &plane = GfInfo::m_camPlanes[i];

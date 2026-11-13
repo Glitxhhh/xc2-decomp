@@ -73,6 +73,49 @@ void GfComEffectCaster::procMsgFxRimBloom(fw::MessageObject *object, MsgFxRimBlo
 
 void GfComEffectCaster::openDebugWindow(ml::WinProc *window) {}
 
+void GfComEffectCaster::cleanup() {
+  for (EventEfHandleTbl *tbl = unknownc3b0.begin(); tbl != unknownc3b0.end(); tbl++) {
+    if (tbl->unknown28.get() != nullptr) {
+      tbl->unknown28.get()->release();
+      tbl->unknown28 = nullptr;
+    }
+  }
+  unknownc3b0.clear();
+  for (Param *param = unknown3a0.begin(); param != unknown3a0.end(); param++) {
+    if (param->unknown58 != 0) {
+      fw::EffectManager::get()->remove(param->unknown58);
+    }
+    if (param->unknown6e && unknown390 != nullptr) {
+      unknown390->unknown88(param->unknown34.c_str());
+    }
+  }
+  unknown3a0.clear();
+  if (unknown38 != nullptr) {
+    unknown38->release();
+    unknown38 = nullptr;
+  }
+  for (u32 i = 0; i < unknown40.size(); i++) {
+    if (unknown40[i].unknown00 != nullptr) {
+      unknown40[i].unknown00->release();
+      unknown40[i].unknown00 = nullptr;
+    }
+  }
+  unknown40.clear();
+  fw::EffectCasterBase *caster = unknown388;
+  if (caster != nullptr) {
+    if (caster->unknown10 != nullptr) {
+      caster->unknown10->unknown002();
+      caster->unknown10 = nullptr;
+    }
+    caster->_40 = true;
+    unknown388 = nullptr;
+  }
+  if (unknown390 != nullptr) {
+    unknown390->unknown002();
+    unknown390 = nullptr;
+  }
+}
+
 fw::EffectPack *GfComEffectCaster::getEffectPack(GF_ASSET_HANDLE *handle) {
   GfAssetResource *resource = GfObjUtil::getResourceEfb(static_cast<GfObj *>(unknown08)->unknownf8);
   if (resource != nullptr) {

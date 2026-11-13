@@ -13,6 +13,8 @@
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/map/gf_map_manager.h"
+#include "gf/object/component/gf_com_transform.h"
+#include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
@@ -20,6 +22,8 @@
 #include "idcoli/idcoli.h"
 #include "ml/dev_graph.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
+#include "mm_math/mm_quat.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/vector.h" // IWYU pragma: keep
 #include "scn/scn_obj_acc.h"
@@ -649,6 +653,48 @@ void GfFieldLodColiAnim::unbindPosInfoToGfObj(const PosInfo &posInfo) {
   }
 }
 
+void GfFieldLodColiAnim::PosInfo::updateAnim(ml::ScnObjAccPartsPos &partsPos, f32 delta) {
+  if (unknown68) {
+    bool isLoop = partsPos.isLoop();
+    f32 posFrame = partsPos.getPosFrame();
+    f32 nodeFrame = partsPos.getNodeFrame();
+    if (!unknown69) {
+      posFrame += delta;
+      nodeFrame += delta;
+      if (partsPos.getPosMaxFrame() < posFrame) {
+        posFrame = isLoop ? 0.0f : partsPos.getPosMaxFrame();
+      }
+      if (partsPos.getNodeMaxFrame() < nodeFrame) {
+        nodeFrame = isLoop ? 0.0f : partsPos.getNodeMaxFrame();
+      }
+    } else {
+      posFrame -= delta;
+      nodeFrame -= delta;
+      if (posFrame < 0.0f) {
+        posFrame = isLoop ? partsPos.getPosMaxFrame() : 0.0f;
+      }
+      if (nodeFrame < 0.0f) {
+        nodeFrame = isLoop ? partsPos.getNodeMaxFrame() : 0.0f;
+      }
+    }
+    mm::Mat44 matrix;
+    if (partsPos.isPosAnm()) {
+      partsPos.getAnmMatrix(&matrix);
+    }
+    partsPos.setPosFrame(posFrame);
+    partsPos.setNodeFrame(nodeFrame);
+    if (partsPos.isPosAnm()) {
+      partsPos.setMatrix(matrix);
+      syncGfTransform(matrix);
+      partsPos.getAnmMatrix(&matrix);
+      if (unknown48 >= 0 && unknown00->unknown00.unknown08 != nullptr) {
+        idcoli::IDColiParmsGrand grand(unknown00->unknown00.unknown08);
+        grand.getMoveObj(unknown48).setMatrix(matrix);
+      }
+    }
+  }
+}
+
 void GfFieldLodColiAnim::PosInfo::updateColiOff(ml::ScnObjAccPartsPos &partsPos) {
   if (partsPos.isColiSkipData()) {
     bool isColiOff = partsPos.isColiOff();
@@ -657,6 +703,18 @@ void GfFieldLodColiAnim::PosInfo::updateColiOff(ml::ScnObjAccPartsPos &partsPos)
     if (isColiOff != !isGlobal) {
       fw::ColiManager::get()->setGblId(id, !isColiOff);
     }
+  }
+}
+
+void GfFieldLodColiAnim::PosInfo::syncGfTransform(const mm::Mat44 &matrix) {
+  GfObj *obj = GfObjUtil::getObj(unknown50);
+  if (obj != nullptr) {
+    GfComTransform *transform = obj->getComponent<GfComTransform>();
+    mm::Quat rotation;
+    mm::unknown004(rotation, matrix);
+    transform->setPosition(matrix.unknown004());
+    transform->setRotation(rotation);
+    transform->syncFrame();
   }
 }
 

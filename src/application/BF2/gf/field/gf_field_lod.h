@@ -94,6 +94,8 @@ public:
   struct PosInfo {
     void update(const fw::UpdateInfo &info);
     void updateColiOff(ml::ScnObjAccPartsPos &partsPos);
+    void updateAnim(ml::ScnObjAccPartsPos &partsPos, f32 delta);
+    void syncGfTransform(const mm::Mat44 &matrix);
 
     GfFieldLodColiAnim *unknown00; // Inferred role: owner; original member name unknown.
     GfFieldLodEffect unknown08;    // Inferred role: pop/depop effects; original member name unknown.

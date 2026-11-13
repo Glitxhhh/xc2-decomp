@@ -1,5 +1,6 @@
 #include "gf/game/event/gf_game_event.h"
 
+#include "bdat.h"
 #include "event/manager.h"
 #include "event/seq_info.h"
 #include "event/seq_manager.h"
@@ -30,6 +31,7 @@
 #include "gf/map/gf_map_manager.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/sound/gf_sound.h"
@@ -37,6 +39,7 @@
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
+#include "mm_mtl/fixstr.h"
 #include "mtl/mem_manager.h"
 
 namespace gf {
@@ -234,6 +237,37 @@ mtl::ALLOC_HANDLE GfGameEvent::getEventDebugMem() {
     return get()->unknown14;
   }
   return mtl::ALLOC_HANDLE();
+}
+
+void GfGameEvent::play(u32 eventId, u32 bladeId, u32 startId, bool isEndFadeOut) {
+  GfGameEvent *gameEvent = get();
+  event::Manager *manager = event::Manager::get();
+  if (gameEvent == nullptr || manager == nullptr) {
+    return;
+  }
+  gameEvent->unknown1929 = false;
+  u8 *list = Bdat::getFP("EVT_listList");
+  u32 listTop = Bdat::getIdTop(list);
+  u32 listEnd = listTop + Bdat::getIdCount(list);
+  for (u32 i = listTop; i < listEnd; i++) {
+    u8 *bdat = Bdat::getFP(Bdat::getVal(list, "listSeat", i).valueString);
+    u32 top = Bdat::getIdTop(bdat);
+    u32 count = Bdat::getIdCount(bdat);
+    if (top <= eventId && eventId < top + count) {
+      mm::mtl::FixStr<64> name = Bdat::getVal(bdat, "evtName", eventId).valueString;
+      if (name.c_str()[0] == '\0') {
+        return;
+      }
+      if (!manager->isDebugPlayOnetime() && Bdat::getVal(bdat, "linkID", eventId).valueU16 != 0) {
+        name += "_link";
+      }
+      Bdat::getVal(bdat, "category", eventId);
+      gameEvent->unknown190c = eventId;
+      gameEvent->unknown1910 = startId;
+      manager->play(name.c_str(), unknown020, 0, 0, bladeId, startId, isEndFadeOut);
+      return;
+    }
+  }
 }
 
 void GfGameEvent::stop() {
@@ -693,6 +727,14 @@ bool GfGameEvent::isOriginalHomuraModel(u32 bladeId) {
     return eventId >= HOMURA_ORIGINAL_EVENT_UNKNOWN_10062 && eventId <= HOMURA_ORIGINAL_EVENT_UNKNOWN_10065;
   }
   return false;
+}
+
+GfEvtModelSalvage *GfGameEvent::createSalvage() {
+  GfInitParamDriver param;
+  param.unknown08 = unknown030_9;
+  param.m_bladeID = DRIVER_UNKNOWN_1;
+  param.unknown40 = 8;
+  return GfEvtModelSalvage::create(param);
 }
 
 void GfGameEvent::setListeningPoint(const mm::Vec3 &point) {

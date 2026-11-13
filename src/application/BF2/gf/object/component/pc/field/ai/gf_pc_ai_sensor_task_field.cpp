@@ -22,7 +22,7 @@ bool isStack(const GfComPropertyPc &property, const SensorAIParam &param, f32 ti
     direction.unknown001();
   }
 
-  mm::Vec3 move = property.unknown160.unknown00 - property.unknown180;
+  mm::Vec3 move = property.unknown160.unknown00 - property.unknown180.unknown00;
   f32 moveDistance = direction.x * move.x + direction.y * move.y + direction.z * move.z;
   return speed * time - moveDistance >= param.stackThreashold;
 }

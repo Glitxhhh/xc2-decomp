@@ -1,7 +1,9 @@
 #include "gf/game/gf_game_inside_battle_lock.h"
 
+#include "framework/memory/framework_memory.h"
 #include "fw/fw_transform.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_setup.h"
@@ -29,6 +31,17 @@ struct unknown001 {
   mm::Vec3 position;
 };
 
+// Inferred role: tells whether one of the battle locks is active; original name unknown.
+struct unknown002 {
+  void onTraverse(const gmk::AGmkBase &gmk) {
+    if (static_cast<const gmk::GmkBattleLock &>(gmk).unknown50.unknown58 != nullptr) {
+      lock->unknown20 = true;
+    }
+  }
+
+  GfGameInsideBattleLock *lock;
+};
+
 } // namespace
 
 bool GfGameInsideBattleLock::isInside(const mm::Vec3 &position) {
@@ -49,9 +62,28 @@ bool GfGameInsideBattleLock::isInside(GF_OBJ_HANDLE *handle) {
   return false;
 }
 
-struct GF_OBJ_HANDLE;
+void GfGameInsideBattleLock::build(const GfSetupParam &) {
+  // __LINE__ must be 35 as in the original source: it is the line argument of operator new.
+#line 35
+  GfGameInsideBattleLock *lock = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameInsideBattleLock;
+  lock->unknown08.setAllocator(fw::FrameworkMemory::getAllocator(5));
+}
 
 void GfGameInsideBattleLock::destroy() { delete get(); }
+
+void GfGameInsideBattleLock::update(const fw::UpdateInfo &) {
+  GfGameInsideBattleLock *lock = get();
+  if (lock == nullptr || gmk::GmkManager::get() == nullptr) {
+    return;
+  }
+
+  lock->updateInfos();
+  lock->unknown20 = false;
+  unknown002 traverser = {lock};
+  gmk::GmkManager::get()->traverseGmkInst(gmk::GMK_TYPE_BATTLE_LOCK, traverser);
+}
+
+void GfGameInsideBattleLock::updateInfo(GF_OBJ_HANDLE *handle) { get()->unknown08[handle] = get()->isInsideBattleLock(handle); }
 
 bool GfGameInsideBattleLock::isInsideBattleLock(GF_OBJ_HANDLE *handle) const {
   GfObjAcc acc(handle);

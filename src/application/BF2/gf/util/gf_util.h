@@ -13,6 +13,7 @@ namespace util {
 
 bool getScreenPos(mm::Vec3 &screenPos, const mm::Vec3 &position);
 void getEulerRotateModel(mm::Vec3 &euler, const mm::Quat &quat);
+void getEulerRotateCamera(mm::Vec3 &euler, const mm::Quat &quat);
 bool isInsideView(const mm::Vec3 &position, f32 radius);
 void getViewLocalToDeviceCoord(mm::Vec3 &device, const mm::Mat44 &frustum, const mm::Vec3 &local);
 void getDeviceCoordToViewLocal(mm::Vec3 &local, const mm::Mat44 &frustum, const mm::Vec3 &device);

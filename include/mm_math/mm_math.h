@@ -159,6 +159,58 @@ inline void unknown001(Mat44 &matrix, const Quat &quat) {
   matrix.rows[3][3] = 1.0f;
 }
 
+// Inferred helper: quaternion of the rotation of a matrix; original name unknown. Evidence: inlined in fw::PrimCapsule::setup
+// (1.0.0: 0x7100197934), whose stack holds the four values and the pointers to the four components below the quaternion of
+// the caller, and in gf::GfFieldLodColiAnim::PosInfo::syncGfTransform (0x71002e2728).
+// Internal linkage: the game inlines it into the single caller of each unit.
+static inline void unknown004(Quat &rotation, const Mat44 &matrix) {
+  f32 values[4];
+  values[0] = ((matrix.rows[0][0] - matrix.rows[1][1]) - matrix.rows[2][2]) + 1.0f;
+  values[1] = ((matrix.rows[1][1] - matrix.rows[0][0]) - matrix.rows[2][2]) + 1.0f;
+  values[2] = (-matrix.rows[0][0] - matrix.rows[1][1]) + matrix.rows[2][2] + 1.0f;
+  values[3] = matrix.rows[0][0] + matrix.rows[1][1] + matrix.rows[2][2] + 1.0f;
+  u32 largest = 0;
+  if (values[1] > values[0]) {
+    largest = 1;
+  }
+  if (values[2] > values[largest]) {
+    largest = 2;
+  }
+  if (values[3] > values[largest]) {
+    largest = 3;
+  }
+  if (values[largest] < 0.0f) {
+    rotation = mm::Quat::identity;
+  } else {
+    f32 *components[4] = {&rotation.x, &rotation.y, &rotation.z, &rotation.w};
+    f32 root = sqrtf(values[largest]);
+    *components[largest] = root * 0.5f;
+    f32 scale = 0.25f / (root * 0.5f);
+    switch (largest) {
+    case 3:
+      rotation.x = scale * (matrix.rows[1][2] - matrix.rows[2][1]);
+      rotation.y = scale * (matrix.rows[2][0] - matrix.rows[0][2]);
+      rotation.z = scale * (matrix.rows[0][1] - matrix.rows[1][0]);
+      break;
+    case 1:
+      rotation.x = scale * (matrix.rows[0][1] + matrix.rows[1][0]);
+      rotation.z = scale * (matrix.rows[1][2] + matrix.rows[2][1]);
+      rotation.w = scale * (matrix.rows[2][0] - matrix.rows[0][2]);
+      break;
+    case 2:
+      rotation.x = scale * (matrix.rows[2][0] + matrix.rows[0][2]);
+      rotation.y = scale * (matrix.rows[1][2] + matrix.rows[2][1]);
+      rotation.w = scale * (matrix.rows[0][1] - matrix.rows[1][0]);
+      break;
+    default:
+      rotation.y = scale * (matrix.rows[0][1] + matrix.rows[1][0]);
+      rotation.z = scale * (matrix.rows[2][0] + matrix.rows[0][2]);
+      rotation.w = scale * (matrix.rows[1][2] - matrix.rows[2][1]);
+      break;
+    }
+  }
+}
+
 __attribute__((always_inline)) inline void quatToEuler(const Quat &quat, Vec3 &euler) {
   Mat44 matrix;
   quatToMatrix(matrix, quat);

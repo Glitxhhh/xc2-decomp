@@ -28,6 +28,7 @@ enum unknown030 {
   unknown030_6 = 6, // Inferred role: event driver; original name unknown.
   unknown030_7 = 7, // Inferred role: event blade; original name unknown.
   unknown030_8 = 8, // Inferred role: trinity blade; original name unknown.
+  unknown030_9 = 9, // Inferred role: salvage model (GfGameEvent::createSalvage); original name unknown.
   unknown030_10 = 10,
   unknown030_11 = 11, // Inferred role: act viewer event; original name unknown.
   unknown030_12 = 12, // Inferred role: event npc; original name unknown.

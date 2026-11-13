@@ -37,7 +37,7 @@ void WaterInPlugin::update(GfComBehaviorPc &behavior, const fw::UpdateInfo &) {
     GfComEnvSensor *envSensor = behavior.unknown08->getComponent<GfComEnvSensor>();
     GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
     if (envSensor != nullptr && property != nullptr && envSensor->unknown10.unknown24_1) {
-      if (property->unknown160.unknown00.y < property->unknown180.y && property->unknown180.y > envSensor->unknown10.unknown30.unknown70.unknown00 &&
+      if (property->unknown160.unknown00.y < property->unknown180.unknown00.y && property->unknown180.unknown00.y > envSensor->unknown10.unknown30.unknown70.unknown00 &&
           envSensor->unknown10.unknown30.unknown70.unknown00 >= property->unknown160.unknown00.y) {
         onEvent(behavior);
       }

@@ -155,6 +155,55 @@ void GfMenuObjDropItem::closeAll() {
   }
 }
 
+void GfMenuObjDropItem::ListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case 0x21: {
+    ui::UIObjectAcc item(acc.searchDuplicatedChild("LAY_item_root", event.unknown14_u16));
+    if (item.isValid()) {
+      item.setDisp(true);
+      item.setDispChild(true, "LAY_item");
+      setupScreen(item.unknown10, event.unknown08, event.unknown0c, event.unknown10);
+      GfMenuObjUtil::CtrlParam ctrl;
+      ctrl.unknown08 = 0x10000000;
+      ctrl.unknown50 = "getitem";
+      ctrl.unknown58 = "fadein";
+      ctrl.unknown04 = (item.getDuplicateIndex() << 16) | 0x200;
+      int id = GfMenuObjUtil::startCtrl(item.unknown10, ctrl, nullptr);
+      if (id == -1) {
+        removeObject(item);
+      } else {
+        hookCtrlEvent(acc.unknown10, id);
+      }
+    }
+    break;
+  }
+  case 0x22: {
+    ui::UIObjectAcc item(acc.searchDuplicatedChild("LAY_item_root", event.unknown08_u16));
+    if (item.isValid()) {
+      removeObject(item);
+    }
+    break;
+  }
+  case 3: {
+    u32 param = event.unknown08;
+    if (param == 0) {
+      break;
+    }
+    ui::UIObjectAcc item(acc.searchDuplicatedChild("LAY_item_root", param >> 16));
+    if ((param & 0xff00) == 0x200 && item.isValid()) {
+      removeObject(item);
+    }
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf
 
 template void gf::GfMenuManyObjects::remove<gf::GfMenuObjDropItem::DropItemInfo>(u32, u32);
