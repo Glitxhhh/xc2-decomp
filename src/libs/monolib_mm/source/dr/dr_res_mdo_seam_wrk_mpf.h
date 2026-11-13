@@ -4,6 +4,10 @@
 #include "dr/dr_res_mdo_seam_res.h"
 #include "types.h"
 
+namespace mtl {
+class ALLOC_HANDLE;
+} // namespace mtl
+
 namespace grlib {
 class CGLibVtxInstans;
 } // namespace grlib
@@ -70,6 +74,7 @@ public:
   DrResMdoSeamWrkMpf();
   virtual ~DrResMdoSeamWrkMpf();
   void release();
+  void setupWork(MdoWrkMatRes *matRes, mtl::ALLOC_HANDLE handle, const MdsSeamMpfMapHead *head, DrMdoMpfMan *mpfMan);
   void changeMemCall();
   void releaseCache(DrMdoCtlSeamMpfMap *ctl);
   bool update(const DrResMdoSeamParmRead *parmRead, bool isOpen, u32 flags);

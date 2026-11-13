@@ -182,7 +182,7 @@ template <typename T> bool GfFieldLocalSteer::TIsTargetNotSameSquad<T>::operator
     return true;
   }
   if (squad == unknown002<T>(handle)) {
-    gmk::GmkSquadLeader *leader = squad->getBindedGmkSquadLeader();
+    const gmk::GmkSquadLeader *leader = squad->getBindedGmkSquadLeader();
     if (leader != nullptr && leader->getData()->unknown00 == 1) {
       return false;
     }

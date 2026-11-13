@@ -1,5 +1,7 @@
 #include "ml/proc_exception.h"
 
+#include "ml/cache_draw.h"
+#include "ml/dev_graph.h"
 #include "ml/device.h"
 #include "ml/proc_desktop.h"
 #include "ml/reslist.h"
@@ -7,6 +9,8 @@
 #include "ml/work_obj.h"
 #include "ml/work_system.h"
 #include "ml/work_util.h"
+#include "mm_math/mm_pnt.h"
+#include "mm_math/mm_rect.h"
 #include "window/window.h"
 
 namespace ml {
@@ -55,6 +59,38 @@ ProcException *ProcException::create(WorkObj *parent, const wchar_t *message, EX
 void ProcException::setInfo(u32 wid, const wchar_t *message) {
   unknown1f8 = wid;
   unknown200 = message;
+}
+
+void ProcException::wkRender() {
+  switch (unknown210) {
+  case 0:
+    unknown20c += unknown208;
+    if (unknown20c >= 0.8f) {
+      unknown20c = 0.8f;
+      unknown210 = 1;
+    }
+    break;
+  case 1:
+    if (wkIsShutdown()) {
+      unknown20c -= unknown208;
+      if (unknown20c <= 0.0f) {
+        unknown20c = 0.0f;
+        unknown210 = 2;
+      }
+    }
+    break;
+  }
+
+  WinView *view = WinView::getView(true);
+  int width = DevGraph::getRootWidth();
+  int height = DevGraph::getRootHeight();
+  if (view != nullptr) {
+    width = WinView::getView(true)->getSize(false).x;
+    height = WinView::getView(true)->getSize(false).y;
+  }
+  DebDraw *draw = DebDraw::get(0xffffffff);
+  draw->setCol(0.0f, 0.0f, 0.0f, unknown20c);
+  draw->renderRectFill(mm::Rect<int>(0, 0, width, height));
 }
 
 void ProcException::renderWide(const wchar_t *message) {}

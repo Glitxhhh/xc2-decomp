@@ -105,6 +105,43 @@ f32 CharaWalkCalculator::getDecSpeed(bool isRun, f32 frame) {
   return getTopSpeed(isRun) * (blend - frame) / blend;
 }
 
+f32 CharaWalkCalculator::calcTotalFrame(f32 length) const {
+  u32 flags = unknown00;
+  f32 acc = 0.0f;
+  f32 dec = 0.0f;
+  bool isRun = (flags & FLAG_UNKNOWN_1) != 0;
+  bool hasAcc = (flags & FLAG_UNKNOWN_2) != 0;
+  bool hasDec = (flags & FLAG_UNKNOWN_3) != 0;
+  f32 blend = getBlend(isRun);
+  if (hasAcc) {
+    acc = getAccLength(isRun, blend);
+  }
+  if (hasDec) {
+    dec = getDecLength(isRun, blend);
+  }
+  if (acc + dec < length) {
+    f32 rest = length;
+    f32 frames = 0.0f;
+    f32 speed = getTopSpeed(isRun);
+    if (hasAcc) {
+      rest -= acc;
+      frames += blend;
+    }
+    if (hasDec) {
+      rest -= dec;
+      frames += blend;
+    }
+    return frames + rest / speed;
+  }
+  f32 scale = (flags & (FLAG_UNKNOWN_2 | FLAG_UNKNOWN_3)) == (FLAG_UNKNOWN_2 | FLAG_UNKNOWN_3) ? 2.0f : 1.0f;
+  for (f32 frame = 0.0f; frame <= blend; frame += 1.0f) {
+    if (length <= scale * getAccLength(isRun, frame)) {
+      return scale * frame - 1.0f;
+    }
+  }
+  return blend * scale;
+}
+
 void CharaWalkCalculator::update(f32 delta) {
   if ((unknown00 & FLAG_UNKNOWN_0) != 0) {
     unknown70 = calcPos(unknown84);

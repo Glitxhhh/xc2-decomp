@@ -16,6 +16,7 @@
 #include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_seam_wrk_mpf.h"
 #include "dr/dr_res_mdo_vertex.h"
+#include "mtl/alloc_handle.h"
 #include "types.h"
 
 namespace grlib {
@@ -61,6 +62,18 @@ void DrMdoCtlSeamMpfMap::createMpfZPrePassDisplayList() {
       }
     }
   }
+}
+
+void DrMdoCtlSeamMpfMap::initMpfMapParts(DrResMdoSeamWrkMpf *mpf) {
+  const u8 *data = mpf->unknown18->m_buffer;
+  const MdsSeamMpfMapHead *head = reinterpret_cast<const MdsSeamMpfMapHead *>(data);
+  initMpfMaterial(data + head->unknown04, data + head->unknown0c, data + head->unknown00, data + head->unknown10, true);
+  MdoWrkMatRes *matRes = unknown30;
+  const unknown722 *table = reinterpret_cast<const unknown722 *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown68);
+  unknownc4c += table[mpf->unknown4c].unknown38;
+  unknownb90[mpf->unknown4c >> 5] |= 1 << (mpf->unknown4c & 0x1f);
+  unknownc06++;
+  mpf->setupWork(matRes, m_drMan->unknown14, head, m_drMan->unknown88->unknown020);
 }
 
 void DrMdoCtlSeamMpfMap::changeMemMpfMapParts(DrResMdoSeamWrkMpf *mpf) {

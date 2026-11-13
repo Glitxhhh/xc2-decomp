@@ -164,6 +164,7 @@ public:
   ~GmkSquadManager() override { clearGmkSquads(); }
   void update(f32 deltaTime);
   void addGmkSquad(GmkSquad *squad);
+  void removeGmkSquad(GmkSquad *squad);
   void clearGmkSquads();
   void debugDraw() const;
 

@@ -42,6 +42,7 @@ public:
   void calculateFlareBuff();
   void calculateLensFlare();
   void bloomLensFlare();
+  void calcCollectRender(bool isVolume);
 
   grlib::CGLibRenderTarget *unknown18;    // Inferred role: render target; original member name unknown.
   grlib::CGLibRenderTarget *unknown20;    // Inferred role: render target; original member name unknown.

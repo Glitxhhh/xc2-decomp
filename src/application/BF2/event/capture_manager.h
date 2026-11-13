@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "event/i_manager.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
@@ -49,12 +51,19 @@ private:
   u32 unknown10;                                                        // Inferred role: flags; original member name unknown.
   MODE unknown14;                                                       // Inferred role: mode; original member name unknown.
   int unknown18;                                                        // Inferred role: filter; original member name unknown.
+  int unknown1c;                                                        // Inferred role: captured frame count; original member name unknown.
   mm::mtl::FixedVector<mm::mtl::FixStr<16>, CUT_UNKNOWN_512> unknown20; // Inferred role: cut names; original member name unknown.
   mm::mtl::FixStr<128> unknown2828;                                     // Inferred role: directory; original member name unknown.
   mm::mtl::FixStr<128> unknown28ac;                                     // Inferred role: file name; original member name unknown.
   mm::mtl::FixStr<128> unknown2930;                                     // Inferred role: raw movie path; original member name unknown.
   mm::mtl::FixStr<128> unknown29b4;                                     // Inferred role: movie path; original member name unknown.
   mm::mtl::FixStr<128> unknown2a38;                                     // Inferred role: half movie path; original member name unknown.
+
+  friend struct CaptureManagerLayout;
+};
+
+struct CaptureManagerLayout {
+  static_assert(offsetof(CaptureManager, unknown1c) == 0x1c, "");
 };
 
 static_assert(sizeof(CaptureManager) == 0x2ac0, "");

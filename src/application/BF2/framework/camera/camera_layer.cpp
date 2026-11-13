@@ -41,6 +41,23 @@ void CameraLayer::onPushCamera(Camera &camera) {
   camera.unknowna0 = true;
 }
 
+void CameraLayer::pop(mm::mtl::IntrusivePtr<Camera> &camera, f32 time) {
+  Camera *front = unknown08.begin().get();
+  if (camera.get() == front && time > 0.0f) {
+    unknown80 = camera->unknown60;
+    unknownc0 = 0.0f;
+    unknownc4 = time;
+    unknownc8 = true;
+  }
+  camera->onDeactivate();
+  onPopCamera(*camera);
+  unknown08.erase(camera.get());
+  camera->release();
+  if (!unknown08.empty()) {
+    unknown08.begin().get()->onActivate();
+  }
+}
+
 void CameraLayer::pushPlugin(mm::mtl::IntrusivePtr<CameraPlugin> &plugin) {
   plugin->addRef();
   unknown20.push_front(plugin.get());

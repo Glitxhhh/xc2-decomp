@@ -2,6 +2,9 @@
 
 #include <math.h>
 
+#include "dr/dr_ap_cache.h"
+#include "dr/dr_fog_man.h"
+#include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_man.h"
@@ -9,8 +12,15 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
 #include "dr/dr_res_use_query_obj.h"
+#include "dr/dr_shd_data_list.h"
+#include "dr/dr_shd_data_obj.h"
+#include "dr/dr_shd_man.h"
+#include "grlib/cglib_color_ctl.h"
 #include "grlib/cglib_render_target.h"
+#include "grlib/cglib_shader.h"
+#include "grlib/cglib_uni_base_utility.h"
 #include "mm_math/mm_math.h"
+#include "mm_math/mm_vec4.h"
 #include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 
@@ -127,6 +137,45 @@ void DrPixlPostObjHistgram::update() {
     }
   }
   unknownb8 = isValid;
+}
+
+void DrPixlPostObjHistgram::render() {
+  DrAPCache *apCache = unknown00->unknown5c0;
+  grlib::CGLibColorCtl::setColorBufferOff();
+  DrFogMan *fogMan = unknown00->unknown590;
+  bool isDepthFog = fogMan->isFogOn() && fogMan->unknownd1;
+  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  DrShdDataObj *shader = shdList->getPostShdObj(0x27);
+  u32 depthCheck = isDepthFog ? 2 : 1;
+  shader->setDeclarationIdx(shader->getDeclarationOfs("DEPTH_CHECK"), depthCheck);
+  grlib::CGLibUniformEtcUtility uniform(shader);
+  uniform.setUseUniformBlock("U_POST");
+  shdList->bindQuadsTex();
+  shader->setupShader(0u);
+  u32 paramOffset = uniform.unknown001("gParam");
+  mm::Vec4 param = mm::Vec4::zero;
+  unknown001 section = getSection(unknowna4);
+  param.x = section.unknown00;
+  param.y = section.unknown04;
+  param.z = unknown00->unknown588->getSkyLuminance();
+  uniform.setF32SetVec4(paramOffset, &param.x);
+  int location = (shader->unknown38 + shader->unknown58)->getTextureLocation("s0");
+  grlib::CGLibRenderTarget *target = unknown08->unknown7f0->unknown180->unknown18->unknown18[0];
+  apCache->beginTexSampling(2, 1);
+  apCache->setTexture(*target->unknown70, location);
+  if (!isDepthFog) {
+    int depthLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("depth");
+    DrPixlRenderTarget *depth = unknown08->unknown7f0->unknown180->getDownDepth();
+    apCache->beginTexSampling(2, 0);
+    apCache->setTexture(*depth->unknown70, depthLocation);
+  }
+  target->setRenderTarget();
+  uniform.updateData();
+  uniform.setUniformBlock();
+  unknown18->begin(unknown08->unknown7f8);
+  shdList->renderQuads();
+  unknown18->end();
+  grlib::CGLibColorCtl::setColorBufferOn();
 }
 
 f32 DrPixlPostObjHistgram::calcLuminanceAve(f32 rate, bool isLow) const {

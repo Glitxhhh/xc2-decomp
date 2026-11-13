@@ -16,6 +16,20 @@ namespace ml {
 
 u32 DrMdoNomAfterImage::isReleaseCall() const { return unknown20 & (1 << DrMan::s_nDblMemIdx); }
 
+void DrMdoNomAfterImage::update(const DrMdoCtlNom *model, f32 delta) {
+  if (unknown08 != 0) {
+    for (int i = 0; i < unknown08; i++) {
+      // The game never sets the fourth argument's register: updateParam does not read it, so the original expression cannot be checked.
+      updateParam(&unknown00[i], model, delta, model->m_offsetPos);
+    }
+    unknown10 += delta;
+    if (unknown10 >= unknown0c) {
+      unknown10 = 0.0f;
+      captureObj(model);
+    }
+  }
+}
+
 void DrMdoNomAfterImage::releaseCall() { unknown20 |= 1 << DrMan::s_nDblStockIdx; }
 
 void DrMdoNomAfterImage::create(const DrMdoCtlNom *model, f32 span, f32 life, f32 fade, const mm::Col3 &headColor, f32 headPower, f32 headBlackRatio, f32 headEmissive, const mm::Col3 &tailColor,

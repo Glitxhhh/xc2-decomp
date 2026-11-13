@@ -13,6 +13,7 @@ class DrMdoCtlSeamMpfMap : public DrMdoCtlSeamInstMap {
 public:
   DrMdoCtlSeamMpfMap(int viewNum);
   void releaseMpfMap();
+  void initMpfMapParts(DrResMdoSeamWrkMpf *mpf);
   void changeMemMpfMapParts(DrResMdoSeamWrkMpf *mpf);
   DrResMdoSeamWrkMpf *createFreeSeamMpf();
   void releaseFreeSeamMpf(DrResMdoSeamWrkMpf *mpf);

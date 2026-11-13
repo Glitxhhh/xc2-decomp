@@ -15,6 +15,9 @@ public:
   // planes and scales it by 2000 for checkLineNeraPointGet. It is declared but not defined: every natural form matches except four register
   // numbers (see the `registers` blocker), so the vtable of this class is not emitted by this unit until it is defined.
   bool clipLineTest(const mm::Vec3 &start, const mm::Vec3 &direction, f32 radius) const override;
+  // Game symbol _ZNK2ml22DrCalcClipWorkViewPoli16createLineNormalERN2mm4Vec3ERKS2_S5_S5_ (0x71008a98b0). The parameter roles are inferred: the
+  // normalized component of (point - line point) perpendicular to the line; original parameter names unknown.
+  void createLineNormal(mm::Vec3 &normal, const mm::Vec3 &linePoint, const mm::Vec3 &lineDirection, const mm::Vec3 &point) const;
 
   // Game symbol _ZN2ml22DrCalcClipWorkViewPoli21checkLineNeraPointGetERN2mm4Vec3ES3_RKS2_S5_S5_S5_ (0x71008a99d4, not decompiled yet).
   // clipLineTest calls it with six register arguments and no `this`, so it is static. The parameter roles are inferred from that call: the

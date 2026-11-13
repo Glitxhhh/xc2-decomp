@@ -126,6 +126,11 @@ static_assert(offsetof(TColiCheckResult<256>, isHit) == 0x5014, "");
 
 class ColiCheckCallback : public idcoli::IDColiCallBack {
 public:
+  static const u32 HIT_FLAG_UNKNOWN_2 = 1 << 2; // Inferred role: set on every hit; original name unknown.
+  static const u32 HIT_FLAG_UNKNOWN_3 = 1 << 3; // Inferred role: the hit object was found; original name unknown.
+
+  static int m_prevWarningFrame;
+
   explicit ColiCheckCallback(TColiCheckResult<256> &result) : unknown08(&result) {}
 
   void coli_callback(void *userData) override;

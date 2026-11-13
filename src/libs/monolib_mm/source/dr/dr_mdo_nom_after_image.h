@@ -23,6 +23,7 @@ public:
   ~DrMdoNomAfterImage();
   void release();
   u32 isReleaseCall() const;
+  void update(const DrMdoCtlNom *model, f32 delta);
   void releaseCall();
   void create(const DrMdoCtlNom *model, f32 span, f32 life, f32 fade, const mm::Col3 &headColor, f32 headPower, f32 headBlackRatio, f32 headEmissive, const mm::Col3 &tailColor, f32 tailPower,
               f32 tailBlackRatio, f32 tailEmissive);

@@ -314,7 +314,8 @@ public:
   s32 unknownf58; // Inferred role: bloom scale type; original member name unknown.
   u8 _0f5c[0x0f72 - 0x0f5c];
   bool unknownf72; // Inferred role: blm 2 pass; original member name unknown.
-  u8 _0f73[0x0f78 - 0x0f73];
+  bool unknownf73; // Inferred role: selects the second bloom buffer for the bloom render; original member name unknown.
+  u8 _0f74[0x0f78 - 0x0f74];
   u32 unknownf78; // Inferred role: SSR debug scale shift; original member name unknown.
   u8 _0f7c[0x0f94 - 0x0f7c];
   f32 unknownf94; // Inferred role: tssao prev blur strength; original member name unknown.
@@ -499,6 +500,7 @@ static_assert(offsetof(DrPixlPostParm, unknown514) == 0x0514, "");
 static_assert(offsetof(DrPixlPostParm, unknownf54) == 0x0f54, "");
 static_assert(offsetof(DrPixlPostParm, unknownf58) == 0x0f58, "");
 static_assert(offsetof(DrPixlPostParm, unknownf72) == 0x0f72, "");
+static_assert(offsetof(DrPixlPostParm, unknownf73) == 0x0f73, "");
 static_assert(offsetof(DrPixlPostParm, unknownf94) == 0x0f94, "");
 static_assert(offsetof(DrPixlPostParm, unknownf78) == 0x0f78, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb1) == 0x0fb1, "");

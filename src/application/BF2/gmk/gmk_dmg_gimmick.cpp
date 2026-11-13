@@ -4,16 +4,21 @@
 #include "framework/coli/coli_object.h"
 #include "framework/effect/effect_manager.h"
 #include "framework/sound/sound_manager.h"
+#include "fw/fw_coli_check.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
+#include "gf/field/gf_field_dmg.h"
 #include "gf/field/gf_field_manager.h"
 #include "gf/field/gf_field_sound.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_player_formation.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/gf_com_collider.h"
+#include "gf/object/component/pc/gf_com_behavior_pc.h"
+#include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
@@ -22,6 +27,7 @@
 #include "gmk/gmk_set.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/rtti.h"
 #include "mm_mtl/vector.h"
 
 namespace gf {
@@ -471,6 +477,94 @@ void GmkDmgPhantomManager::gevPartyMover(gf::GF_OBJ_HANDLE *handle, bool isJoin)
     }
   } else {
     removeTargetInfo(handle);
+  }
+}
+
+void GmkDmgPhantomManager::update(f32 deltaTime) {
+  unknown38 = false;
+  if (unknown10.capacity() == 0) {
+    return;
+  }
+  fw::ColiCheckConfig config;
+  config.unknown14 = true;
+  config.unknown08 = 0.0f;
+  config.unknown0c = 0.0f;
+  config.unknown15 = false;
+  config.unknown00 = fw::ColiCheckConfig::FLAG_UNKNOWN_2;
+  config.unknown04 = 0x100000;
+  config.unknown10 = 0;
+  fw::TColiCheckResult<256> result;
+  for (GmkDmgPhantomTargetInfo &info : unknown10) {
+    gf::GfObjAcc acc(info.unknown00);
+    gf::GfObj *obj = acc.getObj();
+    if (obj == nullptr) {
+      continue;
+    }
+    const gf::GfComCollider *collider = obj->getComponent<gf::GfComCollider>();
+    if (collider == nullptr) {
+      continue;
+    }
+    fw::ColiObject *coli = collider->unknown18[0];
+    if (coli == nullptr || !coli->isActivate()) {
+      continue;
+    }
+    result.clear();
+    if (!fw::ColiCheck::testObjectPhantom(result, coli, config)) {
+      info.unknown08 = 0;
+      info.unknown0c = 0.0f;
+      continue;
+    }
+    bool isInside = false;
+    u32 hitNum = result.getCount();
+    for (u32 i = 0; i < hitNum; i++) {
+      fw::ColiUserData *userData = result.unknown002(i);
+      GmkDmgGimmick *gimmick = nullptr;
+      if (userData != nullptr) {
+        gimmick = mm::mtl::dynamicCast<GmkDmgGimmick>(userData);
+      }
+      if (gimmick != nullptr) {
+        if (gimmick->isValid()) {
+          isInside = true;
+          if (info.isTargetPlayer()) {
+            unknown38 = true;
+          }
+          f32 interval = gimmick->getBdatInfo()->unknown04;
+          int bdatIndex = gimmick->unknown20.unknown18;
+          if (info.unknown08 != bdatIndex) {
+            info.unknown08 = bdatIndex;
+            info.unknown0c = interval;
+          }
+          info.unknown0c += deltaTime;
+          if (info.unknown0c < interval) {
+            break;
+          }
+          info.unknown0c = 0.0f;
+          if (!gf::GfGameManager::isEnableGimmickPhantomDamage()) {
+            break;
+          }
+          switch (info.getTargetType()) {
+          case 1: {
+            gf::GfObj *target = gf::GfObjUtil::getObj(info.unknown00);
+            if (target != nullptr) {
+              gf::MsgPcApplyFieldDamage message(gimmick->getBdatInfo()->unknown08);
+              target->sendMessage(target, message);
+            }
+            break;
+          }
+          case 2:
+            gf::GfFieldDmg::applyDamage(info.unknown00, gimmick->getBdatInfo()->unknown09);
+            break;
+          default:
+            break;
+          }
+        }
+        break;
+      }
+    }
+    if (!isInside) {
+      info.unknown08 = 0;
+      info.unknown0c = 0.0f;
+    }
   }
 }
 

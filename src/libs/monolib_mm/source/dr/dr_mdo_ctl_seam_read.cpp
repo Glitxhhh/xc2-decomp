@@ -381,7 +381,7 @@ void DrMdoCtlSeamRead::waitLightStream(_wkSeamReadCall *call, bool isRead) {
     const MdsSeamLgtMapData *table = reinterpret_cast<const MdsSeamLgtMapData *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown8c);
     const MdsSeamLgtMapData *data = &table[light->unknown30];
     unknownc6c += data->unknown1c;
-    unknownbc0[static_cast<u32>(light->unknown30) >> 5] |= 1 << (light->unknown30 & 0x1f);
+    unknown723(unknownbc0, light->unknown30) |= 1 << (light->unknown30 & 0x1f);
     unknownc0c++;
     light->setupWork(data);
     DrEnvironmentObj *environment = light->unknown20;

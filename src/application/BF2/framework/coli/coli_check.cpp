@@ -1,8 +1,11 @@
 #include "framework/coli/coli_manager.h"
 #include "framework/coli/coli_object.h"
+#include "framework/framework.h"
 #include "fw/fw_coli_check.h"
 #include "idcoli/idcoli.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/rtti.h"
 #include "types.h"
 
 namespace fw {
@@ -36,6 +39,44 @@ template <typename Coli> void unknown001(Coli &coli, ColiCheckCallback &callback
 }
 
 } // namespace
+
+int ColiCheckCallback::m_prevWarningFrame;
+
+void ColiCheckCallback::coli_callback(void *userData) {
+  if (unknown08 == nullptr) {
+    return;
+  }
+
+  if (unknown08->hits.size() == unknown08->hits.capacity()) {
+    u32 frame = Framework::getFrameCount();
+    // The game keeps this test around the store alone (cmp, b.eq, str at 0x7100157ea0): the warning it guarded, printed once per frame, was stripped from the retail build.
+    if (m_prevWarningFrame != frame) {
+      m_prevWarningFrame = frame;
+    }
+    return;
+  }
+
+  TColiCheckResult<256>::unknown001 hit;
+  hit.position = mm::Vec3::zero;
+  hit.normal = mm::Vec3::zero;
+  hit.unknown20 = mm::Vec3::zero;
+  ColiObject *object = nullptr;
+  if (userData != nullptr) {
+    ColiObjUserData *data = static_cast<ColiObjUserData *>(userData);
+    if (data->getRTTI()->isKindOf(&ColiObjUserData::m_rtti)) {
+      object = ColiCheck::getObjectFromUserData(data->unknown08);
+    }
+  }
+  hit.unknown30 = nullptr;
+  hit.unknown38 = userData;
+  hit.object = object;
+  hit.unknown48 = HIT_FLAG_UNKNOWN_2;
+  if (object != nullptr) {
+    hit.unknown48 |= HIT_FLAG_UNKNOWN_3;
+  }
+  unknown08->hits.push_back(hit);
+  unknown08->hitCount++;
+}
 
 ColiObject *ColiCheck::getObjectFromUserData(u32 handle) {
   if (handle != 0) {

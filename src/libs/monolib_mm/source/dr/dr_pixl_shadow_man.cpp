@@ -5,6 +5,7 @@
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_pixl_format.h"
+#include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_pixl_shadow_obj_dir.h"
@@ -38,6 +39,35 @@ void DrPixlShadowMan::afterUpdate() {
   }
   for (int i = 0; i < unknown8900; i++) {
     unknown0000[i]->afterUpdate();
+  }
+}
+
+void DrPixlShadowMan::shadowRender() {
+  int size = unknown8908->unknown5b8->unknown28 / 5;
+  int y = 0;
+  int x = 0;
+  int column = 0;
+  for (int i = 0; i < unknown8900; i++) {
+    if (unknown0000[i]->dispChk()) {
+      unknown8910->debugRender(*unknown0000[i]->unknown40->unknown128, x, y, size, size, false, false, 1.0f, true);
+      x += size;
+      column++;
+      if (column > 3) {
+        column = 0;
+        x = 0;
+        y += size;
+      }
+      for (DrPixlShadowObj *shadow = unknown0000[i]->unknown190; shadow != nullptr; shadow = shadow->unknown190) {
+        unknown8910->debugRender(*shadow->unknown40->unknown128, x, y, size, size, false, false, 1.0f, true);
+        x += size;
+        column++;
+        if (column > 3) {
+          column = 0;
+          x = 0;
+          y += size;
+        }
+      }
+    }
   }
 }
 

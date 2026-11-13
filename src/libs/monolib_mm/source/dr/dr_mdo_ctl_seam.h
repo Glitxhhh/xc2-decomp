@@ -30,6 +30,10 @@ template <typename T> class CGLibUniformArray;
 } // namespace grlib
 
 namespace ml {
+
+// Inferred role: word of a bit table holding bit index; original name unknown.
+inline u32 &unknown723(u32 *table, u32 index) { return table[index >> 5]; }
+
 class DrCalcClipMan;
 class DrCalcClipObj;
 class DrCalcCpPlaneObj;

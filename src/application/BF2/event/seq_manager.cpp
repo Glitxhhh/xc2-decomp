@@ -14,7 +14,9 @@
 #include "event/memory_manager.h"
 #include "event/motstm_manager.h"
 #include "event/mstxt_manager.h"
+#include "event/object_chara.h"
 #include "event/object_manager.h"
+#include "event/object_party_list.h"
 #include "event/res_manager.h"
 #include "event/se_manager.h"
 #include "event/skip_manager.h"
@@ -23,7 +25,10 @@
 #include "event/volume_manager.h"
 #include "fw/fw_debug.h"
 #include "gf/data/gf_data_map.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
+#include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_util.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
 #include "gf/scom/gf_scom_script.h"
@@ -34,6 +39,10 @@
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_rect.h"
 #include "scn/scn_render_dr_sys_parm_acc.h"
+
+namespace gf {
+struct GF_OBJ_HANDLE;
+} // namespace gf
 
 namespace event {
 
@@ -157,6 +166,51 @@ ICmd::RESULT SeqManager::start_loading::update(const Param &param) {
   }
   if (mm::mtl::Singleton<ObjectManager>::getPtr()->isLoading()) {
     return RESULT_UNKNOWN_0;
+  }
+  return RESULT_UNKNOWN_1;
+}
+
+ICmd::RESULT SeqManager::start_other::update(const Param &param) {
+  if (param.getFrame() <= 0) {
+    u32 num = param.val(1).getS32();
+    unknown08.clear();
+    for (u32 i = 1; i < 4; i++) {
+      if (num <= mm::mtl::Singleton<ObjectManager>::getPtr()->getCharaCount()) {
+        break;
+      }
+      gf::GF_OBJ_HANDLE *handle = mm::mtl::Singleton<ObjectPartyList>::getPtr()->getDriver(i);
+      if (gf::GfObjUtil::getObj(handle) != nullptr) {
+        gf::GfObjAcc acc(handle);
+        u32 id = acc.getBdatId();
+        if (mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_PC, id) == nullptr) {
+          mm::mtl::FixStr<64> name;
+          name.format("other%d", i);
+          unknown08.push_back(mm::mtl::Singleton<ObjectManager>::getPtr()->createGfObjPcByWalkID(name.c_str(), i, 0));
+        }
+      }
+    }
+    for (u32 i = 1; i < 4; i++) {
+      if (num <= mm::mtl::Singleton<ObjectManager>::getPtr()->getCharaCount()) {
+        break;
+      }
+      gf::GF_OBJ_HANDLE *handle = mm::mtl::Singleton<ObjectPartyList>::getPtr()->getBlade(i);
+      if (gf::GfObjUtil::getObj(handle) != nullptr) {
+        gf::GfObjAcc acc(handle);
+        u32 id = acc.getBdatId();
+        if (mm::mtl::Singleton<ObjectManager>::getPtr()->searchByID(gf::OBJECT_TYPE_BLADE, id) == nullptr) {
+          mm::mtl::FixStr<64> name;
+          name.format("other_bl%d", i);
+          unknown08.push_back(mm::mtl::Singleton<ObjectManager>::getPtr()->createGfObjBlByWalkID(name.c_str(), i, 0));
+        }
+      }
+    }
+    static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "start other";
+  }
+  while (!unknown08.empty()) {
+    if (unknown08.front()->isLoading()) {
+      return RESULT_UNKNOWN_0;
+    }
+    unknown08.erase(unknown08.begin());
   }
   return RESULT_UNKNOWN_1;
 }

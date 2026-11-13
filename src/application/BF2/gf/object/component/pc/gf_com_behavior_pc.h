@@ -53,6 +53,7 @@ struct CallBackCache;
 
 enum {
   MSG_PC_UNKNOWN_16777221 = 0x1000005, // Inferred role: msg pc get state; original name unknown.
+  MSG_PC_UNKNOWN_16777225 = 0x1000009, // Inferred role: msg pc apply field damage; original name unknown.
   MSG_PC_UNKNOWN_16777241 = 0x1000019, // Inferred role: msg pc field warp; original name unknown.
   MSG_PC_UNKNOWN_16777243 = 0x100001b, // Inferred role: msg pc field change control mode; original name unknown.
 };
@@ -91,8 +92,10 @@ struct MsgPcFieldChangeControlMode : fw::Message {
 static_assert(offsetof(MsgPcFieldChangeControlMode, unknown08) == 0x08, "");
 
 // Layout evidence: GfComBehaviorPc::recieveMessage and procMsgPcApplyFieldDamage pass the member at 0x8 as the damage rate to
-// StateUtil::applyDamage.
+// StateUtil::applyDamage; gmk::GmkDmgPhantomManager::update (0x710061f644) builds it on the stack with the id, the mask 0x40 and the rate.
 struct MsgPcApplyFieldDamage : fw::Message {
+  explicit MsgPcApplyFieldDamage(u8 rate) : fw::Message(MSG_PC_UNKNOWN_16777225, 0x40), unknown08(rate) {}
+
   u8 unknown08; // Inferred role: damage rate; original member name unknown.
 };
 

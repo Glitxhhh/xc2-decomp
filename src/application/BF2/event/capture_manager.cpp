@@ -1,8 +1,14 @@
 #include "event/capture_manager.h"
 
+#include <string.h>
+
 #include "event/env_manager.h"
 #include "event/fade_ctrl.h"
 #include "event/fade_manager.h"
+#include "event/frame_manager.h"
+#include "event/manager.h"
+#include "event/object_camera.h"
+#include "event/object_manager.h"
 #include "fw/fw_debug.h"
 #include "ml/dev_graph.h"
 #include "mm_math/mm_col4.h"
@@ -71,6 +77,35 @@ void CaptureManager::stop() {
   if (unknown18 != 0) {
     mm::mtl::Singleton<EnvManager>::getPtr()->setColorFilter(EnvManager::COLORFILTER_TYPE_UNKNOWN_0, -1, -1, 0.0f);
   }
+}
+
+void CaptureManager::update() {
+  if ((unknown10 & FLAG_UNKNOWN_1) == 0) {
+    return;
+  }
+  if (mm::mtl::Singleton<FrameManager>::getPtr()->isPause(FrameManager::PAUSE_TYPE_UNKNOWN_17_2)) {
+    return;
+  }
+  if (unknown1c > 0) {
+    mm::mtl::FixStr<128> path;
+    const char *sceneName = Manager::get()->getSceneName();
+    if (!isJpegMode()) {
+      path.format("%s/%s/%s_%08d", MOV_PATH_OFS, sceneName, sceneName, unknown1c);
+    } else {
+      path.format("%s/%s/%s_%08d", JPG_PATH_OFS, sceneName, sceneName, unknown1c);
+    }
+    mm::mtl::FixStr<16> cutName = "_cxx";
+    if (mm::mtl::Singleton<ObjectManager>::getPtr()->getCameraCount() != 0) {
+      const char *name = strstr(mm::mtl::Singleton<ObjectManager>::getPtr()->getCamera(0)->getCutName(), "_c");
+      if (name != nullptr) {
+        cutName = name;
+      }
+    }
+    if (unknown20.empty() || strcmp(unknown20.back().c_str(), cutName.c_str()) != 0) {
+      unknown20.push_back(cutName);
+    }
+  }
+  unknown1c++;
 }
 
 void CaptureManager::render() {

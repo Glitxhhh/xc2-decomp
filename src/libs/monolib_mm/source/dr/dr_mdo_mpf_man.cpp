@@ -2,9 +2,12 @@
 
 #include <string.h>
 
+#include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mpf_work_auto_inf.h"
 #include "grlib/cglib_ctl_vertex.h"
+#include "grlib/shd_util.h"
+#include "mm_math/mm_col3.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -167,6 +170,26 @@ void DrMdoMpfMan::update() {
     }
   }
   updateUniformWork();
+}
+
+void DrMdoMpfMan::updateUniformWork() {
+  f32 *buffer = static_cast<f32 *>(unknown18.getBuff());
+  for (int i = 0; i < getMpfWindMax(); i++) {
+    grlib::ShdMat44TransposeMat34(buffer, unknown100[i].unknown70);
+    grlib::ShdMat44TransposeMat34(buffer + 0xc, unknown100[i].unknownb0);
+    buffer += 0x18;
+  }
+  unknown18.updateData();
+  mm::Col3 color = unknown00->unknown588->unknown12c;
+  color.r *= 0.5f;
+  color.g *= 0.5f;
+  color.b *= 0.5f;
+  f32 *ambient = static_cast<f32 *>(unknown60.getBuff());
+  ambient[0] = color.r;
+  ambient[1] = color.g;
+  ambient[2] = color.b;
+  ambient[3] = 0.0f;
+  unknown60.updateData();
 }
 
 void DrMdoMpfMan::bindInstanceBuffAsSSBO(u32 index, u32 offset, u32 size) { unknown98.setStorageBuffer(index, offset, size); }

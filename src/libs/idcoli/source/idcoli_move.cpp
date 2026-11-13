@@ -218,6 +218,74 @@ void IDColiMove::calcDownVec() {
   }
 }
 
+void IDColiMove::calcColiYVecParms(f32 y) {
+  f32 base = unknown150.y;
+  f32 ceilingY = base;
+  f32 groundY = base;
+  bool isLanding = false;
+  bool isGround = false;
+  bool isStep = false;
+  u32 count = unknown10.unknowne0;
+  for (u32 i = 0; i < count; i++) {
+    if (unknown10.unknownc0[i].y < 0.0f) {
+      f32 position = unknown10.unknownb8[i].y;
+      if (position < y && position > base) {
+        groundY = position - unknown1b8;
+        isStep = true;
+        y = position;
+      }
+    }
+  }
+  f32 limit = y;
+  if (isStep) {
+    limit = y + 0.1f;
+  }
+  f32 top = base + unknown1b8 * 2.0f;
+  bool isCeiling = false;
+  isStep = false;
+  for (u32 i = 0; i < count; i++) {
+    f32 normalY = unknown10.unknownc0[i].y;
+    if (normalY > 0.0f) {
+      f32 position = unknown10.unknownb8[i].y;
+      if (base <= position && position < top) {
+        if (ceilingY <= position) {
+          ceilingY = position;
+        }
+        if (normalY > unknown1d0) {
+          isGround |= unknown124 > i;
+          isLanding = true;
+        }
+        isCeiling = true;
+      } else if (position < limit) {
+        if (isStep) {
+          if (position > groundY) {
+            groundY = position;
+          }
+        } else {
+          groundY = position;
+        }
+        if (normalY > unknown1d0) {
+          isGround |= unknown124 > i;
+          isLanding = true;
+        }
+        isStep = true;
+      }
+    }
+  }
+  // The game keeps the first two arms apart although both store the same height (str s5 at 0x71008cbfc8, str s1 at 0x71008cc000); one merged condition does not compile to its code.
+  if (isCeiling) {
+    unknown130 = mm::Vec3(unknown150.x, ceilingY, unknown150.z);
+  } else if (unknown1b8 < fabsf(groundY)) {
+    unknown130 = mm::Vec3(unknown150.x, ceilingY, unknown150.z);
+  } else {
+    unknown130 = mm::Vec3(unknown150.x, groundY, unknown150.z);
+  }
+  if (unknown140.y <= 0.01f) {
+    unknown1eb |= isLanding;
+    unknown1ec |= isGround;
+  }
+}
+
 bool IDColiMove::calcAABBCheck() {
   mm::Vec3 max;
   mm::Vec3 min;

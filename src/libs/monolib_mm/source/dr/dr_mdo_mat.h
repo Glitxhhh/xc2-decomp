@@ -777,6 +777,7 @@ public:
 
   void initMdlInfo(const u8 *data, MdoWrkMatRes *matRes);
   void initMaterial(const u8 *matData, const u8 *shaderData, const u8 *mdlData, const u8 *texData, bool isStm);
+  void initMpfMaterial(const u8 *matData, const u8 *vertexData, const u8 *mdlData, const u8 *texData, bool isStm);
   void setupResource(bool isStm);
   void oneTextureStream();
   void updateBillTbl();
