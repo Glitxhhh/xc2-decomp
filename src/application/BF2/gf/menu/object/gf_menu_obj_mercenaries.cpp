@@ -23,6 +23,7 @@
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
+#include "mm_math/mm_vec2.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
@@ -416,6 +417,21 @@ bool GfMenuObjMercenaries::seqRewardStart3() {
     isEnd = true;
   }
   return isEnd;
+}
+
+bool GfMenuObjMercenaries::seqRewardComp() {
+  ui::UIObjectAcc reward(unknown18, "LAY_reward");
+  u32 handle = reward.unknown10;
+  GfMenuObjUtil::setChildDisp(handle, "LAY_reward_complete", true);
+  GfMenuObjUtil::setChildDisp(handle, "LAY_reward_result", false);
+  ui::UIObjectAcc complete(unknown18, "LAY_reward_complete");
+  complete.setScale(mm::Vec2(2.0f, 2.0f));
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown08 = 0;
+  param.unknown00 = 0.5f;
+  unknown378 = GfMenuObjUtil::startCtrl(complete.unknown10, param, nullptr);
+  disableInput(handle);
+  return true;
 }
 
 bool GfMenuObjMercenaries::seqRewardComp2() {

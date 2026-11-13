@@ -20,9 +20,28 @@ class GfMenuObjItemList2 : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjItemList2 *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];           // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjItemList2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class ItemListListener : public ui::UIObjectListener {
+  public:
+    ItemListListener(GfMenuObjItemList2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];           // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjItemList2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class FilterListener : public ui::UIObjectListener {
+  public:
+    FilterListener(GfMenuObjItemList2 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];           // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
     GfMenuObjItemList2 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -35,6 +54,8 @@ public:
   void finalize() override;
   void update() override;
   static void setFadeOutSub(u32 handle);
+  static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList);
+  static void updateItemList(GfMenuItemList *list, ui::UISelectObjList *selectList, u32 filter, u32 sort);
   static void refreshItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList);
   static void setupFilter(ui::UIObjectAcc &acc, u32 index);
   static void getFilterText(u32 index, ui::UIStr &text);
@@ -50,6 +71,10 @@ public:
 };
 
 static_assert(offsetof(GfMenuObjItemList2::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjItemList2::ItemListListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjItemList2::ItemListListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjItemList2::FilterListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjItemList2::FilterListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjItemList2, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjItemList2, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjItemList2, unknown38) == 0x38, "");

@@ -122,6 +122,7 @@ public:
   void addItem(const MenuItemInfo &info, bool isAddItemBox);
   void setupFromHanaParts(const HanaPartsSetup &setup);
   void setupFromBox(const ItemBoxSetup &setup);
+  void addListFromBox(const ItemBoxSetup &setup);
   void setupFromShop(const ItemShopSetup &setup);
   void setupFromShopExcTask(const ItemShopExcSetup &setup);
   void setupFromQuestReward(const QuestRewardSetup &setup);

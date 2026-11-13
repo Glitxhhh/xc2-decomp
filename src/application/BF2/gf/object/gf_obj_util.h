@@ -170,7 +170,9 @@ public:
   static u32 getWeaponResourceSwtNum(GF_OBJ_HANDLE *handle);
   static GfAssetResource *getWeaponResourceSwt(GF_OBJ_HANDLE *handle, u32 index);
   static u32 getWeaponResourceEabNum(GF_OBJ_HANDLE *handle);
+  static GfAssetResource *getWeaponResourceEab(GF_OBJ_HANDLE *handle, u32 index);
   static u32 getWeaponResourceEfbNum(GF_OBJ_HANDLE *handle);
+  static GfAssetResource *getWeaponResourceEfb(GF_OBJ_HANDLE *handle, u32 index);
   static fw::SoundPack *getSePack(GF_OBJ_HANDLE *handle);
   static fw::SoundPack *getSePackFoot1(GF_OBJ_HANDLE *handle);
   static fw::SoundPack *getSePackFoot2(GF_OBJ_HANDLE *handle);

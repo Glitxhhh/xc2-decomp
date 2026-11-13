@@ -6,6 +6,8 @@
 #include "battle/utility_battle.h"
 #include "framework/coli/coli_object.h"
 #include "framework/effect/effect_manager.h"
+#include "framework/sound/sound_manager.h"
+#include "fw/fw_camera.h"
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/data/gf_bdat_chrbl.h"
@@ -30,6 +32,7 @@
 #include "gf/field/gf_field_time.h"
 #include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_cond.h"
+#include "gf/game/gf_game_inside_battle_lock.h"
 #include "gf/game/gf_game_mount.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_party.h"
@@ -66,6 +69,7 @@
 #include "gf/util/gf_equip_util.h"
 #include "gf/util/gf_item_util.h"
 #include "gf/util/gf_util.h"
+#include "mm_math/mm_mat44.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/vector.h"
 
@@ -606,6 +610,26 @@ bool GfGameScene::isEnableRideCondition(u32 partyId) const {
     return false;
   }
   return unknown240[0].unknown04 != MOVER_STATE_UNKNOWN_2;
+}
+
+void GfGameScene::checkFieldBladeChangeForRide() {
+  if ((GfGameInsideBattleLock::get() != nullptr && GfGameInsideBattleLock::get()->unknown20) || GfManager::isDestroyNow() || GfGameManager::isGameOver() || GfGameManager::isPlayerDeadSequence() ||
+      GfGameRide::testRideOn()) {
+    unknown668 = false;
+    return;
+  }
+  bool isRide = false;
+  int bladeSet = GfSelectBlade::getStartBattleSetId(0);
+  if (bladeSet >= 0) {
+    DataParamAcc paramAcc(GfGameParty::getHandleDriver(0));
+    isRide = GfDataParty::isRideChar(paramAcc.getValidDriverId()) && GfDataParty::isRideChar(GfDataDriver::getBlade(paramAcc.getValidDriverId(), bladeSet));
+  }
+  bool isRideBlade = unknown668;
+  if (isRide && !isRideBlade) {
+    unknown668 = true;
+  } else if (isRideBlade && !isRide) {
+    unknown668 = false;
+  }
 }
 
 void GfGameScene::setForceBossBattleBgm(bool isForce) { m_forceBossBattleBgm = isForce; }
@@ -1621,6 +1645,23 @@ void GfGameScene::updateMaxHp(const fw::UpdateInfo &) {
       obj->sendMessage(obj, message);
     }
   }
+}
+
+void GfGameScene::updateListeningPoint(const fw::UpdateInfo &) {
+  mm::Mat44 matrix;
+  if (unknown2a0) {
+    matrix.unknown007(unknown290);
+    unknown2a0 = false;
+  } else {
+    fw::CameraManager::get()->unknown20[0].getMtx(matrix);
+    GfObjAcc obj(GfGameManager::getControlMover());
+    if (obj.isValidTransform()) {
+      const mm::Vec3 &position = obj.getWorldTransform().unknown00;
+      matrix.setTrans(mm::Vec3(position.x, position.y + 1.5f, position.z));
+    }
+  }
+  fw::SoundManager::get()->setListeningPoint(matrix);
+  unknown280 = matrix.unknown004();
 }
 
 void GfGameScene::updateLog(const fw::UpdateInfo &info) {

@@ -23,17 +23,55 @@ class GfMenuObjInn : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjInn *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class DriverListener : public ui::UIObjectListener {
+  public:
+    DriverListener(GfMenuObjInn *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class ModeListener : public ui::UIObjectListener {
+  public:
+    ModeListener(GfMenuObjInn *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
     GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   class ManualListener : public ui::UIObjectListener {
   public:
+    ManualListener(GfMenuObjInn *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class LvSelectListener : public ui::UIObjectListener {
+  public:
+    LvSelectListener(GfMenuObjInn *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class LvUpListener : public ui::UIObjectListener {
+  public:
+    LvUpListener(GfMenuObjInn *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
     GfMenuObjInn *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -85,6 +123,16 @@ static_assert(offsetof(GfMenuObjInn, unknown90) == 0x90, "");
 static_assert(offsetof(GfMenuObjInn, unknown98) == 0x98, "");
 static_assert(offsetof(GfMenuObjInn, unknown0a0) == 0xa0, "");
 static_assert(offsetof(GfMenuObjInn::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjInn::DriverListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjInn::ModeListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjInn::ManualListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjInn::LvSelectListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjInn::LvUpListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjInn::MainListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjInn::DriverListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjInn::ModeListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjInn::ManualListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjInn::LvSelectListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjInn::LvUpListener) == 0x28, "");
 
 } // namespace gf

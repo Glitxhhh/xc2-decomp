@@ -86,6 +86,7 @@ public:
   void pop(mm::mtl::IntrusivePtr<Camera> &camera, f32 time);
   void pushPlugin(mm::mtl::IntrusivePtr<CameraPlugin> &plugin);
   void popPlugin(mm::mtl::IntrusivePtr<CameraPlugin> &plugin);
+  void getMtx(mm::Mat44 &matrix) const;
   mm::Vec3 getCameraPosition() const;
 
   mm::mtl::IntrusiveList<Camera> unknown08;       // Inferred role: cameras; original member name unknown.

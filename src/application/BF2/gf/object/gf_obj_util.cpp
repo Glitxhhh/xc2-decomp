@@ -1142,6 +1142,57 @@ GfAssetResource *GfObjUtil::getResourceEfb(GF_OBJ_HANDLE *handle) {
   }
 }
 
+// Inferred helper: weapon resource of the object at the given position among the file indices of a range; original name unknown.
+static GfAssetResource *unknown008(GF_OBJ_HANDLE *handle, u32 position, int begin, int end) {
+  DataParamAcc paramAcc(handle);
+  if (!paramAcc.isValid()) {
+    return nullptr;
+  }
+
+  u32 count = 0;
+  for (int index = begin; index < end; index++) {
+    GfAssetResource *resource = GfAssetManager::getResource(GfObjUtil::getAssetHandle(handle), static_cast<GfFileIdx>(index), ASSET_TYPE_UNKNOWN_0);
+    if (resource == nullptr) {
+      continue;
+    }
+    if (count == position) {
+      return resource;
+    }
+    count++;
+  }
+
+  return nullptr;
+}
+
+GfAssetResource *GfObjUtil::getWeaponResourceSwt(GF_OBJ_HANDLE *handle, u32 index) {
+  GfObjAcc objAcc(handle);
+  if (!objAcc.isValid()) {
+    return nullptr;
+  }
+
+  switch (objAcc.getType()) {
+  case OBJECT_TYPE_PC:
+  case OBJECT_TYPE_BLADE:
+    return unknown008(handle, index, 0x65, 0x99);
+  case OBJECT_TYPE_PC_WEAPON:
+    if (!GfObjManager::getObjInfo(handle)->unknown30->unknown54) {
+      return unknown008(GfGameParty::getHandleDriver(GfObjManager::getObjInfo(handle)->unknown30->unknown14), index, 0x65, 0x99);
+    } else {
+      return unknown008(handle, index, 0x65, 0x99);
+    }
+  case OBJECT_TYPE_ENEMY: {
+    GfAssetResource *first = GfAssetManager::getResource(getAssetHandle(handle), static_cast<GfFileIdx>(3), ASSET_TYPE_UNKNOWN_0);
+    GfAssetResource *second = GfAssetManager::getResource(getAssetHandle(handle), static_cast<GfFileIdx>(0x11), ASSET_TYPE_UNKNOWN_0);
+    if (index == 0) {
+      return first == nullptr ? second : first;
+    }
+    return second;
+  }
+  }
+
+  return nullptr;
+}
+
 // Inferred helper: counts the weapon swt resources of the object; original name unknown.
 static u32 unknown005(GF_OBJ_HANDLE *handle) {
   DataParamAcc paramAcc(handle);
@@ -1227,6 +1278,31 @@ u32 GfObjUtil::getWeaponResourceEabNum(GF_OBJ_HANDLE *handle) {
   return count;
 }
 
+GfAssetResource *GfObjUtil::getWeaponResourceEab(GF_OBJ_HANDLE *handle, u32 index) {
+  GfObjAcc objAcc(handle);
+  if (!objAcc.isValid()) {
+    return nullptr;
+  }
+
+  switch (objAcc.getType()) {
+  case OBJECT_TYPE_PC:
+    return unknown008(handle, index, 0x9a, 0x26e);
+  case OBJECT_TYPE_BLADE:
+  case OBJECT_TYPE_PC_WEAPON:
+    getAssetHandle(handle);
+    return unknown008(handle, index, 0x9a, 0x26e);
+  case OBJECT_TYPE_ENEMY: {
+    GfAssetResource *resource = GfAssetManager::getResource(getAssetHandle(handle), static_cast<GfFileIdx>(0x12), ASSET_TYPE_UNKNOWN_0);
+    if (index == 0 && resource != nullptr) {
+      return resource;
+    }
+    return unknown008(handle, index - (resource != nullptr), 0x9a, 0x26e);
+  }
+  }
+
+  return nullptr;
+}
+
 // Inferred helper: counts the weapon efb resources of the asset; original name unknown.
 static u32 unknown007(GF_ASSET_HANDLE *asset) {
   u32 count = 0;
@@ -1265,6 +1341,40 @@ u32 GfObjUtil::getWeaponResourceEfbNum(GF_OBJ_HANDLE *handle) {
   }
 
   return count;
+}
+
+GfAssetResource *GfObjUtil::getWeaponResourceEfb(GF_OBJ_HANDLE *handle, u32 index) {
+  DataParamAcc paramAcc(handle);
+  if (!paramAcc.isValid()) {
+    return nullptr;
+  }
+
+  switch (paramAcc.getObjType()) {
+  case OBJECT_TYPE_PC:
+    return unknown008(handle, index, 0x26f, 0x443);
+  case OBJECT_TYPE_BLADE:
+  case OBJECT_TYPE_PC_WEAPON:
+    getAssetHandle(handle);
+    return unknown008(handle, index, 0x26f, 0x443);
+  case OBJECT_TYPE_ENEMY: {
+    mm::mtl::FixedVector<GfAssetResource *, 2> resources;
+    GfAssetResource *resource = GfAssetManager::getResource(getAssetHandle(handle), static_cast<GfFileIdx>(0xb), ASSET_TYPE_UNKNOWN_0);
+    if (resource != nullptr) {
+      resources.push_back(resource);
+    }
+    resource = GfAssetManager::getResource(getAssetHandle(handle), static_cast<GfFileIdx>(0x13), ASSET_TYPE_UNKNOWN_0);
+    if (resource != nullptr) {
+      resources.push_back(resource);
+    }
+    u32 count = resources.size();
+    if (index < count) {
+      return resources[index];
+    }
+    return unknown008(handle, index - count, 0x26f, 0x443);
+  }
+  }
+
+  return nullptr;
 }
 
 fw::SoundPack *GfObjUtil::getSePack(GF_OBJ_HANDLE *handle) {
@@ -1381,6 +1491,29 @@ bool GfObjUtil::isUpdateComponent(const GfObj *obj) {
 }
 
 void GfObjUtil::applyExecUpdate(GF_OBJ_HANDLE *handle) { applyExecUpdate(getObj(handle)); }
+
+bool GfObjUtil::isFollowObjNotReady(GF_OBJ_HANDLE *handle) {
+  GfObjSetup *setup = getObjSetup(handle);
+  if (setup == nullptr || setup->unknown1c != unknown030_1 || handle == unknown020) {
+    return false;
+  }
+  u32 type = getObjType(handle);
+  if (type != OBJECT_TYPE_PC && type != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+  GfComPropertyPc *property = GfObjManager::getObjInfo(handle)->unknown18->getComponent<GfComPropertyPc>();
+  u32 playerId = property->unknown38;
+  if (playerId == PLAYER_ID_UNKNOWN_4294967295) {
+    return false;
+  }
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  u32 followId = formation->unknown1a0[playerId].unknown00;
+  if (followId == PLAYER_ID_UNKNOWN_4294967295) {
+    return false;
+  }
+  GfObjAcc acc(formation->unknown1a0[followId].unknown08);
+  return !acc.isValid() || acc.isRebuild() || acc.isReload();
+}
 
 void GfObjUtil::setWarpTransform(GF_OBJ_HANDLE *handle, const fw::Transform &transform, bool isResetState) {
   GfObj *obj = getObj(handle);
