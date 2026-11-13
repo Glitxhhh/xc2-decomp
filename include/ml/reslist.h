@@ -22,6 +22,12 @@ public:
     return *this;
   }
 
+  _reslist_iterator operator++(int) {
+    _reslist_iterator previous = *this;
+    unknown00 = unknown00->getNext();
+    return previous;
+  }
+
   bool operator==(const _reslist_iterator &other) const { return unknown00 == other.unknown00; }
   bool operator!=(const _reslist_iterator &other) const { return unknown00 != other.unknown00; }
 
@@ -44,9 +50,9 @@ public:
   };
 
   _reslist_base() : m_pool(nullptr), m_capacity(0), m_size(0), m_isExternal(false) {
+    m_end = &m_root;
     m_root.next = &m_root;
     m_root.prev = &m_root;
-    m_end = &m_root;
   }
 
   virtual ~_reslist_base() {

@@ -8,6 +8,7 @@
 namespace ml {
 class DrGpuCheckBase;
 class DrGpuCheckObj;
+class DrGpuCheckRender;
 class DrMdlBase;
 class DrMdlObj;
 class DrMdoGrpObj;
@@ -56,14 +57,19 @@ public:
     bool unknown02; // Inferred role: volume model rendered; original member name unknown.
     bool unknown03; // Inferred role: light pre pass model rendered; original member name unknown.
     bool unknown04; // Inferred role: refraction model rendered; original member name unknown.
-    u8 _05[0x07 - 0x05];
+    bool unknown05; // Inferred role: cleared by DrMdlMan::apply; original member name unknown.
+    bool unknown06; // Inferred role: simple shadow displayed; original member name unknown.
     bool unknown07; // Inferred role: full screen shadow model rendered; original member name unknown.
     bool unknown08; // Inferred role: model flag 8 rendered; original member name unknown.
     bool unknown09; // Inferred role: model flag 9 rendered; original member name unknown.
-    u8 _0a[0x0c - 0x0a];
+    bool unknown0a; // Inferred role: cleared by DrMdlMan::apply; original member name unknown.
+    bool unknown0b; // Inferred role: cleared by DrMdlMan::apply; original member name unknown.
     bool unknown0c; // Inferred role: seam model updated; original member name unknown.
   };
 
+  ~DrMdlMan();
+  void deleteAll();
+  void DepthCheckRender(bool isDblDepth);
   void setupCate(int cate);
   void setupEnd();
   void applyDispOff(u32 view);
@@ -118,9 +124,9 @@ public:
   DrMdoSmlShadowMan *unknown030;  // Inferred role: small shadow man; original member name unknown.
   DrResOccUniformObj *unknown038; // Inferred role: occ uniform; original member name unknown.
   DrResEtcUniformObj *unknown040; // Inferred role: etc uniform; original member name unknown.
-  u8 _048[0x050 - 0x048];
-  DrMdoZSortMan *unknown050[4]; // Inferred role: z sort men per category; original member name unknown.
-  unknown004 unknown070[4];     // Inferred role: render flags per category; original member name unknown.
+  DrGpuCheckRender *unknown048;   // Inferred role: gpu check render; original member name unknown.
+  DrMdoZSortMan *unknown050[4];   // Inferred role: z sort men per category; original member name unknown.
+  unknown004 unknown070[4];       // Inferred role: render flags per category; original member name unknown.
   u8 _0a4[0x0a8 - 0x0a4];
   DrResChankList<DrMdlBase> unknown0a8[4]; // Inferred role: models per view; original member name unknown.
   DrResChankList<DrMdlBase> unknown0e8[2]; // Inferred role: models created per buffer; original member name unknown.
@@ -136,7 +142,7 @@ public:
   unknown004 *unknown230;                     // Inferred role: current category render flags; original member name unknown.
   u32 unknown238;                             // Inferred role: cate; original member name unknown.
   u32 unknown23c;                             // Inferred role: groups disp; original member name unknown.
-  u8 _240[0x248 - 0x240];
+  u32 unknown240;                             // Inferred role: views whose gpu check objects render; original member name unknown.
 };
 
 static_assert(offsetof(DrMdlMan, unknown000) == 0x000, "");
@@ -149,6 +155,7 @@ static_assert(offsetof(DrMdlMan, unknown030) == 0x030, "");
 static_assert(offsetof(DrMdlMan, unknown038) == 0x038, "");
 static_assert(offsetof(DrMdlMan, unknown040) == 0x040, "");
 static_assert(offsetof(DrMdlMan, unknown050) == 0x050, "");
+static_assert(offsetof(DrMdlMan, unknown048) == 0x048, "");
 static_assert(offsetof(DrMdlMan, unknown0a8) == 0x0a8, "");
 static_assert(offsetof(DrMdlMan, unknown0e8) == 0x0e8, "");
 static_assert(offsetof(DrMdlMan, unknown148) == 0x148, "");
@@ -160,6 +167,7 @@ static_assert(offsetof(DrMdlMan, unknown220) == 0x220, "");
 static_assert(offsetof(DrMdlMan, unknown230) == 0x230, "");
 static_assert(offsetof(DrMdlMan, unknown238) == 0x238, "");
 static_assert(offsetof(DrMdlMan, unknown23c) == 0x23c, "");
+static_assert(offsetof(DrMdlMan, unknown240) == 0x240, "");
 static_assert(sizeof(DrMdlMan) == 0x248, "");
 static_assert(sizeof(DrMdlMan::unknown004) == 0x0d, "");
 static_assert(offsetof(DrMdlMan::unknown005, unknown1c) == 0x1c, "");

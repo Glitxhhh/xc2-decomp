@@ -33,6 +33,7 @@ public:
   static void removeSubCpuUpdate(void (*update)(void *));
   static void updateSubCpu();
   static u32 jobUpdate(void *argument, void *userData);
+  static WorkObj *getException();
   virtual bool createDevice() = 0;
   virtual void createDevicePort(const char *name) = 0;
 

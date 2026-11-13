@@ -12,6 +12,7 @@
 #include "dr/dr_fog_man.h"
 #include "dr/dr_global_ibl_man.h"
 #include "dr/dr_gpu_check_obj.h"
+#include "dr/dr_gpu_check_render.h"
 #include "dr/dr_ibl_man.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_mdl_base.h"
@@ -174,6 +175,52 @@ bool DrMan::isTemporalUPSToGlobalIBL() const {
     return false;
   }
   return unknown80->unknown18->unknown58->isEnable();
+}
+
+DrMdlMan::~DrMdlMan() {
+  deleteAll();
+  if (unknown038 != nullptr) {
+    delete unknown038;
+    unknown038 = nullptr;
+  }
+  if (unknown040 != nullptr) {
+    delete unknown040;
+    unknown040 = nullptr;
+  }
+  if (unknown048 != nullptr) {
+    delete unknown048;
+    unknown048 = nullptr;
+  }
+  if (unknown028 != nullptr) {
+    delete unknown028;
+    unknown028 = nullptr;
+  }
+  if (unknown030 != nullptr) {
+    delete unknown030;
+    unknown030 = nullptr;
+  }
+  if (unknown008 != nullptr) {
+    delete unknown008;
+    unknown008 = nullptr;
+  }
+  if (unknown010 != nullptr) {
+    delete unknown010;
+    unknown010 = nullptr;
+  }
+  if (unknown018 != nullptr) {
+    delete unknown018;
+    unknown018 = nullptr;
+  }
+  for (int i = 0; i < 4; i++) {
+    if (unknown050[i] != nullptr) {
+      delete unknown050[i];
+      unknown050[i] = nullptr;
+    }
+  }
+  if (unknown020 != nullptr) {
+    delete unknown020;
+    unknown020 = nullptr;
+  }
 }
 
 int DrMdlMan::headerChek(const void *data) {
@@ -511,6 +558,20 @@ void DrMdlMan::occRender(bool isFirst) {
   pixlMan->occRenderEnd();
 }
 
+void DrMdlMan::DepthCheckRender(bool isDblDepth) {
+  if (unknown001()) {
+    return;
+  }
+  if ((unknown240 & (1 << unknown238)) == 0) {
+    return;
+  }
+  unknown048->beginRender(isDblDepth);
+  for (DrGpuCheckObj *check = unknown228->unknown00; check != nullptr; check = check->unknown10) {
+    check->render();
+  }
+  unknown048->endRender();
+}
+
 bool DrMdlMan::shadowCacheRender(DrPixlShadowCacheObj &cache) {
   for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
     if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
@@ -617,6 +678,47 @@ void DrMdlMan::applyDispOff(u32 view) {
   for (DrGpuCheckObj *check = unknown228->unknown00; check != nullptr; check = check->unknown10) {
     check->update();
   }
+}
+
+void DrMdlMan::apply() {
+  unknown230->unknown00 = false;
+  unknown230->unknown01 = false;
+  unknown230->unknown02 = false;
+  unknown230->unknown03 = false;
+  unknown230->unknown04 = false;
+  unknown230->unknown05 = false;
+  unknown230->unknown06 = false;
+  unknown230->unknown07 = false;
+  unknown230->unknown08 = false;
+  unknown230->unknown09 = false;
+  unknown230->unknown0a = false;
+  unknown230->unknown0b = false;
+  unknown230->unknown0c = false;
+  unknown218->beginViewWorld();
+  for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
+    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+      mdl->update();
+    } else {
+      mdl->dispOffUpdate();
+    }
+  }
+  unknown240 &= ~(1 << unknown238);
+  unknown048->beginUpdate();
+  bool isRender = false;
+  for (DrGpuCheckObj *check = unknown228->unknown00; check != nullptr; check = check->unknown10) {
+    isRender |= check->update();
+  }
+  unknown048->endUpdate();
+  if (isRender) {
+    unknown240 |= 1 << unknown238;
+  }
+  if (unknown238 == 0) {
+    if (unknown000->unknown1e00 != nullptr) {
+      unknown000->unknown1e00->apply(&unknown000->unknown660[unknown000->unknown1c98], unknown218);
+    }
+  }
+  unknown218->endViewWorld();
+  unknown230->unknown06 = unknown030->checkDisp();
 }
 
 void DrMdlMan::beginApply() {

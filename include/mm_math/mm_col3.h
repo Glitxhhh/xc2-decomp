@@ -4,6 +4,7 @@
 namespace mm {
 
 struct Col3 {
+  static const Col3 gray;   // Name from the game symbol _ZN2mm4Col34grayE; also in torna and xc1de.
   static const Col3 black;  // Name from the game symbol _ZN2mm4Col35blackE; also in torna and xc1de.
   static const Col3 red;    // Name from the game symbol _ZN2mm4Col33redE; also in torna and xc1de.
   static const Col3 green;  // Name from the game symbol _ZN2mm4Col35greenE; also in torna and xc1de.

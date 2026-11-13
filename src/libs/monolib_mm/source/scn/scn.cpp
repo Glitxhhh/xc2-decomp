@@ -128,6 +128,64 @@ void Scn::move() {
   }
 }
 
+void Scn::draw() {
+  if (unknowndf9) {
+    return;
+  }
+  bool isCurrent;
+  DevGraph::cmdOpenDisplayList(0);
+  {
+    CS lock(*unknownce0);
+    isCurrent = unknown28->setCurrentCam() && unknown28->getView(-1) == WinView::getView(true);
+  }
+  DevGraph::cmdCloseDisplayList();
+  if (!isCurrent) {
+    return;
+  }
+  DevGraph::cmdOpenDisplayList(0);
+  {
+    CS lock(*unknownce0);
+    unknown20->apply();
+  }
+  DevGraph::cmdCloseDisplayList();
+  {
+    CS lock(*unknownce0);
+    if (unknown38 != nullptr) {
+      DebDraw::getOnly(0xffffffff)->setForceRenderQueue(true);
+      unknown38->applyBegin();
+      int count = unknown38->applyLoopCnt();
+      for (int i = 0; i < count; i++) {
+        DevGraph::cmdOpenDisplayList(0);
+        unknown38->applyUpdate(i);
+        DevGraph::cmdCloseDisplayList();
+        DevGraph::cmdOpenDisplayList(0);
+        unknown38->applyRender(i);
+        DevGraph::cmdCloseDisplayList();
+      }
+      unknown38->applyEnd();
+      DebDraw::getOnly(0xffffffff)->setForceRenderQueue(false);
+    }
+  }
+  callbackToListener(SCNCB_UNKNOWN_1);
+  DevGraph::cmdOpenDisplayList(0);
+  {
+    CS lock(*unknownce0);
+    DebDraw *debDraw = DebDraw::get(0xffffffff);
+    unknown20->renderDebug(debDraw);
+    if (unknown30 != nullptr) {
+      unknown30->render(debDraw);
+    }
+  }
+  DevGraph::cmdCloseDisplayList();
+}
+
+void Scn::init() {
+  mtl::ALLOC_HANDLE mem = unknown64;
+  unknown30 = new (mem) ScnDebug(this, mem);
+  unknown20 = new (mem) ScnPoolObj(this);
+  unknown28 = new (mem) ScnCamMan(this);
+}
+
 u32 Scn::thUpAfter(void *argument, void *userData) {
   Scn *scn = static_cast<Scn *>(argument);
   for (int i = 0; i < scn->unknown4b8; i++) {
@@ -307,8 +365,21 @@ ScnObjCam *Scn::getCam(const WinView *view) { return unknown28->getCam(view); }
 
 const ScnObjCam *Scn::getCam(const WinView *view) const { return unknown28->getCam(view); }
 
+bool ScnCamMan::setCurrentCam() {
+  ScnObjCam *cam = getCam(WinView::getView(true));
+  if (cam != nullptr) {
+    unknown40 = cam->m_info;
+    return true;
+  }
+  return false;
+}
+
 template class reslist<ScnObj *>;
 
 } // namespace ml
+
+// Scn::draw inlines ScnDebug::render and Scn::init the ScnDebug constructor in the game (one unit from 0x710073fc4c to
+// 0x7100755bfc); the ScnDebug block (0x71007437a0 to 0x7100751eb0) follows every function of this file.
+#include "scn_debug.cpp"
 
 template mm::mtl::PtrSingleton<ml::Scn>::~PtrSingleton();

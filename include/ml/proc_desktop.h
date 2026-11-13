@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "ml/reslist.h"
 #include "ml/win_proc.h"
 #include "mm_math/mm_col4.h"
 #include "mm_mtl/singleton.h"
@@ -13,8 +14,33 @@ class WinView;
 class WorkObj;
 
 namespace _dsk {
-class ProcDesktopBackGround;
-class ProcDesktopException;
+
+// Defined here rather than in proc_desktop.cpp: ProcException::create uses the ProcDesktopException that
+// ProcDesktop::getException returns as a WinProc.
+class ProcDesktopBackGround : public WinProc, public mm::mtl::PtrSingleton<ProcDesktopBackGround> {
+public:
+  ProcDesktopBackGround(const char *name, WorkObj *parent) : WinProc(name, parent, 8) {}
+
+  bool wkStandbyLogout() override {
+    if (unknown60.size() != 0) {
+      return false;
+    }
+    return WinProc::wkStandbyLogout();
+  }
+};
+
+class ProcDesktopException : public WinProc, public mm::mtl::PtrSingleton<ProcDesktopException> {
+public:
+  ProcDesktopException(const char *name, WorkObj *parent) : WinProc(name, parent, 64) {}
+
+  bool wkStandbyLogout() override {
+    if (unknown60.size() != 0) {
+      return false;
+    }
+    return WinProc::wkStandbyLogout();
+  }
+};
+
 } // namespace _dsk
 
 class ProcDesktop : public WinProc, public mm::mtl::PtrSingleton<ProcDesktop> {

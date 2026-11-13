@@ -19,11 +19,10 @@ struct alignas(16) DevTouchInfo {
   DevTouchInfo();
   void initialize();
 
-  long unknown00; // Inferred role: clock at the start of the contact; original member name unknown.
-  f32 unknown08;  // Inferred role: seconds since the start of the contact; original member name unknown.
-  s32 unknown0c;  // Inferred role: contact id; original member name unknown.
-  u16 unknown10;  // Inferred role: flags; original member name unknown.
-  u8 _12[0x20 - 0x12];
+  long unknown00;     // Inferred role: clock at the start of the contact; original member name unknown.
+  f32 unknown08;      // Inferred role: seconds since the start of the contact; original member name unknown.
+  s32 unknown0c;      // Inferred role: contact id; original member name unknown.
+  u16 unknown10;      // Inferred role: flags; original member name unknown.
   mm::Vec2 unknown20; // Inferred role: initial position; original member name unknown.
   mm::Vec2 unknown30; // Inferred role: position; original member name unknown.
   mm::Vec2 unknown40; // Inferred role: previous position; original member name unknown.
@@ -58,6 +57,7 @@ public:
   void itDown(u32 index, f32 x, f32 y) override;
   void itUp(u32 index, f32 x, f32 y) override;
   void itMove(u32 index, f32 x, f32 y) override;
+  int getContactIndex(u32 contactId);
   void releseContact(u32 contactId);
   static DevTouchInfo *getInfo(u32 index);
   virtual void updateDevice();

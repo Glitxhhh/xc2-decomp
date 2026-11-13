@@ -15,6 +15,21 @@ WinProc::WinProc(const char *name, WorkObj *parent, s16 childNum) : WorkObj(name
 
 WinProc::~WinProc() {}
 
+WinView *WinProc::pssGetApplicationView() { return pssGetApplicationView(pssGetView(0xffffffff)); }
+
+WinView *WinProc::pssGetApplicationView(WinView *view) {
+  for (; view != nullptr; view = view->getParentView()) {
+    if (ProcDesktop::getView() == view) {
+      return view;
+    }
+    if (view->getParentView() == ProcDesktop::getView()) {
+      return view;
+    }
+  }
+
+  return nullptr;
+}
+
 bool WinProc::wkStandbyLogin() { return WorkObj::wkStandbyLogin(); }
 
 bool WinProc::wkStandbyLogout() {

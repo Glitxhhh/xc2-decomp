@@ -52,30 +52,6 @@ mm::mtl::FixStr<128> s_revision;
 int s_nEnableHomeBtn;
 const char *s_szDesktop = "Desktop";
 
-class ProcDesktopBackGround : public WinProc, public mm::mtl::PtrSingleton<ProcDesktopBackGround> {
-public:
-  ProcDesktopBackGround(const char *name, WorkObj *parent) : WinProc(name, parent, 8) {}
-
-  bool wkStandbyLogout() override {
-    if (unknown60.size() != 0) {
-      return false;
-    }
-    return WinProc::wkStandbyLogout();
-  }
-};
-
-class ProcDesktopException : public WinProc, public mm::mtl::PtrSingleton<ProcDesktopException> {
-public:
-  ProcDesktopException(const char *name, WorkObj *parent) : WinProc(name, parent, 64) {}
-
-  bool wkStandbyLogout() override {
-    if (unknown60.size() != 0) {
-      return false;
-    }
-    return WinProc::wkStandbyLogout();
-  }
-};
-
 } // namespace _dsk
 
 void ProcDesktop::setSimpleCost(bool isSimpleCost) { _dsk::s_flg = !isSimpleCost ? _dsk::s_flg & ~_dsk::FLAG_UNKNOWN_6 : _dsk::s_flg | _dsk::FLAG_UNKNOWN_6; }

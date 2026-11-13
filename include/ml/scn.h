@@ -156,6 +156,7 @@ public:
   ~ScnCamMan() override;
   static void setCrossIdTarget(const WinView *view);
   void update();
+  bool setCurrentCam();
   void setView(WinView *view, int screen);
   void clrView(WinView *view, int screen);
   const ScnObjCam *getCam(const WinView *view) const;
@@ -193,6 +194,7 @@ public:
 
   Scn(const ScnSetup *setup);
   static Scn *create(const ScnSetup *setup);
+  void init();
   void move();
   void draw();
   void tail();

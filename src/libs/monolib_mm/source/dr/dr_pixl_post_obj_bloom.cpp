@@ -1,18 +1,22 @@
 #include "dr/dr_pixl_post_obj_bloom.h"
 
+#include "dr/dr_ap_cache.h"
 #include "dr/dr_ap_gx_type.h"
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_post_obj.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
+#include "dr/dr_shd_data_list.h"
+#include "dr/dr_shd_data_obj.h"
+#include "dr/dr_shd_man.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_render_target.h"
+#include "grlib/cglib_shader.h"
+#include "grlib/cglib_uni_base_utility.h"
 #include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 
 namespace ml {
-class DrPixlMan;
-class DrPixlPostMan;
 
 namespace _dppob {
 
@@ -134,6 +138,39 @@ void DrPixlPostObjBloom::calculateGaussBlur() {
     calculateLensFlare();
     bloomLensFlare();
   }
+}
+
+void DrPixlPostObjBloom::calculateFlareBuff() {
+  unknown28->setRenderTarget();
+  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  DrShdDataObj *shader = shdList->getPostShdObj(8);
+  shdList->unknown002(shader);
+  grlib::CGLibUniformEtcUtility uniform(shader);
+  uniform.setUseUniformBlock("U_POST");
+  DrAPCache *apCache = unknown00->unknown5c0;
+  int location = (shader->unknown38 + shader->unknown58)->getTextureLocation("s0");
+  u32 scaleOffset = uniform.unknown001("gScal");
+  u32 ratioOffset = uniform.unknown001("ratio");
+  f32 height = static_cast<f32>(unknown18->unknownc0);
+  f32 width = static_cast<f32>(unknown18->unknownbc);
+  // Sixteen floats although four are used: with f32 work[4] the only difference is the frame (sub sp, sp, #160 instead
+  // of the game's #208 in 0x7100854cb0).
+  f32 work[16];
+  work[0] = (width - 1.0f) / width;
+  work[1] = (height - 1.0f) / height;
+  work[2] = 1.0f / (width + width);
+  work[3] = 1.0f / (height + height);
+  uniform.setF32SetVec4(scaleOffset, work);
+  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  work[0] = postParm->unknownc8;
+  work[1] = postParm->unknowncc * (1.0f / 3.0f);
+  uniform.setF32SetVec4(ratioOffset, work);
+  apCache->beginTexSampling(2, 1);
+  apCache->setTexture(*unknown38[2]->unknown70, location);
+  uniform.updateData();
+  uniform.setUniformBlock();
+  shdList->renderQuads();
+  unknown28->setColorInvalidate();
 }
 
 } // namespace ml

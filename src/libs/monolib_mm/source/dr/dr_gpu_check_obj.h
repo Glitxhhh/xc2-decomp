@@ -31,7 +31,7 @@ public:
   u32 isDeleteCall() const override;
   void setPos(const mm::Vec3 &position, f32 radius) override;
   void setWorldPos(const mm::Vec3 &position, f32 radius) override;
-  void update() override;
+  bool update() override;
   void render() override;
 
   DrGpuCheckObj *unknown08; // Inferred role: previous object; original member name unknown.
