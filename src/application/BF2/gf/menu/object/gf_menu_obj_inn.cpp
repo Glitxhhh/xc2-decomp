@@ -2,6 +2,7 @@
 
 #include "gf/data/gf_data_driver.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -406,6 +407,91 @@ void GfMenuObjInn::LvSelectListener::reciveEvent(const ui::EventData &event, u32
     GfMenuObject::disableInput(handle);
     setFadeOut(handle);
     break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjInn::LvUpListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  switch (event.unknown00) {
+  case 1:
+    setupLvUpAdapter(acc);
+    break;
+  case 3:
+    switch (event.unknown08) {
+    case 1: {
+      u32 label = acc.searchChild("LAY_lv_up_label");
+      ui::UIObjectAcc labelAcc(label);
+      labelAcc.setDisp(false);
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x800;
+      param.unknown0c = 1;
+      param.unknown04 = 3;
+      param.unknown00 = 0.25f;
+      param.unknown14 = 4;
+      unknown20->unknown94 = GfMenuObjUtil::startCtrl(label, param, nullptr);
+      GfMenuObject::hookCtrlEvent(acc.unknown10, unknown20->unknown94);
+      break;
+    }
+    case 3: {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0;
+      param.unknown04 = 4;
+      param.unknown00 = 2.0f;
+      int ctrl = GfMenuObjUtil::startCtrl(handle, param, nullptr);
+      GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+      break;
+    }
+    case 4: {
+      u32 label = acc.searchChild("LAY_lv_up_label");
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown08 = 0x4000;
+      param.unknown0c = 1;
+      param.unknown04 = 5;
+      param.unknown00 = 0.5f;
+      param.unknown14 = 8;
+      param.unknown18 = unknown20->unknown94;
+      GfMenuObjUtil::startCtrl(label, param, nullptr);
+      GfMenuObject::hookCtrlEvent(acc.unknown10, unknown20->unknown94);
+      break;
+    }
+    case 5:
+      GfGameUtil::execLevelUp(unknown20->unknown8c, unknown20->unknown90);
+      unknown20->unknown98 = true;
+      unknown164(handle, GfMenuTypes::unknown003_34);
+      if (unknown20->unknown88 != 0) {
+        unknown163(owner.searchChild("LAY_dr_list"), GfMenuTypes::unknown003_258, 0);
+        unknown163(owner.searchChild("LAY_dr_select"), GfMenuTypes::unknown003_33, 0);
+      } else {
+        unknown163(owner.searchChild("LAY_mode_select"), GfMenuTypes::unknown003_260, 0);
+      }
+      break;
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    detailOpen(unknown20, acc, "lv_up_detail", unknown20->unknown8c);
+    GfMenuReference::setDriverVirtualLevel(unknown20->unknown90);
+    GfMenuObject::enableInput(handle);
+    setFadeIn(handle);
+    GfMenuObjUtil::setChildDisp(handle, "LAY_lv_up_label", false);
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObjCommonDetail::close(unknown20->unknown30);
+    GfMenuObject::disableInput(handle);
+    setFadeOut(handle);
+    break;
+  case 0x41:
+    if (unknown20->unknown28 != nullptr && unknown20->unknown28->unknown0c == event.unknown08) {
+      unknown164(owner.searchChild("LAY_dr_list"), GfMenuTypes::unknown003_34);
+    }
+    break;
+  case 0x105:
+    unknown20->unknown28->reset();
+    GfMenuObjCommonText::open(unknown20->unknown28, 0x10, 0);
+    GfMenuObject::setCallContextEventHandler(unknown20->unknown28, handle);
   default:
     ui::UIObjectListener::reciveEvent(event, handle);
     break;

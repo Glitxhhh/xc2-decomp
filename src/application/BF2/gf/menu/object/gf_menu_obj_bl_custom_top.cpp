@@ -1,6 +1,9 @@
 #include "gf/menu/object/gf_menu_obj_bl_custom_top.h"
 
+#include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/list/gf_menu_blade_list.h"
 #include "gf/menu/object/gf_menu_obj_bl_orb.h"
 #include "gf/menu/object/gf_menu_obj_bl_weapon.h"
@@ -10,6 +13,7 @@
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_revolve_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -23,6 +27,48 @@ GfMenuObjBlCustomTop::~GfMenuObjBlCustomTop() {
   mm::mtl::safeRelease(unknown28);
   mm::mtl::safeRelease(unknown30);
   mm::mtl::safeRelease(unknown38);
+}
+
+void GfMenuObjBlCustomTop::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  if (main.isValid()) {
+// __LINE__ must be 74 as in the original file: it is the line argument of operator new.
+#line 74
+    MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+    mainListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(main.unknown10, mainListener);
+    if (mainListener != nullptr) {
+      mainListener->release();
+    }
+    {
+      GfMenuBladeList::DriverSetup setup;
+      setup.unknown14 = 1;
+      setup.unknown18 = 1;
+      unknown28 = GfMenuBladeList::create();
+      unknown28->setupFromDriver(setup);
+    }
+    unknown28->setIndex(0);
+    {
+      ui::UIObjectAcc select(unknown18, "LAY_bl_select");
+      select.setDispChild(true, "LAY_bl_image");
+      GfMenuCharDataAdapter::createFromReferenceBlade(select.searchChild("TXT_bl_select_name"), 2, 0, false);
+      GfMenuReference::setReferenceBladeID(0, unknown28->getContents(unknown28->getIndex(false)).unknown00);
+      if (unknown28->getSize() >= 3) {
+        setupInputSelectionFromList(select.unknown10, *unknown28);
+      } else {
+        select.setDispChild(false, "LAY_bl_select_input");
+      }
+// __LINE__ must be 179 as in the original file: it is the line argument of operator new.
+#line 179
+      DrSelectListener *selectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DrSelectListener(this);
+      selectListener->addRef();
+      ui::UIEventManager::get()->registObjectListener(select.unknown10, selectListener);
+      if (selectListener != nullptr) {
+        selectListener->release();
+      }
+    }
+    GfMenuObject::initialize();
+  }
 }
 
 void GfMenuObjBlCustomTop::finalize() { GfMenuObject::finalize(); }

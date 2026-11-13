@@ -27,7 +27,7 @@ class ReferenceFrame;
 class LookIkSolver : public IkSolver {
 public:
   struct Description {
-    Description(f32 fadeOutTime, f32 fadeInTime) : unknown00(fadeOutTime), unknown04(fadeInTime) {}
+    Description() : unknown00(0.5f), unknown04(0.5f) {}
 
     f32 unknown00; // Inferred role: spine fade out time; original member name unknown.
     f32 unknown04; // Inferred role: spine fade in time; original member name unknown.

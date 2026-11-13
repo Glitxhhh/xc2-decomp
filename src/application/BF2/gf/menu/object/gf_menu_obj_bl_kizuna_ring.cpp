@@ -22,6 +22,7 @@
 #include "gf/sound/gf_sound.h"
 #include "gf/util/gf_item_util.h"
 #include "mm_math/mm_pnt.h"
+#include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
@@ -30,6 +31,7 @@
 #include "ui/list/ui_list_info.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
@@ -642,6 +644,93 @@ void GfMenuObjBlKizunaRing::BladeSkillInfoListener::reciveEvent(const ui::EventD
     acc.setDisp(true);
   } else {
     ui::UIObjectListener::reciveEvent(event, handle);
+  }
+}
+
+void GfMenuObjBlKizunaRing::SkillDetailListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupSkillDetail(acc);
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    u32 blade = GfMenuReference::getReferenceBladeID(0);
+    u32 line = GfMenuReference::getReferenceNumber(0);
+    u32 level = GfMenuReference::getReferenceNumber(1);
+    const char *layout = line < 4 || line == 9 ? "blskillinfo2_2" : "blskillinfo2_1";
+    ui::UIObjectAcc main(owner.searchChild("LAY_main"));
+    mm::Rect<s16> rect;
+    main.getLayoutRect(layout, rect);
+    mm::Pnt<s16> pos(rect.unknown00);
+    acc.setPos(pos);
+    ui::UIObjectAcc title(acc.searchChild("LAY_questtitle"));
+    ui::UIObjectAcc title2(acc.searchChild("LAY_questtitle2"));
+    ui::UIObjectAcc clear(acc.searchChild("LAY_clear"));
+    ui::UIObjectAcc normal(acc.searchChild("LAY_normal"));
+    ui::UIObjectAcc small(acc.searchChild("LAY_small"));
+    u8 *bdat;
+    u32 id;
+    ui::UIObjectAcc icon(acc.searchChild("IMG_skill_icon@01"));
+    ui::UIObjectAcc base(acc.searchChild("IMG_skill_base@01"));
+    u32 state = GfKizunaringBlade::getReleaseAchievement(blade, line, level);
+    if (state == 4 || state == 5) {
+      title.setDisp(false);
+      bool hasText = false;
+      if (GfDataBlade::getTaskResultMessage(bdat, id, blade, line, level)) {
+        ui::UIStr text(bdat, id);
+        hasText = text.size() != 0;
+      }
+      title2.setDisp(hasText);
+      clear.setDisp(false);
+      if (hasText) {
+        normal.setDisp(true);
+        small.setDisp(false);
+      } else {
+        normal.setDisp(false);
+        small.setDisp(true);
+      }
+      icon.setMulColor("white");
+      base.setMulColor("white");
+    } else {
+      bool hasText = false;
+      if (GfDataBlade::getTaskTitleMessage(bdat, id, blade, line, level)) {
+        ui::UIStr text(bdat, id);
+        hasText = text.size() != 0;
+      }
+      title.setDisp(hasText);
+      title2.setDisp(false);
+      clear.setDisp(true);
+      if (hasText) {
+        normal.setDisp(true);
+        small.setDisp(false);
+      } else {
+        normal.setDisp(false);
+        small.setDisp(true);
+      }
+      if (line == 9 || state == 0 || state == 1) {
+        icon.setMulColor("white");
+      } else {
+        icon.setMulColor("black");
+      }
+      base.setMulColor("gray");
+    }
+    if (!unknown20->unknown39) {
+      unknown20->unknown39 = true;
+      GfMenuObject::hookCtrlEvent(handle, GfMenuObjUtil::setCommonFadeIn(handle, 1, 0));
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_34:
+    if (unknown20->unknown39) {
+      unknown20->unknown39 = false;
+      GfMenuObject::hookCtrlEvent(handle, GfMenuObjUtil::setCommonFadeOut(handle, 2, 0));
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
   }
 }
 } // namespace gf

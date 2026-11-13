@@ -9,15 +9,23 @@
 #include "gf/event/gf_event.h"
 #include "gf/field/gf_fobj_manager.h"
 #include "gf/game/gf_game_load.h"
+#include "gf/game/gf_game_mount.h"
+#include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_party.h"
+#include "gf/game/gf_game_ride.h"
 #include "gf/game/gf_game_save.h"
 #include "gf/game/gf_game_scene.h"
+#include "gf/game/gf_game_util.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
 #include "gf/gf_pause.h"
 #include "gf/map/gf_map_manager.h"
+#include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
+#include "gf/object/gf_obj_setup.h"
+#include "gf/object/gf_obj_util.h"
 #include "gf/request/gf_req_manager.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/scom/gf_scom_fade.h"
@@ -360,6 +368,65 @@ void GfReqCommand::execStartScript(const GfReqParam *param) {
   }
 }
 
+// Inferred role: replaces the blade of a party member by another blade set; original name unknown.
+static void unknown013(u32 partyId, int bladeSet) {
+  if (GfGameParty::getBladeSetId(partyId, -1) == bladeSet) {
+    return;
+  }
+  GF_OBJ_HANDLE *driver = GfGameParty::getHandleDriver(partyId);
+  if (!GfObjUtil::isValid(driver)) {
+    return;
+  }
+  GF_OBJ_HANDLE *newBlade = GfGameParty::getHandleBlade(partyId, bladeSet);
+  if (!GfObjUtil::isValid(newBlade)) {
+    return;
+  }
+  if (GfGameRide::testRideOn() && GfGameParty::getPartyId(GfGameParty::getLeader()) == partyId) {
+    GfGameRide::setRideOn(false);
+  }
+  GF_OBJ_HANDLE *oldBlade = GfGameParty::getHandleBlade(partyId, -1);
+  GfObjUtil::getMountHandle(driver, GFATTACH_UNKNOWN_0);
+  {
+    GfObjAcc oldAcc(oldBlade);
+    GfObjAcc newAcc(newBlade);
+    if (oldAcc.isRebuild() || newAcc.isRebuild()) {
+      GfSleep(1);
+    }
+  }
+  GfObjUtil::copyTransformToSetup(oldBlade, newBlade);
+  GfGameObj::setupLeaveGameObj(oldBlade, 0.5f);
+  GfGameObj::setupLeaveGameObjMount(oldBlade, GFATTACH_UNKNOWN_0, 0.5f);
+  GfGameUtil::setBladeSelect(driver, bladeSet);
+  GfSelectBlade::resetStartBattleSetId(partyId);
+  GfObjSetupBlade *bladeSetup = GfObjUtil::getObjSetup<GfObjSetupBlade>(newBlade);
+  if (bladeSetup != nullptr) {
+    bladeSetup->unknown70 = false;
+  }
+  GfGameMount *mount = GfMountManager::getMount(GfObjUtil::getMountHandle(newBlade, GFATTACH_UNKNOWN_0));
+  if (mount != nullptr) {
+    for (u32 index = 0; index < HANDLE_UNKNOWN_10; index++) {
+      GF_OBJ_HANDLE *handle = mount->unknown18->getCurrentHandles()[index];
+      if (handle != unknown020) {
+        GfObjSetupWeapon *weaponSetup = GfObjUtil::getObjSetup<GfObjSetupWeapon>(handle);
+        if (weaponSetup != nullptr) {
+          weaponSetup->unknown70 = false;
+        }
+      }
+    }
+  }
+  GfGameObj::enterStayObject(newBlade);
+  GfGameObj::enterStayObjectMount(newBlade, GFATTACH_UNKNOWN_0);
+  GfGameObj::setupEnterGameObj(newBlade, 0.5f);
+  GfGameObj::setupEnterGameObjMount(newBlade, GFATTACH_UNKNOWN_0, 0.5f);
+  GfObjAcc acc(newBlade);
+  acc.setAlphaNormal(1.0f);
+  GfMountManager::setAlphaMount(newBlade, GFATTACH_UNKNOWN_0, 1.0f);
+  GfSelectBlade::resetDefaultBladeForDebug(driver);
+  while (!GfGameObj::isValidGameObj(newBlade, false, nullptr)) {
+    GfSleep(1);
+  }
+}
+
 u32 GfReqCommand::reqChangeBladeWithSetId(u32 partyId, int bladeSet, bool isForce) {
 #line 221
   unknown011 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown011;
@@ -369,12 +436,37 @@ u32 GfReqCommand::reqChangeBladeWithSetId(u32 partyId, int bladeSet, bool isForc
   return GfReqManager::addCommand(param, execChangeBladeWithSetId);
 }
 
+void GfReqCommand::execChangeBladeWithSetId(const GfReqParam *param) {
+  const unknown011 *change = static_cast<const unknown011 *>(param);
+  if (!change->unknown08) {
+    f32 time = 0.0f;
+    while (GfReqSmallCom::isExistCommandWithoutParallel()) {
+      GfSleep(1);
+      time += GfReqManager::getUpdateInfo()->unknown04;
+      if (time >= 10.0f) {
+        break;
+      }
+    }
+  }
+  unknown013(change->unknown00, change->unknown04);
+}
+
 void GfReqCommand::reqChangeBladeWithBladeId(u32 partyId, u32 blade) {
 #line 232
   unknown012 *param = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) unknown012;
   param->unknown00 = partyId;
   param->unknown04 = blade;
   GfReqManager::addCommand(param, execChangeBladeWithBladeId);
+}
+
+void GfReqCommand::execChangeBladeWithBladeId(const GfReqParam *param) {
+  const unknown012 *change = static_cast<const unknown012 *>(param);
+  while (GfReqSmallCom::isExistCommandWithoutParallel()) {
+    GfSleep(1);
+  }
+  GfSleep(30);
+  int bladeSet = GfDataBlade::getDriverSetID(change->unknown04);
+  unknown013(change->unknown00, bladeSet);
 }
 
 u32 GfReqCommand::reqChangeParty(const RQ_SETUP_PARTY_DRIVER &info) {

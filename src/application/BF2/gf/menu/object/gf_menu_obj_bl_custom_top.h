@@ -26,6 +26,15 @@ public:
     GfMenuObjBlCustomTop *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class DrSelectListener : public ui::UIObjectListener {
+  public:
+    DrSelectListener(GfMenuObjBlCustomTop *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjBlCustomTop *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjBlCustomTop(u32 handle);
   ~GfMenuObjBlCustomTop() override;
   void initialize() override;
@@ -72,5 +81,7 @@ static_assert(offsetof(GfMenuObjBlCustomTop, unknown2ec) == 0x2ec, "");
 
 static_assert(offsetof(GfMenuObjBlCustomTop::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjBlCustomTop::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjBlCustomTop::DrSelectListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjBlCustomTop::DrSelectListener) == 0x28, "");
 
 } // namespace gf

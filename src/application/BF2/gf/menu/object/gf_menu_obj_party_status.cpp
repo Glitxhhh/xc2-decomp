@@ -2,9 +2,13 @@
 
 #include <string.h>
 
+#include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_driver.h"
+#include "gf/data/gf_data_party.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_gfobj_adapter.h"
+#include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_party_status2.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
@@ -16,6 +20,7 @@
 #include "ui/event/ui_event_manager.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
@@ -189,6 +194,61 @@ int GfMenuObjPartyStatus::openPartyStatus(u32 handle, int member) {
     GfMenuObjPartyStatus2::open();
   }
   return member;
+}
+
+// Inferred role: default button of each combo request slot; original name unknown.
+static const u32 unknown004[] = {4, 0x40, 0x80};
+
+void GfMenuObjPartyStatus::setupComboReq(const ui::UIObjectAcc &acc, u16 index, u16 combo, bool isEnable, u16 effect, u32 button) {
+  mm::mtl::FixStr<32> name;
+  mm::mtl::FixStr<32> color;
+  u8 atr = GfMenuObjUtil::getElementComboAtr(combo);
+  color.format("elemental%02d", atr);
+  u32 number = index + 1;
+  name.format("TXT_combo_req2_name@%02d", number);
+  ui::UIObjectAcc text(acc.unknown10, name.c_str());
+  if (text.isValid()) {
+    text.setText(GfMenuObjUtil::getElementComboName(combo));
+    mm::mtl::FixStr<32> pattern;
+    pattern.format("element%02d", atr);
+    text.setTextFacePattern(pattern.c_str());
+  }
+  name.format("IMG_combo_req2_name_bg@%02d", number);
+  ui::UIObjectAcc(acc.unknown10, name.c_str()).setMulColor(color.c_str());
+  name.format("IMG_combo_req2_name_base@%02d", number);
+  ui::UIObjectAcc(acc.unknown10, name.c_str()).setMulColor(color.c_str());
+  name.format("IMG_combo_req2_name_top@%02d", number);
+  ui::UIObjectAcc(acc.unknown10, name.c_str()).setMulColor(color.c_str());
+  name.format("IMG_combo_req2_btn_bg@%02d", number);
+  ui::UIObjectAcc(acc.unknown10, name.c_str()).setMulColor(color.c_str());
+  name.format("IMG_combo_req2_btn_disable@%02d", number);
+  ui::UIObjectAcc disable(acc.unknown10, name.c_str());
+  if (disable.isValid()) {
+    disable.setDisp(false);
+  }
+  name.format("IMG_combo_req2_btn@%02d", number);
+  ui::UIObjectAcc btn(acc.unknown10, name.c_str());
+  if (btn.isValid()) {
+    btn.setDisp(isEnable);
+  }
+  name.format("IMG_combo_req2_eff@%02d", number);
+  ui::UIObjectAcc eff(acc.unknown10, name.c_str());
+  if (effect != 0) {
+    eff.setImageIndex(effect - 1);
+    eff.setAlpha(1.0f);
+  } else {
+    eff.setAlpha(0.0f);
+  }
+  if (button == 0) {
+    button = unknown004[index];
+  }
+  name.format("IMG_combo_req2_btn@%02d", number);
+  int icon = GfMenuObjUtil::getBtnIconNumber(button);
+  ui::UIObjectAcc(acc.unknown10, name.c_str()).setImageIndex(GfMenuBdat::getIconImageIndex(icon));
+  if (index == 0) {
+    bool isDisp = GfDataParty::getDriver(index) == 1 && GfDataDriver::getBlade(1, -1) == BLADE_HOMURI;
+    ui::UIObjectAcc(acc.unknown10, "IMG_combo_req2_sp@01").setDisp(isDisp);
+  }
 }
 
 } // namespace gf

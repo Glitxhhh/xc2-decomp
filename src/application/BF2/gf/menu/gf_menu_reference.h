@@ -11,7 +11,6 @@
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
-#include "ui/list/ui_list_info.h"
 #include "ui/ui_str.h"
 
 namespace gf {
@@ -19,7 +18,8 @@ namespace gf {
 struct GF_SEARCH_OBJ;
 struct GfSetupParam;
 struct GfSearchParam;
-struct MenuEnemyInfo;
+class GfMenuEnemyList;
+class GfMenuItemList;
 struct MenuItemInfo;
 
 // Inferred role: element of the GfMenuReference object pool; the constructor clears 512 of them in 0x4000 bytes. Members unknown.
@@ -146,8 +146,8 @@ public:
   static HOMURA_MODE getHomuraModeInBattle();
   static bool isPaletteModeReverse();
   static bool isReversePaletteBtnState(u32 index, u32 button);
-  static ui::UIListInfo<MenuEnemyInfo> *getEnemyLinkList();
-  static ui::UIListInfo<MenuItemInfo> *getItemLinkList();
+  static GfMenuEnemyList *getEnemyLinkList();
+  static GfMenuItemList *getItemLinkList();
   static void addEnemyLink(u32 enemy);
   static void addItemLink(const MenuItemInfo &info);
   static void clearLinkList();
@@ -231,11 +231,11 @@ public:
   bool unknown4cb80;                      // Inferred role: palette reverse; original member name unknown.
   mm::mtl::unknown027<8> unknown4cb84[4]; // Inferred role: reverse palette btn states; original member name unknown.
   u8 _4cb94[0x4cb98 - 0x4cb94];
-  ui::UIListInfo<MenuEnemyInfo> *unknown4cb98; // Inferred role: enemy links; original member name unknown.
-  ui::UIListInfo<MenuItemInfo> *unknown4cba0;  // Inferred role: item links; original member name unknown.
-  ElemComboRoot unknown4cba8[7];               // Inferred role: element combo roots; original member name unknown.
-  unknown003 unknown4cbe0[2];                  // Inferred role: element combo parties; original member name unknown.
-  u32 unknown4cbf0;                            // Inferred role: element combo request; original member name unknown.
+  GfMenuEnemyList *unknown4cb98; // Inferred role: enemy links; original member name unknown.
+  GfMenuItemList *unknown4cba0;  // Inferred role: item links; original member name unknown.
+  ElemComboRoot unknown4cba8[7]; // Inferred role: element combo roots; original member name unknown.
+  unknown003 unknown4cbe0[2];    // Inferred role: element combo parties; original member name unknown.
+  u32 unknown4cbf0;              // Inferred role: element combo request; original member name unknown.
   u8 _4cbf4[0x4cbf8 - 0x4cbf4];
   u32 unknown4cbf8[8];        // Inferred role: reference driver ids; original member name unknown.
   u32 unknown4cc18[8];        // Inferred role: reference blade ids; original member name unknown.

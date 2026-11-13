@@ -42,6 +42,7 @@ public:
   void sendCloseEvent(u32 handle, int type);
   void listenerCtrl(const ui::EventData &event);
   bool seqExit();
+  void updateMissionList();
   void refreshMissionList();
   void updateBladeList();
   void updateTargetTeam();

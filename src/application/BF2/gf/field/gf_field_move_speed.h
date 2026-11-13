@@ -22,6 +22,7 @@ public:
   void dispose();
   GfComAsm *getComAsm() const;
   void setSpeedKmph(f32 speed, f32 time);
+  void update(f32 deltaTime);
 
   GF_OBJ_HANDLE *unknown00 = unknown020; // Inferred role: object; original member name unknown.
   f32 unknown08 = 12.0f;                 // Inferred role: minimum speed; original member name unknown.

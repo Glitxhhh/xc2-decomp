@@ -107,6 +107,8 @@ static_assert(offsetof(MsgPcFieldNotifyWaterWarp, unknown08) == 0x08, "");
 // Layout evidence: StateFieldWaterWarpDive sends it to the buddies with the warp info of GfPropertyField::getWarpInfo,
 // and AIAgentField::procMsgPcFieldNotifyWaterWarpBuddy reads that info through the member at 0x8.
 struct MsgPcFieldNotifyWaterWarpBuddy : fw::Message {
+  MsgPcFieldNotifyWaterWarpBuddy(const MsgPcFieldNotifyWarp *warp) : fw::Message(MSG_PC_FIELD_NOTIFY_UNKNOWN_16777247, 0x40), unknown08(warp) {}
+
   const MsgPcFieldNotifyWarp *unknown08; // Inferred role: warp info; original member name unknown.
 };
 

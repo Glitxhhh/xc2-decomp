@@ -166,6 +166,32 @@ void GfMenuObjItemList::MainListener::reciveEvent(const ui::EventData &event, u3
   }
 }
 
+void GfMenuObjItemList::ListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    unknown20->unknown28->setIndex(index);
+    break;
+  }
+  case 0x100:
+    if (unknown20->unknownf0->unknown10->getSize() == 0) {
+      GfMenuObject::disableInput(acc.unknown10);
+      acc.setDispChild(false, "IMG_item_cursor");
+    } else {
+      GfMenuObject::enableInput(acc.unknown10);
+      acc.setDispChild(true, "IMG_item_cursor");
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknownf0->unknown10);
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf
 
 template class gf::GfMenuReferenceList<gf::GfMenuItemList>;

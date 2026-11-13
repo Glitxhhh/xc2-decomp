@@ -18,6 +18,7 @@
 #include "gf/menu/list/gf_menu_field_skill_list.h"
 #include "gf/menu/list/gf_menu_mission_list.h"
 #include "gf/menu/list/gf_menu_team_list.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_col4.h"
@@ -26,6 +27,7 @@
 #include "mm_math/mm_vec2.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/plugin/ui_object_dock_plugin.h"
@@ -756,6 +758,164 @@ void GfMenuObjMercenaries::MissionRewardListener::reciveEvent(const ui::EventDat
     acc.setDisp(false);
     break;
   }
+}
+
+void GfMenuObjMercenaries::MissionListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    setupMissionList(acc, unknown20->unknown68);
+    GfMenuObjUtil::CursorParam param;
+    param.unknown00 = ui::UIObjectAcc(handle).getParentHandle();
+    param.unknown04 = acc.searchSibiling("IMG_mis_list_cursor");
+    param.unknown20.unknown18 = 5;
+    param.unknown1a = 1;
+    param.unknown08 = "LAY_mis@%02d";
+    unknown20->unknown90 = GfMenuObjUtil::createCursor(param);
+    ui::UIObjectAcc bar(unknown20->unknown18, "IMG_mis_scroll_bar");
+    if (bar.isValid()) {
+      GfMenuObjUtil::createVScrollBarPlugin(bar.unknown10, unknown20->unknown68, "IMG_mis_scroll_base", true);
+      bar.setDisp(true);
+      bar.setAddColor("gray");
+    }
+    GfMenuObject::disableInput(handle);
+    break;
+  }
+  case 6: {
+    u32 index = event.unknown08;
+    unknown20->unknown68->setIndex(index);
+    u32 selected = unknown20->unknown68->getIndex(true);
+    unknown20->unknown90->inputChange(selected);
+    GfMenuReference::setReferenceMissionID(unknown20->unknown68->getContents(unknown20->unknown68->getIndex(false)).unknown00);
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+  case GfMenuTypes::unknown003_33: {
+    updateMissionList(unknown20->unknown68, GfMenuReference::getReferenceZoneID());
+    GfMenuReference::setReferenceMissionID(0);
+    unknown20->unknown90->open(0);
+    GfMenuObject::setupInputSelectionFromList(handle, *unknown20->unknown68);
+    GfMenuObject::enableInput(handle);
+    acc.setDisp(true);
+    ui::UIObjectAcc owner(unknown20->unknown18);
+    GfMenuObjOperationInfo::open(handle, owner.searchChild("LAY_mis_select"), 0, 0);
+    break;
+  }
+  case 8:
+    switch (event.unknown0c) {
+    case 1:
+      if (unknown20->unknown68->getSize() != 0) {
+        unknown002(unknown20->unknown18, "LAY_mis_detail");
+        GfDataMercenaries::clearNewMission(GfMenuReference::getReferenceMissionID());
+        GfMenuObject::disableInput(handle);
+      }
+      break;
+    case 2: {
+      unknown003(unknown20->unknown18, "LAY_mission");
+      {
+        ui::UIObjectAcc owner(unknown20->unknown18);
+        unknown163(owner.searchChild("LAY_location"), GfMenuTypes::unknown003_33, 0);
+      }
+      GfMenuObject::disableInput(handle);
+      break;
+    }
+    }
+    break;
+  case GfMenuTypes::unknown003_34:
+    GfMenuObject::disableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_257: {
+    GfMenuObject::enableInput(handle);
+    ui::UIObjectAcc owner(unknown20->unknown18);
+    GfMenuObjOperationInfo::open(handle, owner.searchChild("LAY_mis_select"), 0, 0);
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjMercenaries::LaunchListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupFormBladeSelect(acc, unknown20->unknown50);
+    GfMenuObject::migrateInput(acc.searchChild("LAY_form_bl"), handle);
+    GfMenuObject::disableInput(handle);
+    break;
+  case 3:
+    if (event.unknown08 == 5) {
+      for (u32 i = 1; i <= 6; i++) {
+        mm::mtl::FixStr<32> name;
+        name.format("LAY_form_bl_plate@%02d", i);
+        u32 plateHandle = acc.searchChild(name.c_str());
+        ui::UIObjectAcc plate(plateHandle);
+        name.format("blade_default_position%02d", i);
+        mm::Rect<s16> rect;
+        acc.getLayoutRect(name.c_str(), rect);
+        GfMenuObjUtil::CtrlParam param;
+        plate.getPos(param.unknown26);
+        param.unknown26.x = rect.x;
+        param.unknown26.y = rect.y;
+        param.unknown08 = 0x80;
+        param.unknown0c = 1;
+        param.unknown00 = 0.2f;
+        GfMenuObjUtil::startCtrl(plateHandle, param, nullptr);
+      }
+    }
+    return;
+  case 8:
+    if (event.unknown0c == 1) {
+      unknown20->unknown28->reset();
+      unknown20->unknown388 = 0x25;
+      GfMenuObjCommonText::open(unknown20->unknown28, unknown20->unknown388, 0);
+      GfMenuObject::setCallContextEventHandler(unknown20->unknown28, handle);
+      GfMenuObject::disableInput(handle);
+    }
+    return;
+  case GfMenuTypes::unknown003_33: {
+    u32 team = GfMenuReference::getReferenceTeamID();
+    updateBladeList(unknown20->unknown50, team);
+    ui::UIObjectAcc blades(acc.searchChild("LAY_form_bl"));
+    blades.setDisp(true);
+    for (u32 i = 0; i < 6; i++) {
+      mm::mtl::FixStr<32> name;
+      name.format("LAY_form_bl_plate@%02d", i + 1);
+      ui::UIObjectAcc plate(acc.searchChild(name.c_str()));
+      mm::Pnt<s16> pos;
+      plate.getPos(pos);
+      pos.x = 0;
+      plate.setPos(pos);
+      name.format("LAY_form_bl_name_def@%02d", i + 1);
+      u32 nameHandle = acc.searchChild(name.c_str());
+      f32 alpha = unknown20->unknown50->getContents(i).unknown00 == 0 ? 0.0f : 1.0f;
+      ui::UIObjectAcc(nameHandle).setAlpha(alpha);
+    }
+    int ctrl = GfMenuObjUtil::setCommonFadeIn(handle, 5, 0);
+    GfMenuObject::hookCtrlEvent(handle, ctrl);
+    acc.setDisp(true);
+    GfMenuObject::enableInput(handle);
+    GfMenuObjOperationInfo::open(handle, 0, 0, 0);
+    return;
+  }
+  case GfMenuTypes::unknown003_34:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(handle);
+    return;
+  case 0x41:
+    if (unknown20->unknown28 != nullptr && unknown20->unknown28->unknown0c == event.unknown08) {
+      u16 result = event.unknown10_u16;
+      GfMenuReference::getReferenceMissionID();
+      if (result == 0 && unknown20->unknown388 == 0x25) {
+        unknown002(unknown20->unknown18, "LAY_mission");
+        int ctrl = GfMenuObjUtil::setCommonFadeOut(handle, 6, 0);
+        GfMenuObject::hookCtrlEvent(handle, ctrl);
+        GfMenuObject::disableInput(handle);
+      }
+    }
+    return;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
 }
 
 } // namespace gf

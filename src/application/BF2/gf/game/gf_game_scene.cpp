@@ -17,9 +17,12 @@
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_achievement.h"
 #include "gf/data/gf_data_blade.h"
+#include "gf/data/gf_data_develop.h"
 #include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_item.h"
+#include "gf/data/gf_data_map.h"
+#include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_party.h"
 #include "gf/data/gf_data_shop.h"
@@ -37,6 +40,7 @@
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_ride.h"
+#include "gf/game/gf_game_save.h"
 #include "gf/game/gf_game_slow_attack.h"
 #include "gf/game/gf_game_state.h"
 #include "gf/game/gf_game_trinity_attack.h"
@@ -98,6 +102,16 @@ constexpr int FLAG_UNKNOWN_2133 = 2133;            // Inferred role: flag crysta
 constexpr int FLAG_UNKNOWN_1551 = 1551;            // Inferred role: flag event money; original name unknown.
 constexpr int FLAG_UNKNOWN_54665 = 54665;          // Inferred role: flag crystal popup; original name unknown.
 constexpr u16 SCENARIO_FLAG_UNKNOWN_3048 = 3048;   // Inferred role: scenario flag suzaku activate; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_1001 = 1001;   // Inferred role: scenario flag new game save; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_1031 = 1031;   // Inferred role: scenario flag clear game blades; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_2005 = 2005;   // Inferred role: scenario flag byakko activate; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_2042 = 2042;   // Inferred role: scenario flag byakko set; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_4009 = 4009;   // Inferred role: scenario flag mercenaries level; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_7024 = 7024;   // Inferred role: scenario flag saika lens; original name unknown.
+constexpr u32 SCENARIO_FLAG_UNKNOWN_8037 = 8037;   // Inferred role: scenario flag develop point move; original name unknown.
+constexpr u16 SCENARIO_FLAG_UNKNOWN_10012 = 10012; // Inferred role: first scenario flag shown with the sepia filter; original name unknown.
+constexpr u16 SCENARIO_FLAG_UNKNOWN_10014 = 10014; // Inferred role: second scenario flag shown with the sepia filter; original name unknown.
+constexpr u16 SCENARIO_FLAG_UNKNOWN_10017 = 10017; // Inferred role: third scenario flag shown with the sepia filter; original name unknown.
 constexpr u32 ACHIEVEMENT_STATS_UNKNOWN_70 = 70;   // Inferred role: achievement stats homura cook item; original name unknown.
 constexpr u32 ACHIEVEMENT_STATS_UNKNOWN_71 = 71;   // Inferred role: achievement stats yuoh cook item; original name unknown.
 constexpr u32 ACHIEVEMENT_STATS_UNKNOWN_72 = 72;   // Inferred role: achievement stats musubi cook item; original name unknown.
@@ -1847,4 +1861,98 @@ void GfGameScene::setRideOn(u32 partyId) {
   }
 }
 
+void GfGameScene::gevChangeScenarioFlag(u32 scenarioFlag, u32 oldScenarioFlag) {
+  GfWeapon *extra = GfObjUtil::getExtraMountObject(GfGameParty::getHandleDriverByBdatID(DRIVER_UNKNOWN_1));
+  if (extra != nullptr) {
+    f32 alpha = GfGameManager::isInMetJIJI() ? 1.0f : 0.0f;
+    for (u32 index = 0; index < HANDLE_UNKNOWN_10; index++) {
+      GF_OBJ_HANDLE *handle = extra->getCurrentHandles()[index];
+      if (handle != unknown020) {
+        GfObjAcc obj(handle);
+        if (obj.isValid()) {
+          obj.setAlphaNormal(alpha);
+        }
+      }
+    }
+  }
+  bool isDispRexCrystal = unknown1bc;
+  unknown1bc = !(GfGameUtil::isDispRexCrystal() || scenarioFlag == 0);
+  if (unknown1bc != isDispRexCrystal) {
+    GfGameUtil::dispRexCrystal(GfGameParty::getHandleDriverByBdatID(DRIVER_UNKNOWN_1), unknown1bc);
+  }
+  bool isDispHomuraCrystal = unknown1bd;
+  unknown1bd = !(GfGameUtil::isDispHomuraCrystal() || scenarioFlag == 0);
+  if (unknown1bd != isDispHomuraCrystal) {
+    GfGameUtil::dispHomuraCrystal(GfGameParty::getHandleBladeByBdatID(BLADE_HOMURA), unknown1bd);
+  }
+  switch (scenarioFlag) {
+  case SCENARIO_FLAG_UNKNOWN_2005: {
+    GfDataBlade::setActivateDriver(BLADE_BYAKKO, -1, DRIVER_UNKNOWN_2, 0);
+    int bladeSet = GfDataDriver::getSetIdByBlade(DRIVER_UNKNOWN_2, BLADE_BYAKKO);
+    DataParamAcc paramAcc(OBJECT_TYPE_PC, DRIVER_UNKNOWN_2, GimmickType());
+    paramAcc.setBladeSet(bladeSet);
+    break;
+  }
+  case SCENARIO_FLAG_UNKNOWN_2042: {
+    int bladeSet = GfDataDriver::getSetIdByBlade(DRIVER_UNKNOWN_2, BLADE_BYAKKO);
+    DataParamAcc paramAcc(OBJECT_TYPE_PC, DRIVER_UNKNOWN_2, GimmickType());
+    paramAcc.setBladeSet(bladeSet);
+    break;
+  }
+  }
+  if ((scenarioFlag > SCENARIO_FLAG_UNKNOWN_7024) != (oldScenarioFlag > SCENARIO_FLAG_UNKNOWN_7024)) {
+    GfGameUtil::setSaikaLensOff();
+  }
+  switch (scenarioFlag) {
+  case SCENARIO_FLAG_UNKNOWN_4009:
+    if (GfDataMercenaries::getLevel() == 0) {
+      GfDataMercenaries::setLevel(1);
+    }
+    break;
+  case SCENARIO_FLAG_UNKNOWN_8037:
+    GfDataDevelop::setPoint(NATION_UNKNOWN_5, GfDataDevelop::getPoint(NATION_UNKNOWN_6) + GfDataDevelop::getPoint(NATION_UNKNOWN_5));
+    break;
+  }
+  if (scenarioFlag == SCENARIO_FLAG_UNKNOWN_1001 && oldScenarioFlag == 0) {
+    GfGameSave::makeNewGameSaveData();
+  }
+  if (GfGameManager::isClearGame()) {
+    if (scenarioFlag == SCENARIO_FLAG_UNKNOWN_1031) {
+      unknown124 *dataParty = GfDataParty::getSDataParty();
+      if (dataParty->unknown4e[0] != 0) {
+        GfDataBlade::setActivateDriver(dataParty->unknown4e[0], -1, DRIVER_UNKNOWN_1, 0);
+      }
+      if (dataParty->unknown4e[1] != 0) {
+        GfDataBlade::setActivateDriver(dataParty->unknown4e[1], -1, DRIVER_UNKNOWN_1, 0);
+      }
+      for (u32 index = 0; index < BLADE_UNKNOWN_422; index++) {
+        u32 blade = GfDataBlade::getBladeID(index);
+        if (blade != 0 && GfDataBlade::isUnselect(blade)) {
+          GfDataBlade::setUnselect(blade, false);
+        }
+      }
+    }
+  }
+}
+
+void GfGameScene::updateSepia(const fw::UpdateInfo &) {
+  if (unknown66c != 0) {
+    if (fw::EffectManager::get() == nullptr || !fw::EffectManager::get()->isExist(unknown66c)) {
+      unknown66c = 0;
+    }
+  }
+
+  bool isExist = unknown66c != 0;
+  u32 map = GfGameManager::getMapID();
+  bool isMap = map == MAP_UNKNOWN_7 || map == MAP_UNKNOWN_17 || map == MAP_UNKNOWN_19;
+  bool isNotEvent = !GfGameManager::isPlayEvent();
+  u16 flag = GfDataUtil::getScenarioFlag();
+  bool isScenario = flag == SCENARIO_FLAG_UNKNOWN_10012 || flag == SCENARIO_FLAG_UNKNOWN_10014 || flag == SCENARIO_FLAG_UNKNOWN_10017;
+  bool isSepia = isMap && isScenario && isNotEvent;
+  if (isSepia && !isExist) {
+    createSepiaFilter();
+  } else if (!isSepia && isExist) {
+    destroySepiaFilter();
+  }
+}
 } // namespace gf

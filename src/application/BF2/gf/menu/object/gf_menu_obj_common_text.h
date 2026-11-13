@@ -89,6 +89,8 @@ public:
     u32 unknown0c; // Inferred role: condition; original member name unknown.
   };
   struct OpenNumSelectParam {
+    OpenNumSelectParam() : unknown00(0), unknown04(0), unknown08(0), unknown0c(0) {}
+
     u32 unknown00; // Inferred role: first value of the number selection; original member name unknown.
     u32 unknown04; // Inferred role: second value of the number selection; original member name unknown.
     u32 unknown08; // Inferred role: third value of the number selection; original member name unknown.

@@ -25,7 +25,38 @@ class GfMenuObjHanaPartsCrystal : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjHanaPartsCrystal *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];                  // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjHanaPartsCrystal *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class PartsListListener : public ui::UIObjectListener {
+  public:
+    PartsListListener(GfMenuObjHanaPartsCrystal *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];                  // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjHanaPartsCrystal *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class ItemListListener : public ui::UIObjectListener {
+  public:
+    ItemListListener(GfMenuObjHanaPartsCrystal *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];                  // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjHanaPartsCrystal *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class NumSelectListener : public ui::UIObjectListener {
+  public:
+    NumSelectListener(GfMenuObjHanaPartsCrystal *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];                  // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjHanaPartsCrystal *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   GfMenuObjHanaPartsCrystal(u32 handle);
@@ -67,5 +98,13 @@ static_assert(offsetof(GfMenuObjHanaPartsCrystal, unknown50) == 0x50, "");
 static_assert(offsetof(GfMenuObjHanaPartsCrystal, unknown58) == 0x58, "");
 static_assert(offsetof(GfMenuObjHanaPartsCrystal, unknown60) == 0x60, "");
 static_assert(offsetof(GfMenuObjHanaPartsCrystal, unknown68) == 0x68, "");
+static_assert(offsetof(GfMenuObjHanaPartsCrystal::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjHanaPartsCrystal::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjHanaPartsCrystal::PartsListListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjHanaPartsCrystal::PartsListListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjHanaPartsCrystal::ItemListListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjHanaPartsCrystal::ItemListListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjHanaPartsCrystal::NumSelectListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjHanaPartsCrystal::NumSelectListener) == 0x28, "");
 
 } // namespace gf

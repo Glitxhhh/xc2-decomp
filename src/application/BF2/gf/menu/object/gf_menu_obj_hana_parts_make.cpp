@@ -5,6 +5,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_hana.h"
 #include "gf/game/gf_game_util_hana.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_hana_adapter.h"
 #include "gf/menu/adapter/gf_menu_hana_parts_adapter.h"
 #include "gf/menu/adapter/gf_menu_item_adapter.h"
@@ -28,10 +29,15 @@
 #include "ui/ctrl/ui_ctrl_cursor_color.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
+#include "ui/list/ui_list_info.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
+
+// Inferred role: call id of the parts make layout; original name unknown.
+constexpr u32 CALL_UNKNOWN_115 = 115;
 
 GfMenuObjHanaPartsMake::GfMenuObjHanaPartsMake(u32 handle)
     : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown70(0), unknown74(0) {}
@@ -46,6 +52,66 @@ GfMenuObjHanaPartsMake::~GfMenuObjHanaPartsMake() {
   mm::mtl::safeRelease(unknown58);
   unknown60 = nullptr;
   unknown68 = nullptr;
+}
+
+void GfMenuObjHanaPartsMake::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 144 as in the original file: it is the line argument of operator new.
+#line 144
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_115, main);
+  u32 partsWindow = acc.searchChild("LAY_partsmake_window");
+// __LINE__ must be 150 as in the original file: it is the line argument of operator new.
+#line 150
+  PartsListListener *partsListListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PartsListListener(this);
+  partsListListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(partsWindow, partsListListener);
+  if (partsListListener != nullptr) {
+    partsListListener->release();
+  }
+  u32 itemWindow = acc.searchChild("LAY_metl_window");
+// __LINE__ must be 154 as in the original file: it is the line argument of operator new.
+#line 154
+  ItemListListener *itemListListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ItemListListener(this);
+  itemListListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(itemWindow, itemListListener);
+  if (itemListListener != nullptr) {
+    itemListListener->release();
+  }
+  u32 dialog = acc.searchChild("LAY_make_diarog");
+// __LINE__ must be 158 as in the original file: it is the line argument of operator new.
+#line 158
+  NumSelectListener *numSelectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) NumSelectListener(this);
+  numSelectListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(dialog, numSelectListener);
+  if (numSelectListener != nullptr) {
+    numSelectListener->release();
+  }
+  unknown40 = GfMenuItemList::create();
+  ui::UISelectObjList::CreateParam createParam;
+  createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+  unknown48 = ui::UISelectObjList::create(createParam);
+  unknown28 = GfMenuIDList::create();
+  ui::UIListInfoBase::SetupParam setup;
+  setup.unknown08 = 5;
+  setup.unknown10 = true;
+  unknown28->setup(getAllocator(ALLOCATOR_UNKNOWN_0), setup);
+  createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+  unknown30 = ui::UISelectObjList::create(createParam);
+  unknown58 = GfMenuCallContext::create();
+  unknown60 = unknown160();
+  unknown60->unknown162(0);
+  unknown60->unknown166(99);
+  unknown68 = unknown160();
+  unknown68->unknown162(0);
+  unknown68->unknown166(999999999);
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjHanaPartsMake::finalize() { GfMenuObject::finalize(); }

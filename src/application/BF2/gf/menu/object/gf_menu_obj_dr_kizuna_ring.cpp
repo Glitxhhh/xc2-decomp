@@ -454,6 +454,78 @@ void GfMenuObjDrKizunaRing::DriverStockSPListener::reciveEvent(const ui::EventDa
     break;
   }
 }
+
+void GfMenuObjDrKizunaRing::SkillDetailListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupSkillDetail(acc);
+    unknown20->unknown38 = false;
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    ui::UIObjectAcc caption(acc.searchChild("LAY_caption"));
+    caption.setDisp(true);
+    const char *name = isScreenLR(unknown20->unknown40 % 6) ? "drskillinfo2_2" : "drskillinfo2_1";
+    mm::Rect<s16> rect;
+    ui::UIObjectAcc main(owner.searchChild("LAY_dr_main"));
+    main.getLayoutRect(name, rect);
+    mm::Pnt<s16> pos;
+    pos.x = rect.x;
+    pos.y = rect.y;
+    acc.setPos(pos);
+    if (unknown20->unknown3c == 0) {
+      ui::UIObjectAcc skill(acc.searchChild("LAY_skif_skill"));
+      skill.setDisp(true);
+      ui::UIObjectAcc lock(acc.searchChild("LAY_skif_lock"));
+      lock.setDisp(false);
+    } else {
+      ui::UIObjectAcc skill(acc.searchChild("LAY_skif_skill"));
+      skill.setDisp(false);
+      ui::UIObjectAcc lock(acc.searchChild("LAY_skif_lock"));
+      lock.setDisp(true);
+    }
+    if (!unknown20->unknown38) {
+      setFadeIn(handle);
+      unknown20->unknown38 = true;
+    }
+    u32 driver = GfMenuReference::getReferenceDriverID(0);
+    u32 row = GfMenuReference::getReferenceNumber(0);
+    u32 level = GfMenuReference::getReferenceNumber(1);
+    int hidden = GfMenuReference::getReferenceNumber(2);
+    ui::UIObjectAcc icon(acc.searchChild("IMG_skif_icon@01"));
+    ui::UIObjectAcc base(acc.searchChild("IMG_skif_icon_base@01"));
+    if (!GfDataDriverSkill::isSkillUnlock(driver, row, level, hidden != 0)) {
+      icon.setMulColor("white");
+      base.setMulColor("gray");
+    } else if (GfDataDriverSkill::getSkill(driver, row, level, hidden != 0) == 0) {
+      icon.setMulColor("black");
+      base.setMulColor("gray");
+    } else {
+      icon.setMulColor("white");
+      base.setMulColor("white");
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_34:
+    if (unknown20->unknown38) {
+      unknown20->unknown38 = false;
+      setFadeOut(handle);
+    }
+    break;
+  case GfMenuTypes::unknown003_257:
+    if (!unknown20->unknown38) {
+      setFadeIn(handle);
+      unknown20->unknown38 = true;
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf
 
 template bool gf::GfMenuSequence<gf::GfMenuObjDrKizunaRing, 8>::wait();

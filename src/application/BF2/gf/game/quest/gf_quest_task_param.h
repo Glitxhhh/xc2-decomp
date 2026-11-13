@@ -23,6 +23,7 @@ enum {
 enum TASK_STATE {
   TASK_STATE_UNKNOWN_0, // Inferred role: task state none; original name unknown.
   TASK_STATE_UNKNOWN_1, // Inferred role: task completed; original name unknown.
+  TASK_STATE_UNKNOWN_2, // Inferred role: task state of the suppress count; original name unknown.
 };
 
 enum QUEST_PARAM {

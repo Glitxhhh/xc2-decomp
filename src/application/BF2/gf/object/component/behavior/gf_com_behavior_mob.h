@@ -88,6 +88,7 @@ public:
 
   void procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message);
   void procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObjectGetVelocity &message);
+  void setup();
   void cleanup();
   fw::ColiMoveObject *getColiObject() const;
   gmk::AGmkBase *getBindedGmkInst() const;
@@ -101,6 +102,7 @@ public:
   void setActivateCollison(bool isActivate);
   u32 getStateId() const;
   void createNaviMeshObj();
+  void updateNaviMeshObj(f32 deltaTime);
   void createSquadNavi();
   void createFsm();
   void init(bool param1);

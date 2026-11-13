@@ -1,39 +1,54 @@
 #include "gf/menu/object/gf_menu_obj_world_map.h"
 
+#include <string.h>
+
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_util.h"
+#include "gf/data/gf_game_flag.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/field/gf_field_gimmick.h"
 #include "gf/field/gf_gmk_locator_atlas.h"
 #include "gf/game/gf_game_cond.h"
+#include "gf/game/gf_game_manager.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_world_map_adapter.h"
 #include "gf/menu/adapter/gf_menu_zone_map_adapter.h"
+#include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_flag.h"
 #include "gf/menu/gf_menu_location.h"
 #include "gf/menu/gf_menu_map_info.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
+#include "gf/menu/list/gf_menu_field_skill_list.h"
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/list/gf_menu_zone_map_list.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gmk/gmk_manager.h"
 #include "mm_math/mm_aabb.h"
 #include "mm_math/mm_pnt.h"
+#include "mm_math/mm_vec2.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/stream/ui_stream_manager.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
+
+enum {
+  FLAG_UNKNOWN_51161 = 0xc7d9, // Inferred role: first landmark found flag, as in GmkLandmark::getGameFlagId; original name unknown.
+};
 
 // Game symbol _ZN2gf20nd_lay_icon_node_tblE.
 const char *nd_lay_icon_node_tbl[10] = {
@@ -44,6 +59,27 @@ GfMenuObjWorldMap::GfMenuObjWorldMap(u32 handle)
       unknown2f0(nullptr), unknown2f8(nullptr), unknown318(0), unknown320(nullptr), unknown328(nullptr), unknown330(nullptr), unknown690(false), unknown6b8(nullptr), unknown6c0(), unknown2f10(0),
       unknown2f60(false), unknown2f61(false), unknown2f68(nullptr), unknown2f70(false), unknown2f78(nullptr), unknown2f80(0), unknown2f84(0), unknown2f88(nullptr), unknown2f90(nullptr) {
   unknown300.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
+}
+
+GfMenuObjWorldMap::~GfMenuObjWorldMap() {
+  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(unknown30);
+  mm::mtl::safeRelease(unknown2e0);
+  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown2e0);
+  mm::mtl::safeRelease(unknown2f0);
+  mm::mtl::safeRelease(unknown2f8);
+  if (unknown300.size() != 0) {
+    unknown300.destroy();
+  }
+  mm::mtl::safeRelease(unknown330);
+  mm::mtl::safeRelease(unknown328);
+  mm::mtl::safeRelease(unknown320);
+  mm::mtl::safeRelease(unknown6b8);
+  mm::mtl::safeRelease(unknown2f68);
+  mm::mtl::safeRelease(unknown2f88);
+  mm::mtl::safeRelease(unknown2f90);
 }
 
 void GfMenuObjWorldMap::finalize() {
@@ -272,6 +308,144 @@ void GfMenuObjWorldMap::setupWorldMap(ui::UIObjectAcc &acc, GfMenuIDList *list, 
   }
 }
 
+void GfMenuObjWorldMap::MapSelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupMapSelect(acc, unknown20->unknown28);
+    GfMenuObject::setupInputSelectionFromList(handle, *unknown20->unknown28);
+    GfMenuObjMainMenu2::setSystemKeyEnable(true);
+    GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    unknown0c = 0;
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      refreshMapSelect(acc, unknown20->unknown28, unknown20->unknown30, unknown20->unknown28->getIndex(true));
+      GfMenuObject::enableFSInput(0);
+      GfMenuObjMainMenu2::setSystemKeyEnable(true);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    }
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    u32 previous = event.unknown0c;
+    unknown20->unknown28->setIndex(index);
+    GfMenuReference::setReferenceWorldMapID(unknown20->unknown28->getContents(index).unknown00);
+    refreshMapSelect(acc, unknown20->unknown28, unknown20->unknown30, unknown20->unknown28->getIndex(true));
+    sendEvent(owner.searchChild("LAY_worldmap"), GfMenuTypes::unknown003_257, unknown20->unknown28->getContents(index).unknown00, 0);
+    if (previous != 0xffffffff && index != previous) {
+      GfMenuObjUtil::playSECommonCursor();
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      if (isEnterMap(GfMenuReference::getReferenceWorldMapID())) {
+        u32 map = GfMenuReference::getReferenceWorldMapID();
+        if (map == 0) {
+          break;
+        }
+        int gmkSetId = gmk::GmkManager::get()->findFirstBdatId_RSC_GmkSetList(map);
+        if (gmkSetId == 0) {
+          break;
+        }
+        const char *sheetName = gmk::GmkManager::get()->getSheetnameByType(gmkSetId, gmk::GMK_TYPE_LANDMARK);
+        if (sheetName == nullptr) {
+          break;
+        }
+        unknown20->unknown2f78 = Bdat::getFP(sheetName);
+        unknown20->unknown2f70 = unknown20->setupZoneList(unknown20->unknown40);
+        GfMenuZoneMapList *zones = unknown20->unknown40;
+        zones->unknown79 = unknown20->unknown2f70;
+        if (unknown20->unknown40->getSize() != 0) {
+          GfMenuObjOperationInfo::remove(owner.searchChild("LAY_map_sellect"), owner.searchChild("LAY_worldmap"), 0, 0);
+          GfMenuObjMainMenu2::setSystemKeyEnable(false);
+          {
+            GfMenuObjUtil::CtrlParam param;
+            param.unknown004("fade_out_l");
+            param.unknown00 = 0.3f;
+            param.unknown04 = 2;
+            param.unknown14 = 10;
+            int ctrl = GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_area_tag");
+            if (ctrl != -1) {
+              GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+            }
+          }
+          acc.setDispChild(true, "LAY_area_tag_select");
+          {
+            GfMenuObjUtil::CtrlParam param;
+            param.unknown004("fade_in_l");
+            param.unknown00 = 0.3f;
+            param.unknown14 = 8;
+            GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_area_tag_select");
+          }
+          unknown164(owner.searchChild("LAY_zone_sellect"), GfMenuTypes::unknown003_259);
+          ctrlScrollBar(acc.searchChild("LAY_area_scroll_bar"), true);
+          unknown0c = 1;
+          GfMenuObject::disableFSInput();
+          GfMenuObjMainMenu2::setSystemKeyEnable(false);
+          GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+          refreshMapSelect(acc, unknown20->unknown28, unknown20->unknown30, -1);
+          GfMenuObjUtil::playSECommonDecide();
+          break;
+        }
+      }
+      GfMenuObjUtil::playSECommon(2);
+    } else if (event.unknown0c == 2) {
+      unknown164(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34);
+    }
+    break;
+  case GfMenuTypes::unknown003_257: {
+    u32 map = event.unknown08;
+    int index = -1;
+    for (u32 i = 0; i < unknown20->unknown28->getSize(); i++) {
+      if (unknown20->unknown28->getContents(i).unknown00 == map) {
+        unknown20->unknown28->setIndex(i);
+        index = i;
+        break;
+      }
+    }
+    if (index != -1) {
+      refreshMapSelect(acc, unknown20->unknown28, unknown20->unknown30, index);
+    }
+    GfMenuObject::setupInputSelection(handle, index, unknown20->unknown28->getSize());
+    break;
+  }
+  case GfMenuTypes::unknown003_259:
+    acc.setDisp(true);
+    acc.setDispChild(true, "LAY_area_tag");
+    {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_in_l");
+      param.unknown00 = 0.3f;
+      param.unknown04 = 1;
+      param.unknown14 = 8;
+      int ctrl = GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_area_tag");
+      if (ctrl == -1) {
+        GfMenuObject::enableFSInput(0);
+        GfMenuObjMainMenu2::setSystemKeyEnable(true);
+        GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+      } else {
+        GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+      }
+    }
+    if (unknown0c == 1) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_out_l");
+      param.unknown00 = 0.3f;
+      param.unknown14 = 10;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_area_tag_select");
+      unknown0c = 0;
+    }
+    ctrlScrollBar(acc.searchChild("LAY_area_scroll_bar"), false);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjWorldMap::setupMapSelect(ui::UIObjectAcc &acc, GfMenuIDList *list) {
   mm::mtl::FixStr<32> name;
   for (u32 i = 0; i < 9; i++) {
@@ -320,12 +494,201 @@ bool GfMenuObjWorldMap::isEnterMap(u32 map) {
   return false;
 }
 
+bool GfMenuObjWorldMap::setupZoneList(GfMenuZoneMapList *list) {
+  const char *mapName = GfDataMap::getMapResourceNameByMapID(GfMenuReference::getReferenceWorldMapID());
+  list->clear();
+  u8 *group = GfDataBdat::getFP(BDAT_MNU_MAP_GROUP);
+  int top = Bdat::getIdTop(group);
+  for (u32 i = 0; i < Bdat::getIdCount(group); i++) {
+    const char *includeMap = Bdat::getVal(group, "include_map", top + i).valueString;
+    if (includeMap != nullptr && strcmp(mapName, includeMap) == 0) {
+      MenuZoneMapInfo info;
+      info.unknown00 = top + i;
+      u16 condition = Bdat::getVal(group, "condition", top + i).valueU16;
+      if (condition == 0 || !GfGameCond::isGameCond(condition)) {
+        u8 *mapJump = unknown2f78;
+        int mapJumpTop = Bdat::getIdTop(mapJump);
+        u32 mapJumpCount = Bdat::getIdCount(mapJump);
+        bool isFound = false;
+        for (u32 j = 0; j < mapJumpCount; j++) {
+          u16 menuGroup = Bdat::getVal(mapJump, "menuGroup", mapJumpTop + j).valueU16;
+          if (Bdat::getVal(mapJump, "MAPJUMPID", mapJumpTop + j).valueU16 != 0 && menuGroup == info.unknown00) {
+            bool isOpen = GfGameFlag::getLocal(1, mapJumpTop + j + FLAG_UNKNOWN_51161) == 1;
+            isFound |= isOpen;
+            if (isOpen) {
+              break;
+            }
+          }
+        }
+        if (isFound) {
+          list->addContents(info);
+        }
+      }
+    }
+  }
+  return list->getSize() != 0;
+}
+
 void GfMenuObjWorldMap::ctrlScrollBar(u32 handle, bool unknown) {
   GfMenuObjUtil::CtrlParam param;
   param.unknown08 = unknown ? 2 : 1;
   param.unknown00 = 0.3f;
   param.unknown0c = 1;
   GfMenuObjUtil::startCtrl(handle, param, nullptr);
+}
+
+void GfMenuObjWorldMap::ZoneSelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(acc.unknown10);
+    setupZoneSelect(acc, unknown20->unknown40);
+    unknown0c = 0;
+    return;
+  case 3:
+    if (event.unknown08 == 1) {
+      refreshZoneSelect(acc, unknown20->unknown40, unknown20->unknown48, unknown20->unknown40->getIndex(true));
+      GfMenuObject::enableFSInput(1);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    } else if (event.unknown08 == 2) {
+      {
+        mm::mtl::FixStr<32> name;
+        name.format("IMG_zone_base_@%02d", unknown20->unknown48->getIndex(false) + 1);
+        ui::UIObjectAcc base(unknown20->unknown48->getSelectObject(), name.c_str());
+        if (base.isValid()) {
+          base.startAnimation("open", false);
+        }
+      }
+      sendEvent(owner.searchChild("LAY_zonemap"), GfMenuTypes::unknown003_259, 0, 0);
+      sendEvent(owner.searchChild("LAY_icon_filter"), GfMenuTypes::unknown003_259, 0, 0);
+      sendEvent(owner.searchChild("LAY_point_sellect"), GfMenuTypes::unknown003_259, 0, 2);
+      sendEvent(owner.searchChild("LAY_worldmap"), GfMenuTypes::unknown003_260, 0, 0);
+      sendEvent(handle, GfMenuTypes::unknown003_260, 0, 0);
+    }
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    u32 previous = event.unknown0c;
+    if (unknown20->unknown40->getSize() != 0) {
+      unknown20->unknown40->setIndex(index);
+      int page = unknown20->unknown40->getIndex(true);
+      unknown20->unknown40->getContents(index);
+      refreshZoneSelect(acc, unknown20->unknown40, unknown20->unknown48, page);
+      if (previous != 0xffffffff && index != previous) {
+        GfMenuObjUtil::playSECommonCursor();
+      }
+      return;
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      if (unknown20->unknown40->getSize() == 0) {
+        GfMenuObjUtil::playSECommon(2);
+      } else {
+        unknown20->unknown2f0->clear();
+        if (!unknown20->unknown2f70) {
+          unknown20->unknown2f0->unknown79 = false;
+        } else {
+          u8 *bdat = unknown20->unknown2f78;
+          u32 top = Bdat::getIdTop(bdat);
+          u32 count = Bdat::getIdCount(bdat);
+          unknown20->unknown2f0->unknown79 = true;
+          for (u32 i = 0; i < count; i++) {
+            Bdat::uVal group = Bdat::getVal(bdat, "menuGroup", top + i);
+            if (Bdat::getVal(bdat, "MAPJUMPID", top + i).valueU16 != 0) {
+              if (group.valueU16 == unknown20->unknown40->getContents(unknown20->unknown40->getIndex(false)).unknown00) {
+                if (GfGameFlag::getLocal(1, top + i + FLAG_UNKNOWN_51161) == 1) {
+                  MenuZoneMapInfo info;
+                  info.unknown00 = top + i;
+                  info.unknown04 = Bdat::getVal(bdat, "MSGID", top + i).valueU16;
+                  info.unknown08 = Bdat::getVal(bdat, "stoff_cndID", top + i).valueU16;
+                  info.unknown14 = Bdat::getVal(bdat, "menuPriority", top + i).valueU16;
+                  unknown20->unknown2f0->addContents(info);
+                }
+              }
+            }
+          }
+          if (unknown20->unknown300.size() != 0) {
+            unknown20->unknown300.destroy();
+            unknown20->unknown300.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
+          }
+          if (unknown20->unknown2f0->getSize() != 0) {
+            unknown20->unknown2f0->sortFromPriority();
+            unknown20->unknown300.reserve(unknown20->unknown2f0->getSize());
+            unknown20->unknown300.fill(MapJumpInfo());
+          }
+        }
+        int ctrl = ctrlGroupUp(unknown20->unknown48, unknown20->unknown40->getSize());
+        if (ctrl == -1) {
+          {
+            mm::mtl::FixStr<32> name;
+            name.format("IMG_zone_base_@%02d", unknown20->unknown48->getIndex(false) + 1);
+            ui::UIObjectAcc base(unknown20->unknown48->getSelectObject(), name.c_str());
+            if (base.isValid()) {
+              base.startAnimation("open", false);
+            }
+          }
+          sendEvent(owner.searchChild("LAY_zonemap"), GfMenuTypes::unknown003_259, 0, 0);
+          sendEvent(owner.searchChild("LAY_icon_filter"), GfMenuTypes::unknown003_259, 0, 0);
+          sendEvent(owner.searchChild("LAY_point_sellect"), GfMenuTypes::unknown003_259, 0, 2);
+          sendEvent(owner.searchChild("LAY_worldmap"), GfMenuTypes::unknown003_260, 0, 0);
+          sendEvent(handle, GfMenuTypes::unknown003_260, 0, 0);
+        } else {
+          GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+        }
+        ctrlScrollBar(acc.searchChild("LAY_zone_scroll_bar"), true);
+        GfMenuObject::disableFSInput();
+        GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+        unknown0c = 1;
+        GfMenuObjUtil::playSECommonDecide();
+      }
+    } else if (event.unknown0c == 2) {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_out_l");
+      param.unknown00 = 0.3f;
+      param.unknown14 = 10;
+      GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_zonespot");
+      ctrlScrollBar(acc.searchChild("LAY_zone_scroll_bar"), true);
+      GfMenuObject::disableFSInput();
+      GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+      sendEvent(owner.searchChild("LAY_map_sellect"), GfMenuTypes::unknown003_259, 0, 0);
+      GfMenuObjUtil::playSECommonCancel();
+    }
+    return;
+  case GfMenuTypes::unknown003_259:
+    acc.setDisp(true);
+    if (unknown0c == 1) {
+      int ctrl = ctrlGroupReturn(unknown20->unknown48, unknown20->unknown40->getSize());
+      if (ctrl == -1) {
+        GfMenuObject::enableFSInput(1);
+      } else {
+        GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+      }
+      unknown0c = 0;
+    } else {
+      acc.setDispChild(true, "LAY_zonespot");
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_in_l");
+      param.unknown00 = 0.3f;
+      param.unknown04 = 1;
+      param.unknown14 = 8;
+      int ctrl = GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_zonespot");
+      if (ctrl == -1) {
+        GfMenuObject::enableFSInput(1);
+        GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+      } else {
+        GfMenuObject::hookCtrlEvent(acc.unknown10, ctrl);
+      }
+    }
+    ctrlScrollBar(acc.searchChild("LAY_zone_scroll_bar"), false);
+    GfMenuObject::resetInputSelection(handle);
+    GfMenuObject::setupInputSelectionFromList(handle, *unknown20->unknown40);
+    break;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
 }
 
 void GfMenuObjWorldMap::setupZoneSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list) {
@@ -402,6 +765,21 @@ void GfMenuObjWorldMap::setupPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList
     }
   }
   GfMenuObjUtil::createVScrollBarPlugin(acc.searchChild("IMG_point_scroll_bar"), list, "IMG_point_scroll_bar_base", true);
+}
+
+void GfMenuObjWorldMap::refreshPointSelect(ui::UIObjectAcc &acc, GfMenuZoneMapList *list, ui::UISelectObjList *objects, u32 point) {
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    u32 id = list->getContents(list->getPageIndex(i)).unknown00;
+    name.format("IMG_point_base_@%02d", i + 1);
+    ui::UIObjectAcc base(acc.searchChild(name.c_str()));
+    if (id == point) {
+      base.startAnimation("select", false);
+    } else {
+      base.startAnimation("normal", false);
+    }
+  }
+  refreshPointText(acc, list, objects);
 }
 
 void GfMenuObjWorldMap::loadTex() {
@@ -492,6 +870,71 @@ void GfMenuObjWorldMap::updateDispIconNode() {
   }
 }
 
+void GfMenuObjWorldMap::IconFilterListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    acc.setDisp(false);
+    GfMenuObject::disableInput(handle);
+    return;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff) {
+      u32 prev = event.unknown0c;
+      unknown20->unknown2f88->setIndex(index);
+      {
+        ui::UIObjectAcc text(acc.unknown10, "TXT_icon_filter_index");
+        u16 msgId = GfMenuObjUtil::getMsgIDFromList(BDAT_MNU_MSG_MAP_FILTER, index + 1);
+        text.setText(ui::UIStr(GfDataBdat::getFP(BDAT_MENU_MS), msgId));
+      }
+      bool isOn = (unknown20->unknown2f84 & (1 << index)) != 0;
+      GfMenuObjOperationInfo::changeText(acc.unknown10, 11, isOn);
+      if (prev != 0xffffffff && index != prev) {
+        GfMenuObjUtil::playSECommonTab();
+      }
+    }
+    break;
+  }
+  case 8: {
+    u32 index = event.unknown08;
+    if (index != 0xffffffff && event.unknown0c == 11) {
+      if ((unknown20->unknown2f84 & (1 << index)) == 0) {
+        unknown20->unknown2f84 |= 1 << index;
+      } else {
+        unknown20->unknown2f84 &= ~(1 << index);
+      }
+      unknown20->refreshIconFilter();
+      unknown20->updateDispIconNode();
+      u32 isOn = unknown20->unknown2f84 & (1 << index);
+      if (isOn != 0) {
+        GfMenuObjUtil::playSE(12);
+      } else {
+        GfMenuObjUtil::playSE(14);
+      }
+      GfMenuFlag::set1(index + 0x28, isOn != 0);
+      GfMenuObjOperationInfo::changeText(acc.unknown10, 11, isOn != 0);
+    }
+    return;
+  }
+  case GfMenuTypes::unknown003_259:
+    unknown20->unknown2f88->setIndex(0);
+    GfMenuObject::resetInputSelection(acc.unknown10);
+    GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown2f88);
+    acc.setDisp(true);
+    unknown20->unknown2f90->setDisp(true);
+    unknown20->refreshIconFilter();
+    GfMenuObject::enableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_260:
+    acc.setDisp(false);
+    unknown20->unknown2f90->setDisp(false);
+    GfMenuObject::disableInput(handle);
+    break;
+  }
+  ui::UIObjectListener::reciveEvent(event, handle);
+}
+
 u32 GfMenuObjWorldMap::searchNodeId(u32 map) {
   for (u32 i = 0; i < 15; i++) {
     if (unknown001[i] == map) {
@@ -538,6 +981,14 @@ bool GfMenuObjWorldMap::chkMapCond(u32 map, mm::Pnt<s16> *pos) {
   return false;
 }
 
+u32 GfMenuObjWorldMap::getFloor() {
+  if (!unknown40->unknown79) {
+    return unknown40->getContents(unknown40->getIndex(false)).unknown00;
+  }
+  u16 image = unknown2f0->getContents(unknown2f0->getIndex(false)).unknown00;
+  return Bdat::getVal(unknown2f78, "menuMapImage", image).valueU16;
+}
+
 bool GfMenuObjWorldMap::seqTexDelete() {
   ui::UIObjectAcc main(ui::UIObjectAcc(unknown18).searchChild("LAY_main"));
   if (unknown690) {
@@ -559,6 +1010,36 @@ bool GfMenuObjWorldMap::seqTexLoadWait() {
   ui::UIObjectAcc main(ui::UIObjectAcc(unknown18).searchChild("LAY_main"));
   ui::UIObjectAcc floor(main.searchChild("LAY_floor"));
   return !floor.isStreaming();
+}
+
+bool GfMenuObjWorldMap::seqGimik() {
+  ui::UIObjectAcc main(ui::UIObjectAcc(unknown18).searchChild("LAY_main"));
+  if (GfFieldGimmick::get()->unknownf4c0.unknown00 <= 0 || !(nullptr == GfFieldGimmick::get()->unknownf4c0.unknown438)) {
+    return false;
+  }
+  if (unknown2f60) {
+    const mm::Vec3 &position = GfGameManager::getControlMoverPosition();
+    unknown2f60 = GfFieldGimmick::get() != nullptr && GfFieldGimmick::get()->unknownf4c0.isBelongToCurMap(position);
+  }
+  setupIconTable(main, unknown6c0, unknown2f0, unknown2f14, unknown2f20, unknown2f30, unknown2f60);
+  for (u32 node = 0; node < 10; node++) {
+    for (u32 i = 0; i < unknown6c0[node].size(); i++) {
+      unknown6b8->addObject(unknown6c0[node][i]);
+    }
+  }
+  if (unknown2f0->unknown79) {
+    for (u32 i = 0; i < unknown2f0->getSize(); i++) {
+      unknown2f0->getContents(i).unknown10 = -1;
+      for (u32 j = 0; j < unknown6b8->getSize(); j++) {
+        if (unknown300[i].unknown00 == unknown6b8->getObject(j)) {
+          unknown2f0->getContents(i).unknown10 = j;
+          break;
+        }
+      }
+    }
+  }
+  updateDispIconNode();
+  return true;
 }
 
 void GfMenuObjWorldMap::closeIconTable(ui::UIObjectAcc &, mm::mtl::FixedArray<mm::mtl::FixedVector<u32, 256>, 10> &icons) {
@@ -591,6 +1072,25 @@ void GfMenuObjWorldMap::getFloorAABB(u32 map, u32 floor, mm::Aabb &aabb, mm::Pnt
       center.y = static_cast<s16>((min.z + max.z) * 0.5f);
     }
   }
+}
+
+u32 GfMenuObjWorldMap::setupIconTableSub(ui::UIObjectAcc &acc, mm::mtl::FixedVector<u32, 256> &icons, u32 type, mm::Pnt<s16> pos, mm::Vec2) {
+  // Inferred role: image index of the icon of each node; original name unknown.
+  static const u32 unknown002[10] = {1, 3, 4, 5, 6, 7, 8, 9, 10, 0};
+  if (icons.size() == icons.capacity()) {
+    return 0;
+  }
+  const char *name = getIconNodeName(type);
+  ui::UIObjectAcc layout(acc.searchChild("LAY_icon"));
+  u32 handle = ui::UIObjectAcc(layout.searchChild("IMG_zoneicon")).duplicate(layout.searchChild(name));
+  ui::UIObjectAcc icon(handle);
+  if (icon.isValid()) {
+    icon.setDisp(true);
+    icon.setPosCenter(pos);
+    icon.setImageIndex(unknown002[type]);
+    icons.push_back(handle);
+  }
+  return handle;
 }
 
 const char *GfMenuObjWorldMap::getIconNodeName(u32 type) { return nd_lay_icon_node_tbl[type]; }

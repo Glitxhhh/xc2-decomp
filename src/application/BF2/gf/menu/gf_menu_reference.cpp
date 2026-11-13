@@ -529,7 +529,7 @@ bool GfMenuReference::isReversePaletteBtnState(u32 index, u32 button) {
   return false;
 }
 
-ui::UIListInfo<MenuEnemyInfo> *GfMenuReference::getEnemyLinkList() {
+GfMenuEnemyList *GfMenuReference::getEnemyLinkList() {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
     return reference->unknown4cb98;
@@ -537,7 +537,7 @@ ui::UIListInfo<MenuEnemyInfo> *GfMenuReference::getEnemyLinkList() {
   return nullptr;
 }
 
-ui::UIListInfo<MenuItemInfo> *GfMenuReference::getItemLinkList() {
+GfMenuItemList *GfMenuReference::getItemLinkList() {
   GfMenuReference *reference = get();
   if (reference != nullptr) {
     return reference->unknown4cba0;

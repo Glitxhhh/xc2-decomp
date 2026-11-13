@@ -1,6 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_dr_custom_top.h"
 
+#include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_party.h"
+#include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
 #include "gf/menu/object/gf_menu_obj_blade_set.h"
 #include "gf/menu/object/gf_menu_obj_common_detail.h"
@@ -8,11 +13,15 @@
 #include "gf/menu/object/gf_menu_obj_dr_arts_set.h"
 #include "gf/menu/object/gf_menu_obj_dr_equip.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_math/mm_pnt.h"
+#include "mm_math/mm_rect.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_curve.h"
 #include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/ctrl/ui_ctrl_revolve_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -26,6 +35,85 @@ GfMenuObjDrCustomTop::~GfMenuObjDrCustomTop() {
   mm::mtl::safeRelease(unknown28);
   mm::mtl::safeRelease(unknown30);
   mm::mtl::safeRelease(unknown38);
+}
+
+void GfMenuObjDrCustomTop::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  if (!main.isValid()) {
+    return;
+  }
+// __LINE__ must be 74 as in the original file: it is the line argument of operator new.
+#line 74
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main.unknown10, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  {
+    GfMenuDriverList::PartySetup setup;
+    setup.unknown18 = false;
+    setup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_2;
+    unknown28 = GfMenuDriverList::create();
+    unknown28->setupFromParty(setup);
+    unknown28->setIndex(0);
+  }
+  {
+    ui::UIObjectAcc select(unknown18, "LAY_dr_select");
+    ui::UISelectObjList::CreateParam createParam = {};
+    createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+    unknown30 = ui::UISelectObjList::create(createParam);
+    for (u32 i = 0; i < unknown28->getSize(); i++) {
+      ui::UIObjectAcc image(select.duplicateChild("LAY_dr_image"));
+      if (image.isValid()) {
+        GfMenuCharDataAdapter::create(image.searchChild("IMG_dr_image"), 0x1c, OBJECT_TYPE_PC, unknown28->getContents(i).unknown00, false);
+        image.setDisp(true);
+        unknown30->addObject(image.unknown10);
+      }
+    }
+    ui::UICtrlRevolveSelect::RevolveSetting setting;
+    {
+      ui::UIObjectAcc spot(select.unknown10, "IMG_dr_spot");
+      mm::Rect<s16> rect;
+      spot.getRect(rect, ui::UIObjectAcc::RECT_SCALED);
+      s16 centerX = rect.x + rect.width / 2;
+      select.getLayoutRect("dr_fimege", rect);
+      s16 centerY = rect.y + rect.height / 2;
+      u32 priority = select.getDispPriority();
+      if (unknown30->getSize() >= 4) {
+        priority = unknown30->getSize() - 3;
+      }
+      setting.unknown00 = 360;
+      setting.unknown02 = 2;
+      setting.unknown08 = mm::Pnt<s16>(centerX, centerY);
+      setting.unknown0c = 150;
+      setting.unknown24 = ui::CURVE_TYPE_SIN90;
+      setting.unknown20 = priority;
+      setting.unknown04 = 0.5f;
+      setting.unknown2c = 0.5f;
+      setting.unknown18 = 0.25f;
+    }
+    unknown38 = ui::UICtrlRevolveSelect::create(select.unknown10, setting, unknown30);
+    if (unknown38 != nullptr) {
+      unknown38->setupEventHanding(select.unknown10, 1);
+    }
+    GfMenuCharDataAdapter::createFromReferenceDriver(select.searchChild("TXT_dr_select_name"), 2, 0, false);
+    GfMenuReference::setReferenceDriverID(0, unknown28->getContents(unknown28->getIndex(false)).unknown00);
+    if (unknown28->getSize() >= 2) {
+      setupInputSelectionFromList(select.unknown10, *unknown28);
+    } else {
+      select.setDispChild(false, "LAY_dr_select_input");
+    }
+// __LINE__ must be 174 as in the original file: it is the line argument of operator new.
+#line 174
+    DrSelectListener *drSelectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DrSelectListener(this);
+    drSelectListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(select.unknown10, drSelectListener);
+    if (drSelectListener != nullptr) {
+      drSelectListener->release();
+    }
+  }
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjDrCustomTop::finalize() { GfMenuObject::finalize(); }

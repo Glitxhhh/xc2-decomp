@@ -3,11 +3,13 @@
 #include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_blade_create.h"
+#include "gf/data/gf_data_idea.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/game/blade/gf_blade_create.h"
 #include "gf/gf_allocator.h"
 #include "gf/util/gf_item_util.h"
 #include "ml/rand.h"
+#include "mm_mtl/fixed_vector.h"
 
 namespace gf {
 
@@ -80,6 +82,13 @@ bool GfBladeCreate::setupCoreCrystal(u32 crystal) {
   }
   unknown04 = crystal;
   return true;
+}
+
+void GfBladeCreate::setupAddBooster(u32 booster) {
+  unknown08.push_back(booster);
+  int idea = GfBdatItem::get()->getBoosterIdea(booster);
+  u32 category = GfBdatItem::get()->getBoosterCategory(booster);
+  unknown210.setLevel(category, unknown210.unknown00[category].unknown04 + idea);
 }
 
 bool GfBladeCreate::isEnableAddBlade() const { return GfDataBlade::getEnableCountForCreateBlade() != 0; }

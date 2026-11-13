@@ -89,7 +89,9 @@ enum ActivateType {
   ACTIVATE_TYPE_UNKNOWN_3, // Inferred role: activate type mercenary team; original name unknown.
 };
 
-enum DBSLOT {};
+enum DBSLOT {
+  DBSLOT_UNKNOWN_0, // Inferred role: death blow slot 0; original name unknown.
+};
 enum FAVORITE {
   FAVORITE_UNKNOWN_0, // Inferred role: favorite category 0; original name unknown.
   FAVORITE_UNKNOWN_1, // Inferred role: favorite category 1; original name unknown.

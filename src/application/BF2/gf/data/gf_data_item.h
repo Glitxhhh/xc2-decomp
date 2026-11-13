@@ -33,6 +33,7 @@ struct ItemType {
 enum {
   FAVORITE_CATEGORY_FOOD_UNKNOWN_12 = 12, // Inferred role: favorite category food first; original name unknown.
   FAVORITE_CATEGORY_FOOD_UNKNOWN_17 = 17, // Inferred role: favorite category food last; original name unknown.
+  FAVORITE_CATEGORY_UNKNOWN_20 = 20,      // Inferred role: favorite category of a blade without one, not a food; original name unknown.
 };
 
 enum ITEM_BOX_INDEX {

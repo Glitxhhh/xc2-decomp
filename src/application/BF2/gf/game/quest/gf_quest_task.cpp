@@ -1,8 +1,12 @@
 #include "gf/game/quest/gf_quest_task.h"
 
+#include "gf/data/gf_bdat_chrenarrange.h"
+#include "gf/data/gf_bdat_chrenparam.h"
 #include "gf/data/gf_bdat_quest.h"
+#include "gf/data/gf_bdat_rsc.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_driver.h"
+#include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_quest.h"
@@ -17,6 +21,7 @@
 #include "gf/game/quest/gf_quest_info.h"
 #include "gf/game/quest/gf_quest_manager.h"
 #include "gf/game/quest/gf_quest_task_param.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/request/gf_req_scom.h"
 #include "gf/util/gf_item_util.h"
@@ -132,6 +137,56 @@ void GfQuestTask::clearTask(QuestID quest) {
 
     if (isTaskFlagComplete(param)) {
       setCompleteFlag(param, false);
+    }
+  }
+}
+
+void GfQuestTask::incSuppressEnemy(u32 enemy) {
+  GfBdatRsc *rsc = GfBdatRsc::get();
+  GfBdatChrEnArrange *arrange = GfBdatChrEnArrange::get();
+  GfBdatChrEnParam *enParam = GfBdatChrEnParam::get();
+  u32 paramId = arrange->getChrEnArrangeParamID(enemy);
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  u32 resource = enParam->getChrEnParamResourceID(paramId);
+  rsc->getRscEnTypeFamily(resource);
+  u32 genus = rsc->getRscEnTypeGenus(resource);
+  GfDataEnemy::getName(enemy);
+  u32 questMax = GfQuestManager::getOrderQuestMaxWithAchievement();
+  for (u32 i = 0; i < questMax; i++) {
+    QuestID quest = GfQuestManager::getOrderQuestWithAchievement(i);
+    u32 purpose = GfDataQuest::getListPurposeID(quest);
+    if (purpose == 0) {
+      continue;
+    }
+
+    for (u32 taskIndex = 0; taskIndex < QUEST_UNKNOWN_4; taskIndex++) {
+      QuestTaskParam param(quest, taskIndex, purpose, TASK_STATE_UNKNOWN_2);
+      if (param.unknown10 != TASK_TYPE_UNKNOWN_1 || !isEnableTaskCondition(param)) {
+        continue;
+      }
+
+      u32 targetEnemy = questListAcc->getBattleEnemyID(param.unknown14);
+      u32 targetGroup = questListAcc->getBattleEnemyGroupID(param.unknown14);
+      u32 targetSpecies = questListAcc->getBattleEnemySpeciesID(param.unknown14);
+      bool isTarget;
+      if (targetEnemy != 0) {
+        isTarget = targetEnemy == enemy;
+      } else if (targetGroup != 0) {
+        isTarget = GfQuestUtil::isEnemyGroup(targetGroup, enemy);
+      } else {
+        isTarget = genus == targetSpecies && targetSpecies != 0;
+      }
+
+      if (isTarget && GfQuestInfo::incSuppressCount(param)) {
+        QuestID parent = GfDataQuest::getListPRTQuestID(quest);
+        bool isVisible = GfDataQuest::getListVisible(parent);
+        u32 taskUi = questListAcc->getTaskTaskUI(purpose, taskIndex);
+        if (isVisible && taskUi != 1 && taskUi != 3) {
+          GfQuestUtil::sendSuppressLog(param, enemy);
+        }
+
+        GfQuestManager::eventChangeTaskState(param);
+      }
     }
   }
 }

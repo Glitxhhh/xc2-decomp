@@ -26,12 +26,15 @@ enum CLOUD_SEA {};
 enum {
   MAP_UNKNOWN_3 = 3,   // Inferred role: map avaritia; original name unknown.
   MAP_UNKNOWN_6 = 6,   // Inferred role: map gula; original name unknown.
+  MAP_UNKNOWN_7 = 7,   // Inferred role: first map shown with the sepia filter; original name unknown.
   MAP_UNKNOWN_9 = 9,   // Inferred role: map invidia; original name unknown.
   MAP_UNKNOWN_10 = 10, // Inferred role: map superbia; original name unknown.
   MAP_UNKNOWN_12 = 12, // Inferred role: map arcadia; original name unknown.
   MAP_UNKNOWN_13 = 13, // Inferred role: map luxuria; original name unknown.
   MAP_UNKNOWN_14 = 14, // Inferred role: map liberalitas; original name unknown.
   MAP_UNKNOWN_15 = 15, // Inferred role: map elpis; original name unknown.
+  MAP_UNKNOWN_17 = 17, // Inferred role: second map shown with the sepia filter; original name unknown.
+  MAP_UNKNOWN_19 = 19, // Inferred role: third map shown with the sepia filter; original name unknown.
 };
 
 // Inferred role: save data map; original type name unknown.

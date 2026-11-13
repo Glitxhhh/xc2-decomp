@@ -99,7 +99,8 @@ public:
   ui::UISelectObjList *unknown30;                         // Inferred role: chip objects; original member name unknown.
   mm::mtl::IntrusivePtr<GfMenuReferenceNumber> unknown38; // Inferred role: reference number; original member name unknown.
   GfMenuCallContext *unknown40;                           // Inferred role: call context; original member name unknown.
-  u8 _48[0x50 - 0x48];
+  u32 unknown48;                                          // Inferred role: state of the call context dialog; original member name unknown.
+  u8 _4c[0x50 - 0x4c];
   GfMenuCallContext *unknown50;                    // Inferred role: call context; original member name unknown.
   GfMenuSequence<GfMenuObjBlWeapon2, 8> unknown58; // Inferred role: weapon change steps; original member name unknown.
   bool unknown2e8;                                 // Inferred role: control started flag; original member name unknown.
@@ -128,6 +129,7 @@ static_assert(offsetof(GfMenuObjBlWeapon2, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown38) == 0x38, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown40) == 0x40, "");
+static_assert(offsetof(GfMenuObjBlWeapon2, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown50) == 0x50, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown58) == 0x58, "");
 static_assert(offsetof(GfMenuObjBlWeapon2, unknown2e8) == 0x2e8, "");

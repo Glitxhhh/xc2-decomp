@@ -30,9 +30,19 @@ public:
 
   class BGListener : public ui::UIObjectListener {
   public:
+    BGListener(GfMenuObjPartyForm3 *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];            // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjPartyForm3 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class DriverSelectListener : public ui::UIObjectListener {
+  public:
+    DriverSelectListener(GfMenuObjPartyForm3 *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];            // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
     GfMenuObjPartyForm3 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -85,6 +95,9 @@ static_assert(offsetof(GfMenuObjPartyForm3, unknown80) == 0x80, "");
 static_assert(offsetof(GfMenuObjPartyForm3::MainListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjPartyForm3::BGListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjPartyForm3::MainListener) == 0x28, "");
+static_assert(sizeof(GfMenuObjPartyForm3::BGListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjPartyForm3::DriverSelectListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjPartyForm3::DriverSelectListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjPartyForm3, unknown310) == 0x310, "");
 static_assert(offsetof(GfMenuObjPartyForm3, unknown318) == 0x318, "");
 static_assert(sizeof(GfMenuObjPartyForm3) == 0x320, "");

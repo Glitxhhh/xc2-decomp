@@ -8,6 +8,7 @@
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/data/gf_bdat_btl.h"
+#include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_achievement.h"
@@ -16,6 +17,7 @@
 #include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_en_book.h"
 #include "gf/data/gf_data_field.h"
+#include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_param_acc.h"
@@ -2976,6 +2978,55 @@ GF_SCOM_HANDLE *SCOM_FIELD_VOICE::createAchievementAll(u32 blade) {
 void SCOM_FIELD_VOICE::createEngage(u32 blade) {
   ParamObj object = {unknown020, OBJECT_TYPE_BLADE, blade};
   GfFieldVoice::playVoice(object, CV_FIELD_UNKNOWN_36, 0, 0, CV_PRIO_UNKNOWN_1);
+}
+
+GAME_VOICE_HANDLE *SCOM_FIELD_VOICE::createFavorite(u32 id, FAVORITE favorite) {
+  DataParamAcc acc(GfDataBlade::isBladeID(id) ? OBJECT_TYPE_BLADE : OBJECT_TYPE_PC, id, GIMMICK_TYPE_UNKNOWN_0);
+  if (!acc.isValid()) {
+    return nullptr;
+  }
+  u32 type = acc.getObjType();
+  ParamObj object = {unknown020, type, id};
+  if (acc.getObjType() == OBJECT_TYPE_BLADE && GfDataBlade::isCommonBlade(id)) {
+    u32 middle = 2;
+    switch (favorite) {
+    case FAVORITE_UNKNOWN_0:
+    case FAVORITE_UNKNOWN_1:
+      middle = 0;
+      break;
+    case FAVORITE_UNKNOWN_2:
+    case FAVORITE_UNKNOWN_3:
+      middle = 2;
+      break;
+    }
+    u32 category = FAVORITE_CATEGORY_UNKNOWN_20;
+    switch (favorite) {
+    case FAVORITE_UNKNOWN_2:
+    case FAVORITE_UNKNOWN_3: {
+      u32 item = GfDataBlade::getFavorite(id, favorite);
+      // The game drops the result (bl at 0x71005d04d8) and falls through to the category read.
+      GfBdatItem::get()->getFavoriteCategory(item);
+    }
+    case FAVORITE_UNKNOWN_0:
+    case FAVORITE_UNKNOWN_1:
+      category = GfDataBlade::getFavorite(id, favorite);
+      break;
+    }
+    u32 variation = GfDataItem::isFavoriteCategoryFood(category) ? 0 : 1;
+    switch (favorite) {
+    case FAVORITE_UNKNOWN_2:
+    case FAVORITE_UNKNOWN_3:
+      return GfFieldVoice::playVoice(object, CV_FIELD_UNKNOWN_29, middle, variation, CV_PRIO_UNKNOWN_1);
+    case FAVORITE_UNKNOWN_0:
+    case FAVORITE_UNKNOWN_1:
+      return GfFieldVoice::playVoice(object, CV_FIELD_UNKNOWN_29, variation, middle, CV_PRIO_UNKNOWN_1);
+    }
+  } else if (favorite >= FAVORITE_UNKNOWN_2 && favorite <= FAVORITE_UNKNOWN_3) {
+    return GfFieldVoice::playVoice(object, CV_FIELD_UNKNOWN_29, 2, favorite - FAVORITE_UNKNOWN_2, CV_PRIO_UNKNOWN_1);
+  } else if (favorite >= FAVORITE_UNKNOWN_0 && favorite <= FAVORITE_UNKNOWN_1) {
+    return GfFieldVoice::playVoice(object, CV_FIELD_UNKNOWN_29, favorite, 0, CV_PRIO_UNKNOWN_1);
+  }
+  return nullptr;
 }
 
 GF_SCOM_HANDLE *SCOM_FIELD_VOICE::createBadWeather() {

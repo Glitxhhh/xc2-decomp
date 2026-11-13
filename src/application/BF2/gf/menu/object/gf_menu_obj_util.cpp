@@ -1,6 +1,9 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 
+#include <string.h>
+
 #include "bdat.h"
+#include "framework/lang_util.h"
 #include "framework/sound/sound_manager.h"
 #include "fw/fw_pad.h"
 #include "fw/fw_param_manager.h"
@@ -58,6 +61,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/intrusive_ptr.h"
+#include "mtl/mem_manager.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/ctrl/ui_ctrl_manager.h"
 #include "ui/event/ui_event_manager.h"
@@ -910,6 +914,43 @@ bool GfMenuObjUtil::getImageParam(u32 type, u32 id, ImageParam &param, u32 index
   param.unknown02 = Bdat::getVal(bdat, offsetY.c_str(), row).valueS16;
   param.unknown04 = Bdat::getVal(bdat, scale.c_str(), row).valueF32;
   return true;
+}
+
+bool GfMenuObjUtil::getBladeTeamName(u32 blade, ui::UIStr &name) {
+  if (blade != 0) {
+    if (GfDataBlade::isCommonBlade(blade)) {
+      DataParamAcc acc(OBJECT_TYPE_BLADE, blade, GIMMICK_TYPE_UNKNOWN_0);
+      ui::UIStr bladeName = getName(acc);
+      u16 id = getMsgIDFromList(BDAT_MNU_MSG_MERCENARIES, 20);
+      ui::UIStr teamName(GfDataBdat::getFP(BDAT_MENU_MS), id);
+      u32 length = strlen(bladeName.c_str());
+      char *text;
+      if (fw::LangUtil::getLangType() == 12 || fw::LangUtil::getLangType() == 2 || fw::LangUtil::getLangType() == 4 || fw::LangUtil::getLangType() == 5) {
+        u32 teamLength = strlen(teamName.c_str());
+        text = static_cast<char *>(getAllocator(ALLOCATOR_UNKNOWN_0)->allocate(length + teamLength + 2, 4));
+        strcpy(text, teamName.c_str());
+        strcat(text, " ");
+        strcat(text, bladeName.c_str());
+      } else {
+        u32 teamLength = strlen(teamName.c_str());
+        text = static_cast<char *>(getAllocator(ALLOCATOR_UNKNOWN_0)->allocate(length + teamLength + 1, 4));
+        strcpy(text, bladeName.c_str());
+        strcat(text, teamName.c_str());
+      }
+      name.setupAllocated(text);
+      if (text != nullptr) {
+        mtl::MemManager::deallocate(text, 0, false);
+      }
+      return true;
+    }
+    u8 *bdat;
+    u32 textId;
+    if (GfDataBlade::getMercenaryName(bdat, textId, blade)) {
+      name.setupMstxt(bdat, textId);
+      return true;
+    }
+  }
+  return false;
 }
 
 ui::UIStr GfMenuObjUtil::getName(const DataParamAcc &acc) {

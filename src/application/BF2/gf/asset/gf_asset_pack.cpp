@@ -634,6 +634,17 @@ size_t GfAssetPack::getNeedLoadFileSize(size_t blockSize, bool) {
   return total;
 }
 
+void GfAssetPack::loadStart(mm::mtl::IAllocator *allocator) {
+  m_assetType.unknown100 = allocator;
+  for (GfAssetFiles::AssetFile *file : m_assetType.unknown50) {
+    GfFileIdx index = file->unknown00;
+    const mm::mtl::FixStr<128> &name = m_assetType.getFileName(index);
+    if (getResource(index) == nullptr) {
+      setResource(index, GfAssetResource::create(m_assetType.unknown08.c_str(), name.c_str(), allocator, 10));
+    }
+  }
+}
+
 void GfAssetPack::replaceAssetType(const GfAssetFilesInfo &filesInfo) {
   AssetPackInfo *info = GfAssetManager::getAssetPackInfo(filesInfo.unknown00);
   info->unknown308 = filesInfo.unknown08;

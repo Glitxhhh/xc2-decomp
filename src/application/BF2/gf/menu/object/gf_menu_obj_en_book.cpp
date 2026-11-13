@@ -211,6 +211,43 @@ void GfMenuObjEnBook::refreshFamilyList() {
   }
 }
 
+void GfMenuObjEnBook::setupGenusMsgList() {
+  u8 *bdat = GfDataBdat::getFP(BDAT_BTL_EN_BOOK);
+  if (bdat == nullptr) {
+    return;
+  }
+  u32 top = Bdat::getIdTop(bdat);
+  {
+    ui::UIListInfoBase::SetupParam param;
+    param.unknown08 = unknown58->getSize();
+    param.unknown10 = true;
+    unknown50->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
+    unknown50->clear();
+  }
+  GfBdatRsc *bdatRsc = GfBdatRsc::get();
+  for (int i = 0; i < Bdat::getIdCount(bdat); i++) {
+    Bdat::uVal enemy = Bdat::getVal(bdat, "BaseEnemyID", top + i);
+    if (enemy.valueU16) {
+      u32 rsc = GfDataEnemy::getRscIdByArrangeId(enemy.valueU16);
+      if (bdatRsc->getRscEnTypeFamily(rsc) == unknown28) {
+        u32 genus = bdatRsc->getRscEnTypeGenus(rsc);
+        MsgID id = {};
+        id.unknown00 = bdatRsc->getRscEnGenusNAME(genus);
+        bool found = false;
+        for (u32 j = 0; j < unknown50->getSize(); j++) {
+          if (unknown50->getContents(j).unknown00 == id.unknown00) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          unknown50->addContents(id);
+        }
+      }
+    }
+  }
+}
+
 void GfMenuObjEnBook::refreshGenusMsgList() {
   ui::UIStr text;
   mm::mtl::FixStr<32> name;

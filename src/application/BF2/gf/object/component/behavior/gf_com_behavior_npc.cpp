@@ -32,7 +32,9 @@
 #include "gf/object/component/behavior/npc/gf_npc_state_reaction.h"
 #include "gf/object/component/behavior/npc/gf_npc_state_talk.h"
 #include "gf/object/component/behavior/npc/gf_npc_state_walk.h"
+#include "gf/object/component/behavior/plugin/gf_eye_blink_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
+#include "gf/object/component/behavior/plugin/gf_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -396,6 +398,43 @@ bool GfComBehaviorNpc::recieveMessage(fw::MessageObject *sender, fw::Message &me
     break;
   }
   return isHandled;
+}
+
+void GfComBehaviorNpc::setup() {
+  cleanup();
+  unknown10.beginSetup(*this, 4);
+  unknown10.unknown001<EyeBlinkPlugin>(1, true);
+  unknown10.unknown001<LipSyncPlugin>(2, true);
+  unknown10.endSetup();
+  Plugin *plugin = unknown10.unknown28[2];
+  if (plugin != nullptr) {
+    plugin->setActivate(true);
+  }
+  gmk::AGmkBase *gmk = getBindedGmkInst();
+  if (gmk != nullptr && gmk::hasEyeBlink(*gmk)) {
+    GfObjUtil::setEnableEyeBlink(static_cast<GfObj *>(unknown08)->unknownf8, true);
+  }
+  init(false);
+  createFsm();
+  {
+    GfFieldMoveSpeed::CreateInfo moveSpeedInfo;
+    moveSpeedInfo.unknown00 = static_cast<GfObj *>(unknown08)->unknownf8;
+    unknown270.create(moveSpeedInfo);
+  }
+  validateBindedGmkInstInfo(false);
+  fw::ColiMoveObject *coli = getColiObject();
+  if (coli != nullptr) {
+    GfGameStuckMeter::CreateInfo stuckInfo;
+    // The game really clears the value before setColiObj (1.0.0: str wzr, [sp, #24] at 0x7100534b74, right before the call), although it is set again below.
+    stuckInfo.unknown10 = 0.0f;
+    stuckInfo.setColiObj(coli);
+    stuckInfo.unknown10 = stuckInfo.unknown00 * stuckInfo.unknown00;
+    unknown1c0.create(stuckInfo);
+  }
+  GfGameDepopMeter::CreateInfo depopInfo;
+  depopInfo.unknown08 = true;
+  depopInfo.unknown00 = static_cast<GfObj *>(unknown08)->unknownf8;
+  unknown220.create(depopInfo);
 }
 
 void GfComBehaviorNpc::update(const fw::UpdateInfo &info) {

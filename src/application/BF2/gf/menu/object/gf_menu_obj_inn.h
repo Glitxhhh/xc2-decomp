@@ -103,8 +103,8 @@ public:
   u32 unknown88;                         // Inferred role: mode; original member name unknown.
   u32 unknown8c;                         // Inferred role: driver of the level up; original member name unknown.
   u32 unknown90;                         // Inferred role: enable level of the driver (first output of GfDataDriver::getEnableLevel); original member name unknown.
-  u8 _94[0x98 - 0x94];
-  bool unknown98; // Role and original member name unknown, cleared by the constructor.
+  int unknown94;                         // Inferred role: control of the level up label (result of GfMenuObjUtil::startCtrl); original member name unknown.
+  bool unknown98;                        // Role and original member name unknown, cleared by the constructor.
   u8 _99[0xa0 - 0x99];
   GfMenuSequence<GfMenuObjInn, 8> unknown0a0; // Inferred role: queued steps; original member name unknown.
 };
@@ -120,6 +120,7 @@ static_assert(offsetof(GfMenuObjInn, unknown60) == 0x60, "");
 static_assert(offsetof(GfMenuObjInn, unknown88) == 0x88, "");
 static_assert(offsetof(GfMenuObjInn, unknown8c) == 0x8c, "");
 static_assert(offsetof(GfMenuObjInn, unknown90) == 0x90, "");
+static_assert(offsetof(GfMenuObjInn, unknown94) == 0x94, "");
 static_assert(offsetof(GfMenuObjInn, unknown98) == 0x98, "");
 static_assert(offsetof(GfMenuObjInn, unknown0a0) == 0xa0, "");
 static_assert(offsetof(GfMenuObjInn::MainListener, unknown20) == 0x20, "");

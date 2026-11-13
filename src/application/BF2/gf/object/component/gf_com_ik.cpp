@@ -6,6 +6,7 @@
 #include "framework/ik/ik_blow_rotate_solver.h"
 #include "framework/ik/ik_ground_interface.h"
 #include "framework/ik/ik_look_at_solver.h"
+#include "framework/ik/ik_look_solver.h"
 #include "framework/ik/ik_placement_ground_solver.h"
 #include "framework/ik/ik_rotate_solver.h"
 #include "framework/ik/ik_slope_ground_solver.h"
@@ -98,6 +99,24 @@ void GfComIK::cleanup() {
   }
   unknown10.unknown10.clear();
   unknown48.reset();
+}
+
+fw::LookIkSolver *GfComIK::createLookIK(f32 fadeInTime, f32 fadeOutTime) {
+  GfComTransform *transform = unknown08->getComponent<GfComTransform>();
+  GfComModel *model = mm::mtl::dynamicCast<GfComModel>(unknown08->unknown38[GfComModel::COMPONENT_INDEX]);
+  mm::mtl::IntrusivePtr<fw::ReferenceFrame> &frame = transform->unknown001();
+  fw::LookIkSolver *solver = nullptr;
+  if (model->unknown30 != nullptr) {
+    fw::LookIkSolver::Description description;
+    description.unknown04 = fadeInTime;
+    description.unknown00 = fadeOutTime;
+    solver = fw::LookIkSolver::create(description, frame, *model->unknown30);
+    unknown10.unknown10[unknown002_3] = solver;
+    if (solver != nullptr) {
+      solver->release();
+    }
+  }
+  return solver;
 }
 
 fw::RotateIkSolver *GfComIK::createRotateBodyIK(const char *boneName) {

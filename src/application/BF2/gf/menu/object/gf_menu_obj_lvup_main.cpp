@@ -1,6 +1,9 @@
 #include "gf/menu/object/gf_menu_obj_lvup_main.h"
 
 #include "gf/data/gf_data_driver.h"
+#include "gf/game/gf_game_party.h"
+#include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_sound_manager.h"
 #include "gf/menu/list/gf_menu_driver_list.h"
@@ -9,10 +12,12 @@
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/sound/gf_sound.h"
+#include "mm/mm_std_base.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -32,6 +37,100 @@ GfMenuObjLvupMain::~GfMenuObjLvupMain() {
   mm::mtl::safeRelease(unknown38);
   mm::mtl::safeRelease(unknown30);
   mm::mtl::safeRelease(unknown28);
+}
+
+void GfMenuObjLvupMain::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  mm::mtl::FixStr<32> name;
+// __LINE__ must be 103 as in the original file: it is the line argument of operator new.
+#line 103
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main.searchChild("LAY_contents"), mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  unknown30 = GfMenuDriverList::create();
+  {
+    ui::UIObjectAcc menu(main.unknown10, "LAY_mode_menu");
+    ui::UISelectObjList::CreateParam createParam;
+    createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+    unknown28 = ui::UISelectObjList::create(createParam);
+    unknown28->pickupObject(menu.unknown10, "LAY_mode_sltag@%02d", 1);
+// __LINE__ must be 120 as in the original file: it is the line argument of operator new.
+#line 120
+    MenuListener *menuListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MenuListener(this);
+    menuListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(menu.unknown10, menuListener);
+    if (menuListener != nullptr) {
+      menuListener->release();
+    }
+  }
+  {
+    ui::UIObjectAcc driverSet(main.unknown10, "LAY_lv_driverset");
+    {
+      ui::UISelectObjList::CreateParam createParam;
+      createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
+      unknown38 = ui::UISelectObjList::create(createParam);
+    }
+    unknown38->pickupObject(driverSet.unknown10, "LAY_lv_drinfo@%02d", 1);
+    MM_VERIFY(unknown38->getSize());
+    {
+      GfMenuDriverList::PartySetup setup;
+      setup.unknown18 = false;
+      setup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_2;
+      setup.unknown00.unknown08 = unknown38->getSize();
+      unknown30->setupFromParty(setup);
+    }
+    {
+      ui::UICtrlCursorSelect::CursorSetting setting;
+      setting.setType(0);
+      setting.unknown18 = 0;
+      unknown40 = ui::UICtrlCursorSelect::create(driverSet.searchChild("IMG_lv_drcursor"), setting, unknown38);
+    }
+    for (u32 i = 0; i < unknown38->getSize(); i++) {
+      name.format("TXT_lv_drname@%02d", i + 1);
+      GfMenuCharDataAdapter *adapter = GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 2, unknown30, i, false);
+      if (adapter != nullptr) {
+        name.format("LAY_lv_drinfo@%02d", i + 1);
+        adapter->unknown24 = driverSet.searchChild(name.c_str());
+      }
+      name.format("IMG_lv_drimage@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 3, unknown30, i, false);
+      name.format("TXT_lv_lvnum_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 1, unknown30, i, true);
+      name.format("TXT_lv_lvupeff_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 1, unknown30, i, true);
+      name.format("TXT_lv_nowexp_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 0x13, unknown30, i, true);
+      name.format("TXT_lv_nexp_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 0x14, unknown30, i, true);
+      name.format("TXT_lv_bexp_num@%02d", i + 1);
+      GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 0x15, unknown30, i, true);
+      name.format("IMG_lv_exp_gauge_exp@%02d", i + 1);
+      {
+        ui::UIObjectAcc gauge(driverSet.unknown10, name.c_str());
+        GfMenuCharDataAdapter::createFromDriverList(gauge.unknown10, 0x16, unknown30, i, true);
+        gauge.setExtType(1);
+      }
+      name.format("IMG_lv_exp_gauge_bexp@%02d", i + 1);
+      {
+        ui::UIObjectAcc gauge(driverSet.unknown10, name.c_str());
+        GfMenuCharDataAdapter::createFromDriverList(driverSet.searchChild(name.c_str()), 0x17, unknown30, i, true);
+        gauge.setExtType(1);
+      }
+    }
+// __LINE__ must be 209 as in the original file: it is the line argument of operator new.
+#line 209
+    SelectListener *selectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SelectListener(this);
+    selectListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(driverSet.unknown10, selectListener);
+    if (selectListener != nullptr) {
+      selectListener->release();
+    }
+    GfMenuObject::setFSInputObject(1, driverSet.unknown10);
+  }
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjLvupMain::finalize() { GfMenuObject::finalize(); }

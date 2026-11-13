@@ -4,6 +4,7 @@
 #include "framework/object/updatable_object.h"
 #include "framework/pad/pad_relay_util.h"
 #include "fw/fw_pad.h"
+#include "gf/field/gf_field_dmg.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_player_camera.h"
@@ -25,6 +26,8 @@
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "ml/dev_pad.h"
+#include "mm_math/mm_math.h"
+#include "mm_mtl/intrusive_ptr.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/unique_ptr.h"
 #include "mm_mtl/vector.h"
@@ -165,6 +168,26 @@ void StateUtil::setEnableFootStep(GfComBehaviorPc &behavior, bool isEnable) {
 EnviromentSensor::GroundInfo *StateUtil::getGroundInfo(GfComBehaviorPc &behavior) {
   EnviromentSensor *sensor = behavior.unknown08->getComponent<GfComPropertyPc>()->getEnvSensor();
   return sensor->unknown24_0 ? &sensor->unknown30 : nullptr;
+}
+
+void StateUtil::applyDamage(GfComBehaviorPc &behavior, u32 rate, bool isTerrain) {
+  GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
+  GfStatusProperty *status = property->unknown10.get();
+  if (status->unknown10 != 0 && !status->unknown1b) {
+    OwnerBonus *bonus = GfGameManager::getOwnerBonus();
+    u32 maxHp = status->unknown0c;
+    f32 reduction = static_cast<f32>(bonus->unknown00[OWNER_BONUS_UNKNOWN_2]) * 0.01f;
+    mm::clampRef(reduction, 0.0f, 0.8f);
+    u32 damage = GfFieldDmg::calculateDamage(maxHp, rate, reduction);
+    if (!property->unknown111_2 && damage >= status->unknown10 - 1) {
+      damage = status->unknown10 - 1;
+    }
+    if (damage != 0) {
+      MsgObjectDamage message(damage, isTerrain ? 2 : 3);
+      GfObj *obj = static_cast<GfObj *>(behavior.unknown08);
+      obj->sendMessage(obj, message);
+    }
+  }
 }
 
 EnviromentSensor::unknown003 *StateUtil::getClimbWallInfo(GfComBehaviorPc &behavior) {

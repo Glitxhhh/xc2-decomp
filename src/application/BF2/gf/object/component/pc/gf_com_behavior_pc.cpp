@@ -17,6 +17,7 @@
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/enemy/gf_enemy_state_battle.h"
 #include "gf/object/component/env_sensor/gf_com_env_sensor.h"
+#include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_dynamics.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/model/gf_com_model.h"
@@ -53,6 +54,7 @@
 #include "mm_math/mm_plane.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/vector.h"
 
 namespace fw {
 struct UpdateInfo;
@@ -223,6 +225,24 @@ void GfComBehaviorPc::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgObj
 }
 
 bool GfComBehaviorPc::warpFallDead(GfComPropertyPc &property) { return warpNormal(property); }
+
+bool GfComBehaviorPc::warpExternal(GfComPropertyPc &property, const fw::Transform &transform) {
+  onWarpBeforeTransform(property);
+  GfComTransform *comTransform = mm::mtl::dynamicCast<GfComTransform>(unknown08->unknown38[GfComTransform::COMPONENT_INDEX]);
+  comTransform->unknown10->unknown003() = transform;
+  {
+    const GfComCollider *collider = unknown08->getComponent<GfComCollider>();
+    mm::Mat44 matrix;
+    fw::ColiObject *coli = collider->unknown18[0];
+    if (coli != nullptr) {
+      transform.unknown001(matrix);
+      coli->setInstantlyMatrix(matrix);
+    }
+  }
+  resetHeadColPosition(transform);
+  onWarpAfterTransform(property);
+  return true;
+}
 
 void GfComBehaviorPc::onWarpFallDead(GfComPropertyPc &property) {
   onWarpNormal(property);

@@ -3,9 +3,11 @@
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_mtl/fixstr.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
+#include "ui/ui_str.h"
 
 namespace gf {
 
@@ -70,6 +72,39 @@ bool GfMenuObjElementEff::seqInit() {
   if (bottom.isPlayingAnimation()) {
     bottom.stopAnimation();
   }
+  return true;
+}
+
+bool GfMenuObjElementEff::seqOpen() {
+  ui::UIObjectAcc top(unknown18, "IMG_top");
+  ui::UIObjectAcc bottom(unknown18, "IMG_bottom");
+  mm::mtl::FixStr<32> color;
+  color.format("elemental%02d", GfMenuObjUtil::getElementComboAtr(unknown2bc));
+  top.setDisp(true);
+  top.startAnimation("start", false);
+  top.setMulColor(color.c_str());
+  bottom.setDisp(true);
+  bottom.startAnimation("start", false);
+  bottom.setAddColor(color.c_str());
+  ui::UIStr name = GfMenuObjUtil::getElementComboName(unknown2bc);
+  {
+    ui::UIObjectAcc comboName(unknown18, "LAY_combo_name");
+    ui::UIObjectAcc(comboName.unknown10, "TXT_combo_name").setText(name);
+    ui::UIObjectAcc(comboName.unknown10, "TXT_combo_name_shadow").setText(name);
+    comboName.setDisp(true);
+    {
+      GfMenuObjUtil::CtrlParam param;
+      param.unknown004("fade_in_l");
+      param.unknown14 = 8;
+      GfMenuObjUtil::startCtrl(comboName.unknown10, param, nullptr);
+    }
+    ui::UIObjectAcc effect(unknown18, "LAY_combo_name_eff");
+    ui::UIObjectAcc(effect.unknown10, "TXT_combo_name_eff").setText(name);
+    ui::UIObjectAcc(effect.unknown10, "TXT_combo_name_eff_shadow").setText(name);
+    effect.setDisp(false);
+  }
+  GfMenuObjUtil::playSE(0x2f);
+  unknown2b8 = -1;
   return true;
 }
 

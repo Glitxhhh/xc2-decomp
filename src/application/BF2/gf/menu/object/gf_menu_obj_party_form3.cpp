@@ -1,6 +1,8 @@
 #include "gf/menu/object/gf_menu_obj_party_form3.h"
 
 #include "gf/game/gf_game_cond.h"
+#include "gf/game/gf_game_party.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_char_data_adapter.h"
 #include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -17,12 +19,16 @@
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
 
 // Inferred role: menu id; original name unknown.
 constexpr u32 unknown001 = 0x24;
+
+// Inferred role: call id of the party form layout; original name unknown.
+constexpr u32 CALL_UNKNOWN_98 = 98;
 
 GfMenuObjPartyForm3::GfMenuObjPartyForm3(u32 handle)
     : GfMenuObject(handle), unknown28(nullptr), unknown30(0), unknown34(0), unknown38(0), unknown3c(0), unknown40(-1), unknown44(false), unknown80(this), unknown310(nullptr), unknown318(true),
@@ -35,6 +41,71 @@ GfMenuObjPartyForm3::~GfMenuObjPartyForm3() {
   mm::mtl::safeRelease(unknown28);
   mm::mtl::safeRelease(unknown310);
 }
+
+void GfMenuObjPartyForm3::initialize() {
+  unknown318 = !GfGameCond::isGameCond(0xa70);
+  {
+    GfMenuTypes::Param layerParam;
+    if (getFSLayerParam(unknown20, layerParam)) {
+      unknown30 = layerParam.get<OpenParam>().unknown00;
+      removeFSLayerParam(unknown20);
+    }
+  }
+  ui::UIObjectAcc acc(unknown18);
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 173 as in the original file: it is the line argument of operator new.
+#line 173
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_98, main);
+  u32 bg = acc.searchChild("LAY_bg");
+// __LINE__ must be 179 as in the original file: it is the line argument of operator new.
+#line 179
+  BGListener *bgListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BGListener(this);
+  bgListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(bg, bgListener);
+  if (bgListener != nullptr) {
+    bgListener->release();
+  }
+  u32 driverSelect = acc.searchChild("LAY_dr_select");
+// __LINE__ must be 183 as in the original file: it is the line argument of operator new.
+#line 183
+  DriverSelectListener *driverSelectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DriverSelectListener(this);
+  driverSelectListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(driverSelect, driverSelectListener);
+  if (driverSelectListener != nullptr) {
+    driverSelectListener->release();
+  }
+  unknown28 = GfMenuDriverList::create();
+  unknown34 = 0;
+  unknown38 = 0;
+  {
+    mm::mtl::FixedVector<u16, 16> drivers;
+    GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_UNKNOWN_0, 0);
+    unknown34 = drivers.size();
+    drivers.clear();
+    GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_UNKNOWN_1, 0);
+    unknown38 = drivers.size();
+    GfMenuDriverList::PartySetup setup;
+    setup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_2;
+    setup.unknown18 = false;
+    unknown28->setupFromParty(setup);
+  }
+  if (unknown28->getSize() == 1) {
+    unknown318 = false;
+  }
+  for (int i = 0; i < 7; i++) {
+    unknown48[i] = unknown160();
+    unknown48[i]->unknown162(3);
+  }
+  disableInput(acc.searchChild("LAY_dr_select"));
+  GfMenuObject::initialize();
+}
+
 void GfMenuObjPartyForm3::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjPartyForm3::update() {

@@ -44,6 +44,7 @@ enum {
   BLADE_UNKNOWN_1074 = 1074, // Inferred role: Homuri loaded when GfDataBlade::isHomuriNameHikari; original name unknown.
   BLADE_UNKNOWN_1078 = 1078,
   BLADE_UNKNOWN_1079 = 1079,
+  BLADE_UNKNOWN_1103 = 1103, // Inferred role: blade whose death blow effect uses the weapon motion name; original name unknown.
 };
 
 } // namespace gf

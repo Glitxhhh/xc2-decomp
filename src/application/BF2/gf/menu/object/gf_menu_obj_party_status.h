@@ -5,6 +5,10 @@
 #include "types.h"
 #include "ui/event/ui_object_listener.h"
 
+namespace ui {
+class UIObjectAcc;
+} // namespace ui
+
 namespace gf {
 
 class GfMenuCallContext;
@@ -51,6 +55,7 @@ public:
   static void resetComboRequest(u16 index, const RequestParam &param);
   void closePartyStatus(u32 handle, int member);
   int openPartyStatus(u32 handle, int member);
+  void setupComboReq(const ui::UIObjectAcc &acc, u16 index, u16 combo, bool isEnable, u16 effect, u32 button);
 
   u8 _24[0x30 - 0x24];
   int unknown30[2]; // Inferred role: unused, -1 at start; original member name unknown.

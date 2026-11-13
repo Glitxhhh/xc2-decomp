@@ -110,7 +110,8 @@ public:
   mm::mtl::ReferenceObject *unknown30; // Inferred role: reference-counted object; type and original member name unknown.
   bool unknown38;                      // Role and original member name unknown, cleared by the constructor.
   u32 unknown3c;                       // Role and original member name unknown, cleared by the constructor.
-  int unknown40;                       // Role and original member name unknown, set to -1 by the constructor.
+  u32 unknown40; // Inferred role: selected ring position, -1 at start; unsigned: SkillDetailListener::reciveEvent takes it modulo 6 with an unsigned division (0x7100459254); original member name
+                 // unknown.
   u8 _44[0x48 - 0x44];
   GfMenuCallContext *unknown48; // Inferred role: call context; original member name unknown.
   GfMenuCallContext *unknown50; // Inferred role: call context; original member name unknown.

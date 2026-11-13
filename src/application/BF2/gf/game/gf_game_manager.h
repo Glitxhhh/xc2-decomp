@@ -25,6 +25,7 @@ struct GfSetupParam;
 
 enum {
   OWNER_BONUS_UNKNOWN_1 = 1,   // Inferred role: movement speed bonus in percent, read by gf::pc::MoveUtilField::getSpeedEffect; original name unknown.
+  OWNER_BONUS_UNKNOWN_2 = 2,   // Inferred role: reduction of the field damage in percent, read by gf::pc::StateUtil::applyDamage; original name unknown.
   OWNER_BONUS_UNKNOWN_3 = 3,   // Inferred role: owner bonus favorite value max; original name unknown.
   OWNER_BONUS_UNKNOWN_4 = 4,   // Inferred role: owner bonus idea point; original name unknown.
   OWNER_BONUS_UNKNOWN_5 = 5,   // Inferred role: owner bonus develop point; original name unknown.

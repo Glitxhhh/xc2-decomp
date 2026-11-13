@@ -5,6 +5,7 @@
 #include "bdat.h"
 #include "framework/coli/coli_manager.h"
 #include "framework/effect/effect_manager.h"
+#include "fw/fw_debug.h"
 #include "fw/fw_model_object.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
@@ -21,9 +22,13 @@
 #include "gmk/gmk_bdat.h"
 #include "idcoli/idcoli.h"
 #include "ml/dev_graph.h"
+#include "ml/scn.h"
+#include "ml/scn_cam_util.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/vector.h" // IWYU pragma: keep
 #include "scn/scn_obj_acc.h"
@@ -620,6 +625,30 @@ bool GfFieldLodColiAnim::isPlayEnd(u16 lodId) const {
     }
   }
   return false;
+}
+
+void GfFieldLodColiAnim::debugDraw() const {
+  if (unknown00.unknown00 == nullptr || unknown00.unknown10 == nullptr) {
+    return;
+  }
+  ml::ScnObjAccSeamPos seamPos(unknown00.unknown00);
+  mm::Vec3 screenPos;
+  mm::Mat44 matrix;
+  mm::Col4 color;
+  int max = seamPos.getMax();
+  mm::mtl::FixStr<16> text;
+  for (int i = 0; i < max; i++) {
+    ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);
+    if (partsPos.isPosMatrix()) {
+      partsPos.getMatrix(matrix);
+      mm::Vec3 position = matrix.unknown004();
+      if (ml::ScnCamUtil::getScreenPos(screenPos, ml::Scn::get()->getCam(-1), position)) {
+        color = unknown20[i].unknown08.unknown2c != 0 ? mm::Col4::red : mm::Col4::white;
+        text.format("%d-%d", partsPos.getID(), partsPos.getSwitchID());
+        fw::debug::drawFont(static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), color, text.c_str());
+      }
+    }
+  }
 }
 
 void GfFieldLodColiAnim::clearEffectInsts() {

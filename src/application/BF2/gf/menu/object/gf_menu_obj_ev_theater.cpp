@@ -4,6 +4,7 @@
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_ev_theater_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
@@ -13,6 +14,7 @@
 #include "mm_mtl/reference_object.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/list/ui_list_info.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
@@ -36,6 +38,99 @@ GfMenuObjEvTheater::~GfMenuObjEvTheater() {
   mm::mtl::safeRelease(unknown28);
   mm::mtl::safeRelease(unknown40);
   mm::mtl::safeRelease(unknown38);
+}
+
+void GfMenuObjEvTheater::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+// __LINE__ must be 134 as in the original file: it is the line argument of operator new.
+#line 134
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main.unknown10, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(unknown001, main.unknown10);
+  {
+    ui::UIObjectAcc top(main.unknown10, "LAY_top");
+// __LINE__ must be 145 as in the original file: it is the line argument of operator new.
+#line 145
+    TopListener *topListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) TopListener(this);
+    topListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(top.unknown10, topListener);
+    if (topListener != nullptr) {
+      topListener->release();
+    }
+    setFSInputObject(0, top.unknown10);
+    sendOpenEvent(top.unknown10, 0, 0.0f);
+  }
+  {
+    ui::UIObjectAcc sub(main.unknown10, "LAY_sub");
+    unknown30 = ui::UISelectObjList::create({getAllocator(ALLOCATOR_UNKNOWN_0)});
+    unknown30->pickupObject(sub.unknown10, "LAY_sub_item@%02d", 1);
+// __LINE__ must be 162 as in the original file: it is the line argument of operator new.
+#line 162
+    SubListener *subListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SubListener(this);
+    subListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(sub.unknown10, subListener);
+    if (subListener != nullptr) {
+      subListener->release();
+    }
+    setFSInputObject(1, sub.unknown10);
+  }
+  {
+    ui::UIObjectAcc select(main.unknown10, "LAY_select");
+    mm::mtl::FixStr<32> name;
+    unknown40 = ui::UISelectObjList::create({getAllocator(ALLOCATOR_UNKNOWN_0)});
+    unknown40->pickupObject(select.unknown10, "LAY_select_item@%02d", 1);
+    ui::UIListInfoBase::SetupParam param;
+    param.unknown08 = unknown40->getSize();
+    unknown38->setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
+    GfMenuEvTherterAdapter::createFromList(select.searchChild("IMG_select_cur"), 1, unknown38, -1, false);
+    GfMenuEvTherterAdapter::createFromList(select.searchChild("TXT_select_cur_title"), 0, unknown38, -1, false);
+    for (u32 i = 0; i < unknown40->getSize(); i++) {
+      name.format("IMG_select_item@%02d", i + 1);
+      GfMenuEvTherterAdapter *adapter = GfMenuEvTherterAdapter::createFromList(select.searchChild(name.c_str()), 1, unknown38, i, false);
+      if (adapter != nullptr) {
+        name.format("LAY_select_item@%02d", i + 1);
+        adapter->unknown24 = select.searchChild(name.c_str());
+      }
+    }
+// __LINE__ must be 205 as in the original file: it is the line argument of operator new.
+#line 205
+    SelectListener *selectListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SelectListener(this);
+    selectListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(select.unknown10, selectListener);
+    if (selectListener != nullptr) {
+      selectListener->release();
+    }
+    setFSInputObject(2, select.unknown10);
+  }
+  {
+    ui::UIObjectAcc header(main.unknown10, "LAY_header");
+// __LINE__ must be 215 as in the original file: it is the line argument of operator new.
+#line 215
+    HeaderListener *headerListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) HeaderListener(this);
+    headerListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(header.unknown10, headerListener);
+    if (headerListener != nullptr) {
+      headerListener->release();
+    }
+  }
+  disableFSInput();
+  {
+    ui::UIObjectAcc screen(unknown18, "LAY_mdl_view");
+// __LINE__ must be 224 as in the original file: it is the line argument of operator new.
+#line 224
+    ScreenListener *screenListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ScreenListener(this);
+    screenListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(screen.unknown10, screenListener);
+    if (screenListener != nullptr) {
+      screenListener->release();
+    }
+    attachExternalCall(unknown002, screen.unknown10);
+  }
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjEvTheater::finalize() { GfMenuObject::finalize(); }

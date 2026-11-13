@@ -2,6 +2,7 @@
 
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_mercenaries.h"
+#include "gf/game/gf_game_voice.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_manager.h"
@@ -370,6 +371,64 @@ bool GfMenuObjMercenaryForm::seqDepartureStart() {
   unknown108.unknown002(&GfMenuObjMercenaryForm::seqApperBlade);
   unknown8f8 = SCOM_FIELD_VOICE::createMercenariesLeader(GfMenuReference::getReferenceBladeID(0));
   return true;
+}
+
+bool GfMenuObjMercenaryForm::seqApperBlade() {
+  if (unknown8f8 != nullptr) {
+    if (GfGameVoice::getResult(unknown8f8) >= 3) {
+      unknown8f8 = nullptr;
+    } else {
+      return false;
+    }
+  }
+  ui::UIObjectAcc image(unknown18, "LAY_bl_img");
+  bool isEnd;
+  if (!unknown430) {
+    {
+      ui::EventData event;
+      event.unknown00 = 0x100;
+      sendEvent(image.unknown10, event, 0.0f);
+    }
+    {
+      ui::UIObjectAcc start(unknown18, "LAY_start");
+      mm::mtl::FixStr<32> name;
+      mm::mtl::FixStr<32> anime;
+      for (u32 i = 0; i < unknown78->getSize(); i++) {
+        u32 blade = unknown28->getContents(i + 1).unknown00;
+        name.format("IMG_mis_start_bl@%02d", i + 1);
+        {
+          ui::UIObjectAcc bladeImage(start.unknown10, name.c_str());
+          start.setLayout(bladeImage.unknown10, "mnu090_anim_sub_1");
+          GfMenuObjUtil::ImageParam imageParam;
+          if (GfMenuObjUtil::getImageParam(1, blade, imageParam, 1)) {
+            mm::Vec2 scale;
+            bladeImage.getScale(scale);
+            scale.x = imageParam.unknown04 * scale.x;
+            scale.y = imageParam.unknown04 * scale.y;
+            bladeImage.setScale(scale);
+            GfMenuObjUtil::addPos(bladeImage.unknown10, imageParam.unknown00, imageParam.unknown02);
+          }
+        }
+        anime.format("mnu090_anim_sub_%d", i + 1);
+        GfMenuObjUtil::CtrlParam param;
+        param.unknown08 = 0x10000000;
+        param.unknown50 = anime.c_str();
+        param.unknown58 = "start";
+        GfMenuObjUtil::startCtrl(unknown78->getObject(i), param, nullptr);
+      }
+    }
+    isEnd = false;
+    unknown430 = true;
+  } else if (!GfMenuObjUtil::isBusyCtrl(GfMenuObjUtil::getCtrlID(image.unknown10))) {
+    SCOM_FIELD_VOICE::createMercenariesStart(unknown28->getContents(0).unknown00);
+    unknown108.unknown004(60);
+    unknown108.unknown002(&GfMenuObjMercenaryForm::seqLeaveBlade);
+    isEnd = true;
+    unknown430 = false;
+  } else {
+    isEnd = false;
+  }
+  return isEnd;
 }
 
 bool GfMenuObjMercenaryForm::seqDepartureEnd() {

@@ -28,6 +28,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/util/gf_util.h"
+#include "mm/mm_std_base.h"
 #include "mm_mtl/fixed_queue.h"
 #include "nn/diag.h"
 
@@ -46,6 +47,10 @@ const char *const unknown014 = "np/np002001";                     // Inferred ro
 const GfFileIdx FILE_IDX_UNKNOWN_1 = static_cast<GfFileIdx>(1);   // Inferred role: foot step se file index; original name unknown.
 const GfFileIdx FILE_IDX_UNKNOWN_2 = static_cast<GfFileIdx>(2);   // Inferred role: foot step se sub file index; original name unknown.
 const GfFileIdx FILE_IDX_UNKNOWN_15 = static_cast<GfFileIdx>(15); // Inferred role: add motion file index; original name unknown.
+const GfFileIdx FILE_IDX_UNKNOWN_16 = static_cast<GfFileIdx>(16); // Inferred role: weapon motion file index; original name unknown.
+const GfFileIdx FILE_IDX_UNKNOWN_17 = static_cast<GfFileIdx>(17); // Inferred role: swt file index; original name unknown.
+const GfFileIdx FILE_IDX_UNKNOWN_18 = static_cast<GfFileIdx>(18); // Inferred role: weapon effect file index; original name unknown.
+const GfFileIdx FILE_IDX_UNKNOWN_19 = static_cast<GfFileIdx>(19); // Inferred role: weapon effect bank file index; original name unknown.
 
 const char *getValidName(const char *name) {
   if (name == nullptr || *name == '\0') {
@@ -834,6 +839,205 @@ void GfAssetSetupEnemy::getEnemyEfbFileName(mm::mtl::FixStr<128> &name, const Gf
   }
 
   name.format("%s%s%s", getEffPath(), efb, ".wiefb");
+}
+
+void GfAssetSetupEnemy::setup(GF_ASSET_HANDLE *handle, const GfInitParamEnemy &param) {
+  unknown200 = &param;
+  setupParam(handle, param);
+  if (!checkValidResource()) {
+    return;
+  }
+
+  mm::mtl::FixStr<128> name;
+  GfAssetFilesInfo info;
+  info.unknown00 = handle;
+  info.unknown08 = getAssetType();
+  info.unknown30 = name.c_str();
+  info.unknown40 = param.unknown44;
+  info.unknown08 = getAssetType();
+  info.unknown10.clear();
+  info.unknown10.push(ASSET_TYPE_UNKNOWN_18);
+  makeAssetNamePrefix(name, info.unknown08, getMdlFile(info.unknown08), "");
+  GfAssetPack *corePack = GfAssetManager::createAssetFiles(info);
+  requestCoreResource(corePack, handle);
+
+  info.unknown08 = getAssetTypeArc();
+  if (const char *arc = getArcFile(info.unknown08)) {
+    makeAssetNamePrefix(name, info.unknown08, arc, "En");
+    GfAssetPack *pack = GfAssetManager::createAssetFiles(info);
+    if (!setupReference(pack, name.c_str(), getArcSlot())) {
+      mm::mtl::FixStr<128> path;
+      path.format("%s%s%s", getPath(), arc, ".arc");
+      pack->m_assetType.addResource(getArcSlot(), path.c_str());
+    }
+  }
+
+  info.unknown08 = getAssetTypeMot();
+  if (const char *motion = getRetargetMotFile(info.unknown08)) {
+    makeAssetNamePrefix(name, info.unknown08, motion, "");
+    GfAssetPack *pack = GfAssetManager::createAssetFiles(info);
+    if (!setupReference(pack, name.c_str(), getRetargetMotSlot())) {
+      GfAssetManager::setMotionInfo(handle, motion);
+      mm::mtl::FixStr<128> path;
+      path.format("%s%s%s", getPath(), motion, ".mot");
+      pack->m_assetType.addResource(getRetargetMotSlot(), path.c_str());
+      if (const char *addMotion = GfDataEnemy::getAddMotionName(unknown08)) {
+        path.format("%s%s%s", getPath(), addMotion, ".mot");
+        pack->m_assetType.addResource(getMotSlot(), path.c_str());
+      }
+    }
+  }
+
+  info.unknown08 = ASSET_TYPE_UNKNOWN_18;
+  info.unknown10.clear();
+  info.unknown10.push(ASSET_TYPE_UNKNOWN_11);
+  if (const char *eventMotion = getEvtMotFile(info.unknown08)) {
+    makeAssetNamePrefix(name, info.unknown08, eventMotion, "Evt");
+    GfAssetPack *pack = GfAssetManager::createAssetFiles(info);
+    if (!setupReference(pack, name.c_str(), getEvtMotSlot())) {
+      mm::mtl::FixStr<128> path;
+      path.format("%s%s%s", getEvtPath(), eventMotion, ".mot");
+      pack->m_assetType.addResource(getEvtMotSlot(), path.c_str());
+    }
+  }
+
+  info.unknown08 = ASSET_TYPE_UNKNOWN_13;
+  u32 blade = param.getBladeID();
+  u32 attribute = getEnemyAttribute(param);
+  makeEnemyEffectAssetName(name, param, attribute);
+  GfAssetPack *effectPack = GfAssetManager::createAssetFiles(info);
+  if (!setupReference(effectPack, name.c_str(), getEabSlot())) {
+    mm::mtl::FixStr<128> path;
+    getEnemyEabFileName(path, param, info.unknown08);
+    effectPack->m_assetType.addResource(getEabSlot(), path.c_str());
+  }
+  if (const char *efb = getEfbFile(info.unknown08)) {
+    if (!setupReference(effectPack, name.c_str(), getEfbSlot())) {
+      mm::mtl::FixStr<128> path;
+      getEnemyEfbFileName(path, param, info.unknown08, attribute);
+      effectPack->m_assetType.addResource(getEfbSlot(), path.c_str());
+    }
+    if (param.unknown08 == unknown030_5) {
+      if (attribute == 0) {
+        mm::mtl::FixStr<16> weaponName;
+        if (GfDataBlade::getBladeWpnType(blade) != 0) {
+          u32 weaponType = GfDataWeapon::getAsmWeaponType(GfDataBlade::getBladeWpnType(blade));
+          if (weaponType >= 10) {
+            weaponName.format("%d", weaponType);
+          } else {
+            weaponName.format("0%d", weaponType);
+          }
+          name += "_";
+          name += weaponName.c_str();
+        }
+      }
+      name += "Db";
+      GfAssetPack *deathBlowPack = GfAssetManager::createAssetFiles(info);
+      mm::mtl::FixStr<128> path;
+      path.format("%s%s%s_deathblow_%s%s", getEffPath(), efb, GfDataBlade::getDeathBlowWeaponName(blade), "00", ".wieab");
+      deathBlowPack->m_assetType.addResource(static_cast<GfFileIdx>(GfDataDriver::getDeathBlowEabFileIdx(DBSLOT_UNKNOWN_0, 0)), path.c_str());
+      if (attribute == 0) {
+        path.format("%s%s%s_deathblow_%s%s", getEffPath(), efb, GfDataBlade::getDeathBlowWeaponName(blade), "00", ".wiefb");
+      } else {
+        path.format("%s%s%s_deathblow_%s%s%s", getEffPath(), efb, GfDataBlade::getDeathBlowWeaponName(blade), "00", GfDataBlade::getBaseEfbAttributeName(blade, attribute), ".wiefb");
+      }
+      deathBlowPack->m_assetType.addResource(static_cast<GfFileIdx>(GfDataDriver::getDeathBlowEfbFileIdx(DBSLOT_UNKNOWN_0, 0)), path.c_str());
+    }
+  }
+
+  info.unknown08 = ASSET_TYPE_UNKNOWN_13;
+  {
+    const char *motion = getSwtFile(getAssetTypeMot());
+    mm::mtl::FixStr<128> motionName;
+    mm::mtl::FixStr<128> swtPath;
+    u32 enArrange = param.m_enArrangeID;
+    if (motion == nullptr || strstr(motion, "en/") == nullptr) {
+      DataParamAcc dataParamAcc(OBJECT_TYPE_ENEMY, enArrange, GIMMICK_TYPE_UNKNOWN_0);
+      u32 weaponType = GfDataWeapon::getAsmWeaponType(dataParamAcc.getWeaponType(-1, false));
+      if (weaponType == 0) {
+        motionName.format("%s", motion, weaponType);
+      } else if (weaponType < 10) {
+        motionName.format("%s_0%d", motion, weaponType);
+      } else {
+        motionName.format("%s_%d", motion, weaponType);
+      }
+    } else {
+      motionName = motion;
+    }
+    mm::mtl::FixStr<16> weaponName;
+    if (param.unknown08 == unknown030_5) {
+      MM_VERIFY(GfDataBlade::getBladeWpnType(blade));
+      u32 weaponType = GfDataWeapon::getAsmWeaponType(GfDataBlade::getBladeWpnType(blade));
+      if (weaponType >= 10) {
+        weaponName.format("%d", weaponType);
+      } else {
+        weaponName.format("0%d", weaponType);
+      }
+    }
+    makeAssetNamePrefix(name, info.unknown08, motionName.c_str(), "");
+    if (!weaponName.empty()) {
+      name += "_";
+      name += weaponName.c_str();
+    }
+    name += "Swt";
+    GfAssetPack *swtPack = GfAssetManager::createAssetFiles(info);
+    if (param.unknown08 == unknown030_5) {
+      swtPath.format("%s%s%s%s", getPath(), motionName.c_str(), GfDataBlade::getDeathBlowWeaponName(blade), ".wiswt");
+    } else {
+      swtPath.format("%s%s%s", getPath(), motionName.c_str(), ".wiswt");
+    }
+    swtPack->m_assetType.addResource(FILE_IDX_UNKNOWN_17, swtPath.c_str());
+  }
+
+  u32 driverWeaponType = GfDataWeapon::getAsmWeaponType(GfDataEnemy::getWeaponType(param.m_enArrangeID));
+  if (driverWeaponType != 0) {
+    info.unknown08 = ASSET_TYPE_UNKNOWN_16;
+    if (makeAssetNameWpnType(name, param.m_enArrangeID, driverWeaponType)) {
+      GfAssetPack *driverPack = GfAssetManager::createAssetFiles(info);
+      mm::mtl::FixStr<128> path;
+      mm::mtl::FixStr<128> animName;
+      if (GfDataEnemy::getDriverAddAnim(animName, param.m_enArrangeID, driverWeaponType)) {
+        if (!setupReference(driverPack, animName.c_str(), FILE_IDX_UNKNOWN_16)) {
+          path.format("%s%s%s", getPath(), animName.c_str(), ".mot");
+          driverPack->m_assetType.addResource(FILE_IDX_UNKNOWN_16, path.c_str());
+        }
+        mm::mtl::FixStr<128> modelName;
+        mm::mtl::FixStr<128> effectName;
+        GfDataEnemy::getDriverEffect(modelName, effectName, param.m_enArrangeID, driverWeaponType);
+        info.unknown08 = ASSET_TYPE_UNKNOWN_13;
+        makeAssetNamePrefix(name, info.unknown08, animName.c_str(), "");
+        GfAssetPack *driverEffectPack = GfAssetManager::createAssetFiles(info);
+        const char *effect = blade == BLADE_UNKNOWN_1103 ? animName.c_str() : modelName.c_str();
+        path.format("%s%s%s", getEffPath(), effect, ".wiefb");
+        driverEffectPack->m_assetType.addResource(FILE_IDX_UNKNOWN_19, path.c_str());
+        path.format("%s%s%s", getEffPath(), effect, ".wieab");
+        driverEffectPack->m_assetType.addResource(FILE_IDX_UNKNOWN_18, path.c_str());
+        path.format("%s%s_deathblow_%s%s", getEffPath(), effectName.c_str(), "00", ".wieab");
+        driverEffectPack->m_assetType.addResource(static_cast<GfFileIdx>(GfDataDriver::getDeathBlowEabFileIdx(DBSLOT_UNKNOWN_0, 0)), path.c_str());
+        if (!GfDataHana::isValid(blade)) {
+          path.format("%s%s_deathblow_%s%s", getEffPath(), effectName.c_str(), "00", ".wiefb");
+        } else {
+          path.format("%s%s_deathblow_%s%s%s", getEffPath(), effectName.c_str(), "00", GfDataBlade::getBaseEfbAttributeName(blade, attribute), ".wiefb");
+        }
+        driverEffectPack->m_assetType.addResource(static_cast<GfFileIdx>(GfDataDriver::getDeathBlowEfbFileIdx(DBSLOT_UNKNOWN_0, 0)), path.c_str());
+      }
+    }
+  }
+
+  info.unknown08 = ASSET_TYPE_UNKNOWN_19;
+  info.unknown10.clear();
+  info.unknown10.push(ASSET_TYPE_UNKNOWN_18);
+  if (const char *sePack = getSePackFile()) {
+    makeAssetNamePrefix(name, info.unknown08, sePack, "");
+    GfAssetPack *sePackAsset = GfAssetManager::createAssetFiles(info);
+    sePackAsset->unknown2b0 = FILE_IDX_UNKNOWN_0;
+    if (!setupReference(sePackAsset, sePack, FILE_IDX_UNKNOWN_0)) {
+      mm::mtl::FixStr<128> path;
+      path.format("%s%s%s", getSePackPath(), sePack, ".xsp");
+      sePackAsset->m_assetType.addResource(FILE_IDX_UNKNOWN_0, path.c_str());
+    }
+  }
+  requestFootStepSePackFile(info, getFootStepId(), FILE_IDX_UNKNOWN_1, FILE_IDX_UNKNOWN_2);
 }
 
 const char *GfAssetSetupEnemy::getSwtFile(GfAssetType type) { return getRetargetMotFile(type); }

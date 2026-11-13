@@ -13,11 +13,14 @@
 #include "gf/menu/list/gf_menu_id_list.h"
 #include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "mm_math/mm_pnt.h"
+#include "mm_math/mm_rect.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/ctrl/ui_ctrl_revolve_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/list/ui_list_info.h"
 #include "ui/list/ui_select_obj_list.h"
 #include "ui/ui_object_acc.h"
 
@@ -116,6 +119,45 @@ void GfMenuObjMercenaryTop::updateTargetTeam() {
       GfMenuReference::setReferenceTeamID(team->unknown10);
       return;
     }
+  }
+}
+
+void GfMenuObjMercenaryTop::updateMissionList() {
+  u32 zone = unknown80->unknown0c;
+  ui::UIListInfoBase::SetupParam param;
+  param.unknown08 = unknown70->getSize();
+  param.unknown10 = true;
+  unknown30->setupMissionListFromZone(param, zone);
+  u32 index = 0;
+  bool hasOrderOnlyOne = false;
+  bool hasOrderMultiple = false;
+  GfMenuObjUtil::MissionInfo info;
+  for (; index < unknown30->getSize(); index++) {
+    if (GfMenuObjUtil::getMissionInfo(unknown30->getContents(index).unknown00, info) && (info.unknown0c & 1)) {
+      if (GfDataMercenaries::isOrderOnlyOne(unknown30->getContents(index).unknown00)) {
+        hasOrderOnlyOne = true;
+      } else {
+        hasOrderMultiple = true;
+      }
+    }
+  }
+  ui::UIObjectAcc acc(unknown18, "LAY_zone_notice");
+  acc.setDisp(hasOrderOnlyOne || hasOrderMultiple);
+  if (acc.isDisp()) {
+    acc.setDispChild(hasOrderMultiple, "IMG_zone_notice_icon@01");
+    if (hasOrderMultiple) {
+      unknown68->addObject(acc.searchChild("IMG_zone_notice_icon@01"));
+    }
+    acc.setDispChild(hasOrderOnlyOne, "IMG_zone_notice_icon@02");
+    if (hasOrderOnlyOne) {
+      unknown68->addObject(acc.searchChild("IMG_zone_notice_icon@02"));
+    }
+    mm::Rect<s16> rect;
+    acc.getLayoutRect("mnu090_mercenary_icon_categorie", rect);
+    mm::Rect<s16> range;
+    acc.getLayoutRect("mnu090_mercenary_icon_categorie_range", range);
+    GfMenuObjUtil::placeObjectH(unknown68, mm::Pnt<s16>(rect.x + rect.width / 2, rect.y + rect.height / 2), range.x - rect.x);
+    unknown68->clear();
   }
 }
 
