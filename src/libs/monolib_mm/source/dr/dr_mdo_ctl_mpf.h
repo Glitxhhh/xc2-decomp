@@ -9,6 +9,8 @@ class DrMan;
 class DrMdoCtlMpf : public DrMdlObj {
 public:
   DrMdoCtlMpf(const void *data, const char *path, DrMan *drMan, int viewNum);
+  ~DrMdoCtlMpf() override;
+  void releaseMpf();
   void update() override;
   void resourceInit() override;
   void callZPrepassRender();

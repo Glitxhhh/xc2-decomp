@@ -27,6 +27,7 @@ public:
   void renderMemInfo();
   bool calcPieceMem(bool isCheck);
   void releaseFreeObj(DrResMdoSeamMemObj *obj);
+  void releaseTempFreeObj(DrResMdoSeamMemObj *obj);
   DrResMdoSeamMemObj *createFreeObj(u32 size);
   DrResMdoSeamMemObj *createFreeObj(u32 size, DrResChankList<DrResMdoSeamMemObj> &list, int index);
   DrResMdoSeamMemObj *createBackFreeObj(u32 size);

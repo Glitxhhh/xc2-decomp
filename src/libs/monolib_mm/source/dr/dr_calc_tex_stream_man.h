@@ -77,6 +77,12 @@ public:
   DrCalcTexStmObj *createSizeModeFreeObj(u32 size);
   DrCalcTexStmObj *createChildObj(DrCalcTexStmObj *parent, u32 size);
 
+  // Name from the game symbol of DrCalcTexStreamMan::callReadType.
+  enum DrTxtmType {};
+
+  bool callReadType(DrTxtmType type);
+  void apiUpdate();
+
   enum Flag {
     FLAG_UNKNOWN_4 = 1 << 4, // Inferred role: cacher clear mode; original name unknown.
   };
@@ -85,7 +91,9 @@ public:
   DrResChankList<DrCalcTexStmObj> unknown18;     // Inferred role: free object list; original member name unknown.
   DrResChankList<DrCalcStmListObj> unknown28;    // Inferred role: update list; original member name unknown.
   DrResChankList<DrCalcStmListObj> unknown38[2]; // Inferred role: entry list per buffer; original member name unknown.
-  u8 _58[0x2068 - 0x58];
+  DrCalcStmListObj *unknown58[2][512];           // Inferred role: objects to update on the api side per buffer; original member name unknown.
+  u32 unknown2058[2];                            // Inferred role: number of used entries of unknown58 per buffer; original member name unknown.
+  u8 _2060[0x2068 - 0x2060];
   u32 unknown2068;                  // Inferred role: flags; original member name unknown.
   u32 unknown206c;                  // Inferred role: object count; original member name unknown.
   DrCalcTexStmObj *unknown2070;     // Inferred role: object array; original member name unknown.
@@ -98,14 +106,16 @@ public:
   s16 unknown248c;                  // Inferred role: read mode; original member name unknown.
   u16 unknown248e;                  // Inferred role: read mode flags; original member name unknown.
   s32 unknown2490;                  // Inferred role: read mode limit; original member name unknown.
-  u8 _2494[0x2498 - 0x2494];
-  u32 unknown2498; // Inferred role: job cpu; original member name unknown.
+  s32 unknown2494;                  // Inferred role: read mode limit of the previous update; original member name unknown.
+  u32 unknown2498;                  // Inferred role: job cpu; original member name unknown.
 };
 
 static_assert(offsetof(DrCalcTexStreamMan, unknown08) == 0x08, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown18) == 0x18, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown28) == 0x28, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown38) == 0x38, "");
+static_assert(offsetof(DrCalcTexStreamMan, unknown58) == 0x58, "");
+static_assert(offsetof(DrCalcTexStreamMan, unknown2058) == 0x2058, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2068) == 0x2068, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown206c) == 0x206c, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2070) == 0x2070, "");
@@ -118,6 +128,7 @@ static_assert(offsetof(DrCalcTexStreamMan, unknown2488) == 0x2488, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown248c) == 0x248c, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown248e) == 0x248e, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2490) == 0x2490, "");
+static_assert(offsetof(DrCalcTexStreamMan, unknown2494) == 0x2494, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2498) == 0x2498, "");
 
 } // namespace ml

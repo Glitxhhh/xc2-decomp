@@ -13,6 +13,8 @@ struct CERR_STRUCT;
 
 enum ERR_CALL {};
 
+const char *SYS_TAG_ERR();
+
 // Name from the game symbol of ml::ErrViewer::reqError.
 class ICBError {
 public:

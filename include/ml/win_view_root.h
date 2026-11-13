@@ -31,6 +31,7 @@ public:
   static bool isCurrent(const WinView *view);
   static void invalidCurrent(WinView *view);
   static bool isCurrentChild(const WinView *view, const WinView *current);
+  static void cutOff(bool cut);
 
   u8 _1b0[0x1f0 - 0x1b0];
   WinView *unknown1f0; // Inferred role: current view; original member name unknown.

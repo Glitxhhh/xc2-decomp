@@ -269,4 +269,17 @@ DrResMdoSeamMemObj *DrResMdoSeamMemMan::createParentFreeObj(DrResMdoSeamMemObj *
   return child;
 }
 
+void DrResMdoSeamMemMan::releaseFreeObj(DrResMdoSeamMemObj *obj) {
+  clearMemObj(obj, unknown00);
+  if (unknown2c & 2) {
+    for (int i = 0; i < unknown444; i++) {
+      if (unknown240[i] == obj) {
+        unknown240[i] = nullptr;
+      }
+    }
+  }
+}
+
+void DrResMdoSeamMemMan::releaseTempFreeObj(DrResMdoSeamMemObj *obj) { clearMemObj(obj, unknown00); }
+
 } // namespace ml

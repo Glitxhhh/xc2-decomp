@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "dr/dr_calc_stm_list_obj.h"
+#include "dr/dr_man.h"
 #include "ml/critical_section.h"
 #include "ml/dev_graph.h"
 #include "ml/work_cpu.h"
@@ -248,6 +249,23 @@ void DrCalcTexStreamMan::callReadStopMode() {
   unknown2068 |= 0x20;
   unknown248c = 0xa0;
   unknown248e = 0x000a;
+}
+
+bool DrCalcTexStreamMan::callReadType(DrTxtmType type) {
+  if (unknown2490 < type) {
+    return false;
+  }
+  unknown2490 = type;
+  return type <= unknown2494;
+}
+
+void DrCalcTexStreamMan::apiUpdate() {
+  u32 count = unknown2058[DrMan::s_nDblStockIdx];
+  DrCalcStmListObj **list = unknown58[DrMan::s_nDblStockIdx];
+  for (u32 i = 0; i < count; i++) {
+    list[i]->apiUpdate();
+  }
+  unknown2058[DrMan::s_nDblStockIdx] = 0;
 }
 
 DrCalcTexStreamMan::~DrCalcTexStreamMan() { release(); }

@@ -239,6 +239,11 @@ public:
     grlib::CGLibTextureBuffer *unknown10; // Inferred role: texture; original member name unknown.
   };
 
+  struct DCOL : unknown001 {
+    void flush(DebDraw *draw) override;
+    mm::Col4 unknown0c; // Inferred role: color; original member name unknown.
+  };
+
   struct DDOUBLESIDE : unknown001 {
     DDOUBLESIDE(const bool &isEnable) : unknown001(6, sizeof(DDOUBLESIDE), 0), unknown0c(isEnable) {}
     void flush(DebDraw *draw) override;
@@ -467,6 +472,7 @@ static_assert(sizeof(CacheDraw::DFONT64) == 0x58, "");
 static_assert(sizeof(CacheDraw::DFONT128) == 0x98, "");
 static_assert(sizeof(CacheDraw::DFONT256) == 0x118, "");
 static_assert(sizeof(CacheDraw::DFONT_COL) == 0x20, "");
+static_assert(offsetof(CacheDraw::DCOL, unknown0c) == 0xc, "");
 static_assert(offsetof(CacheDraw::DBEGIN, unknown10) == 0x10, "");
 static_assert(offsetof(CacheDraw::DPERS, unknown4c) == 0x4c, "");
 static_assert(offsetof(CacheDraw::DPERS, unknown58) == 0x58, "");

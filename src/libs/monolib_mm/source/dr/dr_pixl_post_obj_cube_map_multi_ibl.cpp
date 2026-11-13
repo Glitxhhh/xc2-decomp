@@ -4,6 +4,9 @@
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_cube_map_mip_map.h"
 #include "dr/dr_shd_cube_cap_filter.h"
+#include "dr/dr_shd_lgt_global_ibl.h"
+#include "dr/dr_shd_lgt_man.h"
+#include "dr/dr_shd_man.h"
 #include "mm_mtl/fixed_array.h"
 
 // Spherical harmonics helpers of the unit (second order, 9 coefficients). The game keeps them in the namespace
@@ -48,6 +51,30 @@ DrPixlPostObjCubeMapMultiIBL::~DrPixlPostObjCubeMapMultiIBL() {
       unknown5c8[i] = nullptr;
     }
   }
+}
+
+void DrPixlPostObjCubeMapMultiIBL::render() {
+  for (mm::mtl::FixedQueue<DrRequetIBL, 30>::iterator it = unknown18.begin(); it != unknown18.end();) {
+    u8 state = *(*it).unknown28;
+    if (state == 0 || state == 2 || state == 3) {
+      it = unknown18.erase(it);
+    } else {
+      ++it;
+    }
+  }
+  if (unknown00->isIBLSkip() || !unknown00->unknown120[unknown00->unknown1c98]->unknown269) {
+    return;
+  }
+  for (mm::mtl::FixedQueue<DrRequetIBL, 30>::iterator it = unknown18.begin(); it != unknown18.end(); ++it) {
+    DrRequetIBL &request = *it;
+    if (*request.unknown28 == 1 && request.getVersion() == 2) {
+      relightCubeMap2(request);
+      generateSH2(request);
+      (*request.unknown28)++;
+    }
+  }
+  unknown6d8 ^= 1;
+  unknown00->unknown80->unknown18->unknown58->updateUniformBlock(unknown00->unknown1c98);
 }
 
 bool DrPixlPostObjCubeMapMultiIBL::requestIBL(DrRequetIBL &request) {

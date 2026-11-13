@@ -85,6 +85,11 @@ public:
   bool asyncUpdate() override;
 };
 
+class DevFileWriterNx : public DevFileWriterTh {
+public:
+  bool asyncUpdate() override;
+};
+
 class DevFileBlackListNxTh : public mm::mtl::PtrSingleton<DevFileBlackListNxTh> {
 public:
   DevFileBlackListNxTh(mtl::ALLOC_HANDLE handle);

@@ -15,6 +15,8 @@ namespace ml {
 
 s32 ErrViewer::s_nHandle;
 
+const char *SYS_TAG_ERR() { return "SYS:ERR"; }
+
 ErrViewer::ErrViewer() {
   unknown258 = 0;
   unknown270 = 0;
@@ -32,7 +34,7 @@ ErrViewer::ErrViewer() {
 
 ErrViewer::~ErrViewer() {
   if (unknown26b) {
-    WorkControl::pause(false, "SYS:ERR");
+    WorkControl::pause(false, SYS_TAG_ERR());
   }
   WorkCpu::removeBackgroundListener(this);
   if (unknown10 != nullptr) {

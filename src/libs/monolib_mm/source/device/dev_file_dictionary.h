@@ -47,6 +47,7 @@ public:
   T findImpl(const char *key, size_t &from, size_t &pos, size_t len) const;
   T begin(size_t &from, size_t &len);
   T next(size_t &from, size_t &len, size_t root);
+  template <typename U> void reallocArray(U *&array, int size, int from);
 
   // Inferred role: exact search of a whole key, a missing path reported as a missing value (inlined in DevFileArchiver::getFileInfo); original name unknown.
   T unknown001(const char *key) const {
@@ -197,6 +198,17 @@ template <typename T, typename ALLOC, int NO_VALUE, int NO_PATH, bool FLAG> T De
   from = static_cast<size_t>(unknown00[from].unknown00) ^ label;
   len++;
   return begin(from, len);
+}
+
+template <typename T, typename ALLOC, int NO_VALUE, int NO_PATH, bool FLAG>
+template <typename U>
+void DevFileDictionary<T, ALLOC, NO_VALUE, NO_PATH, FLAG>::reallocArray(U *&array, int size, int from) {
+  array = static_cast<U *>(unknown48->reallocate(array, sizeof(U) * size));
+  // Name from the game symbol of this static (_ZZN2ml17DevFileDictionary...12reallocArray...E2T0): the value the grown part of the array is filled with.
+  static const U T0 = U();
+  for (U *it = array + from, *end = array + size; it != end; ++it) {
+    *it = T0;
+  }
 }
 
 } // namespace ml

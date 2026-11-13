@@ -7,6 +7,7 @@
 #include "grlib/shd_util.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
+#include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "types.h"
 #include <string.h>
 
@@ -107,3 +108,6 @@ void DrShdLgtGlobalIBL::getLowestPrioritySH(mm::Mat44 &red, mm::Mat44 &green, mm
 void DrShdLgtGlobalIBL::addObj(DrLightObjGlobalIBL *obj, int viewNum) { unknown10[viewNum].unknown00.push_back(obj); }
 
 } // namespace ml
+
+template mm::mtl::FixedList<ml::DrShdLgtGlobalIBL::SlotCandidate, 32>::iterator
+    mm::mtl::FixedList<ml::DrShdLgtGlobalIBL::SlotCandidate, 32>::erase(mm::mtl::FixedList<ml::DrShdLgtGlobalIBL::SlotCandidate, 32>::iterator);

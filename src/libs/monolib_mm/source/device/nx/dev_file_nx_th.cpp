@@ -69,6 +69,8 @@ void DevFileNxTh::setMediaRootPath(const char *path) { m_rootPath = path; }
 
 DevFileJobTh *DevFileNxTh::createLoader(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobTh(); }
 
+DevFileJobTh *DevFileNxTh::createWriter(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileWriterNx; }
+
 DevFileJobTh *DevFileNxTh::createFileValid(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobValidNxTh(); }
 
 bool DevFileNxTh::readBlock(FileHandleTh *handle, const char *path) {

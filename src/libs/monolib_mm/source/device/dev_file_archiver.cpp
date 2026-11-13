@@ -77,4 +77,6 @@ void DevFileArchiver::finalize() {
 
 template class ml::DevFileDictionary<int, ml::DevFileDicAllocator, -1, -2, true>;
 
+template void ml::DevFileDictionary<int, ml::DevFileDicAllocator, -1, -2, true>::reallocArray(block *&array, int size, int from);
+
 template mm::mtl::PtrSingleton<ml::DevFileArchiver>::~PtrSingleton();
