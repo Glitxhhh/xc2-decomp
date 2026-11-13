@@ -4,6 +4,9 @@
 #include "dr/dr_man.h"
 #include "mtl/alloc_handle.h"
 
+// The game builds the collision access in this unit, before this file (0x7edd14): DrIBLObj::initialize, the DrIBLObj destructor and DrIBLObj::update inline its functions.
+#include "dr_ibl_coli_acc.cpp"
+
 namespace ml {
 
 DrIBLMan::DrIBLMan(DrMan *man, int index) : unknown00(man), unknown08(index), unknown910(nullptr) {}
@@ -20,6 +23,44 @@ DrIBLMan::~DrIBLMan() {
       if (*it != nullptr) {
         delete *it;
         *it = nullptr;
+      }
+    }
+  }
+}
+
+void DrIBLMan::update() {
+  for (mm::mtl::FixedList<DrIBLObj *, 32>::iterator it = unknown6d0.begin(); it != unknown6d0.end(); ++it) {
+    if (*it != nullptr) {
+      delete *it;
+    }
+  }
+  unknown6d0.clear();
+  for (mm::mtl::FixedList<DrIBLObj *, 32>::iterator it = unknown250[DrMan::s_nDblIdx].begin(); it != unknown250[DrMan::s_nDblIdx].end(); ++it) {
+    DrIBLObj *obj = *it;
+    if ((obj->unknown58 & 2) == 0) {
+      obj->initialize(unknown00);
+    }
+    unknown10.push_back(obj);
+  }
+  unknown250[DrMan::s_nDblIdx].clear();
+  for (mm::mtl::FixedList<DrIBLObj *, 32>::iterator it = unknown10.begin(); it != unknown10.end();) {
+    DrIBLObj *obj = *it;
+    if ((obj->unknown58 & 2) != 0) {
+      unknown6d0.push_back(obj);
+      it = unknown10.erase(it);
+    } else {
+      ++it;
+    }
+  }
+  unknown910 = nullptr;
+  for (mm::mtl::FixedList<DrIBLObj *, 32>::iterator it = unknown10.begin(); it != unknown10.end(); ++it) {
+    DrIBLObj *obj = *it;
+    if ((obj->unknown58 & 1) != 0) {
+      obj->update();
+      if (obj->hasValidIBL() && obj->unknown5c != 0) {
+        if (unknown910 == nullptr || unknown910->getPriority() < obj->getPriority()) {
+          unknown910 = obj;
+        }
       }
     }
   }

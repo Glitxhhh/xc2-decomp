@@ -14,6 +14,10 @@ struct Col3 {
   Col3() {}
   Col3(f32 r, f32 g, f32 b) : r(r), g(g), b(b) {}
 
+  Col3 operator+(const Col3 &color) const { return Col3(r + color.r, g + color.g, b + color.b); }
+
+  friend Col3 operator*(f32 scale, const Col3 &color) { return Col3(scale * color.r, scale * color.g, scale * color.b); }
+
   f32 r;
   f32 g;
   f32 b;

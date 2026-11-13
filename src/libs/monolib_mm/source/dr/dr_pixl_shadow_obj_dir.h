@@ -36,5 +36,6 @@ static_assert(offsetof(DrPixlShadowObjDir, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(DrPixlShadowObjDir, unknown300) == 0x300, "");
 static_assert(offsetof(DrPixlShadowObjDir, unknown338) == 0x338, "");
 static_assert(offsetof(DrPixlShadowObjDir, unknown340) == 0x340, "");
+static_assert(sizeof(DrPixlShadowObjDir) == 0x350, "");
 
 } // namespace ml

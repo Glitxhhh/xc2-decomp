@@ -8,6 +8,7 @@
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/fixed_array.h"
 #include "types.h"
+#include <string.h>
 
 namespace ml {
 
@@ -79,6 +80,29 @@ void DrShdLgtGlobalIBL::update(int viewNum) {
 }
 
 void DrShdLgtGlobalIBL::updateUniformBlock(int viewNum) { updateUniformBlockImpl(viewNum); }
+
+void DrShdLgtGlobalIBL::getLowestPrioritySH(mm::Mat44 &red, mm::Mat44 &green, mm::Mat44 &blue) const {
+  const unknown001 &view = unknown10[unknown00->unknown1c98];
+  int index = -1;
+  for (DrLightObjGlobalIBL *const *it = view.unknown1b40.end(); it != view.unknown1b40.begin(); --it) {
+    const unknown002 &slot = view.unknown40[0];
+    if (slot.unknown10 == nullptr) {
+      break;
+    }
+    if (slot.unknown10 == it[-1] && slot.unknown04[(slot.unknown08 + 2) % 3] != 3 && (slot.unknown04[0] == 2 || slot.unknown04[1] == 2 || slot.unknown04[2] == 2)) {
+      index = slot.unknown00;
+    }
+  }
+  if (index != -1) {
+    red = view.unknown340[index * 3];
+    green = view.unknown340[index * 3 + 1];
+    blue = view.unknown340[index * 3 + 2];
+  } else {
+    memset(&red, 0, sizeof(mm::Mat44));
+    memset(&green, 0, sizeof(mm::Mat44));
+    memset(&blue, 0, sizeof(mm::Mat44));
+  }
+}
 
 void DrShdLgtGlobalIBL::addObj(DrLightObjGlobalIBL *obj, int viewNum) { unknown10[viewNum].unknown00.push_back(obj); }
 

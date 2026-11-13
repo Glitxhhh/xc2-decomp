@@ -127,8 +127,8 @@ public:
   u8 _208[0x210 - 0x208];
   cloud::CloudMdlDataObj *unknown210; // Inferred role: cloud model data; original member name unknown.
   u8 _218[0x230 - 0x218];
-  u64 unknown230; // Inferred role: shadow cache mask; original member name unknown.
-  u8 _238[0x240 - 0x238];
+  u64 unknown230;         // Inferred role: shadow cache mask; original member name unknown.
+  const char *unknown238; // Inferred role: path given to the constructor; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoCtlNom, unknown190) == 0x190, "");
@@ -144,5 +144,6 @@ static_assert(offsetof(DrMdoCtlNom, unknown1f8) == 0x1f8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown200) == 0x200, "");
 static_assert(offsetof(DrMdoCtlNom, unknown210) == 0x210, "");
 static_assert(offsetof(DrMdoCtlNom, unknown230) == 0x230, "");
+static_assert(offsetof(DrMdoCtlNom, unknown238) == 0x238, "");
 
 } // namespace ml

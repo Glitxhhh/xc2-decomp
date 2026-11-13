@@ -62,6 +62,7 @@ public:
   void setUniformBlock(u32 index) const;
   void setStorageBuffer(u32 index) const;
   const mm::Mat44 &getSHMatrix(u32 row, u32 column) const;
+  void getLowestPrioritySH(mm::Mat44 &red, mm::Mat44 &green, mm::Mat44 &blue) const;
   void updateUB_ShMatrixList(u8 *work, int viewNum);
   void getSHAverage(mm::Vec3 &average, u32 index) const;
   void updateUB_ToProxySpace(u8 *work, int viewNum);

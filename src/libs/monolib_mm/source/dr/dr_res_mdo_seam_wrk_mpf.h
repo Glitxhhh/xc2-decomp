@@ -15,6 +15,7 @@ class DrMdoCtlMpfInst;
 class DrMdoCtlMpfWork;
 class DrMdoCtlSeamMpfMap;
 class DrMdoMpfMan;
+class DrResMdoSeamParmRead;
 class DrResMdoSeamWrkPosMpf;
 struct MdoWrkMatRes;
 struct MdsMpfObjData;
@@ -23,9 +24,12 @@ struct _wkMpfAutoBuff;
 
 // Inferred layout of the mpf map resource header; offsets are relative to the header.
 struct MdsSeamMpfMapHead {
-  u8 _00[0x08];
+  u32 unknown00; // Inferred role: model data offset; original member name unknown.
+  u32 unknown04; // Inferred role: material data offset; original member name unknown.
   u32 unknown08; // Inferred role: mpf data offset; original member name unknown.
-  u8 _0c[0x1c - 0x0c];
+  u32 unknown0c; // Inferred role: vertex data offset; original member name unknown.
+  u32 unknown10; // Inferred role: texture data offset; original member name unknown.
+  u8 _14[0x1c - 0x14];
   u32 unknown1c; // Inferred role: etc position table offset; original member name unknown.
   u32 unknown20; // Inferred role: etc position num; original member name unknown.
 };
@@ -68,12 +72,16 @@ public:
   void release();
   void changeMemCall();
   void releaseCache(DrMdoCtlSeamMpfMap *ctl);
+  bool update(const DrResMdoSeamParmRead *parmRead, bool isOpen, u32 flags);
+  u32 updateRenderList(DrCalcViewWork *view, grlib::CGLibVtxInstans *instans, DrMdoCtlSeamMpfMap *ctl);
   void beginCalc();
   void calcCacheInfo();
   void calcMpfMatSetup(DrCalcViewWork *view, grlib::CGLibVtxInstans *instans);
   void setEtcMpfCache(int id, DrResMdoSeamMemObj *memObj);
   void setMpfPoliCache(int id, DrResMdoSeamMemObj *memObj);
   void setupMpfPoliWork(int index);
+
+  static f32 SEAM_MPFMAP_READ_CHECK;
 
   DrResMdoSeamMemObj *unknown18;      // Inferred role: memory object; original member name unknown.
   DrMdoMpfMan *unknown20;             // Inferred role: mpf manager; original member name unknown.

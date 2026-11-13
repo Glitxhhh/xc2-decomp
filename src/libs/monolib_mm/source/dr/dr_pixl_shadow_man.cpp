@@ -1,12 +1,17 @@
 #include "dr/dr_pixl_shadow_man.h"
 
+#include <string.h>
+
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_pixl_format.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_pixl_shadow_obj_dir.h"
+#include "dr/dr_pixl_shadow_obj_pnt.h"
+#include "dr/dr_pixl_shadow_obj_spt.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
 
@@ -145,4 +150,44 @@ void DrPixlShadowMan::releaseShadow(DrPixlShadowObj *shadow) {
 
 void DrPixlShadowMan::setAddShadowObj(DrPixlShadowObjDir *shadow) { m_addShadowObj = shadow; }
 
+DrPixlShadowMan::DrPixlShadowMan(DrMan *man, DrPixlMan *pixlMan) : unknown8900(0), unknown8908(man), unknown8910(pixlMan), m_addShadowObj(nullptr) {
+  memset(unknown0000, 0, sizeof(unknown0000));
+  for (int i = 0; i < 16; i++) {
+    unknown0800[i].unknown808 = 0;
+    unknown0800[i].unknown80a = 0;
+    unknown0800[i].unknown800 = 0.0f;
+    unknown0800[i].unknown804 = 0;
+  }
+}
+
+DrPixlShadowMan::~DrPixlShadowMan() { releaseTexWork(); }
+
+DrPixlShadowObj *DrPixlShadowMan::createPntShadow(DrLightObj *light, int index) {
+  DrPixlShadowObjPnt *shadow = new (unknown8908->unknown10) DrPixlShadowObjPnt(unknown8908, 0);
+  shadow->unknown190 = new (unknown8908->unknown10) DrPixlShadowObjPnt(unknown8908, 1);
+  unknown0000[unknown8900++] = shadow;
+  return shadow;
+}
+
+DrPixlShadowObj *DrPixlShadowMan::createSptShadow(DrLightObj *light, int index) {
+  MdoShdPxlWrkTex *work = createShdTexWrk(index, 2);
+  if (work == nullptr) {
+    return nullptr;
+  }
+  DrPixlShadowObjSpt *shadow = new (unknown8908->unknown10) DrPixlShadowObjSpt(unknown8908);
+  shadow->createWork(light, 0, work);
+  unknown0000[unknown8900++] = shadow;
+  return shadow;
+}
+
+void DrPixlShadowMan::shadowDebugInfRender() {
+  for (int i = 0; i < unknown8900; i++) {
+    unknown0000[i]->debugInfo();
+    for (DrPixlShadowObj *shadow = unknown0000[i]->unknown190; shadow != nullptr; shadow = shadow->unknown190) {
+      if (shadow->dispChk() && (shadow->unknown50 & DrPixlShadowObj::FLAG_UNKNOWN_0) != 0) {
+        shadow->debugInfo();
+      }
+    }
+  }
+}
 } // namespace ml

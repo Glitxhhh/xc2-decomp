@@ -10,6 +10,18 @@
 namespace ml {
 class DrPixlOccQuery;
 
+DrLightObjGlobalIBL::~DrLightObjGlobalIBL() {
+  for (u32 i = 0; i < unknown20.size(); i++) {
+    MeshData &mesh = unknown20[i];
+    mesh.unknown00.release();
+    mesh.unknown28.release();
+    if (mesh.unknown110 != nullptr) {
+      delete mesh.unknown110;
+      mesh.unknown110 = nullptr;
+    }
+  }
+}
+
 int DrLightObjGlobalIBL::getPriority() const { return m_priority; }
 
 void DrLightObjGlobalIBL::bindVertex(u32 index) {
