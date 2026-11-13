@@ -6,6 +6,9 @@
 #include "mm_mtl/singleton.h"
 #include "types.h"
 
+namespace fw {
+struct UpdateInfo;
+} // namespace fw
 namespace ui {
 class UIStr;
 } // namespace ui
@@ -35,6 +38,7 @@ public:
   static void build(const GfSetupParam &param);
   static void destroy();
   static bool isInitialized();
+  static void postUpdate(const fw::UpdateInfo &info);
   void attachCall(u32 call, u32 object);
   void detachCall(u32 call);
   u32 getAttachedObject(u32 call);

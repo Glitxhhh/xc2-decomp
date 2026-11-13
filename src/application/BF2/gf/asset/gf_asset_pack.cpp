@@ -615,6 +615,25 @@ s64 GfAssetPack::getAllFileSize() {
   return unknown240;
 }
 
+size_t GfAssetPack::getNeedLoadFileSize(size_t blockSize, bool) {
+  size_t total = 0;
+  for (GfAssetFiles::AssetFile *file : m_assetType.unknown50) {
+    GfAssetResource *resource = getResource(file->unknown00);
+    if (resource != nullptr && resource->unknown0c == GfAssetResource::unknown001_3) {
+      continue;
+    }
+    s64 size = m_assetType.calcFileSize(file->unknown00);
+    if (size > 0) {
+      size_t rest = size % blockSize;
+      if (rest != 0) {
+        size = size + blockSize - rest;
+      }
+    }
+    total += size;
+  }
+  return total;
+}
+
 void GfAssetPack::replaceAssetType(const GfAssetFilesInfo &filesInfo) {
   AssetPackInfo *info = GfAssetManager::getAssetPackInfo(filesInfo.unknown00);
   info->unknown308 = filesInfo.unknown08;

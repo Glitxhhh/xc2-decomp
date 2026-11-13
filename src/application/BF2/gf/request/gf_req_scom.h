@@ -139,7 +139,7 @@ public:
   GF_OBJ_HANDLE *unknown20; // Inferred role: target; original member name unknown.
 };
 
-class SCOM_PARTY_ADD {
+class SCOM_PARTY_ADD : public SCOM, public mm::mtl::PtrSingleton<SCOM_PARTY_ADD> {
 public:
   // Inferred role: kind of a queued party change (1 add blade, 2 remove blade, 3 add driver, 4 remove driver); original enum and enumerator names unknown.
   enum unknown001 {
@@ -160,6 +160,8 @@ public:
     unknown001 unknown10; // Inferred role: change kind; original member name unknown.
   };
 
+  SCOM_PARTY_ADD(GF_SCOM_HANDLE *handle) : SCOM(handle, SCOM_TYPE_PARTY_ADD, SCOM_EXEC_UNKNOWN_0, 1) {}
+  bool exec(const fw::UpdateInfo &info) override;
   static void addBlade(u32 blade, u32 driver, int slot);
   static GF_SCOM_HANDLE *create();
   static void removeBlade(u32 blade, bool isForce);
@@ -176,6 +178,7 @@ public:
 static_assert(offsetof(SCOM_PARTY_ADD::unknown002, unknown0c) == 0x0c, "");
 static_assert(offsetof(SCOM_PARTY_ADD::unknown002, unknown10) == 0x10, "");
 static_assert(sizeof(SCOM_PARTY_ADD::unknown002) == 0x14, "");
+static_assert(sizeof(SCOM_PARTY_ADD) == 0x28, "");
 
 class SCOM_EXEC_CURRENT_BLADE : public SCOM {
 public:

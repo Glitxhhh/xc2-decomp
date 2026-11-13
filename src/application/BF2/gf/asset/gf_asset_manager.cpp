@@ -1,5 +1,6 @@
 #include "gf/asset/gf_asset_manager.h"
 
+#include <new>
 #include <string.h>
 
 #include "gf/asset/gf_asset_pack.h"
@@ -19,6 +20,9 @@
 #include "mtl/mem_manager.h"
 
 namespace gf {
+
+constexpr u32 ASSET_HANDLE_UNKNOWN_1023 = 1023;       // Inferred role: mask of the pool index kept in the low bits of an asset handle; original name unknown.
+constexpr u32 ASSET_HANDLE_UNKNOWN_1048575 = 1048575; // Inferred role: serial of an asset handle that is skipped; original name unknown.
 
 GfAssetManager::GfAssetManager(const GfSetupParam &param) : unknowndb918(0), m_slotMapping(nullptr), unknowne04c0(false), unknowne04c1(false) { initialize(param); }
 
@@ -97,7 +101,7 @@ bool GfAssetManager::isInitialized() {
 
 AssetPackInfo *GfAssetManager::getAssetPackInfo(GF_ASSET_HANDLE *handle) {
   GfAssetManager *manager = get();
-  u32 index = reinterpret_cast<u64>(handle) & 0x3ff;
+  u32 index = reinterpret_cast<u64>(handle) & ASSET_HANDLE_UNKNOWN_1023;
   AssetPackInfo *info = &manager->unknown10.unknown007[index];
   return manager->unknown10.unknown010(index) ? info : nullptr;
 }
@@ -137,6 +141,20 @@ void GfAssetManager::disableGameResource(GF_ASSET_HANDLE *handle) {
   if (info != nullptr && info->unknown305) {
     info->setUsingGame(false);
   }
+}
+
+GF_ASSET_HANDLE *GfAssetManager::createAssetHandle(const GfInitParam &) {
+  GfAssetManager *manager = get();
+  u32 index = 0;
+  AssetPackInfo *info = new (manager->unknown10.unknown003(&index)) AssetPackInfo;
+  u32 serial = manager->unknowndb918++;
+  if (serial >= ASSET_HANDLE_UNKNOWN_1048575) {
+    serial = manager->unknowndb918++;
+  }
+  GF_ASSET_HANDLE *handle = reinterpret_cast<GF_ASSET_HANDLE *>(static_cast<u64>((index & ASSET_HANDLE_UNKNOWN_1023) | serial << 10));
+  info->unknown08 = handle;
+  manager->unknownce0b8.push_back(handle);
+  return handle;
 }
 
 GfAssetPack *GfAssetManager::createAssetFiles(const GfAssetFilesInfo &info) {

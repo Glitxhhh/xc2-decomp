@@ -206,13 +206,15 @@ public:
 
   int unknown6c;  // Inferred role: slot; original member name unknown.
   bool unknown70; // Inferred role: leaving; original member name unknown.
-  u8 _71[0x74 - 0x71];
+  bool unknown71; // Role and original member name unknown; cleared by the GfPlayComHoodHomuraBattou constructor before the rebuild.
+  u8 _72[0x74 - 0x72];
   int unknown74; // Inferred role: formation player id; original member name unknown.
   u8 _78[0x130 - 0x78];
 };
 
 static_assert(offsetof(GfObjSetupBlade, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfObjSetupBlade, unknown70) == 0x70, "");
+static_assert(offsetof(GfObjSetupBlade, unknown71) == 0x71, "");
 static_assert(offsetof(GfObjSetupBlade, unknown74) == 0x74, "");
 static_assert(sizeof(GfObjSetupBlade) == 0x130, "");
 

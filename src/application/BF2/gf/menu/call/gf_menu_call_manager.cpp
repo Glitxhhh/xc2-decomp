@@ -2,6 +2,7 @@
 
 #include "gf/gf_allocator.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "mm_mtl/reference_object.h"
 
 namespace gf {
 
@@ -39,6 +40,20 @@ void GfMenuCallManager::destroy() {
 }
 
 bool GfMenuCallManager::isInitialized() { return true; }
+
+void GfMenuCallManager::postUpdate(const fw::UpdateInfo &) {
+  GfMenuCallManager *self = get();
+  if (self != nullptr) {
+    for (unknown001 *info = self->unknown1108.begin(); info != self->unknown1108.end();) {
+      if (info->unknown00->isTerm()) {
+        mm::mtl::safeRelease(info->unknown00);
+        info = self->unknown1108.erase(info);
+      } else {
+        ++info;
+      }
+    }
+  }
+}
 
 void GfMenuCallManager::attachCall(u32 call, u32 object) { unknown08[call] = object; }
 

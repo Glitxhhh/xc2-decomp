@@ -47,7 +47,6 @@ enum {
 enum {
   BLADE_UNKNOWN_1051 = 1051, // Inferred role: blade act first; original name unknown.
   BLADE_UNKNOWN_1039 = 1039, // Inferred role: blade change weapon; original name unknown.
-  BLADE_UNKNOWN_1043 = 1043, // Inferred role: blade change weapon range first; original name unknown.
 };
 
 enum {

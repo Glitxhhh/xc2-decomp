@@ -41,11 +41,12 @@ public:
     dest.m_nLen = __builtin_strlen(dest.mData);
   }
 
-  // Inferred role: index of the first occurrence of a substring, -1 when missing; no game symbol, original name unknown. Shape from
-  // fw::ResourceManager::isDelayReleaseExtention (1.0.0: 0x710019c128), which compares at each position with strncmp.
-  int unknown003(const char *pszStr) const {
+  // Inferred role: index of the first occurrence of a substring at or after start, -1 when missing; no game symbol, original name unknown. Shape from
+  // fw::ResourceManager::isDelayReleaseExtention (1.0.0: 0x710019c128), which compares at each position with strncmp, and from
+  // mm::mtl::replacestr (0x71001a86e0), which searches again from the end of each replacement.
+  int unknown003(const char *pszStr, int start = 0) const {
     int len = __builtin_strlen(pszStr);
-    for (int i = 0; i < m_nLen; i++) {
+    for (int i = start; i < m_nLen; i++) {
       if (strncmp(mData + i, pszStr, len) == 0) {
         return i;
       }
@@ -91,8 +92,13 @@ public:
     mData[len] = 0;
   }
 
+  // A count of -1 erases up to the end (mm::mtl::replacestr inlines this test with the count it passes, 1.0.0: 0x71001a86e0).
   void erase(int pos, int count) {
-    if (pos < m_nLen) {
+    if (count == -1) {
+      if (pos < m_nLen) {
+        resize(pos);
+      }
+    } else if (pos < m_nLen) {
       int end = pos + count < m_nLen ? pos + count : m_nLen;
       __builtin_strcpy(mData + pos, mData + end);
       m_nLen = __builtin_strlen(mData);
@@ -139,13 +145,7 @@ public:
   FixStr &replace(int pos, int count, const char *strNew) {
     MM_ASSERT(strNew);
     int len = __builtin_strlen(strNew);
-    if (count == -1) {
-      if (pos < m_nLen) {
-        resize(pos);
-      }
-    } else {
-      erase(pos, count);
-    }
+    erase(pos, count);
     insert(pos, strNew, len);
     return *this;
   }

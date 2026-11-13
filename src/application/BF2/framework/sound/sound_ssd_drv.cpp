@@ -19,6 +19,7 @@
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/hash.h"
 #include "mm_mtl/internal/object_allocator.h"
+#include "mm_mtl/str_util.h" // IWYU pragma: keep
 #include "mtl/mem_manager.h"
 #include "nn/diag.h"
 #include "ssd/ssd_sound_core.h"
@@ -1222,6 +1223,9 @@ SoundSsdBank::~SoundSsdBank() {
 template mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::iterator mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::erase(mm::mtl::FixedList<fw::SoundPoolMemory *, 256>::iterator);
 
 template mm::mtl::PtrSingleton<fw::SoundSsdDriver>::~PtrSingleton();
+
+// Instantiated here: the game emits it next to SoundSsdDriver::playStream, its caller (1.0.0: 0x71001a86e0).
+template void mm::mtl::replacestr<mm::mtl::FixStr<256>>(mm::mtl::FixStr<256> &, const char *, const char *);
 
 // Instantiated here, where the driver keeps its sound handle allocator: the game calls the out-of-line ssd::SoundHandle constructor, which sound_handle.cpp would inline.
 template ssd::SoundHandle *mm::mtl::ObjectAllocator<ssd::SoundHandle>::allocate();

@@ -116,6 +116,13 @@ public:
     m_free_index_top = N;
   }
 
+  template <typename Iterator> void assign(Iterator first, Iterator last) {
+    clear();
+    for (; first != last; ++first) {
+      push_back(*first);
+    }
+  }
+
   // __LINE__ must be 220 and 224 as in the original header: they are the line arguments of the asserts.
   void push_front(const T &value) {
 #line 220

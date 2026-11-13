@@ -960,6 +960,7 @@ class GfPlayComHoodHomuraBattou : public GfPlayCom, public mm::mtl::PtrSingleton
   GF_PLAY_COM("HoodHomuraBattou")
 
 public:
+  GfPlayComHoodHomuraBattou();
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;

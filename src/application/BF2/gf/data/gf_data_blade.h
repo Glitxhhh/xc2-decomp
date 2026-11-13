@@ -273,7 +273,7 @@ public:
   static void setUsedFavoriteItemForPouch(u32 blade, u32 item);
   static u32 getMenuCastName(u32 blade);
   static u32 getMenuIlustName(u32 blade);
-  static void setActivateDriver(u32 bladeId, int slot, u32 driverId, u32 option);
+  static bool setActivateDriver(u32 bladeId, int slot, u32 driverId, u32 option);
   static SDataBlade &getSDataBlade(u32 blade);
   static void initSaveData(SDataGame &dataGame);
   static void setupSDataBlade(SDataBlade &dataBlade, u32 blade, bool unknown001);

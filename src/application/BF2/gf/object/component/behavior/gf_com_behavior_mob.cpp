@@ -6,6 +6,7 @@
 #include "bdat.h"
 #include "framework/coli/coli_object.h"
 #include "framework/memory/allocator.h"
+#include "framework/message/message_object.h"
 #include "framework/navi/navi_manager.h"
 #include "framework/object/updatable_object.h"
 #include "framework/reference_frame.h"
@@ -20,6 +21,7 @@
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
 #include "gf/object/component/gf_com_collider.h"
 #include "gf/object/component/gf_com_transform.h"
+#include "gf/object/component/gf_component.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
@@ -46,6 +48,18 @@ void GfComBehaviorMob::BdatInfo::create(const CBdatWrapper &bdat, int id) {
   if (Bdat::getMember(bdat.unknown00, "BattleMot") != nullptr) {
     unknown0a = bdat.getValCheck("BattleMot", id, gmk::BDAT_TYPE_UNKNOWN_2);
   }
+}
+
+bool GfComBehaviorMob::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
+  switch (message.unknown00) {
+  case MSG_UNKNOWN_16777219:
+    procMsgActivateComponentDebugWindow(sender, static_cast<MsgDebugActivateComponentWindow &>(message));
+    return true;
+  case MSG_UNKNOWN_16777286:
+    procMsgObjectGetVelocity(sender, static_cast<MsgObjectGetVelocity &>(message));
+    return true;
+  }
+  return false;
 }
 
 void GfComBehaviorMob::procMsgActivateComponentDebugWindow(fw::MessageObject *sender, MsgDebugActivateComponentWindow &message) {}

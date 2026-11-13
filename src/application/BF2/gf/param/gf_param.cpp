@@ -77,3 +77,9 @@ void ParamManager::addReflectionFileName(Reflection &reflection, const char *nam
 }
 
 } // namespace fw
+
+typedef mm::mtl::RedBlackTreeBase<mm::mtl::Map<const fw::Reflection *, fw::ParamManager::RefInfo>::MapTraits<const fw::Reflection *, fw::ParamManager::RefInfo>> unknown101;
+
+// Instantiated here: the game emits them after gf::destroyGFReflections, which erases the reflection file names (1.0.0: 0x71005b921c, 0x71005b9450).
+template void unknown101::erase(unknown101::node *);
+template void unknown101::rebalance_after_erase(unknown101::node *);

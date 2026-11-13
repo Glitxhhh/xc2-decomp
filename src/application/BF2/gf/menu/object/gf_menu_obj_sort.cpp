@@ -3,6 +3,7 @@
 #include "bdat.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_bdat.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
@@ -12,6 +13,7 @@
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 #include "ui/ui_str.h"
 
@@ -23,6 +25,40 @@ constexpr u32 unknown001 = 0x83;
 GfMenuObjSort::GfMenuObjSort(u32 handle) : GfMenuObject(handle), unknown24(0), unknown28(0), unknown2c(0), unknown30(0) {}
 
 GfMenuObjSort::~GfMenuObjSort() { ; }
+
+void GfMenuObjSort::initialize() {
+  ui::UIObjectAcc main(unknown18, "LAY_main");
+  attachExternalCall(unknown001, main.unknown10);
+// __LINE__ must be 51 as in the original file: it is the line argument of operator new.
+#line 51
+  MainListener *listener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  listener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main.unknown10, listener);
+  if (listener != nullptr) {
+    listener->release();
+  }
+  {
+    ui::UIObjectAcc list(main.unknown10, "LAY_list");
+    ui::UIObjectAcc name(main.unknown10, "TXT_cur_name");
+    GfMenuObjUtil::createDockPlugin(list.unknown10, name.unknown10, 3, mm::Pnt<s16>(0, 16), 0);
+  }
+  {
+    ui::UIObjectAcc list(main.unknown10, "LAY_list");
+    ui::UIObjectAcc base(main.unknown10, "IMG_base");
+    GfMenuObjUtil::createFitPlugin(base.unknown10, list.unknown10, 16, 16, GfMenuObjUtil::FitOption());
+  }
+  u8 *bdat = GfDataBdat::getFP(BDAT_MNU_SORT_TABLE);
+  if (bdat != nullptr) {
+    mm::mtl::FixStr<32> name;
+    for (unknown30 = 0;; unknown30++) {
+      name.format("sort_type%d", unknown30 + 1);
+      if (Bdat::getMember(bdat, name.c_str()) == nullptr) {
+        break;
+      }
+    }
+  }
+  GfMenuObject::initialize();
+}
 
 void GfMenuObjSort::finalize() { GfMenuObject::finalize(); }
 

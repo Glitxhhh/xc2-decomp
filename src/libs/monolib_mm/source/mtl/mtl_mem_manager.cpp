@@ -1039,3 +1039,9 @@ void operator delete(void *pointer, mtl::ALLOC_HANDLE, const char *, size_t, int
 void operator delete[](void *pointer, mtl::ALLOC_HANDLE, const char *, size_t, int, bool) noexcept { mtl::MemManager::deallocate(pointer, 0, false); }
 
 template class mtl::AssetAllocator<1024>;
+
+typedef mm::mtl::FixedList<mtl::ALLOC_HANDLE, 128> unknown101;
+
+// Instantiated here: the game emits it after the AssetAllocator<1024> functions of this file (1.0.0: 0x71007861bc); the copy of a
+// MemManager region assigns its list of child handles.
+template void unknown101::assign<unknown101::const_iterator>(unknown101::const_iterator, unknown101::const_iterator);

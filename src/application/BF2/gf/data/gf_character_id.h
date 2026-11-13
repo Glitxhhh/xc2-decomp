@@ -35,6 +35,10 @@ enum {
   BLADE_UNKNOWN_1022 = 1022, // Inferred role: blade real alias target; original name unknown.
   BLADE_KOSMOS = 1039,       // Row 40749 of BDAT table EVT_setupFev01, column objID, reads "BLADE_KOSMOS".
   BLADE_UNKNOWN_1040 = 1040,
+  BLADE_UNKNOWN_1042 = 1042, // Inferred role: blade whose event weapon belongs to driver metsu (GfInitParamWeapon::setupForEvent); original name unknown.
+  BLADE_UNKNOWN_1043 = 1043, // Inferred role: first blade of the change weapon range, event weapon of driver shin (GfInitParamWeapon::setupForEvent); original name unknown.
+  BLADE_UNKNOWN_1044 = 1044, // Inferred role: blade whose event weapon belongs to driver shin (GfInitParamWeapon::setupForEvent); original name unknown.
+  BLADE_UNKNOWN_1045 = 1045, // Inferred role: blade whose event weapon belongs to driver shin (GfInitParamWeapon::setupForEvent); original name unknown.
   BLADE_UNKNOWN_1050 = 1050, // Inferred role: blade real alias; original name unknown.
   BLADE_UNKNOWN_1073 = 1073,
   BLADE_UNKNOWN_1074 = 1074, // Inferred role: Homuri loaded when GfDataBlade::isHomuriNameHikari; original name unknown.

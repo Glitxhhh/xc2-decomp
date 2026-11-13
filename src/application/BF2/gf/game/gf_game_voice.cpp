@@ -3,12 +3,15 @@
 #include <string.h>
 
 #include "framework/lang_util.h"
+#include "fw/fw_transform.h"
+#include "fw/fw_update_info.h"
 #include "gf/data/gf_character_id.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/game/salvage/gf_salvage_voice.h"
 #include "gf/gf_allocator.h"
 #include "gf/gf_manager.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/request/gf_req_scom.h"
@@ -272,6 +275,24 @@ void VoiceInfo::destroyJob() {
     delete *it;
   }
   unknown30.clear();
+}
+
+void VoiceInfo::update(const fw::UpdateInfo &info) {
+  for (mm::mtl::FixedQueue<PJOB *, 16>::iterator it = unknown30.begin(); it != unknown30.end();) {
+    PJOB *job = *it;
+    if (!job->exec()) {
+      break;
+    }
+    delete job;
+    it = unknown30.erase(it);
+  }
+  if (unknown20.isValid()) {
+    GfObjAcc acc(unknown10.unknown00);
+    if (acc.isValidTransform()) {
+      applyPosition(acc.getWorldTransform().unknown00);
+    }
+  }
+  unknown0c += info.unknown04;
 }
 
 bool VoiceInfo::isEmpty() const {

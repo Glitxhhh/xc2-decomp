@@ -1,6 +1,9 @@
+#include <string.h>
+
 #include "bdat.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_bdat_wrapper.h"
+#include "gf/data/gf_data_quest.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_task_param.h"
@@ -3415,6 +3418,26 @@ qlist_iterator qlist_iterator::operator++() {
   }
 
   return *this;
+}
+
+void QuestListAcc::makeQuestTaskInfo() {
+  memset(unknown4310c, 0, sizeof(unknown4310c));
+  unknown62510.clear();
+  u16 count = 0;
+  for (qlist_iterator it = begin(QTYPE_UNKNOWN_0); it != end(QTYPE_UNKNOWN_0); ++it) {
+    u32 purpose = GfDataQuest::getListPurposeID(it.getQuestID());
+    if (purpose == 0) {
+      continue;
+    }
+    for (u32 task = 0; task < QUEST_UNKNOWN_4; task++) {
+      u32 type = getTaskTaskType(purpose, task);
+      if (type == TASK_TYPE_UNKNOWN_3 || type == TASK_TYPE_UNKNOWN_4) {
+        count++;
+        unknown62510.push_back(count);
+        unknown4310c[it.getQuestID().unknown00 * QUEST_UNKNOWN_4 + task] = unknown62510.size();
+      }
+    }
+  }
 }
 
 u32 QuestListAcc::getCollectUseFlagIndex(const QuestTaskParam &param) const {

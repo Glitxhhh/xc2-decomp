@@ -74,6 +74,7 @@
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_queue.h"
@@ -940,6 +941,99 @@ GF_SCOM_HANDLE *SCOM_DEAD_PARTICLE::create(GF_OBJ_HANDLE *handle, u32 attribute,
 
 mm::mtl::FixedQueue<SCOM_PARTY_ADD::unknown002, 16> SCOM_PARTY_ADD::s_info;
 
+bool SCOM_PARTY_ADD::exec(const fw::UpdateInfo &) {
+  RQ_SETUP_PARTY info;
+  GfGameParty::getPartyPosition(info.unknowne0);
+  mm::mtl::FixedVector<u32, PARTY_UNKNOWN_3> drivers;
+  bool isChange = false;
+  bool isBladeRemove = false;
+  for (mm::mtl::FixedQueue<unknown002, 16>::iterator it = s_info.begin(); it != s_info.end(); ++it) {
+    unknown002 &entry = *it;
+    switch (entry.unknown10) {
+    case unknown001_3:
+      isChange |= GfDataDriver::setActivateParty(entry.unknown04, entry.unknown08 >= 0 ? entry.unknown08 : PARTY_UNKNOWN_4294967295);
+      break;
+    case unknown001_4:
+      if (entry.unknown0c) {
+        isChange |= GfDataDriver::setActivateReserver(entry.unknown04, PARTY_UNKNOWN_4294967295);
+      } else {
+        isChange |= GfDataDriver::setActivateUnuse(entry.unknown04);
+      }
+      break;
+    }
+  }
+  for (mm::mtl::FixedQueue<unknown002, 16>::iterator it = s_info.begin(); it != s_info.end(); ++it) {
+    unknown002 &entry = *it;
+    switch (entry.unknown10) {
+    case unknown001_1: {
+      if (entry.unknown00 == BLADE_UNKNOWN_1050 && !GfDataBlade::isAttachedParty(BLADE_UNKNOWN_1050)) {
+        GfDataBlade::setCreator(entry.unknown00, GfDataBlade::getCreator(BLADE_UNKNOWN_1022));
+      }
+      u32 slotMax = GfMenuObjUtil::getBladeSlotMax();
+      if (slotMax == 3) {
+        slotMax = 0;
+      }
+      if (GfDataBlade::setActivateDriver(entry.unknown00, entry.unknown08, entry.unknown04, slotMax)) {
+        if (mm::mtl::find(drivers.begin(), drivers.end(), entry.unknown04) == drivers.end()) {
+          drivers.push_back(entry.unknown04);
+        }
+        if (entry.unknown0e) {
+          DataParamAcc acc(OBJECT_TYPE_PC, entry.unknown04, GIMMICK_TYPE_UNKNOWN_0);
+          int bladeSet = entry.unknown08;
+          if (bladeSet < 0) {
+            bladeSet = GfDataDriver::getSetIdByBlade(entry.unknown04, entry.unknown00);
+          }
+          acc.setBladeSet(bladeSet);
+        }
+        isChange = true;
+      }
+      break;
+    }
+    case unknown001_2: {
+      bool isExist = GfDataParty::isExistBlade(entry.unknown00);
+      u32 driver = GfDataBlade::getSetDriver(entry.unknown00);
+      u32 blade = GfDataDriver::getBlade(driver, -1);
+      if (entry.unknown0c) {
+        GfGameUtil::execActivateReserverForBlade(entry.unknown00);
+      } else {
+        GfGameUtil::execActivateUnuseForBlade(entry.unknown00, entry.unknown0d);
+      }
+      isChange |= isExist;
+      if (driver == DRIVER_UNKNOWN_1) {
+        GfGameUtil::execEquipMercenariesBlade(DRIVER_UNKNOWN_1, GfDataBlade::getStartCommonBlade());
+      }
+      if (blade != GfDataDriver::getBlade(driver, -1)) {
+        if (mm::mtl::find(drivers.begin(), drivers.end(), driver) == drivers.end()) {
+          drivers.push_back(driver);
+        }
+      }
+      isBladeRemove = true;
+      break;
+    }
+    }
+  }
+  if (isChange || GfGameParty::isExistMismatchScenarioMask(PARTY_UNKNOWN_4294967295)) {
+    GfGameParty::getCurrentPartyInfo(info);
+    for (u32 i = 0; i < drivers.size(); i++) {
+      for (u32 partyId = 0; partyId < PARTY_UNKNOWN_3; partyId++) {
+        if (info.unknown00[partyId].unknown00 == drivers[i]) {
+          info.unknown00[partyId].unknown12 = true;
+        }
+      }
+    }
+    for (u32 partyId = 0; partyId < PARTY_UNKNOWN_3; partyId++) {
+      if (GfGameParty::isExistMismatchScenarioMask(partyId)) {
+        info.unknown00[partyId].unknown12 = true;
+      }
+    }
+    GfReqCommand::reqChangeParty(info);
+  } else if (isBladeRemove) {
+    GfEvent::callPartyChange();
+  }
+  s_info.clear();
+  return true;
+}
+
 void SCOM_PARTY_ADD::addBlade(u32 blade, u32 driver, int slot) {
   if (blade == 0) {
     return;
@@ -947,6 +1041,15 @@ void SCOM_PARTY_ADD::addBlade(u32 blade, u32 driver, int slot) {
   unknown002 info = {GfDataBlade::getActBlade2CommonBlade(blade), driver, slot, true, false, false, unknown001_1};
   s_info.push(info);
   create();
+}
+
+GF_SCOM_HANDLE *SCOM_PARTY_ADD::create() {
+  if (get() == nullptr) {
+#line 2479
+    SCOM_PARTY_ADD *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_PARTY_ADD(GfReqSmallCom::get()->allocate());
+    return GfReqSmallCom::addRequest(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
 }
 
 void SCOM_PARTY_ADD::removeBlade(u32 blade, bool isForce) {

@@ -1318,6 +1318,18 @@ GfPlayComMoverSwitch *GfPlayComMoverSwitch::create() {
   return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfPlayComMoverSwitch();
 }
 
+GfPlayComHoodHomuraBattou::GfPlayComHoodHomuraBattou() : GfPlayCom(PCOMTYPE_UNKNOWN_43, true) {
+  GfObjAcc bladeAcc(GfGameParty::getHandleBlade(0, -1));
+  GfObjSetupBlade *setup = GfObjUtil::getObjSetup<GfObjSetupBlade>(bladeAcc.getHandle());
+  if (setup != nullptr) {
+    setup->unknown71 = false;
+    GfObjUtil::rebuild(bladeAcc.getHandle());
+    setup->unknown50 = 1.0f;
+    setup->unknown60 = true;
+    setup->unknown64 = VFACC_UNKNOWN_FFFFFFFF;
+  }
+}
+
 void GfPlayComHoodHomuraBattou::start() {}
 
 void GfPlayComHoodHomuraBattou::end() {}
@@ -1334,6 +1346,12 @@ bool GfPlayComHoodHomuraBattou::update(const fw::UpdateInfo &, bool) {
     GfGameUtil::enterPlayerBattle(false, unknown020, false);
   }
   return true;
+}
+
+GfPlayComHoodHomuraBattou *GfPlayComHoodHomuraBattou::create() {
+  // __LINE__ must be 3069 as in the original file: its value changes the instruction order.
+#line 3069
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfPlayComHoodHomuraBattou();
 }
 
 void GfPlayComReturnTitle::start() { GfMenuObjPopup::closeAll(); }
