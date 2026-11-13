@@ -10,6 +10,7 @@
 #include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/adapter/gf_menu_reference_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
+#include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_reference_number.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_id_list.h"
@@ -151,6 +152,49 @@ void GfMenuObjHanaPartsMake::setupPartsList(ui::UIObjectAcc &acc, GfMenuIDList *
     }
     name.format("IMG_partsicon@%02d01", i + 1);
     GfMenuHanaPartsAdapter::createFromList(acc.searchChild(name.c_str()), 1, list, i, false);
+  }
+}
+
+void GfMenuObjHanaPartsMake::refreshItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects, u32 type, u32 isEquip) {
+  GfMenuReference::getReferenceBladeID(0);
+  {
+    ui::UIObjectAcc baseMake(acc.searchChild("IMG_melist_base_make"));
+    ui::UIObjectAcc baseCrystal(acc.searchChild("IMG_melist_base_crystal"));
+    ui::UIObjectAcc titleMake(acc.searchChild("TXT_melist_title_make"));
+    ui::UIObjectAcc titleCrystal(acc.searchChild("TXT_melist_title_crystal"));
+    ui::UIObjectAcc colMake(acc.searchChild("TXT_melist_col_make"));
+    ui::UIObjectAcc colCrystal(acc.searchChild("TXT_melist_col_crystal"));
+    bool isMake = isEquip == 0;
+    baseMake.setDisp(isMake);
+    baseCrystal.setDisp(!isMake);
+    titleMake.setDisp(isMake);
+    titleCrystal.setDisp(!isMake);
+    colMake.setDisp(isMake);
+    colCrystal.setDisp(!isMake);
+    for (u32 i = 0; i < 9; i++) {
+      mm::mtl::FixStr<32> name;
+      name.format("LAY_sbparts_make@%02d", i + 1);
+      ui::UIObjectAcc make(acc.searchChild(name.c_str()));
+      make.setDisp(isMake);
+      name.format("LAY_sbparts_crystal@%02d", i + 1);
+      ui::UIObjectAcc crystal(acc.searchChild(name.c_str()));
+      crystal.setDisp(!isMake);
+    }
+  }
+  mm::mtl::FixStr<32> name;
+  for (u32 i = 0; i < objects->getSize(); i++) {
+    u32 parts = list->getContents(list->getPageIndex(i)).unknown04;
+    ui::UIObjectAcc object(objects->getObject(i));
+    name.format("TXT_sbpartsname@%02d", i + 1);
+    ui::UIObjectAcc text(object.searchChild(name.c_str()));
+    RESULT_HANA result;
+    const char *color;
+    if (isEquip == 0) {
+      color = GfMenuHanaAdapter::isMakeParts(type, parts, result) ? "txt_normal2" : "txt_disable";
+    } else {
+      color = GfMenuHanaAdapter::isCrystalParts(type, parts, result) ? "txt_normal2" : "txt_disable";
+    }
+    GfMenuObjUtil::setColMulandAdd(text.unknown10, color);
   }
 }
 

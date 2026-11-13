@@ -49,6 +49,7 @@
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_npc/gmk_npc.h"
 #include "gmk/gmk_npc/gmk_routed_npc.h"
+#include "mm/mm_std_base.h"
 #include "mm_mtl/reference_object.h"
 #include "mm_mtl/rtti.h"
 #include "mm_mtl/unique_ptr.h"
@@ -58,6 +59,11 @@
 namespace gf {
 
 constexpr int unknown001 = 0xa396; // Inferred role: first game flag of the talk bonus states; original name unknown.
+
+// Inferred role: talk state of each MsgGameTalkAction action; original name unknown.
+static const char *const unknown009[] = {"S_talkA_00", "S_talkA_01", "S_talkA_02", "S_idle"};
+// Inferred role: talk command of each MsgGameTalkAction action, none for the actions that only set the state; original name unknown.
+static const char *const unknown010[] = {"C_talkA_00", nullptr, "C_talkA_02", nullptr};
 
 void GfComBehaviorNpc::BdatInfo::create(const CBdatWrapper &bdat, int id, const GfComBehaviorNpc &npc) {
   unknown00 = bdat.getValCheck("ShopID", id, gmk::BDAT_TYPE_UNKNOWN_2);
@@ -159,6 +165,28 @@ void GfComBehaviorNpc::procMsgPcGetLookPoint(fw::MessageObject *sender, MsgPcGet
   if (unknown1b8.get() != nullptr) {
     message.unknown10 = unknown1b8->getSyncedWorldTransform().unknown00;
     message.unknown20 = true;
+  }
+}
+
+void GfComBehaviorNpc::procMsgGameTalkAction(fw::MessageObject *sender, MsgGameTalkAction &message) {
+  GfComAsm *comAsm = unknown08->getComponent<GfComAsm>();
+  if (comAsm == nullptr) {
+    return;
+  }
+
+  if (message.isDirect) {
+    message.isSuccess = comAsm->setState(unknown009[message.action], ANIM_LAYER_UNKNOWN_0);
+  } else {
+    if (unknown010[message.action] != nullptr) {
+      message.isSuccess = comAsm->execCmd(unknown010[message.action], ANIM_LAYER_UNKNOWN_0);
+    }
+    if (!message.isSuccess) {
+      // The game computes the state name and drops it, likely the argument of a debug message removed from the release build.
+      MM_VERIFY(comAsm->getStateName(ANIM_LAYER_UNKNOWN_0) != nullptr ? comAsm->getStateName(ANIM_LAYER_UNKNOWN_0) : "");
+      if (unknown010[message.action] != nullptr) {
+        message.isSuccess = comAsm->setState(unknown009[message.action], ANIM_LAYER_UNKNOWN_0);
+      }
+    }
   }
 }
 

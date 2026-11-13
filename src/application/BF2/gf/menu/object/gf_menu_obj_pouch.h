@@ -21,22 +21,37 @@ class GfMenuObjPouch : public GfMenuObject {
 public:
   class MainListener : public ui::UIObjectListener {
   public:
+    MainListener(GfMenuObjPouch *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];       // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjPouch *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   class DescriptionListener : public ui::UIObjectListener {
   public:
+    DescriptionListener(GfMenuObjPouch *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];       // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
     GfMenuObjPouch *unknown20; // Inferred role: owner; original member name unknown.
   };
 
   class PouchListener : public ui::UIObjectListener {
   public:
+    PouchListener(GfMenuObjPouch *owner) : _0c(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x20 - 0x0c];
+    u8 _0c[0x1c - 0x0c];       // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    GfMenuObjPouch *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class ItemListListener : public ui::UIObjectListener {
+  public:
+    ItemListListener(GfMenuObjPouch *owner) : _0c(), unknown20(owner) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];       // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
     GfMenuObjPouch *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -70,7 +85,13 @@ static_assert(offsetof(GfMenuObjPouch, unknown40) == 0x40, "");
 static_assert(offsetof(GfMenuObjPouch, unknown48) == 0x48, "");
 static_assert(offsetof(GfMenuObjPouch, unknown4c) == 0x4c, "");
 static_assert(offsetof(GfMenuObjPouch, unknown50) == 0x50, "");
+static_assert(offsetof(GfMenuObjPouch::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjPouch::MainListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjPouch::DescriptionListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjPouch::DescriptionListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjPouch::PouchListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjPouch::PouchListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjPouch::ItemListListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjPouch::ItemListListener) == 0x28, "");
 
 } // namespace gf

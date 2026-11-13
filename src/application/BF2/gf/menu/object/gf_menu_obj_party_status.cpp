@@ -3,13 +3,17 @@
 #include <string.h>
 
 #include "gf/game/gf_game_party.h"
+#include "gf/gf_allocator.h"
+#include "gf/menu/adapter/gf_menu_gfobj_adapter.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/object/gf_menu_obj_party_status2.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/gf_obj_handle.h"
+#include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixstr.h"
 #include "types.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_object_acc.h"
 
@@ -36,6 +40,48 @@ static inline void unknown003(u32 call, u16 type, bool param) {
 GfMenuObjPartyStatus::GfMenuObjPartyStatus(u32 handle) : GfMenuObject(handle), unknown38(-1), unknown3c(false) { memset(unknown30, 0xff, sizeof(unknown30)); }
 
 GfMenuObjPartyStatus::~GfMenuObjPartyStatus() { ; }
+
+void GfMenuObjPartyStatus::initialize() {
+  ui::UIObjectAcc acc(unknown18, "LAY_main");
+  if (acc.isValid()) {
+// __LINE__ must be 103 as in the original file: it is the line argument of operator new.
+#line 103
+    MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+    mainListener->addRef();
+    ui::UIEventManager::get()->registObjectListener(acc.unknown10, mainListener);
+    if (mainListener != nullptr) {
+      mainListener->release();
+    }
+    attachExternalCall(unknown001, acc.unknown10);
+    {
+      ui::UIObjectAcc comboReq(unknown18, "LAY_combo_req2");
+      if (comboReq.isValid()) {
+        attachExternalCall(unknown002, comboReq.unknown10);
+// __LINE__ must be 117 as in the original file: it is the line argument of operator new.
+#line 117
+        ComboReqListener *comboReqListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ComboReqListener(this);
+        comboReqListener->addRef();
+        ui::UIEventManager::get()->registObjectListener(comboReq.unknown10, comboReqListener);
+        if (comboReqListener != nullptr) {
+          comboReqListener->release();
+        }
+      }
+      GfMenuObjUtil::createDockPlugin(comboReq.searchChild("IMG_combo_req2_name_top@01"), comboReq.searchChild("IMG_combo_req2_name_base@01"), 1, mm::Pnt<s16>(0, 0), 0);
+      GfMenuObjUtil::createDockPlugin(comboReq.searchChild("IMG_combo_req2_name_top@02"), comboReq.searchChild("IMG_combo_req2_name_base@02"), 1, mm::Pnt<s16>(0, 0), 0);
+      GfMenuObjUtil::createDockPlugin(comboReq.searchChild("IMG_combo_req2_name_top@03"), comboReq.searchChild("IMG_combo_req2_name_base@03"), 0, mm::Pnt<s16>(0, 0), 0);
+    }
+    mm::mtl::FixStr<32> name;
+    for (int i = 0; i < 3; i++) {
+      name.format("IMG_mem%d_hpgauge", i + 1);
+      GfMenuGfObjAdapter::createFromPartyDriver(acc.searchChild(name.c_str()), 0, i, true);
+      ui::UIObjectAcc(acc.searchChild(name.c_str())).setExtType(1);
+      addNumberEventCondition(acc.unknown10, name.c_str(), 0x1000, i + 1, 1.0f);
+      addNumberEventCondition(acc.unknown10, name.c_str(), 0x1001, i + 1, 0.2f);
+      addNumberEventCondition(acc.unknown10, name.c_str(), 0x1002, i + 1, 0.0f);
+    }
+    GfMenuObject::initialize();
+  }
+}
 
 void GfMenuObjPartyStatus::finalize() { GfMenuObject::finalize(); }
 

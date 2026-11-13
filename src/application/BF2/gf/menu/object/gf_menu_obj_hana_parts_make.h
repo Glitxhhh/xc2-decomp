@@ -52,6 +52,7 @@ public:
   static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects);
   static void makeCategoryItemList(GfMenuIDList *idList, GfMenuItemList *itemList, u32 isEquip, u32 sort);
   static void updateItemList(GfMenuItemList *list, ItemType::Type type, u32 isEquip);
+  static void refreshItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *objects, u32 type, u32 isEquip);
 
   u8 _24[0x28 - 0x24];
   GfMenuIDList *unknown28;                                // Inferred role: parts types; original member name unknown.

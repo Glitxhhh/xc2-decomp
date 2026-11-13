@@ -17,6 +17,11 @@ class GfMenuReferenceItem : public IGfMenuReferenceItem {
 public:
   void getItem(MenuItemInfo &info) const override;
 
+  // Inferred helper: allocates an empty reference item; original name unknown.
+  // __LINE__ must be 57 as in the original header: it is the line argument of operator new.
+#line 57
+  static GfMenuReferenceItem *unknown001() { return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuReferenceItem; }
+
   MenuItemInfo unknown0c; // Inferred role: item; original member name unknown.
 };
 

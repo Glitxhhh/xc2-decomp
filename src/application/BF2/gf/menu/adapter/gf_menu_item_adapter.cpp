@@ -706,8 +706,8 @@ void GfMenuItemAdapter::ListConverter::getItemInfo(MenuItemInfo &info) {
 }
 
 void GfMenuItemAdapter::ReferenceListConverter::getItemInfo(MenuItemInfo &info) {
-  if (list->unknown10.get() != nullptr) {
-    GfMenuItemList &itemList = *list->unknown10.get();
+  if (list->unknown10 != nullptr) {
+    GfMenuItemList &itemList = *list->unknown10;
     if (listIndex < itemList.getSize()) {
       info = itemList.getContents(itemList.getPageIndex(listIndex));
     } else {

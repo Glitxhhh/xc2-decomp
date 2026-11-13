@@ -27,6 +27,8 @@
 namespace gf {
 struct GF_OBJ_HANDLE;
 
+GfMenuReference::~GfMenuReference() {}
+
 void GfMenuReference::build(const GfSetupParam &param) {
 // __LINE__ must be 67 as in the original file: its value changes the instruction order.
 #line 67

@@ -4,6 +4,7 @@
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_item_handle.h"
 #include "gf/game/item/gf_pouch_util.h"
+#include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_enhance_adapter.h"
 #include "gf/menu/adapter/gf_menu_item_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -17,9 +18,13 @@
 #include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
+#include "ui/event/ui_event_manager.h"
 #include "ui/ui_object_acc.h"
 
 namespace gf {
+
+// Inferred role: call id of the pouch layouts; original name unknown.
+constexpr u32 CALL_UNKNOWN_89 = 89;
 
 GfMenuObjPouch::GfMenuObjPouch(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(0), unknown4c(0) {}
 
@@ -29,6 +34,54 @@ GfMenuObjPouch::~GfMenuObjPouch() {
   mm::mtl::safeRelease(unknown38);
   mm::mtl::safeRelease(unknown40);
   unknown50 = nullptr;
+}
+
+void GfMenuObjPouch::initialize() {
+  ui::UIObjectAcc acc(unknown18);
+  unknown40 = GfMenuCallContext::create();
+  unknown28 = GfMenuItemList::create();
+  unknown50 = GfMenuReferenceItem::unknown001();
+  u32 main = acc.searchChild("LAY_main");
+// __LINE__ must be 110 as in the original file: it is the line argument of operator new.
+#line 110
+  MainListener *mainListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this);
+  mainListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(main, mainListener);
+  if (mainListener != nullptr) {
+    mainListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_89, main);
+  u32 pouch = acc.searchChild("LAY_pouch");
+// __LINE__ must be 116 as in the original file: it is the line argument of operator new.
+#line 116
+  PouchListener *pouchListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PouchListener(this);
+  pouchListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(pouch, pouchListener);
+  if (pouchListener != nullptr) {
+    pouchListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_89, pouch);
+  u32 itemList = acc.searchChild("LAY_item_list");
+// __LINE__ must be 121 as in the original file: it is the line argument of operator new.
+#line 121
+  ItemListListener *itemListListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ItemListListener(this);
+  itemListListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(itemList, itemListListener);
+  if (itemListListener != nullptr) {
+    itemListListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_89, itemList);
+  u32 enhance = acc.searchChild("LAY_enhance");
+// __LINE__ must be 126 as in the original file: it is the line argument of operator new.
+#line 126
+  DescriptionListener *descriptionListener = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DescriptionListener(this);
+  descriptionListener->addRef();
+  ui::UIEventManager::get()->registObjectListener(enhance, descriptionListener);
+  if (descriptionListener != nullptr) {
+    descriptionListener->release();
+  }
+  attachExternalCall(CALL_UNKNOWN_89, enhance);
+  GfMenuObject::initialize();
 }
 
 void GfMenuObjPouch::finalize() { GfMenuObject::finalize(); }
