@@ -18,7 +18,12 @@ struct Mat44;
 
 namespace event {
 
-enum MODEL_TYPE {};
+enum MODEL_TYPE {
+  MODEL_TYPE_UNKNOWN_1 = 1, // Inferred role: driver; original name unknown.
+  MODEL_TYPE_UNKNOWN_2 = 2, // Inferred role: blade; original name unknown.
+  MODEL_TYPE_UNKNOWN_3 = 3, // Inferred role: npc; original name unknown.
+  MODEL_TYPE_UNKNOWN_4 = 4, // Inferred role: enemy; original name unknown.
+};
 
 class ModelObj : public IResEvent {
 public:

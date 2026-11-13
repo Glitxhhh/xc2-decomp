@@ -35,6 +35,8 @@ public:
     virtual RESULT update(const Param &param);
   };
 
+  static const char *MSBDAT; // Name given by the xc2 symbol _ZN5event10RandPlayer6MSBDATE.
+
   RandPlayer();
   virtual ~RandPlayer() {}
   void clear();

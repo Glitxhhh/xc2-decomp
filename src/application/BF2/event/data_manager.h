@@ -51,7 +51,6 @@ public:
   void setOffsetDes(const mm::Vec3 &pos, f32 rotY, bool isKeep);
   virtual void OnEventProc(MSG_TYPE type);
 
-private:
   // Inferred helper: transforms the point (x, y, z) by mat; original name unknown.
   static mm::Vec3 unknown001(const mm::Mat44 &mat, f32 x, f32 y, f32 z) {
     return mm::Vec3(mat.rows[0][0] * x + mat.rows[1][0] * y + mat.rows[2][0] * z + mat.rows[3][0],
@@ -59,6 +58,7 @@ private:
                     mat.rows[0][2] * x + mat.rows[1][2] * y + mat.rows[2][2] * z + mat.rows[3][2]);
   }
 
+private:
   // Inferred helper: unknown001 on a matrix taken by value (the game keeps each getPosAxis/getTarAxis result in its own
   // stack slot, which a reference parameter would let the compiler share); original name unknown.
   static mm::Vec3 unknown002(mm::Mat44 mat, f32 x, f32 y, f32 z) { return unknown001(mat, x, y, z); }

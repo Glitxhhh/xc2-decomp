@@ -34,21 +34,19 @@ bool FrameManager::isPause(PAUSE_TYPE type) const { return (unknown18 & (type ==
 
 const FrameInfo &FrameManager::frameInfo() {
   unknown1170.unknown00 = m_frame;
-  f32 delta = unknown13c - m_frame;
+  unknown1170.unknown04 = unknown13c - m_frame;
   if (isPause(PAUSE_TYPE_UNKNOWN_17_2)) {
-    delta = 0.0f;
+    unknown1170.unknown04 = 0.0f;
   }
-  u32 pauseBits = unknown18;
-  unknown1170.unknown04 = delta;
-  unknown1170.unknown08 = delta;
-  if ((pauseBits & PAUSE_BITS_UNKNOWN_5108) != 0 && delta <= 0.0f) {
+  unknown1170.unknown08 = unknown1170.unknown04;
+  if ((unknown18 & PAUSE_BITS_UNKNOWN_5108) != 0 && unknown1170.unknown04 <= 0.0f) {
     unknown1170.unknown08 = __builtin_fmaxf(unknown160, 0.0f) + 1.0f;
   }
-  unknown1170.unknown0c = delta;
+  unknown1170.unknown0c = unknown1170.unknown04;
   if ((unknown10 & FLAG_UNKNOWN_0) == 0) {
     unknown1170.unknown0c = __builtin_fmaxf(unknown160, 0.0f) + 1.0f;
   }
-  if ((pauseBits & PAUSE_BITS_UNKNOWN_120842) != 0) {
+  if ((unknown18 & PAUSE_BITS_UNKNOWN_120842) != 0) {
     unknown1170.unknown0c = 0.0f;
   }
   unknown1170.unknown10 = unknown160;

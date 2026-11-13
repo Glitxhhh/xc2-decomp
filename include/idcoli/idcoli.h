@@ -830,6 +830,17 @@ public:
   bool instAaBbHit(u32 index);
   bool instAaBbHitParts(const IDCmfPosData *posData, const IDCmfPosInfo *posInfo);
 
+  // Inferred helper: callbacks of a test that only checks for a hit (stops at the first one, no stock, no vector data); original name unknown.
+  // Evidence: the same five stores in IDColiGrandObj::testLine, testRay, testSphere and testCapsule (1.0.0: 0x71008e3f18, 0x71008e4d98,
+  // 0x71008e5074 and 0x71008e5434) when the result type is 0.
+  void unknown099() {
+    unknown90 = &IDColiGrandTree::treeHitEnd;
+    unknown30 = nullptr;
+    unknown40 = nullptr;
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+
   bool (IDColiGrandTree::*unknown90)(u32);                          // Inferred role: hit test of a tree cell object; original member name unknown.
   bool (IDColiGrandTree::*unknowna0)(u32);                          // Inferred role: hit test of a moved instance; original member name unknown.
   bool (IDColiGrandTree::*unknownb0)(const float *, const float *); // Inferred role: bounds test; original member name unknown.

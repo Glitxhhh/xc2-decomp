@@ -1,4 +1,6 @@
 #pragma once
+#include <stddef.h>
+
 #include "event/i_res_event.h"
 #include "event/model_obj.h"
 #include "mm_mtl/fixstr.h"
@@ -35,7 +37,9 @@ public:
   void finishFree();
   void init(f32 frame, const char *path, u32 value, bool isActive, int param);
   void init(f32 frame, MODEL_TYPE type, u32 id, u32 value, bool isActive, int param);
+  void finishLoad();
   void finishLoaded();
+  void finishModel();
   void finishDelay();
   void finishBusy();
   void load();
@@ -60,14 +64,12 @@ private:
   mm::mtl::FixStr<128> unknown14; // Inferred role: path; original member name unknown.
   u32 _98;
   u32 _9c;
-  u32 _a0;
-  bool _a4;
-  bool _a5;
+  ModelObj::OPTION _a0;
   u32 _a8;
   void *_b0;
-  void *_b8;
+  size_t _b8;
   void *_c0;
-  void *_c8;
+  size_t _c8;
   ml::DrStmReadObj *_d0;
   ModelObj *unknownd8; // Inferred role: reuse model; original member name unknown.
   ModelObj *unknowne0; // Inferred role: model; original member name unknown.

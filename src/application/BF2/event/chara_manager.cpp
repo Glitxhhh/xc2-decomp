@@ -1,6 +1,8 @@
 #include "event/chara_manager.h"
 
 #include "event/extend.h"
+#include "event/mdlstm_manager.h"
+#include "event/model_obj.h"
 #include "event/res_manager.h"
 #include "mm_mtl/singleton.h"
 
@@ -27,6 +29,39 @@ CharaManager::CharaManager() : unknown10(0), unknown14(0), m_offscrID(0), m_reus
 void CharaManager::loadResource(const char *name) {
   if (!isStreamMode()) {
     mm::mtl::Singleton<ResManager>::getPtr()->load(mm::mtl::Singleton<Extend>::getPtr()->anm(name), nullptr, false);
+  }
+}
+
+void CharaManager::loadMdlstream(f32 frame, const char *path, u32 value) {
+  if (isOffscrMode()) {
+    value = m_offscrID;
+  }
+  if (isStreamMode()) {
+    bool isHood = isUseHood();
+    mm::mtl::Singleton<MdlstmManager>::getPtr()->load(frame, path, value, isHood);
+  }
+}
+
+void CharaManager::loadMdlstream(f32 frame, CHARA_TYPE type, u32 id, u32 value) {
+  if (isOffscrMode()) {
+    value = m_offscrID;
+  }
+  if (isStreamMode()) {
+    bool isHood = isUseHood();
+    switch (type) {
+    case CHARA_TYPE_UNKNOWN_1:
+      mm::mtl::Singleton<MdlstmManager>::getPtr()->load(frame, MODEL_TYPE_UNKNOWN_1, id, value, isHood);
+      break;
+    case CHARA_TYPE_UNKNOWN_2:
+      mm::mtl::Singleton<MdlstmManager>::getPtr()->load(frame, MODEL_TYPE_UNKNOWN_2, id, value, isHood);
+      break;
+    case CHARA_TYPE_UNKNOWN_3:
+      mm::mtl::Singleton<MdlstmManager>::getPtr()->load(frame, MODEL_TYPE_UNKNOWN_3, id, value, isHood);
+      break;
+    case CHARA_TYPE_UNKNOWN_5:
+      mm::mtl::Singleton<MdlstmManager>::getPtr()->load(frame, MODEL_TYPE_UNKNOWN_4, id, value, isHood);
+      break;
+    }
   }
 }
 

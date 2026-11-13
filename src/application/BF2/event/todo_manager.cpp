@@ -95,6 +95,32 @@ void TodoManager::add(TodoItem::CREATE_FUNC create, const Param &param) {
   doit();
 }
 
+void TodoManager::updateAdd() {
+  while (unknown8c20 < unknown18.size()) {
+    size_t last = unknown18.size() - 1;
+    size_t index = 0;
+    for (TodoItem *it = unknown18.begin(); it != unknown18.end(); ++it, ++index) {
+      if (index == last) {
+        if (it->getTodo() != nullptr) {
+          delete it->getTodo();
+          it->setTodo(nullptr);
+        }
+        unknown18.erase(it);
+        break;
+      }
+    }
+  }
+  while (unknown18.capacity() <= unknown18.size()) {
+    TodoItem *item = unknown18.begin();
+    if (item->getTodo() != nullptr) {
+      delete item->getTodo();
+      item->setTodo(nullptr);
+    }
+    unknown8c20--;
+    unknown18.erase(item);
+  }
+}
+
 void TodoManager::undo() {
   if (unknown8c20 == 0) {
     return;

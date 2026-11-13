@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 
+#include "event/curve.h"
 #include "event/debug_manager.h"
 #include "event/dof_manager.h"
 #include "event/fade_ctrl.h"
@@ -9,6 +10,7 @@
 #include "event/frame_manager.h"
 #include "event/mstxt_manager.h"
 #include "event/skip_manager.h"
+#include "event/status_manager.h"
 #include "framework/object/updatable_object.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -35,6 +37,9 @@ namespace event {
 static constexpr s32 SKIP_UNKNOWN_14 = 14;            // Inferred role: skip wait frames; original name unknown.
 static constexpr s32 SKIP_UNKNOWN_11 = 11;            // Inferred role: skip open frame; original name unknown.
 static constexpr s32 PAD_ENABLE_WAIT_UNKNOWN_40 = 40; // Inferred role: pad enable wait frames; original name unknown.
+static constexpr u32 COMMON_WINDOW_UNKNOWN_73 = 73;   // Inferred role: first common window opened behind a fade; original name unknown.
+static constexpr u32 COMMON_WINDOW_UNKNOWN_153 = 153; // Inferred role: last common window opened behind a fade; original name unknown.
+static constexpr s32 COMMON_WAIT_UNKNOWN_30 = 30;     // Inferred role: common window wait frames; original name unknown.
 
 void UIManager::setPadDisable(bool isDisable) {
   if (isDisable) {
@@ -204,6 +209,35 @@ void UIManager::closeSkip() {
 }
 
 bool UIManager::isOpenSkipUI() const { return (unknown10 & FLAG_UNKNOWN_0) != 0; }
+
+bool UIManager::openCommonUI(u32 window) {
+  bool isFade = window >= COMMON_WINDOW_UNKNOWN_73 && window <= COMMON_WINDOW_UNKNOWN_153;
+  if ((unknown10 & FLAG_UNKNOWN_2) == 0) {
+    bool isSkip = mm::mtl::Singleton<SkipManager>::getPtr()->isSkip();
+    if (isFade) {
+      mm::mtl::Singleton<FadeManager>::getPtr()->play(true, 40, FadeCtrl::PRIO_LOW, nullptr);
+    }
+    unknown298 = isSkip ? 0 : COMMON_WAIT_UNKNOWN_30;
+    unknown10 |= FLAG_UNKNOWN_2;
+  }
+  bool isOpen = true;
+  if (!isFade || (!mm::mtl::Singleton<FadeManager>::getPtr()->isFading() && unknown298-- <= 0)) {
+    if ((unknown10 & FLAG_UNKNOWN_1) == 0) {
+      gf::GfMenuManager::openCommonWindow(window);
+      unknown10 |= FLAG_UNKNOWN_1;
+    }
+    isOpen = gf::GfMenuManager::isOpenCommonWindow();
+  }
+  if (isOpen) {
+    mm::mtl::Singleton<SkipManager>::getPtr()->skip(false, 0.0f);
+    mm::mtl::Singleton<SkipManager>::getPtr()->setSkipVolume(false);
+    mm::mtl::Singleton<FrameManager>::getPtr()->pause(FrameManager::PAUSE_TYPE_UNKNOWN_4, true);
+    return false;
+  }
+  mm::mtl::Singleton<FrameManager>::getPtr()->pause(FrameManager::PAUSE_TYPE_UNKNOWN_4, false);
+  unknown10 &= ~(FLAG_UNKNOWN_1 | FLAG_UNKNOWN_2);
+  return true;
+}
 
 bool UIManager::isOpenCommonUI() const { return (unknown10 & (FLAG_UNKNOWN_1 | FLAG_UNKNOWN_2)) != 0; }
 
@@ -449,6 +483,47 @@ void UIManager::startStaffrollUI(f32 frame, int type) {
 }
 
 void UIManager::endStaffroll() { gf::GfMenuObjStaffroll::fadeout(); }
+
+bool UIManager::openHomuraHikariUI() {
+  if ((unknown10 & FLAG_UNKNOWN_14) == 0) {
+    unknown70.clear();
+    unknown70.append(0.0f, 0.7f, CV_TYPE_UNKNOWN_1);
+    unknown10 |= FLAG_UNKNOWN_14;
+  }
+  bool isEnd = false;
+  if (unknown70.isEnd()) {
+    if ((unknown10 & FLAG_UNKNOWN_15) == 0) {
+      gf::GfMenuManager::openNameSelect();
+      unknown10 |= FLAG_UNKNOWN_15;
+    }
+    if (!gf::GfMenuManager::isOpenNameSelect()) {
+      if ((unknown10 & FLAG_UNKNOWN_16) == 0) {
+        unknown180.clear();
+        unknown180.append(0.0f, 0.7f, CV_TYPE_UNKNOWN_1);
+        unknown180.append(15.0f, 0.0f, CV_TYPE_UNKNOWN_1);
+        unknown10 |= FLAG_UNKNOWN_16;
+      }
+      isEnd = unknown180.isEnd();
+    }
+  }
+  if (!isEnd) {
+    mm::mtl::Singleton<SkipManager>::getPtr()->skip(false, 0.0f);
+    mm::mtl::Singleton<SkipManager>::getPtr()->setSkipVolume(false);
+    mm::mtl::Singleton<FrameManager>::getPtr()->pause(FrameManager::PAUSE_TYPE_UNKNOWN_11, true);
+    return false;
+  }
+  if (mm::mtl::Singleton<StatusManager>::getPtr()->getHomuriFlag() == 0) {
+    mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("choice HOMURA");
+  } else {
+    mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("choice HIKARI");
+  }
+  mm::mtl::Singleton<FrameManager>::getPtr()->pause(FrameManager::PAUSE_TYPE_UNKNOWN_11, false);
+  mm::mtl::Singleton<DofManager>::getPtr()->stop();
+  unknown70.clear();
+  unknown180.clear();
+  unknown10 &= ~FLAG_UNKNOWN_114688;
+  return true;
+}
 
 bool UIManager::isOpenHomuraHikariUI() const { return (unknown10 & FLAG_UNKNOWN_114688) != 0; }
 

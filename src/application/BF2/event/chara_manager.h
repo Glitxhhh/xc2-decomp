@@ -1,4 +1,5 @@
 #pragma once
+#include "event/chara_obj.h"
 #include "event/i_manager.h"
 #include "mm_mtl/singleton.h"
 #include "types.h"
@@ -34,6 +35,8 @@ public:
   int getReuseFlag() const;
   void clear();
   void loadResource(const char *name);
+  void loadMdlstream(f32 frame, const char *path, u32 value);
+  void loadMdlstream(f32 frame, CHARA_TYPE type, u32 id, u32 value);
   void setStreamMode(bool isStreamMode);
   void setOffscrMode(bool isOffscrMode, u32 offscrID);
   void setAutoTalkMode(bool isAutoTalkMode);

@@ -209,6 +209,49 @@ IDColiGrandObj::IDColiGrandObj(wrkIDCmfWork *work) {
 
 IDColiGrandObj::~IDColiGrandObj() {}
 
+bool IDColiGrandObj::testLine(IDColiResult &result, const IDColiInput &input) {
+  unknown08 = &result;
+  unknown10 = &input;
+  unknown20 = &IDColiGrandMesh::meshLine;
+  unknownb0 = &IDColiGrandTree::isLineAaBb;
+  unknowna0 = &IDColiGrandTree::instLineHit;
+  unknown50 = &IDColiGrandMesh::lenghtLine;
+  if (result.unknown00 == 0) {
+    unknown099();
+    return coliCallCheck(&IDColiGrandTree::instLineHitParts);
+  }
+  unknown90 = &IDColiGrandTree::treeHitDef;
+  // The game repeats the block below in the six test functions (testLine, testRay, testSphere, testCapsule, testMoveSphere and
+  // testMoveCapsule): an inline helper turns the result type branch into selects, which the game does not have.
+  if (result.unknown00 == 2) {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstTbl;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockTbl;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstTbl;
+  } else {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstNear;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockNear;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstNear;
+  }
+  if (result.unknownb3) {
+    if (unknown18 != nullptr) {
+      unknown70 = &IDColiGrandMesh::vecotrInst;
+    } else {
+      unknown70 = &IDColiGrandMesh::vecotrDef;
+    }
+    unknown80 = &IDColiGrandMesh::vecotrInst;
+  } else {
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+  return coliCallResl(&IDColiGrandTree::instLineHitParts);
+}
+
 bool IDColiGrandObj::coliCallCheck(unknown020 function) {
   if (unknown00->unknown88 == 0) {
     if ((this->*unknown90)(0)) {
@@ -258,6 +301,47 @@ bool IDColiGrandObj::testRay(IDColiResult &result, const IDColiInput &input, con
   return testRay(result, ray);
 }
 
+bool IDColiGrandObj::testRay(IDColiResult &result, const IDColiInput &input) {
+  unknown08 = &result;
+  unknown10 = &input;
+  unknown20 = &IDColiGrandMesh::meshLine;
+  unknownb0 = &IDColiGrandTree::isLineAaBb;
+  unknowna0 = &IDColiGrandTree::instRayHit;
+  unknown50 = &IDColiGrandMesh::lenghtRay;
+  if (result.unknown00 == 0) {
+    unknown099();
+    return coliCallCheck(&IDColiGrandTree::instRayHitParts);
+  }
+  unknown90 = &IDColiGrandTree::treeHitDef;
+  if (result.unknown00 == 2) {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstTbl;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockTbl;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstTbl;
+  } else {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstSecNear;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockSecNear;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstSecNear;
+  }
+  if (result.unknownb3) {
+    if (unknown18 != nullptr) {
+      unknown70 = &IDColiGrandMesh::vecotrInst;
+    } else {
+      unknown70 = &IDColiGrandMesh::vecotrDef;
+    }
+    unknown80 = &IDColiGrandMesh::vecotrInst;
+  } else {
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+  return coliCallResl(&IDColiGrandTree::instRayHitParts);
+}
+
 bool IDColiGrandObj::testSphere(IDColiResult &result, const IDColiInput &input, bool isWall, const IDCmfPosData *posData) {
   unknown18 = posData;
   IDColiInput sphere;
@@ -265,11 +349,169 @@ bool IDColiGrandObj::testSphere(IDColiResult &result, const IDColiInput &input, 
   return testSphere(result, sphere, isWall);
 }
 
+bool IDColiGrandObj::testSphere(IDColiResult &result, const IDColiInput &input, bool isWall) {
+  unknown08 = &result;
+  unknown10 = &input;
+  unknown20 = &IDColiGrandMesh::meshSphere;
+  unknowna0 = &IDColiGrandTree::instSphereHit;
+  unknownb0 = &IDColiGrandTree::isAaBbToAaBb;
+  unknown50 = isWall ? &IDColiGrandMesh::lenghtWallSphere : &IDColiGrandMesh::lenghtSphere;
+  if (result.unknown00 == 0) {
+    unknown099();
+    return coliCallCheck(&IDColiGrandTree::instSphereHitParts);
+  }
+  unknown90 = &IDColiGrandTree::treeHitDef;
+  if (result.unknown00 == 2) {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstTbl;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockTbl;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstTbl;
+  } else {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstNear;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockNear;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstNear;
+  }
+  if (result.unknownb3) {
+    if (unknown18 != nullptr) {
+      unknown70 = &IDColiGrandMesh::vecotrInst;
+    } else {
+      unknown70 = &IDColiGrandMesh::vecotrDef;
+    }
+    unknown80 = &IDColiGrandMesh::vecotrInst;
+  } else {
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+  return coliCallResl(&IDColiGrandTree::instSphereHitParts);
+}
+
 bool IDColiGrandObj::testCapsule(IDColiResult &result, const IDColiInput &input, bool isWall, const IDCmfPosData *posData) {
   unknown18 = posData;
   IDColiInput capsule;
   IDColiInputUtil::getCapsule(capsule, input, posData, false);
   return testCapsule(result, capsule, isWall);
+}
+
+bool IDColiGrandObj::testCapsule(IDColiResult &result, const IDColiInput &input, bool isWall) {
+  unknown08 = &result;
+  unknown10 = &input;
+  unknown20 = &IDColiGrandMesh::meshCapsule;
+  unknownb0 = &IDColiGrandTree::isAaBbToAaBb;
+  unknowna0 = &IDColiGrandTree::instCapsuleHit;
+  unknown50 = &IDColiGrandMesh::lenghtLine;
+  unknown60 = isWall ? &IDColiGrandMesh::lenghtWallSphere : &IDColiGrandMesh::lenghtSphere;
+  if (result.unknown00 == 0) {
+    unknown099();
+    return coliCallCheck(&IDColiGrandTree::instCapsuleHitParts);
+  }
+  unknown90 = &IDColiGrandTree::treeHitDef;
+  if (result.unknown00 == 2) {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstTbl;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockTbl;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstTbl;
+  } else {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstNear;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockNear;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstNear;
+  }
+  if (result.unknownb3) {
+    if (unknown18 != nullptr) {
+      unknown70 = &IDColiGrandMesh::vecotrInst;
+    } else {
+      unknown70 = &IDColiGrandMesh::vecotrDef;
+    }
+    unknown80 = &IDColiGrandMesh::vecotrInst;
+  } else {
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+  return coliCallResl(&IDColiGrandTree::instCapsuleHitParts);
+}
+
+bool IDColiGrandObj::testMoveSphere(IDColiResult &result, const IDColiInput &input, bool isStop) {
+  unknown08 = &result;
+  unknown10 = &input;
+  unknown20 = &IDColiGrandMesh::meshSphere;
+  unknowna0 = &IDColiGrandTree::instSphereHit;
+  unknownb0 = &IDColiGrandTree::isAaBbToAaBb;
+  unknown50 = &IDColiGrandMesh::lenghtWallSphere;
+  unknown90 = &IDColiGrandTree::treeHitDef;
+  if (result.unknown00 == 2) {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstTbl;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockTbl;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstTbl;
+  } else {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstNear;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockNear;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstNear;
+  }
+  if (result.unknownb3) {
+    if (unknown18 != nullptr) {
+      unknown70 = &IDColiGrandMesh::vecotrInst;
+    } else {
+      unknown70 = &IDColiGrandMesh::vecotrDef;
+    }
+    unknown80 = &IDColiGrandMesh::vecotrInst;
+  } else {
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+  return coliMoveCallResl(&IDColiGrandTree::instSphereHitParts, isStop);
+}
+
+bool IDColiGrandObj::testMoveCapsule(IDColiResult &result, const IDColiInput &input, bool isStop) {
+  unknown08 = &result;
+  unknown10 = &input;
+  unknown20 = &IDColiGrandMesh::meshCapsule;
+  unknownb0 = &IDColiGrandTree::isAaBbToAaBb;
+  unknowna0 = &IDColiGrandTree::instCapsuleHit;
+  unknown50 = &IDColiGrandMesh::lenghtLine;
+  unknown60 = &IDColiGrandMesh::lenghtWallSphere;
+  unknown90 = &IDColiGrandTree::treeHitDef;
+  if (result.unknown00 == 2) {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstTbl;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockTbl;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstTbl;
+  } else {
+    if (unknown18 != nullptr) {
+      unknown30 = &IDColiGrandMesh::stockInstNear;
+    } else {
+      unknown30 = &IDColiGrandMesh::stockNear;
+    }
+    unknown40 = &IDColiGrandMesh::stockInstNear;
+  }
+  if (result.unknownb3) {
+    if (unknown18 != nullptr) {
+      unknown70 = &IDColiGrandMesh::vecotrInst;
+    } else {
+      unknown70 = &IDColiGrandMesh::vecotrDef;
+    }
+    unknown80 = &IDColiGrandMesh::vecotrInst;
+  } else {
+    unknown70 = &IDColiGrandMesh::vecotrNon;
+    unknown80 = &IDColiGrandMesh::vecotrNon;
+  }
+  return coliMoveCallResl(&IDColiGrandTree::instCapsuleHitParts, isStop);
 }
 
 bool IDColiGrandObj::testAaBb(IDColiResult &result, const IDColiInput &input) {

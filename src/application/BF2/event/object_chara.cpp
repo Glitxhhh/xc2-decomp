@@ -140,6 +140,14 @@ mm::Mat44 ObjectChara::getEyeMat() {
   return mat;
 }
 
+void ObjectChara::OnManiSetPos(IManiCallback::SetParam &param) {
+  mm::Vec3 pos = param.matrix.unknown004();
+  PosAxis axis = unknown80;
+  pos = DataManager::unknown001(axis.calcOrigMatInv(), pos.x, pos.y, pos.z);
+  axis.set(axis.getAxis(), pos);
+  setPosAxis(axis);
+}
+
 void ObjectChara::OnManiSetRot(IManiCallback::SetParam &param) {
   mm::Vec3 euler = mm::matrixToEuler(param.matrix);
   RotAxis axis = unknowna0;
