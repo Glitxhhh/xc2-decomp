@@ -41,11 +41,14 @@ static_assert(sizeof(unknown108) == 0x0c, "");
 
 // Inferred role: save data blade skill; original type name unknown.
 struct unknown109 {
+  // Evidence: GfObjPropertyBlade::GfObjPropertyBlade builds three of them (0x71005aade8-0x71005aae10) and assigns them again (0x71005aae9c-0x71005aaebc).
+  unknown109() : unknown00(0), unknown02(0), unknown03(0), unknown04(1), unknown05(0) {}
+
   u16 unknown00; // Inferred role: id; original member name unknown.
   u8 unknown02;  // Inferred role: achiev release level; original member name unknown.
   u8 unknown03;  // Inferred role: level; original member name unknown.
   u8 unknown04;  // Inferred role: level max; original member name unknown.
-  u8 _05[0x06 - 0x05];
+  u8 unknown05;  // Inferred role: zeroed by the constructor; original member name unknown.
 };
 
 static_assert(offsetof(unknown109, unknown02) == 0x02, "");

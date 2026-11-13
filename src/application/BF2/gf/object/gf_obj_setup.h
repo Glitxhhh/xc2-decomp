@@ -269,7 +269,7 @@ public:
   static const u32 OBJECT_TYPE = OBJECT_TYPE_NPC;
 
   mm::mtl::FixStr<32> unknown6c; // Inferred role: motion; original member name unknown.
-  void *unknown90;               // Role and original member name unknown; copied from GfInitParamNpc.
+  const char *unknown90;         // Inferred role: name, copied from GfInitParamNpc; original member name unknown.
   u8 _98[0xa0 - 0x98];
 };
 

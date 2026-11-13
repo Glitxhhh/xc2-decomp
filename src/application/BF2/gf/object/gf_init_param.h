@@ -56,7 +56,7 @@ public:
 
   GfInitParam(u32 category, u32 layer)
       : unknown08(0), unknown0c(category), m_bladeID(0), unknown18(nullptr), unknown20(0xffffffff), unknown24(VIEWCAM_UNKNOWN_0), unknown28(-1), unknown30(unknown020), unknown38(unknown020),
-        unknown40(layer), unknown44(0), unknown48(0), unknown4c(1.0f), unknown50(1.0f), unknown80(false), unknown81(true), unknown82(false), unknown83(false), unknown84(false), unknown88(nullptr) {}
+        unknown40(layer), unknown44(0), unknown48(0), unknown4c(1.0f), unknown50(1.0f), unknown80(false), unknown81(true), unknown82(false), unknown83(false), unknown84(false) {}
 
   virtual bool isAllWeapon() const { return false; }
   virtual u32 getBladeID() const { return m_bladeID; }
@@ -109,8 +109,11 @@ public:
   bool unknown82;     // Inferred role: flag; original member name unknown.
   bool unknown83;     // Inferred role: death blow weapon; original member name unknown.
   bool unknown84;     // Inferred role: flag; original member name unknown.
+  // The asset setup pointer at 0x88 is the first member of each derived class, in this class's tail padding, not a member of this one. GfInitParamDriver::operator= (0x71005ae8f0) copies this
+  // class's last group as 0x80..0x84 only (0x71005ae950-0x71005ae95c) and then 0x90 and 0x88 as the derived group (0x71005ae960-0x71005ae96c); GfGameUnit::createParty
+  // (0x7100347c38-0x7100347c40) and the GfObjSetupDriver constructor (0x71005abd8c-0x71005abd98) store the vtable pointer, 0x88 and 0x90 in that order. With the member in this class,
+  // GfGameUnit::createParty and SCOM_REBUILD_PARTY_WEAPON::exec do not match. GfAssetFactory only reads it through the concrete parameter type.
   u8 _85[0x88 - 0x85];
-  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParam, unknown08) == 0x08, "");
@@ -134,7 +137,6 @@ static_assert(offsetof(GfInitParam, unknown44) == 0x44, "");
 static_assert(offsetof(GfInitParam, unknown48) == 0x48, "");
 static_assert(offsetof(GfInitParam, unknown83) == 0x83, "");
 static_assert(offsetof(GfInitParam, unknown84) == 0x84, "");
-static_assert(offsetof(GfInitParam, unknown88) == 0x88, "");
 static_assert(sizeof(GfInitParam) == 0x90, "");
 
 class GfInitParamDriver : public GfInitParam {
@@ -151,21 +153,34 @@ public:
 
   static const u32 WEAPON_UNKNOWN_32 = 32; // Inferred role: weapon max; original name unknown.
 
+  // Evidence: inlined in GfGameUnit::createParty (0x7100347b9c), which stores unknown84 then unknown82 after the members.
+  GfInitParamDriver() : GfInitParam(OBJECT_TYPE_PC, 4), unknown88(nullptr), unknown90(0), unknown1a0(false), m_allWeapon(false), unknown1a2(false), unknown1a4(0), unknown1a8(1.0f), unknown1ac(0) {
+    unknown84 = true;
+    unknown82 = true;
+  }
+
   bool isAllWeapon() const override;
 
-  u8 _90[0x98 - 0x90];
+  GfAssetSetup *unknown88;                                       // Inferred role: asset setup overriding the default one; original member name unknown.
+  u32 unknown90;                                                 // Role and original member name unknown; cleared by the constructor and read by GfObjFactory::createDriver.
   mm::mtl::FixedVector<unknown031, WEAPON_UNKNOWN_32> unknown98; // Inferred role: weapons; original member name unknown.
   bool unknown1a0;                                               // Inferred role: ride; original member name unknown.
   bool m_allWeapon;
   bool unknown1a2; // Inferred role: Jiji display, set by GfGameEvent::createDriver outside GfGameManager::isInMetJIJI; original member name unknown.
-  u8 _1a3[0x1a8 - 0x1a3];
+  u32 unknown1a4;  // Role and original member name unknown; cleared by the constructor.
+  f32 unknown1a8;  // Inferred role: value of the party leader info (PartyLeaderInfo::unknown00), 1 by default; original member name unknown.
+  int unknown1ac;  // Role and original member name unknown; cleared by the constructor and read by GfObjFactory::createDriver.
 };
 
 static_assert(sizeof(GfInitParamDriver::unknown031) == 0x08, "");
+static_assert(offsetof(GfInitParamDriver, unknown90) == 0x90, "");
 static_assert(offsetof(GfInitParamDriver, unknown98) == 0x98, "");
 static_assert(offsetof(GfInitParamDriver, unknown1a0) == 0x1a0, "");
 static_assert(offsetof(GfInitParamDriver, m_allWeapon) == 0x1a1, "");
 static_assert(offsetof(GfInitParamDriver, unknown1a2) == 0x1a2, "");
+static_assert(offsetof(GfInitParamDriver, unknown1a4) == 0x1a4, "");
+static_assert(offsetof(GfInitParamDriver, unknown1a8) == 0x1a8, "");
+static_assert(offsetof(GfInitParamDriver, unknown1ac) == 0x1ac, "");
 static_assert(sizeof(GfInitParamDriver) == 0x1b0, "");
 
 class GfInitParamBlade : public GfInitParam {
@@ -179,8 +194,9 @@ public:
   void setupForActViewerUI(u32 blade, u32 weapon);
   void setupForUi(u32 blade, VIEWCAM camera);
 
-  bool unknown90; // Inferred role: party flag; original member name unknown.
-  bool unknown91; // Inferred role: flag; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  bool unknown90;          // Inferred role: party flag; original member name unknown.
+  bool unknown91;          // Inferred role: flag; original member name unknown.
   u8 _92[0x94 - 0x92];
   u32 unknown94; // Inferred role: weapon; original member name unknown.
   int unknown98; // Inferred role: party slot; original member name unknown.
@@ -215,8 +231,9 @@ public:
     unknown88 = nullptr;
   }
 
-  void *unknown90; // Role and original member name unknown; cleared by the constructor.
-  u32 unknown98;   // Inferred role: en param id; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  void *unknown90;         // Role and original member name unknown; cleared by the constructor.
+  u32 unknown98;           // Inferred role: en param id; original member name unknown.
   u32 m_enArrangeID;
   u32 m_bladeID;
   u32 unknowna4;      // Inferred role: resource id; original member name unknown.
@@ -246,13 +263,14 @@ public:
     unknown82 = true;
   }
 
-  bool unknown90; // Role and original member name unknown; set by GfObjFactory::createGmkNpc.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  bool unknown90;          // Role and original member name unknown; set by GfObjFactory::createGmkNpc.
   u8 _91[0x98 - 0x91];
-  void *unknown98; // Role and original member name unknown; copied into GfObjSetupNpc.
-  u16 unknowna0;   // Inferred role: first parameter of the belonging setup (the "MountPoint" of the npc list); original member name unknown.
-  u16 unknowna2;   // Inferred role: second parameter of the belonging setup (the "MountObject" of the npc list); original member name unknown.
-  u16 unknowna4;   // Inferred role: third parameter of the belonging setup; original member name unknown.
-  u16 unknowna6;   // Inferred role: fourth parameter of the belonging setup; original member name unknown.
+  const char *unknown98; // Inferred role: name (GfObjFactory::createGmkBlade), copied into GfObjSetupNpc; original member name unknown.
+  u16 unknowna0;         // Inferred role: first parameter of the belonging setup (the "MountPoint" of the npc list); original member name unknown.
+  u16 unknowna2;         // Inferred role: second parameter of the belonging setup (the "MountObject" of the npc list); original member name unknown.
+  u16 unknowna4;         // Inferred role: third parameter of the belonging setup; original member name unknown.
+  u16 unknowna6;         // Inferred role: fourth parameter of the belonging setup; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParamNpc, unknown90) == 0x90, "");
@@ -268,10 +286,11 @@ public:
     unknown82 = true;
   }
 
-  u16 unknown90; // Inferred role: first parameter of GfObjFactory::createGmkMob; original member name unknown.
-  u16 unknown92; // Inferred role: second parameter of GfObjFactory::createGmkMob; original member name unknown.
-  u16 unknown94; // Inferred role: third parameter of GfObjFactory::createGmkMob; original member name unknown.
-  u16 unknown96; // Inferred role: fourth parameter of GfObjFactory::createGmkMob; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  u16 unknown90;           // Inferred role: first parameter of GfObjFactory::createGmkMob; original member name unknown.
+  u16 unknown92;           // Inferred role: second parameter of GfObjFactory::createGmkMob; original member name unknown.
+  u16 unknown94;           // Inferred role: third parameter of GfObjFactory::createGmkMob; original member name unknown.
+  u16 unknown96;           // Inferred role: fourth parameter of GfObjFactory::createGmkMob; original member name unknown.
   u8 _98[0xa0 - 0x98];
 };
 
@@ -286,13 +305,17 @@ public:
     unknown48 = GIMMICK_TYPE_UNKNOWN_0;
   }
 
-  void *unknown90; // Role and original member name unknown; copied into GfObjSetupGimmick.
-  bool unknown98;  // Inferred role: big object, the "BigObj" flag of the map object list (GfObjFactory::createGmkMapObj); original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  void *unknown90;         // Role and original member name unknown; copied into GfObjSetupGimmick.
+  bool unknown98;          // Inferred role: big object, the "BigObj" flag of the map object list (GfObjFactory::createGmkMapObj); original member name unknown.
 };
 
 static_assert(offsetof(GfInitParamGimmick, unknown90) == 0x90, "");
 
-class GfInitParamMapObj : public GfInitParam {};
+class GfInitParamMapObj : public GfInitParam {
+public:
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+};
 
 class GfInitParamFobj : public GfInitParam {
 public:
@@ -304,9 +327,10 @@ public:
     unknown90 = 2;
   }
 
-  u32 unknown90;  // Role and original member name unknown; 2 by default.
-  u8 unknown94;   // Inferred role: index of the "paramid" column of the bdat; original member name unknown.
-  bool unknown95; // Inferred role: creates a dropitem for the object; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  u32 unknown90;           // Role and original member name unknown; 2 by default.
+  u8 unknown94;            // Inferred role: index of the "paramid" column of the bdat; original member name unknown.
+  bool unknown95;          // Inferred role: creates a dropitem for the object; original member name unknown.
   u8 _96[0xa0 - 0x96];
 };
 
@@ -317,6 +341,11 @@ static_assert(sizeof(GfInitParamFobj) == 0xa0, "");
 
 class GfInitParamWeapon : public GfInitParam {
 public:
+  // Evidence: inlined in SCOM_REBUILD_PARTY_WEAPON::exec (0x71005d24f0) and in GfObjFactory::createDriver.
+  GfInitParamWeapon()
+      : GfInitParam(OBJECT_TYPE_PC_WEAPON, 6), unknown88(nullptr), unknown90(false), unknown91(false), unknown94(-1), unknown120(unknown020), unknown128(0), unknown12c(0), unknown1e0(false),
+        unknown1e1(false), unknown1e4(GFATTACH_UNKNOWN_0), unknown1e8(false) {}
+
   void setupForEvent(u32 driver, u32 blade);
   void setupBladeForEvent(u32 blade);
   void setupForEventBlade(u32 blade, GF_OBJ_HANDLE *owner);
@@ -326,32 +355,56 @@ public:
   void setupBladeForEventLeft(u32 blade);
   void setupBladeForEventLeftCS(u32 blade);
 
-  bool unknown90; // Role and original member name unknown.
-  u8 _91[0x94 - 0x91];
-  int unknown94;      // Inferred role: slot; original member name unknown.
-  GfAppend unknown98; // Inferred role: append; original member name unknown.
-  u8 _120[0x128 - 0x120];
-  u32 unknown128; // Inferred role: driver; original member name unknown.
-  u32 unknown12c; // Inferred role: blade; original member name unknown.
-  u8 _130[0x1e0 - 0x130];
-  bool unknown1e0; // Inferred role: right hand; original member name unknown.
-  bool unknown1e1; // Inferred role: left hand; original member name unknown.
-  u8 _1e2[0x1e8 - 0x1e2];
+  // Inferred helper: sets up the weapon of a party blade; original name unknown. Evidence: inlined in SCOM_REBUILD_PARTY_WEAPON::exec (0x71005d24f0) and GfObjFactory::createDriver, which evaluate the
+  // arguments in this order and then store them.
+  void unknown003(u32 partyId, int slot, u32 weapon, GF_OBJ_HANDLE *owner, GF_OBJ_HANDLE *blade, GF_OBJ_HANDLE *driver, bool isCurrent) {
+    unknown08 = unknown030_1;
+    unknown20 = partyId;
+    m_bladeID = weapon;
+    unknown94 = slot;
+    unknown30 = owner;
+    unknown38 = blade;
+    unknown90 = true;
+    unknown120 = driver;
+    unknown91 = isCurrent;
+  }
+
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  bool unknown90;          // Role and original member name unknown.
+  bool unknown91;          // Inferred role: the slot is the driver's current blade set (SCOM_REBUILD_PARTY_WEAPON::exec); original member name unknown.
+  u8 _92[0x94 - 0x92];
+  int unknown94;              // Inferred role: slot; original member name unknown.
+  GfAppend unknown98;         // Inferred role: append; original member name unknown.
+  GF_OBJ_HANDLE *unknown120;  // Inferred role: party driver object (GfObjFactory::createDriverWeapon reads it through DataParamAcc); original member name unknown.
+  u32 unknown128;             // Inferred role: driver; original member name unknown.
+  u32 unknown12c;             // Inferred role: blade; original member name unknown.
+  GfAppendHandles unknown130; // Inferred role: weapon handles used when the owner has no mount (GfObjFactory::createDriverWeapon); original member name unknown.
+  bool unknown1e0;            // Inferred role: right hand; original member name unknown.
+  bool unknown1e1;            // Inferred role: left hand; original member name unknown.
+  u8 _1e2[0x1e4 - 0x1e2];
+  GFATTACH unknown1e4; // Inferred role: attach slot (GfObjFactory::createDriverWeapon passes it to GfMountManager::getAppendHandles); original member name unknown.
+  bool unknown1e8;     // Role and original member name unknown; cleared by the constructor.
 };
 
 static_assert(offsetof(GfInitParamWeapon, unknown90) == 0x90, "");
+static_assert(offsetof(GfInitParamWeapon, unknown91) == 0x91, "");
 static_assert(offsetof(GfInitParamWeapon, unknown94) == 0x94, "");
 static_assert(offsetof(GfInitParamWeapon, unknown98) == 0x98, "");
+static_assert(offsetof(GfInitParamWeapon, unknown120) == 0x120, "");
 static_assert(offsetof(GfInitParamWeapon, unknown128) == 0x128, "");
 static_assert(offsetof(GfInitParamWeapon, unknown12c) == 0x12c, "");
+static_assert(offsetof(GfInitParamWeapon, unknown130) == 0x130, "");
 static_assert(offsetof(GfInitParamWeapon, unknown1e0) == 0x1e0, "");
 static_assert(offsetof(GfInitParamWeapon, unknown1e1) == 0x1e1, "");
+static_assert(offsetof(GfInitParamWeapon, unknown1e4) == 0x1e4, "");
+static_assert(offsetof(GfInitParamWeapon, unknown1e8) == 0x1e8, "");
 static_assert(sizeof(GfInitParamWeapon) == 0x1f0, "");
 
 class GfInitParamEnWeapon : public GfInitParam {
 public:
   u32 getEnArrangeID() const override;
 
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
   u8 _90[0x98 - 0x90];
   GfAppend unknown98; // Inferred role: append; original member name unknown.
   u32 m_enArrangeID;
@@ -367,14 +420,15 @@ static_assert(offsetof(GfInitParamEnWeapon, unknown130) == 0x130, "");
 
 class GfInitParamBelonging : public GfInitParam {
 public:
-  GfInitParamBelonging() : GfInitParam(OBJECT_TYPE_OPTION, 6), unknown120(false), unknown128(nullptr), unknown130(true) {}
+  GfInitParamBelonging() : GfInitParam(OBJECT_TYPE_OPTION, 6), unknown88(nullptr), unknown120(false), unknown128(nullptr), unknown130(true) {}
 
-  GfAppend unknown90; // Inferred role: append; original member name unknown.
-  u16 unknown118;     // Inferred role: first parameter of GfAppendUtil::setupBelonging; original member name unknown.
-  u16 unknown11a;     // Inferred role: second parameter of GfAppendUtil::setupBelonging; original member name unknown.
-  u16 unknown11c;     // Inferred role: third parameter of GfAppendUtil::setupBelonging; original member name unknown.
-  u16 unknown11e;     // Inferred role: fourth parameter of GfAppendUtil::setupBelonging; original member name unknown.
-  bool unknown120;    // Inferred role: set up from a driver; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  GfAppend unknown90;      // Inferred role: append; original member name unknown.
+  u16 unknown118;          // Inferred role: first parameter of GfAppendUtil::setupBelonging; original member name unknown.
+  u16 unknown11a;          // Inferred role: second parameter of GfAppendUtil::setupBelonging; original member name unknown.
+  u16 unknown11c;          // Inferred role: third parameter of GfAppendUtil::setupBelonging; original member name unknown.
+  u16 unknown11e;          // Inferred role: fourth parameter of GfAppendUtil::setupBelonging; original member name unknown.
+  bool unknown120;         // Inferred role: set up from a driver; original member name unknown.
   u8 _121[0x128 - 0x121];
   GfInitParamDriver *unknown128; // Inferred role: driver of the belonging, used when unknown120 is set; original member name unknown.
   bool unknown130;               // Inferred role: visible; original member name unknown.
@@ -389,7 +443,8 @@ static_assert(offsetof(GfInitParamBelonging, unknown130) == 0x130, "");
 
 class GfInitParamExtra : public GfInitParam {
 public:
-  GfAppend unknown90; // Inferred role: append; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  GfAppend unknown90;      // Inferred role: append; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParamExtra, unknown90) == 0x90, "");
@@ -403,8 +458,9 @@ public:
     unknown98 = nullptr;
   }
 
-  bool unknown90;        // Inferred role: use map id; original member name unknown.
-  const char *unknown98; // Inferred role: model path; original member name unknown.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  bool unknown90;          // Inferred role: use map id; original member name unknown.
+  const char *unknown98;   // Inferred role: model path; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParamMapSeamless, unknown90) == 0x90, "");
@@ -412,12 +468,16 @@ static_assert(offsetof(GfInitParamMapSeamless, unknown98) == 0x98, "");
 
 class GfInitParamMap : public GfInitParam {
 public:
+  u8 _88[0x90 - 0x88];
   mm::mtl::FixStr<256> unknown90; // Inferred role: path; original member name unknown.
 };
 
 static_assert(offsetof(GfInitParamMap, unknown90) == 0x90, "");
 
-class GfInitParamEventObj : public GfInitParam {};
+class GfInitParamEventObj : public GfInitParam {
+public:
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+};
 
 class GfInitParamMapLodAnim : public GfInitParam {
 public:
@@ -428,7 +488,8 @@ public:
     unknown40 = 0;
   }
 
-  bool unknown90; // Role and original member name unknown; cleared by the constructor.
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+  bool unknown90;          // Role and original member name unknown; cleared by the constructor.
   u8 _91[0x110 - 0x91];
   u32 unknown110; // Role and original member name unknown; cleared by the constructor.
   u8 _114[0x120 - 0x114];
@@ -438,6 +499,9 @@ static_assert(offsetof(GfInitParamMapLodAnim, unknown90) == 0x90, "");
 static_assert(offsetof(GfInitParamMapLodAnim, unknown110) == 0x110, "");
 static_assert(sizeof(GfInitParamMapLodAnim) == 0x120, "");
 
-class GfInitParamUiObj : public GfInitParam {};
+class GfInitParamUiObj : public GfInitParam {
+public:
+  GfAssetSetup *unknown88; // Inferred role: asset setup overriding the default one; original member name unknown.
+};
 
 } // namespace gf

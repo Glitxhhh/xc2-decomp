@@ -17,7 +17,9 @@
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_enemy.h"
+#include "gf/data/gf_data_npc.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/field/gf_fobj_dropitem.h"
@@ -63,6 +65,15 @@ static void unknown001(GF_OBJ_HANDLE *handle, GF_ASSET_HANDLE *asset, const GfIn
     if (packInfo != nullptr) {
       packInfo->unknown2d8 = handle;
     }
+  }
+}
+
+// Inferred role: sets the motion of an npc setup from a row of FLD_NpcMobMotionId, as a stand motion; original name unknown. The game repeats this block in createGmkNpc (0x7100587680) and
+// createGmkBlade (0x7100589464), and converts the row before the table lookup.
+static void unknown002(GfObjSetupNpc *setup, u32 motion) {
+  setup->unknown6c = reinterpret_cast<const char *>(Bdat::getValCheck(Bdat::getFP("FLD_NpcMobMotionId"), "cmdName", motion, gmk::BDAT_TYPE_UNKNOWN_7));
+  if (!setup->unknown6c.empty()) {
+    setup->unknown6c.unknown002(0) = 'S';
   }
 }
 
@@ -323,6 +334,36 @@ GF_OBJ_HANDLE *GfObjFactory::createGmkMapGimmick(const CBdatWrapper &bdat, int i
   GfObjUtil::addDebugName(handle);
   manager->callGfObjListener(IGfObjListener::OBJEVT_UNKNOWN_1, handle);
   return handle;
+}
+
+GF_OBJ_HANDLE *GfObjFactory::createGmkCommonBlade(u32 blade) {
+  GfInitParamNpc param;
+  param.m_bladeID = blade;
+  param.unknown90 = true;
+  param.unknown98 = GfDataBlade::getDebugName(blade);
+  return createNpc(param);
+}
+
+GF_OBJ_HANDLE *GfObjFactory::createGmkBlade(const CBdatWrapper &bdat, int id, int blade) {
+  if (GfDataBlade::isCommonBlade(blade)) {
+    return createGmkCommonBlade(blade);
+  }
+  CBdatWrapper npcList(GfDataNpc::getRscBdatFp(blade));
+  GfInitParamNpc param;
+  param.m_bladeID = blade;
+  param.unknown18 = &npcList;
+  param.unknown90 = true;
+  param.unknown98 = reinterpret_cast<const char *>(bdat.getValCheck("name", id, gmk::BDAT_TYPE_UNKNOWN_7));
+  GF_OBJ_HANDLE *handle = createNpc(param);
+  if (handle != unknown020) {
+    GfObjSetupNpc *setup = GfObjUtil::getObjSetup<GfObjSetupNpc>(handle);
+    u16 motion = bdat.getValCheck("Mot", id, gmk::BDAT_TYPE_UNKNOWN_2);
+    if (motion) {
+      unknown002(setup, motion);
+    }
+    return handle;
+  }
+  return unknown020;
 }
 
 GF_OBJ_HANDLE *GfObjFactory::createGmkMob(int id, u16 param2, u16 param3, u16 param4, u16 param5) {

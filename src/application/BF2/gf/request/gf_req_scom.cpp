@@ -55,6 +55,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/object/component/animation/gf_com_asm.h"
 #include "gf/object/component/property/gf_com_property.h"
+#include "gf/object/gf_append.h"
 #include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
@@ -346,6 +347,59 @@ GF_SCOM_HANDLE *SCOM_CURRENT_BLADE::create(u32 blade) {
   SCOM_PARTY_ADD::setCurrentBlade(blade);
 #line 4737
   SCOM_CURRENT_BLADE *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_CURRENT_BLADE(GfReqSmallCom::get()->allocate(), blade);
+  return GfReqSmallCom::addRequest(command);
+}
+
+// The game clears unknown28 before it calls getPartyId, so unknown20 is assigned in the body.
+SCOM_REBUILD_PARTY_WEAPON::SCOM_REBUILD_PARTY_WEAPON(GF_SCOM_HANDLE *handle, u32 blade) : SCOM(handle, SCOM_TYPE_UNKNOWN_78, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(blade), unknown28(0) {
+  unknown20 = GfGameParty::getPartyId(OBJECT_TYPE_BLADE, blade);
+  DataParamAcc acc(GfGameParty::getHandleDriver(unknown20));
+  unknown24 = -1;
+  int count = GfDataDriver::getMaxSetBladeNum(acc.getValidDriverId());
+  for (int slot = 0; slot < count; ++slot) {
+    if (acc.getBlade(slot, false) == blade) {
+      unknown24 = slot;
+      break;
+    }
+  }
+}
+
+bool SCOM_REBUILD_PARTY_WEAPON::exec(const fw::UpdateInfo &) {
+  if (unknown28 == 0) {
+    GfAppendHandles handles = *GfGameParty::getHandleWeapon(unknown20, unknown24);
+    for (u32 index = 0; index < HANDLE_UNKNOWN_10; index++) {
+      GfObjUtil::destroy(handles.getCurrentHandles()[index]);
+    }
+    unknown28 = 1;
+    return false;
+  }
+
+  if (unknown28 == 1) {
+    GfAppendHandles handles = *GfGameParty::getHandleWeapon(unknown20, unknown24);
+    for (u32 index = 0; index < HANDLE_UNKNOWN_10; index++) {
+      GF_OBJ_HANDLE *handle = handles.getCurrentHandles()[index];
+      if (handle != unknown020 && GfObjUtil::isValid(handle)) {
+        return false;
+      }
+    }
+  }
+
+  GF_OBJ_HANDLE *driver = GfGameParty::getHandleDriver(unknown20);
+  GF_OBJ_HANDLE *blade = GfGameParty::getHandleBlade(unknown20, unknown24);
+  DataParamAcc bladeAcc(blade);
+  if (bladeAcc.getEquipWeapon(-1, false) != 0) {
+    DataParamAcc driverAcc(GfGameParty::getHandleDriver(unknown20));
+    GfInitParamWeapon param;
+    param.unknown003(unknown20, unknown24, bladeAcc.getEquipWeapon(-1, false), driver, blade, GfGameParty::getHandleDriver(unknown20), driverAcc.getBladeSet(false) == unknown24);
+    GfObjFactory::createDriverWeapon(param);
+    GfMountManager::setMountType(driver, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_2);
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_REBUILD_PARTY_WEAPON::create(u32 blade) {
+#line 4819
+  SCOM_REBUILD_PARTY_WEAPON *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_REBUILD_PARTY_WEAPON(GfReqSmallCom::get()->allocate(), blade);
   return GfReqSmallCom::addRequest(command);
 }
 
@@ -1959,6 +2013,12 @@ bool SCOM_REBUILD::exec(const fw::UpdateInfo &) {
 GF_SCOM_HANDLE *SCOM_REBUILD::create(GF_OBJ_HANDLE *target) {
 #line 3402
   SCOM_REBUILD *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_REBUILD(GfReqSmallCom::get()->allocate(), target);
+  return GfReqSmallCom::addRequest(command);
+}
+
+GF_SCOM_HANDLE *SCOM_CHANGE_RIDE::create(GF_OBJ_HANDLE *driver, bool isRide) {
+#line 3459
+  SCOM_CHANGE_RIDE *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_CHANGE_RIDE(GfReqSmallCom::get()->allocate(), driver, isRide);
   return GfReqSmallCom::addRequest(command);
 }
 

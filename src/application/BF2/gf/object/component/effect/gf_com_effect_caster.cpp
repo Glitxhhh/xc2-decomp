@@ -238,6 +238,31 @@ void GfComEffectCaster::effectEnd(u32 effect) {
   }
 }
 
+void GfComEffectCaster::addMountEffectEv(const EffectMountSetupEv &setup) {
+  if (setup.unknown0 == 0) {
+    return;
+  }
+  EventEfHandleTbl tbl;
+  tbl.unknown00 = setup.unknown8;
+  tbl.unknown24 = setup.unknown0;
+  tbl.unknown28 = nullptr;
+  tbl.unknown30 = setup.unknown30;
+  tbl.unknown41 = setup.unknown41;
+  tbl.unknown40 = setup.unknown40;
+  tbl.unknown42 = setup.unknown42;
+  if (tbl.unknown41) {
+    if (unknown390 != nullptr) {
+      tbl.unknown28 = unknown390->unknown68(tbl.unknown00.c_str());
+    } else {
+      GfComModel *model = unknown08->getComponent<GfComModel>();
+      if (model != nullptr) {
+        tbl.unknown28 = model->createBoneReferenceFrame(tbl.unknown00.c_str());
+      }
+    }
+  }
+  unknownc3b0.push_back(tbl);
+}
+
 bool GfComEffectCaster::removeMountEffectEv(u32 effect) {
   for (EventEfHandleTbl *tbl = unknownc3b0.begin(); tbl != unknownc3b0.end(); tbl++) {
     if (tbl->unknown24 == effect) {

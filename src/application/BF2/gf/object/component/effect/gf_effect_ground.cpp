@@ -11,6 +11,7 @@
 #include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_math/mm_vec3.h"
 #include "mm_mtl/unique_ptr.h"
 
 namespace gf {
@@ -60,7 +61,7 @@ bool GfEffectGround::tryGetWaterDepth(const GfComEffectCaster *caster, const GfC
       return false;
     }
     if (property->unknown18 != nullptr) {
-      depth = waterInfo->unknown00 - property->unknown18->unknown34;
+      depth = waterInfo->unknown00 - property->unknown18->unknown30.y;
       return true;
     }
   }

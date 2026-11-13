@@ -42,7 +42,7 @@ void AttachUtil::setMount(bool isSet, gf::GF_OBJ_HANDLE *handle, u32 effect, con
   setup.unknown8 = bone;
   setup.unknown41 = isRotate;
   setup.unknown30 = offset;
-  setup._40[0] = false;
+  setup.unknown40 = 0;
   setup.unknown42 = type == static_cast<ATTACH_TYPE>(1);
   caster->addMountEffectEv(setup);
 }
