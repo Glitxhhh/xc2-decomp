@@ -333,6 +333,38 @@ void GfMenuObjMercenaryForm::addUnitBladeList(u32 blade) {
   SCOM_FIELD_VOICE::createMercenariesIn(info.unknown00);
 }
 
+bool GfMenuObjMercenaryForm::seqOpenImage() {
+  ui::UIObjectAcc image(unknown18, "IMG_leader_bl_img");
+  bool isEnd;
+  if (!image.isStreaming()) {
+    ui::UIObjectAcc layout(unknown18, "LAY_bl_img");
+    u32 blade = GfMenuReference::getReferenceBladeID(0);
+    layout.setLayout(image.unknown10, "character");
+    GfMenuObjUtil::ImageParam imageParam;
+    if (GfMenuObjUtil::getImageParam(1, blade, imageParam, 1)) {
+      mm::Vec2 scale;
+      image.getScale(scale);
+      scale.x = imageParam.unknown04 * scale.x;
+      scale.y = imageParam.unknown04 * scale.y;
+      image.setScale(scale);
+      GfMenuObjUtil::addPos(image.unknown10, imageParam.unknown00, imageParam.unknown02);
+    }
+    image.setAlpha(1.0f);
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown004("fade_in_r");
+    param.unknown14 = 8;
+    param.unknown11 = true;
+    GfMenuObjUtil::startCtrl(image.unknown10, param, nullptr);
+    image.setAlpha(0.0f);
+    GfMenuObjUtil::playSE("se_fld_allmap_503");
+    isEnd = true;
+  } else {
+    image.setAlpha(0.0f);
+    isEnd = false;
+  }
+  return isEnd;
+}
+
 bool GfMenuObjMercenaryForm::seqDepartureStart() {
   unknown430 = false;
   unknown108.unknown002(&GfMenuObjMercenaryForm::seqApperBlade);

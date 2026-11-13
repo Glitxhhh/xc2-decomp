@@ -33,6 +33,14 @@ public:
     GfMenuObjQuestList *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class ListListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjQuestList *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   class TabListener : public ui::UIObjectListener {
   public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
@@ -130,6 +138,8 @@ public:
 
 static_assert(offsetof(GfMenuObjQuestList::MainListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjQuestList::MainListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjQuestList::ListListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjQuestList::ListListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjQuestList::TabListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjQuestList::TabListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjQuestList::TabOpenListener, unknown20) == 0x20, "");

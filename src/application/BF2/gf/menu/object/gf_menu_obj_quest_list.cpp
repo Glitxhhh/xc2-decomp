@@ -333,6 +333,76 @@ void GfMenuObjQuestList::MainListener::reciveEvent(const ui::EventData &event, u
   }
 }
 
+void GfMenuObjQuestList::ListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::disableInput(acc.unknown10);
+    acc.setDisp(false);
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    u32 previous = event.unknown0c;
+    if (index != 0xffffffff) {
+      unknown20->unknown28->setIndex(index);
+      unknown20->unknown68->setIndex(unknown20->unknown28->getIndex(true));
+    }
+    if (previous != 0xffffffff && index != previous) {
+      GfMenuObjUtil::playSECommonCursor();
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1 && unknown20->unknown28->getSize() != 0) {
+      if (unknown20->unknown28->getContents(unknown20->unknown28->getIndex(false)).unknown00 != 0) {
+        unknown20->sendSuspendEvent(acc.unknown10, 0);
+        unknown20->unknown340 = unknown20->unknown28->getContents(unknown20->unknown28->getIndex(false)).unknown00;
+        GfMenuObject::sendOpenEvent(acc.searchSibiling("LAY_detail"), 0, 0.0f);
+        GfMenuObjMainMenu2::setSystemKeyEnable(false);
+        GfMenuObjUtil::playSECommonDecide();
+        GfMenuObject::sendCloseEvent(acc.searchSibiling("LAY_tab_open"), 0, 0.0f);
+        GfMenuObject::disableInput(acc.unknown10);
+        GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+      }
+    }
+    break;
+  case GfMenuTypes::unknown003_33:
+    acc.setDisp(true);
+    break;
+  case GfMenuTypes::unknown003_34:
+    acc.setDisp(false);
+    break;
+  case GfMenuTypes::unknown003_257:
+    acc.setDispChild(false, "IMG_list_cursor");
+    if (unknown20->unknown58 == 1) {
+      GfMenuObject::disableInput(acc.unknown10);
+      GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+    }
+    break;
+  case GfMenuTypes::unknown003_258:
+    if (unknown20->unknown58 == 1) {
+      GfMenuObject::enableInput(acc.unknown10);
+      GfMenuObjMainMenu2::setSystemKeyEnable(true);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+      bool hasQuest = unknown20->unknown28->getSize() != 0;
+      if (!hasQuest) {
+        acc.setDispChild(false, "IMG_list_cursor");
+      } else {
+        acc.setDispChild(true, "IMG_list_cursor");
+      }
+      GfMenuObjOperationInfo::setActionEnable(acc.unknown10, 1, hasQuest);
+      GfMenuObject::resetInputSelection(acc.unknown10);
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown28);
+    }
+    break;
+  case GfMenuTypes::unknown003_260:
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjQuestList::TabOpenListener::reciveEvent(const ui::EventData &event, u32 handle) {
   ui::UIObjectAcc acc(handle);
   switch (event.unknown00) {

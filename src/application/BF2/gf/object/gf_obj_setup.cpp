@@ -10,6 +10,7 @@
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_obj.h"
+#include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_obj_manager.h"
@@ -348,6 +349,11 @@ GfObjSetupEnemy::GfObjSetupEnemy(const GfInitParamEnemy &param)
     unknownc0 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SDataBlade;
     GfDataBlade::setupSDataBlade(*unknownc0, unknownb8, false);
   }
+}
+
+GfObjSetupBlade::GfObjSetupBlade(const GfInitParamBlade &param) : GfObjSetup(param, OBJECT_TYPE_BLADE), unknown6c(-1), unknown70(false), unknown74(-1) {
+  unknown71 = GfGameUtil::isCondBladeModel(param.m_bladeID);
+  unknown80 = param;
 }
 
 } // namespace gf

@@ -3,7 +3,7 @@
 
 #include "ai/ai_state.h"
 #include "ai/ai_state_fsm.h"
-#include "gf/game/gf_game_mount.h"
+#include "gf/object/gf_append.h"
 #include "gf/object/gf_obj_manager.h"
 #include "mm_mtl/fixed_list.h"
 #include "mm_mtl/fixstr.h"
@@ -15,6 +15,7 @@ struct UpdateInfo;
 } // namespace fw
 namespace mm {
 struct Vec3;
+
 namespace mtl {
 class RTTI;
 } // namespace mtl
@@ -346,8 +347,9 @@ public:
   bool isPlayEndAnimCS();
   void setAnimSpeedCS(f32 speed);
 
-  GfWeapon unknown298; // Inferred role: weapon handles; original member name unknown.
-  u32 unknown348;      // Inferred role: driver; original member name unknown.
+  // GfAppendHandles, not GfWeapon: the constructor (0x710030c27c) stores the GfAppendHandles vtable here, the same one the GfInitParamWeapon constructor stores in its unknown130.
+  GfAppendHandles unknown298; // Inferred role: weapon handles; original member name unknown.
+  u32 unknown348;             // Inferred role: driver; original member name unknown.
   u8 _34c[0x350 - 0x34c];
 };
 

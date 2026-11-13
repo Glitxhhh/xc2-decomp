@@ -100,6 +100,7 @@ public:
   static void setupFilter(ui::UIObjectAcc &acc, u32 filter);
   static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list);
   static void setupResult(ui::UIObjectAcc &acc);
+  static void refreshResult(ui::UIObjectAcc &acc, const GfMenuBladeList *list);
   static void setupPartyInfo(ui::UIObjectAcc &acc);
   static void updateItemList(GfMenuItemList *list, ui::UISelectObjList *selectList, u32 filter, u32 sort);
   static void refreshSlot(ui::UIObjectAcc &acc, u32 index);

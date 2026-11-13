@@ -22,6 +22,7 @@
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_char_select.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
+#include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_sort.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "gf/request/gf_req_scom.h"
@@ -660,6 +661,46 @@ void GfMenuObjPouch2::MainListener::reciveEvent(const ui::EventData &event, u32 
     break;
   case GfMenuTypes::unknown003_34:
     setFadeOut(handle, 0);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjPouch2::ResultListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    setupResult(acc);
+    acc.setDisp(false);
+    GfMenuObject::disableInput(handle);
+    break;
+  case 8:
+    if (event.unknown0c == 0xb || event.unknown0c == 2) {
+      unknown164(handle, GfMenuTypes::unknown003_258);
+      unknown001(owner.searchChild(unknown20->unknown64 == 0 ? "LAY_eqp_fevitem" : "LAY_fvstock_fevitem"), GfMenuTypes::unknown003_257, 0, 0);
+      if (unknown20->unknown64 == 0) {
+        GfMenuObjCharSelect::dispOnChar(0);
+      } else {
+        setFadeIn(owner.searchChild("LAY_fvstock_fevitem"), 1);
+        setFadeIn(owner.searchChild("LAY_chr_fevinfo"), 2);
+      }
+      GfMenuObjUtil::playSECommonCloseSubMenu();
+    }
+    break;
+  case GfMenuTypes::unknown003_257:
+    refreshResult(acc, unknown20->unknown3e0);
+    GfMenuObjOperationInfo::setGuideText(0x22, 0);
+    GfMenuObjOperationInfo::add(handle, 0, 0, 0);
+    setFadeIn(handle, 1);
+    GfMenuObject::enableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_258:
+    GfMenuObjOperationInfo::remove(handle, 0, 0, 0);
+    setFadeOut(handle, 1);
+    GfMenuObject::disableInput(handle);
     break;
   default:
     ui::UIObjectListener::reciveEvent(event, handle);

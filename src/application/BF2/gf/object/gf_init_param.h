@@ -101,7 +101,7 @@ public:
   u32 unknown48; // Inferred role: gimmick type; original member name unknown.
   f32 unknown4c; // Inferred role: scale; original member name unknown.
   f32 unknown50; // Inferred role: scale copied into the object setup; original member name unknown.
-  u8 _54[0x60 - 0x54];
+  // 0x54..0x60 is alignment padding, not a member: the implicit copy in the GfObjSetupWeapon constructor (0x71005acbc8) copies 0x08..0x54 as one 0x4c byte memcpy.
   mm::Vec3 unknown60; // Inferred role: initial position, used when unknown80 is set; original member name unknown.
   mm::Vec3 unknown70; // Inferred role: initial rotation, used when unknown80 is set; original member name unknown.
   bool unknown80;     // Inferred role: flag; original member name unknown.
@@ -112,8 +112,8 @@ public:
   // The asset setup pointer at 0x88 is the first member of each derived class, in this class's tail padding, not a member of this one. GfInitParamDriver::operator= (0x71005ae8f0) copies this
   // class's last group as 0x80..0x84 only (0x71005ae950-0x71005ae95c) and then 0x90 and 0x88 as the derived group (0x71005ae960-0x71005ae96c); GfGameUnit::createParty
   // (0x7100347c38-0x7100347c40) and the GfObjSetupDriver constructor (0x71005abd8c-0x71005abd98) store the vtable pointer, 0x88 and 0x90 in that order. With the member in this class,
-  // GfGameUnit::createParty and SCOM_REBUILD_PARTY_WEAPON::exec do not match. GfAssetFactory only reads it through the concrete parameter type.
-  u8 _85[0x88 - 0x85];
+  // GfGameUnit::createParty and SCOM_REBUILD_PARTY_WEAPON::exec do not match. GfAssetFactory only reads it through the concrete parameter type. 0x85..0x88 is tail padding, not a member: the
+  // copies in GfObjSetupWeapon (0x71005acbc8) and GfObjSetupBlade (0x71005ae690) constructors read 0x80 and 0x84 alone.
 };
 
 static_assert(offsetof(GfInitParam, unknown08) == 0x08, "");
@@ -185,6 +185,12 @@ static_assert(sizeof(GfInitParamDriver) == 0x1b0, "");
 
 class GfInitParamBlade : public GfInitParam {
 public:
+  // Evidence: inlined in the GfObjSetupBlade constructor (0x71005ae690), which stores unknown84 then unknown82 after the members; no constructor symbol in the game.
+  GfInitParamBlade() : GfInitParam(OBJECT_TYPE_BLADE, 4), unknown88(nullptr), unknown90(false), unknown91(true), unknown94(0), unknown98(-1), m_allWeapon(false), unknowna0(0), unknowna4(false) {
+    unknown84 = true;
+    unknown82 = true;
+  }
+
   bool isAllWeapon() const override;
   void setupForParty(u32 blade, int slot, u32 driver, GF_OBJ_HANDLE *owner, bool isVirtual);
   void setupForEvent(u32 blade, bool isFirst);
@@ -201,7 +207,8 @@ public:
   u32 unknown94; // Inferred role: weapon; original member name unknown.
   int unknown98; // Inferred role: party slot; original member name unknown.
   bool m_allWeapon;
-  u8 _9d[0xa4 - 0x9d];
+  u8 _9d[0xa0 - 0x9d];
+  u32 unknowna0;  // Role and original member name unknown; cleared by the constructor.
   bool unknowna4; // Inferred role: flag; original member name unknown.
 };
 
@@ -210,7 +217,9 @@ static_assert(offsetof(GfInitParamBlade, unknown91) == 0x91, "");
 static_assert(offsetof(GfInitParamBlade, unknown94) == 0x94, "");
 static_assert(offsetof(GfInitParamBlade, unknown98) == 0x98, "");
 static_assert(offsetof(GfInitParamBlade, m_allWeapon) == 0x9c, "");
+static_assert(offsetof(GfInitParamBlade, unknowna0) == 0xa0, "");
 static_assert(offsetof(GfInitParamBlade, unknowna4) == 0xa4, "");
+static_assert(sizeof(GfInitParamBlade) == 0xb0, "");
 
 class GfInitParamEnemy : public GfInitParam {
 public:

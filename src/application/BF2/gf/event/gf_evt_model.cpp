@@ -3,6 +3,8 @@
 #include <new>
 #include <string.h>
 
+#include "gf/data/gf_data_param_acc.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/event/gf_event.h"
 #include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_manager.h"
@@ -310,6 +312,32 @@ void GfEvtModel::setWeaponFieldState() {}
 void GfEvtModel::setWeaponBattleMount() {}
 
 void GfEvtModel::setWeaponFieldMount() {}
+
+GfEvtModelDriver::GfEvtModelDriver(GfInitParamDriver &param) : GfEvtModel(GF_EVT_MODEL_UNKNOWN_0, param.m_bladeID), unknown298(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown310(param.unknown1ac) {
+  if (GfMenuManager::isOpenFullScreen() && GfGameManager::isInnerState(GF_STATE_UNKNOWN_6)) {
+    param.unknown40 = changeLayerUI(param.unknown40);
+  }
+  unknown20 = GfObjFactory::createDriver(param);
+  unknown298.beginSetup(this, 4);
+  unknown298.registerState<StateIdleField>(unknown012);
+  unknown298.registerState<StateIdleBattle>(unknown013);
+  unknown298.registerState<StateStartBattle>(unknown003);
+  unknown298.registerState<StateEndBattle>(unknown004);
+  unknown298.endSetup();
+  unknown298.setState(unknown012);
+  if (unknown310 == 0) {
+    DataParamAcc acc(OBJECT_TYPE_PC, param.m_bladeID, GIMMICK_TYPE_UNKNOWN_0);
+    unknown310 = acc.getBlade(-1, false);
+  }
+}
+
+GfEvtModelDriver *GfEvtModelDriver::create(GfInitParamDriver &param) {
+  // __LINE__ must be 392 as in the original source: it is the line argument of operator new.
+#line 392
+  GfEvtModelDriver *model = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfEvtModelDriver(param);
+  model->addRef();
+  return model;
+}
 
 GfEvtModelSalvage::GfEvtModelSalvage(GfInitParamDriver &param) : GfEvtModelDriver(param) {}
 
@@ -751,6 +779,20 @@ void GfEvtModelWeapon::setAnimSpeedCS(f32 speed) {
   GfComPackAnim *anim = unknown001<GfComPackAnim>(unknown20);
   if (anim != nullptr) {
     anim->setSpeed(speed);
+  }
+}
+
+GfEvtModelWeapon::GfEvtModelWeapon(GfInitParamWeapon &param) : GfEvtModel(GF_EVT_MODEL_UNKNOWN_2, param.m_bladeID), unknown348(param.unknown128) {
+  if (GfMenuManager::isOpenFullScreen() && GfGameManager::isInnerState(GF_STATE_UNKNOWN_6)) {
+    param.unknown40 = changeLayerUI(param.unknown40);
+  }
+  unknown298 = *GfObjFactory::createDriverWeapon(param);
+  for (u32 index = 0; index < 10; index++) {
+    GF_OBJ_HANDLE *handle = unknown298.getCurrentHandles()[index];
+    if (handle != unknown020) {
+      unknown20 = handle;
+      break;
+    }
   }
 }
 

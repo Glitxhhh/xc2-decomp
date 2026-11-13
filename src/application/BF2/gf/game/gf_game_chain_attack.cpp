@@ -6,11 +6,14 @@
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/gf_menu_manager.h"
+#include "gf/object/gf_init_param.h"
+#include "gf/object/gf_obj_factory.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 
 namespace gf {
 
+constexpr s32 CHAIN_ATTACK_STATE_UNKNOWN_1 = 1; // Inferred role: chain attack state setup; original name unknown.
 constexpr s32 CHAIN_ATTACK_STATE_UNKNOWN_2 = 2; // Inferred role: chain attack state play; original name unknown.
 
 GfChainAttack::GfChainAttack() : m_state(0) {
@@ -22,6 +25,26 @@ GfChainAttack::GfChainAttack() : m_state(0) {
 
 GfChainAttack::~GfChainAttack() {}
 
+void GfChainAttack::createPartyDriver() {
+  for (u32 partyId = 0; partyId < 3; partyId++) {
+    u32 driver = GfGameParty::getDriverBdatId(partyId);
+    if (driver != 0) {
+      GfInitParamDriver param;
+      param.unknown08 = unknown030_7;
+      param.m_bladeID = driver;
+      param.unknown24 = VIEWCAM_UNKNOWN_1;
+      param.unknown40 = 10;
+      param.unknown81 = false;
+      param.unknown82 = false;
+      param.unknown50 = 0.0f;
+      GF_OBJ_HANDLE *handle = GfObjFactory::createDriver(param);
+      if (handle != unknown020) {
+        m_driverByPartyId[partyId] = handle;
+      }
+    }
+  }
+}
+
 bool GfChainAttack::isLoadingDrivers() const {
   for (u32 index = 0; index < 3; index++) {
     if (m_driverByPartyId[index] != unknown020 && !GfGameObj::isValidGameObj(m_driverByPartyId[index], true, nullptr)) {
@@ -29,6 +52,13 @@ bool GfChainAttack::isLoadingDrivers() const {
     }
   }
   return false;
+}
+
+void GfChainAttack::startSetup() {
+  m_state = CHAIN_ATTACK_STATE_UNKNOWN_1;
+  unknown10.bind(this, &GfChainAttack::updateForSetup);
+  GfMenuManager::openBtlModelView();
+  createPartyDriver();
 }
 
 void GfChainAttack::updateForSetup(const fw::UpdateInfo &) {

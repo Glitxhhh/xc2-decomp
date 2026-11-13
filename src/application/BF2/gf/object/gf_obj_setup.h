@@ -181,17 +181,22 @@ public:
   static mm::mtl::RTTI m_rtti;
   static const u32 OBJECT_TYPE = OBJECT_TYPE_PC;
 
-  GfObjSetupDriver(const GfInitParamDriver &param);
+  // Defined in the class: the game has only the C2 symbol of this constructor.
+  GfObjSetupDriver(const GfInitParamDriver &param) : GfObjSetup(param, OBJECT_TYPE_PC), unknown6c(false), unknown6d(false), unknown6e(false), unknown70(-1) { unknown80 = param; }
   const mm::mtl::RTTI *getRTTI() const override;
 
   bool unknown6c; // Inferred role: ride; original member name unknown.
-  u8 _6d[0x70 - 0x6d];
+  bool unknown6d; // Role and original member name unknown; cleared by the constructor.
+  bool unknown6e; // Role and original member name unknown; cleared by the constructor.
+  u8 _6f[0x70 - 0x6f];
   int unknown70; // Inferred role: formation player id; original member name unknown.
   u8 _74[0x80 - 0x74];
   GfInitParamDriver unknown80; // Inferred role: copy of the init param; original member name unknown.
 };
 
 static_assert(offsetof(GfObjSetupDriver, unknown6c) == 0x6c, "");
+static_assert(offsetof(GfObjSetupDriver, unknown6d) == 0x6d, "");
+static_assert(offsetof(GfObjSetupDriver, unknown6e) == 0x6e, "");
 static_assert(offsetof(GfObjSetupDriver, unknown70) == 0x70, "");
 static_assert(offsetof(GfObjSetupDriver, unknown80) == 0x80, "");
 static_assert(sizeof(GfObjSetupDriver) == 0x230, "");
@@ -209,13 +214,15 @@ public:
   bool unknown71; // Role and original member name unknown; cleared by the GfPlayComHoodHomuraBattou constructor before the rebuild.
   u8 _72[0x74 - 0x72];
   int unknown74; // Inferred role: formation player id; original member name unknown.
-  u8 _78[0x130 - 0x78];
+  u8 _78[0x80 - 0x78];
+  GfInitParamBlade unknown80; // Inferred role: copy of the init param; original member name unknown.
 };
 
 static_assert(offsetof(GfObjSetupBlade, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfObjSetupBlade, unknown70) == 0x70, "");
 static_assert(offsetof(GfObjSetupBlade, unknown71) == 0x71, "");
 static_assert(offsetof(GfObjSetupBlade, unknown74) == 0x74, "");
+static_assert(offsetof(GfObjSetupBlade, unknown80) == 0x80, "");
 static_assert(sizeof(GfObjSetupBlade) == 0x130, "");
 
 class GfObjSetupWeapon : public GfObjSetup {
@@ -223,7 +230,8 @@ public:
   static mm::mtl::RTTI m_rtti;
   static const u32 OBJECT_TYPE = OBJECT_TYPE_PC_WEAPON;
 
-  GfObjSetupWeapon(const GfInitParamWeapon &param);
+  // Defined in the class: the game has only the C2 symbol of this constructor.
+  GfObjSetupWeapon(const GfInitParamWeapon &param) : GfObjSetup(param, OBJECT_TYPE_PC_WEAPON), unknown6c(-1), unknown70(false), unknown74(-1), unknown78(false) { unknown80 = param; }
   const mm::mtl::RTTI *getRTTI() const override;
 
   int unknown6c;  // Inferred role: slot; original member name unknown.
