@@ -1,5 +1,7 @@
 #include "gf/object/gf_obj_acc.h"
 
+#include "anm/anm_pose.h"
+#include "anm/anm_qs_transform.h"
 #include "anm/anm_skeleton.h"
 #include "battle/character/battle_character.h"
 #include "battle/character/character_manager_battle.h"
@@ -29,6 +31,7 @@
 #include "mm_math/mm_aabb.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_math/mm_vec4.h"
 #include "mm_mtl/fixed_array.h"
 #include "mm_mtl/intrusive_list.h"
 #include "mm_mtl/intrusive_ptr.h"
@@ -73,6 +76,50 @@ int GfObjAcc::getBoneIdx(const char *name) {
   }
 
   return -1;
+}
+
+bool GfObjAcc::getBoneTransform(fw::Transform &transform, const char *name) { return getBoneTransform(transform, getBoneIdx(name)); }
+
+bool GfObjAcc::getBoneTransform(fw::Transform &transform, int bone) {
+  if (m_obj == nullptr || bone == -1) {
+    return false;
+  }
+
+  GfComModel *model = m_obj->getComponent<GfComModel>();
+  if (model == nullptr) {
+    return false;
+  }
+
+  anm::Pose *pose = model->unknown30;
+  if (pose == nullptr) {
+    return false;
+  }
+
+  fw::TransformUtil::mul(getWorldTransform(), pose->getBoneModelSpace(bone), model->m_modelScale, &transform);
+  return true;
+}
+
+bool GfObjAcc::getBoneTransformModelSpace(fw::Transform &transform, const char *name) { return getBoneTransformModelSpace(transform, getBoneIdx(name)); }
+
+bool GfObjAcc::getBoneTransformModelSpace(fw::Transform &transform, int bone) {
+  if (m_obj == nullptr || bone == -1) {
+    return false;
+  }
+
+  GfComModel *model = m_obj->getComponent<GfComModel>();
+  if (model == nullptr) {
+    return false;
+  }
+
+  anm::Pose *pose = model->unknown30;
+  if (pose == nullptr) {
+    return false;
+  }
+
+  const anm::QsTransform &boneTransform = pose->getBoneModelSpace(bone);
+  transform.unknown00 = mm::Vec3(boneTransform.unknown00.x, boneTransform.unknown00.y, boneTransform.unknown00.z);
+  transform.unknown10 = boneTransform.unknown10;
+  return true;
 }
 
 bool GfObjAcc::isValidTransform() const {

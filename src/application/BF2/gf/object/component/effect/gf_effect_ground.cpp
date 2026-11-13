@@ -123,7 +123,7 @@ u32 GfEffectGround::getGroundMaterial(GfEnvProperty *env, const GfComEffectCaste
     }
     return material;
   }
-  if (env->unknown2d0 & 2) {
+  if (env->unknown003(GfEnvProperty::GROUND_INDEX_UNKNOWN_0)) {
     return unknown001(env->unknown00[0].unknown34, env->unknown00[0].unknown48);
   }
   return 0;

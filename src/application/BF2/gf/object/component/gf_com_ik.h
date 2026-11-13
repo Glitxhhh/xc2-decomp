@@ -5,6 +5,7 @@
 #include "framework/ik/ik_ground_interface.h"
 #include "framework/ik/ik_raycaster.h"
 #include "gf/object/component/gf_component.h"
+#include "gf/object/component/property/gf_env_property.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/unique_ptr.h"
 #include "types.h"
@@ -33,8 +34,6 @@ class RTTI;
 } // namespace mm
 
 namespace gf {
-
-struct GfEnvProperty;
 
 // Inferred role: slot indices of the IK solver vector, from the size asserts; original name unknown.
 enum unknown002 {
@@ -76,6 +75,14 @@ public:
     const mm::Plane *getPlane() const override;
     const mm::Vec3 *getHitPos() const override;
 
+    // Inferred helper: ground sample of this foot, null without a valid one; original name unknown.
+    const GfEnvProperty::unknown002 *unknown001() const {
+      if (unknown18 == nullptr) {
+        return nullptr;
+      }
+      return unknown18->unknown004(unknown20);
+    }
+
     GfEnvProperty *unknown18; // Inferred role: environment property; original member name unknown.
     int unknown20;            // Inferred role: foot index; original member name unknown.
   };
@@ -98,6 +105,17 @@ public:
         ground.unknown18 = env;
         ground.unknown20 = i + 1;
       }
+    }
+
+    // Inferred helper: ground sample, null without a valid one; original name unknown.
+    const GfEnvProperty::unknown002 *unknown002(GfEnvProperty::GROUND_INDEX index) const {
+      if (unknown08 == nullptr) {
+        return nullptr;
+      }
+      if (!unknown08->unknown2d4) {
+        return nullptr;
+      }
+      return unknown08->unknown004(index);
     }
 
     GfEnvProperty *unknown08;                      // Inferred role: environment property; original member name unknown.

@@ -42,6 +42,17 @@ static inline GfObjPropertyBlade *unknown003(GF_OBJ_HANDLE *handle) {
   return property->getBlade();
 }
 
+// Inferred role: reads the attribute at an index of the enemy's attribute list, false when there is none; original name unknown.
+static inline bool unknown006(GfObjPropertyEnemy *enemy, u32 index, u32 &attribute) {
+  if (enemy->unknown120.size() > index) {
+    attribute = enemy->unknown120[index];
+    if (attribute >= 1 && attribute <= 8) {
+      return true;
+    }
+  }
+  return false;
+}
+
 GfMenuGfObjAdapter::GfMenuGfObjAdapter(ui::UIObjectPlugin *plugin, bool isUpdateAlways, bool isUpdateAfter)
     : GfMenuAdapter(plugin, isUpdateAfter, isUpdateAlways), unknown48(unknown020), unknown70(0), unknown78(nullptr) {}
 
@@ -397,11 +408,9 @@ bool GfMenuGfObjAdapter::update_EN_ResAttrOn(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  if (enemy->unknown120.size() > unknown70) {
-    u32 attribute = enemy->unknown120[unknown70];
-    if (attribute >= 1 && attribute <= 8) {
-      return (enemy->unknownfc[attribute].unknown00 & unknown138::FLAG_UNKNOWN_0) != 0;
-    }
+  u32 attribute;
+  if (unknown006(enemy, unknown70, attribute)) {
+    return (enemy->unknownfc[attribute].unknown00 & unknown138::FLAG_UNKNOWN_0) != 0;
   }
   return false;
 }
@@ -412,13 +421,11 @@ bool GfMenuGfObjAdapter::update_EN_ResAttrTarget(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  if (enemy->unknown120.size() > unknown70) {
-    u32 attribute = enemy->unknown120[unknown70];
-    if (attribute >= 1 && attribute <= 8) {
-      u16 flags = enemy->unknownfc[attribute].unknown00;
-      if ((flags & unknown138::FLAG_UNKNOWN_2) == 0) {
-        return (flags & unknown138::FLAG_UNKNOWN_1) != 0;
-      }
+  u32 attribute;
+  if (unknown006(enemy, unknown70, attribute)) {
+    u16 flags = enemy->unknownfc[attribute].unknown00;
+    if ((flags & unknown138::FLAG_UNKNOWN_2) == 0) {
+      return (flags & unknown138::FLAG_UNKNOWN_1) != 0;
     }
   }
   return false;
@@ -430,11 +437,23 @@ bool GfMenuGfObjAdapter::update_EN_ResAttrBurst(GF_OBJ_HANDLE *handle) {
     return false;
   }
 
-  if (enemy->unknown120.size() > unknown70) {
-    u32 attribute = enemy->unknown120[unknown70];
-    if (attribute >= 1 && attribute <= 8) {
-      return (enemy->unknownfc[attribute].unknown00 & unknown138::FLAG_UNKNOWN_2) != 0;
-    }
+  u32 attribute;
+  if (unknown006(enemy, unknown70, attribute)) {
+    return (enemy->unknownfc[attribute].unknown00 & unknown138::FLAG_UNKNOWN_2) != 0;
+  }
+  return false;
+}
+
+bool GfMenuGfObjAdapter::update_EN_ResAttrHP(GF_OBJ_HANDLE *handle) {
+  GfObjPropertyEnemy *enemy = getEnProperty(handle);
+  if (enemy == nullptr) {
+    return false;
+  }
+
+  u32 attribute;
+  if (unknown006(enemy, unknown70, attribute)) {
+    setNumber(3 - enemy->unknownfc[attribute].unknown02 + (attribute - 1) * 4);
+    return true;
   }
   return false;
 }
@@ -559,6 +578,29 @@ bool GfMenuGfObjAdapter::update_BL_ChangeRecast(GF_OBJ_HANDLE *handle) {
 
   setNumber(blade->unknown1b0 * 100.0f);
   return blade->unknown1b0 > 0.0f;
+}
+
+bool GfMenuGfObjAdapter::update_BL_ChangeRecast2(GF_OBJ_HANDLE *handle) {
+  GfObjAcc acc(handle);
+  if (acc.getType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+
+  if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_5)) {
+    DataParamAcc paramAcc(handle);
+    if (!paramAcc.isValid()) {
+      return false;
+    }
+
+    if (paramAcc.getValidBdatId() == BLADE_HOMURI) {
+      if (GfMenuManager::isBattleState(BATTLE_STATE_UNKNOWN_3)) {
+        return false;
+      }
+      setNumber(GfMenuReference::getAwakeningRestTimeRatio() * 100.0f);
+      return true;
+    }
+  }
+  return false;
 }
 
 bool GfMenuGfObjAdapter::update_BL_DispComboReady(GF_OBJ_HANDLE *handle) {

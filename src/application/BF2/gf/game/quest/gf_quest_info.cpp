@@ -57,6 +57,35 @@ u32 GfQuestInfo::getPlayEvent(QuestID quest, QSTATE state) {
   return GfDataQuest::getListCallEventB(quest);
 }
 
+QuestID GfQuestInfo::getProgressQuest(QuestID quest) {
+  if (quest.empty()) {
+    return quest;
+  }
+
+  if (!isParent(quest)) {
+    quest = getParentQuest(quest);
+  }
+
+  if (getState(quest) != QSTATE_UNKNOWN_1) {
+    return QuestID();
+  }
+
+  QuestID child = GfDataQuest::getListNextQuestA(quest);
+  while (GfDataQuest::getListPRTQuestID(child) == quest) {
+    if (getState(child) == QSTATE_UNKNOWN_1) {
+      return child;
+    }
+
+    QuestID current = child;
+    child = GfDataQuest::getListNextQuestA(current);
+    if (child.empty() || isQuestNotOrder(child)) {
+      child = GfDataQuest::getListNextQuestB(current);
+    }
+  }
+
+  return QuestID();
+}
+
 bool GfQuestInfo::isParent(QuestID quest) { return GfDataQuest::getListPRTQuestID(quest).empty(); }
 
 QuestID GfQuestInfo::getChildQuestID(QuestID quest) {

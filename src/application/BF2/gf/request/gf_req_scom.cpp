@@ -2534,7 +2534,7 @@ GAME_VOICE_HANDLE *SCOM_SALVAGE_VOICE::create(GF_OBJ_HANDLE *handle, CV_SALVAGE 
 
 GAME_VOICE_HANDLE *SCOM_SALVAGE_VOICE::createResult(GF_OBJ_HANDLE *handle, CV_SALVAGE_RESULT voice) { return GfSalvageVoice::playResultVoice(handle, voice); }
 
-bool SCOM_SALVAGE_VOICE::isPlayEnd(GAME_VOICE_HANDLE *voice) { return GfGameVoice::getResult(voice) != VOICE_RESULT_UNKNOWN_2; }
+bool SCOM_SALVAGE_VOICE::isPlayEnd(GAME_VOICE_HANDLE *voice) { return GfGameVoice::getResult(voice) != CV_RESULT_UNKNOWN_2; }
 
 bool SCOM_FIELD_VOICE::isStopVoice() const { return unknownd2 && GfGameManager::isPlayEvent(); }
 
@@ -2552,7 +2552,7 @@ bool SCOM_FIELD_VOICE::exec(const fw::UpdateInfo &info) {
 
   unknown001 &voice = unknown20.front();
   switch (voice.unknown18) {
-  case VOICE_RESULT_UNKNOWN_0:
+  case CV_RESULT_UNKNOWN_0:
     voice.unknown10 -= info.unknown04;
     if (voice.unknown10 > 0.0f) {
       return false;
@@ -2560,26 +2560,26 @@ bool SCOM_FIELD_VOICE::exec(const fw::UpdateInfo &info) {
     if (!isStopVoice()) {
       voice.unknown20 = GfFieldVoice::playVoice(voice.unknown00, voice.unknown14, voice.unknown1c);
       if (voice.unknown20 != nullptr) {
-        voice.unknown18 = VOICE_RESULT_UNKNOWN_2;
+        voice.unknown18 = CV_RESULT_UNKNOWN_2;
         return false;
       }
     } else {
       voice.unknown20 = nullptr;
     }
-    voice.unknown18 = VOICE_RESULT_UNKNOWN_3;
+    voice.unknown18 = CV_RESULT_UNKNOWN_3;
     break;
-  case VOICE_RESULT_UNKNOWN_2:
+  case CV_RESULT_UNKNOWN_2:
     if (isStopVoice() && voice.unknown20 != nullptr) {
       GfGameVoice::playStop(voice.unknown20);
       voice.unknown20 = nullptr;
     }
     voice.unknown18 = GfGameVoice::getResult(voice.unknown20);
-    if (voice.unknown18 == VOICE_RESULT_UNKNOWN_2) {
+    if (voice.unknown18 == CV_RESULT_UNKNOWN_2) {
       return false;
     }
     break;
   }
-  if (voice.unknown18 >= VOICE_RESULT_UNKNOWN_3) {
+  if (voice.unknown18 >= CV_RESULT_UNKNOWN_3) {
     unknown20.pop_front();
     if (unknown20.empty()) {
       return true;

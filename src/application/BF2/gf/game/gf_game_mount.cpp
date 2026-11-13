@@ -286,6 +286,37 @@ void GfMountManager::addMountHandle(GF_MOUNT_HANDLE *mountHandle, GF_OBJ_HANDLE 
   }
 }
 
+void GfMountManager::removeMountHandle(GF_OBJ_HANDLE *handle, GFATTACH attach) {
+  GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
+  if (info == nullptr) {
+    return;
+  }
+
+  GF_MOUNT_HANDLE *mountHandle = info->unknownb8[attach].unknown00;
+  if (mountHandle == reinterpret_cast<GF_MOUNT_HANDLE *>(-1)) {
+    return;
+  }
+
+  info->unknownb8[attach].unknown00 = reinterpret_cast<GF_MOUNT_HANDLE *>(-1);
+  mm::mtl::FixedList<MINFO, 256>::iterator it = get()->unknown10.begin();
+  while (it->unknown08 != mountHandle) {
+    ++it;
+  }
+
+  GfGameMount *mount = it->unknown00;
+  mount->unknown18->eraseHandle(handle);
+  int count = mount->getRefCount() - 1;
+  if (count <= 0) {
+    if (mount != nullptr) {
+      mount->release();
+    }
+
+    destroyMount(mountHandle);
+  } else if (mount != nullptr) {
+    mount->release();
+  }
+}
+
 GfMountManager::~GfMountManager() {}
 
 GfGameMount *GfMountManager::getMount(GF_MOUNT_HANDLE *mountHandle) {

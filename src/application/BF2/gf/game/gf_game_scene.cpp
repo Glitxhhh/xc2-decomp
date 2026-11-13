@@ -527,6 +527,25 @@ void GfGameScene::setHomuriWeaponExtraMesh(bool isVisible, f32 alpha) {
   }
 }
 
+bool GfGameScene::isNeedResetBladeForBattleEndForBattleEnd() const {
+  if (isNeedResetBladeForBattleEndForMenuOpen()) {
+    return true;
+  }
+
+  for (u32 partyId = 0; partyId < 3; partyId++) {
+    u32 driver = GfGameParty::getDriverBdatId(partyId);
+    if (driver != DRIVER_UNKNOWN_1) {
+      continue;
+    }
+
+    if (GfDataDriver::getBlade(driver, -1) == BLADE_HOMURI) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 bool GfGameScene::isEnableFieldBladeChange() const {
   if (unknown18 >= unknown018 && GfGameManager::isEnableOpenMainMenu()) {
     return GfGameManager::isControlFree();

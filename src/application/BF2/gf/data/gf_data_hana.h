@@ -40,6 +40,10 @@ struct EquipHana {
 
   void setArtsParts(u32 parts, u32 handle, u32 index);
   void setNArtsParts(u32 parts, u32 handle, u32 index);
+  // u16: the game calls the u32 getter with bl + ret (no tail call, no extension), so the result is narrowed, and their caller
+  // GfDataBlade::getEquipOrbEnance (0x71002a4760) tests and pushes the 16-bit result.
+  u16 getCondenserEnahnce(u32 slot) const;
+  u16 getExtendCondenserEnahnce(u32 slot) const;
   // Inferred role: sets a condenser parts and its handle; original name unknown.
   void unknown001(u32 parts, u32 handle, u32 slot) {
     unknown4c[slot] = parts;

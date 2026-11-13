@@ -113,6 +113,54 @@ bool GfMenuElementComboAdapter::update_ComboRouteCurrentDisp() {
   return unknown54 == current;
 }
 
+bool GfMenuElementComboAdapter::update_ComboRoutePassedDisp() {
+  if (idDispComboRouteNo(unknown54)) {
+    return true;
+  }
+  return false;
+}
+
+bool GfMenuElementComboAdapter::idDispComboRouteNo(u32 routeNo) {
+  u32 current = GfMenuReference::getElementComboRootCurrent();
+  if (current != routeNo) {
+    switch (current) {
+    case 0:
+      break;
+    case 1:
+      switch (routeNo) {
+      case 2:
+      case 5:
+      case 6:
+        return false;
+      }
+      break;
+    case 2:
+      switch (routeNo) {
+      case 1:
+      case 3:
+      case 4:
+        return false;
+      }
+      break;
+    case 7:
+      return false;
+    default:
+      if (routeNo >= 3 && routeNo <= 6) {
+        return false;
+      }
+      if (!(current == 3 || current == 4)) {
+        if (routeNo == 1 && (current == 5 || current == 6)) {
+          return false;
+        }
+      } else if (routeNo == 2) {
+        return false;
+      }
+      break;
+    }
+  }
+  return true;
+}
+
 GfObjPropertyEnemy *GfMenuElementComboAdapter::getTargetProperty() {
   GF_OBJ_HANDLE *handle = GfMenuManager::getTargetObjHandle();
   if (handle == unknown020) {

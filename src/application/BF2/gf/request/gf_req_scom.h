@@ -336,7 +336,7 @@ public:
 
   // Inferred role: queues a voice to play; original name unknown.
   void unknown002(const ParamObj &object, f32 delay, CV_FIELD voice, CV_PRIO priority) {
-    unknown001 entry = {object, delay, voice, VOICE_RESULT_UNKNOWN_0, priority, nullptr};
+    unknown001 entry = {object, delay, voice, CV_RESULT_UNKNOWN_0, priority, nullptr};
     unknown20.push(entry);
   }
 

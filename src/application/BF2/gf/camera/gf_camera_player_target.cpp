@@ -87,7 +87,7 @@ void PlayerCameraTarget::writeTargetInfo() {
       unknown44 = true;
       unknown46 = true;
     }
-    GfEnvProperty::unknown002 *ground = (env->unknown2d0 & 2) ? &env->unknown00[0] : nullptr;
+    const GfEnvProperty::unknown002 *ground = env->unknown004(GfEnvProperty::GROUND_INDEX_UNKNOWN_0);
     if (ground != nullptr) {
       if (unknown44) {
         if (unknown48 < ground->unknown00.y) {

@@ -57,7 +57,7 @@ GfMenuObjFieldSkill::~GfMenuObjFieldSkill() {
 void GfMenuObjFieldSkill::finalize() { GfMenuObject::finalize(); }
 
 void GfMenuObjFieldSkill::update() {
-  if (unknown68 != nullptr && GfGameVoice::getResult(unknown68) > VOICE_RESULT_UNKNOWN_2) {
+  if (unknown68 != nullptr && GfGameVoice::getResult(unknown68) > CV_RESULT_UNKNOWN_2) {
     unknown68 = nullptr;
   }
   unknown70.unknown003();

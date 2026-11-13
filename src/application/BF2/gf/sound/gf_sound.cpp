@@ -7,6 +7,7 @@
 #include "framework/sound/sound_manager.h"
 #include "framework/sound/sound_pack.h"
 #include "framework/sound/sound_res_source_manager.h"
+#include "fw/fw_update_info.h"
 #include "gf/asset/gf_asset_resource.h"
 #include "gf/data/gf_bdat_bgm.h"
 #include "gf/data/gf_data_manager.h"
@@ -189,7 +190,7 @@ void GfMasterVolume::initialize() {
 
 GF_SE_CATEGORY_HANDLE *GfSound::createCategoryHandle() {
   for (u32 i = 0; i < CATEGORY_UNKNOWN_32; i++) {
-    if (unknown20[i].unknown168 < 0) {
+    if (!unknown20[i].unknown001()) {
       int index = i;
       CategoryVolume &categoryVolume = unknown20[index];
       for (CategoryVolume::Volume &volume : categoryVolume.unknown00) {
@@ -245,6 +246,59 @@ void GfSound::updateSeParamList(const fw::UpdateInfo &) {
   }
 }
 
+bool GfSound::calcCategoryVolume(const fw::UpdateInfo &info) {
+  for (CategoryVolume &categoryVolume : unknown20) {
+    if (categoryVolume.unknown001()) {
+      categoryVolume.unknown16c = false;
+      for (CategoryVolume::Volume &volume : categoryVolume.unknown00) {
+        if (volume.unknown10 == 0.0f) {
+          if (volume.unknown00 != volume.unknown04) {
+            volume.unknown00 = volume.unknown04;
+            categoryVolume.unknown16c = true;
+          }
+        } else {
+          volume.unknown10 -= info.unknown04;
+          if (volume.unknown10 > 0.0f) {
+            f32 rate = volume.unknown10 / volume.unknown0c;
+            volume.unknown00 = volume.unknown04 * (1.0f - rate) + rate * volume.unknown08;
+          } else {
+            volume.unknown0c = 0.0f;
+            volume.unknown10 = 0.0f;
+            volume.unknown00 = volume.unknown04;
+          }
+          categoryVolume.unknown16c = true;
+        }
+      }
+    }
+  }
+
+  if (!isNeedUpdateCategoryVolume()) {
+    return false;
+  }
+
+  f32 volumes[CATEGORY_UNKNOWN_18];
+  for (u32 category = 1; category < CATEGORY_UNKNOWN_18; category++) {
+    volumes[category] = 1.0f;
+  }
+
+  for (u32 i = 0; i < CATEGORY_UNKNOWN_32; i++) {
+    if (unknown20[i].unknown001()) {
+      for (u32 category = 1; category < CATEGORY_UNKNOWN_18; category++) {
+        volumes[category] *= unknown20[i].unknown00[category].unknown00;
+      }
+    }
+  }
+
+  fw::SoundManager *soundManager = fw::SoundManager::get();
+  if (soundManager != nullptr) {
+    for (u32 category = 1; category < CATEGORY_UNKNOWN_18; category++) {
+      soundManager->setCategoryVolume(static_cast<fw::SoundCategory>(category), volumes[category], 0.0f);
+    }
+  }
+
+  return true;
+}
+
 void GfSound::setupGame() { unknown6690.setupGame(); }
 
 void GfMasterVolume::setupGame() {
@@ -273,6 +327,24 @@ GfSound::CategoryVolume *GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handl
 f32 GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handle, fw::SoundCategory category) const { return unknown20[getCategoryIndex(handle)].unknown00[static_cast<u32>(category)].unknown00; }
 
 const GfSound::CategoryVolume *GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handle) const { return &unknown20[getCategoryIndex(handle)]; }
+
+bool GfSound::isNeedUpdateCategoryVolume() const {
+  if (unknown11) {
+    return true;
+  }
+
+  for (const CategoryVolume &volume : unknown20) {
+    if (!volume.unknown001()) {
+      continue;
+    }
+
+    if (volume.unknown16c) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 void GfSound::setCategoryPitch(fw::SoundCategory category, f32 pitch, f32 fadeTime) {
   if (fw::SoundManager::get() != nullptr) {

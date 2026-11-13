@@ -280,6 +280,23 @@ bool GfDataDriver::getSetBlade(mm::mtl::FixedVector<u16, 422> &blades, u32 drive
   return !blades.empty();
 }
 
+bool GfDataDriver::isExistBlade(u32 driver) {
+  mm::mtl::FixedVector<u16, 422> blades;
+  return getListBlade(blades, driver);
+}
+
+bool GfDataDriver::getListBlade(mm::mtl::FixedVector<u16, 422> &blades, u32 driver) {
+  int setBladeNum = getMaxSetBladeNum(driver);
+  for (int slot = 0; slot < setBladeNum; slot++) {
+    u32 blade = getBlade(driver, slot);
+    if (blade != 0) {
+      blades.push_back(blade);
+    }
+  }
+
+  return !blades.empty();
+}
+
 u16 GfDataDriver::getDriverWeapon(u32 driver) { return getDriverWeapon(getSDataDriver(driver)); }
 
 u16 GfDataDriver::getDriverWeapon(const SDataDriver &dataDriver) {
@@ -1067,6 +1084,20 @@ u32 GfDataDriver::getFavorite(u32 driver, FAVORITE favorite) {
   }
 
   return 0;
+}
+
+bool GfDataDriver::isFavoriteItem(u32 driver, u32 item) {
+  if (item == 0) {
+    return false;
+  }
+
+  for (u32 favorite = FAVORITE_UNKNOWN_2; favorite <= FAVORITE_UNKNOWN_3; favorite++) {
+    if (getFavorite(driver, static_cast<FAVORITE>(favorite)) == item) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void GfDataDriver::setPouchData(u32 driver, u32 slot, const SDataPouch &pouch) {

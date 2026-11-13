@@ -147,7 +147,9 @@ public:
   void finalize();
   void update(const fw::UpdateInfo &info);
   void postUpdate(const fw::UpdateInfo &info);
+  void updateLayerPauseObjects(const fw::UpdateInfo &info);
   void updateFirstObjects(const fw::UpdateInfo &info);
+  void updateChangeParamObjects(const fw::UpdateInfo &info);
   void checkTerminate();
   void applyModelLayerPauseSpeed();
   static bool reloadForDebug(GF_OBJ_HANDLE *handle, bool isReload);

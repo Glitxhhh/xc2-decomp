@@ -558,7 +558,28 @@ int GfGameVoice::getResult(GAME_VOICE_HANDLE *voice) {
     return (*result).unknown18;
   }
   mm::mtl::FixedList<VoiceInfo *, 6>::iterator it = mm::mtl::find_if(self->unknown90.begin(), self->unknown90.end(), [voice](VoiceInfo *info) { return info->isEnableVoiceHandle(voice); });
-  return it != self->unknown90.end() ? VOICE_RESULT_UNKNOWN_2 : VOICE_RESULT_UNKNOWN_3;
+  return it != self->unknown90.end() ? CV_RESULT_UNKNOWN_2 : CV_RESULT_UNKNOWN_3;
+}
+
+int GfGameVoice::getResult(GF_OBJ_HANDLE *handle) {
+  GfGameVoice *self = get();
+  ParamObj object = {handle, 0, 0};
+  VoiceInfo *info = self->getPlayInfo(object);
+  if (info != nullptr) {
+    if (info->unknown00) {
+      return CV_RESULT_UNKNOWN_1;
+    }
+
+    return getResult(info->unknown28);
+  }
+
+  mm::mtl::FixedQueue<unknown001, 256>::iterator result =
+      mm::mtl::find_if(self->unknown118.begin(), self->unknown118.end(), [handle](const unknown001 &entry) { return handle != unknown020 && entry.unknown00 == handle; });
+  if (result != self->unknown118.end()) {
+    return (*result).unknown18;
+  }
+
+  return CV_RESULT_UNKNOWN_0;
 }
 
 void GfGameVoice::gevLayerPause(u32 layer, bool isPause) {

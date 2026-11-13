@@ -81,6 +81,13 @@ void GfObjManager::update(const fw::UpdateInfo &info) {
   applyModelLayerPauseSpeed();
 }
 
+void GfObjManager::postUpdate(const fw::UpdateInfo &info) {
+  updateLayerPauseObjects(info);
+  updateFirstObjects(info);
+  updateChangeParamObjects(info);
+  GfObjLayerSpeed::cleanup();
+}
+
 bool GfObjManager::reloadForDebug(GF_OBJ_HANDLE *, bool) { return false; }
 
 void GfObjManager::gevMapjump(GEV event, const MapjumpCallbackInfo &info) {

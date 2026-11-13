@@ -29,6 +29,20 @@ void EquipHana::setNArtsParts(u32 parts, u32 handle, u32 index) {
   unknown28[index].unknown02 = GfBdatItem::get()->getITM_HanaNArtsSetNArtsRecastRev(parts);
 }
 
+u16 EquipHana::getCondenserEnahnce(u32 slot) const {
+  if (unknown4c[slot] == 0) {
+    return 0;
+  }
+  return GfBdatItem::get()->getITM_HanaAssistEnhance(unknown4c[slot]);
+}
+
+u16 EquipHana::getExtendCondenserEnahnce(u32 slot) const {
+  if (unknown52[slot] == 0) {
+    return 0;
+  }
+  return GfBdatItem::get()->getITM_HanaAssistEnhance(unknown52[slot]);
+}
+
 bool GfDataHana::getRoleName(u8 *&bdat, u32 &textId, u32 parts) {
   textId = GfBdatItem::get()->getITM_HanaRoleName(parts);
   bdat = GfBdatMsg::getFpBtlHanaRole();

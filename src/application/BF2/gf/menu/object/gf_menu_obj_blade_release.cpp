@@ -142,7 +142,7 @@ bool GfMenuObjBladeRelease::seqEffReleaseA() {
     unknown4b0 = SCOM_FIELD_VOICE::createReleaseBlade(blade);
     isEnd = false;
     unknown2e8 = true;
-  } else if (!GfMenuObjUtil::isBusyCtrl(ctrl) && static_cast<int>(GfGameVoice::getResult(unknown4b0)) > VOICE_RESULT_UNKNOWN_2) {
+  } else if (!GfMenuObjUtil::isBusyCtrl(ctrl) && static_cast<int>(GfGameVoice::getResult(unknown4b0)) > CV_RESULT_UNKNOWN_2) {
     isEnd = true;
     unknown4b0 = nullptr;
     unknown2e8 = false;

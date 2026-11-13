@@ -1485,7 +1485,7 @@ void GfGameUtil::setGameObjWait(GF_OBJ_HANDLE *handle, bool isWait) {
 
 bool GfGameUtil::isGameObjWait(GF_OBJ_HANDLE *handle) { return GfObjUtil::testFlag(handle, OBJ_FLAG_UNKNOWN_16); }
 
-bool GfGameUtil::isPlayVoice(GF_OBJ_HANDLE *handle) { return GfGameVoice::getResult(handle) == VOICE_RESULT_UNKNOWN_2; }
+bool GfGameUtil::isPlayVoice(GF_OBJ_HANDLE *handle) { return GfGameVoice::getResult(handle) == CV_RESULT_UNKNOWN_2; }
 
 void GfGameUtil::levelupForEnemy(GF_OBJ_HANDLE *handle, u32 addLevel) {
   DataParamAcc dataParamAcc(handle);

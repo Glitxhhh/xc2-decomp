@@ -1,8 +1,11 @@
 #include "gf/menu/object/gf_menu_obj_bl_kizuna_ring.h"
 
 #include "gf/data/gf_data_achievement.h"
+#include "gf/data/gf_data_blade.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/kizunaring/gf_kizunaring_manager.h"
+#include "gf/game/kizunaring/gf_kizunaring_util.h"
+#include "gf/game/quest/gf_quest_util.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_achievement_adapter.h"
 #include "gf/menu/adapter/gf_menu_adapter_manager.h"
@@ -12,8 +15,12 @@
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/gf_menu_types.h"
 #include "gf/menu/list/gf_menu_item_list.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/request/gf_req_scom.h"
+#include "gf/sound/gf_sound.h"
+#include "gf/util/gf_item_util.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
@@ -31,6 +38,9 @@ constexpr u32 unknown001 = 0x6a;
 
 // Inferred role: menu id; original name unknown.
 constexpr u32 unknown002 = 0x22;
+
+// Inferred role: nodes per ring of the pointer index; original name unknown.
+constexpr u32 KIZUNARING_UNKNOWN_10 = 10;
 
 GfMenuObjBlKizunaRing::GfMenuObjBlKizunaRing(u32 handle)
     : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(false), unknown39(false), unknown3c(0), unknown40(-1), unknown48(nullptr), unknown50(0), unknown58(nullptr),
@@ -224,6 +234,34 @@ void GfMenuObjBlKizunaRing::setupRing(ui::UIObjectAcc &acc) {
   GfMenuAdapterManager::endAddAfter();
 }
 
+void GfMenuObjBlKizunaRing::refreshRing(ui::UIObjectAcc &acc) {
+  u32 blade = GfMenuReference::getReferenceBladeID(0);
+  mm::mtl::FixStr<32> name;
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 10; j++) {
+      name.format("IMG_node_icon@%02d", i + j * 5 + 1);
+      ui::UIObjectAcc icon(acc.searchChild(name.c_str()));
+      if (icon.isValid()) {
+        name.format("IMG_node_base@%02d", i + j * 5 + 1);
+        ui::UIObjectAcc base(acc.searchChild(name.c_str()));
+        if (base.isValid()) {
+          u32 state = GfKizunaringBlade::getReleaseAchievement(blade, j == 0 ? 9 : j - 1, i + 1);
+          if (state == 0 || state == 1) {
+            icon.setMulColor("white");
+            base.setMulColor("gray");
+          } else if (state == 4 || state == 5) {
+            icon.setMulColor("white");
+            base.setMulColor("white");
+          } else {
+            icon.setMulColor("black");
+            base.setMulColor("gray");
+          }
+        }
+      }
+    }
+  }
+}
+
 void GfMenuObjBlKizunaRing::setupRingList(ui::UIObjectAcc &acc, ui::UISelectObjList *list) {
   mm::mtl::FixStr<32> name;
   list->clear();
@@ -319,6 +357,138 @@ bool GfMenuObjBlKizunaRing::procAchieve(u32 handle, GfMenuObjBlKizunaRing *objec
   return true;
 }
 
+bool GfMenuObjBlKizunaRing::seqComplete() {
+  u32 blade = GfMenuReference::getReferenceBladeID(0);
+  if (GfDataBlade::isKizunaringComplete(blade)) {
+    return true;
+  }
+  if (GfDataBlade::getKizunaringMax(blade) > GfDataBlade::getKizunaringCompleteNum(blade)) {
+    return true;
+  }
+  ui::UIObjectAcc acc(unknown18);
+  ui::UIObjectAcc complete(acc.searchChild("LAY_complete"));
+  switch (unknown434) {
+  case 0: {
+    complete.setDisp(true);
+    ui::UIObjectAcc image(complete.searchChild("IMG_complete"));
+    image.startAnimation("fade_in", false);
+    ui::UIObjectAcc text(complete.searchChild("TXT_complete"));
+    GfMenuObjUtil::CtrlParam param;
+    param.unknown08 = 0x10000000;
+    param.unknown50 = "mnu89_complete_telop";
+    param.unknown58 = "fade_in";
+    param.unknown14 = 10;
+    GfMenuObjUtil::startCtrl(text.unknown10, param, nullptr);
+    GfMenuObjUtil::playJingle(0x10);
+    unknown468 = SCOM_FIELD_VOICE::createAchievementAll(blade);
+    unknown434++;
+    break;
+  }
+  case 1: {
+    ui::UIObjectAcc image(complete.searchChild("IMG_complete"));
+    if (!image.isPlayingAnimation()) {
+      complete.setDisp(false);
+      unknown448->clear();
+      GfQuestReward reward;
+      if (!GfKizunaringUtil::getCompleteKizunaringReward(reward, blade)) {
+        return true;
+      }
+      for (u32 i = 8; i < 12; i++) {
+        u16 item = reward.unknown00[i].unknown44;
+        if (item != 0) {
+          MenuItemInfo info;
+          info.unknown00 = GfItemUtil::getType(item);
+          info.unknown04 = item;
+          info.unknown08 = reward.unknown00[i].m_developZone;
+          unknown448->addContents(info);
+        }
+      }
+      unknown440->reset();
+      GfMenuObjCommonText::openGetItem(unknown440, unknown448);
+      unknown434++;
+    }
+    break;
+  }
+  case 2:
+    if (!GfReqSmallCom::get()->isValid(unknown468) && unknown440->isTerm()) {
+      GfDataBlade::setKizunaringComplete(blade);
+      unknown434 = 0;
+      return true;
+    }
+    break;
+  }
+  return false;
+}
+
+bool GfMenuObjBlKizunaRing::seqAchieve() {
+  ui::UIObjectAcc acc(unknown18);
+  mm::mtl::FixStr<32> name;
+  u32 blade = GfMenuReference::getReferenceBladeID(0);
+  switch (unknown430) {
+  case 1:
+    if (unknown60.size() == 0) {
+      if (getAchievementList(unknown60, unknown50, unknown454) == 0) {
+        unknown430 = 0;
+        sendEvent(acc.searchChild("LAY_main"), GfMenuTypes::unknown003_33, 0);
+        return true;
+      }
+      unknown430 = 1;
+    } else {
+      Achievement achievement = unknown60.back();
+      u32 index = achievement.unknown00 * 5 + (achievement.unknown02 - 1);
+      if (achievement.unknown04 != 1 || index < 0x2d) {
+        unknown198 = index;
+        if (index <= 0x2c) {
+          name.format("IMG_node_eff@%02d", index + 6);
+        } else {
+          name.format("IMG_lock_eff@%02d", index - 0x2c);
+        }
+        ui::UIObjectAcc effect(acc.searchChild(name.c_str()));
+        effect.startAnimation(achievement.unknown04 == 1 ? "skill_open" : "skill_learn", false);
+        if (achievement.unknown04 == 3) {
+          GfMenuObjUtil::playSE(0xf);
+          if (achievement.unknown00 != 9) {
+            unknown460 = achievement.unknown00;
+          }
+        }
+      }
+      unknown430 = 2;
+    }
+    return false;
+  case 2: {
+    if (unknown198 <= 0x2c) {
+      name.format("IMG_node_eff@%02d", unknown198 + 6);
+    } else {
+      name.format("IMG_lock_eff@%02d", unknown198 - 0x2c);
+    }
+    ui::UIObjectAcc effect(acc.searchChild(name.c_str()));
+    if (unknown60.size() != 1 || !effect.isPlayingAnimation()) {
+      Achievement achievement = unknown60.back();
+      unknown60.pop_back();
+      u32 index = unknown198;
+      if (achievement.unknown04 == 3 && index > 0x2c) {
+        const char *lines[] = {"linea", "lineb", "linec", "lined", "linee"};
+        u32 line = index - 0x2d;
+        if (line < 5) {
+          ui::UIObjectAcc(acc.searchChild("IMG_kizunabg_eff")).startAnimation(lines[line], false);
+        }
+        GfMenuObjUtil::playSE(0x10);
+      }
+      if (achievement.unknown04 == 3) {
+        GfKizunaringBlade::releaseAchievement(blade, achievement.unknown00, achievement.unknown02);
+      } else {
+        GfKizunaringBlade::orderAchievement(blade, achievement.unknown00, achievement.unknown02);
+      }
+      refreshRing(acc);
+      unknown430 = 1;
+    }
+    return false;
+  }
+  default:
+    return true;
+  }
+}
+
 void GfMenuObjBlKizunaRing::sendEvent(u32 handle, u32 type, u32 param) { unknown140(handle, type, param, 0.0f); }
 
 int GfMenuObjBlKizunaRing::setFadeIn(u32 handle) {
@@ -358,12 +528,110 @@ bool GfMenuObjBlKizunaRing::seqEnd() {
 
 bool GfMenuObjBlKizunaRing::seqWaitVoice() {
   u32 result = GfGameVoice::getResult(unknown458);
-  if (result == VOICE_RESULT_UNKNOWN_1 || result == VOICE_RESULT_UNKNOWN_2) {
+  if (result == CV_RESULT_UNKNOWN_1 || result == CV_RESULT_UNKNOWN_2) {
     return false;
   }
   ui::UIObjectAcc acc(unknown18);
   unknown140(acc.searchChild("LAY_main"), GfMenuTypes::unknown003_33, 0, 0.0f);
   return true;
+}
+
+void GfMenuObjBlKizunaRing::RingPadListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::setupInputSelection(handle, 0, 10);
+    GfMenuObject::disableInput(handle);
+    break;
+  case 6:
+    break;
+  case 8: {
+    int next;
+    switch (event.unknown0c) {
+    case 2:
+      unknown140(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34, 0, 0.0f);
+      GfMenuObject::disableInput(handle);
+      if (unknown20->unknown438 == 0) {
+        GfMenuObjMainMenu2::disableCharChange();
+      }
+      GfMenuObjUtil::playSECommonCancel();
+      return;
+    case 10: {
+      int index = unknown20->unknown40;
+      if (index < 0) {
+        return;
+      }
+      u32 ring = index / KIZUNARING_UNKNOWN_10;
+      u32 pos = index % KIZUNARING_UNKNOWN_10;
+      if (pos < 5) {
+        if (ring == 0) {
+          return;
+        }
+        next = ring * KIZUNARING_UNKNOWN_10 - KIZUNARING_UNKNOWN_10 + pos;
+      } else {
+        if (ring + 1 > 4) {
+          return;
+        }
+        next = (ring + 1) * KIZUNARING_UNKNOWN_10 + pos;
+      }
+      break;
+    }
+    case 9: {
+      int index = unknown20->unknown40;
+      if (index < 0) {
+        return;
+      }
+      u32 ring = index / KIZUNARING_UNKNOWN_10;
+      u32 pos = index % KIZUNARING_UNKNOWN_10;
+      if (pos < 5) {
+        if (ring + 1 > 4) {
+          return;
+        }
+        next = (ring + 1) * KIZUNARING_UNKNOWN_10 + pos;
+      } else {
+        if (ring == 0) {
+          return;
+        }
+        next = ring * KIZUNARING_UNKNOWN_10 - KIZUNARING_UNKNOWN_10 + pos;
+      }
+      break;
+    }
+    case 12: {
+      int index = unknown20->unknown40;
+      if (index < 0 || index % KIZUNARING_UNKNOWN_10 == 0) {
+        return;
+      }
+      next = index - 1;
+      break;
+    }
+    case 11: {
+      int index = unknown20->unknown40;
+      if (index < 0 || index % KIZUNARING_UNKNOWN_10 > 8) {
+        return;
+      }
+      next = index + 1;
+      break;
+    }
+    default:
+      return;
+    }
+    GfMenuObject::changePointerPos(owner.searchChild("LAY_kizunaring"), mm::Pnt<s16>(0, 0));
+    movePointer(owner.searchChild("LAY_kizunaring"), next, unknown20->unknown28);
+    GfMenuObjUtil::playSECommonTab();
+    unknown140(handle, 0x101, 0, 0.0f);
+    break;
+  }
+  case 0x101:
+    unknown20->unknown1a0.unknown005();
+    unknown20->unknown1a0.unknown004(1);
+    unknown20->unknown1a0.unknown002(&GfMenuObjBlKizunaRing::seqWait);
+    GfMenuObject::disableInput(handle);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
 }
 
 void GfMenuObjBlKizunaRing::BladeSkillInfoListener::reciveEvent(const ui::EventData &event, u32 handle) {

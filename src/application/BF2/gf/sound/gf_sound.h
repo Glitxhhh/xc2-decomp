@@ -178,6 +178,11 @@ public:
       }
     }
 
+    // Inferred role: tells whether the category volume is in use; original name unknown. A member function:
+    // isNeedUpdateCategoryVolume (0x71005d62bc) only gets the game's loop (pointer step before the counter step) with
+    // the index test coming from an inlined call.
+    bool unknown001() const { return unknown168 >= 0; }
+
     Volume unknown00[CATEGORY_UNKNOWN_18]; // Inferred role: volumes; original member name unknown.
     int unknown168;                        // Inferred role: index; original member name unknown.
     bool unknown16c;                       // Inferred role: changed; original member name unknown.

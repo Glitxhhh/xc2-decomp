@@ -53,6 +53,30 @@ public:
     GfMenuObjEnBook *unknown20; // Inferred role: owner; original member name unknown.
   };
 
+  class TopListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjEnBook *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class FamilySelListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjEnBook *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
+  class GenusSelListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x1c - 0x0c];
+    GfMenuObjEnBook *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjEnBook(u32 handle);
   ~GfMenuObjEnBook() override;
   void initialize() override;
@@ -60,6 +84,7 @@ public:
   void update() override;
   void setupFamilyMsgList();
   void refreshFamilyList();
+  void setupGenusMsgList();
   void refreshGenusMsgList();
   void setupMapIDList();
   void setupEnBookIDList();
@@ -99,6 +124,12 @@ static_assert(sizeof(GfMenuObjEnBook::DetailListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjEnBook::EnListListener, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfMenuObjEnBook::EnListListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjEnBook::EnListListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjEnBook::TopListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjEnBook::TopListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjEnBook::FamilySelListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjEnBook::FamilySelListener) == 0x28, "");
+static_assert(offsetof(GfMenuObjEnBook::GenusSelListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjEnBook::GenusSelListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjEnBook, unknown24) == 0x24, "");
 static_assert(offsetof(GfMenuObjEnBook, unknown28) == 0x28, "");
 static_assert(offsetof(GfMenuObjEnBook, unknown2c) == 0x2c, "");

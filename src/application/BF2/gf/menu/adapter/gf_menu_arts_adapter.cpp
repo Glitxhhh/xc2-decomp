@@ -76,6 +76,14 @@ GfMenuArtsAdapter *GfMenuArtsAdapter::createFromListReferenceDriver(u32 handle, 
   return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
+GfMenuArtsAdapter *GfMenuArtsAdapter::createFromListReferenceDriverReferenceIndex(u32 handle, u32 type, GfMenuArtsList *list, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> number, u32 driverIndex,
+                                                                                  bool isUpdateAlways) {
+  // __LINE__ must be 305 as in the original source: it is the line argument of operator new.
+#line 305
+  IConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ListReferenceDriverConverterReferenceIndex(list, number, driverIndex);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
 GfMenuArtsAdapter *GfMenuArtsAdapter::createFromReferenceDriverSlot(u32 handle, u32 type, u32 driverIndex, u32 slot, bool isUpdateAlways) {
   // __LINE__ must be 314 as in the original source: it is the line argument of operator new.
 #line 314

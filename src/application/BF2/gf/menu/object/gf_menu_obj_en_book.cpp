@@ -310,6 +310,81 @@ void GfMenuObjEnBook::MainListener::reciveEvent(const ui::EventData &event, u32 
   }
 }
 
+void GfMenuObjEnBook::TopListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObjOperationInfo::setGuideText(0x3a, 0);
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableFSInput(0);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown30);
+    }
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    if (index != -1) {
+      mm::mtl::FixStr<32> name;
+      if (event.unknown0c != -1) {
+        name.format("IMG_top_item_base@%02d", event.unknown0c + 1);
+        ui::UIObjectAcc(acc.unknown10, name.c_str()).startAnimation("idol", false);
+      }
+      unknown20->unknown30->setIndex(index);
+      name.format("IMG_top_item_base@%02d", index + 1);
+      ui::UIObjectAcc(acc.unknown10, name.c_str()).startAnimation("sellect", false);
+    }
+    break;
+  }
+  case 8:
+    if (event.unknown0c == 1) {
+      u32 index = event.unknown08;
+      unknown20->unknown24 = index;
+      switch (index) {
+      case 0:
+        GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(4), 0, 0.0f);
+        break;
+      case 1:
+        GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(1), 0, 0.0f);
+        break;
+      case 2:
+        GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(3), 0, 0.0f);
+        break;
+      default:
+        return;
+      }
+      GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
+      GfMenuObject::disableFSInput();
+    } else if (event.unknown0c == 2) {
+      GfMenuObject::returnFSSubLayer(unknown20);
+    } else {
+      break;
+    }
+    GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown00 = 6;
+    param.unknown04 = 0;
+    param.unknown10 = 1;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjEnBook::IndexListener::reciveEvent(const ui::EventData &event, u32 handle) {
   ui::UIObjectAcc acc(handle);
   switch (event.unknown00) {
@@ -321,6 +396,128 @@ void GfMenuObjEnBook::IndexListener::reciveEvent(const ui::EventData &event, u32
     param.unknown04 = 0;
     param.unknown00 = 6;
     GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjEnBook::FamilySelListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableFSInput(1);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown40);
+    }
+    break;
+  case 6:
+    if (event.unknown08 != -1) {
+      unknown20->unknown40->setIndex(event.unknown08);
+      unknown20->refreshFamilyList();
+    }
+    break;
+  case 8:
+    if (event.unknown0c == 1) {
+      unknown20->unknown28 = unknown20->unknown40->getContents(unknown20->unknown40->getIndex(false)).unknown00 - 1;
+      GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(2), 0, 0.0f);
+    } else if (event.unknown0c == 2) {
+      GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(0), 0, 0.0f);
+      GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
+      GfMenuObject::disableFSInput();
+      GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+    }
+    break;
+  case GfMenuTypes::unknown003_33: {
+    int type = event.unknown08;
+    if (type != 2) {
+      u32 open = 0;
+      if (type != 4) {
+        unknown20->unknown40->setIndex(0);
+        unknown20->refreshFamilyList();
+        open = 1;
+      }
+      GfMenuObjUtil::PresetCtrlParam param;
+      param.unknown00 = 6;
+      param.unknown04 = 0;
+      param.unknown10 = open;
+      GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    } else {
+      GfMenuObject::enableFSInput(1);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+    }
+    break;
+  }
+  case GfMenuTypes::unknown003_34: {
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown10 = 0;
+    param.unknown04 = 1;
+    param.unknown00 = 6;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjEnBook::GenusSelListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case 3:
+    if (event.unknown08 == 1) {
+      GfMenuObject::enableFSInput(2);
+      GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown20->unknown50);
+    }
+    break;
+  case 6:
+    if (event.unknown08 != -1) {
+      unknown20->unknown50->setIndex(event.unknown08);
+      unknown20->refreshGenusMsgList();
+    }
+    break;
+  case 8:
+    if (event.unknown0c == 1) {
+      unknown20->unknown2c = unknown20->unknown50->getContents(unknown20->unknown50->getIndex(false)).unknown00;
+      GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(4), 2, 0.0f);
+      GfMenuObject::sendCloseEvent(GfMenuObject::getFSInputObject(1), 0, 0.0f);
+    } else if (event.unknown0c == 2) {
+      GfMenuObject::sendOpenEvent(GfMenuObject::getFSInputObject(1), 2, 0.0f);
+    } else {
+      break;
+    }
+    GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
+    GfMenuObject::disableFSInput();
+    GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
+    break;
+  case GfMenuTypes::unknown003_33: {
+    int type = event.unknown08;
+    GfMenuObjUtil::PresetCtrlParam param;
+    param.unknown00 = 6;
+    param.unknown04 = 0;
+    param.unknown10 = 1;
+    GfMenuObjUtil::startPresetCtrl(acc.unknown10, param);
+    if (type != 4) {
+      unknown20->setupGenusMsgList();
+      unknown20->refreshGenusMsgList();
+    }
     break;
   }
   case GfMenuTypes::unknown003_34: {

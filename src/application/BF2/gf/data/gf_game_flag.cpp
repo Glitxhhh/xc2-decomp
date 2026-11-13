@@ -114,6 +114,41 @@ u32 GfGameFlag::getFlag(int flag) {
   return getLocal(size, index);
 }
 
+void GfGameFlag::setLocal(GameFlag &gameFlag, u32 size, int index, u32 value) {
+  switch (size) {
+  case 1:
+    // The game keeps the index assert of this read (bitflag.h line 119) and reuses its word index and mask for the write.
+    gameFlag.unknown00.unknown005(index);
+    gameFlag.unknown00.unknown006(index, value != 0);
+    break;
+  case 2: {
+    u32 bit = index * 2;
+    u32 word = bit >> 5;
+    u32 shift = bit & 31;
+    gameFlag.unknown2000[word] &= ~(3 << shift);
+    gameFlag.unknown2000[word] |= value << shift;
+    break;
+  }
+  case 4: {
+    u32 bit = index * 4;
+    u32 word = bit >> 5;
+    u32 shift = bit & 31;
+    gameFlag.unknown6000[word] &= ~(0xf << shift);
+    gameFlag.unknown6000[word] |= value << shift;
+    break;
+  }
+  case 8:
+    gameFlag.unknown7000[index] = value;
+    break;
+  case 16:
+    gameFlag.unknown9000[index] = value;
+    break;
+  case 32:
+    gameFlag.unknowna800[index] = value;
+    break;
+  }
+}
+
 u32 GfGameFlag::getMaxFlag(int size) {
   switch (size) {
   case 1:

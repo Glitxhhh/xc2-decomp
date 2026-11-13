@@ -19,6 +19,7 @@
 #include "gf/game/quest/gf_quest_task_param.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/request/gf_req_scom.h"
+#include "gf/util/gf_item_util.h"
 #include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
@@ -287,6 +288,48 @@ bool GfQuestTask::isTaskBattle(QuestID quest) {
   }
 
   return false;
+}
+
+void GfQuestTask::refreshTaskParam(QuestID quest) {
+  if (GfQuestInfo::isParent(quest)) {
+    quest = GfDataQuest::getListNextQuestA(quest);
+  }
+
+  if (GfDataQuest::getListPurposeID(quest) == 0) {
+    return;
+  }
+
+  QuestListAcc *questListAcc = QuestListAcc::get();
+  for (u32 taskIndex = 0; taskIndex < QUEST_UNKNOWN_4; taskIndex++) {
+    QuestTaskParam param(quest, taskIndex, TASK_STATE_UNKNOWN_0);
+    switch (param.unknown10) {
+    case TASK_TYPE_UNKNOWN_3: {
+      u32 limit = questListAcc->getCollectCount(param.unknown14);
+      u32 item = questListAcc->getCollectItemID(param.unknown14);
+      u32 count;
+      if (item != 0) {
+        count = GfItemUtil::getItemBoxCount(item);
+      } else {
+        u32 category = questListAcc->getCollectCategory(param.unknown14);
+        if (category == 0) {
+          break;
+        }
+
+        count = GfItemUtil::getCountByItemCategory(category);
+      }
+
+      for (u32 i = 0; i != count && i < limit; i++) {
+        GfQuestInfo::incCollectUseCount(param);
+      }
+      break;
+    }
+    case TASK_TYPE_UNKNOWN_12:
+      GfQuestInfo::setupAchievementCount(param);
+      break;
+    default:
+      break;
+    }
+  }
 }
 
 void GfQuestTask::refreshTaskCounters() {

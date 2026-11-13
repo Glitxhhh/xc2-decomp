@@ -1062,24 +1062,18 @@ bool GfDataBlade::getEquipOrbEnance(mm::mtl::FixedVector<u16, 64> &enhances, SDa
   if (dataBlade.unknown06 - BLADE_UNKNOWN_1005 < BLADE_HANA_UNKNOWN_3) {
     u32 condenserNum = GfDataHana::getCondenserNum(dataBlade.unknown06);
     for (u32 slot = 0; slot < condenserNum; slot++) {
-      u32 parts = dataBlade.unknown68c.unknown4c[slot];
-      if (parts != 0) {
-        u16 enhance = GfBdatItem::get()->getITM_HanaAssistEnhance(parts);
-        if (enhance != 0) {
-          enhances.push_back(enhance);
-        }
+      u16 enhance = GfDataHana::getEquipParts(dataBlade)->getCondenserEnahnce(slot);
+      if (enhance != 0) {
+        enhances.push_back(enhance);
       }
     }
 
     u32 extendCondenserNum = GfDataHana::getExtendCondenserNum(dataBlade.unknown06);
     for (u32 slot = 0; slot < extendCondenserNum; slot++) {
       if (GfDataHana::isOpenCircuit(dataBlade, slot + 3)) {
-        u32 parts = dataBlade.unknown68c.unknown52[slot];
-        if (parts != 0) {
-          u16 enhance = GfBdatItem::get()->getITM_HanaAssistEnhance(parts);
-          if (enhance != 0) {
-            enhances.push_back(enhance);
-          }
+        u16 enhance = GfDataHana::getEquipParts(dataBlade)->getExtendCondenserEnahnce(slot);
+        if (enhance != 0) {
+          enhances.push_back(enhance);
         }
       }
     }

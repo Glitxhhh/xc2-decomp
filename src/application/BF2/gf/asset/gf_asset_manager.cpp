@@ -281,7 +281,50 @@ GfAssetResource *GfAssetManager::getResource(GF_ASSET_HANDLE *handle, const char
   return nullptr;
 }
 
+GF_ASSET_HANDLE *GfAssetManager::getAssetHandle(const char *name) {
+  GfAssetManager *manager = get();
+  for (mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = manager->unknownd70f8.begin(); it != manager->unknownd70f8.end(); ++it) {
+    AssetPackInfo *info = getAssetPackInfo(*it);
+    if (info == nullptr) {
+      continue;
+    }
+
+    if (info->getAssetPack(name) != nullptr) {
+      return *it;
+    }
+  }
+
+  for (mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = manager->unknownce0b8.begin(); it != manager->unknownce0b8.end(); ++it) {
+    AssetPackInfo *info = getAssetPackInfo(*it);
+    if (info == nullptr) {
+      continue;
+    }
+
+    if (info->getAssetPack(name) != nullptr) {
+      return *it;
+    }
+  }
+
+  return unknown018;
+}
+
 bool GfAssetManager::isLoading() { return get()->unknownce0b8.size() > 0; }
+
+bool GfAssetManager::isLoading(const GfAssetPack *pack) {
+  mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024> *list = getLoadingAsset();
+  for (mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = list->begin(); it != list->end(); ++it) {
+    AssetPackInfo *info = getAssetPackInfo(*it);
+    if (info == nullptr) {
+      continue;
+    }
+
+    if (info->isExistAssetPack(pack)) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 u32 GfAssetManager::getTimeout(GF_ASSET_HANDLE *handle) {
   if (handle == unknown018) {
@@ -574,6 +617,31 @@ void GfAssetManager::lockEnterRersource(GF_ASSET_HANDLE *handle) {
   AssetPackInfo *info = getAssetPackInfo(handle);
   if (info != nullptr) {
     info->lockEnterRersource();
+  }
+}
+
+void GfAssetManager::updateCheckLoading() {
+  for (mm::mtl::FixedList<GfAssetPack *, 1024>::iterator it = unknowndb920.begin(); it != unknowndb920.end(); ++it) {
+    if (!(*it)->isPreSizeSizeValid()) {
+      (*it)->applyPreFileSize();
+    }
+  }
+
+  for (mm::mtl::FixedList<GF_ASSET_HANDLE *, 1024>::iterator it = unknownce0b8.begin(); it != unknownce0b8.end();) {
+    AssetPackInfo *info = getAssetPackInfo(*it);
+    if (info == nullptr) {
+      it = unknownce0b8.erase(it);
+    } else if (info->unknown304) {
+      unknownd70f8.push_back(*it);
+      it = unknownce0b8.erase(it);
+    } else if (info->isLoaded(nullptr) && info->isPreSizeSizeValid()) {
+      info->releaseEmptySlot();
+      info->setLoadComplete();
+      unknownd70f8.push_back(*it);
+      it = unknownce0b8.erase(it);
+    } else {
+      ++it;
+    }
   }
 }
 

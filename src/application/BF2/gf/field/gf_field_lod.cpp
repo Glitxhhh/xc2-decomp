@@ -244,6 +244,19 @@ void GfFieldLod::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
   }
 }
 
+void GfFieldLod::gevPlayEvent(GEV event, u32) {
+  switch (event) {
+  case GEV_UNKNOWN_9:
+    unknown889 = true;
+    break;
+  case GEV_UNKNOWN_10:
+    unknown889 = false;
+    break;
+  default:
+    break;
+  }
+}
+
 void GfFieldLod::createColiAnim(ml::ScnObjModel *model, bool isDebugDraw) {
   if (model == nullptr) {
     return;

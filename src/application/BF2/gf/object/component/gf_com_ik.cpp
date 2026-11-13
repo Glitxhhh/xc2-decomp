@@ -8,6 +8,7 @@
 #include "framework/ik/ik_look_at_solver.h"
 #include "framework/ik/ik_placement_ground_solver.h"
 #include "framework/ik/ik_rotate_solver.h"
+#include "framework/ik/ik_slope_ground_solver.h"
 #include "framework/ik/ik_solver.h"
 #include "framework/ik/ik_spherical_coordinates_solver.h"
 #include "framework/ik/ik_spine_rotate_solver.h"
@@ -176,6 +177,25 @@ fw::TwoCharaGroundSolver *GfComIK::createTwoCharaGroundIK(f32 value, const char 
   return solver;
 }
 
+fw::SlopeGroundSolver *GfComIK::createSlopeGroundIK(f32 first, f32 second) {
+  GfComTransform *transform = unknown08->getComponent<GfComTransform>();
+  GfComModel *model = mm::mtl::dynamicCast<GfComModel>(unknown08->unknown38[GfComModel::COMPONENT_INDEX]);
+  mm::mtl::IntrusivePtr<fw::ReferenceFrame> &frame = transform->unknown001();
+  fw::SlopeGroundSolver *solver = nullptr;
+  if (model->unknown30 != nullptr) {
+    fw::SlopeGroundSolver::Description description;
+    description.unknown1c = unknown50;
+    description.unknown14 = first;
+    description.unknown18 = second;
+    solver = fw::SlopeGroundSolver::create(description, frame, *model->unknown30, unknown48.get());
+    unknown10.unknown10[unknown002_0] = solver;
+    if (solver != nullptr) {
+      solver->release();
+    }
+  }
+  return solver;
+}
+
 fw::SphericalCoordinatesIkSolver *GfComIK::createSphericalCoordinatesIkSolver(const fw::ParamAdapter &param, const char *boneName) {
   GfComTransform *transform = unknown08->getComponent<GfComTransform>();
   GfComModel *model = mm::mtl::dynamicCast<GfComModel>(unknown08->unknown38[GfComModel::COMPONENT_INDEX]);
@@ -271,5 +291,53 @@ void GfComIK::changeLayer(u32 oldLayer, u32 newLayer) {
 const mm::mtl::RTTI *GfComIK::getRTTI() const { return &m_rtti; }
 
 fw::IKFootGroundInterface *GfComIK::Ground::getFootGround(fw::IKFootIndex index) { return &unknown10[index]; }
+
+const mm::Plane *GfComIK::Ground::getPlane() const {
+  const GfEnvProperty::unknown002 *ground = unknown002(GfEnvProperty::GROUND_INDEX_UNKNOWN_0);
+  if (ground == nullptr) {
+    return nullptr;
+  }
+  return &ground->unknown10;
+}
+
+const mm::Vec3 *GfComIK::Ground::getHitPos() const {
+  const GfEnvProperty::unknown002 *ground = unknown002(GfEnvProperty::GROUND_INDEX_UNKNOWN_0);
+  if (ground == nullptr) {
+    return nullptr;
+  }
+  return &ground->unknown00;
+}
+
+const mm::Plane *GfComIK::Ground::getPlaneSub() const {
+  const GfEnvProperty::unknown002 *ground = unknown002(GfEnvProperty::GROUND_INDEX_UNKNOWN_7);
+  if (ground == nullptr) {
+    return nullptr;
+  }
+  return &ground->unknown10;
+}
+
+const mm::Vec3 *GfComIK::Ground::getHitPosSub() const {
+  const GfEnvProperty::unknown002 *ground = unknown002(GfEnvProperty::GROUND_INDEX_UNKNOWN_7);
+  if (ground == nullptr) {
+    return nullptr;
+  }
+  return &ground->unknown00;
+}
+
+const mm::Plane *GfComIK::FootGround::getPlane() const {
+  const GfEnvProperty::unknown002 *ground = unknown001();
+  if (ground == nullptr) {
+    return nullptr;
+  }
+  return &ground->unknown10;
+}
+
+const mm::Vec3 *GfComIK::FootGround::getHitPos() const {
+  const GfEnvProperty::unknown002 *ground = unknown001();
+  if (ground == nullptr) {
+    return nullptr;
+  }
+  return &ground->unknown00;
+}
 
 } // namespace gf

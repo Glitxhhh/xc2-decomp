@@ -52,6 +52,28 @@ public:
     mBits[0] = value;
   }
 
+  // Inferred role: writes one bit; original name unknown. The assert line of the game (89), seen in gf::GfGameFlag::setLocal (0x71002b8958) and
+  // gf::GfObjUtil::setFlag, tells it apart from set(unsigned int, bool) (169).
+#line 88
+  void unknown006(unsigned int index, bool value) {
+    MM_ASSERT(index < Size);
+    unsigned int word = wordIndex(index);
+    unsigned int mask = bit(index);
+    if (value) {
+      mBits[word] |= mask;
+    } else {
+      mBits[word] &= ~mask;
+    }
+  }
+
+  // Inferred role: reads one bit; original name unknown. The assert line of the game (119), seen in gf::GfGameFlag::getLocal, gf::GfGameFlag::setLocal
+  // (0x71002b8928) and gf::GfDataEvent::isWatchedEventFlag, tells it apart from test() (133).
+#line 118
+  bool unknown005(unsigned int index) const {
+    MM_ASSERT(index < Size);
+    return (mBits[wordIndex(index)] & bit(index)) != 0;
+  }
+
   // The assert line of the game (133).
 #line 132
   bool test(unsigned int index) const {

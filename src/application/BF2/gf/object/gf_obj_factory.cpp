@@ -114,7 +114,7 @@ GF_OBJ_HANDLE *GfObjFactory::createSmnEnemy(int id, const mm::Vec3 &position, co
 bool checkSoundTriggerPlayer(GfComSound *sound, const fw::ResSoundTriggerInfo &info) {
   if (strcmp(info.unknown00, "S_jump_02") == 0 || strcmp(info.unknown00, "S_jumpdmg") == 0) {
     GfEnvProperty *env = static_cast<GfObj *>(sound->unknown08)->getComponent<GfComProperty>()->unknown28.get();
-    GfEnvProperty::unknown002 *ground = (env->unknown2d0 & 2) ? &env->unknown00[0] : nullptr;
+    const GfEnvProperty::unknown002 *ground = env->unknown004(GfEnvProperty::GROUND_INDEX_UNKNOWN_0);
     if ((env->unknown2d0 & 1) && ground != nullptr) {
       return !(ground->unknown00.y <= env->unknown280.unknown00.x);
     }

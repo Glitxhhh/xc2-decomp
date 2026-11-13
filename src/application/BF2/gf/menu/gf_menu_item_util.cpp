@@ -159,6 +159,42 @@ u32 GfMenuItemUtil::canEquipAcc(u32 accessory, u32 driver, u32 slot) {
   }
 }
 
+u32 GfMenuItemUtil::canEquipAcc(u32 accessory, GfItemHandle handle, u32 driver, u32 slot) {
+  if (driver == 0) {
+    return 0;
+  }
+  u32 result = GfEquipUtil::getEquipAcceResult(driver, slot, accessory);
+  switch (result) {
+  case EQUIP_RESULT_UNKNOWN_6: {
+    for (u32 i = 0; i < 2; i++) {
+      u32 equip = GfEquipUtil::getEquipDriverAcce(driver, i);
+      if (equip != 0 && equip == accessory && GfDataDriver::getEquipAcceHandle(driver, i).value == handle.value) {
+        return 1;
+      }
+    }
+    return 2;
+  }
+  case EQUIP_RESULT_UNKNOWN_5:
+    return 3;
+  case EQUIP_RESULT_UNKNOWN_0:
+    break;
+  default:
+    if (result == EQUIP_RESULT_UNKNOWN_3 || result == EQUIP_RESULT_UNKNOWN_4) {
+      u32 equipDriver = searchEquipAcc(accessory, handle, nullptr);
+      if (equipDriver == 0) {
+        return 4;
+      }
+      return equipDriver == driver ? 1 : 4;
+    }
+    return 0;
+  }
+  u32 equipDriver = searchEquipAcc(accessory, handle, nullptr);
+  if (equipDriver == 0) {
+    return 0;
+  }
+  return equipDriver == driver ? 1 : 2;
+}
+
 u32 GfMenuItemUtil::searchEquipAcc(u32 accessory, GfItemHandle handle, u32 *slot) {
   mm::mtl::FixedVector<u16, 16> drivers;
   GfPartySelect::getDriverList(drivers, GfPartySelect::LIST_TYPE_UNKNOWN_6, 0);
@@ -191,6 +227,43 @@ u32 GfMenuItemUtil::canEquipOrb(u32 orb, u32 blade, u32 slot) {
     return 4;
   }
   return 0;
+}
+
+u32 GfMenuItemUtil::canEquipOrb(u32 orb, GfItemHandle handle, u32 blade, u32 slot) {
+  if (blade == 0) {
+    return 0;
+  }
+  u32 result = GfEquipUtil::getEquipOrbResult(blade, orb, slot);
+  switch (result) {
+  case EQUIP_RESULT_UNKNOWN_6: {
+    u32 equipOrbMax = GfEquipUtil::getEquipOrbMax(blade);
+    for (u32 i = 0; i < equipOrbMax; i++) {
+      u32 equip = GfEquipUtil::getEquipBladeOrb(blade, i);
+      if (equip != 0 && equip == orb && GfDataBlade::getEquipOrbHandle(blade, i).value == handle.value) {
+        return 1;
+      }
+    }
+    return 2;
+  }
+  case EQUIP_RESULT_UNKNOWN_5:
+    return 3;
+  case EQUIP_RESULT_UNKNOWN_0:
+    break;
+  default:
+    if (result == EQUIP_RESULT_UNKNOWN_3 || result == EQUIP_RESULT_UNKNOWN_4) {
+      u32 equipBlade = searchEquipOrb(orb, handle, nullptr);
+      if (equipBlade == 0) {
+        return 4;
+      }
+      return equipBlade == blade ? 1 : 4;
+    }
+    return 0;
+  }
+  u32 equipBlade = searchEquipOrb(orb, handle, nullptr);
+  if (equipBlade == 0) {
+    return 0;
+  }
+  return equipBlade == blade ? 1 : 2;
 }
 
 u32 GfMenuItemUtil::searchEquipOrb(u32 orb, GfItemHandle handle, u32 *slot) {

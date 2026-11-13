@@ -138,6 +138,7 @@ public:
   static int getRuleSetBlade(u32 driver, u32 blade, int slot);
   static u32 getFavorite(u32 driver, FAVORITE favorite);
   static bool isFavoriteCategory(u32 driver, u32 item);
+  static bool isFavoriteItem(u32 driver, u32 item);
   static bool isKizunaringComplete(u32 driver, bool isSecond);
   static void setKizunaringComplete(u32 driver, bool isSecond);
   static bool setEquipBlade(u32 driver, bool isEquip, int slot);
@@ -164,6 +165,7 @@ public:
   static int getSetIdByDummyBlade(u32 driver);
   static u32 getBlade(u32 driver, int slot);
   static bool getSetBlade(mm::mtl::FixedVector<u16, 422> &blades, u32 driver);
+  static bool isExistBlade(u32 driver);
   static bool getListBlade(mm::mtl::FixedVector<u16, 422> &blades, u32 driver);
   static bool unsetBlade(u32 blade);
   static bool leaveOneCommonBlade(u32 driver);
