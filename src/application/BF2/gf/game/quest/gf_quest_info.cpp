@@ -28,6 +28,10 @@ constexpr u32 DUMMY_TALK_GROUP_FLAG_UNKNOWN_3723 = 0xe8b; // Inferred role: dumm
 constexpr u32 COUNT_FLAG_UNKNOWN_255 = 0xff;              // Inferred role: count flag max; original name unknown.
 constexpr u32 GROUP_UNKNOWN_8 = 8;                        // Inferred role: enemy group count; original name unknown.
 constexpr u32 WEATHER_UNKNOWN_4 = 4;                      // Inferred role: weather none; original name unknown.
+constexpr u32 QUEST_FLAG_UNKNOWN_1634 = 1634;             // Inferred role: quest state flag base of the parent achievement quests up to variant 15000; original name unknown.
+constexpr u32 QUEST_FLAG_UNKNOWN_16635 = 16635;           // Inferred role: quest state flag base of the child achievement quests up to variant 15000; original name unknown.
+constexpr u32 QUEST_FLAG_UNKNOWN_24671 = 24671;           // Inferred role: quest state flag base of the parent achievement quests above variant 15000; original name unknown.
+constexpr u32 QUEST_FLAG_UNKNOWN_34672 = 34672;           // Inferred role: quest state flag base of the child achievement quests above variant 15000; original name unknown.
 
 } // namespace
 
@@ -37,7 +41,40 @@ bool GfQuestInfo::isQuestProgress(QuestID quest) { return getState(quest) == QST
 
 bool GfQuestInfo::isQuestFin(QuestID quest) { return getState(quest) > QSTATE_UNKNOWN_1; }
 
+QSTATE GfQuestInfo::getState(QuestID quest) {
+  if (quest.empty()) {
+    return QSTATE_UNKNOWN_0;
+  }
+
+  return static_cast<QSTATE>(GfGameFlag::getLocal(2, getQuestFlag2No(quest)));
+}
+
 bool GfQuestInfo::isQuestNotOrder(QuestID quest) { return getState(quest) == QSTATE_UNKNOWN_0; }
+
+u32 GfQuestInfo::getQuestFlag2No(QuestID quest) {
+  bool isParent = GfQuestInfo::isParent(quest);
+  if (quest.unknown02 != 0) {
+    if (isParent) {
+      if (quest.isHighVariant()) {
+        return quest.unknown02 + QUEST_FLAG_UNKNOWN_24671;
+      }
+
+      return quest.unknown02 + QUEST_FLAG_UNKNOWN_1634;
+    }
+
+    if (quest.isHighVariant()) {
+      return quest.unknown02 + QUEST_FLAG_UNKNOWN_34672;
+    }
+
+    return quest.unknown02 + QUEST_FLAG_UNKNOWN_16635;
+  }
+
+  if (isParent) {
+    return GfDataQuest::getListFlagPRT(quest);
+  }
+
+  return GfDataQuest::getListFlagCLD(quest);
+}
 
 QuestID GfQuestInfo::getParentQuest(QuestID quest) {
   QuestID parent = GfDataQuest::getListPRTQuestID(quest);

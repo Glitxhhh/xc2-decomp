@@ -192,6 +192,13 @@ public:
   void create(QuestID quest, int reachId);
   void dispose();
 
+  // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+  // Tells whether a category and a place are set. LocatorReach::update (1.0.0: 0x71002dcd08, 49 instructions) tests both members through one 32-bit load (ldr w8, [x19, #0x14] at 0x71002dcd18) and
+  // then reloads the place id for the lookup (ldrh w2, [x19, #0x16] at 0x71002dcd48): the test was compiled as a function of its own before it was inlined.
+  // Forms tried without the helper, written in update, all 48 instructions (the place id comes from the wide load, lsr w2, w9, #16): if (unknown14 != 0 && unknown16 != 0), the swapped test,
+  // if (unknown14 == 0 || unknown16 == 0) return, two nested if, a bool local holding the test.
+  bool hasPlace() const { return unknown14 != 0 && unknown16 != 0; }
+
   u8 unknown14;  // Inferred role: category; original member name unknown.
   u16 unknown16; // Inferred role: place id; original member name unknown.
   u8 m_posNum;

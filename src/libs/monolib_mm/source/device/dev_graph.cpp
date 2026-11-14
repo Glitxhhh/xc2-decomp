@@ -368,6 +368,16 @@ void DevGraph::renderSync() {
   }
 }
 
+DevGraphQue::DevGraphQue() {
+  unknown00 = WorkCpu::getEven();
+  unknown48 = false;
+  unknown4c = 100.0f;
+  unknown50 = 0.1f;
+  unknown54 = 30.0f;
+  pushWholeRect(mm::Rect<int>(0, 0, static_cast<s16>(DevGraph::getRootWidth()), static_cast<s16>(DevGraph::getRootHeight())), false);
+  unknown08.create(0x100, WorkUtil::getWorkMem());
+}
+
 DevGraphQue::~DevGraphQue() {}
 
 GraphQue *DevGraphQue::createQue(u32 size) {

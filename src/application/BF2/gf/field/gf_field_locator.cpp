@@ -18,6 +18,7 @@
 #include "gmk/gmk_elevator.h"
 #include "gmk/gmk_event.h"
 #include "gmk/gmk_jump.h"
+#include "gmk/gmk_landmark.h"
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_map_gimmick.h"
 #include "gmk/gmk_npc/gmk_npc.h"
@@ -234,6 +235,34 @@ void LocatorReach::dispose() {
   unknown16 = 0;
   unknown14 = 0;
   unknown08 = QuestID();
+}
+
+void LocatorReach::update() {
+  if (hasPlace()) {
+    m_posNum = 0;
+    switch (unknown14) {
+    case 1:
+    case 2: {
+      const gmk::AGmkBase *gmk = gmk::GmkManager::get()->findFirstGmkInstByBdatId(gmk::GmkLandmark::GMK_TYPE, unknown16);
+      if (gmk == nullptr || !static_cast<const gmk::GmkLandmark *>(gmk)->getBdatInfo()->isCondMatched()) {
+        return;
+      }
+      m_pos = gmk->unknown08.unknown08->unknown00;
+      break;
+    }
+    case 3: {
+      const gmk::AGmkBase *gmk = gmk::GmkManager::get()->findFirstGmkInstByBdatId(gmk::GmkEvent::GMK_TYPE, unknown16);
+      if (gmk == nullptr || !static_cast<const gmk::GmkEvent *>(gmk)->unknownf0) {
+        return;
+      }
+      m_pos = gmk->unknown08.unknown08->unknown00;
+      break;
+    }
+    default:
+      return;
+    }
+    m_posNum = 1;
+  }
 }
 
 LocatorTbox::LocatorTbox(QuestID quest, u16 tboxId) : unknown14(0), m_posNum(0) {

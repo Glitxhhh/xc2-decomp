@@ -7,14 +7,13 @@
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_party.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/pc/gf_pc_state_util.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
 
 namespace gf {
-
-constexpr u32 MOTION_UNKNOWN_3 = 3; // Inferred role: unique motion num; original name unknown.
 
 void GfGamePlayerUniqueScheduler::build(const GfSetupParam &) {
   GfGamePlayerUniqueScheduler *scheduler = new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGamePlayerUniqueScheduler();

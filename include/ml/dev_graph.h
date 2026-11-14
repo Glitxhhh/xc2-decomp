@@ -250,6 +250,7 @@ public:
   void flushViewport();
   void pushRect(const mm::Rect<int> &viewport, const mm::Rect<int> &scissor, const mm::Rect<int> &renderRect, bool isFlush);
   void popRect();
+  void pushWholeRect(const mm::Rect<int> &rect, bool isFlush);
   mm::Rect<int> &getViewport();
   mm::Rect<int> &getRenderRect();
   GraphQue *createQue(u32 size);
@@ -259,17 +260,34 @@ public:
 
   u32 unknown00; // Inferred role: view; original member name unknown.
   u8 _04[0x08 - 0x04];
-  reslist<GraphQue *> unknown08; // Inferred role: que list; original member name unknown.
-  u8 _48[0x58 - 0x48];
+  reslist<GraphQue *> unknown08;                     // Inferred role: que list; original member name unknown.
+  bool unknown48;                                    // Inferred role: cleared by the constructor; original member name unknown.
+  f32 unknown4c;                                     // Inferred role: 100.0f from the constructor; original member name unknown.
+  f32 unknown50;                                     // Inferred role: 0.1f from the constructor; original member name unknown.
+  f32 unknown54;                                     // Inferred role: 30.0f from the constructor; original member name unknown.
   mm::mtl::FixedQueue<mm::Rect<int>, 32> unknown58;  // Inferred role: viewport stack; original member name unknown.
   mm::mtl::FixedQueue<mm::Rect<int>, 32> unknown268; // Inferred role: scissor stack; original member name unknown.
   mm::mtl::FixedQueue<mm::Rect<int>, 32> unknown478; // Inferred role: render rect stack; original member name unknown.
 };
 
 static_assert(offsetof(DevGraphQue, unknown08) == 0x08, "");
+static_assert(offsetof(DevGraphQue, unknown48) == 0x48, "");
+static_assert(offsetof(DevGraphQue, unknown4c) == 0x4c, "");
+static_assert(offsetof(DevGraphQue, unknown50) == 0x50, "");
+static_assert(offsetof(DevGraphQue, unknown54) == 0x54, "");
 static_assert(offsetof(DevGraphQue, unknown58) == 0x58, "");
 static_assert(offsetof(DevGraphQue, unknown268) == 0x268, "");
 static_assert(offsetof(DevGraphQue, unknown478) == 0x478, "");
+
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// Pushes one rect as viewport and scissor, with a render rect of the same size at the origin. The DevGraphQue constructor (1.0.0: 0x7100714a14, 92 instructions) builds the root rect at sp+0x10 and
+// the render rect at sp+0x20 (0x7100714af0-0x7100714afc), a slot it reuses after the call (str w8, [sp, #0x20] at 0x7100714b28): the render rect is the stack object of an inlined callee.
+// DevGraphQue::popRect (0x71007133e0, not matched) holds the same call with true (0x71007134a0-0x71007134c4).
+// Forms tried without the helper, written in the constructor, all 92 instructions with the two rects in other stack slots unless said: the render rect as a temporary argument, as a named local
+// after the root rect, as a named local before it (both built from width and height locals), in a block of its own, both rects in one block (three orders), the root rect copied from the render
+// rect, three temporaries (94). One form matches, a block that declares the render rect first and assigns it after the root rect is built: it needs that declaration order only to choose the
+// stack slot, the same block with the render rect initialised where it is declared does not match. A helper that also builds the root rect does not match either.
+inline void DevGraphQue::pushWholeRect(const mm::Rect<int> &rect, bool isFlush) { pushRect(rect, rect, mm::Rect<int>(0, 0, rect.width, rect.height), isFlush); }
 
 inline void GraphQue::unknown001() {
   unknown28 = unknown10[unknown08->unknown00];

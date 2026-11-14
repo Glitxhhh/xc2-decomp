@@ -15,6 +15,8 @@ namespace gf {
 
 class GfComBehaviorPc;
 struct MsgPcFieldHighJump;
+struct MsgPcFieldSetUniqueMotion;
+struct MsgPcFieldTestEnableUniqueMotion;
 
 namespace pc {
 
@@ -24,8 +26,11 @@ class StateFieldIdle : public GfStateBase {
   void leave(GfComBehaviorPc *behavior, ai::State *next);
   void update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info);
   bool recieveMessage(void *owner, fw::MessageObject *sender, fw::Message &message) override;
+  bool isEnableUnique(GfComBehaviorPc *behavior);
   bool checkSpace(GfComBehaviorPc *behavior) const;
   void procMsgPcFieldHighJump(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldHighJump &message);
+  void procMsgPcFieldTestEnableUniqueMotion(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldTestEnableUniqueMotion &message);
+  void procMsgPcFieldSetUniqueMotion(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcFieldSetUniqueMotion &message);
 };
 
 static_assert(sizeof(StateFieldIdle) == 0x18, "");

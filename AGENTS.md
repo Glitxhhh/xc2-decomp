@@ -20,10 +20,21 @@
 - A member with no accessor and no string naming it is `unknown` followed by
   its hexadecimal byte offset, for example `unknown18`, never a descriptive
   invented name. For reconstructed helper functions, use `unknown001`,
-  `unknown002`, etc., within each file. Keep the inferred role in a comment
-  and state that the original name is unknown. Do not rename exported symbols
-  to follow this convention. A bitfield member is `unknownXX_N`, N being the
-  index of its first bit in byte XX.
+  `unknown002`, etc., within each file (see the exception below for a helper
+  with a single user). Keep the inferred role in a comment and state that the
+  original name is unknown. Do not rename exported symbols to follow this
+  convention. A bitfield member is `unknownXX_N`, N being the index of its
+  first bit in byte XX.
+  - Exception: an inline helper with a single user, whose existence is proven
+    only because that function matches with it and no other valid form
+    matches (clang optimises a separate function before inlining it), takes a
+    descriptive name that states its role (`hasPlace`, `isHighVariant`...),
+    like a macro. Mark it with the comment `// Inferred name; kept as an
+    exception to the unknown-name rule (AGENTS.md): single-user helper whose
+    existence only the match proves; rename if a sibling build gives a
+    symbol.`, and list in a comment the forms tried without the helper and
+    the game address of its user. Helpers with several users stay
+    `unknownNNN`.
 - A macro leaves no trace in the binary, so its original name can never be
   recovered: give it a descriptive upper-case name and say in a comment that
   the name is inferred (`// Inferred macro name; macros leave no trace in the

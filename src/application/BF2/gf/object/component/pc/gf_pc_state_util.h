@@ -28,6 +28,8 @@ enum {
   MSG_PC_FIELD_UNKNOWN_16777240 = 0x1000018, // Inferred role: msg pc field water warp; original name unknown.
   MSG_PC_FIELD_UNKNOWN_16777246 = 0x100001e, // Inferred role: msg pc field relay survive; original name unknown.
   MSG_PC_FIELD_UNKNOWN_16777248 = 0x1000020, // Inferred role: msg pc field water warp buddy; original name unknown.
+  MSG_PC_FIELD_UNKNOWN_16777250 = 0x1000022, // Inferred role: msg pc field set unique motion; original name unknown.
+  MSG_PC_FIELD_UNKNOWN_16777251 = 0x1000023, // Inferred role: msg pc field test enable unique motion; original name unknown.
   MSG_PC_FIELD_UNKNOWN_16777252 = 0x1000024, // Inferred role: msg pc field notify rider event; original name unknown.
   MSG_PC_FIELD_UNKNOWN_16777253 = 0x1000025, // Inferred role: msg pc field req fall dead motion; original name unknown.
 };
@@ -51,6 +53,27 @@ struct MsgPcFieldHighJump : fw::Message {
 };
 
 static_assert(offsetof(MsgPcFieldHighJump, unknown08) == 0x08, "");
+
+// Layout evidence: StateFieldIdle::procMsgPcFieldTestEnableUniqueMotion (0x7100558f88) stores the result of StateFieldIdle::isEnableUnique in the member at 0x8.
+struct MsgPcFieldTestEnableUniqueMotion : fw::Message {
+  bool unknown08; // Inferred role: unique motion enabled; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldTestEnableUniqueMotion, unknown08) == 0x08, "");
+
+constexpr u32 MOTION_UNKNOWN_3 = 3; // Inferred role: unique motion num; original name unknown.
+
+// Layout evidence: GfGamePlayerUniqueScheduler::executeRequest (0x710033123c) builds it on the stack with the motion at 0x8, and StateFieldIdle::procMsgPcFieldSetUniqueMotion (0x710055902c)
+// stores the result of StateUtilField::execAsmCmd in the member at 0xc.
+struct MsgPcFieldSetUniqueMotion : fw::Message {
+  MsgPcFieldSetUniqueMotion(u32 motion) : fw::Message(MSG_PC_FIELD_UNKNOWN_16777250, 0x40), unknown08(motion), unknown0c() {}
+
+  u32 unknown08;  // Inferred role: unique motion index; original member name unknown.
+  bool unknown0c; // Inferred role: unique motion started; original member name unknown.
+};
+
+static_assert(offsetof(MsgPcFieldSetUniqueMotion, unknown08) == 0x08, "");
+static_assert(offsetof(MsgPcFieldSetUniqueMotion, unknown0c) == 0x0c, "");
 
 // Layout evidence: TaskFieldSensor::update (0x7100544988) builds it on the stack and tests the member at 0x8 that
 // StateFieldWaterNormal::procMsgPcFieldWaterWarp sets.

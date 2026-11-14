@@ -20,13 +20,6 @@ struct GF_OBJ_HANDLE;
 struct GfSetupParam;
 struct UniqueMotionParam;
 
-struct MsgPcFieldSetUniqueMotion : fw::Message {
-  MsgPcFieldSetUniqueMotion(u32 motion) : fw::Message(0x1000022, 0x40), motion(motion), _0c() {}
-
-  u32 motion;
-  u8 _0c[0x0d - 0x0c];
-};
-
 class GfGamePlayerUniqueScheduler : public mm::mtl::PtrSingleton<GfGamePlayerUniqueScheduler>, public IGfEvent, public fw::MessageObject {
 public:
   static const u32 UNIT_UNKNOWN_6 = 6; // Inferred role: unit num; original name unknown.
