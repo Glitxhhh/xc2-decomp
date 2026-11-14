@@ -2,24 +2,24 @@
   {
     "name": "gf",
     "code": {
-      "total": 4336924,
-      "matching": 3098876,
+      "total": 4334508,
+      "matching": 3099024,
       "non_matching": 0
     }
   },
   {
     "name": "monolib_mm",
     "code": {
-      "total": 1747420,
-      "matching": 672468,
+      "total": 1747668,
+      "matching": 674592,
       "non_matching": 0
     }
   },
   {
     "name": "gmk",
     "code": {
-      "total": 761544,
-      "matching": 521320,
+      "total": 763712,
+      "matching": 523488,
       "non_matching": 0
     }
   },
@@ -35,7 +35,7 @@
     "name": "framework",
     "code": {
       "total": 485744,
-      "matching": 291640,
+      "matching": 292396,
       "non_matching": 0
     }
   },
