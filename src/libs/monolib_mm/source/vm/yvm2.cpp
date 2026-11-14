@@ -764,4 +764,107 @@ void vmBuiltinOCRegist(unknown013 *pOC) {
   }
   unknown017.unknownd890 = pOC;
 }
+
+#line 636
+int vmOCRegist(unknown013 *pOC) {
+  VM_ASSERT_TEXT(pOC != 0, "pOC != ((void*)0)");
+  if (vmOCSearch(pOC->unknown00) != -1) {
+    return 1;
+  }
+  for (int i = 0; i < 0x30; i++) {
+    if (unknown017.unknownd710[i] == 0) {
+      unknown017.unknownd710[i] = pOC;
+      unknown011 *pProperty = pOC->unknown10;
+      if (pProperty != 0) {
+        for (; pProperty->unknown00 != 0; pProperty++) {
+          pProperty->unknown18 = strlen(pProperty->unknown00);
+        }
+      }
+      unknown012 *pSelector = pOC->unknown18;
+      if (pSelector != 0) {
+        for (; pSelector->unknown00 != 0; pSelector++) {
+          pSelector->unknown10 = strlen(pSelector->unknown00);
+        }
+      }
+      return 1;
+    }
+  }
+  return 0;
+}
+
+unknown004 *vmArgPtrGet(unknown007 *pThread, int no) {
+  u8 cnt = vmArgCntGet(pThread);
+  if (no == 0 || cnt < no) {
+    vmHalt();
+  }
+  return &pThread->unknown50[pThread->reg.sp - no - 1];
+}
+
+char *vmUsrAtrSearch(sSbHeader *pSb, const char *name) {
+  unknown001 *pAtr = VM_OFFSET(unknown001, pSb, pSb->unknown38);
+  for (int i = 0; i < pAtr->num; i++) {
+    char *id = vmIdPoolGet(pSb, *reinterpret_cast<u16 *>(vmUsrAtrPoolGet(pSb, i)));
+    if (strcmp(name, id) == 0) {
+      return id;
+    }
+  }
+  return 0;
+}
+
+int vmFuncFarSearch(const char *mName, const char *fName) {
+  for (int i = 0; i < 32; i++) {
+    if (unknown017.unknown00[i].unknown08 != 0 && strcmp(unknown017.unknown00[i].unknown08, mName) == 0) {
+      sSbHeader *pSb = unknown017.unknown00[i].unknown00;
+      unknown001 *pFunc = VM_OFFSET(unknown001, pSb, pSb->unknown1c);
+      unknown003 *pEntry = VM_OFFSET(unknown003, pFunc, pFunc->unknown00);
+      for (int j = 0; j < pFunc->num; pEntry++, j++) {
+        if (strcmp(vmIdPoolGet(pSb, pEntry->unknown00), fName) == 0) {
+          return (i << 16) | j;
+        }
+      }
+      return -1;
+    }
+  }
+  return -1;
+}
+
+unknown007 *vmThreadCreate(sSbHeader *pSb, int func) {
+  for (int idx = 0; idx < 32; idx++) {
+    if (unknown017.unknown310[idx].pSb == 0) {
+      unknown007 *pThread = &unknown017.unknown310[idx];
+      for (int i = 0; i < 32; i++) {
+        if (unknown017.unknown210[i] == 0) {
+          unknown017.unknown210[i] = pThread;
+          break;
+        }
+      }
+      pThread->reg.pc = vmFunctionPoolGet(pSb, func)->unknown0c;
+      pThread->reg.sp = 0;
+      pThread->reg.unknown08 = 0;
+      pThread->unknown0c = 0;
+      pThread->unknown10 = 0;
+      int package = vmPackageSearchIdx(pSb);
+      pThread->unknown2c = package;
+      pThread->unknown30 = func;
+      pThread->unknown34 = package;
+      pThread->pSb = pSb;
+      sSbCode *pCode = VM_OFFSET(sSbCode, pSb, pSb->codeOfs);
+      pThread->unknown40 = VM_OFFSET(const u8, pCode, pCode->unknown00);
+      unknown002 *pStatic = VM_OFFSET(unknown002, pSb, pSb->unknown2c);
+      pThread->unknown48 = VM_OFFSET(unknown004, pStatic, pStatic->unknown00);
+      pThread->unknown50 = unknown017.unknown1410[idx];
+      pThread->stackSize = 0x80;
+      pThread->unknown5c = vmThreadNextIdGet();
+      pThread->unknown60 = 0;
+      pThread->unknown64 = 0;
+      pThread->unknown66 = 0;
+      pThread->unknown68[0] = 0;
+      pThread->unknown68[1] = 0;
+      pThread->unknown68[2] = 0;
+      pThread->unknown80 = 0;
+      return pThread;
+    }
+  }
+  return 0;
+}
 }

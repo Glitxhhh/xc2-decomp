@@ -93,4 +93,30 @@ bool WinViewFrame::checkLTFrame(const mm::Rect<int> &rect, const mm::Pnt<int> &p
   return false;
 }
 
+bool WinViewFrame::checkTFrame(const mm::Rect<int> &rect, const mm::Pnt<int> &pos) const {
+  int top = rect.y;
+  int left = static_cast<s16>(rect.x + 0x10);
+  int right = left + static_cast<s16>(rect.width - 0x20);
+  if (pos.x >= right || pos.x < left) {
+    return false;
+  }
+  if (pos.y < top) {
+    return false;
+  }
+  return pos.y < unknown60 + top;
+}
+
+bool WinViewFrame::checkBFrame(const mm::Rect<int> &rect, const mm::Pnt<int> &pos) const {
+  int top = static_cast<s16>(rect.y + rect.height - unknown60);
+  int left = static_cast<s16>(rect.x + 0x10);
+  int right = left + static_cast<s16>(rect.width - 0x20);
+  if (pos.x >= right || pos.x < left) {
+    return false;
+  }
+  if (pos.y < top) {
+    return false;
+  }
+  return pos.y < top + unknown60;
+}
+
 } // namespace ml
