@@ -272,6 +272,7 @@ public:
   static void createLine(CLLineWork &line, const mm::Vec3 &start, const mm::Vec3 &end);
   static void createRay(CLRayWork &ray, const mm::Vec3 &start, const mm::Vec3 &direction, f32 length, f32 backLength);
   static void createCapsule(CLCapsuleWork &capsule, const IDColiInput &input);
+  static void createCapsule(CLCapsuleWork &capsule, const mm::Vec3 &start, const mm::Vec3 &end, f32 radius);
   static void createBaseSphere(void *data, IDColiBaseType &type, const mm::Mat44 &matrix, const mm::Vec3 &size);
   static void calcBoxAaBb(CLBoxWork *box);
   static void calcCapsuleSetup(CLCapsuleWork *capsule);

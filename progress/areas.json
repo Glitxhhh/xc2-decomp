@@ -2,7 +2,7 @@
   {
     "name": "gf",
     "code": {
-      "total": 4334316,
+      "total": 4334192,
       "matching": 3125032,
       "non_matching": 0
     }
@@ -11,7 +11,7 @@
     "name": "monolib_mm",
     "code": {
       "total": 1747796,
-      "matching": 697040,
+      "matching": 698344,
       "non_matching": 0
     }
   },
@@ -19,7 +19,7 @@
     "name": "gmk",
     "code": {
       "total": 763712,
-      "matching": 523488,
+      "matching": 523696,
       "non_matching": 0
     }
   },
@@ -34,8 +34,8 @@
   {
     "name": "framework",
     "code": {
-      "total": 485744,
-      "matching": 293300,
+      "total": 485876,
+      "matching": 294552,
       "non_matching": 0
     }
   },
@@ -83,7 +83,7 @@
     "name": "idcoli",
     "code": {
       "total": 132992,
-      "matching": 73552,
+      "matching": 73972,
       "non_matching": 0
     }
   },
@@ -98,8 +98,8 @@
   {
     "name": "ssd",
     "code": {
-      "total": 105332,
-      "matching": 64884,
+      "total": 105324,
+      "matching": 64876,
       "non_matching": 0
     }
   },
@@ -131,7 +131,7 @@
     "name": "plugin",
     "code": {
       "total": 15372,
-      "matching": 9908,
+      "matching": 11428,
       "non_matching": 0
     }
   },
