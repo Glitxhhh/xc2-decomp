@@ -40,6 +40,7 @@ enum {
   BLADE_UNKNOWN_1044 = 1044, // Inferred role: blade whose event weapon belongs to driver shin (GfInitParamWeapon::setupForEvent); original name unknown.
   BLADE_UNKNOWN_1045 = 1045, // Inferred role: blade whose event weapon belongs to driver shin (GfInitParamWeapon::setupForEvent); original name unknown.
   BLADE_UNKNOWN_1050 = 1050, // Inferred role: blade real alias; original name unknown.
+  BLADE_UNKNOWN_1051 = 1051, // Inferred role: blade act first; original name unknown.
   BLADE_UNKNOWN_1073 = 1073,
   BLADE_UNKNOWN_1074 = 1074, // Inferred role: Homuri loaded when GfDataBlade::isHomuriNameHikari; original name unknown.
   BLADE_UNKNOWN_1078 = 1078,
