@@ -7,6 +7,7 @@
 #include "dr/dr_mdo_ctl_seam_inst_map.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_inst_anm_obj.h"
+#include "dr/dr_res_mdo_pnt_alpha.h"
 #include "dr/dr_res_mdo_pos.h"
 #include "dr/dr_res_mdo_seam_parm_read.h"
 #include "dr/dr_res_mdo_seam_res.h"
@@ -14,6 +15,7 @@
 #include "dr/dr_res_mdo_vertex.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
@@ -37,6 +39,57 @@ DrResMdoSeamWrkInst::DrResMdoSeamWrkInst()
       unknown128(nullptr), unknown130(nullptr), unknown140(0), unknown144(0), unknown156(0), unknown158(0), unknown1b0(nullptr), unknown1b8(nullptr) {}
 
 DrResMdoSeamWrkInst::~DrResMdoSeamWrkInst() { release(); }
+
+void DrResMdoSeamWrkInst::release() {
+  if (unknown118 != nullptr) {
+    // The game reads the count once, before the loop (0x71008808dc).
+    int num = unknown20->unknown3c + 1;
+    for (int i = 0; i < num; i++) {
+      unknown118[i].releaseBaseInstPos();
+    }
+    unknown118 = nullptr;
+    unknown140 = 0;
+  }
+  if (unknown130 != nullptr) {
+    unknown130->unknown130 = nullptr;
+  }
+  unknown130 = nullptr;
+  for (int i = 0; i < unknown98; i++) {
+    if (unknown90[i] != nullptr) {
+      mtl::MemManager::deallocate(unknown90[i], 0, false);
+      unknown90[i] = nullptr;
+    }
+  }
+  unknown98 = 0;
+  if (unknown50 != nullptr) {
+    mtl::MemManager::deallocate(unknown50, 0, false);
+    unknown50 = nullptr;
+  }
+  if (unknown58 != nullptr) {
+    mtl::MemManager::deallocate(unknown58, 0, false);
+    unknown58 = nullptr;
+  }
+  if (unknown60 != nullptr) {
+    delete unknown60;
+    unknown60 = nullptr;
+  }
+  unknown108 = nullptr;
+  unknown158 = 0;
+}
+
+void DrResMdoSeamWrkInst::releaseCache(DrMdoCtlSeamInstMap *ctl) {
+  // The game reads the count once, before the loop (0x7100880a7c).
+  int num = unknown20->unknown3c;
+  for (int i = 0; i < num; i++) {
+    if ((unknowne8[i >> 5] & (1 << (i & 0x1f))) != 0) {
+      if (unknown118[i + 1].unknown50 != nullptr) {
+        ctl->releaseFreeSeamMemObj(unknown118[i + 1].unknown50);
+      }
+      unknown118[i + 1].releaseBaseInstPos();
+    }
+  }
+  release();
+}
 
 void DrResMdoSeamWrkInst::changeMemCall() {
   const MdsSeamInstMapHead *head = reinterpret_cast<const MdsSeamInstMapHead *>(unknown108->m_buffer);
@@ -68,6 +121,15 @@ void DrResMdoSeamWrkInst::calcCacheInfo() {
       pos->changeMemEtcInstPos();
     }
   }
+}
+
+void DrResMdoSeamWrkInst::calcEtcInstPosUpdate(DrMdoCtlSeamInstMap *ctl) {
+  // The game reads the speed before the position updates (0x71008828ac).
+  f32 speed = ctl->unknowndc * DrMan::getIns()->unknown1c8c;
+  for (int i = 0; i < unknown140; i++) {
+    unknown120[i]->update();
+  }
+  unknown198->update(speed);
 }
 
 void DrResMdoSeamWrkInst::seachCheckStreamList(u16 *textureFlags, DrResMdoSeamTexture *textures) {
@@ -249,6 +311,20 @@ void DrResMdoSeamWrkInst::seachDefShadowInstMapRender(DrPixlShadowObj *shadow, D
   }
 }
 
+void DrResMdoSeamWrkPosInst::releaseBaseInstPos() {
+  if (unknown6c != 0) {
+    for (int i = 0; i < unknown6c; i++) {
+      unknown48[i].release();
+    }
+    unknown6c = 0;
+  }
+  unknown50 = nullptr;
+  if (unknown78 != nullptr) {
+    mtl::MemManager::deallocate(unknown78, 0, false);
+    unknown78 = nullptr;
+  }
+}
+
 void DrResMdoSeamWrkPosInst::changeMemBaseInstPos(const u8 *data) {
   const unknown404 *header = reinterpret_cast<const unknown404 *>(data);
   unknown00 = data;
@@ -358,5 +434,7 @@ void DrResMdoSeamWrkPosInst::clearAllShwBitTbl() {
 }
 
 DrResMdoSeamWrkPosInst::DrResMdoSeamWrkPosInst() : unknown20(nullptr), unknown40(nullptr), unknown50(nullptr), unknown60(0), unknown6c(0), unknown74(0), unknown78(nullptr) {}
+
+DrResMdoSeamWrkPosInst::~DrResMdoSeamWrkPosInst() { releaseBaseInstPos(); }
 
 } // namespace ml

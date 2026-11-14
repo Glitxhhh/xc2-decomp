@@ -159,9 +159,9 @@ public:
   void *unknown230;              // Inferred role: allocated memory; original member name unknown.
   s32 unknown238;                // Inferred role: allocated buffer count; original member name unknown.
   u8 _23c[0x240 - 0x23c];
-  u32 *unknown240; // Inferred role: display call flags of the positions; original member name unknown.
-  s32 unknown248;  // Inferred role: render buffer offset; original member name unknown.
-  u8 _24c[0x250 - 0x24c];
+  u32 *unknown240;                 // Inferred role: display call flags of the positions; original member name unknown.
+  s32 unknown248;                  // Inferred role: render buffer offset; original member name unknown.
+  s32 unknown24c;                  // Inferred role: unknown, cleared by resourceInit; original member name unknown.
   DrResMdoPosAddList *unknown250;  // Inferred role: add list; original member name unknown.
   DrResMdoInstMdlInfo *unknown258; // Inferred role: inst mdl info; original member name unknown.
   u16 unknown260;                  // Inferred role: render list count; original member name unknown.
@@ -205,6 +205,7 @@ static_assert(offsetof(DrMdoCtlPos, unknown218) == 0x218, "");
 static_assert(offsetof(DrMdoCtlPos, unknown238) == 0x238, "");
 static_assert(offsetof(DrMdoCtlPos, unknown240) == 0x240, "");
 static_assert(offsetof(DrMdoCtlPos, unknown248) == 0x248, "");
+static_assert(offsetof(DrMdoCtlPos, unknown24c) == 0x24c, "");
 static_assert(offsetof(DrMdoCtlPos, unknown250) == 0x250, "");
 static_assert(offsetof(DrMdoCtlPos, unknown258) == 0x258, "");
 static_assert(offsetof(DrMdoCtlPos, unknown260) == 0x260, "");

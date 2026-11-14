@@ -103,6 +103,7 @@ public:
   };
 
   DrResMdoSeamWrkPosInst();
+  ~DrResMdoSeamWrkPosInst();
   void releaseBaseInstPos();
   void setupBaseInstPos(const u8 *data, mtl::ALLOC_HANDLE handle, const DrResMdoInstAnmObj *anm);
   void changeMemBaseInstPos(const u8 *data);

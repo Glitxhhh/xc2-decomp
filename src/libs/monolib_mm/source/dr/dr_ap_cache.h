@@ -25,6 +25,7 @@ class DrAPCache {
 public:
   static DrAPCache *s_pIns;
   static GrlSurfaceFormat TEXTYPE_RGBA_8;
+  static const GrlSurfaceFormat TEXTYPE_HALF_X1; // Read-only data in the game (0x7100f84614).
 
   DrAPCache();
   virtual ~DrAPCache() {}

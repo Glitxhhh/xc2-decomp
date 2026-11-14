@@ -39,6 +39,7 @@ enum RCB : int {
 };
 
 enum RSTAT : int {
+  RSTAT_UNKNOWN_0 = 0, // Inferred role: rendering, the state DevGraphNx::renderBeginSys sets; original name unknown.
   RSTAT_UNKNOWN_1 = 1,
   RSTAT_UNKNOWN_2 = 2,
 };

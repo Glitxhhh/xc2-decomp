@@ -452,6 +452,11 @@ static inline mm::Quat unknown004(mm::Vec3 rotation) {
   return quat;
 }
 
+bool SCOM_OBJ_WARP_POS::exec(const fw::UpdateInfo &) {
+  GfObjUtil::setWarpTransform(unknown20, unknown30, unknown50);
+  return true;
+}
+
 GF_SCOM_HANDLE *SCOM_OBJ_WARP_POS::create(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation, bool isFollow) {
   fw::Transform transform;
   transform.unknown00 = position;
@@ -1431,6 +1436,11 @@ void SCOM_QUEST_REACH::createArrivePlace(u32 place) {
 #line 1736
   SCOM_QUEST_REACH *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_QUEST_REACH(GfReqSmallCom::get()->allocate(), unknown001_3, place);
   GfReqSmallCom::addRequestParallel(command);
+}
+
+bool SCOM_QUEST_GIMMICK::exec(const fw::UpdateInfo &) {
+  GfQuestTask::completeGimmickTask(unknown1c, unknown20);
+  return true;
 }
 
 GF_SCOM_HANDLE *SCOM_QUEST_GIMMICK::createDoor(u32 gimmick, f32 delay) {

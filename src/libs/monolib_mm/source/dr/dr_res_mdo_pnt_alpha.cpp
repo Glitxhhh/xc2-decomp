@@ -64,6 +64,22 @@ void DrResMdoPntAlphaMan::setup(DrResMdoPntAlpha *unknown001, DrResMdoPntAlpha *
   }
 }
 
+void DrResMdoPntAlphaMan::update(f32 speed) {
+  s32 count = 0;
+  for (s32 i = 0; i < unknown14; i++) {
+    unknown08[count] = unknown08[i];
+    DrResMdoPntAlpha *item = unknown08[i];
+    if (item->unknown00 & DrResMdoPntAlpha::unknown004_2) {
+      item->update(speed * 0.1f);
+      count++;
+    } else {
+      item->unknown00 = 0;
+      item->unknown04 = 1.0f;
+    }
+  }
+  unknown14 = count;
+}
+
 f32 DrResMdoPntAlphaMan::getAlphaObj(const void *unknown001, bool unknown002) {
   for (s32 i = 0; i < unknown14; i++) {
     DrResMdoPntAlpha *item = unknown08[i];

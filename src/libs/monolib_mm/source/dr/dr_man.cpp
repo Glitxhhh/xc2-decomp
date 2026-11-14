@@ -50,6 +50,9 @@
 #include "grlib/cglib_manager.h"
 #include "ml/critical_section.h"
 
+// The game builds DrIniSys in this unit, before this file (0x71007c4958 to 0x71007c8450): DrMan::setSRGBMode (0x71007c750c) sits inside its block.
+#include "dr_ini_sys.cpp"
+
 namespace ml {
 class DrPixlShadowCacheObj;
 class DrGpuCheckBase;

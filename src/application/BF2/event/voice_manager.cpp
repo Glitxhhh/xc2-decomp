@@ -36,6 +36,9 @@ void VoiceManager::setAutoVoiceMode(bool isAutoVoiceMode, const char *directory,
 
 void VoiceManager::setMultipleMode(bool isMultipleMode) { unknown230.setMultipleMode(isMultipleMode); }
 
+// The original source repeats the statements of preload() here instead of calling it: with `preload(frame, path)`
+// this function is 46 instructions against the game's 109 (0x71000fcaa4), and no call, unit grouping or flag
+// gives the game's code.
 void VoiceManager::preloadAuto(f32 frame, const char *name) {
   if ((unknown10 & FLAG_UNKNOWN_0) == 0) {
     return;
@@ -50,6 +53,26 @@ void VoiceManager::preloadAuto(f32 frame, const char *name) {
 void VoiceManager::preload(f32 frame, const char *name) {
   const char *path = mm::mtl::Singleton<Extend>::getPtr()->wav(name);
   unknown230.preload(frame, path);
+}
+
+// The original source repeats the statements of play() here instead of calling it: the game's playAuto
+// (0x71000f517c, 159 instructions) holds them with Extend::wav inlined, which play() itself (0x71000fccec) calls.
+// `return play(path, delay, event)` gives 26 instructions, and play() forced inline gives 123 (wav stays a call);
+// both files are in the event unit, and no flag or inline threshold gives the game's code.
+bool VoiceManager::playAuto(const char *name, f32 delay, IVoiceEvent *event) {
+  if ((unknown10 & FLAG_UNKNOWN_0) == 0) {
+    return false;
+  }
+  const char *path = unknown18.makePath(name);
+  if (path == nullptr) {
+    return false;
+  }
+  bool isLipsync = mm::mtl::Singleton<LipsyncManager>::getPtr()->setTarget(path);
+  setFlag(FLAG_UNKNOWN_1, isLipsync);
+  if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkip()) {
+    return isLipsync;
+  }
+  return unknown230.play(mm::mtl::Singleton<Extend>::getPtr()->wav(path), delay, event);
 }
 
 bool VoiceManager::play(const char *name, f32 delay, IVoiceEvent *event) {

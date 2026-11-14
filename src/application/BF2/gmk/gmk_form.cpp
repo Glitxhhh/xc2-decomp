@@ -18,7 +18,6 @@ struct GF_OBJ_HANDLE;
 
 namespace gmk {
 
-extern template bool GmkForm::create<GmkFormPc, GmkFormPcnpc>(const GmkFormPc &);
 template bool GmkForm::create<GmkFormPcEv, GmkFormPcnpcEv>(const GmkFormPcEv &);
 
 GmkForm::GmkForm(const CreateInfo *info) : unknown00(0) {

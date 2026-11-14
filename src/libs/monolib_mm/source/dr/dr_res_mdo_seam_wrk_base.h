@@ -83,9 +83,10 @@ public:
   u32 unknown94; // Inferred role: render count; original member name unknown.
   u64 unknown98; // Inferred role: shadow cache update mask; original member name unknown.
   s32 unknowna0; // Inferred role: state flags, cleared by the constructor; original member name unknown.
-  u8 _a4[0xb0 - 0xa4];
-  s32 unknownb0; // Inferred role: allocated buffer count; original member name unknown.
-  s32 unknownb4; // Inferred role: memory size; original member name unknown.
+  u8 _a4[0xa8 - 0xa4];
+  void **unknowna8; // Inferred role: allocated buffers; original member name unknown.
+  s32 unknownb0;    // Inferred role: allocated buffer count; original member name unknown.
+  s32 unknownb4;    // Inferred role: memory size; original member name unknown.
   u8 _b8[0xe0 - 0xb8];
   u32 *unknowne0;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u32 *unknowne8;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
@@ -119,6 +120,7 @@ static_assert(offsetof(DrResMdoSeamWrkBase, unknown78) == 0x78, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown84) == 0x84, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown8c) == 0x8c, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown98) == 0x98, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, unknowna8) == 0xa8, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknownb4) == 0xb4, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown110) == 0x110, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown130) == 0x130, "");

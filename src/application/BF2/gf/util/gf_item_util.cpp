@@ -515,3 +515,5 @@ template mm::mtl::FixedVector<gf::GfItem, 1024>::~FixedVector();
 
 #include "gf/util/gf_equip_util.cpp"
 #include "gf/util/gf_shop_util.cpp"
+// The game builds GfRecipeOrbUtil in the same unit: three of its functions (0x710035f534 to 0x710035f544) open the unit's block and the others follow GfShopUtil (0x71003623f0 to 0x7100362e34).
+#include "gf/util/gf_recipe_orb_util.cpp"

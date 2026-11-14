@@ -2,7 +2,6 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
-#include "dr/dr_mdo_mat.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_res.h"
@@ -12,20 +11,6 @@ namespace ml {
 
 DrMdoCtlSeamInstMap::DrMdoCtlSeamInstMap(int viewNum) : DrMdoCtlSeamLowMap(viewNum) {}
 
-namespace {
-
-// Inferred role: header of the fixed animation data of the instance map; original type name unknown.
-struct unknown411 {
-  u8 _00[0x14];
-  u32 unknown14; // Inferred role: offset of the fixed animation infos; original member name unknown.
-  u8 _18[0x1c - 0x18];
-  u32 unknown1c; // Inferred role: offset of the fixed animation keys; original member name unknown.
-  u8 _20[0x24 - 0x20];
-  u32 unknown24; // Inferred role: offset of the fixed animation arrays; original member name unknown.
-};
-
-} // namespace
-
 void DrMdoCtlSeamInstMap::changeMemInstMapParts(DrResMdoSeamWrkInst *inst) {
   MdoWrkMatRes *matRes = inst->unknown50;
   const u8 *data = inst->unknown108->m_buffer;
@@ -33,11 +18,7 @@ void DrMdoCtlSeamInstMap::changeMemInstMapParts(DrResMdoSeamWrkInst *inst) {
   unknown30 = matRes;
   resetInstMapMaterial(matRes, data + head->unknown10, data + head->unknown0c, data + head->unknown44, nullptr, head->unknown24);
   if (head->unknown14 != 0) {
-    const unknown411 *block = reinterpret_cast<const unknown411 *>(data + head->unknown14);
-    matRes->unknown50 = reinterpret_cast<const u8 *>(block);
-    matRes->unknown58 = reinterpret_cast<const MdsFixAnmInf *>(reinterpret_cast<const u8 *>(block) + block->unknown14);
-    matRes->unknown60 = reinterpret_cast<const unknown013 *>(reinterpret_cast<const u8 *>(block) + block->unknown1c);
-    matRes->unknown68 = reinterpret_cast<const u8 *>(block) + block->unknown24;
+    changeMemFixAnim(matRes, data + head->unknown14);
   }
 }
 

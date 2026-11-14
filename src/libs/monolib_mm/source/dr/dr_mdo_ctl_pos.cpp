@@ -11,6 +11,7 @@
 #include "dr/dr_mdl_base.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_mdo_texture_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
@@ -20,6 +21,7 @@
 #include "dr/dr_res_mdo_pos.h"
 #include "dr/dr_res_mdo_pos_add_list.h"
 #include "dr/dr_res_mdo_sort.h"
+#include "dr/dr_res_mdo_tex_list.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "dr/dr_res_wrk_clip_list.h"
 #include "mm_math/mm_vec3.h"
@@ -235,6 +237,18 @@ void DrMdoCtlPos::dispOffUpdate() {
     arg.unknown18 = unknowndc;
     unknown258->update(arg);
   }
+}
+
+void DrMdoCtlPos::resourceInit() {
+  setupResource(false);
+  if (unknown30->unknownf0 != 0) {
+    unknown30->unknownd0 = m_drMan->unknown88->unknown010->createTextureObj(unknown30->unknown08);
+    for (int i = 0; i < unknown30->unknownd0->unknown68; i++) {
+      unknown30->unknowne8[i] = unknown30->unknownd0->getTexObj(i);
+    }
+  }
+  m_drMan->unknown78->unknown800->addShadowCacheUpdate(false);
+  unknown24c = 0;
 }
 
 void DrMdoCtlPos::createRenderDisplayList(const MdsMdlInfoHeader *, int, _MdoInstanceWork *, grlib::CGLibVtxInstans *, int) {}

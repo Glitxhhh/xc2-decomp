@@ -602,14 +602,18 @@ void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
 
 } // namespace ml
 
-// The game builds these files in one unit with this one, in this order.
+// The game builds these files in one unit with this one (0x71007f0d14 to 0x7100836bb4), in this order; this file's own functions (0x7100819e84 to 0x710081c050) sit between dr_mdo_ctl_dammy.cpp and
+// dr_mdo_ctl_seam_all.cpp.
 // clang-format off
 #include "dr_mdo_ctl.cpp"
-#include "dr_mdo_setup.cpp"
-#include "dr_mdo_mat.cpp"
-#include "dr_mdo_zsort.cpp"
+#include "dr_mdo_ctl_cld_mdl.cpp"
+#include "dr_mdo_ctl_mpf.cpp"
+#include "dr_mdo_ctl_mpf_auto.cpp"
+#include "dr_mdo_ctl_mpf_inst.cpp"
+#include "dr_mdo_ctl_mpf_work.cpp"
 #include "dr_mdo_ctl_nom.cpp"
 #include "dr_mdo_ctl_pos.cpp"
+#include "dr_mdo_ctl_dammy.cpp"
 #include "dr_mdo_ctl_seam_all.cpp"
 #include "dr_mdo_ctl_seam_base_map.cpp"
 #include "dr_mdo_ctl_seam_env_map.cpp"
@@ -618,4 +622,16 @@ void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
 #include "dr_mdo_ctl_seam_low_map.cpp"
 #include "dr_mdo_ctl_seam_mpf_map.cpp"
 #include "dr_mdo_ctl_seam_read.cpp"
+#include "dr_mdo_mat.cpp"
+#include "dr_mdo_anim.cpp"
+#include "dr_mdo_nom_after_image.cpp"
+#include "../util/ml_halton.cpp"
+#include "dr_mdo_mpf_man.cpp"
+#include "dr_mdo_node.cpp"
+#include "dr_mdo_setup.cpp"
+#include "dr_mdo_sml_shadow_man.cpp"
+#include "dr_mdo_tex_simple_man.cpp"
+#include "dr_mdo_texture_man.cpp"
+#include "dr_mdo_vertex_man.cpp"
+#include "dr_mdo_zsort.cpp"
 // clang-format on

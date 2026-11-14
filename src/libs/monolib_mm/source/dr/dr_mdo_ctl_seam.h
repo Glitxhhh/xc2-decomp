@@ -159,7 +159,9 @@ struct unknown061 {
   u32 m_seamInstMdlMax;
   u32 unknown24; // Inferred role: offset of the instance map entries; original member name unknown.
   u32 m_seamColiMax;
-  u8 _2c[0x44 - 0x2c];
+  u8 _2c[0x30 - 0x2c];
+  s32 unknown30; // Inferred role: env map count; original member name unknown.
+  u8 _34[0x44 - 0x34];
   u32 m_seamShaderMax;
   u8 _48[0x50 - 0x48];
   u32 m_seamVertexMax;
@@ -194,6 +196,7 @@ static_assert(offsetof(unknown061, unknown1c) == 0x1c, "");
 static_assert(offsetof(unknown061, m_seamBaseMdlMax) == 0x18, "");
 static_assert(offsetof(unknown061, m_seamInstMdlMax) == 0x20, "");
 static_assert(offsetof(unknown061, m_seamColiMax) == 0x28, "");
+static_assert(offsetof(unknown061, unknown30) == 0x30, "");
 static_assert(offsetof(unknown061, m_seamShaderMax) == 0x44, "");
 static_assert(offsetof(unknown061, m_seamVertexMax) == 0x50, "");
 static_assert(offsetof(unknown061, m_seamTextureMax) == 0x58, "");

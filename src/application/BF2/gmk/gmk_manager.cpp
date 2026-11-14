@@ -1698,7 +1698,9 @@ GmkPhantomManager::~GmkPhantomManager() {}
 
 } // namespace gmk
 
+// GmkForm follows GmkPhantomManager in the game (0x71005e7b10 to 0x71005e8208).
 // clang-format off
+#include "gmk/gmk_form.cpp"
 #include "gmk/gmk_ctrl_vol_se.cpp"
 // clang-format on
 

@@ -21,6 +21,7 @@ namespace ml {
 class DrMdoCtlSeamInstMap;
 class DrPixlShadowCacheObj;
 class DrPixlShadowObj;
+class DrResMdoPntAlphaMan;
 class DrResMdoPos;
 class DrResMdoSeamParmRead;
 struct MdoArgSeamUpdate;
@@ -107,6 +108,7 @@ public:
   void changeMemCall();
   bool update(const DrResMdoSeamParmRead *parmRead, bool isOpen, u32 flags);
   void calcEtcInstPos(DrMdoCtlSeamInstMap *ctl);
+  void calcEtcInstPosUpdate(DrMdoCtlSeamInstMap *ctl);
   bool callReadOffColiTest(const mm::Vec3 &position, const DrResMdoSeamParmRead *parmRead);
   bool callReadColiTest(const mm::Vec3 &position, bool isFirst);
   void calcCacheInfo();
@@ -153,8 +155,9 @@ public:
   s32 unknown84; // Inferred role: memory size; original member name unknown.
   s16 unknown88; // Inferred role: read count; original member name unknown.
   u16 unknown8a; // Inferred role: state flags; original member name unknown.
-  u8 _8c[0x98 - 0x8c];
-  s32 unknown98; // Inferred role: render buffer count; original member name unknown.
+  u8 _8c[0x90 - 0x8c];
+  void **unknown90; // Inferred role: render buffers; original member name unknown.
+  s32 unknown98;    // Inferred role: render buffer count; original member name unknown.
   u8 _9c[0xc8 - 0x9c];
   u32 *unknownc8; // Inferred role: read model bit table; original member name unknown.
   u32 *unknownd0; // Inferred role: sub model bit table; original member name unknown.
@@ -177,8 +180,9 @@ public:
   u8 _152[0x156 - 0x152];
   u16 unknown156; // Inferred role: shadow flags; original member name unknown.
   u32 unknown158; // Inferred role: shadow cache flags; original member name unknown.
-  u8 _15c[0x1a0 - 0x15c];
-  unknown002 *unknown1a0; // Inferred role: model infos; original member name unknown.
+  u8 _15c[0x198 - 0x15c];
+  DrResMdoPntAlphaMan *unknown198; // Inferred role: point alpha manager; original member name unknown.
+  unknown002 *unknown1a0;          // Inferred role: model infos; original member name unknown.
   u8 _1a8[0x1b0 - 0x1a8];
   void *unknown1b0; // Inferred role: unknown work, cleared by the constructor; original member name unknown.
   void *unknown1b8; // Inferred role: unknown work, cleared by the constructor; original member name unknown.
@@ -198,6 +202,7 @@ static_assert(offsetof(DrResMdoSeamWrkInst, unknown70) == 0x70, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown80) == 0x80, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown84) == 0x84, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown88) == 0x88, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown90) == 0x90, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown98) == 0x98, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknownc8) == 0xc8, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknownd0) == 0xd0, "");
@@ -212,6 +217,7 @@ static_assert(offsetof(DrResMdoSeamWrkInst, unknown140) == 0x140, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown14c) == 0x14c, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown150) == 0x150, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown156) == 0x156, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown198) == 0x198, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown1a0) == 0x1a0, "");
 static_assert(sizeof(DrResMdoSeamWrkInst::unknown002) == 0x20, "");
 static_assert(sizeof(DrResMdoSeamWrkInst) == 0x1c8, "");

@@ -22,7 +22,7 @@ namespace ml {
 namespace {
 
 // Inferred role: path buffer of the loaded files; original name unknown.
-char unknown002[0x200];
+char unknown015[0x200];
 
 // Inferred helper: reloads the volume textures; original name unknown.
 inline void unknown001(DrIniSys *self) {
@@ -103,8 +103,8 @@ void DrIniSys::getdrColor3Work(mm::Col3 &color, const char *value) {
   for (int i = 0; i < 0x400; i++) {
     char c = value[i];
     if (c == ',') {
-      unknown002[length] = '\0';
-      rgb[count] = getFloatWork(unknown002);
+      unknown015[length] = '\0';
+      rgb[count] = getFloatWork(unknown015);
       count++;
       if (count >= 3) {
         break;
@@ -113,12 +113,12 @@ void DrIniSys::getdrColor3Work(mm::Col3 &color, const char *value) {
     } else if (c == '\0') {
       break;
     } else {
-      unknown002[length++] = c;
+      unknown015[length++] = c;
     }
   }
   if (length > 1 && count < 3) {
-    unknown002[length] = '\0';
-    rgb[count] = getFloatWork(unknown002);
+    unknown015[length] = '\0';
+    rgb[count] = getFloatWork(unknown015);
   }
   color.r = rgb[0];
   color.g = rgb[1];
@@ -136,8 +136,8 @@ int DrIniSys::getToonDirType(const char *value) {
 }
 
 FileResTh *DrIniSys::readTextureMapFile(const char *name) {
-  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/%s.witex", name);
-  return unknown003(this, unknown002);
+  snprintf(unknown015, sizeof(unknown015), "/monolib/shader/%s.witex", name);
+  return unknown003(this, unknown015);
 }
 
 int DrIniSys::getIntWork(const char *value) { return atoi(value); }
@@ -191,13 +191,13 @@ void DrIniSys::loadWetnessCSVBFile() {
   if (unknown1b88 == nullptr) {
     unknown1b88 = new (unknown00->unknown1c) csvb::CCsvbData();
   }
-  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/%s.bin", WETNESS_CSVB_FILE);
-  unknown1b88->Load(unknown00->unknown1c, unknown002);
+  snprintf(unknown015, sizeof(unknown015), "/monolib/shader/%s.bin", WETNESS_CSVB_FILE);
+  unknown1b88->Load(unknown00->unknown1c, unknown015);
 }
 
 void DrIniSys::loadFilterLutTexture() {
-  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/filterlut.wiltp");
-  FileResTh *res = unknown003(this, unknown002);
+  snprintf(unknown015, sizeof(unknown015), "/monolib/shader/filterlut.wiltp");
+  FileResTh *res = unknown003(this, unknown015);
   if (unknown8a0 != nullptr) {
     unknown8a0->Release();
     unknown8a0 = nullptr;
@@ -207,13 +207,13 @@ void DrIniSys::loadFilterLutTexture() {
 }
 
 void DrIniSys::loadGlassBreakage() {
-  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/%s", GLASS_BREAKAGE);
-  unknown898 = unknown003(this, unknown002);
+  snprintf(unknown015, sizeof(unknown015), "/monolib/shader/%s", GLASS_BREAKAGE);
+  unknown898 = unknown003(this, unknown015);
 }
 
 void DrIniSys::loadCameraLight() {
-  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/%s.wilgt", CAM_LGT_FILE);
-  unknown890 = unknown003(this, unknown002);
+  snprintf(unknown015, sizeof(unknown015), "/monolib/shader/%s.wilgt", CAM_LGT_FILE);
+  unknown890 = unknown003(this, unknown015);
 }
 
 void DrIniSys::loadTextureImpl(u32 index, const char *name) {
@@ -264,8 +264,8 @@ void DrIniSys::setDispMirrorBall(bool isDisp) {
 }
 
 void DrIniSys::loadMirrorBallModel() {
-  snprintf(unknown002, sizeof(unknown002), "/monolib/shader/%s.wimdo", MIRROR_BALL_MDL_FILE);
-  FileResTh *res = unknown003(this, unknown002);
+  snprintf(unknown015, sizeof(unknown015), "/monolib/shader/%s.wimdo", MIRROR_BALL_MDL_FILE);
+  FileResTh *res = unknown003(this, unknown015);
   if (res == nullptr) {
     return;
   }
@@ -277,7 +277,7 @@ void DrIniSys::loadMirrorBallModel() {
     unknown878 = nullptr;
   }
   unknown878 = res;
-  unknown880 = Scn::get()->createMdl(res->unknownc8, unknown002, 0);
+  unknown880 = Scn::get()->createMdl(res->unknownc8, unknown015, 0);
 }
 
 bool DrIniSys::getUpdateMirrorBallPos() const { return m_updateMirrorBallPos; }
@@ -304,9 +304,9 @@ void DrIniSys::setStrWork(char *dst, const char *src) {
 }
 
 FileResTh *DrIniSys::readWorkFile(const char *name) {
-  snprintf(unknown002, sizeof(unknown002), "monolib/shader/%s.wilut", name);
+  snprintf(unknown015, sizeof(unknown015), "monolib/shader/%s.wilut", name);
   FileResTh *res = new (WorkUtil::getWorkMem()) FileResTh();
-  res->loadBlock(unknown00->unknown1c, unknown002, 0x1000, 0);
+  res->loadBlock(unknown00->unknown1c, unknown015, 0x1000, 0);
   return res;
 }
 

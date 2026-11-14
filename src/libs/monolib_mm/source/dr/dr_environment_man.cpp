@@ -697,9 +697,15 @@ void (DrEnvironmentObjLgt::*DrEnvironmentObjLgt::s_pCallFogCall[])(DrFogObjGbl *
 
 } // namespace ml
 
+// The game builds these files in one unit with this one (0x71007dad8c to 0x71007f0994): the light list (0x71007df6e0) sits between the animation block and this file's, the fog manager
+// (0x71007e6eac to 0x71007e76c0) between this file's functions and the light manager's.
+// clang-format off
 #include "dr_environment_anim.cpp"
+#include "dr_environment_lgt_list.cpp"
 #include "dr_environment_tex.cpp"
 #include "dr_environment_time.cpp"
+#include "dr_fog_man.cpp"
 #include "dr_light_obj.cpp"
+// clang-format on
 // DrLightMan inlines functions of the light objects (isCullON, constructors): keep their definitions visible in this unit.
 #include "dr_light_man.cpp"

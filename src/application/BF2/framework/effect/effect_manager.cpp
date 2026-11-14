@@ -1121,3 +1121,6 @@ void EffectManager::finalRender(const ml::IDrDrawWorkInfo *info) {
 } // namespace fw
 
 template mm::mtl::PtrSingleton<fw::EffectManager>::~PtrSingleton();
+
+// The game builds this file in the same unit: RimBloomCalc::calcEndFrame (0x710016f138) and getVal (0x7100175e90) sit inside this file's block (0x710016d0a0 to 0x710017779c).
+#include "../render/rim_bloom_calc.cpp"

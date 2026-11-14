@@ -7,6 +7,7 @@
 #include "dr/dr_mdl_base.h"
 #include "dr/dr_mdo_ctl.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_mdo_nom_after_image.h"
 #include "dr/dr_mdo_sml_shadow_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
@@ -23,6 +24,7 @@
 #include "dr/dr_res_mdo_vtx_mesh_obj.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "mm_math/mm_col3.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
 
@@ -435,6 +437,47 @@ void DrMdoCtlNom::dispOffUpdate() {
   unknown1f8->unknown08 = (unknown1f8->unknown08 & 0xffffff81) | 0xe;
   unknownfc &= ~(unknown027_22 | unknown027_23 | unknown027_26);
   updateAfterImage();
+}
+
+void DrMdoCtlNom::updateAfterImage() {
+  if (unknown218 != nullptr && unknown218->isReleaseCall()) {
+    delete unknown218;
+    unknown218 = nullptr;
+  }
+  if (unknown220[DrMan::s_nDblMemIdx] != nullptr) {
+    if (unknown218 != nullptr) {
+      delete unknown218;
+      unknown218 = nullptr;
+    }
+    unknown218 = unknown220[DrMan::s_nDblMemIdx];
+    unknown220[DrMan::s_nDblMemIdx] = nullptr;
+  }
+  if (unknown218 != nullptr) {
+    unknown218->update(this, unknowndc * m_drMan->unknown1c8c);
+  }
+}
+
+void DrMdoCtlNom::createAfterImage(f32 count, f32 span, f32 fade, const mm::Col3 &headColor, f32 headAlpha, f32 headEmissive, f32 headScale, const mm::Col3 &tailColor, f32 tailAlpha, f32 tailEmissive,
+                                   f32 tailScale) {
+  if (unknown218 != nullptr) {
+    unknown218->releaseCall();
+  }
+  DrMdoNomAfterImage *image = new (DrMan::getIns()->unknown0c) DrMdoNomAfterImage();
+  image->create(this, count, span, fade, headColor, headAlpha, headEmissive, headScale, tailColor, tailAlpha, tailEmissive, tailScale);
+  unknown220[DrMan::s_nDblStockIdx] = image;
+}
+
+void DrMdoCtlNom::releaseAfterImage() {
+  if (unknown218 != nullptr) {
+    unknown218->releaseCall();
+  }
+  if (unknown220[DrMan::s_nDblMemIdx] != nullptr) {
+    unknown220[DrMan::s_nDblMemIdx]->releaseCall();
+  }
+  if (unknown220[DrMan::s_nDblStockIdx] != nullptr) {
+    delete unknown220[DrMan::s_nDblStockIdx];
+    unknown220[DrMan::s_nDblStockIdx] = nullptr;
+  }
 }
 
 } // namespace ml

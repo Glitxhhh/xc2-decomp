@@ -16,7 +16,20 @@ class CGLibTriUniformArray;
 namespace ml {
 
 struct MdoWrkMatRes;
-struct MdsSeamEnvMapHead;
+
+// Inferred layout of the env map resource header; offsets are relative to the header.
+struct MdsSeamEnvMapHead {
+  u32 unknown00; // Inferred role: model data offset; original member name unknown.
+  u32 unknown04; // Inferred role: material data offset; original member name unknown.
+  u32 unknown08; // Inferred role: fixed animation data offset, 0 when there is none; original member name unknown.
+  u32 unknown0c; // Inferred role: vertex data offset; original member name unknown.
+  u32 unknown10; // Inferred role: texture data offset; original member name unknown.
+  u8 _14[0x18 - 0x14];
+  u32 unknown18; // Inferred role: shader data offset; original member name unknown.
+};
+
+static_assert(offsetof(MdsSeamEnvMapHead, unknown08) == 0x08, "");
+static_assert(offsetof(MdsSeamEnvMapHead, unknown18) == 0x18, "");
 
 // Inferred layout of the env map data; offsets are relative to the data.
 struct MdsSeamEnvMapData {

@@ -11,6 +11,7 @@
 #include "gf/menu/list/gf_menu_item_list.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
+#include "gf/menu/object/gf_menu_obj_sort.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_rect.h"
@@ -41,6 +42,9 @@ static const ItemType::Type unknown001[13] = {
     ItemType::ITEM_TYPE_UNKNOWN_5,
     ItemType::ITEM_TYPE_UNKNOWN_8,
 };
+
+// Inferred role: sort type of each filter; original name unknown.
+static const u32 unknown002[13] = {11, 3, 4, 5, 6, 7, 8, 9, 2, 10, 11, 12, 13};
 
 GfMenuObjItemList2::GfMenuObjItemList2(u32 handle) : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown98(0), unknown9c(0), unknowna0(true) {}
 
@@ -286,6 +290,101 @@ void GfMenuObjItemList2::MainListener::reciveEvent(const ui::EventData &event, u
     GfMenuObject::disableInput(acc.searchChild("LAY_mainwindow"));
     setFadeOutSub(handle);
     unknown20->unknowna0 = false;
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjItemList2::ItemListListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown20->unknown98 = 0;
+    unknown20->unknown30->clear();
+    unknown20->unknown30->pickupObject(acc.unknown10, "LAY_listtag@%02d", 1);
+    setupItemList(acc, unknown20->unknown28, unknown20->unknown30);
+    GfMenuObjUtil::createVScrollBarPlugin(acc.searchChild("IMG_scroll_point"), unknown20->unknown28, "IMG_scroll_line", true);
+    updateItemList(unknown20->unknown28, unknown20->unknown30, unknown20->unknown98, unknown0c);
+    refreshItemList(acc, unknown20->unknown28, unknown20->unknown30);
+    setupFilter(acc, 0);
+    GfMenuObjSort::setSortLabelText(GfMenuObjSort::getSortID(unknown002[0], 0), acc.searchChild("TXT_sort_label"));
+    unknown164(handle, GfMenuTypes::unknown003_257);
+    unknown0c = 0;
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    u32 previous = event.unknown0c;
+    if (index != 0xffffffff) {
+      unknown20->unknown28->setIndex(index);
+      unknown20->unknown28->getContents(index);
+      refreshItemList(acc, unknown20->unknown28, unknown20->unknown30);
+    }
+    if (previous != 0xffffffff && index != previous) {
+      GfMenuObjUtil::playSECommonCursor();
+    }
+    break;
+  }
+  case 8:
+    switch (event.unknown0c) {
+    case 2:
+      unknown164(handle, GfMenuTypes::unknown003_258);
+      unknown163(owner.searchChild("LAY_main"), GfMenuTypes::unknown003_34, 0);
+      break;
+    case 9: {
+      u32 filter = unknown20->unknown38[unknown20->unknown98];
+      GfMenuObjSort::open(acc.unknown10, acc.searchChild("TXT_sort_label"), unknown002[filter], unknown0c);
+      GfMenuObject::disableInput(handle);
+      GfMenuObjOperationInfo::remove(owner.searchChild("LAY_mainwindow"), 0, 0, 0);
+      unknown164(owner.searchChild("LAY_filter"), GfMenuTypes::unknown003_258);
+      break;
+    }
+    }
+    break;
+  case GfMenuTypes::unknown003_257:
+    GfMenuObject::setupInputSelectionFromList(handle, *unknown20->unknown28);
+    GfMenuObject::enableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_258:
+    GfMenuObject::disableInput(handle);
+    break;
+  case GfMenuTypes::unknown003_259: {
+    u32 filter = unknown20->unknown38[unknown20->unknown98];
+    // The original source repeats the statements of setupFilter() here instead of calling it, where event 1 above
+    // calls it (bl at 0x710047c314, its only reference): the game holds them at 0x710047c158-0x710047c1cc, and
+    // both destructors run before getSortID. With setupFilter(acc, filter) the function is 361 instructions against
+    // the game's 389; neither call is inlined (costs 430 and 435 against 412), and a higher inline threshold
+    // inlines the constant call of event 1 first, which the game keeps.
+    {
+      ui::UIStr text;
+      getFilterText(filter, text);
+      ui::UIObjectAcc label(acc.searchChild("TXT_filterlabel"));
+      label.setText(text);
+    }
+    GfMenuObjSort::setSortLabelText(GfMenuObjSort::getSortID(unknown002[filter], 0), acc.searchChild("TXT_sort_label"));
+    unknown0c = 0;
+    updateItemList(unknown20->unknown28, unknown20->unknown30, filter, unknown0c);
+    unknown20->unknown28->setIndex(0);
+    unknown20->unknown28->getSize();
+    acc.setDispChild(filter != 4, "LAY_iteminfo_normal");
+    acc.setDispChild(filter == 4, "LAY_iteminfo_pouch");
+    break;
+  }
+  case GfMenuTypes::unknown003_260:
+    GfMenuObject::resetInputSelection(handle);
+    GfMenuObject::setupInputSelectionFromList(handle, *unknown20->unknown28);
+    break;
+  case 0x148:
+    GfMenuObject::enableInput(handle);
+    GfMenuObjOperationInfo::add(owner.searchChild("LAY_mainwindow"), 0, 0, 0);
+    unknown164(owner.searchChild("LAY_filter"), GfMenuTypes::unknown003_257);
+    if (unknown0c != event.unknown08) {
+      u16 sort = GfMenuObjSort::getSortID(unknown002[unknown20->unknown38[unknown20->unknown98]], event.unknown08);
+      unknown20->unknown28->sort(sort, false);
+      unknown0c = event.unknown08;
+    }
     break;
   default:
     ui::UIObjectListener::reciveEvent(event, handle);

@@ -378,8 +378,16 @@ template class reslist<ScnObj *>;
 
 } // namespace ml
 
-// Scn::draw inlines ScnDebug::render and Scn::init the ScnDebug constructor in the game (one unit from 0x710073fc4c to
-// 0x7100755bfc); the ScnDebug block (0x71007437a0 to 0x7100751eb0) follows every function of this file.
+// The game builds these files in one unit with this one (0x710073fc4c to 0x7100755bfc), in this order. Scn::draw inlines ScnDebug::render and Scn::init the ScnDebug constructor; ScnCamUtil
+// (0x7100742c24 to 0x7100743708) comes before the ScnDebug block (0x71007437a0 to 0x7100751eb0), which follows every function of this file and ends with ScnDebugUtil (0x7100751cc4); ScnObjCam
+// (0x7100751eb0), ScnObj (0x7100753ad4) and ScnUtil (0x7100754c4c) come after it.
+// clang-format off
+#include "scn_cam_util.cpp"
 #include "scn_debug.cpp"
+#include "scn_debug_util.cpp"
+#include "scn_obj_cam.cpp"
+#include "scn_obj.cpp"
+#include "scn_util.cpp"
+// clang-format on
 
 template mm::mtl::PtrSingleton<ml::Scn>::~PtrSingleton();

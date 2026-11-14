@@ -29,10 +29,11 @@ public:
 
   class ItemListListener : public ui::UIObjectListener {
   public:
-    ItemListListener(GfMenuObjItemList2 *owner) : _0c(), unknown20(owner) {}
+    ItemListListener(GfMenuObjItemList2 *owner) : unknown0c(0), _10(), unknown20(owner) {}
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
-    u8 _0c[0x1c - 0x0c];           // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
+    u32 unknown0c;                 // Inferred role: index of the selected sort; original member name unknown.
+    u8 _10[0x1c - 0x10];           // Actively zero-initialized unknown byte range, NOT padding; original name/role unknown.
     GfMenuObjItemList2 *unknown20; // Inferred role: owner; original member name unknown.
   };
 
@@ -62,15 +63,19 @@ public:
   void refreshFilterIcon();
 
   u8 _24[0x28 - 0x24];
-  GfMenuItemList *unknown28;               // Inferred role: item list; original member name unknown.
-  ui::UISelectObjList *unknown30;          // Inferred role: item objects; original member name unknown.
-  mm::mtl::FixedVector<int, 21> unknown38; // Inferred role: item types of the filter icons; original member name unknown.
-  u32 unknown98;                           // Inferred role: selected filter; original member name unknown.
-  u32 unknown9c;                           // Role and original member name unknown, cleared by the constructor.
-  bool unknowna0;                          // Role and original member name unknown, set by the constructor.
+  GfMenuItemList *unknown28;      // Inferred role: item list; original member name unknown.
+  ui::UISelectObjList *unknown30; // Inferred role: item objects; original member name unknown.
+  // Inferred role: filter of each shown filter icon, an index of the filter tables; original member name unknown. The elements are u32: initialize fills it from its u32 counter, they are the
+  // unsigned int argument of getFilterText(unsigned int, UIStr &) and updateItemList(..., unsigned int, unsigned int) (mangled symbols), and ItemListListener::reciveEvent zero-extends the index
+  // (ldr w8 at 0x710047c0d0, ldrsw with int).
+  mm::mtl::FixedVector<u32, 21> unknown38;
+  u32 unknown98;  // Inferred role: selected filter; original member name unknown.
+  u32 unknown9c;  // Role and original member name unknown, cleared by the constructor.
+  bool unknowna0; // Role and original member name unknown, set by the constructor.
 };
 
 static_assert(offsetof(GfMenuObjItemList2::MainListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjItemList2::ItemListListener, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfMenuObjItemList2::ItemListListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjItemList2::ItemListListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjItemList2::FilterListener, unknown20) == 0x20, "");

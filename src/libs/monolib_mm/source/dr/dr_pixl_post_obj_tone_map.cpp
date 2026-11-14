@@ -3,7 +3,9 @@
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_format.h"
 #include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_mem_man.h"
 #include "dr/dr_pixl_post_man.h"
 #include "dr/dr_pixl_render_target.h"
 #include "dr/dr_shd_data_list.h"
@@ -14,6 +16,7 @@
 #include "grlib/cglib_shader.h"
 #include "grlib/cglib_uni_base_utility.h"
 #include "mm_math/mm_vec4.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
 
@@ -25,6 +28,23 @@ void DrPixlPostObjToneMap::update() {
     updateByCompute();
   } else {
     updateByRenderTarget();
+  }
+}
+
+DrPixlPostObjToneMap::DrPixlPostObjToneMap(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan) : DrPixlPostObj(drMan, pixlMan, postMan), unknownb0(1.0f), unknownb4(0x10), unknownb8(0) {
+  for (s32 i = 0; i < 6; i++) {
+    unknown18[i] = new (unknown00->unknown0c) DrPixlRenderTarget(drMan);
+  }
+  unknown48.setup(0x10);
+  unknown70.setup(0x10);
+  unknown98 = new (unknown00->unknown0c) DrPixlRenderTarget(drMan);
+  unknowna0 = new (unknown00->unknown0c) DrPixlRenderTarget(drMan);
+  unknowna8 = unknown98;
+  unknown98->setTextureInfo(1.0f, 1.0f, DrAPCache::TEXTYPE_HALF_X1, false, 0);
+  unknowna0->setTextureInfo(1.0f, 1.0f, DrAPCache::TEXTYPE_HALF_X1, false, 0);
+  for (s32 i = 0; i < 6; i++) {
+    unknown18[i]->setTextureInfo(
+        static_cast<f32>(128 >> i), static_cast<f32>(128 >> i), DrPixlFormat::s_ToneMapFormat, true, (DrPixlMemMan::get()->unknown010 + DrMan::getIns()->unknown1c98)->unknown19c[i]);
   }
 }
 

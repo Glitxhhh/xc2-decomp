@@ -25,6 +25,7 @@
 #include "gf/request/gf_req_scom.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_form.h"
+#include "gmk/gmk_form_impl.h" // IWYU pragma: keep (the game instantiates GmkForm::create<GmkFormPc, GmkFormPcnpc> in this unit, after applyPartyForm, at 0x710037c27c)
 #include "gmk/gmk_form_pc.h"
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_salvage.h"

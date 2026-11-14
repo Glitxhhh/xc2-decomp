@@ -16,6 +16,7 @@ class CloudMdlDataObj;
 
 namespace ml {
 class DrMan;
+class DrMdoNomAfterImage;
 class DrResEtcPamObj;
 class DrResMdoLight;
 class DrResMdoMeshObj;
@@ -126,9 +127,10 @@ public:
   DrResEtcPamObj *unknown200;     // Inferred role: etc pam object; original member name unknown.
   u8 _208[0x210 - 0x208];
   cloud::CloudMdlDataObj *unknown210; // Inferred role: cloud model data; original member name unknown.
-  u8 _218[0x230 - 0x218];
-  u64 unknown230;         // Inferred role: shadow cache mask; original member name unknown.
-  const char *unknown238; // Inferred role: path given to the constructor; original member name unknown.
+  DrMdoNomAfterImage *unknown218;     // Inferred role: current after image, updated each frame and deleted once its release call is due; original member name unknown.
+  DrMdoNomAfterImage *unknown220[2];  // Inferred role: new after images waiting per double buffer index; original member name unknown.
+  u64 unknown230;                     // Inferred role: shadow cache mask; original member name unknown.
+  const char *unknown238;             // Inferred role: path given to the constructor; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoCtlNom, unknown190) == 0x190, "");
@@ -143,6 +145,8 @@ static_assert(offsetof(DrMdoCtlNom, unknown1f0) == 0x1f0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1f8) == 0x1f8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown200) == 0x200, "");
 static_assert(offsetof(DrMdoCtlNom, unknown210) == 0x210, "");
+static_assert(offsetof(DrMdoCtlNom, unknown218) == 0x218, "");
+static_assert(offsetof(DrMdoCtlNom, unknown220) == 0x220, "");
 static_assert(offsetof(DrMdoCtlNom, unknown230) == 0x230, "");
 static_assert(offsetof(DrMdoCtlNom, unknown238) == 0x238, "");
 
