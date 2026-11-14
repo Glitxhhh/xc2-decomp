@@ -1,14 +1,31 @@
 #include "dr/dr_pixl_post_obj_cube_map_ibl.h"
 
+#include <string.h>
+
 #include "dr/dr_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_cube_map_mip_map.h"
 #include "grlib/cglib_dbl_uniform_block.h"
+#include "grlib/cglib_texture_buffer.h"
 #include "grlib/shd_util.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
+
+DrPixlPostObjCubeMapIBL::DrPixlPostObjCubeMapIBL(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan) : DrPixlPostObj(drMan, pixlMan, postMan), unknown18(true), unknown210(0), unknown214(0) {
+  for (int i = 0; i < 2; i++) {
+    m_premTexture[i] = new (drMan->unknown0c) DrPixlRenderCubeMapMipMap(drMan);
+    m_premTexture[i]->setTextureInfo(64.0f, 64.0f, GRL_SURFACE_FORMAT_R11G11B10F, false, 0);
+  }
+  m_premMipCount = 5;
+  m_uniformBlock = new (drMan->unknown10) grlib::CGLibDblUniformBlock();
+  m_uniformBlock->setup(0x110);
+  memset(m_shMatrix, 0, sizeof(m_shMatrix));
+  unknown1c0 = mm::Mat44::identity;
+  unknown200 = mm::Vec3::zero;
+}
 
 DrPixlPostObjCubeMapIBL::~DrPixlPostObjCubeMapIBL() {
   if (m_premTexture[0] != nullptr) {

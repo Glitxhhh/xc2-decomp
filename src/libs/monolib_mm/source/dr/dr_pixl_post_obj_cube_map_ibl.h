@@ -13,11 +13,15 @@ class CGLibTextureBuffer;
 
 namespace ml {
 
+class DrMan;
+class DrPixlMan;
+class DrPixlPostMan;
 class DrPixlRenderCubeMapMipMap;
 
 // Derives from DrPixlPostObj: the constructor (1.0.0: 0x7100836c2c) calls the base constructor on this.
 class DrPixlPostObjCubeMapIBL : public DrPixlPostObj {
 public:
+  DrPixlPostObjCubeMapIBL(DrMan *drMan, DrPixlMan *pixlMan, DrPixlPostMan *postMan);
   ~DrPixlPostObjCubeMapIBL();
   void debugRender();
   void render();

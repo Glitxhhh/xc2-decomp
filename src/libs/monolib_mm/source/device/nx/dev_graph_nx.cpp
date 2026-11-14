@@ -4,13 +4,18 @@
 #include "font/write_str.h"
 #include "grlib/cglib_manager.h"
 #include "grlib/cglib_state.h"
+#include "ml/cache_draw.h"
 #include "ml/deb_draw_cmd.h"
+#include "ml/reslist.h"
+#include "ml/win_proc_root.h"
+#include "ml/win_view_root.h"
 #include "ml/work_cpu.h"
 #include "ml/work_root.h"
 #include "ml/work_util.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_rect.h"
 #include "mtl/alloc_handle.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
@@ -92,6 +97,27 @@ bool DevGraphNx::wkStandbyLogin() {
 }
 
 u32 DevGraphNx::thInitialize(void *argument, void *userData) { return initGL(); }
+
+bool DevGraphNx::wkStandbyLogout() {
+  if (unknown60.size() != 0 || WinProcRoot::get() != nullptr || WinViewRoot::get() != nullptr) {
+    return false;
+  }
+  if (unknown6d0 != nullptr) {
+    unknown378.destroy();
+    if (unknown6d0 != nullptr) {
+      mtl::MemManager::deallocate(unknown6d0, 0, false);
+      unknown6d0 = nullptr;
+    }
+  }
+  // The game inlines getOnly here (0x7100722f8c), which does not read its argument, so the original expression cannot be
+  // checked; 0xffffffff is what the callers outside the unit pass (Scn::draw).
+  delete DebDraw::getOnly(0xffffffff);
+  if (grlib::CGLibManager::get() != nullptr && grlib::CGLibManager::get()->isRelease()) {
+    WorkCpu::runThread(WorkCpu::getRenderCPUID(), thDestroy, this, nullptr, nullptr, false, WKCPU_SYNC_UNKNOWN_0);
+    return false;
+  }
+  return DevGraph::wkStandbyLogout();
+}
 
 u32 DevGraphNx::thDestroy(void *argument, void *userData) {
   grlib::CGLibManager::get()->deviceRelease();
