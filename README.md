@@ -153,6 +153,8 @@ To try another compiler: `XC2_CXX=clang++-4.0.1 check ...`.
 
 `-nostdlibinc` (a header search flag, no effect on the generated code) keeps the compiler from reading the host's `/usr/include`, so that on a distribution that has one the musl headers of the sysroot are the only libc headers.
 
+`-fno-spell-checking` (diagnostics only, no effect on the generated code) turns off the "did you mean" suggestions: on an undeclared identifier, Clang 3.9.1's spelling correction can allocate tens of gigabytes within seconds instead of reporting the error.
+
 </details>
 
 <details>
