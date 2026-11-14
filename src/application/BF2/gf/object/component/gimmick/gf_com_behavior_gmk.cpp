@@ -255,9 +255,7 @@ void GfComBehaviorGmk::createMenuObj() {
   }
   int offsetId = GfGameUtil::getUiOffsetId(param.unknown00);
   param.unknown10.unknown10 = nullptr;
-  param.unknown10.unknown00 = mm::Vec3::zero.x;
-  param.unknown10.unknown04 = mm::Vec3::zero.y;
-  param.unknown10.unknown08 = mm::Vec3::zero.z;
+  param.unknown10.unknown00 = mm::Vec3::zero;
   GfMenuBdat::getMenuOffset(offsetId, param.unknown10);
   unknowna8 = GfMenuCallContext::create();
   GfMenuObjTargetInfo::openOther(unknowna8, param);
