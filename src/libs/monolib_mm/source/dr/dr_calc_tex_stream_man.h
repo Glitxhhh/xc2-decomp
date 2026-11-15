@@ -10,18 +10,17 @@ namespace ml {
 class CriticalSection;
 class DrCalcStmListObj;
 
-// Inferred layout from DrCalcTexStreamMan list walks; the original member names are unknown.
-class DrCalcTexStmObj {
+// Inferred layout from DrCalcTexStreamMan list walks and the constructor (0x71008b5078); the original member names are unknown.
+// vtable _ZTVN2ml15DrCalcTexStmObjE: 2 slots (D2, D0), no other virtual function.
+class DrCalcTexStmObj : public unknown199<DrCalcTexStmObj> {
 public:
   DrCalcTexStmObj();
   virtual ~DrCalcTexStmObj() {}
 
-  DrCalcTexStmObj *unknown08; // Inferred role: previous object; original member name unknown.
-  DrCalcTexStmObj *unknown10; // Inferred role: next object; original member name unknown.
-  u8 *unknown18;              // Inferred role: address; original member name unknown.
-  u32 unknown20;              // Inferred role: size; original member name unknown.
-  u32 unknown24;              // Inferred role: flags, bit 0 is in use; original member name unknown.
-  u32 unknown28;              // Inferred role: unused; original member name unknown.
+  u8 *unknown18; // Inferred role: address; original member name unknown.
+  u32 unknown20; // Inferred role: size; original member name unknown.
+  u32 unknown24; // Inferred role: flags, bit 0 is in use; original member name unknown.
+  u32 unknown28; // Inferred role: unused; original member name unknown.
 };
 
 static_assert(offsetof(DrCalcTexStmObj, unknown08) == 0x08, "");

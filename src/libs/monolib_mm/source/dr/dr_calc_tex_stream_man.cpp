@@ -364,6 +364,8 @@ bool DrCalcTexStreamMan::memTempCopy(u32 size) {
   return isEmpty;
 }
 
+DrCalcTexStmObj::DrCalcTexStmObj() : unknown18(nullptr), unknown20(0), unknown24(0), unknown28(0) {}
+
 } // namespace ml
 
 // The game compiles DrCalcStmWork and DrCalcStmListObj in this unit (their functions are interleaved with the DrCalcTexStreamMan ones from 0x71008b2c8c on):
