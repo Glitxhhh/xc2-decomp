@@ -12,6 +12,7 @@
 #include "dr/dr_pixl_post_obj_tone_map.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
+#include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_man.h"
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_shd_lgt_global_ibl.h"
@@ -92,6 +93,21 @@ void DrPixlDeferred::shadowLightRender() {
       }
     }
   }
+}
+
+bool DrPixlDeferred::shadowTexRender(int cate) {
+  if (unknown08->unknown1d7a || unknown08->unknown588->unknown160 <= 0.0f || !unknown08->unknown588->unknown1b9) {
+    return false;
+  }
+  shadowCharacterRender();
+  shadowBuffBegin();
+  if (unknown18->unknown800->isShadowMap() && cate == 0) {
+    shadowBuffCacheRender();
+  } else if (!shadowBuffDefRender()) {
+    m_temporalInputShadowMap->clearTexture(mm::Col4::white, static_cast<GrlClaerMask>(0xf));
+  }
+  m_temporalInputShadowMap->setColorInvalidate();
+  return true;
 }
 
 void DrPixlDeferred::debugRender() {
