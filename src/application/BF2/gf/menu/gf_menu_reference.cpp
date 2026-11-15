@@ -27,6 +27,74 @@
 namespace gf {
 struct GF_OBJ_HANDLE;
 
+GfMenuReference::GfMenuReference(const GfSetupParam &param)
+    : unknown4ca40(false), unknown4cbe0(), unknown4ccac(0), unknown4ccb0(0), unknown4ccb4(0), unknown4ccb8(0), unknown4ccbc(0), unknown4ccc0(), unknown4ccd0(0), unknown4ccd4() {
+  initialize(param);
+}
+
+void GfMenuReference::initialize(const GfSetupParam &) {
+  unknown4ca40 = true;
+  unknown4cb60[0] = 0;
+  unknown4cb60[1] = 0;
+  unknown4cb68 = 0;
+  unknown4cb6c = 0;
+  unknown4cb70 = 0;
+  unknown4cb74 = 0;
+  unknown4cb78 = 0;
+  unknown4cc98 = 0;
+  unknown4cc9c = 0;
+  unknown4cca0 = 0;
+  unknown4cca4 = 0;
+  unknown4cca8 = 0;
+  // Each list has its own setup parameter in a block: the game (0x71003cc0a4) builds both at the same stack slot.
+  {
+    ui::UIListInfoBase::SetupParam enemyParam;
+    unknown4cb98 = GfMenuEnemyList::create();
+    enemyParam.unknown08 = 8;
+    unknown4cb98->setup(getAllocator(ALLOCATOR_UNKNOWN_0), enemyParam);
+  }
+  {
+    ui::UIListInfoBase::SetupParam itemParam;
+    unknown4cba0 = GfMenuItemList::create();
+    itemParam.unknown08 = 8;
+    unknown4cba0->setup(getAllocator(ALLOCATOR_UNKNOWN_0), itemParam);
+  }
+  for (u32 i = 0; i < 8; i++) {
+    unknown4cbf8[i] = 0;
+  }
+  for (u32 i = 0; i < 8; i++) {
+    unknown4cc18[i] = 0;
+  }
+  for (u32 i = 0; i < 8; i++) {
+    initReferenceNumber(i);
+  }
+  for (u32 i = 0; i < 7; i++) {
+    unknown4cba8[i] = ElemComboRoot();
+  }
+  for (u32 i = 0; i < 2; i++) {
+    unknown4cbe0[i].unknown00 = 0;
+    unknown4cbe0[i].unknown04 = 0.0f;
+  }
+  unknown4cbf0 = 0;
+  resetDriverVirtual();
+  resetBladeVirtual();
+  unknown4cb40 = 0.0f;
+  unknown4cb44 = 0.0f;
+  unknown4cb48 = 0;
+  unknown4cb4c = -1;
+  unknown4cb7c = static_cast<HOMURA_MODE>(0);
+  unknown4cb80 = false;
+  for (u32 i = 0; i < 4; i++) {
+    unknown4cb84[i].clear();
+  }
+  unknown4cf08.clear();
+  unknown4cf0c = 0;
+  unknown4cb50 = 0.0f;
+  unknown4cb54 = 0.0f;
+  unknown4cb58 = 0;
+  unknown4cb5c = 0;
+}
+
 GfMenuReference::~GfMenuReference() {}
 
 void GfMenuReference::build(const GfSetupParam &param) {

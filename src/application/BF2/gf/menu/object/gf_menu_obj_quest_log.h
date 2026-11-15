@@ -87,6 +87,7 @@ public:
   u32 nextTaskIndex(u32 index);
   void setupLogItem();
   bool seqOrderActivation();
+  bool seqLogNext();
   bool seqLogNextEnd();
   bool seqLogNextWaitInfo();
   bool seqLogStart();

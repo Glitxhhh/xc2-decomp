@@ -69,6 +69,7 @@ public:
 
   class DriverListConverter : public IConverter {
   public:
+    DriverListConverter(const GfMenuDriverList *list, int index) : unknown08(list), unknown10(index) {}
     void getCharData(u8 &type, u32 &id) override;
 
     const GfMenuDriverList *unknown08; // Inferred role: driver list; original member name unknown.
@@ -77,6 +78,7 @@ public:
 
   class BladeListConverter : public IConverter {
   public:
+    BladeListConverter(const GfMenuBladeList *list, int index) : unknown08(list), unknown10(index) {}
     void getCharData(u8 &type, u32 &id) override;
 
     const GfMenuBladeList *unknown08; // Inferred role: blade list; original member name unknown.
@@ -85,6 +87,7 @@ public:
 
   class EnemyListConverter : public IConverter {
   public:
+    EnemyListConverter(const GfMenuEnemyList *list, int index) : unknown08(list), unknown10(index) {}
     void getCharData(u8 &type, u32 &id) override;
 
     const GfMenuEnemyList *unknown08; // Inferred role: enemy list; original member name unknown.
@@ -117,6 +120,7 @@ public:
 
   class BladeSetConverter : public IConverter {
   public:
+    BladeSetConverter(u32 driver, int slot) : unknown08(driver), unknown0c(slot) {}
     void getCharData(u8 &type, u32 &id) override;
 
     u32 unknown08; // Inferred role: driver; original member name unknown.
@@ -125,6 +129,7 @@ public:
 
   class ReferenceBladeSetConverter : public IConverter {
   public:
+    ReferenceBladeSetConverter(u32 index, int slot) : unknown08(index), unknown0c(slot) {}
     void getCharData(u8 &type, u32 &id) override;
 
     u32 unknown08; // Inferred role: reference index of the driver; original member name unknown.
@@ -152,6 +157,7 @@ public:
   static GfMenuCharDataAdapter *createFromEnemyList(u32 handle, u32 type, const GfMenuEnemyList *list, int index, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways);
+  static GfMenuCharDataAdapter *createFromBladeSet(u32 handle, u32 type, u32 driver, int slot, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceBladeSet(u32 handle, u32 type, u32 index, int slot, bool isUpdateAlways);
   static GfMenuCharDataAdapter *createFromReferenceBladeOwnerDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways);
   bool update_Name(const DataParamAcc &acc);

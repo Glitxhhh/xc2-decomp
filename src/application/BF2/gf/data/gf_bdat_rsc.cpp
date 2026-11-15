@@ -5,7 +5,17 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/gf_allocator.h"
 
+#include <array>
+
 namespace gf {
+
+// Evidence: getRSC_PcWpnMountWpnInR (0x710027acf8) and the other seven per-column getters of the voice and mount tables index a
+// constant table of these getters (0x710117ebc0.., after the vtable of GfBdatRsc: constant data) and keep the null test of the entry.
+// A plain constant array lets clang fold the load and drop the test; an array wrapped in a struct keeps it, as in the game, and
+// std::array (the game links libc++) is the natural wrapper: mm::mtl::FixedArray cannot hold a constant table (private storage, no
+// initialiser).
+// Inferred type; original name unknown.
+typedef const char *(*unknown001)(const CBdatWrapper &wrapper, u32 id);
 namespace _gfbrs {
 
 enum {
@@ -4523,6 +4533,150 @@ const char *GfBdatRsc::getRSC_PcWpnMountWpn26lIn(u32 id) const { return _gfbrs::
 
 const char *GfBdatRsc::getRSC_PcWpnMountWpn26lOut(u32 id) const { return _gfbrs::getRSC_PcWpnMountWpn26lOut(*m_RSC_PcWpnMount, id); }
 
+const char *GfBdatRsc::getRSC_PcWpnMountWpnInR(u32 mount, u32 weaponType) const {
+  static const std::array<unknown001, 27> getters = {{nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn01rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn02rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn03rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn04rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn05rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn06rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn07rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn08rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn09rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn10rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn11rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn12rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn13rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn14rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn15rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn16rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn17rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn18rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn19rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn20rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn21rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn22rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn23rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn24rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn25rIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn26rIn}};
+  unknown001 getter = getters[weaponType];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_RSC_PcWpnMount, mount);
+}
+
+const char *GfBdatRsc::getRSC_PcWpnMountWpnInL(u32 mount, u32 weaponType) const {
+  static const std::array<unknown001, 27> getters = {{nullptr,
+                                                      nullptr,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn03lIn,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn05lIn,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn07lIn,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn09lIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn10lIn,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn12lIn,
+                                                      nullptr,
+                                                      nullptr,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn16lIn,
+                                                      nullptr,
+                                                      nullptr,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn20lIn,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn22lIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn23lIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn24lIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn25lIn,
+                                                      _gfbrs::getRSC_PcWpnMountWpn26lIn}};
+  unknown001 getter = getters[weaponType];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_RSC_PcWpnMount, mount);
+}
+
+const char *GfBdatRsc::getRSC_PcWpnMountWpnOutR(u32 mount, u32 weaponType) const {
+  static const std::array<unknown001, 27> getters = {{nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn01rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn02rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn03rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn04rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn05rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn06rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn07rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn08rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn09rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn10rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn11rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn12rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn13rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn14rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn15rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn16rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn17rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn18rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn19rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn20rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn21rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn22rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn23rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn24rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn25rOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn26rOut}};
+  unknown001 getter = getters[weaponType];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_RSC_PcWpnMount, mount);
+}
+
+const char *GfBdatRsc::getRSC_PcWpnMountWpnOutL(u32 mount, u32 weaponType) const {
+  static const std::array<unknown001, 27> getters = {{nullptr,
+                                                      nullptr,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn03lOut,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn05lOut,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn07lOut,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn09lOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn10lOut,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn12lOut,
+                                                      nullptr,
+                                                      nullptr,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn16lOut,
+                                                      nullptr,
+                                                      nullptr,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn20lOut,
+                                                      nullptr,
+                                                      _gfbrs::getRSC_PcWpnMountWpn22lOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn23lOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn24lOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn25lOut,
+                                                      _gfbrs::getRSC_PcWpnMountWpn26lOut}};
+  unknown001 getter = getters[weaponType];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_RSC_PcWpnMount, mount);
+}
+
 u32 GfBdatRsc::getRscEnWpnStart() const { return Bdat::getIdTop(m_rscEnWpn->unknown00); }
 
 u32 GfBdatRsc::getRscEnWpnEnd() const { return Bdat::getIdTop(m_rscEnWpn->unknown00) + Bdat::getIdCount(m_rscEnWpn->unknown00); }
@@ -4575,6 +4729,17 @@ const char *GfBdatRsc::getVoiceTableDriver5(u32 id) const { return _gfbrs::getVo
 
 const char *GfBdatRsc::getVoiceTableDriver6(u32 id) const { return _gfbrs::getVoiceTableDriver6(*m_voiceTable, id); }
 
+const char *GfBdatRsc::getVoiceTableDriver(u32 voice, u32 driver) const {
+  static const std::array<unknown001, 6> getters = {
+      {_gfbrs::getVoiceTableDriver1, _gfbrs::getVoiceTableDriver2, _gfbrs::getVoiceTableDriver3, _gfbrs::getVoiceTableDriver4, _gfbrs::getVoiceTableDriver5, _gfbrs::getVoiceTableDriver6}};
+  unknown001 getter = getters[driver];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_voiceTable, voice);
+}
+
 u32 GfBdatRsc::getVoiceTableBladeStart() const { return Bdat::getIdTop(m_voiceTableBlade->unknown00); }
 
 u32 GfBdatRsc::getVoiceTableBladeEnd() const { return Bdat::getIdTop(m_voiceTableBlade->unknown00) + Bdat::getIdCount(m_voiceTableBlade->unknown00); }
@@ -4600,6 +4765,26 @@ const char *GfBdatRsc::getVoiceTableBladeBlade9(u32 id) const { return _gfbrs::g
 const char *GfBdatRsc::getVoiceTableBladeBlade10(u32 id) const { return _gfbrs::getVoiceTableBladeBlade10(*m_voiceTableBlade, id); }
 
 const char *GfBdatRsc::getVoiceTableBladeBlade11(u32 id) const { return _gfbrs::getVoiceTableBladeBlade11(*m_voiceTableBlade, id); }
+
+const char *GfBdatRsc::getVoiceTableBladeBlade(u32 voice, u32 blade) const {
+  static const std::array<unknown001, 11> getters = {{_gfbrs::getVoiceTableBladeBlade1,
+                                                      _gfbrs::getVoiceTableBladeBlade2,
+                                                      _gfbrs::getVoiceTableBladeBlade3,
+                                                      _gfbrs::getVoiceTableBladeBlade4,
+                                                      _gfbrs::getVoiceTableBladeBlade5,
+                                                      _gfbrs::getVoiceTableBladeBlade6,
+                                                      _gfbrs::getVoiceTableBladeBlade7,
+                                                      _gfbrs::getVoiceTableBladeBlade8,
+                                                      _gfbrs::getVoiceTableBladeBlade9,
+                                                      _gfbrs::getVoiceTableBladeBlade10,
+                                                      _gfbrs::getVoiceTableBladeBlade11}};
+  unknown001 getter = getters[blade];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_voiceTableBlade, voice);
+}
 
 u32 GfBdatRsc::getVoiceTableRareStart() const { return Bdat::getIdTop(m_voiceTableRare->unknown00); }
 
@@ -4679,6 +4864,24 @@ const char *GfBdatRsc::getVoiceTableRareRareBlade36(u32 id) const { return _gfbr
 
 const char *GfBdatRsc::getVoiceTableRareRareBlade37(u32 id) const { return _gfbrs::getVoiceTableRareRareBlade37(*m_voiceTableRare, id); }
 
+const char *GfBdatRsc::getVoiceTableRareBlade(u32 voice, u32 blade) const {
+  static const std::array<unknown001, 37> getters = {
+      {_gfbrs::getVoiceTableRareRareBlade1,  _gfbrs::getVoiceTableRareRareBlade2,  _gfbrs::getVoiceTableRareRareBlade3,  _gfbrs::getVoiceTableRareRareBlade4,  _gfbrs::getVoiceTableRareRareBlade5,
+       _gfbrs::getVoiceTableRareRareBlade6,  _gfbrs::getVoiceTableRareRareBlade7,  _gfbrs::getVoiceTableRareRareBlade8,  _gfbrs::getVoiceTableRareRareBlade9,  _gfbrs::getVoiceTableRareRareBlade10,
+       _gfbrs::getVoiceTableRareRareBlade11, _gfbrs::getVoiceTableRareRareBlade12, _gfbrs::getVoiceTableRareRareBlade13, _gfbrs::getVoiceTableRareRareBlade14, _gfbrs::getVoiceTableRareRareBlade15,
+       _gfbrs::getVoiceTableRareRareBlade16, _gfbrs::getVoiceTableRareRareBlade17, _gfbrs::getVoiceTableRareRareBlade18, _gfbrs::getVoiceTableRareRareBlade19, _gfbrs::getVoiceTableRareRareBlade20,
+       _gfbrs::getVoiceTableRareRareBlade21, _gfbrs::getVoiceTableRareRareBlade22, _gfbrs::getVoiceTableRareRareBlade23, _gfbrs::getVoiceTableRareRareBlade24, _gfbrs::getVoiceTableRareRareBlade25,
+       _gfbrs::getVoiceTableRareRareBlade26, _gfbrs::getVoiceTableRareRareBlade27, _gfbrs::getVoiceTableRareRareBlade28, _gfbrs::getVoiceTableRareRareBlade29, _gfbrs::getVoiceTableRareRareBlade30,
+       _gfbrs::getVoiceTableRareRareBlade31, _gfbrs::getVoiceTableRareRareBlade32, _gfbrs::getVoiceTableRareRareBlade33, _gfbrs::getVoiceTableRareRareBlade34, _gfbrs::getVoiceTableRareRareBlade35,
+       _gfbrs::getVoiceTableRareRareBlade36, _gfbrs::getVoiceTableRareRareBlade37}};
+  unknown001 getter = getters[blade];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_voiceTableRare, voice);
+}
+
 u32 GfBdatRsc::getVoiceTableCommonStart() const { return Bdat::getIdTop(m_voiceTableCommon->unknown00); }
 
 u32 GfBdatRsc::getVoiceTableCommonEnd() const { return Bdat::getIdTop(m_voiceTableCommon->unknown00) + Bdat::getIdCount(m_voiceTableCommon->unknown00); }
@@ -4746,6 +4949,24 @@ const char *GfBdatRsc::getVoiceTableCommonCommonBlade30(u32 id) const { return _
 const char *GfBdatRsc::getVoiceTableCommonCommonBlade31(u32 id) const { return _gfbrs::getVoiceTableCommonCommonBlade31(*m_voiceTableCommon, id); }
 
 const char *GfBdatRsc::getVoiceTableCommonCommonBlade32(u32 id) const { return _gfbrs::getVoiceTableCommonCommonBlade32(*m_voiceTableCommon, id); }
+
+const char *GfBdatRsc::getVoiceTableCommonCommonBlade(u32 voice, u32 blade) const {
+  static const std::array<unknown001, 32> getters = {
+      {_gfbrs::getVoiceTableCommonCommonBlade1,  _gfbrs::getVoiceTableCommonCommonBlade2,  _gfbrs::getVoiceTableCommonCommonBlade3,  _gfbrs::getVoiceTableCommonCommonBlade4,
+       _gfbrs::getVoiceTableCommonCommonBlade5,  _gfbrs::getVoiceTableCommonCommonBlade6,  _gfbrs::getVoiceTableCommonCommonBlade7,  _gfbrs::getVoiceTableCommonCommonBlade8,
+       _gfbrs::getVoiceTableCommonCommonBlade9,  _gfbrs::getVoiceTableCommonCommonBlade10, _gfbrs::getVoiceTableCommonCommonBlade11, _gfbrs::getVoiceTableCommonCommonBlade12,
+       _gfbrs::getVoiceTableCommonCommonBlade13, _gfbrs::getVoiceTableCommonCommonBlade14, _gfbrs::getVoiceTableCommonCommonBlade15, _gfbrs::getVoiceTableCommonCommonBlade16,
+       _gfbrs::getVoiceTableCommonCommonBlade17, _gfbrs::getVoiceTableCommonCommonBlade18, _gfbrs::getVoiceTableCommonCommonBlade19, _gfbrs::getVoiceTableCommonCommonBlade20,
+       _gfbrs::getVoiceTableCommonCommonBlade21, _gfbrs::getVoiceTableCommonCommonBlade22, _gfbrs::getVoiceTableCommonCommonBlade23, _gfbrs::getVoiceTableCommonCommonBlade24,
+       _gfbrs::getVoiceTableCommonCommonBlade25, _gfbrs::getVoiceTableCommonCommonBlade26, _gfbrs::getVoiceTableCommonCommonBlade27, _gfbrs::getVoiceTableCommonCommonBlade28,
+       _gfbrs::getVoiceTableCommonCommonBlade29, _gfbrs::getVoiceTableCommonCommonBlade30, _gfbrs::getVoiceTableCommonCommonBlade31, _gfbrs::getVoiceTableCommonCommonBlade32}};
+  unknown001 getter = getters[blade];
+  if (getter == nullptr) {
+    return "";
+  }
+
+  return getter(*m_voiceTableCommon, voice);
+}
 
 u32 GfBdatRsc::getFLD_actorSEStart() const { return Bdat::getIdTop(m_FLD_actorSE->unknown00); }
 

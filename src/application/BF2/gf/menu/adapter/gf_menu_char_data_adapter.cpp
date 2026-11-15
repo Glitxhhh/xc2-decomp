@@ -193,7 +193,11 @@ void GfMenuCharDataAdapter::PartyBladeConverter::getCharData(u8 &type, u32 &id) 
 
 GfMenuCharDataAdapter::PartyBladeConverter *GfMenuCharDataAdapter::PartyBladeConverter::fromPartyBlade() { return this; }
 
-void GfMenuCharDataAdapter::DriverListConverter::getCharData(u8 &type, u32 &id) {
+// The converters below (list, blade set and reference blade set ones) are defined inline: the game inlines their getCharData into the
+// createFrom* function that builds them (0x39ef80, 0x39f0cc, 0x39f20c, 0x39f5d8, 0x39f6d8). Their cost is above the plain inline
+// threshold and under the inline-hint one, which only a function declared inline gets. EnBookListConverter::getCharData is inlined by
+// the game too (0x39f34c) but costs a little more than the hint threshold here, so createFromEnBookList stays unmatched.
+inline void GfMenuCharDataAdapter::DriverListConverter::getCharData(u8 &type, u32 &id) {
   u32 index = unknown10;
   if (index == -1) {
     index = unknown08->getIndex(true);
@@ -207,7 +211,7 @@ void GfMenuCharDataAdapter::DriverListConverter::getCharData(u8 &type, u32 &id) 
   }
 }
 
-void GfMenuCharDataAdapter::BladeListConverter::getCharData(u8 &type, u32 &id) {
+inline void GfMenuCharDataAdapter::BladeListConverter::getCharData(u8 &type, u32 &id) {
   u32 index = unknown10;
   if (index == -1) {
     index = unknown08->getIndex(true);
@@ -221,7 +225,7 @@ void GfMenuCharDataAdapter::BladeListConverter::getCharData(u8 &type, u32 &id) {
   }
 }
 
-void GfMenuCharDataAdapter::EnemyListConverter::getCharData(u8 &type, u32 &id) {
+inline void GfMenuCharDataAdapter::EnemyListConverter::getCharData(u8 &type, u32 &id) {
   u32 index = unknown10;
   if (index == -1) {
     index = unknown08->getIndex(true);
@@ -260,7 +264,7 @@ void GfMenuCharDataAdapter::ReferenceBladeConverter::getCharData(u8 &type, u32 &
   id = GfMenuReference::getReferenceBladeID(unknown08);
 }
 
-void GfMenuCharDataAdapter::BladeSetConverter::getCharData(u8 &type, u32 &id) {
+inline void GfMenuCharDataAdapter::BladeSetConverter::getCharData(u8 &type, u32 &id) {
   DataParamAcc acc(OBJECT_TYPE_PC, unknown08, GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     u32 blade = GfMenuObjUtil::getBladeIDFromDriverSlot(acc.getValidDriverId(), unknown0c);
@@ -269,7 +273,7 @@ void GfMenuCharDataAdapter::BladeSetConverter::getCharData(u8 &type, u32 &id) {
   }
 }
 
-void GfMenuCharDataAdapter::ReferenceBladeSetConverter::getCharData(u8 &type, u32 &id) {
+inline void GfMenuCharDataAdapter::ReferenceBladeSetConverter::getCharData(u8 &type, u32 &id) {
   DataParamAcc acc(OBJECT_TYPE_PC, GfMenuReference::getReferenceDriverID(unknown08), GIMMICK_TYPE_UNKNOWN_0);
   if (acc.isValid()) {
     u32 blade = GfMenuObjUtil::getBladeIDFromDriverSlot(acc.getValidDriverId(), unknown0c);
@@ -334,84 +338,82 @@ GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromGfObj(u32 handle, u32 ty
   // __LINE__ must be 645 as in the original source: it is the line argument of operator new.
 #line 645
   GfObjConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfObjConverter(objHandle);
-  u8 objType;
-  u32 id;
-  converter->getCharData(objType, id);
-  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
-  if (adapter != nullptr) {
-    adapter->unknown70 = converter;
-  }
-  return adapter;
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromPartyDriver(u32 handle, u32 type, u8 partyId, bool isUpdateAlways) {
   // __LINE__ must be 652 as in the original source: it is the line argument of operator new.
 #line 652
   PartyDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PartyDriverConverter(partyId);
-  u8 objType;
-  u32 id;
-  converter->getCharData(objType, id);
-  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
-  if (adapter != nullptr) {
-    adapter->unknown70 = converter;
-  }
-  return adapter;
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromPartyBlade(u32 handle, u32 type, u8 partyId, int slot, bool isUpdateAlways, bool isBackSlot, bool isVirtual) {
   // __LINE__ must be 659 as in the original source: it is the line argument of operator new.
 #line 659
   PartyBladeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) PartyBladeConverter(partyId, slot, isBackSlot, isVirtual);
-  u8 objType;
-  u32 id;
-  converter->getCharData(objType, id);
-  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
-  if (adapter != nullptr) {
-    adapter->unknown70 = converter;
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromDriverList(u32 handle, u32 type, const GfMenuDriverList *list, int index, bool isUpdateAlways) {
+  // The game (0x710039efa8) returns null for a zero handle here and in none of the other createFrom* functions.
+  if (handle == 0) {
+    return nullptr;
   }
-  return adapter;
+
+  // __LINE__ must be 668 as in the original source: it is the line argument of operator new.
+#line 668
+  DriverListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DriverListConverter(list, index);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromBladeList(u32 handle, u32 type, const GfMenuBladeList *list, int index, bool isUpdateAlways) {
+  // __LINE__ must be 675 as in the original source: it is the line argument of operator new.
+#line 675
+  BladeListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BladeListConverter(list, index);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromEnemyList(u32 handle, u32 type, const GfMenuEnemyList *list, int index, bool isUpdateAlways) {
+  // __LINE__ must be 682 as in the original source: it is the line argument of operator new.
+#line 682
+  EnemyListConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) EnemyListConverter(list, index);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 696 as in the original source: it is the line argument of operator new.
 #line 696
   ReferenceDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceDriverConverter(index);
-  u8 objType;
-  u32 id;
-  converter->getCharData(objType, id);
-  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
-  if (adapter != nullptr) {
-    adapter->unknown70 = converter;
-  }
-  return adapter;
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceBlade(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 703 as in the original source: it is the line argument of operator new.
 #line 703
   ReferenceBladeConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceBladeConverter(index);
-  u8 objType;
-  u32 id;
-  converter->getCharData(objType, id);
-  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
-  if (adapter != nullptr) {
-    adapter->unknown70 = converter;
-  }
-  return adapter;
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromBladeSet(u32 handle, u32 type, u32 driver, int slot, bool isUpdateAlways) {
+  // __LINE__ must be 710 as in the original source: it is the line argument of operator new.
+#line 710
+  BladeSetConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BladeSetConverter(driver, slot);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
+}
+
+GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceBladeSet(u32 handle, u32 type, u32 index, int slot, bool isUpdateAlways) {
+  // __LINE__ must be 717 as in the original source: it is the line argument of operator new.
+#line 717
+  ReferenceBladeSetConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceBladeSetConverter(index, slot);
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 GfMenuCharDataAdapter *GfMenuCharDataAdapter::createFromReferenceBladeOwnerDriver(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   // __LINE__ must be 724 as in the original source: it is the line argument of operator new.
 #line 724
   ReferenceBladeOwnerDriverConverter *converter = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ReferenceBladeOwnerDriverConverter(index);
-  u8 objType;
-  u32 id;
-  converter->getCharData(objType, id);
-  GfMenuCharDataAdapter *adapter = create(handle, type, objType, id, isUpdateAlways);
-  if (adapter != nullptr) {
-    adapter->unknown70 = converter;
-  }
-  return adapter;
+  return createFromCoverter(handle, type, converter, isUpdateAlways);
 }
 
 void GfMenuCharDataAdapter::update(const fw::UpdateInfo &info) {
@@ -676,6 +678,29 @@ bool GfMenuCharDataAdapter::update_BL_DR_Face(const DataParamAcc &acc) {
   if (icon != 0) {
     setNumber(GfMenuBdat::getIconImageIndex(icon));
     result = true;
+  }
+  return result;
+}
+
+bool GfMenuCharDataAdapter::update_BL_RoleIcon(const DataParamAcc &acc) {
+  if (acc.getObjType() != OBJECT_TYPE_BLADE) {
+    return false;
+  }
+
+  bool result = false;
+  switch (acc.getRole(false)) {
+  case 1:
+    setNumber(1);
+    result = true;
+    break;
+  case 2:
+    setNumber(0);
+    result = true;
+    break;
+  case 3:
+    setNumber(2);
+    result = true;
+    break;
   }
   return result;
 }

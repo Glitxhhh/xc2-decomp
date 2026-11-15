@@ -2,6 +2,7 @@
 
 #include <math.h>
 
+#include "framework/navi/navi_util.h"
 #include "fw/fw_coli_check.h"
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
@@ -12,6 +13,8 @@
 #include "gf/object/component/enemy/gf_enemy_state_id.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
+#include "gf/object/gf_obj_manager.h"
+#include "gf/object/gf_obj_setup.h"
 #include "gmk/gmk_base.h"
 #include "gmk/gmk_enemy/gmk_enemy.h"
 #include "idcoli/idcoli_util_coli.h"
@@ -20,6 +23,7 @@
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
+#include "mm_mtl/rtti.h"
 
 namespace gf {
 namespace enemy {
@@ -164,6 +168,58 @@ void StateFieldAreaWalk::enter(GfComBehaviorEnemy *behavior, ai::State *previous
 
   behavior->unknown140.applyFieldMoveSpeed(static_cast<STATE_ID>(unknown08), *behavior);
   unknown58 = &StateFieldAreaWalk::seqInitGoalPos;
+}
+
+void StateFieldAreaWalk::seqInitGoalPos(GfComBehaviorEnemy &behavior, const fw::UpdateInfo &info) {
+  gmk::AGmkBase *gmkInst = behavior.getBindedGmkInst();
+  if (gmkInst == nullptr) {
+    return;
+  }
+
+  // The game reads the goal unset when unknown18 is not 1 to 4 (0x710050d6e8: the default path jumps over the getGoalPos calls to the
+  // use of the goal at sp+0x10, which no path has written).
+  mm::Vec3 goal;
+  switch (unknown18) {
+  case 1:
+  case 2:
+    if (!getGoalPosRandom(goal, behavior)) {
+      return;
+    }
+    break;
+  case 3:
+    if (!getGoalPosCircle(goal, behavior)) {
+      return;
+    }
+    break;
+  case 4:
+    if (!getGoalPosWater(goal, behavior)) {
+      return;
+    }
+    break;
+  }
+
+  if (behavior.unknown140.unknown90) {
+    f32 radius = gmkInst->getYSnapRayLength() * 0.5f;
+    if (fw::NaviUtil::testNaviFindPos(behavior.getTransform().unknown00, radius, radius, 0.1f, goal, radius, radius, 0.1f, 0) != 3) {
+      return;
+    }
+
+    mm::Vec3 snapped;
+    if (!gmkInst->getPositionAppliedYSnap(snapped, goal, false)) {
+      return;
+    }
+
+    goal = snapped;
+  }
+
+  if (unknown18 == 2 || unknown18 == 3) {
+    GfObjSetupEnemy *setup = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8)->unknown30);
+    goal.y = setup->unknown20.y + ml::mtRandf1(-1.0f, 1.0f) * 3.0f;
+  }
+
+  behavior.unknown140.unknownc0 = goal;
+  behavior.execTurnCmdToGoal();
+  unknown58 = &StateFieldAreaWalk::seqWaitTurnEnd;
 }
 
 void StateFieldAreaWalk::leave(GfComBehaviorEnemy *behavior, ai::State *next) {}

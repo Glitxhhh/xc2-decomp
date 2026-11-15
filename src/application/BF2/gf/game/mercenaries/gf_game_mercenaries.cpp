@@ -317,6 +317,30 @@ void GfGameMercenaries::setMissionFlag(u32 mission, u32 missionFlag) {
   GfEvent::callMercenariesMissionFlag(mission, missionFlag, previous);
 }
 
+void GfGameMercenaries::cancelMission(u32 mission) {
+  if (mission != 0) {
+    u32 flag = GfDataMercenaries::getMissionFlag(mission);
+    if (flag != 0) {
+      GfDataMercenaries::getMissionQuestID(mission);
+      unknown120 *team = GfDataMercenaries::getTeamByMissionID(mission);
+      if (team != nullptr) {
+        team->unknown0c = QuestID();
+        team->unknown1c = ElapseTime();
+        team->unknown20 = ElapseTime();
+        team->unknown14 = 0;
+        team->unknown18 = 0;
+      }
+      // The same call is written in both arms: the game (0x71003658c0) tests isEnableOrder first and keeps a second test of
+      // the flag; `isEnableOrder(mission) || flag != 4` and the swapped operand compile to the flag test first (ruling 5, P3).
+      if (GfDataMercenaries::isEnableOrder(mission)) {
+        setMissionFlag(mission, 1);
+      } else if (flag != 4) {
+        setMissionFlag(mission, 1);
+      }
+    }
+  }
+}
+
 void GfGameMercenaries::applyCompleteMission(const QuestCompleteParam &param) {
   u32 mission = GfDataMercenaries::getMissionByQuestID(param.unknown04);
   if (mission != 0 && GfDataMercenaries::getMissionFlag(mission) == 2) {
@@ -329,6 +353,15 @@ void GfGameMercenaries::qevOrderQuest(const QuestOrderParam &param) {
   if (mission != 0 && GfDataMercenaries::getMissionFlag(mission) == 1) {
     setMissionFlag(mission, 2);
   }
+}
+
+void GfGameMercenaries::qevCompleteQuest(const QuestCompleteParam &param) {
+  // The game (0x71003659d8) never sets x0 for the call of applyMercenariesLevel: neither applyCompleteMission nor it reads `this`
+  // (ruling 6), so the object the original called them on cannot be checked; the singleton is the most plausible one.
+  GfGameMercenaries *mercenaries = get();
+  mercenaries->applyCompleteMission(param);
+  mercenaries->applyMercenariesLevel(param);
+  applyDestroyMission();
 }
 
 void GfGameMercenaries::gevMercenariesMissionFlag(u32 mission, u32 flag, u32 value) {

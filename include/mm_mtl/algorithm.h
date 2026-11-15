@@ -65,8 +65,9 @@ template <typename T> T *copy_n(const T *first, size_t n, T *result) {
   return result + n;
 }
 
-// __LINE__ must be 264 as in the original header: it is the line argument of the assert.
-#line 262
+// __LINE__ must be 264 as in the original header: it is the line argument of the assert (GfMenuReference::initialize, 0x71003cc0a4, through
+// unknown027::operator=); the assert is the line after the signature, so the signature is line 263.
+#line 263
 template <typename T> T *copy(const T *first, size_t n, T *result) {
   MM_ASSERT(result >= first + n || result < first);
   __builtin_memcpy(result, first, n * sizeof(T));

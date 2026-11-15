@@ -58,7 +58,11 @@ static_assert(sizeof(fixed_size_alloc<int>) == 0x30, "");
 // at +0x08, word count 0x10).
 template <typename T, int N> class fixed_size_alloc_inside {
 public:
-  fixed_size_alloc_inside() : unknown08(), unknown005() {
+  // Every member is zeroed first: the GfMenuReference constructor (1.0.0: 0x71003cb790) clears the pool of 32 REFLIST with one memset of
+  // 0x48520 bytes, which runs from the elements through unknown006..unknown009 (no padding after the two bitmap words); the pool of 512
+  // MENUREF_OBJ keeps its 0x4044 memset (0x71003cb740) because the bitmap is followed by 4 bytes of padding. Stores that the assignments
+  // below overwrite are dropped by the compiler, so the other users are unchanged.
+  fixed_size_alloc_inside() : unknown08(), unknown005(), unknown006(nullptr), unknown007(nullptr), unknown008(0), unknown009(0) {
     unknown008 = N / 32;
     unknown007 = reinterpret_cast<T *>(unknown08);
     unknown006 = unknown005;

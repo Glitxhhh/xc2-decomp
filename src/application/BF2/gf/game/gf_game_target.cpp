@@ -1,6 +1,8 @@
 // Original file name from the game string C:/Monolithsoft/BF2/prog/application/BF2/gf/game/gf_game_target.cpp.
 #include "gf/game/gf_game_target.h"
 
+#include <math.h>
+
 #include "battle/battle_global.h"
 #include "battle/ui_manager_battle.h"
 #include "framework/memory/allocator.h"
@@ -24,6 +26,7 @@
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
+#include "gf/object/gf_obj_property.h"
 #include "gf/object/gf_obj_util.h"
 #include "gf/request/gf_req_scom.h"
 #include "mm_mtl/fixed_list.h"
@@ -382,6 +385,40 @@ void GfGameTarget::fadeOutTarget() {
   }
 }
 
+bool GfGameTarget::setTargetNearest(const mm::mtl::FixedList<GfSearchInfo *, 256> &list) {
+  const Param *param = getParam();
+  bool isSwim = isSwimPlayer();
+  for (mm::mtl::FixedList<GfSearchInfo *, 256>::const_iterator it = list.begin(); it != list.end(); ++it) {
+    GfSearchInfo *info = *it;
+    if (!isEnableTarget(info->unknown00) || !info->unknown2c_0) {
+      continue;
+    }
+    if (GfObjUtil::getObjType(info->unknown00) != OBJECT_TYPE_ENEMY && fabsf(info->unknown24) > param->nearAngle) {
+      continue;
+    }
+    if (isSwim && !isWaterHole(info->unknown00)) {
+      continue;
+    }
+    unknown001(info->unknown00);
+    return true;
+  }
+  return false;
+}
+
+// The game (0x71003464f4) computes `isSwim & isMove` (and w0, w9, w8 at 0x7100346528) and sets w9 (isSwim, cset at 0x7100346518)
+// only on the path where the move exists; the two null paths leave w9 unset, as `bool isSwim;` assigned in the branch does. The
+// conjunction written as `property != nullptr && property->unknown18 != nullptr && ...` gives 15 instructions against the game's 16.
+bool GfGameTarget::isSwimPlayer() const {
+  GfObjProperty *property = GfObjUtil::getProperty(GfGameManager::getControlMover());
+  bool isSwim;
+  bool isMove = false;
+  if (property != nullptr && property->unknown18 != nullptr) {
+    isSwim = property->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_2;
+    isMove = true;
+  }
+  return isSwim && isMove;
+}
+
 bool GfGameTarget::isWaterHole(GF_OBJ_HANDLE *handle) {
   MsgPcFieldGetAccessType message;
   GfObj *obj = GfObjUtil::getObj(handle);
@@ -433,6 +470,13 @@ bool GfGameTarget::setTargetNearestEnemyBattle(const mm::mtl::FixedList<GfSearch
     return true;
   }
   return false;
+}
+
+void GfGameTarget::gevChangeLeader(GF_OBJ_HANDLE *) {
+  if (unknown002(unknown28)) {
+    resetTarget();
+    unknown28.setState(STATE_UNKNOWN_0);
+  }
 }
 
 void GfGameTarget::gevSwapFormation(u32, u32) {
@@ -501,6 +545,29 @@ bool GfGameTarget::recieveMessage(fw::MessageObject *sender, fw::Message &messag
 void GfGameTarget::procMsgGameChangeTarget(fw::MessageObject *, MsgGameChangeTarget &message) {
   unknown001(message.unknown08);
   notifyTarget();
+}
+
+void GfGameTarget::StateAutoTarget::update(GfGameTarget *target, const fw::UpdateInfo &) {
+  // Bitwise or of the three flags in this order: the game (0x7100346e2c) loads the pair unknownca/unknowncb with one ldrh and merges
+  // unknownc9 into it, without branches; `||` chains (c9, ca, cb or ca, c9, cb) and `c9 | ca | cb` do not match.
+  if (target->unknownca | target->unknownc9 | target->unknowncb) {
+    target->setTargetNearestEnemy(*GfGameSearchObj::getObj(target->unknowna0));
+    if (target->unknownb8 != unknown020) {
+      reqState(STATE_UNKNOWN_2);
+      return;
+    }
+  }
+  if (target->setTargetNearest(*GfGameSearchObj::getObj(target->unknowna8))) {
+    return;
+  }
+  if (target->unknownb8 == unknown020) {
+    return;
+  }
+  if (disableTarget(target->unknownb8) || (target->isSwimPlayer() && !target->isWaterHole(target->unknownb8))) {
+    target->resetTarget();
+  } else {
+    target->fadeOutTarget();
+  }
 }
 
 void GfGameTarget::StateEnemyTarget::update(GfGameTarget *target, const fw::UpdateInfo &) {

@@ -7,6 +7,7 @@
 #include "framework/ik/ik_spine_solver.h"
 #include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
+#include "fw/fw_update_info.h"
 #include "gf/object/component/animation/gf_com_evt_anim.h"
 #include "gf/object/component/behavior/plugin/gf_foot_ik_controller_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
@@ -46,6 +47,16 @@ void GfComBehaviorEvent::setup() {
   if (plugin != nullptr) {
     plugin->setActivate(true);
   }
+}
+
+void GfComBehaviorEvent::update(const fw::UpdateInfo &info) {
+  unknown10.update(info);
+  if ((unknown98 & 1) == 0) {
+    setFootIK(true);
+    unknown98 |= 1;
+  }
+
+  unknowna0.update(info.unknown04);
 }
 
 const mm::mtl::RTTI *GfComBehaviorEvent::getRTTI() const { return &m_rtti; }

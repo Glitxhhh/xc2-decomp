@@ -3,6 +3,8 @@
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_item_handle.h"
+#include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_scene.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
 #include "gf/game/quest/gf_quest_manager.h"
@@ -254,6 +256,21 @@ bool GfMenuObjQuestLog::seqLogOpen() {
   return false;
 }
 
+bool GfMenuObjQuestLog::seqLogNext() {
+  ui::UIObjectAcc acc(unknown18, "LAY_log");
+  // Statement without effect the game holds (0x71004c38e0, ruling 5): it asserts `_ptr != 0` of unknown40 before the control parameter.
+  unknown40.operator->();
+  GfMenuObjUtil::CtrlParam param;
+  param.unknown004("fade_in_r");
+  param.unknown11 = true;
+  unknown814 = GfMenuObjUtil::startCtrl(acc.unknown10, param, "LAY_log_info");
+  setupLogClear();
+  setupLogItem();
+  unknown2f0.unknown002(&GfMenuObjQuestLog::seqLogNextWaitInfo);
+  unknown2f0.unknown002(&GfMenuObjQuestLog::seqLogNextEnd);
+  return true;
+}
+
 bool GfMenuObjQuestLog::seqLogClose() {
   ui::UIObjectAcc acc(unknown18, "LAY_log");
   acc.setDispChild(false, "LAY_log_info");
@@ -425,6 +442,31 @@ bool GfMenuObjQuestLog::seqTitleFadeOutNormal() {
 bool GfMenuObjQuestLog::seqTitleFadeOutText() {
   unknown004(nullptr);
   return true;
+}
+
+void GfMenuObjQuestLog::update() {
+  unknown60.unknown003();
+  unknown2f0.unknown003();
+  unknown580.unknown003();
+  QuestID quest;
+  unknown30->getQuest(quest);
+  GfGameScene *scene = GfGameScene::get();
+  if (scene != nullptr) {
+    if (!(quest == scene->getQuestIdForTaskLog())) {
+      unknown30->unknown0c = scene->getQuestIdForTaskLog();
+      ui::UIObjectAcc acc(getAttachedObject(unknown001));
+      if (acc.isValid()) {
+        ui::EventData event;
+        event.unknown00 = 0x101;
+        sendEvent(acc.searchChild("LAY_log"), event, 0.0f);
+      }
+    }
+  }
+  {
+    ui::UIObjectAcc acc(unknown18, "LAY_log_to_detail_main");
+    acc.setAlpha(GfGameManager::isEnableOpenMainMenu() ? 1.0f : 0.5f);
+  }
+  GfMenuObject::update();
 }
 
 void GfMenuObjQuestLog::changeActiveQuest() { unknown147(unknown001, "LAY_log", unknown002); }

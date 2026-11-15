@@ -78,6 +78,9 @@ public:
 
   // Inferred role: arts palette; original type name unknown.
   struct unknown005 {
+    // The GfMenuReference constructor (1.0.0: 0x71003cb6c4) zeroes every member of the nine and three palettes and sets the enable flag.
+    unknown005() : unknown00(), unknown08(), unknown1c(0), unknown20(true), unknown24(0) {}
+
     ArtsPaletteInfo unknown00;             // Inferred role: info; original member name unknown.
     GfMenuObjUtil::ArtsIconInfo unknown08; // Inferred role: icon info; original member name unknown.
     u32 unknown1c;                         // Inferred role: element type; original member name unknown.
@@ -92,6 +95,7 @@ public:
   };
 
   GfMenuReference(const GfSetupParam &param);
+  void initialize(const GfSetupParam &param);
   ~GfMenuReference() override;
   static void build(const GfSetupParam &param);
   static void destroy();
@@ -222,9 +226,10 @@ public:
   u32 unknown4cb58;    // Inferred role: chain attack total damage; original member name unknown.
   u32 unknown4cb5c;    // Inferred role: chain attack burst count; original member name unknown.
   u32 unknown4cb60[2]; // Inferred role: target enemy buffs; original member name unknown.
-  u8 _4cb68[0x4cb6c - 0x4cb68];
-  u16 unknown4cb6c; // Inferred role: chain num; original member name unknown.
-  u8 _4cb6e[0x4cb74 - 0x4cb6e];
+  u32 unknown4cb68;    // Inferred role: unknown, zeroed by initialize with the chain num; original member name unknown.
+  u16 unknown4cb6c;    // Inferred role: chain num; original member name unknown.
+  u8 _4cb6e[0x4cb70 - 0x4cb6e];
+  u32 unknown4cb70;                       // Inferred role: unknown, zeroed by initialize; original member name unknown.
   u32 unknown4cb74;                       // Inferred role: target enemy debuff; original member name unknown.
   u32 unknown4cb78;                       // Inferred role: target enemy weak attr; original member name unknown.
   HOMURA_MODE unknown4cb7c;               // Inferred role: homura mode; original member name unknown.
@@ -257,7 +262,7 @@ public:
   ui::UIStr unknown4cce0[8];                           // Inferred role: reference strings; original member name unknown.
   unknown005 unknown4cda0[ALL_ARTS_PALETTE_UNKNOWN_9]; // Inferred role: all arts palettes; original member name unknown.
   mm::mtl::unknown027<32> unknown4cf08;                // Inferred role: party status lock; original member name unknown.
-  u8 _4cf0c[0x4cf10 - 0x4cf0c];
+  u32 unknown4cf0c;                                    // Inferred role: unknown, zeroed by initialize with the party status lock; original member name unknown.
 };
 
 static_assert(sizeof(GfMenuReference::REFLIST) == 0x2428, "");
