@@ -10,6 +10,15 @@
 
 namespace ml {
 
+// 0x71008b5290. The name is copied by a FixStr<256> at 0xd4 (cleared at 0x71008b52d8, its null assertion at 0x71008b52f8, its length stored at 0x1d4),
+// the hash is stored at 0x1d8 (0x71008b5334) and setupInfo(header, false) is the tail call at 0x71008b5394.
+DrCalcStmListObj::DrCalcStmListObj(const char *name, const u8 *header, u32 hash) {
+  unknownd4 = name;
+  unknown1d8 = hash;
+  initInfo();
+  setupInfo(header, false);
+}
+
 DrCalcStmListObj::~DrCalcStmListObj() {
   if (unknown40 != nullptr) {
     DevFileTh::cancel(unknown40, false);

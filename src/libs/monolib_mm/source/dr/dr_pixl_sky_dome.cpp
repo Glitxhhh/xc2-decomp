@@ -6,6 +6,7 @@
 #include "dr/dr_fog_man.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_res_use_query_obj.h"
 #include "dr/dr_shd_data_list.h"
@@ -57,6 +58,43 @@ void DrPixlSkyDome::luminanceRender() {
     color.z = ratio * lightMan->unknown12c.b + otherRatio * lightMan->unknown120.b;
     color.w = 0.0f;
     renderColorBackground(color);
+  }
+}
+
+// 0x71008517a8. The three fog values at 0xc0, 0xc4 and 0xc8 are read as unknown60[24] to unknown60[26] (the game loads them as floats at
+// 0x71008517dc, 0x71008517e8 and 0x71008517f4). Each is tested with `fcmp s0, #0.0` then `b.hi` (greater or unordered, 0x71008517e4,
+// 0x71008517f0): that is `!(x <= 0.0f)`, the NaN-correct test; a plain `x > 0.0f` gives `b.gt`.
+void DrPixlSkyDome::godRayRender() {
+  DrFogMan *fogMan = unknown00->unknown590;
+  if (fogMan->isFogOn() && !(fogMan->unknown60[24] <= 0.0f && fogMan->unknown60[25] <= 0.0f && fogMan->unknown60[26] <= 0.0f)) {
+    DrShdDataList *shdList = unknown00->unknown80->unknown00;
+    DrShdDataObj *shader = shdList->getPostShdObj(0x14);
+    DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
+    DrAPGxType::setupStencilTest(true, false, 2, false, 0, 0, 2, 0, 0, 0);
+    DrAPGxType::setupBlend(0);
+    shdList->bindShdVertex();
+    shader->setupShader(0u);
+    grlib::CGLibUniformEtcUtility uniform(shader);
+    uniform.setUseUniformBlock("U_POST");
+    u32 projOffset = uniform.unknown001("proj");
+    u32 parmOffset = uniform.unknown001("gParm[0]");
+    uniform.setMat44SetMat44(projOffset, viewWork->unknown1c0);
+    DrLightMan *lightMan = unknown00->unknown588;
+    f32 parm[8];
+    parm[0] = lightMan->unknown140.r;
+    parm[1] = lightMan->unknown140.g;
+    parm[2] = lightMan->unknown140.b;
+    parm[3] = fogMan->unknown5c;
+    parm[4] = fogMan->unknown60[24] * unknown10;
+    parm[5] = unknown10 * fogMan->unknown60[25];
+    parm[6] = fogMan->unknown60[26] * unknown10;
+    parm[7] = 1.0f;
+    uniform.setF32SetF32Array(parmOffset, parm, 8);
+    unknown08->begin(unknown00->unknown78->unknown7f8);
+    uniform.updateData();
+    uniform.setUniformBlock();
+    shdList->renderQuads();
+    unknown08->end();
   }
 }
 

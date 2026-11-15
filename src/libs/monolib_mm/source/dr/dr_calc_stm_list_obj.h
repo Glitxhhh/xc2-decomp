@@ -2,7 +2,9 @@
 #include <stddef.h>
 
 #include "dr/dr_calc_stm_work.h"
+#include "dr/dr_res_chank_list.h"
 #include "ml/work_event.h"
+#include "mm_mtl/fixstr.h"
 #include "types.h"
 
 namespace grlib {
@@ -50,7 +52,9 @@ static_assert(offsetof(unknown035, unknown0c) == 0x0c, "");
 static_assert(offsetof(unknown035, unknown10) == 0x10, "");
 static_assert(sizeof(unknown035) == 0x18, "");
 
-class DrCalcStmListObj : public IWorkEvent {
+// The previous and next links (unknown08, unknown10) are the members of the non-polymorphic base unknown199, as in DrCalcTexStmObj: the
+// constructors (0x71008b5290, 0x71008b5948, 0x71008b5a60) store the link at 0x10 before the vptr and pair the link at 0x08 with it.
+class DrCalcStmListObj : public IWorkEvent, public unknown199<DrCalcStmListObj> {
 public:
   enum DrTexUseMode {
     DR_TEX_USE_MODE_UNKNOWN_0, // Inferred role: none; original name unknown.
@@ -58,6 +62,7 @@ public:
     DR_TEX_USE_MODE_UNKNOWN_2, // Inferred role: middle; original name unknown.
   };
 
+  DrCalcStmListObj(const char *name, const u8 *header, u32 hash);
   ~DrCalcStmListObj() override;
   void initInfo();
   void release();
@@ -100,8 +105,6 @@ public:
   void afterUpdate(DrStmListAfterArg &arg);
   void apiUpdate();
 
-  DrCalcStmListObj *unknown08; // Inferred role: previous object; original member name unknown.
-  DrCalcStmListObj *unknown10; // Inferred role: next object; original member name unknown.
   void *unknown18;             // Inferred role: unused, only cleared; original member name unknown.
   void *unknown20;             // Inferred role: memory block of the tables; original member name unknown.
   DrCalcTexStmObj **unknown28; // Inferred role: tex stream objects; original member name unknown.
@@ -138,10 +141,12 @@ public:
   s16 unknowna8; // Inferred role: error wait count; original member name unknown.
   s16 unknownaa; // Inferred role: request wait count; original member name unknown.
   u8 _ac[0xb0 - 0xac];
-  DrCalcStmWork unknownb0; // Inferred role: textures and vertex object; original member name unknown.
-  s32 unknownc8;           // Inferred role: current use mode; original member name unknown.
-  s32 unknowncc[2];        // Inferred role: use mode per buffer; original member name unknown.
-  u8 _d4[0x1e0 - 0xd4];
+  DrCalcStmWork unknownb0;        // Inferred role: textures and vertex object; original member name unknown.
+  s32 unknownc8;                  // Inferred role: current use mode; original member name unknown.
+  s32 unknowncc[2];               // Inferred role: use mode per buffer; original member name unknown.
+  mm::mtl::FixStr<256> unknownd4; // Inferred role: list name; original member name unknown.
+  u32 unknown1d8;                 // Inferred role: name hash; original member name unknown.
+  u8 _1dc[0x1e0 - 0x1dc];
   bool (DrCalcStmListObj::*unknown1e0)(); // Inferred role: current state function; original member name unknown.
   bool (DrCalcStmListObj::*unknown1f0)(); // Inferred role: read check state function; original member name unknown.
   bool (DrCalcStmListObj::*unknown200)(); // Inferred role: request state function; original member name unknown.
@@ -184,6 +189,8 @@ static_assert(offsetof(DrCalcStmListObj, unknownb0) == 0xb0, "");
 static_assert(offsetof(DrCalcStmListObj, unknownc8) == 0xc8, "");
 static_assert(offsetof(DrCalcStmListObj, unknowncc) == 0xcc, "");
 static_assert(offsetof(DrCalcStmListObj, unknown1e0) == 0x1e0, "");
+static_assert(offsetof(DrCalcStmListObj, unknownd4) == 0xd4, "");
+static_assert(offsetof(DrCalcStmListObj, unknown1d8) == 0x1d8, "");
 static_assert(offsetof(DrCalcStmListObj, unknown1f0) == 0x1f0, "");
 static_assert(offsetof(DrCalcStmListObj, unknown200) == 0x200, "");
 
