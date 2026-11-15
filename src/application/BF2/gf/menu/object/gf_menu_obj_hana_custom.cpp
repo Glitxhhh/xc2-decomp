@@ -96,6 +96,39 @@ u32 GfMenuObjHanaCustom::convPartsId(u32 partsId) {
   return partsId;
 }
 
+bool GfMenuObjHanaCustom::isExpand(u32 blade, u32 parts) {
+  switch (parts) {
+  case 9:
+  case 10:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 16:
+  case 17:
+  case 18:
+  case 19:
+  case 20:
+  case 21:
+    RESULT_HANA result;
+    if (isExpandCircuit(blade, parts, result)) {
+      return true;
+    }
+    switch (result) {
+    case RESULT_HANA_UNKNOWN_3:
+    case RESULT_HANA_UNKNOWN_6:
+    case RESULT_HANA_UNKNOWN_10:
+      return true;
+    default:
+      return false;
+    }
+  case 15:
+    return true;
+  default:
+    return false;
+  }
+}
+
 bool GfMenuObjHanaCustom::isExpandParts(u32 partsId) { return partsId - 9 < 6; }
 
 void GfMenuObjHanaCustom::refreshPlanLine(ui::UIObjectAcc &) {}

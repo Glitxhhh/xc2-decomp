@@ -3,6 +3,7 @@
 
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_item_handle.h"
+#include "gf/game/gf_game_util_hana.h"
 #include "gf/menu/gf_menu_object.h"
 #include "gf/menu/gf_menu_sequence.h"
 #include "mm_mtl/fixed_array.h"
@@ -57,6 +58,7 @@ public:
   void finalize() override;
   void update() override;
   static u32 convPartsId(u32 partsId);
+  static bool isExpand(u32 blade, u32 parts);
   static bool isExpandParts(u32 partsId);
   static void refreshPlanLine(ui::UIObjectAcc &);
   static void setupMain(ui::UIObjectAcc &acc);
@@ -64,6 +66,7 @@ public:
   u32 getPartsId();
   bool seqLineAnime();
   static void removeParts(u32 blade, u32 parts);
+  static bool isExpandCircuit(u32 blade, u32 parts, RESULT_HANA &result);
   static void expandCircuit(u32 blade, u32 parts);
   static void setupItemList(ui::UIObjectAcc &acc, GfMenuItemList *list, ui::UISelectObjList *selectList);
   static void equipParts(u32 blade, u32 parts, u32 partsId, GfItemHandle handle);
