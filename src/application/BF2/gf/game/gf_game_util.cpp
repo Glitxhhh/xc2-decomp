@@ -981,6 +981,53 @@ u32 GfGameUtil::getFormationPlayerID(GF_OBJ_HANDLE *handle) {
   return hierarchy - 1;
 }
 
+u32 GfGameUtil::setFormationParam(GF_OBJ_HANDLE *handle) {
+  // The game reads the formation singleton twice (0x710034ceac before the first test, 0x710034cee4 after getObjType) and calls isTrinityBlade twice (0x710034ceb4, 0x710034cec8); a single test or a
+  // single read does not match.
+  GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
+  if (GfObjUtil::isTrinityBlade(handle)) {
+    return -1;
+  }
+
+  if (!GfObjUtil::isTrinityBlade(handle)) {
+    u32 partyId = GfGameParty::getPartyId(handle);
+    u32 type = GfObjUtil::getObjType(handle);
+    GfGamePlayerFormation *current = GfGamePlayerFormation::get();
+    const GfGamePlayerFormation::unknown004 *slot = current->unknown1a0;
+    for (u32 index = 0; index < GfGamePlayerFormation::PLAYER_UNKNOWN_6; index++, slot++) {
+      GfObjSetup *setup = GfObjUtil::getObjSetup(slot->unknown08);
+      if (setup != nullptr && setup->unknown14 == partyId && GfObjUtil::getObjType(slot->unknown08) == type) {
+        // The game copies the slot through a local (0x710034d010 loads its 64-bit word at 0x1b0, 0x710034d014 stores the handle, 0x710034d018 stores the low byte of the main pc flag back); assigning
+        // the handle alone does not match.
+        GfGamePlayerFormation::unknown004 player = formation->unknown1a0[index];
+        player.unknown08 = handle;
+        formation->unknown1a0[index] = player;
+        return index;
+      }
+    }
+  }
+
+  // The three stores come once after the type branches (0x710034d078, 0x710034d07c, 0x710034d080), so the branches compute follow and isMain.
+  u32 playerId = getFormationPlayerID(handle);
+  bool isMain;
+  int follow;
+  u32 type = GfObjUtil::getObjType(handle);
+  if (type == OBJECT_TYPE_PC) {
+    follow = -(playerId == 0);
+    isMain = playerId != 1;
+  } else if (type == OBJECT_TYPE_BLADE) {
+    isMain = playerId == 0;
+    follow = playerId - 1;
+  } else {
+    follow = -1;
+    isMain = true;
+  }
+  formation->unknown1a0[playerId].unknown00 = follow;
+  formation->unknown1a0[playerId].unknown08 = handle;
+  formation->unknown1a0[playerId].unknown10 = isMain;
+  return playerId;
+}
+
 void GfGameUtil::resetFormationParam(GF_OBJ_HANDLE *handle) {
   if (GfObjUtil::isTrinityBlade(handle)) {
     return;
