@@ -28,18 +28,7 @@ class CommandParam {
 public:
   void parseCommand(s8 separator);
   bool isValid(int index) const;
-  const char *getArg(int index) const {
-    if (!isValid(index)) {
-      return "";
-    }
-
-    const char *arg = unknown800[index].unknown00;
-    if (arg == nullptr) {
-      arg = "";
-    }
-
-    return arg;
-  }
+  const char *getArg(int index) const;
   mm::mtl::FixStr<128> getStr(int index) const;
   bool getS32(int index, int &value) const;
   bool getF32(int index, f32 &value) const;

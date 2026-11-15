@@ -10,6 +10,14 @@ namespace skt {
 
 bool CommandParam::isValid(int index) const { return static_cast<size_t>(index) < unknown800.size(); }
 
+const char *CommandParam::getArg(int index) const {
+  const char *arg = "";
+  if (isValid(index) && unknown800[index].unknown00 != nullptr) {
+    arg = unknown800[index].unknown00;
+  }
+  return arg;
+}
+
 mm::mtl::FixStr<128> CommandParam::getStr(int index) const { return mm::mtl::FixStr<128>(getArg(index)); }
 
 bool CommandParam::getS32(int index, int &value) const {
