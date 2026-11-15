@@ -45,6 +45,7 @@ public:
   void setPlayState(PLAY_STATE playState);
   bool isEnableEventBgm() const;
   void setFadeoutVolume();
+  void setPlayBgmTakeOver(const char *name);
 
   bool m_initialized;
   u8 _09[0x0c - 0x09];
