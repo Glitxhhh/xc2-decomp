@@ -721,11 +721,14 @@ public:
   // Inferred role: draw flag; original type name unknown.
   enum unknown027 {
     unknown027_0 = 1 << 0,    // Inferred role: resource ready; original name unknown.
+    unknown027_1 = 1 << 1,    // Inferred role: ready flag tested with unknown027_0 at the top of oneTextureStream (0x7100806388); original name unknown.
     unknown027_2 = 1 << 2,    // Inferred role: always tex stm; original name unknown.
     unknown027_4 = 1 << 4,    // Inferred role: write stencil; original name unknown.
+    unknown027_5 = 1 << 5,    // Inferred role: stream textures are bound in the texture table (oneTextureStream); original name unknown.
     unknown027_6 = 1 << 6,    // Inferred role: flag wave; original name unknown.
     unknown027_8 = 1 << 8,    // Inferred role: registered in the shadow cache update; original name unknown.
     unknown027_10 = 1 << 10,  // Inferred role: simple shadow; original name unknown.
+    unknown027_13 = 1 << 13,  // Inferred role: mirrors bit 2 of the texture list state (oneTextureStream); original name unknown.
     unknown027_14 = 1 << 14,  // Inferred role: sp alpha mode; original name unknown.
     unknown027_15 = 1 << 15,  // Inferred role: sp blur off; original name unknown.
     unknown027_16 = 1 << 16,  // Inferred role: gpu clip off; original name unknown.

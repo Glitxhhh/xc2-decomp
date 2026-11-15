@@ -94,7 +94,8 @@ struct unknown057 {
   s32 unknown24; // Inferred role: render height; original member name unknown.
   s32 unknown28; // Inferred role: screen width; original member name unknown.
   s32 unknown2c; // Inferred role: screen height; original member name unknown.
-  u8 _30[0x38 - 0x30];
+  s32 unknown30; // Inferred role: divisor of the screen share of a model (DrMdoMat::oneTextureStream); original member name unknown.
+  u8 _34[0x38 - 0x34];
   u32 unknown38; // Inferred role: view flags; original member name unknown.
   u8 _3c[0x40 - 0x3c];
 };
@@ -102,6 +103,7 @@ struct unknown057 {
 static_assert(offsetof(unknown057, unknown18) == 0x18, "");
 static_assert(offsetof(unknown057, unknown20) == 0x20, "");
 static_assert(offsetof(unknown057, unknown28) == 0x28, "");
+static_assert(offsetof(unknown057, unknown30) == 0x30, "");
 static_assert(offsetof(unknown057, unknown2c) == 0x2c, "");
 static_assert(offsetof(unknown057, unknown38) == 0x38, "");
 static_assert(sizeof(unknown057) == 0x40, "");

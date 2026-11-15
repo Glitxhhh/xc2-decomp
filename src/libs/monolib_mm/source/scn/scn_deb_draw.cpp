@@ -28,6 +28,7 @@
 #include "mm_math/mm_cylinder.h"
 #include "mm_math/mm_line2.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_obb.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_math/mm_prim_base.h"
@@ -1393,6 +1394,61 @@ void DebDraw::renderCone(f32 radius, f32 height, u32 division) {
       add(apex, rim);
     }
     end();
+  }
+}
+
+void DebDraw::renderCapsule(f32 radius, f32 height, u32 division) {
+  if (!unknown210->renderCapsule(radius, height, division)) {
+    u32 count = 8;
+    if (division >= 8) {
+      count = division;
+    }
+    mm::Vec3 offset(0.0f, radius * 0.5f, 0.0f);
+    // The axis is rotated by the matrix rows without a translation term, written out in both loops as the game does (no call:
+    // 0x710070b27c and 0x710070b388); a helper shared by the loops also matches but is not proven by anything.
+    mm::Vec3 axis(0.0f, height, 0.0f);
+    for (u32 i = 0; i < count; i++) {
+      f32 angle = (6.2831855f / count) * i;
+      begin(3, 18);
+      for (int j = 0; j <= 8; j++) {
+        mm::Mat44 rotation;
+        rotation.setRotXYZ(mm::Vec3(j * 1.5707964f * 0.125f, angle, 0.0f));
+        mm::Vec3 point(axis.x * rotation.rows[0][0] + axis.y * rotation.rows[1][0] + axis.z * rotation.rows[2][0],
+                       axis.x * rotation.rows[0][1] + axis.y * rotation.rows[1][1] + axis.z * rotation.rows[2][1],
+                       axis.x * rotation.rows[0][2] + axis.y * rotation.rows[1][2] + axis.z * rotation.rows[2][2]);
+        point.y = fabsf(point.y);
+        add(point + offset);
+      }
+      for (int j = 8; j >= 0; j--) {
+        mm::Mat44 rotation;
+        rotation.setRotXYZ(mm::Vec3(j * 1.5707964f * 0.125f, angle, 0.0f));
+        mm::Vec3 point(axis.x * rotation.rows[0][0] + axis.y * rotation.rows[1][0] + axis.z * rotation.rows[2][0],
+                       axis.x * rotation.rows[0][1] + axis.y * rotation.rows[1][1] + axis.z * rotation.rows[2][1],
+                       axis.x * rotation.rows[0][2] + axis.y * rotation.rows[1][2] + axis.z * rotation.rows[2][2]);
+        add(mm::Vec3(point.x, -fabsf(point.y), point.z) - offset);
+      }
+      end();
+    }
+  }
+}
+
+void DebDraw::renderOval(f32 width, f32 height) {
+  if (!unknown210->renderOval(width, height)) {
+    mm::Vec3 top(0.0f, width * 0.5f + height, 0.0f);
+    mm::Vec3 bottom(0.0f, width * -0.5f - height, 0.0f);
+    for (int i = 0; i < 2; i++) {
+      begin(3, 4);
+      f32 angle = mm::unknown003(i * 3.1415927f + 1.5707964f);
+      mm::Vec3 upper(sinf(angle), width * 0.5f, cosf(angle));
+      upper.x *= height;
+      upper.z *= height;
+      mm::Vec3 lower(upper.x, width * -0.5f, upper.z);
+      add(top);
+      add(upper);
+      add(lower);
+      add(bottom);
+      end();
+    }
   }
 }
 

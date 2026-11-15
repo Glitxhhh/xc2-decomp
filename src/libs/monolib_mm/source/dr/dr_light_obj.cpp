@@ -253,6 +253,23 @@ void DrLightObjSpt::setMat(const f32 *matrix) {
   m_pos = unknown30.unknown004();
 }
 
+// The translation row is set from a Vec3 copy of the position, as in setDir and event::EffectCtrl: the game loads x and y as one 64-bit
+// value (ldr x8, [x1] at 0x71007dc248); setTrans(position) gives 13 instructions against the game's 12.
+void DrLightObjSpt::setPos(const mm::Vec3 &position) {
+  m_pos = position;
+  unknown30.setTrans(mm::Vec3(position));
+}
+
+// Pitch and yaw as in DrLightObjDir::setDir (x and y loaded as a pair, ldp at 0x71007ea24c); the translation row is set from a Vec3
+// copy of m_pos, which the game loads as one 64-bit value and a word (ldr x8, [x19, #0x70] at 0x71007ea32c), as in event::EffectCtrl.
+void DrLightObjSpt::setDir(const mm::Vec3 &direction) {
+  f32 pitch = atan2f(direction.y, sqrtf(direction.x * direction.x + direction.z * direction.z));
+  f32 yaw = atan2f(direction.x, -direction.z);
+  unknown30.unknown011(mm::Vec3(pitch, -yaw, 0.0f));
+  unknown30.setTrans(mm::Vec3(m_pos));
+  unknown90 = direction;
+}
+
 void DrLightObjSpt::deleteSptShadow() { releaseSpt(); }
 
 DrLightObjSpt::DrLightObjSpt() : DrLightObj() { initSpt(); }

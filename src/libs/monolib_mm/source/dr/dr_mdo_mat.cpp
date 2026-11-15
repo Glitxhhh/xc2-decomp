@@ -207,6 +207,48 @@ void DrMdoMat::resetDispCallRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes
   matRes->unknown130->unknown10 = reinterpret_cast<const MdsMatDispCCData *>(data + table->unknown04);
 }
 
+void DrMdoMat::oneTextureStream() {
+  if ((unknownfc & (unknown027_0 | unknown027_1)) != (unknown027_0 | unknown027_1)) {
+    return;
+  }
+  if (unknown30->unknownd0 == nullptr) {
+    return;
+  }
+  if (((static_cast<f32>(unknownec) / static_cast<f32>(m_drMan->unknown5b8->unknown30) >= 0.01f && unknowne4 >= 0.1f) || (unknownfc & unknown027_2)) && !m_drMan->unknown1cc4 &&
+      !m_drMan->unknown1cc5) {
+    unknown30->unknownd0->callStmRead(2);
+  } else if (0.007f <= unknowne4 || (unknownfc & unknown027_17)) {
+    unknown30->unknownd0->callStmRead(1);
+  }
+  u32 state = unknown30->unknownd0->unknown70;
+  if (!(state & 1)) {
+    if ((state & 2) && !(unknownfc & unknown027_5)) {
+      unknownfc |= unknown027_5;
+      for (s32 i = 0; i < unknown30->unknownd0->unknown68; i++) {
+        unknown30->unknowne8[i] = unknown30->unknownd0->getStmTexObj(i);
+      }
+      unknown20 &= ~0x60;
+    }
+  } else if (unknownfc & unknown027_5) {
+    unknownfc &= ~unknown027_5;
+    if (unknown30->unknownd0 != nullptr) {
+      for (s32 i = 0; i < unknown30->unknownd0->unknown68; i++) {
+        unknown30->unknowne8[i] = unknown30->unknownd0->getTexObj(i);
+      }
+      unknown20 &= ~0x60;
+    }
+  }
+  if (!(state & 4)) {
+    if (unknownfc & unknown027_13) {
+      unknownfc &= ~unknown027_13;
+      unknown20 &= ~0x60;
+    }
+  } else if (!(unknownfc & unknown027_13)) {
+    unknownfc |= unknown027_13;
+    unknown20 &= ~0x60;
+  }
+}
+
 void DrMdoMat::updateMatFstCallBack() {
   const unknown010 *callBack = unknown30->unknown40;
   if (callBack == nullptr) {
