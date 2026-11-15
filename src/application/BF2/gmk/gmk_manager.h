@@ -276,6 +276,7 @@ bool isPointBehindGround(const mm::Vec3 &position);
 bool isNaviMeshExist(const mm::Vec3 &position);
 bool getYSnapPos(mm::Vec3 &result, const mm::Vec3 &position, f32 distance);
 bool getYSnapPos(mm::Vec3 &result, const mm::Vec3 &position, f32 distance, const fw::ColiCheckConfig &config);
+bool getYSnapPosRot(mm::Vec3 &position, mm::Quat &rotation, const mm::Vec3 &start, f32 distance);
 bool getWaterHeight(f32 &height, const mm::Vec3 &position, f32 range);
 bool isWaterHeightCondMatchedOfEnemy(const mm::Vec3 &position, u8 type, f32 depth);
 void reqDrawCmnMsg(u32 messageId);
