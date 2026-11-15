@@ -4,13 +4,43 @@
 #include "framework/lang_util.h"
 #include "fw/fw_bdat_manager.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/hash.h"
 #include "mm_mtl/map.h"
 #include "mtl/alloc_handle.h"
 #include "types.h"
 
 namespace fw {
 
+struct UpdateInfo;
+
 bool BdatManager::Impl::isMsgFile(const char *name) { return __builtin_strstr(name, "_ms.") != nullptr; }
+
+// The game (0x7100152c60) computes the length of `name` and checks it against the capacity once in each arm, then both arms
+// join in the shared strcat of the tail. Written as `if (...) { lang; "/"; } path += name;` the function has 77 instructions
+// against the game's 90 (first difference at +0x28, the branch target of the msg test), so `path += name` is written in both arms.
+void BdatManager::Impl::makePath(mm::mtl::FixStr<256> &path, const char *name) {
+  if (isMsgFile(name)) {
+    path += LangUtil::getLangFolder().c_str();
+    path += "/";
+    path += name;
+  } else {
+    path += name;
+  }
+}
+
+void BdatManager::Impl::loadBdatFromMemory(int id, void *data) {
+  BdatInfo &info = unknown128[id];
+  info.unknown04.clear();
+  info.unknown108.clear();
+  info.unknown00 = STATE_UNKNOWN_2;
+  info.unknown140 = 0;
+  info.unknown148 = data;
+  info.unknown150 = mtl::ALLOC_HANDLE();
+  info.unknown158 = nullptr;
+  info.unknown12c = LangUtil::getLangFolder().c_str();
+  info.unknown160 = true;
+  updateLayer(id, info);
+}
 
 BdatManager::Impl::~Impl() {
   for (int i = 0; i < BDAT_UNKNOWN_16; i++) {
@@ -34,6 +64,31 @@ bool BdatManager::Impl::isEnableBdat(int id) const {
 
   return unknown128[id].unknown00 == STATE_UNKNOWN_3;
 }
+
+unsigned char *BdatManager::Impl::getFp(const char *name) {
+  mm::mtl::Map<u32, SheetFpInfo>::iterator it = unknown110.find(mm::mtl::hashStrCrc(name));
+  if (it == unknown110.end()) {
+    return nullptr;
+  }
+  return it->second.unknown68;
+}
+
+void BdatManager::Impl::update(const UpdateInfo &info) {
+  for (int i = 0; i < BDAT_UNKNOWN_16; i++) {
+    updateLayer(i, unknown128[i]);
+  }
+}
+
+void BdatManager::update(const UpdateInfo &info) {
+  if (!isFinalized()) {
+    // Impl::update, defined in this file, never reads its info parameter, so the game never sets x1 for the tail call
+    // (0x7100154240): the compiler erased the argument (ruling 2026-11-13 #6). The original expression cannot be checked;
+    // info, the parameter of this function, is the plausible one.
+    unknown18->update(info);
+  }
+}
+
+unsigned char *BdatManager::getFp(const char *name) { return get()->unknown18->getFp(name); }
 
 bool BdatManager::initialize() { return true; }
 

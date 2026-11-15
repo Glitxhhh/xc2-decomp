@@ -5,11 +5,12 @@
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/map.h"
 #include "mm_mtl/singleton.h"
+#include "mtl/alloc_handle.h"
 #include "types.h"
 
-namespace mtl {
-class ALLOC_HANDLE;
-} // namespace mtl
+namespace ml {
+class FileResTh;
+} // namespace ml
 
 namespace mm {
 namespace mtl {
@@ -26,16 +27,26 @@ public:
   class Impl {
   public:
     enum State {
+      STATE_UNKNOWN_0 = 0, // Inferred role: unused; original name unknown.
+      STATE_UNKNOWN_1 = 1, // Inferred role: loading; original name unknown.
+      STATE_UNKNOWN_2 = 2, // Inferred role: loaded, sheets not registered; original name unknown.
       STATE_UNKNOWN_3 = 3, // Inferred role: enable; original name unknown.
     };
 
+    // Layout evidence: loadBdat (0x7100153048), loadBdatFromMemory (0x7100153920) and unregistBdat (0x7100152ecc) clear and fill one
+    // element in these members: the three FixStr (characters at 0x04, 0x108 and 0x12c, lengths at 0x104, 0x128 and 0x13c) and the
+    // members at 0x00, 0x140, 0x148, 0x150, 0x158 and 0x160.
     struct BdatInfo {
-      State unknown00; // Inferred role: state; original member name unknown.
-      u8 _004[0x148 - 0x004];
-      void *unknown148; // Inferred role: data; original member name unknown.
-      u8 _150[0x158 - 0x150];
-      void *unknown158; // Inferred role: loading data; original member name unknown.
-      u8 _160[0x168 - 0x160];
+      State unknown00;                // Inferred role: state; original member name unknown.
+      mm::mtl::FixStr<256> unknown04; // Inferred role: file path; original member name unknown.
+      mm::mtl::FixStr<32> unknown108; // Inferred role: name; original member name unknown.
+      mm::mtl::FixStr<16> unknown12c; // Inferred role: language folder; original member name unknown.
+      u32 unknown140;                 // Inferred role: CRC of the name; original member name unknown.
+      void *unknown148;               // Inferred role: data; original member name unknown.
+      mtl::ALLOC_HANDLE unknown150;   // Inferred role: allocator handle, a copy of the handle passed to loadBdat; original member name unknown.
+      ml::FileResTh *unknown158;      // Inferred role: loading data; original member name unknown.
+      bool unknown160;                // Inferred role: data given by the caller; original member name unknown.
+      u8 _161[0x168 - 0x161];
     };
 
     // Sheet registered by updateLayer (0x7100153684) under the CRC of its name, and read back by getFp
@@ -51,6 +62,7 @@ public:
     static const u32 BDAT_UNKNOWN_16 = 16; // Inferred role: maximum number of registered bdat files; original name unknown.
 
     static bool isMsgFile(const char *name);
+    void makePath(mm::mtl::FixStr<256> &path, const char *name);
     ~Impl();
     void unregistBdat(int id);
     bool loadBdat(int id, mtl::ALLOC_HANDLE handle, const char *path);
@@ -59,6 +71,8 @@ public:
     void loadBdatFromMemory(int id, void *data);
     void unregistBdat(const char *name);
     int find(const char *name) const;
+    void updateLayer(int id, BdatInfo &info);
+    unsigned char *getFp(const char *name);
     void update(const UpdateInfo &info);
     bool isExistBdat(int id) const;
     bool isEnableBdat(int id) const;
@@ -99,6 +113,14 @@ static_assert(sizeof(BdatManager::Impl::SheetFpInfo) == 0x78, "");
 static_assert(offsetof(BdatManager::Impl, unknown08) == 0x08, "");
 static_assert(offsetof(BdatManager::Impl, unknown110) == 0x110, "");
 static_assert(offsetof(BdatManager::Impl, unknown128) == 0x128, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown04) == 0x04, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown108) == 0x108, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown12c) == 0x12c, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown140) == 0x140, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown148) == 0x148, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown150) == 0x150, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown158) == 0x158, "");
+static_assert(offsetof(BdatManager::Impl::BdatInfo, unknown160) == 0x160, "");
 static_assert(sizeof(BdatManager::Impl::BdatInfo) == 0x168, "");
 static_assert(offsetof(BdatManager, unknown18) == 0x18, "");
 
