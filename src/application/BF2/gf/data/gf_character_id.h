@@ -27,6 +27,7 @@ enum {
   BLADE_UNKNOWN_1006 = 1006, // Inferred role: blade hana jk; original name unknown.
   BLADE_UNKNOWN_1007 = 1007, // Inferred role: blade hana jd; original name unknown.
   BLADE_SUZAKU = 1008,       // Row 13044 of BDAT table EVT_setupBf03, column objID, reads "BLADE_SUZAKU".
+  BLADE_KAGUTSUCHI = 1009,   // Row 12117 of BDAT table EVT_setupBf02, column objID, reads "BLADE_KAGUTSUCHI".
   BLADE_SAIKA = 1010,        // Row 15170 of BDAT table EVT_setupBf05, column objID, reads "BLADE_SAIKA".
   BLADE_UNKNOWN_1011 = 1011,
   BLADE_UNKNOWN_1012 = 1012, // Inferred role: blade rex dummy; original name unknown.
