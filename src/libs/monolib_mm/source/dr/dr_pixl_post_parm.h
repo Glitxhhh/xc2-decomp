@@ -221,7 +221,12 @@ public:
   f32 unknown1f0; // Inferred role: blur sp parm; original member name unknown.
   u8 _01f4[0x01fc - 0x01f4];
   bool m_motBlur2;
-  u8 _01fd[0x0214 - 0x01fd];
+  u8 _01fd[0x0200 - 0x01fd];
+  f32 unknown200; // Inferred role: first component of the motion blur 2 dpch vector (DrPixlPostObjMotionBlur2::calcBlurWork, 0x71008bc294); original member name unknown.
+  f32 unknown204; // Inferred role: fourth component of the motion blur 2 dpch vector (the game loads it with unknown200 as one 64 bit pair, as two f32 members do); original member name unknown.
+  u8 _0208[0x020c - 0x0208];
+  f32 unknown20c;  // Inferred role: second component of the motion blur 2 dpch vector; original member name unknown.
+  f32 unknown210;  // Inferred role: third component of the motion blur 2 dpch vector, multiplied by the unknown798 of the view work; original member name unknown.
   f32 unknown214;  // Inferred role: motion blur 2 strength of the blur parameter; original member name unknown.
   bool unknown218; // Inferred role: dof; original member name unknown.
   bool unknown219; // Inferred role: dof override; original member name unknown.
@@ -458,6 +463,10 @@ static_assert(offsetof(DrPixlPostParm, unknown1d8) == 0x01d8, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ec) == 0x01ec, "");
 static_assert(offsetof(DrPixlPostParm, unknown1f0) == 0x01f0, "");
 static_assert(offsetof(DrPixlPostParm, m_motBlur2) == 0x01fc, "");
+static_assert(offsetof(DrPixlPostParm, unknown200) == 0x0200, "");
+static_assert(offsetof(DrPixlPostParm, unknown204) == 0x0204, "");
+static_assert(offsetof(DrPixlPostParm, unknown20c) == 0x020c, "");
+static_assert(offsetof(DrPixlPostParm, unknown210) == 0x0210, "");
 static_assert(offsetof(DrPixlPostParm, unknown214) == 0x0214, "");
 static_assert(offsetof(DrPixlPostParm, unknown218) == 0x0218, "");
 static_assert(offsetof(DrPixlPostParm, unknown219) == 0x0219, "");

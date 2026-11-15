@@ -104,4 +104,27 @@ static inline Quat slerp(const Quat &qs, const Quat &qe, f32 t) {
   return end;
 }
 
+// Inferred helper: quaternion of Euler angles, the products of the sines and cosines of the half angles (the three half angles are computed before
+// the first sinf call); original name unknown. Evidence: the same statements are inlined in event::CharaEvaPlayer::update (0x71000c98c4),
+// fw::FootPlacementIKSolver::setGroundAngle and gf::npc::StateWalk::seqWaitMoveEnd. Not the helper of gf_camera_utilities.h (w with the sines
+// first) nor those of event::CharaSetRot and gf_req_scom.cpp (the sign of the second product differs).
+// Internal linkage: as a member function (external linkage) or with always_inline, CharaEvaPlayer::update loads its 0.5 constant into another register.
+static inline Quat unknown005(const Vec3 &rotation) {
+  f32 halfX = rotation.x * 0.5f;
+  f32 halfY = rotation.y * 0.5f;
+  f32 halfZ = rotation.z * 0.5f;
+  f32 sinX = sinf(halfX);
+  f32 cosX = cosf(halfX);
+  f32 sinY = sinf(halfY);
+  f32 cosY = cosf(halfY);
+  f32 sinZ = sinf(halfZ);
+  f32 cosZ = cosf(halfZ);
+  Quat quat;
+  quat.x = sinX * cosY * cosZ - cosX * sinY * sinZ;
+  quat.y = cosX * sinY * cosZ + sinX * cosY * sinZ;
+  quat.z = cosX * cosY * sinZ - sinX * sinY * cosZ;
+  quat.w = cosX * cosY * cosZ + sinX * sinY * sinZ;
+  return quat;
+}
+
 } // namespace mm
