@@ -16,6 +16,15 @@ struct alignas(16) Quat {
   Vec3 rotate(const Vec3 &vector) const;
   static Quat mul(const Quat &qa, const Quat &qb);
   static void inverse(Quat &qa);
+  // Inferred role: sets the rotation about the y axis of half the angle; original name unknown. Evidence: the same four stores in the order y, w, x, z are in
+  // gf::GfComBehaviorMob::moveToGoal (0x710052cc40), gf::AIAgentField::procMsgPcFieldHighJump, procMsgPcFieldNotifyWaterWarp and procMsgPcFieldNotifyWaterWarpBuddy,
+  // gf_pc_state_field_big_jump.cpp (unknown50 and target) and gf_field_exec_cmd_turn.cpp (rotation and half).
+  void unknown001(f32 half) {
+    y = sinf(half);
+    w = cosf(half);
+    x = 0.0f;
+    z = 0.0f;
+  }
 
   f32 x;
   f32 y;
