@@ -612,7 +612,27 @@ void GmkSet::seqUpdate(f32 deltaTime) {
   }
 }
 
-template <typename T> bool isGmkValidViewUnbound(const AGmkBase &gmk);
+template <typename T> bool isGmkValidViewUnbound(const AGmkBase &gmk) {
+  const auto &insts = unknown011(static_cast<const T &>(gmk));
+  if (!insts.isPopFinished()) {
+    return false;
+  }
+  u32 num = unknown012(insts);
+  for (u32 i = 0; i < num; i++) {
+    gf::GF_OBJ_HANDLE *handle = unknown013(insts, i);
+    if (handle == gf::unknown020 || gf::GfObjUtil::isSearchEmptyResource(handle)) {
+      continue;
+    }
+    if (!isValidView(handle)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// The GmkEnemy, GmkMob and GmkRoutedMob instances match with this body. The GmkRoutedEnemy one (0x71005e0d5c) keeps the instance address
+// as gmk + 0x50 for every load where the game's code folds the offset into each access, so it stays unmatched and is not emitted.
+template <> bool isGmkValidViewUnbound<GmkRoutedEnemy>(const AGmkBase &gmk);
 
 // Inferred helper: checks the view of a game object that has a resource to wait for; original name unknown.
 static bool unknown005(gf::GF_OBJ_HANDLE *handle) {
