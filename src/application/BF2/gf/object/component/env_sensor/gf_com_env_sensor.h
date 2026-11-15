@@ -26,6 +26,7 @@ struct Transform;
 namespace gf {
 
 struct GF_OBJ_HANDLE;
+struct GfEnvProperty;
 
 // Layout evidence: GfComEnvSensor::GfComEnvSensor() constructs the sensor at +0x10 and the next member at +0x2b0;
 // EnviromentSensor::EnviromentSensor() clears +0x20, constructs VerticalData at +0x30 and a GroundInfo at +0x1f0 and
@@ -155,6 +156,8 @@ public:
   };
 
   static void searchHorizon(const mm::Vec3 &position, HorizonPacket *packet);
+  void check(const fw::Transform &transform, fw::ParamAdapter param);
+  void writeBackProperty(bool isEnable, GfEnvProperty *property) const;
   static void searchWallUnderGround(const mm::Vec3 &position, WallPacket *packet);
 
   // Layout evidence: VerticalData::VerticalData() initializes the water info at +0x70 and the ceiling info at +0xe0.
@@ -221,6 +224,7 @@ static_assert(sizeof(EnviromentSensor) == 0x2a0, "");
 class GfEnemySensor {
 public:
   u8 unknown00;
+  void update(GF_OBJ_HANDLE *handle);
 };
 
 class GfComEnvSensor : public GfComponent {
@@ -241,6 +245,7 @@ public:
   ~GfComEnvSensor() override;
   void cleanup();
   void changeLayer(u32 oldLayer, u32 newLayer) override;
+  void flushRoot();
   void setEnableSensor(bool isEnable);
   void flushEnv(const fw::Transform &transform);
   void resolveTransform();

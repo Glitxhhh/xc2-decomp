@@ -551,6 +551,18 @@ u32 GfMenuObjUtil::getBladeIDFromPartySlot(u32 partyId, int offset, bool isVirtu
   return blade;
 }
 
+// The game has no call to getDriverPartyID here (0x71004e24ac, 87 instructions): the ten GfDataParty::getDriver compares
+// are unrolled in this function, which is what the search written out gives; calling getDriverPartyID compiles to 38
+// instructions (the search stays in its own function).
+u32 GfMenuObjUtil::getBladeIDFromDriverSlot(u32 driver, int offset) {
+  for (u32 partyId = 0; partyId < 10; partyId++) {
+    if (GfDataParty::getDriver(partyId) == driver) {
+      return getBladeIDFromPartySlot(partyId, offset, false);
+    }
+  }
+  return 0;
+}
+
 GF_OBJ_HANDLE *GfMenuObjUtil::getBladeHandleFromPartySlot(u32 partyId, int offset, bool isVirtual) {
   int slot = getSetBladeID(partyId, offset, isVirtual);
   if (slot == -1) {
