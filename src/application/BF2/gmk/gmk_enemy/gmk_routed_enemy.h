@@ -94,7 +94,7 @@ public:
 protected:
   void createGmk(void *data) override;
 
-private:
+public:
   GmkEnemyList::BdatInfo unknown228; // Inferred role: bdat info; original member name unknown.
   GmkTriggerList unknown240;         // Inferred role: trigger list; original member name unknown.
 };

@@ -306,6 +306,24 @@ public:
 
     bool create();
 
+    // Inferred helper: sets the display and release sizes and the repop time of the enemy instances, the sizes of the gimmick info first and these defaults when they are zero; original name unknown.
+    // Shared by GmkEnemy::create (0x71005f05d0) and GmkRoutedEnemy::create (0x71005f38c0), which compile to the same code.
+    void unknown001(GmkEnemyInsts::CreateInfo &createInfo, const unknown071 &info) const {
+      int height = info.unknown06;
+      if (height == 0) {
+        height = unknown05;
+      }
+      createInfo.unknown18 = height;
+      createInfo.unknown20 = static_cast<f32>(height) + unknown07;
+      int radius = info.unknown04;
+      if (radius == 0) {
+        radius = unknown04;
+      }
+      createInfo.unknown14 = radius;
+      createInfo.unknown1c = static_cast<f32>(radius) + unknown06;
+      createInfo.unknown24 = unknown08 * 60.0f;
+    }
+
     int unknown00; // Inferred role: map id; original member name unknown.
     u8 unknown04;  // Inferred role: enemy display radius; original member name unknown.
     u8 unknown05;  // Inferred role: enemy display height; original member name unknown.
@@ -329,7 +347,7 @@ public:
 protected:
   void createGmk(void *data) override;
 
-private:
+public:
   GmkEnemyList::BdatInfo unknown228; // Inferred role: bdat info; original member name unknown.
   GmkTriggerList unknown240;         // Inferred role: trigger list; original member name unknown.
 };

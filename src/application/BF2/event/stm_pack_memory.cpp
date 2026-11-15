@@ -107,6 +107,38 @@ void StmPackMemory::loadCut(void *buffer, size_t size, size_t firstFile, size_t 
   unknown30.push_back(res);
 }
 
+bool StmPackMemory::loadCut(void *buffer, size_t size, size_t firstPage, size_t &nextPage) {
+  if (!getLoadStream()->unknown98.isSuccess()) {
+    return false;
+  }
+  size_t firstFile = unknown5838;
+  u32 prio = getLoadStream()->unknown88.getPrio(unknown5838);
+  size_t dataOfs = getLoadStream()->unknown88.getDataOfs(unknown5838);
+  size_t cutSize = getLoadStream()->unknown88.getDataSize(unknown5838);
+  unknown5848 = cutSize;
+  unknown5850 = size;
+  if (cutSize >= size) {
+    return false;
+  }
+  size_t count = getLoadStream()->unknown88.getCount();
+  for (size_t i = unknown5838 + 1; i < count; i++) {
+    if (prio != getLoadStream()->unknown88.getPrio(i)) {
+      break;
+    }
+    size_t dataSize = getLoadStream()->unknown88.getDataOfs(i) + getLoadStream()->unknown88.getDataSize(i) - dataOfs;
+    if (size <= dataSize) {
+      break;
+    }
+    unknown5838 = i;
+    cutSize = dataSize;
+  }
+  size_t lastPage = firstPage + cutSize / PAGE_UNKNOWN_4096 + 1;
+  loadCut(buffer, cutSize, firstFile, unknown5838, firstPage, lastPage, prio);
+  nextPage = lastPage;
+  unknown5838++;
+  return true;
+}
+
 bool StmPackMemory::waitCut() {
   if (getLoadStream()->unknown98.isBusy()) {
     return false;

@@ -8,6 +8,7 @@
 #include "framework/reflection.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/intrusive_ptr.h"
+#include "mm_mtl/reference_object.h"
 
 namespace fw {
 
@@ -27,6 +28,17 @@ void SpineIkSolver::Param::createReflection(Reflection *reflection, const char *
 #line 27
   value->add(new (Allocator::getDebAllocator(), 16, __FILE__, __LINE__) ReflectionValueF32("limitAngle1", offsetof(Param, limitAngle1), 0.0f, 180.0f, 90.0f));
   reflection->setReflectionStruct(index, value);
+}
+
+SpineIkSolver *SpineIkSolver::create(const ParamAdapter &param, const char *boneName, const char *endBoneName, mm::mtl::IntrusivePtr<ReferenceFrame> &frame, anm::Pose &pose) {
+  // __LINE__ of the game: it is the line argument of operator new.
+#line 42
+  SpineIkSolver *solver = new (Allocator::getProcAllocator(), 16, __FILE__, __LINE__) SpineIkSolver();
+  solver->addRef();
+  if (!solver->setupLimit(param, boneName, endBoneName, frame, pose)) {
+    mm::mtl::safeRelease(solver);
+  }
+  return solver;
 }
 
 bool SpineIkSolver::setupLimit(const ParamAdapter &param, const char *boneName, const char *endBoneName, mm::mtl::IntrusivePtr<ReferenceFrame> &frame, anm::Pose &pose) {

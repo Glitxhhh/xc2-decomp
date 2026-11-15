@@ -466,6 +466,23 @@ void GmkEnemy::update(f32 deltaTime) {
   unknown48.update(info);
 }
 
+void GmkEnemy::create(const CreateInfo &info) {
+  if (info.unknown10 != nullptr) {
+    AGmkBase::create(info);
+    GmkEnemyInsts::CreateInfo createInfo;
+    // The game loads the info and the list (0x71005f0648, 0x71005f064c) before the call of getBindedBdatFp.
+    const unknown071 *bdatInfo = info.unknown10;
+    const GmkEnemyList *list = static_cast<const GmkEnemyList *>(unknown08.unknown00);
+    createInfo.unknown00 = this;
+    createInfo.unknown08.unknown00 = list->getBindedBdatFp();
+    createInfo.unknown10 = unknown20.unknown18;
+    list->unknown228.unknown001(createInfo, *bdatInfo);
+    unknown48.create(createInfo);
+  } else {
+    dispose();
+  }
+}
+
 void GmkEnemy::dispose() {
   unknown48.dispose();
   AGmkBase::dispose();

@@ -43,6 +43,23 @@ bool GmkRoutedEnemy::isValid() const {
   return unknown50.unknown00.unknown00 != nullptr && unknown50.unknown00.unknown08.unknown00 != nullptr && unknown50.unknown00.unknown10 > 0;
 }
 
+void GmkRoutedEnemy::create(const CreateInfo &info) {
+  if (info.unknown10 != nullptr) {
+    AGmkBase::create(info);
+    GmkEnemyInsts::CreateInfo createInfo;
+    // The game loads the info and the list (0x71005f3938, 0x71005f393c) before the call of getBindedBdatFp.
+    const unknown071 *bdatInfo = info.unknown10;
+    const GmkRoutedEnemyList *list = static_cast<const GmkRoutedEnemyList *>(unknown08.unknown00);
+    createInfo.unknown00 = this;
+    createInfo.unknown08.unknown00 = list->getBindedBdatFp();
+    createInfo.unknown10 = unknown20.unknown18;
+    list->unknown228.unknown001(createInfo, *bdatInfo);
+    unknown50.create(createInfo);
+  } else {
+    dispose();
+  }
+}
+
 bool GmkRoutedEnemy::PopXformFinder::isYSnap() const { return false; }
 
 void GmkRoutedEnemy::PopXformFinder::onCreateGobInsts(u32 num) const { unknown08->createRouteNavis(num); }

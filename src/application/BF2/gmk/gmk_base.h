@@ -21,9 +21,12 @@ namespace gmk {
 class IGmkList;
 
 // Inferred role: gmk info; original type name unknown.
+// Layout evidence: GmkEnemy::create (0x71005f05d0) reads the u16 at 0x04 and 0x06 of the info of an enemy gimmick.
 struct unknown071 {
   u16 id;
   u16 unknown02; // Role and original member name unknown.
+  u16 unknown04; // Inferred role: display radius of an enemy gimmick; original member name unknown.
+  u16 unknown06; // Inferred role: display height of an enemy gimmick; original member name unknown.
 };
 
 struct Xform {
