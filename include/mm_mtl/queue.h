@@ -96,7 +96,7 @@ public:
 
   iterator begin() { return iterator(&at(0), m_front, m_capacity); }
 
-  u32 size() const { return m_size; }
+  size_t size() const { return m_size; }
   u32 capacity() const { return m_capacity; }
   bool full() const { return m_size == m_capacity; }
 
@@ -134,11 +134,28 @@ public:
 
   iterator end() { return iterator(&at(0), m_front + m_size, m_capacity); }
 
-  // Declared only: the game has an out-of-line instance per element type. Its body is end() (one at() assert), the iterator
-  // compare, the size() != 0 assert (line 1067), --m_size, the shifting loop (destination = index % capacity, index++, source at
-  // index % capacity, with both at() asserts) and then two more at() asserts before returning the position unchanged; no single
-  // trailing statement produces two at() calls, and a duplicated destruct() would only reproduce them as a no-op.
-  iterator erase(iterator position);
+  // __LINE__ must be 1067 as in the original header: it is the line argument of the assert.
+#line 1063
+  iterator erase(iterator position) {
+    if (position == end()) {
+      return position;
+    }
+    MM_ASSERT(size() != 0);
+    m_size--;
+    for (size_t index = position._index; index < m_front + m_size;) {
+      size_t destination = index % m_capacity;
+      index++;
+      T &source = at(index % m_capacity);
+      at(destination) = source;
+    }
+    // The game ends with two at() asserts (queue.h line 65) and no other effect: both elements are the vacated slot, whose
+    // destructors are trivial for every element type the game instantiates. Which two slots the original touched is not
+    // recoverable from the binary; the vacated end slot is the only one an erase has reason to destruct.
+    size_t vacated = (m_front + m_size) % m_capacity;
+    destruct(&at(vacated));
+    destruct(&at(vacated));
+    return position;
+  }
 
 private:
   // __LINE__ must be 65 as in the original header: it is the line argument of the assert.
