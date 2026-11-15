@@ -61,9 +61,9 @@ struct unknown003 {
 struct unknown004 {
   u8 unknown00;  // Inferred role: kind; original member name unknown.
   u8 unknown01;  // Inferred role: value type, or shift of a flag; original member name unknown.
-  u16 unknown02; // Inferred role: offset in the row; original member name unknown.
-  u16 unknown04; // Inferred role: array count; original member name unknown.
-  u16 unknown06; // Inferred role: unused here; original member name unknown.
+  u16 unknown02; // Inferred role: offset in the row, or the first half of the 32 bit mask of a flag (read as a u32 at 0x02 by getShiftMask); original member name unknown.
+  u16 unknown04; // Inferred role: array count, or the second half of the mask of a flag; original member name unknown.
+  u16 unknown06; // Inferred role: offset of the parent member of a flag, compared by getShiftMask; unused otherwise; original member name unknown.
 };
 #pragma pack(pop)
 
@@ -438,6 +438,26 @@ void errFlag(unsigned char *bdat, const char *name, const char *flag) {}
 void errFlagParent(unsigned char *bdat, const char *name, const char *flag) {}
 
 int getFlagVal(unsigned char *bdat, int column, int id, int flag) { return getFlagVal(bdat, getMember(bdat, column), id, getMember(bdat, flag)); }
+
+bool getShiftMask(unsigned char *pBdat, const char *name, const char *flag, int *shift, u32 *mask) {
+#line 422
+  assert(pBdat != 0L);
+  unsigned char *member = getMember(pBdat, name);
+  if (member == nullptr) {
+    return false;
+  }
+  unsigned char *flagMember = getMember(pBdat, flag);
+  if (flagMember == nullptr) {
+    return false;
+  }
+  unknown004 *var = reinterpret_cast<unknown004 *>(pBdat + reinterpret_cast<unknown003 *>(flagMember)->unknown00);
+  if (var->unknown00 == 3 && var->unknown06 == static_cast<u16>(member - pBdat)) {
+    *shift = var->unknown01;
+    *mask = *reinterpret_cast<u32 *>(&var->unknown02);
+    return true;
+  }
+  return false;
+}
 
 bool getValCheckSub(unsigned char *bdat, unsigned char *member, int type) {
   if (member == nullptr) {
