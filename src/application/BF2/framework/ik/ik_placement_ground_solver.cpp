@@ -10,6 +10,7 @@
 #include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec4.h"
+#include "mm_mtl/bitflag.h"
 
 namespace fw {
 
@@ -113,7 +114,7 @@ void PlacementGroundSolver::overwriteRaycastUp(f32 distance) {
 void PlacementGroundSolver::resetRaycastUp() {
   for (u32 i = 0; i < unknown20.size(); i++) {
     if (unknown20[i].get() != nullptr) {
-      unknown20[i]->unknowna0 &= ~4;
+      unknown20[i]->unknowna0.unknown004(FootPlacementIKSolver::FLAG_UNKNOWN_2);
     }
   }
 }
@@ -129,7 +130,7 @@ void PlacementGroundSolver::overwriteRaycastDown(f32 distance) {
 void PlacementGroundSolver::resetRaycastDown() {
   for (u32 i = 0; i < unknown20.size(); i++) {
     if (unknown20[i].get() != nullptr) {
-      unknown20[i]->unknowna0 &= ~8;
+      unknown20[i]->unknowna0.unknown004(FootPlacementIKSolver::FLAG_UNKNOWN_3);
     }
   }
 }

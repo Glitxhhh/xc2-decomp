@@ -1,5 +1,6 @@
 #include "event/seq_manager.h"
 
+#include "event/bgm_manager.h"
 #include "event/cmd_param.h"
 #include "event/cmd_variable.h"
 #include "event/cs_snd_manager.h"
@@ -104,6 +105,39 @@ ICmd::RESULT SeqManager::exec_fadeout::update(const Param &param) {
     result = RESULT_UNKNOWN_1;
   }
   return result;
+}
+
+ICmd::RESULT SeqManager::start_fadeout::update(const Param &param) {
+  if (param.getFrame() <= 0) {
+    SeqManager *seq = static_cast<SeqManager *>(param.val(0).getUserdata());
+    mm::mtl::Singleton<FadeManager>::getPtr()->request(FadePlanner::TYPE_UNKNOWN_0);
+    mm::mtl::Singleton<VolumeManager>::get().startSeamlessVolume(seq->unknown2710.unknown7c);
+    if (!param.val(1).getBool()) {
+      mm::mtl::Singleton<BgmManager>::getPtr()->playDefaultBgm(param.val(2).getS32());
+    }
+    seq->unknown178 = "start fadeout";
+  }
+  return static_cast<RESULT>(!mm::mtl::Singleton<FadeManager>::getPtr()->isFading());
+}
+
+ICmd::RESULT SeqManager::end_wait::update(const Param &param) {
+  if (param.getFrame() <= 0) {
+    mm::mtl::Singleton<ObjectManager>::getPtr()->clear();
+    mm::mtl::Singleton<MdlstmManager>::getPtr()->clear();
+    gf::GfScriptManager::destroyScript(SCRIPT_SLOT_UNKNOWN_2);
+    gf::GfEvent::callEventPlay(gf::GEV_UNKNOWN_8, 0);
+    static_cast<SeqManager *>(param.val(0).getUserdata())->unknown178 = "end wait";
+  }
+  if (!unknown08) {
+    return RESULT_UNKNOWN_0;
+  }
+  if (!gf::GfScriptManager::isScriptFinish(SCRIPT_SLOT_UNKNOWN_2) && gf::GfScriptManager::isScriptActive(SCRIPT_SLOT_UNKNOWN_2)) {
+    return RESULT_UNKNOWN_0;
+  }
+  if (mm::mtl::Singleton<MemoryManager>::getPtr()->isActive()) {
+    return RESULT_UNKNOWN_0;
+  }
+  return static_cast<RESULT>(param.getFrame() > 1);
 }
 
 ICmd::RESULT SeqManager::start_change::update(const Param &param) {

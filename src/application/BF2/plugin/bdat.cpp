@@ -319,6 +319,47 @@ uVal getArrayVal(unsigned char *bdat, const char *name, int id, int index) {
   return value;
 }
 
+uVal getArrayVal(unsigned char *pBdat, unsigned char *pVarName, int id, int index) {
+#line 243
+  assert(pVarName != 0L);
+#line 246
+  assert(pBdat != 0L);
+  if (calcId(pBdat, &id)) {
+    return getArray(pBdat, pVarName, id, index);
+  }
+  uVal value;
+  clearVal(&value);
+  return value;
+}
+
+uVal getArray(unsigned char *bdat, unsigned char *member, int row, int index) {
+  unknown004 *var = reinterpret_cast<unknown004 *>(bdat + reinterpret_cast<unknown003 *>(member)->unknown00);
+  if (var->unknown00 == 2 && index < var->unknown04) {
+    unknown002 *header = reinterpret_cast<unknown002 *>(bdat);
+    unsigned char *data = bdat + header->unknown0e + header->unknown08 * row + var->unknown02;
+    switch (var->unknown01) {
+    case 1:
+    case 4:
+      data += index;
+      break;
+    case 2:
+    case 5:
+      data += index * 2;
+      break;
+    case 3:
+    case 6:
+    case 7:
+    case 8:
+      data += index * 4;
+      break;
+    }
+    return getVarVal(bdat, data, var->unknown01);
+  }
+  uVal value;
+  clearVal(&value);
+  return value;
+}
+
 uVal getArrayVal(unsigned char *bdat, int column, int id, int index) { return getArrayVal(bdat, getMember(bdat, column), id, index); }
 
 int getArrayCount(unsigned char *bdat, const char *name) {

@@ -72,8 +72,8 @@ void GmkNpcIdInfo::dispose() {
     delete unknown10;
     unknown10 = nullptr;
   }
-  unknown00 = 0;
-  unknown08 = nullptr;
+  unknown00.unknown00 = 0;
+  unknown00.unknown08 = nullptr;
 }
 
 void GmkNpcIdInfo::disposeGobInst(bool isFadeOut) {

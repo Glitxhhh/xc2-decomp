@@ -19,7 +19,7 @@
     "name": "gmk",
     "code": {
       "total": 763712,
-      "matching": 529260,
+      "matching": 530696,
       "non_matching": 0
     }
   },
@@ -27,7 +27,7 @@
     "name": "event",
     "code": {
       "total": 725424,
-      "matching": 505360,
+      "matching": 510528,
       "non_matching": 0
     }
   },
@@ -35,7 +35,7 @@
     "name": "framework",
     "code": {
       "total": 485876,
-      "matching": 297900,
+      "matching": 297976,
       "non_matching": 0
     }
   },
@@ -139,7 +139,7 @@
     "name": "plugin",
     "code": {
       "total": 15372,
-      "matching": 11868,
+      "matching": 12512,
       "non_matching": 0
     }
   },

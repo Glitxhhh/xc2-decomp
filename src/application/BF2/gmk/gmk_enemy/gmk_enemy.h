@@ -74,6 +74,7 @@ public:
 
     void create(CBdatWrapper bdat, int id, const AGmkBase &gmk);
     bool isInvincibleCondMatched() const;
+    bool isPopCondMatched() const;
     bool isPopCondMatchedOfSmn() const;
 
     u16 unknown00;              // Inferred role: condition; original member name unknown.
@@ -166,6 +167,11 @@ public:
     unknown004_2 = 1 << 2, // Inferred role: depop distance condition matched; original name unknown.
   };
 
+  // Inferred helper: sets or clears one bit of the matched condition flags; original name unknown. Shared by the three bits of updatePopDepopCond, which the game
+  // writes through single selects (0x71005ef928). Forms tried: `isSet ? (x | flag) : (x & ~flag)` puts the orr before the and (the game computes the and first, as the
+  // negated test of the first block of updatePopDepopCond writes it) and an if/else gives branches (47 instructions against 46).
+  void unknown001(unknown004 flag, bool isSet) { unknown178 = !isSet ? (unknown178 & ~flag) : (unknown178 | flag); }
+
   GmkEnemyInsts();
   ~GmkEnemyInsts() { dispose(); }
   bool isPopFinished() const;
@@ -177,6 +183,7 @@ public:
   int getGobInstCapa() const;
   gf::GF_OBJ_HANDLE *getGobInst(u32 index) const;
   void update(const UpdateInfo &info);
+  void updatePopDepopCond(const UpdateInfo &info);
   void seqUpdatePopDepop(const UpdateInfo &info);
   void seqWaitToFadeOutOfGobInst(const UpdateInfo &info);
   bool canDepopGobInst() const;
