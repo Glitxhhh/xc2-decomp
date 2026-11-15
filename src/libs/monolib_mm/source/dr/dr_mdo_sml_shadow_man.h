@@ -45,6 +45,7 @@ public:
   void changeViewNum(DrMdoSmlShadowObj *shadow, int viewNum);
   void shadowRender();
   void releaseObj(DrMdoSmlShadowObj *shadow);
+  void addObjList(int viewNum);
   void delObjList();
   bool checkDisp();
 

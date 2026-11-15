@@ -47,7 +47,7 @@ struct VolumeFadeParams {
   f32 unknown88[5];      // Inferred role: third group of five floats; original member name unknown.
   f32 unknown9c;         // Inferred role: frame; original member name unknown.
   f32 unknowna0;         // Inferred role: rate; original member name unknown.
-  f32 unknowna4;         // Role and original member name unknown.
+  u32 unknowna4;         // Inferred role: volume texture index offset, MdoWrkVanishEffect::unknowna8; original member name unknown.
 };
 
 static_assert(offsetof(VolumeFadeParams, unknown40) == 0x40, "");

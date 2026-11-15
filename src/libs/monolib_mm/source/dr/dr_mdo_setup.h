@@ -163,6 +163,7 @@ public:
   void varStTex_ToonDarkGradTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_AmbBRDFTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_ToonRimTex(const MdsMatInfoHeader *header, u32 location, u32 index);
+  void varStTex_VolumeTex00(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_VolumeTex01(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_OrientationTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_FlagWaveTex0(const MdsMatInfoHeader *header, u32 location, u32 index);
@@ -170,6 +171,7 @@ public:
   void varStTex_DitherTex(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_Capture4(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_Movie0(const MdsMatInfoHeader *header, u32 location, u32 index);
+  void varStTex_Movie1(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_Movie2(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStTex_Movie3(const MdsMatInfoHeader *header, u32 location, u32 index);
   void varStImg_BaseColor(const MdsMatInfoHeader *header, u32 location, u32 index);

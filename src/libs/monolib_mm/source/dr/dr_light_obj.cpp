@@ -1,6 +1,7 @@
 #include "dr/dr_light_obj.h"
 
 #include <math.h>
+#include <string.h>
 
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
@@ -185,6 +186,16 @@ void DrLightObjPnt::setMat(const mm::Mat44 &matrix) {
 void DrLightObjPnt::setMat(const f32 *matrix) {
   unknown031(unknown30, matrix);
   m_pos = unknown30.unknown004();
+}
+
+// The translation row is copied from a Vec3 filled by memcpy, the way Mat44::unknown004 reads it: the game loads x and y as
+// one 64-bit value and splits it (ldr x8, [x1]; lsr x9, x8, #32; stp w8, w9 at 0x71007dc0e4); the component-wise Mat44::setTrans
+// and a memcpy straight into the row give 13 and 11 instructions against the game's 12.
+void DrLightObjPnt::setPos(const mm::Vec3 &position) {
+  m_pos = position;
+  mm::Vec3 pos;
+  memcpy(&pos, &position, sizeof(f32) * 3);
+  unknown30.setTrans(pos);
 }
 
 void DrLightObjPnt::initPnt() {

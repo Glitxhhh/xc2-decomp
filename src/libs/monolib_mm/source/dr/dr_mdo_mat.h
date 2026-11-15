@@ -683,7 +683,9 @@ static_assert(offsetof(MdoWrkMatRes, unknown168) == 0x168, "");
 static_assert(offsetof(MdoWrkMatRes, unknown170) == 0x170, "");
 static_assert(offsetof(MdoWrkMatRes, unknown178) == 0x178, "");
 
-// Layout evidence: ScnObjAccVolumeFade::setParams copies VolumeFadeParams into 0x00..0xa0 and its member at 0xa4 to 0xa8.
+// Layout evidence: ScnObjAccVolumeFade::setParams copies VolumeFadeParams into 0x00..0xa0 and its member at 0xa4 to 0xa8 as 32 bits;
+// DrMdoSetup::varStTex_VolumeTex00 adds 7 to the member at 0xa8 in 32 bits (unsigned: a signed member lets clang drop an instruction) and
+// sign-extends the sum (0x710082f5f8).
 struct MdoWrkVanishEffect {
   mm::Col3 unknown00[5]; // Inferred role: colors; original member name unknown.
   mm::Vec3 unknown40;    // Inferred role: position; original member name unknown.
@@ -694,7 +696,7 @@ struct MdoWrkVanishEffect {
   f32 unknown9c;         // Inferred role: frame; original member name unknown.
   f32 unknowna0;         // Inferred role: rate; original member name unknown.
   f32 unknowna4;         // Inferred role: ratio; original member name unknown.
-  f32 unknowna8;         // Role and original member name unknown.
+  u32 unknowna8;         // Inferred role: volume texture index offset; original member name unknown.
   u8 _ac[0xd0 - 0xac];
   f32 unknownd0; // Inferred role: base ratio; original member name unknown.
   u32 unknownd4; // Inferred role: flags; original member name unknown.

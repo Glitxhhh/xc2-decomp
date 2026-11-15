@@ -21,6 +21,7 @@ public:
   void setClear();
   void setNewGrid();
   void update(const mm::Mat44 &view, const mm::Mat44 &projection, const mm::Vec3 &center, int gridX, int gridY);
+  bool checkGrid(int gridX, int gridY) const;
   void setBigMode(bool isBig);
   void setID(int id);
   void depthClear();

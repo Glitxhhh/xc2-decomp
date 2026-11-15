@@ -2,11 +2,13 @@
 
 #include <string.h>
 
+#include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam_base_map.h"
 #include "dr/dr_mdo_mat.h"
 #include "dr/dr_res_mdo_alp_tbl.h"
 #include "dr/dr_res_mdo_seam_wrk_base_vertex.h"
 #include "dr/dr_res_mdo_vertex.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -21,6 +23,15 @@ void DrResMdoSeamWrkBaseVertex::release() {
     unknown08 = nullptr;
   }
   unknown00 = nullptr;
+}
+
+// The buffer is read before DrMan::getIns() (ldr x20, [x20, #0x18] at 0x710087fc34): the local places that load.
+void DrResMdoSeamWrkBaseVertex::setupVertex(int index, DrResMdoSeamMemObj *memObj) {
+  release();
+  unknown00 = memObj;
+  unknown10 = index;
+  const u8 *buffer = memObj->m_buffer;
+  unknown08 = new (DrMan::getIns()->unknown10) DrResMdoVertex(buffer);
 }
 
 void DrResMdoSeamWrkBaseVertex::changeMemVertex() { unknown08->changeMemVertex(unknown00->m_buffer); }

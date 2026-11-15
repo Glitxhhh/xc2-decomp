@@ -613,6 +613,17 @@ void DrMdoSetup::varStTex_ToonRimTex(const MdsMatInfoHeader *header, u32 locatio
   cache->setTexture(m_drMan->unknown70->unknown98[6], location);
 }
 
+void DrMdoSetup::varStTex_VolumeTex00(const MdsMatInfoHeader *header, u32 location, u32 index) {
+  DrAPCache *cache = m_drMan->unknown5c0;
+  cache->begin3DTextureWarpSampling();
+  MdoWrkVanishEffect *effect = getVanishEffectWrk(index, 2);
+  int slot = 7;
+  if (effect != nullptr) {
+    slot = effect->unknowna8 + 7;
+  }
+  cache->setTexture(m_drMan->unknown70->unknown98[slot], location);
+}
+
 void DrMdoSetup::varStTex_VolumeTex01(const MdsMatInfoHeader *header, u32 location, u32 index) {
   DrAPCache *cache = m_drMan->unknown5c0;
   cache->begin3DTextureWarpSampling();
@@ -663,6 +674,26 @@ void DrMdoSetup::varStTex_Movie0(const MdsMatInfoHeader *header, u32 location, u
   DrAPCache *cache = m_drMan->unknown5c0;
   grlib::CGLibTextureBuffer *texture = pixlMan->unknown808[0];
   if (pixlMan->unknown828[0] != 0) {
+    cache->beginTexSampling(2, 1);
+  } else {
+    cache->beginTexSampling(2, 0);
+  }
+  if (texture == nullptr) {
+    cache->setMipMapOn(*pixlMan->getDammyTexObj());
+    cache->setTexture(*pixlMan->getDammyTexObj(), location);
+  } else {
+    cache->setMipMapOn(*texture);
+    cache->setTexture(*texture, location);
+  }
+}
+
+// Repeats the texture block of varStTex_Movie0, varStTex_Movie2 and varStTex_Movie3 (movie 1): each of the four game functions holds the whole
+// block (40 instructions). With the block in one shared helper clang does not inline it and every function shrinks to a call (7 instructions).
+void DrMdoSetup::varStTex_Movie1(const MdsMatInfoHeader *header, u32 location, u32 index) {
+  DrPixlMan *pixlMan = m_drMan->unknown78;
+  DrAPCache *cache = m_drMan->unknown5c0;
+  grlib::CGLibTextureBuffer *texture = pixlMan->unknown808[1];
+  if (pixlMan->unknown828[1] != 0) {
     cache->beginTexSampling(2, 1);
   } else {
     cache->beginTexSampling(2, 0);

@@ -251,6 +251,61 @@ DrMdlMan::~DrMdlMan() {
   }
 }
 
+void DrMdlMan::deleteAll(int cate) {
+  unknown0a8[cate].unknown005();
+  unknown148[cate].unknown005();
+}
+
+void DrMdlMan::deleteAll() {
+  for (int i = 0; i < 2; i++) {
+    unknown1f8[i].unknown005();
+  }
+  unknown1e8.unknown005();
+  for (int i = 0; i < 4; i++) {
+    deleteAll(i);
+  }
+  for (int i = 0; i < 2; i++) {
+    unknown0e8[i].unknown005();
+  }
+  for (int i = 0; i < 2; i++) {
+    unknown188[i].unknown005();
+  }
+  for (int i = 0; i < 4; i++) {
+    unknown108[i].unknown005();
+    unknown1a8[i].unknown005();
+  }
+}
+
+void DrMdlMan::addDelList(int cate) {
+  unknown108[cate].unknown005();
+  unknown1a8[cate].unknown005();
+  DrMdlBase *mdl = unknown0e8[DrMan::s_nDblIdx].unknown00;
+  while (mdl != nullptr) {
+    DrMdlBase *next;
+    if (mdl->unknown1a == cate) {
+      mdl->resourceInit();
+      next = mdl->unknown10;
+      unknown0e8[DrMan::s_nDblIdx].unknown001(mdl);
+      unknown0a8[cate].unknown004(mdl);
+    } else {
+      next = mdl->unknown10;
+    }
+    mdl = next;
+  }
+  DrGpuCheckObj *check = unknown188[DrMan::s_nDblIdx].unknown00;
+  while (check != nullptr) {
+    // The game loads the type (0x71007cad08) before the next pointer (0x71007cad0c).
+    s32 type = check->unknown18;
+    DrGpuCheckObj *next = check->unknown10;
+    if (type == cate) {
+      unknown188[DrMan::s_nDblIdx].unknown001(check);
+      unknown148[cate].unknown004(check);
+    }
+    check = next;
+  }
+  unknown030->addObjList(cate);
+}
+
 int DrMdlMan::headerChek(const void *data) {
   const unknown003 *header = static_cast<const unknown003 *>(data);
   switch (header->unknown00) {
