@@ -2,6 +2,8 @@
 
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_mercenaries.h"
+#include "gf/data/gf_data_param_acc.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/mercenaries/gf_game_mercenaries.h"
 #include "gf/gf_allocator.h"
@@ -363,14 +365,16 @@ void GfMenuObjMercenaryForm::initialize() {
   GfMenuObject::initialize();
 }
 
+// The stores of the event are in the order of the game's inlined copies (updateBladeCount, 0x7100492e84: the second parameter, the
+// type, then the first parameter), which the out-of-line copies below also match.
 void GfMenuObjMercenaryForm::sendOpenEvent(u32 handle, int type, f32 delay) {
   if (handle == 0) {
     handle = ui::UIObjectAcc(unknown18, "LAY_form_main").unknown10;
   }
   ui::EventData event;
-  event.unknown08 = type;
   event.unknown0c = 0;
   event.unknown00 = GfMenuTypes::unknown003_33;
+  event.unknown08 = type;
   GfMenuObject::sendEvent(handle, event, delay);
 }
 
@@ -379,9 +383,9 @@ void GfMenuObjMercenaryForm::sendCloseEvent(u32 handle, int type, f32 delay) {
     handle = ui::UIObjectAcc(unknown18, "LAY_form_main").unknown10;
   }
   ui::EventData event;
-  event.unknown08 = type;
   event.unknown0c = 0;
   event.unknown00 = GfMenuTypes::unknown003_34;
+  event.unknown08 = type;
   GfMenuObject::sendEvent(handle, event, delay);
 }
 
@@ -444,7 +448,123 @@ void GfMenuObjMercenaryForm::updateReserveBlade(u32 index) {
   refreshBladeList();
 }
 
+// Game: 0x7100492e84. The accessors of the condition rows live in a {} block: the game stores the number only after destroying
+// them. sendOpenEvent and sendCloseEvent are inlined with their parameter 0.
+void GfMenuObjMercenaryForm::updateBladeCount(bool hasCurrent, bool isCheck) {
+  ui::UIObjectAcc form(unknown18, "LAY_form");
+  u32 mission = GfMenuReference::getReferenceMissionID();
+  mm::mtl::FixStr<32> name;
+  GfRequestBladeData request = {};
+  u32 addIndex = -1;
+  if (hasCurrent && unknown28->getSize() < 6) {
+    u32 blade = unknown30->getContents(unknown30->getIndex(false)).unknown00;
+    u32 i = 0;
+    for (; i < unknown28->getSize(); i++) {
+      if (unknown28->getContents(i).unknown00 == blade) {
+        break;
+      }
+    }
+    if (i == unknown28->getSize()) {
+      MenuBladeInfo info = {};
+      addIndex = unknown28->getSize();
+      info.unknown00 = blade;
+      info.unknown04 = GfDataBlade::getCreator(blade);
+      unknown28->addContents(info);
+    }
+  }
+  int conditions = 0;
+  int fulfilled = 0;
+  for (u32 task = 0; task < 3; task++) {
+    u32 count;
+    if (GfDataMercenaries::getRequestCondition(request, mission, task)) {
+      count = GfMenuObjUtil::getMissionCondBladeCount(request, unknown28);
+      conditions++;
+    } else {
+      count = 0;
+    }
+    u32 number = task + 1;
+    {
+      name.format("TXT_form_mis_cond_txt@%02d", number);
+      ui::UIObjectAcc text(form.unknown10, name.c_str());
+      name.format("IMG_form_mis_cond_icon@%02d", number);
+      ui::UIObjectAcc icon(form.unknown10, name.c_str());
+      if ((request.unknown0c == 0 ? 1 : request.unknown0c) > count) {
+        GfMenuObjUtil::setColMulandAdd(text.unknown10, "txt_warning");
+        icon.setAddColor("mer_cond_ng");
+      } else {
+        GfMenuObjUtil::setColDefault(text.unknown10);
+        icon.setAddColor("mer_cond_ok");
+        fulfilled++;
+      }
+    }
+    unknownc0[task]->unknown0c = count;
+  }
+  if (!hasCurrent && isCheck) {
+    bool isFull = fulfilled == conditions;
+    form.setDispChild(isFull, "LAY_form_unit_apply");
+    if (isFull) {
+      sendOpenEvent(form.searchChild("LAY_form_apply"), 0, 0.0f);
+    } else {
+      sendCloseEvent(form.searchChild("LAY_form_apply"), 0, 0.0f);
+    }
+    setInputActionEnable(form.searchChild("LAY_form_list_bl"), 0x10, isFull);
+    setInputActionEnable(form.searchChild("LAY_form_unit_bl"), 0x10, isFull);
+    unknown8f0 = isFull;
+  }
+  for (u32 slot = 0; slot < 3; slot++) {
+    int skill = GfDataMercenaries::getFieldSkill(mission, slot);
+    int count = 0;
+    if (skill != 0) {
+      for (u32 i = 0; i < unknown28->getSize(); i++) {
+        DataParamAcc acc(OBJECT_TYPE_BLADE, unknown28->getContents(i).unknown00, GIMMICK_TYPE_UNKNOWN_0);
+        if ((acc.getFieldSkillLevel(0, false) != 0 && acc.getFieldSkill(0, false) == skill) || (acc.getFieldSkillLevel(1, false) != 0 && acc.getFieldSkill(1, false) == skill) ||
+            (acc.getFieldSkillLevel(2, false) != 0 && acc.getFieldSkill(2, false) == skill)) {
+          count++;
+        }
+      }
+    }
+    unknownc0[4 + slot]->unknown0c = count;
+  }
+  if (addIndex != static_cast<u32>(-1)) {
+    GfMenuBladeList *list = unknown28;
+    list->contents.erase(list->contents.begin() + addIndex);
+    list->subSize(1);
+    list->contentsChanged = true;
+  }
+}
+
 bool GfMenuObjMercenaryForm::chkTempUnlink(u32 blade) { return mm::mtl::find(unknown598.begin(), unknown598.end(), static_cast<u16>(blade)) != unknown598.end(); }
+
+// Game: 0x71004934a4. The first accessor lives in a {} block: the game builds both accessors in the same stack slot (sp+8, frame 192; with
+// the first one in the scope of the loop body, two slots give 208). The if/else with a call in each arm is the game's shape (a ternary argument
+// gives another register order); the element reference is read again for each compare (ldr w9, [x27]), as the calls in the loop may change the list.
+void GfMenuObjMercenaryForm::refreshBladeList() {
+  ui::UIObjectAcc list(unknown18, "LAY_form_list_bl");
+  mm::mtl::FixStr<32> name;
+  for (u32 index = 0; index < unknown30->getPageSize(); index++) {
+    MenuBladeInfo &info = unknown30->getContents(unknown30->getPageIndex(index));
+    bool isSelectable = GfMenuObjUtil::isBladeSelectable(info.unknown00, nullptr);
+    name.format("IMG_form_list_bl_face@%02d", index + 1);
+    {
+      ui::UIObjectAcc face(list.unknown10, name.c_str());
+      if (!isSelectable && !chkTempUnlink(info.unknown00)) {
+        face.setMulColor("gray");
+      } else {
+        face.setMulColor("white");
+      }
+    }
+    bool isChecked = false;
+    for (u32 i = 0; i < unknown28->getSize(); i++) {
+      if (unknown28->getContents(i).unknown00 == info.unknown00) {
+        isChecked = true;
+        break;
+      }
+    }
+    name.format("IMG_form_list_bl_check@%02d", index + 1);
+    ui::UIObjectAcc check(list.unknown10, name.c_str());
+    check.setDisp(isChecked);
+  }
+}
 
 void GfMenuObjMercenaryForm::addTempUnlink(u32 blade) {
   if (!chkTempUnlink(blade)) {

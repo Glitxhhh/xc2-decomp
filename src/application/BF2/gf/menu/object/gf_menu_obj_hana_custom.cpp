@@ -895,6 +895,26 @@ void GfMenuObjHanaCustom::EquipListListener::reciveEvent(const ui::EventData &ev
   }
 }
 
+void GfMenuObjHanaCustom::PlanListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc ownerAcc(unknown20->unknown18);
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1: {
+    u32 blade = GfMenuReference::getReferenceBladeID(0);
+    // The game (0x710046ed24) never sets x1 for the unused list argument of setupPlan, which is defined in this file and
+    // never reads it (ruling 6); the original expression cannot be checked. unknown30 is the one of the two identifier lists of the owner that
+    // getPartsId does not read.
+    setupPlan(acc, unknown20->unknown30);
+    setupItemInfo(ownerAcc, unknown20->unknown88);
+    setupItemInfo2(ownerAcc, unknown20->unknown358, blade);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 } // namespace gf
 
 template bool mm::mtl::Delegate<bool()>::memberFuncInvoker<gf::GfMenuObjHanaCustom>(const mm::mtl::Delegate<bool()> *);

@@ -16,7 +16,6 @@ class ReferenceObject;
 } // namespace mm
 
 namespace ui {
-class UIListInfoBase;
 class UISelectObjList;
 } // namespace ui
 
@@ -58,8 +57,9 @@ public:
     u32 unknown28;  // Inferred role: created blade; original member name unknown.
     bool unknown2c; // Inferred role: ideagram page skipped; original member name unknown.
     u8 _2d[0x30 - 0x2d];
-    mm::mtl::ReferenceObject *unknown30;   // Inferred role: reference-counted object; type and original member name unknown.
-    ui::UIListInfoBase *unknown38;         // Inferred role: list released when the result is full; original member name unknown.
+    mm::mtl::ReferenceObject *unknown30; // Inferred role: reference-counted object; type and original member name unknown.
+    // Evidence for the type: ConfirmListener::reciveEvent (0x71003fab6c) resets it, opens a common window on it and compares its id (+0x0c).
+    GfMenuCallContext *unknown38;          // Inferred role: call context of the confirmation window; original member name unknown.
     ui::UIListInfo<u32> *unknown40;        // Inferred role: driver list; original member name unknown.
     GfMenuItemList *unknown48;             // Inferred role: crystal list; original member name unknown.
     ui::UIListInfo<unknown005> *unknown50; // Inferred role: idea list; original member name unknown.
@@ -70,6 +70,15 @@ public:
   class ResultListener : public ui::UIObjectListener {
   public:
     ResultListener(GfMenuObjBladeCreate *owner, PageContext *context) : _0c(), unknown20(owner), unknown28(context) {}
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeCreate *unknown20; // Inferred role: owner; original member name unknown.
+    PageContext *unknown28;          // Inferred role: page state of the owner; original member name unknown.
+  };
+
+  class ConfirmListener : public ui::UIObjectListener {
+  public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
 
     u8 _0c[0x20 - 0x0c];

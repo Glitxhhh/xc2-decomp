@@ -13,6 +13,7 @@
 #include "gf/game/sequential_play/gf_play_command.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
+#include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fade.h"
 #include "gf/menu/gf_menu_fullscreen.h"
 #include "gf/menu/gf_menu_manager.h"
@@ -25,6 +26,7 @@
 #include "gf/menu/object/gf_menu_obj_blade_name.h"
 #include "gf/menu/object/gf_menu_obj_blade_set2.h"
 #include "gf/menu/object/gf_menu_obj_cmn_status.h"
+#include "gf/menu/object/gf_menu_obj_common_text.h"
 #include "gf/menu/object/gf_menu_obj_fade.h"
 #include "gf/menu/object/gf_menu_obj_mainmenu2.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
@@ -893,6 +895,55 @@ void GfMenuObjBladeCreate::IdeagramListener::reciveEvent(const ui::EventData &ev
       unknown0c = 0;
     }
     break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+void GfMenuObjBladeCreate::ConfirmListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    break;
+  case GfMenuTypes::unknown003_33:
+    unknown28->unknown38->reset();
+    // The game (0x71003fabd0) keeps the branch on the flag and calls open in each arm; a ternary argument gives a csel.
+    if (!unknown20->unknown11b4) {
+      GfMenuObjCommonText::open(unknown28->unknown38, 0x46, 0);
+    } else {
+      GfMenuObjCommonText::open(unknown28->unknown38, 0xc4, 0);
+    }
+    GfMenuObject::setCallContextEventHandler(unknown28->unknown38, acc.unknown10);
+    GfMenuObjOperationInfo::setDisp(false);
+    unknown20->dispGuideText(false);
+    if (!unknown20->unknown11b4) {
+      GfMenuObjMainMenu2::setCloseKeyEnable(false);
+    }
+    break;
+  case GfMenuTypes::unknown003_34:
+    break;
+  case 0x41: {
+    // Ruling 2: the game (0x71003fabf4) loads the id of the event before the id of the context.
+    u32 callId = event.unknown08;
+    if (unknown28->unknown38->unknown0c != callId) {
+      break;
+    }
+    if (event.unknown10 == 0) {
+      ui::EventData closeEvent;
+      closeEvent.unknown00 = GfMenuTypes::unknown003_34;
+      GfMenuObject::sendEvent(acc.searchSibiling("LAY_dr_idea"), closeEvent, 0.0f);
+      unknown20->nextPage(acc.unknown10, unknown28, true);
+    } else {
+      GfMenuObjOperationInfo::setDisp(true);
+      unknown20->dispGuideText(true);
+      unknown20->returnPage(acc.unknown10, unknown28, true);
+      if (!unknown20->unknown11b4) {
+        GfMenuObjMainMenu2::setCloseKeyEnable(true);
+      }
+    }
+    break;
+  }
   default:
     ui::UIObjectListener::reciveEvent(event, handle);
     break;

@@ -7,6 +7,9 @@
 #include "mm_mtl/intrusive_ptr.h"
 #include "types.h"
 
+namespace fw {
+struct Transform;
+} // namespace fw
 namespace mm {
 namespace mtl {
 class RTTI;
@@ -84,6 +87,9 @@ public:
   virtual ~ChainAttackCamera();
   void start();
   void end();
+  void change(GF_OBJ_HANDLE *handle);
+  void getParam(int id, Param &param);
+  void updateParam(Param &param, const fw::Transform &transform, const mm::Vec3 &position, const mm::Vec3 &target);
   void setCameraParam(const Param &param);
   void destroyCamera(mm::mtl::IntrusivePtr<fw::Camera> *camera, f32 time);
   u32 lottery(u8 camType);
