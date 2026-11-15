@@ -12,9 +12,13 @@
 #include "gf/data/gf_bdat_msg.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
+#include "gf/data/gf_data_achievement.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_blade_arts.h"
+#include "gf/data/gf_data_blade_skill.h"
 #include "gf/data/gf_data_driver.h"
 #include "gf/data/gf_data_field.h"
+#include "gf/data/gf_data_field_skill.h"
 #include "gf/data/gf_data_game.h"
 #include "gf/data/gf_data_hana.h"
 #include "gf/data/gf_data_idea.h"
@@ -490,6 +494,376 @@ bool GfDataBlade::isFavoriteItem(u32 blade, u32 item) {
 }
 
 u32 GfDataBlade::getAchievementQuestPrefix(u32 blade, u32 line, u32 level) { return getBladeRelativeID(blade) * ACHIEVEMENT_UNKNOWN_50 + line * ACHIEVEMENT_UNKNOWN_5 + level; }
+
+// Inferred role: gets the data of a blade and the type and index of an achievement line in it; original name unknown. Written out in each function the three statements give the same
+// code; they are shared because nine functions below start with them.
+static bool unknown003(SDataBlade *&dataBlade, ACHIEVEMENT_TYPE &type, u32 &index, u32 blade, u32 line) {
+  dataBlade = &GfDataBlade::getSDataBlade(blade);
+  return GfDataAchievement::getAchievementType(type, index, line);
+}
+
+SDataBladeAchievement *GfDataBlade::getAchievInfo(u32 blade, u32 line) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (unknown003(dataBlade, type, index, blade, line)) {
+    switch (type) {
+    case ACHIEVEMENT_TYPE_UNKNOWN_3:
+      return &dataBlade->unknown5d4;
+    case ACHIEVEMENT_TYPE_UNKNOWN_2:
+      return &dataBlade->unknown424[index];
+    case ACHIEVEMENT_TYPE_UNKNOWN_1:
+      return &dataBlade->unknown274[index];
+    default:
+      return &dataBlade->unknownc4[index];
+    }
+  }
+  return &dataBlade->unknownc4[0];
+}
+
+u32 GfDataBlade::getKizunaringMax(u32 blade) {
+  u32 count = 0;
+  for (u32 line = 0; line < ACHIEVEMENT_UNKNOWN_10; line++) {
+    SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
+    if (achievInfo->unknown00 != 0) {
+      for (u32 level = 0; level < ACHIEVEMENT_UNKNOWN_5; level++) {
+        if (achievInfo->unknown04[level].unknown18 != 0) {
+          count++;
+        }
+      }
+    }
+  }
+  return count;
+}
+
+u32 GfDataBlade::getKizunaringCompleteNum(u32 blade) {
+  u32 count = 0;
+  for (u32 line = 0; line < ACHIEVEMENT_UNKNOWN_10; line++) {
+    SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
+    if (achievInfo->unknown00 != 0) {
+      for (u32 level = 0; level < ACHIEVEMENT_UNKNOWN_5; level++) {
+        AchievQuest &achievQuest = achievInfo->unknown04[level];
+        if (achievQuest.unknown18 != 0) {
+          count += achievQuest.unknown0c & 1;
+        }
+      }
+    }
+  }
+  return count;
+}
+
+bool GfDataBlade::getTaskSkillMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line) {
+  textId = 0;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (GfDataAchievement::getAchievementType(type, index, line)) {
+    SDataBlade &dataBlade = getSDataBlade(blade);
+    switch (type) {
+    case ACHIEVEMENT_TYPE_UNKNOWN_3:
+      textId = 1;
+      bdat = GfBdatMsg::getFpAchievement();
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_2:
+      GfDataFieldSkill::getName(bdat, textId, dataBlade.unknownae[index].unknown00);
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_1:
+      GfDataBladeSkill::getName(bdat, textId, dataBlade.unknown9c[index].unknown00);
+      break;
+    default:
+      GfDataBladeArts::getName(bdat, textId, dataBlade.unknown3c[index].unknown00);
+      break;
+    }
+  }
+  return textId != 0;
+}
+
+// The `achievInfo` local places the call before the `level - 1` index: clang evaluates the index of a subscript first, the game computes it after the inlined getAchievInfo.
+bool GfDataBlade::getTaskTitleMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line, u32 level) {
+  SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
+  AchievQuest &achievQuest = achievInfo->unknown04[level - 1];
+  if (achievQuest.unknown00.empty()) {
+    return false;
+  }
+  QuestID quest = GfDataQuest::getListNextQuestA(achievQuest.unknown00);
+  if (quest.empty() || GfDataQuest::getListPurposeID(quest) == 0) {
+    return false;
+  }
+  textId = QuestListAcc::get()->getTaskTaskLog(GfDataQuest::getListPurposeID(quest), 0);
+  bdat = GfBdatMsg::getFpQuest(quest);
+  return textId != 0;
+}
+
+// Same `achievInfo` local as getTaskTitleMessage (0x71002a2f98: the call comes before the `level - 1` index).
+bool GfDataBlade::getTaskResultMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line, u32 level) {
+  SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
+  AchievQuest &achievQuest = achievInfo->unknown04[level - 1];
+  if (achievQuest.unknown00.empty()) {
+    return false;
+  }
+  textId = QuestListAcc::get()->getListResultA(achievQuest.unknown00);
+  bdat = GfBdatMsg::getFpQuest(achievQuest.unknown00);
+  return textId != 0;
+}
+
+// The functions by achievement line (getAchievInfo, getSkillLine*, setSkillLevel, getTask*Message, setAchievReleaseLevel, getAchievementID, the getKizunaring* loops) inline
+// GfDataAchievement::getAchievementType: the game tests `line - 3` in the entry block (subs/b.hs), which only that helper gives (a plain if chain on `line` gives cmp #2/b.hi),
+// and a line past the key line fails the helper (getAchievInfo then returns the first arts entry, getSkillLineLevel returns 0).
+// Case order (ruling 4): the source order of the switch cases fixes the block layout, and only one order matches the ten functions: the key case first (`default` in the eight
+// functions where the key is the default, `case ACHIEVEMENT_TYPE_UNKNOWN_3` in getAchievInfo and getTaskSkillMessage), then field skill, skill, arts. Measured on the
+// branch: with `default` first and the others ascending (0, 1, 2) only getSkillLineLevel, getSkillLineLevelMax, getSkillLineId and getAchievReleaseLevel match, getAchievementID
+// and the three setters do not (62 against 61 instructions; first difference at +0x48 and +0x4c); with `default` last and ascending cases getSkillLineLevel and
+// getAchievReleaseLevel also fail (53 against 51); with the key case after the others getAchievInfo fails (first difference at +0x78).
+u32 GfDataBlade::getSkillLineLevel(u32 blade, u32 line) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  u32 level = 0;
+  if (unknown003(dataBlade, type, index, blade, line)) {
+    switch (type) {
+    default:
+      level = dataBlade->unknown664;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_2:
+      level = dataBlade->unknownae[index].unknown03;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_1:
+      level = dataBlade->unknown9c[index].unknown03;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_0:
+      level = dataBlade->unknown3c[index].unknown07;
+      break;
+    }
+  }
+  return level;
+}
+
+u32 GfDataBlade::getSkillLineLevelMax(u32 blade, u32 line) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  u32 levelMax = 0;
+  if (unknown003(dataBlade, type, index, blade, line)) {
+    switch (type) {
+    default:
+      levelMax = ACHIEVEMENT_UNKNOWN_5;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_2:
+      levelMax = dataBlade->unknownae[index].unknown04;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_1:
+      levelMax = dataBlade->unknown9c[index].unknown04;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_0:
+      levelMax = dataBlade->unknown3c[index].unknown08;
+      break;
+    }
+  }
+  return levelMax;
+}
+
+u32 GfDataBlade::getSkillLineId(u32 blade, u32 line) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (!unknown003(dataBlade, type, index, blade, line)) {
+    return 0;
+  }
+  u32 skill = 0;
+  switch (type) {
+  default:
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_2:
+    skill = dataBlade->unknownae[index].unknown00;
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_1:
+    skill = dataBlade->unknown9c[index].unknown00;
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_0:
+    skill = dataBlade->unknown3c[index].unknown00;
+    break;
+  }
+  return skill;
+}
+
+u32 GfDataBlade::getAchievReleaseLevel(u32 blade, u32 line) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  u32 releaseLevel = 0;
+  if (unknown003(dataBlade, type, index, blade, line)) {
+    switch (type) {
+    default:
+      releaseLevel = dataBlade->unknown664;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_2:
+      releaseLevel = dataBlade->unknownae[index].unknown02;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_1:
+      releaseLevel = dataBlade->unknown9c[index].unknown02;
+      break;
+    case ACHIEVEMENT_TYPE_UNKNOWN_0:
+      releaseLevel = dataBlade->unknown3c[index].unknown06;
+      break;
+    }
+  }
+  return releaseLevel;
+}
+
+bool GfDataBlade::setAchievReleaseLevel(u32 blade, u32 line, u32 level) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  u32 releaseLevel;
+  if (!unknown003(dataBlade, type, index, blade, line)) {
+    return false;
+  }
+  switch (type) {
+  default:
+    releaseLevel = dataBlade->unknown664;
+    if (releaseLevel < level) {
+      dataBlade->unknown664 = level;
+    }
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_2: {
+    unknown109 &skill = dataBlade->unknownae[index];
+    releaseLevel = skill.unknown02;
+    if (level > releaseLevel) {
+      skill.unknown02 = level;
+      if (skill.unknown04 > skill.unknown03) {
+        skill.unknown03++;
+      }
+    }
+    break;
+  }
+  case ACHIEVEMENT_TYPE_UNKNOWN_1: {
+    unknown109 &skill = dataBlade->unknown9c[index];
+    releaseLevel = skill.unknown02;
+    if (level > releaseLevel) {
+      skill.unknown02 = level;
+      if (skill.unknown04 > skill.unknown03) {
+        skill.unknown03++;
+      }
+    }
+    break;
+  }
+  case ACHIEVEMENT_TYPE_UNKNOWN_0: {
+    unknown108 &arts = dataBlade->unknown3c[index];
+    releaseLevel = arts.unknown06;
+    if (level > releaseLevel) {
+      arts.unknown06 = level;
+      if (arts.unknown08 > arts.unknown07) {
+        arts.unknown07++;
+      }
+    }
+    break;
+  }
+  }
+  return releaseLevel < level;
+}
+
+void GfDataBlade::setSkillLineLevel(u32 blade, u32 line, u32 level) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (!unknown003(dataBlade, type, index, blade, line)) {
+    return;
+  }
+  switch (type) {
+  default:
+    dataBlade->unknown664 = level;
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_2: {
+    unknown109 &skill = dataBlade->unknownae[index];
+    skill.unknown03 = level;
+    if (level == 0) {
+      skill.unknown02 = 0;
+    }
+    break;
+  }
+  case ACHIEVEMENT_TYPE_UNKNOWN_1: {
+    unknown109 &skill = dataBlade->unknown9c[index];
+    skill.unknown03 = level;
+    if (level == 0) {
+      skill.unknown02 = 0;
+    }
+    break;
+  }
+  case ACHIEVEMENT_TYPE_UNKNOWN_0: {
+    unknown108 &arts = dataBlade->unknown3c[index];
+    arts.unknown07 = level;
+    if (level == 0) {
+      arts.unknown06 = 0;
+    }
+    break;
+  }
+  }
+}
+
+void GfDataBlade::setSkillLevel(u32 blade, u32 line, u32 level) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (!unknown003(dataBlade, type, index, blade, line)) {
+    return;
+  }
+  switch (type) {
+  default:
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_2: {
+    unknown109 &skill = dataBlade->unknownae[index];
+    skill.unknown03 = level;
+    if (level == 0) {
+      skill.unknown02 = 0;
+    }
+    break;
+  }
+  case ACHIEVEMENT_TYPE_UNKNOWN_1: {
+    unknown109 &skill = dataBlade->unknown9c[index];
+    skill.unknown03 = level;
+    if (level == 0) {
+      skill.unknown02 = 0;
+    }
+    break;
+  }
+  case ACHIEVEMENT_TYPE_UNKNOWN_0: {
+    unknown108 &arts = dataBlade->unknown3c[index];
+    arts.unknown07 = level;
+    if (level == 0) {
+      arts.unknown06 = 0;
+    }
+    break;
+  }
+  }
+}
+
+u32 GfDataBlade::getAchievementID(u32 blade, u32 line, u32 level) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (!unknown003(dataBlade, type, index, blade, line)) {
+    return 0;
+  }
+  const u16 *achievementSet;
+  switch (type) {
+  default:
+    achievementSet = &dataBlade->unknown5d4.unknown00;
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_2:
+    achievementSet = &dataBlade->unknownae[index].unknown00;
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_1:
+    achievementSet = &dataBlade->unknown9c[index].unknown00;
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_0:
+    achievementSet = &dataBlade->unknown3c[index].unknown00;
+    break;
+  }
+  u32 achievement = *achievementSet;
+  if (achievement == 0) {
+    return 0;
+  }
+  return QuestListAcc::get()->getFLD_AchievementSetAchievementID(achievement, level - 1);
+}
 
 void GfDataBlade::setupAchievQuest(AchievQuest &achievQuest) {
   achievQuest.unknown04 = 0;

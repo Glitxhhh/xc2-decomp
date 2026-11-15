@@ -25,6 +25,16 @@ public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
   };
 
+  // Only the members that reciveEvent (1.0.0: 0x71003f29d4) reads are declared: the constructor is inlined in
+  // GfMenuObjBladeBook::initialize, which is not matched, so the rest of the layout is not proven.
+  class ListListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjBladeBook *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   GfMenuObjBladeBook(u32 handle);
   ~GfMenuObjBladeBook() override;
   void initialize() override;

@@ -391,6 +391,10 @@ public:
   static bool getNameWithFieldSkillForDebug(mm::mtl::FixStr<128> &name, u32 blade);
   static u32 getKeyReleaseLevel(u32 blade);
   static u32 getSkillLineId(u32 blade, u32 line);
+  static u32 getSkillLineLevel(u32 blade, u32 line);
+  static u32 getSkillLineLevelMax(u32 blade, u32 line);
+  static void setSkillLineLevel(u32 blade, u32 line, u32 level);
+  static void setSkillLevel(u32 blade, u32 line, u32 level);
   static bool setAchievReleaseLevel(u32 blade, u32 line, u32 level);
   // Return type inferred: GfKizunaringBlade::releaseAchievement compares the result with the level unsigned (cmp w0, w20; b.hs at 0x7100363c48).
   static u32 getAchievReleaseLevel(u32 blade, u32 line);

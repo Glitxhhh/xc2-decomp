@@ -27,7 +27,9 @@ struct AchievQuest {
   u16 unknown12;     // Inferred role: achievement type; original member name unknown.
   u16 unknown14;     // Inferred role: sort index; original member name unknown.
   u16 unknown16;     // Inferred role: blade; original member name unknown.
-  u8 _18[0x1c - 0x18];
+  u16 unknown18; // Inferred role: achievement; original member name unknown. Evidence: GfDataBlade::setupAchievInfo stores the achievement id at +0x18 of each quest and GfDataBlade::getKizunaringMax
+                 // tests it.
+  u8 _1a[0x1c - 0x1a];
 };
 
 static_assert(offsetof(AchievQuest, unknown0c) == 0x0c, "");
@@ -36,6 +38,7 @@ static_assert(offsetof(AchievQuest, unknown10) == 0x10, "");
 static_assert(offsetof(AchievQuest, unknown12) == 0x12, "");
 static_assert(offsetof(AchievQuest, unknown14) == 0x14, "");
 static_assert(offsetof(AchievQuest, unknown16) == 0x16, "");
+static_assert(offsetof(AchievQuest, unknown18) == 0x18, "");
 static_assert(sizeof(AchievQuest) == 0x1c, "");
 
 } // namespace gf
