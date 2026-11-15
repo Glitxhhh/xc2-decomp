@@ -33,6 +33,7 @@ struct ResAxisInfo;
 class PadResEvent;
 
 enum VibrationID : int {
+  VIBRATION_ID_UNKNOWN_1 = 1,
   VIBRATION_ID_UNKNOWN_2 = 2,
   VIBRATION_ID_UNKNOWN_7 = 7,
   VIBRATION_ID_UNKNOWN_8 = 8,
