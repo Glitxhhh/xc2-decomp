@@ -5,6 +5,7 @@
 #include "bdat.h"
 #include "fw/fw_camera.h"
 #include "fw/fw_transform.h"
+#include "fw/fw_update_info.h"
 #include "gf/camera/gf_camera_utilities.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_data_bdat.h"
@@ -66,6 +67,39 @@ void ChainAttackCameraEntity::calcSpeedTypeFastInFastOut() {
   f32 rate = fastInFastOut(unknown11c / unknown114);
   unknownf0 = unknownb0 + (unknownd0 - unknownb0) * rate;
   unknown100 = unknownc0 + (unknowne0 - unknownc0) * rate;
+}
+
+void ChainAttackCameraEntity::update(const fw::UpdateInfo &info) {
+  if (unknown110 > 0.0f) {
+    unknownf0 = unknownf0 + (unknownd0 - unknownf0) * unknown110;
+    unknown100 = unknown100 + (unknowne0 - unknown100) * unknown110;
+  } else if (unknown114 > 0.0f) {
+    // The game dispatches on unknown118 through a jump table of four entries (1.0.0: `cmp w8, #3` at 0x71001d225c, table at 0x7100f68fa8) whose entries 0 and "above 3" reach the same block
+    // (0x71001d227c). Only two separate cases with the same body give that table: `case 0:` stacked on `default:` (in either order), a switch without case 0 and an if chain all compile to a compare
+    // chain (194 or 192 instructions against the game's 197). The game calls calcSpeedTypeSlowInSlowOut (0x71001d22ec, 0x1fc bytes) and inlines the other three.
+    switch (unknown118) {
+    case 0:
+      calcSpeedTypeLinearSpacing();
+      break;
+    case 1:
+      calcSpeedTypeSlowInSlowOut();
+      break;
+    case 2:
+      calcSpeedTypeFastOut();
+      break;
+    case 3:
+      calcSpeedTypeSlowOut();
+      break;
+    default:
+      calcSpeedTypeLinearSpacing();
+      break;
+    }
+    unknown11c += info.unknown04 / (1.0f / 30.0f);
+    if (unknown114 < unknown11c) {
+      unknown11c = unknown114;
+    }
+  }
+  setLookAt(unknownf0, unknown100, 0.0f);
 }
 
 f32 ChainAttackCameraEntity::curve(f32 a, f32 b, f32 t) {

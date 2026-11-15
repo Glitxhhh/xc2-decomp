@@ -13,6 +13,7 @@
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/reference_object.h"
+#include "ui/ctrl/ui_ctrl_object.h"
 #include "ui/ctrl/ui_ctrl_revolve_select.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
@@ -209,6 +210,46 @@ bool GfMenuObjBlCustomTop::seqEndAddLayer() {
   mm::mtl::safeRelease(unknown50);
   resumeInput();
   return true;
+}
+
+// Twin of GfMenuObjDrCustomTop::DrSelectListener::reciveEvent (1.0.0: 0x7100450604), whose case 6 selects the driver; here cases 1 and 6 do nothing (1.0.0: 0x710041025c, one ccmp).
+void GfMenuObjBlCustomTop::DrSelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+  case 6:
+    break;
+  case 0xe:
+    if (ui::UICtrlObject::getEventCtrlObjID(event) == 1) {
+      // The game never sets x0 for this call (0x7100410288): receiveRevolveEvent, defined in this file, does not read its object, so the compiler dropped the argument and the original
+      // expression cannot be checked. The owner is the object the other listeners of this class call their owner's functions on.
+      unknown20->receiveRevolveEvent(event, acc.unknown10);
+    }
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
+// Repeats the statements of GfMenuObjDrCustomTop::receiveRevolveEvent (1.0.0: 0x7100450750) with the child "IMG_bl_spot" instead of "IMG_dr_spot": the game has two functions of the same code at
+// 0x71004102bc and 0x7100450750, one per class, and the two classes only share GfMenuObject. A function taking the child name, inlined into both, matches too, but nothing in the binary (a call, a
+// symbol) shows that the original had one, and every other function of the two classes is written out twice on main.
+void GfMenuObjBlCustomTop::receiveRevolveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  if (ui::UICtrlObject::getEventType(event) == 0) {
+    ui::uiEventParam param;
+    ui::UICtrlObject::getEventParam(event, 1, param);
+    if (param.valueF32 != 0.0f) {
+      ui::UIObjectAcc spot(acc.unknown10, "IMG_bl_spot");
+      spot.setAlpha(1.0f);
+      GfMenuObjUtil::CtrlParam ctrl;
+      ctrl.unknown08 = 2;
+      ctrl.unknown0c = 4;
+      ctrl.unknown00 = param.valueF32;
+      GfMenuObjUtil::startCtrl(acc.searchChild("IMG_bl_spot"), ctrl, nullptr);
+    }
+  }
 }
 
 void GfMenuObjBlCustomTop::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {

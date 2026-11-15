@@ -30,6 +30,7 @@ public:
   void calcSpeedTypeLinearSpacing();
   void calcSpeedTypeFastOut();
   void calcSpeedTypeSlowOut();
+  void calcSpeedTypeSlowInSlowOut();
   void setPlayTimeRate(f32 rate);
   void setPlayTimeDuration(f32 duration);
   void setMoveType(int moveType);
