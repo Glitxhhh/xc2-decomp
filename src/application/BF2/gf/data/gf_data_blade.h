@@ -391,6 +391,7 @@ public:
   static bool getNameWithFieldSkillForDebug(mm::mtl::FixStr<128> &name, u32 blade);
   static u32 getKeyReleaseLevel(u32 blade);
   static u32 getSkillLineId(u32 blade, u32 line);
+  static const char *getSkillLineName(u32 blade, u32 line);
   static u32 getSkillLineLevel(u32 blade, u32 line);
   static u32 getSkillLineLevelMax(u32 blade, u32 line);
   static void setSkillLineLevel(u32 blade, u32 line, u32 level);

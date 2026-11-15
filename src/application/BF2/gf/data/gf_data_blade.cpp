@@ -496,7 +496,7 @@ bool GfDataBlade::isFavoriteItem(u32 blade, u32 item) {
 u32 GfDataBlade::getAchievementQuestPrefix(u32 blade, u32 line, u32 level) { return getBladeRelativeID(blade) * ACHIEVEMENT_UNKNOWN_50 + line * ACHIEVEMENT_UNKNOWN_5 + level; }
 
 // Inferred role: gets the data of a blade and the type and index of an achievement line in it; original name unknown. Written out in each function the three statements give the same
-// code; they are shared because nine functions below start with them.
+// code; they are shared because ten functions below start with them.
 static bool unknown003(SDataBlade *&dataBlade, ACHIEVEMENT_TYPE &type, u32 &index, u32 blade, u32 line) {
   dataBlade = &GfDataBlade::getSDataBlade(blade);
   return GfDataAchievement::getAchievementType(type, index, line);
@@ -608,11 +608,11 @@ bool GfDataBlade::getTaskResultMessage(u8 *&bdat, u32 &textId, u32 blade, u32 li
 // The functions by achievement line (getAchievInfo, getSkillLine*, setSkillLevel, getTask*Message, setAchievReleaseLevel, getAchievementID, the getKizunaring* loops) inline
 // GfDataAchievement::getAchievementType: the game tests `line - 3` in the entry block (subs/b.hs), which only that helper gives (a plain if chain on `line` gives cmp #2/b.hi),
 // and a line past the key line fails the helper (getAchievInfo then returns the first arts entry, getSkillLineLevel returns 0).
-// Case order (ruling 4): the source order of the switch cases fixes the block layout, and only one order matches the ten functions: the key case first (`default` in the eight
+// Case order (ruling 4): the source order of the switch cases fixes the block layout, and only one order matches the eleven functions: the key case first (`default` in the nine
 // functions where the key is the default, `case ACHIEVEMENT_TYPE_UNKNOWN_3` in getAchievInfo and getTaskSkillMessage), then field skill, skill, arts. Measured on the
-// branch: with `default` first and the others ascending (0, 1, 2) only getSkillLineLevel, getSkillLineLevelMax, getSkillLineId and getAchievReleaseLevel match, getAchievementID
-// and the three setters do not (62 against 61 instructions; first difference at +0x48 and +0x4c); with `default` last and ascending cases getSkillLineLevel and
-// getAchievReleaseLevel also fail (53 against 51); with the key case after the others getAchievInfo fails (first difference at +0x78).
+// branch: with `default` first and the others ascending (0, 1, 2) only getSkillLineLevel, getSkillLineLevelMax, getSkillLineId and getAchievReleaseLevel match, getAchievementID,
+// getSkillLineName (first difference at +0xec) and the three setters do not (62 against 61 instructions; first difference at +0x48 and +0x4c); with `default` last and ascending cases
+// getSkillLineLevel and getAchievReleaseLevel also fail (53 against 51); with the key case after the others getAchievInfo fails (first difference at +0x78).
 u32 GfDataBlade::getSkillLineLevel(u32 blade, u32 line) {
   SDataBlade *dataBlade;
   ACHIEVEMENT_TYPE type;
@@ -659,6 +659,30 @@ u32 GfDataBlade::getSkillLineLevelMax(u32 blade, u32 line) {
     }
   }
   return levelMax;
+}
+
+const char *GfDataBlade::getSkillLineName(u32 blade, u32 line) {
+  SDataBlade *dataBlade;
+  ACHIEVEMENT_TYPE type;
+  u32 index;
+  if (!unknown003(dataBlade, type, index, blade, line)) {
+    return "";
+  }
+  const char *name;
+  switch (type) {
+  default:
+    return "";
+  case ACHIEVEMENT_TYPE_UNKNOWN_2:
+    name = GfDataFieldSkill::getName(dataBlade->unknownae[index].unknown00);
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_1:
+    name = GfDataBladeSkill::getName(dataBlade->unknown9c[index].unknown00);
+    break;
+  case ACHIEVEMENT_TYPE_UNKNOWN_0:
+    name = GfDataBladeArts::getName(dataBlade->unknown3c[index].unknown00);
+    break;
+  }
+  return name == nullptr ? "" : name;
 }
 
 u32 GfDataBlade::getSkillLineId(u32 blade, u32 line) {
