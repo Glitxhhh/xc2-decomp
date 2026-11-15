@@ -608,12 +608,9 @@ void GfComBehaviorPc::procMsgGameChangeTarget(fw::MessageObject *sender, MsgGame
 
 void GfComBehaviorPc::setup(const SetupInfo &info) {
   static_cast<GfObj *>(unknown08)->unknown110 |= 2;
-  // The first two statements of this block repeat GfComBehaviorSalvage::setup (0x710057e86c) and GfComBehaviorUI::setup (0x7100580990): the game inlines the same registration of the
-  // "system" callback in each, with no call to a shared function.
   GfComAsm *comAsm = unknown08->getComponent<GfComAsm>();
   if (comAsm != nullptr) {
-    comAsm->unknown70[0].unknown00 = "system";
-    comAsm->unknown70[0].unknown08.bind<GfComBehavior>(this, &GfComBehavior::callbackAnim);
+    unknown014(comAsm);
     comAsm->unknown70[1].unknown00 = pc::ASM_CB_NAME_FIELD;
     comAsm->unknown70[1].unknown08.bind<GfComBehaviorPc>(this, &GfComBehaviorPc::callbackField);
     comAsm->unknown70[2].unknown00 = pc::ASM_CB_NAME_BATTLE;

@@ -336,7 +336,8 @@ public:
   SDataEnemy *unknowna0; // Inferred role: data enemy; original member name unknown.
   int unknowna8;         // Inferred role: row id of BDAT_FLD_ENACT_MOVE; original member name unknown.
   f32 unknownac;         // Inferred role: change battle delay, copied by GfComBehaviorEnemy::createBehField; original member name unknown.
-  u16 unknownb0;         // Role and original member name unknown.
+  bool unknownb0;        // Role and original member name unknown; the game reads this byte in GfComBehaviorEnemy::validatePopPos.
+  bool unknownb1;        // Role and original member name unknown; the game reads this byte in GfComBehaviorEnemy::onPopped.
   bool unknownb2;        // Role and original member name unknown.
   u8 _b3[0xb4 - 0xb3];
   u32 unknownb4; // Inferred role: saved hp; original member name unknown.
