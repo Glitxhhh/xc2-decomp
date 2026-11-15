@@ -909,6 +909,38 @@ bool GfObjUtil::testFlag(GF_OBJ_HANDLE *handle, u32 flag) {
   return info != nullptr && info->unknown38.test(flag);
 }
 
+bool GfObjUtil::setFlag(GF_OBJ_HANDLE *handle, u32 flag, bool value) {
+  GFOBJ_INFO *info = GfObjManager::getObjInfo(handle);
+  if (info != nullptr && info->unknown38.unknown007(flag, value)) {
+    if (GfObjManager::get() != nullptr) {
+      GfObjManager::get()->addApplyParam(info->unknown08);
+    }
+    return true;
+  }
+  return false;
+}
+
+bool GfObjUtil::setFlag(GFOBJ_INFO *info, u32 flag, bool value) {
+  if (info != nullptr && info->unknown38.unknown007(flag, value)) {
+    if (GfObjManager::get() != nullptr) {
+      GfObjManager::get()->addApplyParam(info->unknown08);
+    }
+    return true;
+  }
+  return false;
+}
+
+bool GfObjUtil::setFlag(GfObj *obj, u32 flag, bool value) {
+  GFOBJ_INFO *info = obj->unknown100;
+  if (info != nullptr && info->unknown38.unknown007(flag, value)) {
+    if (GfObjManager::get() != nullptr) {
+      GfObjManager::get()->addApplyParam(info->unknown08);
+    }
+    return true;
+  }
+  return false;
+}
+
 bool GfObjUtil::testFlag(const GfObj *obj, u32 flag) { return obj->unknown100 != nullptr && obj->unknown100->unknown38.test(flag); }
 
 void GfObjUtil::copyTransformToSetup(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *setupHandle) {

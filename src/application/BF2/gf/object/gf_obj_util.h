@@ -148,6 +148,7 @@ public:
   static bool testFlag(const GFOBJ_INFO *info, u32 flag);
   static void copyTransformToSetup(GF_OBJ_HANDLE *handle, GF_OBJ_HANDLE *setupHandle);
   static void copyTransformToSetup(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation);
+  static bool setFlag(GfObj *obj, u32 flag, bool value);
   static bool testFlag(const GfObj *obj, u32 flag);
   static const char *getModelBaseName(GF_OBJ_HANDLE *handle);
   static const char *getAssetModelName(GF_OBJ_HANDLE *handle);

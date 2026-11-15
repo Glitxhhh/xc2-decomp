@@ -66,6 +66,7 @@ public:
   void procMsgPcFieldGetAccessType(fw::MessageObject *sender, MsgPcFieldGetAccessType &message);
   void procMsgPcGetLookPoint(fw::MessageObject *sender, MsgPcGetLookPoint &message);
   void procMsgPcFieldNotifySkillEvent(fw::MessageObject *sender, MsgPcFieldNotifySkillEvent &message);
+  void setup();
   void cleanup();
   void createMenuObj();
   void disposeMenuObj();
