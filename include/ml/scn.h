@@ -104,6 +104,9 @@ public:
   void addTrack(const mm::Vec3 &pos);
   void addRotAtCam(const mm::Vec3 &rot);
   void setDist(const f32 &dist);
+  void setTargetDist(const f32 &dist);
+  WinView *getView();
+  const WinView *getView() const;
 
   s32 m_info; // Inferred role: screen; original member name unknown.
   mm::mtl::FixStr<64> m_name;

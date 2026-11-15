@@ -27,10 +27,28 @@ class DrResMdoSeamParmRead;
 struct unknown700;
 
 // Inferred role: base map header of the resource data; the original type name is MdsSeamBaseMapHead (game symbols), the members are unknown.
+// Offsets are relative to the header; DrMdoCtlSeamBaseMap::initBaseMapParts (1.0.0: 0x710081fc10) reads unknown0c to unknown2c.
 struct MdsSeamBaseMapHead {
   u32 unknown00; // Inferred role: flags; original member name unknown.
-  u8 _04[0x38 - 0x04];
+  u8 _04[0x0c - 0x04];
+  u32 unknown0c; // Inferred role: model data offset; original member name unknown.
+  u32 unknown10; // Inferred role: material data offset; original member name unknown.
+  u32 unknown14; // Inferred role: fixed animation data offset, 0 when there is none; original member name unknown.
+  u8 _18[0x20 - 0x18];
+  s32 unknown20; // Inferred role: skip texture list count; original member name unknown.
+  u32 unknown24; // Inferred role: vertex data offset, 0 when there is none; original member name unknown.
+  u8 _28[0x2c - 0x28];
+  u32 unknown2c; // Inferred role: shader data offset; original member name unknown.
+  u8 _30[0x38 - 0x30];
 };
+
+static_assert(offsetof(MdsSeamBaseMapHead, unknown0c) == 0x0c, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown10) == 0x10, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown14) == 0x14, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown20) == 0x20, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown24) == 0x24, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown2c) == 0x2c, "");
+static_assert(sizeof(MdsSeamBaseMapHead) == 0x38, "");
 
 // Inferred role: render list entry of the base map; original type name unknown.
 struct unknown504 {

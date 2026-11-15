@@ -3,19 +3,64 @@
 #include "dr/dr_calc_man.h"
 #include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
+#include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_parm_read.h"
+#include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_seam_wrk_base.h"
 #include "grlib/cglib_etc_uniform_block.h"
 #include "grlib/shd_util.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
+#include "mtl/alloc_handle.h"
 
 namespace ml {
-class DrResMdoSeamMemObj;
+struct MdoWrkMatRes;
 
 DrMdoCtlSeamBaseMap::DrMdoCtlSeamBaseMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
+
+void DrMdoCtlSeamBaseMap::initBaseMapParts(DrResMdoSeamWrkBase *base) {
+  const u8 *data = base->unknown158->m_buffer;
+  const MdsSeamBaseMapHead *head = reinterpret_cast<const MdsSeamBaseMapHead *>(data);
+  MdoWrkMatRes *matRes = nullptr;
+  // Two calls, one per branch: the game's branches set their registers before one shared call (clang merges the identical calls); a conditional
+  // argument gives another schedule (77 instructions instead of 98).
+  if (head->unknown24 == 0) {
+    initBaseMapMaterial(matRes, data + head->unknown10, data + head->unknown0c, nullptr, data + head->unknown2c, nullptr, head->unknown20);
+  } else {
+    initBaseMapMaterial(matRes, data + head->unknown10, data + head->unknown0c, data + head->unknown24, data + head->unknown2c, nullptr, head->unknown20);
+  }
+  unknown30 = matRes;
+  if (head->unknown14 != 0) {
+    setupFixAnim(data + head->unknown14);
+  }
+  const unknown700 *table = reinterpret_cast<const unknown700 *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown1c);
+  // The game sign-extends the index of the entry (ldrsw, 0x710081fce8) and shifts the same member unsigned for the bit table below.
+  unknownc40 += table[static_cast<s32>(base->unknown84)].unknown38;
+  base->setupWork(matRes, unknownb28, m_drMan->unknown14, this, head, 500);
+  unknownb50[base->unknown84 >> 5] |= 1 << (base->unknown84 & 0x1f);
+  unknownc00++;
+  if (unknown1a == 0) {
+    m_drMan->unknown78->unknown800->callSelectShadowCacheUpdate(0xffffffffffffffff);
+  }
+  unknownc90 = 0;
+}
+
+void DrMdoCtlSeamBaseMap::changeMemBaseMapParts(DrResMdoSeamWrkBase *base) {
+  const u8 *data = base->unknown158->m_buffer;
+  const MdsSeamBaseMapHead *head = reinterpret_cast<const MdsSeamBaseMapHead *>(data);
+  MdoWrkMatRes *matRes = base->unknown68;
+  if (head->unknown24 == 0) {
+    resetBaseMapMaterial(matRes, data + head->unknown10, data + head->unknown0c, nullptr, data + head->unknown2c, nullptr, head->unknown20);
+  } else {
+    resetBaseMapMaterial(matRes, data + head->unknown10, data + head->unknown0c, data + head->unknown24, data + head->unknown2c, nullptr, head->unknown20);
+  }
+  if (head->unknown14 != 0) {
+    changeMemFixAnim(matRes, data + head->unknown14);
+  }
+}
 
 void DrMdoCtlSeamBaseMap::releaseBaseMap() {
   DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00;

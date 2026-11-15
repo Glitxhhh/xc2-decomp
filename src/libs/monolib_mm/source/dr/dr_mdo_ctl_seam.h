@@ -24,9 +24,8 @@ class CloudMdlDataObj;
 } // namespace cloud
 
 namespace grlib {
-class CGLibTriUniformBlock;
 class CGLibVtxInstans;
-template <typename T> class CGLibUniformArray;
+class CGLibTriUniformArray;
 } // namespace grlib
 
 namespace ml {
@@ -463,16 +462,16 @@ public:
   u32 m_coliListMax[2];
   DrResEtcTexList *unknown658; // Inferred role: texture list; original member name unknown.
   u8 _660[0x698 - 0x660];
-  DrResMdoInstAnmObj unknown698;                                     // Inferred role: inst anm object; original member name unknown.
-  unknown060 unknown6c8;                                             // Inferred role: etc pos list; original member name unknown.
-  const unknown097 *unknown6d8;                                      // Inferred role: global IBL list; original member name unknown.
-  DrResMdoSeamMemMan unknown6e0;                                     // Inferred role: seam memory manager; original member name unknown.
-  grlib::CGLibUniformArray<grlib::CGLibTriUniformBlock> *unknownb28; // Inferred role: mdl uniforms; original member name unknown.
-  cloud::CloudMdlDataObj *unknownb30;                                // Inferred role: cloud model data; original member name unknown.
-  MdoWrkMatRes *unknownb38;                                          // Inferred role: saved mat res; original member name unknown.
-  void *unknownb40;                                                  // Inferred role: memory pool buffer; original member name unknown.
-  void *unknownb48;                                                  // Inferred role: memory buffer released with the memory pool buffer; original member name unknown.
-  u32 *unknownb50;                                                   // Inferred role: base map read bits; original member name unknown.
+  DrResMdoInstAnmObj unknown698;           // Inferred role: inst anm object; original member name unknown.
+  unknown060 unknown6c8;                   // Inferred role: etc pos list; original member name unknown.
+  const unknown097 *unknown6d8;            // Inferred role: global IBL list; original member name unknown.
+  DrResMdoSeamMemMan unknown6e0;           // Inferred role: seam memory manager; original member name unknown.
+  grlib::CGLibTriUniformArray *unknownb28; // Inferred role: mdl uniforms, passed to DrResMdoSeamWrkBase::setupWork by initBaseMapParts (1.0.0: 0x710081fc10); original member name unknown.
+  cloud::CloudMdlDataObj *unknownb30;      // Inferred role: cloud model data; original member name unknown.
+  MdoWrkMatRes *unknownb38;                // Inferred role: saved mat res; original member name unknown.
+  void *unknownb40;                        // Inferred role: memory pool buffer; original member name unknown.
+  void *unknownb48;                        // Inferred role: memory buffer released with the memory pool buffer; original member name unknown.
+  u32 *unknownb50;                         // Inferred role: base map read bits; original member name unknown.
   u8 _b58[0xb60 - 0xb58];
   DrResBitTbl unknownb60; // Inferred role: base map render bits; original member name unknown.
   u32 *unknownb70;        // Inferred role: low map read bits; original member name unknown.
