@@ -37,6 +37,7 @@
 #include "grlib/cglib_uniform_array.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_vec4.h"
 #include "mm_mtl/fixed_array.h"
 #include "mtl/alloc_handle.h"
 
@@ -1017,6 +1018,67 @@ DrPixlRenderTarget *DrPixlMan::getDiffIBLObj() {
 }
 
 DrPixlRenderTarget *DrPixlMan::getBackFaceDepthTexture() const { return unknown7f0->unknown148; }
+
+// Ruling 8: the two shader blocks (stencil bit 0x40 and 0x80) are written out twice like the game (0x7100849174: the first block is
+// 0x71008491a0-0x71008492fc, the second one starts at 0x7100849318 and repeats it with its own 8-float `col` array and its own uniform utility). A
+// file-local helper taking the flag, the mask and the target row, called twice, is not inlined (72 instructions against 258), so no call form matches.
+void DrPixlMan::clearAccumBuffer() {
+  if (unknown08->unknown88->unknown230->unknown0a) {
+    mm::Vec4 col[2];
+    col[0] = col[1] = mm::Vec4::zero;
+    unknown08->unknown78->selectGBuffRenderTarget(0x40);
+    DrAPGxType::setupStencilTest(false, false, 7, true, 0x40, 0x40, 5, 1, 1, 1);
+    DrAPGxType::setupBlend(0);
+    DrAPGxType::setupCullingOff();
+    DrShdDataList *shdList = unknown08->unknown80->unknown00;
+    DrShdDataObj *shader = shdList->getSelectShdObj(1);
+    shader->setDeclarationIdx(shader->getDeclarationOfs("PIXL_TYPE"), 2);
+    shader->setDeclarationIdx(shader->getDeclarationOfs("MRT_NUM"), 1);
+    shdList->bindTriangle();
+    shader->setupShader(0u);
+    grlib::CGLibUniformEtcUtility uniform(shader);
+    uniform.setUseUniformBlock("U_POST");
+    uniform.setF32SetF32Array(uniform.unknown001("col[0]"), &col[0].x, 4);
+    uniform.updateData();
+    uniform.setUniformBlock();
+    shdList->renderTriangle();
+  } else {
+    unknown7f0->unknown00[5][0]->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
+  }
+  if (unknown08->unknown88->unknown230->unknown0b) {
+    mm::Vec4 col[2];
+    col[0] = col[1] = mm::Vec4::zero;
+    unknown08->unknown78->selectGBuffRenderTarget(0x80);
+    DrAPGxType::setupStencilTest(false, false, 7, true, 0x80, 0x80, 5, 1, 1, 1);
+    DrAPGxType::setupBlend(0);
+    DrAPGxType::setupCullingOff();
+    DrShdDataList *shdList = unknown08->unknown80->unknown00;
+    DrShdDataObj *shader = shdList->getSelectShdObj(1);
+    shader->setDeclarationIdx(shader->getDeclarationOfs("PIXL_TYPE"), 2);
+    shader->setDeclarationIdx(shader->getDeclarationOfs("MRT_NUM"), 1);
+    shdList->bindTriangle();
+    shader->setupShader(0u);
+    grlib::CGLibUniformEtcUtility uniform(shader);
+    uniform.setUseUniformBlock("U_POST");
+    uniform.setF32SetF32Array(uniform.unknown001("col[0]"), &col[0].x, 4);
+    uniform.updateData();
+    uniform.setUniformBlock();
+    shdList->renderTriangle();
+  } else {
+    unknown7f0->unknown00[6][0]->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
+  }
+  DrAPGxType::setupStencilTest(false, false, 7, false, 0, 0, 2, 1, 1, 1);
+  // The game loads the render target table of the resource (`ldr x8, [x20]`, 0x71008494e0 and 0x7100849508) before the double buffer index
+  // (0x71008494e8 and 0x710084950c); the natural `unknown00[9][DrMan::s_nDblIdx]` loads the index first (first difference at 0x71008494dc, and
+  // at 0x7100849508 when only the second clear is written that way), so each row stays in a local.
+  DrPixlRenderTarget **accum = unknown7f0->unknown00[9];
+  accum[DrMan::s_nDblIdx]->clearTexture(mm::Col4::zero, static_cast<GrlClaerMask>(0xf));
+  DrPixlRenderTarget **accumBlur = unknown7f0->unknown00[14];
+  accumBlur[DrMan::s_nDblIdx]->clearTexture(mm::Col4::zero, static_cast<GrlClaerMask>(0xf));
+  unknown7f0->unknown00[10][0]->clearTexture(mm::Col4::black, static_cast<GrlClaerMask>(0xf));
+  unknown7f0->unknown00[11][0]->clearTexture(mm::Col4::black, static_cast<GrlClaerMask>(0xf));
+  unknown7f0->unknown00[15][0]->clearTexture(mm::Col4::black, static_cast<GrlClaerMask>(0xf));
+}
 
 } // namespace ml
 

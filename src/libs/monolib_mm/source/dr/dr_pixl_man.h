@@ -131,6 +131,7 @@ public:
   void setShadowDirRenderTarget(int index);
   void setupShadowUnifrom(int index);
   ~DrPixlMan();
+  void clearAccumBuffer();
   void releaseColorBuffer();
   void resetLightBuffOnly();
   void createShadowParmDisplayList(wkPixlManRes *res);
