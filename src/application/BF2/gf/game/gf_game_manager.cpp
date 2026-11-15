@@ -1254,9 +1254,9 @@ void GfGameManager::setStartGame() {
 
 bool GfGameManager::isEnableRoomForHikariLv4() { return GfGameScene::get() != nullptr && GfGameScene::get()->unknown1ca; }
 
-void GfGameManager::setHomuriWeaponExtraMesh(bool isVisible, f32 alpha) {
+void GfGameManager::setHomuriWeaponExtraMesh(bool isVisible, f32 time) {
   if (GfGameScene::get() != nullptr) {
-    GfGameScene::get()->setHomuriWeaponExtraMesh(isVisible, alpha);
+    GfGameScene::get()->setHomuriWeaponExtraMesh(isVisible, time);
   }
 }
 

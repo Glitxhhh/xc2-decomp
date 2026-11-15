@@ -1,7 +1,9 @@
 #pragma once
 #include <stddef.h>
 
+#include "bdat.h"
 #include "gf/data/gf_data_blade.h"
+#include "gf/gf_allocator.h"
 #include "gf/object/gf_obj_handle.h"
 #include "mm_math/mm_plane.h"
 #include "mm_math/mm_quat.h"
@@ -36,7 +38,15 @@ struct GfObjPropertyCharacter {
     u32 unknown04; // Inferred role: zeroed by GfObjPropertyCharacter::unknown002; original member name unknown.
   };
 
-  GfObjPropertyCharacter();
+  // Inline in the original: the game has only the base constructor symbol (1.0.0: 0x71005ab290, emitted in the unit of GfObjProperty::create).
+  GfObjPropertyCharacter() : unknown00(0), unknown04(0), unknown08(0), unknown28(unknown020), unknown30(false) {
+    u8 *bdat = Bdat::getFP("BTL_Buff");
+    if (bdat != nullptr && Bdat::getIdCount(bdat) != 0) {
+      unknown10.setAllocator(getAllocator(ALLOCATOR_UNKNOWN_0));
+      unknown10.reserve(Bdat::getIdCount(bdat));
+      unknown002();
+    }
+  }
 
   // Inferred role: clears the values and the buff states, repeated by the constructors of the character and of the driver and blade properties; original name unknown.
   void unknown002() {

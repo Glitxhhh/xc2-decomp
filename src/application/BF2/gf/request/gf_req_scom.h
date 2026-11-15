@@ -64,10 +64,21 @@ public:
 static_assert(offsetof(SCOM_MISSION_COMPLETE, unknown1c) == 0x1c, "");
 static_assert(sizeof(SCOM_MISSION_COMPLETE) == 0x20, "");
 
-class SCOM_ADD_ITEM {
+class SCOM_ADD_ITEM : public SCOM {
 public:
+  SCOM_ADD_ITEM(GF_SCOM_HANDLE *handle, u32 item, int num, bool isForBattle) : SCOM(handle, SCOM_TYPE_UNKNOWN_13, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(item), unknown20(num), unknown24(isForBattle) {}
+  bool exec(const fw::UpdateInfo &info) override;
   static GF_SCOM_HANDLE *create(u32 item, int num);
+  static GF_SCOM_HANDLE *createForBattle(u32 item, int num);
+
+  u32 unknown1c;  // Inferred role: item; original member name unknown.
+  int unknown20;  // Inferred role: number of items; original member name unknown.
+  bool unknown24; // Inferred role: created for a battle (shows the precious window); original member name unknown.
 };
+
+static_assert(offsetof(SCOM_ADD_ITEM, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_ADD_ITEM, unknown24) == 0x24, "");
+static_assert(sizeof(SCOM_ADD_ITEM) == 0x28, "");
 
 class SCOM_ADD_ETHER : public SCOM {
 public:
@@ -393,10 +404,22 @@ public:
   u32 unknown1c; // Inferred role: map; original member name unknown.
 };
 
-class SCOM_HOMURI_PARTS {
+class SCOM_HOMURI_PARTS : public SCOM {
 public:
-  static void create(u32 partyId, bool isVisible, f32 alpha);
+  SCOM_HOMURI_PARTS(GF_SCOM_HANDLE *handle, u32 partyId, bool isVisible, f32 time)
+      : SCOM(handle, SCOM_TYPE_UNKNOWN_76, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(partyId), unknown20(isVisible), unknown24(0.0f), unknown28(time) {}
+  bool exec(const fw::UpdateInfo &info) override;
+  static void create(u32 partyId, bool isVisible, f32 time);
+
+  u32 unknown1c;  // Inferred role: party id; original member name unknown.
+  bool unknown20; // Inferred role: show the max mode parts; original member name unknown.
+  f32 unknown24;  // Inferred role: elapsed seconds; original member name unknown.
+  f32 unknown28;  // Inferred role: fade seconds; original member name unknown.
 };
+
+static_assert(offsetof(SCOM_HOMURI_PARTS, unknown1c) == 0x1c, "");
+static_assert(offsetof(SCOM_HOMURI_PARTS, unknown28) == 0x28, "");
+static_assert(sizeof(SCOM_HOMURI_PARTS) == 0x30, "");
 
 class SCOM_SALVAGER_POINT {
 public:

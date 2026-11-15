@@ -71,7 +71,10 @@
 #include "gf/scom/gf_scom_enbook.h"
 #include "gf/scom/gf_scom_fade.h"
 #include "gf/scom/gf_scom_obj.h"
+#include "gf/scom/gf_scom_script.h"
+#include "gf/script/gf_script_manager.h"
 #include "gf/util/gf_item_util.h"
+#include "gf/util/gf_util.h"
 #include "gmk/gmk_manager.h"
 #include "ml/rand.h"
 #include "mm_math/mm_col4.h"
@@ -82,6 +85,7 @@
 #include "mm_mtl/fixed_list.h" // IWYU pragma: keep
 #include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
+#include "mm_mtl/fixstr.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_util.h"
 
@@ -3215,6 +3219,68 @@ void GfReqSmallCom::update(const fw::UpdateInfo &info) {
   }
   unknown9048.clear();
   unknownd870 = false;
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_ITEM::create(u32 item, int num) {
+  if (item != 0 && num != 0) {
+#line 602
+    SCOM_ADD_ITEM *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_ADD_ITEM(GfReqSmallCom::get()->allocate(), item, num, false);
+    return GfReqSmallCom::addRequest(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_ITEM::createForBattle(u32 item, int num) {
+  if (item != 0 && num != 0) {
+#line 609
+    SCOM_ADD_ITEM *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_ADD_ITEM(GfReqSmallCom::get()->allocate(), item, num, true);
+    return GfReqSmallCom::addRequest(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+void SCOM_HOMURI_PARTS::create(u32 partyId, bool isVisible, f32 time) {
+#line 4572
+  SCOM_HOMURI_PARTS *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_HOMURI_PARTS(GfReqSmallCom::get()->allocate(), partyId, isVisible, time);
+  GfReqSmallCom::addRequestParallel(command);
+}
+
+bool SCOM_SCRIPT::exec(const fw::UpdateInfo &) {
+  if (unknown20.empty()) {
+    GfScriptManager::destroyScript(unknown1c);
+    return true;
+  }
+  if (unknown44 == 0) {
+    GfScriptManager::loadScript(unknown1c, unknown20.c_str());
+    unknown44 = 1;
+  }
+  if (unknown44 == 1) {
+    if (GfScriptManager::isScriptLoadError(unknown1c)) {
+      return true;
+    }
+    if (!GfScriptManager::isScriptWaitStart(unknown1c)) {
+      return false;
+    }
+    GfScriptManager::startScript(unknown1c);
+    if (!unknown48) {
+      return true;
+    }
+    unknown44 = 2;
+  }
+  if (unknown44 == 2 && GfScriptManager::isScriptActive(unknown1c)) {
+    return false;
+  }
+  return true;
+}
+
+GF_SCOM_HANDLE *SCOM_SCRIPT::create(u32 slot, const char *script, bool isWait) {
+  mm::mtl::FixStr<32> name;
+  if (script != nullptr) {
+    name = util::getNoPathExtName(script).c_str();
+  }
+#line 1047
+  SCOM_SCRIPT *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_SCRIPT(GfReqSmallCom::get()->allocate(), slot, name, isWait);
+  return GfReqSmallCom::addRequestParallel(command);
 }
 
 } // namespace gf

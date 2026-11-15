@@ -11,6 +11,7 @@
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/field/gf_field_collect.h"
+#include "gf/field/gf_field_gimmick.h"
 #include "gf/field/gf_field_manager.h"
 #include "gf/field/gf_field_map_gimmick.h"
 #include "gf/field/gf_field_tbox.h"
@@ -39,6 +40,7 @@
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/game/sequential_play/gf_sequential_play.h"
 #include "gf/gf_allocator.h"
+#include "gf/gf_info.h"
 #include "gf/gf_pause.h"
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_fade.h"
@@ -70,6 +72,87 @@ namespace gf {
 const mm::mtl::RTTI *GfPlayCom::getRTTI() const { return &m_rtti; }
 
 void GfPlayCom::start() {}
+
+void GfPlayComEventFade::start() {
+  unknown14 = GfGameEvent::getFadeInWaitSec();
+  unknown18 = GfGameEvent::getFadeInSec();
+  unknown1c = 10.0f;
+}
+
+void GfPlayComEventFade::end() {
+  if (unknown10 > 0) {
+    if (GfGameScene::get() != nullptr) {
+      GfGameScene::get()->setPlayerTalkForce(false);
+    }
+    GfFieldGimmick::get()->unknownf4ac.unknown00 = false;
+  }
+}
+
+bool GfPlayComEventFade::update(const fw::UpdateInfo &info, bool) {
+  switch (unknown10) {
+  case 0:
+    if (GfSequentialPlay::hasCommand(PCOMTYPE_UNKNOWN_36, this)) {
+      return true;
+    }
+    if (!GfSequentialPlay::hasCommand(PCOMTYPE_UNKNOWN_16, this)) {
+      if (GfSequentialPlay::hasCommand(PCOMTYPE_UNKNOWN_9, this)) {
+        return true;
+      }
+      if (!GfPause::isPause(PAUSE_BIT_UNKNOWN_0)) {
+        if (GfGameManager::isFadeClear()) {
+          return true;
+        }
+        if (GfGameManager::isEvent(false) && GfGameEvent::isStop()) {
+          return true;
+        }
+        GfMenuFade::setFade(1, 0, mm::Col4::black);
+        unknown10 = 1;
+        if (GfGameScene::get() != nullptr) {
+          GfGameScene::get()->setPlayerTalkForce(true);
+        }
+        // The same four stores, in the same order, as event::EnvManager::startGimmickPopWait (0x71000ac6f4); the game does not call it here (no bl, no EnvManager flag), so the stores are
+        // written out (GfFieldGimmick lists this class as a friend for them).
+        GfFieldGimmick *gimmick = GfFieldGimmick::get();
+        gimmick->unknownf4ac.unknown00 = true;
+        gimmick->unknownf4ac.unknown02 = false;
+        gimmick->unknownf4ac.unknown01 = false;
+        gimmick->unknownf4ac.unknown04 = 0.0f;
+        return false;
+      }
+    }
+    break;
+  case 1:
+    if (GfFieldGimmick::get()->unknownf4ac.unknown02) {
+      unknown14 = GfGameEvent::getFadeInWaitSec();
+      unknown18 = GfGameEvent::getFadeInSec();
+      unknown10 = 2;
+    }
+    return false;
+  case 2:
+    unknown14 -= info.unknown04;
+    if (unknown14 > 0.0f) {
+      return false;
+    }
+    break;
+  }
+  if (!GfGameParty::isReadyObj()) {
+    unknown1c -= info.unknown04;
+    if (unknown1c > 0.0f) {
+      return false;
+    }
+  }
+  u32 frame = unknown18 / GfInfo::m_fSecPerFrame;
+  SCOM_FADE::create(0, frame, mm::Col4::zero);
+  SCOM_FADE::create(1, frame, mm::Col4::zero);
+  SCOM_FADE::create(2, frame, mm::Col4::zero);
+  return true;
+}
+
+GfPlayComEventFade *GfPlayComEventFade::create() {
+  // __LINE__ must be 211 as in the original file: its value changes the instruction order.
+#line 211
+  return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfPlayComEventFade();
+}
 
 void GfPlayComPause::start() {
   if (unknown10 != 0) {

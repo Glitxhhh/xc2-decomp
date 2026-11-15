@@ -1,6 +1,7 @@
 #include "gf/game/blade/gf_blade_manager.h"
 
 #include "gf/data/gf_bdat_item.h"
+#include "gf/data/gf_bdat_msg.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_blade_create.h"
 #include "gf/data/gf_data_idea.h"
@@ -100,6 +101,22 @@ bool GfBladeCreate::getResultBlade(SDataBlade &blade) const {
     return false;
   }
   setupSDataBlade(blade, *this);
+  return true;
+}
+
+bool GfBladeCreateInfo::getBladeName(u8 *&bdat, u32 &textId) const {
+  if (unknown27c == 0) {
+    return false;
+  }
+  if (!unknown244) {
+    bdat = GfBdatMsg::getFpCommonBladeName();
+  } else {
+    if (unknown32c == 0) {
+      return false;
+    }
+    bdat = GfBdatMsg::getFpChrDr();
+  }
+  textId = unknown27c;
   return true;
 }
 

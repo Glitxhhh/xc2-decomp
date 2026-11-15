@@ -17,6 +17,7 @@ class GfEvtBgm : public mm::mtl::PtrSingleton<GfEvtBgm> {
 public:
   enum PLAY_STATE {
     PLAY_STATE_UNKNOWN_0 = 0,
+    PLAY_STATE_UNKNOWN_1 = 1,
     PLAY_STATE_UNKNOWN_2 = 2,
     PLAY_STATE_UNKNOWN_3 = 3,
     PLAY_STATE_UNKNOWN_4 = 4,
@@ -40,6 +41,7 @@ public:
   void update(const fw::UpdateInfo &info);
   void updateBgmTask(const fw::UpdateInfo &info);
   void setPlayBgmVolume(f32 volume);
+  void setPlayParam(const EventBgmSetup &setup);
   void setPlayState(PLAY_STATE playState);
   bool isEnableEventBgm() const;
   void setFadeoutVolume();
