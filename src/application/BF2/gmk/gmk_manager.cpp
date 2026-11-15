@@ -1148,6 +1148,31 @@ bool isModelRendered(gf::GF_OBJ_HANDLE *handle) {
   return model->isRender();
 }
 
+// Nothing calls this function in the binary: GmkClimbing::updateIcon (0x710061d414, not reproduced) has its body inlined. Here the call costs
+// 275 against the inline threshold 275, so updateIcon stays a call (17 instructions against 59). Defining the function inline would inline it
+// and match updateIcon, but then this copy (0x71005e4344, 51 instructions, matching) is no longer emitted.
+bool isPointBehindGround(const mm::Vec3 &position) {
+  if (isCameraExist()) {
+    fw::TColiCheckResult<256> result;
+    // The game stores the result members in the order of clear() (0x71005e4388 to 0x71005e4398), not in the one of the constructor, which
+    // the other functions build the result with (0x71005d8bb8 to 0x71005d8bc4); the constructor alone, with the camera test written as an
+    // early return or the declarations in another order, keeps the constructor's order.
+    result.clear();
+    mm::Vec3 start = getCameraPos();
+    // Each game function that tests the collision sets its own ColiCheckConfig (8 functions with these four stores), none calls a helper.
+    fw::ColiCheckConfig config;
+    config.unknown08 = 0.0f;
+    config.unknown0c = 0.0f;
+    config.unknown14 = false;
+    config.unknown15 = false;
+    config.unknown00 = fw::ColiCheckConfig::FLAG_UNKNOWN_0 | fw::ColiCheckConfig::FLAG_UNKNOWN_3;
+    config.unknown10 = 0;
+    config.unknown04 = 0x80000020;
+    return fw::ColiCheck::testLineChara(result, start, position, config);
+  }
+  return false;
+}
+
 bool isNaviMeshExist(const mm::Vec3 &position) {
   mm::Vec3 result;
   return fw::NaviUtil::testNaviColi(result, position, 2.0f, 2.0f);

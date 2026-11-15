@@ -272,6 +272,7 @@ void setEventDisp(gf::GF_OBJ_HANDLE *handle, bool isDisp);
 bool getGobPosRot(mm::Vec3 &position, mm::Quat &rotation, gf::GF_OBJ_HANDLE *handle);
 bool isValidView(gf::GF_OBJ_HANDLE *handle);
 bool isModelRendered(gf::GF_OBJ_HANDLE *handle);
+bool isPointBehindGround(const mm::Vec3 &position);
 bool isNaviMeshExist(const mm::Vec3 &position);
 bool getYSnapPos(mm::Vec3 &result, const mm::Vec3 &position, f32 distance);
 bool getYSnapPos(mm::Vec3 &result, const mm::Vec3 &position, f32 distance, const fw::ColiCheckConfig &config);
