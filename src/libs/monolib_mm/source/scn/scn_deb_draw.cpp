@@ -654,7 +654,15 @@ void DebDraw::renderPoint(const mm::Vec3 &position) {
   }
 }
 
-void CacheDraw::DRPNT::flush(DebDraw *draw) { draw->renderPoint(unknown0c); }
+// Evidence for the casts of the flush functions of CacheDraw (decision 45): the game passes the address of the 12-byte record member
+// to functions whose mangled names take const mm::Vec3 & (DRCUBE::flush 0x71007065c0: add x8,x0,#0xc; add x2,x0,#0x18; b DebDraw::renderCube).
+void CacheDraw::DRPNT::flush(DebDraw *draw) { draw->renderPoint(reinterpret_cast<const mm::Vec3 &>(unknown0c)); }
+
+void CacheDraw::DRPNT2D::flush(DebDraw *draw) {
+  draw->setLineWidth(static_cast<u32>(unknown18));
+  draw->renderPoint(reinterpret_cast<const mm::Vec3 &>(unknown0c));
+  draw->setLineWidth(1);
+}
 
 void DebDraw::renderLine(const mm::Vec3 &start, const mm::Vec3 &end) {
   if (!unknown210->renderLine(start, end)) {
@@ -663,6 +671,8 @@ void DebDraw::renderLine(const mm::Vec3 &start, const mm::Vec3 &end) {
     this->end();
   }
 }
+
+void CacheDraw::DRLINE::flush(DebDraw *draw) { draw->renderLine(reinterpret_cast<const mm::Vec3 &>(unknown0c), reinterpret_cast<const mm::Vec3 &>(unknown18)); }
 
 void DebDraw::renderLine(const mm::Pnt<int> &start, const mm::Pnt<int> &end) {
   if (!unknown210->renderLine(start, end)) {
@@ -683,6 +693,10 @@ void DebDraw::renderTriangle(const mm::Vec3 &first, const mm::Vec3 &second, cons
   }
 }
 
+void CacheDraw::DRTRI::flush(DebDraw *draw) {
+  draw->renderTriangle(reinterpret_cast<const mm::Vec3 &>(unknown0c), reinterpret_cast<const mm::Vec3 &>(unknown18), reinterpret_cast<const mm::Vec3 &>(unknown24));
+}
+
 void DebDraw::renderTriangleFill(const mm::Vec3 &first, const mm::Vec3 &second, const mm::Vec3 &third) {
   if (!unknown210->renderTriangleFill(first, second, third)) {
     begin(6, 3);
@@ -691,6 +705,10 @@ void DebDraw::renderTriangleFill(const mm::Vec3 &first, const mm::Vec3 &second, 
     add(third);
     end();
   }
+}
+
+void CacheDraw::DRTRI_FILL::flush(DebDraw *draw) {
+  draw->renderTriangleFill(reinterpret_cast<const mm::Vec3 &>(unknown0c), reinterpret_cast<const mm::Vec3 &>(unknown18), reinterpret_cast<const mm::Vec3 &>(unknown24));
 }
 
 void DebDraw::renderRect(int x, int y, int width, int height) {
