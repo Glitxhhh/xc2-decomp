@@ -1,6 +1,7 @@
 #include "event/cam_free.h"
 
 #include "event/manager.h"
+#include "ml/dev_keyboard.h"
 #include "ml/event_view.h"
 #include "ml/scn.h"
 #include "ml/win_view.h"
@@ -79,6 +80,28 @@ bool CamFree::OnKeyUp(ml::EventView *view) {
   }
   unknown4c &= ~8;
   unknown50 = CTRL_MODE_UNKNOWN_0;
+  return true;
+}
+
+bool CamFree::OnMouseMove(ml::EventView *view) {
+  if ((ml::DevKeyboard::getVkHold() & 1) == 0) {
+    return false;
+  }
+  // Cases in the order of the blocks of the game (0x71000afa7c: tumble 0x71000afac8, dolly 0x71000afad8, track, inlined, 0x71000afae8): the compares come out as 1, 2 and 3 with ctrlTumble as the
+  // fall-through. Ascending case order, an if/else chain and `return true` in each case all give 68 instructions against 66 (checked).
+  switch (unknown50) {
+  case CTRL_MODE_UNKNOWN_3:
+    ctrlTumble(view->unknown10);
+    break;
+  case CTRL_MODE_UNKNOWN_1:
+    ctrlDolly(view->unknown10);
+    break;
+  case CTRL_MODE_UNKNOWN_2:
+    ctrlTrack(view->unknown10);
+    break;
+  default:
+    return false;
+  }
   return true;
 }
 
