@@ -91,6 +91,7 @@ public:
   mm::mtl::IntrusivePtr<fw::ReferenceFrame> createMountReferenceFrameImpl(u16 mount);
   void destroyBoneReferenceFrame(const char *name);
   void destroyBoneReferenceFrameImpl(mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame);
+  void cleanup();
   void destroyMountReferenceFrameImpl(mm::mtl::IntrusivePtr<fw::ReferenceFrame> frame);
   mm::mtl::IntrusivePtr<fw::ReferenceFrame> getBoneReferenceFrame(const char *name);
   bool addBoneReferenceFrame(const char *name, mm::mtl::IntrusivePtr<fw::ReferenceFrame> &frame);

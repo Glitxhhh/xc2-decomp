@@ -1,7 +1,10 @@
 #include "gf/object/component/model/gf_com_model.h"
 
 #include "anm/anm_array-inl.h"
+#include "anm/anm_extra_truck.h"
+#include "anm/anm_pose.h"
 #include "anm/anm_qs_transform.h"
+#include "anm/anm_reference_object.h"
 #include "anm/anm_skeleton.h"
 #include "anm/anm_transform_util.h"
 #include "framework/anim/anim_manager.h"
@@ -19,6 +22,8 @@
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec4.h"
 #include "mm_mtl/algorithm.h"
+#include "mm_mtl/delegate.h"
+#include "mm_mtl/reference_object.h"
 
 namespace gf {
 
@@ -249,6 +254,33 @@ void GfComModel::bindReferenceFrameToBone(u16 bone, mm::mtl::IntrusivePtr<fw::Re
 #line 618
   MM_ASSERT(com_trans != NULL);
   com_trans->unknown001().get()->addChild(*frame.get());
+}
+
+void GfComModel::cleanup() {
+  if (unknown1140.capacity() != 0) {
+    for (u32 i = 0; i < unknown1140.size(); i++) {
+      unbindReferenceFrameToBone(unknown1140[i].unknown00);
+      fw::ReferenceFrame &frame = *unknown1140[i].unknown00.get();
+      fw::ReferenceFrame::unlinkParent(frame);
+      fw::ReferenceFrame::unlinkChild(frame);
+    }
+    unknown1140.destroy();
+  }
+  if (unknown40.unknown18 != nullptr && unknown40.unknown20 != nullptr) {
+    unknown40.unbind();
+    fw::AnimationManager::get()->removePoseModifier(getLayer(), unknown40);
+  }
+  if (unknown10c8.unknown18 != nullptr) {
+    unknown10c8.unknown50.clear();
+    unknown10c8.unbind();
+    fw::AnimationManager::get()->removeAfterModifier(getLayer(), unknown10c8);
+  }
+  anm::unknown001(unknown38);
+  anm::unknown001(unknown30);
+  anm::unknown001(unknown28);
+  unknown20 = nullptr;
+  mm::mtl::safeRelease(unknown18);
+  unknown10 = -1;
 }
 
 void GfComModel::unbindReferenceFrameToBone(mm::mtl::IntrusivePtr<fw::ReferenceFrame> &frame) {

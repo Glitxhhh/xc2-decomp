@@ -114,6 +114,8 @@ f32 bgmvolAdvertize(ExecFadeParam &param) {
   return bgmvolControlFade(info, time, GfManager::isExecModeAdvertize());
 }
 
+f32 bgmvolStop(ExecFadeParam &param) { return bgmvolControlFade(*param.unknown08, s_bStopBGM ? param.unknown10->unknown20 : param.unknown10->unknown24, s_bStopBGM); }
+
 f32 bgmvolBattleBoss(ExecFadeParam &param) {
   bool isFadeOut = param.unknown00->unknown620->m_rscBossBattleBgmID != 0 || GfGameManager::isForceBossBattleBgm();
   return bgmvolControlFade(*param.unknown08, isFadeOut ? param.unknown10->unknown20 : param.unknown10->unknown24, isFadeOut);
