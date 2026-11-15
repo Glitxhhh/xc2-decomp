@@ -614,6 +614,56 @@ void GfMenuObjHanaCustom::updateItemList(GfMenuItemList *list, ItemType::Type ty
   list->setupFromBox(setup);
 }
 
+bool GfMenuObjHanaCustom::isExpandCircuit(u32 blade, u32 parts, RESULT_HANA &result) {
+  switch (parts) {
+  case 9:
+  case 10:
+  case 11:
+  case 16:
+  case 17:
+  case 18: {
+    u32 circuit = parts > 15 ? parts - 16 : parts - 9;
+    result = GfGameUtilHana::isOpenArtsCircuit(blade, circuit);
+    if (result == RESULT_HANA_UNKNOWN_10) {
+      if (GfGameUtilHana::getEtherForOpenArtsCircuit(blade, circuit) <= GfDataHana::getEther()) {
+        return true;
+      }
+      result = RESULT_HANA_UNKNOWN_3;
+    }
+    break;
+  }
+  case 12:
+  case 13:
+  case 14:
+  case 19:
+  case 20:
+  case 21: {
+    u32 circuit = parts > 18 ? parts - 19 : parts - 12;
+    result = GfGameUtilHana::isOpenCondenserCircuit(blade, circuit);
+    if (result == RESULT_HANA_UNKNOWN_10) {
+      if (GfGameUtilHana::getEtherForOpenCondenserCircuit(blade, circuit) <= GfDataHana::getEther()) {
+        return true;
+      }
+      result = RESULT_HANA_UNKNOWN_3;
+    }
+    break;
+  }
+  case 15: {
+    u32 rank = GfGameUtilHana::getPowerRank(blade);
+    if (rank < 20) {
+      result = GfGameUtilHana::isExecPowerRankup(blade, rank + 1);
+      if (result == RESULT_HANA_UNKNOWN_0) {
+        return true;
+      }
+      break;
+    }
+    result = RESULT_HANA_UNKNOWN_6;
+    break;
+  }
+  }
+  return false;
+}
+
 void GfMenuObjHanaCustom::removeParts(u32 blade, u32 parts) {
   switch (parts) {
   case 3:

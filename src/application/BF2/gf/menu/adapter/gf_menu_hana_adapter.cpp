@@ -217,6 +217,28 @@ void GfMenuHanaAdapter::update(const fw::UpdateInfo &info) {
   }
 }
 
+bool GfMenuHanaAdapter::isOpenCircuit(u32 blade, u32 circuit, RESULT_HANA &result) {
+  switch (circuit) {
+  case 9:
+  case 10:
+  case 11:
+    result = GfGameUtilHana::isOpenArtsCircuit(blade, circuit - 9);
+    if (result == RESULT_HANA_UNKNOWN_0) {
+      return true;
+    }
+    break;
+  case 12:
+  case 13:
+  case 14:
+    result = GfGameUtilHana::isOpenCondenserCircuit(blade, circuit - 12);
+    if (result == RESULT_HANA_UNKNOWN_0) {
+      return true;
+    }
+    break;
+  }
+  return false;
+}
+
 u32 GfMenuHanaAdapter::getEquipParts(u32 blade, u32 type) {
   EquipHana equip;
   GfGameUtilHana::getEquip(equip, blade);
