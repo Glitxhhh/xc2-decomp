@@ -185,6 +185,45 @@ bool AssetPackInfo::isExistAssetPack(const GfAssetPack *pack) const {
   return false;
 }
 
+bool AssetPackInfo::isExistAssetPack(AssetPackValue value) const {
+  for (GfAssetPack *pack : unknown10) {
+    if (pack->unknown10 == value) {
+      return true;
+    }
+  }
+  return false;
+}
+
+GfAssetPack *AssetPackInfo::getAssetPack(const char *name) const {
+  for (GfAssetPack *pack : unknown10) {
+    if (strcmp(pack->m_assetType.unknown08.c_str(), name) == 0) {
+      return pack;
+    }
+  }
+  return nullptr;
+}
+
+GfAssetPack *AssetPackInfo::getAssetPackByAssetType(GfAssetType type) const {
+  for (GfAssetPack *pack : unknown10) {
+    if (pack->m_assetType.unknown00 == type) {
+      return pack;
+    }
+  }
+  return nullptr;
+}
+
+bool AssetPackInfo::isSameResource(const AssetPackInfo *other) const {
+  if (unknown10.size() != other->unknown10.size()) {
+    return false;
+  }
+  for (size_t i = 0; i < unknown10.size(); i++) {
+    if (unknown10[i]->unknown10 != other->unknown10[i]->unknown10) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void AssetPackInfo::execReload() {
   GfAssetUtil::setRetargetLoad(unknown08, false);
   for (GfAssetPack *pack : unknown10) {

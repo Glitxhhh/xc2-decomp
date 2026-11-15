@@ -90,6 +90,13 @@ void GfMenuObjQuestOrder::open(GfMenuCallContext *context, QuestID quest) {
   }
 }
 
+void GfMenuObjQuestOrder::setupScreen(u32 handle, QuestID quest) {
+  for (u32 i = 0; i < sizeof(unknown003) / sizeof(unknown003[0]); i++) {
+    createAdapter(handle, unknown003[i].unknown00, quest, unknown003[i].unknown08);
+  }
+  GfMenuObjUtil::setChildDisp(handle, "IMG_chkbtn02", false);
+}
+
 void GfMenuObjQuestOrder::createAdapter(u32 handle, const char *name, QuestID quest, u32 type) {
   ui::UIObjectAcc acc(handle, name);
   if (acc.isValid()) {

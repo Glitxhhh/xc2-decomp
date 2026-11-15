@@ -28,6 +28,7 @@ public:
 
   static void close();
   static void open(GfMenuCallContext *context, QuestID quest);
+  static void setupScreen(u32 handle, QuestID quest);
   static void createAdapter(u32 handle, const char *name, QuestID quest, u32 type);
   GfMenuObjQuestOrder(u32 handle);
   ~GfMenuObjQuestOrder() override;

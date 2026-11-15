@@ -714,6 +714,12 @@ void GfFieldBgm::setPause(bool isPause) {
   }
 }
 
+void GfFieldBgm::gevPlayEvent(GEV gev, u32 value) {
+  if (BgmEvent::get() != nullptr) {
+    BgmEvent::get()->gevPlayEvent(gev, value);
+  }
+}
+
 GfFieldBgm::~GfFieldBgm() {
   for (BgmTrack **it = unknown08.begin(); it != unknown08.end(); ++it) {
     if (*it != nullptr) {

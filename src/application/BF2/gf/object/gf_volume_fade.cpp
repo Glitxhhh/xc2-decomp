@@ -10,6 +10,7 @@
 #include "gf/object/gf_obj_util.h"
 #include "mm/mm_std_base.h"
 #include "mm_math/mm_col3.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_math/mm_vec3_na.h"
 #include "mm_mtl/fixed_vector.h"
@@ -53,6 +54,19 @@ bool GfVolumeFade::setupVolumeFadeParamForDead(ml::VolumeFadeParams &params, VFE
     }
   }
   return false;
+}
+
+void GfVolumeFade::setFadeRatio(VFACC acc, VFPARTS parts, f32 ratio) {
+  mm::clampRef(ratio, 0.0f, 1.0f);
+  if (parts != VFPARTS_UNKNOWN_FFFFFFFF) {
+    unknown14[acc][parts] = ratio;
+  } else {
+    for (u32 i = 0; i < 6; i++) {
+      unknown14[acc][i] = ratio;
+    }
+  }
+  unknown10 = true;
+  applyFadeRatio();
 }
 
 void GfVolumeFade::applyFadeRatio() {

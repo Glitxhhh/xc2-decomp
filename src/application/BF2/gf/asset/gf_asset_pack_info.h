@@ -20,6 +20,12 @@ class GfAssetPack;
 class GfExtendResource;
 class GfAssetResource;
 
+// Name from the game symbol _ZNK2gf13AssetPackInfo16isExistAssetPackENS_14AssetPackValueE (0x71001b9170, also in Torna), the only symbol that names the type. Inferred role: asset pack value, name
+// hash in the high word and asset type in the low word (GfAssetPack::calcAssetPackValue). The game passes it in x1 and compares it with the 64-bit GfAssetPack::unknown10 by one cmp; no function of
+// the 1.0.0 executable calls it or reads a member of it. Declared as an enum with a 64-bit underlying type because that adds nothing the game does not show: a struct wrapping a u64 matches too
+// (tested) but needs an invented member name. A typedef is refused by the mangling (it would give `m`).
+enum AssetPackValue : u64 {};
+
 struct AssetPackInfo {
   AssetPackInfo();
   virtual ~AssetPackInfo();
@@ -38,6 +44,7 @@ struct AssetPackInfo {
   bool isUseSameAsset(const AssetPackInfo *other) const;
   bool isFullResource() const;
   bool isExistAssetPack(const GfAssetPack *pack) const;
+  bool isExistAssetPack(AssetPackValue value) const;
   void setDestroy();
   GfAssetPack *getAssetPack(GF_SLOT_HANDLE *handle) const;
   void setAssetPack(GfAssetType type, GfAssetPack *pack);

@@ -12,6 +12,7 @@
 #include "gf/field/gf_field_collect.h"
 #include "gf/field/gf_field_map_gimmick.h"
 #include "gf/field/gf_field_tbox.h"
+#include "gf/field/gf_fobj_manager.h"
 #include "gf/game/achiev/gf_achiev_manager.h"
 #include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_arts_movie.h"
@@ -123,6 +124,11 @@ GfPlayComWait *GfPlayComWait::create(f32 time) {
 }
 
 void GfPlayComWaitEvent::start() { unknown20 = GfReqCommand::reqWaitEvent(unknown10, unknown18); }
+
+void GfPlayComWaitEvent::end() {
+  GfFobjManager::get()->unknown907c = 0.0f;
+  GfFobjManager::get()->unknown9080 = false;
+}
 
 bool GfPlayComWaitEvent::update(const fw::UpdateInfo &, bool isCancel) {
   for (u32 partyId = 0; partyId < 3; partyId++) {
