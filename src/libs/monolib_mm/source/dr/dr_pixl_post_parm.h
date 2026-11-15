@@ -366,7 +366,9 @@ public:
   bool unknown103c; // Inferred role: temporal shadow enable; original member name unknown.
   bool unknown103d; // Inferred role: temporal shadow history valid; original member name unknown.
   bool unknown103e; // Inferred role: char dir shadow; original member name unknown.
-  u8 _103f[0x1061 - 0x103f];
+  u8 _103f[0x1048 - 0x103f];
+  f32 unknown1048; // Inferred role: temporal shadow buffer scale; original member name unknown.
+  u8 _104c[0x1061 - 0x104c];
   bool unknown1061; // Inferred role: selects the IBL pixl objs; original member name unknown.
   u8 _1062[0x1064 - 0x1062];
   f32 unknown1064; // Inferred role: toon gradation value set from the ambient light data; original member name unknown.
@@ -548,6 +550,7 @@ static_assert(offsetof(DrPixlPostParm, unknown102c) == 0x102c, "");
 static_assert(offsetof(DrPixlPostParm, unknown103c) == 0x103c, "");
 static_assert(offsetof(DrPixlPostParm, unknown103d) == 0x103d, "");
 static_assert(offsetof(DrPixlPostParm, unknown103e) == 0x103e, "");
+static_assert(offsetof(DrPixlPostParm, unknown1048) == 0x1048, "");
 static_assert(offsetof(DrPixlPostParm, unknown1061) == 0x1061, "");
 static_assert(offsetof(DrPixlPostParm, unknown1064) == 0x1064, "");
 static_assert(offsetof(DrPixlPostParm, unknown1074) == 0x1074, "");

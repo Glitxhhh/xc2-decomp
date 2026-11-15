@@ -4,7 +4,12 @@
 #include "dr/dr_light_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
+#include "dr/dr_pixl_format.h"
 #include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_mem_man.h"
+#include "dr/dr_pixl_post_man.h"
+#include "dr/dr_pixl_post_obj_histgram.h"
+#include "dr/dr_pixl_post_obj_tone_map.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
 #include "dr/dr_pixl_shadow_man.h"
@@ -43,6 +48,32 @@ void DrPixlDeferred::shadowCharacterRender() {
     if (shadowMan->unknown0000[i]->dispChk() && shadowMan->unknown0000[i]->unknown4c == 0) {
       mdlMan->shadowRender(shadowMan->unknown0000[i]);
     }
+  }
+}
+
+void DrPixlDeferred::displayUpdate() {
+  DrPixlPostParm *postParm = unknown08->unknown120[unknown08->unknown1c98];
+  s32 width;
+  s32 height;
+  if (!postParm->unknown103c) {
+    width = unknown08->unknown5b8->unknown18;
+    height = unknown08->unknown5b8->unknown1c;
+  } else {
+    unknown18->unknown7f0->unknown180->unknownf8 |= DrPixlPostMan::FLAG_UNKNOWN_19;
+    width = static_cast<s32>(postParm->unknown1048 * static_cast<f32>(unknown08->unknown5b8->unknown18));
+    height = static_cast<s32>(postParm->unknown1048 * static_cast<f32>(unknown08->unknown5b8->unknown1c));
+  }
+  if ((unknown38 != 0 || unknown3a != 0) && (width != unknown38 || height != unknown3a)) {
+    m_temporalInputShadowMap->setTextureInfo(
+        static_cast<f32>(width), static_cast<f32>(height), DrPixlFormat::s_DirShadowFormat, true, (DrPixlMemMan::get()->unknown010 + DrMan::getIns()->unknown1c98)->unknown0e8[0]);
+    if (unknown08->unknown120[unknown08->unknown1c98]->unknown103c) {
+      unknown28[0]->setTextureInfo(
+          static_cast<f32>(width), static_cast<f32>(height), DrPixlFormat::s_DirShadowFormat, true, (DrPixlMemMan::get()->unknown010 + DrMan::getIns()->unknown1c98)->unknown0e8[1]);
+      unknown28[1]->setTextureInfo(
+          static_cast<f32>(width), static_cast<f32>(height), DrPixlFormat::s_DirShadowFormat, true, (DrPixlMemMan::get()->unknown010 + DrMan::getIns()->unknown1c98)->unknown0e8[2]);
+    }
+    unknown38 = static_cast<s16>(width);
+    unknown3a = static_cast<s16>(height);
   }
 }
 
@@ -103,6 +134,26 @@ DrPixlRenderTarget *DrPixlDeferred::getTemporalOutputShadowMap() { return unknow
 DrPixlRenderTarget *DrPixlDeferred::getTemporalOutputShadowMap() const { return unknown28[DrMan::s_nDblIdx]; }
 
 DrPixlRenderTarget *DrPixlDeferred::getTemporalHistoryShadowMap() { return unknown28[DrMan::s_nDblStockIdx]; }
+
+void DrPixlDeferred::lastDeferredRender() {
+  lgtCalcRender();
+  unknown18->endGBuffTexture();
+  DrPixlPostMan *postMan = unknown18->unknown7f0->unknown180;
+  if (postMan->unknown18 != nullptr) {
+    postMan->unknown18->fastRender();
+  }
+  if (postMan->unknown60 != nullptr) {
+    postMan->unknown60->render();
+  }
+  DrAPGxType::setupBlend(0);
+  unknown18->setMainViewPort();
+  unknown18->resetRenderTarget();
+  if (unknown18->unknown7f0->unknown1d8 & 2) {
+    DrAPGxType::setupScreenQuads(false);
+    unknown18->setMainRenderTarget();
+    unknown18->toneMapRender(false);
+  }
+}
 
 void DrPixlDeferred::lgtCalcRender() {
   DrPixlMan *pixlMan = unknown18;

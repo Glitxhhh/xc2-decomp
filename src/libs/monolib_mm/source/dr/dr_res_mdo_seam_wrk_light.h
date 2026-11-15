@@ -7,12 +7,16 @@ namespace ml {
 class DrEnvironmentObj;
 class DrResMdoSeamMemObj;
 
+// Inferred layout of the light map data; also the entry of the light table of the seam resource
+// (stride 0x38, data offset 0x18 and size 0x1c read by DrMdoCtlSeamRead::callLightStream at 0x7100827840).
 struct MdsSeamLgtMapData {
-  u8 _00[0x1c];
+  u8 _00[0x18];
+  u32 unknown18; // Inferred role: data offset in the seam file; original member name unknown.
   u32 unknown1c; // Inferred role: memory size; original member name unknown.
   u8 _20[0x38 - 0x20];
 };
 
+static_assert(offsetof(MdsSeamLgtMapData, unknown18) == 0x18, "");
 static_assert(offsetof(MdsSeamLgtMapData, unknown1c) == 0x1c, "");
 static_assert(sizeof(MdsSeamLgtMapData) == 0x38, "");
 

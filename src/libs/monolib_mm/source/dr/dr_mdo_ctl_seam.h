@@ -50,7 +50,8 @@ struct MdoWrkMatRes;
 
 struct MdsSeamOfsTexTblData {
   u32 unknown00; // Inferred role: texture data offset; original member name unknown.
-  s32 unknown04; // Inferred role: texture size; original member name unknown.
+  u32 unknown04; // Inferred role: texture size; original member name unknown. Unsigned: the game passes it zero-extended as the memcpy size (DrMdoCtlSeamRead::callHeightTexutreStream, ldr w2 at
+                 // 0x71008270f8).
   u32 unknown08; // Inferred role: height data offset; original member name unknown.
   u32 unknown0c; // Inferred role: height texture size; original member name unknown.
   u32 unknown10; // Role and original member name unknown.
@@ -169,7 +170,8 @@ struct unknown061 {
   u32 m_seamColiMax;
   u8 _2c[0x30 - 0x2c];
   s32 unknown30; // Inferred role: env map count; original member name unknown.
-  u8 _34[0x44 - 0x34];
+  u32 unknown34; // Inferred role: offset of the env map entries; original member name unknown.
+  u8 _38[0x44 - 0x38];
   u32 m_seamShaderMax;
   u8 _48[0x50 - 0x48];
   u32 m_seamVertexMax;
@@ -192,7 +194,10 @@ struct unknown061 {
   u32 unknown94; // Inferred role: offset of the texture list table; original member name unknown.
   u8 _98[0xa8 - 0x98];
   u32 unknowna8; // Inferred role: offset of the clip data; original member name unknown.
-  u8 _ac[0xc8 - 0xac];
+  u8 _ac[0xb8 - 0xac];
+  s32 unknownb8; // Inferred role: low map count; original member name unknown.
+  u32 unknownbc; // Inferred role: offset of the low map entries; original member name unknown.
+  u8 _c0[0xc8 - 0xc0];
   u32 unknownc8; // Inferred role: offset of the mpf poli table; original member name unknown.
   u8 _cc[0xd0 - 0xcc];
   u32 unknownd0; // Inferred role: offset of the base vertex table; original member name unknown.
@@ -205,6 +210,7 @@ static_assert(offsetof(unknown061, m_seamBaseMdlMax) == 0x18, "");
 static_assert(offsetof(unknown061, m_seamInstMdlMax) == 0x20, "");
 static_assert(offsetof(unknown061, m_seamColiMax) == 0x28, "");
 static_assert(offsetof(unknown061, unknown30) == 0x30, "");
+static_assert(offsetof(unknown061, unknown34) == 0x34, "");
 static_assert(offsetof(unknown061, m_seamShaderMax) == 0x44, "");
 static_assert(offsetof(unknown061, m_seamVertexMax) == 0x50, "");
 static_assert(offsetof(unknown061, m_seamTextureMax) == 0x58, "");
@@ -219,6 +225,7 @@ static_assert(offsetof(unknown061, unknown68) == 0x68, "");
 static_assert(offsetof(unknown061, unknown70) == 0x70, "");
 static_assert(offsetof(unknown061, unknown78) == 0x78, "");
 static_assert(offsetof(unknown061, unknown8c) == 0x8c, "");
+static_assert(offsetof(unknown061, unknownbc) == 0xbc, "");
 static_assert(offsetof(unknown061, unknownc8) == 0xc8, "");
 static_assert(offsetof(unknown061, unknownd0) == 0xd0, "");
 static_assert(offsetof(unknown061, unknown84) == 0x84, "");

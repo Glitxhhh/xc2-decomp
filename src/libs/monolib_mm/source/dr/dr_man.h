@@ -281,7 +281,9 @@ public:
   f32 unknown1cd0[2]; // Inferred role: pos model far render distance per operation mode; original member name unknown.
   u8 _1cd8[0x1cfc - 0x1cd8];
   s32 unknown1cfc; // Inferred role: seam read lv; original member name unknown.
-  u8 _1d00[0x1d20 - 0x1d00];
+  u8 _1d00[0x1d0c - 0x1d00];
+  f32 unknown1d0c; // Inferred role: seam low map read distance, added to the read check distance by DrMdoCtlSeamLowMap::readLowMapCheck; original member name unknown.
+  u8 _1d10[0x1d20 - 0x1d10];
   u32 *m_gblIdx;              // Named after setGblIdx and offGblIdx, which write its bits; Xenoblade Chronicles DE has isGblIdx and clearGblIdx on its table.
   RenderSpecMode unknown1d28; // Inferred role: render spec mode; original member name unknown.
   u8 _1d2c[0x1d30 - 0x1d2c];
@@ -400,6 +402,7 @@ static_assert(offsetof(DrMan, unknown1cc9) == 0x1cc9, "");
 static_assert(offsetof(DrMan, unknown1ccc) == 0x1ccc, "");
 static_assert(offsetof(DrMan, unknown1cd0) == 0x1cd0, "");
 static_assert(offsetof(DrMan, unknown1cfc) == 0x1cfc, "");
+static_assert(offsetof(DrMan, unknown1d0c) == 0x1d0c, "");
 static_assert(offsetof(DrMan, m_gblIdx) == 0x1d20, "");
 static_assert(offsetof(DrMan, unknown1d28) == 0x1d28, "");
 static_assert(offsetof(DrMan, m_globalWind) == 0x1d30, "");

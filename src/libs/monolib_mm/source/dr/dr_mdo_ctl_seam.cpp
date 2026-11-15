@@ -28,7 +28,6 @@
 #include "dr/dr_res_mdo_seam_read.h"
 #include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_sort.h"
-#include "grlib/cglib_tri_uniform_block.h"
 #include "grlib/cglib_uniform_array.h"
 #include "ml/dev_graph.h"
 #include "mm_math/mm_col4.h"
