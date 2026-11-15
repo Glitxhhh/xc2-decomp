@@ -35,7 +35,16 @@ bool DrLightObj::isCullON() const { return (unknown1c & FLAG_UNKNOWN_30) != 0; }
 
 DrLightObj::DrLightObj() : unknown08(nullptr), unknown10(nullptr), unknown1c(0), unknown20(nullptr), unknown28(nullptr) {}
 
-DrLightObj::DrLightObj(DrPixlMan *pixlMan) : unknown10(nullptr), unknown1c(0), unknown20(pixlMan), unknown28(nullptr) { unknown08 = nullptr; }
+// The statements are in the order that matches this constructor (0x71007e9858) and its copies inlined into the derived light constructors
+// and the createXxxLight functions: a member initialiser list, in declaration order or with the one body statement it replaces, changes the
+// stores of the inlined copies.
+DrLightObj::DrLightObj(DrPixlMan *pixlMan) {
+  unknown10 = nullptr;
+  unknown20 = pixlMan;
+  unknown08 = nullptr;
+  unknown1c = 0;
+  unknown28 = nullptr;
+}
 
 void DrLightObj::setTexLoop(bool isEnable) { unknown1c = !isEnable ? unknown1c & ~FLAG_UNKNOWN_4 : unknown1c | FLAG_UNKNOWN_4; }
 
@@ -82,6 +91,8 @@ bool DrLightObj::isAmbModeOn() const { return (unknown1c & FLAG_UNKNOWN_11) != 0
 bool DrLightObj::isCacheShadow() const { return (unknown1c & FLAG_UNKNOWN_2) != 0; }
 
 DrLightObjAmb::DrLightObjAmb() {}
+
+DrLightObjAmb::DrLightObjAmb(DrPixlMan *pixlMan) : DrLightObj(pixlMan) {}
 
 namespace {
 
@@ -198,24 +209,30 @@ void DrLightObjPnt::setPos(const mm::Vec3 &position) {
   unknown30.setTrans(pos);
 }
 
+DrLightObjPnt::DrLightObjPnt() : DrLightObj() { initPnt(); }
+
+// The statement order is the one found to match this function (0x71007e9d68) and the two constructors that inline it (0x71007e9cdc,
+// 0x71007e9dd4): the order of the members and the store order of the game do not (the game's stores are scheduled differently).
 void DrLightObjPnt::initPnt() {
-  unknownb0 = 1.0f;
   m_pos.x = 0.0f;
-  unknown90.r = 1.0f;
-  unknowna4 = 1.0f;
-  unknownac = 0.1f;
-  m_pos.y = 0.0f;
   unknown90.g = 1.0f;
-  m_pos.z = 0.0f;
+  unknown90.r = 1.0f;
+  unknownb0 = 1.0f;
+  unknowna4 = 1.0f;
+  m_pos.y = 0.0f;
   m_size = 5.0f;
+  m_pos.z = 0.0f;
   unknowna0 = true;
   unknowna8 = 1.0f;
   unknown90.b = 1.0f;
+  unknownac = 0.1f;
   unknown18 = TYPE_UNKNOWN_2;
   unknown30 = mm::Mat44::identity;
   unknownb4[0] = 0.0f;
   unknownb4[1] = 0.0f;
 }
+
+DrLightObjPnt::DrLightObjPnt(DrPixlMan *pixlMan) : DrLightObj(pixlMan) { initPnt(); }
 
 void DrLightObjPnt::deletePntShadow() { releasePnt(); }
 
@@ -237,6 +254,37 @@ void DrLightObjSpt::setMat(const f32 *matrix) {
 }
 
 void DrLightObjSpt::deleteSptShadow() { releaseSpt(); }
+
+DrLightObjSpt::DrLightObjSpt() : DrLightObj() { initSpt(); }
+
+// As initPnt: the order of the members and the store order of the game do not match this function (0x71007e9ffc) and the constructors that
+// inline it (0x71007e9f44, 0x71007ea094).
+void DrLightObjSpt::initSpt() {
+  unknownb0.g = 1.0f;
+  unknownd4 = 1.0f;
+  unknownd0 = 0.0001f;
+  unknownb0.b = 1.0f;
+  unknownb0.r = 1.0f;
+  m_pos.x = 0.0f;
+  m_pos.y = 0.0f;
+  m_size = 5.0f;
+  unknown90.x = 0.0f;
+  m_pos.z = 0.0f;
+  unknownd8 = 4.0f;
+  unknown90.y = 0.0f;
+  unknownc4 = true;
+  unknowncc = 1.0f;
+  unknownc8 = 0.4f;
+  unknown90.z = 1.0f;
+  unknownbc = 0.9424779f;
+  unknown18 = TYPE_UNKNOWN_3;
+  unknown30 = mm::Mat44::identity;
+  unknowndc = 0.0f;
+  unknowne0 = 0.5f;
+  unknowne4 = 0.0f;
+}
+
+DrLightObjSpt::DrLightObjSpt(DrPixlMan *pixlMan) : DrLightObj(pixlMan) { initSpt(); }
 
 DrLightObjSpt::~DrLightObjSpt() { releaseSpt(); }
 

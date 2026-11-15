@@ -12,6 +12,23 @@
 
 namespace ml {
 
+// The game clears the four lists with one memset of 0x50 bytes (value-initialisation). The statement order is the one found to match
+// (0x71008b2000): the order of the members merges the two read mode limits (0x2490, 0x2494) into one 64-bit store and the order [0], [1]
+// of the counters moves the singleton store.
+DrCalcTexStreamMan::DrCalcTexStreamMan() : unknown08(), unknown18(), unknown28(), unknown38() {
+  unknown2488 = 0;
+  unknown2058[1] = 0;
+  unknown2058[0] = 0;
+  unknown2064 = 0;
+  unknown2068 = 0;
+  unknown206c = 0;
+  unknown2070 = nullptr;
+  unknown2078 = nullptr;
+  unknown2490 = 3;
+  unknown2494 = 3;
+  unknown248c = 0;
+}
+
 CriticalSection &DrCalcTexStreamMan::getCriticalSection() {
   static CriticalSection sect;
   return sect;

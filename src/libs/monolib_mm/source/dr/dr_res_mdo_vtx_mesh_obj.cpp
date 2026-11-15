@@ -10,6 +10,41 @@
 
 namespace ml {
 
+// The statement order is the one found to match: neither the order of the members nor the store order of the game (0x710087ab80) gives the
+// game's bytes. unknown84 is stored twice because the game's 64-bit zero store at 0x80 covers it before the 40000 store.
+DrResMdoVtxMeshObj::DrResMdoVtxMeshObj() {
+  unknown98 = 0.0f;
+  unknown94 = 0;
+  unknowne0.y = 1.0f;
+  unknowne0.z = 0.0f;
+  unknownf0.y = 1.0f;
+  unknown100 = 1.0f;
+  unknownf0.z = 0.0f;
+  unknown104 = 60.0f;
+  unknown110 = 30;
+  unknown8c = 0;
+  unknown88 = 0;
+  unknown80 = 0;
+  unknown84 = 0;
+  unknown108 = 1.2f;
+  unknown10c = -0.05f;
+  unknown114.r = 0.18f;
+  unknown90 = 0;
+  unknownf0.x = 0.0f;
+  unknown114.g = 0.12f;
+  unknown114.b = 0.09f;
+  unknown12c = 1.0f;
+  unknown120 = 0.998f;
+  unknown124 = 0.3f;
+  unknown78 = nullptr;
+  unknown128 = 0.6f;
+  unknowne0.x = 0.0f;
+  unknown130 = 1.0f;
+  unknown74 = 0;
+  unknown70 = false;
+  unknown84 = 40000;
+}
+
 void DrResMdoVtxMeshObj::updateInit(const mm::Mat44 &matrix) {
   u32 flags = unknown74;
   u32 startBit = 0x10000 << DrMan::s_nDblIdx;
