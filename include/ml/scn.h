@@ -191,9 +191,10 @@ public:
   };
 
   // Inferred type: render callback entry; the original type name is unknown.
+  // Scn::addRenderCB (0x7100740860) writes the members and never the last byte, Scn::removeRenderCB (0x71007408f8) only the callback, and
+  // Scn::tail (0x7100742068) copies an entry as two 64 bit words (0x71007420ec): both functions fill a local entry member by member (with
+  // constructors, removeRenderCB matches only with a 16th member that nothing in the game names).
   struct unknown001 {
-    unknown001(IScnRender *render, SCNPRIO_CB priority, bool flag1, bool flag2) : unknown00(render), unknown08(priority), unknown0c(flag2), unknown0d(flag1), unknown0e(false) {}
-
     IScnRender *unknown00; // Inferred role: callback; original member name unknown.
     SCNPRIO_CB unknown08;  // Inferred role: priority; original member name unknown.
     bool unknown0c;        // Inferred role: flag; original member name unknown.
@@ -230,6 +231,7 @@ public:
   const ScnObjCam *getCam(int index) const;
   WinView *getView(int index);
   void addRenderCB(IScnRender *render, SCNPRIO_CB priority, bool flag1, bool flag2);
+  static void removeRenderCB(IScnRender *render);
   void addEntryRes(FileResTh *res);
   FileResTh *allocEntryRes(const char *path);
   void removeEntryRes(FileResTh *res);
@@ -252,8 +254,8 @@ public:
   unknown001 unknownb8[64]; // Inferred role: render callbacks; original member name unknown.
   s32 unknown4b8;           // Inferred role: render callback count; original member name unknown.
   u8 _4bc[0x4c0 - 0x4bc];
-  mm::mtl::FixedQueue<unknown001, 64> unknown4c0; // Inferred role: render callbacks to add; original member name unknown.
-  u8 _8d0[0xce0 - 0x8d0];
+  mm::mtl::FixedQueue<unknown001, 64> unknown4c0;   // Inferred role: render callbacks to add; original member name unknown.
+  mm::mtl::FixedQueue<unknown001, 64> unknown8d0;   // Inferred role: render callbacks to remove; original member name unknown.
   CriticalSection *unknownce0;                      // Inferred role: scn lock; original member name unknown.
   CriticalSection *unknownce8;                      // Inferred role: entry res critical section; original member name unknown.
   mm::mtl::FixedVector<FileResTh *, 32> unknowncf0; // Inferred role: entry res; original member name unknown.
@@ -271,6 +273,7 @@ static_assert(offsetof(Scn, unknownb4) == 0xb4, "");
 static_assert(offsetof(Scn, unknownb8) == 0xb8, "");
 static_assert(offsetof(Scn, unknown4b8) == 0x4b8, "");
 static_assert(offsetof(Scn, unknown4c0) == 0x4c0, "");
+static_assert(offsetof(Scn, unknown8d0) == 0x8d0, "");
 static_assert(offsetof(Scn, unknownce0) == 0xce0, "");
 static_assert(offsetof(Scn, unknownce8) == 0xce8, "");
 static_assert(offsetof(Scn, unknowncf0) == 0xcf0, "");

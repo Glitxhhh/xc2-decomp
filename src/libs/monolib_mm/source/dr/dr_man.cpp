@@ -14,6 +14,8 @@
 #include "dr/dr_gpu_check_obj.h"
 #include "dr/dr_gpu_check_render.h"
 #include "dr/dr_ibl_man.h"
+#include "dr/dr_ini_sys.h"
+#include "dr/dr_irr_vol_man.h"
 #include "dr/dr_light_man.h"
 #include "dr/dr_mdl_base.h"
 #include "dr/dr_mdl_man.h"
@@ -48,7 +50,10 @@
 #include "grlib/cglib_ctl_shader.h"
 #include "grlib/cglib_debug.h"
 #include "grlib/cglib_manager.h"
+#include "grlib/cglib_state.h"
 #include "ml/critical_section.h"
+#include "ml/work_cpu.h"
+#include "mtl/mem_manager.h"
 
 // The game builds DrIniSys in this unit, before this file (0x71007c4958 to 0x71007c8450): DrMan::setSRGBMode (0x71007c750c) sits inside its block.
 #include "dr_ini_sys.cpp"
@@ -60,6 +65,135 @@ class DrGpuCheckBase;
 DrMan *DrMan::getIns() { return s_pTop; }
 
 DrMan *DrMan::get() { return s_pTop; }
+
+DrMan::~DrMan() {
+  WorkCpu::removeBackgroundListener(this);
+  unknown78->pixelEndMode();
+  if (unknown1d18 != nullptr) {
+    mtl::MemManager::deallocate(unknown1d18, 0, false);
+    unknown1d18 = nullptr;
+  }
+  if (m_gblIdx != nullptr) {
+    mtl::MemManager::deallocate(m_gblIdx, 0, false);
+    m_gblIdx = nullptr;
+  }
+  if (unknown88 != nullptr) {
+    delete unknown88;
+    unknown88 = nullptr;
+  }
+  if (unknown1e00 != nullptr) {
+    delete unknown1e00;
+    unknown1e00 = nullptr;
+  }
+  for (int i = 0; i < 4; i++) {
+    if (unknown100[i] != nullptr) {
+      delete unknown100[i];
+      unknown100[i] = nullptr;
+    }
+    if (unknown140[i] != nullptr) {
+      delete unknown140[i];
+      unknown140[i] = nullptr;
+    }
+    if (unknown160[i] != nullptr) {
+      delete unknown160[i];
+      unknown160[i] = nullptr;
+    }
+    if (unknownc0[i] != nullptr) {
+      delete unknownc0[i];
+      unknownc0[i] = nullptr;
+    }
+    if (unknowne0[i] != nullptr) {
+      delete unknowne0[i];
+      unknowne0[i] = nullptr;
+    }
+  }
+  if (unknown78 != nullptr) {
+    delete unknown78;
+    unknown78 = nullptr;
+  }
+  if (unknown90 != nullptr) {
+    delete unknown90;
+    unknown90 = nullptr;
+  }
+  for (int i = 0; i < 4; i++) {
+    if (unknown120[i] != nullptr) {
+      delete unknown120[i];
+      unknown120[i] = nullptr;
+    }
+  }
+  if (unknown180 != nullptr) {
+    delete unknown180;
+    unknown180 = nullptr;
+  }
+  if (unknown188 != nullptr) {
+    delete unknown188;
+    unknown188 = nullptr;
+  }
+  for (int i = 0; i < 4; i++) {
+    if (unknowna0[i] != nullptr) {
+      delete unknowna0[i];
+      unknowna0[i] = nullptr;
+    }
+  }
+  if (unknown80 != nullptr) {
+    delete unknown80;
+    unknown80 = nullptr;
+  }
+  if (unknown98 != nullptr) {
+    delete unknown98;
+    unknown98 = nullptr;
+  }
+  if (unknown5b0 != nullptr) {
+    delete unknown5b0;
+    unknown5b0 = nullptr;
+  }
+  if (unknown5c8 != nullptr) {
+    delete unknown5c8;
+    unknown5c8 = nullptr;
+  }
+  if (unknown70 != nullptr) {
+    delete unknown70;
+    unknown70 = nullptr;
+  }
+  if (unknown5d0 != nullptr) {
+    delete unknown5d0;
+    unknown5d0 = nullptr;
+  }
+  if (unknown5c0 != nullptr) {
+    delete unknown5c0;
+    unknown5c0 = nullptr;
+  }
+  if (unknown0c.isValid()) {
+    mtl::MemManager::erase(unknown0c);
+    unknown0c = mtl::ALLOC_HANDLE();
+  }
+  if (unknown10.isValid()) {
+    mtl::MemManager::erase(unknown10);
+    unknown10 = mtl::ALLOC_HANDLE();
+  }
+  if (unknown14.isValid()) {
+    mtl::MemManager::erase(unknown14);
+    unknown14 = mtl::ALLOC_HANDLE();
+  }
+  if (unknown18.isValid()) {
+    mtl::MemManager::erase(unknown18);
+    unknown18 = mtl::ALLOC_HANDLE();
+  }
+  if (unknown1c.isValid()) {
+    mtl::MemManager::erase(unknown1c);
+    unknown1c = mtl::ALLOC_HANDLE();
+  }
+  if (unknown20.isValid()) {
+    mtl::MemManager::erase(unknown20);
+    unknown20 = mtl::ALLOC_HANDLE();
+  }
+  if (unknown08.isValid()) {
+    mtl::MemManager::erase(unknown08);
+    unknown08 = mtl::ALLOC_HANDLE();
+  }
+  s_pTop = nullptr;
+  grlib::CGLibState::setPixelResidentArea(false, 0);
+}
 
 CriticalSection &DrMan::getCriticalSection() {
   static CriticalSection sect;

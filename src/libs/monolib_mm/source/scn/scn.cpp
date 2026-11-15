@@ -249,7 +249,30 @@ void Scn::enableScnDebug(bool isEnable) {
   }
 }
 
-void Scn::addRenderCB(IScnRender *render, SCNPRIO_CB priority, bool flag1, bool flag2) { unknown4c0.push(unknown001(render, priority, flag1, flag2)); }
+void Scn::addRenderCB(IScnRender *render, SCNPRIO_CB priority, bool flag1, bool flag2) {
+  unknown001 entry;
+  entry.unknown00 = render;
+  entry.unknown08 = priority;
+  entry.unknown0c = flag2;
+  entry.unknown0d = flag1;
+  entry.unknown0e = false;
+  unknown4c0.push(entry);
+}
+
+void Scn::removeRenderCB(IScnRender *render) {
+  Scn *scn = get();
+  if (scn != nullptr) {
+    unknown001 entry;
+    entry.unknown00 = render;
+    scn->unknown8d0.push(entry);
+    for (int i = 0; i < scn->unknown4b8; i++) {
+      if (scn->unknownb8[i].unknown00 == render) {
+        scn->unknownb8[i].unknown0e = true;
+        break;
+      }
+    }
+  }
+}
 
 void Scn::addEntryRes(FileResTh *res) {
   CS lock(*unknownce8);
