@@ -2,7 +2,7 @@
   {
     "name": "gf",
     "code": {
-      "total": 4334192,
+      "total": 4333368,
       "matching": 3218496,
       "non_matching": 0
     }
@@ -11,7 +11,7 @@
     "name": "monolib_mm",
     "code": {
       "total": 1747796,
-      "matching": 721808,
+      "matching": 724484,
       "non_matching": 0
     }
   },
@@ -91,7 +91,7 @@
     "name": "eflib",
     "code": {
       "total": 175688,
-      "matching": 65672,
+      "matching": 65928,
       "non_matching": 0
     }
   },
@@ -115,7 +115,15 @@
     "name": "skdlib",
     "code": {
       "total": 55128,
-      "matching": 15916,
+      "matching": 17552,
+      "non_matching": 0
+    }
+  },
+  {
+    "name": "wndlib",
+    "code": {
+      "total": 19760,
+      "matching": 15796,
       "non_matching": 0
     }
   },
@@ -148,14 +156,6 @@
     "code": {
       "total": 14572,
       "matching": 9236,
-      "non_matching": 0
-    }
-  },
-  {
-    "name": "wndlib",
-    "code": {
-      "total": 18936,
-      "matching": 7920,
       "non_matching": 0
     }
   },

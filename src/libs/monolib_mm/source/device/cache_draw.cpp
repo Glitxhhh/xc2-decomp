@@ -161,6 +161,15 @@ bool CacheDraw::setOrtho() {
   return false;
 }
 
+bool CacheDraw::setCol(const mm::Col4 &color) {
+  CSNC lock(*unknown6060);
+  if (DebDraw::isNotRender()) {
+    new (getBuf(false)->unknown08) DCOL(color);
+    return calcCurrentBuf(sizeof(DCOL));
+  }
+  return false;
+}
+
 bool CacheDraw::setTex(grlib::CGLibTextureBuffer *texture) {
   CSNC lock(*unknown6060);
   if (DebDraw::isNotRender()) {
@@ -320,6 +329,15 @@ bool CacheDraw::renderCapsule(f32 radius, f32 height, u32 division) {
   if (DebDraw::isNotRender()) {
     new (getBuf(false)->unknown08) DRCAPSULE(radius, height, division);
     return calcCurrentBuf(sizeof(DRCAPSULE));
+  }
+  return false;
+}
+
+bool CacheDraw::renderPrim(const mm::Mat44 &matrix, u32 type) {
+  CSNC lock(*unknown6060);
+  if (DebDraw::isNotRender()) {
+    new (getBuf(false)->unknown08) DRPRIM(matrix, type);
+    return calcCurrentBuf(sizeof(DRPRIM));
   }
   return false;
 }

@@ -97,6 +97,21 @@ public:
     mm::Vec3 unknown58;  // Inferred role: position; original member name unknown.
   };
 
+  struct DRPRIM : unknown001 {
+    // The game copies the matrix element by element (sixteen ldr/str pairs in renderPrim, 0x71007034a4), not through the Mat44 copy constructor (alignment assert and memcpy); same as DRCIRCLE_MAT.
+    DRPRIM(const mm::Mat44 &matrix, u32 type) : unknown001(0x28, sizeof(DRPRIM), 2) {
+      for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+          unknown0c.rows[i][j] = matrix.rows[i][j];
+        }
+      }
+      unknown4c = type;
+    }
+    void flush(DebDraw *draw) override;
+    mm::Mat44 unknown0c; // Inferred role: primitive matrix; original member name unknown.
+    u32 unknown4c;       // Inferred role: primitive type, a PrimBase::Type value; original member name unknown.
+  };
+
   struct alignas(8) DRCIRCLE_MAT : unknown001 {
     DRCIRCLE_MAT(const mm::Mat44 &matrix, f32 radius, u32 division) : unknown001(0x15, sizeof(DRCIRCLE_MAT), 2) {
       for (int i = 0; i < 4; i++) {
@@ -240,6 +255,8 @@ public:
   };
 
   struct DCOL : unknown001 {
+    // Same command type as DTEX in the game.
+    DCOL(const mm::Col4 &color) : unknown001(5, sizeof(DCOL), 0), unknown0c(color) {}
     void flush(DebDraw *draw) override;
     mm::Col4 unknown0c; // Inferred role: color; original member name unknown.
   };
