@@ -733,6 +733,7 @@ public:
     unknown027_22 = 1 << 22,  // Inferred role: updated render list; original name unknown.
     unknown027_23 = 1 << 23,  // Inferred role: unknown, cleared while the display is off; original name unknown.
     unknown027_26 = 1 << 26,  // Inferred role: model matrix is updated; original name unknown.
+    unknown027_27 = 1 << 27,  // Inferred role: group member, set when a group creates the model; original name unknown.
     unknown027_28 = 1 << 28,  // Inferred role: cam check mode; original name unknown.
     unknown027_29 = 1 << 29,  // Inferred role: cam check resl; original name unknown.
     unknown027_30 = 1 << 30,  // Inferred role: debug delete; original name unknown.

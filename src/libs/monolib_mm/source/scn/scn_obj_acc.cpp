@@ -1,5 +1,6 @@
 #include "scn/scn_obj_acc.h"
 
+#include <math.h>
 #include <string.h>
 
 #include "dr/dr_creator.h"
@@ -24,6 +25,7 @@
 #include "grlib/cglib_one_uniform_block.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
+#include "mm_math/mm_math.h"
 #include "mm_math/mm_vec3.h"
 #include "scn/scn_obj_model_dr_sys.h"
 
@@ -66,6 +68,27 @@ void ScnObjAccResMdlInfo::getInitialVertexAABBMax(mm::Vec3 &max, bool isScaled) 
 void ScnObjAccResMdlInfo::getInitialVertexAABBMin(mm::Vec3 &min, bool isScaled) const { m_drMdl->getInitialVertexAABBMin(min, isScaled); }
 
 int ScnObjAccResMdlInfo::isGpuRender() const { return m_drMdl->isGpuRender(); }
+
+void ScnObjAccResMdlInfo::getCamPosToNewPosScale(mm::Vec3 &position, f32 &scale, const mm::Vec3 &cameraPosition, const mm::Vec3 &targetPosition, f32 fovy) {
+  DrMdlObj *drMdl = m_drMdl;
+  f32 length = drMdl->unknown160;
+  f32 angle = fovy * mm::DEG_TO_RAD * 0.5f;
+  mm::Vec3 direction = cameraPosition - targetPosition;
+  // Ruling 5 (P3): the game (0x71007b36cc) computes the length of the difference here and drops it: fsqrt and the NaN
+  // branch to sqrtf, result unused, before DrMdoCtl::getMatrix. Probably the operand of a compiled-out assertion; the
+  // original expression cannot be checked. mm::Vec3::isUnit() gives the same bytes but asks a question the vector
+  // (a camera-to-target difference, normalised only below) cannot answer, so the plain expression is written.
+  sqrtf(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+  // The game re-reads m_drMdl for getMatrix (0x71007b36e4) while the other reads use the pointer loaded at entry.
+  mm::Vec3 translation = m_drMdl->getMatrix().unknown004();
+  direction.unknown001();
+  mm::Vec3 offset = drMdl->unknown130 - cameraPosition;
+  f32 distance = sqrtf(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z);
+  scale = distance * sinf(angle) / length;
+  position = cameraPosition;
+  position -= direction * distance;
+  position += (translation - drMdl->unknown130) * scale;
+}
 
 void ScnObjAccResMdlInfo::setAlpha(f32 alpha) { m_drMdl->setAlpha(alpha); }
 

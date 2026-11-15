@@ -17,6 +17,7 @@ public:
   virtual ~DrGlobalIBLPack();
   void setup();
   void release();
+  void resourceInit();
   void update();
   static bool checkFileType(const void *data);
 
@@ -73,6 +74,32 @@ public:
       }
       unknown00 = nullptr;
       unknown08 = nullptr;
+    }
+
+    // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+    // Unlinks a pack from the list, resetting the two links of the pack. Single user: DrGlobalIBLMan::update (0x71007d6f54, 0x71007d7010-0x71007d7064).
+    // Forms tried without the helper, written in update, all short of the game's 87 instructions: `next` read before the unlink (84), `prev` and `next` read together (84, and 83 with
+    // `next->unknown08 = prev` for the last link).
+    void unlink(DrGlobalIBLPack *pack) {
+      DrGlobalIBLPack *prev = pack->unknown08;
+      DrGlobalIBLPack *next = pack->unknown10;
+      if (prev == nullptr) {
+        if (next == nullptr) {
+          unknown00 = nullptr;
+          unknown08 = nullptr;
+        } else {
+          unknown00 = next;
+          next->unknown08 = nullptr;
+        }
+      } else if (next == nullptr) {
+        unknown08 = prev;
+        prev->unknown10 = nullptr;
+      } else {
+        prev->unknown10 = next;
+        pack->unknown10->unknown08 = pack->unknown08;
+      }
+      pack->unknown08 = nullptr;
+      pack->unknown10 = nullptr;
     }
 
     DrGlobalIBLPack *unknown00; // Inferred role: first pack; original member name unknown.

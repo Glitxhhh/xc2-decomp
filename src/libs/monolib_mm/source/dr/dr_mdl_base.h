@@ -24,6 +24,7 @@ public:
   enum unknown038 {
     unknown038_0 = 1 << 0, // Inferred role: disp; original name unknown.
     unknown038_1 = 1 << 1, // Inferred role: clip; original name unknown.
+    unknown038_2 = 1 << 2, // Inferred role: group member; original name unknown.
     unknown038_3 = 1 << 3, // Inferred role: delete call; original name unknown.
     unknown038_5 = 1 << 5, // Inferred role: view state, cleared when a view is removed; original name unknown.
     unknown038_6 = 1 << 6, // Inferred role: view state, cleared when a view is removed; original name unknown.

@@ -2,8 +2,11 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
+#include "dr/dr_mdl_obj.h"
+#include "dr/dr_mdo_ctl_dammy.h"
 #include "dr/dr_mdo_ctl_nom.h"
 #include "dr/dr_mdo_mat.h"
+#include "ml/critical_section.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
@@ -51,6 +54,25 @@ DrMdoGrpObj::~DrMdoGrpObj() {
   unknown38[0].unknown005();
   unknown38[1].unknown005();
   unknown58.unknown005();
+}
+
+DrMdlObj *DrMdoGrpObj::createMdl(const void *data, const char *name, u32 index) {
+  CS lock(DrMan::getCriticalSection());
+  DrMdlObj *mdl;
+  if (DrMdlMan::headerChek(data) == 1) {
+    mdl = new (DrMan::s_pTop->unknown10) DrMdoCtlNom(data, name, DrMan::s_pTop, unknown1a);
+  } else {
+    mdl = new (DrMan::s_pTop->unknown10) DrMdoCtlDammy(data, DrMan::s_pTop, unknown1a);
+  }
+  mdl->unknown20 |= unknown038_2;
+  // The game compares the group count with the index as signed (0x71007cf9b0) and stores the clamped index in the 16-bit group member (0x71007cf9bc).
+  if (unknown68 <= static_cast<s32>(index)) {
+    index = unknown68 - 1;
+  }
+  mdl->unknown1e = index;
+  mdl->unknownfc |= DrMdoMat::unknown027_27;
+  unknown38[DrMan::s_nDblStockIdx].unknown004(mdl);
+  return mdl;
 }
 
 void DrMdoGrpObj::dispOffUpdate() {

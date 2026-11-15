@@ -2,6 +2,7 @@
 
 #include <new>
 
+#include "dr/dr_man.h"
 #include "dr/dr_res_chank_list.h" // IWYU pragma: keep
 #include "dr/dr_res_mdo_vertex.h"
 #include "grlib/cglib_texture.h"
@@ -163,6 +164,13 @@ bool DrResMdoSeamVertex::update() {
     unknown2e = true;
   }
   return false;
+}
+
+void DrResMdoSeamVertex::createVertex() {
+  release();
+  unknown20 = new (DrMan::getIns()->unknown10) DrResMdoVertex(unknown18->m_buffer);
+  unknown2a = 0;
+  unknown2e = false;
 }
 
 void DrResMdoSeamVertex::changeMemVertex() {

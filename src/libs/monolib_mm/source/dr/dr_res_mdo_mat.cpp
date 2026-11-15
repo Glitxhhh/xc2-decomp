@@ -69,6 +69,8 @@ void DrResMdoMeshParts::setMatAdd(mm::Mat44 *matrix, const mm::Mat44 *baseMat, c
   unknown38 = index;
 }
 
+void DrResMdoMeshParts::setMatrix(const mm::Mat44 &matrix) { unknown10->unknown009(*unknown18, matrix); }
+
 void DrResMdoMeshParts::setRegisterMatrix(int index, bool isRegister) {
   if (unknown28 & FLAG_UNKNOWN_27) {
     if (isRegister) {

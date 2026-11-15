@@ -67,7 +67,9 @@ public:
   bool setCurrentPtr(int offset);
   bool setReadBuffer(int size, u32 alignment, u32 blockSize);
   void setReadAdr(int size, void *buffer, int alignedSize);
+  void setTime(u32 high, u32 low);
   void setTime(u64 time);
+  int getTotalReadSize(int size) const;
   bool call(CBM cbm);
 
   FTYPE unknown00; // Inferred role: buffer type; original member name unknown.
@@ -92,7 +94,14 @@ public:
   u32 unknown94;                                        // Inferred role: state flags; original member name unknown.
   mm::mtl::FixStr<256> unknown98;                       // Inferred role: path; original member name unknown.
   mm::mtl::FixStr<32> unknown19c;                       // Role and original member name unknown.
-  u64 m_time;
+  // setTime(u64) stores the whole value (0x7100737ecc), setTime(u32, u32) stores two words at 0x1c4 then 0x1c0 (0x710072b5f0).
+  union {
+    u64 m_time;
+    struct {
+      u32 unknown1c0; // Inferred role: low word of the time; original member name unknown.
+      u32 unknown1c4; // Inferred role: high word of the time; original member name unknown.
+    };
+  };
   u64 unknown1c8; // Inferred role: file time; original member name unknown.
   s32 unknown1d0; // Role and original member name unknown.
   u32 unknown1d4; // Inferred role: file channel; original member name unknown.

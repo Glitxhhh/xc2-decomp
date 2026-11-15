@@ -194,7 +194,22 @@ bool FileHandleTh::setReadBuffer(int size, u32 alignment, u32 blockSize) {
   return true;
 }
 
+void FileHandleTh::setTime(u32 high, u32 low) {
+  unknown1c4 = high;
+  unknown1c0 = low;
+}
+
 void FileHandleTh::setTime(u64 time) { m_time = time; }
+
+int FileHandleTh::getTotalReadSize(int size) const {
+  if (unknown94 & 1) {
+    if (unknown18 != 0 && size - unknown14 > unknown18) {
+      return unknown18;
+    }
+    return size - unknown14;
+  }
+  return size;
+}
 
 } // namespace ml
 
