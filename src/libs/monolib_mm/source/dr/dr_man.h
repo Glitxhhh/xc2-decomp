@@ -285,7 +285,9 @@ public:
   f32 unknown1cd0[2]; // Inferred role: pos model far render distance per operation mode; original member name unknown.
   u8 _1cd8[0x1cfc - 0x1cd8];
   s32 unknown1cfc; // Inferred role: seam read lv; original member name unknown.
-  u8 _1d00[0x1d0c - 0x1d00];
+  f32 unknown1d00; // Inferred role: seam base map read distance, added to the read check distance by DrMdoCtlSeamBaseMap::readBaseMapCheck; original member name unknown.
+  f32 unknown1d04; // Inferred role: seam base map vertex read distance, copied by DrMdoCtlSeamBaseMap::readBaseMapCheck; original member name unknown.
+  f32 unknown1d08; // Inferred role: seam base map vertex middle read distance, copied by DrMdoCtlSeamBaseMap::readBaseMapCheck; original member name unknown.
   f32 unknown1d0c; // Inferred role: seam low map read distance, added to the read check distance by DrMdoCtlSeamLowMap::readLowMapCheck; original member name unknown.
   u8 _1d10[0x1d18 - 0x1d10];
   void *unknown1d18;          // Inferred role: memory block released by the destructor; original member name unknown.
@@ -413,6 +415,9 @@ static_assert(offsetof(DrMan, unknown1cc9) == 0x1cc9, "");
 static_assert(offsetof(DrMan, unknown1ccc) == 0x1ccc, "");
 static_assert(offsetof(DrMan, unknown1cd0) == 0x1cd0, "");
 static_assert(offsetof(DrMan, unknown1cfc) == 0x1cfc, "");
+static_assert(offsetof(DrMan, unknown1d00) == 0x1d00, "");
+static_assert(offsetof(DrMan, unknown1d04) == 0x1d04, "");
+static_assert(offsetof(DrMan, unknown1d08) == 0x1d08, "");
 static_assert(offsetof(DrMan, unknown1d0c) == 0x1d0c, "");
 static_assert(offsetof(DrMan, unknown1d18) == 0x1d18, "");
 static_assert(offsetof(DrMan, m_gblIdx) == 0x1d20, "");

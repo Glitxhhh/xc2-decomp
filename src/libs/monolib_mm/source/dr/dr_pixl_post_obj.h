@@ -1,5 +1,6 @@
 #pragma once
 
+#include "dr/dr_pixl_render_target.h"
 #include "grlib/cglib_render_target.h"
 #include "types.h"
 
@@ -13,7 +14,6 @@ namespace ml {
 class DrMan;
 class DrPixlMan;
 class DrPixlPostMan;
-class DrPixlRenderTarget;
 class DrShdDataObj;
 
 // Inferred role: releases and deletes a render target; original name unknown.
@@ -22,6 +22,17 @@ inline void unknown001(grlib::CGLibRenderTarget *&target) {
   if (renderTarget != nullptr) {
     renderTarget->releaseWork();
     delete renderTarget;
+    target = nullptr;
+  }
+}
+
+// Inferred role: releases and deletes a render target typed with the derived class, through the base class with unknown001 (a delete through
+// DrPixlRenderTarget * gives other code). Named apart from unknown001 because other post objects have their own template unknown001(T *&) that
+// deletes through the derived type; original name unknown.
+inline void unknown120(DrPixlRenderTarget *&target) {
+  grlib::CGLibRenderTarget *renderTarget = target;
+  if (renderTarget != nullptr) {
+    unknown001(renderTarget);
     target = nullptr;
   }
 }

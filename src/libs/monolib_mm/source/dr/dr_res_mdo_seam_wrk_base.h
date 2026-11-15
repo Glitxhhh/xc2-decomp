@@ -85,6 +85,14 @@ public:
   void seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamBaseMap *ctl);
   void stockRenderListBaseMap(int base, u32 kind, u32 index, u32 vertex, bool isAlpha, int unknown);
 
+  // Names from the game symbols _ZN2ml19DrResMdoSeamWrkBase23SEAM_BASEMAP_READ_CHECKE (0x71011b5738), ...26SEAM_BASEMAP_READ_IN_CHECKE (0x71011b573c),
+  // ...25SEAM_BASEMAP_VERTEX_CHECKE (0x71011b5740) and ...26SEAM_BASEMAP_VERTEX_MIDDLEE (0x71011b5744); writable data, initial values read from the
+  // game's .data (4200.0f, 10.0f, 4000.0f, 4000.0f), written by DrMdoCtlSeamBaseMap::readBaseMapCheck.
+  static f32 SEAM_BASEMAP_READ_CHECK;
+  static f32 SEAM_BASEMAP_READ_IN_CHECK;
+  static f32 SEAM_BASEMAP_VERTEX_CHECK;
+  static f32 SEAM_BASEMAP_VERTEX_MIDDLE;
+
   const unknown700 *unknown18;         // Inferred role: base map entry; original member name unknown.
   const MdsSeamBaseMapHead *unknown20; // Inferred role: base map header; original member name unknown.
   u8 _28[0x38 - 0x28];

@@ -36,6 +36,11 @@ void DrResMdoSeamWrkBaseVertex::setupVertex(int index, DrResMdoSeamMemObj *memOb
 
 void DrResMdoSeamWrkBaseVertex::changeMemVertex() { unknown08->changeMemVertex(unknown00->m_buffer); }
 
+f32 DrResMdoSeamWrkBase::SEAM_BASEMAP_READ_CHECK = 4200.0f;
+f32 DrResMdoSeamWrkBase::SEAM_BASEMAP_READ_IN_CHECK = 10.0f;
+f32 DrResMdoSeamWrkBase::SEAM_BASEMAP_VERTEX_CHECK = 4000.0f;
+f32 DrResMdoSeamWrkBase::SEAM_BASEMAP_VERTEX_MIDDLE = 4000.0f;
+
 DrResMdoSeamWrkBase::DrResMdoSeamWrkBase()
     : unknown68(nullptr), unknown70(nullptr), unknown78(nullptr), unknown98(0), unknowna0(0), unknownb0(0), unknownb4(0), unknowne0(nullptr), unknowne8(nullptr), unknown158(nullptr),
       unknown168(nullptr), unknown17a(0), unknown17c(0), unknown17e(0) {}

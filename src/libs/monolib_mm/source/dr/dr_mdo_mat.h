@@ -397,6 +397,7 @@ struct MdsMdlInfoHeader {
   // Inferred role: render pass flag of unknown04; original type name unknown.
   enum PassFlag {
     PASS_FLAG_UNKNOWN_14 = 1 << 14, // Inferred role: renders into the shadow map; original name unknown.
+    PASS_FLAG_UNKNOWN_15 = 1 << 15, // Inferred role: renders into the thickness pass instead of the z pre pass; original name unknown.
   };
 
   u32 unknown00; // Inferred role: flags; original member name unknown.
@@ -879,6 +880,7 @@ public:
   void updateMatFstCallBack();
   void updateMatCallBack(const u32 *flags);
   void updateTimerCalc(const u32 *flags);
+  void updateTimerCalc();
 
   static const f32 MDL_SCALE_PARAMS; // Name from the game symbol _ZN2ml8DrMdoMat16MDL_SCALE_PARAMSE; the game value is 0x3f13cd3f (0.57735055f).
 
