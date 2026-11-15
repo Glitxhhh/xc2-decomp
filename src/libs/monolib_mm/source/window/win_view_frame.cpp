@@ -119,4 +119,10 @@ bool WinViewFrame::checkBFrame(const mm::Rect<int> &rect, const mm::Pnt<int> &po
   return pos.y < top + unknown60;
 }
 
+void WinViewFrame::getRectClose(mm::Rect<int> &rect) const {
+  mm::Rect<int> frame = m_info->getFrameRect(false);
+  s16 border = unknown60;
+  rect = mm::Rect<int>(border + static_cast<s16>(frame.width - border * 2) - 0x12, border + 2, 0x10, 0x12);
+}
+
 } // namespace ml

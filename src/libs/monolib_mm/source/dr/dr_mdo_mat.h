@@ -18,6 +18,7 @@ class CGLibOneUniformArray;
 
 namespace ml {
 
+class DrResQueryAcc;
 class DrResMdoMat;
 class DrShdMdoExtTblObj;
 class DrMan;
@@ -579,6 +580,22 @@ struct unknown713 {
 
 static_assert(offsetof(unknown713, unknown08) == 0x08, "");
 
+// Inferred role: occlusion position work of the nom model, read by DrMdoCtlNom::occRender; original type name unknown.
+struct unknown724 {
+  u8 _00[0x18 - 0x00];
+  s32 unknown18; // Inferred role: position count; original member name unknown.
+  u8 _1c[0x20 - 0x1c];
+  mm::Mat44 *unknown20; // Inferred role: position matrices; original member name unknown.
+  u8 _28[0x30 - 0x28];
+  u32 *unknown30;           // Inferred role: bit table passed to the occlusion query; original member name unknown.
+  DrResQueryAcc *unknown38; // Inferred role: occlusion query accessor; original member name unknown.
+};
+
+static_assert(offsetof(unknown724, unknown18) == 0x18, "");
+static_assert(offsetof(unknown724, unknown20) == 0x20, "");
+static_assert(offsetof(unknown724, unknown30) == 0x30, "");
+static_assert(offsetof(unknown724, unknown38) == 0x38, "");
+
 struct MdoWrkMatRes {
   const u8 *unknown00;               // Inferred role: vertex data; original member name unknown.
   const u8 *unknown08;               // Inferred role: texture data; original member name unknown.
@@ -632,6 +649,7 @@ struct MdoWrkMatRes {
   union {
     unknown715 *unknown160;   // Inferred role: billboard matrices of the base map; original member name unknown.
     unknown716 *unknown160_1; // Inferred role: billboard matrices of the instance map; original member name unknown.
+    unknown724 *unknown160_2; // Inferred role: occlusion positions of the nom model; original member name unknown.
   };
   const MdsMdlTopHeader *unknown168; // Inferred role: mdl entries; original member name unknown.
   s32 unknown170;                    // Inferred role: mdl entry count; original member name unknown.
@@ -697,7 +715,9 @@ struct MdoWrkVanishEffect {
   f32 unknowna0;         // Inferred role: rate; original member name unknown.
   f32 unknowna4;         // Inferred role: ratio; original member name unknown.
   u32 unknowna8;         // Inferred role: volume texture index offset; original member name unknown.
-  u8 _ac[0xd0 - 0xac];
+  f32 unknownac[4];      // Inferred role: first group of four floats; original member name unknown.
+  f32 unknownbc[4];      // Inferred role: second group of four floats; original member name unknown.
+  u8 _cc[0xd0 - 0xcc];
   f32 unknownd0; // Inferred role: base ratio; original member name unknown.
   u32 unknownd4; // Inferred role: flags; original member name unknown.
   u8 _d8[0xe0 - 0xd8];
@@ -712,6 +732,8 @@ static_assert(offsetof(MdoWrkVanishEffect, unknown9c) == 0x9c, "");
 static_assert(offsetof(MdoWrkVanishEffect, unknowna0) == 0xa0, "");
 static_assert(offsetof(MdoWrkVanishEffect, unknowna4) == 0xa4, "");
 static_assert(offsetof(MdoWrkVanishEffect, unknowna8) == 0xa8, "");
+static_assert(offsetof(MdoWrkVanishEffect, unknownac) == 0xac, "");
+static_assert(offsetof(MdoWrkVanishEffect, unknownbc) == 0xbc, "");
 static_assert(offsetof(MdoWrkVanishEffect, unknownd0) == 0xd0, "");
 static_assert(offsetof(MdoWrkVanishEffect, unknownd4) == 0xd4, "");
 static_assert(sizeof(MdoWrkVanishEffect) == 0xe0, "");
@@ -894,7 +916,8 @@ public:
   mm::Vec3 m_AABBMax;
   mm::Vec3 m_AABBMin;
   mm::Vec3 unknown130; // Inferred role: center; original member name unknown.
-  u8 _140[0x160 - 0x140];
+  mm::Vec3 unknown140; // Inferred role: half size of the box, passed with unknown130 to the occlusion query; original member name unknown.
+  u8 _150[0x160 - 0x150];
   f32 unknown160; // Inferred role: length; original member name unknown.
   u8 _164[0x168 - 0x164];
   u16 unknown168; // Inferred role: update flags; original member name unknown.
@@ -927,6 +950,7 @@ static_assert(offsetof(DrMdoMat, m_AABBMax) == 0x110, "");
 static_assert(offsetof(DrMdoMat, unknown168) == 0x168, "");
 static_assert(offsetof(DrMdoMat, m_AABBMin) == 0x120, "");
 static_assert(offsetof(DrMdoMat, unknown130) == 0x130, "");
+static_assert(offsetof(DrMdoMat, unknown140) == 0x140, "");
 static_assert(offsetof(DrMdoMat, unknown160) == 0x160, "");
 static_assert(offsetof(DrMdoMat, unknown16a) == 0x16a, "");
 
