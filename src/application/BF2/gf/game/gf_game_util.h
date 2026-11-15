@@ -11,6 +11,9 @@
 namespace mm {
 struct Vec3;
 struct Mat44;
+namespace mtl {
+template <typename T> class Vector;
+} // namespace mtl
 } // namespace mm
 
 namespace gf {
@@ -20,6 +23,7 @@ enum {
 };
 
 struct GF_OBJ_HANDLE;
+struct GfFieldLocator;
 struct GfItem;
 struct OwnerBonus;
 struct SDataBlade;
@@ -195,6 +199,7 @@ public:
   static GF_OBJ_HANDLE *getBlade(GF_OBJ_HANDLE *handle);
   static void setupNewGameParam(const SDataGame &dataGame);
   static bool getDriverAcceList(mm::mtl::FixedVector<u16, 16> &drivers);
+  static void collectOrderableLocators(mm::mtl::Vector<GfFieldLocator> &locators);
   static bool isDispRexCrystal();
   static bool isDispHomuraCrystal();
   static bool isDispMetsuCrystal();
