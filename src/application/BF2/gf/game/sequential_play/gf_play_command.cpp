@@ -7,16 +7,20 @@
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_data_bdat.h"
 #include "gf/data/gf_data_event.h"
+#include "gf/data/gf_data_map.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_util.h"
 #include "gf/field/gf_field_collect.h"
+#include "gf/field/gf_field_manager.h"
 #include "gf/field/gf_field_map_gimmick.h"
 #include "gf/field/gf_field_tbox.h"
+#include "gf/field/gf_field_weather.h"
 #include "gf/field/gf_fobj_manager.h"
 #include "gf/game/achiev/gf_achiev_manager.h"
 #include "gf/game/event/gf_game_event.h"
 #include "gf/game/gf_game_arts_movie.h"
 #include "gf/game/gf_game_chain_attack.h"
+#include "gf/game/gf_game_dead_camera.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_obj.h"
 #include "gf/game/gf_game_party.h"
@@ -24,6 +28,7 @@
 #include "gf/game/gf_game_speed.h"
 #include "gf/game/gf_game_state.h"
 #include "gf/game/gf_game_util.h"
+#include "gf/game/gf_game_util_skip_travel.h"
 #include "gf/game/gf_game_voice.h"
 #include "gf/game/quest/gf_quest_event.h"
 #include "gf/game/quest/gf_quest_info.h"
@@ -41,6 +46,7 @@
 #include "gf/menu/gf_menu_manager.h"
 #include "gf/menu/object/gf_menu_obj_popup.h"
 #include "gf/menu/object/gf_menu_obj_quest_log.h"
+#include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_setup.h"
@@ -1371,6 +1377,94 @@ GfPlayComReturnTitle *GfPlayComReturnTitle::create(const ParamReturnTitle &param
 }
 
 bool GfPlayComPlayerDead::isDead() { return get() != nullptr && get()->m_dead; }
+
+bool GfPlayComPlayerDead::replaceDeadType(GfPlayerDead dead) {
+  if (dead == PLAYER_DEAD_UNKNOWN_4 && get() != nullptr && get()->unknown20 != PLAYER_DEAD_UNKNOWN_4) {
+    if (!get()->unknown38) {
+      get()->setupForFallout();
+      return true;
+    }
+  }
+  return false;
+}
+
+void GfPlayComPlayerDead::setupForFallout() {
+  unknown20 = PLAYER_DEAD_UNKNOWN_4;
+  // __LINE__ must be 2186 as in the original file: it is the line argument of operator new.
+#line 2186
+  unknown30 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfDeadCamera(unknown20);
+  MsgObjectNotifyDead message(0, nullptr);
+  message.unknown08 = unknown20;
+  SCOM_CHAR_DEAD::create(GfGameManager::getControlMover(), message);
+}
+
+void GfPlayComPlayerDead::start() {
+  GfEvent::addEventCallback(this);
+  // The local places the load of unknown20 (0x7100382f88) before the store of unknown28 (0x7100382f90); read at the test it gives the store first.
+  bool isFallout = unknown20 == PLAYER_DEAD_UNKNOWN_4;
+  unknown28 = 3.0f;
+  if (isFallout) {
+    setupForFallout();
+    ParamObj object = {GfGameManager::getControlMover(), 0, 0};
+    SCOM_FIELD_VOICE::createFallDead(object);
+  }
+}
+
+void GfPlayComPlayerDead::end() {
+  if (GfGameScene::get() != nullptr) {
+    GfGameScene::get()->setDeadType(PLAYER_DEAD_UNKNOWN_0);
+  }
+  if (unknown30 != nullptr) {
+    delete unknown30;
+    unknown30 = nullptr;
+  }
+  GfGameParty::setPartyGauge(0);
+  GfEvent::removeEventCallback(this);
+}
+
+bool GfPlayComPlayerDead::update(const fw::UpdateInfo &info, bool isCancel) {
+  if (isCancel) {
+    return true;
+  }
+  if (!unknown38) {
+    unknown24 += info.unknown04;
+    if (unknown24 < unknown28) {
+      return unknown3a;
+    }
+    if (!GfGameManager::isPlayEnemyVoice() && !GfGameManager::isPartyMemberPlayVoice()) {
+      GfQuestManager::resetBattleTaskForPlayerDead();
+      GfMapjumpInfo mapjump;
+      // The game stores the jump type 2 (0x71003831f0) before it calls getLandmarkPoint (0x71003831f4) and stores the id; written after setMapjump it is stored after the id and the code differs from
+      // +0xec.
+      mapjump.unknown108 = 2;
+      mapjump.setMapjump(GfFieldManager::getLandmarkPoint());
+      mapjump.unknown103 = true;
+      if (!GfGameUtilSkipTravel::isEnableSkipTravel(GfFieldManager::getLandmarkPoint())) {
+        if (GfFieldWeather::getCloudSea(GfDataMap::getMapID(GfFieldManager::getLandmarkPoint())) == CLOUD_SEA_UNKNOWN_1) {
+          GfDataMap::setCloudType(GfGameManager::getMapID(), CLOUD_SEA_UNKNOWN_0);
+          GfFieldWeather::setCloudSea(GfDataMap::getMapID(GfFieldManager::getLandmarkPoint()), CLOUD_SEA_UNKNOWN_0);
+        }
+      }
+      GfReqCommand::reqMapjump(mapjump);
+      unknown38 = true;
+      return false;
+    }
+    if (!unknown3a) {
+      unknown2c -= info.unknown04;
+      return unknown2c <= 0.0f;
+    }
+  } else {
+    if (!unknown39) {
+      return false;
+    }
+    if (unknown20 == PLAYER_DEAD_UNKNOWN_1) {
+      SCOM_FIELD_VOICE::createRestart(CV_FIELD_UNKNOWN_21);
+    } else {
+      SCOM_FIELD_VOICE::createRestart(CV_FIELD_UNKNOWN_22);
+    }
+  }
+  return true;
+}
 
 void GfPlayComPlayerDead::gevMapjump(GEV event, const MapjumpCallbackInfo &) {
   if (event == GEV_UNKNOWN_4) {

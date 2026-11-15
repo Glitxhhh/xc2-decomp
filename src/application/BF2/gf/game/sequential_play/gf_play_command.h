@@ -726,6 +726,7 @@ public:
   void start() override;
   void end() override;
   bool update(const fw::UpdateInfo &info, bool isCancel) override;
+  void setupForFallout();
   static bool isDead();
   static bool replaceDeadType(GfPlayerDead dead);
   static GfPlayComPlayerDead *create(GfPlayerDead dead);
