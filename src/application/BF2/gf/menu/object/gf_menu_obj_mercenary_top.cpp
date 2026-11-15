@@ -185,26 +185,22 @@ void GfMenuObjMercenaryTop::initialize() {
     }
     {
       mm::mtl::FixStr<32> unitName;
-      // `i` is declared outside the loop: with `for (u32 i = 0; ...)` clang 3.9 swaps the registers of the counter and of its value plus one
-      // (game loop at 0x710049ae30; also tried: a counter from 1 to 4 with `i = number - 1`, `<=`, `!=`, `int`, do/while).
-      u32 i;
-      for (i = 0; i < 3; i++) {
-        u32 number = i + 1;
-        unitName.format("TXT_zone_unit_name@%02d", number);
-        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 0, number, false);
-        unitName.format("TXT_zone_unit_mission_name@%02d", number);
-        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 9, number, false);
-        unitName.format("IMG_zone_unit_bl_icon@%02d", number);
-        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 1, number, false);
-        unitName.format("IMG_zone_unit_flag@%02d", number);
-        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 8, number, false);
-        unitName.format("TXT_zone_unit_mission_time@%02d", number);
+      for (u32 i = 0; i < 3; i++) {
+        unitName.format("TXT_zone_unit_name@%02d", i + 1);
+        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 0, i + 1, false);
+        unitName.format("TXT_zone_unit_mission_name@%02d", i + 1);
+        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 9, i + 1, false);
+        unitName.format("IMG_zone_unit_bl_icon@%02d", i + 1);
+        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 1, i + 1, false);
+        unitName.format("IMG_zone_unit_flag@%02d", i + 1);
+        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 8, i + 1, false);
+        unitName.format("TXT_zone_unit_mission_time@%02d", i + 1);
         ui::UIObjectAcc time(zone.unknown10, unitName.c_str());
-        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 10, number, true);
-        unitName.format("TXT_zone_unit_mission_inf@%02d", number);
+        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 10, i + 1, true);
+        unitName.format("TXT_zone_unit_mission_inf@%02d", i + 1);
         GfMenuObjUtil::createSyncPlugin(zone.searchChild(unitName.c_str()), time.unknown10, 0x40);
-        unitName.format("TXT_zone_unit_come_back@%02d", number);
-        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 0xb, number, true);
+        unitName.format("TXT_zone_unit_come_back@%02d", i + 1);
+        GfMenuMercenariesAdapter::create(zone.searchChild(unitName.c_str()), 0xb, i + 1, true);
         addDispEventCondition(zone.unknown10, unitName.c_str(), 1, i, false);
       }
     }
@@ -228,20 +224,19 @@ void GfMenuObjMercenaryTop::initialize() {
     updateMissionList();
     GfMenuAdapterManager::beginAddAfter();
     for (u32 i = 0; i < unknown70->getSize(); i++) {
-      u32 number = i + 1;
-      name.format("TXT_mis_sel_title@%02d", number);
+      name.format("TXT_mis_sel_title@%02d", i + 1);
       GfMenuMissionAdapter *adapter = GfMenuMissionAdapter::createFromList(missionSelect.searchChild(name.c_str()), 0, unknown30, i, nullptr, false);
       if (adapter != nullptr) {
         adapter->unknown24 = unknown70->getObject(i);
       }
-      name.format("TXT_mis_sel_time@%02d", number);
+      name.format("TXT_mis_sel_time@%02d", i + 1);
       ui::UIObjectAcc time(missionSelect.unknown10, name.c_str());
       GfMenuMissionAdapter::createFromList(time.unknown10, 0x23, unknown30, i, nullptr, false);
-      name.format("TXT_mis_sel_time_inf@%02d", number);
+      name.format("TXT_mis_sel_time_inf@%02d", i + 1);
       GfMenuObjUtil::createSyncPlugin(missionSelect.searchChild(name.c_str()), time.unknown10, 0x40);
-      name.format("IMG_mis_sel_icon@%02d", number);
+      name.format("IMG_mis_sel_icon@%02d", i + 1);
       GfMenuMissionAdapter::createFromList(missionSelect.searchChild(name.c_str()), 2, unknown30, i, nullptr, false);
-      name.format("IMG_mis_sel_new@%02d", number);
+      name.format("IMG_mis_sel_new@%02d", i + 1);
       GfMenuMissionAdapter::createFromList(missionSelect.searchChild(name.c_str()), 0x1c, unknown30, i, nullptr, true);
     }
     {
@@ -253,26 +248,25 @@ void GfMenuObjMercenaryTop::initialize() {
     }
     GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild("TXT_mis_sel_detail_info"), 1, 0, false);
     GfMenuZoneAdapter::createFromReference(missionSelect.searchChild("IMG_mis_sel_detail_flag"), 2, unknown80, false);
-    for (u32 i = 1; i < 4; i++) {
-      u32 slot = i - 1;
-      name.format("IMG_mis_sel_cond_icon@%02d", i);
-      GfMenuMissionAdapter *adapter = GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x12, slot, false);
+    for (u32 i = 0; i < 3; i++) {
+      name.format("IMG_mis_sel_cond_icon@%02d", i + 1);
+      GfMenuMissionAdapter *adapter = GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x12, i, false);
       if (adapter != nullptr) {
-        name.format("LAY_mis_sel_cond@%02d", i);
+        name.format("LAY_mis_sel_cond@%02d", i + 1);
         adapter->unknown24 = missionSelect.searchChild(name.c_str());
       }
-      name.format("TXT_mis_sel_cond_txt@%02d", i);
-      GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x11, slot, false);
+      name.format("TXT_mis_sel_cond_txt@%02d", i + 1);
+      GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x11, i, false);
       u32 text = missionSelect.searchChild(name.c_str());
       if (text != 0) {
-        name.format("TXT_mis_sel_cond_val@%02d", i);
+        name.format("TXT_mis_sel_cond_val@%02d", i + 1);
         GfMenuObjUtil::createDockPlugin(missionSelect.searchChild(name.c_str()), text, 1, mm::Pnt<s16>(12, 0), 0);
-        GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x13, slot, false);
-        name.format("TXT_mis_sel_cond_lv@%02d", i);
+        GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x13, i, false);
+        name.format("TXT_mis_sel_cond_lv@%02d", i + 1);
         GfMenuObjUtil::createDockPlugin(missionSelect.searchChild(name.c_str()), text, 1, mm::Pnt<s16>(12, 0), 0);
-        GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x14, slot, false);
-        name.format("TXT_mis_sel_cond_max@%02d", i);
-        GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x16, slot, false);
+        GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x14, i, false);
+        name.format("TXT_mis_sel_cond_max@%02d", i + 1);
+        GfMenuMissionAdapter::createFromReferenceMission(missionSelect.searchChild(name.c_str()), 0x16, i, false);
       }
     }
     GfMenuAdapterManager::endAddAfter();
