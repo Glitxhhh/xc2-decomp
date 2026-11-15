@@ -125,7 +125,7 @@ u32 GfDataDriver::getBlade(u32 driver, int slot) {
   return getBlade(getSDataDriver(driver), slot);
 }
 
-SDataPouch *GfDataDriver::getPouchData(u32 driver, u32 slot) { return &getSDataDriver(driver).unknown584[slot]; }
+SDataPouch &GfDataDriver::getPouchData(u32 driver, u32 slot) { return getSDataDriver(driver).unknown584[slot]; }
 
 int GfDataDriver::getBladeSet(u32 driver) {
   if (driver == 0) {

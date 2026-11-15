@@ -274,20 +274,20 @@ void GfMenuObjPouch2::refreshSlot(ui::UIObjectAcc &acc, u32 index) {
   u32 openCount = GfPouchUtil::getOpenCount(driver);
   mm::mtl::FixStr<32> name;
   for (u32 slot = 0; slot < 3; slot++) {
-    SDataPouch *pouch = GfPouchUtil::getPouch(driver, slot);
+    SDataPouch &pouch = GfPouchUtil::getPouch(driver, slot);
     if (slot < openCount) {
       mm::mtl::FixStr<32> slotName;
       slotName.format("IMG_eqpouch_slbase@%02d", slot + 1);
       ui::UIObjectAcc base(acc.searchChild(slotName.c_str()));
-      base.startAnimation(pouch->unknown04 == 0 ? "porch1_idle" : "porch_full", false);
+      base.startAnimation(pouch.unknown04 == 0 ? "porch1_idle" : "porch_full", false);
       slotName.format("TXT_eqpouch_no@%02d", slot + 1);
       ui::UIObjectAcc number(acc.searchChild(slotName.c_str()));
-      number.setDisp(pouch->unknown04 == 0);
+      number.setDisp(pouch.unknown04 == 0);
     }
   }
-  SDataPouch *pouch = GfPouchUtil::getPouch(driver, index);
+  SDataPouch &pouch = GfPouchUtil::getPouch(driver, index);
   ui::UIObjectAcc cursor(acc.searchChild("IMG_slotcursor"));
-  cursor.setImageIndex(pouch->unknown04 != 0);
+  cursor.setImageIndex(pouch.unknown04 != 0);
   for (u32 slot = 0; slot < 3; slot++) {
     name.format("LAY_eqpouch_slot@%02d", slot + 1);
     ui::UIObjectAcc layout(acc.searchChild(name.c_str()));
@@ -585,11 +585,11 @@ void GfMenuObjPouch2::updateSlotList(GfMenuItemList *list) {
   u32 driver = GfMenuReference::getReferenceDriverID(0);
   list->clear();
   for (u32 slot = 0; slot < 3; slot++) {
-    SDataPouch *pouch = GfPouchUtil::getPouch(driver, slot);
-    if (pouch->_06 != 0) {
+    SDataPouch &pouch = GfPouchUtil::getPouch(driver, slot);
+    if (pouch._06 != 0) {
       MenuItemInfo info;
       info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_10;
-      info.unknown04 = pouch->unknown04;
+      info.unknown04 = pouch.unknown04;
       info.unknown08 = info.unknown04 != 0;
       list->addContents(info);
     }

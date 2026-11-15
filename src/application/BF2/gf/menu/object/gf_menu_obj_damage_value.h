@@ -33,6 +33,7 @@ public:
   void initialize() override;
   void finalize() override;
   void update() override;
+  static void setupScreen(u32 handle, int type, int text, int target, int flags);
   static void removeObject(ui::UIObjectAcc acc);
   static void close(u32 handle);
   static void closeAll();

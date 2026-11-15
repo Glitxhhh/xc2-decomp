@@ -427,6 +427,7 @@ public:
       : SCOM(handle, SCOM_TYPE_UNKNOWN_9, SCOM_EXEC_UNKNOWN_0, 1), unknown1c(point), unknown20(driver), unknown24(idea), unknown28(target) {}
   bool exec(const fw::UpdateInfo &info) override;
   static GF_SCOM_HANDLE *create(GF_OBJ_HANDLE *handle, u32 idea, int point);
+  static GF_SCOM_HANDLE *create(u32 driver, u32 idea, int point);
 
   int unknown1c;            // Inferred role: idea point; original member name unknown.
   u32 unknown20;            // Inferred role: driver; original member name unknown.

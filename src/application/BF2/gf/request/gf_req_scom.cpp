@@ -622,6 +622,24 @@ bool SCOM_ADD_IDEA::exec(const fw::UpdateInfo &) {
   return true;
 }
 
+GF_SCOM_HANDLE *SCOM_ADD_IDEA::create(GF_OBJ_HANDLE *handle, u32 idea, int point) {
+  if (point != 0) {
+#line 375
+    SCOM_ADD_IDEA *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_ADD_IDEA(GfReqSmallCom::get()->allocate(), point, 0, idea, handle);
+    return GfReqSmallCom::addRequest(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
+GF_SCOM_HANDLE *SCOM_ADD_IDEA::create(u32 driver, u32 idea, int point) {
+  if (point != 0) {
+#line 380
+    SCOM_ADD_IDEA *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_ADD_IDEA(GfReqSmallCom::get()->allocate(), point, driver, idea, unknown020);
+    return GfReqSmallCom::addRequest(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
 bool SCOM_EXEC_DRIVER_ARTS_LVUP::exec(const fw::UpdateInfo &) {
   u32 driverId = unknown20;
   if (driverId == 0) {

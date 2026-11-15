@@ -174,7 +174,7 @@ public:
   static bool leaveOneCommonBlade(u32 driver);
   static bool leaveOneRareBlade(u32 driver);
   static bool leaveOneScenarioBlade(u32 driver);
-  static SDataPouch *getPouchData(u32 driver, u32 slot);
+  static SDataPouch &getPouchData(u32 driver, u32 slot);
   static int getBladeSet(u32 driver);
   static bool isActivateReserver(u32 driver);
   static bool isActivateUnuse(u32 driver);

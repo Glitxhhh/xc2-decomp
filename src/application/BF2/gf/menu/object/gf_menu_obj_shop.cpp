@@ -596,6 +596,13 @@ void GfMenuObjShop::addCallContextResult(u32 type, u32 value) {
 
 void GfMenuObjShop::reqRefreshItemList() { unknown59 = true; }
 
+void GfMenuObjShop::finalize() {
+  for (u32 i = 0; i < 26; i++) {
+    unknown168[i] = nullptr;
+  }
+  GfMenuObject::finalize();
+}
+
 void GfMenuObjShop::update() {
   unknown248.unknown003();
   if (unknown59) {
