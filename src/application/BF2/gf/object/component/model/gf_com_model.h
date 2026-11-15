@@ -19,6 +19,7 @@ class ModelObject;
 class MessageObject;
 } // namespace fw
 namespace mm {
+struct Quat;
 namespace mtl {
 class RTTI;
 } // namespace mtl
@@ -76,6 +77,7 @@ public:
   const mm::mtl::RTTI *getRTTI() const override;
 
   bool hasBone(const char *name) const;
+  bool clacBoneRotateMS(u16 bone, mm::Quat *rotation) const;
   bool isRender() const;
   bool isVolumeFadeForUser() const;
   void procMsgObjectNotifyDead(fw::MessageObject *sender, MsgObjectNotifyDead &message);

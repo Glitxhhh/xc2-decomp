@@ -161,7 +161,7 @@ public:
   GfMenuCallContext *unknown1f8;                                  // Inferred role: call context of the skip input; original member name unknown.
   GfMenuCallContext *unknown200;                                  // Inferred role: call context of the result; original member name unknown.
   GfMenuCallContext *unknown208;                                  // Inferred role: call context of the total info; original member name unknown.
-  int unknown210;                                                 // Role and original member name unknown.
+  u32 unknown210;                                                 // Role and original member name unknown; unsigned, StateTotalNext::onStep converts a float into it with fcvtzu (0x71003bb31c).
   int unknown214;                                                 // Role and original member name unknown.
   bool unknown218;                                                // Role and original member name unknown.
   u8 _219[0x220 - 0x219];

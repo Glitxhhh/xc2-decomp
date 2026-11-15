@@ -441,6 +441,7 @@ bool GfComBehaviorMob::isArrivedToGoal() const {
   } else {
     mm::Vec3 min;
     mm::Vec3 max;
+    // The game ignores the result of the call (0x710052d060) and reads min and max, which getAABB leaves unset when it returns false.
     coli->getAABB(min, max);
     f32 dx = max.x - min.x;
     f32 dz = max.z - min.z;

@@ -1,6 +1,7 @@
 #include "gf/object/component/pc/plugin/gf_pc_look_at_plugin.h"
 
 #include "framework/ik/ik_look_at_solver.h"
+#include "framework/ik/ik_look_solver.h"
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/game/gf_game_search_obj.h"
@@ -58,6 +59,48 @@ void LookAtPlugin::update(GfComBehaviorPc &behavior, const fw::UpdateInfo &info)
 const unknown002 *LookAtPlugin::getParam() const {
   const fw::ParamList *list = unknown18.operator->();
   return list->unknown0c > 4 ? static_cast<const unknown002 *>(list->unknown10[4].param) : nullptr;
+}
+
+bool LookAtPlugin::changeTarget() {
+  TargetInfo *target = nullptr;
+  for (mm::mtl::Map<GF_OBJ_HANDLE *, TargetInfo>::iterator it = unknown28.begin(); it != unknown28.end(); ++it) {
+    TargetInfo &info = it->second;
+    if (info.unknown1c) {
+      continue;
+    }
+    if (unknown70[info.unknown18] > 0.0f) {
+      continue;
+    }
+    u32 side = info.unknown08->unknown24 >= 0.0f ? 1 : 2;
+    if (unknown68 == side) {
+      continue;
+    }
+    if (target != nullptr && (info.unknown10->unknown14 < target->unknown10->unknown14 || info.unknown08->unknown20 >= target->unknown08->unknown20)) {
+      continue;
+    }
+    target = &info;
+  }
+  const unknown002 *param = getParam();
+  if (target == nullptr) {
+    if (unknown40 != nullptr) {
+      unknown10->fadeOut(param->unknown10);
+    }
+    unknown40 = nullptr;
+    return false;
+  }
+  if (unknown10->isEnable()) {
+    unknown10->startTargetFade(param->unknown0c);
+  }
+  if (unknown40 == nullptr) {
+    unknown10->fadeIn(param->unknown08);
+  }
+  target->unknown1c = true;
+  if (target->unknown10 != nullptr) {
+    unknown70[target->unknown18] = target->unknown10->unknown10;
+  }
+  unknown48 = *target;
+  unknown40 = &unknown48;
+  return true;
 }
 
 void LookAtPlugin::onActivate() {

@@ -3,6 +3,7 @@
 #include "anm/anm_array-inl.h"
 #include "anm/anm_qs_transform.h"
 #include "anm/anm_skeleton.h"
+#include "anm/anm_transform_util.h"
 #include "framework/anim/anim_manager.h"
 #include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
@@ -70,6 +71,21 @@ void GfComModel::setModelScale(f32 scale) {
   if (unknown18 != nullptr) {
     unknown18->setScale(scale);
   }
+}
+
+bool GfComModel::clacBoneRotateMS(u16 bone, mm::Quat *rotation) const {
+  const anm::Skeleton *skeleton = unknown28;
+  if (skeleton != nullptr && bone < skeleton->unknown40.size()) {
+    anm::QsTransform transform = skeleton->unknown40[bone];
+    s16 parent = unknown28->unknown003(bone);
+    while (parent != -1) {
+      anm::TransformUtil::mul(skeleton->unknown40[parent], transform, &transform);
+      parent = unknown28->unknown003(parent);
+    }
+    *rotation = transform.unknown10;
+    return true;
+  }
+  return false;
 }
 
 mm::mtl::IntrusivePtr<fw::ReferenceFrame> GfComModel::createBoneReferenceFrame(const char *name) {

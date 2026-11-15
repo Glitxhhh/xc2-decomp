@@ -5,6 +5,7 @@
 #include "gf/menu/call/gf_menu_call_context.h"
 #include "gf/menu/gf_menu_reference.h"
 #include "gf/menu/object/gf_menu_obj_field_skill.h"
+#include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/reference_object.h"
 
 namespace gf {
@@ -131,9 +132,26 @@ void GfMenuFieldSkill::StateTotalNext::onEnter(void *owner, ai::State *previous)
 
 void GfMenuFieldSkill::StateTotalNext::onLeave(void *owner, ai::State *next) {}
 
+void GfMenuFieldSkill::StateTotalNext::onStep(void *owner, const void *param) {
+  GfMenuFieldSkill *skill = static_cast<GfMenuFieldSkill *>(owner);
+  if (skill->unknown80.unknown08.empty() || skill->unknown1b8 > 1) {
+    reqState(6);
+  } else {
+    skill->unknown210 = GfMenuObjUtil::getParamMenu()->unknown14 * 30.0f;
+    skill->unknown214 = 2;
+    reqState(4);
+  }
+}
+
 ai::State *GfMenuFieldSkill::StateQuit::create(void *buffer) { return new (buffer) StateQuit; }
 
 const char *GfMenuFieldSkill::StateQuit::getName() const { return "StateQuit"; }
+
+void GfMenuFieldSkill::StateQuit::onEnter(void *owner, ai::State *previous) {
+  GfMenuFieldSkill *skill = static_cast<GfMenuFieldSkill *>(owner);
+  skill->unknown200 = GfMenuCallContext::create();
+  GfMenuObjFieldSkill::close(skill->unknown200);
+}
 
 void GfMenuFieldSkill::StateQuit::onLeave(void *owner, ai::State *next) { mm::mtl::safeRelease(static_cast<GfMenuFieldSkill *>(owner)->unknown200); }
 

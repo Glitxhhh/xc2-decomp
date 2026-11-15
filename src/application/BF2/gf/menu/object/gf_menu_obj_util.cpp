@@ -1111,6 +1111,17 @@ u32 GfMenuObjUtil::playSECommonCursor() { return playSE(MENU_SE_UNKNOWN_6); }
 
 u32 GfMenuObjUtil::playSECommonTab() { return playSE(MENU_SE_UNKNOWN_5); }
 
+void GfMenuObjUtil::playSECommonFromInput(u32 input) {
+  // Inputs 2 and 3 are written as two branches: `input == 2 || input == 3` folds to one compare (orr + cmp), the game tests 3 and 2 separately (0x71004e4408..) and merges the tails.
+  if (input == 1) {
+    playSECommonDecide();
+  } else if (input == 2) {
+    playSECommonCancel();
+  } else if (input == 3) {
+    playSECommonCancel();
+  }
+}
+
 u32 GfMenuObjUtil::playSECommonSort() { return playSE(MENU_SE_UNKNOWN_11); }
 
 u32 GfMenuObjUtil::playSECommonOpenSubMenu() { return playSE(MENU_SE_UNKNOWN_12); }

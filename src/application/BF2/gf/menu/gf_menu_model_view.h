@@ -108,8 +108,8 @@ public:
   void changeCamera(u32 index, f32 time);
   int getCurrentCameraIndex();
   mm::Vec3 getCameraPos(u32 index);
-  mm::Vec3 getCameraRot(u32 index);
   void setCameraPos(u32 index, const mm::Vec3 &position);
+  mm::Vec3 getCameraRot(u32 index);
   void setCameraRotY(u32 index, f32 rotation);
   bool playCameraMotion(const char *name, const mm::Vec3 &position, f32 rotation);
   void resetCamera(u32 index, f32 time);
