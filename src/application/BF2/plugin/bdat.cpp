@@ -53,8 +53,11 @@ struct unknown003 {
   u16 unknown04; // Inferred role: offset of the member name; original member name unknown.
 };
 
-// Inferred role: variable description (1 scalar, 2 array, 3 flag); original name unknown. The 16 and 32 bit values
-// are stored unaligned in the data, so they are read through the byte arrays.
+// Inferred role: variable description (1 scalar, 2 array, 3 flag); original name unknown. Packed (file format layout): with
+// the natural alignment of 2 clang widens the kind byte load into one 16 bit load that also covers the type byte (GVN),
+// where the game (0x71006b5020 getVar) loads the two bytes separately, so the game's type is not 2-aligned (same case
+// as unknown002, decision 15 of 2026-11-14).
+#pragma pack(push, 1)
 struct unknown004 {
   u8 unknown00;  // Inferred role: kind; original member name unknown.
   u8 unknown01;  // Inferred role: value type, or shift of a flag; original member name unknown.
@@ -62,6 +65,7 @@ struct unknown004 {
   u16 unknown04; // Inferred role: array count; original member name unknown.
   u16 unknown06; // Inferred role: unused here; original member name unknown.
 };
+#pragma pack(pop)
 
 static_assert(offsetof(unknown001, unknown08) == 0x08, "");
 static_assert(offsetof(unknown002, unknown04) == 0x04, "");
@@ -270,6 +274,19 @@ void errMember(unsigned char *bdat, const char *name) {}
 
 void clearVal(uVal *value) { value->valueString = nullptr; }
 
+uVal getVal(unsigned char *pBdat, unsigned char *pVarName, int id) {
+#line 206
+  assert(pVarName != 0L);
+#line 209
+  assert(pBdat != 0L);
+  if (calcId(pBdat, &id)) {
+    return getVar(pBdat, pVarName, id);
+  }
+  uVal value;
+  clearVal(&value);
+  return value;
+}
+
 bool calcId(unsigned char *bdat, int *id) {
   unknown002 *header = reinterpret_cast<unknown002 *>(bdat);
   if (static_cast<u32>(*id - header->unknown12) < header->unknown10) {
@@ -277,6 +294,17 @@ bool calcId(unsigned char *bdat, int *id) {
     return true;
   }
   return false;
+}
+
+uVal getVar(unsigned char *bdat, unsigned char *member, int row) {
+  unknown004 *var = reinterpret_cast<unknown004 *>(bdat + reinterpret_cast<unknown003 *>(member)->unknown00);
+  if (var->unknown00 == 1) {
+    unknown002 *header = reinterpret_cast<unknown002 *>(bdat);
+    return getVarVal(bdat, bdat + header->unknown0e + header->unknown08 * row + var->unknown02, var->unknown01);
+  }
+  uVal value;
+  clearVal(&value);
+  return value;
 }
 
 uVal getVal(unsigned char *bdat, int column, int id) { return getVal(bdat, getMember(bdat, column), id); }
