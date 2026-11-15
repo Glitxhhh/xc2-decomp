@@ -48,6 +48,15 @@ struct MsgFxRimBloomTarget : fw::Message {
   MsgFxRimBloomTarget() : fw::Message(0x1000054, 0x80) {}
 };
 
+// Layout evidence: WaterInPlugin::onEvent (0x710057cf0c) builds it on the stack: id 0x1000055, mask 0x80 and the flag at 0x08.
+struct MsgFxSplashdown : fw::Message {
+  explicit MsgFxSplashdown(bool isBig) : fw::Message(0x1000055, 0x80), unknown08(isBig) {}
+
+  bool unknown08; // Inferred role: big splash; original member name unknown.
+};
+
+static_assert(offsetof(MsgFxSplashdown, unknown08) == 0x08, "");
+
 // Layout evidence: GfComEffectCaster::procMsgFxRimBloom reads the member at 0x08 and the flag at 0x0c and sets the flag at 0x0d.
 struct MsgFxRimBloom : fw::Message {
   u32 unknown08;  // Inferred role: rim bloom state; original member name unknown.
