@@ -10,6 +10,8 @@ extern "C" void vmExec();
 
 namespace fw {
 
+mm::mtl::FixStr<256> ScriptManager::m_rootPath;
+
 ScriptManager::ScriptManager(mm::mtl::IAllocator *allocator, size_t count) : unknown20(allocator) { unknown20.reserve(count); }
 
 ScriptManager::~ScriptManager() { finalize(); }
@@ -103,6 +105,15 @@ bool ScriptManager::isScriptFree(int type) const {
 }
 
 u32 ScriptManager::getTypeMax() const { return unknown20.size(); }
+
+void ScriptManager::setScriptPath(const char *path) {
+  m_rootPath = path;
+  // The game (1.0.0: 0x710019e1c4, `ldurb w8, [x19, #-1]`) tests the byte before the buffer, not the last character; the index -1 is what
+  // it computes, indexing with length() - 1 loads m_nLen first and gives 51 instructions instead of 50.
+  if (m_rootPath[-1] != '/') {
+    m_rootPath += "/";
+  }
+}
 
 void ScriptManager::loadScript(int type, const char *name, ml::FILE_PRIO priority) {
   mm::mtl::FixStr<256> path;

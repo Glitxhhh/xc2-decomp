@@ -22,6 +22,7 @@
 #include "gf/menu/gf_menu_manager.h"
 #include "ml/micro_thread.h"
 #include "ml/work_root.h"
+#include "mm_math/mm_math.h"
 #include "mm_mtl/delegate.h"
 #include "mtl/alloc_handle.h"
 
@@ -81,6 +82,22 @@ void TitleMain::initialize() {
     updater->unknown18.bind(&TitleMain::fnUpdate);
     updater->unknown10 = this;
   }
+}
+
+void TitleMain::finalize() {
+  destroyMaskVolume();
+  unknown94 = true;
+  while (unknown08.getState()->unknown08 != 8) {
+    ml::MicroThread::get()->sleep(1, true);
+  }
+  stopTitleBGM(0.0f);
+  unknown158.destroyMenuCallContext();
+  if (unknown80 != nullptr) {
+    delete unknown80;
+    unknown80 = nullptr;
+  }
+  unknown08.cleanup();
+  destroySaveBuffer();
 }
 
 void TitleMain::destroy() {
@@ -256,6 +273,22 @@ void TitleMain::getGameClearFlagFromSaveData() {
   if (unknown130->unknown00 == gf::SAVE_UNKNOWN_237915 && gf::GfGameFlag::getLocal(unknown130->unknown10.unknownfbbc4, 1, 0xd77e) != 0) {
     unknown178 = true;
   }
+}
+
+u32 TitleMain::getChapterIdFromSaveData() {
+  if (unknown130->unknown00 != gf::SAVE_UNKNOWN_237915) {
+    return 0;
+  }
+  // The game reads the u16 at SDataSave + 0x104bd6 (ldrh at 0x7100143e6c), which is unknown9000[1], a short flag, of the game flags.
+  u32 flag = unknown130->unknown10.unknownfbbc4.unknown9000[1];
+  if (flag == 0) {
+    return 0;
+  }
+  u32 chapter = flag / 1000;
+  if (chapter == 0) {
+    return 1;
+  }
+  return mm::min(10u, chapter);
 }
 
 } // namespace tl

@@ -114,6 +114,7 @@ public:
   void preUpdate();
   void update();
   static bool canUpdate();
+  void postUpdate();
   void tail(const UpdateState &updateState);
   void render();
   Applet *getApplet() const;

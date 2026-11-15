@@ -518,6 +518,17 @@ void SoundManager::stopSeAll() {
 
 void SoundManager::registPack(SoundPack *pack) { unknowna0.push_back(pack); }
 
+void SoundManager::removePack(SoundPack *pack) {
+  mm::mtl::List<SoundPack *>::iterator end = unknowna0.end();
+  for (mm::mtl::List<SoundPack *>::iterator it = unknowna0.begin(); it != end;) {
+    mm::mtl::List<SoundPack *>::iterator cur = it;
+    ++it;
+    if (*cur == pack) {
+      unknowna0.erase(cur);
+    }
+  }
+}
+
 void SoundManager::loadCommonSe() {
   mm::mtl::safeRelease(unknowne0);
   SoundResource::SetupInfo info;

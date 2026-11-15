@@ -611,6 +611,23 @@ bool GmkElevator::isLiftStateDown() const {
   return isDown;
 }
 
+void GmkElevator::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
+  AGmkBase::onGobEvent(event, handle);
+  if (event == gf::IGfObjListener::OBJEVT_UNKNOWN_3) {
+    // Written out like the chain of onPlayerAccessed: the same search as a loop over unknown290 gives 49 instructions
+    // against the game's 51 (the game tests each slot in turn, 0x710061c1c8).
+    if (unknown290[ITEM_TYPE_UNKNOWN_0] == handle) {
+      unknown290[ITEM_TYPE_UNKNOWN_0] = gf::unknown020;
+    } else if (unknown290[ITEM_TYPE_UNKNOWN_1] == handle) {
+      unknown290[ITEM_TYPE_UNKNOWN_1] = gf::unknown020;
+    } else if (unknown290[ITEM_TYPE_UNKNOWN_2] == handle) {
+      unknown290[ITEM_TYPE_UNKNOWN_2] = gf::unknown020;
+    } else if (unknown290[ITEM_TYPE_UNKNOWN_3] == handle) {
+      unknown290[ITEM_TYPE_UNKNOWN_3] = gf::unknown020;
+    }
+  }
+}
+
 void GmkElevator::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
   const BdatInfo *info = getBdatInfo();
   if (info->unknown00 != 0 && !gf::GfGameCond::isGameCond(info->unknown00)) {

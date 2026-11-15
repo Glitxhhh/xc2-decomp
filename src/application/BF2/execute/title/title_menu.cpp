@@ -35,6 +35,17 @@ void TitleMenu::setupTitle() { gf::GfMenuObjTitle::attach(getMenuCallContext());
 
 bool TitleMenu::hasResultSelect() const { return !unknown08->unknown18.empty(); }
 
+// The game ignores the result of popResult (bl at 0x7100146b70) and loads the GfMenuResult slots (0x7100146b74, 0x7100146b84) whether or not
+// the call filled them.
+int TitleMenu::getResult() const {
+  gf::GfMenuCallContext::GfMenuResult result;
+  unknown08->popResult(result);
+  if (result.unknown00 == 0 && result.unknown04 < 5) {
+    return result.unknown04 + 1;
+  }
+  return 0;
+}
+
 void TitleMenu::closeTitle(bool isFadeOut, bool isFadeIn) {
   gf::GfMenuManager::closeFullScreen(isFadeOut, isFadeIn);
   destroyMenuCallContext();
@@ -77,5 +88,12 @@ void TitleMenu::exitEventTheater() { destroyMenuCallContext(); }
 void TitleMenu::fadeoutEventTheater() { gf::GfMenuObjEvTheater::fadeout(getMenuCallContext()); }
 
 void TitleMenu::fadeinEventTheater() { gf::GfMenuObjEvTheater::fadein(getMenuCallContext()); }
+
+// Same unchecked popResult as getResult (bl at 0x7100146e40, the slots loaded by the ldp at 0x7100146e44).
+u32 TitleMenu::getPlayEventID() const {
+  gf::GfMenuCallContext::GfMenuResult result;
+  unknown08->popResult(result);
+  return result.unknown00 == 0 ? result.unknown04 : 0;
+}
 
 } // namespace tl

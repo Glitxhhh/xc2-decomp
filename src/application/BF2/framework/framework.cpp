@@ -382,6 +382,22 @@ bool Framework::canUpdate() {
   return framework->unknown84 == STATE_UNKNOWN_3;
 }
 
+void Framework::postUpdate() {
+  // Same test as isUpdating(), written out: the game (0x710017c4d0) keeps the early ret right after the test (b.ls over ret); with the inline
+  // isUpdating() (or a switch, or a positive if) clang puts the ret last.
+  if (unknown84 < STATE_UNKNOWN_2 || unknown84 > STATE_UNKNOWN_4) {
+    return;
+  }
+
+  if (m_applet != nullptr) {
+    m_applet->postUpdate(unknown78);
+  }
+  if (ColiManager::get() != nullptr) {
+    ColiManager::get()->postUpdate();
+  }
+  PadManager::get()->debugDraw(0x80, 0x80);
+}
+
 void Framework::tail(const UpdateState &updateState) {
   if (!isUpdating()) {
     return;

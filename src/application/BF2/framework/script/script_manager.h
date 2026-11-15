@@ -114,6 +114,8 @@ static_assert(offsetof(ScriptInfo, unknown238) == 0x238, "");
 
 class ScriptManager : public ManagerObject, public mm::mtl::PtrSingleton<ScriptManager>, public ml::IWorkEvent {
 public:
+  static mm::mtl::FixStr<256> m_rootPath;
+
   ScriptManager(mm::mtl::IAllocator *allocator, size_t count);
   ~ScriptManager();
   bool initialize() override;
@@ -131,6 +133,7 @@ public:
   void removeEvent(IScriptEvent *event);
   void loadScript(int type, const char *name, ml::FILE_PRIO priority);
   void notifyEvent(int type, ScriptEventParam::State state);
+  void setScriptPath(const char *path);
   u32 getTypeMax() const;
 
   mm::mtl::Array<ScriptInfo> unknown20;              // Inferred role: scripts; original member name unknown.
