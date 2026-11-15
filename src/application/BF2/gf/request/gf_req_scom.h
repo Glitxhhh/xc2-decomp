@@ -537,6 +537,13 @@ public:
 static_assert(offsetof(SCOM_OBJ_VFADE_OFF, unknown20) == 0x20, "");
 static_assert(sizeof(SCOM_OBJ_VFADE_OFF) == 0x28, "");
 
+// Declaration only: the layout of the class (vtable _ZTVN2gf14SCOM_OBJ_VFADEE, constructor 0x71005c5e6c) is not written yet; GfMountManager::setVFadeForMount
+// calls createBattle (0x71005c6aac), which returns the handle of GfReqSmallCom::addRequestParallel or -1.
+class SCOM_OBJ_VFADE : public SCOM {
+public:
+  static GF_SCOM_HANDLE *createBattle(GF_OBJ_HANDLE *handle, f32 time, u32 attribute);
+};
+
 class SCOM_ADD_WP : public SCOM {
 public:
   // Inferred role: weapon point target (0 driver, 1 driver object, 2 reserve blades, 3 driver bdat id); original enum and enumerator names unknown.

@@ -177,6 +177,19 @@ bool GfMenuHanaAdapter::update_equipColor() {
   return true;
 }
 
+bool GfMenuHanaAdapter::update_partsExpandIcon() {
+  if (unknown58 == 0) {
+    return false;
+  }
+  RESULT_HANA result;
+  u32 expand = 0;
+  if (unknown58 >= 9 && unknown58 <= 14 && !isOpenCircuit(unknown5c, unknown58, result)) {
+    expand = 1;
+  }
+  setNumber(expand);
+  return true;
+}
+
 GfMenuHanaAdapter *GfMenuHanaAdapter::createFromReferenceIndex(u32 handle, u32 type, u32 index, bool isUpdateAlways) {
   if (handle == 0) {
     return nullptr;
