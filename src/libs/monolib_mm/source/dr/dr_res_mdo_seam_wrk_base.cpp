@@ -118,6 +118,36 @@ void DrResMdoSeamWrkBase::beginRender() {
 
 void DrResMdoSeamWrkBase::endRender() { unknown68->unknownc8 = nullptr; }
 
+void DrResMdoSeamWrkBase::setupHeader() {
+  const u8 *data = reinterpret_cast<const u8 *>(unknown20);
+  const u8 *tree = data + unknown20->unknown18;
+  unknown28 = reinterpret_cast<const unknown780 *>(tree);
+  unknown30 = tree + unknown28->unknown04;
+  unknown38 = reinterpret_cast<const MdsSeamBaMpTreeData *>(tree + unknown28->unknown0c);
+  unknown40 = tree + unknown28->unknown14;
+  unknown48 = tree + unknown28->unknown1c;
+  // The game stores unknown48 twice (0x710087c8c4 and 0x710087c8d0: the offset is loaded again between the two stores).
+  unknown48 = tree + unknown28->unknown1c;
+  const unknown781 *model = reinterpret_cast<const unknown781 *>(data + unknown20->unknown0c);
+  // The game (1.0.0: 0x710087c8e0, also in changeMemCall 0x710087c970) keeps the branch: cbz, then add + str, else str xzr. Both arms are written to the
+  // same member, and clang merges such a pair into one store of a select (csel) in InstCombine's SimplifyStoreAtEndOfBlock or in MergedLoadStoreMotion. They
+  // stay apart when the member is typed `const unknown783 *` (the game's readers use the record the pointer reaches): InstCombine rewrites the store of the
+  // casted byte pointer into a store of the byte pointer through a casted address, so the two arms no longer store the same type to the same address and
+  // neither pass merges them. With `const u8 *` (or `u64`, `void *`) both arms have the same store and the csel comes out: 33 instructions against the game's 34.
+  if (model->unknown24 == 0) {
+    unknown60 = nullptr;
+  } else {
+    unknown60 = reinterpret_cast<const unknown783 *>(reinterpret_cast<const u8 *>(model) + model->unknown24);
+  }
+  unknown50 = reinterpret_cast<const unknown782 *>(data + unknown20->unknown38);
+  unknown58 = reinterpret_cast<const u8 *>(unknown50) + unknown50->unknown08;
+}
+
+void DrResMdoSeamWrkBase::changeMemCall() {
+  unknown20 = reinterpret_cast<const MdsSeamBaseMapHead *>(unknown158->m_buffer);
+  setupHeader();
+}
+
 void DrResMdoSeamWrkBase::selectVertex(int index) {
   if (unknown178 != index) {
     unknown68->unknownc8 = unknown78[index].unknown08;
