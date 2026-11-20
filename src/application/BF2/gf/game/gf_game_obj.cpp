@@ -20,6 +20,7 @@
 #include "gf/gf_allocator.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/property/gf_com_property.h"
+#include "gf/object/gf_init_param.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
@@ -393,10 +394,70 @@ bool GfGameObj::isBattle(const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_
   return false;
 }
 
+// The singleton is loaded before the dispatch, as the game does (0x7100320b1c).
+void GfGameObj::listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectType) {
+  GfGameObj *gameObj = get();
+  switch (event) {
+  case OBJEVT_UNKNOWN_1:
+    GfGameEvent::applySetDispObject(handle);
+    break;
+  case OBJEVT_UNKNOWN_2:
+    gameObj->addInObj(handle, 0.5f);
+    break;
+  case OBJEVT_UNKNOWN_3:
+    gameObj->removeGameObj(handle);
+    break;
+  default:
+    break;
+  }
+}
+
+// 0x7100320cc8. The event test is isEventCharacter (values 6, 7, 12), not GfObjSetup::isEvent. Measured: the ObjMsg search is a find_if with a capturing lambda (a plain loop is jump-threaded, the
+// game's is not) and the last search is mm::mtl::find with `list->end() != found` (`found != list->end()` does not match). The switch of getListType inlined here lays its case blocks out as the
+// game does (0/0xe, default, 3, 6, 7, 8, 0xd, 4, 5, 9, 10, 0xb, 0xc) only with the cases 0 and 0xe written as two separate returns (see getListType).
+void GfGameObj::removeGameObj(GF_OBJ_HANDLE *handle) {
+  if (!GfObjUtil::testFlag(handle, OBJ_FLAG_UNKNOWN_15)) {
+    return;
+  }
+  GfObjAcc acc(handle);
+  removeGameObjCommon(acc);
+  mm::mtl::FixedList<ObjMsg, 256>::iterator message = mm::mtl::find_if(unknown54240.begin(), unknown54240.end(), [handle](const ObjMsg &entry) { return entry.unknown00 == handle; });
+  if (message != unknown54240.end()) {
+    unknown54240.erase(message);
+  }
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
+    if (it->unknown00 == handle) {
+      unknown47a00.erase(it);
+      acc.setFlag(OBJ_FLAG_UNKNOWN_15, false);
+      return;
+    }
+  }
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown3f1d0.begin(); it != unknown3f1d0.end(); ++it) {
+    if (it->unknown00 == handle) {
+      unknown3f1d0.erase(it);
+      return;
+    }
+  }
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list;
+  GfObjSetup *setup = GfObjUtil::getObjSetup(handle);
+  if (setup != nullptr && isEventCharacter(setup->unknown1c)) {
+    list = &unknown28930;
+  } else {
+    list = getListType(GfObjUtil::getObjType(handle), handle);
+  }
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator found = mm::mtl::find(list->begin(), list->end(), handle);
+  if (list->end() != found) {
+    list->erase(found);
+    flushEvent();
+  }
+}
+
+// Cases 0 and 0xe are two separate returns, in value order (0xe after 0xd). Measured: with `case 0: case 0xe:` grouped, this function matches the same, but the switch inlined into removeGameObj lays
+// its case blocks out in another order than the game's and its jump table (0x7100f6a4f4) differs. The two cases still share one block; the order of the case blocks that tie in frequency follows
+// the rounding of the jump table successors' frequencies, which the separate case labels change (read in clang 3.9's block placement).
 mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListType(u32 objectType, GF_OBJ_HANDLE *handle) {
   switch (objectType) {
   case 0:
-  case 0xe:
     return &unknown28930;
   default:
     return &unknown3a9b0;
@@ -425,6 +486,8 @@ mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListType(u
     return &unknown2d150;
   case 0xd:
     return &unknown36190;
+  case 0xe:
+    return &unknown28930;
   }
 }
 
