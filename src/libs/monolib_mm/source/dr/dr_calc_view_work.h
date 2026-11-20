@@ -82,7 +82,7 @@ public:
   f32 unknown4c4; // Inferred role: field of view of the screen to view position (gScreenToViewPos of DrPixlPostObjTSSAO::passTemporalFiltering, halved and passed to tanf at 0x71008c2eb0); original
                   // member name unknown.
   f32 unknown4c8; // Inferred role: distance along the view direction (DrPixlPostObjMotionBlur2::calcBlurWork, 0x71008bcbe0, times the direction and 10); original member name unknown.
-  u8 _4cc[0x4d0 - 0x4cc];
+  f32 unknown4cc; // Inferred role: velocity parameter of the sky base render (DrPixlSkyDome::baseRender, gVelocityParam x component); original member name unknown.
   f32 unknown4d0; // Inferred role: pixl scale; original member name unknown.
   u8 _4d4[0x4e0 - 0x4d4];
   DrCalcClipWorkViewPlane unknown4e0; // Inferred role: view clip plane; original member name unknown.
