@@ -1,5 +1,7 @@
 #include "gf/object/component/pc/gf_pc_state_util.h"
 
+#include "framework/ik/ik_look_solver.h"
+#include "framework/ik/ik_placement_ground_solver.h"
 #include "framework/object/component_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/pad/pad_relay_util.h"
@@ -17,6 +19,7 @@
 #include "gf/object/component/behavior/plugin/gf_lip_sync_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin.h"
 #include "gf/object/component/behavior/plugin/gf_plugin_manager.h"
+#include "gf/object/component/gf_com_ik.h"
 #include "gf/object/component/pc/gf_com_behavior_pc.h"
 #include "gf/object/component/pc/gf_com_property_pc.h"
 #include "gf/object/component/pc/plugin/gf_pc_fall_damage_plugin.h"
@@ -123,6 +126,30 @@ void StateUtil::switchPlacementIK(GfComBehaviorPc &behavior, bool isOn) {
   FootIkControllerPlugin *plugin = behavior.unknown001<FootIkControllerPlugin>(3);
   if (plugin != nullptr) {
     plugin->switchMode(isOn ? FootIkControllerPlugin::MODE_UNKNOWN_2 : FootIkControllerPlugin::MODE_UNKNOWN_1);
+  }
+}
+
+void StateUtil::setEnableSpineIK(GfComBehaviorPc &behavior, bool isEnable) {
+  const GfComIK *ik = behavior.unknown08->getComponent<GfComIK>();
+  fw::LookIkSolver *look = ik->unknown003<fw::LookIkSolver>(unknown002_3);
+  if (look != nullptr) {
+    look->setEnableSpine(isEnable);
+  }
+}
+
+void StateUtil::changePlacementDownDist(GfComBehaviorPc &behavior, f32 distance) {
+  const GfComIK *ik = behavior.unknown08->getComponent<GfComIK>();
+  fw::PlacementGroundSolver *placement = ik->unknown003<fw::PlacementGroundSolver>(unknown002_2);
+  if (placement != nullptr) {
+    placement->overwriteRaycastDown(distance);
+  }
+}
+
+void StateUtil::resetPlacementDownDist(GfComBehaviorPc &behavior) {
+  const GfComIK *ik = behavior.unknown08->getComponent<GfComIK>();
+  fw::PlacementGroundSolver *placement = ik->unknown003<fw::PlacementGroundSolver>(unknown002_2);
+  if (placement != nullptr) {
+    placement->resetRaycastDown();
   }
 }
 
