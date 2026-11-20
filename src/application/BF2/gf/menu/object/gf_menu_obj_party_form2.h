@@ -18,6 +18,14 @@ class GfMenuFieldSkillList;
 
 class GfMenuObjPartyForm2 : public GfMenuObject {
 public:
+  class MainListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u8 _0c[0x20 - 0x0c];
+    GfMenuObjPartyForm2 *unknown20; // Inferred role: owner; original member name unknown.
+  };
+
   class DrDetailListener : public ui::UIObjectListener {
   public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
@@ -87,6 +95,8 @@ public:
   ui::UISelectObjList *unknown320;  // Inferred role: field skill objects; original member name unknown.
 };
 
+static_assert(offsetof(GfMenuObjPartyForm2::MainListener, unknown20) == 0x20, "");
+static_assert(sizeof(GfMenuObjPartyForm2::MainListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjPartyForm2::DrDetailListener, unknown20) == 0x20, "");
 static_assert(sizeof(GfMenuObjPartyForm2::DrDetailListener) == 0x28, "");
 static_assert(offsetof(GfMenuObjPartyForm2::FieldSkillListener, unknown20) == 0x20, "");

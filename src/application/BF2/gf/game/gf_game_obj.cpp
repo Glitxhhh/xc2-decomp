@@ -412,6 +412,17 @@ void GfGameObj::listenerGfObj(OBJEVT event, GF_OBJ_HANDLE *handle, u32 objectTyp
   }
 }
 
+// Inferred role: list holding the object (the event character list, or the list of its type); no game symbol, original name unknown. The game inlines this choice in removeGameObj (0x7100320cc8),
+// addGameObj (0x7100321b20) and addOutObj (0x71003214ac) and holds no function for it. Measured: the three functions match both with this helper (inlined, no symbol emitted) and with the six lines
+// written out in each, so the helper is the form.
+static mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *unknown001(GfGameObj *gameObj, GF_OBJ_HANDLE *handle) {
+  GfObjSetup *setup = GfObjUtil::getObjSetup(handle);
+  if (setup != nullptr && isEventCharacter(setup->unknown1c)) {
+    return &gameObj->unknown28930;
+  }
+  return gameObj->getListType(GfObjUtil::getObjType(handle), handle);
+}
+
 // 0x7100320cc8. The event test is isEventCharacter (values 6, 7, 12), not GfObjSetup::isEvent. Measured: the ObjMsg search is a find_if with a capturing lambda (a plain loop is jump-threaded, the
 // game's is not) and the last search is mm::mtl::find with `list->end() != found` (`found != list->end()` does not match). The switch of getListType inlined here lays its case blocks out as the
 // game does (0/0xe, default, 3, 6, 7, 8, 0xd, 4, 5, 9, 10, 0xb, 0xc) only with the cases 0 and 0xe written as two separate returns (see getListType).
@@ -438,17 +449,132 @@ void GfGameObj::removeGameObj(GF_OBJ_HANDLE *handle) {
       return;
     }
   }
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list;
-  GfObjSetup *setup = GfObjUtil::getObjSetup(handle);
-  if (setup != nullptr && isEventCharacter(setup->unknown1c)) {
-    list = &unknown28930;
-  } else {
-    list = getListType(GfObjUtil::getObjType(handle), handle);
-  }
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = unknown001(this, handle);
   mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator found = mm::mtl::find(list->begin(), list->end(), handle);
   if (list->end() != found) {
     list->erase(found);
     flushEvent();
+  }
+}
+
+// 0x7100321b20. The list choice is unknown001, as in removeGameObj. Returns true on every path (the game sets w0 to 1).
+bool GfGameObj::addGameObj(GF_OBJ_HANDLE *handle) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = unknown001(this, handle);
+  list->push_back(handle);
+  GfGameUtil::setKosmosArts3EnableBothWeapon(handle, false);
+  return true;
+}
+
+// 0x71003214ac. The list choice is unknown001, as in removeGameObj and addGameObj. Measured: the list search tested as `list->end() == found` with the out list search first (the not found arm leaves
+// the function early) gives the game's block order; `list->end() != found` with the search last gives 347 instructions (the two `return false` blocks merge), `found == list->end()` another `cmp`
+// operand order, and a find_if for the last search another order. The two manager reads are the game's (0x7100321730, 0x71003217c0).
+bool GfGameObj::addOutObj(GF_OBJ_HANDLE *handle, f32 fadeTime, bool isEffect) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = unknown001(this, handle);
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator found = mm::mtl::find(list->begin(), list->end(), handle);
+  if (list->end() == found) {
+    for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
+      if ((*it).unknown00 == handle) {
+        return true;
+      }
+    }
+    return false;
+  }
+  list->erase(found);
+  if (GfGameManager::isFadeout()) {
+    fadeTime = 0.0f;
+  }
+  INOUT inout;
+  inout.unknown00 = handle;
+  inout.unknown08 = fadeTime < 0.000001f ? 0.0f : fadeTime;
+  inout.unknown0c = 0.0f;
+  inout.unknown10 = fadeTime == 0.0f ? 0.0f : 1.0f;
+  inout.unknown14 = true;
+  inout.unknown15 = true;
+  inout.unknown16 = false;
+  unknown47a00.push_back(inout);
+  GfObjAcc acc(handle);
+  if (acc.testFlag(OBJ_FLAG_UNKNOWN_14)) {
+    acc.setFlag(OBJ_FLAG_UNKNOWN_14, false);
+  }
+  if (!acc.testFlag(OBJ_FLAG_UNKNOWN_17)) {
+    acc.setFlag(OBJ_FLAG_UNKNOWN_17, true);
+  }
+  if (isEffect) {
+    GfObjManager *manager = GfObjManager::get();
+    if (manager != nullptr) {
+      mm::mtl::FixedList<GF_OBJ_HANDLE *, 32> *multiBind = manager->getMultiBindList(handle);
+      if (multiBind != nullptr) {
+        for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 32>::iterator it = multiBind->begin(); it != multiBind->end(); ++it) {
+          if (*it != handle) {
+            // The game calls the GfObjAcc constructor (0x7100321798) for each bound object and never reads the accessor.
+            GfObjAcc bound(*it);
+            addOutObj(*it, fadeTime, false);
+          }
+        }
+      }
+    }
+  }
+  GfObjManager *manager = GfObjManager::get();
+  if (manager != nullptr) {
+    mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> followObjs;
+    if (manager->getFollowObj(followObjs, handle)) {
+      for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 768>::iterator it = followObjs.begin(); it != followObjs.end(); ++it) {
+        addOutObj(*it, fadeTime, false);
+      }
+    }
+  }
+  return true;
+}
+
+// 0x7100324860. The list type switch inlined here has no event character test (unlike addGameObj and addOutObj). Measured: the follow object loop dereferences its iterator twice, as the game does
+// (an assert each time): the search lambda captures `*it` by value and the new message reads `*it` again; a named local gives 376 instructions. The end comparisons are `found == list->end()` for
+// the list search and `end() == existing` for the message search (the other operand orders give another `cmp`). The loops over followObjs that set the collision off construct the accessor from
+// `handle` (the game never reads the node: the constructor call at 0x7100324928 takes x19, the handle).
+void GfGameObj::addCharDeadMessage(GF_OBJ_HANDLE *handle, const MsgObjectNotifyDead &message) {
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> followObjs;
+  GfObjManager *manager = GfObjManager::get();
+  if (manager != nullptr) {
+    manager->getFollowObj(followObjs, handle);
+  }
+  GfObjAcc acc(handle);
+  if (acc.getType() == OBJECT_TYPE_ENEMY) {
+    acc.setCollisionChar(false);
+    for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 768>::iterator it = followObjs.begin(); it != followObjs.end(); ++it) {
+      GfObjAcc follow(handle);
+      follow.setCollisionChar(false);
+    }
+  }
+  if (!message.unknown28 || message.unknown20 == 0) {
+    return;
+  }
+  GfGameObj *gameObj = get();
+  mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator entering =
+      mm::mtl::find_if(gameObj->unknown3f1d0.begin(), gameObj->unknown3f1d0.end(), [handle](const INOUT &entry) { return entry.unknown00 == handle; });
+  if (entering == gameObj->unknown3f1d0.end()) {
+    mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator leaving =
+        mm::mtl::find_if(gameObj->unknown47a00.begin(), gameObj->unknown47a00.end(), [handle](const INOUT &entry) { return entry.unknown00 == handle; });
+    if (leaving == gameObj->unknown47a00.end()) {
+      mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = gameObj->getListType(GfObjUtil::getObjType(handle), handle);
+      mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator found = mm::mtl::find(list->begin(), list->end(), handle);
+      if (found == list->end()) {
+        return;
+      }
+    }
+  }
+  u32 attribute = message.unknown20;
+  ObjMsg objMessage;
+  objMessage.unknown00 = handle;
+  objMessage.unknown08 = attribute;
+  gameObj->unknown54240.push_back(objMessage);
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 768>::iterator it = followObjs.begin(); it != followObjs.end(); ++it) {
+    mm::mtl::FixedList<ObjMsg, 256>::iterator existing =
+        mm::mtl::find_if(gameObj->unknown54240.begin(), gameObj->unknown54240.end(), [followObj = *it](const ObjMsg &entry) { return entry.unknown00 == followObj; });
+    if (gameObj->unknown54240.end() == existing) {
+      ObjMsg followMessage;
+      followMessage.unknown00 = *it;
+      followMessage.unknown08 = attribute;
+      gameObj->unknown54240.push_back(followMessage);
+    }
   }
 }
 

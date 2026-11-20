@@ -1155,6 +1155,43 @@ void GfMenuObjShop::OrbListListener::reciveEvent(const ui::EventData &event, u32
   ui::UIObjectListener::reciveEvent(event, handle);
 }
 
+void GfMenuObjShop::SellFilterListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  case 6: {
+    u32 index = event.unknown08;
+    u32 previous = event.unknown0c;
+    if (unknown20->unknownc0 != index) {
+      unknown20->unknownc0 = index;
+      ui::EventData notify;
+      notify.unknown00 = 0x45;
+      GfMenuObject::sendEvent(acc.getParentHandle(), notify, 0.0f);
+    }
+    unknown20->refreshFilterIcon();
+    if (previous != 0xffffffff && index != previous) {
+      GfMenuObjUtil::playSECommonTab();
+    }
+    break;
+  }
+  case 0x21:
+    GfMenuObject::resetInputSelection(acc.unknown10);
+    GfMenuObject::setupInputSelection(acc.unknown10, unknown20->unknownc0, unknown20->unknown60.size());
+    GfMenuObject::enableInput(acc.unknown10);
+    break;
+  case 0x22:
+    // Measured (clang 3.9.1): with `case 1: case 0x22:` as grouped labels the default arm is laid out after case 0x21 (game: before it);
+    // two separate bodies leave the game's order. The game's case 1 and case 0x22 are one block (0x71004d1c54): the tail merge joins them.
+    GfMenuObject::disableInput(acc.unknown10);
+    break;
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjShop::setGuideText(u32 id) {
   if (unknown38 != id) {
     ui::UIObjectAcc acc(unknown18, "TXT_common_guide");

@@ -331,6 +331,56 @@ bool GfMenuObjPartyForm2::seqWaitSwapEnd() {
   return true;
 }
 
+void GfMenuObjPartyForm2::MainListener::reciveEvent(const ui::EventData &event, u32 handle) {
+  ui::UIObjectAcc acc(handle);
+  switch (event.unknown00) {
+  case 1:
+    unknown20->unknown68.unknown002(&GfMenuObjPartyForm2::seqStartOpen);
+    unknown20->unknown68.unknown002(&GfMenuObjPartyForm2::seqAppearTitle);
+    unknown20->unknown68.unknown002(&GfMenuObjPartyForm2::seqAppearFrame);
+    unknown20->unknown68.unknown002(&GfMenuObjPartyForm2::seqAppearPlate);
+    if (unknown20->unknown2f8 == 1) {
+      unknown20->unknown68.unknown002(&GfMenuObjPartyForm2::seqAnnounceChange);
+    }
+    unknown20->unknown68.unknown002(&GfMenuObjPartyForm2::seqWaitOpenEnd);
+    break;
+  case 2: {
+    GfMenuObjUtil::CtrlParam param;
+    // Ruling 2026-11-13 #4, 0x71004a9944: the game stores unknown08 (2) before unknown00 (0.5f), the order of the other `startCtrl` callers on main; with unknown00 first the `orr`/`str` order
+    // differs.
+    param.unknown08 = 2;
+    param.unknown00 = 0.5f;
+    param.unknown14 = 1;
+    GfMenuObjUtil::startCtrl(acc.unknown10, param, nullptr);
+    break;
+  }
+  case 0x40: {
+    u32 driver = event.unknown08;
+    GfMenuReference::setReferenceDriverID(0, driver);
+    GfMenuReference::setReferenceBladeIDFromDriver(driver);
+    GfMenuObject::disableInput(acc.searchChild("LAY_dr_sel"));
+    ui::EventData request;
+    request.unknown00 = 0x21;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_dr_detail"), request, 0.0f);
+    break;
+  }
+  case 0x41:
+  case 0x43:
+    GfMenuObject::enableInput(acc.searchChild("LAY_dr_sel"));
+    break;
+  case 0x42: {
+    GfMenuObject::disableInput(acc.searchChild("LAY_dr_sel"));
+    ui::EventData request;
+    request.unknown00 = 0x21;
+    GfMenuObject::sendEvent(acc.searchChild("LAY_field_skill"), request, 0.0f);
+    break;
+  }
+  default:
+    ui::UIObjectListener::reciveEvent(event, handle);
+    break;
+  }
+}
+
 void GfMenuObjPartyForm2::DrDetailListener::reciveEvent(const ui::EventData &event, u32 handle) {
   ui::UIObjectAcc acc(handle);
   switch (event.unknown00) {
