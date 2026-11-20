@@ -184,6 +184,7 @@ public:
   void setMatrix(u32 handle, const mm::Mat44 &matrix);
   void setParam(u32 handle, EffectCasterBase *caster, f32 scale);
   void setParam(u32 handle, const mm::Vec3 &position, const mm::Vec3 &scale);
+  void setParam(u32 handle, const mm::Vec3 &position, const mm::Vec3 &rotation, const mm::Vec3 &scale);
   void setSignal(u32 handle);
   bool isExist(u32 handle);
   int getDeadFlag(u32 handle);
@@ -232,13 +233,14 @@ public:
   bool isPerfMonitoring();
   static void memoryDump();
   u32 createHateRing();
-  void updateHateRing(u32 handle, const mm::Vec3 &position, const f32 &rotation, bool isEnable, const f32 &scale);
+  bool updateHateRing(u32 handle, const mm::Vec3 &position, const f32 &rotation, bool isEnable, const f32 &scale);
   void destroyHateRing(u32 handle);
   u32 createHateRingVec();
-  void updateHateRingVec(u32 handle, const mm::Vec3 &position, const f32 &rotation, const f32 &scale, const mm::Col4 &color);
+  bool updateHateRingVec(u32 handle, const mm::Vec3 &position, const f32 &rotation, const f32 &scale, const mm::Col4 &color);
   void destroyHateRingVec(u32 handle);
   u32 createHateArrow();
   void destroyHateArrow(u32 handle);
+  bool updateHateArrow(u32 handle, const mm::Vec3 &position, const f32 &rotation, const f32 &scale, const mm::Col4 &color);
   u32 createComboBall(u32 level);
   bool updateComboBall(u32 handle, const mm::Vec3 &position, const f32 &scale);
   void destroyComboBall(u32 handle);
