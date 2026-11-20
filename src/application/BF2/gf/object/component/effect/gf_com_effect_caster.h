@@ -92,6 +92,21 @@ struct MsgFxFootPrint : fw::Message {
 static_assert(offsetof(MsgFxFootPrint, unknown08) == 0x08, "");
 static_assert(offsetof(MsgFxFootPrint, unknown0c) == 0x0c, "");
 
+// Layout evidence: GfComBehavior::callbackAnim (0x71004fbc6c) builds it on the stack: id 0x1000050, mask 0x80, the flag at 0x08 (0 for weaponAttach, 1 for weaponDetach; the game zeroes the
+// word at 0x0c with it), then the right and left option handles at 0x10 and 0x18.
+struct MsgFxWeapon : fw::Message {
+  MsgFxWeapon() : fw::Message(0x1000050, 0x80), unknown08(0), unknown0c(0) {}
+
+  u32 unknown08;            // Inferred role: weapon detached; original member name unknown.
+  u32 unknown0c;            // Role and original member name unknown.
+  GF_OBJ_HANDLE *unknown10; // Inferred role: right option handle; original member name unknown.
+  GF_OBJ_HANDLE *unknown18; // Inferred role: left option handle; original member name unknown.
+};
+
+static_assert(offsetof(MsgFxWeapon, unknown08) == 0x08, "");
+static_assert(offsetof(MsgFxWeapon, unknown10) == 0x10, "");
+static_assert(offsetof(MsgFxWeapon, unknown18) == 0x18, "");
+
 // Message id from GfComEffectCaster::recieveMessage (0x7100503300), whose case 0x100004c is procMsgFxCombo inlined.
 struct MsgFxCombo : fw::Message {
   MsgFxCombo() : fw::Message(0x100004c, 0x80), unknown08(0) {}

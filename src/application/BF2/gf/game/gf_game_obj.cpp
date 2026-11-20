@@ -19,12 +19,14 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/component/gf_com_transform.h"
+#include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_manager.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "gf/request/gf_req_scom.h"
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/algorithm.h"
@@ -56,6 +58,33 @@ void GfGameObj::finalize() {
     unknown55c68 = nullptr;
   }
   unknown55c70 = false;
+}
+
+void GfGameObj::bdatReload() {
+  GfGameObj *gameObj = get();
+  if (gameObj == nullptr) {
+    return;
+  }
+  // The first two loops repeat the statements of refreshBdatInOut (0x710032474c, 39 instructions), which the game inlines here although it keeps a standalone copy:
+  // the call form compiles to 156 instructions (refreshBdatInOut stays a call), the game has 218 (no call to it). The last two loops call refreshBdat (0x71003247e8), which clang inlines.
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
+    GfObjAcc acc((*it).unknown00);
+    if (acc.getType() == OBJECT_TYPE_ENEMY) {
+      refreshBdat((*it).unknown00);
+    }
+  }
+  for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown47a00.begin(); it != gameObj->unknown47a00.end(); ++it) {
+    GfObjAcc acc((*it).unknown00);
+    if (acc.getType() == OBJECT_TYPE_ENEMY) {
+      refreshBdat((*it).unknown00);
+    }
+  }
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown9050.begin(); it != gameObj->unknown9050.end(); ++it) {
+    refreshBdat(*it);
+  }
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = gameObj->unknownd870.begin(); it != gameObj->unknownd870.end(); ++it) {
+    refreshBdat(*it);
+  }
 }
 
 void GfGameObj::destroy() {
@@ -323,6 +352,25 @@ bool GfGameObj::fadeinGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo 
   addGameObj(inout.unknown00);
   acc.setAlphaLife(1.0f);
   return true;
+}
+
+void GfGameObj::setupEffectFadeout(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo &info) {
+  if ((acc.getType() == OBJECT_TYPE_ENEMY || acc.getType() == OBJECT_TYPE_GIMMICK) && acc.getObj()->getComponent<GfComProperty>() != nullptr) {
+    // The game calls getHandle at each use, the search's call after the setup of the iterators (0x7100322b88); a local used at every call gives 94 instructions, the lambda taking acc by
+    // reference 95 (the game has 96).
+    mm::mtl::FixedList<ObjMsg, 256>::iterator it =
+        mm::mtl::find_if(unknown54240.begin(), unknown54240.end(), [handle = acc.getHandle()](const ObjMsg &message) { return message.unknown00 == handle; });
+    if (it != unknown54240.end()) {
+      if (0.0f < inout.unknown08) {
+        inout.unknown10 = 1.0f;
+      }
+      inout.unknown08 = SCOM_OBJ_VFADE::createDead(acc.getHandle(), it->unknown08);
+      inout.unknown16 = true;
+      if (acc.getType() == OBJECT_TYPE_ENEMY) {
+        SCOM_DEAD_PARTICLE::create(acc.getHandle(), it->unknown08, inout.unknown08);
+      }
+    }
+  }
 }
 
 bool GfGameObj::isEffectFadeEnd(const INOUT &inout, const GfObjAcc &acc) const {
@@ -603,10 +651,7 @@ void GfGameObj::refreshBdat(GF_OBJ_HANDLE *handle) {
 void GfGameObj::refreshBdatInOut(INOUT &inout) {
   GfObjAcc acc(inout.unknown00);
   if (acc.getType() == OBJECT_TYPE_ENEMY) {
-    GfObjSetupEnemy *setup = GfObjUtil::getObjSetup<GfObjSetupEnemy>(inout.unknown00);
-    if (setup != nullptr) {
-      GfDataEnemy::setupSDataEnemy(*setup->unknowna0, setup->unknowna0->unknown00, setup->unknowna0->unknowna8);
-    }
+    refreshBdat(inout.unknown00);
   }
 }
 

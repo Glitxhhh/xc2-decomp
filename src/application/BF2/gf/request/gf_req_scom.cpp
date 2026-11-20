@@ -289,6 +289,15 @@ bool SCOM_BATTLE_TASK_RESET::exec(const fw::UpdateInfo &) {
   return true;
 }
 
+GF_SCOM_HANDLE *SCOM_BATTLE_TASK_RESET::create() {
+  if (get() == nullptr) {
+#line 4865
+    SCOM_BATTLE_TASK_RESET *command = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) SCOM_BATTLE_TASK_RESET(GfReqSmallCom::get()->allocate());
+    return GfReqSmallCom::addRequest(command);
+  }
+  return reinterpret_cast<GF_SCOM_HANDLE *>(-1);
+}
+
 SCOM_FSKILLMAX_FOR_DEBUG::SCOM_FSKILLMAX_FOR_DEBUG(GF_SCOM_HANDLE *handle) : SCOM(handle, SCOM_TYPE_UNKNOWN_74, SCOM_EXEC_UNKNOWN_0, 1) {
   GfDataBlade::getListParty(unknown20);
   GfDataBlade::getListReserver(unknown20);
