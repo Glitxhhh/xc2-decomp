@@ -79,6 +79,15 @@ void GmkEvent::update(f32 deltaTime) {
   }
 }
 
+// The game tests the result of isPlayEventOK (1.0.0: 0x7100319a4c) with `tbz w0, #0` (here 0x71005fddbc, the body of this function), while the
+// callee returns the property flag as it loads it (`ldrb w0`, no extension): a plain conversion of the u8 gives `and w8, w0, #0xff; cbz` (55
+// instead of 54 instructions) and a bool return type of the callee gives `cmp; cset` in the callee.
+void GmkEvent::updateInActiveList(f32 deltaTime) {
+  if (unknown60.unknown83 && unknown001()->isCondMatched() && (gf::GfGameManager::isPlayEventOK() & 1) != 0) {
+    beginEvent();
+  }
+}
+
 void GmkEvent::createGmkPhantom() {
   const GmkSet *set = AGmkBase::unknown08.unknown00->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {

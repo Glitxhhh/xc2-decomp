@@ -367,6 +367,23 @@ void GmkManager::seqWaitValidateResDefBdatFp(f32 deltaTime) {
   }
 }
 
+void GmkManager::seqUpdate(f32 deltaTime) {
+  unknown1a0.update(deltaTime);
+  unknownf270.update(deltaTime);
+  TGmkActiveList<GmkPrecious>::unknown001(deltaTime);
+  TGmkActiveList<GmkSe>::unknown001(deltaTime);
+  TGmkActiveList<GmkSeLine>::unknown001(deltaTime);
+  TGmkActiveList<GmkEvent>::unknown001(deltaTime);
+  TGmkActiveList<GmkTutorial>::unknown001(deltaTime);
+  u64 num = unknownf358.size();
+  for (u64 i = 0; i < num; i++) {
+    GmkSet *set = unknownf358[i];
+    if (set != nullptr) {
+      set->update(deltaTime);
+    }
+  }
+}
+
 void GmkManager::create(const CreateInfo &info) {
   dispose();
   unknown08 = info;

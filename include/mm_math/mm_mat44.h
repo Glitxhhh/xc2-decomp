@@ -255,17 +255,21 @@ struct alignas(16) Mat44 {
   // Inferred 2x2 minor of rows p and q, columns a and b; original name unknown.
   static f32 unknown013(const f32 (&m)[4][4], u32 p, u32 q, u32 a, u32 b) { return m[p][a] * m[q][b] - m[q][a] * m[p][b]; }
 
-  // Inferred in-place adjugate/determinant inverse; original helper name unknown.
+  // Inferred adjugate/determinant inverse of `source` stored into this; original helper name unknown.
   // Matches fw::CameraLayer::getMtx (1.0.0: 0x71001577d0, 244 instructions) and
-  // event::PosAxis/TarAxis::calcOrigMatInv (0x7100094298 / 0x71000961c4, 279 each).
+  // event::PosAxis/TarAxis::calcOrigMatInv (0x7100094298 / 0x71000961c4, 279 each) through unknown012,
+  // and idcoli::IDColiGrdMoveObj::update (0x71008e60f4, 408 instructions) with a separate source.
   // The game builds the signed first column from 2x2 minors, checks the
   // determinant, computes the other twelve cofactors, then normalizes every
   // element of a temporary matrix explicitly and assigns it back. Forms that did
   // not match CameraLayer::getMtx: sixteen scalar cofactors written straight to
   // the matrix (243 instructions), unknown003's column-argument 3x3 expansion
   // (262), the same with a normalization loop (267).
-  __attribute__((always_inline)) void unknown012() {
-    const auto &m = rows;
+  // IDColiGrdMoveObj::update reads the source where it is: the game loads it again after the assert call,
+  // while a local copy of it (every value held in a register across the call) gives 400 instructions and
+  // a stack frame of 192 bytes against the game's 128.
+  __attribute__((always_inline)) void unknown014(const Mat44 &source) {
+    const auto &m = source.rows;
     Mat44 result;
     result.rows[0][0] = m[1][1] * unknown013(m, 2, 3, 2, 3) - m[1][2] * unknown013(m, 2, 3, 1, 3) + m[1][3] * unknown013(m, 2, 3, 1, 2);
     result.rows[1][0] = -(m[1][0] * unknown013(m, 2, 3, 2, 3) - m[1][2] * unknown013(m, 2, 3, 0, 3) + m[1][3] * unknown013(m, 2, 3, 0, 2));
@@ -306,6 +310,9 @@ struct alignas(16) Mat44 {
     result.rows[3][3] *= invDet;
     *this = result;
   }
+
+  // Inferred in-place adjugate/determinant inverse; original helper name unknown. See unknown014.
+  __attribute__((always_inline)) void unknown012() { unknown014(*this); }
 
   // Inferred translation extraction in AttachActorBase::render (1.0.0:
   // 0x710009e4bc, 179 matching instructions); original helper name unknown.
