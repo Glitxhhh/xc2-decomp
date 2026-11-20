@@ -16,6 +16,31 @@ void GfMenuMapInfo::destroy() {
   delete info;
 }
 
+void GfMenuMapInfo::finalize() {
+  if (unknown10.capacity() != 0) {
+    for (u32 i = 0; i < unknown10.size(); i++) {
+      if (unknown10[i] != nullptr) {
+        unknown10[i]->release();
+        unknown10[i] = nullptr;
+      }
+    }
+    unknown10.destroy();
+  }
+  if (unknown38.capacity() != 0) {
+    for (u32 i = 0; i < unknown38.size(); i++) {
+      if (unknown38[i].unknown00 != nullptr) {
+        unknown38[i].unknown00->release();
+        unknown38[i].unknown00 = nullptr;
+      }
+    }
+    unknown38.destroy();
+  }
+  for (int i = 0; i < 5; i++) {
+    unknown80[i].destroy();
+  }
+  unknown08 = false;
+}
+
 bool GfMenuMapInfo::isInitialized() {
   if (get() != nullptr && get()->unknown08) {
     return !isLoading();
