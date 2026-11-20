@@ -14,9 +14,9 @@ int unknown113(int size) { return size + (0x10 - size % 0x10) % 0x10; }
 } // namespace
 
 DrMdoCtlMpfAuto::DrMdoCtlMpfAuto() : unknown68(0), unknown6c(0), unknown70(0), unknown80(0), unknown84(0) {
-  unknownd8 = 0.0f;
-  unknownd0 = 0.0f;
-  unknownd4 = 0.0f;
+  unknownd0.unknown08 = 0.0f;
+  unknownd0.unknown00 = 0.0f;
+  unknownd0.unknown04 = 0.0f;
   unknown00 = nullptr;
   unknown28 = nullptr;
 }
@@ -89,7 +89,7 @@ void DrMdoCtlMpfAuto::gridColiCalc() {
   unknownf8 = 0;
   for (int i = 0; i < unknown68; i++) {
     unknown58 = unknown60[i];
-    if (unknown58->unknown08 > unknownd0 || unknown58->unknown00 < unknownd0 || unknown58->unknown0c > unknownd8 || unknown58->unknown04 < unknownd8) {
+    if (unknown58->unknown08 > unknownd0.unknown00 || unknown58->unknown00 < unknownd0.unknown00 || unknown58->unknown0c > unknownd0.unknown08 || unknown58->unknown04 < unknownd0.unknown08) {
       continue;
     }
     gridTreeColiCalc(unknown58->unknown38);
@@ -101,7 +101,7 @@ void DrMdoCtlMpfAuto::gridInstColiCalc() {
   unknownf8 = 0;
   for (int i = 0; i < unknown68; i++) {
     unknown58 = unknown60[i];
-    if (unknown58->unknown08 > unknownd0 || unknown58->unknown00 < unknownd0 || unknown58->unknown0c > unknownd8 || unknown58->unknown04 < unknownd8) {
+    if (unknown58->unknown08 > unknownd0.unknown00 || unknown58->unknown00 < unknownd0.unknown00 || unknown58->unknown0c > unknownd0.unknown08 || unknown58->unknown04 < unknownd0.unknown08) {
       continue;
     }
     if (unknown58->unknown38 != nullptr) {
@@ -147,17 +147,17 @@ void DrMdoCtlMpfAuto::StockTempPoint() {
     return;
   }
   for (int i = 0; i < unknownf8; i++) {
-    f32 difference = unknownd4 - unknownf0[i].unknown00;
+    f32 difference = unknownd0.unknown04 - unknownf0[i].unknown00;
     if (difference < 2.0f && difference > -2.0f) {
       if (difference > 0.0f) {
-        unknownf0[i].unknown04 = unknowndc;
-        unknownf0[i].unknown00 = unknownd4;
+        unknownf0[i].unknown04 = unknownd0.unknown0c;
+        unknownf0[i].unknown00 = unknownd0.unknown04;
       }
       return;
     }
   }
-  unknownf0[unknownf8].unknown04 = unknowndc;
-  unknownf0[unknownf8].unknown00 = unknownd4;
+  unknownf0[unknownf8].unknown04 = unknownd0.unknown0c;
+  unknownf0[unknownf8].unknown00 = unknownd0.unknown04;
   unknownf8++;
 }
 
@@ -218,6 +218,41 @@ int DrMdoCtlMpfAuto::calcWorkSize(const u8 *autoData) {
   size = unknown113(size);
   size += header->unknown00 * 0x10;
   return unknown113(size);
+}
+
+// Stocks the current point in the work list whose mean height is within the tolerance (0x71007fd6ac); a list that reaches its limit is moved to a free block by
+// setHeMemWork. The limit test multiplies the count by sizeof(DrMdoCtlMpfAuto) (0x170, the distance between the auto and instance mpf objects in the work block of
+// DrResMdoSeamWrkMpf::setupWork, 0x710088afc4 / 0x710088afcc) and compares it with the size of a calculation table (_MPFWorkAutoPos, 0x600; the tables at 0x108 are
+// the ones DrMdoMpfMan::getTempCalcTbl hands out, 0x71007fd978). The game does it as a 64-bit unsigned value (ldrsw, mul x, cmp #1536).
+bool DrMdoCtlMpfAuto::StockWorkPoint() {
+  if (unknown100 == 0) {
+    unknown130[0] = unknownd0.unknown04;
+    *unknown108[0] = unknownd0;
+    unknown144[0] = 1;
+    unknown100++;
+    return false;
+  }
+  unknown100++;
+  for (int i = 0; i < unknown104; i++) {
+    if (__builtin_fabsf(unknownd0.unknown04 - unknown130[i]) <= unknownfc) {
+      f32 ratio = 1.0f / static_cast<f32>(unknown144[i] + 1);
+      unknown130[i] = unknownd0.unknown04 * ratio + unknown130[i] * (1.0f - ratio);
+      unknown108[i][unknown144[i]] = unknownd0;
+      unknown144[i]++;
+      if (unknown144[i] * sizeof(DrMdoCtlMpfAuto) >= sizeof(_MPFWorkAutoPos)) {
+        return setHeMemWork(i);
+      }
+      return false;
+    }
+  }
+  if (unknown104 > 4) {
+    return false;
+  }
+  unknown130[unknown104] = unknownd0.unknown04;
+  *unknown108[unknown104] = unknownd0;
+  unknown144[unknown104] = 1;
+  unknown104++;
+  return false;
 }
 
 } // namespace ml
