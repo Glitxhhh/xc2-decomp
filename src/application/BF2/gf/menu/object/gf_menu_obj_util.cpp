@@ -414,7 +414,7 @@ int GfMenuObjUtil::getLeaderPartyType() {
   return -1;
 }
 
-bool GfMenuObjUtil::isExitDriver(u32 partyId) {
+int GfMenuObjUtil::isExitDriver(u32 partyId) {
   if (partyId >= PARTY_DRIVER_UNKNOWN_3) {
     partyId %= PARTY_DRIVER_UNKNOWN_3;
   }
