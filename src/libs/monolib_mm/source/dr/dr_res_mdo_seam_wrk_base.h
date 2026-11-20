@@ -83,6 +83,7 @@ public:
   void selectVertex(int index);
   void releaseCache(DrMdoCtlSeamBaseMap *ctl);
   bool seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl);
+  bool seachShadowBaseMapRenderChild(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl, const MdsSeamBaMpTreeData *tree);
   void seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamBaseMap *ctl);
   void stockRenderListBaseMap(int base, u32 kind, u32 index, u32 vertex, bool isAlpha, int unknown);
 
@@ -119,7 +120,9 @@ public:
   u32 *unknowne8;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u32 **unknownf0; // Inferred role: shadow bit tables; original member name unknown.
   u32 unknownf8;   // Inferred role: shadow bit table size; original member name unknown.
-  u8 _fc[0x110 - 0xfc];
+  u8 _fc[0x100 - 0xfc];
+  u32 *unknown100; // Inferred role: shadow bit table of the shadow cache being searched; original member name unknown.
+  u8 _108[0x110 - 0x108];
   unknown504 **unknown110; // Inferred role: first render entries per material; original member name unknown.
   unknown504 **unknown118; // Inferred role: first alpha render entries per material; original member name unknown.
   unknown504 **unknown120; // Inferred role: last render entry per material and kind; original member name unknown.
@@ -155,6 +158,7 @@ static_assert(offsetof(DrResMdoSeamWrkBase, unknown138) == 0x138, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown150) == 0x150, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown158) == 0x158, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknownf0) == 0xf0, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, unknown100) == 0x100, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown170) == 0x170, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown178) == 0x178, "");
 static_assert(sizeof(DrResMdoSeamWrkBase) == 0x180, "");

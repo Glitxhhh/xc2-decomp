@@ -6,6 +6,13 @@
 
 namespace ml {
 
+namespace {
+
+// Inferred helper: rounds a size up to a multiple of 16; original name unknown.
+int unknown113(int size) { return size + (0x10 - size % 0x10) % 0x10; }
+
+} // namespace
+
 DrMdoCtlMpfAuto::DrMdoCtlMpfAuto() : unknown68(0), unknown6c(0), unknown70(0), unknown80(0), unknown84(0) {
   unknownd8 = 0.0f;
   unknownd0 = 0.0f;
@@ -199,6 +206,18 @@ void DrMdoCtlMpfAuto::changeMemAutoMpf(const u8 *data, const u8 *autoData) {
     unknown20 = data + unknown00->unknown58;
     unknown28 = reinterpret_cast<const MdsMpfAutoHlvPoliTree *>(data + unknown00->unknown4c);
   }
+}
+
+int DrMdoCtlMpfAuto::calcWorkSize(const u8 *autoData) {
+  const unknown001 *header = reinterpret_cast<const unknown001 *>(autoData);
+  int size = header->unknown5c == 0 ? 0x78 : 0;
+  size += header->unknown00 * 0x10;
+  size += 0x50;
+  // The game rounds the size up to 16 bytes twice (0x71007f8bb8: two signed remainders by 16 each time), once after the fixed part and once after the
+  // second per-object part. The helper is inlined and matches; the statement written out twice matches as well.
+  size = unknown113(size);
+  size += header->unknown00 * 0x10;
+  return unknown113(size);
 }
 
 } // namespace ml

@@ -5,6 +5,7 @@
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam_base_map.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_alp_tbl.h"
 #include "dr/dr_res_mdo_seam_wrk_base_vertex.h"
 #include "dr/dr_res_mdo_vertex.h"
@@ -131,6 +132,25 @@ void DrResMdoSeamWrkBase::seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, D
     seachDefShadowBaseMapRenderChild(shadow, ctl, unknown38);
     endRender();
   }
+}
+
+// 0x710087fdf4. The id is loaded with ldrsh (0x710087fe2c) and the table indexed through an unsigned register (`ldr x8, [x9, w8, uxtw #3]`, 0x710087fe38), so
+// it goes through a u32 local (same as DrResMdoSeamWrkInst::seachShadowInstMapRender): indexing with `cache.unknown8f2` or an int local gives another sequence.
+bool DrResMdoSeamWrkBase::seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl) {
+  if ((unknown98 & cache.unknown8e8) == 0) {
+    if ((unknown20->unknown00 & 4) == 0) {
+      u32 id = cache.unknown8f2;
+      unknown100 = unknownf0[id];
+      beginRender();
+      bool isRender = seachShadowBaseMapRenderChild(cache, ctl, unknown38);
+      endRender();
+      if (isRender) {
+        return true;
+      }
+    }
+    unknown98 |= cache.unknown8e8;
+  }
+  return false;
 }
 
 void DrResMdoSeamWrkBase::stockRenderListBaseMap(int base, u32 kind, u32 index, u32 vertex, bool isAlpha, int unknown) {

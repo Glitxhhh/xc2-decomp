@@ -1,5 +1,6 @@
 #pragma once
 #include "mm_mtl/fixstr.h"
+#include "types.h"
 
 namespace ml {
 
@@ -10,6 +11,7 @@ public:
   static mm::mtl::FixStr<64> getNoPathExtName(const char *path);
   template <class T> static bool getNoExtName(T &path, const char *name);
   template <class T> static bool getFsaPath(T &path, const char *name);
+  static void htoa(mm::mtl::FixStr<16> &string, u32 value, int digits);
   static void itoa(mm::mtl::FixStr<16> &string, int value, int base);
 };
 

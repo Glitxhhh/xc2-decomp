@@ -134,7 +134,7 @@ void DrResMdoSeamWrkPosMpf::setupMpfEtcPos(int index, DrResMdoSeamMemObj *memObj
   const unknown001 *header = reinterpret_cast<const unknown001 *>(data);
   unknown10 = data;
   unknown00 = data + header->unknown04;
-  unknown08 = data + header->unknown0c;
+  unknown08 = reinterpret_cast<const MdsMpfObjTreeData *>(data + header->unknown0c);
   unknown18 = header->unknown10;
 }
 
@@ -188,7 +188,7 @@ void DrResMdoSeamWrkPosMpf::changeMemCall() {
   const unknown001 *header = reinterpret_cast<const unknown001 *>(data);
   unknown10 = data;
   unknown00 = data + header->unknown04;
-  unknown08 = data + header->unknown0c;
+  unknown08 = reinterpret_cast<const MdsMpfObjTreeData *>(data + header->unknown0c);
 }
 
 } // namespace ml

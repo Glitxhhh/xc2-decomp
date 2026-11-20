@@ -81,6 +81,7 @@ public:
   DrMdoCtlMpfAuto();
   ~DrMdoCtlMpfAuto();
   void setupAutoMpf(const u8 *data, const u8 *autoData, u8 *work);
+  static int calcWorkSize(const u8 *autoData);
   void autoMpfRelease();
   void changeMemAutoMpf(const u8 *data, const u8 *autoData);
   void resetPrePos();
