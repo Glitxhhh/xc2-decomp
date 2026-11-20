@@ -93,7 +93,10 @@ public:
   }
 
   // A count of -1 erases up to the end (mm::mtl::replacestr inlines this test with the count it passes, 1.0.0: 0x71001a86e0).
-  void erase(int pos, int count) {
+  // Returns the string like insert and replace do: GfComEffectCaster::procMessageAsmCallback (1.0.0: 0x710050354c) assigns the result
+  // back to the string (operator= from its own buffer: a second strlen and the assertion at line 221 after each erase). The game has no
+  // out-of-line erase symbol, so the return type is chosen by that use only; `erase(...); s = s.c_str();` gives the same code.
+  FixStr &erase(int pos, int count) {
     if (count == -1) {
       if (pos < m_nLen) {
         resize(pos);
@@ -103,6 +106,7 @@ public:
       __builtin_strcpy(mData + pos, mData + end);
       m_nLen = __builtin_strlen(mData);
     }
+    return *this;
   }
 
   // __LINE__ must be 715, 725 and 726 as in the original header: they are the line arguments of the asserts.
