@@ -74,6 +74,7 @@
 #include "ui/motion/ui_motion_library.h"
 #include "ui/plugin/ui_object_disp_plugin.h"
 #include "ui/plugin/ui_object_dock_plugin.h"
+#include "ui/plugin/ui_object_fit_plugin.h"
 #include "ui/plugin/ui_object_number_plugin.h"
 #include "ui/plugin/ui_object_scroll_bar_plugin.h"
 #include "ui/plugin/ui_object_sync_plugin.h"
@@ -1473,6 +1474,22 @@ void GfMenuObjUtil::createDockPluginEx(u32 handle, u32 target, u32 dockType, con
     plugin->unknown24 = dockType;
     plugin->unknown28 = option.unknown00;
     plugin->unknown30 = option.unknown08;
+    plugin->release();
+  }
+}
+
+// Each flag is one csel between the cleared and the set word, the `and` computed first and `ne` selecting the `orr` (0x71004e0a3c, flags at 0x71004e0a58). Only the negated test gives that order:
+// the positive ternary computes the `orr` first, `if`/`else` with `|=` and `&=` selects with `eq`, and clearing then setting gives branches with intermediate stores.
+void GfMenuObjUtil::createFitPlugin(u32 handle, u32 target, int marginX, int marginY, const FitOption &option) {
+  ui::UIObjectFitPlugin *plugin = ui::UIObjectFitPlugin::create(handle, target, marginX, marginY);
+  if (plugin != nullptr) {
+    plugin->unknown28 = !option.unknown00 ? (plugin->unknown28 & ~ui::UIObjectFitPlugin::FLAG_HALF_SIZE_MARGIN) : (plugin->unknown28 | ui::UIObjectFitPlugin::FLAG_HALF_SIZE_MARGIN);
+    plugin->unknown28 = !option.unknown01 ? (plugin->unknown28 & ~ui::UIObjectFitPlugin::FLAG_KEEP_SCALE_X) : (plugin->unknown28 | ui::UIObjectFitPlugin::FLAG_KEEP_SCALE_X);
+    plugin->unknown28 = !option.unknown02 ? (plugin->unknown28 & ~ui::UIObjectFitPlugin::FLAG_KEEP_SCALE_Y) : (plugin->unknown28 | ui::UIObjectFitPlugin::FLAG_KEEP_SCALE_Y);
+    plugin->unknown20.x = option.unknown04.x;
+    plugin->unknown20.y = option.unknown04.y;
+    plugin->unknown24.x = option.unknown08.x;
+    plugin->unknown24.y = option.unknown08.y;
     plugin->release();
   }
 }
