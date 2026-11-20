@@ -71,6 +71,7 @@ constexpr f32 unknown021 = 0.01f;                                               
 constexpr u32 CROWN_POINT_UNKNOWN_5 = 5;                                          // Inferred role: crown point max; original name unknown.
 constexpr u32 CROWN_POINT_UNKNOWN_1 = 1;                                          // Inferred role: crown point min; original name unknown.
 constexpr u32 TALK_UNKNOWN_32 = 32;                                               // Inferred role: normal talk count; original name unknown.
+constexpr u32 PARTY_UNKNOWN_8 = 8;                                                // Inferred role: party members scanned for field skills; original name unknown.
 
 namespace {
 
@@ -487,6 +488,43 @@ bool GfDataBlade::isFavoriteItem(u32 blade, u32 item) {
   for (u32 favorite = FAVORITE_UNKNOWN_2; favorite <= FAVORITE_UNKNOWN_3; favorite++) {
     if (getFavorite(blade, static_cast<FAVORITE>(favorite)) == item) {
       return true;
+    }
+  }
+
+  return false;
+}
+
+// The game (0x71002a5f64) reads the pouch item again for each use (reference to the pouch, item not kept in a local) and inlines the driver's isFavoriteItem and isFavoriteCategory, while the
+// blade's two functions stay calls (0x710029bee4, 0x710029be10: isFavoriteCategory is not matched yet and stays declared only). `bdatItem` places the item table load before the loop, as the game
+// does (0x71002a5ff4; the call in the loop gives 128 instructions without it). The driver state is set to 0, then to 2 or 1: the game has no separate zero store (its state register holds the item,
+// known to be 0, on the path where the item is 0); this form gives 129 instructions, a ternary 130, an if/else chain with a final else 143 (a local holding the state also gives 129, but adds a
+// variable).
+bool GfDataBlade::getPouchEnhanceFavorite(mm::mtl::FixedVector<EnhanceFavorite, 64> &favorites, u32 blade) {
+  if (blade != 0) {
+    u32 driver = getSDataBlade(blade).unknown04;
+    if (driver != 0) {
+      GfBdatItem *bdatItem = GfBdatItem::get();
+      for (u32 slot = 0; slot < POUCH_UNKNOWN_3; slot++) {
+        SDataPouch &pouch = GfDataDriver::getSDataDriver(driver).unknown584[slot];
+        if (pouch.unknown04 != 0) {
+          u32 enhance = bdatItem->getFavoriteType(pouch.unknown04);
+          if (enhance != 0) {
+            EnhanceFavorite favorite;
+            favorite.unknown00 = 1.0f;
+            favorite.unknown04 = enhance;
+            favorite.unknown06 = 0;
+            if (GfDataDriver::isFavoriteItem(driver, pouch.unknown04)) {
+              favorite.unknown06 = 2;
+            } else if (GfDataDriver::isFavoriteCategory(driver, pouch.unknown04)) {
+              favorite.unknown06 = 1;
+            }
+            favorite.unknown08 = isFavoriteItem(blade, pouch.unknown04) ? 2 : isFavoriteCategory(blade, pouch.unknown04);
+            favorites.push_back(favorite);
+          }
+        }
+      }
+
+      return !favorites.empty();
     }
   }
 
@@ -1645,6 +1683,24 @@ bool GfDataBlade::getListUse(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blade
 
 bool GfDataBlade::getListForAchievement(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
   return unknown001(blades, [](u32 blade) { return (!isActivateUnuse(blade) || isAttachedParty(blade)) && !isDummyBlade(blade) && !isUnselect(blade); });
+}
+
+bool GfDataBlade::getListForFieldSkill(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  blades.clear();
+  for (u32 member = 0; member < PARTY_UNKNOWN_8; member++) {
+    u32 driver = GfDataParty::getDriver(member);
+    if (driver != 0) {
+      int slotNum = GfDataDriver::getMaxSetBladeNum(GfDataDriver::getSDataDriver(driver));
+      for (int slot = 0; slot < slotNum; slot++) {
+        u32 blade = GfDataDriver::getBlade(driver, slot);
+        if (blade != 0 && !isDummyBlade(blade) && !isUnselect(blade)) {
+          blades.push_back(blade);
+        }
+      }
+    }
+  }
+
+  return !blades.empty();
 }
 
 bool GfDataBlade::getListParty(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades, bool unknown001, bool unknown002) {

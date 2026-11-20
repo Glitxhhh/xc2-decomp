@@ -53,6 +53,7 @@ public:
   static void selectDriver(u32 handle, u32 index, u32 state);
   static void selectBlade(u32 handle, u32 index, u32 state);
   static void swapDriver(PtFormContext *, u32, u32);
+  static void swapBlade(PtFormContext *, u32, u32);
 
   u8 _24[0x28 - 0x24];
   PtFormContext unknown28; // Inferred role: party form data; original member name unknown.

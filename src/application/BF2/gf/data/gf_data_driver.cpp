@@ -34,7 +34,6 @@ enum {
 constexpr u32 DRIVER_UNKNOWN_16 = 16;         // Inferred role: driver count; original name unknown.
 constexpr u32 SET_BLADE_UNKNOWN_3 = 3;        // Inferred role: set blade num normal; original name unknown.
 constexpr u32 SET_BLADE_UNKNOWN_5 = 5;        // Inferred role: set blade num rex; original name unknown.
-constexpr u32 POUCH_UNKNOWN_3 = 3;            // Inferred role: pouch count; original name unknown.
 constexpr int SLOT_UNKNOWN_5 = 5;             // Inferred role: death blow per slot; original name unknown.
 constexpr int FILE_INDEX_UNKNOWN_48 = 0x30;   // Inferred role: file index weapon anm; original name unknown.
 constexpr int FILE_INDEX_UNKNOWN_101 = 0x65;  // Inferred role: file index weapon swt; original name unknown.

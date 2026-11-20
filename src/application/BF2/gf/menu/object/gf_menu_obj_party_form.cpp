@@ -1,6 +1,7 @@
 #include "gf/menu/object/gf_menu_obj_party_form.h"
 
 #include "gf/data/gf_data_driver.h"
+#include "gf/menu/adapter/gf_menu_adapter.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
 #include "mm_mtl/fixstr.h"
 #include "ui/event/ui_event_data.h"
@@ -38,6 +39,41 @@ void GfMenuObjPartyForm::selectBlade(u32 handle, u32 index, u32 state) {
   ui::UIObjectAcc image(unknown002(handle, "IMG_blade%02d_%s", index));
   if (image.isValid()) {
     image.startAnimation(unknown001[state], false);
+  }
+}
+
+// The game evaluates the row index twice before each notify loop (two "index < size()" assertions at 0x71004a74b0 for the first row, two more for the second, after the
+// swap's own four), once for the row and once for its id, which is why the id is read again from the context.
+void GfMenuObjPartyForm::swapDriver(PtFormContext *context, u32 first, u32 second) {
+  u32 id = context->unknown00[first].unknown00;
+  context->unknown00[first].unknown00 = context->unknown00[second].unknown00;
+  context->unknown00[second].unknown00 = id;
+  unknown004 &firstRow = context->unknown00[first];
+  u32 firstId = context->unknown00[first].unknown00;
+  for (u32 i = 0; i < firstRow.unknown08.size(); i++) {
+    firstRow.unknown08[i]->changeCharData(3, firstId);
+  }
+  unknown004 &secondRow = context->unknown00[second];
+  u32 secondId = context->unknown00[second].unknown00;
+  for (u32 i = 0; i < secondRow.unknown08.size(); i++) {
+    secondRow.unknown08[i]->changeCharData(3, secondId);
+  }
+}
+
+// Same shape as swapDriver (0x71004a74b0) at 0x71004a7df8, on the blade rows and with the notification type 4.
+void GfMenuObjPartyForm::swapBlade(PtFormContext *context, u32 first, u32 second) {
+  u32 id = context->unknown100[first].unknown00;
+  context->unknown100[first].unknown00 = context->unknown100[second].unknown00;
+  context->unknown100[second].unknown00 = id;
+  unknown004 &firstRow = context->unknown100[first];
+  u32 firstId = context->unknown100[first].unknown00;
+  for (u32 i = 0; i < firstRow.unknown08.size(); i++) {
+    firstRow.unknown08[i]->changeCharData(4, firstId);
+  }
+  unknown004 &secondRow = context->unknown100[second];
+  u32 secondId = context->unknown100[second].unknown00;
+  for (u32 i = 0; i < secondRow.unknown08.size(); i++) {
+    secondRow.unknown08[i]->changeCharData(4, secondId);
   }
 }
 

@@ -315,6 +315,8 @@ public:
   static bool getCommonBladeName(u8 *&bdat, u32 &textId, u32 nameList);
   static u32 getFavorite(u32 blade, FAVORITE favorite);
   static bool isFavoriteItem(u32 blade, u32 item);
+  static bool isFavoriteCategory(u32 blade, u32 item);
+  static bool getPouchEnhanceFavorite(mm::mtl::FixedVector<EnhanceFavorite, 64> &favorites, u32 blade);
   static const char *getFieldSkillVoice(u32 blade, u32 skill);
   static u32 getAchievementQuestPrefix(u32 blade, u32 line, u32 level);
   static void setupAchievQuest(AchievQuest &achievQuest);
@@ -342,7 +344,7 @@ public:
   static bool isActivateUnuse(u32 blade);
   static bool isActivateMercenaryTeam(u32 blade);
   static bool isAttachedParty(u32 blade);
-  static void getListForFieldSkill(mm::mtl::FixedVector<u16, 422> &blades);
+  static bool getListForFieldSkill(mm::mtl::FixedVector<u16, 422> &blades);
   static u32 getStartBlade();
   static u32 getEndBlade();
   static u32 getStartRareBlade();
