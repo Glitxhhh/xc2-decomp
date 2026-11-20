@@ -57,12 +57,12 @@ public:
   // the component read directly after getComponent<T>() (also through a `T &` reference, a local reference to the solver vector, or a named local for the collision object), a helper taking the solver
   // vector or the collision vector, a helper taking GfComBehaviorPc &, a static helper taking the owner for the IK or the collider component, and an `inline` or external-linkage helper with the body
   // of getPropertyComponent.
-  // Forms that keep it (the game's instruction counts): a function taking the component, so that the first user is a call (GfComIK::unknown003, a `const GfComIK &` parameter, getFirstColiObject in
-  // gf_pc_dead_col_check_plugin.cpp), and, for setWaterMode, a function of internal linkage (static, static template or anonymous namespace) taking the owner and returning the component
-  // (getPropertyComponent in gf_pc_state_util_field.cpp): its slot load is promoted into the caller before it is inlined.
-  // Same cause, not matched yet (the same two forms keep the test in a scratch compile): LookAtPlugin::setup (GfComIK::unknown003), StateUtil::reflectionAdsorption (a collision helper) and
-  // StateFieldWallAdsorptionAir::update (a helper taking the property component); GfComBehaviorEnemy::procMsgObjectNotifyDead, GfComBehaviorPc::warpBattle and the other IK functions of StateUtil
-  // show the same symptom.
+  // Forms that keep it (the game's instruction counts): a function taking the component, so that the first user is a call (GfComIK::unknown003, GfComCollider::unknown001, a `const GfComIK &`
+  // parameter, getWallParam in gf_pc_state_field_wall_adsorption_air.cpp) and, for setWaterMode and getWaterHeight, a function of internal linkage (static, static template or anonymous namespace)
+  // taking the owner and returning the component, its slot load being promoted into the caller before it is inlined (getPropertyComponent in gf_pc_state_util_field.cpp, getEnvSensorComponent in
+  // gf_com_property_enemy.cpp). A Mat44 declared before the collider read also keeps it, but GfComCollider::unknown001 keeps it without that local.
+  // Matched with them: LookAtPlugin::setup, StateUtil::reflectionAdsorption, setEnableSpineRotate, setSpineRotateAngles and changeGroundAnglesForMotion, StateFieldWallAdsorptionAir::update,
+  // GfComPropertyEnemy::getWaterHeight, GfComBehaviorPc::warpBattle and warpExternal. GfComBehaviorEnemy::procMsgObjectNotifyDead keeps the test the same way but still differs in registers.
   template <typename T> T *getComponent() const {
     ComponentObject *component = unknown38[T::COMPONENT_INDEX];
     if (component == nullptr) {
