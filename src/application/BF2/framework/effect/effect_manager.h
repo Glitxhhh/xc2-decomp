@@ -32,6 +32,7 @@ class IAllocator;
 
 namespace ml {
 class DrMdlObj;
+struct DrMdlAfterImageParams;
 struct VolumeFadeParams;
 class IDrDrawWorkInfo;
 class Scn;
@@ -120,6 +121,7 @@ public:
   virtual void updateLayerPost(const UpdateInfo &info, u32 layers);
   virtual void tail(const UpdateInfo &info, bool flag);
   bool isCommonLoaded();
+  bool getAfterImageParams(u32 headIndex, u32 tailIndex, ml::DrMdlAfterImageParams &params);
   bool commonLoaded();
   void getNum(u32 &emitterNum, u32 &particleNum, u32 &drawNum);
   void es_clearall(bool isForce);

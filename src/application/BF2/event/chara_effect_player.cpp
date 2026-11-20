@@ -41,18 +41,21 @@ void CharaEffectPlayer::destroy() {
   unknown08 = 0;
 }
 
+// Inferred role: model component of the object behind a handle, null when there is no object; original name unknown.
+static gf::GfComModel *unknown001(gf::GF_OBJ_HANDLE *handle) {
+  gf::GfObj *obj = gf::GfObjUtil::getObj(handle);
+  return obj != nullptr ? obj->getComponent<gf::GfComModel>() : nullptr;
+}
+
 void CharaEffectPlayer::stopAfterImage() {
   if (unknown10 == gf::unknown020 || !(unknown08 & FLAG_UNKNOWN_3)) {
     return;
   }
 
-  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown10);
-  if (obj != nullptr) {
-    gf::GfComModel *model = obj->getComponent<gf::GfComModel>();
-    if (model != nullptr) {
-      ml::ScnObjAccResMdlInfo info(model->unknown18->getInterface());
-      info.releaseAfterImage();
-    }
+  gf::GfComModel *model = unknown001(unknown10);
+  if (model != nullptr) {
+    ml::ScnObjAccResMdlInfo info(model->unknown18->getInterface());
+    info.releaseAfterImage();
   }
   unknown08 &= ~FLAG_UNKNOWN_3;
 }
@@ -80,13 +83,10 @@ void CharaEffectPlayer::stopVolumeFade(VF_TYPE type) {
 
   u32 fadeFlag = type == VF_TYPE_UNKNOWN_1 ? FLAG_UNKNOWN_1 : FLAG_UNKNOWN_0;
   if (unknown08 & fadeFlag) {
-    gf::GfObj *obj = gf::GfObjUtil::getObj(unknown10);
-    if (obj != nullptr) {
-      gf::GfComModel *model = obj->getComponent<gf::GfComModel>();
-      if (model != nullptr) {
-        ml::ScnObjAccVolumeFade fade(model->unknown18->getInterface());
-        fade.setRatio(0.0f, unknown70[type]);
-      }
+    gf::GfComModel *model = unknown001(unknown10);
+    if (model != nullptr) {
+      ml::ScnObjAccVolumeFade fade(model->unknown18->getInterface());
+      fade.setRatio(0.0f, unknown70[type]);
     }
     unknown08 &= ~fadeFlag;
   }
@@ -206,6 +206,30 @@ void CharaEffectPlayer::playRimBloom(int id) {
   }
   unknown2a0 = id;
   unknown08 |= FLAG_UNKNOWN_2;
+}
+
+void CharaEffectPlayer::playAfterImage(int id, int count, f32 interval, f32 alpha, f32 life) {
+  if (((unknown08 & FLAG_UNKNOWN_3) == 0 || unknown2a4 != id || unknown2a8 != count || unknown2ac != interval || unknown2b0 != alpha || unknown2b4 != life) && unknown10 != gf::unknown020) {
+    gf::GfObjAcc acc(unknown10);
+    mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("afterImage %s %d %d", acc.getDebugName(), id, count);
+    stopAfterImage();
+    ml::DrMdlAfterImageParams params;
+    fw::EffectManager::get()->getAfterImageParams(id, count, params);
+    params.unknown00 = interval;
+    params.unknown04 = alpha;
+    params.unknown08 = life;
+    gf::GfComModel *model = unknown001(unknown10);
+    if (model != nullptr) {
+      ml::ScnObjAccResMdlInfo info(model->unknown18->getInterface());
+      info.createAfterImage(params);
+    }
+    unknown2a4 = id;
+    unknown2a8 = count;
+    unknown2ac = interval;
+    unknown2b0 = alpha;
+    unknown2b4 = life;
+    unknown08 |= FLAG_UNKNOWN_3;
+  }
 }
 
 } // namespace event
