@@ -82,9 +82,11 @@ public:
   static void waitWeightVtx();
   static void waitBeginWeightVtx();
 
-  DrResChkList *(*unknown190)[8]; // Inferred role: render list per mdl and render type; original member name unknown.
-  DrResChkList *unknown198;       // Inferred role: render list entries; original member name unknown.
-  s32 unknown1a0;                 // Inferred role: render list entry count; original member name unknown.
+  // Inferred role: render list per mdl and render type, a flat table of 8 types per mdl: DrMdoCtlMpf::defMpfZPreRender addresses it with a 32-bit i * 8 (0x71007faa5c);
+  // original member name unknown.
+  DrResChkList **unknown190;
+  DrResChkList *unknown198; // Inferred role: render list entries; original member name unknown.
+  s32 unknown1a0;           // Inferred role: render list entry count; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoCtl, unknown190) == 0x190, "");

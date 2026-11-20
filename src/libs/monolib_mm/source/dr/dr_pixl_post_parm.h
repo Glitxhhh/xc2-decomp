@@ -6,9 +6,9 @@
 namespace ml {
 
 // Inferred role: g buff debug range; original type name unknown.
+// Evidence: DrPixlMan::debugGBuffRender reads the two values of an entry through one loop index, the scene accessor writes them as min and max.
 struct unknown038 {
-  f32 unknown00; // Inferred role: min; original member name unknown.
-  f32 unknown04; // Inferred role: max; original member name unknown.
+  f32 unknown00[2]; // Inferred role: min and max; original member name unknown.
 };
 
 static_assert(sizeof(unknown038) == 0x8, "");
@@ -231,9 +231,9 @@ public:
   u8 _01f4[0x01fc - 0x01f4];
   bool m_motBlur2;
   u8 _01fd[0x0200 - 0x01fd];
-  f32 unknown200; // Inferred role: first component of the motion blur 2 dpch vector (DrPixlPostObjMotionBlur2::calcBlurWork, 0x71008bc294); original member name unknown.
-  f32 unknown204; // Inferred role: fourth component of the motion blur 2 dpch vector (the game loads it with unknown200 as one 64 bit pair, as two f32 members do); original member name unknown.
-  u8 _0208[0x020c - 0x0208];
+  f32 unknown200;  // Inferred role: first component of the motion blur 2 dpch vector (DrPixlPostObjMotionBlur2::calcBlurWork, 0x71008bc294); original member name unknown.
+  f32 unknown204;  // Inferred role: fourth component of the motion blur 2 dpch vector (the game loads it with unknown200 as one 64 bit pair, as two f32 members do); original member name unknown.
+  f32 unknown208;  // Inferred role: motion blur 2 velocity blur scale, tested against zero and multiplied into the sizes by DrPixlPostObjMotionBlur2::calcVelocityBlur; original member name unknown.
   f32 unknown20c;  // Inferred role: second component of the motion blur 2 dpch vector; original member name unknown.
   f32 unknown210;  // Inferred role: third component of the motion blur 2 dpch vector, multiplied by the unknown798 of the view work; original member name unknown.
   f32 unknown214;  // Inferred role: motion blur 2 strength of the blur parameter; original member name unknown.
@@ -282,9 +282,8 @@ public:
   u8 _02d4[0x0304 - 0x02d4];
   bool unknown304; // Inferred role: deffered color; original member name unknown.
   u8 _0305[0x0320 - 0x0305];
-  unknown038 unknown320[5]; // Inferred role: g buff debug ranges; original member name unknown.
-  u8 _0348[0x0360 - 0x0348];
-  f32 unknown360; // Inferred role: shadow str; original member name unknown.
+  unknown038 unknown320[8]; // Inferred role: g buff debug ranges; original member name unknown. The scene accessor writes the first five, DrPixlMan::debugGBuffRender reads all eight.
+  f32 unknown360;           // Inferred role: shadow str; original member name unknown.
   u8 _0364[0x037c - 0x0364];
   f32 unknown37c; // Inferred role: shadow chache angle; original member name unknown.
   u8 _0380[0x03b8 - 0x0380];
@@ -400,10 +399,11 @@ public:
   u8 _10a0[0x10c0 - 0x10a0];
   u32 unknown10c0; // Inferred role: rain drop fade frames; original member name unknown.
   u8 _10c4[0x10d4 - 0x10c4];
-  f32 unknown10d4; // Inferred role: first area parameter, set from the seam resource area table; original member name unknown.
-  f32 unknown10d8; // Inferred role: second area parameter, set from the seam resource area table; original member name unknown.
-  f32 unknown10dc; // Inferred role: third area parameter, set from the seam resource area table; original member name unknown.
-  u8 _10e0[0x10fc - 0x10e0];
+  f32 unknown10d4;    // Inferred role: first area parameter, set from the seam resource area table; original member name unknown.
+  f32 unknown10d8;    // Inferred role: second area parameter, set from the seam resource area table; original member name unknown.
+  f32 unknown10dc;    // Inferred role: third area parameter, set from the seam resource area table; original member name unknown.
+  s32 unknown10e0[4]; // Inferred role: g buff debug counts; original member name unknown.
+  u8 _10f0[0x10fc - 0x10f0];
   bool unknown10fc; // Inferred role: attri menu closed; original member name unknown.
   u8 _10fd[0x10fe - 0x10fd];
   bool unknown10fe; // Inferred role: disp reduction; original member name unknown.
@@ -486,6 +486,7 @@ static_assert(offsetof(DrPixlPostParm, unknown1f0) == 0x01f0, "");
 static_assert(offsetof(DrPixlPostParm, m_motBlur2) == 0x01fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown200) == 0x0200, "");
 static_assert(offsetof(DrPixlPostParm, unknown204) == 0x0204, "");
+static_assert(offsetof(DrPixlPostParm, unknown208) == 0x0208, "");
 static_assert(offsetof(DrPixlPostParm, unknown20c) == 0x020c, "");
 static_assert(offsetof(DrPixlPostParm, unknown210) == 0x0210, "");
 static_assert(offsetof(DrPixlPostParm, unknown214) == 0x0214, "");
@@ -584,6 +585,7 @@ static_assert(offsetof(DrPixlPostParm, unknown109c) == 0x109c, "");
 static_assert(offsetof(DrPixlPostParm, unknown10c0) == 0x10c0, "");
 static_assert(offsetof(DrPixlPostParm, unknown10d4) == 0x10d4, "");
 static_assert(offsetof(DrPixlPostParm, unknown10dc) == 0x10dc, "");
+static_assert(offsetof(DrPixlPostParm, unknown10e0) == 0x10e0, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fc) == 0x10fc, "");
 static_assert(offsetof(DrPixlPostParm, unknown10fe) == 0x10fe, "");
 static_assert(offsetof(DrPixlPostParm, unknown1105) == 0x1105, "");
