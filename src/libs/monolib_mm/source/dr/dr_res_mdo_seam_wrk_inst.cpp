@@ -3,8 +3,12 @@
 #include <string.h>
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_mdo_ctl_seam_inst_map.h"
+#include "dr/dr_mdo_mat.h"
+#include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_occ_query.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_inst_anm_obj.h"
@@ -14,6 +18,7 @@
 #include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_seam_wrk_pos_inst.h"
 #include "dr/dr_res_mdo_vertex.h"
+#include "dr/dr_res_occ_uniform_obj.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
@@ -346,6 +351,35 @@ void DrResMdoSeamWrkInst::seachDefShadowInstMapRender(DrPixlShadowObj *shadow, D
       const unknown405 *etcData = reinterpret_cast<const unknown405 *>(unknown128->unknown00);
       for (int j = 0; j < etcData->unknown18; j++) {
         seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->unknown18 + j);
+      }
+    }
+  }
+}
+
+// 0x71008896d0. The game holds the body for the two render lists (unknown160[1] at 0x7100889744, unknown160[2] at 0x7100889824) twice; the loop over the list type
+// is unrolled by Clang 3.9.1 and matches. DrMdoCtlPos::occRender (0x710081828c, not decompiled yet) has the same body.
+void DrResMdoSeamWrkInst::occRender() {
+  if (unknown1b0 != nullptr) {
+    DrPixlOccQuery *query = DrMan::getIns()->unknown78->unknown7f8;
+    DrResOccUniformObj *uniform = DrMan::getIns()->unknown88->unknown038;
+    for (unknown002 *info = unknown1b0; info != nullptr; info = info->unknown18) {
+      u32 index = info->unknown0c;
+      const s16 *posNum = &unknown50->unknown168[index].unknown28;
+      for (int type = 1; type < 3; type++) {
+        for (DrResMdoPos *pos = unknown160[type][index]; pos != nullptr; pos = pos->unknown10) {
+          u16 flags = pos->unknown1e;
+          if ((flags & 0xf) != 0) {
+            u32 bits = 0;
+            int count = 0;
+            for (int i = 0; i < *posNum; i++) {
+              if ((1 << i) & flags) {
+                bits |= 1 << i;
+                count++;
+              }
+            }
+            query->occRenderPosAABB(&pos->unknown00_1, uniform->getMatTbl(pos->unknown20), &bits, count);
+          }
+        }
       }
     }
   }

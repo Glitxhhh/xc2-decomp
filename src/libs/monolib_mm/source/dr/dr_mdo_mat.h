@@ -430,11 +430,14 @@ struct MdsMdlTopHeader {
   u8 _08[0x0c - 0x08];
   f32 unknown0c[3]; // Inferred role: aabb max; original member name unknown.
   f32 unknown18[3]; // Inferred role: aabb min; original member name unknown.
-  u8 _24[0x44 - 0x24];
+  u8 _24[0x28 - 0x24];
+  s16 unknown28; // Inferred role: occlusion position count; original member name unknown.
+  u8 _2a[0x44 - 0x2a];
 };
 
 static_assert(offsetof(MdsMdlTopHeader, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsMdlTopHeader, unknown18) == 0x18, "");
+static_assert(offsetof(MdsMdlTopHeader, unknown28) == 0x28, "");
 static_assert(sizeof(MdsMdlTopHeader) == 0x44, "");
 
 // Inferred role: flag wave uniform table; original type name unknown.

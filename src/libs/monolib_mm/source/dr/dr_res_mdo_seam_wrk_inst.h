@@ -96,7 +96,10 @@ class DrResMdoSeamWrkInst : public unknown133<DrResMdoSeamWrkInst> {
 public:
   // Inferred role: model info of the instance map; original type name unknown.
   struct unknown002 {
-    u8 _00[0x20];
+    u8 _00[0x0c];
+    u16 unknown0c; // Inferred role: mdl entry index; original member name unknown.
+    u8 _0e[0x18 - 0x0e];
+    unknown002 *unknown18; // Inferred role: next model info of the occlusion list; original member name unknown.
   };
 
   DrResMdoSeamWrkInst();
@@ -180,12 +183,14 @@ public:
   u8 _152[0x156 - 0x152];
   u16 unknown156; // Inferred role: shadow flags; original member name unknown.
   u32 unknown158; // Inferred role: shadow cache flags; original member name unknown.
-  u8 _15c[0x198 - 0x15c];
+  u8 _15c[0x160 - 0x15c];
+  DrResMdoPos **unknown160[3]; // Inferred role: render list heads per mdl entry, one list per render type; original member name unknown.
+  u8 _178[0x198 - 0x178];
   DrResMdoPntAlphaMan *unknown198; // Inferred role: point alpha manager; original member name unknown.
   unknown002 *unknown1a0;          // Inferred role: model infos; original member name unknown.
   u8 _1a8[0x1b0 - 0x1a8];
-  void *unknown1b0; // Inferred role: unknown work, cleared by the constructor; original member name unknown.
-  void *unknown1b8; // Inferred role: unknown work, cleared by the constructor; original member name unknown.
+  unknown002 *unknown1b0; // Inferred role: head of the occlusion model info list, cleared by the constructor; original member name unknown.
+  unknown002 *unknown1b8; // Inferred role: tail of the occlusion model info list, cleared by the constructor; original member name unknown.
   u8 _1c0[0x1c8 - 0x1c0];
 };
 
@@ -217,8 +222,12 @@ static_assert(offsetof(DrResMdoSeamWrkInst, unknown140) == 0x140, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown14c) == 0x14c, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown150) == 0x150, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown156) == 0x156, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown160) == 0x160, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown198) == 0x198, "");
 static_assert(offsetof(DrResMdoSeamWrkInst, unknown1a0) == 0x1a0, "");
+static_assert(offsetof(DrResMdoSeamWrkInst, unknown1b0) == 0x1b0, "");
+static_assert(offsetof(DrResMdoSeamWrkInst::unknown002, unknown0c) == 0x0c, "");
+static_assert(offsetof(DrResMdoSeamWrkInst::unknown002, unknown18) == 0x18, "");
 static_assert(sizeof(DrResMdoSeamWrkInst::unknown002) == 0x20, "");
 static_assert(sizeof(DrResMdoSeamWrkInst) == 0x1c8, "");
 

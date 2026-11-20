@@ -56,12 +56,13 @@ struct unknown504 {
   u16 unknown04; // Inferred role: index of the next entry plus one; original member name unknown.
   u16 unknown06; // Inferred role: vertex index; original member name unknown.
   u16 unknown08; // Inferred role: unknown, set by the render list call; original member name unknown.
-  u8 _0a[0x0c - 0x0a];
+  u16 unknown0a; // Inferred role: flags, bit 1 selects the dither of the z pre pass; original member name unknown.
 };
 
 static_assert(offsetof(unknown504, unknown04) == 0x04, "");
 static_assert(offsetof(unknown504, unknown06) == 0x06, "");
 static_assert(offsetof(unknown504, unknown08) == 0x08, "");
+static_assert(offsetof(unknown504, unknown0a) == 0x0a, "");
 static_assert(sizeof(unknown504) == 0x0c, "");
 
 class DrResMdoSeamWrkBase : public unknown133<DrResMdoSeamWrkBase> {
