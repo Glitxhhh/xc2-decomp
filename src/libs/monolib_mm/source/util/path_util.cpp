@@ -56,4 +56,21 @@ void PathUtil::htoa(mm::mtl::FixStr<16> &string, u32 value, int digits) {
   }
 }
 
+// 1.0.0: 0x710075bd0c. Replaces the extension of name by ext (a dot is added when ext has none); the search is the inlined FixStr::unknown004.
+bool PathUtil::changeExt(mm::mtl::FixStr<256> &path, const char *name, const char *ext) {
+  if (name == nullptr || ext == nullptr) {
+    return false;
+  }
+  path = name;
+  int dot = path.unknown004('.');
+  if (dot != -1) {
+    path.erase(dot, -1);
+  }
+  if (strchr(ext, '.') == nullptr) {
+    path += ".";
+  }
+  path += ext;
+  return true;
+}
+
 } // namespace ml

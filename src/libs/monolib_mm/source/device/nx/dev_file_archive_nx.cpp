@@ -9,6 +9,7 @@
 #include "ml/work_cpu.h"
 #include "mm_mtl/fixstr.h" // IWYU pragma: keep
 #include "mm_mtl/internal/fixed_object_allocator.h"
+#include "mm_mtl/str_util.h"
 #include "mm_mtl/tuple.h" // IWYU pragma: keep
 #include "mm_thread/mm_thread_csection.h"
 #include "nn/fs.h" // IWYU pragma: keep
@@ -177,6 +178,19 @@ DevFileJobTh *DevFileArchiveNx::createLoader(mtl::ALLOC_HANDLE handle) { return 
 DevFileJobTh *DevFileArchiveNx::createWriter(mtl::ALLOC_HANDLE handle) { return nullptr; }
 
 DevFileJobTh *DevFileArchiveNx::createFileValid(mtl::ALLOC_HANDLE handle) { return new (handle) DevFileJobValidArcNxTh(); }
+
+// 1.0.0: 0x710072e640. Turns the backslashes into slashes, makes the path absolute and lower-cases it from its last separator (mm::mtl::unknown002).
+void DevFileArchiveNx::normalizeFileName(mm::mtl::FixStr<256> &fileName) {
+  for (int i = 0; i < fileName.length(); i++) {
+    if (fileName[i] == '\\') {
+      fileName[i] = '/';
+    }
+  }
+  if (fileName[0] != '/') {
+    fileName.insert(0, 1, '/');
+  }
+  mm::mtl::unknown002(fileName);
+}
 
 bool DevFileArchiveNx::rfRead(FileHandleTh *handle, const DevFileParamTh &param) {
   if (handle == nullptr) {

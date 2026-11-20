@@ -54,6 +54,36 @@ public:
     return -1;
   }
 
+  // Inferred role: index of the last occurrence of ch, -1 when missing (the game inlines it everywhere, 1.0.0: PathUtil::getFsaPath<FixStr<128>>
+  // 0x7100169e4c, getNoExtName<FixStr<256>> 0x710019e430, changeExt 0x710075bd0c, GfMenuMapInfo::initialize 0x71003c5fb0, the lower-casing
+  // helper of mm::mtl::unknown002, ScriptManager::makeFullPath 0x710019e240, GfDebugUtil::getSaveDataPath 0x71002cf75c...); no game symbol, original
+  // name unknown. Documented exception per decision 55 of work/decisions-2026-11-14.md: the integer round trip below is allowed only in this helper.
+  // The game's loop keeps `mData - 1` hoisted in one register (`sub x11, x19, #1 ; ldrb w13, [x11, x12]`, exit `add w12, w11, w12 ; sub w12, w12, w13`).
+  // Three ingredients, each needed (forms tried: work/leftovers/oc-dec-fixstrsearch/FixStrSearch2_report.md, about 700 compiles):
+  // 1. The base goes through an integer. The address SCEV `{(-1 + mData),+,-1}` merges the -1, LSR on AArch64 cannot fold reg + reg + imm and
+  //    emits `add x9, x19, x8 ; ldurb [x9, #-1]`; only an SCEV-opaque base (a SCEVUnknown) is kept as one register. Every natural form (int, long,
+  //    unsigned counters, `base[i]`, `s[i - 1]`, pointer or reverse-iterator loops, select or phi bases) gives the LSR form, a third counter or a csel.
+  // 2. Accessors c_str()/length() rather than mData/m_nLen. A call in the found block keeps SimplifyCFG's two-entry-PHI folding from speculating the
+  //    found block's `ptrtoint/sub/trunc` into the loop before the inliner runs (the second search, whose found edge goes into the join, otherwise
+  //    keeps the arithmetic in the loop and LSR emits `add x12, x11, x10 ; ldrb [x12]`).
+  // 3. A do-while behind the `length() != 0` guard. The second loop then has a preheader that falls through to its header, so early tail duplication
+  //    keeps it and MachineLICM hoists the `mov w12, #-1` of the join phi into it; a for loop gives the `mov` after the loop and another char register.
+  // Result, with this one helper: getFsaPath, getNoExtName, changeExt, GfMenuMapInfo::initialize, getMapInfoIndex, normalizeFileName,
+  // makeFullPath and getSaveDataPath match byte for byte.
+  int unknown004(char ch) const {
+    if (length() != 0) {
+      const char *base = reinterpret_cast<const char *>(reinterpret_cast<size_t>(c_str()) - 1);
+      long i = length();
+      do {
+        const char *p = base + i;
+        if (*p == ch) {
+          return p - c_str();
+        }
+      } while (--i != 0);
+    }
+    return -1;
+  }
+
   FixStr &operator+=(const char *pszBack) {
     // __LINE__ must be 485 and 487 as in the original header: they are the line arguments of the asserts.
 #line 485
