@@ -140,6 +140,102 @@ void DrMdoSetup::updateMpfMatUniformBlock() {
   }
 }
 
+void DrMdoSetup::getSetupMaterial(MdoWrkMatSetupArg &arg, const MdsMatInfoHeader *header, int mode) {
+  arg.unknown00 = header->unknown2f;
+  arg.unknown04 = header->unknown04 & 1;
+  arg.unknown08 = header->unknown2e;
+  arg.unknown0c = header->unknown29;
+  arg.unknown10 = header->unknown2d;
+  arg.unknown14 = header->unknown2c;
+  // The game loads unknownf2 with ldrh here (0x710082dd18) while getShdIdx sign-extends it, so the switch takes the unsigned value.
+  switch (static_cast<u16>(unknownf2)) {
+  case 1:
+    if (arg.unknown00 == 0) {
+      arg.unknown0c = 1;
+      arg.unknown00 = 1;
+    }
+    arg.unknown10 = 0;
+    arg.unknown14 = 0;
+    break;
+  default:
+    if (unknownf2 == 4) {
+      arg.unknown04 = 0;
+      arg.unknown10 = 0;
+      arg.unknown14 = 0;
+      if ((header->unknown04 & MdsMatInfoHeader::unknown015_26) || unknowne0 < 1.0f) {
+        arg.unknown08 = 3;
+        arg.unknown0c = 0;
+      }
+    } else {
+      arg.unknown0c = 0;
+      if (header->unknown04 & MdsMatInfoHeader::unknown015_2) {
+        // Two arms storing 1 (0x710082de44 tests the byte at +0xfa, then bit 25 of the flags): one condition with || makes clang merge both tests into one branch.
+        if (unknownf8 & unknown028_23) {
+          arg.unknown04 = 1;
+        } else if (header->unknown04 & MdsMatInfoHeader::unknown015_25) {
+          arg.unknown04 = 1;
+        } else {
+          arg.unknown04 = 0;
+          arg.unknown08 = 3;
+        }
+      } else if (!(header->unknown08 & MdsMatInfoHeader::unknown030_9) && (unknownfc & unknown027_11) && header->unknown28 == 0 &&
+                 !(header->unknown04 & (MdsMatInfoHeader::unknown015_6 | MdsMatInfoHeader::unknown015_25)) && mode != 8) {
+        arg.unknown04 = 0;
+        arg.unknown08 = 3;
+      } else {
+        arg.unknown04 = 1;
+      }
+      if ((arg.unknown14 & 8) == 0) {
+        arg.unknown14 |= 8;
+      } else {
+        arg.unknown14 &= ~8;
+      }
+      // Ruling 8: the two tests of unknown08 (and the unknown027_24 test after them) are written out in the default, case 7 and case 8 arms, as the game holds them
+      // in each (0x710082de7c, 0x710082ddcc, 0x710082de0c; 0x710082de9c, 0x710082de34). A file-local helper over `arg` is inlined into other code (case 8 keeps its
+      // constant 8 out of the select the game folds into lsr/and, 0x710082de10), and one taking and returning the flags by value merges the two tests into a single
+      // load and mask, because the game stores arg.unknown14 and reloads unknown08 between them (0x710082de88, 0x710082de8c).
+      if (header->unknown08 & MdsMatInfoHeader::unknown030_12) {
+        arg.unknown14 |= 0x40;
+      }
+      if (header->unknown08 & MdsMatInfoHeader::unknown030_13) {
+        arg.unknown14 |= 0x80;
+      }
+      if (!(unknownfc & unknown027_24)) {
+        arg.unknown14 |= 2;
+      }
+    }
+    if (unknownfc & unknown027_4) {
+      arg.unknown10 = 1;
+      arg.unknown14 |= 0x80;
+    }
+    break;
+  case 7:
+    arg.unknown04 = 0;
+    if (header->unknown08 & MdsMatInfoHeader::unknown030_12) {
+      arg.unknown14 |= 0x40;
+    }
+    if (header->unknown08 & MdsMatInfoHeader::unknown030_13) {
+      arg.unknown14 |= 0x80;
+    }
+    break;
+  case 8:
+    arg.unknown0c = (header->unknown04 & MdsMatInfoHeader::unknown015_10) == 0 ? 7 : 0;
+    arg.unknown10 = 1;
+    arg.unknown14 = 8;
+    if (header->unknown08 & MdsMatInfoHeader::unknown030_12) {
+      arg.unknown14 |= 0x40;
+    }
+    if (header->unknown08 & MdsMatInfoHeader::unknown030_13) {
+      arg.unknown14 |= 0x80;
+    }
+    if (!(unknownfc & unknown027_24)) {
+      arg.unknown14 |= 2;
+    }
+    break;
+  }
+  arg.unknown14 &= ~0x20;
+}
+
 void DrMdoSetup::setupPrePassShader(int index, const MdsMatInfoHeader *header, int uniformIndex, int unused) {
   DrMdoShdSetPrePass shdSet;
   shdSet.unknown00 = this;
@@ -315,7 +411,7 @@ int DrMdoSetup::unimate_matColor(f32 *work, DrResMdoMat *mat, const MdsMatInfoHe
     work[2] = powf(mat->unknown08.b, gamma);
   }
   f32 alpha = mat->unknown08.a;
-  if ((header->unknown09 & 1) == 0) {
+  if ((header->unknown08 & MdsMatInfoHeader::unknown030_8) == 0) {
     alpha *= unknowne0;
   }
   work[3] = alpha;
@@ -326,7 +422,7 @@ int DrMdoSetup::unimate_alphaInfo(f32 *work, DrResMdoMat *mat, const MdsMatInfoH
   work[0] = 1.0f;
   work[1] = mat->unknown18;
   f32 alpha = mat->unknown08.a;
-  if ((header->unknown09 & 1) == 0) {
+  if ((header->unknown08 & MdsMatInfoHeader::unknown030_8) == 0) {
     alpha *= unknowne0;
   }
   work[2] = alpha;
@@ -651,7 +747,7 @@ void DrMdoSetup::varStTex_FlagWaveTex1(const MdsMatInfoHeader *header, u32 locat
 void DrMdoSetup::varStTex_DitherTex(const MdsMatInfoHeader *header, u32 location, u32 index) {
   DrAPCache *cache = m_drMan->unknown5c0;
   const grlib::CGLibTextureBuffer *texture;
-  if ((header->unknown09 & 4) == 0) {
+  if ((header->unknown08 & MdsMatInfoHeader::unknown030_10) == 0) {
     cache->beginTexSampling(2, 0);
     texture = &m_drMan->unknown70->unknown98[1];
   } else {

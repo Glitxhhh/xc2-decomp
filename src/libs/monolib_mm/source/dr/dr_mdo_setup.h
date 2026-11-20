@@ -8,7 +8,6 @@ namespace ml {
 class DrResMdoMat;
 struct DrResMpfSampler;
 class DrShdDataList;
-struct MdoWrkMatSetupArg;
 struct MdsMatInfoHeader;
 struct MdsMpfMatInfoHeader;
 struct MdsMatTechnique;
@@ -53,6 +52,20 @@ static_assert(offsetof(MdsMpfMatExtData, unknown18) == 0x18, "");
 static_assert(offsetof(MdsMpfMatExtData, unknown20) == 0x20, "");
 static_assert(offsetof(MdsMpfMatExtData, unknown24) == 0x24, "");
 static_assert(sizeof(MdsMpfMatExtData) == 0x34, "");
+
+// Name from the game symbol _ZN2ml10DrMdoSetup16getSetupMaterialERNS_17MdoWrkMatSetupArgEPKNS_16MdsMatInfoHeaderEi. Size: six words are written
+// (0x710082dce4 to 0x710082dd14) and the callers keep the object at sp+8, below the registers saved at sp+0x20 (setupMaterial 0x710082def0,
+// setupZPrePassPartsMaterial 0x71007f6d40).
+struct MdoWrkMatSetupArg {
+  s32 unknown00; // Inferred role: render type; original member name unknown.
+  s32 unknown04; // Inferred role: depth write; original member name unknown.
+  s32 unknown08; // Inferred role: depth test; original member name unknown.
+  s32 unknown0c; // Inferred role: alpha blend; original member name unknown.
+  s32 unknown10; // Inferred role: stencil; original member name unknown.
+  s32 unknown14; // Inferred role: stencil reference and flags; original member name unknown.
+};
+
+static_assert(sizeof(MdoWrkMatSetupArg) == 0x18, "");
 
 class DrMdoSetup : public DrMdoNode {
 public:
