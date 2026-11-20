@@ -252,6 +252,61 @@ struct alignas(16) Mat44 {
     return a00 * (a11 * a22 - a12 * a21) - a01 * (a10 * a22 - a12 * a20) + a02 * (a10 * a21 - a20 * a11);
   }
 
+  // Inferred 2x2 minor of rows p and q, columns a and b; original name unknown.
+  static f32 unknown013(const f32 (&m)[4][4], u32 p, u32 q, u32 a, u32 b) { return m[p][a] * m[q][b] - m[q][a] * m[p][b]; }
+
+  // Inferred in-place adjugate/determinant inverse; original helper name unknown.
+  // Matches fw::CameraLayer::getMtx (1.0.0: 0x71001577d0, 244 instructions) and
+  // event::PosAxis/TarAxis::calcOrigMatInv (0x7100094298 / 0x71000961c4, 279 each).
+  // The game builds the signed first column from 2x2 minors, checks the
+  // determinant, computes the other twelve cofactors, then normalizes every
+  // element of a temporary matrix explicitly and assigns it back. Forms that did
+  // not match CameraLayer::getMtx: sixteen scalar cofactors written straight to
+  // the matrix (243 instructions), unknown003's column-argument 3x3 expansion
+  // (262), the same with a normalization loop (267).
+  __attribute__((always_inline)) void unknown012() {
+    const auto &m = rows;
+    Mat44 result;
+    result.rows[0][0] = m[1][1] * unknown013(m, 2, 3, 2, 3) - m[1][2] * unknown013(m, 2, 3, 1, 3) + m[1][3] * unknown013(m, 2, 3, 1, 2);
+    result.rows[1][0] = -(m[1][0] * unknown013(m, 2, 3, 2, 3) - m[1][2] * unknown013(m, 2, 3, 0, 3) + m[1][3] * unknown013(m, 2, 3, 0, 2));
+    result.rows[2][0] = m[1][0] * unknown013(m, 2, 3, 1, 3) - m[1][1] * unknown013(m, 2, 3, 0, 3) + m[1][3] * unknown013(m, 2, 3, 0, 1);
+    result.rows[3][0] = -(m[1][0] * unknown013(m, 2, 3, 1, 2) - m[1][1] * unknown013(m, 2, 3, 0, 2) + m[1][2] * unknown013(m, 2, 3, 0, 1));
+    f32 det = m[0][0] * result.rows[0][0] + m[0][1] * result.rows[1][0] + m[0][2] * result.rows[2][0] + m[0][3] * result.rows[3][0];
+    if (!(fabsf(det) > 1.0e-6f)) {
+      MMStdBase::mmAssert("mm::abs(det) > MM_FLOAT_EPSILON", __FILE__, 2993);
+    }
+    result.rows[0][1] = -(m[0][1] * unknown013(m, 2, 3, 2, 3) - m[0][2] * unknown013(m, 2, 3, 1, 3) + m[0][3] * unknown013(m, 2, 3, 1, 2));
+    result.rows[0][2] = m[0][1] * unknown013(m, 1, 3, 2, 3) - m[0][2] * unknown013(m, 1, 3, 1, 3) + m[0][3] * unknown013(m, 1, 3, 1, 2);
+    result.rows[0][3] = -(m[0][1] * unknown013(m, 1, 2, 2, 3) - m[0][2] * unknown013(m, 1, 2, 1, 3) + m[0][3] * unknown013(m, 1, 2, 1, 2));
+    result.rows[1][1] = m[0][0] * unknown013(m, 2, 3, 2, 3) - m[0][2] * unknown013(m, 2, 3, 0, 3) + m[0][3] * unknown013(m, 2, 3, 0, 2);
+    result.rows[1][2] = -(m[0][0] * unknown013(m, 1, 3, 2, 3) - m[0][2] * unknown013(m, 1, 3, 0, 3) + m[0][3] * unknown013(m, 1, 3, 0, 2));
+    result.rows[1][3] = m[0][0] * unknown013(m, 1, 2, 2, 3) - m[0][2] * unknown013(m, 1, 2, 0, 3) + m[0][3] * unknown013(m, 1, 2, 0, 2);
+    result.rows[2][1] = -(m[0][0] * unknown013(m, 2, 3, 1, 3) - m[0][1] * unknown013(m, 2, 3, 0, 3) + m[0][3] * unknown013(m, 2, 3, 0, 1));
+    result.rows[2][2] = m[0][0] * unknown013(m, 1, 3, 1, 3) - m[0][1] * unknown013(m, 1, 3, 0, 3) + m[0][3] * unknown013(m, 1, 3, 0, 1);
+    result.rows[2][3] = -(m[0][0] * unknown013(m, 1, 2, 1, 3) - m[0][1] * unknown013(m, 1, 2, 0, 3) + m[0][3] * unknown013(m, 1, 2, 0, 1));
+    result.rows[3][1] = m[0][0] * unknown013(m, 2, 3, 1, 2) - m[0][1] * unknown013(m, 2, 3, 0, 2) + m[0][2] * unknown013(m, 2, 3, 0, 1);
+    result.rows[3][2] = -(m[0][0] * unknown013(m, 1, 3, 1, 2) - m[0][1] * unknown013(m, 1, 3, 0, 2) + m[0][2] * unknown013(m, 1, 3, 0, 1));
+    result.rows[3][3] = m[0][0] * unknown013(m, 1, 2, 1, 2) - m[0][1] * unknown013(m, 1, 2, 0, 2) + m[0][2] * unknown013(m, 1, 2, 0, 1);
+    f32 invDet = 1.0f / det;
+    result.rows[0][0] *= invDet;
+    result.rows[0][1] *= invDet;
+    result.rows[0][2] *= invDet;
+    result.rows[0][3] *= invDet;
+    result.rows[1][0] *= invDet;
+    result.rows[1][1] *= invDet;
+    result.rows[1][2] *= invDet;
+    result.rows[1][3] *= invDet;
+    result.rows[2][0] *= invDet;
+    result.rows[2][1] *= invDet;
+    result.rows[2][2] *= invDet;
+    result.rows[2][3] *= invDet;
+    result.rows[3][0] *= invDet;
+    result.rows[3][1] *= invDet;
+    result.rows[3][2] *= invDet;
+    result.rows[3][3] *= invDet;
+    *this = result;
+  }
+
   // Inferred translation extraction in AttachActorBase::render (1.0.0:
   // 0x710009e4bc, 179 matching instructions); original helper name unknown.
   // Copy only the three components, then use Vec3's component-wise copy.
