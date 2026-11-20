@@ -24,6 +24,34 @@ const char *PathUtil::getFileExtPtr(const char *path) {
   return nullptr;
 }
 
+// 1.0.0: 0x710075b788. The name without directory and extension; the search for the dot is the inlined FixStr::unknown004 and the substring is built in the return
+// slot (FixStr::substr). The file part is the loop of getFilePtrFromPath (0x710075b6b4) written out (ruling 8): the game inlines it (no call, `subs x13, x12, #1` at
+// 0x710075b7cc), but the call `const char *file = getFilePtrFromPath(path);` gives 104 instructions against 103, the loop counter being `x12 + 1` (`add x13, x12, #1 ;
+// cmp x13, #1`) with a longer loop body. The same 104 with the call alone in a wrapper, with getFilePtrFromPath defined after the caller, and with the standalone body
+// written as a `while`, as `&path[i]` (both still match the standalone function, 29 instructions); the scan from `strlen(path) - 1` gives 105 and does not match the
+// standalone one either. The IR text handed to loop strength reduction is identical for the call and for the loop written out; [INFERENCE] the use-list order of the
+// inlined body is what differs. `file != nullptr` is dead here but the game keeps it (`cbz x20, 0x710075b880` skips the whole assignment, 0x710075b800): without it
+// the assertion of operator= stays (109 instructions).
+mm::mtl::FixStr<64> PathUtil::getNoPathExtName(const char *path) {
+  mm::mtl::FixStr<64> name;
+  const char *file = path;
+  for (int i = strlen(path); i > 0; i--) {
+    char c = path[i - 1];
+    if (c == '/' || c == '\\' || c == ':') {
+      file = path + i;
+      break;
+    }
+  }
+  if (file != nullptr) {
+    name = file;
+  }
+  int dot = name.unknown004('.');
+  if (dot == -1 || dot == 0) {
+    return name;
+  }
+  return name.substr(0, dot);
+}
+
 void PathUtil::itoa(mm::mtl::FixStr<16> &string, int value, int digits) {
   string = "";
   for (int i = 0; i < digits; i++) {

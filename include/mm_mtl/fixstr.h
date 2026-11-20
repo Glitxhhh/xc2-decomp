@@ -41,6 +41,18 @@ public:
     dest.m_nLen = __builtin_strlen(dest.mData);
   }
 
+  // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+  // By-value form of unknown001: the substring is built in the return slot. ml::PathUtil::getNoPathExtName (1.0.0: 0x710075b788, 103 instructions) returns the whole name
+  // from one path (a copy: strlen, assertion 221, strcpy at 0x710075b880-0x710075b8b4) and the substring from the other, which it constructs in place (strb wzr, [x19] ;
+  // str wzr, [x19, #0x40] at 0x710075b8cc, then strncpy into x19 at 0x710075b90c).
+  // Forms tried without the helper, written in getNoPathExtName: a local `head` filled by unknown001 and returned (two returned locals, so the substring is built in a
+  // local and copied: 116 instructions, frame 192 against the game's 128).
+  FixStr substr(int s, int len) const {
+    FixStr result;
+    unknown001(result, s, len);
+    return result;
+  }
+
   // Inferred role: index of the first occurrence of a substring at or after start, -1 when missing; no game symbol, original name unknown. Shape from
   // fw::ResourceManager::isDelayReleaseExtention (1.0.0: 0x710019c128), which compares at each position with strncmp, and from
   // mm::mtl::replacestr (0x71001a86e0), which searches again from the end of each replacement.
