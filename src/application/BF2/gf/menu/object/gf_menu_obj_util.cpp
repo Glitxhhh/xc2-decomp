@@ -7,6 +7,7 @@
 #include "framework/sound/sound_manager.h"
 #include "fw/fw_pad.h"
 #include "fw/fw_param_manager.h"
+#include "gf/data/gf_bdat_bgm.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_quest.h"
 #include "gf/data/gf_character_id.h"
@@ -1144,6 +1145,24 @@ void GfMenuObjUtil::stopSE(u32 handle, f32 time) {
   if (fw::SoundManager::get() != nullptr) {
     fw::SoundManager::get()->stopSe(handle, time);
   }
+}
+
+// The game tests the u16 resource as `and w8, w0, #0xffff; cbz w8` (0x71004e4520) and zero-extends it again, `and w1, w0, #0xffff` (0x71004e452c), for the
+// getBgmListfilename argument after loading the GfBdatBgm instance; the zero test keeps the i16 compare, see GfAutoTalk::BdatInfo::create. Both singletons are read
+// again after the calls (ldr x8, [x23] at 0x71004e4528, ldr x0, [x22] at 0x71004e4564), as the game's PtrSingleton::get() does.
+u32 GfMenuObjUtil::playBGM(u32 bgm, bool ignorePause, fw::SoundCategory category) {
+  if (fw::SoundManager::get() != nullptr && GfBdatBgm::get() != nullptr) {
+    u16 resource = Bdat::getVal(GfDataBdat::getFP(BDAT_MNU_SOUND_BGM), "resource", bgm).valueU16;
+    if (resource) {
+      const char *name = GfBdatBgm::get()->getBgmListfilename(resource);
+      if (name != nullptr && name[0] != '\0') {
+        mm::mtl::FixStr<128> path;
+        path.format("stream/bgm/%s", name);
+        return fw::SoundManager::get()->playBgm(path.c_str(), 1.0f, ignorePause, -1, category);
+      }
+    }
+  }
+  return 0;
 }
 
 bool GfMenuObjUtil::startBGM(u32 handle) {
