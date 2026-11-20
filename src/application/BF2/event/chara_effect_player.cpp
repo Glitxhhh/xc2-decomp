@@ -5,7 +5,9 @@
 #include "event/debug_manager.h"
 #include "framework/effect/effect_manager.h"
 #include "fw/fw_model_object.h"
+#include "gf/object/component/effect/gf_com_effect_caster.h"
 #include "gf/object/component/model/gf_com_model.h"
+#include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
@@ -53,6 +55,22 @@ void CharaEffectPlayer::stopAfterImage() {
     }
   }
   unknown08 &= ~FLAG_UNKNOWN_3;
+}
+
+void CharaEffectPlayer::stopRimBloom() {
+  if (unknown10 == gf::unknown020 || !(unknown08 & FLAG_UNKNOWN_2)) {
+    return;
+  }
+  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown10);
+  gf::GfComProperty *property = obj != nullptr ? obj->getComponent<gf::GfComProperty>() : nullptr;
+  gf::GfComEffectCaster *caster = obj != nullptr ? obj->getComponent<gf::GfComEffectCaster>() : nullptr;
+  gf::MsgFxRimBloomEnd message;
+  if (property != nullptr && caster != nullptr) {
+    gf::GfObj *sender = static_cast<gf::GfObj *>(property->unknown08);
+    caster->recieveMessage(sender, message);
+  }
+  unknown2a0 = 0;
+  unknown08 &= ~FLAG_UNKNOWN_2;
 }
 
 void CharaEffectPlayer::stopVolumeFade(VF_TYPE type) {
@@ -159,6 +177,35 @@ void CharaEffectPlayer::playVolumeFadeAnim(VF_TYPE type, f32 rate, f32 frame) {
   unknown80[type].append(0.0f, unknown78[type], CV_TYPE_UNKNOWN_1);
   unknown80[type].append(frame, rate, CV_TYPE_UNKNOWN_1);
   unknown08 |= type == VF_TYPE_UNKNOWN_1 ? FLAG_UNKNOWN_5 : FLAG_UNKNOWN_4;
+}
+
+void CharaEffectPlayer::playRimBloom(int id) {
+  if ((unknown08 & FLAG_UNKNOWN_2) && unknown2a0 == id) {
+    return;
+  }
+  if (unknown10 == gf::unknown020) {
+    return;
+  }
+  gf::GfObjAcc acc(unknown10);
+  mm::mtl::Singleton<DebugManager>::getPtr()->playMessage("rimBloom %s %d", acc.getDebugName(), id);
+  stopRimBloom();
+  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown10);
+  gf::GfComProperty *property = obj != nullptr ? obj->getComponent<gf::GfComProperty>() : nullptr;
+  gf::GfComEffectCaster *caster = obj != nullptr ? obj->getComponent<gf::GfComEffectCaster>() : nullptr;
+  gf::MsgFxRimBloom message;
+  // The game stores the two flags as separate bytes (0x71000bc618: strb wzr at 0x0d, 0x71000bc61c: strb at 0x0c). Measured with
+  // clang 3.9: the orders 08, 0c, 0d and 08, 0d, 0c merge them into one halfword store (112 instructions against the game's 113),
+  // 0c, 08, 0d differs in the scheduling of the constant (first difference at +0x168); with the flag at 0x0d written first, as
+  // here (0d, 08, 0c matches too), the stores stay separate.
+  message.unknown0d = false;
+  message.unknown0c = true;
+  message.unknown08 = id;
+  if (property != nullptr && caster != nullptr) {
+    gf::GfObj *sender = static_cast<gf::GfObj *>(property->unknown08);
+    caster->recieveMessage(sender, message);
+  }
+  unknown2a0 = id;
+  unknown08 |= FLAG_UNKNOWN_2;
 }
 
 } // namespace event

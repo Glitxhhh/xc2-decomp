@@ -44,7 +44,10 @@ class GfObj;
 struct GF_OBJ_HANDLE;
 struct GF_ASSET_HANDLE;
 struct MsgObjectNotifyAsmCallback;
-struct MsgFxRimBloomEnd;
+// Layout evidence: CharaEffectPlayer::stopRimBloom (0x71000bbb04) stores id 0x1000053 and mask 0x80 as one 64-bit constant; the message has no other member.
+struct MsgFxRimBloomEnd : fw::Message {
+  MsgFxRimBloomEnd() : fw::Message(0x1000053, 0x80) {}
+};
 
 struct MsgFxRimBloomTarget : fw::Message {
   MsgFxRimBloomTarget() : fw::Message(0x1000054, 0x80) {}
@@ -61,6 +64,9 @@ static_assert(offsetof(MsgFxSplashdown, unknown08) == 0x08, "");
 
 // Layout evidence: GfComEffectCaster::procMsgFxRimBloom reads the member at 0x08 and the flag at 0x0c and sets the flag at 0x0d.
 struct MsgFxRimBloom : fw::Message {
+  // CharaEffectPlayer::playRimBloom (0x71000bc4a8) stores id 0x1000052 and mask 0x80, then the three members one by one before the component tests.
+  MsgFxRimBloom() : fw::Message(0x1000052, 0x80) {}
+
   u32 unknown08;  // Inferred role: rim bloom state; original member name unknown.
   bool unknown0c; // Inferred role: force; original member name unknown.
   bool unknown0d; // Inferred role: accepted; original member name unknown.
