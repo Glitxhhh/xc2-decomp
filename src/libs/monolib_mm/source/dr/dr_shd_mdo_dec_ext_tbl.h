@@ -27,7 +27,9 @@ public:
   u32 *unknown20;            // Inferred role: shader param add; original member name unknown.
   u32 *m_valGlobalParam;
   u8 unknown30; // Inferred role: global parameter index of the billboard uniform block; original member name unknown.
-  u8 _31[0x36 - 0x31];
+  u8 unknown31; // Inferred role: global parameter index of the occlusion uniform block; original member name unknown.
+  u8 unknown32; // Inferred role: global parameter index of the node animation uniform block; original member name unknown.
+  u8 _33[0x36 - 0x33];
   u8 unknown36; // Inferred role: texture count; original member name unknown.
   u8 _37[0x38 - 0x37];
 };

@@ -142,7 +142,8 @@ struct MdsMatInfoHeader {
   u16 unknown56; // Inferred role: avatar map color index; original member name unknown.
   u16 unknown58; // Inferred role: first material callback; original member name unknown.
   u16 unknown5a; // Inferred role: material callback count; original member name unknown.
-  u8 _5c[0x62 - 0x5c];
+  u32 unknown5c; // Inferred role: texture index offset of the alternative pass; original member name unknown.
+  u8 _60[0x62 - 0x60];
   u16 unknown62; // Inferred role: texture index; original member name unknown.
   u16 unknown64; // Inferred role: time value index; original member name unknown.
   u8 _66[0x74 - 0x66];
@@ -172,6 +173,7 @@ static_assert(offsetof(MdsMatInfoHeader, unknown50) == 0x50, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown56) == 0x56, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown58) == 0x58, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown5a) == 0x5a, "");
+static_assert(offsetof(MdsMatInfoHeader, unknown5c) == 0x5c, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown62) == 0x62, "");
 static_assert(offsetof(MdsMatInfoHeader, unknown64) == 0x64, "");
 
@@ -193,11 +195,24 @@ struct MdsMatTechnique {
   u8 _00[0x10 - 0x00];
   u32 unknown10; // Inferred role: variable table offset; original member name unknown.
   s32 unknown14; // Inferred role: variable count; original member name unknown.
-  u8 _18[0x44 - 0x18];
+  u32 unknown18; // Inferred role: static texture table offset; original member name unknown.
+  u32 unknown1c; // Inferred role: static texture count; original member name unknown.
+  u32 unknown20; // Inferred role: uniform block table offset; original member name unknown.
+  s32 unknown24; // Inferred role: uniform block count; original member name unknown.
+  u8 _28[0x34 - 0x28];
+  u32 unknown34; // Inferred role: static image table offset; original member name unknown.
+  u32 unknown38; // Inferred role: static image count; original member name unknown.
+  u8 _3c[0x44 - 0x3c];
 };
 
 static_assert(offsetof(MdsMatTechnique, unknown10) == 0x10, "");
 static_assert(offsetof(MdsMatTechnique, unknown14) == 0x14, "");
+static_assert(offsetof(MdsMatTechnique, unknown18) == 0x18, "");
+static_assert(offsetof(MdsMatTechnique, unknown1c) == 0x1c, "");
+static_assert(offsetof(MdsMatTechnique, unknown20) == 0x20, "");
+static_assert(offsetof(MdsMatTechnique, unknown24) == 0x24, "");
+static_assert(offsetof(MdsMatTechnique, unknown34) == 0x34, "");
+static_assert(offsetof(MdsMatTechnique, unknown38) == 0x38, "");
 static_assert(sizeof(MdsMatTechnique) == 0x44, "");
 
 struct unknown091;

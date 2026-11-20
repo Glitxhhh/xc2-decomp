@@ -28,11 +28,14 @@ struct MdsMatValShaderCate {
     FLAG_UNKNOWN_0 = 1 << 0, // Inferred role: storage buffer; original name unknown.
   };
 
-  u8 _00[0x03 - 0x00];
+  u16 unknown00; // Inferred role: index of the uniform block function in s_pUniBkMat; original member name unknown.
+  u8 _02;
   u8 unknown03; // Inferred role: flags; original member name unknown.
 };
 
+static_assert(offsetof(MdsMatValShaderCate, unknown00) == 0x00, "");
 static_assert(offsetof(MdsMatValShaderCate, unknown03) == 0x03, "");
+static_assert(sizeof(MdsMatValShaderCate) == 0x04, "");
 
 struct MdsMpfMatExtData {
   f32 unknown00[3]; // Inferred role: color; original member name unknown.
@@ -103,6 +106,7 @@ public:
   void changeShaderMat(bool isChange);
   void changeShaderPos();
   void getSetupMaterial(MdoWrkMatSetupArg &arg, const MdsMatInfoHeader *header, int mode);
+  void setupMaterial(const MdsMatInfoHeader *header);
   void createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat);
   void setShader(DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatTechnique *technique, u32 matIndex, int mdlIndex, u32 bufferIndex);
   void updateUniformBlock(const u32 *flags);
@@ -194,6 +198,9 @@ public:
   void varStImg_ZBuff(const MdsMatInfoHeader *header, u32 location, u32 index);
 
   static int (DrMdoSetup::*s_pStockMaterial[])(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable);
+  static void (DrMdoSetup::*s_pUniBkMat[])(const MdsMatValShaderCate *cate, int paramIndex, int mdlIndex, int matIndex, bool isJitter, u32 bufferIndex);
+  static void (DrMdoSetup::*s_pStaticTexture[])(const MdsMatInfoHeader *header, u32 location, u32 index);
+  static void (DrMdoSetup::*s_pStaticImage[])(const MdsMatInfoHeader *header, u32 location, u32 index);
 };
 
 static_assert(sizeof(DrMdoSetup) == 0x190, "");

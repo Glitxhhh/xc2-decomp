@@ -64,6 +64,47 @@ void DrMdoSetup::changeShaderMat(bool isChange) {
 
 void DrMdoSetup::changeShaderPos() { unknown178 |= 2; }
 
+void DrMdoSetup::setShader(DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatTechnique *technique, u32 matIndex, int mdlIndex, u32 bufferIndex) {
+  if (unknown178 & 0x10) {
+    setupMaterial(header);
+  }
+  const MdsMatValShaderCate *cate = reinterpret_cast<const MdsMatValShaderCate *>(unknown30->unknown78 + technique->unknown20);
+  s16 passIndex = unknownf4;
+  for (int i = 0; i < technique->unknown24; i++, cate++) {
+    (this->*s_pUniBkMat[cate->unknown00])(cate, i, mdlIndex, matIndex, passIndex != 5, bufferIndex);
+  }
+  if (unknown178 & 0x11) {
+    MdoWrkMatRes *matRes = unknown30;
+    if (matRes->unknowne8 != nullptr) {
+      if ((header->unknown04 & 0x84) == 0 || unknownf2 == 0 || unknownf2 == 2 || unknownf2 == 7) {
+        unknown38->setTextureList(reinterpret_cast<const MdsMatTextureInfo *>(matRes->unknown10 + header->unknown20), matRes->unknowne8, matRes->unknownd8);
+      } else {
+        unknown38->setTextureList(reinterpret_cast<const MdsMatTextureInfo *>(matRes->unknown10 + header->unknown5c), matRes->unknowne8, matRes->unknownd8);
+      }
+    }
+    int blockNum = technique->unknown24;
+    if (technique->unknown1c != 0) {
+      const u16 *textures = reinterpret_cast<const u16 *>(unknown30->unknown78 + technique->unknown18);
+      for (int i = 0; i < technique->unknown1c; i++) {
+        u32 location = unknown38->getValGlobalParam(blockNum + i);
+        (this->*s_pStaticTexture[textures[i]])(header, location, bufferIndex);
+      }
+    }
+    // The game reloads the block count after the texture loop (0x71007f1854), keeps the texture count that the loop test reloaded in w8 and adds both in the preheader of the
+    // image loop, after its pointer loads (0x71007f1878): both are locals loaded before the guard and summed in the loop. A sum written before the guard
+    // (technique->unknown1c + technique->unknown24) is sunk to the top of the preheader instead.
+    int textureNum = technique->unknown1c;
+    int imageBase = technique->unknown24;
+    if (technique->unknown38 != 0) {
+      const u16 *images = reinterpret_cast<const u16 *>(unknown30->unknown78 + technique->unknown34);
+      for (int i = 0; i < technique->unknown38; i++) {
+        u32 location = unknown38->getValGlobalParam(imageBase + textureNum + i);
+        (this->*s_pStaticImage[images[i]])(header, location, 0);
+      }
+    }
+  }
+}
+
 void DrMdoSetup::createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat) {
   MdoWrkMatRes *matRes = unknown30;
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(matRes->unknown10 + header->unknown4c);

@@ -2,8 +2,10 @@
 
 #include "dr/dr_ap_cache.h"
 #include "dr/dr_man.h"
+#include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_nom.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_res_etc_uniform_obj.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "dr/dr_shd_man.h"
 #include "dr/dr_shd_mdo_dec_ext_tbl.h"
@@ -19,7 +21,7 @@
 namespace ml {
 class DrShdDataList;
 
-inline void DrMdoCtl::unknown004(int index) { unknown38 = &unknown30->unknown88->unknown08[index]; }
+inline void DrMdoCtl::unknown004(int index) { unknown38 = unknown30->unknown88->unknown08 + index; }
 
 inline void DrMdoCtl::unknown005(const MdsMdlInfoHeader *info) {
   if (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_13) {
@@ -230,10 +232,78 @@ void DrMdoCtl::createBaseBillPrepass(const MdsMatInfoHeader *header, int index) 
   (*unknown30->unknown120->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
 }
 
+// The four material uniform functions below select the table with the same helper as the prepass functions above: the game reads the shader chain before the index, which
+// a pointer sum gives (clang evaluates the index of a subscript first), and sign-extends the index (ldrsw) because the helper takes an int.
+void DrMdoCtl::createInstBillMate(const MdsMatInfoHeader *header, int index) {
+  const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
+  unknown004(shader->unknown00);
+  (*unknown30->unknown120_1->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+}
+
+void DrMdoCtl::createBaseBillMate(const MdsMatInfoHeader *header, int index) {
+  const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
+  unknown004(shader->unknown00);
+  (*unknown30->unknown120->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+}
+
+void DrMdoCtl::createOccMate(const MdsMatInfoHeader *header, int index) {
+  const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
+  unknown004(shader->unknown00);
+  m_drMan->unknown88->unknown040->setUniformBlock(index, unknown38->m_valGlobalParam[unknown38->unknown31]);
+}
+
+void DrMdoCtl::createNodeAnm(const MdsMatInfoHeader *header, int index) {
+  const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
+  unknown004(shader->unknown00);
+  m_drMan->unknown88->unknown040->setUniformBlock(index, unknown38->m_valGlobalParam[unknown38->unknown32]);
+}
+
+void DrMdoCtl::partsMaterialSetup(const MdsMdlInfoHeader *header) {
+  const MdsMatInfoHeader *mat = unknown30->unknown28 + header->unknown0e;
+  const MdsMatShaderTbl *table = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + mat->unknown4c);
+  u32 uniformIndex;
+  int shaderIndex = getShdIdx(uniformIndex, table, mat->unknown50);
+  // The game computes the technique before setVertexBind (smaddl at 0x71007f15d0), after the shader index and before the call.
+  const MdsMatTechnique *technique = &unknown30->unknown70[shaderIndex];
+  unknown30->unknownc8->setVertexBind(header->unknown08);
+  bindShader(shaderIndex);
+  if (unknown17e == header->unknown0e) {
+    unknown178 &= ~0x10;
+  } else {
+    unknown178 |= 0x10;
+    unknown17e = header->unknown0e;
+  }
+  // The game never sets x1 for the setShader tail call (0x71007f1698): setShader, defined in this unit, never reads its first parameter, so the compiler erased the
+  // argument (ruling 2026-11-13 #6); the original expression cannot be checked and this function has no material resource, so nullptr is the plausible one.
+  setShader(nullptr, mat, technique, uniformIndex, 0, 0);
+}
+
 void DrMdoCtl::createInstanceDefRender(const MdsMdlInfoHeader *header, grlib::CGLibVtxInstans *instans, u32 offset, u32 stride, u32 instanceCount) {
   unknown30->unknownc8->setVertexBind(header->unknown08);
   grlib::CGLibCtlVertex::setInstanceVertex(*instans, stride, offset, 1, 1);
   unknown30->unknownc8->renderIns(header->unknown0a, instanceCount);
+}
+
+void DrMdoCtl::createMaterialDisplaList(const MdsMatInfoHeader *header, DrResMdoMat *mat) {
+  const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
+  unknownf2 = shader->unknown04;
+  m_drMan->unknown5c0->begin();
+  unknown004(shader->unknown00);
+  unknown38->bindShader();
+  // The game never sets x1 for the setShader tail call (0x71007f4bcc): setShader, defined in this unit, never reads its first parameter, so the compiler erased the
+  // argument (ruling 2026-11-13 #6); the original expression cannot be checked, mat, the parameter of this function, is the plausible one. The technique is a pointer
+  // sum: the game loads the technique table before the (zero-extended) index, a subscript loads the index first.
+  setShader(mat, header, unknown30->unknown70 + shader->unknown00, shader->unknown06, 0, 0);
+}
+
+void DrMdoCtl::createMaterialLgtPrePassDisplaList(const MdsMatInfoHeader *header, DrResMdoMat *mat) {
+  const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c) + 1;
+  unknownf2 = shader->unknown04;
+  m_drMan->unknown5c0->begin();
+  unknown004(shader->unknown00);
+  unknown38->bindShader();
+  // The game never sets x1 for the setShader tail call (0x71007f4c8c): same as createMaterialDisplaList.
+  setShader(mat, header, unknown30->unknown70 + shader->unknown00, shader->unknown06, 0, 0);
 }
 
 void DrMdoCtl::waitWeightVtx() { grlib::CGLibCtlShader::setMemoryBarrierBit(0x21); }
