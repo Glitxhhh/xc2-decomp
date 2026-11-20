@@ -3,6 +3,9 @@
 #include <string.h>
 
 #include "gf/data/gf_data_save.h"
+#include "gf/data/gf_object_type.h"
+#include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/gf_allocator.h"
 #include "gf/menu/adapter/gf_menu_pos_adapter.h"
 #include "gf/menu/call/gf_menu_call_context.h"
@@ -13,6 +16,7 @@
 #include "gf/menu/object/gf_menu_obj_fade.h"
 #include "gf/menu/object/gf_menu_obj_operation_info.h"
 #include "gf/menu/object/gf_menu_obj_util.h"
+#include "gf/object/gf_obj_acc.h"
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
 #include "mm_math/mm_pnt.h"
@@ -245,6 +249,83 @@ void GfMenuObjBalloon::openEventSelectBox(GfMenuCallContext *context, const Open
     event.unknown08 = id;
     GfMenuObject::sendEvent(object, event, 0.0f);
     ui::UIObjectAcc(object).setSuspend(false);
+  }
+}
+
+void GfMenuObjBalloon::openEvent(GfMenuCallContext *context, const OpenParam &param) {
+  if (context->getState() == GfMenuCallContext::STATE_UNKNOWN_0) {
+    ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(2));
+    ui::UIObjectAcc talk(acc.duplicateChild("LAY_ev_talk"));
+    if (talk.isValid()) {
+      GfMenuPosAdapter *adapter = GfMenuPosAdapter::create(talk.searchChild("LAY_ev_talk_main"), param.unknown20, &param.unknown30);
+      adapter->setPosOffsMode(1);
+      adapter->unknown84 = mm::Pnt<s16>(0x20, -0x20);
+      adapter->setPosAdjustSizeOffs(-0x40, -0x20);
+      adapter->setPosAdjustScreen(true);
+      GfMenuPosAdapter::createDiffOffset(talk.searchChild("LAY_ev_talk_arrow"), param.unknown20, &param.unknown30, 0x60, 0);
+      GfMenuObjUtil::createDockPlugin(talk.searchChild("LAY_ev_talk_arrow"), talk.searchChild("LAY_ev_talk_main"), 3, mm::Pnt<s16>(0, -0x23), 0);
+      GfMenuObjUtil::createSyncPlugin(talk.searchChild("LAY_ev_talk_arrow_sh"), talk.searchChild("LAY_ev_talk_arrow"), 0x3e);
+      {
+        mm::mtl::FixStr<32> name;
+        GfMenuObjUtil::FitOption option;
+        option.unknown00 = true;
+        option.unknown08.x = 0x1c2;
+        for (int i = 1; i <= 3; i++) {
+          name.format("IMG_ev_talk_win@%02d", i);
+          ui::UIObjectAcc window(talk.unknown10, name.c_str());
+          GfMenuObjUtil::createFitPlugin(window.unknown10, talk.searchChild("LAY_ev_talk_msg"), 0, 0, option);
+        }
+        GfMenuObjUtil::createDockPlugin(talk.searchChild("IMG_ev_talk_cursor"), talk.searchChild("LAY_ev_talk_msg"), 3, mm::Pnt<s16>(0, 0), 0);
+        // The game keeps both fit options in one stack slot (sp+40) while the name string and the window handles use others: one variable, reset
+        // (stores 0x71003ef550 to 0x71003ef55c: byte 1, the two zero words, byte 2, byte 0) rather than a second one in a sibling scope.
+        option = GfMenuObjUtil::FitOption();
+        option.unknown02 = true;
+        option.unknown00 = true;
+        GfMenuObjUtil::createFitPlugin(talk.searchChild("IMG_ev_talk_name_base"), talk.searchChild("TXT_ev_talk_name"), 0, 0, option);
+        {
+          ui::UIObjectAcc nameLayer(talk.unknown10, "LAY_ev_talk_name");
+          s16 width;
+          s16 height;
+          nameLayer.getSize(false, width, height);
+          // The two lookups are locals so that the game's order holds (0x71003ef5dc): both searchChild calls, then x and y of the offset loaded and
+          // stored one after the other; the Pnt temporary of the call loads both values first.
+          u32 target = talk.searchChild("LAY_ev_talk_name");
+          u32 dock = talk.searchChild("LAY_ev_talk_win");
+          mm::Pnt<s16> offset;
+          offset.x = width;
+          offset.y = height;
+          GfMenuObjUtil::createDockPlugin(target, dock, 4, offset, 0);
+        }
+      }
+      u32 nameId = 0xffffffff;
+      if (param.unknown10 != nullptr && param.unknown18 != 0) {
+        nameId = GfMenuObject::registString(ui::UIStr(param.unknown10, param.unknown18));
+        if (GfGameParty::getPartyId(param.unknown20) == PARTY_UNKNOWN_4294967295) {
+          if (GfGameManager::isEvent(false)) {
+            GfObjAcc objAcc(param.unknown20);
+            // The game calls getType (0x71003ef664), tests it against 3 (0x71003ef668), calls getType again when it differs (0x71003ef674) and uses neither
+            // result nor anything after it: statement without effect that the game holds (ruling 5, P3).
+            if (objAcc.getType() != OBJECT_TYPE_PC) {
+              objAcc.getType();
+            }
+          }
+          ui::UIObjectAcc base(talk.unknown10, "IMG_ev_talk_name_base");
+          base.setMulColor("green");
+        }
+      }
+      u32 textId = 0xffffffff;
+      if (param.unknown00 != nullptr && param.unknown08 != 0) {
+        textId = GfMenuObject::registString(ui::UIStr(param.unknown00, param.unknown08));
+      }
+      ui::EventData event;
+      event.unknown00 = GfMenuTypes::unknown003_256;
+      event.unknown08 = textId;
+      event.unknown0c = 0;
+      event.unknown10 = nameId;
+      event.unknown14 = talk.getDuplicateIndex();
+      GfMenuObject::sendEvent(acc.unknown10, event, 0.0f);
+      GfMenuObject::startCallContext(context, 2, talk.unknown10);
+    }
   }
 }
 

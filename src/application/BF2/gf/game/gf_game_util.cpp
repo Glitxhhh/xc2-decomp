@@ -59,6 +59,7 @@
 #include "gf/object/component/behavior/gf_com_behavior_npc.h"
 #include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/component/enemy/gf_enemy_state_id.h"
+#include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_append.h"
 #include "gf/object/gf_append_info.h"
@@ -323,6 +324,52 @@ bool GfGameUtil::isUiNameDistMatch(GF_OBJ_HANDLE *handle) {
   if (isUiGfObjHandleValid(handle)) {
     GfObjAcc objAcc(handle);
     f32 distance = getUiNameDist(handle);
+    if (!(distance <= 0.0f)) {
+      const mm::Vec3 &position = objAcc.getWorldTransform().unknown00;
+      return gmk::DistCond::isMatch(distance * distance, position);
+    }
+  }
+
+  return false;
+}
+
+bool GfGameUtil::isUiInfoIconDistMatch(GF_OBJ_HANDLE *handle) {
+  if (isUiGfObjHandleValid(handle)) {
+    GfObjAcc objAcc(handle);
+    switch (objAcc.getType()) {
+    case OBJECT_TYPE_ENEMY:
+    case OBJECT_TYPE_NPC:
+    case OBJECT_TYPE_GIMMICK:
+      break;
+    default:
+      return false;
+    }
+
+    // The game (0x7100348734) reads the bdat value 0xc once for the null and default paths: the two identical statements are merged. A bool set in the
+    // case body and tested afterwards also matches (85 instructions), but the game holds no such value.
+    f32 distance;
+    gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
+    if (gmkInst != nullptr) {
+      switch (gmkInst->getGmkType()) {
+      case gmk::GMK_TYPE_TBOX:
+      case gmk::GMK_TYPE_COLLECTION:
+      case gmk::GMK_TYPE_MAP_GIMMICK:
+      case gmk::GMK_TYPE_GRAVE:
+      case gmk::GMK_TYPE_DOOR:
+      case gmk::GMK_TYPE_ELEVATOR:
+        distance = getUiNameDist(handle);
+        if (!(distance > 0.0f)) {
+          return false;
+        }
+        distance *= Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0x39, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+        break;
+      default:
+        distance = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xc, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+        break;
+      }
+    } else {
+      distance = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_WILDCARD_DATA), 0, 0xc, gmk::BDAT_TYPE_UNKNOWN_8).valueF32;
+    }
     if (!(distance <= 0.0f)) {
       const mm::Vec3 &position = objAcc.getWorldTransform().unknown00;
       return gmk::DistCond::isMatch(distance * distance, position);
@@ -697,6 +744,44 @@ u32 GfGameUtil::getTrustRank(u32 blade) {
     trustRank--;
   }
   return trustRank;
+}
+
+u32 GfGameUtil::getKizunaLink(u32 blade) {
+  GfBdatBtl *bdat = GfBdatBtl::get();
+  u32 kizunaLinkSet = GfDataBlade::getSDataBlade(blade).unknown84a;
+  u32 type = bdat->getBTL_Bl_KizunaLinkSetLinkChType(kizunaLinkSet);
+  int number = bdat->getBTL_Bl_KizunaLinkSetLinkChNum(kizunaLinkSet);
+  switch (type) {
+  case 0:
+    return bdat->getBTL_Bl_KizunaLinkSetKizunaLink1(kizunaLinkSet);
+  case 1:
+    if (static_cast<int>(getTrustRank(blade)) >= number) {
+      return bdat->getBTL_Bl_KizunaLinkSetKizunaLink2(kizunaLinkSet);
+    }
+    break;
+  case 2:
+    if (GfGameCond::isGameCond(number)) {
+      return bdat->getBTL_Bl_KizunaLinkSetKizunaLink2(kizunaLinkSet);
+    }
+    break;
+  default:
+    return 0;
+  }
+
+  return bdat->getBTL_Bl_KizunaLinkSetKizunaLink1(kizunaLinkSet);
+}
+
+void GfGameUtil::setTransformPreEnemy(GF_OBJ_HANDLE *handle, const mm::Vec3 &position, const mm::Vec3 &rotation) {
+  GfObjAcc objAcc(handle);
+  if (objAcc.isValidTransform() && objAcc.getType() == OBJECT_TYPE_ENEMY && !GfGameObj::isValidGameObj(handle, true, nullptr)) {
+    GfComTransform *transform = objAcc.getObj()->getComponent<GfComTransform>();
+    if (transform != nullptr) {
+      mm::Quat quat;
+      mm::unknown009(quat, rotation);
+      transform->setPosition(position);
+      transform->setRotation(quat);
+    }
+  }
 }
 
 void GfGameUtil::addTrustRankForKizunaRing(u32 blade) {
