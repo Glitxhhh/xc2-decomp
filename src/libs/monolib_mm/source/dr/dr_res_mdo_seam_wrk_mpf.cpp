@@ -1,5 +1,6 @@
 #include "dr/dr_res_mdo_seam_wrk_mpf.h"
 
+#include "dr/dr_calc_view_work.h"
 #include "dr/dr_mdo_ctl_mpf_auto.h"
 #include "dr/dr_mdo_ctl_mpf_inst.h"
 #include "dr/dr_mdo_ctl_mpf_work.h"
@@ -105,6 +106,24 @@ void DrResMdoSeamWrkMpf::calcMpfMatSetup(DrCalcViewWork *view, grlib::CGLibVtxIn
       }
     }
   }
+}
+
+u32 DrResMdoSeamWrkMpf::updateRenderList(DrCalcViewWork *view, grlib::CGLibVtxInstans *instans, DrMdoCtlSeamMpfMap *ctl) {
+  u32 result = 0;
+  beginCalc();
+  if (unknown56 < 20) {
+    seachEtcMpfPos(&ctl->unknownd30, ctl);
+    seachMpfPoli(&ctl->unknownd30, ctl);
+    unknownc0->beginList();
+    calcCacheInfo();
+    for (int i = 0; i < unknown54; i++) {
+      unknownd0->calcSeamInstMpf(view, unknownc0, unknowne0[i]);
+    }
+    unknownc8->autoMpfCalc(view->unknown9ab, true, view, unknownc0, unknown20);
+    calcMpfMatSetup(view, instans);
+    result = unknown48;
+  }
+  return result;
 }
 
 u32 DrResMdoSeamWrkPosMpf::getDataSize() const {

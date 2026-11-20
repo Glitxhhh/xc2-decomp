@@ -2,10 +2,15 @@
 
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
+#include "dr/dr_mdo_mat.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
+#include "dr/dr_res_mdo_vertex.h"
+#include "grlib/cglib_etc_uniform_block.h"
+#include "grlib/shd_util.h"
+#include "mm_math/mm_mat44.h"
 
 namespace ml {
 
@@ -110,6 +115,24 @@ void DrMdoCtlSeamInstMap::callShadowMapRenderSeamInstMap(DrPixlShadowObj *shadow
       }
     }
   }
+}
+
+void DrMdoCtlSeamInstMap::renderInstShadowCacheRender(DrResMdoSeamWrkInst *inst, const mm::Mat44 &matrix, u32 index, const MdsMdlTopHeader *top) {
+  if (index == 0xffff) {
+    unknown30->unknownc8 = inst->unknown60;
+  } else {
+    // The game loads the halfword, subtracts in 32 bits (sub w9, w9, #1 at 0x7100824310) and zero-extends the result in umaddl (0x7100824318).
+    // `unknownbd0[index] - 1` (a signed int) gives 51 instructions against the game's 52; `static_cast<u32>(unknownbd0[index]) - 1` matches too.
+    unknown30->unknownc8 = unknown220.unknown20[unknownbd0[index] - 1u].unknown20;
+  }
+  unknown30->unknownc8->beginVertexSetup();
+  grlib::CGLibEtcUniformBlock uniform;
+  grlib::ShdMat44TransposeMat44(reinterpret_cast<f32 *>(uniform.getBuff()), matrix);
+  uniform.updateData(sizeof(mm::Mat44));
+  unknown170 = &uniform;
+  unknown178 |= 2;
+  partsPosShadowRender(top);
+  partsPosNukiShadowRender(top);
 }
 
 void DrMdoCtlSeamInstMap::callInstShadowCacheRender(DrPixlShadowCacheObj &cache) {

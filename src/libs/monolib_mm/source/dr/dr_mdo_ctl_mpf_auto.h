@@ -8,6 +8,8 @@ struct Vec3;
 } // namespace mm
 
 namespace ml {
+class DrCalcViewWork;
+class DrMdoCtlMpfWork;
 class DrMdoMpfMan;
 struct MdsMpfAutoHlvPoliTree;
 struct MdsMpfAutoPosData;
@@ -98,6 +100,7 @@ public:
   bool gridColiRangeChk(const MdsMpfAutoTree *tree);
   void seachInstTree(const MdsMpfAutoPosTree *tree);
   bool StockPoint();
+  void autoMpfCalc(bool isFlag, bool isEnable, DrCalcViewWork *view, DrMdoCtlMpfWork *work, DrMdoMpfMan *man);
 
   const unknown001 *unknown00;            // Inferred role: resource header; original member name unknown.
   const unknown510 *unknown08;            // Inferred role: object data; original member name unknown.

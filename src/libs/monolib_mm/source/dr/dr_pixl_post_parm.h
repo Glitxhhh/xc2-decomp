@@ -199,9 +199,18 @@ public:
   bool unknown174; // Inferred role: tssao; original member name unknown.
   // Inferred role: tssao debug render; original member name unknown. Evidence: byte cleared by DrPixlPostParm::reset (strb at 0x710085bf98).
   bool unknown175;
-  u8 _0176[0x0188 - 0x0176];
+  u8 _0176[0x0178 - 0x0176];
+  // Inferred role: tssao ssao radius scale, first factor of the gParam uniform of DrPixlPostObjTSSAO::passQuaterNormal (0x71008c1ea0) and passSSAO
+  // (0x71008c2388), squared in its second value; original member name unknown.
+  f32 unknown178;
+  // Inferred role: tssao upscale first parameter, first value of the gParam uniform written by DrPixlPostObjTSSAO::passUpScaleToMiddle
+  // (0x71008c4544) and passUpScaleToFull (0x71008c485c); original member name unknown.
+  f32 unknown17c;
+  f32 unknown180; // Inferred role: tssao ssao strength, times 100 in the gParam2 uniform of passQuaterNormal and passSSAO; original member name unknown.
+  f32 unknown184; // Inferred role: tssao upscale fourth parameter, last value of the same gParam uniform; original member name unknown.
   f32 unknown188; // Inferred role: tssao post blur strength; original member name unknown.
-  u8 _018c[0x0194 - 0x018c];
+  u8 _018c[0x0190 - 0x018c];
+  f32 unknown190;  // Inferred role: tssao upscale blend, the third gParam value is 1 - this clamped to [0, 1]; original member name unknown.
   bool unknown194; // Inferred role: ssao; original member name unknown.
   u8 _0195[0x019c - 0x0195];
   f32 unknown19c; // Inferred role: ssao blur str; original member name unknown.
@@ -332,7 +341,12 @@ public:
   // Inferred role: tssao option whose target DrPixlPostObjTSSAO::debugRender shows; original member name unknown. Evidence: byte cleared by
   // DrPixlPostParm::reset (strb at 0x710085c3a8) and read by DrPixlPostObjTSSAO::passSSAO (ldrb at 0x71008c2400).
   bool unknownfa0;
-  u8 _0fa1[0x0fb1 - 0x0fa1];
+  u8 _0fa1[0x0fa4 - 0x0fa1];
+  // Inferred role: tssao ssao second value copied unchanged into the gParam2 uniform of DrPixlPostObjTSSAO::passQuaterNormal (0x71008c1ea0) and
+  // passSSAO (0x71008c2388); original member name unknown.
+  f32 unknownfa4;
+  u8 _0fa8[0x0fb0 - 0x0fa8];
+  bool unknownfb0; // Inferred role: tssao ssao mpf skip, selects the MPF_SKIP declaration of DrPixlPostObjTSSAO::passSSAO; original member name unknown.
   bool unknownfb1; // Inferred role: tssao quarter normal; original member name unknown.
   bool unknownfb2; // Inferred role: reduction; original member name unknown.
   bool unknownfb3; // Inferred role: reduction buffer; original member name unknown.
@@ -448,7 +462,12 @@ static_assert(offsetof(DrPixlPostParm, unknown12c) == 0x012c, "");
 static_assert(offsetof(DrPixlPostParm, unknown158) == 0x0158, "");
 static_assert(offsetof(DrPixlPostParm, unknown174) == 0x0174, "");
 static_assert(offsetof(DrPixlPostParm, unknown175) == 0x0175, "");
+static_assert(offsetof(DrPixlPostParm, unknown178) == 0x0178, "");
+static_assert(offsetof(DrPixlPostParm, unknown17c) == 0x017c, "");
+static_assert(offsetof(DrPixlPostParm, unknown180) == 0x0180, "");
+static_assert(offsetof(DrPixlPostParm, unknown184) == 0x0184, "");
 static_assert(offsetof(DrPixlPostParm, unknown188) == 0x0188, "");
+static_assert(offsetof(DrPixlPostParm, unknown190) == 0x0190, "");
 static_assert(offsetof(DrPixlPostParm, unknown104) == 0x0104, "");
 static_assert(offsetof(DrPixlPostParm, unknown108) == 0x0108, "");
 static_assert(offsetof(DrPixlPostParm, unknown10c) == 0x010c, "");
@@ -528,6 +547,8 @@ static_assert(offsetof(DrPixlPostParm, unknownf74) == 0x0f74, "");
 static_assert(offsetof(DrPixlPostParm, unknownf73) == 0x0f73, "");
 static_assert(offsetof(DrPixlPostParm, unknownf94) == 0x0f94, "");
 static_assert(offsetof(DrPixlPostParm, unknownfa0) == 0x0fa0, "");
+static_assert(offsetof(DrPixlPostParm, unknownfa4) == 0x0fa4, "");
+static_assert(offsetof(DrPixlPostParm, unknownfb0) == 0x0fb0, "");
 static_assert(offsetof(DrPixlPostParm, unknownf78) == 0x0f78, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb1) == 0x0fb1, "");
 static_assert(offsetof(DrPixlPostParm, unknownfb2) == 0x0fb2, "");
