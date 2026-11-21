@@ -21,7 +21,6 @@ class DrResChkList;
 class DrResMdoAlpTbl;
 class DrResMdoMat;
 class DrResMdoPos;
-struct MdoInstancePrePassArg;
 struct MdsMatInfoHeader;
 struct MdsMatShaderTbl;
 struct MdsMdlInfoHeader;
@@ -56,6 +55,27 @@ static_assert(offsetof(MdoInstanceDrawArg, unknown20) == 0x20, "");
 static_assert(offsetof(MdoInstanceDrawArg, unknown28) == 0x28, "");
 static_assert(offsetof(MdoInstanceDrawArg, unknown2c) == 0x2c, "");
 static_assert(sizeof(MdoInstanceDrawArg) == 0x30, "");
+
+// Name from the game symbol _ZN2ml8DrMdoCtl27partsInstanceZPrepassRenderERKNS_21MdoInstancePrePassArgE. Size: DrMdoCtlSeamInstMap::createInstZPrePassDisplayList (0x710081d8c4) fills 0x28 bytes of it
+// on the stack; the members are the ones partsInstanceZPrepassRender (0x71007f2fd4) reads. It draws consecutive ranges of the instances that start at unknown08: unknown10 instances,
+// unknown14 - unknown18 instances, then the last unknown18 instances (drawn with the depth stencil of setupPartsMaterial mode 3). The roles below are inferred from these reads.
+struct MdoInstancePrePassArg {
+  const MdsMdlInfoHeader *unknown00; // Inferred role: mdl info of the draw; original member name unknown.
+  s32 unknown08;                     // Inferred role: vertex offset of the instances; original member name unknown.
+  s32 unknown0c;                     // Inferred role: vertex stride of the instances; original member name unknown.
+  s32 unknown10;                     // Inferred role: instance count of the leading range; original member name unknown.
+  s32 unknown14;                     // Inferred role: instance count of the second and last ranges together; original member name unknown.
+  s32 unknown18;                     // Inferred role: instance count of the last range, drawn with a setup material of its own; original member name unknown.
+  u8 _1c[0x20 - 0x1c];
+  u8 unknown20; // Inferred role: sets up the depth stencil of the draw; original member name unknown.
+};
+
+static_assert(offsetof(MdoInstancePrePassArg, unknown08) == 0x08, "");
+static_assert(offsetof(MdoInstancePrePassArg, unknown10) == 0x10, "");
+static_assert(offsetof(MdoInstancePrePassArg, unknown14) == 0x14, "");
+static_assert(offsetof(MdoInstancePrePassArg, unknown18) == 0x18, "");
+static_assert(offsetof(MdoInstancePrePassArg, unknown20) == 0x20, "");
+static_assert(sizeof(MdoInstancePrePassArg) == 0x28, "");
 
 class DrMdoCtl : public DrMdoSetup {
 public:

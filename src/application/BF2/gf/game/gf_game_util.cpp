@@ -43,6 +43,7 @@
 #include "gf/field/gf_field_manager.h"
 #include "gf/field/gf_field_time.h"
 #include "gf/field/gf_field_weather.h"
+#include "gf/field/gf_real_time.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
 #include "gf/game/gf_game_mount.h"
