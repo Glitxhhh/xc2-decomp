@@ -303,6 +303,7 @@ public:
   static u32 getPouchItemNum(u32 driver, u32 item);
   static bool isUsedFavorite(u32 driver, FAVORITE favorite);
   static bool getPouchEnhance(mm::mtl::FixedVector<u16, 64> &enhances, u32 driver);
+  static bool getPouchEnhanceFavorite(mm::mtl::FixedVector<EnhanceFavorite, 64> &favorites, u32 driver);
   static u8 getFavoritePouchNum(u32 driver, FAVORITE favorite);
   static u32 getFootStep(u32 driver);
   static u32 getFootStepEffect(u32 driver);

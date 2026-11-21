@@ -58,6 +58,7 @@
 #include "gf/game/quest/gf_quest_util.h"
 #include "gf/object/component/behavior/gf_com_behavior_event.h"
 #include "gf/object/component/behavior/gf_com_behavior_npc.h"
+#include "gf/object/component/enemy/gf_behavior_enemy_field.h"
 #include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/component/enemy/gf_enemy_state_id.h"
 #include "gf/object/component/gf_com_transform.h"
@@ -195,6 +196,25 @@ bool GfGameUtil::isUiGfObjHandleValid(GF_OBJ_HANDLE *handle) {
 
   GfObjAcc objAcc(handle);
   return objAcc.isValid() && !objAcc.isDestroy() && !objAcc.testFlag(OBJ_FLAG_UNKNOWN_17);
+}
+
+void GfGameUtil::UiEnemyStatusIconInfo::create(GF_OBJ_HANDLE *handle) {
+  unknown00 = false;
+  unknown01 = false;
+  if (!isUiGfObjHandleValid(handle)) {
+    return;
+  }
+
+  GfObjAcc objAcc(handle);
+  GfObj *obj = objAcc.getObj();
+  // The game tests only the low byte of the Detects column (tst w0, #0xff at 0x710034850c) where the accessor returns u32 (it zero-extends the u8 value itself, 0x7100234990): the u8 local is that
+  // truncation (an accessor returning u8 loses its own `and` and no longer matches; `static_cast<u8>` in the comparison matches too).
+  u8 detects = GfBdatChrEnArrange::get()->getChrEnArrangeDetects(mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(handle)->unknown30)->m_enArrangeID);
+  unknown00 = detects != 0;
+  GfComBehaviorEnemy *behavior = obj->getComponent<GfComBehaviorEnemy>();
+  if (behavior != nullptr) {
+    unknown01 = behavior->unknown140.unknown37 != 0;
+  }
 }
 
 void GfGameUtil::UiActionWindowInfo::create(GF_OBJ_HANDLE *handle) {
