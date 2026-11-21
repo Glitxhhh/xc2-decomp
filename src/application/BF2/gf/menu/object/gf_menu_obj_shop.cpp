@@ -48,6 +48,7 @@
 #include "mm_math/mm_col4.h"
 #include "mm_mtl/delegate.h"
 #include "mm_mtl/fixstr.h"
+#include "mm_mtl/reference_object.h"
 #include "ui/ctrl/ui_ctrl_cursor_select.h"
 #include "ui/event/ui_event_data.h"
 #include "ui/event/ui_event_manager.h"
@@ -81,6 +82,31 @@ GfMenuObjShop::GfMenuObjShop(u32 handle)
     unknown508[i] = nullptr;
   }
   unknown578 = GfMenuCallContext::create();
+}
+
+GfMenuObjShop::~GfMenuObjShop() {
+  unknown238 = nullptr;
+  for (u32 i = 0; i < 26; i++) {
+    unknown168[i] = nullptr;
+  }
+  mm::mtl::safeRelease(unknown150);
+  mm::mtl::safeRelease(unknown158);
+  mm::mtl::safeRelease(unknown160);
+  mm::mtl::safeRelease(unknownf0);
+  mm::mtl::safeRelease(unknowne8);
+  mm::mtl::safeRelease(unknowne0);
+  mm::mtl::safeRelease(unknownd8);
+  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(unknownc8);
+  mm::mtl::safeRelease(unknown48);
+  mm::mtl::safeRelease(unknown50);
+  mm::mtl::safeRelease(unknown4e8);
+  mm::mtl::safeRelease(unknown4f0);
+  for (u32 i = 0; i < 8; i++) {
+    mm::mtl::safeRelease(unknown508[i]);
+  }
+  mm::mtl::safeRelease(unknown570);
+  mm::mtl::safeRelease(unknown578);
 }
 
 void GfMenuObjShop::initialize() {

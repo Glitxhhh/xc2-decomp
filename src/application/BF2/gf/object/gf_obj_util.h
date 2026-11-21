@@ -10,6 +10,7 @@
 #include "types.h"
 
 namespace mm {
+struct Aabb;
 struct Quat;
 struct Vec3;
 } // namespace mm
@@ -162,6 +163,7 @@ public:
   static void rebuild(GF_OBJ_HANDLE *handle);
   static void saveRebuildInfo(GF_OBJ_HANDLE *handle);
   static bool isVolumeFadeForUser(GF_OBJ_HANDLE *handle);
+  static void getCullingAabb(mm::Aabb &aabb, GF_OBJ_HANDLE *handle);
   static void setVolumeFadeUserFlag(GF_OBJ_HANDLE *handle, bool isForUser);
   static bool isStanbyTalkingPlayer(GF_OBJ_HANDLE *handle);
   static void setTalking(GF_OBJ_HANDLE *handle, bool isTalking);
