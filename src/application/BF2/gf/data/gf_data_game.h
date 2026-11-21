@@ -103,6 +103,24 @@ struct SDataGame {
 
   SDataGame();
   SDataGame &operator=(const SDataGame &dataGame);
+
+  // Inferred helper: copies one game flag of a size from another save game; original name unknown. Inlined in GfGameUtil::setupNewGameParam (0x7100351354) and in
+  // GfGameUtilSaveData::setupGameSaveData (0x7100355178).
+  void unknown001(const SDataGame &src, u32 size, int flag) { GfGameFlag::setLocal(unknownfbbc4, size, flag, GfGameFlag::getLocal(src.unknownfbbc4, size, flag)); }
+
+  // Inferred helper: copies the game flags of a size from first up to last (excluded), the loops that start at the first flag (0x71003517e4); original name unknown.
+  void unknown002(const SDataGame &src, u32 size, int first, int last) {
+    for (int flag = first; flag < last; flag++) {
+      unknown001(src, size, flag);
+    }
+  }
+
+  // Inferred helper: copies count game flags of a size from a base flag, the loops that add the base to a counter (0x7100351370); original name unknown.
+  void unknown003(const SDataGame &src, u32 size, int base, int count) {
+    for (int i = 0; i < count; i++) {
+      unknown001(src, size, base + i);
+    }
+  }
 };
 
 static_assert(offsetof(SDataGame, unknown00) == 0x0, "");
