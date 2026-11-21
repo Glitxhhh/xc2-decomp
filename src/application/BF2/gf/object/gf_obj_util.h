@@ -79,6 +79,7 @@ public:
   static void addGfObj(GF_OBJ_HANDLE *handle, GfObj *obj);
   static void removeGfObj(GF_OBJ_HANDLE *handle);
   static u32 getObjType(GF_OBJ_HANDLE *handle);
+  static void setEnableAllIK(GF_OBJ_HANDLE *handle, bool isEnable, f32 time);
   static void setEnableBlowRotateIK(GF_OBJ_HANDLE *handle, bool isEnable, f32 time);
   static void setEnableBodyIK(GF_OBJ_HANDLE *handle, bool isEnable, f32 time);
   static void setEnableLookIK(GF_OBJ_HANDLE *handle, bool isEnable, f32 time);

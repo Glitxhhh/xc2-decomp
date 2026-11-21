@@ -105,15 +105,22 @@ public:
 class CommandManager : public mm::mtl::PtrSingleton<CommandManager> {
 public:
   struct PortInfo {
+    // The game inlines this constructor into openServer (0x71009835c0, stores at 0x7100983684-0x71009836ac): unknown00 = 0x10000 and unknown04 = 0
+    // (stp), the FixStr unknown0c (terminator at 0x0c, length 0 at 0x2c), unknown30 = ' ', the count of unknown50 (0x150), unknown38, unknown40 and
+    // unknown48 = 0. unknown158 and unknown15c are not set. Same defaults as PortRegistInfo's constructor for the matching members.
+    PortInfo() : unknown00(0x10000), unknown04(0), unknown30(' '), unknown38(nullptr), unknown40(nullptr), unknown48(nullptr) {}
+
     void destroy();
 
-    u8 _00[0x04 - 0x00];
+    u32 unknown00; // Inferred role: buffer size, copied from PortRegistInfo by openServer; original member name unknown.
     u32 unknown04; // Inferred role: port id, read by findPortInfoFromID; original member name unknown.
-    u8 _08[0x0c - 0x08];
+    u16 unknown08; // Inferred role: port number, copied from PortRegistInfo by openServer; original member name unknown.
+    u8 _0a[0x0c - 0x0a];
     mm::mtl::FixStr<32> unknown0c; // Inferred role: port name; original member name unknown.
-    u8 _30[0x38 - 0x30];
-    ICommandCallback *unknown38; // Inferred role: callback notified by notifyDisconnect; original member name unknown.
-    u8 _40[0x48 - 0x40];
+    char unknown30;                // Inferred role: argument separator, copied from PortRegistInfo by openServer; original member name unknown.
+    u8 _31[0x38 - 0x31];
+    ICommandCallback *unknown38;                        // Inferred role: callback notified by notifyDisconnect; original member name unknown.
+    void *unknown40;                                    // Role and original member name unknown; 8 bytes zeroed by the constructor and copied whole by mtl::copy<PortInfo> (0x7100984cf0).
     unknown003 *unknown48;                              // Inferred role: connection of the port; original member name unknown.
     mm::mtl::FixedVector<CommandParam *, 32> unknown50; // Inferred role: received commands; original member name unknown.
     NETWORK_MODE unknown158;                            // Inferred role: kind of port; original member name unknown.
@@ -155,12 +162,18 @@ public:
   mm::mtl::IAllocator *m_allocator;
   mm::threading::CriticalSection unknown3120; // Inferred role: lock of the port tables; original member name unknown.
   bool unknown3148;                           // Inferred role: running flag; original member name unknown.
-  u8 _3149[0x3158 - 0x3149];
+  u8 _3149[0x314c - 0x3149];
+  u32 unknown314c; // Inferred role: last port id given out by openServer; original member name unknown.
+  u32 unknown3150; // Inferred role: first port id, the counter wraps to it; original member name unknown.
+  u32 unknown3154; // Inferred role: last port id; original member name unknown.
 };
 
 static_assert(offsetof(CommandManager::PortInfo, unknown04) == 0x04, "");
+static_assert(offsetof(CommandManager::PortInfo, unknown08) == 0x08, "");
 static_assert(offsetof(CommandManager::PortInfo, unknown0c) == 0x0c, "");
+static_assert(offsetof(CommandManager::PortInfo, unknown30) == 0x30, "");
 static_assert(offsetof(CommandManager::PortInfo, unknown38) == 0x38, "");
+static_assert(offsetof(CommandManager::PortInfo, unknown40) == 0x40, "");
 static_assert(offsetof(CommandManager::PortInfo, unknown48) == 0x48, "");
 static_assert(offsetof(CommandManager::PortInfo, unknown50) == 0x50, "");
 static_assert(offsetof(CommandManager::PortInfo, unknown158) == 0x158, "");
@@ -171,6 +184,8 @@ static_assert(offsetof(CommandManager, unknown2c10) == 0x2c10, "");
 static_assert(offsetof(CommandManager, m_allocator) == 0x3118, "");
 static_assert(offsetof(CommandManager, unknown3120) == 0x3120, "");
 static_assert(offsetof(CommandManager, unknown3148) == 0x3148, "");
+static_assert(offsetof(CommandManager, unknown314c) == 0x314c, "");
+static_assert(offsetof(CommandManager, unknown3154) == 0x3154, "");
 static_assert(sizeof(CommandManager) == 0x3158, "");
 
 } // namespace skt

@@ -113,6 +113,46 @@ bool CommandManager::setServerOption(const char *server, SERVER_OPTION option) {
 
 bool CommandManager::updateHtcsPortInfo(size_t unknown) { return false; }
 
+bool CommandManager::openServer(const PortRegistInfo &info, SERVER_OPTION option) {
+  CommandManager *manager = get();
+  if (manager == nullptr) {
+    return false;
+  }
+
+  PortInfo *found = manager->findPortInfo(info.unknown00, info.unknown04.c_str());
+  if (found == nullptr) {
+    PortInfo port;
+    port.unknown08 = info.unknown00;
+    port.unknown0c = info.unknown04;
+    port.unknown38 = info.unknownb0;
+    port.unknown00 = info.unknownc0;
+    port.unknown30 = info.unknownc4;
+    port.unknown158 = NETWORK_MODE_UNKNOWN_1;
+    // The game stores 0 with unknown158 in one 64-bit store (0x71009836fc) and never reads `option` (w1 is not used), so no enumerator is known for it.
+    port.unknown15c = static_cast<SERVER_OPTION>(0);
+    // The id counter wraps to unknown3150 when it leaves the range. The game has two compare-and-branch pairs into one block (0x7100983724 and
+    // 0x710098372c), which two successive tests give; one test `> unknown3154 || < unknown3150` gives 110 instructions (clang speculates the second
+    // store of the counter into csinc plus an unconditional store).
+    manager->unknown314c++;
+    if (manager->unknown314c > manager->unknown3154) {
+      manager->unknown314c = manager->unknown3150;
+    }
+    if (manager->unknown314c < manager->unknown3150) {
+      manager->unknown314c = manager->unknown3150;
+    }
+    port.unknown04 = manager->unknown314c;
+    port.unknown48 = nullptr;
+    mm::MMStdBase::mmPrint("erorr create socket portName:%s\n", port.unknown0c.c_str());
+    return false;
+  }
+
+  if (strcmp(found->unknown0c.c_str(), info.unknown04.c_str()) == 0) {
+    return true;
+  }
+  mm::MMStdBase::mmPrint("another port registed!! port[%s : %s] portNo:%d\n", info.unknown04.c_str(), found->unknown0c.c_str(), found->unknown08);
+  return false;
+}
+
 CommandManager::PortInfo *CommandManager::findPortInfo(u16 port, const char *name) {
   mm::threading::CS lock(unknown3120);
   for (PortInfo *info = unknown08.begin(); info != unknown08.end(); ++info) {
