@@ -21,6 +21,16 @@ public:
     TGmkActiveList::get()->unknown20 = false;
   }
 
+  // Inferred helper: adds a gimmick to the list unless it is already there; the create functions of the precious, event, se, se line and
+  // tutorial gimmicks repeat it (GmkPrecious::createGobInst, GmkEvent::createGmkPhantom, GmkSe::createInst, GmkSeLine::createInst,
+  // GmkTutorial::createGmkPhantom). Original name unknown.
+  static void unknown002(T *gmk) {
+    TGmkActiveList *list = TGmkActiveList::get();
+    if (list->unknown08.end() == list->unknown08.unknown002(list->unknown08.begin(), list->unknown08.end(), gmk)) {
+      TGmkActiveList::get()->unknown08.push_back(gmk);
+    }
+  }
+
   mm::mtl::IntrusiveList<T> unknown08; // Inferred role: active gimmicks; original member name unknown.
   bool unknown20;                      // Inferred role: list being updated; original member name unknown.
 };

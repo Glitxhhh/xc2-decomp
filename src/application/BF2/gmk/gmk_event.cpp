@@ -94,10 +94,7 @@ void GmkEvent::createGmkPhantom() {
     return;
   }
   unknown60.create(*this, nullptr, false);
-  TGmkActiveList<GmkEvent> *list = TGmkActiveList<GmkEvent>::get();
-  if (list->unknown08.end() == list->unknown08.unknown002(list->unknown08.begin(), list->unknown08.end(), this)) {
-    TGmkActiveList<GmkEvent>::get()->unknown08.push_back(this);
-  }
+  TGmkActiveList<GmkEvent>::unknown002(this);
 }
 
 void GmkEvent::create(const CreateInfo &info) { AGmkBase::create(info); }

@@ -101,6 +101,18 @@ struct MsgFxFootPrint : fw::Message {
 static_assert(offsetof(MsgFxFootPrint, unknown08) == 0x08, "");
 static_assert(offsetof(MsgFxFootPrint, unknown0c) == 0x0c, "");
 
+// Layout evidence: CharaEvaPlayer::playFoot (0x71000cb06c) builds it on the stack: id 0x1000056, mask 0x80, the foot at 0x08 (0 for the right foot, 1 for the left) and the word at 0x0c zeroed;
+// GfComEffectCaster::procMsgFxFootPrintEv (0x7100505088) reads the foot and stores the started effect handle at 0x0c.
+struct MsgFxFootPrintEv : fw::Message {
+  explicit MsgFxFootPrintEv(u32 foot) : fw::Message(0x1000056, 0x80), unknown08(foot), unknown0c(0) {}
+
+  u32 unknown08; // Inferred role: foot (0 right, 1 left); original member name unknown.
+  u32 unknown0c; // Inferred role: started effect handle; original member name unknown.
+};
+
+static_assert(offsetof(MsgFxFootPrintEv, unknown08) == 0x08, "");
+static_assert(offsetof(MsgFxFootPrintEv, unknown0c) == 0x0c, "");
+
 // Layout evidence: GfComBehavior::callbackAnim (0x71004fbc6c) builds it on the stack: id 0x1000050, mask 0x80, the flag at 0x08 (0 for weaponAttach, 1 for weaponDetach; the game zeroes the
 // word at 0x0c with it), then the right and left option handles at 0x10 and 0x18.
 struct MsgFxWeapon : fw::Message {
