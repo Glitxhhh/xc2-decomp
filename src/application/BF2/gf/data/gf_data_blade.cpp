@@ -787,7 +787,7 @@ bool GfDataBlade::setAchievReleaseLevel(u32 blade, u32 line, u32 level) {
     }
     break;
   case ACHIEVEMENT_TYPE_UNKNOWN_2: {
-    unknown109 &skill = dataBlade->unknownae[index];
+    unknown110 &skill = dataBlade->unknownae[index];
     releaseLevel = skill.unknown02;
     if (level > releaseLevel) {
       skill.unknown02 = level;
@@ -835,7 +835,7 @@ void GfDataBlade::setSkillLineLevel(u32 blade, u32 line, u32 level) {
     dataBlade->unknown664 = level;
     break;
   case ACHIEVEMENT_TYPE_UNKNOWN_2: {
-    unknown109 &skill = dataBlade->unknownae[index];
+    unknown110 &skill = dataBlade->unknownae[index];
     skill.unknown03 = level;
     if (level == 0) {
       skill.unknown02 = 0;
@@ -872,7 +872,7 @@ void GfDataBlade::setSkillLevel(u32 blade, u32 line, u32 level) {
   default:
     break;
   case ACHIEVEMENT_TYPE_UNKNOWN_2: {
-    unknown109 &skill = dataBlade->unknownae[index];
+    unknown110 &skill = dataBlade->unknownae[index];
     skill.unknown03 = level;
     if (level == 0) {
       skill.unknown02 = 0;
@@ -1158,8 +1158,8 @@ bool GfDataBlade::getBladeAddAnim(mm::mtl::FixStr<128> &animName, u32 blade, u32
 const char *GfDataBlade::getDebugName(u32 blade) {
   if (isCommonBlade(blade)) {
     SDataBlade &dataBlade = getSDataBlade(blade);
-    if (dataBlade.unknown898 != 0) {
-      return dataBlade.unknown858;
+    if (dataBlade.unknown858.length() != 0) {
+      return dataBlade.unknown858.c_str();
     }
 
     return getName(blade, 0);
@@ -1954,9 +1954,9 @@ u32 GfDataBlade::getVoiceID(u32 blade) {
   return GfBdatBtl::get()->getBTL_Bl_PersonalityVoiceID(personality);
 }
 
-const char *GfDataBlade::getVoiceStr(u32 blade) { return getSDataBlade(blade).unknown770; }
+const char *GfDataBlade::getVoiceStr(u32 blade) { return getSDataBlade(blade).unknown770.c_str(); }
 
-const char *GfDataBlade::getSePack(u32 blade) { return getSDataBlade(blade).unknown7fc; }
+const char *GfDataBlade::getSePack(u32 blade) { return getSDataBlade(blade).unknown7fc.c_str(); }
 
 u32 GfDataBlade::getBladeNum() {
   mm::mtl::FixedVector<u16, 422> blades;

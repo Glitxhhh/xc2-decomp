@@ -466,7 +466,7 @@ void GfGameUtil::flushProperty(GF_OBJ_HANDLE *handle) {
     driver->unknown19c = paramAcc.getSkillPoint();
     driver->unknown194 = paramAcc.getExpNext(false);
   } else if (acc.getType() == OBJECT_TYPE_BLADE) {
-    mm::mtl::FixedArray<unknown109, 3> &skills = property->getBlade()->unknown190;
+    mm::mtl::FixedArray<unknown110, 3> &skills = property->getBlade()->unknown190;
     SDataBlade &sdata = GfDataBlade::getSDataBlade(paramAcc.isValid() ? paramAcc.getBdatId() : 0);
     skills = sdata.unknownae;
   }
