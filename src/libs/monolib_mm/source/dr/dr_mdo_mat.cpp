@@ -1,11 +1,13 @@
 #include "dr/dr_mdo_mat.h"
 
 #include <math.h>
+#include <new>
 #include <string.h>
 
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_sampler_man.h"
+#include "dr/dr_mdo_shd_set.h"
 #include "dr/dr_mdo_texture_man.h"
 #include "dr/dr_mdo_vertex_man.h"
 #include "dr/dr_pixl_man.h"
@@ -19,6 +21,7 @@
 #include "dr/dr_shd_man.h"
 #include "dr/dr_shd_mdo_dec_shd_obj.h"
 #include "dr/dr_shd_mdo_man.h"
+#include "dr/dr_shd_uniform_block_man.h"
 #include "grlib/cglib_dbl_uniform_block.h" // IWYU pragma: keep
 #include "grlib/cglib_one_uniform_block.h" // IWYU pragma: keep
 #include "grlib/cglib_tri_uniform_block.h" // IWYU pragma: keep
@@ -26,6 +29,7 @@
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -209,6 +213,75 @@ int DrMdoMat::getDispCallRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes 
 void DrMdoMat::resetDispCallRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes) {
   const unknown704 *table = reinterpret_cast<const unknown704 *>(data + offset);
   matRes->unknown130->unknown10 = reinterpret_cast<const MdsMatDispCCData *>(data + table->unknown04);
+}
+
+// One allocation holds the work (0x180 bytes), the texture table, the material bit table, the uniform array and the samplers, each part aligned to 32 bytes (0x71007f8388).
+// The game computes the sizes twice: once for the allocation and once to place the parts. The allocation size is a signed int (sxtw), hence the int sampler count.
+void DrMdoMat::initMpfMaterial(const u8 *matData, const u8 *vertexData, const u8 *mdlData, const u8 *texData, bool isStm) {
+  const MdsMpfMatTopHeader *header = reinterpret_cast<const MdsMpfMatTopHeader *>(matData);
+  int texCount = 0;
+  int size = 0x180;
+  if (texData != nullptr) {
+    texCount = DrResMdoTexList::calcTextureMax(texData);
+    size = texCount * 8 + 0x180;
+  }
+  size += (32 - size % 32) % 32;
+  size += (header->unknown04 / 32 + 1) * 4;
+  size += (32 - size % 32) % 32;
+  if (header->unknown14 != 0) {
+    size += 0x28;
+  }
+  int samplerCount = header->unknown04;
+  if (samplerCount == 0) {
+    samplerCount = reinterpret_cast<const unknown022 *>(mdlData)->unknown20;
+  }
+  void *block = mtl::MemManager::allocate(m_drMan->unknown14, size + samplerCount * 0x20, 0x10, false, "no name", 0);
+  u8 *work = static_cast<u8 *>(block);
+  unknown30 = static_cast<MdoWrkMatRes *>(block);
+  memset(unknown30, 0, sizeof(MdoWrkMatRes));
+  unknown30->unknown10 = matData;
+  unknown30->unknown00 = vertexData;
+  unknown30->unknown08 = texData;
+  unknown30->unknownf0 = texCount;
+  unknown30->unknown30 = header->unknown04;
+  unknown30->unknown34 = header->unknown0c;
+  unknown30->unknown28_1 = reinterpret_cast<const MdsMpfMatInfoHeader *>(matData + header->unknown00);
+  size = sizeof(MdoWrkMatRes);
+  if (unknown30->unknownf0 != 0) {
+    unknown30->unknowne8 = static_cast<grlib::CGLibTextureBuffer **>(static_cast<void *>(work + sizeof(MdoWrkMatRes)));
+    size = unknown30->unknownf0 * 8 + sizeof(MdoWrkMatRes);
+    if (isStm) {
+      unknown30->unknownd0 = new (m_drMan->unknown10) DrResMdoTexList(unknown30->unknown08);
+      for (s32 i = 0; i < unknown30->unknownd0->unknown68; i++) {
+        unknown30->unknowne8[i] = unknown30->unknownd0->getTexObj(i);
+      }
+    } else {
+      for (s32 i = 0; i < unknown30->unknownf0; i++) {
+        unknown30->unknowne8[i] = m_drMan->unknown78->getDammyTexObj();
+      }
+    }
+  }
+  size += (32 - size % 32) % 32;
+  unknown30->unknown108 = static_cast<u32 *>(static_cast<void *>(work + size));
+  size += (header->unknown04 / 32 + 1) * 4;
+  size += (32 - size % 32) % 32;
+  if (header->unknown14 != 0) {
+    unknown30->unknown90 = static_cast<grlib::CGLibDblUniformArray *>(static_cast<void *>(work + size));
+    size += 0x28;
+    DrShdUniformBlockMan::createUniformMpfMaterialObj(unknown30->unknown90, header);
+  }
+  if (samplerCount != 0) {
+    unknown30->unknowne0 = static_cast<DrResMpfSampler *>(static_cast<void *>(work + size));
+    for (u32 i = 0; i < samplerCount; i++) {
+      // Ruling 2: the game loads the material info pointer before the sampler address (0x71007f86b4); inline the call form puts the sampler address first.
+      const MdsMpfMatInfoHeader *info = &unknown30->unknown28_1[i];
+      new (&unknown30->unknowne0[i]) DrResMpfSampler(info);
+    }
+  }
+  initMdlInfo(mdlData, unknown30);
+  if (isStm) {
+    unknown30->unknownc8 = new (m_drMan->unknown10) DrResMdoVertex(unknown30->unknown00);
+  }
 }
 
 void DrMdoMat::oneTextureStream() {
