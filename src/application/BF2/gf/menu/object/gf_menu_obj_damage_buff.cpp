@@ -91,7 +91,9 @@ u32 GfMenuObjDamageBuff::open(const OpenParam &param) {
   mm::mtl::Queue<DamageInfo> *queue = static_cast<mm::mtl::Queue<DamageInfo> *>(GfMenuManyObjects::get()->unknown10[GfMenuManyObjects::unknown001_1]);
   if (queue != nullptr) {
     if (queue->full()) {
-      close(queue->unknown002().unknown08);
+      DamageInfo oldest;
+      queue->unknown002(oldest);
+      close(oldest.unknown08);
     }
     queue->push_back(info);
   }
@@ -127,7 +129,9 @@ u32 GfMenuObjDamageBuff::openUniteCombo(const OpenUniteParam &param) {
   mm::mtl::Queue<DamageInfo> *queue = static_cast<mm::mtl::Queue<DamageInfo> *>(GfMenuManyObjects::get()->unknown10[GfMenuManyObjects::unknown001_1]);
   if (queue != nullptr) {
     if (queue->full()) {
-      closeUniteCombo(queue->unknown002().unknown08);
+      DamageInfo oldest;
+      queue->unknown002(oldest);
+      closeUniteCombo(oldest.unknown08);
     }
     queue->push_back(info);
   }

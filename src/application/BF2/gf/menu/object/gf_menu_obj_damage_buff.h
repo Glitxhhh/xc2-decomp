@@ -14,6 +14,7 @@ class GfMenuObjDamageBuff : public GfMenuObject {
 public:
   // Queued by GfMenuManyObjects; the game gives it its own vtable, inheriting the dispose of the base.
   struct DamageInfo : GfMenuManyObjects::InfoType {
+    DamageInfo() {}
     DamageInfo(u32 handle) : InfoType(handle) {}
   };
 
