@@ -379,8 +379,11 @@ DrCalcTexStmObj::DrCalcTexStmObj() : unknown18(nullptr), unknown20(0), unknown24
 
 // The game compiles DrCalcStmWork and DrCalcStmListObj in this unit (their functions are interleaved with the DrCalcTexStreamMan ones from 0x71008b2c8c on):
 // release inlines DrCalcTexStreamMan::getCriticalSection and the destructor inlines releaseFreeObj and DrCalcStmWork::workRelease.
-#include "dr_calc_stm_list_obj.cpp"
+// In the order of their last functions: DrCalcStmWork ends at 0x71008b5280 (getTexObj), DrCalcStmListObj at 0x71008b7eb4 (OnFileEvent).
+// clang-format off
 #include "dr_calc_stm_work.cpp"
+#include "dr_calc_stm_list_obj.cpp"
+// clang-format on
 
 template mm::mtl::PtrSingleton<ml::DrCalcTexStreamMan>::~PtrSingleton();
 template void ml::DrResChankList<ml::DrCalcTexStmObj>::changeList(ml::DrCalcTexStmObj *first, ml::DrCalcTexStmObj *second);

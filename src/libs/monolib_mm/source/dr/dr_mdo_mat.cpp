@@ -22,13 +22,11 @@
 #include "grlib/cglib_dbl_uniform_block.h" // IWYU pragma: keep
 #include "grlib/cglib_one_uniform_block.h" // IWYU pragma: keep
 #include "grlib/cglib_tri_uniform_block.h" // IWYU pragma: keep
+#include "grlib/cglib_uniform_array.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/fixed_array.h"
 #include "mtl/mem_manager.h"
-// The game builds the sampler manager in the same unit, so its release functions are inlined here.
-#include "dr_mdo_sampler_man.cpp"
-#include "grlib/cglib_uniform_array.h"
 
 namespace ml {
 
