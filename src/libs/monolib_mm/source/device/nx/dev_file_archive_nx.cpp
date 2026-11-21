@@ -12,6 +12,7 @@
 #include "mm_mtl/str_util.h"
 #include "mm_mtl/tuple.h" // IWYU pragma: keep
 #include "mm_thread/mm_thread_csection.h"
+#include "mtl/mem_manager.h"
 #include "nn/fs.h" // IWYU pragma: keep
 #include "nn/os.h"
 #include "nn/result.h"
@@ -211,6 +212,18 @@ bool DevFileArchiveNx::rfRead(FileHandleTh *handle, const DevFileParamTh &param)
   channel->unknown10e = false;
   channel->unknown110 = false;
   channel->unknown198->setSignalEvent(true);
+  return true;
+}
+
+// 1.0.0: 0x710072ea6c. The game builds `path + "/"` and never uses it (ruling 5), but keeps the named local: with a discarded temporary
+// the two FixStr<256> objects swap their stack slots. The handle copy for the allocation is made before `num = 0` (`ldr w8, [x21]` before `str wzr, [x20]`), which only
+// a local copy of the handle places (a direct argument gives `str wzr` first and the registers of `handle` and `num` swapped).
+bool DevFileArchiveNx::getFilesBlock(char *&files, int &num, mtl::ALLOC_HANDLE handle, const char *path, const char *extension) {
+  mm::mtl::FixStr<256> directory = mm::mtl::FixStr<256>(path) + "/";
+  mtl::ALLOC_HANDLE memory = handle;
+  num = 0;
+  files = static_cast<char *>(mtl::MemManager::allocate(memory, 0x100000, 4, false, "no name", 0));
+  files[0] = 0;
   return true;
 }
 

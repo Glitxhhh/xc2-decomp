@@ -470,9 +470,9 @@ static_assert(sizeof(MdsMdlInfoHeader) == 0x30, "");
 
 // Model data mdl entry, named from DrMdoCtlNom::nomRender(const MdsMdlTopHeader *, DrResChkList *).
 struct MdsMdlTopHeader {
-  u32 unknown00; // Inferred role: info offset; original member name unknown.
-  s32 unknown04; // Inferred role: info count; original member name unknown.
-  u8 _08[0x0c - 0x08];
+  u32 unknown00;    // Inferred role: info offset; original member name unknown.
+  s32 unknown04;    // Inferred role: info count; original member name unknown.
+  u32 unknown08;    // Inferred role: flags, bit 2 has a node animation uniform index, bit 5 a storage buffer index; original member name unknown.
   f32 unknown0c[3]; // Inferred role: aabb max; original member name unknown.
   f32 unknown18[3]; // Inferred role: aabb min; original member name unknown.
   u8 _24[0x28 - 0x24];
@@ -480,6 +480,7 @@ struct MdsMdlTopHeader {
   u8 _2a[0x44 - 0x2a];
 };
 
+static_assert(offsetof(MdsMdlTopHeader, unknown08) == 0x08, "");
 static_assert(offsetof(MdsMdlTopHeader, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsMdlTopHeader, unknown18) == 0x18, "");
 static_assert(offsetof(MdsMdlTopHeader, unknown28) == 0x28, "");

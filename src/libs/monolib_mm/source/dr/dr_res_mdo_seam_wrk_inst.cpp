@@ -357,7 +357,7 @@ void DrResMdoSeamWrkInst::seachDefShadowInstMapRender(DrPixlShadowObj *shadow, D
 }
 
 // 0x71008896d0. The game holds the body for the two render lists (unknown160[1] at 0x7100889744, unknown160[2] at 0x7100889824) twice; the loop over the list type
-// is unrolled by Clang 3.9.1 and matches. DrMdoCtlPos::occRender (0x710081828c, not decompiled yet) has the same body.
+// is unrolled by Clang 3.9.1 and matches. DrMdoCtlPos::occRender (0x710081828c) has the same body.
 void DrResMdoSeamWrkInst::occRender() {
   if (unknown1b0 != nullptr) {
     DrPixlOccQuery *query = DrMan::getIns()->unknown78->unknown7f8;
