@@ -24,10 +24,13 @@ public:
   // 0x71004a63b4 to 0x71004a63bc, clears the three sizes at the object offsets 0xf0, 0x120 and 0x1a0). The context goes on after 0x180 (BladeFormListener reads 0x180).
   struct PtFormContext {
     mm::mtl::FixedVector<unknown004, 5> unknown00; // Inferred role: driver rows; original member name unknown.
-    u32 unknownd0;                                 // Inferred role: selected driver row, 0xffffffff when none; original member name unknown.
-    u8 _d4[0xe0 - 0xd4];
+    int unknownd0;                                 // Inferred role: selected driver row, -1 when none (read sign-extended at 0x71004a78c8); original member name unknown.
+    u8 _d4[0xd8 - 0xd4];
+    u32 unknownd8; // Inferred role: driver whose blades are shown, set by the BladeFormListener event 0x21 (0x71004a7904); original member name unknown.
+    u8 _dc[0xe0 - 0xdc];
     mm::mtl::FixedVector<class unknown140 *, 3> unknowne0; // Inferred role: gauge adapters; original member name unknown.
     mm::mtl::FixedVector<unknown004, 3> unknown100;        // Inferred role: blade rows; original member name unknown.
+    u32 unknown180;                                        // Inferred role: selected blade row, 0xffffffff when none (BladeFormListener, 0x71004a7818); original member name unknown.
   };
 
   class MainListener : public ui::UIObjectListener {
@@ -41,6 +44,17 @@ public:
 
     u32 unknown0c; // Inferred role: state, 0 while no driver is picked and 1 while one is held for a swap; original member name unknown.
     u8 _10[0x20 - 0x10];
+    GfMenuObjPartyForm *unknown20; // Inferred role: owner; original member name unknown.
+    PtFormContext *unknown28;      // Inferred role: data of the owner; original member name unknown.
+  };
+
+  class BladeFormListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    u32 unknown0c; // Inferred role: state, 0 while no blade is picked, 1 while one is held for a swap and 2 after the driver list was left; original member name unknown.
+    int unknown10; // Inferred role: control that fades the blade list; original member name unknown.
+    u8 _14[0x20 - 0x14];
     GfMenuObjPartyForm *unknown20; // Inferred role: owner; original member name unknown.
     PtFormContext *unknown28;      // Inferred role: data of the owner; original member name unknown.
   };
@@ -68,6 +82,13 @@ static_assert(offsetof(GfMenuObjPartyForm::DriverFormListener, unknown0c) == 0x0
 static_assert(offsetof(GfMenuObjPartyForm::DriverFormListener, unknown20) == 0x20, "");
 static_assert(offsetof(GfMenuObjPartyForm::DriverFormListener, unknown28) == 0x28, "");
 static_assert(sizeof(GfMenuObjPartyForm::DriverFormListener) == 0x30, "");
+static_assert(offsetof(GfMenuObjPartyForm::PtFormContext, unknownd8) == 0xd8, "");
+static_assert(offsetof(GfMenuObjPartyForm::PtFormContext, unknown180) == 0x180, "");
+static_assert(offsetof(GfMenuObjPartyForm::BladeFormListener, unknown0c) == 0x0c, "");
+static_assert(offsetof(GfMenuObjPartyForm::BladeFormListener, unknown10) == 0x10, "");
+static_assert(offsetof(GfMenuObjPartyForm::BladeFormListener, unknown20) == 0x20, "");
+static_assert(offsetof(GfMenuObjPartyForm::BladeFormListener, unknown28) == 0x28, "");
+static_assert(sizeof(GfMenuObjPartyForm::BladeFormListener) == 0x30, "");
 static_assert(offsetof(GfMenuObjPartyForm, unknown28) == 0x28, "");
 
 } // namespace gf
