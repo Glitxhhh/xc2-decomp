@@ -24,6 +24,14 @@ public:
     void reciveEvent(const ui::EventData &event, u32 handle) override;
   };
 
+  class ResultListener : public ui::UIObjectListener {
+  public:
+    void reciveEvent(const ui::EventData &event, u32 handle) override;
+
+    int unknown0c; // Inferred role: result display state, 0 closed and 1 shown; the event 0x21 stores the time of the event in hundredths of a second here before the state 1, and the event 0xc reads
+                   // it as such; original member name unknown.
+  };
+
   struct ResultParam {
     u8 unknown00;  // Inferred role: event parameter; original member name unknown.
     u32 unknown04; // Inferred role: event parameter; original member name unknown.
@@ -63,5 +71,7 @@ static_assert(sizeof(GfMenuObjChainAttack) == 0x58, "");
 static_assert(offsetof(GfMenuObjChainAttack::ResultParam, unknown04) == 0x4, "");
 static_assert(sizeof(GfMenuObjChainAttack::ResultParam) == 0x8, "");
 static_assert(sizeof(GfMenuObjChainAttack::StartListener) == 0x10, "");
+static_assert(offsetof(GfMenuObjChainAttack::ResultListener, unknown0c) == 0xc, "");
+static_assert(sizeof(GfMenuObjChainAttack::ResultListener) == 0x10, "");
 
 } // namespace gf
