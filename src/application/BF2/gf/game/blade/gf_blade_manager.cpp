@@ -1,5 +1,7 @@
 #include "gf/game/blade/gf_blade_manager.h"
 
+#include <new>
+
 #include "gf/data/gf_bdat_item.h"
 #include "gf/data/gf_bdat_msg.h"
 #include "gf/data/gf_data_blade.h"
@@ -74,6 +76,70 @@ bool GfBladeManager::isBindRareBladeCrystal(u32 item) {
 }
 
 GfBladeCreate::GfBladeCreate() {}
+
+void GfBladeCreateInfo::clear() {
+  unknown00 = 0;
+  unknown04 = 0;
+  unknown08.clear();
+  new (&unknown210) SDataIdea();
+  unknown230 = 0;
+  unknown234 = 0;
+  unknown238 = 0;
+  unknown23c = 0;
+  unknown240 = -1;
+  unknown244 = false;
+  unknown248.clear();
+  unknown258.clear();
+  unknown268 = 1;
+  unknown26c = 0;
+  unknown270 = 0;
+  unknown274 = 0;
+  unknown278 = 0;
+  unknown27c = 0;
+  unknown280.clear();
+  unknown2c4.clear();
+  unknown2d8.clear();
+  unknown2ec.clear();
+  unknown310.clear();
+  unknown324.assign(0);
+  unknown328 = 0;
+  unknown32c = 0;
+  unknown330 = 1;
+  unknown334 = 0;
+  new (&unknown338) SDataIdea();
+  unknown358 = 0;
+  unknown35c = 0;
+  unknown360 = 0;
+  new (&unknown364) unknown108();
+  unknown370 = 100;
+  unknown374 = 0;
+  unknown378 = 0;
+  unknown37c = 0;
+  unknown380 = 0;
+  unknown384 = 0;
+  unknown388 = 0;
+  unknown38c = 0;
+  unknown390 = 0;
+  unknown394.assign(unknown108());
+  unknown3b8.assign(unknown108());
+  unknown3dc.assign(unknown109());
+  unknown3ee.assign(unknown110());
+  unknown400.assign(AchievInfo());
+  unknown5b0.assign(AchievInfo());
+  unknown760.assign(AchievInfo());
+  unknown910 = AchievInfo();
+  unknown9a0.assign(unknown112());
+  unknown9b0.clear();
+  unknowna38 = 0;
+  unknowna3a = false;
+  unknowna3b = false;
+  unknowna3c = 0;
+  unknowna40 = 0;
+  unknowna44 = 0;
+  unknowna48 = 0;
+  unknowna4c = 0;
+  unknowna50 = 0;
+}
 
 // The game compiles GfBladeCreate in this unit: its functions (0x71003011a0 to 0x7100303c54, with their unnamed helpers up to 0x7100306d74) follow
 // GfBladeManager::isBindRareBladeCrystal (0x7100301148) and precede this unit's deferred PtrSingleton<GfBladeManager> destructors (0x7100306d74).
