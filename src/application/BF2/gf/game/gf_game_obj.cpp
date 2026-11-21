@@ -1,8 +1,10 @@
 #include "gf/game/gf_game_obj.h"
 
+#include "fw/fw_coli_check.h"
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/asset/gf_asset_manager.h"
+#include "gf/data/gf_bdat_rsc.h"
 #include "gf/data/gf_data_blade.h"
 #include "gf/data/gf_data_enemy.h"
 #include "gf/data/gf_data_param_acc.h"
@@ -18,6 +20,7 @@
 #include "gf/game/gf_game_search_obj.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
+#include "gf/object/component/enemy/gf_com_behavior_enemy.h"
 #include "gf/object/component/gf_com_transform.h"
 #include "gf/object/component/property/gf_com_property.h"
 #include "gf/object/gf_init_param.h"
@@ -950,6 +953,75 @@ bool GfGameObjEnemy::isGenusLink(GF_OBJ_HANDLE *handle) {
     return mm::mtl::find(enemy->unknown1890.begin(), enemy->unknown1890.end(), handle) != enemy->unknown1890.end();
   }
   return false;
+}
+
+// Inferred role: whether the enemy behavior of the object has its unknown54e4 flag set; no game symbol, original name unknown. The game holds this test twice in calcGenusLink (0x7100325b4c for the
+// first object, 0x7100325b8c for the second) and has no function for it. Measured: calcGenusLink matches both with this helper (inlined, no symbol emitted) and with the two blocks written out, so the
+// helper is the form.
+static bool unknown002(GF_OBJ_HANDLE *handle) {
+  GfObj *obj = GfObjUtil::getObj(handle);
+  if (obj != nullptr) {
+    GfComBehaviorEnemy *behavior = obj->getComponent<GfComBehaviorEnemy>();
+    if (behavior != nullptr && behavior->unknown54e4) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Game: 0x7100325ad0. The ColiCheckConfig stores repeat the seven of gf::util::getHitCollision, getUnderHitCollision and getUpperHitCollision (ruling 8): the game calls fw::ColiCheck::testLine
+// directly with this block (0x7100325d48) and never calls those functions, which also read the first hit position.
+void GfGameObjEnemy::calcGenusLink(Pair &pair) {
+  bool wasLinked = pair.unknown10;
+  pair.unknown10 = false;
+  GfObjAcc first(pair.unknown00);
+  GfObjAcc second(pair.unknown08);
+  if (first.isValid() && second.isValid()) {
+    if (first.isBattle() != second.isBattle()) {
+      if (unknown002(pair.unknown00) || unknown002(pair.unknown08)) {
+        return;
+      }
+      DataParamAcc firstParam(pair.unknown00);
+      DataParamAcc secondParam(pair.unknown08);
+      if (firstParam.getHp() != 0 && secondParam.getHp() != 0) {
+        f32 radius = firstParam.getLinkRadius();
+        if (!(radius * radius <= 0.000001f)) {
+          mm::Vec3 delta = second.getWorldTransform().unknown00 - first.getWorldTransform().unknown00;
+          if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z < radius * radius) {
+            GfBdatRsc *bdatRsc = GfBdatRsc::get();
+            if (pair.unknown12 == -1) {
+              pair.unknown12 = first.getBoneIdx(bdatRsc->getRscEnSearchBaseBone(first.getEnRscId()));
+            }
+            if (pair.unknown14 == -1) {
+              pair.unknown14 = second.getBoneIdx(bdatRsc->getRscEnSearchBaseBone(second.getEnRscId()));
+            }
+            fw::Transform firstBone;
+            fw::Transform secondBone;
+            if (first.getBoneTransform(firstBone, pair.unknown12) && second.getBoneTransform(secondBone, pair.unknown14)) {
+              fw::TColiCheckResult<256> result;
+              fw::ColiCheckConfig config;
+              config.unknown04 = 0xffffffff;
+              config.unknown10 = 1;
+              config.unknown08 = 0.0f;
+              config.unknown0c = 0.0f;
+              config.unknown14 = false;
+              config.unknown15 = false;
+              config.unknown00 = 9;
+              pair.unknown10 = !fw::ColiCheck::testLine(result, firstBone.unknown00, secondBone.unknown00, config);
+            }
+          }
+          if (!wasLinked && pair.unknown10) {
+            GF_OBJ_HANDLE *handle = first.isBattle() ? pair.unknown08 : pair.unknown00;
+            mm::mtl::FixedList<GF_OBJ_HANDLE *, 256>::iterator found = mm::mtl::find(unknown1890.begin(), unknown1890.end(), handle);
+            // The game compares the end iterator on the left of the test (0x7100325e00: cmp x23, x8), as removeGameObj and addOutObj do; the other order gives cmp x8, x23.
+            if (unknown1890.end() == found) {
+              unknown1890.push_back(handle);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 bool GfGameObjEnemy::empty() const { return unknown08.empty(); }
