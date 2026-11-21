@@ -38,6 +38,10 @@ public:
   // Base of the objects queued by the pooled menu objects (ExpGetInfo, PopupInfo...); the game gives it a vtable and a dispose virtual.
   class InfoType {
   public:
+    // GfMenuObjDamageBuff::open and openUniteCombo (0x7100443854, 0x7100443bec) and GfMenuObjDropItem::open (0x7100446c10) store the handle before
+    // the vtable pointer of their queued record: the base constructor sets the handle after its own vtable pointer, which the derived constructor
+    // then overwrites (the dead first store disappears).
+    InfoType(u32 handle) : unknown08(handle) {}
     virtual void dispose() {}
 
     u32 unknown08; // Inferred role: handle of the queued UI object, compared by remove; original member name unknown.

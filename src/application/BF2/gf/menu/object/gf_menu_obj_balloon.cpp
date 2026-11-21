@@ -22,6 +22,7 @@
 #include "gf/request/gf_req_command.h"
 #include "gf/request/gf_req_manager.h"
 #include "gf/request/gf_req_scom.h"
+#include "mm_math/mm_col3.h"
 #include "mm_math/mm_pnt.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/reference_object.h"
@@ -162,6 +163,79 @@ u32 GfMenuObjBalloon::openCommon(GfMenuCallContext *context, u32 call, GF_OBJ_HA
     }
   }
   return 0;
+}
+
+int GfMenuObjBalloon::setupEvTalk(u32 handle, int text, int name) {
+  ui::UIObjectAcc acc(handle);
+  u32 feeling;
+  {
+    ui::UIObjectAcc message(acc.unknown10, "TXT_ev_talk_msg");
+    if (message.isValid()) {
+      ui::UIStr string(GfMenuObject::getString(text));
+      feeling = getFeeling(string);
+      message.setText(string);
+      GfMenuObject::releaseString(text);
+    } else {
+      feeling = 0;
+    }
+  }
+  {
+    ui::UIObjectAcc layout(acc.unknown10, "LAY_ev_talk_msg");
+    layout.updateLayoutSize();
+  }
+  if (name != -1) {
+    ui::UIObjectAcc title(acc.unknown10, "TXT_ev_talk_name");
+    if (title.isValid()) {
+      GfMenuObject::setText(title.unknown10, name);
+    }
+  }
+  {
+    mm::mtl::FixStr<32> image;
+    for (int i = 0; i < 3; i++) {
+      image.format("IMG_ev_talk_win@%02d", i + 1);
+      acc.setDispChild(feeling == i, image.c_str());
+      image.format("IMG_ev_talk_arrow@%02d", i + 1);
+      acc.setDispChild(feeling == i, image.c_str());
+      image.format("IMG_ev_talk_arrow_sh@%02d", i + 1);
+      acc.setDispChild(feeling == i, image.c_str());
+    }
+  }
+  ui::UIObjectAcc(acc.unknown10, "IMG_ev_talk_cursor").setMulColor(mm::Col3(144 / 255.0f, 150 / 255.0f, 178 / 255.0f));
+  acc.updateLayoutSize();
+  return feeling;
+}
+
+void GfMenuObjBalloon::setupEvSelect(u32 handle, int title, int name) {
+  ui::UIObjectAcc acc(handle);
+  {
+    ui::UIObjectAcc message(acc.unknown10, "TXT_ev_select_msg_title");
+    if (message.isValid()) {
+      GfMenuObject::setText(message.unknown10, title);
+    }
+  }
+  if (name != -1) {
+    ui::UIObjectAcc text(acc.unknown10, "TXT_ev_select_name");
+    if (text.isValid()) {
+      GfMenuObject::setText(text.unknown10, name);
+    }
+  }
+  GfMenuStrLinker &linker = GfMenuCallManager::get()->unknown228;
+  mm::mtl::FixStr<32> layout;
+  for (int i = 0; i < 2; i++) {
+    layout.format("TXT_ev_select_msg@%02d", i + 1);
+    ui::UIObjectAcc item(acc.searchChild(layout.c_str()));
+    if (item.isValid()) {
+      layout.format("LAY_ev_select_msg@%02d", i + 1);
+      int count = linker.unknowne18.size();
+      if (i < count) {
+        item.setText(linker.unknowne18[i]);
+        acc.setDispChild(true, layout.c_str());
+      } else {
+        acc.setDispChild(false, layout.c_str());
+      }
+    }
+  }
+  linker.clearSelectString();
 }
 
 bool GfMenuObjBalloon::seqSave() {

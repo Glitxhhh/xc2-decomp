@@ -111,6 +111,20 @@ public:
 
   T &front() { return at(m_front); }
 
+  // Inferred role: removes the front element and returns a copy of it; original name unknown (no symbol in XC2, Torna or XC1DE: the game only
+  // instantiates the push_back/erase/expand members of Queue<T>). The game inlines it in GfMenuObjDamageBuff::open and openUniteCombo (0x7100443854,
+  // 0x7100443bec), GfMenuObjDropItem::open (0x7100446c10) and GfMenuObjDamageValue::open (0x7100445578): the assertion strings quote "!empty()" at
+  // line 0x301 (769), then at() asserts the buffer at line 0x41, and the element is read before the front moves.
+  // __LINE__ must be 769 as in the original header: it is the line argument of the assert.
+#line 768
+  T unknown002() {
+    MM_ASSERT(!empty());
+    T value = at(m_front);
+    m_front = (m_front + 1) % m_capacity;
+    m_size--;
+    return value;
+  }
+
   // __LINE__ must be 782 as in the original header: it is the line argument of the assert.
 #line 781
   void pop_front() {
