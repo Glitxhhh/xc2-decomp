@@ -1,15 +1,18 @@
 #include "dr/dr_mdo_ctl_seam_inst_map.h"
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_ctl.h"
 #include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_mdo_mat.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
+#include "dr/dr_res_mdo_mat.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
 #include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "grlib/cglib_etc_uniform_block.h"
 #include "grlib/shd_util.h"
+#include "mm_math/mm_col4.h"
 #include "mm_math/mm_mat44.h"
 
 namespace ml {
@@ -100,6 +103,66 @@ void DrMdoCtlSeamInstMap::occInstRender() {
       unknown30 = inst->unknown50;
       if (unknown30 != nullptr) {
         inst->occRender();
+      }
+    }
+  }
+}
+
+// Measured forms (1.0.0: 0x710081d8c4, 126 instructions), each checked against the game's code:
+// - The billboard condition `flag 4 && info->unknown04 != 0 && pass flag 0 && !flag 17` is the only one of the 24 orders of its four terms that matches: five more orders keep 126
+//   instructions with the tbz #0 test moved before the tbnz #0x11 or tbz #4 test, the others give 127 to 131 (the game tests tbz #4, tbnz #0x11, tbz #0 on the loaded words, then loads
+//   info->unknown04). [INFERENCE] clang merges two adjacent header flag tests into one mask compare; the load of info->unknown04 between them stops it.
+// - `arg.unknown20 = false;` before the conditional `true` is the game's `strb wzr, [sp, #0x28]` before `ldrb w9, [x21, #8]` (0x710081d984); `arg.unknown20 = info->unknown08 & 1;`
+//   gives 125 instructions without that store. The byte load is how clang narrows the 16-bit read of unknown08.
+// - The header count is read before arg.unknown00 (`ldp w10, w26, [x8]` before `ldr x8, [x9, #0x18]`, 0x710081d9f8); reading it after gives 127 instructions. The loop counts up to it
+//   and advances arg.unknown00 (0x710081da74).
+// - `unknown168 + index` and `unknownc0 + index` (pointer plus) give the game's order of loads (table pointer before the index, as dr_mdo_ctl_pos.cpp); the subscript form changes it.
+void DrMdoCtlSeamInstMap::createInstZPrePassDisplayList() {
+  if ((unknownc7c & 4) && !m_drMan->unknown1d6a) {
+    MdoInstancePrePassArg arg;
+    arg.unknown0c = 0x34;
+    for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+      unknown30 = inst->unknown50;
+      if (unknown30 != nullptr && inst->unknown152 != 0 && (inst->unknown8a & 0x10)) {
+        inst->beginMdl();
+        while (DrResMdoSeamWrkInst::unknown002 *info = inst->getMdlInfo()) {
+          int count = info->unknown00 - info->unknown02;
+          if (count != 0) {
+            if (info->unknown0e == 0xffff) {
+              unknown30->unknownc8 = inst->unknown60;
+            } else {
+              unknown30->unknownc8 = unknown220.unknown20[unknownbd0[info->unknown0e] - 1u].unknown20;
+            }
+            arg.unknown20 = false;
+            if (info->unknown08 & 1) {
+              arg.unknown20 = true;
+            }
+            arg.unknown08 = info->unknown14 + info->unknown02 * 0x34;
+            arg.unknown10 = count - info->unknown04;
+            arg.unknown14 = info->unknown04;
+            arg.unknown18 = info->unknown06;
+            unknown17c = 0xffff;
+            unknown17e = 0xffff;
+            unknown179 = false;
+            unknown178 |= 0x10;
+            unknown30->unknownc8->beginVertexSetup();
+            const MdsMdlTopHeader *top = unknown30->unknown168 + info->unknown0c;
+            int headerCount = top->unknown04;
+            arg.unknown00 = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
+            for (int i = 0; i < headerCount; i++, arg.unknown00++) {
+              if ((unknown30->unknownc0 + arg.unknown00->unknown0e)->unknown08.a > 0.0f && !(arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15)) {
+                if (!(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_14)) {
+                  if ((arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_4) && info->unknown04 != 0 && (arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_0) &&
+                      !(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
+                    partsInstanceZPrepassBillRender(arg);
+                  }
+                } else if (!(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
+                  partsInstanceZPrepassRender(arg);
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

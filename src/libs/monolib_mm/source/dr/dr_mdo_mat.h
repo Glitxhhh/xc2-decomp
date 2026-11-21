@@ -433,6 +433,7 @@ struct MdsMdlInfoHeader {
     FLAG_UNKNOWN_9 = 1 << 9,   // Inferred role: unknown, with the textures of the work and the material field at 0x24 selects the alpha test shaders (0x1b/0x1c, 0x1e/0x1f) of
                                // partsInstanceZPrepassBillRender (0x71007f3734); original name unknown.
     FLAG_UNKNOWN_13 = 1 << 13, // Inferred role: renders with the mesh parts render index; original name unknown.
+    FLAG_UNKNOWN_14 = 1 << 14, // Inferred role: instance mesh drawn by partsInstanceZPrepassRender, a billboard drawn by partsInstanceZPrepassBillRender when clear; original name unknown.
     FLAG_UNKNOWN_17 = 1 << 17, // Inferred role: skinned mesh, excluded from the base shadow render; original name unknown.
     FLAG_UNKNOWN_20 = 1 << 20, // Inferred role: unknown, selects the second group of pre pass shaders (0x1d-0x1f) of partsInstanceZPrepassBillRender (0x71007f3734); original name unknown.
     FLAG_UNKNOWN_23 = 1 << 23, // Inferred role: has etc vertices; original name unknown.
@@ -441,6 +442,7 @@ struct MdsMdlInfoHeader {
 
   // Inferred role: render pass flag of unknown04; original type name unknown.
   enum PassFlag {
+    PASS_FLAG_UNKNOWN_0 = 1 << 0,   // Inferred role: required to draw a billboard in the z pre pass of the instance map (createInstZPrePassDisplayList, 0x710081da48); original name unknown.
     PASS_FLAG_UNKNOWN_14 = 1 << 14, // Inferred role: renders into the shadow map; original name unknown.
     PASS_FLAG_UNKNOWN_15 = 1 << 15, // Inferred role: renders into the thickness pass instead of the z pre pass; original name unknown.
   };
