@@ -72,6 +72,7 @@ public:
   };
 
   DrCalcStmListObj(const char *name, const u8 *header, u32 hash);
+  DrCalcStmListObj(u32 size);
   ~DrCalcStmListObj() override;
   void initInfo();
   void release();

@@ -7,6 +7,7 @@
 #include "ml/critical_section.h"
 #include "ml/dev_graph.h"
 #include "ml/work_cpu.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 #include "nn/os.h"
 
@@ -362,6 +363,14 @@ bool DrCalcTexStreamMan::memTempCopy(u32 size) {
     }
   }
   return isEmpty;
+}
+
+DrCalcStmListObj *DrCalcTexStreamMan::createBufferListObj(u32 size) {
+  CS cs(getCriticalSection());
+  DrCalcStmListObj *list = new (DrMan::get()->unknown18) DrCalcStmListObj(size);
+  list->unknowna6++;
+  unknown38[DrMan::s_nDblStockIdx].unknown004(list);
+  return list;
 }
 
 DrCalcTexStmObj::DrCalcTexStmObj() : unknown18(nullptr), unknown20(0), unknown24(0), unknown28(0) {}

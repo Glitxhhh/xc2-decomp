@@ -6,6 +6,7 @@
 #include "grlib/cglib_texture_buffer.h"
 #include "ml/critical_section.h"
 #include "ml/dev_file_th.h"
+#include "mm_mtl/hash.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -17,6 +18,18 @@ DrCalcStmListObj::DrCalcStmListObj(const char *name, const u8 *header, u32 hash)
   unknown1d8 = hash;
   initInfo();
   setupInfo(header, false);
+}
+
+// 0x71008b5a60. List of the size mode objects of createBufferListObj: the name "size" is copied inline (word store, length 4 at 0x1d4), its hash
+// is computed at run time (hashStrCrc call at 0x71008b5ab0), unknown80 holds 0x10000 and unknown9c the size.
+DrCalcStmListObj::DrCalcStmListObj(u32 size) {
+  unknownd4 = "size";
+  unknown1d8 = mm::mtl::hashStrCrc(unknownd4.c_str());
+  initInfo();
+  unknown80 = 0x10000;
+  unknown9c = size;
+  unknown1e0 = &DrCalcStmListObj::texstm_size_alloc;
+  unknown1f0 = &DrCalcStmListObj::texstm_size_alloc;
 }
 
 DrCalcStmListObj::~DrCalcStmListObj() {
