@@ -50,9 +50,12 @@ void CharaIKUpdater::create(gf::GF_OBJ_HANDLE *handle) {
 // the value is erased; 0.0f is the plausible expression and the original one cannot be checked.
 void CharaIKUpdater::destroy() {
   update(0.0f);
+  // The handle is reset before the two flag words are cleared, as in CharaDysUpdater::destroy and CharaPartUpdater::destroy. The order is
+  // visible where this is inlined in ~CharaObj (0x71000be088 `str x21, [x19, #0xd70]` before 0x71000be08c `str xzr, [x19, #0xd68]`); the
+  // clears first (the constructor's order) give `str xzr` first there, while this standalone copy (0x71000b9114, one `stp`) matches both.
+  unknown10 = gf::unknown020;
   unknown08.clear();
   unknown0c.clear();
-  unknown10 = gf::unknown020;
 }
 
 // 1.0.0: 0x71000b9124. Evidence for the forms below: `hasLook` is the game's own flag (w25, set by `orr w25, wzr, #1` at 0x71000b921c and read by

@@ -12,22 +12,77 @@
 #include "event/cmd_variable.h"
 #include "event/debug_manager.h"
 #include "event/group_manager.h"
+#include "event/i_attach_actor.h"
 #include "event/light_manager.h"
+#include "event/mdlstm_manager.h"
 #include "event/model_manager.h"
 #include "event/model_obj.h"
 #include "event/offscr_manager.h"
 #include "event/skip_manager.h"
 #include "event/tar_axis.h"
 #include "gf/event/gf_evt_model.h"
+#include "gf/object/component/gf_com_transform.h"
+#include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_setup.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_math/mm_math.h"
+#include "mm_math/mm_quat.h"
 #include "mm_mtl/singleton.h"
 
 namespace event {
 
 const char *CharaObj::getName() const { return m_name.c_str(); }
+
+// 0x71000bdf6c, 589 instructions (D2; the deleting D0 at 0x71000bec48 is the compiler's). The players are released in the order of the game (the
+// dys updater after the ik updater), then the model by state. The game's jump table (0x7100f67dbc) has five entries for the states 2 to 6:
+// 2, 3 and 6 share the ModelManager call (0x71000be0b4), but states 4 and 5 each have their own inlined MdlstmManager::dispose (0x71000be524 and
+// 0x71000be6c0). A merged `case 4: case 5:` gives one copy (487 instructions instead of 589), so the two cases keep separate, identical bodies.
+CharaObj::~CharaObj() {
+  if (unknownd58 != nullptr) {
+    delete unknownd58;
+    unknownd58 = nullptr;
+  }
+  unknown1650.destroy();
+  unknown1390.destroy();
+  unknown1350.destroy();
+  unknown12d0.destroy();
+  unknown1280.destroy();
+  unknownfe0.destroy();
+  unknowne10.destroy();
+  unknownd60.destroy();
+  unknownde0.destroy();
+  switch (unknownca4) {
+  case STATE_UNKNOWN_2:
+  case STATE_UNKNOWN_3:
+  case STATE_UNKNOWN_6:
+    mm::mtl::Singleton<ModelManager>::getPtr()->destroyModel(unknownd50, unknown3054);
+    break;
+  case STATE_UNKNOWN_4:
+    mm::mtl::Singleton<MdlstmManager>::getPtr()->dispose(unknownd50);
+    break;
+  case STATE_UNKNOWN_5:
+    mm::mtl::Singleton<MdlstmManager>::getPtr()->dispose(unknownd50);
+    break;
+  }
+}
+
+// 0x71000bec6c, 135 instructions: the Euler angles are written straight into the member, one angle per branch, which the out-parameter
+// mm::quatToEuler does (the by-value form `unknown2fd0 = mm::quatToEuler(...)` costs six more instructions). The game reads the four
+// components of the quaternion once from the getRotation() result (0x71000becfc); only a copy of the quaternion gives its register
+// assignment (binding the returned reference directly gives s11 where the game has s14 at 0x71000bed00).
+void CharaObj::createGfObj(gf::GF_OBJ_HANDLE *handle) {
+  unknownd3c = 0;
+  m_eyeOffset = 1.5f;
+  unknownd40 = handle;
+  gf::GfComTransform *transform = gf::GfObjUtil::getObj(handle)->getComponent<gf::GfComTransform>();
+  unknown2fb0 = transform->getPosition();
+  mm::Quat rotation = transform->getRotation();
+  mm::quatToEuler(rotation, unknown2fd0);
+  unknownca4 = STATE_UNKNOWN_1;
+  unknownd48 = nullptr;
+}
 
 void CharaObj::createGfObj(CHARA_TYPE type, u32 id, u32 param3, u32 param4) {
   // The game loads CharaManager::unknown10 before the first call (0x71000bef20, ldr w25) and tests
