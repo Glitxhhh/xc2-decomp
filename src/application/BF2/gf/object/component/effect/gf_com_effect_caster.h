@@ -3,6 +3,7 @@
 
 #include "framework/message/message_object.h"
 #include "framework/reference_frame.h"
+#include "gf/object/component/effect/gf_effect_caster.h" // IWYU pragma: export
 #include "gf/object/component/effect/gf_effect_ground.h"
 #include "gf/object/component/gf_component.h"
 #include "gf/object/component/property/gf_env_property.h"
@@ -283,7 +284,7 @@ public:
   fw::EffectResData *unknown30;                   // Inferred role: effect annotations of the weapon effect pack; original member name unknown.
   fw::EffectPack *unknown38;                      // Inferred role: effect pack; original member name unknown.
   mm::mtl::FixedVector<unknown001, 52> unknown40; // Inferred role: weapon effect packs; original member name unknown.
-  fw::EffectCasterBase *unknown388;               // Inferred role: effect caster; original member name unknown.
+  EffectCaster *unknown388;                       // Inferred role: effect caster; original member name unknown.
   fw::EffectPoint *unknown390;                    // Inferred role: effect point; original member name unknown.
   u8 _398[0x3a0 - 0x398];
   mm::mtl::FixedVector<Param, 256> unknown3a0;             // Inferred role: caster params; original member name unknown.

@@ -17,7 +17,8 @@
 #include "gf/game/gf_game_util.h"
 #include "gf/object/component/animation/gf_com_asm.h"      // IWYU pragma: keep
 #include "gf/object/component/animation/gf_com_evt_anim.h" // IWYU pragma: keep
-#include "gf/object/component/model/gf_com_model.h"        // IWYU pragma: keep
+#include "gf/object/component/effect/gf_effect_caster.h"
+#include "gf/object/component/model/gf_com_model.h" // IWYU pragma: keep
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_handle.h"
 #include "gf/object/gf_obj_util.h"
@@ -92,6 +93,20 @@ void GfComEffectCaster::registerAsmCallbackEffect(GF_OBJ_HANDLE *handle, anm::Re
 void GfComEffectCaster::procMsgObjectNotifyDamage(fw::MessageObject *object, MsgObjectNotifyDamage &message) {}
 
 void GfComEffectCaster::procMsgObjectNotifyDead(fw::MessageObject *object, MsgObjectNotifyDead &message) {}
+
+bool GfComEffectCaster::getEfpMatrix(const char *name, mm::Mat44 &matrix) {
+  if (unknown388 != nullptr) {
+    if (unknown388->unknown10 == nullptr) {
+      return false;
+    }
+    int index = unknown388->unknown10->getPointIndex(name);
+    if (index != -1) {
+      matrix.unknown009(unknown388->unknown10->getPointTransform(index), unknown388->unknown60);
+      return true;
+    }
+  }
+  return false;
+}
 
 void GfComEffectCaster::procMsgFxRimBloomEnd(fw::MessageObject *object, MsgFxRimBloomEnd &message) {
   unknown14 = false;
