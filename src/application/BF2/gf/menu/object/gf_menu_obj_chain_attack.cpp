@@ -92,6 +92,35 @@ void GfMenuObjChainAttack::openFullBurst(GfMenuCallContext *context) {
   }
 }
 
+// Game 0x7100426090. Written out like openStart and openFullBurst (ruling 8): the layout parameters are stored between the lookup of the child layout and
+// the send, so a shared helper that takes the finished event (called after the event is built, before the attached-object test) gives 59 instructions
+// against the game's 60 (first difference at +0x4, the frame saves x19 alone instead of the pair x20/x19).
+void GfMenuObjChainAttack::openTurnSelect(GfMenuCallContext *context, const TurnSelectParam &param) {
+  ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
+  if (acc.isValid() && GfMenuObjUtil::checkCCStart(context)) {
+    ui::UIObjectAcc child(acc.searchChild("LAY_turn_sel"));
+    ui::EventData event;
+    event.unknown00 = GfMenuTypes::unknown003_33;
+    if (param.unknown00.size() > 0) {
+      event.unknown08_u16 = param.unknown00[0];
+    } else {
+      event.unknown08_u16 = 0xffff;
+    }
+    if (param.unknown00.size() > 1) {
+      event.unknown0a = param.unknown00[1];
+    } else {
+      event.unknown0a = 0xffff;
+    }
+    if (param.unknown00.size() < 3) {
+      event.unknown0c_u16 = 0xffff;
+    } else {
+      event.unknown0c_u16 = param.unknown00[2];
+    }
+    GfMenuObject::sendEvent(child.unknown10, event, 0.0f);
+    GfMenuObject::startCallContext(context, unknown001, child.unknown10);
+  }
+}
+
 void GfMenuObjChainAttack::closeTurnSelect(GfMenuCallContext *context) {
   ui::UIObjectAcc acc(GfMenuObject::getAttachedObject(unknown001));
   if (acc.isValid() && GfMenuObjUtil::checkCCNext(context, unknown001)) {

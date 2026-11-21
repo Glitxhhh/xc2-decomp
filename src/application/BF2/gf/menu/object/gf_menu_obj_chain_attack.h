@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include "gf/menu/gf_menu_object.h"
+#include "mm_mtl/fixed_vector.h"
 #include "types.h"
 #include "ui/event/ui_object_listener.h"
 #include "ui/input/ui_input_layer.h"
@@ -37,11 +38,17 @@ public:
     u32 unknown04; // Inferred role: event parameter; original member name unknown.
   };
 
+  // Layout evidence: openTurnSelect (0x7100426090) reads up to three words at 0x00, 0x04 and 0x08 after testing the size word at 0x10 against 0, 1 and 2; original type name unknown.
+  struct TurnSelectParam {
+    mm::mtl::FixedVector<u32, 3> unknown00; // Inferred role: turn select characters; original member name unknown.
+  };
+
   GfMenuObjChainAttack(u32 handle);
   ~GfMenuObjChainAttack() override;
   static void openStatus(GfMenuCallContext *context);
   static void openStart(GfMenuCallContext *context);
   static void openFullBurst(GfMenuCallContext *context);
+  static void openTurnSelect(GfMenuCallContext *context, const TurnSelectParam &param);
   static void closeTurnSelect(GfMenuCallContext *context);
   static void openResult(const ResultParam &param);
   static void closeResult();
@@ -70,6 +77,7 @@ static_assert(sizeof(GfMenuObjChainAttack) == 0x58, "");
 
 static_assert(offsetof(GfMenuObjChainAttack::ResultParam, unknown04) == 0x4, "");
 static_assert(sizeof(GfMenuObjChainAttack::ResultParam) == 0x8, "");
+static_assert(sizeof(GfMenuObjChainAttack::TurnSelectParam) == 0x18, "");
 static_assert(sizeof(GfMenuObjChainAttack::StartListener) == 0x10, "");
 static_assert(offsetof(GfMenuObjChainAttack::ResultListener, unknown0c) == 0xc, "");
 static_assert(sizeof(GfMenuObjChainAttack::ResultListener) == 0x10, "");
