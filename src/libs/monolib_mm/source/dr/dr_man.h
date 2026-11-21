@@ -313,14 +313,18 @@ public:
   bool unknown1d6a; // Inferred role: occlusion render skip; original member name unknown.
   bool unknown1d6b; // Inferred role: seam mpf map render skip; original member name unknown.
   bool unknown1d6c; // Inferred role: seam env map render skip; original member name unknown.
-  u8 _1d6d[0x1d70 - 0x1d6d];
+  u8 _1d6d[0x1d6e - 0x1d6d];
+  bool unknown1d6e; // Inferred role: skips the light buffer render of DrPixlDeferred::fastDeferredRender; original member name unknown.
+  u8 _1d6f[0x1d70 - 0x1d6f];
   bool unknown1d70; // Inferred role: shadow light skip; original member name unknown.
   bool unknown1d71; // Inferred role: fog skip; original member name unknown.
   u8 _1d72[0x1d73 - 0x1d72];
   bool unknown1d73; // Inferred role: simple shadow render skip, read by DrMdoSmlShadowMan::shadowRender; original member name unknown.
   u8 _1d74[0x1d75 - 0x1d74];
   bool unknown1d75; // Inferred role: IBL skip; original member name unknown.
-  u8 _1d76[0x1d7a - 0x1d76];
+  u8 _1d76[0x1d78 - 0x1d76];
+  bool unknown1d78; // Inferred role: skips the clustered light render of DrPixlDeferred::fastDeferredRender; original member name unknown.
+  u8 _1d79[0x1d7a - 0x1d79];
   bool unknown1d7a; // Inferred role: shadow map override; original member name unknown.
   bool unknown1d7b; // Inferred role: mdl dbl pause; original member name unknown.
   bool unknown1d7c; // Inferred role: skips the mpf wind update; original member name unknown.
@@ -442,9 +446,11 @@ static_assert(offsetof(DrMan, unknown1d65) == 0x1d65, "");
 static_assert(offsetof(DrMan, unknown1d66) == 0x1d66, "");
 static_assert(offsetof(DrMan, unknown1d67) == 0x1d67, "");
 static_assert(offsetof(DrMan, unknown1d6c) == 0x1d6c, "");
+static_assert(offsetof(DrMan, unknown1d6e) == 0x1d6e, "");
 static_assert(offsetof(DrMan, unknown1d71) == 0x1d71, "");
 static_assert(offsetof(DrMan, unknown1d73) == 0x1d73, "");
 static_assert(offsetof(DrMan, unknown1d75) == 0x1d75, "");
+static_assert(offsetof(DrMan, unknown1d78) == 0x1d78, "");
 static_assert(offsetof(DrMan, unknown1d7a) == 0x1d7a, "");
 static_assert(offsetof(DrMan, unknown1d7b) == 0x1d7b, "");
 static_assert(offsetof(DrMan, unknown1d7d) == 0x1d7d, "");

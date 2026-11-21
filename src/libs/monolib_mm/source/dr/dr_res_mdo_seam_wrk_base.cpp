@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "dr/dr_man.h"
+#include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_mdo_ctl_seam_base_map.h"
 #include "dr/dr_mdo_mat.h"
 #include "dr/dr_pixl_man.h"
@@ -283,6 +284,127 @@ void DrResMdoSeamWrkBase::calcCacheInfo() {
   }
 }
 
+// Inferred role: moves the loaded bit of a height texture entry of the work to the wanted state and marks the entry as kept when the bit changed; original name unknown.
+// The height bit handling of calcStaemBaseMapMdl calls it three times and matches (399 instructions; written out it matches too, so the helper is the shorter form, P4).
+static void unknown300(DrResMdoSeamWrkBase *wrk, s32 bit, s32 i, bool on) {
+  if (on) {
+    if ((wrk->unknownd8[bit >> 5] & (1 << (bit & 0x1f))) == 0) {
+      wrk->unknownd8[bit >> 5] |= 1 << (bit & 0x1f);
+      wrk->unknownd0[i >> 5] |= 1 << (i & 0x1f);
+    }
+  } else if (wrk->unknownd8[bit >> 5] & (1 << (bit & 0x1f))) {
+    wrk->unknownd8[bit >> 5] &= ~(1 << (bit & 0x1f));
+    wrk->unknownd0[i >> 5] |= 1 << (i & 0x1f);
+  }
+}
+
+// 0x710087db04. Inlines DrResMdoSeamParmRead::setStockTexture and setStockHeightTexture (defined earlier in this unit, dr_res_mdo_lod_parts.cpp). The game keeps the loop over the material
+// textures and the alpha texture block apart for the height bits: they are written as two branches (a bool local for the test leaves the alpha block merged, 372 instructions against 399).
+// The not requested and the stock paths of a seam texture entry each have their own copy of the loaded bit handling in the game: it is written out twice (ruling 8). A static helper
+// holding that block (the loaded bit test, both clears, the keep bit and the two stores of unknowne8), called from both paths, is simplified before it is inlined and gives 357
+// instructions against the game's 399 (measured).
+void DrResMdoSeamWrkBase::calcStaemBaseMapMdl(u16 *textureFlags, DrResMdoSeamTexture *textures, DrResMdoSeamParmRead *parmRead, const MdsSeamOfsTexTblData *table, bool isHeight) {
+  const MdsSeamBaseMapHead *head = unknown20;
+  s32 matCount = unknown68->unknown30;
+  const u8 *matData = unknown68->unknown10;
+  s32 count = head->unknown20;
+  const MdsMatTextureInfo *infos = reinterpret_cast<const MdsMatTextureInfo *>(matData + reinterpret_cast<const MdsMatTopHeader *>(matData)->unknown3c);
+  for (s32 i = 0; i < matCount; i++) {
+    if (unknownb8[i >> 5] & (1 << (i & 0x1f))) {
+      const MdsMatInfoHeader *mat = &unknown68->unknown28[i];
+      s32 num = mat->unknown24;
+      const MdsMatTextureInfo *info = reinterpret_cast<const MdsMatTextureInfo *>(unknown68->unknown10 + mat->unknown20);
+      s32 bit = unknown68->unknown30 + i;
+      if ((unknownb8[bit >> 5] & (1 << (bit & 0x1f))) && isHeight) {
+        for (s32 j = 0; j < num; j++, info++) {
+          unknownc8[info->unknown00 >> 5] |= 1 << (info->unknown00 & 0x1f);
+          s32 heightBit = info->unknown00 + count;
+          unknownc8[heightBit >> 5] |= 1 << (heightBit & 0x1f);
+        }
+        if ((mat->unknown04 & MdsMatInfoHeader::unknown015_2) || (mat->unknown08 & 0x10)) {
+          const MdsMatTextureInfo *alpha = &infos[mat->unknown62];
+          unknownc8[alpha->unknown00 >> 5] |= 1 << (alpha->unknown00 & 0x1f);
+          s32 heightBit = alpha->unknown00 + count;
+          unknownc8[heightBit >> 5] |= 1 << (heightBit & 0x1f);
+        }
+      } else {
+        for (s32 j = 0; j < num; j++, info++) {
+          unknownc8[info->unknown00 >> 5] |= 1 << (info->unknown00 & 0x1f);
+        }
+        if ((mat->unknown04 & MdsMatInfoHeader::unknown015_2) || (mat->unknown08 & 0x10)) {
+          const MdsMatTextureInfo *alpha = &infos[mat->unknown62];
+          unknownc8[alpha->unknown00 >> 5] |= 1 << (alpha->unknown00 & 0x1f);
+        }
+      }
+    }
+  }
+  s32 size = (count / 32 + 1) * 4;
+  size += (32 - size % 32) % 32;
+  memset(unknownd0, 0, size);
+  grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
+  const unknown785 *entry = reinterpret_cast<const unknown785 *>(reinterpret_cast<const u8 *>(head) + unknown20->unknown1c);
+  for (s32 i = 0; i < count; i++, entry++) {
+    if ((entry->unknown06 & 2) == 0) {
+      if ((entry->unknown06 & 1) && unknown160[entry->unknown02]->unknown3b) {
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+      }
+    } else if ((unknownc8[i >> 5] & (1 << (i & 0x1f))) == 0) {
+      if (unknownd8[i >> 5] & (1 << (i & 0x1f))) {
+        unknownd8[i >> 5] &= ~(1 << (i & 0x1f));
+        s32 heightBit = i + count;
+        unknownd8[heightBit >> 5] &= ~(1 << (heightBit & 0x1f));
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+        if ((entry->unknown06 & 1) == 0) {
+          unknown68->unknowne8[i] = dummy;
+        } else {
+          unknown68->unknowne8[i] = unknown160[entry->unknown02]->unknown20 + entry->unknown00;
+        }
+      } else if ((entry->unknown06 & 1) && unknown160[entry->unknown02]->unknown3b) {
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+      }
+    } else if (textureFlags[entry->unknown04] == 0) {
+      // The game never sets the level argument (decision 6); 0.0f is a placeholder, the original expression cannot be checked.
+      parmRead->setStockTexture(0.0f, entry->unknown04);
+      if (unknownd8[i >> 5] & (1 << (i & 0x1f))) {
+        unknownd8[i >> 5] &= ~(1 << (i & 0x1f));
+        s32 heightBit = i + count;
+        unknownd8[heightBit >> 5] &= ~(1 << (heightBit & 0x1f));
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+        if ((entry->unknown06 & 1) == 0) {
+          unknown68->unknowne8[i] = dummy;
+        } else {
+          unknown68->unknowne8[i] = unknown160[entry->unknown02]->unknown20 + entry->unknown00;
+        }
+      } else if ((entry->unknown06 & 1) && unknown160[entry->unknown02]->unknown3b) {
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+      }
+    } else {
+      DrResMdoSeamTexture *texture = &textures[textureFlags[entry->unknown04] - 1];
+      texture->unknowna0 = 0;
+      if (texture->unknowna1) {
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+      }
+      if ((unknownd8[i >> 5] & (1 << (i & 0x1f))) == 0) {
+        unknownd8[i >> 5] |= 1 << (i & 0x1f);
+        unknownd0[i >> 5] |= 1 << (i & 0x1f);
+        unknown68->unknowne8[i] = &texture->unknown18;
+      }
+      if (table[entry->unknown04].unknown0c != 0) {
+        s32 bit = i + count;
+        if ((unknownc8[bit >> 5] & (1 << (bit & 0x1f))) == 0) {
+          unknown300(this, bit, i, texture->unknowna3 == 1);
+        } else if (texture->unknowna3 == 1) {
+          texture->unknowna2 = 0;
+          unknown300(this, bit, i, true);
+        } else {
+          parmRead->setStockHeightTexture(entry->unknown04 + 1);
+          unknown300(this, bit, i, false);
+        }
+      }
+    }
+  }
+}
+
 // The loop over the texture list indices has no test of its own: the guard of the rotated loop (cmp w8, #1; b.lt at 0x7100880384) is its only test of the count.
 void DrResMdoSeamWrkBase::callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdoSeamTexList *texLists, const u16 *textureListFlags) {
   if (unknown20->unknown34 != 0) {
@@ -323,6 +445,60 @@ void DrResMdoSeamWrkBase::callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdo
       unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
     }
     unknowne0[(i + unknown17e) >> 5] &= ~(1 << ((i + unknown17e) & 0x1f));
+  }
+}
+
+// The game holds the replacement of the vertex three times (0x710087f8c4, 0x710087f994 and 0x710087fa9c: the memory object released first, the bits i and i + count,
+// then DrResMdoSeamWrkBaseVertex::setupVertex inlined with the DrResMdoVertex constructor). The same block as a member helper called three times is not inlined
+// (the call stays, 47 instructions against the game's 252, measured), and as a static helper taking the work (inlined) it gives 252 instructions with two induction
+// adds of the entry and vertex pointers in the other order (measured, also with the increments swapped), so it is written out (ruling 8). The entry list is read through
+// the offset of the resource header (decision 54).
+void DrResMdoSeamWrkBase::setVertexCache(u32 index, DrResMdoSeamMemObj *memObj, int size, DrMdoCtlSeamBaseMap *ctl) {
+  const unknown782 *list = unknown50;
+  const unknown786 *entry = reinterpret_cast<const unknown786 *>(reinterpret_cast<const u8 *>(list) + list->unknown00);
+  if (!(unknowna0 & 0x200)) {
+    for (s32 i = 0; i < list->unknown04; i++, entry++) {
+      if (entry->unknown18 == index) {
+        DrResMdoSeamMemObj *old = unknown78[i].unknown00;
+        if (old != nullptr) {
+          unknown78[i].release();
+          ctl->releaseFreeSeamMemObj(old);
+        }
+        unknowne0[i >> 5] |= 1 << (i & 0x1f);
+        unknowne0[(i + unknown17e) >> 5] |= 1 << ((i + unknown17e) & 0x1f);
+        unknown78[i].setupVertex(size, memObj);
+        unknown98 = 0;
+        return;
+      }
+    }
+  } else {
+    for (s32 i = 0; i < list->unknown04; i++, entry++) {
+      if (entry->unknown18 == index) {
+        DrResMdoSeamMemObj *old = unknown78[i].unknown00;
+        if (old != nullptr) {
+          unknown78[i].release();
+          ctl->releaseFreeSeamMemObj(old);
+        }
+        unknowne0[i >> 5] |= 1 << (i & 0x1f);
+        unknowne0[(i + unknown17e) >> 5] |= 1 << ((i + unknown17e) & 0x1f);
+        unknown78[i].setupVertex(size, memObj);
+        unknown98 = 0;
+        return;
+      }
+      if (entry->unknown1c == index) {
+        s32 slot = i + list->unknown04;
+        DrResMdoSeamMemObj *old = unknown78[slot].unknown00;
+        if (old != nullptr) {
+          unknown78[slot].release();
+          ctl->releaseFreeSeamMemObj(old);
+        }
+        unknowne0[slot >> 5] |= 1 << (slot & 0x1f);
+        unknowne0[(slot + unknown17e) >> 5] |= 1 << ((slot + unknown17e) & 0x1f);
+        unknown78[slot].setupVertex(size, memObj);
+        unknown98 = 0;
+        return;
+      }
+    }
   }
 }
 

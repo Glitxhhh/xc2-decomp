@@ -45,6 +45,8 @@ int DrCalcViewWork::unistatic_preProjMat(f32 *work, bool isJitter) {
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_68];
 }
 
+DrCalcViewWork::~DrCalcViewWork() {}
+
 void DrCalcViewWork::shadowBegin(const mm::Mat44 &matrix) {
   unknownc0 = matrix;
   unknownc0.rows[3][0] = unknownc0.rows[3][1] = 0.0f;

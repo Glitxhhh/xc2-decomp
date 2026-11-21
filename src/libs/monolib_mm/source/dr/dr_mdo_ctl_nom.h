@@ -16,13 +16,16 @@ class CloudMdlDataObj;
 } // namespace cloud
 
 namespace ml {
+class DrCalcStmListObj;
 class DrMan;
 class DrMdoNomAfterImage;
 class DrResEtcPamObj;
+class DrResMdoAlpTbl;
 class DrResMdoLight;
 class DrResMdoMeshObj;
 class DrResMdoMorpObj;
 class DrResMdoShdObj;
+class DrResMdoSortNom;
 class DrResMdoSortNomCldBackApha;
 class DrResMdoSortNomFastApha;
 class DrResMdoSortNomLastApha;
@@ -119,18 +122,19 @@ public:
     beginSetup();
   }
 
-  u8 _1a8[0x1b8 - 0x1a8];
-  unknown099 *unknown1b8; // Inferred role: alpha sort work; original member name unknown.
-  u8 _1c0[0x1c8 - 0x1c0];
-  DrResMdoMorpObj *unknown1c8;    // Inferred role: morph object; original member name unknown.
-  DrResMdoShdObj *unknown1d0;     // Inferred role: shd object; original member name unknown.
-  DrResMdoVtxMeshObj *unknown1d8; // Inferred role: vtx mesh object; original member name unknown.
-  DrResMdoLight *unknown1e0;      // Inferred role: light; original member name unknown.
-  DrResMdoMeshObj *unknown1e8;    // Inferred role: mesh object; original member name unknown.
-  DrResMdoLodObj *unknown1f0;     // Inferred role: lod object; original member name unknown.
-  DrResClip *unknown1f8;          // Inferred role: clip; original member name unknown.
-  DrResEtcPamObj *unknown200;     // Inferred role: etc pam object; original member name unknown.
-  u8 _208[0x210 - 0x208];
+  void *unknown1a8;                   // Inferred role: allocated work, released by releaseNom; original member name unknown.
+  DrResMdoSortNom *unknown1b0;        // Inferred role: nom sort object, destroyed by releaseNom; original member name unknown.
+  unknown099 *unknown1b8;             // Inferred role: alpha sort work; original member name unknown.
+  DrResMdoAlpTbl *unknown1c0;         // Inferred role: alpha table passed to the part render functions; original member name unknown.
+  DrResMdoMorpObj *unknown1c8;        // Inferred role: morph object; original member name unknown.
+  DrResMdoShdObj *unknown1d0;         // Inferred role: shd object; original member name unknown.
+  DrResMdoVtxMeshObj *unknown1d8;     // Inferred role: vtx mesh object; original member name unknown.
+  DrResMdoLight *unknown1e0;          // Inferred role: light; original member name unknown.
+  DrResMdoMeshObj *unknown1e8;        // Inferred role: mesh object; original member name unknown.
+  DrResMdoLodObj *unknown1f0;         // Inferred role: lod object; original member name unknown.
+  DrResClip *unknown1f8;              // Inferred role: clip; original member name unknown.
+  DrResEtcPamObj *unknown200;         // Inferred role: etc pam object; original member name unknown.
+  DrCalcStmListObj *unknown208;       // Inferred role: texture stream list object, released by releaseNom; original member name unknown.
   cloud::CloudMdlDataObj *unknown210; // Inferred role: cloud model data; original member name unknown.
   DrMdoNomAfterImage *unknown218;     // Inferred role: current after image, updated each frame and deleted once its release call is due; original member name unknown.
   DrMdoNomAfterImage *unknown220[2];  // Inferred role: new after images waiting per double buffer index; original member name unknown.
@@ -140,7 +144,10 @@ public:
 
 static_assert(offsetof(DrMdoCtlNom, unknown190) == 0x190, "");
 static_assert(offsetof(DrMdoCtlNom, unknown198) == 0x198, "");
+static_assert(offsetof(DrMdoCtlNom, unknown1a8) == 0x1a8, "");
+static_assert(offsetof(DrMdoCtlNom, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1b8) == 0x1b8, "");
+static_assert(offsetof(DrMdoCtlNom, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1c8) == 0x1c8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1d0) == 0x1d0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1d8) == 0x1d8, "");
@@ -149,6 +156,7 @@ static_assert(offsetof(DrMdoCtlNom, unknown1e8) == 0x1e8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1f0) == 0x1f0, "");
 static_assert(offsetof(DrMdoCtlNom, unknown1f8) == 0x1f8, "");
 static_assert(offsetof(DrMdoCtlNom, unknown200) == 0x200, "");
+static_assert(offsetof(DrMdoCtlNom, unknown208) == 0x208, "");
 static_assert(offsetof(DrMdoCtlNom, unknown210) == 0x210, "");
 static_assert(offsetof(DrMdoCtlNom, unknown218) == 0x218, "");
 static_assert(offsetof(DrMdoCtlNom, unknown220) == 0x220, "");

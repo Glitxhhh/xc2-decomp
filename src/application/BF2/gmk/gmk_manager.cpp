@@ -1202,9 +1202,10 @@ bool isModelRendered(gf::GF_OBJ_HANDLE *handle) {
   return model->isRender();
 }
 
-// Nothing calls this function in the binary: GmkClimbing::updateIcon (0x710061d414, not reproduced) has its body inlined. Here the call costs
-// 275 against the inline threshold 275, so updateIcon stays a call (17 instructions against 59). Defining the function inline would inline it
-// and match updateIcon, but then this copy (0x71005e4344, 51 instructions, matching) is no longer emitted.
+// Nothing calls this function in the binary: GmkClimbing::updateIcon (0x710061d414) and GmkMapGimmick::seqUpdate (0x710060ec64) inline its body. The call costs 275
+// against the inline threshold 275 (-Rpass-analysis=inline), wherever the function is defined in the unit (before or after its callers, with isCameraExist and
+// getCameraPos before or after it), so a call compiles to 17 instructions in updateIcon against the game's 59; defining it inline would inline it but stop emitting
+// this copy (0x71005e4344, 51 instructions, matching). updateIcon therefore writes the body out again (ruling 8, see there).
 bool isPointBehindGround(const mm::Vec3 &position) {
   if (isCameraExist()) {
     fw::TColiCheckResult<256> result;

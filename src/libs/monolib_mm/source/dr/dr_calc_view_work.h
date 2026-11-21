@@ -15,6 +15,7 @@ class DrMan;
 class DrCalcViewWork {
 public:
   DrCalcViewWork(DrMan *man);
+  ~DrCalcViewWork();
   void begin(int loop);
   void end();
   f32 getPixlLen(f32 depth, f32 length) const;

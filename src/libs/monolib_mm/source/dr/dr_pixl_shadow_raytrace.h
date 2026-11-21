@@ -24,6 +24,7 @@ public:
   };
 
   void update();
+  void resetColorBuff();
   void releaseColorBuff();
   void debugRender();
   void render_beforeTemporal();

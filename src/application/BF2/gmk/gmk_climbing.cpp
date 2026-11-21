@@ -2,6 +2,7 @@
 #include "gmk/gmk_list_impl.h" // IWYU pragma: keep
 
 #include "bdat.h"
+#include "fw/fw_coli_check.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
@@ -95,6 +96,36 @@ void GmkClimbing::createIcon() {
   param.unknown00 = Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 1, unknown001, BDAT_TYPE_UNKNOWN_2).valueU16;
   param.unknown10 = unknown50;
   gf::GfMenuObjFieldIcon::open(unknown48, param);
+}
+
+// The game inlines gmk::isPointBehindGround (0x71005e4344, matched in gmk_manager.cpp, called from nowhere) here: 59 instructions. The call form compiles to 16 instructions
+// (`disp(unknown48, !isPointBehindGround(unknown50))`; 18 with a `bool isBehind` local): the inliner costs the callee at 275 against its threshold of 275
+// (-Rpass-analysis=inline) wherever it is defined in the unit (before or after the callers, isCameraExist and
+// getCameraPos before or after it), and defining it inline would inline it but stop emitting its matching standalone copy. The body is therefore written out again (ruling 8,
+// measured above). The callee's parameter is bound to a local reference before the camera test: the game computes &unknown50 once, in x20, and keeps it across the two
+// getCam calls, as it does for an inlined argument (without the reference the address is computed after them: 58 instructions); the flag set by the camera test is
+// inverted after the join, where the game's eor is, not inside the test.
+void GmkClimbing::updateIcon() {
+  if (unknown48 == nullptr) {
+    return;
+  }
+  bool isBehind = false;
+  const mm::Vec3 &position = unknown50;
+  if (isCameraExist()) {
+    fw::TColiCheckResult<256> result;
+    result.clear();
+    mm::Vec3 start = getCameraPos();
+    fw::ColiCheckConfig config;
+    config.unknown08 = 0.0f;
+    config.unknown0c = 0.0f;
+    config.unknown14 = false;
+    config.unknown15 = false;
+    config.unknown00 = fw::ColiCheckConfig::FLAG_UNKNOWN_0 | fw::ColiCheckConfig::FLAG_UNKNOWN_3;
+    config.unknown10 = 0;
+    config.unknown04 = 0x80000020;
+    isBehind = fw::ColiCheck::testLineChara(result, start, position, config);
+  }
+  gf::GfMenuObjFieldIcon::disp(unknown48, !isBehind);
 }
 
 bool GmkClimbing::isPopCondMatched() const {

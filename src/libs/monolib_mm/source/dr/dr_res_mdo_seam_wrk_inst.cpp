@@ -209,6 +209,140 @@ void DrResMdoSeamWrkInst::seachCheckStreamList(u16 *textureFlags, DrResMdoSeamTe
   }
 }
 
+// Inferred role: moves the loaded bit of a height texture entry of the work to the wanted state and marks the entry as kept when the bit changed; original name unknown.
+// Same helper as unknown300 of dr_res_mdo_seam_wrk_base.cpp on the instance tables. One shared helper taking the two bit tables as pointers does not match (414 and 559
+// instructions instead of the game's 399 and 549, measured), so each work class has its own, taking the work.
+static void unknown301(DrResMdoSeamWrkInst *wrk, s32 bit, s32 i, bool on) {
+  if (on) {
+    if ((wrk->unknowne0[bit >> 5] & (1 << (bit & 0x1f))) == 0) {
+      wrk->unknowne0[bit >> 5] |= 1 << (bit & 0x1f);
+      wrk->unknownd8[i >> 5] |= 1 << (i & 0x1f);
+    }
+  } else if (wrk->unknowne0[bit >> 5] & (1 << (bit & 0x1f))) {
+    wrk->unknowne0[bit >> 5] &= ~(1 << (bit & 0x1f));
+    wrk->unknownd8[i >> 5] |= 1 << (i & 0x1f);
+  }
+}
+
+// 0x7100884c20. Inlines DrResMdoSeamParmRead::setStockHeightTexture (defined earlier in this unit, dr_res_mdo_lod_parts.cpp). The game never reads the vertex table and the seam vertices
+// (x1 and x2 are unused). The texture entry loop has the shape of DrResMdoSeamWrkBase::calcStaemBaseMapMdl (0x710087db04) on the instance map tables, without the stock texture and the height
+// bits of the textures; the height bit handling is the same helper. The not requested block is written out as in calcStaemBaseMapMdl (ruling 8: the helper form of that block gives 357
+// instructions against 399 there, measured). The count of the materials of the second loop is read before its test (the loop guard shares the compare chain with the bit test: ccmp), so it is a local
+// declared before the bit.
+void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex *seamVertex, u16 *textureTbl, DrResMdoSeamTexture *seamTexture, DrResMdoSeamParmRead *parmRead,
+                                             const MdsSeamOfsTexTblData *table, bool isHeight) {
+  s32 mdlCount = unknown50->unknown170;
+  const MdsMdlTopHeader *mdls = unknown50->unknown168;
+  for (s32 i = 0; i < mdlCount; i++) {
+    if (unknownb0[i >> 5] & (1 << (i & 0x1f))) {
+      const MdsMdlTopHeader *mdl = &mdls[i];
+      s32 num = mdl->unknown04;
+      const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown50->unknown18 + mdl->unknown00);
+      s32 bit = unknown50->unknown170 + i;
+      if ((unknownb0[bit >> 5] & (1 << (bit & 0x1f))) && isHeight) {
+        for (s32 j = 0; j < num; j++, info++) {
+          unknowna0[info->unknown0e >> 5] |= 1 << (info->unknown0e & 0x1f);
+          s32 heightBit = unknown50->unknown30 + info->unknown0e;
+          unknowna0[heightBit >> 5] |= 1 << (heightBit & 0x1f);
+        }
+      } else {
+        for (s32 j = 0; j < num; j++, info++) {
+          unknowna0[info->unknown0e >> 5] |= 1 << (info->unknown0e & 0x1f);
+        }
+      }
+    }
+  }
+  s32 count = unknown20->unknown24;
+  s32 matCount = unknown50->unknown30;
+  for (s32 i = 0; i < matCount; i++) {
+    if (unknowna0[i >> 5] & (1 << (i & 0x1f))) {
+      MdoWrkMatRes *matRes = unknown50;
+      const MdsMatInfoHeader *mat = &matRes->unknown28[i];
+      s32 num = mat->unknown24;
+      s32 bit = matRes->unknown30 + i;
+      if (unknowna0[bit >> 5] & (1 << (bit & 0x1f))) {
+        const MdsMatTextureInfo *info = reinterpret_cast<const MdsMatTextureInfo *>(matRes->unknown10 + mat->unknown20);
+        for (s32 j = 0; j < num; j++, info++) {
+          unknownc0[info->unknown00 >> 5] |= 1 << (info->unknown00 & 0x1f);
+        }
+      }
+    }
+  }
+  s32 size = (count / 32 + 1) * 4;
+  size += (32 - size % 32) % 32;
+  memset(unknownd8, 0, size);
+  grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
+  const MdsSeamInstMapHead *head = unknown20;
+  const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(head) + head->unknown20);
+  for (s32 i = 0; i < count; i++, entry++) {
+    if ((entry->unknown06 & 2) == 0) {
+      if ((entry->unknown06 & 1) && unknown110[entry->unknown02]->unknown3b) {
+        unknownd8[i >> 5] |= 1 << (i & 0x1f);
+      }
+    } else if (textureTbl[entry->unknown04] == 0) {
+      if (unknowne0[i >> 5] & (1 << (i & 0x1f))) {
+        unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+        s32 heightBit = i + count;
+        unknowne0[heightBit >> 5] &= ~(1 << (heightBit & 0x1f));
+        unknownd8[i >> 5] |= 1 << (i & 0x1f);
+        if ((entry->unknown06 & 1) == 0) {
+          unknown50->unknowne8[i] = dummy;
+        } else {
+          unknown50->unknowne8[i] = unknown110[entry->unknown02]->unknown20 + entry->unknown00;
+        }
+      } else if ((entry->unknown06 & 1) && unknown110[entry->unknown02]->unknown3b) {
+        unknownd8[i >> 5] |= 1 << (i & 0x1f);
+      }
+    } else {
+      DrResMdoSeamTexture *texture = &seamTexture[textureTbl[entry->unknown04] - 1];
+      if (texture->unknowna1) {
+        unknownd8[i >> 5] |= 1 << (i & 0x1f);
+      }
+      if ((unknowne0[i >> 5] & (1 << (i & 0x1f))) == 0) {
+        unknowne0[i >> 5] |= 1 << (i & 0x1f);
+        unknownd8[i >> 5] |= 1 << (i & 0x1f);
+        unknown50->unknowne8[i] = &texture->unknown18;
+      }
+      if (table[entry->unknown04].unknown0c != 0) {
+        s32 bit = i + count;
+        if ((unknownc0[i >> 5] & (1 << (i & 0x1f))) == 0) {
+          unknown301(this, bit, i, texture->unknowna3 == 1);
+        } else if (texture->unknowna3 == 1) {
+          texture->unknowna2 = 0;
+          unknown301(this, bit, i, true);
+        } else {
+          parmRead->setStockHeightTexture(entry->unknown04 + 1);
+          unknown301(this, bit, i, false);
+        }
+      }
+    }
+  }
+  const u8 *entries = reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown20;
+  for (s32 i = 0; i < matCount; i++) {
+    const MdsMatInfoHeader *mat = &unknown50->unknown28[i];
+    const MdsMatTextureInfo *infos = reinterpret_cast<const MdsMatTextureInfo *>(unknown50->unknown10 + mat->unknown20);
+    s32 num = mat->unknown24;
+    for (s32 j = 0; j < num; j++) {
+      const unknown401 *texEntry = reinterpret_cast<const unknown401 *>(entries + infos[j].unknown00 * 8);
+      if ((texEntry->unknown06 & 2) && textureTbl[texEntry->unknown04] == 0) {
+        unknowna8[i >> 5] |= 1 << (i & 0x1f);
+        break;
+      }
+    }
+  }
+  for (s32 i = 0; i < mdlCount; i++) {
+    const MdsMdlTopHeader *mdl = &mdls[i];
+    const MdsMdlInfoHeader *infos = reinterpret_cast<const MdsMdlInfoHeader *>(unknown50->unknown18 + mdl->unknown00);
+    s32 num = mdl->unknown04;
+    for (s32 j = 0; j < num; j++) {
+      if (unknowna8[infos[j].unknown0e >> 5] & (1 << (infos[j].unknown0e & 0x1f))) {
+        unknownb8[i >> 5] |= 1 << (i & 0x1f);
+        break;
+      }
+    }
+  }
+}
+
 u32 DrResMdoSeamWrkInst::isSubMdl(u32 index) {
   u32 bit = unknown20->unknown2c + index;
   return unknownd0[bit >> 5] & (1 << (bit & 0x1f));

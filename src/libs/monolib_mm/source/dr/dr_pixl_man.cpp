@@ -13,6 +13,7 @@
 #include "dr/dr_pixl_mem_man.h"
 #include "dr/dr_pixl_occ_query.h"
 #include "dr/dr_pixl_post_man.h"
+#include "dr/dr_pixl_post_obj_tssao.h"
 #include "dr/dr_pixl_post_parm.h"
 #include "dr/dr_pixl_render_target.h"
 #include "dr/dr_pixl_shadow_cache_man.h"
@@ -21,6 +22,8 @@
 #include "dr/dr_pixl_tile_parm.h"
 #include "dr/dr_shd_data_list.h"
 #include "dr/dr_shd_data_obj.h"
+#include "dr/dr_shd_lgt_global_ibl.h"
+#include "dr/dr_shd_lgt_man.h"
 #include "dr/dr_shd_man.h"
 #include "grlib/cglib_color_ctl.h"
 #include "grlib/cglib_ctl_texture.h"
@@ -1080,6 +1083,23 @@ void DrPixlMan::clearAccumBuffer() {
   unknown7f0->unknown00[10][0]->clearTexture(mm::Col4::black, static_cast<GrlClaerMask>(0xf));
   unknown7f0->unknown00[11][0]->clearTexture(mm::Col4::black, static_cast<GrlClaerMask>(0xf));
   unknown7f0->unknown00[15][0]->clearTexture(mm::Col4::black, static_cast<GrlClaerMask>(0xf));
+}
+
+void DrPixlMan::fastDeferredRender() {
+  if (unknown08->unknown120[unknown08->unknown1c98]->unknown488) {
+    debugGBuffRender();
+  }
+  unknown7f0->unknown180->renderDeferredFast();
+  DrShdLgtMan *shdLgtMan = unknown7f0->unknown170->unknown08->unknown80->unknown18;
+  shdLgtMan->unknown58->render(shdLgtMan);
+  unknown7f0->unknown170->shadowTexRender(unknown860);
+  unknown7f0->unknown180->renderDeferredTemporal();
+  if (unknown7f0->unknown180->unknown78 != nullptr) {
+    unknown7f0->unknown180->unknown78->render_afterTemporal();
+  }
+  // Ruling 6: the game never sets the argument register (0x71008435b4); DrPixlDeferred::fastDeferredRender never reads its parameter, and
+  // the original expression cannot be checked. unknown860 is the cate that shadowTexRender takes above.
+  unknown7f0->unknown170->fastDeferredRender(unknown860);
 }
 
 void DrPixlMan::debugGBuffRender() {

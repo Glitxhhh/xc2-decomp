@@ -15,7 +15,9 @@
 #include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_man.h"
 #include "dr/dr_pixl_shadow_obj.h"
+#include "dr/dr_shd_lgt_clustered.h"
 #include "dr/dr_shd_lgt_global_ibl.h"
+#include "dr/dr_shd_lgt_hybrid.h"
 #include "dr/dr_shd_lgt_man.h"
 #include "dr/dr_shd_man.h"
 #include "grlib/cglib_color_ctl.h"
@@ -88,6 +90,30 @@ void DrPixlDeferred::displayUpdate() {
     unknown38 = static_cast<s16>(width);
     unknown3a = static_cast<s16>(height);
   }
+}
+
+void DrPixlDeferred::fastDeferredRender(int cate) {
+  DrLightMan *lightMan = unknown08->unknown588;
+  DrShdLgtMan *shdLgtMan = unknown08->unknown80->unknown18;
+  shdLgtMan->renderBegin();
+  // Ruling 8: the tail (setupBlend, setMainViewPort, resetRenderTarget) is written in both paths (function at 0x710083967c). With one shared tail after the if, GVN partial redundancy
+  // elimination turns `this + 24` into a phi (an extra add and branch: 106 instructions measured again, the game has 104); two tails are merged later.
+  if (unknown08->unknown1d6e) {
+    DrAPGxType::setupBlend(0);
+    unknown18->setMainViewPort();
+    unknown18->resetRenderTarget();
+    return;
+  }
+  shadowLightRender();
+  if (!unknown08->unknown1d78) {
+    shdLgtMan->unknown60->render(shdLgtMan, lightMan);
+  }
+  shdLgtMan->setupLgtBuff();
+  shdLgtMan->m_hybridLight->render(shdLgtMan, lightMan);
+  unknown18->endDeferredRenderTarget();
+  DrAPGxType::setupBlend(0);
+  unknown18->setMainViewPort();
+  unknown18->resetRenderTarget();
 }
 
 void DrPixlDeferred::shadowLightRender() {

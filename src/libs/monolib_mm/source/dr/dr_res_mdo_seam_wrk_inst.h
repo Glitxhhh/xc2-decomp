@@ -25,6 +25,7 @@ class DrResMdoPntAlphaMan;
 class DrResMdoPos;
 class DrResMdoSeamParmRead;
 struct MdoArgSeamUpdate;
+struct MdsSeamOfsTexTblData;
 struct MdoWrkMatRes;
 struct unknown721;
 class DrResMdoVertex;
@@ -129,6 +130,8 @@ public:
   void beginRenderList(u16 *textureFlags);
   void seachRenderMdlList(MdoArgSeamUpdate &update);
   void seachReadMdlList(u16 *vertexTbl, u16 *textureTbl, DrResMdoSeamVertex *seamVertex, DrResMdoSeamTexture *seamTexture, DrMdoCtlSeamInstMap *ctl);
+  void seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex *seamVertex, u16 *textureTbl, DrResMdoSeamTexture *seamTexture, DrResMdoSeamParmRead *parmRead, const MdsSeamOfsTexTblData *table,
+                          bool isHeight);
   void seachCheckStreamList(u16 *textureFlags, DrResMdoSeamTexture *textures);
   void seachShadowCheck(DrResMdoInstAnmObj *anm);
   u32 isSubMdl(u32 index);
@@ -173,8 +176,11 @@ public:
   void **unknown90; // Inferred role: render buffers; original member name unknown.
   s32 unknown98;    // Inferred role: render buffer count; original member name unknown.
   u8 _9c[0xa0 - 0x9c];
-  const u32 *unknowna0; // Inferred role: material update flags; original member name unknown.
-  u8 _a8[0xc8 - 0xa8];
+  u32 *unknowna0; // Inferred role: material bit table, the bits i and i + the material count, also the material update flags; original member name unknown.
+  u32 *unknowna8; // Inferred role: material bit table of the materials with a texture that is not read yet; original member name unknown.
+  u32 *unknownb0; // Inferred role: mdl bit table, the bits i and i + the mdl entry count; original member name unknown.
+  u32 *unknownb8; // Inferred role: mdl bit table of the mdl entries with a texture that is not read yet; original member name unknown.
+  u32 *unknownc0; // Inferred role: texture bit table of the height textures to read; original member name unknown.
   u32 *unknownc8; // Inferred role: read model bit table; original member name unknown.
   u32 *unknownd0; // Inferred role: sub model bit table; original member name unknown.
   u32 *unknownd8; // Inferred role: bit table; original member name unknown.

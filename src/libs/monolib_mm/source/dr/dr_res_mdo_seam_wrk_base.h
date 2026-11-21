@@ -63,9 +63,23 @@ struct unknown781 {
   u32 unknown24; // Inferred role: offset of the data of unknown60 of the work, 0 when there is none; original member name unknown.
 };
 
+// Inferred role: base map vertex entry of the list at the offset unknown00 of the resource at MdsSeamBaseMapHead::unknown38 (stride 0x24); original type name unknown.
+struct unknown786 {
+  f32 unknown00[3]; // Inferred role: maximum position of the area; original member name unknown.
+  f32 unknown0c[3]; // Inferred role: minimum position of the area; original member name unknown.
+  u32 unknown18;    // Inferred role: vertex id; original member name unknown.
+  u32 unknown1c;    // Inferred role: second vertex id, used when the work has bit 9 of unknowna0 set; original member name unknown.
+  u8 _20[0x24 - 0x20];
+};
+
+static_assert(offsetof(unknown786, unknown0c) == 0x0c, "");
+static_assert(offsetof(unknown786, unknown18) == 0x18, "");
+static_assert(offsetof(unknown786, unknown1c) == 0x1c, "");
+static_assert(sizeof(unknown786) == 0x24, "");
+
 // Inferred role: header of the resource at MdsSeamBaseMapHead::unknown38; original type name unknown.
 struct unknown782 {
-  u8 _00[0x04];
+  u32 unknown00; // Inferred role: offset of the unknown786 entries; original member name unknown.
   s32 unknown04; // Inferred role: bit count; calcCacheInfo (1.0.0: 0x710087d2ac) reads the bits i and i + this count of unknowne0 of the work; original member name unknown.
   u32 unknown08; // Inferred role: offset of the data of unknown58 of the work; original member name unknown.
 };
@@ -106,9 +120,8 @@ static_assert(offsetof(unknown782, unknown08) == 0x08, "");
 struct unknown785 {
   u16 unknown00; // Inferred role: texture index in the texture list; original member name unknown.
   u16 unknown02; // Inferred role: texture list index; original member name unknown.
-  u8 _04[0x06 - 0x04];
-  u8 unknown06; // Inferred role: flags, bit 0 is set when the texture is read; original member name unknown.
-  u8 _07[0x08 - 0x07];
+  u16 unknown04; // Inferred role: seam texture index; original member name unknown.
+  u16 unknown06; // Inferred role: flags, bit 0 is set when the texture is read, bit 1 when it is a seam texture; original member name unknown.
 };
 
 static_assert(offsetof(unknown785, unknown02) == 0x02, "");
@@ -152,6 +165,7 @@ public:
   void selectVertex(int index);
   void releaseCache(DrMdoCtlSeamBaseMap *ctl);
   void calcCacheInfo();
+  void calcStaemBaseMapMdl(u16 *textureFlags, DrResMdoSeamTexture *textures, DrResMdoSeamParmRead *parmRead, const MdsSeamOfsTexTblData *table, bool isHeight);
   bool seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl);
   bool seachShadowBaseMapRenderChild(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl, const MdsSeamBaMpTreeData *tree);
   void seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamBaseMap *ctl);
@@ -190,7 +204,11 @@ public:
   void **unknowna8; // Inferred role: allocated buffers; original member name unknown.
   s32 unknownb0;    // Inferred role: allocated buffer count; original member name unknown.
   s32 unknownb4;    // Inferred role: memory size; original member name unknown.
-  u8 _b8[0xe0 - 0xb8];
+  u32 *unknownb8;   // Inferred role: material bit table, the bits i and i + the material count; original member name unknown.
+  u8 _c0[0xc8 - 0xc0];
+  u32 *unknownc8;  // Inferred role: texture bit table of the materials in use, the bits i and i + the texture entry count; original member name unknown.
+  u32 *unknownd0;  // Inferred role: texture bit table, bit i is set when the texture entry i must be kept; original member name unknown.
+  u32 *unknownd8;  // Inferred role: texture bit table of the loaded texture entries, the bits i and i + the texture entry count; original member name unknown.
   u32 *unknowne0;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u32 *unknowne8;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
   u32 **unknownf0; // Inferred role: shadow bit tables; original member name unknown.

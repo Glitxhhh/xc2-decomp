@@ -52,3 +52,10 @@ void DrCalcMan::renderEnd() {
 void DrCalcMan::shadowEnd() { unknown10->unknownc0 = unknown10->unknown140; }
 
 } // namespace ml
+
+// The game builds the view work in this unit: the functions of DrCalcMan and DrCalcViewWork interleave in one contiguous range with no other unit between them
+// (DrCalcMan::begin 0x71008aa678, DrCalcViewWork::begin 0x71008aa6a4, DrCalcMan::end 0x71008ad964, DrCalcViewWork::end 0x71008ad96c, DrCalcMan::renderEnd 0x71008adde4,
+// DrCalcViewWork::renderEnd 0x71008ade28, DrCalcMan::shadowEnd 0x71008ade6c, DrCalcViewWork::shadowEnd 0x71008ade80, then the rest of the view work up to 0x71008b1f44).
+// With the view work in this unit clang inlines the empty DrCalcClipWorkViewPlane and DrCalcClipWorkViewPoli destructors (0x71008a75c4, 0x71008a8ce8) into ~DrCalcViewWork
+// (0x71008ae7a8), which calls only the CGLibDblUniformBlock destructors.
+#include "dr_calc_view_work.cpp"

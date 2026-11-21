@@ -11,6 +11,7 @@
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_quest.h"
 #include "gf/data/gf_game_flag.h"
+#include "gf/data/gf_object_type.h"
 #include "gf/game/achiev/gf_achiev_manager.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
@@ -511,6 +512,56 @@ void GfQuestTask::completeItemUseTask(u32 item, u32 driver) {
   for (mm::mtl::FixedQueue<QuestData, 15000>::iterator it = orderAchievementQuest->begin(), last = orderAchievementQuest->end(); it != last; ++it) {
     unknown002((*it).unknown00, item, category, blades);
   }
+}
+
+u32 GfQuestTask::getReduceHpObj(QuestID quest, GF_OBJ_HANDLE *handle) {
+  u32 purpose = GfDataQuest::getListPurposeID(quest);
+  if (purpose == 0) {
+    return 0;
+  }
+
+  GfObjAcc objAcc(handle);
+  if (objAcc.getType() == OBJECT_TYPE_ENEMY) {
+    u32 enemy = objAcc.getEnArrangeId();
+    QuestListAcc *questListAcc = QuestListAcc::get();
+    for (u32 taskIndex = 0; taskIndex < QUEST_UNKNOWN_4; taskIndex++) {
+      QuestTaskParam param(quest, taskIndex, purpose, TASK_STATE_UNKNOWN_0);
+      if (param.unknown10 != TASK_TYPE_UNKNOWN_1) {
+        continue;
+      }
+
+      // Ruling 8: the statements of GfQuestUtil::isEnemyGroup (0x71003773d0) written out; the game does not call it here (0x7100375c88 holds the
+      // unrolled 8-step loop). The call form `isEnemyGroup(group, enemy)` gives 275 instructions against 238 (clang then unrolls the four-task loop,
+      // calling isEnemyGroup four times). Including gf_quest_util.cpp in this unit does not help: clang still keeps the call, and it inlines
+      // GfQuestUtil::sendSuppressLog into incSuppressEnemy, which the game calls out of line.
+      u32 group = questListAcc->getBattleEnemyGroupID(param.unknown14);
+      if (group != 0) {
+        GfBdatChrEnParam *chrEnParam = GfBdatChrEnParam::get();
+        for (u32 index = 0; index < 8; index++) {
+          if (enemy == chrEnParam->getEnemyGroupEnemyID(group, index)) {
+            return questListAcc->getBattleReduceEnemyHP(param.unknown14);
+          }
+        }
+      }
+
+      if (enemy == questListAcc->getBattleEnemyID(param.unknown14)) {
+        return questListAcc->getBattleReduceEnemyHP(param.unknown14);
+      }
+    }
+  } else if (GfGameManager::getPartyLeaderDriver() == handle) {
+    QuestListAcc *questListAcc = QuestListAcc::get();
+    for (u32 taskIndex = 0; taskIndex < QUEST_UNKNOWN_4; taskIndex++) {
+      QuestTaskParam param(quest, taskIndex, purpose, TASK_STATE_UNKNOWN_0);
+      if (param.unknown10 == TASK_TYPE_UNKNOWN_1) {
+        u32 reduceHp = questListAcc->getBattleReducePCHP(param.unknown14);
+        if (reduceHp != 0) {
+          return reduceHp;
+        }
+      }
+    }
+  }
+
+  return 0;
 }
 
 bool GfQuestTask::isReduceHpObj(QuestID quest, GF_OBJ_HANDLE *handle) { return getReduceHpObj(quest, handle) != 0; }

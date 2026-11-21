@@ -2,6 +2,7 @@
 
 #include "cloud/cloud_mdl_data_obj.h"
 #include "dr/dr_ap_cache.h"
+#include "dr/dr_calc_stm_list_obj.h"
 #include "dr/dr_light_obj.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_base.h"
@@ -17,17 +18,20 @@
 #include "dr/dr_pixl_shadow_obj.h"
 #include "dr/dr_res_clip.h"
 #include "dr/dr_res_etc_params.h"
+#include "dr/dr_res_mdo_alp_tbl.h"
 #include "dr/dr_res_mdo_light.h"
 #include "dr/dr_res_mdo_lod_obj.h"
 #include "dr/dr_res_mdo_mesh_obj.h"
 #include "dr/dr_res_mdo_morp_obj.h"
 #include "dr/dr_res_mdo_shd_obj.h"
+#include "dr/dr_res_mdo_sort.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "dr/dr_res_mdo_vtx_mesh_obj.h"
 #include "grlib/cglib_ctl_shader.h"
 #include "mm_math/mm_col3.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
+#include "mtl/mem_manager.h"
 
 namespace ml {
 
@@ -39,6 +43,62 @@ DrMdoCtlNom::~DrMdoCtlNom() {
     m_drMan->unknown78->unknown800->delShadowCacheUpdate();
   }
   releaseNom();
+}
+
+void DrMdoCtlNom::releaseNom() {
+  if (unknown218 != nullptr) {
+    delete unknown218;
+    unknown218 = nullptr;
+  }
+  if (unknown220[0] != nullptr) {
+    delete unknown220[0];
+    unknown220[0] = nullptr;
+  }
+  if (unknown220[1] != nullptr) {
+    delete unknown220[1];
+    unknown220[1] = nullptr;
+  }
+  if (unknown58 != nullptr) {
+    unknown58->unknown28 |= DrMdoSmlShadowObj::FLAG_UNKNOWN_14 << DrMan::s_nDblStockIdx;
+    unknown58 = nullptr;
+  }
+  if (unknown210 != nullptr) {
+    unknown210->release();
+    unknown210 = nullptr;
+  }
+  DrResMdoLight::release(unknown1e0);
+  DrResMdoVtxMeshObj::release(unknown1d8);
+  DrResMdoAlpTbl::release(unknown1c0);
+  DrResMdoMorpObj::release(unknown1c8);
+  DrResMdoMeshObj::release(unknown1e8);
+  DrResMdoLodObj::release(unknown1f0);
+  DrResEtcPamObj::release(unknown200);
+  if (unknown1f8 != nullptr) {
+    unknown1f8->~DrResClip();
+    unknown1f8 = nullptr;
+  }
+  unknown1b0->~DrResMdoSortNom();
+  if (unknown1b8 != nullptr) {
+    if (unknown1b8->unknown08 != nullptr) {
+      unknown1b8->unknown08->~DrResMdoSortNomLastApha();
+    }
+    if (unknown1b8->unknown00 != nullptr) {
+      unknown1b8->unknown00->~DrResMdoSortNomFastApha();
+    }
+    if (unknown1b8->unknown10 != nullptr) {
+      unknown1b8->unknown10->~DrResMdoSortNomCldBackApha();
+    }
+    unknown1b8 = nullptr;
+  }
+  releaseMat();
+  if (unknown208 != nullptr) {
+    unknown208->release();
+    unknown208 = nullptr;
+  }
+  if (unknown1a8 != nullptr) {
+    mtl::MemManager::deallocate(unknown1a8, 0, false);
+    unknown1a8 = nullptr;
+  }
 }
 
 void DrMdoCtlNom::setDeleteCall(int deleteCall) {

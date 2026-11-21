@@ -200,6 +200,45 @@ void DrPixlPostMan::renderDeferredLast() {
 
 DrPixlRenderTarget *DrPixlPostMan::getDownDepth() { return unknownc0[DrMan::s_nDblIdx]; }
 
+void DrPixlPostMan::resetColorBuff() {
+  if (unknown78 != nullptr) {
+    unknown78->resetColorBuff(false);
+  }
+  setupDepthBuff();
+  if (unknown20 != nullptr) {
+    unknown20->resetColorBuff(false);
+  }
+  if (unknown70 != nullptr) {
+    unknown70->resetColorBuff();
+  }
+  if (unknown68 != nullptr) {
+    unknown68->resetColorBuff();
+  }
+  if (unknown88 != nullptr) {
+    unknown88->resetColorBuff();
+  }
+  if (unknown00->unknown120[unknown00->unknown1c98]->unknownfe4 != 2) {
+    if (unknown30 != nullptr) {
+      unknown30->resetColorBuff();
+    }
+    if (unknown50 != nullptr) {
+      unknown50->resetColorBuff();
+    }
+    if (unknown58 != nullptr) {
+      unknown58->resetColorBuff();
+    }
+    if (unknown38 != nullptr) {
+      unknown38->resetColorBuff();
+    }
+    if (unknown28 != nullptr) {
+      unknown28->calcColorBuff();
+    }
+    if (unknowna0 != nullptr) {
+      unknowna0->resetColorBuff();
+    }
+  }
+}
+
 void DrPixlPostMan::releaseColorBuff() {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   if (unknown20 != nullptr) {
