@@ -6,6 +6,8 @@
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_sampler_man.h"
+#include "dr/dr_mdo_texture_man.h"
+#include "dr/dr_mdo_vertex_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_post_man.h"
 #include "dr/dr_pixl_post_parm.h"
@@ -13,13 +15,17 @@
 #include "dr/dr_res_mdo_tex_list.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "dr/dr_res_mpf_sampler.h"
+#include "dr/dr_res_query_acc.h"
+#include "dr/dr_shd_man.h"
 #include "dr/dr_shd_mdo_dec_shd_obj.h"
+#include "dr/dr_shd_mdo_man.h"
 #include "grlib/cglib_dbl_uniform_block.h" // IWYU pragma: keep
 #include "grlib/cglib_one_uniform_block.h" // IWYU pragma: keep
 #include "grlib/cglib_tri_uniform_block.h" // IWYU pragma: keep
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_math.h"
 #include "mm_mtl/fixed_array.h"
+#include "mtl/mem_manager.h"
 // The game builds the sampler manager in the same unit, so its release functions are inlined here.
 #include "dr_mdo_sampler_man.cpp"
 #include "grlib/cglib_uniform_array.h"
@@ -724,6 +730,100 @@ void DrMdoMat::matCall_ToonId(const MdsMatInfoHeader *header, int valueIndex, in
 
 void DrMdoMat::matCall_VolumeTest(const MdsMatInfoHeader *header, int valueIndex, int matIndex) {}
 
+// Measured forms (1.0.0: 0x71007f937c, 397 instructions): the game inlines the release functions of the sampler, texture, vertex and shader managers and the uniform array release
+// (unknown001). The billboard uniforms (unknown120) are read once into a local and, in the instance map branch, into a second local for the other view of the union (unknown120_1),
+// because the game keeps the pointer in a register and clears the array pointer through it once, after the tail shared by the two loops (stride 0x38 and 0x28): reading
+// `unknown30->unknown120` again after the calls reloads it and gives no shared store. The occlusion view (unknown160_2) is read before the matrices (unknown160) and read again after
+// the store that clears their array (a null array reuses the first load). The pointer of the shader extension tables is cleared twice and the texture array pointer (unknowne8) is
+// cleared in place of the texture list pointer (unknownd0) in the game.
+void DrMdoMat::releaseMat() {
+  if (unknown30 == nullptr) {
+    return;
+  }
+  if (unknown30->unknowne0 != nullptr) {
+    for (u32 i = 0; i < unknown30->unknown30; i++) {
+      unknown30->unknowne0[i].~DrResMpfSampler();
+    }
+    unknown30->unknowne0 = nullptr;
+  }
+  if (unknown30->unknownd8 != nullptr) {
+    m_drMan->unknown88->unknown018->releaseSamplerObj(unknown30->unknownd8);
+    unknown30->unknownd8 = nullptr;
+  }
+  if (unknown30->unknown98 != nullptr) {
+    unknown30->unknown98->release();
+    unknown30->unknown98 = nullptr;
+  }
+  if (unknown30->unknown90 != nullptr) {
+    unknown30->unknown90->unknown001();
+    unknown30->unknown90 = nullptr;
+  }
+  if (unknown30->unknowna0 != nullptr) {
+    unknown30->unknowna0->unknown001();
+    unknown30->unknowna0 = nullptr;
+  }
+  if (unknown30->unknowna8 != nullptr) {
+    unknown30->unknowna8->unknown001();
+    unknown30->unknowna8 = nullptr;
+  }
+  if (unknown30->unknownb0 != nullptr) {
+    unknown30->unknownb0->unknown001();
+    unknown30->unknownb0 = nullptr;
+  }
+  if (unknown30->unknownb8 != nullptr) {
+    unknown30->unknownb8->unknown001();
+    unknown30->unknownb8 = nullptr;
+  }
+  unknown712 *billboard = unknown30->unknown120;
+  if (billboard != nullptr) {
+    if (billboard->unknown00 == 0) {
+      if (billboard->unknown08 != nullptr) {
+        billboard->unknown08->unknown001();
+        billboard->unknown08 = nullptr;
+      }
+    } else {
+      unknown713 *instBillboard = unknown30->unknown120_1;
+      if (instBillboard->unknown08 != nullptr) {
+        instBillboard->unknown08->unknown001();
+        instBillboard->unknown08 = nullptr;
+      }
+    }
+  }
+  if (unknown30->unknown140 != nullptr && unknown30->unknown140->unknown18 != nullptr) {
+    unknown30->unknown140->unknown18->unknown001();
+    unknown30->unknown140->unknown18 = nullptr;
+  }
+  unknown724 *occlusion = unknown30->unknown160_2;
+  if (unknown30->unknown160 != nullptr && unknown30->unknown160->unknown08 == 0) {
+    if (unknown30->unknown160->unknown00 != nullptr) {
+      unknown30->unknown160->unknown00->unknown001();
+      unknown30->unknown160->unknown00 = nullptr;
+      occlusion = unknown30->unknown160_2;
+    }
+    occlusion->unknown38->releaseQuery();
+  }
+  if (unknown30->unknown88 != nullptr) {
+    mtl::MemManager::deallocate(unknown30->unknown88, 0, false);
+    unknown30->unknown88 = nullptr;
+    unknown30->unknown88 = nullptr;
+  }
+  if (unknown30->unknownd0 != nullptr) {
+    m_drMan->unknown88->unknown010->releaseTextureObj(unknown30->unknownd0);
+    unknown30->unknowne8 = nullptr;
+  }
+  if (unknown30->unknownc8 != nullptr) {
+    m_drMan->unknown88->unknown008->releaseVertexObj(unknown30->unknownc8);
+    unknown30->unknownc8 = nullptr;
+  }
+  if (unknown30->unknown80 != nullptr) {
+    m_drMan->unknown80->unknown08->releaseShaderObj(unknown30->unknown80);
+    unknown30->unknown80 = nullptr;
+  }
+  if (unknown30 != nullptr) {
+    mtl::MemManager::deallocate(unknown30, 0, false);
+    unknown30 = nullptr;
+  }
+}
 } // namespace ml
 
 // The game instantiates these in this file, where the uniform block constructors and release() are out of line.

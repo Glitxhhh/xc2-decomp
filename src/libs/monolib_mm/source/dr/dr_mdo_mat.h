@@ -93,6 +93,7 @@ struct MdsMatInfoHeader {
     unknown015_17 = 1 << 17,  // Inferred role: animation of the category at unknown34; original name unknown.
     unknown015_18 = 1 << 18,  // Inferred role: material animation; original name unknown.
     unknown015_19 = 1 << 19,  // Inferred role: plane matrix animation of the category at unknown3c; original name unknown.
+    unknown015_23 = 1 << 23,  // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
     unknown015_25 = 1 << 25,  // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
     unknown015_26 = 1 << 26,  // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
     unknown015_27 = 1 << 27,  // Inferred role: fur shader material; original name unknown.
@@ -106,6 +107,7 @@ struct MdsMatInfoHeader {
     unknown030_10 = 1 << 10, // Inferred role: unknown, the dither texture is replaced by a white texture (varStTex_DitherTex); original name unknown.
     unknown030_12 = 1 << 12, // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
     unknown030_13 = 1 << 13, // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
+    unknown030_14 = 1 << 14, // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
   };
 
   u32 unknown00; // Inferred role: offset of the material name; original member name unknown.
@@ -428,6 +430,7 @@ struct MdsMdlInfoHeader {
   // Inferred role: mdl info flag; original type name unknown.
   enum Flag {
     FLAG_UNKNOWN_2 = 1 << 2,   // Inferred role: uses the billboard matrix uniform of the base map; original name unknown.
+    FLAG_UNKNOWN_3 = 1 << 3,   // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
     FLAG_UNKNOWN_4 = 1 << 4,   // Inferred role: uses the billboard uniform of the base map; original name unknown.
     FLAG_UNKNOWN_8 = 1 << 8,   // Inferred role: has mesh parts; original name unknown.
     FLAG_UNKNOWN_9 = 1 << 9,   // Inferred role: unknown, with the textures of the work and the material field at 0x24 selects the alpha test shaders (0x1b/0x1c, 0x1e/0x1f) of
@@ -438,11 +441,17 @@ struct MdsMdlInfoHeader {
     FLAG_UNKNOWN_20 = 1 << 20, // Inferred role: unknown, selects the second group of pre pass shaders (0x1d-0x1f) of partsInstanceZPrepassBillRender (0x71007f3734); original name unknown.
     FLAG_UNKNOWN_23 = 1 << 23, // Inferred role: has etc vertices; original name unknown.
     FLAG_UNKNOWN_24 = 1 << 24, // Inferred role: has mof blend vertices; original name unknown.
+    FLAG_UNKNOWN_25 = 1 << 25, // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
   };
 
   // Inferred role: render pass flag of unknown04; original type name unknown.
   enum PassFlag {
     PASS_FLAG_UNKNOWN_0 = 1 << 0,   // Inferred role: required to draw a billboard in the z pre pass of the instance map (createInstZPrePassDisplayList, 0x710081da48); original name unknown.
+    PASS_FLAG_UNKNOWN_1 = 1 << 1,   // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
+    PASS_FLAG_UNKNOWN_2 = 1 << 2,   // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
+    PASS_FLAG_UNKNOWN_3 = 1 << 3,   // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
+    PASS_FLAG_UNKNOWN_5 = 1 << 5,   // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
+    PASS_FLAG_UNKNOWN_6 = 1 << 6,   // Inferred role: unknown, tested by DrMdoCtlSeamInstMap::createInstMapDisplayList (0x7100823b60); original name unknown.
     PASS_FLAG_UNKNOWN_14 = 1 << 14, // Inferred role: renders into the shadow map; original name unknown.
     PASS_FLAG_UNKNOWN_15 = 1 << 15, // Inferred role: renders into the thickness pass instead of the z pre pass; original name unknown.
   };
@@ -572,13 +581,15 @@ struct unknown720;
 
 // Inferred role: billboard uniform work; original type name unknown.
 struct unknown712 {
-  u8 _00[0x08 - 0x00];
+  u8 unknown00; // Inferred role: set when the uniforms are of the instance map (unknown713 view of unknown08), tested by DrMdoMat::releaseMat (0x71007f937c); original member name unknown.
+  u8 _01[0x08 - 0x01];
   grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown08; // Inferred role: uniforms; original member name unknown.
   u8 _10[0x18 - 0x10];
   const unknown719 *unknown18; // Inferred role: billboard entries in the model data; original member name unknown.
   const unknown720 *unknown20; // Inferred role: billboard positions in the model data; original member name unknown.
 };
 
+static_assert(offsetof(unknown712, unknown00) == 0x00, "");
 static_assert(offsetof(unknown712, unknown08) == 0x08, "");
 static_assert(offsetof(unknown712, unknown18) == 0x18, "");
 static_assert(offsetof(unknown712, unknown20) == 0x20, "");
@@ -600,11 +611,13 @@ static_assert(offsetof(unknown714, unknown10) == 0x10, "");
 // Inferred role: billboard matrix work of the base map; original type name unknown.
 struct unknown715 {
   grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown00; // Inferred role: uniforms, read by DrMdoCtl::partsDefRender (0x71007f1ae0); original member name unknown.
-  u8 _08[0x10 - 0x08];
+  u8 unknown08;                                                     // Inferred role: unknown, tested by DrMdoMat::releaseMat (0x71007f937c); original member name unknown.
+  u8 _09[0x10 - 0x09];
   const u8 *unknown10; // Inferred role: matrices in the model data; original member name unknown.
 };
 
 static_assert(offsetof(unknown715, unknown00) == 0x00, "");
+static_assert(offsetof(unknown715, unknown08) == 0x08, "");
 static_assert(offsetof(unknown715, unknown10) == 0x10, "");
 
 // Inferred role: billboard matrix work of the instance map; original type name unknown.
@@ -674,7 +687,7 @@ struct MdoWrkMatRes {
   DrShdMdoDecShdObj *unknown80;                                     // Inferred role: dec shader object; original member name unknown.
   DrShdMdoExtTblObj *unknown88;                                     // Inferred role: shader extension tables; original member name unknown.
   grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown90; // Inferred role: material uniforms; original member name unknown.
-  u8 _098[0x0a0 - 0x098];
+  grlib::CGLibTriUniformBlock *unknown98;                           // Inferred role: unknown uniform block released by DrMdoMat::releaseMat (0x71007f937c); original member name unknown.
   grlib::CGLibUniformArray<grlib::CGLibTriUniformBlock> *unknowna0; // Inferred role: mdl uniforms; original member name unknown.
   grlib::CGLibOneUniformArray *unknowna8;                           // Inferred role: mof blend uniforms; original member name unknown.
   grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknownb0; // Inferred role: vol tex uniforms; original member name unknown.
@@ -732,6 +745,7 @@ static_assert(offsetof(MdoWrkMatRes, unknown58) == 0x058, "");
 static_assert(offsetof(MdoWrkMatRes, unknown60) == 0x060, "");
 static_assert(offsetof(MdoWrkMatRes, unknown88) == 0x088, "");
 static_assert(offsetof(MdoWrkMatRes, unknown90) == 0x090, "");
+static_assert(offsetof(MdoWrkMatRes, unknown98) == 0x098, "");
 static_assert(offsetof(MdoWrkMatRes, unknowna0) == 0x0a0, "");
 static_assert(offsetof(MdoWrkMatRes, unknowna8) == 0x0a8, "");
 static_assert(offsetof(MdoWrkMatRes, unknownb0) == 0x0b0, "");
@@ -848,6 +862,7 @@ public:
     unknown028_16 = 1 << 16, // Inferred role: alpha bloom; original name unknown.
     unknown028_17 = 1 << 17, // Inferred role: volume; original name unknown.
     unknown028_18 = 1 << 18, // Inferred role: full screen shadow; original name unknown.
+    unknown028_19 = 1 << 19, // Inferred role: unknown, set from the material flag unknown030_14 by createInstMapDisplayList (0x7100823b60); original name unknown.
     unknown028_25 = 1 << 25,
     unknown028_26 = 1 << 26,
     unknown028_27 = 1 << 27,

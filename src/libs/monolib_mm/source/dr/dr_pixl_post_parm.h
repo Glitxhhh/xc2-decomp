@@ -365,7 +365,10 @@ public:
   bool unknown1000;    // Inferred role: debug blur mask render; original member name unknown.
   u8 _1001[0x1008 - 0x1001];
   s32 unknown1008; // Inferred role: debug mode of DrPixlShadowRaytrace::debugRender (1 draws three targets, 2 to 4 one); original member name unknown. Split out of _1001 (decision 2026-11-14 #17).
-  u8 _100c[0x101c - 0x100c];
+  u8 _100c[0x1010 - 0x100c];
+  f32 unknown1010; // Inferred role: shw raytrace temporal filtering depth scale, its inverse is the third value of gParam (DrPixlShadowRaytrace::temporalFiltering, 0x71008c6420); original member name
+                   // unknown.
+  u8 _1014[0x101c - 0x1014];
   f32 unknown101c; // Inferred role: unbranch to depth quarter size scale parameter; original member name unknown.
   u8 _1020[0x1024 - 0x1020];
   bool unknown1024; // Inferred role: shw raytrace temporal; original member name unknown.
@@ -563,6 +566,7 @@ static_assert(offsetof(DrPixlPostParm, unknownfc8) == 0x0fc8, "");
 static_assert(offsetof(DrPixlPostParm, unknownff0) == 0x0ff0, "");
 static_assert(offsetof(DrPixlPostParm, unknown1000) == 0x1000, "");
 static_assert(offsetof(DrPixlPostParm, unknown1008) == 0x1008, "");
+static_assert(offsetof(DrPixlPostParm, unknown1010) == 0x1010, "");
 static_assert(offsetof(DrPixlPostParm, unknown101c) == 0x101c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1024) == 0x1024, "");
 static_assert(offsetof(DrPixlPostParm, unknown1025) == 0x1025, "");

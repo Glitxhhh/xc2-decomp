@@ -213,6 +213,51 @@ void DrMdoCtlSeamInstMap::createInstZPrePassDisplayList() {
   }
 }
 
+// Measured forms (1.0.0: 0x710081e3f4, 111 instructions): the same loop as createInstZPrePassDisplayList for the thickness pass. `count` is a local because the game keeps the
+// instance count of the mdl info in a register for the test and for arg.unknown10 (ldrh w28); the two flag bits of unknown8a are tested as one mask compare (0x110).
+void DrMdoCtlSeamInstMap::createInstThicknessPassDisplayList(bool isFirst) {
+  if (!m_drMan->unknown1d6a) {
+    MdoInstancePrePassArg arg;
+    arg.unknown0c = 0x34;
+    arg.unknown21 = isFirst;
+    for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+      unknown30 = inst->unknown50;
+      if (unknown30 != nullptr && (inst->unknown8a & 0x110) == 0x110) {
+        inst->beginMdl();
+        while (DrResMdoSeamWrkInst::unknown002 *info = inst->getMdlInfo()) {
+          int count = info->unknown00;
+          if (count != 0) {
+            if (info->unknown0e == 0xffff) {
+              unknown30->unknownc8 = inst->unknown60;
+            } else {
+              unknown30->unknownc8 = unknown220.unknown20[unknownbd0[info->unknown0e] - 1u].unknown20;
+            }
+            arg.unknown20 = false;
+            unknown17c = 0xffff;
+            unknown17e = 0xffff;
+            unknown179 = false;
+            unknown178 |= 0x10;
+            unknown30->unknownc8->beginVertexSetup();
+            const MdsMdlTopHeader *top = unknown30->unknown168 + info->unknown0c;
+            int headerCount = top->unknown04;
+            arg.unknown00 = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
+            arg.unknown08 = info->unknown14;
+            arg.unknown10 = count;
+            arg.unknown14 = 0;
+            arg.unknown18 = 0;
+            for (int i = 0; i < headerCount; i++, arg.unknown00++) {
+              if ((unknown30->unknownc0 + arg.unknown00->unknown0e)->unknown08.a > 0.0f && (arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15) &&
+                  (arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_14) && !(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
+                partsInstanceThicknessRender(arg);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 void DrMdoCtlSeamInstMap::callShadowMapRenderSeamInstMap(DrPixlShadowObj *shadow) {
   if (!m_drMan->unknown1d6a) {
     changeSeamMatInfo();
@@ -263,6 +308,72 @@ void DrMdoCtlSeamInstMap::callInstShadowCacheRender(DrPixlShadowCacheObj &cache)
     unknownc98 &= ~cache.unknown8e8;
   } else {
     unknownc98 |= cache.unknown8e8;
+  }
+}
+
+// Measured forms (1.0.0: 0x7100823b60, 121 instructions): the pass flags of every mdl info are merged into unknownf8 one test at a time; the first chain also leaves a flag
+// (`isAlpha`: the pass flag 1 or 6 selected unknown028_4 or unknown028_5) that picks unknown028_16 (alpha bloom) instead of unknown028_15 (bloom) for the mdl info flag 3.
+void DrMdoCtlSeamInstMap::createInstMapDisplayList() {
+  for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+    unknown30 = inst->unknown50;
+    if (unknown30 != nullptr && inst->unknown74 != 0 && (inst->unknown8a & 0x10)) {
+      inst->beginMdl();
+      while (DrResMdoSeamWrkInst::unknown002 *info = inst->getMdlInfo()) {
+        const MdsMdlTopHeader *top = unknown30->unknown168 + info->unknown0c;
+        int count = top->unknown04;
+        const MdsMdlInfoHeader *header = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
+        for (int i = 0; i < count; i++, header++) {
+          const MdsMatInfoHeader *mat = unknown30->unknown28 + header->unknown0e;
+          bool isAlpha = false;
+          if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_0) {
+            unknownf8 |= unknown028_0;
+            if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15) {
+              unknownf8 |= unknown028_6;
+              inst->unknown8a |= 0x100;
+            }
+            if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_1) {
+              unknownf8 |= unknown028_4;
+              isAlpha = true;
+            }
+          } else if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_1) {
+            unknownf8 |= unknown028_4;
+            isAlpha = true;
+          } else if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_6) {
+            unknownf8 |= unknown028_5;
+            isAlpha = true;
+          }
+          if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_3) {
+            unknownf8 |= unknown028_1;
+          }
+          if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_2) {
+            unknownf8 |= unknown028_2;
+          }
+          if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_5) {
+            unknownf8 |= unknown028_3;
+          }
+          if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_3) {
+            if (isAlpha) {
+              unknownf8 |= unknown028_16;
+            } else {
+              unknownf8 |= unknown028_15;
+            }
+          }
+          if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_25) {
+            unknownf8 |= unknown028_18;
+          }
+          if (mat->unknown08 & MdsMatInfoHeader::unknown030_14) {
+            unknownf8 |= unknown028_19;
+          }
+          if (mat->unknown04 & MdsMatInfoHeader::unknown015_23) {
+            if (header->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_6) {
+              unknownf8 |= unknown028_9;
+            } else {
+              unknownf8 |= unknown028_8;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
