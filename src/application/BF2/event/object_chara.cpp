@@ -105,6 +105,15 @@ void ObjectChara::tail() {
 
 bool ObjectChara::isLoading() const { return !unknown70->isReady(); }
 
+// The game (0x710011114c) ends with a tail call to CharaObj::mount (b at 0x710011127c), as linerPosAxis does. Without
+// CharaObj::walkPos defined earlier in this unit (chara_obj.cpp) the tail call is lost (78 instructions instead of 77):
+// LLVM only infers nocapture on the position argument, and so can mark the call tail, from a definition.
+void ObjectChara::walkPosAxis(const PosAxis &axis, EVT_poscvtype cv, bool isRun) {
+  unknown80 = axis;
+  unknown70->walkPos(mm::mtl::Singleton<DataManager>::getPtr()->axis2pos(axis.getAxis(), axis.getPos().x, axis.getPos().y, axis.getPos().z), cv, isRun);
+  unknown70->mount(nullptr, "", mm::Vec3::zero, mm::Vec3::zero);
+}
+
 void ObjectChara::linerPosAxis(const PosAxis &axis, bool isWalk, f32 frame, CV_TYPE cv) {
   unknown80 = axis;
   unknown70->linerPos(mm::mtl::Singleton<DataManager>::getPtr()->axis2pos(axis.getAxis(), axis.getPos().x, axis.getPos().y, axis.getPos().z), isWalk, frame, cv);

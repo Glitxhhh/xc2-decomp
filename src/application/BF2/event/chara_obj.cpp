@@ -1,5 +1,7 @@
 #include "event/chara_obj.h"
 
+#include <math.h>
+
 #include "event/alpha_manager.h"
 #include "event/alpha_obj.h"
 #include "event/attach_actor_base.h"
@@ -212,6 +214,50 @@ void CharaObj::setPos(const mm::Vec3 &pos) {
   param.val(1).setF32(pos.y);
   param.val(2).setF32(pos.z);
   unknown29d8.push_back(&unknown08, param);
+}
+
+// The game (0x71000c41a8, 180 instructions) also calls atan2f in the cv == 0 arm (bl at 0x71000c42ec) and
+// drops the result: the angle is assigned in both arms and tested after them, which clang threads (the
+// call stays, atan2f may set errno). It loads pos.z before pos.x there (0x71000c42d4, ldr s1,[x23,#8]!);
+// the local places that load (ruling 2, P2). Without it both arms start with the same loads and
+// SimplifyCFG hoists them above the cv test (177 instructions). The distance test is `!(d > 0.1f)`
+// (b.le at 0x71000c4294 also leaves for NaN) and the differences are written again after sqrtf as in
+// the game, which reloads the members there.
+void CharaObj::walkPos(const mm::Vec3 &pos, EVT_poscvtype cv, bool isRun) {
+  if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipFast()) {
+    return;
+  }
+  f32 angle;
+  if (cv == 0) {
+    f32 z = pos.z;
+    angle = atan2f(pos.x - unknown2fb0.x, z - unknown2fb0.z);
+    unknown2fb0 = pos;
+  } else {
+    if (!(sqrtf((pos.x - unknown2fb0.x) * (pos.x - unknown2fb0.x) + (pos.z - unknown2fb0.z) * (pos.z - unknown2fb0.z)) > 0.1f)) {
+      return;
+    }
+    angle = atan2f(pos.x - unknown2fb0.x, pos.z - unknown2fb0.z);
+  }
+  if (cv >= 1 && cv <= 8) {
+    unknown2fd0.x = 0.0f;
+    unknown2fd0.y = angle;
+    unknown2fd0.z = 0.0f;
+  }
+  unknown2fc0 = pos;
+  CmdParam param;
+  param.val(0).setUserdata(this);
+  param.unknown001(1, pos);
+  param.val(4).setS32(cv);
+  param.val(5).setBool(isRun);
+  CmdQueue<QUEUE_UNKNOWN_8, 0> *target = &unknown1738;
+  if (cv == 0) {
+    if (unknown1738.isExist(&unknown30)) {
+      unknown1738.erase(&unknown30);
+    }
+    target = &unknown2088;
+  }
+  target->push_back(&unknown30, param);
+  unknown750.setPos(pos);
 }
 
 void CharaObj::linerPos(const mm::Vec3 &pos, bool isWalk, f32 frame, CV_TYPE cv) {
