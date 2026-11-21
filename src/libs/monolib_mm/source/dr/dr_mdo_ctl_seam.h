@@ -552,8 +552,8 @@ public:
   u64 unknownc98; // Inferred role: inst map shadow cache mask; original member name unknown.
   s16 unknownca0; // Inferred role: base map counter; original member name unknown.
   s16 unknownca2; // Inferred role: base map counter; original member name unknown.
-  s16 unknownca4; // Inferred role: inst map counter; original member name unknown.
-  s16 unknownca6; // Inferred role: inst map counter; original member name unknown.
+  u16 unknownca4; // Inferred role: inst map counter; original member name unknown.
+  u16 unknownca6; // Inferred role: inst map counter; original member name unknown.
   u8 _ca8[0xcac - 0xca8];
   s16 unknowncac;    // Inferred role: error code write index; original member name unknown.
   s16 unknowncae[4]; // Inferred role: error codes; original member name unknown.

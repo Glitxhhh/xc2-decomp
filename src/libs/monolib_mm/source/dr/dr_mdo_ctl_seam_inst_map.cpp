@@ -4,9 +4,12 @@
 #include "dr/dr_mdo_ctl.h"
 #include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_pixl_man.h"
+#include "dr/dr_pixl_shadow_cache_man.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_mat.h"
 #include "dr/dr_res_mdo_seam_mem_man.h"
+#include "dr/dr_res_mdo_seam_parm_read.h"
 #include "dr/dr_res_mdo_seam_res.h"
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 #include "dr/dr_res_mdo_vertex.h"
@@ -86,6 +89,48 @@ void DrMdoCtlSeamInstMap::updateInstMap(MdoArgSeamUpdate &arg) {
     updateInstMapRenderList(arg);
     createInstMapDisplayList();
   }
+}
+
+// The game inlines DrMdoMat::updateMatFstCallBack and DrMdoSetup::updateUniformBlock here (both defined in this unit, dr_mdo_mat.cpp and dr_mdo_setup.cpp) and calls updateMatCallBack,
+// updateAnim and updateTimerCalc. The counter test leaves the function on `x < 2` (cmp w10, #2 at 0x7100823aec, b.lo at 0x7100823af0); the nested `x >= 2` and `x > 1` forms are
+// not the same code (tried).
+void DrMdoCtlSeamInstMap::updateInstMapRenderList(MdoArgSeamUpdate &arg) {
+  arg.unknown60 = this;
+  for (DrResMdoSeamWrkInst *inst = unknown300.unknown10.unknown00; inst != nullptr; inst = inst->unknown08) {
+    unknown30 = inst->unknown50;
+    if (unknown30 != nullptr) {
+      if (inst->updateRenderList(arg)) {
+        unknownc54 += inst->unknown144;
+        unknownc58 += inst->unknown148;
+        updateMatFstCallBack();
+        updateMatCallBack(inst->unknowna0);
+        updateAnim(unknowndc * m_drMan->unknown1c8c, inst->unknowna0, nullptr);
+        updateTimerCalc(inst->unknowna0);
+        updateUniformBlock(inst->unknowna0);
+      }
+      if (inst->unknown152 != 0 && m_drMan->unknown1cc2) {
+        unknownc7c |= 5;
+      }
+      if ((unknownc7c & 0x88000) == 0 && inst->unknown70 != 0) {
+        unknownd30.setStockInstMap(inst->unknown70 - 1, inst);
+      }
+      if (inst->unknown154 != 0 || (inst->unknown8a & 0x80) != 0) {
+        unknownc7c |= 0x4000;
+      }
+    }
+  }
+  unknownca4++;
+  if (unknownca4 < 2) {
+    return;
+  }
+  if ((unknownc98 & (1ull << unknownca6)) == 0 && unknown1a == 0) {
+    m_drMan->unknown78->unknown800->callSelectShadowCacheUpdate(1ull << unknownca6);
+  }
+  unknownca6++;
+  if (unknownca6 >= 0x24) {
+    unknownca6 = 0;
+  }
+  unknownca4 = 0;
 }
 
 void DrMdoCtlSeamInstMap::callShadowCacheInstUpdate(u64 flags) {

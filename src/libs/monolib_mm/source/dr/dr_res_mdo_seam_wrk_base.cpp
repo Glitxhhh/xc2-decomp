@@ -5,10 +5,13 @@
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam_base_map.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_shadow_cache_obj.h"
 #include "dr/dr_res_mdo_alp_tbl.h"
+#include "dr/dr_res_mdo_seam_parm_read.h"
 #include "dr/dr_res_mdo_seam_wrk_base_vertex.h"
 #include "dr/dr_res_mdo_vertex.h"
+#include "grlib/cglib_texture_buffer.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
@@ -100,6 +103,43 @@ void DrResMdoSeamWrkBase::beginBaseMapRenderList() {
   unknown8c = 0;
   unknown90 = 0;
   memset(unknown110, 0, unknown174);
+}
+
+// Inlines DrResMdoSeamParmRead::setStockTexList (0x71008792cc), defined earlier in this unit (dr_res_mdo_lod_parts.cpp). The game loads the texture list slot once (ldrh at 0x710087d0c4)
+// and reuses it after the store to unknown3a (sturb at 0x710087d0d0): without the local clang loads it again (97 instructions against 94).
+bool DrResMdoSeamWrkBase::callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamTexList *texLists, DrMdoCtlSeamBaseMap *ctl) {
+  if (unknown20->unknown34 != 0) {
+    if (unknown20->unknown34 > 0) {
+      const u16 *index = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown30);
+      bool isRead = false;
+      for (s32 i = 0; i < unknown20->unknown34; i++, index++) {
+        u16 list = textureListFlags[*index];
+        if (list == 0) {
+          ctl->unknownd30.setStockTexList(*index);
+          isRead = true;
+        } else {
+          texLists[list - 1].unknown3a = 0;
+          unknown160[i] = &texLists[list - 1];
+        }
+      }
+      if (isRead) {
+        return true;
+      }
+    }
+    if ((unknowna0 & 1) == 0) {
+      unknowna0 |= 1;
+      grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
+      const unknown785 *entry = reinterpret_cast<const unknown785 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown1c);
+      for (s32 i = 0; i < unknown20->unknown20; i++, entry++) {
+        if ((entry->unknown06 & 1) == 0) {
+          unknown68->unknowne8[i] = dummy;
+        } else {
+          unknown68->unknowne8[i] = unknown160[entry->unknown02]->unknown20 + entry->unknown00;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 void DrResMdoSeamWrkBase::callShadowCacheBaseUpdate(u64 mask) {
@@ -240,6 +280,49 @@ void DrResMdoSeamWrkBase::calcCacheInfo() {
         unknowne8[i >> 5] &= ~(1 << (i & 0x1f));
       }
     }
+  }
+}
+
+// The loop over the texture list indices has no test of its own: the guard of the rotated loop (cmp w8, #1; b.lt at 0x7100880384) is its only test of the count.
+void DrResMdoSeamWrkBase::callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdoSeamTexList *texLists, const u16 *textureListFlags) {
+  if (unknown20->unknown34 != 0) {
+    if (unknowna0 & 1) {
+      if ((unknowna0 & 0x100) == 0) {
+        unknowna0 |= 0x100;
+      } else {
+        unknowna0 &= ~0x101;
+        for (s32 i = 0; i < unknownb0; i++) {
+          if (unknowna8[i] != nullptr) {
+            mtl::MemManager::deallocate(unknowna8[i], 0, false);
+            unknowna8[i] = nullptr;
+          }
+        }
+      }
+    }
+    const u16 *index = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown30);
+    for (s32 i = 0; i < unknown20->unknown34; i++, index++) {
+      if (textureListFlags[*index] == 0) {
+        ctl->unknownd30.setStockTexList(*index);
+      } else {
+        texLists[textureListFlags[*index] - 1].unknown3a = 0;
+      }
+    }
+  }
+  for (s32 i = 0; i < unknown17e; i++) {
+    if (unknowne0[(i + unknown17e * 2) >> 5] & (1 << ((i + unknown17e * 2) & 0x1f))) {
+      DrResMdoSeamMemObj *memObj = unknown78[i].unknown00;
+      unknown78[i].release();
+      if (memObj != nullptr) {
+        ctl->releaseFreeSeamMemObj(memObj);
+      }
+      unknowne0[(i + unknown17e * 2) >> 5] &= ~(1 << ((i + unknown17e * 2) & 0x1f));
+    } else if (unknowne0[i >> 5] & (1 << (i & 0x1f))) {
+      unknown94++;
+      unknown90 += unknown78[i].unknown10;
+      unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+      unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
+    }
+    unknowne0[(i + unknown17e) >> 5] &= ~(1 << ((i + unknown17e) & 0x1f));
   }
 }
 

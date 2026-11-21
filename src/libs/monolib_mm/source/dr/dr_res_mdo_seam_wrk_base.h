@@ -35,12 +35,13 @@ struct MdsSeamBaseMapHead {
   u32 unknown10; // Inferred role: material data offset; original member name unknown.
   u32 unknown14; // Inferred role: fixed animation data offset, 0 when there is none; original member name unknown.
   u32 unknown18; // Inferred role: tree resource offset; original member name unknown.
-  u8 _1c[0x20 - 0x1c];
-  s32 unknown20; // Inferred role: skip texture list count; original member name unknown.
+  u32 unknown1c; // Inferred role: offset of the texture entries; original member name unknown.
+  s32 unknown20; // Inferred role: texture entry count; original member name unknown.
   u32 unknown24; // Inferred role: vertex data offset, 0 when there is none; original member name unknown.
   u8 _28[0x2c - 0x28];
   u32 unknown2c; // Inferred role: shader data offset; original member name unknown.
-  u8 _30[0x38 - 0x30];
+  u32 unknown30; // Inferred role: offset of the texture list indices (u16); original member name unknown.
+  s32 unknown34; // Inferred role: texture list index count; original member name unknown.
   u32 unknown38; // Inferred role: offset of the resource that unknown50 of the work points at; original member name unknown.
 };
 
@@ -84,9 +85,12 @@ static_assert(offsetof(unknown783, unknown08) == 0x08, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown10) == 0x10, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown14) == 0x14, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown1c) == 0x1c, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown20) == 0x20, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown24) == 0x24, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown2c) == 0x2c, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown30) == 0x30, "");
+static_assert(offsetof(MdsSeamBaseMapHead, unknown34) == 0x34, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown18) == 0x18, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown38) == 0x38, "");
 static_assert(sizeof(MdsSeamBaseMapHead) == 0x3c, "");
@@ -97,6 +101,19 @@ static_assert(offsetof(unknown780, unknown1c) == 0x1c, "");
 static_assert(offsetof(unknown781, unknown24) == 0x24, "");
 static_assert(offsetof(unknown782, unknown04) == 0x04, "");
 static_assert(offsetof(unknown782, unknown08) == 0x08, "");
+
+// Inferred role: texture entry of the base map header at MdsSeamBaseMapHead::unknown1c; original type name unknown.
+struct unknown785 {
+  u16 unknown00; // Inferred role: texture index in the texture list; original member name unknown.
+  u16 unknown02; // Inferred role: texture list index; original member name unknown.
+  u8 _04[0x06 - 0x04];
+  u8 unknown06; // Inferred role: flags, bit 0 is set when the texture is read; original member name unknown.
+  u8 _07[0x08 - 0x07];
+};
+
+static_assert(offsetof(unknown785, unknown02) == 0x02, "");
+static_assert(offsetof(unknown785, unknown06) == 0x06, "");
+static_assert(sizeof(unknown785) == 0x08, "");
 
 // Inferred role: render list entry of the base map; original type name unknown.
 struct unknown504 {
@@ -126,6 +143,8 @@ public:
   void setupHeader();
   void changeMemCall();
   void beginBaseMapRenderList();
+  bool callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamTexList *texLists, DrMdoCtlSeamBaseMap *ctl);
+  void callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdoSeamTexList *texLists, const u16 *textureListFlags);
   void callShadowCacheBaseUpdate(u64 mask);
   void beginRender();
   void endRender();
@@ -186,16 +205,16 @@ public:
   s32 *unknown130;         // Inferred role: render entry num per kind; original member name unknown.
   s32 *unknown138;         // Inferred role: alpha render entry num per kind; original member name unknown.
   u8 _140[0x150 - 0x140];
-  unknown504 *unknown150;         // Inferred role: render entries; original member name unknown.
-  DrResMdoSeamMemObj *unknown158; // Inferred role: memory object; original member name unknown.
-  u8 _160[0x168 - 0x160];
-  DrResMdoAlpTbl *unknown168; // Inferred role: alpha table; original member name unknown.
-  s32 unknown170;             // Inferred role: render list num; original member name unknown.
-  s32 unknown174;             // Inferred role: render list size; original member name unknown.
-  s16 unknown178;             // Inferred role: selected vertex; original member name unknown.
-  s16 unknown17a;             // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  s16 unknown17c;             // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  s16 unknown17e;             // Inferred role: vertex count; original member name unknown.
+  unknown504 *unknown150;           // Inferred role: render entries; original member name unknown.
+  DrResMdoSeamMemObj *unknown158;   // Inferred role: memory object; original member name unknown.
+  DrResMdoSeamTexList **unknown160; // Inferred role: texture lists of the header texture entries; original member name unknown.
+  DrResMdoAlpTbl *unknown168;       // Inferred role: alpha table; original member name unknown.
+  s32 unknown170;                   // Inferred role: render list num; original member name unknown.
+  s32 unknown174;                   // Inferred role: render list size; original member name unknown.
+  s16 unknown178;                   // Inferred role: selected vertex; original member name unknown.
+  s16 unknown17a;                   // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s16 unknown17c;                   // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s16 unknown17e;                   // Inferred role: vertex count; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown18) == 0x18, "");

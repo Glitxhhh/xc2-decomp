@@ -275,7 +275,9 @@ public:
   u8 _1cb0[0x1cc0 - 0x1cb0];
   bool unknown1cc0; // Inferred role: home menu opened; original member name unknown.
   bool unknown1cc1; // Inferred role: auto reset scene; original member name unknown.
-  u8 _1cc2[0x1cc4 - 0x1cc2];
+  bool unknown1cc2; // Inferred role: render list flag, set to true by the constructor (0x71007c885c) and tested by DrMdoCtlNom::createRenderList, DrMdoCtlPos::createPosRenderList and the base and
+                    // instance map render list updates (0x7100808718, 0x71008137f8, 0x7100821180, 0x7100823a70); original member name unknown.
+  u8 _1cc3[0x1cc4 - 0x1cc3];
   bool unknown1cc4; // Inferred role: mdl height tex skip; original member name unknown.
   bool unknown1cc5; // Inferred role: height tex skip; original member name unknown.
   bool unknown1cc6; // Inferred role: seam height tex skip; original member name unknown.
@@ -413,6 +415,7 @@ static_assert(offsetof(DrMan, unknown1ca4) == 0x1ca4, "");
 static_assert(offsetof(DrMan, unknown1cac) == 0x1cac, "");
 static_assert(offsetof(DrMan, unknown1cc0) == 0x1cc0, "");
 static_assert(offsetof(DrMan, unknown1cc1) == 0x1cc1, "");
+static_assert(offsetof(DrMan, unknown1cc2) == 0x1cc2, "");
 static_assert(offsetof(DrMan, unknown1cc4) == 0x1cc4, "");
 static_assert(offsetof(DrMan, unknown1cc5) == 0x1cc5, "");
 static_assert(offsetof(DrMan, unknown1cc6) == 0x1cc6, "");

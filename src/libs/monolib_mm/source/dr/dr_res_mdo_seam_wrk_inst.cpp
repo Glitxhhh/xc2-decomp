@@ -19,6 +19,7 @@
 #include "dr/dr_res_mdo_seam_wrk_pos_inst.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "dr/dr_res_occ_uniform_obj.h"
+#include "grlib/cglib_texture_buffer.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
@@ -118,6 +119,57 @@ void DrResMdoSeamWrkInst::calcEtcInstPos(DrMdoCtlSeamInstMap *) {
   }
   unknown8a &= 0xfe6f;
   unknown156 = 0;
+}
+
+// Same body as DrResMdoSeamWrkBase::callTexReadUpdate (0x710087d080) on the instance map header, plus the release mode (0x710088255c); setStockTexList is inlined (0x71008792cc).
+bool DrResMdoSeamWrkInst::callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamTexList *texLists, DrMdoCtlSeamInstMap *ctl, bool isRelease) {
+  if (unknown20->unknown4c != 0) {
+    if (isRelease) {
+      if ((unknown8a & 2) == 0) {
+        return true;
+      }
+      unknown8a &= ~2;
+      for (s32 i = 0; i < unknown20->unknown4c; i++) {
+        unknown110[i] = nullptr;
+      }
+      s32 count = unknown20->unknown24;
+      for (s32 i = 0; i < count; i++) {
+        unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+        unknowne0[(count + i) >> 5] &= ~(1 << ((count + i) & 0x1f));
+      }
+      return true;
+    }
+    if (unknown20->unknown4c > 0) {
+      const u16 *index = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown48);
+      bool isRead = false;
+      for (s32 i = 0; i < unknown20->unknown4c; i++, index++) {
+        u16 list = textureListFlags[*index];
+        if (list == 0) {
+          ctl->unknownd30.setStockTexList(*index);
+          isRead = true;
+        } else {
+          texLists[list - 1].unknown3a = 0;
+          unknown110[i] = &texLists[list - 1];
+        }
+      }
+      if (isRead) {
+        return true;
+      }
+    }
+    if ((unknown8a & 2) == 0) {
+      unknown8a |= 2;
+      grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
+      const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown20);
+      for (s32 i = 0; i < unknown20->unknown24; i++, entry++) {
+        if ((entry->unknown06 & 1) == 0) {
+          unknown50->unknowne8[i] = dummy;
+        } else {
+          unknown50->unknowne8[i] = unknown110[entry->unknown02]->unknown20 + entry->unknown00;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 void DrResMdoSeamWrkInst::calcCacheInfo() {
