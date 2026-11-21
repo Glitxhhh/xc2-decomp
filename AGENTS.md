@@ -20,12 +20,17 @@
   class or struct that the game names (the name appears in a mangled symbol of
   the game or of a sibling build, Torna or Xenoblade DE), and which is the only
   member of that type in its class, is named `m_` plus the class name without
-  its namespace and without a leading `SData` or `Gf` prefix. The first letter
-  is lowercased and nothing else changes (the accessor rule's convention: an
-  uppercase prefix followed by `_`, such as `BLD_`, is kept as it is): `SDataIdea`
-  gives `m_idea`, `GfBladeCreateInfo` gives `m_bladeCreateInfo`, `IDColiTreeTop`
-  gives `m_iDColiTreeTop`. `T`, `T *`, `T &`, `const T` and arrays of `T` count
-  as the same type when counting the members of a type.
+  its namespace, without leading underscores (`m__x` would contain a double
+  underscore, which C++ reserves for the implementation) and without a leading
+  `SData` or `Gf` prefix (only before an upper-case letter, a digit or `_`).
+  The first letter is lowercased and nothing else changes, except that a name
+  that is all upper case keeps its case (the accessor rule's convention: an
+  uppercase prefix followed by `_`, such as `BLD_`, is kept as it is):
+  `SDataIdea` gives `m_idea`, `GfBladeCreateInfo` gives `m_bladeCreateInfo`,
+  `IDColiTreeTop` gives `m_iDColiTreeTop`, `_wkSeamReadCall` gives
+  `m_wkSeamReadCall`, `CS` gives `m_CS` and `GF_OBJ_HANDLE` gives
+  `m_GF_OBJ_HANDLE`. `T`, `T *`, `T &`, `const T` and arrays of `T` count as
+  the same type when counting the members of a type.
   - Excluded, the member stays `unknownXX`: template types and their
     instantiations (`FixedVector<...>`, `IntrusivePtr<...>`,
     `PtrSingleton<...>`...), the `mm` math types (`Vec3`, `Quat`, `Mat44`,
