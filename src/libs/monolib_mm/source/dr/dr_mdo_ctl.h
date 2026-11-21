@@ -68,6 +68,7 @@ struct MdoInstancePrePassArg {
   s32 unknown18;                     // Inferred role: instance count of the last range, drawn with a setup material of its own; original member name unknown.
   u8 _1c[0x20 - 0x1c];
   u8 unknown20; // Inferred role: sets up the depth stencil of the draw; original member name unknown.
+  u8 unknown21; // Inferred role: first thickness pass, read by partsInstanceThicknessRender (0x71007f3a14); original member name unknown.
 };
 
 static_assert(offsetof(MdoInstancePrePassArg, unknown08) == 0x08, "");
@@ -75,6 +76,7 @@ static_assert(offsetof(MdoInstancePrePassArg, unknown10) == 0x10, "");
 static_assert(offsetof(MdoInstancePrePassArg, unknown14) == 0x14, "");
 static_assert(offsetof(MdoInstancePrePassArg, unknown18) == 0x18, "");
 static_assert(offsetof(MdoInstancePrePassArg, unknown20) == 0x20, "");
+static_assert(offsetof(MdoInstancePrePassArg, unknown21) == 0x21, "");
 static_assert(sizeof(MdoInstancePrePassArg) == 0x28, "");
 
 class DrMdoCtl : public DrMdoSetup {

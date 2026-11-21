@@ -430,8 +430,11 @@ struct MdsMdlInfoHeader {
     FLAG_UNKNOWN_2 = 1 << 2,   // Inferred role: uses the billboard matrix uniform of the base map; original name unknown.
     FLAG_UNKNOWN_4 = 1 << 4,   // Inferred role: uses the billboard uniform of the base map; original name unknown.
     FLAG_UNKNOWN_8 = 1 << 8,   // Inferred role: has mesh parts; original name unknown.
+    FLAG_UNKNOWN_9 = 1 << 9,   // Inferred role: unknown, with the textures of the work and the material field at 0x24 selects the alpha test shaders (0x1b/0x1c, 0x1e/0x1f) of
+                               // partsInstanceZPrepassBillRender (0x71007f3734); original name unknown.
     FLAG_UNKNOWN_13 = 1 << 13, // Inferred role: renders with the mesh parts render index; original name unknown.
     FLAG_UNKNOWN_17 = 1 << 17, // Inferred role: skinned mesh, excluded from the base shadow render; original name unknown.
+    FLAG_UNKNOWN_20 = 1 << 20, // Inferred role: unknown, selects the second group of pre pass shaders (0x1d-0x1f) of partsInstanceZPrepassBillRender (0x71007f3734); original name unknown.
     FLAG_UNKNOWN_23 = 1 << 23, // Inferred role: has etc vertices; original name unknown.
     FLAG_UNKNOWN_24 = 1 << 24, // Inferred role: has mof blend vertices; original name unknown.
   };
@@ -450,7 +453,7 @@ struct MdsMdlInfoHeader {
   u16 unknown0e; // Inferred role: material index; original member name unknown.
   u8 _10[0x12 - 0x10];
   u16 unknown12; // Inferred role: billboard matrix uniform index; original member name unknown.
-  u8 _14[0x16 - 0x14];
+  u16 unknown14; // Inferred role: uniform index passed to the pre pass shader setup by partsInstanceZPrepassBillRender (0x71007f3734); original member name unknown.
   u16 unknown16; // Inferred role: mesh parts index; original member name unknown.
   u8 _18[0x1c - 0x18];
   u16 unknown1c; // Inferred role: shader parameter; original member name unknown.

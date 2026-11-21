@@ -438,6 +438,132 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
   }
 }
 
+void DrMdoCtl::partsInstanceZPrepassBillRender(const MdoInstancePrePassArg &arg) {
+  const MdsMdlInfoHeader *info = arg.unknown00;
+  const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
+  m_drMan->unknown5c0->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
+  unknown30->unknownc8->setVertexBind(info->unknown08);
+  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
+  // The two locals are loaded after setVertexBind (ldrh w26 and w24 at 0x71007f37ac/0x71007f37b0, the material index a second time after the first at 0x71007f3768) and the second render reloads
+  // the render index from the mdl info (0x71007f39e4): without either local the function has 182 instructions, without both 181, and the second render through `renderIndex` keeps 184 but
+  // allocates x26 for x25 (all measured 2026-11-21).
+  u16 renderIndex = info->unknown0a;
+  u16 materialIndex = info->unknown0e;
+  int firstCount = arg.unknown14 - arg.unknown18;
+  // The alpha test condition is written in both arms as the game does (0x71007f37cc, 0x71007f380c): one `bool` local for the two gives 178 instructions.
+  int shaderIndex;
+  if (!(info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_20)) {
+    shaderIndex = 0x1a;
+    if ((info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_9) && unknown30->unknowne8 != nullptr && mat->unknown24 != 0) {
+      shaderIndex = (mat->unknown04 & MdsMatInfoHeader::unknown015_3) ? 0x1c : 0x1b;
+    }
+  } else {
+    shaderIndex = 0x1d;
+    if ((info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_9) && unknown30->unknowne8 != nullptr && mat->unknown24 != 0) {
+      shaderIndex = (mat->unknown04 & MdsMatInfoHeader::unknown015_3) ? 0x1f : 0x1e;
+    }
+  }
+  if (firstCount != 0) {
+    setupPartsMaterial(mat, 2);
+    setupPrePassShader(shaderIndex, mat, info->unknown14, materialIndex);
+    grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
+    unknown30->unknownc8->renderIns(renderIndex, firstCount);
+  }
+  if (arg.unknown18 != 0) {
+    setupPartsMaterial(mat, 3);
+    unknownf8 |= 0x20000000;
+    setupPrePassShader(shaderIndex, mat, info->unknown14, materialIndex);
+    unknownf8 &= ~0x20000000;
+    grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
+    unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+    DrAPGxType::setupStencilPrePassReset();
+  }
+}
+
+// Measured forms (1.0.0: 0x71007f3a14, 430 instructions): the same three arms as partsInstanceZPrepassRender (see its comment) with the thickness shader setup, the isFirst flag read from the
+// argument (ldrh of the two flag bytes at 0x71007f3aa0, `cmp w8, #0xff` for the second) and no culling. They stay written out (ruling 8, by measure, 2026-11-21): the three arms moved into a
+// member helper taking the two shader indices and the render index are not inlined (one call per arm, 60 instructions against 430 for the function). `materialIndex` (ldrh w24 at 0x71007f3a78)
+// and `renderIndex` are needed: without the first the info pointer moves from x25 to x26, with the render index expression written in the two `renderIns` calls the function has 414 instructions.
+void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
+  const MdsMdlInfoHeader *info = arg.unknown00;
+  const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
+  unknown30->unknownc8->setVertexBind(info->unknown08);
+  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
+  int firstCount = arg.unknown14 - arg.unknown18;
+  u16 materialIndex = info->unknown0e;
+  if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_2)) {
+    u16 renderIndex = (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_13) ? info->unknown0c : info->unknown0a;
+    if (arg.unknown20) {
+      setupPartsMaterial(mat, arg.unknown21 ? 9 : 0xb);
+    }
+    if (arg.unknown10 != 0) {
+      setupThicknessShader(10, mat, 0, materialIndex, arg.unknown21);
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
+      unknown30->unknownc8->renderIns(renderIndex, arg.unknown10);
+    }
+    if (firstCount != 0) {
+      setupThicknessShader(0x17, mat, 0, materialIndex, arg.unknown21);
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
+      unknown30->unknownc8->renderIns(renderIndex, firstCount);
+    }
+    if (arg.unknown18 != 0) {
+      setupPartsMaterial(mat, arg.unknown21 ? 10 : 0xc);
+      unknownf8 |= 0x20000000;
+      setupThicknessShader(0x17, mat, 0, materialIndex, arg.unknown21);
+      unknownf8 &= ~0x20000000;
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+    }
+  } else if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_3)) {
+    if (arg.unknown20) {
+      setupPartsMaterial(mat, arg.unknown21 ? 9 : 0xb);
+    }
+    if (arg.unknown10 != 0) {
+      setupThicknessShader(0xb, mat, 0, materialIndex, arg.unknown21);
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown10);
+    }
+    if (firstCount != 0) {
+      setupThicknessShader(0x18, mat, 0, materialIndex, arg.unknown21);
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, firstCount);
+    }
+    if (arg.unknown18 != 0) {
+      setupPartsMaterial(mat, arg.unknown21 ? 10 : 0xc);
+      unknownf8 |= 0x20000000;
+      setupThicknessShader(0x18, mat, 0, materialIndex, arg.unknown21);
+      unknownf8 &= ~0x20000000;
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+    }
+  } else {
+    if (arg.unknown20) {
+      setupPartsMaterial(mat, arg.unknown21 ? 9 : 0xb);
+    }
+    if (arg.unknown10 != 0) {
+      setupThicknessShader(0xc, mat, 0, materialIndex, arg.unknown21);
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown10);
+    }
+    if (firstCount != 0) {
+      setupThicknessShader(0x19, mat, 0, materialIndex, arg.unknown21);
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, firstCount);
+    }
+    if (arg.unknown18 != 0) {
+      setupPartsMaterial(mat, arg.unknown21 ? 10 : 0xc);
+      unknownf8 |= 0x20000000;
+      setupThicknessShader(0x19, mat, 0, materialIndex, arg.unknown21);
+      unknownf8 &= ~0x20000000;
+      grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
+      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+    }
+  }
+  if (arg.unknown20 || arg.unknown18 != 0) {
+    DrAPGxType::setupStencilPrePassReset();
+  }
+}
+
 void DrMdoCtl::createInstanceDefRender(const MdsMdlInfoHeader *header, grlib::CGLibVtxInstans *instans, u32 offset, u32 stride, u32 instanceCount) {
   unknown30->unknownc8->setVertexBind(header->unknown08);
   grlib::CGLibCtlVertex::setInstanceVertex(*instans, stride, offset, 1, 1);
