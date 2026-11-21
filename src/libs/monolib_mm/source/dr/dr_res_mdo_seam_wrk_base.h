@@ -64,7 +64,8 @@ struct unknown781 {
 
 // Inferred role: header of the resource at MdsSeamBaseMapHead::unknown38; original type name unknown.
 struct unknown782 {
-  u8 _00[0x08];
+  u8 _00[0x04];
+  s32 unknown04; // Inferred role: bit count; calcCacheInfo (1.0.0: 0x710087d2ac) reads the bits i and i + this count of unknowne0 of the work; original member name unknown.
   u32 unknown08; // Inferred role: offset of the data of unknown58 of the work; original member name unknown.
 };
 
@@ -94,6 +95,7 @@ static_assert(offsetof(unknown780, unknown0c) == 0x0c, "");
 static_assert(offsetof(unknown780, unknown14) == 0x14, "");
 static_assert(offsetof(unknown780, unknown1c) == 0x1c, "");
 static_assert(offsetof(unknown781, unknown24) == 0x24, "");
+static_assert(offsetof(unknown782, unknown04) == 0x04, "");
 static_assert(offsetof(unknown782, unknown08) == 0x08, "");
 
 // Inferred role: render list entry of the base map; original type name unknown.
@@ -130,6 +132,7 @@ public:
   void setVertexCache(u32 index, DrResMdoSeamMemObj *memObj, int size, DrMdoCtlSeamBaseMap *ctl);
   void selectVertex(int index);
   void releaseCache(DrMdoCtlSeamBaseMap *ctl);
+  void calcCacheInfo();
   bool seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl);
   bool seachShadowBaseMapRenderChild(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl, const MdsSeamBaMpTreeData *tree);
   void seachDefShadowBaseMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamBaseMap *ctl);

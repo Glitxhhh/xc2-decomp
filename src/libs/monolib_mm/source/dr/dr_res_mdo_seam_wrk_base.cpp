@@ -210,6 +210,39 @@ void DrResMdoSeamWrkBase::stockRenderListBaseMap(int base, u32 kind, u32 index, 
   unknown170++;
 }
 
+void DrResMdoSeamWrkBase::calcCacheInfo() {
+  for (s32 i = 0; i < unknown17e; i++) {
+    if (unknowne0[i >> 5] & (1 << (i & 0x1f))) {
+      if (unknown78[i].unknown00->unknown24 & 2) {
+        // The game loads the buffer (ldr x1, [x10, #0x18] at 0x710087d308) after the flag test and before the member holding the vertex (ldr x0, [x8, #8] at 0x710087d30c); without the
+        // local clang loads the member first (x9/x10 swapped, tried: memObj local, element reference, DrResMdoSeamWrkBaseVertex::changeMemVertex inlined): the local places that load.
+        const u8 *buffer = unknown78[i].unknown00->m_buffer;
+        unknown78[i].unknown08->changeMemVertex(buffer);
+      }
+    }
+  }
+  if (!(unknowna0 & 0x200)) {
+    for (s32 i = 0; i < unknown17e; i++) {
+      if (unknowne0[i >> 5] & (1 << (i & 0x1f))) {
+        unknowne8[i >> 5] |= 1 << (i & 0x1f);
+      } else {
+        unknowne8[i >> 5] &= ~(1 << (i & 0x1f));
+      }
+    }
+  } else {
+    // The game loads unknown50 once (ldr x8, [x19, #0x50] at 0x710087d3a0) and reads the count of x8 again in each iteration (0x710087d420); without the local clang reloads
+    // unknown50 after the store to unknowne8 (one more instruction, tried): the local places that load.
+    const unknown782 *list = unknown50;
+    for (s32 i = 0; i < list->unknown04; i++) {
+      if ((unknowne0[i >> 5] & (1 << (i & 0x1f))) || (unknowne0[(i + list->unknown04) >> 5] & (1 << ((i + list->unknown04) & 0x1f)))) {
+        unknowne8[i >> 5] |= 1 << (i & 0x1f);
+      } else {
+        unknowne8[i >> 5] &= ~(1 << (i & 0x1f));
+      }
+    }
+  }
+}
+
 } // namespace ml
 
 // The game builds these files in one unit with this one (0x710087ba20 to 0x710088f99c), in this order.
