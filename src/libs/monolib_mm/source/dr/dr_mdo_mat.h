@@ -83,18 +83,20 @@ static_assert(sizeof(MdsMatTextureInfo) == 0x08, "");
 struct MdsMatInfoHeader {
   // Inferred role: material flag; original type name unknown.
   enum unknown015 {
-    unknown015_2 = 1 << 2,   // Inferred role: alpha test material; original name unknown.
-    unknown015_3 = 1 << 3,   // Inferred role: unknown, selects another shadow shader of an alpha test material; original name unknown.
-    unknown015_6 = 1 << 6,   // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
-    unknown015_10 = 1 << 10, // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
-    unknown015_13 = 1 << 13, // Inferred role: unknown, selects the mesh parts shadow shaders; original name unknown.
-    unknown015_15 = 1 << 15, // Inferred role: seam material; original name unknown.
-    unknown015_16 = 1 << 16, // Inferred role: uv animation; original name unknown.
-    unknown015_17 = 1 << 17, // Inferred role: animation of the category at unknown34; original name unknown.
-    unknown015_18 = 1 << 18, // Inferred role: material animation; original name unknown.
-    unknown015_19 = 1 << 19, // Inferred role: plane matrix animation of the category at unknown3c; original name unknown.
-    unknown015_25 = 1 << 25, // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
-    unknown015_26 = 1 << 26, // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
+    unknown015_2 = 1 << 2,    // Inferred role: alpha test material; original name unknown.
+    unknown015_3 = 1 << 3,    // Inferred role: unknown, selects another shadow shader of an alpha test material; original name unknown.
+    unknown015_6 = 1 << 6,    // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
+    unknown015_10 = 1 << 10,  // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
+    unknown015_13 = 1 << 13,  // Inferred role: unknown, selects the mesh parts shadow shaders and guards the flag wave uniforms of partsDefRender (0x71007f1b4c); original name unknown.
+    unknown015_15 = 1 << 15,  // Inferred role: seam material; original name unknown.
+    unknown015_16 = 1 << 16,  // Inferred role: uv animation; original name unknown.
+    unknown015_17 = 1 << 17,  // Inferred role: animation of the category at unknown34; original name unknown.
+    unknown015_18 = 1 << 18,  // Inferred role: material animation; original name unknown.
+    unknown015_19 = 1 << 19,  // Inferred role: plane matrix animation of the category at unknown3c; original name unknown.
+    unknown015_25 = 1 << 25,  // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
+    unknown015_26 = 1 << 26,  // Inferred role: unknown, tested by getSetupMaterial; original name unknown.
+    unknown015_27 = 1 << 27,  // Inferred role: fur shader material; original name unknown.
+    unknown015_31 = 1u << 31, // Inferred role: unknown, selects a second depth pass of the default render; original name unknown.
   };
 
   // Inferred role: material flag of the second word; original type name unknown.
@@ -347,7 +349,7 @@ static_assert(sizeof(unknown006) == 0x18, "");
 
 // Inferred role: fur shader work, followed by the work entries; original type name unknown.
 struct unknown007 {
-  const u8 *unknown00;         // Inferred role: first data; original member name unknown.
+  const u16 *unknown00;        // Inferred role: first data, a table of work entry indices per material; original member name unknown.
   const unknown005 *unknown08; // Inferred role: source entries; original member name unknown.
   unknown006 *unknown10;       // Inferred role: work entries; original member name unknown.
 };
@@ -425,9 +427,12 @@ static_assert(sizeof(unknown016) == 0x04, "");
 struct MdsMdlInfoHeader {
   // Inferred role: mdl info flag; original type name unknown.
   enum Flag {
+    FLAG_UNKNOWN_2 = 1 << 2,   // Inferred role: uses the billboard matrix uniform of the base map; original name unknown.
+    FLAG_UNKNOWN_4 = 1 << 4,   // Inferred role: uses the billboard uniform of the base map; original name unknown.
     FLAG_UNKNOWN_8 = 1 << 8,   // Inferred role: has mesh parts; original name unknown.
     FLAG_UNKNOWN_13 = 1 << 13, // Inferred role: renders with the mesh parts render index; original name unknown.
     FLAG_UNKNOWN_17 = 1 << 17, // Inferred role: skinned mesh, excluded from the base shadow render; original name unknown.
+    FLAG_UNKNOWN_23 = 1 << 23, // Inferred role: has etc vertices; original name unknown.
     FLAG_UNKNOWN_24 = 1 << 24, // Inferred role: has mof blend vertices; original name unknown.
   };
 
@@ -443,7 +448,9 @@ struct MdsMdlInfoHeader {
   u16 unknown0a; // Inferred role: render index; original member name unknown.
   u16 unknown0c; // Inferred role: render index of the mesh parts; original member name unknown.
   u16 unknown0e; // Inferred role: material index; original member name unknown.
-  u8 _10[0x16 - 0x10];
+  u8 _10[0x12 - 0x10];
+  u16 unknown12; // Inferred role: billboard matrix uniform index; original member name unknown.
+  u8 _14[0x16 - 0x14];
   u16 unknown16; // Inferred role: mesh parts index; original member name unknown.
   u8 _18[0x1c - 0x18];
   u16 unknown1c; // Inferred role: shader parameter; original member name unknown.
@@ -455,6 +462,7 @@ static_assert(offsetof(MdsMdlInfoHeader, unknown08) == 0x08, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown0a) == 0x0a, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown0e) == 0x0e, "");
+static_assert(offsetof(MdsMdlInfoHeader, unknown12) == 0x12, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown16) == 0x16, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown1c) == 0x1c, "");
 
@@ -585,10 +593,12 @@ static_assert(offsetof(unknown714, unknown10) == 0x10, "");
 
 // Inferred role: billboard matrix work of the base map; original type name unknown.
 struct unknown715 {
-  u8 _00[0x10 - 0x00];
+  grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknown00; // Inferred role: uniforms, read by DrMdoCtl::partsDefRender (0x71007f1ae0); original member name unknown.
+  u8 _08[0x10 - 0x08];
   const u8 *unknown10; // Inferred role: matrices in the model data; original member name unknown.
 };
 
+static_assert(offsetof(unknown715, unknown00) == 0x00, "");
 static_assert(offsetof(unknown715, unknown10) == 0x10, "");
 
 // Inferred role: billboard matrix work of the instance map; original type name unknown.

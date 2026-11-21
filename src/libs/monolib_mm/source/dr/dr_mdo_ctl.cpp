@@ -1,6 +1,7 @@
 #include "dr/dr_mdo_ctl.h"
 
 #include "dr/dr_ap_cache.h"
+#include "dr/dr_ap_gx_type.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_nom.h"
@@ -14,6 +15,7 @@
 #include "grlib/cglib_ctl_vertex.h"
 #include "grlib/cglib_dbl_uniform_block.h"
 #include "grlib/cglib_one_uniform_block.h"
+#include "grlib/cglib_tri_uniform_block.h"
 #include "grlib/cglib_uniform_array.h"
 #include "mm_math/mm_mat44.h"
 #include "mm_math/mm_vec3.h"
@@ -276,6 +278,75 @@ void DrMdoCtl::partsMaterialSetup(const MdsMdlInfoHeader *header) {
   // The game never sets x1 for the setShader tail call (0x71007f1698): setShader, defined in this unit, never reads its first parameter, so the compiler erased the
   // argument (ruling 2026-11-13 #6); the original expression cannot be checked and this function has no material resource, so nullptr is the plausible one.
   setShader(nullptr, mat, technique, uniformIndex, 0, 0);
+}
+
+// Measured forms (1.0.0: 0x71007f1930, 295 instructions): the first part is the body of partsMaterialSetup with the two shader parameters of the caller instead of 0 (the game's copy
+// keeps the material in a stack slot, 0x71007f1978). The four depth stencil sequences are setupPartsMaterial (0x71007f1dcc) with the constant modes 5, 8, 8 and 1, folded by the inliner.
+// The test of the second pass id writes the flag first, `(flags & bit 31) && id == 1`: with `id == 1 && flag` SimplifyCFG folds the two compares of the id into a switch (compare with 1
+// first, byte loads of the flags, 296 instructions) while the game keeps the if chain, id 4 first, with one word load of the flags. The fur table is read through unknown138 twice, without
+// a local: a `fur` local gives the registers x9/w10 against the game's x10/w9.
+void DrMdoCtl::partsDefRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, bool isDepthStencil) {
+  const MdsMatInfoHeader *mat = unknown30->unknown28 + header->unknown0e;
+  const MdsMatShaderTbl *table = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + mat->unknown4c);
+  u32 uniformIndex;
+  int shaderIndex = getShdIdx(uniformIndex, table, mat->unknown50);
+  const MdsMatTechnique *technique = &unknown30->unknown70[shaderIndex];
+  unknown30->unknownc8->setVertexBind(header->unknown08);
+  bindShader(shaderIndex);
+  if (unknown17e == header->unknown0e) {
+    unknown178 &= ~0x10;
+  } else {
+    unknown178 |= 0x10;
+    unknown17e = header->unknown0e;
+  }
+  setShader(nullptr, mat, technique, uniformIndex, shaderParam0, shaderParam1);
+  if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_4) {
+    (*unknown30->unknown120->unknown08)[0].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+  }
+  if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_2) {
+    (*unknown30->unknown160->unknown00)[header->unknown12].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown31]);
+  }
+  if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_23) {
+    unknown30->unknownc8->setEtcVertexBind(header->unknown08, 1);
+  }
+  if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_24) {
+    unknown30->unknownc8->setMofBlendVertexBind(unknown30->unknowna8, header->unknown08, 2);
+  }
+  if (mat->unknown04 & MdsMatInfoHeader::unknown015_13) {
+    unknown009 *flagWaves = unknown30->unknown140;
+    u16 waveIndex = flagWaves->unknown00[header->unknown0e];
+    (*flagWaves->unknown18)[waveIndex].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown33]);
+    (*unknown30->unknown140->unknown18)[waveIndex].setOldUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown34]);
+  }
+  if (isDepthStencil) {
+    setupPartsMaterial(mat, 5);
+  }
+  if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_27)) {
+    unknown30->unknownc8->render(header->unknown0a);
+    if (unknownf2 == 4) {
+      if ((mat->unknown04 & MdsMatInfoHeader::unknown015_26) || unknowne0 < 1.0f) {
+        DrAPCache *apCache = m_drMan->unknown5c0;
+        apCache->setupDepthStencil(0, 0, 0, 2);
+        apCache->setupAlphaBlend(1);
+        unknown30->unknownc8->render(header->unknown0a);
+        setupPartsMaterial(mat, 8);
+      }
+    } else if ((mat->unknown04 & MdsMatInfoHeader::unknown015_31) && unknownf2 == 1) {
+      m_drMan->unknown5c0->setupDepthStencil(0, 0, 1, 2);
+      DrAPGxType::beginColorOff();
+      unknown30->unknownc8->render(header->unknown0a);
+      setupPartsMaterial(mat, 8);
+      DrAPGxType::endColorOff();
+    }
+  } else if (!(unknown168 & 0x100)) {
+    const unknown006 &entry = unknown30->unknown138->unknown10[unknown30->unknown138->unknown00[header->unknown0e]];
+    if (entry.unknown04 != 0) {
+      unknown30->unknownc8->renderIns(header->unknown0a, entry.unknown04);
+    }
+  }
+  if (isDepthStencil) {
+    setupPartsMaterial(mat, 1);
+  }
 }
 
 void DrMdoCtl::createInstanceDefRender(const MdsMdlInfoHeader *header, grlib::CGLibVtxInstans *instans, u32 offset, u32 stride, u32 instanceCount) {

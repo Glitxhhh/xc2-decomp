@@ -348,7 +348,7 @@ int DrMdoMat::getFurShaderRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes
   if (work != nullptr) {
     unknown007 *furShader = reinterpret_cast<unknown007 *>(work);
     furShader->unknown08 = reinterpret_cast<const unknown005 *>(data + table->unknown04);
-    const u8 *first = data + table->unknown00;
+    const u16 *first = reinterpret_cast<const u16 *>(data + table->unknown00);
     furShader->unknown10 = reinterpret_cast<unknown006 *>(work + sizeof(unknown007));
     furShader->unknown00 = first;
     for (int i = 0; i < table->unknown08; i++) {
@@ -367,7 +367,7 @@ int DrMdoMat::getFurShaderRes(const u8 *data, u32 offset, u8 *work, MdoWrkMatRes
 void DrMdoMat::resetFurShaderRes(const u8 *data, u32 offset, MdoWrkMatRes *matRes) {
   const unknown008 *table = reinterpret_cast<const unknown008 *>(data + offset);
   matRes->unknown138->unknown08 = reinterpret_cast<const unknown005 *>(data + table->unknown04);
-  matRes->unknown138->unknown00 = data + table->unknown00;
+  matRes->unknown138->unknown00 = reinterpret_cast<const u16 *>(data + table->unknown00);
 }
 
 void DrMdoMat::releaseBaseMapSeamMat(MdoWrkMatRes *matRes) {

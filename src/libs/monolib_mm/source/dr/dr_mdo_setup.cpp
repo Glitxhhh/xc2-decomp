@@ -105,6 +105,99 @@ void DrMdoSetup::setShader(DrResMdoMat *mat, const MdsMatInfoHeader *header, con
   }
 }
 
+// Measured forms (1.0.0: 0x71007f1dcc, 66 instructions; the game also inlines it into partsDefRender). The order of the cases is free in the source and decides which machine
+// blocks BranchFolding merges: the numeric order gives 68 instructions (the game shares `orr w4, wzr, #3` of case 1 with cases 4 and 5). A scratch search over the order of the six
+// case groups {1}, {2, 3}, {4, 5}, {6, 7}, {8}, {9, 10} (720 orders) found 250 that give the game's 66; this order, the numeric one with case 8 last, is one of them. One
+// setupDepthStencil call after a switch that assigns the arguments to locals gives 65 or 67 instructions (without or with a default), and the `| 0x20` cases falling through to the
+// plain ones give 69: none matches.
+void DrMdoSetup::setupPartsMaterial(const MdsMatInfoHeader *header, int mode) {
+  MdoWrkMatSetupArg arg;
+  getSetupMaterial(arg, header, mode);
+  DrAPCache *apCache = m_drMan->unknown5c0;
+  apCache->depthBegin();
+  switch (mode) {
+  case 1:
+    apCache->setupDepthStencil(arg.unknown14, arg.unknown10, 0, 3);
+    break;
+  case 2:
+  case 11:
+    apCache->setupDepthStencil(arg.unknown14, 1, 1, 2);
+    break;
+  case 3:
+  case 12:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 1, 1, 2);
+    break;
+  case 4:
+    apCache->setupDepthStencil(arg.unknown14, 5, 0, 3);
+    break;
+  case 5:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 5, 0, 3);
+    break;
+  case 6:
+    apCache->setupDepthStencil(arg.unknown14, 5, 0, 1);
+    break;
+  case 7:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 5, 0, 1);
+    break;
+  case 9:
+    apCache->setupDepthStencil(arg.unknown14, 1, 0, 2);
+    break;
+  case 10:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 1, 0, 2);
+    break;
+  case 8:
+    apCache->setupDepthStencil(arg.unknown14, arg.unknown10, arg.unknown04 != 0, arg.unknown08);
+    break;
+  }
+}
+
+// Measured forms (1.0.0: 0x71007f6d28, 73 instructions): the same switch as setupPartsMaterial, with its own jump table (0x7100f83cc0, that of setupPartsMaterial is 0x7100f83c90), after
+// the depth write is forced on and the depth test follows the stencil (7 selects 3, the other values 2; read by mode 8 only). The switch is written out in both functions because a
+// shared static helper (apCache, arg, mode) stays an out-of-line call in each of them (20 and 27 instructions against 66 and 73), and the same case order matches here too (the numeric
+// order gives 75 instructions).
+void DrMdoSetup::setupZPrePassPartsMaterial(const MdsMatInfoHeader *header, int mode) {
+  MdoWrkMatSetupArg arg;
+  getSetupMaterial(arg, header, mode);
+  arg.unknown04 = 1;
+  arg.unknown08 = arg.unknown10 == 7 ? 3 : 2;
+  DrAPCache *apCache = m_drMan->unknown5c0;
+  apCache->depthBegin();
+  switch (mode) {
+  case 1:
+    apCache->setupDepthStencil(arg.unknown14, arg.unknown10, 0, 3);
+    break;
+  case 2:
+  case 11:
+    apCache->setupDepthStencil(arg.unknown14, 1, 1, 2);
+    break;
+  case 3:
+  case 12:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 1, 1, 2);
+    break;
+  case 4:
+    apCache->setupDepthStencil(arg.unknown14, 5, 0, 3);
+    break;
+  case 5:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 5, 0, 3);
+    break;
+  case 6:
+    apCache->setupDepthStencil(arg.unknown14, 5, 0, 1);
+    break;
+  case 7:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 5, 0, 1);
+    break;
+  case 9:
+    apCache->setupDepthStencil(arg.unknown14, 1, 0, 2);
+    break;
+  case 10:
+    apCache->setupDepthStencil(arg.unknown14 | 0x20, 1, 0, 2);
+    break;
+  case 8:
+    apCache->setupDepthStencil(arg.unknown14, arg.unknown10, arg.unknown04 != 0, arg.unknown08);
+    break;
+  }
+}
+
 void DrMdoSetup::createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat) {
   MdoWrkMatRes *matRes = unknown30;
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(matRes->unknown10 + header->unknown4c);

@@ -106,6 +106,8 @@ public:
   void changeShaderMat(bool isChange);
   void changeShaderPos();
   void getSetupMaterial(MdoWrkMatSetupArg &arg, const MdsMatInfoHeader *header, int mode);
+  void setupPartsMaterial(const MdsMatInfoHeader *header, int mode);
+  void setupZPrePassPartsMaterial(const MdsMatInfoHeader *header, int mode);
   void setupMaterial(const MdsMatInfoHeader *header);
   void createUniformBlock(const MdsMatInfoHeader *header, DrResMdoMat *mat);
   void setShader(DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatTechnique *technique, u32 matIndex, int mdlIndex, u32 bufferIndex);
