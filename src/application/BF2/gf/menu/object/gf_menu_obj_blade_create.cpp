@@ -285,6 +285,21 @@ void GfMenuBladeCreateCamera::update(const fw::UpdateInfo &info) {
   unknowne0 = rotation;
 }
 
+// Game address 0x71003fe114. Looks from `position` along the forward axis turned by the euler angles `rotation`. Evidence for the forms (210 instructions, each measured):
+// - The identity quaternion is copied into a local before the euler quaternion is built: its four loads come before the first sinf call (0x71003fe134 ldp), the plain
+//   `mm::Quat::mul(mm::Quat::identity, ...)` has 206 instructions (the loads follow the calls).
+// - The quaternion is mm::unknown005 (x, y, z, w with the product of the cosines first in the w sum): the other statement orders and sum orders (96 forms) schedule the eight products
+//   differently.
+// - The vector is rotated in place by mm::unknown010: `target = quat.rotate(target)` has 210 instructions but adds `position` before the rotated component in the x and y sums.
+void GfMenuBladeCreateCamera::updateLookAt(const mm::Vec3 &position, const mm::Vec3 &rotation) {
+  mm::Vec3 target(0.0f, 0.0f, 1.0f);
+  mm::Quat current = mm::Quat::identity;
+  mm::Quat quat = mm::Quat::mul(current, mm::unknown005(rotation));
+  mm::unknown010(quat, target);
+  target += position;
+  setLookAt(position, target, 0.0f);
+}
+
 GfMenuObjBladeCreate::GfMenuObjBladeCreate(u32 handle)
     : GfMenuObject(handle), m_pageContext(), unknownaf8(this), m_sequentialPlaySignal(nullptr), unknown1120(false), unknown1128(), unknown1140(4), unknown1144(0), unknown1170(0), unknown1174(),
       unknown1188(), m_menuBladeCreateCamera(nullptr), unknown1198(-1), unknown11a0(0), unknown11a8(nullptr), unknown11b0(0), unknown11b4(false), unknown11b8(0), unknown11c0(0), unknown11c4() {
@@ -765,6 +780,87 @@ bool GfMenuObjBladeCreate::seqCreateStartSE() {
 bool GfMenuObjBladeCreate::seqCreatePlayJingle() {
   GfMenuObjUtil::stopBGM(unknown11c0, 1.0f);
   unknown11c0 = 0;
+  return true;
+}
+
+// Game address 0x71003f8544. Spreads the drivers of the creation on a circle (the angle between two drivers is 360 / count degrees), turns the five cameras of each driver by the same angle
+// and sets the default camera of the page from the first driver. Evidence for the forms (483 instructions, each measured):
+// - `count` is read once before the loop (0x71003f85a8 stores the result of the second getSize, 0x71003f8678 compares the reloaded value with 2 in every iteration); inline in the
+//   condition the loop calls getSize again (482 instructions).
+// - The transform starts as {Vec3::zero, Quat::identity} before the loop (0x71003f85ac..85d8). Per driver the quaternion identity is stored first (0x71003f86c8), then the point
+//   (0, 0, 1) (0x71003f86d0..86d4), before the first sinf call (0x71003f8718): with the stores after the matrix the point folds to constants (474 instructions).
+// - The matrix is the identity copied into a local first, then `matrix = matrix * rotationMatrix` (`Mat44::identity * rotationMatrix` gives 457 instructions), the point goes through
+//   the shared helper unknown029 and the quaternion is mm::unknown005 (the same forms as seqCreateBuildBlade and GfMenuBladeCreateCamera::update).
+// - The camera index is the inlined getDriverCameraIndex (search loop 0x71003f8970..8988). Its result is compared with -1 before the camera loop (`cbz w8` at 0x71003f898c on the
+//   trip count of the search loop, which skips the loop): without the guard it has 478 instructions, and with `camera = index * 5` before the guard the game's three counters of the
+//   loop (w21 = -j, w27 = running camera, w20 = first camera) do not come out (483 instructions, other spill slots).
+// - The first camera of a driver reads the position and rotation of camera 0 (0x71003f89f0..8a18: getCameraPos/getCameraRot with a zero argument), the others their own
+//   (0x71003f89ac..89d4); the camera that is written is the driver's own in both cases (`target`, a select of w20 and w27 that the game keeps). The own camera is `camera + j`
+//   (a running `current++` next to j gives 476 instructions).
+// - `position` and `rotation` are locals of the loop body; declared before the loop (together with `for (u32 j ...)`) the loop does not match (483 instructions, one spill slot of
+//   the matrix elements differs).
+// - The default camera of the page is read from the first driver (getContents(0), without getIndex, 0x71003f8b64..8b94) in a block that ends after setDefault: the temporaries
+//   then share the stack slots of the loop (frame 304 bytes, 320 without the block).
+bool GfMenuObjBladeCreate::seqCreateDriverObj() {
+  unknown119c = 360.0f / m_pageContext.unknown40->getSize() * mm::DEG_TO_RAD;
+  u32 count = m_pageContext.unknown40->getSize();
+  fw::Transform transform;
+  transform.unknown00 = mm::Vec3::zero;
+  transform.unknown10 = mm::Quat::identity;
+  for (u32 i = 0; i < m_pageContext.unknown40->getSize(); i++) {
+    u32 driver = m_pageContext.unknown40->getContents(i).unknown00;
+    if (count > 1) {
+      f32 angle = i * unknown119c;
+      transform.unknown10 = mm::Quat::identity;
+      transform.unknown00.x = 0.0f;
+      transform.unknown00.y = 0.0f;
+      transform.unknown00.z = 1.0f;
+      mm::Mat44 matrix = mm::Mat44::identity;
+      mm::Mat44 rotationMatrix;
+      rotationMatrix.setRotY(angle);
+      matrix = matrix * rotationMatrix;
+      unknown029(transform.unknown00, matrix);
+      mm::unknown005(transform.unknown10, mm::Vec3(0.0f, angle, 0.0f));
+      u32 index = getDriverCameraIndex(driver);
+      if (index != 0xffffffff) {
+        u32 camera = index * 5;
+        for (u32 j = 0; j < 5; j++) {
+          mm::Vec3 position;
+          mm::Vec3 rotation;
+          u32 target;
+          if (j == 0) {
+            target = camera;
+            position = m_pageContext.m_menuModelView->getCameraPos(0);
+            rotation = m_pageContext.m_menuModelView->getCameraRot(0);
+          } else {
+            target = camera + j;
+            position = m_pageContext.m_menuModelView->getCameraPos(target);
+            rotation = m_pageContext.m_menuModelView->getCameraRot(target);
+          }
+          position.z += 1.0f;
+          unknown029(position, matrix);
+          m_pageContext.m_menuModelView->setCameraPos(target, position);
+          m_pageContext.m_menuModelView->setCameraRotY(target, angle + rotation.y);
+        }
+      }
+    }
+    m_pageContext.m_menuModelView->addDriverObject(driver, transform);
+  }
+  {
+    u32 driver = m_pageContext.unknown40->getContents(0).unknown00;
+    u32 camera = getDriverCameraIndex(driver) * 5;
+    mm::Vec3 position = m_pageContext.m_menuModelView->getCameraPos(camera);
+    mm::Vec3 rotation = m_pageContext.m_menuModelView->getCameraRot(camera);
+    if (m_pageContext.unknown40->getSize() == 2) {
+      m_menuBladeCreateCamera->setRotOffsetY(-8.0f * mm::DEG_TO_RAD);
+      position.x += 0.1f;
+    }
+    m_menuBladeCreateCamera->setDefault(position, rotation);
+  }
+  unknown1198 = m_pageContext.m_menuModelView->addCamera(m_menuBladeCreateCamera);
+  m_pageContext.m_menuModelView->pushCamera(unknown1198, 0.0f);
+  ui::UIObjectAcc acc(unknown18, "LAY_dr_select_arrow");
+  acc.setDisp(m_pageContext.unknown40->getSize() > 1);
   return true;
 }
 
