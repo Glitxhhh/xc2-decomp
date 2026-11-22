@@ -190,13 +190,22 @@ void GfComSound::flushVariables() {
   }
 }
 
+namespace {
+
+// Inferred helper: starts the sound of the given name in the category of the object; original name unknown. The game inlines it in playSe, playSeBone and playSe2D.
+u32 unknown003(GfComSound *sound, const char *name, f32 volume, bool isWithoutSlow) {
+  GF_OBJ_HANDLE *handle = static_cast<GfObj *>(sound->unknown08)->unknownf8;
+  fw::SoundCategory category = isWithoutSlow ? GfObjUtil::getSoundCategoryWithoutSlow(handle) : GfObjUtil::getSoundCategoryNormal(handle);
+  return fw::SoundResSourceManager::playSe(name, volume, sound->m_soundVariableTable, category, sound->unknown130);
+}
+
+} // namespace
+
 bool GfComSound::playSe(const char *name, f32 volume, const mm::Vec3 &offset, bool isWithoutSlow) {
   if (!unknown150) {
     return false;
   }
-  GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
-  fw::SoundCategory category = isWithoutSlow ? GfObjUtil::getSoundCategoryWithoutSlow(handle) : GfObjUtil::getSoundCategoryNormal(handle);
-  u32 id = fw::SoundResSourceManager::playSe(name, volume, m_soundVariableTable, category, unknown130);
+  u32 id = unknown003(this, name, volume, isWithoutSlow);
   if (id == 0) {
     return false;
   }
@@ -215,9 +224,7 @@ bool GfComSound::playSeBone(const char *name, const char *bone, f32 volume, cons
   if (!unknown150) {
     return false;
   }
-  GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
-  fw::SoundCategory category = isWithoutSlow ? GfObjUtil::getSoundCategoryWithoutSlow(handle) : GfObjUtil::getSoundCategoryNormal(handle);
-  u32 id = fw::SoundResSourceManager::playSe(name, volume, m_soundVariableTable, category, unknown130);
+  u32 id = unknown003(this, name, volume, isWithoutSlow);
   if (id == 0) {
     return false;
   }
@@ -230,6 +237,26 @@ bool GfComSound::playSeBone(const char *name, const char *bone, f32 volume, cons
   info.unknown60 = offset;
   unknown30.push_back(info);
   unknown002();
+  return true;
+}
+
+bool GfComSound::playSe2D(const char *name, f32 volume, bool isWithoutSlow, bool isCache) {
+  if (!unknown150) {
+    return false;
+  }
+  u32 id = unknown003(this, name, volume, isWithoutSlow);
+  if (id == 0) {
+    return false;
+  }
+  if (!isCache) {
+    return true;
+  }
+  SoundInfo info;
+  info.unknown00 = id;
+  info.unknown04 = name;
+  info.unknown30 = 2;
+  info.unknown70 = false;
+  unknown30.push_back(info);
   return true;
 }
 

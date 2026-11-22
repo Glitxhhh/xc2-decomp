@@ -8,6 +8,14 @@
 
 namespace gf {
 
+// Evidence: the type of the water info parameter of GfEffectGround::tryGetWaterDepth (1.0.0 symbol), which the game's inlined copy in calcSwimEffectParam (0x7100502e34)
+// reads at the water sample of GfEnvProperty. The GfEnvProperty constructor (0x71005a3210) clears only the first float of the sample (one 4-byte store at 0x280, no
+// vector) and normalises the plane at 0x290.
+struct GfCharaWaterInfo {
+  f32 unknown00;       // Inferred role: water height; original member name unknown.
+  mm::Plane unknown10; // Inferred role: water plane; original member name unknown.
+};
+
 // Evidence: layout read from the GfEnvProperty constructor (0x71005a30cc, 0x2e0 bytes allocated by GfObjFactory), the loop over eight samples of 0x50 bytes,
 // the water sample initialised at 0x280, and the accesses of GfEffectGround (flags at 0x2d0: bit 0 water sample, bit n + 1 ground sample n).
 struct GfEnvProperty {
@@ -41,19 +49,20 @@ struct GfEnvProperty {
   // Inferred helper: ground sample, null when it is not valid; original name unknown.
   const unknown002 *unknown004(int index) const { return unknown003(index) ? &unknown00[index] : nullptr; }
 
-  unknown002 unknown00[8]; // Inferred role: ground samples; original member name unknown.
-  unknown001 unknown280;   // Inferred role: water sample, its x holds the surface height; original member name unknown.
-  f32 unknown2b0;          // Inferred role: zero-initialised; original member name unknown.
-  f32 unknown2b4;          // Inferred role: water depth; original member name unknown.
-  s32 unknown2b8;          // Inferred role: water ground material; original member name unknown.
-  s32 unknown2bc;          // Inferred role: water ground material kind; original member name unknown.
-  u32 unknown2c0;          // Inferred role: damage id; original member name unknown.
+  unknown002 unknown00[8];     // Inferred role: ground samples; original member name unknown.
+  GfCharaWaterInfo unknown280; // Inferred role: water sample; original member name unknown.
+  f32 unknown2b0;              // Inferred role: zero-initialised; original member name unknown.
+  f32 unknown2b4;              // Inferred role: water depth; original member name unknown.
+  s32 unknown2b8;              // Inferred role: water ground material; original member name unknown.
+  s32 unknown2bc;              // Inferred role: water ground material kind; original member name unknown.
+  u32 unknown2c0;              // Inferred role: damage id; original member name unknown.
   u8 _2c4[0x2d0 - 0x2c4];
   u32 unknown2d0;  // Inferred role: valid samples; original member name unknown.
   bool unknown2d4; // Inferred role: zero-initialised; original member name unknown.
 };
 
 static_assert(sizeof(GfEnvProperty::unknown001) == 0x30, "");
+static_assert(sizeof(GfCharaWaterInfo) == 0x30, "");
 static_assert(sizeof(GfEnvProperty::unknown002) == 0x50, "");
 static_assert(offsetof(GfEnvProperty, unknown280) == 0x280, "");
 static_assert(offsetof(GfEnvProperty, unknown2b4) == 0x2b4, "");

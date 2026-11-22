@@ -81,8 +81,8 @@ void PlayerCameraTarget::writeTargetInfo() {
     unknown44 = false;
     unknown46 = false;
     if (env->unknown2d0 & 1) {
-      unknown48 = env->unknown280.unknown00.x - 1.0f;
-      unknown4c = env->unknown280.unknown00.x;
+      unknown48 = env->unknown280.unknown00 - 1.0f;
+      unknown4c = env->unknown280.unknown00;
       unknown50 = env->unknown280.unknown10.normal;
       unknown44 = true;
       unknown46 = true;

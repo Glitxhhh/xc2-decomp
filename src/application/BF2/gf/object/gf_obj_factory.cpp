@@ -116,7 +116,7 @@ bool checkSoundTriggerPlayer(GfComSound *sound, const fw::ResSoundTriggerInfo &i
     GfEnvProperty *env = static_cast<GfObj *>(sound->unknown08)->getComponent<GfComProperty>()->unknown28.get();
     const GfEnvProperty::unknown002 *ground = env->unknown004(GfEnvProperty::GROUND_INDEX_UNKNOWN_0);
     if ((env->unknown2d0 & 1) && ground != nullptr) {
-      return !(ground->unknown00.y <= env->unknown280.unknown00.x);
+      return !(ground->unknown00.y <= env->unknown280.unknown00);
     }
   }
   return true;
