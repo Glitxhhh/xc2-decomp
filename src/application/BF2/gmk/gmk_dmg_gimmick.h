@@ -183,7 +183,7 @@ public:
   GmkDmgSe() : unknown50(nullptr), unknowne0(false), unknowne4(0), unknowne8(1.0f) {}
   ~GmkDmgSe() override { dispose(); }
   GmkType getGmkType() const override { return GMK_TYPE; }
-  bool isValid() const override { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+  bool isValid() const override { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
   void createGmkPhantom() const;
   void createSeInst(fw::SoundPack *pack, u32 id) const;
   void disposeSeInst(bool isFadeOut) const;

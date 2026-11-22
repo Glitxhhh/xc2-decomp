@@ -29,7 +29,7 @@ void GfEvtBgm::finalize() { m_initialized = false; }
 
 bool GfEvtBgm::isInitialized() { return m_initialized; }
 
-void GfEvtBgm::setPlayBgmVolume(f32 volume) { unknown0c.unknown44 = volume; }
+void GfEvtBgm::setPlayBgmVolume(f32 volume) { unknown0c.m_playBgmVolume = volume; }
 
 void GfEvtBgm::setPlayState(PLAY_STATE playState) { m_playState = playState; }
 
@@ -188,7 +188,7 @@ EvtBgmTaskDelay *EvtBgmTaskDelay::create(const EventBgmSetup &setup) {
   return new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) EvtBgmTaskDelay(setup);
 }
 
-EvtBgmTaskVolume::EvtBgmTaskVolume(const EventBgmSetup &setup) : unknown08(setup.unknown48), unknown0c(setup.unknown44), unknown10(false) {}
+EvtBgmTaskVolume::EvtBgmTaskVolume(const EventBgmSetup &setup) : unknown08(setup.unknown48), unknown0c(setup.m_playBgmVolume), unknown10(false) {}
 
 bool EvtBgmTaskVolume::isVolumeTask() const { return true; }
 
@@ -203,12 +203,12 @@ bool EvtBgmTaskVolume::update(GfEvtBgm *bgm, const fw::UpdateInfo &info) {
   }
   f32 remain = unknown08 - info.unknown04;
   unknown08 = remain <= 0.0f ? 0.0f : remain;
-  f32 diff = unknown0c - bgm->unknown0c.unknown44;
+  f32 diff = unknown0c - bgm->unknown0c.m_playBgmVolume;
   if (__builtin_fabsf(diff) <= 1e-06f) {
     return true;
   }
   f32 ratio = unknown08 == 0.0f ? 1.0f : info.unknown04 / unknown08;
-  bgm->unknown0c.unknown44 += diff * ratio;
+  bgm->unknown0c.m_playBgmVolume += diff * ratio;
   return unknown08 <= 0.0f;
 }
 

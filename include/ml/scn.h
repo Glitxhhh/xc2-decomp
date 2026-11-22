@@ -190,7 +190,7 @@ public:
   // Inferred role: deb draw info; original type name unknown. The Scn constructor (0x710073fc4c) stores the screen 0 to 9 at 0xdfc + 8 * i and -1 at 0xe00 + 8 * i.
   struct unknown004 {
     s32 unknown00;        // Inferred role: screen; original member name unknown.
-    SCNPRIO_CB unknown04; // Inferred role: priority; original member name unknown.
+    SCNPRIO_CB m_debDraw; // Inferred role: priority; named after the game accessor ml::Scn::setDebDraw.
   };
 
   // Inferred type: render callback entry; the original type name is unknown.

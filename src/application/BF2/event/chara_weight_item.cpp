@@ -14,8 +14,8 @@ void CharaWeightItem::create(gf::GfObj *obj, gf::AnimLayer layer, const char *, 
   }
   unknown0c = layer;
   m_stat = stat;
-  unknown23c[WEIGHT_LAYER_UNKNOWN_0] = 1.0f;
-  unknown23c[WEIGHT_LAYER_UNKNOWN_1] = 1.0f;
+  m_addWeight[WEIGHT_LAYER_UNKNOWN_0] = 1.0f;
+  m_addWeight[WEIGHT_LAYER_UNKNOWN_1] = 1.0f;
   unknown244[WEIGHT_LAYER_UNKNOWN_0] = 1.0f;
   unknown244[WEIGHT_LAYER_UNKNOWN_1] = 1.0f;
 }
@@ -32,7 +32,7 @@ void CharaWeightItem::update(gf::GfObj *obj, f32 delta) {
   unknown18[WEIGHT_LAYER_UNKNOWN_1].update(delta);
   unknown238 = 1.0f - (1.0f - unknown18[WEIGHT_LAYER_UNKNOWN_0].getValue()) * (1.0f - unknown18[WEIGHT_LAYER_UNKNOWN_1].getValue());
   if (unknown08.test(FLAG_UNKNOWN_0)) {
-    CharaUtil::setEaseWeight(obj, m_stat, unknown0c, unknown238 * unknown23c[WEIGHT_LAYER_UNKNOWN_0] * unknown23c[WEIGHT_LAYER_UNKNOWN_1]);
+    CharaUtil::setEaseWeight(obj, m_stat, unknown0c, unknown238 * m_addWeight[WEIGHT_LAYER_UNKNOWN_0] * m_addWeight[WEIGHT_LAYER_UNKNOWN_1]);
   }
   if (unknown08.test(FLAG_UNKNOWN_0)) {
     CharaUtil::setEaseSpeed(obj, m_stat, unknown0c, unknown244[WEIGHT_LAYER_UNKNOWN_0] * unknown244[WEIGHT_LAYER_UNKNOWN_1]);
@@ -44,7 +44,7 @@ void CharaWeightItem::update(gf::GfObj *obj, f32 delta) {
 
 void CharaWeightItem::render(int x, int y) {
   fw::debug::drawFont(x, y, m_stat);
-  fw::debug::drawFont(x + 120, y, "%.1f", unknown238 * unknown23c[WEIGHT_LAYER_UNKNOWN_0] * unknown23c[WEIGHT_LAYER_UNKNOWN_1]);
+  fw::debug::drawFont(x + 120, y, "%.1f", unknown238 * m_addWeight[WEIGHT_LAYER_UNKNOWN_0] * m_addWeight[WEIGHT_LAYER_UNKNOWN_1]);
 }
 
 bool CharaWeightItem::isActive() const { return unknown08.test(FLAG_UNKNOWN_1); }
@@ -71,6 +71,6 @@ void CharaWeightItem::easeOut(f32 frame, CV_TYPE cv, WeightLayer layer) {
   anm.append(frame, 0.0f, cv);
 }
 
-void CharaWeightItem::setAddWeight(f32 weight, WeightLayer layer) { unknown23c[layer] = weight; }
+void CharaWeightItem::setAddWeight(f32 weight, WeightLayer layer) { m_addWeight[layer] = weight; }
 
 } // namespace event

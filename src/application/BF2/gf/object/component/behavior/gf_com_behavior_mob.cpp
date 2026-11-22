@@ -339,7 +339,7 @@ void GfComBehaviorMob::setActivateCollison(bool isActivate) {
 
 u32 GfComBehaviorMob::getStateId() const {
   if (unknown5328.m_pState != nullptr) {
-    return unknown5328.m_pState->unknown08;
+    return unknown5328.m_pState->m_state;
   }
 
   return ai::INVALID_STATE_ID;

@@ -230,9 +230,9 @@ private:
   CmdQueue<QUEUE_UNKNOWN_8, 0> unknown1738;     // Inferred role: queue; original member name unknown.
   CmdQueue<QUEUE_UNKNOWN_8, 0> unknown2088;     // Inferred role: sub queue; original member name unknown.
   CmdQueue<SUB_QUEUE_UNKNOWN_5, 0> unknown29d8; // Inferred role: fade queue; original member name unknown.
-  mm::Vec3 unknown2fb0;                         // Inferred role: pos; original member name unknown.
+  mm::Vec3 m_pos;                               // Inferred role: pos; named after the game accessor event::CharaObj::getPos.
   mm::Vec3 unknown2fc0;                         // Inferred role: pos to; original member name unknown.
-  mm::Vec3 unknown2fd0;                         // Inferred role: rot; original member name unknown.
+  mm::Vec3 m_rot;                               // Inferred role: rot; named after the game accessor event::CharaObj::getRot.
   mm::Vec3 unknown2fe0;                         // Inferred role: rot to; original member name unknown.
   u8 unknown2ff0[0x3030 - 0x2ff0];              // Inferred role: 2 ff0; original member name unknown.
   FrameInfo unknown3030;                        // Inferred role: frame info; original member name unknown.

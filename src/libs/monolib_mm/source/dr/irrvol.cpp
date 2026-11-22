@@ -67,13 +67,13 @@ float frac(float value) { return value - static_cast<int>(value); }
 
 MemHandlebaseAllocator::MemHandlebaseAllocator() {}
 
-MemHandlebaseAllocator::MemHandlebaseAllocator(mtl::ALLOC_HANDLE handle) : unknown08(handle) {}
+MemHandlebaseAllocator::MemHandlebaseAllocator(mtl::ALLOC_HANDLE handle) : m_memHandle(handle) {}
 
-void MemHandlebaseAllocator::setMemHandle(mtl::ALLOC_HANDLE handle) { unknown08 = handle; }
+void MemHandlebaseAllocator::setMemHandle(mtl::ALLOC_HANDLE handle) { m_memHandle = handle; }
 
-mtl::ALLOC_HANDLE MemHandlebaseAllocator::getMemHandle() const { return unknown08; }
+mtl::ALLOC_HANDLE MemHandlebaseAllocator::getMemHandle() const { return m_memHandle; }
 
-void *MemHandlebaseAllocator::allocate(size_t size, size_t alignment) { return mtl::MemManager::allocate(unknown08, size, alignment, false, "no name", 0); }
+void *MemHandlebaseAllocator::allocate(size_t size, size_t alignment) { return mtl::MemManager::allocate(m_memHandle, size, alignment, false, "no name", 0); }
 
 void MemHandlebaseAllocator::deallocate(void *pointer) {
   if (pointer != nullptr) {

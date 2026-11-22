@@ -65,10 +65,10 @@ public:
   f32 calcSimilarity(const DrLightObjGlobalIBL &other) const;
 
   DrGlobalIBLPack *unknown00; // Inferred role: owner pack, set by initializeFromBuffer; original member name unknown.
-  int unknown08;              // Inferred role: version; original member name unknown.
+  int m_version;              // Inferred role: version; named after the game accessor ml::DrRequetIBL::getVersion.
   int m_priority;
   u32 unknown10;                       // Inferred role: index in the pack, set by initializeFromBuffer; original member name unknown.
-  int unknown14;                       // Inferred role: texture num; original member name unknown.
+  int m_textureNum;                    // Inferred role: texture num; named after the game accessor ml::DrRequetIBL::getTextureNum.
   u32 unknown18;                       // Inferred role: value read from the object data by initializeFromBuffer; original member name unknown.
   mm::mtl::Vector<MeshData> unknown20; // Inferred role: meshes; original member name unknown.
   f32 unknown48;                       // Inferred role: range value passed to the clip test of update; original member name unknown.
@@ -76,13 +76,13 @@ public:
   mm::Vec3 unknown60;                  // Inferred role: bounding box maximum (isInRange); original member name unknown.
   u32 unknown70;                       // Inferred role: current mesh index; original member name unknown.
   u8 _74[0x78 - 0x74];
-  grlib::CGLibTextureBuffer unknown78[TEXTURE_UNKNOWN_7]; // Inferred role: textures; original member name unknown.
+  grlib::CGLibTextureBuffer m_texture[TEXTURE_UNKNOWN_7]; // Inferred role: textures; named after the game accessor ml::DrRequetIBL::getTexture.
   u8 _388[0x390 - 0x388];
-  mm::Vec3 unknown390; // Inferred role: position, set by initializeFromBuffer; original member name unknown.
-  mm::Col3 unknown3a0; // Inferred role: additional ambient; original member name unknown.
+  mm::Vec3 unknown390;          // Inferred role: position, set by initializeFromBuffer; original member name unknown.
+  mm::Col3 m_additionalAmbient; // Inferred role: additional ambient; named after the game accessor ml::DrRequetIBL::getAdditionalAmbient.
   u8 _3ac[0x3b0 - 0x3ac];
-  f32 unknown3b0;                                              // Inferred role: sky intensity; original member name unknown.
-  f32 unknown3b4;                                              // Inferred role: dir light intensity; original member name unknown.
+  f32 m_skyIntensity;                                          // Inferred role: sky intensity; named after the game accessor ml::DrRequetIBL::getSkyIntensity.
+  f32 m_dirLightIntensity;                                     // Inferred role: dir light intensity; named after the game accessor ml::DrRequetIBL::getDirLightIntensity.
   u64 unknown3b8;                                              // Inferred role: frame count of the last IBL request (DrShdLgtGlobalIBL::updateView); original member name unknown.
   int unknown3c0;                                              // Inferred role: occlusion query result summed by update; original member name unknown.
   bool unknown3c4;                                             // Inferred role: visible flag (DrShdLgtGlobalIBL::updateView); original member name unknown.
@@ -92,9 +92,9 @@ public:
   mm::Mat44 unknown840[TEXTURE_UNKNOWN_7 * SH_TERM_UNKNOWN_4]; // Inferred role: sh matrices; original member name unknown.
 };
 
-static_assert(offsetof(DrLightObjGlobalIBL, unknown08) == 0x08, "");
+static_assert(offsetof(DrLightObjGlobalIBL, m_version) == 0x08, "");
 static_assert(offsetof(DrLightObjGlobalIBL, m_priority) == 0x0c, "");
-static_assert(offsetof(DrLightObjGlobalIBL, unknown14) == 0x14, "");
+static_assert(offsetof(DrLightObjGlobalIBL, m_textureNum) == 0x14, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown48) == 0x48, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown50) == 0x50, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown60) == 0x60, "");
@@ -116,10 +116,10 @@ static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown150) == 0x150, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown20) == 0x20, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown70) == 0x70, "");
-static_assert(offsetof(DrLightObjGlobalIBL, unknown78) == 0x78, "");
-static_assert(offsetof(DrLightObjGlobalIBL, unknown3a0) == 0x3a0, "");
-static_assert(offsetof(DrLightObjGlobalIBL, unknown3b0) == 0x3b0, "");
-static_assert(offsetof(DrLightObjGlobalIBL, unknown3b4) == 0x3b4, "");
+static_assert(offsetof(DrLightObjGlobalIBL, m_texture) == 0x78, "");
+static_assert(offsetof(DrLightObjGlobalIBL, m_additionalAmbient) == 0x3a0, "");
+static_assert(offsetof(DrLightObjGlobalIBL, m_skyIntensity) == 0x3b0, "");
+static_assert(offsetof(DrLightObjGlobalIBL, m_dirLightIntensity) == 0x3b4, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown3d0) == 0x3d0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown410) == 0x410, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown450) == 0x450, "");

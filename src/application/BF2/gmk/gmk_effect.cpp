@@ -47,7 +47,7 @@ bool GmkEffect::BdatInfo::isPopCondMatched() const {
 
 GmkType GmkEffectLocator::getGmkType() const { return GMK_TYPE; }
 
-bool GmkEffectLocator::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkEffectLocator::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 GmkType GmkEffect::getGmkType() const { return GMK_TYPE; }
 

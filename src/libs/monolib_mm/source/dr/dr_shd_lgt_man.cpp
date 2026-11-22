@@ -130,7 +130,7 @@ void DrShdLgtMan::delViewInfo(int cate) {
 }
 
 bool DrShdLgtMan::createLightShader() {
-  if (unknown10->createPacShader(unknown08->unknownc8, 0x3f3, true)) {
+  if (unknown10->createPacShader(unknown08->m_glassBreakage, 0x3f3, true)) {
     for (s32 i = 0; i < unknown10->unknown54; i++) {
       unknown18[i] = unknown10->unknown004(i);
     }

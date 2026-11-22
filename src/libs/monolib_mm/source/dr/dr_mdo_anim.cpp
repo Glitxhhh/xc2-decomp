@@ -48,7 +48,7 @@ void DrMdoAnim::updateAnimEnd(f32 frame, const u32 *flags, DrResEtcPamObj *pamOb
         for (u32 j = 0; j < num; j++, cate++) {
           f32 *work = values + cate->unknown06;
           memcpy(work, unknown30->unknown38 + (matInfo->unknown40 + cate->unknown06), sizeof(f32) * 8);
-          calcAnim(cate, &unknown30->unknownc0[i], pamObj, work, frame);
+          calcAnim(cate, &unknown30->m_materialRes[i], pamObj, work, frame);
         }
       }
       if (matInfo->unknown04 & MdsMatInfoHeader::unknown015_18) {
@@ -56,7 +56,7 @@ void DrMdoAnim::updateAnimEnd(f32 frame, const u32 *flags, DrResEtcPamObj *pamOb
         u32 num = range->unknown02;
         const MdsFixAnmCate *cate = &cates[range->unknown00];
         for (u32 j = 0; j < num; j++, cate++) {
-          calcAnim(cate, &unknown30->unknownc0[i], pamObj, values, frame);
+          calcAnim(cate, &unknown30->m_materialRes[i], pamObj, values, frame);
         }
       }
     }
@@ -80,7 +80,7 @@ void DrMdoAnim::calcAnim(const MdsFixAnmCate *cate, DrResMdoMat *mat, DrResEtcPa
       }
     } else {
       if (inf->unknown00_31) {
-        *frames = m_drMan->unknown1cac * 240.0f;
+        *frames = m_drMan->m_timerVal * 240.0f;
       } else {
         *frames += frame;
         if (*frames > inf->unknown0e - 1) {

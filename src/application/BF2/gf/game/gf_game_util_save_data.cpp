@@ -58,7 +58,7 @@ static void unknown001(unknown118 &map) {
   if (scene != nullptr) {
     map.unknown00[0] = scene->getEnableSavePos();
   }
-  map.unknownc0 = GfGameManager::getMapJumpID();
+  map.m_skipTravelID = GfGameManager::getMapJumpID();
 }
 
 // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
@@ -78,14 +78,14 @@ void GfGameUtilSaveData::setupGameSaveData(SDataSave &saveData) {
   getSaveData(saveData);
   saveData.unknown10 = *GfDataManager::getDataGame();
   if (!isClear) {
-    unknown001(saveData.unknown10.unknown1097f0);
+    unknown001(saveData.unknown10.m_sDataMap);
     saveData.unknown10.unknown10ae81 = 0;
-    saveData.unknown10.unknown10ae74 = GfGamePlayerCamera::getSaveYaw();
-    saveData.unknown10.unknown10ae78 = GfGamePlayerCamera::getSavePitch();
-    saveData.unknown10.unknown109b28 = GfGamePlayerCamera::getSaveDistance();
-    saveData.unknown10.unknown10ad70 = GfGamePlayerCamera::getSaveHeight();
-    saveData.unknown10.unknown10ae82 = GfGamePlayerCamera::getSaveSide();
-    saveData.unknown10.unknown10ae7c = GfGamePlayerCamera::isSaveFreeMode();
+    saveData.unknown10.m_cameraYaw = GfGamePlayerCamera::getSaveYaw();
+    saveData.unknown10.m_cameraPitch = GfGamePlayerCamera::getSavePitch();
+    saveData.unknown10.m_playerCameraDistance = GfGamePlayerCamera::getSaveDistance();
+    saveData.unknown10.m_cameraHeight = GfGamePlayerCamera::getSaveHeight();
+    saveData.unknown10.m_cameraSide = GfGamePlayerCamera::getSaveSide();
+    saveData.unknown10.m_cameraFreeMode = GfGamePlayerCamera::isSaveFreeMode();
   } else {
     saveData.unknown10.unknown10ae81 = 1;
     GfGameFlag::setLocal(saveData.unknown10.unknownfbbc4, 16, 1, 10032);
@@ -109,11 +109,11 @@ void GfGameUtilSaveData::setupGameSaveData(SDataSave &saveData) {
       saveData.unknown10.unknown003(title->getSaveBuffer()->unknown10, 1, 0xb42c, 0xa0);
       saveData.unknown10.unknown003(title->getSaveBuffer()->unknown10, 2, 0x94b7, 0x640);
       saveData.unknown10.unknown002(title->getSaveBuffer()->unknown10, 8, 0x12, 0x5ee);
-      saveData.unknown10.unknown1097e4 = title->getSaveBuffer()->unknown10.unknown1097e4;
-      saveData.unknown10.unknown1097e8 = title->getSaveBuffer()->unknown10.unknown1097e8;
+      saveData.unknown10.m_scenario = title->getSaveBuffer()->unknown10.m_scenario;
+      saveData.unknown10.m_select = title->getSaveBuffer()->unknown10.m_select;
       copyOrderParentQuests(saveData.unknown10, title->getSaveBuffer()->unknown10);
       saveData.unknown10.unknown26 = title->getSaveBuffer()->unknown10.unknown26;
-      saveData.unknown10.unknown28 = title->getSaveBuffer()->unknown10.unknown28;
+      saveData.unknown10.m_eventChapterSave = title->getSaveBuffer()->unknown10.m_eventChapterSave;
     }
   }
   GfFieldTime *fieldTime = GfFieldTime::get();
@@ -122,13 +122,13 @@ void GfGameUtilSaveData::setupGameSaveData(SDataSave &saveData) {
     saveData.unknown10.unknown1098c4 = fieldTime->getElapseTime();
     saveData.unknown10.unknown24 = fieldTime->isTimeStop();
     fieldTime->getRealTime(saveData.unknown08);
-    fieldTime->getRealTime(saveData.unknown10.unknown10ad68);
+    fieldTime->getRealTime(saveData.unknown10.m_saveRealTime);
   }
 }
 
 void GfGameUtilSaveData::getSaveData(SDataGame &dataGame) {
   dataGame = *GfDataManager::getDataGame();
-  unknown001(dataGame.unknown1097f0);
+  unknown001(dataGame.m_sDataMap);
 }
 
 void GfGameUtilSaveData::setTitleSaveData(const SDataSave &saveData) {

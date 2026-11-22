@@ -50,7 +50,7 @@ GmkType GmkRoutedFootPrint::getGmkType() const { return GMK_TYPE; }
 u32 GmkRoutedFootPrint::getRoutePointNum() const { return getData()->unknown10 - getData()->unknown0c; }
 
 const GmkRoutedFootPrintPointList *GmkRoutedFootPrint::getBindedRoutePointList() const {
-  return static_cast<const GmkRoutedFootPrintPointList *>(unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTED_FOOT_PRINT_POINT]);
+  return static_cast<const GmkRoutedFootPrintPointList *>(unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTED_FOOT_PRINT_POINT]);
 }
 
 const GmkRoutedFootPrintPoint *GmkRoutedFootPrint::getRoutePoint(u32 index) const {
@@ -123,7 +123,7 @@ GmkRoutedFootPrintPoint::GmkRoutedFootPrintPoint() : unknown50(0), unknown54(tru
 
 GmkType GmkRoutedFootPrintPoint::getGmkType() const { return GMK_TYPE; }
 
-bool GmkRoutedFootPrintPoint::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkRoutedFootPrintPoint::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkRoutedFootPrintPoint::validateDisp() const {
   if (unknown50 == 0) {
@@ -134,7 +134,7 @@ void GmkRoutedFootPrintPoint::validateDisp() const {
 }
 
 void GmkRoutedFootPrintPoint::createEffInst(void *data) {
-  const GmkSet *set = unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return;
   }

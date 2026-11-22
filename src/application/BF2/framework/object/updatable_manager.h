@@ -29,7 +29,7 @@ public:
   public:
     Impl(mm::mtl::IAllocator *allocator, size_t capacity) : unknown00(allocator) {
       for (u32 i = 0; i < GROUP_UNKNOWN_32; i++) {
-        unknown08[i] = nullptr;
+        m_group[i] = nullptr;
       }
       unknown108.reserve(allocator, capacity);
       unknown108.setRange(1, POINTER_ID_UNKNOWN_134217727, POINTER_ID_UNKNOWN_134217727);
@@ -51,9 +51,9 @@ public:
     UpdatableGroup *getGroup(u32 group);
     void registObject(u32 group, UpdatableObject *object);
 
-    mm::mtl::IAllocator *unknown00;              // Inferred role: allocator; original member name unknown.
-    UpdatableGroup *unknown08[GROUP_UNKNOWN_32]; // Inferred role: groups; original member name unknown.
-    PointerMap unknown108;                       // Inferred role: pointer map; original member name unknown.
+    mm::mtl::IAllocator *unknown00;            // Inferred role: allocator; original member name unknown.
+    UpdatableGroup *m_group[GROUP_UNKNOWN_32]; // Inferred role: groups; named after the game accessor fw::UpdatableObjectManager::Impl::getGroup.
+    PointerMap unknown108;                     // Inferred role: pointer map; original member name unknown.
   };
 
   UpdatableObjectManager(mm::mtl::IAllocator *allocator, size_t capacity);
@@ -71,7 +71,7 @@ public:
 };
 
 static_assert(offsetof(UpdatableObjectManager::Impl, unknown00) == 0x00, "");
-static_assert(offsetof(UpdatableObjectManager::Impl, unknown08) == 0x08, "");
+static_assert(offsetof(UpdatableObjectManager::Impl, m_group) == 0x08, "");
 static_assert(offsetof(UpdatableObjectManager::Impl, unknown108) == 0x108, "");
 static_assert(offsetof(UpdatableObjectManager, unknown18) == 0x18, "");
 

@@ -334,7 +334,7 @@ void GmkMob::create(const CreateInfo &info) {
     AGmkBase::create(info);
     GmkMobInsts::CreateInfo createInfo;
     createInfo.unknown00 = this;
-    createInfo.unknown08 = unknown08.unknown00->getBindedBdatFp();
+    createInfo.unknown08 = unknown08.m_ownerGmkEnemyList->getBindedBdatFp();
     createInfo.unknown10 = info.unknown18;
     unknown48.create(createInfo);
   }

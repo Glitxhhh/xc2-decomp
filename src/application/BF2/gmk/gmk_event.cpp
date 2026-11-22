@@ -89,7 +89,7 @@ void GmkEvent::updateInActiveList(f32 deltaTime) {
 }
 
 void GmkEvent::createGmkPhantom() {
-  const GmkSet *set = AGmkBase::unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = AGmkBase::unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return;
   }

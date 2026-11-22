@@ -513,7 +513,7 @@ void GfMenuObjWorldMap::MapSelectListener::reciveEvent(const ui::EventData &even
         unknown20->unknown2f78 = Bdat::getFP(sheetName);
         unknown20->unknown2f70 = unknown20->setupZoneList(unknown20->unknown40);
         GfMenuZoneMapList *zones = unknown20->unknown40;
-        zones->unknown79 = unknown20->unknown2f70;
+        zones->m_groupMode = unknown20->unknown2f70;
         if (unknown20->unknown40->getSize() != 0) {
           GfMenuObjOperationInfo::remove(owner.searchChild("LAY_map_sellect"), owner.searchChild("LAY_worldmap"), 0, 0);
           GfMenuObjMainMenu2::setSystemKeyEnable(false);
@@ -746,12 +746,12 @@ void GfMenuObjWorldMap::ZoneSelectListener::reciveEvent(const ui::EventData &eve
       } else {
         unknown20->unknown2f0->clear();
         if (!unknown20->unknown2f70) {
-          unknown20->unknown2f0->unknown79 = false;
+          unknown20->unknown2f0->m_groupMode = false;
         } else {
           u8 *bdat = unknown20->unknown2f78;
           u32 top = Bdat::getIdTop(bdat);
           u32 count = Bdat::getIdCount(bdat);
-          unknown20->unknown2f0->unknown79 = true;
+          unknown20->unknown2f0->m_groupMode = true;
           for (u32 i = 0; i < count; i++) {
             Bdat::uVal group = Bdat::getVal(bdat, "menuGroup", top + i);
             if (Bdat::getVal(bdat, "MAPJUMPID", top + i).valueU16 != 0) {
@@ -1207,7 +1207,7 @@ bool GfMenuObjWorldMap::chkMapCond(u32 map, mm::Pnt<s16> *pos) {
 }
 
 u32 GfMenuObjWorldMap::getFloor() {
-  if (!unknown40->unknown79) {
+  if (!unknown40->m_groupMode) {
     return unknown40->getContents(unknown40->getIndex(false)).unknown00;
   }
   u16 image = unknown2f0->getContents(unknown2f0->getIndex(false)).unknown00;
@@ -1252,7 +1252,7 @@ bool GfMenuObjWorldMap::seqGimik() {
       unknown6b8->addObject(unknown6c0[node][i]);
     }
   }
-  if (unknown2f0->unknown79) {
+  if (unknown2f0->m_groupMode) {
     for (u32 i = 0; i < unknown2f0->getSize(); i++) {
       unknown2f0->getContents(i).unknown10 = -1;
       for (u32 j = 0; j < unknown6b8->getSize(); j++) {

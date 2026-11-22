@@ -158,7 +158,7 @@ void StateFieldWalk::validateMoveSpeed(GfComBehaviorEnemy &behavior) {
     switch (moveSpeed) {
     case 1: {
       GfBehaviorEnemyField::MoveSpeed speed = GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_1;
-      if ((unknown08 & ~1) == STATE_ID_UNKNOWN_10) {
+      if ((m_state & ~1) == STATE_ID_UNKNOWN_10) {
         speed = GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_2;
       }
 
@@ -180,7 +180,7 @@ void StateFieldWalk::seqWaitTurnEnd(GfComBehaviorEnemy &behavior, const fw::Upda
     unknown20.create(TFieldExecCmd<GfComAsm>::CreateInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8, "C_move"));
     unknown58 = &StateFieldWalk::seqUpdateMove;
     behavior.unknown140.applyFieldMoveSpeed(
-        GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_0, (unknown08 & ~1) == STATE_ID_UNKNOWN_10 ? GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_2 : GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_1, behavior);
+        GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_0, (m_state & ~1) == STATE_ID_UNKNOWN_10 ? GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_2 : GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_1, behavior);
   }
 }
 

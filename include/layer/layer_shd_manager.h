@@ -210,23 +210,23 @@ public:
   bool unknown529; // Inferred role: depth check; original member name unknown.
   bool unknown52a; // Inferred role: render target view port; original member name unknown.
   u8 _52b[0x52c - 0x52b];
-  u32 unknown52c; // Inferred role: current blend type; original member name unknown.
-  f32 unknown530; // Inferred role: screen width; original member name unknown.
-  f32 unknown534; // Inferred role: screen height; original member name unknown.
-  f32 unknown538; // Inferred role: screen div width; original member name unknown.
-  f32 unknown53c; // Inferred role: screen div height; original member name unknown.
-  f32 unknown540; // Inferred role: screen calc pos width; original member name unknown.
-  f32 unknown544; // Inferred role: screen calc pos height; original member name unknown.
-  f32 unknown548; // Inferred role: screen calc scl width; original member name unknown.
-  f32 unknown54c; // Inferred role: screen calc scl height; original member name unknown.
-  f32 unknown550; // Inferred role: screen org width; original member name unknown.
-  f32 unknown554; // Inferred role: screen org height; original member name unknown.
-  f32 unknown558; // Inferred role: screen scale; original member name unknown.
-  f32 unknown55c; // Inferred role: screen scale width; original member name unknown.
-  f32 unknown560; // Inferred role: screen scale height; original member name unknown.
+  u32 unknown52c;            // Inferred role: current blend type; original member name unknown.
+  f32 m_screenWidth;         // Inferred role: screen width; named after the game accessor layer::LayerManager::getScreenWidth.
+  f32 m_screenHeight;        // Inferred role: screen height; named after the game accessor layer::LayerManager::getScreenHeight.
+  f32 m_screenDivWidth;      // Inferred role: screen div width; named after the game accessor layer::LayerManager::getScreenDivWidth.
+  f32 m_screenDivHeight;     // Inferred role: screen div height; named after the game accessor layer::LayerManager::getScreenDivHeight.
+  f32 m_screenCalcPosWidth;  // Inferred role: screen calc pos width; named after the game accessor layer::LayerManager::getScreenCalcPosWidth.
+  f32 m_screenCalcPosHeight; // Inferred role: screen calc pos height; named after the game accessor layer::LayerManager::getScreenCalcPosHeight.
+  f32 m_screenCalcSclWidth;  // Inferred role: screen calc scl width; named after the game accessor layer::LayerManager::getScreenCalcSclWidth.
+  f32 m_screenCalcSclHeight; // Inferred role: screen calc scl height; named after the game accessor layer::LayerManager::getScreenCalcSclHeight.
+  f32 unknown550;            // Inferred role: screen org width; original member name unknown.
+  f32 unknown554;            // Inferred role: screen org height; original member name unknown.
+  f32 unknown558;            // Inferred role: screen scale; original member name unknown.
+  f32 unknown55c;            // Inferred role: screen scale width; original member name unknown.
+  f32 unknown560;            // Inferred role: screen scale height; original member name unknown.
   u8 _564[0x574 - 0x564];
-  f32 unknown574; // Inferred role: screen ratio height; original member name unknown.
-  f32 unknown578; // Inferred role: gamma; original member name unknown.
+  f32 m_screenRatioHeight; // Inferred role: screen ratio height; named after the game accessor layer::LayerManager::getScreenRatioHeight.
+  f32 m_gamma;             // Inferred role: gamma; named after the game accessor layer::LayerAccManager::getGamma.
 };
 
 static_assert(offsetof(LayerShdManager, unknown08) == 0x008, "");
@@ -258,8 +258,8 @@ static_assert(offsetof(LayerShdManager, unknown52a) == 0x52a, "");
 static_assert(offsetof(LayerShdManager, unknown558) == 0x558, "");
 static_assert(offsetof(LayerShdManager, unknown55c) == 0x55c, "");
 static_assert(offsetof(LayerShdManager, unknown52c) == 0x52c, "");
-static_assert(offsetof(LayerShdManager, unknown530) == 0x530, "");
+static_assert(offsetof(LayerShdManager, m_screenWidth) == 0x530, "");
 static_assert(offsetof(LayerShdManager, unknown550) == 0x550, "");
-static_assert(offsetof(LayerShdManager, unknown578) == 0x578, "");
+static_assert(offsetof(LayerShdManager, m_gamma) == 0x578, "");
 
 } // namespace layer

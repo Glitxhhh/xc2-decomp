@@ -24,7 +24,7 @@ struct MdsInstObjPosData {
 
   u32 unknown00; // Inferred role: name offset; original member name unknown.
   u32 unknown04; // Inferred role: position index; original member name unknown.
-  u16 unknown08; // Inferred role: id; original member name unknown.
+  u16 m_iD;      // Inferred role: id; named after the game accessor ml::ScnObjAccPartsPos::getID.
   union {
     u16 flags;
     struct {
@@ -43,7 +43,7 @@ struct MdsInstObjPosData {
 };
 
 static_assert(offsetof(MdsInstObjPosData, unknown04) == 0x04, "");
-static_assert(offsetof(MdsInstObjPosData, unknown08) == 0x08, "");
+static_assert(offsetof(MdsInstObjPosData, m_iD) == 0x08, "");
 static_assert(offsetof(MdsInstObjPosData, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsInstObjPosData, unknown0d) == 0x0d, "");
 
@@ -207,14 +207,14 @@ public:
   const char *unknown10;              // Inferred role: names; original member name unknown.
   const MdsInstObjPosData *unknown18; // Inferred role: info; original member name unknown.
   const mm::Mat44 *unknown20;         // Inferred role: matrix; original member name unknown.
-  f32 unknown28;                      // Inferred role: alpha; original member name unknown.
+  f32 m_alpha;                        // Inferred role: alpha; named after the game accessor ml::ScnObjAccPartsPos::getAlpha.
 };
 
 static_assert(offsetof(DrResMdoInstPartsObj, unknown08) == 0x08, "");
 static_assert(offsetof(DrResMdoInstPartsObj, unknown10) == 0x10, "");
 static_assert(offsetof(DrResMdoInstPartsObj, unknown18) == 0x18, "");
 static_assert(offsetof(DrResMdoInstPartsObj, unknown20) == 0x20, "");
-static_assert(offsetof(DrResMdoInstPartsObj, unknown28) == 0x28, "");
+static_assert(offsetof(DrResMdoInstPartsObj, m_alpha) == 0x28, "");
 
 class DrResMdoInstPartsAnm : public DrResMdoInstPartsObj {
 public:

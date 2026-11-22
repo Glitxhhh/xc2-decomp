@@ -89,20 +89,20 @@ void DrResMdoPosInstAnm::anmInsPosParm_SclY(mm::Vec3 *transform, f32 value) { tr
 
 void DrResMdoPosInstAnm::anmInsPosParm_SclZ(mm::Vec3 *transform, f32 value) { transform[2].z = value; }
 
-DrResMdoInstPartsObj::DrResMdoInstPartsObj(const u8 *data, const MdsInstObjPosData *info) : unknown10(reinterpret_cast<const char *>(data)), unknown18(info), unknown20(nullptr), unknown28(1.0f) {
+DrResMdoInstPartsObj::DrResMdoInstPartsObj(const u8 *data, const MdsInstObjPosData *info) : unknown10(reinterpret_cast<const char *>(data)), unknown18(info), unknown20(nullptr), m_alpha(1.0f) {
   unknown08.unknown00 = 0;
   unknown08.isLoop = info->flags & MdsInstObjPosData::FLAG_UNKNOWN_0;
-  if (info->flags & MdsInstObjPosData::FLAG_UNKNOWN_9 && info->unknown08 != 0) {
-    DrMan::getIns()->setGblIdx(unknown18->unknown08);
+  if (info->flags & MdsInstObjPosData::FLAG_UNKNOWN_9 && info->m_iD != 0) {
+    DrMan::getIns()->setGblIdx(unknown18->m_iD);
   }
 }
 
 void DrResMdoInstPartsObj::setDisp(bool disp) {
-  if (unknown18->unknown08 != 0) {
+  if (unknown18->m_iD != 0) {
     if (disp) {
-      DrMan::getIns()->offGblIdx(unknown18->unknown08);
+      DrMan::getIns()->offGblIdx(unknown18->m_iD);
     } else {
-      DrMan::getIns()->setGblIdx(unknown18->unknown08);
+      DrMan::getIns()->setGblIdx(unknown18->m_iD);
     }
   }
 }
@@ -118,10 +118,10 @@ void DrResMdoInstPartsObj::getMatrix(mm::Mat44 &matrix) const {
 }
 
 bool DrResMdoInstPartsObj::isDisp() const {
-  if (unknown18->unknown08 == 0) {
+  if (unknown18->m_iD == 0) {
     return false;
   }
-  return DrMan::getIns()->isGblIdx(unknown18->unknown08);
+  return DrMan::getIns()->isGblIdx(unknown18->m_iD);
 }
 
 DrResMdoInstPartsAnm::DrResMdoInstPartsAnm(const u8 *data, const MdsInstObjPosData *info)

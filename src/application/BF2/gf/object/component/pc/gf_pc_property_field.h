@@ -179,7 +179,7 @@ public:
   }
 
   mm::mtl::IntrusivePtr<fw::ParamList> unknown08; // Inferred role: param list; original member name unknown.
-  u32 unknown10_0 : 1;                            // Inferred role: walk mode; original member name unknown.
+  u32 m_walkMode : 1;                             // Inferred role: walk mode; named after the game accessor gf::pc::StateUtilField::isWalkMode.
   u32 unknown10_1 : 1;                            // Role and original member name unknown.
   u32 unknown10_2 : 1;                            // Inferred role: idle; original member name unknown.
   u32 unknown10_3 : 1;                            // Inferred role: pad control; original member name unknown.

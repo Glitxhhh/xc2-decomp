@@ -109,7 +109,7 @@ bool GfSlotMapping::setupFreeSlot(REQ *request) {
   GfSlotBase *slot;
   if (request->unknown08->unknown230 == unknown006) {
     u32 priority = request->unknown08->unknown250;
-    GfAssetType type = request->unknown08->m_assetType.unknown00;
+    GfAssetType type = request->unknown08->m_assetType.m_assetType;
     if (GfAssetManager::isExistSameAsset(request->unknown08)) {
       return false;
     }

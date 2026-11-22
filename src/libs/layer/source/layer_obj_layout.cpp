@@ -17,7 +17,7 @@ LayerObjLayout::LayerObjLayout() {
   memset(&unknown2a0, 0, sizeof(unknown2a0));
   unknown2a0.unknown10.unknown08 = 1.0f;
   unknown2a0.unknown10.unknown0c = 1.0f;
-  unknown2a0.unknown20 = 0;
+  unknown2a0.m_autoAnchorMode = 0;
   unknown3f8 = nullptr;
   unknown3f0 = nullptr;
 }

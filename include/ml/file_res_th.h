@@ -34,7 +34,7 @@ public:
   bool OnFileEvent(EventFileTh *event) override;
 
   FileHandleTh *unknownc0; // Inferred role: file handle; original member name unknown.
-  void *unknownc8;         // Inferred role: buffer; original member name unknown.
+  void *m_glassBreakage;   // Inferred role: buffer; named after the game accessor ml::DrIniSys::getGlassBreakage.
   int unknownd0;           // Inferred role: size; original member name unknown.
   u8 _d4[0xe0 - 0xd4];
   u64 unknowne0;  // Inferred role: time stamp; original member name unknown.

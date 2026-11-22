@@ -49,7 +49,7 @@ public:
   static fw::UpdateInfo *getUpdateInfo();
   static bool isExistCommand(void (*command)(const GfReqParam *param));
 
-  fw::UpdateInfo unknown08;                       // Inferred role: update info; original member name unknown.
+  fw::UpdateInfo m_updateInfo;                    // Inferred role: update info; named after the game accessor gf::GfReqManager::getUpdateInfo.
   ml::MLTHG *unknown18;                           // Inferred role: micro thread group; original member name unknown.
   u64 unknown20;                                  // Inferred role: micro thread of reqUpdate; original member name unknown.
   mm::mtl::FixedQueue<unknown001, 256> unknown28; // Inferred role: requests; original member name unknown.
@@ -59,7 +59,7 @@ public:
   bool unknown1848;                               // Inferred role: initialized; original member name unknown.
 };
 
-static_assert(offsetof(GfReqManager, unknown08) == 0x08, "");
+static_assert(offsetof(GfReqManager, m_updateInfo) == 0x08, "");
 static_assert(offsetof(GfReqManager, unknown18) == 0x18, "");
 static_assert(offsetof(GfReqManager, unknown20) == 0x20, "");
 static_assert(offsetof(GfReqManager, unknown28) == 0x28, "");

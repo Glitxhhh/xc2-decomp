@@ -42,7 +42,7 @@ bool IDColiGrandTree::isLineAaBb(const float *max, const float *min) {
 }
 
 bool IDColiGrandTree::instLineHitParts(const IDCmfPosData *posData, const IDCmfPosInfo *posInfo) {
-  if (IDColiManager::get()->isGblId(posInfo->unknown02)) {
+  if (IDColiManager::get()->isGblId(posInfo->m_iD)) {
     return false;
   }
   if (isLineAaBb(&posData->unknown80.x, &posData->unknown90.x)) {
@@ -70,7 +70,7 @@ bool IDColiGrandTree::instLineHitParts(const IDCmfPosData *posData, const IDCmfP
 }
 
 bool IDColiGrandTree::instRayHitParts(const IDCmfPosData *posData, const IDCmfPosInfo *posInfo) {
-  if (IDColiManager::get()->isGblId(posInfo->unknown02)) {
+  if (IDColiManager::get()->isGblId(posInfo->m_iD)) {
     return false;
   }
   if (isLineAaBb(&posData->unknown80.x, &posData->unknown90.x)) {
@@ -98,7 +98,7 @@ bool IDColiGrandTree::instRayHitParts(const IDCmfPosData *posData, const IDCmfPo
 }
 
 bool IDColiGrandTree::instSphereHitParts(const IDCmfPosData *posData, const IDCmfPosInfo *posInfo) {
-  if (IDColiManager::get()->isGblId(posInfo->unknown02)) {
+  if (IDColiManager::get()->isGblId(posInfo->m_iD)) {
     return false;
   }
   if (isAaBbToAaBb(&posData->unknown80.x, &posData->unknown90.x)) {
@@ -126,7 +126,7 @@ bool IDColiGrandTree::instSphereHitParts(const IDCmfPosData *posData, const IDCm
 }
 
 bool IDColiGrandTree::instCapsuleHitParts(const IDCmfPosData *posData, const IDCmfPosInfo *posInfo) {
-  if (IDColiManager::get()->isGblId(posInfo->unknown02)) {
+  if (IDColiManager::get()->isGblId(posInfo->m_iD)) {
     return false;
   }
   if (isAaBbToAaBb(&posData->unknown80.x, &posData->unknown90.x)) {
@@ -154,7 +154,7 @@ bool IDColiGrandTree::instCapsuleHitParts(const IDCmfPosData *posData, const IDC
 }
 
 bool IDColiGrandTree::instAaBbHitParts(const IDCmfPosData *posData, const IDCmfPosInfo *posInfo) {
-  if (IDColiManager::get()->isGblId(posInfo->unknown02)) {
+  if (IDColiManager::get()->isGblId(posInfo->m_iD)) {
     return false;
   }
   if (isAaBbToAaBb(&posData->unknown80.x, &posData->unknown90.x)) {
@@ -263,7 +263,7 @@ bool IDColiGrandObj::coliCallCheck(unknown020 function) {
       if (record->unknown00 != 0 && IDColiManager::get()->isGblId(record->unknown00)) {
         continue;
       }
-      if ((record->unknown08 & 1) && (record->unknown08 >> 8) != IDColiManager::get()->unknownf0) {
+      if ((record->unknown08 & 1) && (record->unknown08 >> 8) != IDColiManager::get()->m_subNum) {
         continue;
       }
       if ((this->*unknown90)(record->unknown04)) {
@@ -271,13 +271,13 @@ bool IDColiGrandObj::coliCallCheck(unknown020 function) {
       }
     }
   }
-  if (unknown00->unknown78 != 0) {
+  if (unknown00->m_moveMax != 0) {
     IDColiUtilTreeAcc tree(unknown00->unknown90[unknown00->unknowna0]);
     tree.startTreeAaBbMode(unknown10->unknown00, unknown10->unknown10);
     for (ColiLinkList<IDColiTreeObj> *list = tree.unknown033(); list != nullptr; list = tree.unknown033()) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiGrdMoveObj *moveObj = reinterpret_cast<unknown006 *>(node)->unknown10;
-        unknown08->unknownf0 = moveObj->unknown1b8;
+        unknown08->unknownf0 = moveObj->m_userData;
         if ((this->*function)(&moveObj->unknown100, &moveObj->unknown1a0)) {
           return true;
         }

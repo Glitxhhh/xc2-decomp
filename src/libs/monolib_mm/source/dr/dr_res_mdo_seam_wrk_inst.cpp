@@ -336,7 +336,7 @@ void DrResMdoSeamWrkInst::calcCacheInfo() {
 
 void DrResMdoSeamWrkInst::calcEtcInstPosUpdate(DrMdoCtlSeamInstMap *ctl) {
   // The game reads the speed before the position updates (0x71008828ac).
-  f32 speed = ctl->unknowndc * DrMan::getIns()->unknown1c8c;
+  f32 speed = ctl->m_frameSpd * DrMan::getIns()->unknown1c8c;
   for (int i = 0; i < unknown140; i++) {
     unknown120[i]->update();
   }
@@ -554,7 +554,7 @@ bool DrResMdoSeamWrkInst::clipRenderMdl(const MdsPosRangeTreeData *tree, MdoArgS
       DrResMdoPos *pos = &unknown128->unknown48[*index];
       f32 objAlpha = 1.0f;
       if (arg.unknown10->unknown00 != nullptr) {
-        objAlpha = arg.unknown10->getObj(pos->unknown18)->unknown28;
+        objAlpha = arg.unknown10->getObj(pos->unknown18)->m_alpha;
       }
       if (objAlpha > 0.0f) {
         s32 alpha = arg.unknown00;

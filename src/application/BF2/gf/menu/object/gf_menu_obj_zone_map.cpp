@@ -359,7 +359,7 @@ void GfMenuObjZoneMap::closeIconTable(ui::UIObjectAcc &, mm::mtl::FixedArray<mm:
 }
 
 u32 GfMenuObjZoneMap::getFloor() {
-  if (!unknown28->unknown79) {
+  if (!unknown28->m_groupMode) {
     return unknown28->getContents(unknown28->getIndex(false)).unknown00;
   }
   u16 image = unknown48->getContents(unknown48->getIndex(false)).unknown00;

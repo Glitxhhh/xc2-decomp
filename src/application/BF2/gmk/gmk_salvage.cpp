@@ -59,7 +59,7 @@ void GmkSalvage::debugDraw() const {
   isValid();
 }
 
-bool GmkSalvageLocator::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkSalvageLocator::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 GmkSalvageLocator::GmkSalvageLocator()
     : unknown48(nullptr), unknown58(false), unknown60(nullptr), unknownc0(gf::unknown020), unknownc8(0), unknownd0(nullptr), unknownd8(0.0f), unknowndc(0.0f), unknowne0(0.0f), unknowne4(0.0f),
@@ -87,7 +87,7 @@ int GmkSalvage::getGmkSalvageLocatorNum() const { return getData()->unknown14 - 
 void GmkSalvage::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) { gf::GfGameFlag::setLocal(1, getGameFlagId(), 1); }
 
 GmkSalvageLocator *GmkSalvage::getGmkSalvageLocator(u32 index) const {
-  GmkSalvageLocatorList *list = static_cast<GmkSalvageLocatorList *>(static_cast<GmkSalvageList *>(unknown08.unknown00)->unknown230.getGmkList(GMK_TYPE_SALVAGE_LOCATOR));
+  GmkSalvageLocatorList *list = static_cast<GmkSalvageLocatorList *>(static_cast<GmkSalvageList *>(unknown08.m_ownerGmkEnemyList)->unknown230.getGmkList(GMK_TYPE_SALVAGE_LOCATOR));
   if (list != nullptr) {
     u32 listIndex = getData()->unknown10 + index;
     if (list->getInstNum() > listIndex) {
@@ -101,7 +101,7 @@ const GmkFormPc *GmkSalvage::getGmkFormPc() const {
   u32 index = getData()->unknown08;
   int num = getData()->unknown0c - index;
   if (num > 0) {
-    const IGmkList *list = static_cast<const GmkSalvageList *>(unknown08.unknown00)->unknown230.getGmkList(GMK_TYPE_FORM_PC);
+    const IGmkList *list = static_cast<const GmkSalvageList *>(unknown08.m_ownerGmkEnemyList)->unknown230.getGmkList(GMK_TYPE_FORM_PC);
     if (list->getInstNum() > index) {
       return static_cast<const GmkFormPc *>(list->getInst(index));
     }

@@ -100,8 +100,8 @@ void DrPixlPostObjHistgram::update() {
     DrPixlPostParm *postParm = drMan->unknown120[drMan->unknown1c98];
     f32 min = postParm->unknown28;
     f32 max = postParm->unknown2c;
-    min *= postParm->unknown08;
-    max *= postParm->unknown08;
+    min *= postParm->m_toneMax;
+    max *= postParm->m_toneMax;
     unknownac = max;
     unknownb0 = min;
     unknown08->setToneAveRange(min, max);

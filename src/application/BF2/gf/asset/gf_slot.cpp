@@ -9,7 +9,7 @@ namespace gf {
 constexpr size_t SIZE_UNKNOWN_32768 = 0x8000; // Inferred role: base block size; original name unknown.
 
 GfSlotBase::GfSlotBase(const char *name, GfSlotAllocator *parent, u32 slotSize, bool useDebugMemory)
-    : m_slotHandle(unknown006), m_slotSize(slotSize), m_parentSlot(nullptr), m_multiSlot(1), unknown314(0), unknown318(useDebugMemory) {
+    : m_slotHandle(unknown006), m_slotSize(slotSize), m_parentSlot(nullptr), m_multiSlot(1), unknown314(0), m_memoryDebug(useDebugMemory) {
   unknown18.setup(name, parent, slotSize, SLOT_UNKNOWN_8192, useDebugMemory);
 }
 
@@ -279,7 +279,7 @@ bool GfSlotAll::isEnableDelete(const SlotList &list, u32 start, u32 num, u32 ind
   return true;
 }
 
-bool GfSlotAll::isMemoryDebug(GfAssetType type) const { return unknown08[type - ASSET_TYPE_UNKNOWN_3][0]->unknown318; }
+bool GfSlotAll::isMemoryDebug(GfAssetType type) const { return unknown08[type - ASSET_TYPE_UNKNOWN_3][0]->m_memoryDebug; }
 
 bool GfSlotAll::getSlotInfo(mm::mtl::IAllocator *&allocator, void *&buffer, size_t &size, GF_SLOT_HANDLE *handle) {
   if (handle == unknown006) {

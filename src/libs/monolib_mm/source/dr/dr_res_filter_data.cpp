@@ -45,15 +45,15 @@ void DrResFilterData::update(int index) {
   bool isColTblOn = postParm->getColTblOn();
   if (index == 0) {
     if (!isColTblOn || !postParm->m_colorFilterTransZ) {
-      setFilterTex(0, postParm->unknown26c, postParm->unknown270);
+      setFilterTex(0, postParm->unknown26c, postParm->m_colorFilterFrm);
     } else {
-      set2LayerFilterTex(0, postParm->unknown26c, postParm->unknown278, postParm->unknown270);
+      set2LayerFilterTex(0, postParm->unknown26c, postParm->unknown278, postParm->m_colorFilterFrm);
     }
   } else if (isColTblOn) {
     if (!postParm->m_colorFilterTransZ) {
-      setFilterTex(index, postParm->unknown26c, postParm->unknown270);
+      setFilterTex(index, postParm->unknown26c, postParm->m_colorFilterFrm);
     } else {
-      set2LayerFilterTex(index, postParm->unknown26c, postParm->unknown278, postParm->unknown270);
+      set2LayerFilterTex(index, postParm->unknown26c, postParm->unknown278, postParm->m_colorFilterFrm);
     }
   }
   updateColorFileter(index);

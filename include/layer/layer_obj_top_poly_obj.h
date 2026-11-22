@@ -68,7 +68,7 @@ public:
   grlib::CGLibDblUniformBlock unknown280; // Inferred role: uniform block; original member name unknown.
   LayerObjResTex unknown2b8;              // Inferred role: textures; original member name unknown.
   layPolyWork unknown300;                 // Inferred role: poly work; original member name unknown.
-  void *unknown358;                       // Inferred role: locked buffer; original member name unknown.
+  void *m_index;                          // Inferred role: locked buffer; named after the game accessor layer::LayerObjTopPolyObj::setIndex.
   u8 _360[0x368 - 0x360];
   void *unknown368; // Inferred role: allocated memory; original member name unknown.
 };
@@ -80,7 +80,7 @@ static_assert(offsetof(LayerObjTopPolyObj, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown280) == 0x280, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown2b8) == 0x2b8, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown300) == 0x300, "");
-static_assert(offsetof(LayerObjTopPolyObj, unknown358) == 0x358, "");
+static_assert(offsetof(LayerObjTopPolyObj, m_index) == 0x358, "");
 static_assert(offsetof(LayerObjTopPolyObj, unknown368) == 0x368, "");
 static_assert(sizeof(LayerObjTopPolyObj::layPolyWork) == 0x58, "");
 static_assert(sizeof(LayerObjTopPolyObj) == 0x370, "");

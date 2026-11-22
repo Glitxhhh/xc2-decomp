@@ -46,29 +46,29 @@ void StateBattleBase::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &in
 }
 
 btl::BattleCharacter *StateBattleBase::GetBattleCharacter() {
-  int id = unknown18->getProperty()->unknown470.unknown08;
+  int id = unknown18->getProperty()->m_battleProperty.unknown08;
   return btl::CharacterManager::get()->GetCharacterConst(id);
 }
 
 void StateBattleBase::ChangeState(STATE_ID state, int param) {
-  if (unknown08 != state) {
-    unknown18->getProperty()->unknown470.unknown0c = param;
+  if (m_state != state) {
+    unknown18->getProperty()->m_battleProperty.unknown0c = param;
     reqState(state);
     unknown21 = true;
   }
 }
 
-GfPropertyBattle *StateBattleBase::GetBattleProperty() { return &GetProperty()->unknown470; }
+GfPropertyBattle *StateBattleBase::GetBattleProperty() { return &GetProperty()->m_battleProperty; }
 
 GfComPropertyPc *StateBattleBase::GetProperty() { return unknown18->unknown08->getComponent<GfComPropertyPc>(); }
 
 const GfComPropertyPc *StateBattleBase::GetPropertyConst() const { return unknown18->unknown08->getComponent<GfComPropertyPc>(); }
 
-const GfPropertyBattle *StateBattleBase::GetBattlePropertyConst() const { return &GetPropertyConst()->unknown470; }
+const GfPropertyBattle *StateBattleBase::GetBattlePropertyConst() const { return &GetPropertyConst()->m_battleProperty; }
 
-const btl::PlayerParameter *StateBattleBase::GetPlayerParameter() { return GetProperty()->unknown470.GetPlayerParameterConst(); }
+const btl::PlayerParameter *StateBattleBase::GetPlayerParameter() { return GetProperty()->m_battleProperty.GetPlayerParameterConst(); }
 
-const btl::PlayerParameter *StateBattleBase::GetPlayerParameterConst() const { return GetPropertyConst()->unknown470.GetPlayerParameterConst(); }
+const btl::PlayerParameter *StateBattleBase::GetPlayerParameterConst() const { return GetPropertyConst()->m_battleProperty.GetPlayerParameterConst(); }
 
 bool StateBattleBase::IsDriver() const {
   const btl::PlayerParameter *parameter = GetPlayerParameterConst();
@@ -141,7 +141,7 @@ void StateBattleBase::procMsgObjectNotifyHealHp(GfComBehaviorPc *behavior, fw::M
 }
 
 bool StateBattleActionBase::Enter(GfComBehaviorPc *behavior, ai::State *previous) {
-  STATE_ID state = static_cast<STATE_ID>(unknown08);
+  STATE_ID state = static_cast<STATE_ID>(m_state);
   if (StateUtilBattle::IsBattleState(state)) {
     btl::BattleCharacter::ACTION_ID action = StateUtilBattle::ConversionStateToAction(state);
     GfPropertyBattle *property = GetBattleProperty();

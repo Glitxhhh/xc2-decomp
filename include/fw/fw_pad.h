@@ -50,8 +50,8 @@ enum VibrationID : int {
 
 struct PadData {
   PadData()
-      : unknown00(0), unknown04(0), unknown08(0), unknown0c(0), unknown10(0), _14(), unknown1c(0.0f), unknown20(0.0f), unknown24(0.0f), unknown28(0.0f), unknown2c(0.2f), unknown30(0.2f),
-        unknown34(0.2f), unknown38(0.2f), unknown3c(-1), unknown40(), unknown44() {}
+      : unknown00(0), unknown04(0), unknown08(0), unknown0c(0), unknown10(0), _14(), unknown1c(0.0f), unknown20(0.0f), unknown24(0.0f), unknown28(0.0f), m_aRXThreshold(0.2f), m_aRYThreshold(0.2f),
+        m_aLXThreshold(0.2f), m_aLYThreshold(0.2f), unknown3c(-1), unknown40(), unknown44() {}
 
   u32 unknown00; // Inferred role: hold; original member name unknown.
   u32 unknown04; // Inferred role: trigger; original member name unknown.
@@ -59,17 +59,17 @@ struct PadData {
   u32 unknown0c; // Inferred role: repeat; original member name unknown.
   u32 unknown10; // Inferred role: double press; original member name unknown.
   u8 _14[0x1c - 0x14];
-  f32 unknown1c;  // Inferred role: stick x read by LeverReduceProc; original member name unknown.
-  f32 unknown20;  // Inferred role: stick y read by LeverReduceProc; original member name unknown.
-  f32 unknown24;  // Inferred role: right stick x; original member name unknown.
-  f32 unknown28;  // Inferred role: right stick y; original member name unknown.
-  f32 unknown2c;  // Inferred role: arx threshold; original member name unknown.
-  f32 unknown30;  // Inferred role: ary threshold; original member name unknown.
-  f32 unknown34;  // Inferred role: alx threshold; original member name unknown.
-  f32 unknown38;  // Inferred role: aly threshold; original member name unknown.
-  int unknown3c;  // Inferred role: pad no; original member name unknown.
-  bool unknown40; // Inferred role: connected; original member name unknown.
-  u32 unknown44;  // Inferred role: style; original member name unknown.
+  f32 unknown1c;      // Inferred role: stick x read by LeverReduceProc; original member name unknown.
+  f32 unknown20;      // Inferred role: stick y read by LeverReduceProc; original member name unknown.
+  f32 unknown24;      // Inferred role: right stick x; original member name unknown.
+  f32 unknown28;      // Inferred role: right stick y; original member name unknown.
+  f32 m_aRXThreshold; // Inferred role: arx threshold; named after the game accessor fw::PadManager::setARXThreshold.
+  f32 m_aRYThreshold; // Inferred role: ary threshold; named after the game accessor fw::PadManager::setARYThreshold.
+  f32 m_aLXThreshold; // Inferred role: alx threshold; named after the game accessor fw::PadManager::setALXThreshold.
+  f32 m_aLYThreshold; // Inferred role: aly threshold; named after the game accessor fw::PadManager::setALYThreshold.
+  int unknown3c;      // Inferred role: pad no; original member name unknown.
+  bool unknown40;     // Inferred role: connected; original member name unknown.
+  u32 unknown44;      // Inferred role: style; original member name unknown.
 };
 
 enum PadActKey {
@@ -113,7 +113,7 @@ static_assert(offsetof(PadData, unknown1c) == 0x1c, "");
 static_assert(offsetof(PadData, unknown24) == 0x24, "");
 static_assert(offsetof(PadData, unknown28) == 0x28, "");
 static_assert(offsetof(PadData, unknown20) == 0x20, "");
-static_assert(offsetof(PadData, unknown2c) == 0x2c, "");
+static_assert(offsetof(PadData, m_aRXThreshold) == 0x2c, "");
 static_assert(offsetof(PadData, unknown40) == 0x40, "");
 static_assert(offsetof(PadData, unknown3c) == 0x3c, "");
 static_assert(sizeof(PadData) == 0x48, "");

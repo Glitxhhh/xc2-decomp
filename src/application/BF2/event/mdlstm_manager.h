@@ -76,7 +76,7 @@ private:
   mm::mtl::FixedVector<MdlstmObj *, OBJ_UNKNOWN_1024> unknown3c020; // Inferred role: active objs; original member name unknown.
   u32 _3e028;
   u32 _3e02c;
-  int unknown3e030; // Inferred role: reuse flag; original member name unknown.
+  int m_reuseFlag; // Inferred role: reuse flag; named after the game accessor event::MdlstmManager::setReuseFlag.
 };
 
 static_assert(sizeof(MdlstmManager) == 0x3e038, "");

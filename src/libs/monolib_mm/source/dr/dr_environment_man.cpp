@@ -55,8 +55,8 @@ namespace ml {
 void DrEnvironmentObj::release() { unknown8c |= FLAG_UNKNOWN_30 << DrMan::s_nDblStockIdx; }
 
 DrEnvironmentObj::DrEnvironmentObj(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan)
-    : unknown08(nullptr), unknown10(nullptr), unknown18(drMan), unknown20(lightMan), unknown28(fogMan), unknown70(0.0f, 0.0f, 0.0f), m_frame(0.0f), m_frameSpd(1.0f), m_maxFrame(0.0f), unknown8c(0),
-      unknown90(0) {
+    : unknown08(nullptr), unknown10(nullptr), unknown18(drMan), unknown20(lightMan), unknown28(fogMan), m_offsetPos(0.0f, 0.0f, 0.0f), m_frame(0.0f), m_frameSpd(1.0f), m_maxFrame(0.0f), unknown8c(0),
+      m_group(0) {
   m_matrix = mm::Mat44::identity;
 }
 
@@ -92,11 +92,11 @@ void DrEnvironmentMan::updateCameraLight() {
   if (unknown20 != 0) {
     return;
   }
-  if (unknown00->unknown1da0) {
+  if (unknown00->m_cameraLight) {
     if (unknown68 == nullptr) {
       FileResTh *res = unknown00->unknown70->unknown890;
       res->AddRef();
-      unknown68 = createObj(res->unknownc8);
+      unknown68 = createObj(res->m_glassBreakage);
     }
     unknown68->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_0;
   } else if (unknown68 != nullptr) {
@@ -345,9 +345,9 @@ void DrEnvironmentObjLgt::update() {
   } else {
     DrMan *drMan = unknown18;
     DrPixlPostParm *postParm = drMan->unknown120[drMan->unknown1c98];
-    unknowna8.unknown14 = drMan->unknown1cac;
+    unknowna8.unknown14 = drMan->m_timerVal;
     int weather = unknown208;
-    unknown208 = postParm->unknown107c;
+    unknown208 = postParm->m_lightNum;
     unknowna8.setWeatherNum(drMan, weather != unknown208, unknown150);
     unknown204 = 0;
     if (unknown1fc != 0) {
@@ -371,17 +371,17 @@ void DrEnvironmentObjLgt::updatePosLgt() {
   if (m_maxFrame < m_frame) {
     m_frame = 0.0f;
   }
-  unknown210.x = viewWork->unknown400.x - unknown70.x;
-  unknown210.y = viewWork->unknown400.y - unknown70.y;
-  unknown210.z = viewWork->unknown400.z - unknown70.z;
+  unknown210.x = viewWork->unknown400.x - m_offsetPos.x;
+  unknown210.y = viewWork->unknown400.y - m_offsetPos.y;
+  unknown210.z = viewWork->unknown400.z - m_offsetPos.z;
   if (unknown8c & FLAG_UNKNOWN_3) {
     setupCalcMatrix();
     calcLgtPos(viewWork);
   } else {
-    if (unknown70.x != unknown220.x || unknown70.y != unknown220.y || unknown70.z != unknown220.z) {
-      unknown220.x = unknown70.x;
-      unknown220.y = unknown70.y;
-      unknown220.z = unknown70.z;
+    if (m_offsetPos.x != unknown220.x || m_offsetPos.y != unknown220.y || m_offsetPos.z != unknown220.z) {
+      unknown220.x = m_offsetPos.x;
+      unknown220.y = m_offsetPos.y;
+      unknown220.z = m_offsetPos.z;
       setupOfsPos();
     }
     calcTreePos(unknown170, viewWork);
@@ -504,7 +504,7 @@ bool DrEnvironmentObjLgt::callback_Chk_Ambinet_Directional(DrEnvironmentLgtList 
       return false;
     }
   }
-  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && unknown90 != data->unknown22) {
+  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && m_group != data->unknown22) {
     return false;
   }
   list->unknown18 = 1.0f;
@@ -540,12 +540,12 @@ bool DrEnvironmentObjLgt::callback_Chk_Point(DrEnvironmentLgtList *list, DrCalcV
   } else {
     list->unknown18 = 1.0f;
   }
-  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && unknown90 != data->unknown22) {
+  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && m_group != data->unknown22) {
     return false;
   }
   DrLightObjPnt *light = static_cast<DrLightObjPnt *>(list->m_lightObj);
   if (data->unknown08 & 0x40000) {
-    unknowne0.calcAnimTransPnt(light, data, unknown70);
+    unknowne0.calcAnimTransPnt(light, data, m_offsetPos);
   }
   const mm::Vec3 &position = light->m_pos;
   return viewWork->unknown4e0.clipTest(position, pos->unknown4c);
@@ -580,12 +580,12 @@ bool DrEnvironmentObjLgt::callback_Chk_Spot(DrEnvironmentLgtList *list, DrCalcVi
   } else {
     list->unknown18 = 1.0f;
   }
-  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && unknown90 != data->unknown22) {
+  if (data->unknown22 != 0 && (unknown8c & FLAG_UNKNOWN_2) && m_group != data->unknown22) {
     return false;
   }
   DrLightObjSpt *light = static_cast<DrLightObjSpt *>(list->m_lightObj);
   if (data->unknown08 & 0x40000) {
-    unknowne0.calcAnimTransSpt(light, data, unknown70);
+    unknowne0.calcAnimTransSpt(light, data, m_offsetPos);
   }
   const mm::Vec3 &position = light->m_pos;
   return viewWork->unknown4e0.clipTest(position, pos->unknown4c);

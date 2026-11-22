@@ -378,7 +378,7 @@ struct unknown023 {
   void *unknown18[2];                      // Inferred role: textures; original member name unknown.
   grlib::CGLibTextureBuffer *unknown28;    // Inferred role: eye base texture; original member name unknown.
   void *unknown30;                         // Inferred role: eye texture; original member name unknown.
-  bool unknown38;                          // Inferred role: doll mat; original member name unknown.
+  bool m_avatarDollMat;                    // Inferred role: doll mat; named after the game accessor ml::ScnObjAccResAvatar::setAvatarDollMat.
   u8 _39[0x40 - 0x39];
   grlib::CGLibOneUniformBlock *unknown40; // Inferred role: char colors; original member name unknown.
   grlib::CGLibOneUniformBlock *unknown48; // Inferred role: doll colors; original member name unknown.
@@ -388,7 +388,7 @@ static_assert(offsetof(unknown023, unknown08) == 0x08, "");
 static_assert(offsetof(unknown023, unknown18) == 0x18, "");
 static_assert(offsetof(unknown023, unknown28) == 0x28, "");
 static_assert(offsetof(unknown023, unknown30) == 0x30, "");
-static_assert(offsetof(unknown023, unknown38) == 0x38, "");
+static_assert(offsetof(unknown023, m_avatarDollMat) == 0x38, "");
 static_assert(offsetof(unknown023, unknown40) == 0x40, "");
 static_assert(offsetof(unknown023, unknown48) == 0x48, "");
 
@@ -697,7 +697,7 @@ struct MdoWrkMatRes {
   grlib::CGLibOneUniformArray *unknowna8;                           // Inferred role: mof blend uniforms; original member name unknown.
   grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknownb0; // Inferred role: vol tex uniforms; original member name unknown.
   grlib::CGLibUniformArray<grlib::CGLibDblUniformBlock> *unknownb8; // Inferred role: rim bloom uniforms; original member name unknown.
-  DrResMdoMat *unknownc0;                                           // Inferred role: mat entries; original member name unknown.
+  DrResMdoMat *m_materialRes;                                       // Inferred role: mat entries; named after the game accessor ml::DrMdlObj::getMaterialRes.
   DrResMdoVertex *unknownc8;                                        // Inferred role: vertex; original member name unknown.
   DrResMdoTexList *unknownd0;                                       // Inferred role: texture list; original member name unknown.
   DrResMdoSampler *unknownd8;                                       // Inferred role: samplers; original member name unknown.
@@ -756,7 +756,7 @@ static_assert(offsetof(MdoWrkMatRes, unknowna0) == 0x0a0, "");
 static_assert(offsetof(MdoWrkMatRes, unknowna8) == 0x0a8, "");
 static_assert(offsetof(MdoWrkMatRes, unknownb0) == 0x0b0, "");
 static_assert(offsetof(MdoWrkMatRes, unknownb8) == 0x0b8, "");
-static_assert(offsetof(MdoWrkMatRes, unknownc0) == 0x0c0, "");
+static_assert(offsetof(MdoWrkMatRes, m_materialRes) == 0x0c0, "");
 static_assert(offsetof(MdoWrkMatRes, unknownc8) == 0x0c8, "");
 static_assert(offsetof(MdoWrkMatRes, unknownd0) == 0x0d0, "");
 static_assert(offsetof(MdoWrkMatRes, unknownd8) == 0x0d8, "");
@@ -972,7 +972,7 @@ public:
   DrMan *m_drMan;
   MdoWrkMatRes *unknown30;             // Inferred role: mat res; original member name unknown.
   DrShdMdoDecExtTbl *unknown38;        // Inferred role: dec ext tbl; original member name unknown.
-  mm::Col3 *unknown40;                 // Inferred role: avatar map colors; original member name unknown.
+  mm::Col3 *m_avatarMapColor;          // Inferred role: avatar map colors; named after the game accessor ml::ScnObjAccResAvatar::getAvatarMapColor.
   const MdsMatCharMkTexTbl *unknown48; // Inferred role: char mk textures; original member name unknown.
   const void *unknown50;               // Inferred role: dammy data; original member name unknown.
   DrMdoSmlShadowObj *unknown58;        // Inferred role: sml shadow; original member name unknown.
@@ -981,8 +981,8 @@ public:
   mm::Vec3 m_offsetPos;
   u8 _c0[0xd0 - 0xc0];
   f32 unknownd0[2]; // Inferred role: alphas; original member name unknown.
-  f32 unknownd8;    // Inferred role: bloom; original member name unknown.
-  f32 unknowndc;    // Inferred role: frame spd; original member name unknown.
+  f32 m_bloom;      // Inferred role: bloom; named after the game accessor ml::ScnObjAccResMdlInfo::getBloom.
+  f32 m_frameSpd;   // Inferred role: frame spd; named after the game accessor ml::ScnObjAccResMdlInfo::setFrameSpd.
   f32 unknowne0;    // Inferred role: alpha; original member name unknown.
   f32 unknowne4;    // Inferred role: outline value time; original member name unknown.
   f32 unknowne8;    // Inferred role: scale; original member name unknown.
@@ -998,10 +998,10 @@ public:
   u8 _104[0x110 - 0x104];
   mm::Vec3 m_AABBMax;
   mm::Vec3 m_AABBMin;
-  mm::Vec3 unknown130; // Inferred role: center; original member name unknown.
+  mm::Vec3 m_center;   // Inferred role: center; named after the game accessor ml::ScnObjModelDrSys::getCenter.
   mm::Vec3 unknown140; // Inferred role: half size of the box, passed with unknown130 to the occlusion query; original member name unknown.
   u8 _150[0x160 - 0x150];
-  f32 unknown160; // Inferred role: length; original member name unknown.
+  f32 m_length; // Inferred role: length; named after the game accessor ml::ScnObjModelDrSys::getLength.
   u8 _164[0x168 - 0x164];
   u16 unknown168; // Inferred role: update flags; original member name unknown.
   u8 unknown16a;  // Inferred role: char mk texture count; original member name unknown.
@@ -1011,15 +1011,15 @@ public:
 static_assert(offsetof(DrMdoMat, m_drMan) == 0x28, "");
 static_assert(offsetof(DrMdoMat, unknown30) == 0x30, "");
 static_assert(offsetof(DrMdoMat, unknown38) == 0x38, "");
-static_assert(offsetof(DrMdoMat, unknown40) == 0x40, "");
+static_assert(offsetof(DrMdoMat, m_avatarMapColor) == 0x40, "");
 static_assert(offsetof(DrMdoMat, unknown48) == 0x48, "");
 static_assert(offsetof(DrMdoMat, unknown50) == 0x50, "");
 static_assert(offsetof(DrMdoMat, unknown58) == 0x58, "");
 static_assert(offsetof(DrMdoMat, m_matrix) == 0x70, "");
 static_assert(offsetof(DrMdoMat, m_offsetPos) == 0xb0, "");
 static_assert(offsetof(DrMdoMat, unknownd0) == 0xd0, "");
-static_assert(offsetof(DrMdoMat, unknownd8) == 0xd8, "");
-static_assert(offsetof(DrMdoMat, unknowndc) == 0xdc, "");
+static_assert(offsetof(DrMdoMat, m_bloom) == 0xd8, "");
+static_assert(offsetof(DrMdoMat, m_frameSpd) == 0xdc, "");
 static_assert(offsetof(DrMdoMat, unknowne0) == 0xe0, "");
 static_assert(offsetof(DrMdoMat, unknowne4) == 0xe4, "");
 static_assert(offsetof(DrMdoMat, unknowne8) == 0xe8, "");
@@ -1032,9 +1032,9 @@ static_assert(offsetof(DrMdoMat, unknown100) == 0x100, "");
 static_assert(offsetof(DrMdoMat, m_AABBMax) == 0x110, "");
 static_assert(offsetof(DrMdoMat, unknown168) == 0x168, "");
 static_assert(offsetof(DrMdoMat, m_AABBMin) == 0x120, "");
-static_assert(offsetof(DrMdoMat, unknown130) == 0x130, "");
+static_assert(offsetof(DrMdoMat, m_center) == 0x130, "");
 static_assert(offsetof(DrMdoMat, unknown140) == 0x140, "");
-static_assert(offsetof(DrMdoMat, unknown160) == 0x160, "");
+static_assert(offsetof(DrMdoMat, m_length) == 0x160, "");
 static_assert(offsetof(DrMdoMat, unknown16a) == 0x16a, "");
 
 } // namespace ml

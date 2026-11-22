@@ -44,17 +44,17 @@ public:
   DrLightMan *unknown20;       // Inferred role: light man; original member name unknown.
   DrFogMan *unknown28;         // Inferred role: fog man; original member name unknown.
   mm::Mat44 m_matrix;
-  mm::Vec3 unknown70; // Inferred role: offset pos; original member name unknown.
+  mm::Vec3 m_offsetPos; // Inferred role: offset pos; named after the game accessor ml::ScnObjLightDrSys::getOffsetPos.
   f32 m_frame;
   f32 m_frameSpd;
   f32 m_maxFrame;
   u32 unknown8c; // Inferred role: flags; original member name unknown.
-  int unknown90; // Inferred role: group; original member name unknown.
+  int m_group;   // Inferred role: group; named after the game accessor ml::ScnObjLightDrSys::getGroup.
 };
 
 static_assert(offsetof(DrEnvironmentObj, unknown18) == 0x18, "");
 static_assert(offsetof(DrEnvironmentObj, m_matrix) == 0x30, "");
-static_assert(offsetof(DrEnvironmentObj, unknown70) == 0x70, "");
+static_assert(offsetof(DrEnvironmentObj, m_offsetPos) == 0x70, "");
 static_assert(offsetof(DrEnvironmentObj, m_frame) == 0x80, "");
 static_assert(offsetof(DrEnvironmentObj, unknown8c) == 0x8c, "");
 

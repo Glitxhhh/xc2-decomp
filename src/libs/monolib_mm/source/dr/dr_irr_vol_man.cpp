@@ -17,7 +17,7 @@ DrIrrVolMan::DrIrrVolMan(DrMan *drMan)
   unknown1b0 = 1.0f;
   unknown1b8 = 0.0f;
   unknown1c0 = 2;
-  unknown1a0 = unknown190;
+  m_irrVolCenterPos = unknown190;
   unknown1b4 = unknown1b0;
   unknown1bc = unknown1b8;
   unknown1c4 = unknown1c0;
@@ -73,7 +73,7 @@ void DrIrrVolMan::update() {
 }
 
 void DrIrrVolMan::tail() {
-  unknown1a0 = unknown190;
+  m_irrVolCenterPos = unknown190;
   unknown1b4 = unknown1b0;
   unknown1bc = unknown1b8;
   unknown1c4 = unknown1c0;
@@ -87,12 +87,12 @@ grlib::CGLibTextureBuffer *DrIrrVolMan::getIrrVolTex(u32 cascade, u32 index) con
   return &irrVolCascade->unknown5e8[irrVolCascade->unknown5e0][index];
 }
 
-const mm::Vec3 &DrIrrVolMan::getIrrVolUVScale(u32 cascade) const { return unknown98[cascade]->unknown5d0; }
+const mm::Vec3 &DrIrrVolMan::getIrrVolUVScale(u32 cascade) const { return unknown98[cascade]->m_irrVolUVScale; }
 
-const mm::Vec3 &DrIrrVolMan::getUVPerPixl(u32 cascade) const { return unknown98[cascade]->unknown5b0; }
+const mm::Vec3 &DrIrrVolMan::getUVPerPixl(u32 cascade) const { return unknown98[cascade]->m_uVPerPixl; }
 
-const mm::Vec3 &DrIrrVolMan::getIrrVolEyeOffset(u32 cascade) const { return unknown98[cascade]->unknown8e0; }
+const mm::Vec3 &DrIrrVolMan::getIrrVolEyeOffset(u32 cascade) const { return unknown98[cascade]->m_irrVolEyeOffset; }
 
-const mm::Vec3 &DrIrrVolMan::getIrrVolUVOffset(u32 cascade) const { return unknown98[cascade]->unknown8f0; }
+const mm::Vec3 &DrIrrVolMan::getIrrVolUVOffset(u32 cascade) const { return unknown98[cascade]->m_irrVolUVOffset; }
 
 } // namespace ml

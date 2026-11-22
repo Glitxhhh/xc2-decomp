@@ -544,7 +544,7 @@ void SystemCore::UpdateGameFrame(f32 deltaTime) {
     unknown400[unknown3f8] = voice;
     unknown3f8++;
   }
-  unknown270++;
+  m_gameFrameCounter++;
   unknowna20 = 1 - unknowna20;
   unknown9f8[unknowna20].unknown08 = 0;
   unknown9f8[unknowna20].unknown00 = 0;
@@ -563,7 +563,7 @@ void SystemCore::AudioThreadImpl() {
   unknowna18 = time;
   while (!unknown4e8.unknown02) {
     nn::os::WaitSystemEvent(&unknown138.m_SystemEventType);
-    unknown280 = unknown278 / unknown290;
+    m_audioTimerCounter = unknown278 / unknown290;
     unknown2a0 = unknown290;
     AudioFrameProcess();
     unknown278++;

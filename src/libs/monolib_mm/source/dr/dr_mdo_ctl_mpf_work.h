@@ -111,14 +111,14 @@ struct _wkMpfObjSelect {
   u8 _08[0x10 - 0x08];
   u16 *unknown10; // Inferred role: alpha position counts per type; original member name unknown.
   u8 _18[0x20 - 0x18];
-  u16 unknown20; // Inferred role: object check; original member name unknown.
+  u16 m_objChk; // Inferred role: object check; named after the game accessor ml::DrMdoCtlMpfWork::getObjChk.
   u8 _22[0x30 - 0x22];
   _wkMpfObjBuff *unknown30;      // Inferred role: position buffer; original member name unknown.
   _wkMpfAlphaObjBuff *unknown38; // Inferred role: alpha position buffer; original member name unknown.
 };
 
 static_assert(offsetof(_wkMpfObjSelect, unknown10) == 0x10, "");
-static_assert(offsetof(_wkMpfObjSelect, unknown20) == 0x20, "");
+static_assert(offsetof(_wkMpfObjSelect, m_objChk) == 0x20, "");
 static_assert(offsetof(_wkMpfObjSelect, unknown30) == 0x30, "");
 static_assert(offsetof(_wkMpfObjSelect, unknown38) == 0x38, "");
 static_assert(sizeof(_wkMpfObjSelect) == 0x40, "");

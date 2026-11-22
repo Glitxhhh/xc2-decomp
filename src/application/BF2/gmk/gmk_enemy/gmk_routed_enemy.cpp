@@ -49,7 +49,7 @@ void GmkRoutedEnemy::create(const CreateInfo &info) {
     GmkEnemyInsts::CreateInfo createInfo;
     // The game loads the info and the list (0x71005f3938, 0x71005f393c) before the call of getBindedBdatFp.
     const unknown071 *bdatInfo = info.unknown10;
-    const GmkRoutedEnemyList *list = static_cast<const GmkRoutedEnemyList *>(unknown08.unknown00);
+    const GmkRoutedEnemyList *list = static_cast<const GmkRoutedEnemyList *>(unknown08.m_ownerGmkEnemyList);
     createInfo.unknown00 = this;
     createInfo.unknown08.unknown00 = list->getBindedBdatFp();
     createInfo.unknown10 = unknown20.unknown18;
@@ -171,7 +171,7 @@ void GmkRoutedEnemyList::setUpdateGmkNumPerFrame(u32 num) {
   unknown240.setUpdateGmkNumPerFrame(num);
 }
 
-IGmkList *GmkRoutedEnemy::getOwnerGmkEnemyList() const { return unknown08.unknown00; }
+IGmkList *GmkRoutedEnemy::getOwnerGmkEnemyList() const { return unknown08.m_ownerGmkEnemyList; }
 
 bool GmkRoutedEnemy::isPopPointRouteEnd(const GmkRouteNavi &navi) const {
   if (navi.isValid()) {
@@ -188,7 +188,7 @@ bool GmkRoutedEnemy::isPopPointRouteEnd(const GmkRouteNavi &navi) const {
   return false;
 }
 
-const IGmkList *GmkRoutedEnemy::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTED_ENEMY_POINT]; }
+const IGmkList *GmkRoutedEnemy::getBindedRoutePointList() const { return unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTED_ENEMY_POINT]; }
 
 void GmkRoutedEnemyList::debugDraw() const {
   TGmkList::debugDraw();

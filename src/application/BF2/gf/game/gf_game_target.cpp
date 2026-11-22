@@ -503,7 +503,7 @@ void GfGameTarget::gevSwapFormation(u32, u32) {
 }
 
 void GfGameTarget::changeBattleTarget(bool isEnable) {
-  bool isBattleTarget = unknown28.getState()->unknown08 == STATE_UNKNOWN_3;
+  bool isBattleTarget = unknown28.getState()->m_state == STATE_UNKNOWN_3;
   if (isEnable) {
     if (!isBattleTarget) {
       unknown28.setState(STATE_UNKNOWN_3);

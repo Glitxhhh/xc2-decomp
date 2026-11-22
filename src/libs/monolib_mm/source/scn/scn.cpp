@@ -43,7 +43,7 @@ Scn::Scn(const ScnSetup *setup)
   unknown68 = *setup;
   for (int i = 0; i < 10; i++) {
     unknowndfc[i].unknown00 = i;
-    unknowndfc[i].unknown04 = static_cast<SCNPRIO_CB>(-1);
+    unknowndfc[i].m_debDraw = static_cast<SCNPRIO_CB>(-1);
   }
   unknownb4 = WorkCpu::createGroupHandle(1);
   WorkCpu::entryJobThread(unknownb4, thUpAfter, 0xf, this, nullptr, CPUID_UNKNOWN_1, true, false);
@@ -125,7 +125,7 @@ void Scn::callbackToListener(SCNCB type) {
       if (!unknownb8[i].unknown0d) {
         unknownb8[i].unknown00->cbRenderAfter(this, unknownb8[i].unknown08);
       }
-      if (unknowndfc[0].unknown04 == unknownb8[i].unknown08) {
+      if (unknowndfc[0].m_debDraw == unknownb8[i].unknown08) {
         DebDraw::flushPrio(-2, getCam(-1)->unknown70.m_front->unknown1a0, getCam(-1)->unknown70.m_front->unknown00.unknown70);
       }
       DevGraph::cmdCloseDisplayList();
@@ -225,7 +225,7 @@ u32 Scn::thUpAfter(void *argument, void *userData) {
   return 0;
 }
 
-void Scn::setDebDraw(SCNCAM cam, SCNPRIO_CB priority) { unknowndfc[cam].unknown04 = priority; }
+void Scn::setDebDraw(SCNCAM cam, SCNPRIO_CB priority) { unknowndfc[cam].m_debDraw = priority; }
 
 ScnObjModel *Scn::createMdl(const void *data, const char *name, int screenID) {
   ScnObjModel *model = unknown38->createMdl(this, data, name, screenID);

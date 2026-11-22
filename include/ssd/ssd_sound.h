@@ -180,13 +180,13 @@ public:
 
   int m_number;
   u8 _34[0x38 - 0x34];
-  TextFixed<64> unknown38;        // Inferred role: name; original member name unknown.
+  TextFixed<64> m_name;           // Inferred role: name; named after the game accessor ssd::SoundBank::GetName.
   List<SoundEntry> unknowne0;     // Inferred role: sound entries; original member name unknown.
   Array<SoundGroup *> unknown108; // Inferred role: sound groups; original member name unknown.
 };
 
 static_assert(offsetof(SoundBank, m_number) == 0x30, "");
-static_assert(offsetof(SoundBank, unknown38) == 0x38, "");
+static_assert(offsetof(SoundBank, m_name) == 0x38, "");
 static_assert(offsetof(SoundBank, unknowne0) == 0xe0, "");
 static_assert(offsetof(SoundBank, unknown108) == 0x108, "");
 

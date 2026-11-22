@@ -311,7 +311,7 @@ GF_OBJ_HANDLE *StateUtil::getBuddyHandle(GfComBehaviorPc &behavior) {
   }
 
   u32 buddyId = (playerId & 1) != 0 ? playerId - 1 : playerId + 1;
-  return formation->unknown1a0[buddyId].unknown08;
+  return formation->unknown1a0[buddyId].m_playerHandle;
 }
 
 void StateUtil::sendMessageToBuddy(GfComBehaviorPc &behavior, fw::Message &message) {
@@ -383,8 +383,8 @@ void StateUtil::broadcastMainChar(GfComBehaviorPc &behavior, fw::Message &messag
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   behavior.unknown08->getComponent<GfComPropertyPc>();
   for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
-    if (formation->unknown1a0[i].unknown10 && formation->unknown1a0[i].unknown08 != static_cast<GfObj *>(behavior.unknown08)->unknownf8) {
-      GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[i].unknown08);
+    if (formation->unknown1a0[i].unknown10 && formation->unknown1a0[i].m_playerHandle != static_cast<GfObj *>(behavior.unknown08)->unknownf8) {
+      GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[i].m_playerHandle);
       if (obj != nullptr) {
         static_cast<GfObj *>(behavior.unknown08)->sendMessage(obj, message);
       }

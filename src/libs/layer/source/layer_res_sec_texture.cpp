@@ -60,7 +60,7 @@ void LayerResSecTexture::release() {
   unknown18.release();
 }
 
-grlib::CGLibTextureBuffer *LayerResSecTexture::getTexture() { return unknown08->unknown30; }
+grlib::CGLibTextureBuffer *LayerResSecTexture::getTexture() { return unknown08->m_texture; }
 
 void LayerResSecTexture::resourceInit() { unknown18.setup(LayerObjUtil::getUniformBlockSizeAlOff(LAYER_UNI_TYPE_UNKNOWN_10)); }
 

@@ -245,7 +245,7 @@ void DrMdoCtlSeamAll::noOffScreenUpdate() {
   if (!unknowncd0.isRead()) {
     unknowncd0.release();
     if (unknownc16 > 3) {
-      unknown20 |= unknown038_3 | unknown038_3 << 1;
+      m_disp |= unknown038_3 | unknown038_3 << 1;
     }
   }
   if (((unknownc7c >> 12) & 1) == 0) {
@@ -463,7 +463,7 @@ bool DrMdoCtlSeamAll::shadowCacheRender(DrPixlShadowCacheObj &cache) {
 }
 
 void DrMdoCtlSeamAll::shadowCacheAddRender(int index) {
-  if ((unknown20 & unknown038_0) == 0 || ((unknownc7c >> 28) & 1) != 0) {
+  if ((m_disp & unknown038_0) == 0 || ((unknownc7c >> 28) & 1) != 0) {
     return;
   }
   m_drMan->unknown78->setupShadowUnifrom(index);
@@ -471,7 +471,7 @@ void DrMdoCtlSeamAll::shadowCacheAddRender(int index) {
 }
 
 void DrMdoCtlSeamAll::occRender() {
-  if ((unknown20 & unknown038_0) == 0 || ((unknownc7c >> 28) & 1) != 0) {
+  if ((m_disp & unknown038_0) == 0 || ((unknownc7c >> 28) & 1) != 0) {
     return;
   }
   occInstRender();

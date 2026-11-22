@@ -14,7 +14,7 @@ template bool TGmkList<GmkSquadMember, GmkSquadMember::BdatInfo, 1112363347u, 1u
 
 GmkType GmkSquadLeader::getGmkType() const { return GMK_TYPE; }
 
-bool GmkSquadLeader::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkSquadLeader::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkSquadLeader::create(const CreateInfo &info) { AGmkBase::create(info); }
 
@@ -24,11 +24,11 @@ void GmkSquadLeader::debugDraw() const {}
 
 void GmkSquadLeader::debugUpdateMmf() {}
 
-const IGmkList *GmkSquadLeader::getBindedSquadMemberList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_SQUAD_MEMBER]; }
+const IGmkList *GmkSquadLeader::getBindedSquadMemberList() const { return unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_SQUAD_MEMBER]; }
 
 GmkType GmkSquadMember::getGmkType() const { return GMK_TYPE; }
 
-bool GmkSquadMember::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkSquadMember::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkSquadMember::create(const CreateInfo &info) { AGmkBase::create(info); }
 

@@ -291,8 +291,8 @@ public:
   bool m_forceBossBattleBgm;
   bool unknown132; // Inferred role: force battle bgm; original member name unknown.
   f32 m_forceEventBgm;
-  bool unknown138; // Inferred role: player talk force enable; original member name unknown.
-  bool unknown139; // Inferred role: gimmick camera pause; original member name unknown.
+  bool m_playerTalkForce;    // Inferred role: player talk force enable; named after the game accessor gf::GfGameScene::setPlayerTalkForce.
+  bool m_gimmickCameraPause; // Inferred role: gimmick camera pause; named after the game accessor gf::GfGameScene::setGimmickCameraPause.
   GfPlayerDead m_deadType;
   u32 unknown140; // Inferred role: player pause bits; original member name unknown.
   u32 unknown144; // Inferred role: flags; original member name unknown.

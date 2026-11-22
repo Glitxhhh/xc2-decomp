@@ -25,8 +25,8 @@ void GfGameSave::destroySaveData() {
   unknown28 = 0;
   SDataSave *saveData = unknown10;
   if (saveData != nullptr) {
-    saveData->unknown10.unknown109b30.clear();
-    saveData->unknown10.unknown1098c8.unknown00.clear();
+    saveData->unknown10.m_taskAchieve.clear();
+    saveData->unknown10.m_sDataMercenaries.unknown00.clear();
     getAllocator(ALLOCATOR_UNKNOWN_0)->deallocate(unknown10);
     unknown10 = nullptr;
   }

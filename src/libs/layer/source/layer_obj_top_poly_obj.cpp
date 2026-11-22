@@ -24,7 +24,7 @@ namespace layer {
 LayerObjTopPolyObj::LayerObjTopPolyObj(u32 width, u32 height, u16 vertexNum, u16 indexNum, LayerPrimitiveType type) : unknown260(this) {
   unknown18 = LAYER_OBJ_TYPE_POLY;
   unknown278 = nullptr;
-  unknown358 = nullptr;
+  m_index = nullptr;
   unknown250 = 0;
   unknown368 = nullptr;
   unknowna8 |= 0x20000;
@@ -137,22 +137,22 @@ void LayerObjTopPolyObj::updateVertexBuffer() {
 
 void LayerObjTopPolyObj::applyPartsSetup() { updateVertexBuffer(); }
 
-void LayerObjTopPolyObj::LockVertex() { unknown358 = unknown300.unknown20[LayerManager::s_nStkIdx]; }
+void LayerObjTopPolyObj::LockVertex() { m_index = unknown300.unknown20[LayerManager::s_nStkIdx]; }
 
-void LayerObjTopPolyObj::setVertex(u32 index, const LayerPolyVertex &vertex) { static_cast<LayerPolyVertex *>(unknown358)[index] = vertex; }
+void LayerObjTopPolyObj::setVertex(u32 index, const LayerPolyVertex &vertex) { static_cast<LayerPolyVertex *>(m_index)[index] = vertex; }
 
 void LayerObjTopPolyObj::UnlockVertex() {
   unknown250 |= 4 << LayerManager::s_nStkIdx;
-  unknown358 = nullptr;
+  m_index = nullptr;
 }
 
-void LayerObjTopPolyObj::LockIndex() { unknown358 = unknown300.unknown30[LayerManager::s_nStkIdx]; }
+void LayerObjTopPolyObj::LockIndex() { m_index = unknown300.unknown30[LayerManager::s_nStkIdx]; }
 
-void LayerObjTopPolyObj::setIndex(u32 index, u16 vertexIndex) { static_cast<u16 *>(unknown358)[index] = vertexIndex; }
+void LayerObjTopPolyObj::setIndex(u32 index, u16 vertexIndex) { static_cast<u16 *>(m_index)[index] = vertexIndex; }
 
 void LayerObjTopPolyObj::UnlockIndex() {
   unknown250 |= 0x10 << LayerManager::s_nStkIdx;
-  unknown358 = nullptr;
+  m_index = nullptr;
 }
 
 void LayerObjTopPolyObj::setTexutre(const void *data) { unknown2b8.setAddTexture(data, 0); }
@@ -188,10 +188,10 @@ void LayerObjTopPolyObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
     if (unknowna8 & 0x400) {
       LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown260, unknown200);
     } else if (!isClip()) {
-      sortMan->set2DSpace(&unknown260, unknownc0);
+      sortMan->set2DSpace(&unknown260, m_priority);
     }
   } else if (!isClip()) {
-    sortMan->set2DSpace(&unknown260, unknownc0);
+    sortMan->set2DSpace(&unknown260, m_priority);
   }
 }
 
@@ -212,7 +212,7 @@ void LayerObjTopPolyObj::finalRender() {
   shader->unknown4f0 = 6;
   shader->setupShader(&unknown280);
   if (unknown278 != nullptr && unknown278->isInitialized()) {
-    shader->setupTexture(*unknown278, static_cast<LayerSamplerType>(unknownc6), 0);
+    shader->setupTexture(*unknown278, static_cast<LayerSamplerType>(m_texFilterType), 0);
   }
   unknown300.unknown10[unknown300.unknown52]->drawIndex(unknown300.unknown4e, unknown300.unknown4c * 2);
 }

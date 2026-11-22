@@ -193,8 +193,8 @@ bool GfBladeCreate::getResultBlade(SDataBlade &blade) const {
 void GfBladeCreate::setupSDataBlade(SDataBlade &blade, const GfBladeCreateInfo &info) {
   if (!info.unknown244 && info.unknowna4c == 0) {
     GfDataBlade::setupSDataBlade(blade, info.unknown32c, false);
-    blade.unknown0c = info.unknown338;
-    blade.unknown824 = info.unknown358;
+    blade.m_idea = info.unknown338;
+    blade.m_personality = info.unknown358;
     blade.unknown770 = info.unknown310;
     blade.unknown84a = info.unknown360;
     blade.unknown83e = info.unknown38c;
@@ -206,8 +206,8 @@ void GfBladeCreate::setupSDataBlade(SDataBlade &blade, const GfBladeCreateInfo &
     blade.unknown844 = info.unknown384;
     blade.unknown845 = info.unknown388;
     blade.unknown823 = info.unknown278;
-    blade.unknown821 = info.unknown270;
-    blade.unknown82c = info.unknown274;
+    blade.m_weaponType = info.unknown270;
+    blade.m_equipWeapon = info.unknown274;
     blade.unknown70c = info.unknown2c4;
     blade.unknown720 = "";
     blade.unknown734 = info.unknown2d8;
@@ -215,7 +215,7 @@ void GfBladeCreate::setupSDataBlade(SDataBlade &blade, const GfBladeCreateInfo &
     blade.unknownc0 = info.unknown324;
     blade.unknown7fc = info.unknown2ec;
     if (info.unknown334 != 0) {
-      blade.unknown70a = info.unknown334;
+      blade.m_iconData = info.unknown334;
     }
     blade.unknown822 = info.unknown35c;
     blade.unknown858 = GfDataBlade::getName(blade, 0);
@@ -232,7 +232,7 @@ void GfBladeCreate::setupSDataBlade(SDataBlade &blade, const GfBladeCreateInfo &
     blade.unknown274 = info.unknown5b0;
     blade.unknown424 = info.unknown760;
     blade.unknown5d4 = info.unknown910;
-    blade.unknown84c = GfDataBlade::makeNormalTalkByPersonality(info.unknown358);
+    blade.m_normalTalk = GfDataBlade::makeNormalTalkByPersonality(info.unknown358);
   } else {
     u32 target = info.unknown32c;
     if (target == 0) {
@@ -288,12 +288,12 @@ static void unknown001(GfBladeCreateInfo &create) {
   create.unknown27c = textId;
   create.unknown280 = GfDataBlade::getName(blade, textId);
   create.unknown268 = dataBlade.unknown846;
-  create.unknown26c = dataBlade.unknown709;
-  create.unknown270 = dataBlade.unknown821;
-  create.unknown274 = dataBlade.unknown82c;
+  create.unknown26c = dataBlade.m_gender;
+  create.unknown270 = dataBlade.m_weaponType;
+  create.unknown274 = dataBlade.m_equipWeapon;
   create.unknown278 = dataBlade.unknown823;
-  create.unknown358 = dataBlade.unknown824;
-  create.unknown334 = dataBlade.unknown70a;
+  create.unknown358 = dataBlade.m_personality;
+  create.unknown334 = dataBlade.m_iconData;
   create.unknown374 = dataBlade.unknown840;
   create.unknown384 = dataBlade.unknown844;
   create.unknown380 = dataBlade.unknown843;
@@ -303,7 +303,7 @@ static void unknown001(GfBladeCreateInfo &create) {
   create.unknown38c = dataBlade.unknown83e;
   create.unknown390 = dataBlade.unknown83f;
   create.unknown35c = dataBlade.unknown822;
-  create.unknown338 = dataBlade.unknown0c;
+  create.unknown338 = dataBlade.m_idea;
   create.unknown394 = dataBlade.unknown3c;
   create.unknown364 = dataBlade.unknown84;
   create.unknown3dc = dataBlade.unknown9c;
@@ -808,7 +808,7 @@ static void rollFieldSkills(GfBladeCreateInfo *info) {
       u32 random = ml::mtRand(candidates.size());
       u32 pick = n == 0 ? 0 : random;
       unknown110 fieldSkill;
-      fieldSkill.unknown00 = candidates[pick];
+      fieldSkill.m_fieldSkill = candidates[pick];
       fieldSkills.push_back(fieldSkill);
       u32 i = 0;
       for (u32 *it = candidates.begin(); it != candidates.end(); ++it, ++i) {
@@ -820,15 +820,15 @@ static void rollFieldSkills(GfBladeCreateInfo *info) {
     }
     if (fieldSkills.size() != 0) {
       for (u32 i = 0; i < fieldSkills.size(); i++) {
-        u32 minLevel = questListAcc->getFLD_FieldSkillListMinLevel(fieldSkills[i].unknown00);
-        u32 maxLevel = questListAcc->getFLD_FieldSkillListMaxLevel(fieldSkills[i].unknown00);
+        u32 minLevel = questListAcc->getFLD_FieldSkillListMinLevel(fieldSkills[i].m_fieldSkill);
+        u32 maxLevel = questListAcc->getFLD_FieldSkillListMaxLevel(fieldSkills[i].m_fieldSkill);
         u32 fieldSkillLevel = ml::mtRand(1 - minLevel + maxLevel) + minLevel;
         fieldSkills[i].unknown04 = fieldSkillLevel;
-        fieldSkills[i].unknown03 = 1;
+        fieldSkills[i].m_fieldSkillLevel = 1;
         if (fieldSkills[i].unknown04 > 3) {
           fieldSkills[i].unknown04 = 3;
         }
-        GfBdatMsg::getNameFieldSkill(questListAcc->getFLD_FieldSkillListName(fieldSkills[i].unknown00));
+        GfBdatMsg::getNameFieldSkill(questListAcc->getFLD_FieldSkillListName(fieldSkills[i].m_fieldSkill));
       }
       for (u32 i = 0; i < fieldSkills.size(); i++) {
         info->unknown3ee[i] = fieldSkills[i];
@@ -1238,7 +1238,7 @@ static void rollArts(GfBladeCreateInfo *info) {
       k++;
     }
     info->unknown394[i].unknown08 = level;
-    info->unknown394[i].unknown07 = 1;
+    info->unknown394[i].m_bladeArtsLevel = 1;
     u32 revCon = bdatBlade->getCmnBl_CapacityArtsRevCon(power);
     u32 revRand = bdatBlade->getCmnBl_CapacityArtsRevRand(power);
     info->unknown394[i].unknown02 = ml::mtRand(revRand) + revCon;
@@ -1303,7 +1303,7 @@ static void rollAchievements(GfBladeCreateInfo *info) {
     }
   }
   for (u32 i = 0; i < 3; i++) {
-    if (info->unknown3ee[i].unknown00 != 0) {
+    if (info->unknown3ee[i].m_fieldSkill != 0) {
       mm::mtl::FixedVector<u16, 32> sets;
       u32 statusId = unknown018(info->unknown23c);
       u32 set = GfBdatBlade::get()->getCommonListFskillAchivementSet(statusId, i);

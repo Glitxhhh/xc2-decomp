@@ -87,7 +87,7 @@ void GfComBehaviorEnemy::Listener::onWkStandbyLogout() { unknown08->unknown54e8 
 
 u32 GfComBehaviorEnemy::getStateId() const {
   if (unknowna0.m_pState != nullptr) {
-    return unknowna0.m_pState->unknown08;
+    return unknowna0.m_pState->m_state;
   }
 
   return ai::INVALID_STATE_ID;
@@ -220,7 +220,7 @@ bool GfComBehaviorEnemy::getGmkBattleLockInfo(int &param1, int &param2) const {
     return false;
   }
 
-  param1 = gmkInst->unknown08.unknown00->getCreateInfo().unknown08->unknown10.unknown04;
+  param1 = gmkInst->unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown10.unknown04;
   u8 *bdat = gmkInst->getBindedBdatFp();
   if (bdat == nullptr) {
     return false;
@@ -446,7 +446,7 @@ void GfComBehaviorEnemy::setup() {
   {
     DataParamAcc dataParam(static_cast<GfObj *>(unknown08)->unknownf8);
     const SDataEnemy *dataEnemy = dataParam.getSDataEnemy();
-    if (dataEnemy != nullptr && dataEnemy->unknown05_1) {
+    if (dataEnemy != nullptr && dataEnemy->m_fieldDamage) {
       GfFieldDmg::CreateInfo dmgInfo;
       dmgInfo.unknown00 = true;
       unknown54a0.create(dmgInfo);

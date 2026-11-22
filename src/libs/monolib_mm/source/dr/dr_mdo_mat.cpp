@@ -120,7 +120,7 @@ void DrMdoMat::resetBaseMapMaterial(MdoWrkMatRes *matRes, const u8 *matData, con
   if (header->unknown20 != 0) {
     matRes->unknown40 = reinterpret_cast<const unknown010 *>(matData + header->unknown20);
   }
-  DrResMdoMat *names = matRes->unknownc0;
+  DrResMdoMat *names = matRes->m_materialRes;
   const MdsMatInfoHeader *infos = matRes->unknown28;
   for (int i = 0; i < matRes->unknown30; i++) {
     names->setName(reinterpret_cast<const char *>(matRes->unknown10 + infos->unknown00));
@@ -165,7 +165,7 @@ void DrMdoMat::resetInstMapMaterial(MdoWrkMatRes *matRes, const u8 *matData, con
   if (header->unknown20 != 0) {
     matRes->unknown40 = reinterpret_cast<const unknown010 *>(matData + header->unknown20);
   }
-  DrResMdoMat *names = matRes->unknownc0;
+  DrResMdoMat *names = matRes->m_materialRes;
   const MdsMatInfoHeader *infos = matRes->unknown28;
   for (int i = 0; i < matRes->unknown30; i++) {
     names->setName(reinterpret_cast<const char *>(matRes->unknown10 + infos->unknown00));
@@ -291,8 +291,8 @@ void DrMdoMat::oneTextureStream() {
   if (unknown30->unknownd0 == nullptr) {
     return;
   }
-  if (((static_cast<f32>(unknownec) / static_cast<f32>(m_drMan->unknown5b8->unknown30) >= 0.01f && unknowne4 >= 0.1f) || (unknownfc & unknown027_2)) && !m_drMan->unknown1cc4 &&
-      !m_drMan->unknown1cc5) {
+  if (((static_cast<f32>(unknownec) / static_cast<f32>(m_drMan->unknown5b8->unknown30) >= 0.01f && unknowne4 >= 0.1f) || (unknownfc & unknown027_2)) && !m_drMan->m_mdlHeightTexSkip &&
+      !m_drMan->m_heightTexSkip) {
     unknown30->unknownd0->callStmRead(2);
   } else if (0.007f <= unknowne4 || (unknownfc & unknown027_17)) {
     unknown30->unknownd0->callStmRead(1);
@@ -304,7 +304,7 @@ void DrMdoMat::oneTextureStream() {
       for (s32 i = 0; i < unknown30->unknownd0->unknown68; i++) {
         unknown30->unknowne8[i] = unknown30->unknownd0->getStmTexObj(i);
       }
-      unknown20 &= ~0x60;
+      m_disp &= ~0x60;
     }
   } else if (unknownfc & unknown027_5) {
     unknownfc &= ~unknown027_5;
@@ -312,17 +312,17 @@ void DrMdoMat::oneTextureStream() {
       for (s32 i = 0; i < unknown30->unknownd0->unknown68; i++) {
         unknown30->unknowne8[i] = unknown30->unknownd0->getTexObj(i);
       }
-      unknown20 &= ~0x60;
+      m_disp &= ~0x60;
     }
   }
   if (!(state & 4)) {
     if (unknownfc & unknown027_13) {
       unknownfc &= ~unknown027_13;
-      unknown20 &= ~0x60;
+      m_disp &= ~0x60;
     }
   } else if (!(unknownfc & unknown027_13)) {
     unknownfc |= unknown027_13;
-    unknown20 &= ~0x60;
+    m_disp &= ~0x60;
   }
 }
 
@@ -382,7 +382,7 @@ void DrMdoMat::updateDispCall() {
     const MdsMatDispCCData *data = dispCall->unknown10;
     for (s32 i = 0; i < dispCall->unknown00; i++, data++, temp++) {
       if (checkCallBackParam(temp, data)) {
-        unknown20 &= ~0x60;
+        m_disp &= ~0x60;
       }
     }
   }
@@ -544,23 +544,23 @@ void DrMdoMat::releaseMpfMapSeamMat(MdoWrkMatRes *matRes) {
 }
 
 void DrMdoMat::matCall_BaseColor(const MdsMatInfoHeader *header, int valueIndex, int matIndex) {
-  DrResMdoMat *mat = &unknown30->unknownc0[matIndex];
+  DrResMdoMat *mat = &unknown30->m_materialRes[matIndex];
   mat->unknown08.r = unknown30->unknown118->unknown00[valueIndex].r;
   mat->unknown08.g = unknown30->unknown118->unknown00[valueIndex].g;
   mat->unknown08.b = unknown30->unknown118->unknown00[valueIndex].b;
 }
 
 void DrMdoMat::matCall_BaseVal(const MdsMatInfoHeader *header, int valueIndex, int matIndex) {
-  DrResMdoMat *mat = &unknown30->unknownc0[matIndex];
+  DrResMdoMat *mat = &unknown30->m_materialRes[matIndex];
   mat->unknown08.r = unknown30->unknown118->unknown30[valueIndex];
   mat->unknown08.g = unknown30->unknown118->unknown30[valueIndex];
   mat->unknown08.b = unknown30->unknown118->unknown30[valueIndex];
 }
 
-void DrMdoMat::matCall_TransVal(const MdsMatInfoHeader *, int valueIndex, int matIndex) { unknown30->unknownc0[matIndex].setAlpha(unknown30->unknown118->unknown30[valueIndex]); }
+void DrMdoMat::matCall_TransVal(const MdsMatInfoHeader *, int valueIndex, int matIndex) { unknown30->m_materialRes[matIndex].setAlpha(unknown30->unknown118->unknown30[valueIndex]); }
 
 void DrMdoMat::matCall_CalcColor(const MdsMatInfoHeader *header, int valueIndex, int matIndex) {
-  unknown30->unknownc0[matIndex].setColor(header->unknown0c * unknownd8, unknownd8 * header->unknown10, unknownd8 * header->unknown14, header->unknown18);
+  unknown30->m_materialRes[matIndex].setColor(header->unknown0c * m_bloom, m_bloom * header->unknown10, m_bloom * header->unknown14, header->unknown18);
 }
 
 void DrMdoMat::matCall_OutLineVal(const MdsMatInfoHeader *header, int valueIndex, int matIndex) {
@@ -791,7 +791,7 @@ void DrMdoMat::matCall_CalcBloom(const MdsMatInfoHeader *header, int valueIndex,
   u32 offset = header->unknown40;
   f32 *value = &values[offset + valueIndex];
   const f32 *baseValue = &unknown30->unknown38[offset + valueIndex];
-  *value = *baseValue * unknownd8;
+  *value = *baseValue * m_bloom;
 }
 
 void DrMdoMat::matCall_ToonId(const MdsMatInfoHeader *header, int valueIndex, int matIndex) {

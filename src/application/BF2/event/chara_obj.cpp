@@ -77,9 +77,9 @@ void CharaObj::createGfObj(gf::GF_OBJ_HANDLE *handle) {
   m_eyeOffset = 1.5f;
   unknownd40 = handle;
   gf::GfComTransform *transform = gf::GfObjUtil::getObj(handle)->getComponent<gf::GfComTransform>();
-  unknown2fb0 = transform->getPosition();
+  m_pos = transform->getPosition();
   mm::Quat rotation = transform->getRotation();
-  mm::quatToEuler(rotation, unknown2fd0);
+  mm::quatToEuler(rotation, m_rot);
   unknownca4 = STATE_UNKNOWN_1;
   unknownd48 = nullptr;
 }
@@ -201,7 +201,7 @@ void CharaObj::playWink(int type, f32 frame, bool isLoop, f32 lensX, f32 lensY, 
   unknown2088.push_back(&unknownab0, param);
 }
 
-const mm::Vec3 &CharaObj::getPos() const { return unknown2fb0; }
+const mm::Vec3 &CharaObj::getPos() const { return m_pos; }
 
 // The routine at 0x71000c19cc reads GfObjSetup::unknown0c (the layer copied from
 // GfInitParam::unknown40); values 10 through 12 skip pause.
@@ -220,30 +220,30 @@ bool CharaObj::isCharaObjPause(const FrameInfo &info) const {
 }
 
 void CharaObj::renderAction() {
-  unknown630.render(unknown2fb0, m_eyeOffset);
-  unknown608.render(unknown2fb0, m_eyeOffset);
+  unknown630.render(m_pos, m_eyeOffset);
+  unknown608.render(m_pos, m_eyeOffset);
 }
 
 f32 CharaObj::getEyeOffset() const { return m_eyeOffset; }
 
-void CharaObj::renderHead() { unknown950.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderHead() { unknown950.render(m_pos, m_eyeOffset); }
 
 void CharaObj::renderMotion() {
-  unknown680.render(unknown2fb0, m_eyeOffset);
-  unknown6d0.render(unknown2fb0, m_eyeOffset);
+  unknown680.render(m_pos, m_eyeOffset);
+  unknown6d0.render(m_pos, m_eyeOffset);
 }
 
-void CharaObj::renderFacial() { unknown9a0.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderFacial() { unknown9a0.render(m_pos, m_eyeOffset); }
 
-void CharaObj::renderTalk() { unknowna38.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderTalk() { unknowna38.render(m_pos, m_eyeOffset); }
 
-void CharaObj::renderWink() { unknownab0.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderWink() { unknownab0.render(m_pos, m_eyeOffset); }
 
-void CharaObj::renderLens() { unknown1280.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderLens() { unknown1280.render(m_pos, m_eyeOffset); }
 
-void CharaObj::renderWeight() { unknown12d0.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderWeight() { unknown12d0.render(m_pos, m_eyeOffset); }
 
-void CharaObj::renderIK() { unknownd60.render(unknown2fb0, m_eyeOffset); }
+void CharaObj::renderIK() { unknownd60.render(m_pos, m_eyeOffset); }
 
 // The original flag names are unknown. The routine at 0x71000c1da8 tests
 // bits 0 and 1 at +0xca0, then calls AttachActorBase::render for each set bit.
@@ -262,7 +262,7 @@ void CharaObj::setPos(const mm::Vec3 &pos) {
   if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipFast()) {
     return;
   }
-  this->unknown2fb0 = pos;
+  this->m_pos = pos;
   unknown29d8.erase(&unknown08);
   CmdParam param;
   param.val(0).setF32(pos.x);
@@ -285,18 +285,18 @@ void CharaObj::walkPos(const mm::Vec3 &pos, EVT_poscvtype cv, bool isRun) {
   f32 angle;
   if (cv == 0) {
     f32 z = pos.z;
-    angle = atan2f(pos.x - unknown2fb0.x, z - unknown2fb0.z);
-    unknown2fb0 = pos;
+    angle = atan2f(pos.x - m_pos.x, z - m_pos.z);
+    m_pos = pos;
   } else {
-    if (!(sqrtf((pos.x - unknown2fb0.x) * (pos.x - unknown2fb0.x) + (pos.z - unknown2fb0.z) * (pos.z - unknown2fb0.z)) > 0.1f)) {
+    if (!(sqrtf((pos.x - m_pos.x) * (pos.x - m_pos.x) + (pos.z - m_pos.z) * (pos.z - m_pos.z)) > 0.1f)) {
       return;
     }
-    angle = atan2f(pos.x - unknown2fb0.x, pos.z - unknown2fb0.z);
+    angle = atan2f(pos.x - m_pos.x, pos.z - m_pos.z);
   }
   if (cv >= 1 && cv <= 8) {
-    unknown2fd0.x = 0.0f;
-    unknown2fd0.y = angle;
-    unknown2fd0.z = 0.0f;
+    m_rot.x = 0.0f;
+    m_rot.y = angle;
+    m_rot.z = 0.0f;
   }
   unknown2fc0 = pos;
   CmdParam param;
@@ -324,7 +324,7 @@ void CharaObj::linerPos(const mm::Vec3 &pos, bool isWalk, f32 frame, CV_TYPE cv)
     CharaUtil::adjestPosY(to, nullptr);
   }
   if (frame == 0.0f) {
-    this->unknown2fb0 = to;
+    this->m_pos = to;
     unknown2fc0 = to;
     unknown2088.erase(&unknown100);
   } else {
@@ -345,14 +345,14 @@ const mm::Vec3 &CharaObj::getPosTo() const {
   if (unknown1738.isExist(&unknown30) || unknown2088.isExist(&unknown30) || unknown2088.isExist(&unknown100)) {
     return unknown2fc0;
   }
-  return unknown2fb0;
+  return m_pos;
 }
 
 void CharaObj::setRot(const mm::Vec3 &rot) {
   if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipFast()) {
     return;
   }
-  this->unknown2fd0 = rot;
+  this->m_rot = rot;
   unknown29d8.erase(&unknown18);
   CmdParam param;
   param.val(0).setF32(rot.x);
@@ -365,7 +365,7 @@ void CharaObj::turnRot(const mm::Vec3 &rot, EVT_rotcvtype cv, f32 frame) {
   if (mm::mtl::Singleton<SkipManager>::getPtr()->isSkipFast()) {
     return;
   }
-  this->unknown2fd0 = rot;
+  this->m_rot = rot;
   unknown2fe0 = rot;
   CmdParam param;
   param.val(0).setUserdata(this);
@@ -389,7 +389,7 @@ void CharaObj::linerRot(const mm::Vec3 &rot, f32 frame, CV_TYPE cv) {
     return;
   }
   if (frame == 0.0f) {
-    this->unknown2fd0 = rot;
+    this->m_rot = rot;
     unknown2fe0 = rot;
     unknown2088.erase(&unknown330);
   } else {
@@ -405,13 +405,13 @@ void CharaObj::linerRot(const mm::Vec3 &rot, f32 frame, CV_TYPE cv) {
   unknown2088.push_back(&unknown330, param);
 }
 
-const mm::Vec3 &CharaObj::getRot() const { return unknown2fd0; }
+const mm::Vec3 &CharaObj::getRot() const { return m_rot; }
 
 const mm::Vec3 &CharaObj::getRotTo() const {
   if (unknown1738.isExist(&unknown310) || unknown2088.isExist(&unknown310) || unknown2088.isExist(&unknown330)) {
     return unknown2fe0;
   }
-  return unknown2fd0;
+  return m_rot;
 }
 
 bool CharaObj::isTurnable() const { return !unknown29d8.isExist(&unknown18); }

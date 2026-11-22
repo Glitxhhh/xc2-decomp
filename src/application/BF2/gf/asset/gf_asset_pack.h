@@ -58,7 +58,7 @@ public:
     u8 _99[0xa0 - 0x99];
   };
 
-  GfAssetFiles() : unknown00(ASSET_TYPE_UNKNOWN_0), unknown04(0), unknown100(nullptr), unknown108(false) {}
+  GfAssetFiles() : m_assetType(ASSET_TYPE_UNKNOWN_0), unknown04(0), unknown100(nullptr), unknown108(false) {}
   ~GfAssetFiles();
   bool addResource(GfFileIdx index, const char *name);
   void setInitializeParam(const GfAssetFilesInfo &info);
@@ -75,7 +75,7 @@ public:
   bool isExistFile(GfFileIdx index) const;
   bool isNoFile(GfFileIdx index) const;
 
-  GfAssetType unknown00;         // Inferred role: asset type; original member name unknown.
+  GfAssetType m_assetType;       // Inferred role: asset type; named after the game accessor gf::GfAssetPack::getAssetType.
   u32 unknown04;                 // Inferred role: asset name hash; original member name unknown.
   mm::mtl::FixStr<64> unknown08; // Inferred role: asset name; original member name unknown.
   u8 _4c[0x50 - 0x4c];
@@ -109,7 +109,7 @@ public:
 
   // Defined in the class: the game only has the base object constructor (C2, 1.0.0: 0x71001baed4), so the original was inline.
   GfAssetPack(const GfAssetFilesInfo &info)
-      : unknown10(0), unknown230(unknown006), unknown238(false), unknown239(false), unknown23a(false), unknown23b(false), unknown240(-1), unknown248(info.unknown3c), unknown24c(0),
+      : unknown10(0), unknown230(unknown006), unknown238(false), unknown239(false), unknown23a(false), m_timeout(false), unknown240(-1), unknown248(info.unknown3c), unknown24c(0),
         unknown250(info.unknown40), unknown254(0), unknown27c(0), unknown280(0), unknown2a8(nullptr), unknown2b0(FILE_IDX_UNKNOWN_FFFFFFFF), unknown2b4(0), unknown2b8(false) {
     m_assetType.setInitializeParam(info);
     unknown288 = info.unknown10;
@@ -165,7 +165,7 @@ public:
   bool unknown238;            // Inferred role: force destroy flag; original member name unknown.
   bool unknown239;            // Inferred role: no cache flag; original member name unknown.
   bool unknown23a;            // Inferred role: waiting slot; original member name unknown.
-  bool unknown23b;            // Inferred role: timeout flag; original member name unknown.
+  bool m_timeout;             // Inferred role: timeout flag; named after the game accessor gf::GfAssetPack::setTimeout.
   u8 _23c[0x240 - 0x23c];
   s64 unknown240;                 // Inferred role: total file size, -1 until computed; original member name unknown.
   u32 unknown248;                 // Inferred role: slot num; original member name unknown.

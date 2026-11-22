@@ -62,19 +62,19 @@ static_assert(sizeof(MdsSeamOfsTexTblData) == 0x14, "");
 
 // Inferred role: model data seam etc pos data; original type name unknown.
 struct unknown058 {
-  u32 unknown00;    // Inferred role: object name offset; original member name unknown.
-  u32 unknown04;    // Inferred role: eff name offset; original member name unknown.
-  f32 unknown08;    // Inferred role: range; original member name unknown.
-  u32 unknown0c;    // Inferred role: matrix max; original member name unknown.
-  u32 unknown10;    // Inferred role: matrix offset; original member name unknown.
-  f32 unknown14[2]; // Inferred role: near clips; original member name unknown.
-  f32 unknown1c[2]; // Inferred role: far clips; original member name unknown.
-  u32 unknown24;    // Inferred role: groups offset; original member name unknown.
+  u32 unknown00;     // Inferred role: object name offset; original member name unknown.
+  u32 unknown04;     // Inferred role: eff name offset; original member name unknown.
+  f32 m_range;       // Inferred role: range; named after the game accessor ml::ScnObjAccPartsEtcPos::getRange.
+  u32 m_matrixMax;   // Inferred role: matrix max; named after the game accessor ml::ScnObjAccPartsEtcPos::getMatrixMax.
+  u32 unknown10;     // Inferred role: matrix offset; original member name unknown.
+  f32 m_nearClip[2]; // Inferred role: near clips; named after the game accessor ml::ScnObjAccPartsEtcPos::getNearClip.
+  f32 m_farClip[2];  // Inferred role: far clips; named after the game accessor ml::ScnObjAccPartsEtcPos::getFarClip.
+  u32 unknown24;     // Inferred role: groups offset; original member name unknown.
 };
 
 static_assert(offsetof(unknown058, unknown10) == 0x10, "");
-static_assert(offsetof(unknown058, unknown14) == 0x14, "");
-static_assert(offsetof(unknown058, unknown1c) == 0x1c, "");
+static_assert(offsetof(unknown058, m_nearClip) == 0x14, "");
+static_assert(offsetof(unknown058, m_farClip) == 0x1c, "");
 static_assert(offsetof(unknown058, unknown24) == 0x24, "");
 
 // Inferred role: seam etc pos; original type name unknown.
@@ -87,10 +87,10 @@ static_assert(sizeof(unknown059) == 0x10, "");
 
 // Inferred role: seam etc pos list; original type name unknown.
 struct unknown060 {
-  unknown060() : unknown00(nullptr), unknown08(0) {}
+  unknown060() : m_obj(nullptr), unknown08(0) {}
 
-  unknown059 *unknown00; // Inferred role: objs; original member name unknown.
-  u32 unknown08;         // Inferred role: object max; original member name unknown.
+  unknown059 *m_obj; // Inferred role: objs; named after the game accessor ml::ScnObjAccSeamEtcPos::getObj.
+  u32 unknown08;     // Inferred role: object max; original member name unknown.
 };
 
 // Inferred role: offset and size of a data block of the seam resource (texture list, vertex, position and poli tables); original type name unknown.

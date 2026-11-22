@@ -60,10 +60,10 @@ void IDColiObjGrand::createGrandAdder(void *buffer, const void *binary) {
   unknown50.unknowna0 = 0;
   int count = 0;
   if (header->unknown94 != 0) {
-    unknown50.unknown70 = reinterpret_cast<IDColiGrdMoveObj *>(base + ((-offset & 0xf) + offset));
+    unknown50.m_moveObj = reinterpret_cast<IDColiGrdMoveObj *>(base + ((-offset & 0xf) + offset));
     count = header->unknown94;
   }
-  unknown50.unknown78 = count;
+  unknown50.m_moveMax = count;
   createMemBinary();
 }
 
@@ -133,28 +133,28 @@ void IDColiObjGrand::createMemBinary() {
     }
   }
 
-  if (unknown50.unknown78 != 0) {
+  if (unknown50.m_moveMax != 0) {
     new (unknown50.unknown90[0]) IDColiTreeTop();
     new (unknown50.unknown90[1]) IDColiTreeTop();
     const IDCmfMovePosData *moveData = reinterpret_cast<const IDCmfMovePosData *>(unknown50.unknown00 + header->unknown90);
-    if (unknown50.unknown78 > 0) {
+    if (unknown50.m_moveMax > 0) {
       const IDCmfMovePosInfo *moveInfo = reinterpret_cast<const IDCmfMovePosInfo *>(moveData + header->unknown94);
-      for (int i = 0; i < unknown50.unknown78; i++, moveData++, moveInfo++) {
-        new (&unknown50.unknown70[i]) IDColiGrdMoveObj();
-        unknown50.unknown70[i].setMoveData(unknown50.unknown00, moveData, moveInfo);
+      for (int i = 0; i < unknown50.m_moveMax; i++, moveData++, moveInfo++) {
+        new (&unknown50.m_moveObj[i]) IDColiGrdMoveObj();
+        unknown50.m_moveObj[i].setMoveData(unknown50.unknown00, moveData, moveInfo);
       }
     }
   }
 }
 
 void IDColiObjGrand::update() {
-  if (unknown50.unknown78 != 0) {
+  if (unknown50.m_moveMax != 0) {
     int bank = unknown50.unknowna0;
     u32 next = bank == 0;
     unknown50.unknown90[next]->begin();
-    for (int i = 0; i < unknown50.unknown78; i++) {
-      unknown50.unknown70[i].update();
-      unknown50.unknown90[next]->setupTreeList(&unknown50.unknown70[i].unknown1c8[next].unknown00, unknown50.unknown70[i].unknown100.unknown80, unknown50.unknown70[i].unknown100.unknown90);
+    for (int i = 0; i < unknown50.m_moveMax; i++) {
+      unknown50.m_moveObj[i].update();
+      unknown50.unknown90[next]->setupTreeList(&unknown50.m_moveObj[i].unknown1c8[next].unknown00, unknown50.m_moveObj[i].unknown100.unknown80, unknown50.m_moveObj[i].unknown100.unknown90);
     }
     unknown50.unknown90[next]->end();
     unknown50.unknowna0 = next;

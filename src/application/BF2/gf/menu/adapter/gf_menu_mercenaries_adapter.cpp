@@ -354,7 +354,7 @@ bool GfMenuMercenariesAdapter::update_TeamNameRes() {
   u32 index = unknown70 + offset;
   switch (GfMenuReference::getReferenceNumber(0)) {
   case 0: {
-    DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getPartyMember(index)->unknown00, GIMMICK_TYPE_UNKNOWN_0);
+    DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getPartyMember(index)->m_driver, GIMMICK_TYPE_UNKNOWN_0);
     if (!acc.isValid()) {
       return false;
     }
@@ -395,7 +395,7 @@ bool GfMenuMercenariesAdapter::update_TeamIconResFace() {
     u32 offset = unknown60->getRowOffset();
     u32 index = unknown70;
     if (GfMenuReference::getReferenceNumber(0) == 0) {
-      DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getPartyMember(index + offset)->unknown00, GIMMICK_TYPE_UNKNOWN_0);
+      DataParamAcc acc(OBJECT_TYPE_PC, GfDataParty::getPartyMember(index + offset)->m_driver, GIMMICK_TYPE_UNKNOWN_0);
       if (acc.isValid()) {
         setNumber(GfMenuBdat::getIconImageIndex(acc.getIconData()));
         return true;

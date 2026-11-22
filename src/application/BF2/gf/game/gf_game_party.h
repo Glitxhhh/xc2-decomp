@@ -69,9 +69,9 @@ class GfSelectBlade {
 public:
   // Inferred role: member; original type name unknown.
   struct unknown005 {
-    u8 unknown00;    // Inferred role: current index; original member name unknown.
-    u8 unknown01[2]; // Inferred role: change indices; original member name unknown.
-    u8 unknown03[3]; // Inferred role: default indices; original member name unknown.
+    u8 unknown00;                     // Inferred role: current index; original member name unknown.
+    u8 m_changeBladeIndexForDebug[2]; // Inferred role: change indices; named after the game accessor gf::GfSelectBlade::getChangeBladeIndexForDebug.
+    u8 m_defBladeIndexForDebug[3];    // Inferred role: default indices; named after the game accessor gf::GfSelectBlade::getDefBladeIndexForDebug.
   };
 
   static void setupBattleStart(u32 partyId);

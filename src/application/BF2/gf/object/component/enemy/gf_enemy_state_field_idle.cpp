@@ -45,7 +45,7 @@ void StateFieldIdle::enter(GfComBehaviorEnemy *behavior, ai::State *previous) {
     comAsm->execCmd("C_walkend", ANIM_LAYER_UNKNOWN_0);
   }
 
-  u32 state = unknown08;
+  u32 state = m_state;
   mm::mtl::FixStr<32> command;
   if (previous == nullptr) {
     if (comAsm != nullptr && comAsm->getStateName(ANIM_LAYER_UNKNOWN_0) != nullptr) {
@@ -55,8 +55,8 @@ void StateFieldIdle::enter(GfComBehaviorEnemy *behavior, ai::State *previous) {
       command = "C_idle";
     }
   } else {
-    u32 previousState = previous->unknown08; // Places the load before the clear of the command (0x710050eb20).
-    command.clear();                         // The game clears the command again here (0x710050eb24).
+    u32 previousState = previous->m_state; // Places the load before the clear of the command (0x710050eb20).
+    command.clear();                       // The game clears the command again here (0x710050eb24).
     // The game tests the states 4 and 5 with one comparison (0x710050eb2c); `!= 4 && != 5` gives `and #0xfffffffe; cmp #4`.
     if ((previousState | 1) != STATE_ID_UNKNOWN_5) {
       for (u32 i = 0; i < 5; i++) {
@@ -101,9 +101,9 @@ void StateFieldIdle::enter(GfComBehaviorEnemy *behavior, ai::State *previous) {
 void StateFieldIdle::leave(GfComBehaviorEnemy *behavior, ai::State *next) {
   GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
   if (comAsm != nullptr) {
-    if (unknown08 == STATE_ID_UNKNOWN_4) {
+    if (m_state == STATE_ID_UNKNOWN_4) {
       comAsm->execCmd("C_specialA_02", ANIM_LAYER_UNKNOWN_0);
-    } else if (unknown08 == STATE_ID_UNKNOWN_5) {
+    } else if (m_state == STATE_ID_UNKNOWN_5) {
       comAsm->execCmd("C_specialB_02", ANIM_LAYER_UNKNOWN_0);
     }
   }
@@ -123,7 +123,7 @@ void StateFieldIdle::update(GfComBehaviorEnemy *behavior, const fw::UpdateInfo &
     }
 
     unknown58 = info.unknown04 + unknown58;
-    if ((unknown5c != 0.0f && unknown5c <= unknown58) || (behavior->unknown54e2 && unknown08 != STATE_ID_UNKNOWN_1)) {
+    if ((unknown5c != 0.0f && unknown5c <= unknown58) || (behavior->unknown54e2 && m_state != STATE_ID_UNKNOWN_1)) {
       if (behavior->isStateCondMatch(STATE_ID_UNKNOWN_14)) {
         reqState(STATE_ID_UNKNOWN_14);
       } else {

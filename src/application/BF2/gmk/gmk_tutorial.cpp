@@ -25,7 +25,7 @@ template class TGmkActiveList<GmkTutorial>;
 
 GmkTutorial::GmkTutorial() : IntrusiveListNode(), unknown60(nullptr), unknownf0(false) {}
 
-bool GmkTutorial::isValid() const { return AGmkBase::unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkTutorial::isValid() const { return AGmkBase::unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 constexpr int GAME_FLAG_UNKNOWN_35322 = 35322; // Inferred role: game flag sys multi flag; original name unknown.
 
@@ -99,7 +99,7 @@ void GmkTutorial::update(f32 deltaTime) {
 }
 
 void GmkTutorial::createGmkPhantom() {
-  const GmkSet *set = AGmkBase::unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = AGmkBase::unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return;
   }
@@ -136,7 +136,7 @@ void GmkTutorial::beginTutorial() {
   }
   const Data *data = getData();
   if (data->unknown00 != nullptr) {
-    static_cast<GmkTutorialList *>(AGmkBase::unknown08.unknown00)->setBootedOthers(*this);
+    static_cast<GmkTutorialList *>(AGmkBase::unknown08.m_ownerGmkEnemyList)->setBootedOthers(*this);
   }
   gf::GfGameFlag::setLocal(1, getGameFlagId(), 1);
   unknownf0 = true;

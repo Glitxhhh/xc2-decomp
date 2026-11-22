@@ -693,7 +693,7 @@ bool GfObjAcc::isLoadedWaitOK() const {
 
 u16 GfObjAcc::getView() const { return unknown00 != nullptr ? unknown00->unknown02 : 0; }
 
-u32 GfObjAcc::getLayer() const { return m_obj != nullptr ? m_obj->unknown2c : 4; }
+u32 GfObjAcc::getLayer() const { return m_obj != nullptr ? m_obj->m_layer : 4; }
 
 bool GfObjAcc::isLayerPause() const { return fw::Framework::isLayerPause(getLayer()); }
 

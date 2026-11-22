@@ -12,15 +12,15 @@ namespace gmk {
 AGmkBase::AGmkBase() : unknown08(), _40() {}
 
 void AGmkBase::disposeBase() {
-  unknown08.unknown00 = nullptr;
+  unknown08.m_ownerGmkEnemyList = nullptr;
   unknown08.unknown08 = nullptr;
   unknown08.unknown10 = nullptr;
 }
 
-u8 *AGmkBase::getBindedBdatFp() const { return unknown08.unknown00->getBindedBdatFp(); }
+u8 *AGmkBase::getBindedBdatFp() const { return unknown08.m_ownerGmkEnemyList->getBindedBdatFp(); }
 
 bool AGmkBase::canCreateGameEntity() const {
-  const GmkSet *set = unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set == nullptr) {
     return true;
   }

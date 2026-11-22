@@ -31,7 +31,7 @@ bool isGmkListReady(const IGmkList *list) {
 
 GmkType GmkTrigger::getGmkType() const { return GMK_TYPE; }
 
-bool GmkTrigger::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkTrigger::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkTrigger::debugDraw() const {}
 
@@ -42,7 +42,7 @@ void GmkTrigger::dispose() {
 }
 
 void GmkTrigger::createGmkPhantom() {
-  const GmkSet *set = unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return;
   }
@@ -79,7 +79,7 @@ void GmkTrigger::applyPopCondMatched(bool matched) {
 void GmkTrigger::seqUpdate(f32 deltaTime) { applyPopCondMatched(unknown50.unknown83); }
 
 void GmkTrigger::seqWaitToValidLinkGmkList(f32 deltaTime) {
-  const GmkSet *set = unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (isGmkListReady(set->unknown1b8[GMK_TYPE_MAP_GIMMICK]) && isGmkListReady(set->unknown1b8[GMK_TYPE_ENEMY]) && isGmkListReady(set->unknown1b8[GMK_TYPE_ROUTED_ENEMY])) {
     applyPopCondMatched(false);
     unknowne0 = &GmkTrigger::seqUpdate;
@@ -101,7 +101,7 @@ void GmkTrigger::update(f32 deltaTime) {
 }
 
 AGmkBase *GmkTrigger::getBindedMapGimmick(u32 index) const {
-  IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_MAP_GIMMICK];
+  IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_MAP_GIMMICK];
   if (list == nullptr) {
     return nullptr;
   }
@@ -117,7 +117,7 @@ AGmkBase *GmkTrigger::getBindedMapGimmick(u32 index) const {
 }
 
 AGmkBase *GmkTrigger::getBindedEnemy(u32 index) const {
-  IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ENEMY];
+  IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ENEMY];
   if (list == nullptr) {
     return nullptr;
   }
@@ -133,7 +133,7 @@ AGmkBase *GmkTrigger::getBindedEnemy(u32 index) const {
 }
 
 AGmkBase *GmkTrigger::getBindedRoutedEnemy(u32 index) const {
-  IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTED_ENEMY];
+  IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTED_ENEMY];
   if (list == nullptr) {
     return nullptr;
   }

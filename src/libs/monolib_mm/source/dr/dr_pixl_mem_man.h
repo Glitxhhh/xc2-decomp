@@ -58,7 +58,7 @@ public:
   u8 _008[0x010 - 0x008];
   unknown001 unknown010[2]; // Inferred role: memory sizes per resource category; original member name unknown.
   u32 unknown430;           // Inferred role: memory area of the main render target; original member name unknown. `ldr w3, [x8, #0x430]` in DrPixlMan::resetColorBuff 0x710083ccc8.
-  u32 unknown434;           // Inferred role: mem1 alpha free; original member name unknown.
+  u32 m_mem1AlphaFree;      // Inferred role: mem1 alpha free; named after the game accessor ml::DrMan::getMem1AlphaFree.
 };
 
 static_assert(sizeof(DrPixlMemMan::unknown001) == 0x210, "");
@@ -72,6 +72,6 @@ static_assert(offsetof(DrPixlMemMan::unknown001, unknown104) == 0x104, "");
 static_assert(offsetof(DrPixlMemMan::unknown001, unknown0c0) == 0x0c0, "");
 static_assert(offsetof(DrPixlMemMan::unknown001, unknown0d8) == 0x0d8, "");
 static_assert(offsetof(DrPixlMemMan, unknown010) == 0x010, "");
-static_assert(offsetof(DrPixlMemMan, unknown434) == 0x434, "");
+static_assert(offsetof(DrPixlMemMan, m_mem1AlphaFree) == 0x434, "");
 
 } // namespace ml

@@ -10,7 +10,7 @@
 
 namespace fw {
 
-ColiManager::Impl::Impl(mm::mtl::IAllocator *allocator, u32 capacity) : unknown18(nullptr), unknown20(nullptr), unknown28(1), unknown30(allocator) {
+ColiManager::Impl::Impl(mm::mtl::IAllocator *allocator, u32 capacity) : m_groundObject(nullptr), m_interface(nullptr), unknown28(1), unknown30(allocator) {
   unknown38.reserve(allocator, capacity);
   unknown38.setRange(1, HANDLE_ID_UNKNOWN_2147483647, HANDLE_ID_UNKNOWN_2147483647);
   initializeContact();
@@ -19,10 +19,10 @@ ColiManager::Impl::Impl(mm::mtl::IAllocator *allocator, u32 capacity) : unknown1
 void ColiManager::Impl::initializeContact() { unknown70.clear(); }
 
 bool ColiManager::Impl::initialize() {
-  if (unknown20 == nullptr) {
+  if (m_interface == nullptr) {
     // __LINE__ of the game: it is the line argument of the operator new.
 #line 248
-    unknown20 = new (Framework::getAllocator(), 16, __FILE__, __LINE__) idcoli::IDColiManager(Framework::get()->unknown58, FrameworkMemory::getMem(5), 0x80000);
+    m_interface = new (Framework::getAllocator(), 16, __FILE__, __LINE__) idcoli::IDColiManager(Framework::get()->unknown58, FrameworkMemory::getMem(5), 0x80000);
   }
 
   return true;
@@ -31,10 +31,10 @@ bool ColiManager::Impl::initialize() {
 bool ColiManager::Impl::finalize() {
   destroyContactTable();
   updateRelease();
-  unknown18 = nullptr;
-  if (unknown20 != nullptr) {
-    delete unknown20;
-    unknown20 = nullptr;
+  m_groundObject = nullptr;
+  if (m_interface != nullptr) {
+    delete m_interface;
+    m_interface = nullptr;
   }
 
   return true;
@@ -53,8 +53,8 @@ void ColiManager::Impl::updateRelease() {
 }
 
 void ColiManager::Impl::update() {
-  if (unknown20 != nullptr) {
-    unknown20->update();
+  if (m_interface != nullptr) {
+    m_interface->update();
     unknown28++;
     updateContact();
     sendContactEvent();
@@ -175,14 +175,14 @@ void ColiManager::Impl::postUpdate() {
     it->postUpdate();
   }
 
-  if (unknown20 != nullptr) {
-    unknown20->consistentUpdate();
+  if (m_interface != nullptr) {
+    m_interface->consistentUpdate();
   }
 }
 
 void ColiManager::Impl::tail() {
-  if (unknown20 != nullptr) {
-    unknown20->tail();
+  if (m_interface != nullptr) {
+    m_interface->tail();
   }
 }
 
@@ -269,7 +269,7 @@ void ColiManager::Impl::registObject(ColiObject *object) {
   object->addRef();
   unknown00.push_back(object);
   if (object->isGrand()) {
-    unknown18 = object;
+    m_groundObject = object;
   }
 
   if (object->isChar()) {
@@ -297,36 +297,36 @@ void ColiManager::Impl::removeObject(ColiObject *object) {
   }
 
   unknown00.erase(object);
-  if (unknown18 == object) {
-    unknown18 = nullptr;
+  if (m_groundObject == object) {
+    m_groundObject = nullptr;
   }
 }
 
 void ColiManager::Impl::cleanupObject(ColiObject *object) { sendRemoveEvent(object->unknownf0.unknown08); }
 
 void ColiManager::Impl::openDebugWindow() {
-  if (unknown20 != nullptr) {
-    unknown20->openDebugWindow(Framework::get()->unknown50);
+  if (m_interface != nullptr) {
+    m_interface->openDebugWindow(Framework::get()->unknown50);
   }
 }
 
 bool ColiManager::Impl::isGblId(u32 id) {
-  if (unknown20 == nullptr) {
+  if (m_interface == nullptr) {
     return false;
   }
 
-  return unknown20->isGblId(id) == 0;
+  return m_interface->isGblId(id) == 0;
 }
 
 void ColiManager::Impl::setGblId(u32 id, bool isGlobal) {
-  if (unknown20 != nullptr) {
-    unknown20->setGblId(id, isGlobal);
+  if (m_interface != nullptr) {
+    m_interface->setGblId(id, isGlobal);
   }
 }
 
 void *ColiManager::Impl::getGblIdTbl() {
-  if (unknown20 != nullptr) {
-    return unknown20->getGblIdTbl();
+  if (m_interface != nullptr) {
+    return m_interface->getGblIdTbl();
   }
 
   return nullptr;
@@ -374,13 +374,13 @@ void ColiManager::removeObject(ColiObject *object) { unknown18->removeObject(obj
 
 void ColiManager::cleanupObject(ColiObject *object) { unknown18->cleanupObject(object); }
 
-const idcoli::IDColiManager *ColiManager::getInterface() const { return unknown18->unknown20; }
+const idcoli::IDColiManager *ColiManager::getInterface() const { return unknown18->m_interface; }
 
-idcoli::IDColiManager *ColiManager::getInterface() { return unknown18->unknown20; }
+idcoli::IDColiManager *ColiManager::getInterface() { return unknown18->m_interface; }
 
 void ColiManager::openDebugWindow() { unknown18->openDebugWindow(); }
 
-ColiObject *ColiManager::getGroundObject() { return unknown18->unknown18; }
+ColiObject *ColiManager::getGroundObject() { return unknown18->m_groundObject; }
 
 ColiObject *ColiManager::getObject(u32 handle) const {
   const PointerMap &objectMap = unknown18->unknown38;

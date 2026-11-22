@@ -395,8 +395,8 @@ void GfGameScene::clear() {
   m_forceBossBattleBgm = false;
   unknown132 = false;
   m_forceEventBgm = 0.0f;
-  unknown138 = false;
-  unknown139 = false;
+  m_playerTalkForce = false;
+  m_gimmickCameraPause = false;
   m_autoBattle = false;
   unknown1bc = false;
   unknown1bd = false;
@@ -444,8 +444,8 @@ void GfGameScene::setupGame() {
   m_forceBossBattleBgm = false;
   unknown132 = false;
   m_forceEventBgm = 0.0f;
-  unknown138 = false;
-  unknown139 = false;
+  m_playerTalkForce = false;
+  m_gimmickCameraPause = false;
   m_autoBattle = false;
   unknown1a9 = true;
   unknown1d0 = false;
@@ -673,11 +673,11 @@ void GfGameScene::setForceEventBgm(f32 time) { m_forceEventBgm = time; }
 
 bool GfGameScene::isForceEventBgm() const { return m_forceEventBgm > 0.0f; }
 
-bool GfGameScene::isPlayerTalkForce() { return unknown138 || unknown139; }
+bool GfGameScene::isPlayerTalkForce() { return m_playerTalkForce || m_gimmickCameraPause; }
 
-void GfGameScene::setPlayerTalkForce(bool isForce) { unknown138 = isForce; }
+void GfGameScene::setPlayerTalkForce(bool isForce) { m_playerTalkForce = isForce; }
 
-void GfGameScene::setGimmickCameraPause(bool isPause) { unknown139 = isPause; }
+void GfGameScene::setGimmickCameraPause(bool isPause) { m_gimmickCameraPause = isPause; }
 
 void GfGameScene::refreshGimmickFlag() {}
 
@@ -917,7 +917,7 @@ void GfGameScene::gevBladeActivate(u32 blade, ActivateType activateType, Activat
       GfEquipUtil::equipBladeOrb(BLADE_SUZAKU, 0, slot, GfItemHandle(0));
     }
     SDataBlade &dataBlade = GfDataBlade::getSDataBlade(BLADE_SUZAKU);
-    dataBlade.unknown82c = GfBdatChrBl::get()->getChrBlDefWeapon(BLADE_SUZAKU);
+    dataBlade.m_equipWeapon = GfBdatChrBl::get()->getChrBlDefWeapon(BLADE_SUZAKU);
   }
   if (activateType == 0 && oldActivateType != 0 && !GfDataBlade::isUnselect(blade)) {
     GfGameUtil::execSaveAchievementPopup(blade);

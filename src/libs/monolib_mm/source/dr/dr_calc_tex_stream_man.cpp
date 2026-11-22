@@ -21,7 +21,7 @@ DrCalcTexStreamMan::DrCalcTexStreamMan() : unknown08(), unknown18(), unknown28()
   unknown2058[1] = 0;
   unknown2058[0] = 0;
   unknown2064 = 0;
-  unknown2068 = 0;
+  m_cacherClearMode = 0;
   unknown206c = 0;
   unknown2070 = nullptr;
   unknown2078 = nullptr;
@@ -129,10 +129,10 @@ void DrCalcTexStreamMan::calcPieceMem(int &pieceCount, u32 &freeSize, u32 &objec
 }
 
 void DrCalcTexStreamMan::cntMemUpdate() {
-  if (unknown2068 & 1) {
+  if (m_cacherClearMode & 1) {
     if (unknown2480++ > 0) {
       unknown2480 = 0;
-      unknown2068 &= ~1;
+      m_cacherClearMode &= ~1;
       for (int i = 0; i < unknown2484; i++) {
         if (unknown2080[i] != nullptr) {
           clearMemObj(unknown2080[i]);
@@ -154,7 +154,7 @@ void DrCalcTexStreamMan::cntMemUpdate() {
       if (count == unknown2484) {
         unknown2480 = 0;
         unknown2484 = 0;
-        unknown2068 &= ~1;
+        m_cacherClearMode &= ~1;
       }
     }
   }
@@ -291,7 +291,7 @@ void DrCalcTexStreamMan::callHlvTexOptimization() { unknown248c = 0xa0; }
 void DrCalcTexStreamMan::callOptimization(u32 value) { unknown2488 += value; }
 
 void DrCalcTexStreamMan::callReadStopMode() {
-  unknown2068 |= 0x20;
+  m_cacherClearMode |= 0x20;
   unknown248c = 0xa0;
   unknown248e = 0x000a;
 }
@@ -341,7 +341,7 @@ void DrCalcTexStreamMan::release() {
       unknown2078 = nullptr;
     }
   }
-  unknown2068 = 0;
+  m_cacherClearMode = 0;
 }
 
 bool DrCalcTexStreamMan::memTempCopy(u32 size) {
@@ -355,7 +355,7 @@ bool DrCalcTexStreamMan::memTempCopy(u32 size) {
     if (unknown2080[unknown2484] != nullptr) {
       isEmpty = false;
       copySize += unknown2080[unknown2484]->unknown20;
-      unknown2068 |= 1;
+      m_cacherClearMode |= 1;
       unknown2484++;
       if (size < copySize) {
         return false;

@@ -85,15 +85,15 @@ void LayerAnimeObj::calcParm(LayerResParmInfo &parm, const LayerAnimeInfo &info,
     parm.unknown00.unknown18 += (info.unknown20 - parm.unknown00.unknown18) * rate;
   }
   if (info.unknown00 & 0x10) {
-    parm.unknown1c.unknown10.r += (info.unknown34 - parm.unknown1c.unknown10.r) * rate;
-    parm.unknown1c.unknown10.g += (info.unknown38 - parm.unknown1c.unknown10.g) * rate;
-    parm.unknown1c.unknown10.b += (info.unknown3c - parm.unknown1c.unknown10.b) * rate;
+    parm.unknown1c.m_addCol.r += (info.unknown34 - parm.unknown1c.m_addCol.r) * rate;
+    parm.unknown1c.m_addCol.g += (info.unknown38 - parm.unknown1c.m_addCol.g) * rate;
+    parm.unknown1c.m_addCol.b += (info.unknown3c - parm.unknown1c.m_addCol.b) * rate;
   }
   if (info.unknown00 & 0x20) {
-    parm.unknown1c.unknown00.r += (info.unknown24 - parm.unknown1c.unknown00.r) * rate;
-    parm.unknown1c.unknown00.g += (info.unknown28 - parm.unknown1c.unknown00.g) * rate;
-    parm.unknown1c.unknown00.b += (info.unknown2c - parm.unknown1c.unknown00.b) * rate;
-    parm.unknown1c.unknown00.a += (info.unknown30 - parm.unknown1c.unknown00.a) * rate;
+    parm.unknown1c.m_mulCol.r += (info.unknown24 - parm.unknown1c.m_mulCol.r) * rate;
+    parm.unknown1c.m_mulCol.g += (info.unknown28 - parm.unknown1c.m_mulCol.g) * rate;
+    parm.unknown1c.m_mulCol.b += (info.unknown2c - parm.unknown1c.m_mulCol.b) * rate;
+    parm.unknown1c.m_mulCol.a += (info.unknown30 - parm.unknown1c.m_mulCol.a) * rate;
   }
 }
 

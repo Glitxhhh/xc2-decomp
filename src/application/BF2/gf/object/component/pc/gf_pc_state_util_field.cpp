@@ -87,7 +87,7 @@ bool StateUtilField::execAsmCmd(GfComAsm &comAsm, ASM_CMD_ID_FIELD id) { return 
 
 bool StateUtilField::testVechile(GfComBehaviorPc &behavior) { return GfGameRide::isVehicle(static_cast<GfObj *>(behavior.unknown08)->unknownf8); }
 
-bool StateUtilField::isWalkMode(GfComPropertyPc &property) { return property.unknown310.unknown10_0; }
+bool StateUtilField::isWalkMode(GfComPropertyPc &property) { return property.unknown310.m_walkMode; }
 
 bool StateUtilField::isStop(GfComPropertyPc &property, u32 noInputFrameCount) { return property.unknown310.unknown001()->stopCnt <= noInputFrameCount; }
 
@@ -553,7 +553,7 @@ bool StateUtilField::isEnableWallPrepare(GfComPropertyPc &property) {
   if (property.unknown38 == 0) {
     return false;
   }
-  GF_OBJ_HANDLE *handle = GfGamePlayerFormation::get()->unknown1a0[property.unknown38 - 2].unknown08;
+  GF_OBJ_HANDLE *handle = GfGamePlayerFormation::get()->unknown1a0[property.unknown38 - 2].m_playerHandle;
   if (handle == unknown020) {
     return false;
   }
@@ -581,7 +581,7 @@ bool StateUtilField::isNearPlayerWall(GfComPropertyPc &property, const mm::Vec3 
     if (i == property.unknown38) {
       continue;
     }
-    GF_OBJ_HANDLE *handle = formation->unknown1a0[i].unknown08;
+    GF_OBJ_HANDLE *handle = formation->unknown1a0[i].m_playerHandle;
     if (handle == unknown020) {
       continue;
     }
@@ -600,8 +600,8 @@ bool StateUtilField::isNearPlayer(GfComPropertyPc &property, const mm::Vec3 &pos
   f32 rangeSq = range * range;
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
   for (u64 i = 0; i < 6; i++) {
-    if (i != property.unknown38 && formation->unknown1a0[i].unknown08 != unknown020) {
-      mm::Vec3 diff = position - GfObjUtil::getProperty(formation->unknown1a0[i].unknown08)->unknown18->unknown10;
+    if (i != property.unknown38 && formation->unknown1a0[i].m_playerHandle != unknown020) {
+      mm::Vec3 diff = position - GfObjUtil::getProperty(formation->unknown1a0[i].m_playerHandle)->unknown18->unknown10;
       if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z <= rangeSq) {
         return true;
       }

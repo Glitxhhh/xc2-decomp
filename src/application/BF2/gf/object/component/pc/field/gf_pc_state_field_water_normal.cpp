@@ -28,7 +28,7 @@ void StateFieldWaterNormal::enter(GfComBehaviorPc *behavior, ai::State *previous
 }
 
 void StateFieldWaterNormal::leave(GfComBehaviorPc *behavior, ai::State *next) {
-  if (next != nullptr && next->unknown08 != STATE_ID_UNKNOWN_29) {
+  if (next != nullptr && next->m_state != STATE_ID_UNKNOWN_29) {
     StateUtilField::setAccessFlag(*behavior, false);
   }
   AccessPlugin *plugin = behavior->unknown001<AccessPlugin>(4);

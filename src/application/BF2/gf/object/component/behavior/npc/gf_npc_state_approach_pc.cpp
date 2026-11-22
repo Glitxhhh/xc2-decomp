@@ -16,13 +16,13 @@ namespace gf {
 namespace npc {
 
 void StateApproachPc::enter(GfComBehaviorNpc *behavior, ai::State *previous) {
-  behavior->validateLocalSteer(static_cast<STATE_ID>(unknown08));
+  behavior->validateLocalSteer(static_cast<STATE_ID>(m_state));
   unknown50 = &StateApproachPc::seqTurnPc;
 }
 
 void StateApproachPc::leave(GfComBehaviorNpc *behavior, ai::State *next) {
   if (next != nullptr) {
-    behavior->validateLocalSteer(static_cast<STATE_ID>(next->unknown08));
+    behavior->validateLocalSteer(static_cast<STATE_ID>(next->m_state));
   }
   unknown50 = nullptr;
 }

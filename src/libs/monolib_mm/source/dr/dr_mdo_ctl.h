@@ -124,7 +124,7 @@ public:
   void partsShadowDirRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1);
   void partsThicknessRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, DrResMdoAlpTbl *alpTbl, u32 alpIndex, bool isFirst);
   void createWeightVtx(int renderType, u32 alphaFlags, u32 lodFlags, bool isPrePass);
-  void setFrameSpd(f32 speed) { unknowndc = speed; }
+  void setFrameSpd(f32 speed) { m_frameSpd = speed; }
   // Inferred role: selects the shader extension table of a technique, the lookup repeated by the shader and uniform block functions; original name unknown.
   void unknown004(int index);
   // Inferred role: renders a mdl info with its render index or its mesh parts render index, repeated by the shadow render functions; original name unknown.

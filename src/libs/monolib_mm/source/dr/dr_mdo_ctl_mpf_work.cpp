@@ -34,7 +34,7 @@ int DrMdoCtlMpfWork::calcRenderListWork(int count, const MdsMpfObjData *data) {
 
 void DrMdoCtlMpfWork::changeMemWork(const MdsMpfObjData *data) { unknown38 = data; }
 
-u32 DrMdoCtlMpfWork::getObjChk(int index) { return unknown20[index].unknown20; }
+u32 DrMdoCtlMpfWork::getObjChk(int index) { return unknown20[index].m_objChk; }
 
 void DrMdoCtlMpfWork::mpf_countSet(_wkMpfObjBuff *buff, const MdsMpfPosData *pos, int index) {
   buff->unknown08[buff->unknown00] = pos;
@@ -78,7 +78,7 @@ void DrMdoCtlMpfWork::mpf_alpha_changeSet(_wkMpfAlphaObjBuff *buff, const MdsMpf
     unknown20[index].unknown38 = &chunk->unknown00.unknown00;
     buff->unknown18 = &chunk->unknown00.unknown00;
   } else {
-    unknown20[index].unknown20--;
+    unknown20[index].m_objChk--;
     buff->unknown00 = 0;
   }
 }
@@ -94,7 +94,7 @@ void DrMdoCtlMpfWork::auto_alpha_changeSet(_wkMpfAlphaObjBuff *buff, const _MPFW
     unknown20[index].unknown38 = &chunk->unknown00;
     buff->unknown18 = &chunk->unknown00;
   } else {
-    unknown20[index].unknown20--;
+    unknown20[index].m_objChk--;
     buff->unknown00 = 0;
   }
 }
@@ -107,7 +107,7 @@ void DrMdoCtlMpfWork::mpf_fastSet(_wkMpfObjBuff *buff, const MdsMpfPosData *pos,
     buff->unknown18.unknown00 = &DrMdoCtlMpfWork::mpf_countSet;
     buff->unknown00 = 1;
   } else {
-    unknown20[index].unknown20--;
+    unknown20[index].m_objChk--;
     buff->unknown00 = 0;
   }
 }
@@ -120,7 +120,7 @@ void DrMdoCtlMpfWork::auto_fastSet(_wkMpfObjBuff *buff, const _MPFWorkAutoInf *w
     buff->unknown18.unknown00_1 = &DrMdoCtlMpfWork::auto_countSet;
     buff->unknown00 = 1;
   } else {
-    unknown20[index].unknown20--;
+    unknown20[index].m_objChk--;
     buff->unknown00 = 0;
   }
 }
@@ -135,7 +135,7 @@ void DrMdoCtlMpfWork::mpf_alpha_fastSet(_wkMpfAlphaObjBuff *buff, const MdsMpfPo
     buff->unknown00 = 1;
     buff->unknown20.unknown00 = &DrMdoCtlMpfWork::mpf_alpha_countSet;
   } else {
-    unknown20[index].unknown20--;
+    unknown20[index].m_objChk--;
     buff->unknown00 = 0;
   }
 }
@@ -148,19 +148,19 @@ void DrMdoCtlMpfWork::auto_alpha_fastSet(_wkMpfAlphaObjBuff *buff, const _MPFWor
     buff->unknown20.unknown00_1 = &DrMdoCtlMpfWork::auto_alpha_countSet;
     buff->unknown00 = 1;
   } else {
-    unknown20[index].unknown20--;
+    unknown20[index].m_objChk--;
     buff->unknown00 = 0;
   }
 }
 
 void DrMdoCtlMpfWork::stockObj(int index, const MdsMpfPosData *pos) {
-  unknown20[index].unknown20++;
+  unknown20[index].m_objChk++;
   unknown20[index].unknown00[pos->unknown0f & 0xf]++;
   (this->*unknown20[index].unknown30->unknown18.unknown00)(unknown20[index].unknown30, pos, index);
 }
 
 void DrMdoCtlMpfWork::stockObj(int index, const MdsMpfPosData *pos, f32 alpha) {
-  unknown20[index].unknown20++;
+  unknown20[index].m_objChk++;
   unknown20[index].unknown10[pos->unknown0f & 0xf]++;
   (this->*unknown20[index].unknown38->unknown20.unknown00)(unknown20[index].unknown38, pos, index, alpha);
 }

@@ -91,8 +91,8 @@ public:
     void *getGblIdTbl();
 
     mm::mtl::IntrusiveList<ColiObject> unknown00; // Inferred role: objects; original member name unknown.
-    ColiObject *unknown18;                        // Inferred role: ground object; original member name unknown.
-    idcoli::IDColiManager *unknown20;             // Inferred role: manager; original member name unknown.
+    ColiObject *m_groundObject;                   // Inferred role: ground object; named after the game accessor fw::ColiManager::getGroundObject.
+    idcoli::IDColiManager *m_interface;           // Inferred role: manager; named after the game accessor fw::ColiManager::getInterface.
     u32 unknown28;                                // Inferred role: frame count; original member name unknown.
     mm::mtl::IAllocator *unknown30;               // Inferred role: allocator; original member name unknown.
     PointerMap unknown38;                         // Inferred role: object map; original member name unknown.
@@ -126,8 +126,8 @@ static_assert(offsetof(ColiManager::Impl::ContactParam, unknown20) == 0x20, "");
 static_assert(offsetof(ColiManager::Impl::ContactParam, unknown38) == 0x38, "");
 static_assert(sizeof(ColiManager::Impl::ContactParam) == 0x40, "");
 static_assert(sizeof(mm::mtl::List<ColiManager::Impl::ContactParam>) == 0x80, "");
-static_assert(offsetof(ColiManager::Impl, unknown18) == 0x18, "");
-static_assert(offsetof(ColiManager::Impl, unknown20) == 0x20, "");
+static_assert(offsetof(ColiManager::Impl, m_groundObject) == 0x18, "");
+static_assert(offsetof(ColiManager::Impl, m_interface) == 0x20, "");
 static_assert(offsetof(ColiManager::Impl, unknown28) == 0x28, "");
 static_assert(offsetof(ColiManager::Impl, unknown30) == 0x30, "");
 static_assert(offsetof(ColiManager::Impl, unknown38) == 0x38, "");

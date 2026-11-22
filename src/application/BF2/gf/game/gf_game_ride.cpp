@@ -69,7 +69,7 @@ void GfGameRide::rideOn() {
   if (formation == nullptr) {
     return;
   }
-  GF_OBJ_HANDLE *leader = formation->unknown1a0[0].unknown08;
+  GF_OBJ_HANDLE *leader = formation->unknown1a0[0].m_playerHandle;
   u32 partyId = GfGameParty::getPartyId(leader);
   if (partyId == PARTY_UNKNOWN_4294967295) {
     return;

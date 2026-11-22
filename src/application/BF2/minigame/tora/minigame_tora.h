@@ -202,7 +202,7 @@ static_assert(sizeof(unknown009) == 0x04, "");
 
 // Inferred role: entry of the treasure box table; original type name unknown.
 struct unknown007 {
-  u8 unknown00; // Inferred role: type of the box, the Type column of MIN_TT_Tbox; original member name unknown.
+  u8 m__tbox_type; // Inferred role: type of the box, the Type column of MIN_TT_Tbox; named after the game accessor minigame::tora::minigame::get_tbox_type.
   u8 _01;
   unknown009 unknown02[10];
 };

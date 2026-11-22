@@ -260,7 +260,7 @@ public:
   const fw::Transform &getTransform();
   const mm::mtl::RTTI *getRTTI() const override;
 
-  EnviromentSensor unknown10;                      // Inferred role: sensor; original member name unknown.
+  EnviromentSensor m_envSensor;                    // Inferred role: sensor; named after the game accessor gf::GfComPropertyPc::getEnvSensor.
   u16 unknown2b0[6];                               // Inferred role: bone indices; original member name unknown.
   u16 unknown2bc;                                  // Inferred role: root bone index; original member name unknown.
   u32 unknown2c0[6];                               // Inferred role: foot flags; original member name unknown.
@@ -274,7 +274,7 @@ public:
   EnvListener unknown370;                          // Inferred role: viewer listener; original member name unknown.
 };
 
-static_assert(offsetof(GfComEnvSensor, unknown10) == 0x10, "");
+static_assert(offsetof(GfComEnvSensor, m_envSensor) == 0x10, "");
 static_assert(offsetof(GfComEnvSensor, unknown2b0) == 0x2b0, "");
 static_assert(offsetof(GfComEnvSensor, unknown2c0) == 0x2c0, "");
 static_assert(offsetof(GfComEnvSensor, unknown2d8) == 0x2d8, "");

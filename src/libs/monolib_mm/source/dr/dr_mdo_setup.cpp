@@ -229,7 +229,7 @@ void DrMdoSetup::updateUniformBlock(const u32 *flags) {
   MdoWrkMatRes *matRes = unknown30;
   int matNum = matRes->unknown30;
   const MdsMatInfoHeader *header = matRes->unknown28;
-  DrResMdoMat *mat = matRes->unknownc0;
+  DrResMdoMat *mat = matRes->m_materialRes;
   for (int i = 0; i < matNum; i++, header++, mat++) {
     if (flags[i >> 5] & (1 << (i & 0x1f))) {
       createUniformBlock(header, mat);
@@ -560,15 +560,15 @@ int DrMdoSetup::unimate_alphaInfo(f32 *work, DrResMdoMat *mat, const MdsMatInfoH
     alpha *= unknowne0;
   }
   work[2] = alpha;
-  work[3] = unknownd8;
+  work[3] = m_bloom;
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_23];
 }
 
 int DrMdoSetup::unimate_AvatarMapWrk(f32 *work, DrResMdoMat *mat, const MdsMatInfoHeader *header, const MdsMatVariableTbl *variable) {
   const u8 *indices = &unknown30->unknown48[header->unknown56 * 4];
-  const mm::Col3 &color0 = unknown40[indices[0]];
-  const mm::Col3 &color1 = unknown40[indices[1]];
-  const mm::Col3 &color2 = unknown40[indices[2]];
+  const mm::Col3 &color0 = m_avatarMapColor[indices[0]];
+  const mm::Col3 &color1 = m_avatarMapColor[indices[1]];
+  const mm::Col3 &color2 = m_avatarMapColor[indices[2]];
   work[0] = color0.r;
   work[1] = color0.g;
   work[2] = color0.b;

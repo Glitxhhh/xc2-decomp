@@ -47,8 +47,8 @@ constexpr u16 unknown002 = 0x104;
 constexpr u16 unknown004 = 0x27;
 // Inferred role: busy flags of the stream waits; original type name unknown.
 struct unknown006 {
-  bool unknown00; // Inferred role: character stream wait busy flag; original member name unknown.
-  bool unknown01; // Inferred role: selection stream wait busy flag; original member name unknown.
+  bool m_charBusy;   // Inferred role: character stream wait busy flag; named after the game accessor gf::GfMenuObjCharSelect::getCharBusy.
+  bool m_selectBusy; // Inferred role: selection stream wait busy flag; named after the game accessor gf::GfMenuObjCharSelect::getSelectBusy.
 };
 // Inferred role: busy flags of the stream waits; original name unknown.
 static unknown006 unknown007;
@@ -67,8 +67,8 @@ GfMenuObjCharSelect::GfMenuObjCharSelect(u32 handle)
   unknown30.assign(nullptr);
   unknown6e0 = GfMenuCallContext::create();
   unknown750.assign(-1);
-  unknown007.unknown00 = false;
-  unknown007.unknown01 = false;
+  unknown007.m_charBusy = false;
+  unknown007.m_selectBusy = false;
 }
 
 GfMenuObjCharSelect::~GfMenuObjCharSelect() {
@@ -368,7 +368,7 @@ void GfMenuObjCharSelect::setCharOffset(ui::UIObjectAcc &acc, const mm::mtl::Fix
 }
 
 bool GfMenuObjCharSelect::seqStreamWaitStatDr() {
-  unknown007.unknown00 = true;
+  unknown007.m_charBusy = true;
   ui::UIObjectAcc acc(unknown18);
   ui::UIObjectAcc image(acc.searchChild("IMG_char_dr_move_img"));
   if (image.isStreaming()) {
@@ -380,7 +380,7 @@ bool GfMenuObjCharSelect::seqStreamWaitStatDr() {
 }
 
 bool GfMenuObjCharSelect::seqStreamWaitStatBl() {
-  unknown007.unknown00 = true;
+  unknown007.m_charBusy = true;
   ui::UIObjectAcc acc(unknown18);
   ui::UIObjectAcc image(acc.searchChild("IMG_char_bl_move_img"));
   if (image.isStreaming()) {
@@ -440,7 +440,7 @@ bool GfMenuObjCharSelect::seqStreamWaitSelectBefore() {
 }
 
 bool GfMenuObjCharSelect::seqStreamWaitSelect() {
-  unknown007.unknown01 = true;
+  unknown007.m_selectBusy = true;
   ui::UIObjectAcc acc(unknown18);
   int bladeNum = getEquipBladeNum(GfMenuReference::getReferenceDriverID(0), unknown3a8);
   {
@@ -479,7 +479,7 @@ bool GfMenuObjCharSelect::seqStreamWaitSelect() {
 }
 
 bool GfMenuObjCharSelect::seqWaitSelect() {
-  if (unknown007.unknown01) {
+  if (unknown007.m_selectBusy) {
     return false;
   }
   ui::UIObjectAcc acc(unknown18);
@@ -492,9 +492,9 @@ bool GfMenuObjCharSelect::seqWaitSelect() {
   return true;
 }
 
-bool GfMenuObjCharSelect::getCharBusy() { return unknown007.unknown00; }
+bool GfMenuObjCharSelect::getCharBusy() { return unknown007.m_charBusy; }
 
-bool GfMenuObjCharSelect::getSelectBusy() { return unknown007.unknown01; }
+bool GfMenuObjCharSelect::getSelectBusy() { return unknown007.m_selectBusy; }
 
 bool GfMenuObjCharSelect::chkSubMenuSpec(u32 character) {
   // The game's code (1.0.0: 0x710042e1bc) has one shared `return true` block (`tbnz` after isCustomEnableDriver, `tbz` after isCustomEnableBlade). Without
@@ -607,7 +607,7 @@ void GfMenuObjCharSelect::MainListener::reciveEvent(const ui::EventData &event, 
     } else {
       GfMenuObjUtil::setChildDisp(acc.unknown10, "LAY_char_bl_move", false);
     }
-    unknown007.unknown00 = true;
+    unknown007.m_charBusy = true;
     if (unknown20->unknown764 == 0) {
       unknown20->seqStreamWaitStatDrBefore();
     } else {
@@ -730,7 +730,7 @@ void GfMenuObjCharSelect::CharDrListener::reciveEvent(const ui::EventData &event
         return;
       }
       if (event.unknown08 == 1) {
-        unknown007.unknown01 = false;
+        unknown007.m_selectBusy = false;
         enableInput(acc.searchChild("LAY_char"));
       }
     }
@@ -746,7 +746,7 @@ void GfMenuObjCharSelect::CharDrSoloListener::reciveEvent(const ui::EventData &e
         return;
       }
       if (event.unknown08 == 1) {
-        unknown007.unknown01 = false;
+        unknown007.m_selectBusy = false;
         enableInput(acc.searchChild("LAY_char"));
       }
     }
@@ -763,7 +763,7 @@ void GfMenuObjCharSelect::CharBlMoveListener::reciveEvent(const ui::EventData &e
       return;
     }
     if (event.unknown08 == 1) {
-      unknown007.unknown00 = false;
+      unknown007.m_charBusy = false;
     }
   }
   ui::UIObjectListener::reciveEvent(event, handle);
@@ -778,7 +778,7 @@ void GfMenuObjCharSelect::CharDrMoveListener::reciveEvent(const ui::EventData &e
       return;
     }
     if (event.unknown08 == 1) {
-      unknown007.unknown00 = false;
+      unknown007.m_charBusy = false;
     }
   }
   ui::UIObjectListener::reciveEvent(event, handle);
@@ -835,7 +835,7 @@ void GfMenuObjCharSelect::SubMenuListener::reciveEvent(const ui::EventData &even
     break;
   }
   case 0x140: {
-    unknown007.unknown00 = true;
+    unknown007.m_charBusy = true;
     if (unknown20->unknown3f8 == 0) {
       u32 character = event.unknown08;
       GfMenuReference::setReferenceDriverID(0, character);
@@ -952,7 +952,7 @@ void GfMenuObjCharSelect::SubMenuListener::reciveEvent(const ui::EventData &even
     break;
   }
   case 8:
-    if (!unknown007.unknown00) {
+    if (!unknown007.m_charBusy) {
       if (event.unknown0c == 1) {
         u32 index = unknown20->unknown3fc;
         u8 *order;

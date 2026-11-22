@@ -211,7 +211,7 @@ public:
   ml::fixed_size_alloc_inside<REFLIST, 32> unknown4070;    // Inferred role: reference list pool; original member name unknown.
   mm::mtl::FixedList<REFLIST *, 32> unknown4c598;          // Inferred role: reference lists; original member name unknown.
   mm::mtl::FixedList<GF_SEARCH_OBJ *, 32> unknown4c7d8;    // Inferred role: search objects whose reference list is destroyed at the next update; original member name unknown.
-  ml::CriticalSection unknown4ca18;                        // Inferred role: critical section; original member name unknown.
+  ml::CriticalSection m_criticalSection;                   // Inferred role: critical section; named after the game accessor gf::GfMenuReference::getCriticalSection.
   bool unknown4ca40;                                       // Inferred role: initialized; original member name unknown.
   mm::mtl::FixedVector<FieldSkillInfo, 28> unknown4ca48;   // Inferred role: field skills; original member name unknown.
   unknown005 unknown4cac0[ARTS_PALETTE_UNKNOWN_3];         // Inferred role: arts palettes; original member name unknown.
@@ -270,7 +270,7 @@ static_assert(offsetof(GfMenuReference, unknown08) == 0x08, "");
 static_assert(offsetof(GfMenuReference, unknown4070) == 0x4070, "");
 static_assert(offsetof(GfMenuReference, unknown4c598) == 0x4c598, "");
 static_assert(offsetof(GfMenuReference, unknown4c7d8) == 0x4c7d8, "");
-static_assert(offsetof(GfMenuReference, unknown4ca18) == 0x4ca18, "");
+static_assert(offsetof(GfMenuReference, m_criticalSection) == 0x4ca18, "");
 static_assert(offsetof(GfMenuReference, unknown4ca40) == 0x4ca40, "");
 static_assert(offsetof(GfMenuReference, unknown4ca48) == 0x4ca48, "");
 static_assert(offsetof(GfMenuReference, unknown4cac0) == 0x4cac0, "");

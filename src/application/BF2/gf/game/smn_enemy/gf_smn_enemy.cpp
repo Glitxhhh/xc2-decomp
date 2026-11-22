@@ -308,7 +308,7 @@ bool GfSmnEnemyManager::execAbsSummon(const AbsSmnInfo &info) {
       // Decision 2026-11-14 #12: the game keeps the accessor's data in a local across the destructor of paramAcc (csel w24, wzr, w28, eq then cbnz w24); testing it in the `if` duplicates the
       // destructor call (206 instructions instead of 207).
       const SDataEnemy *data = paramAcc.getSDataEnemy();
-      if (data->unknown99 != info.unknown0c) {
+      if (data->m_genus != info.unknown0c) {
         continue;
       }
     }

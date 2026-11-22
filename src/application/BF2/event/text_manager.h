@@ -97,7 +97,7 @@ private:
   mm::mtl::FixStr<64> unknown384;  // Inferred role: label; original member name unknown.
   mm::mtl::FixStr<512> unknown3c8; // Inferred role: text; original member name unknown.
   CharaObj *unknown5d0;            // Inferred role: talker; original member name unknown.
-  CharaObj *unknown5d8;            // Inferred role: default talker; original member name unknown.
+  CharaObj *m_defaultTalkerMode;   // Inferred role: default talker; named after the game accessor event::TextManager::setDefaultTalkerMode.
   mm::mtl::FixStr<32> unknown5e0;  // Inferred role: replace name; original member name unknown.
 };
 

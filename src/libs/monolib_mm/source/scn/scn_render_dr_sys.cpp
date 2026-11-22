@@ -35,9 +35,9 @@ void ScnRenderDrSys::applyRender(int loop) { unknown10->render(loop); }
 
 void ScnRenderDrSys::tail() { unknown10->tail(); }
 
-void ScnRenderDrSys::setMdlDblPause(bool isPause) { unknown10->unknown1d7b = isPause; }
+void ScnRenderDrSys::setMdlDblPause(bool isPause) { unknown10->m_mdlDblPause = isPause; }
 
-void ScnRenderDrSys::setGlbSpd(f32 speed) { unknown10->unknown1c84 = speed; }
+void ScnRenderDrSys::setGlbSpd(f32 speed) { unknown10->m_glbSpd = speed; }
 
 void ScnRenderDrSys::setup(const ScnSetup *setup) {}
 

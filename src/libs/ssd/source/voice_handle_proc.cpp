@@ -114,7 +114,7 @@ Result VoiceHandle::ReleaseBuffer() {
       if (nn::audio::IsVoiceValid(&unknown90[i].unknown00)) {
         nn::audio::ReleaseVoiceSlot(&unknown650->unknown168, &unknown90[i].unknown00);
         SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
-        core->unknown410 -= unknown90[i].unknownb4;
+        core->m_hWAllocVoiceCount -= unknown90[i].unknownb4;
         unknown90[i].unknownb4 = 0;
       }
     }

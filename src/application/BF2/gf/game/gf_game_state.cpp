@@ -13,7 +13,7 @@ namespace gf {
 
 void StateGfInitialize::enter(GfGameManager *, ai::State *) { GfGameState::setStateFlg(0); }
 
-void GfGameState::setStateFlg(u32 flags) { get()->unknown80 = flags; }
+void GfGameState::setStateFlg(u32 flags) { get()->m_stateFlg = flags; }
 
 void StateGfInitialize::leave(GfGameManager *, ai::State *) {}
 
@@ -21,7 +21,7 @@ void StateGfInitialize::update(GfGameManager *, const fw::UpdateInfo &) {}
 
 void StateGfDestroy::enter(GfGameManager *, ai::State *previous) {
   GfGameState::setStateFlg(0);
-  GfEvent::callGameState(GF_STATE(previous->unknown08), GF_STATE(unknown08));
+  GfEvent::callGameState(GF_STATE(previous->m_state), GF_STATE(m_state));
 }
 
 void StateGfDestroy::leave(GfGameManager *, ai::State *) {}
@@ -31,7 +31,7 @@ void StateGfDestroy::update(GfGameManager *, const fw::UpdateInfo &) {}
 void StateControl::enter(GfGameManager *, ai::State *previous) {
   GfGameState::setStateFlg(GF_STATE_FLAG_UNKNOWN_0);
   GfGameUtil::execDevelopLevelUp();
-  GfEvent::callGameState(GF_STATE(previous->unknown08), GF_STATE(unknown08));
+  GfEvent::callGameState(GF_STATE(previous->m_state), GF_STATE(m_state));
 }
 
 void StateControl::leave(GfGameManager *, ai::State *) {}
@@ -111,7 +111,7 @@ void StateGmkCamera::leave(GfGameManager *, ai::State *) {}
 
 void StateEvent::enter(GfGameManager *, ai::State *previous) {
   GfGameState::setStateFlg(GF_STATE_FLAG_UNKNOWN_1);
-  GfEvent::callGameState(GF_STATE(previous->unknown08), GF_STATE(unknown08));
+  GfEvent::callGameState(GF_STATE(previous->m_state), GF_STATE(m_state));
 }
 
 void StateEvent::leave(GfGameManager *, ai::State *) {}
@@ -120,7 +120,7 @@ void StateEvent::update(GfGameManager *, const fw::UpdateInfo &) {}
 
 void StateTalk::enter(GfGameManager *, ai::State *previous) {
   GfGameState::setStateFlg(GF_STATE_FLAG_UNKNOWN_5 | GF_STATE_FLAG_UNKNOWN_0);
-  GfEvent::callGameState(GF_STATE(previous->unknown08), GF_STATE(unknown08));
+  GfEvent::callGameState(GF_STATE(previous->m_state), GF_STATE(m_state));
 }
 
 void StateTalk::leave(GfGameManager *, ai::State *) {}
@@ -157,7 +157,7 @@ void StateResetBlade::leave(GfGameManager *, ai::State *) {}
 
 void StateResetBlade::update(GfGameManager *, const fw::UpdateInfo &) {}
 
-GfGameState::GfGameState() : unknown08(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown80(0), unknown84(GF_STATE_UNKNOWN_3), unknown88(0), unknown8c(0.0f) {}
+GfGameState::GfGameState() : unknown08(getAllocator(ALLOCATOR_UNKNOWN_0)), m_stateFlg(0), m_stateReserve(GF_STATE_UNKNOWN_3), m_countStateReserve(0), unknown8c(0.0f) {}
 
 GfGameState::~GfGameState() {}
 
@@ -213,9 +213,9 @@ void GfGameState::clear() {
   }
 }
 
-bool GfGameState::test(u32 flags) { return (get()->unknown80 & flags) != 0; }
+bool GfGameState::test(u32 flags) { return (get()->m_stateFlg & flags) != 0; }
 
-GF_STATE GfGameState::getState() { return GF_STATE(get()->unknown08.getState()->unknown08); }
+GF_STATE GfGameState::getState() { return GF_STATE(get()->unknown08.getState()->m_state); }
 
 const char *GfGameState::getStateName() {
   if (get() != nullptr) {
@@ -224,23 +224,23 @@ const char *GfGameState::getStateName() {
   return "";
 }
 
-GF_STATE GfGameState::getStateReserve() { return get()->unknown84; }
+GF_STATE GfGameState::getStateReserve() { return get()->m_stateReserve; }
 
-u32 GfGameState::getCountStateReserve() { return get()->unknown88; }
+u32 GfGameState::getCountStateReserve() { return get()->m_countStateReserve; }
 
 void GfGameState::setStateReserve(GF_STATE state) {
   if (state != 0) {
     GfGameState *gameState = get();
-    gameState->unknown84 = state;
-    gameState->unknown88 = GfInfo::getFrameCount32();
+    gameState->m_stateReserve = state;
+    gameState->m_countStateReserve = GfInfo::getFrameCount32();
   }
 }
 
 void GfGameState::setState(GF_STATE state, bool isForce) {
   GfGameState *gameState = get();
   if (!isForce) {
-    gameState->unknown84 = GF_STATE_UNKNOWN_3;
-    gameState->unknown88 = GfInfo::getFrameCount32();
+    gameState->m_stateReserve = GF_STATE_UNKNOWN_3;
+    gameState->m_countStateReserve = GfInfo::getFrameCount32();
   }
   gameState->unknown08.setState(state);
   gameState->unknown8c = 0.0f;

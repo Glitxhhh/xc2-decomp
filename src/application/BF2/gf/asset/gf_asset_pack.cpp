@@ -29,12 +29,12 @@ class GfExtendResource : public mm::mtl::ReferenceObject {};
 
 AssetPackInfo::AssetPackInfo() : unknown08(unknown018), unknown2d8(unknown020), unknown300(10) {
   for (u32 i = 0; i < 4; i++) {
-    unknown2e0[i] = nullptr;
+    m_extendResource[i] = nullptr;
   }
   unknown304 = false;
   unknown305 = false;
   unknown306 = false;
-  unknown307 = false;
+  m_loadComplete = false;
   unknown308 = ASSET_TYPE_UNKNOWN_0;
   unknown334 = 0;
 }
@@ -50,17 +50,17 @@ AssetPackInfo::~AssetPackInfo() {
   }
 }
 
-void AssetPackInfo::setLoadComplete() { unknown307 = false; }
+void AssetPackInfo::setLoadComplete() { m_loadComplete = false; }
 
 void AssetPackInfo::setupLoadStart() { unknown334 = 0; }
 
 void AssetPackInfo::replaceAssetPack(GfAssetType from, GfAssetType to, GfAssetPack *pack) { unknown308 = to; }
 
-void AssetPackInfo::setExtendResource(u32 index, GfExtendResource *resource) { unknown2e0[index] = resource; }
+void AssetPackInfo::setExtendResource(u32 index, GfExtendResource *resource) { m_extendResource[index] = resource; }
 
 void AssetPackInfo::releaseExtResource() {
   for (u32 i = 0; i < 4; i++) {
-    mm::mtl::safeRelease(unknown2e0[i]);
+    mm::mtl::safeRelease(m_extendResource[i]);
   }
 }
 
@@ -98,7 +98,7 @@ void AssetPackInfo::releaseEmptySlot() {
 }
 
 bool AssetPackInfo::isCached() const {
-  if (unknown307) {
+  if (m_loadComplete) {
     for (GfAssetPack *const *it = unknown10.begin(); it != unknown10.end(); ++it) {
       if (!(*it)->isEnableReload()) {
         return false;
@@ -205,7 +205,7 @@ GfAssetPack *AssetPackInfo::getAssetPack(const char *name) const {
 
 GfAssetPack *AssetPackInfo::getAssetPackByAssetType(GfAssetType type) const {
   for (GfAssetPack *pack : unknown10) {
-    if (pack->m_assetType.unknown00 == type) {
+    if (pack->m_assetType.m_assetType == type) {
       return pack;
     }
   }
@@ -555,7 +555,7 @@ bool GfAssetPack::releaseRefResource(void *data) {
   return false;
 }
 
-GfAssetType GfAssetPack::getAssetType() const { return m_assetType.unknown00; }
+GfAssetType GfAssetPack::getAssetType() const { return m_assetType.m_assetType; }
 
 const char *GfAssetPack::getAssetName() const { return m_assetType.unknown08.c_str(); }
 
@@ -572,7 +572,7 @@ bool GfAssetPack::setForceDestroy() {
   return true;
 }
 
-void GfAssetPack::setTimeout() { unknown23b = true; }
+void GfAssetPack::setTimeout() { m_timeout = true; }
 
 void GfAssetPack::setResource(GfFileIdx index, GfAssetResource *resource) {
   unknown001 entry;
@@ -692,12 +692,12 @@ void GfAssetPack::replaceAssetType(const GfAssetFilesInfo &filesInfo) {
 
 void GfAssetFiles::replaceAssetType(GfAssetType type) {
   if (type != ASSET_TYPE_UNKNOWN_0) {
-    unknown00 = type;
+    m_assetType = type;
   }
 }
 
 void GfAssetFiles::setInitializeParam(const GfAssetFilesInfo &info) {
-  unknown00 = info.unknown08;
+  m_assetType = info.unknown08;
   if (info.unknown30 != nullptr) {
     unknown08 = info.unknown30;
     unknown04 = mm::mtl::hashStrCrc(info.unknown30);

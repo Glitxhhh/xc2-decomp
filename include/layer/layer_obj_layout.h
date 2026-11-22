@@ -43,7 +43,7 @@ public:
     const u8 *unknown00;               // Inferred role: layout data block; original member name unknown.
     const LyrLayoutPosData *unknown08; // Inferred role: pos data table; original member name unknown.
     LayerViewPort unknown10;           // Inferred role: view port; original member name unknown.
-    u32 unknown20;                     // Inferred role: auto anchor mode; original member name unknown.
+    u32 m_autoAnchorMode;              // Inferred role: auto anchor mode; named after the game accessor layer::LayerAccLayoutObj::getAutoAnchorMode.
     u16 unknown24[2];                  // Inferred role: priority tbls; original member name unknown.
     u16 unknown28;                     // Inferred role: priority tbl; original member name unknown.
     u8 _2a[0x30 - 0x2a];
@@ -55,7 +55,7 @@ public:
   };
 
   static_assert(offsetof(unknown002, unknown10) == 0x10, "");
-  static_assert(offsetof(unknown002, unknown20) == 0x20, "");
+  static_assert(offsetof(unknown002, m_autoAnchorMode) == 0x20, "");
   static_assert(offsetof(unknown002, unknown28) == 0x28, "");
   static_assert(offsetof(unknown002, unknown30) == 0x30, "");
   static_assert(offsetof(unknown002, unknown38) == 0x38, "");

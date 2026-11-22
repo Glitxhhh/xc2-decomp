@@ -105,7 +105,7 @@ void DrMdoCtlSeamEnvMap::updateEnvMapRenderList() {
     if (env->unknown68 & 0x20000) {
       m_drMan->unknown78->unknown7f0->unknown180->setVolumePos(mm::Vec3(env->unknown80.x + view->unknown400.x, env->unknown80.y + view->unknown400.y, env->unknown80.z + view->unknown400.z));
     }
-    updateAnimFast(unknowndc * m_drMan->unknown1c8c, nullptr);
+    updateAnimFast(m_frameSpd * m_drMan->unknown1c8c, nullptr);
     updateTimerCalc();
     // The game loads the bit table pointer before the size (0x7100822304: ldr x21,[x20,#0x30]) and keeps it for the loop; the later calls reload it.
     // The size is unsigned: the game passes `add w2,w8,#4` to memset with no sxtw (0x710082231c).
@@ -113,7 +113,7 @@ void DrMdoCtlSeamEnvMap::updateEnvMapRenderList() {
     u32 size = unknown30->unknown30 / 32 * 4 + 4;
     memset(renderBits, 0, size);
     bool isChange = false;
-    DrResMdoMat *mat = unknown30->unknownc0;
+    DrResMdoMat *mat = unknown30->m_materialRes;
     for (s32 i = 0; i < unknown30->unknown30; i++, mat++) {
       if (mat->unknown08.a <= 0.0f) {
         if (mat->unknown1c & 1) {
@@ -128,7 +128,7 @@ void DrMdoCtlSeamEnvMap::updateEnvMapRenderList() {
         }
       }
     }
-    updateAnimEnd(unknowndc * m_drMan->unknown1c8c, env->unknown30, nullptr);
+    updateAnimEnd(m_frameSpd * m_drMan->unknown1c8c, env->unknown30, nullptr);
     updateMatFstCallBack();
     updateMatCallBack(env->unknown30);
     updateUniformBlock(env->unknown30);

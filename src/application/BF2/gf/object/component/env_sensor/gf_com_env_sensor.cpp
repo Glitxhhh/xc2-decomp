@@ -87,7 +87,7 @@ void GfComEnvSensor::setEnableSensor(bool isEnable) {
 }
 
 void GfComEnvSensor::flushEnv(const fw::Transform &transform) {
-  unknown10.check(transform, unknown2e0);
+  m_envSensor.check(transform, unknown2e0);
   GfComProperty *property = unknown08->getComponent<GfComProperty>();
   if (property != nullptr) {
     GfEnvProperty *env = property->unknown28.get();
@@ -100,7 +100,7 @@ void GfComEnvSensor::flushEnv(const fw::Transform &transform) {
           isEnable = coli->testAttribute(fw::COLI_ATRR_UNKNOWN_0);
         }
       }
-      unknown10.writeBackProperty(isEnable, env);
+      m_envSensor.writeBackProperty(isEnable, env);
     }
   }
   if (unknown360) {

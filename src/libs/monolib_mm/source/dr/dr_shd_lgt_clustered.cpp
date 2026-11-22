@@ -147,11 +147,11 @@ void DrShdLgtClustered::setParamStorageBuffer(u32 cate, u32 index) { unknown20[c
 
 grlib::CGLibTexture *DrShdLgtClustered::getLightListTexture(u32 cate) const { return nullptr; }
 
-void DrShdLgtClustered::beginLightList() { unknown20[unknown08].unknown188 = static_cast<u8 *>(unknown20[unknown08].unknowna8.getBuff()); }
+void DrShdLgtClustered::beginLightList() { unknown20[unknown08].m_lightListData = static_cast<u8 *>(unknown20[unknown08].unknowna8.getBuff()); }
 
-void DrShdLgtClustered::setLightListData(u32 index, int data) { unknown20[unknown08].unknown188[index] = data; }
+void DrShdLgtClustered::setLightListData(u32 index, int data) { unknown20[unknown08].m_lightListData[index] = data; }
 
-u8 DrShdLgtClustered::getLightListData(u32 index) { return unknown20[unknown08].unknown188[index]; }
+u8 DrShdLgtClustered::getLightListData(u32 index) { return unknown20[unknown08].m_lightListData[index]; }
 
 void DrShdLgtClustered::endLightList() { unknown20[unknown08].unknowna8.updateData(); }
 

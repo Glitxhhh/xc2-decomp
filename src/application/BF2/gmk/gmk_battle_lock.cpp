@@ -17,7 +17,7 @@ GmkBattleLock::GmkBattleLock() : unknownc0(0), unknownc4(0) {}
 
 GmkType GmkBattleLock::getGmkType() const { return GMK_TYPE; }
 
-bool GmkBattleLock::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkBattleLock::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkBattleLock::create(const CreateInfo &info) { AGmkBase::create(info); }
 

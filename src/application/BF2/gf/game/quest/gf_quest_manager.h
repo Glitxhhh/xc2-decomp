@@ -208,15 +208,15 @@ public:
 
   mm::mtl::FixedQueue<IQuestEvent *, 16> unknown08;                         // Inferred role: events; original member name unknown.
   bool unknown98;                                                           // Inferred role: initialize; original member name unknown.
-  mm::mtl::FixedQueue<QuestData, 8000> unknowna0;                           // Inferred role: order quests; original member name unknown.
-  mm::mtl::FixedQueue<QuestData, 15000> unknown7db0;                        // Inferred role: order achievement quests; original member name unknown.
+  mm::mtl::FixedQueue<QuestData, 8000> m_orderQuest;                        // Inferred role: order quests; named after the game accessor gf::GfQuestManager::getOrderQuest.
+  mm::mtl::FixedQueue<QuestData, 15000> m_orderAchievementQuest;            // Inferred role: order achievement quests; named after the game accessor gf::GfQuestManager::getOrderAchievementQuest.
   mm::mtl::FixedQueue<QuestData, 8000> unknown16820;                        // Inferred role: blade quests; original member name unknown.
   mm::mtl::FixedQueue<QuestData, 8000> unknown1e530;                        // Inferred role: normal quests; original member name unknown.
   mm::mtl::FixedQueue<QuestData, 8000> unknown26240;                        // Inferred role: mercenaries quests; original member name unknown.
   mm::mtl::FixedQueue<QuestData, 128> unknown2df50;                         // Inferred role: prev complete quests; original member name unknown.
   mm::mtl::FixedQueue<QuestData, 128> unknown2e160;                         // Inferred role: remove quests; original member name unknown.
   mm::mtl::FixedQueue<CompQuest, 128> unknown2e370;                         // Inferred role: complete quests; original member name unknown.
-  QuestID unknown2e780;                                                     // Inferred role: last order; original member name unknown.
+  QuestID m_lastOrder;                                                      // Inferred role: last order; named after the game accessor gf::GfQuestManager::getLastOrder.
   mm::mtl::FixedList<QuestParam *, 256> unknown2e788;                       // Inferred role: event params; original member name unknown.
   mm::mtl::FixedQueue<QuestData, 15000> unknown2f9a8;                       // Inferred role: achievement task checks; original member name unknown.
   mm::mtl::FixedQueue<QuestData, 1024> unknown3e418;                        // Inferred role: parallel task checks; original member name unknown.
@@ -230,15 +230,15 @@ public:
 struct GfQuestManagerLayout {
   static_assert(offsetof(GfQuestManager, unknown08) == 0x08, "");
   static_assert(offsetof(GfQuestManager, unknown98) == 0x98, "");
-  static_assert(offsetof(GfQuestManager, unknowna0) == 0xa0, "");
-  static_assert(offsetof(GfQuestManager, unknown7db0) == 0x7db0, "");
+  static_assert(offsetof(GfQuestManager, m_orderQuest) == 0xa0, "");
+  static_assert(offsetof(GfQuestManager, m_orderAchievementQuest) == 0x7db0, "");
   static_assert(offsetof(GfQuestManager, unknown16820) == 0x16820, "");
   static_assert(offsetof(GfQuestManager, unknown1e530) == 0x1e530, "");
   static_assert(offsetof(GfQuestManager, unknown26240) == 0x26240, "");
   static_assert(offsetof(GfQuestManager, unknown2df50) == 0x2df50, "");
   static_assert(offsetof(GfQuestManager, unknown2e160) == 0x2e160, "");
   static_assert(offsetof(GfQuestManager, unknown2e370) == 0x2e370, "");
-  static_assert(offsetof(GfQuestManager, unknown2e780) == 0x2e780, "");
+  static_assert(offsetof(GfQuestManager, m_lastOrder) == 0x2e780, "");
   static_assert(offsetof(GfQuestManager, unknown2e788) == 0x2e788, "");
   static_assert(offsetof(GfQuestManager, unknown2f9a8) == 0x2f9a8, "");
   static_assert(offsetof(GfQuestManager, unknown3e418) == 0x3e418, "");

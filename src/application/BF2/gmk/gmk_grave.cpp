@@ -41,7 +41,7 @@ void GmkGrave::BdatInfo::create(u8 *bdat, int id, const AGmkBase &gmk) {
       u8 releaseRadius = Bdat::getValCheck(mapList, "ene_release_r", map, BDAT_TYPE_UNKNOWN_1);
       u8 releaseHeight = Bdat::getValCheck(mapList, "ene_release_h", map, BDAT_TYPE_UNKNOWN_1);
       unknown0c.set(displayRadius + releaseRadius, displayHeight + releaseHeight);
-      const GmkSet *set = gmk.unknown08.unknown00->getCreateInfo().unknown08;
+      const GmkSet *set = gmk.unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
       u8 *enemyBdat;
       if (set->unknown1b8[GMK_TYPE_ENEMY] == nullptr || (enemyBdat = set->unknown1b8[GMK_TYPE_ENEMY]->getBindedBdatFp()) == nullptr) {
         if (set->unknown1b8[GMK_TYPE_ROUTED_ENEMY] == nullptr) {

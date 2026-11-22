@@ -50,7 +50,7 @@ void WaterInPlugin::onDeactivate() {
   if (!unknown18) {
     GfComEnvSensor *envSensor = unknown10->unknown08->getComponent<GfComEnvSensor>();
     GfComPropertyPc *property = unknown10->unknown08->getComponent<GfComPropertyPc>();
-    if (envSensor != nullptr && property != nullptr && envSensor->unknown10.unknown24_1 && envSensor->unknown10.unknown30.unknown70.unknown00 >= property->unknown160.unknown00.y) {
+    if (envSensor != nullptr && property != nullptr && envSensor->m_envSensor.unknown24_1 && envSensor->m_envSensor.unknown30.unknown70.unknown00 >= property->unknown160.unknown00.y) {
       onEvent(*unknown10);
     }
   }
@@ -115,9 +115,9 @@ void WaterInPlugin::update(GfComBehaviorPc &behavior, const fw::UpdateInfo &) {
   if (!unknown18) {
     GfComEnvSensor *envSensor = behavior.unknown08->getComponent<GfComEnvSensor>();
     GfComPropertyPc *property = behavior.unknown08->getComponent<GfComPropertyPc>();
-    if (envSensor != nullptr && property != nullptr && envSensor->unknown10.unknown24_1) {
-      if (property->unknown160.unknown00.y < property->unknown180.unknown00.y && property->unknown180.unknown00.y > envSensor->unknown10.unknown30.unknown70.unknown00 &&
-          envSensor->unknown10.unknown30.unknown70.unknown00 >= property->unknown160.unknown00.y) {
+    if (envSensor != nullptr && property != nullptr && envSensor->m_envSensor.unknown24_1) {
+      if (property->unknown160.unknown00.y < property->unknown180.unknown00.y && property->unknown180.unknown00.y > envSensor->m_envSensor.unknown30.unknown70.unknown00 &&
+          envSensor->m_envSensor.unknown30.unknown70.unknown00 >= property->unknown160.unknown00.y) {
         onEvent(behavior);
       }
     }

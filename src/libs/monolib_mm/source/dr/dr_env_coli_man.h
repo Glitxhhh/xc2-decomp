@@ -19,28 +19,28 @@ struct DrEnvColiResult {
     unknown00 = -1;
     unknown24 = 0;
     unknown04 = -1;
-    unknown08 = -1;
-    unknown0c = 0;
-    unknown10 = 0;
-    unknown14 = 0;
-    unknown18 = 0;
+    m_bgmId = -1;
+    m_layerId = 0;
+    m_reverbId = 0;
+    m_caveId = 0;
+    m_areaId = 0;
     unknown1c = 0;
-    unknown20 = 0;
+    m_windId = 0;
   }
 
-  s32 unknown00; // Inferred role: priority; original member name unknown.
-  s32 unknown04; // Inferred role: sub priority; original member name unknown.
-  s32 unknown08; // Inferred role: bgm id; original member name unknown.
-  s32 unknown0c; // Inferred role: layer id; original member name unknown.
-  s32 unknown10; // Inferred role: reverb id; original member name unknown.
-  s32 unknown14; // Inferred role: cave id; original member name unknown.
-  s32 unknown18; // Inferred role: area id; original member name unknown.
-  s32 unknown1c; // Inferred role: post parameter index; original member name unknown.
-  s32 unknown20; // Inferred role: wind id; original member name unknown.
-  u32 unknown24; // Inferred role: flags (bit 2: room); original member name unknown.
+  s32 unknown00;  // Inferred role: priority; original member name unknown.
+  s32 unknown04;  // Inferred role: sub priority; original member name unknown.
+  s32 m_bgmId;    // Inferred role: bgm id; named after the game accessor ml::ScnRenderDrEnvColi::getBgmId.
+  s32 m_layerId;  // Inferred role: layer id; named after the game accessor ml::ScnRenderDrEnvColi::getLayerId.
+  s32 m_reverbId; // Inferred role: reverb id; named after the game accessor ml::ScnRenderDrEnvColi::getReverbId.
+  s32 m_caveId;   // Inferred role: cave id; named after the game accessor ml::ScnRenderDrEnvColi::getCaveId.
+  s32 m_areaId;   // Inferred role: area id; named after the game accessor ml::ScnRenderDrEnvColi::getAreaId.
+  s32 unknown1c;  // Inferred role: post parameter index; original member name unknown.
+  s32 m_windId;   // Inferred role: wind id; named after the game accessor ml::ScnRenderDrEnvColi::getWindId.
+  u32 unknown24;  // Inferred role: flags (bit 2: room); original member name unknown.
 };
 
-static_assert(offsetof(DrEnvColiResult, unknown08) == 0x08, "");
+static_assert(offsetof(DrEnvColiResult, m_bgmId) == 0x08, "");
 static_assert(offsetof(DrEnvColiResult, unknown1c) == 0x1c, "");
 static_assert(offsetof(DrEnvColiResult, unknown24) == 0x24, "");
 static_assert(sizeof(DrEnvColiResult) == 0x28, "");

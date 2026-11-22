@@ -162,7 +162,7 @@ u64 MicroThread::createThread(MLTHG *group, nn::os::FiberFunction function, void
   thread->unknown2c = false;
   thread->unknown2d = false;
   thread->unknown28 = 0;
-  thread->unknown18 = userData;
+  thread->m_currentUserData = userData;
   thread->unknown20 = 0;
   thread->unknown30 = nn::os::GetCurrentThread();
   thread->unknown38 = reinterpret_cast<MLTH *>(createHandle(group, index));
@@ -322,7 +322,7 @@ void MicroThread::tail() {
   unknown88.clear();
 }
 
-void *MicroThread::getCurrentUserData() { return unknown2c0->unknown670->unknown18; }
+void *MicroThread::getCurrentUserData() { return unknown2c0->unknown670->m_currentUserData; }
 
 u64 MicroThread::getCurrentThreadID() {
   MicroThread *thread = get();

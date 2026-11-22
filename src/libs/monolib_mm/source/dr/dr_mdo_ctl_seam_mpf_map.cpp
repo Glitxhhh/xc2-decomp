@@ -52,7 +52,7 @@ void DrMdoCtlSeamMpfMap::createMpfZPrePassDisplayList() {
       int count = mpf->unknown52;
       DrMdoCtlMpfWork *work = mpf->unknownc0;
       for (int i = 0; i < count; i++) {
-        if (work->unknown20[i].unknown20 != 0) {
+        if (work->unknown20[i].m_objChk != 0) {
           const MdsMdlTopHeader *entry = &unknown30->unknown168[i];
           const MdsMdlInfoHeader *header = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + entry->unknown00);
           int num = entry->unknown04;
@@ -205,7 +205,7 @@ void DrMdoCtlSeamMpfMap::createMpfMapDisplayList() {
       int count = mpf->unknown52;
       DrMdoCtlMpfWork *work = mpf->unknownc0;
       for (int i = 0; i < count; i++) {
-        if (work->unknown20[i].unknown20 != 0) {
+        if (work->unknown20[i].m_objChk != 0) {
           const MdsMdlTopHeader *entry = &unknown30->unknown168[i];
           const MdsMdlInfoHeader *header = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + entry->unknown00);
           int num = entry->unknown04;

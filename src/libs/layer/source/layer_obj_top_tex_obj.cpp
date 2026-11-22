@@ -33,7 +33,7 @@ void LayerObjTopTexObj::finalRender() {
   shader->setupVertex(static_cast<LayerDefVertType>(1));
   shader->unknown4f0 = 1;
   shader->setupShader(&unknown278);
-  shader->setupTexture(*unknown270, static_cast<LayerSamplerType>(unknownc6), 0);
+  shader->setupTexture(*unknown270, static_cast<LayerSamplerType>(m_texFilterType), 0);
   shader->renderQuadsIndex();
 }
 
@@ -73,10 +73,10 @@ void LayerObjTopTexObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
     if (unknowna8 & 0x400) {
       LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown258, unknown200);
     } else if (!isClip()) {
-      sortMan->set2DSpace(&unknown258, unknownc0);
+      sortMan->set2DSpace(&unknown258, m_priority);
     }
   } else if (!isClip()) {
-    sortMan->set2DSpace(&unknown258, unknownc0);
+    sortMan->set2DSpace(&unknown258, m_priority);
   }
 }
 

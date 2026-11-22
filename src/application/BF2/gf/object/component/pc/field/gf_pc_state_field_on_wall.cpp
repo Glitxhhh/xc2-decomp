@@ -46,15 +46,15 @@ void StateFieldOnWall::leave(GfComBehaviorPc *behavior, ai::State *next) {
   GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
   property->unknown310.unknown10_5 = false;
   StateUtil::setEnvSensor(*behavior, 0x100, false);
-  if (next != nullptr && next->unknown08 != STATE_ID_UNKNOWN_48) {
+  if (next != nullptr && next->m_state != STATE_ID_UNKNOWN_48) {
     StateUtilField::setAccessFlag(*behavior, false);
-    u32 type = next->unknown08 == STATE_ID_UNKNOWN_15 ? 2 : 1;
+    u32 type = next->m_state == STATE_ID_UNKNOWN_15 ? 2 : 1;
     MsgPcFieldNotifyWall message;
     message.unknown10 = unknown20.unknown00;
     message.unknown30.unknown00 = property->unknown160.unknown00;
     message.unknown30.unknown10 = property->unknown160.unknown10;
     message.unknown50 = type;
-    if (next->unknown08 == STATE_ID_UNKNOWN_43) {
+    if (next->m_state == STATE_ID_UNKNOWN_43) {
       EnviromentSensor::GroundInfo *ground = StateUtil::getClimbEndGroundInfo(*behavior);
       if (ground != nullptr) {
         message.unknown30.unknown00.y = ground->unknown00.y;

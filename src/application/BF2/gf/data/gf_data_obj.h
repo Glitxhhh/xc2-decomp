@@ -167,7 +167,7 @@ public:
   virtual const char *getCenterBone() const;
   virtual const char *getCamBone() const;
   virtual u32 getEyeRotControl() const;
-  virtual void setMenuParam() { unknown3c = true; }
+  virtual void setMenuParam() { m_menuParam = true; }
   virtual bool isValid() const;
   virtual const char *getModelResourceName() const;
   virtual const char *getMotionResourceName() const;
@@ -250,7 +250,7 @@ public:
   GF_OBJ_HANDLE *unknown18; // Inferred role: handle; original member name unknown.
   SDataDriver *unknown20;   // Inferred role: virtual data; original member name unknown.
   u32 unknown28[5];         // Inferred role: virtual equip weapons; original member name unknown.
-  bool unknown3c;           // Inferred role: menu param; original member name unknown.
+  bool m_menuParam;         // Inferred role: menu param; named after the game accessor gf::DataObjDriver::setMenuParam.
 };
 
 static_assert(offsetof(DataObjDriver, m_bdatId) == 0x08, "");
@@ -258,7 +258,7 @@ static_assert(offsetof(DataObjDriver, unknown10) == 0x10, "");
 static_assert(offsetof(DataObjDriver, unknown18) == 0x18, "");
 static_assert(offsetof(DataObjDriver, unknown20) == 0x20, "");
 static_assert(offsetof(DataObjDriver, unknown28) == 0x28, "");
-static_assert(offsetof(DataObjDriver, unknown3c) == 0x3c, "");
+static_assert(offsetof(DataObjDriver, m_menuParam) == 0x3c, "");
 static_assert(sizeof(DataObjDriver) == 0x40, "");
 
 class DataObjBlade : public IDataObj {
@@ -295,7 +295,7 @@ public:
   virtual bool getName(u8 *&bdat, u32 &textId) const;
   virtual u32 getBdatId() const;
   virtual u32 getObjType() const { return OBJECT_TYPE_BLADE; }
-  virtual void setMenuParam() { unknown24 = true; }
+  virtual void setMenuParam() { m_menuParam = true; }
   virtual u32 getDataType() const;
   virtual SDataIdea *getIdea() const;
   virtual u32 getHpMax(bool isVirtual) const;
@@ -356,14 +356,14 @@ public:
   GF_OBJ_HANDLE *unknown10; // Inferred role: handle; original member name unknown.
   SDataBlade *unknown18;    // Inferred role: virtual data; original member name unknown.
   u32 m_bdatId;
-  bool unknown24; // Inferred role: menu param; original member name unknown.
+  bool m_menuParam; // Inferred role: menu param; named after the game accessor gf::DataObjBlade::setMenuParam.
 };
 
 static_assert(offsetof(DataObjBlade, unknown08) == 0x08, "");
 static_assert(offsetof(DataObjBlade, unknown10) == 0x10, "");
 static_assert(offsetof(DataObjBlade, unknown18) == 0x18, "");
 static_assert(offsetof(DataObjBlade, m_bdatId) == 0x20, "");
-static_assert(offsetof(DataObjBlade, unknown24) == 0x24, "");
+static_assert(offsetof(DataObjBlade, m_menuParam) == 0x24, "");
 static_assert(sizeof(DataObjBlade) == 0x28, "");
 
 class DataObjPcWpn : public IDataObj {

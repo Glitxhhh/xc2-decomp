@@ -147,10 +147,10 @@ public:
 
   struct CategoryVolume {
     struct Volume {
-      Volume() : unknown00(1.0f), unknown04(1.0f), unknown08(1.0f), unknown0c(0.0f), unknown10(0.0f) {}
+      Volume() : m_categoryVolume(1.0f), unknown04(1.0f), unknown08(1.0f), unknown0c(0.0f), unknown10(0.0f) {}
 
       void clear() {
-        unknown00 = 1.0f;
+        m_categoryVolume = 1.0f;
         unknown04 = 1.0f;
         unknown08 = 1.0f;
         unknown0c = 0.0f;
@@ -160,15 +160,15 @@ public:
       void set(f32 volume, f32 fadeTime) {
         unknown10 = fadeTime;
         unknown0c = fadeTime;
-        unknown08 = unknown00;
+        unknown08 = m_categoryVolume;
         unknown04 = volume;
       }
 
-      f32 unknown00; // Inferred role: current; original member name unknown.
-      f32 unknown04; // Inferred role: target; original member name unknown.
-      f32 unknown08; // Inferred role: start; original member name unknown.
-      f32 unknown0c; // Inferred role: duration; original member name unknown.
-      f32 unknown10; // Inferred role: time; original member name unknown.
+      f32 m_categoryVolume; // Inferred role: current; named after the game accessor gf::GfSound::getCategoryVolume.
+      f32 unknown04;        // Inferred role: target; original member name unknown.
+      f32 unknown08;        // Inferred role: start; original member name unknown.
+      f32 unknown0c;        // Inferred role: duration; original member name unknown.
+      f32 unknown10;        // Inferred role: time; original member name unknown.
     };
 
     // The game constructor (0x71005d6094) stores the 18 volumes twice, once for the member initialisation and once for this clear loop.

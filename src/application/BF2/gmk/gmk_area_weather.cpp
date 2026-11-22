@@ -11,7 +11,7 @@ template bool TGmkList<GmkAreaWeather, GmkAreaWeather::BdatInfo, 1381259073u, 2u
 
 GmkType GmkAreaWeather::getGmkType() const { return GMK_TYPE; }
 
-bool GmkAreaWeather::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkAreaWeather::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkAreaWeather::create(const CreateInfo &info) {
   AGmkBase::create(info);
@@ -19,7 +19,7 @@ void GmkAreaWeather::create(const CreateInfo &info) {
 }
 
 void GmkAreaWeather::createGmkPhantom() {
-  const GmkSet *set = unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return;
   }

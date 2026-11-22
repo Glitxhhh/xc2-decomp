@@ -21,12 +21,12 @@ void DrShdDataObj::createShader(DrShdDataList *list, int type, int index) {
   if (type == 2) {
     return;
   }
-  unknown68[0] = &list->unknown68[index];
+  unknown68[0] = &list->m_fetchShader[index];
   u8 next = DrShdDataList::s_etcNextVertex[index];
-  unknown68[1] = next == 0xff ? nullptr : &list->unknown68[next];
+  unknown68[1] = next == 0xff ? nullptr : &list->m_fetchShader[next];
 }
 
-DrShdDataList::DrShdDataList(DrMan *drMan) : unknown00(nullptr), unknown08(drMan), unknown10(nullptr), unknown620(nullptr) {
+DrShdDataList::DrShdDataList(DrMan *drMan) : unknown00(nullptr), unknown08(drMan), unknown10(nullptr), m_mpfObj(nullptr) {
   memset(unknown18, 0, sizeof(unknown18));
   unknown618 = new (unknown08->unknown0c) grlib::CGLibShdListBase<DrShdDataObj>();
   createWork();
@@ -44,7 +44,7 @@ DrShdDataList::~DrShdDataList() {
   unknown958.release();
   unknown980.release();
   for (int i = 0; i < 91; i++) {
-    unknown68[i].clearWork();
+    m_fetchShader[i].clearWork();
   }
   unknown9a8.unknown001();
   if (unknown618 != nullptr) {
@@ -87,15 +87,15 @@ DrShdDataObj *DrShdDataList::getComputeObj(int index) { return &unknown18[9][ind
 
 DrShdDataObj *DrShdDataList::getCateShdObj(int category, int index) { return &unknown18[category][index]; }
 
-DrResShdMpf *DrShdDataList::getMpfObj(int index) { return &unknown620[index]; }
+DrResShdMpf *DrShdDataList::getMpfObj(int index) { return &m_mpfObj[index]; }
 
-DrResShdPrePass *DrShdDataList::getPrePassObj(int index) { return &unknown628[index]; }
+DrResShdPrePass *DrShdDataList::getPrePassObj(int index) { return &m_prePassObj[index]; }
 
-DrResShdShw *DrShdDataList::getShwObj(int index) { return &unknown630[index]; }
+DrResShdShw *DrShdDataList::getShwObj(int index) { return &m_shwObj[index]; }
 
-DrResShdStreamOut *DrShdDataList::getStmOutObj(int index) { return &unknown9d0[index]; }
+DrResShdStreamOut *DrShdDataList::getStmOutObj(int index) { return &m_stmOutObj[index]; }
 
-DrResShdObjMot *DrShdDataList::getObjMotBlurObj(int index) { return &unknown9d8[index]; }
+DrResShdObjMot *DrShdDataList::getObjMotBlurObj(int index) { return &m_objMotBlurObj[index]; }
 
 void DrShdDataList::bindShdVertex() { grlib::CGLibCtlVertex::setVertex(unknown638[0]); }
 
@@ -143,11 +143,11 @@ void DrShdDataList::renderPoint(int count) { grlib::CGLibCtlVertex::renderVertex
 
 void DrShdDataList::renderPoint(int count, int instanceCount) { grlib::CGLibCtlVertex::renderInstanceVertex(GRL_PRIMITIVE_POINTS, count, instanceCount); }
 
-DrResFetch *DrShdDataList::getFetchShader(int index) { return &unknown68[index]; }
+DrResFetch *DrShdDataList::getFetchShader(int index) { return &m_fetchShader[index]; }
 
 DrResFetch *DrShdDataList::getSubFetchShader(int index) {
   u8 next = s_etcNextVertex[index];
-  return next == 0xff ? nullptr : &unknown68[next];
+  return next == 0xff ? nullptr : &m_fetchShader[next];
 }
 
 grlib::CGLibOneUniformBlock *DrShdDataList::getAlphaTestUniform(f32 alphaRef) {

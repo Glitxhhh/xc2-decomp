@@ -122,12 +122,12 @@ void GfGameSalvage::update(const fw::UpdateInfo &info) {
 
 void GfGameSalvage::startSalvage(GF_OBJ_HANDLE *handle) {
   get()->unknowna8 = handle;
-  if (GfGameManager::getState() == GF_STATE_UNKNOWN_11 && !GfGameManager::isBattle() && get()->unknown08.getState()->unknown08 == STATE_UNKNOWN_0) {
+  if (GfGameManager::getState() == GF_STATE_UNKNOWN_11 && !GfGameManager::isBattle() && get()->unknown08.getState()->m_state == STATE_UNKNOWN_0) {
     get()->unknown08.setState(STATE_UNKNOWN_1);
   }
 }
 
-bool GfGameSalvage::isStateWait() { return get()->unknown08.getState()->unknown08 == STATE_UNKNOWN_0; }
+bool GfGameSalvage::isStateWait() { return get()->unknown08.getState()->m_state == STATE_UNKNOWN_0; }
 
 void GfGameSalvage::cancelSalvage() {}
 

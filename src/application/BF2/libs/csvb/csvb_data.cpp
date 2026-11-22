@@ -121,13 +121,13 @@ u16 CCsvbData::GetRowCount() const { return m_rowCount; }
 
 u16 CCsvbData::GetColumCount(u16 row) const { return unknown08[row].m_columCount; }
 
-bool CCsvbData::IsValid(u16 row, u16 column) const { return unknown18[unknown08[row].unknown02 + column].unknown00 != 2; }
+bool CCsvbData::IsValid(u16 row, u16 column) const { return unknown18[unknown08[row].unknown02 + column].m_type != 2; }
 
-s32 CCsvbData::GetType(u16 row, u16 column) const { return unknown18[unknown08[row].unknown02 + column].unknown00; }
+s32 CCsvbData::GetType(u16 row, u16 column) const { return unknown18[unknown08[row].unknown02 + column].m_type; }
 
 s32 CCsvbData::GetInt(u16 row, u16 column) const {
   const unknown002 &cell = unknown18[unknown08[row].unknown02 + column];
-  switch (cell.unknown00) {
+  switch (cell.m_type) {
   case 0:
     return cell.unknown08.unknown00;
   case 1:
@@ -138,7 +138,7 @@ s32 CCsvbData::GetInt(u16 row, u16 column) const {
 
 f32 CCsvbData::GetFloat(u16 row, u16 column) const {
   const unknown002 &cell = unknown18[unknown08[row].unknown02 + column];
-  switch (cell.unknown00) {
+  switch (cell.m_type) {
   case 1:
     return cell.unknown08.unknown00_1;
   case 0:
@@ -149,7 +149,7 @@ f32 CCsvbData::GetFloat(u16 row, u16 column) const {
 
 const char *CCsvbData::GetString(u16 row, u16 column) const {
   const unknown002 &cell = unknown18[unknown08[row].unknown02 + column];
-  if (cell.unknown00 == 3) {
+  if (cell.m_type == 3) {
     return cell.unknown08.unknown00_2;
   }
   return nullptr;

@@ -21,19 +21,19 @@ class DrPixlShadowCacheMan;
 class DrPixlShadowMan;
 
 struct wkPixlManRes {
-  DrPixlRenderTarget *unknown00[19][2]; // Inferred role: pixl objs; original member name unknown.
-  DrPixlRenderTarget *unknown130;       // Inferred role: color buff; original member name unknown.
-  DrPixlRenderTarget *unknown138;       // Inferred role: active color buff; original member name unknown.
-  DrPixlRenderTarget *unknown140;       // Inferred role: hdr buff; original member name unknown.
-  DrPixlRenderTarget *unknown148;       // Inferred role: back face depth texture; original member name unknown.
-  DrPixlRenderTarget *unknown150;       // Inferred role: render target; original member name unknown.
-  DrPixlRenderTarget *unknown158;       // Inferred role: render target; original member name unknown.
-  DrPixlRenderTarget *unknown160;       // Inferred role: render target; original member name unknown.
-  DrPixlRenderTarget *unknown168;       // Inferred role: render target; original member name unknown.
-  DrPixlDeferred *unknown170;           // Inferred role: deferred; original member name unknown.
-  DrPixlShadowMan *unknown178;          // Inferred role: shadow man; original member name unknown.
-  DrPixlPostMan *unknown180;            // Inferred role: post man; original member name unknown.
-  f32 unknown188;                       // Inferred role: tone strength, first value of setToneStr; original member name unknown.
+  DrPixlRenderTarget *unknown00[19][2];       // Inferred role: pixl objs; original member name unknown.
+  DrPixlRenderTarget *unknown130;             // Inferred role: color buff; original member name unknown.
+  DrPixlRenderTarget *unknown138;             // Inferred role: active color buff; original member name unknown.
+  DrPixlRenderTarget *unknown140;             // Inferred role: hdr buff; original member name unknown.
+  DrPixlRenderTarget *m_backFaceDepthTexture; // Inferred role: back face depth texture; named after the game accessor ml::DrPixlMan::getBackFaceDepthTexture.
+  DrPixlRenderTarget *unknown150;             // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown158;             // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown160;             // Inferred role: render target; original member name unknown.
+  DrPixlRenderTarget *unknown168;             // Inferred role: render target; original member name unknown.
+  DrPixlDeferred *unknown170;                 // Inferred role: deferred; original member name unknown.
+  DrPixlShadowMan *unknown178;                // Inferred role: shadow man; original member name unknown.
+  DrPixlPostMan *unknown180;                  // Inferred role: post man; original member name unknown.
+  f32 unknown188;                             // Inferred role: tone strength, first value of setToneStr; original member name unknown.
   f32 unknown18c; // Inferred role: second tone value, sent with the tone strength by DrPixlPostObjBloom::calculateDownScaleImpl; original member name unknown. `str s1, [x8, #0x18c]` in
                   // DrPixlMan::setToneStr 0x710083df60; also read as the high half of the 64-bit load at 0x7100854524.
   u8 _190[0x194 - 0x190];
@@ -55,7 +55,7 @@ struct wkPixlManRes {
 };
 
 static_assert(offsetof(wkPixlManRes, unknown130) == 0x130, "");
-static_assert(offsetof(wkPixlManRes, unknown148) == 0x148, "");
+static_assert(offsetof(wkPixlManRes, m_backFaceDepthTexture) == 0x148, "");
 static_assert(offsetof(wkPixlManRes, unknown150) == 0x150, "");
 static_assert(offsetof(wkPixlManRes, unknown158) == 0x158, "");
 static_assert(offsetof(wkPixlManRes, unknown160) == 0x160, "");

@@ -49,13 +49,13 @@ static_assert(sizeof(unknown121) == 0x0c, "");
 // Inferred role: save data mercenaries; original type name unknown.
 struct unknown122 {
   mm::mtl::FixedVector<unknown120, 3> unknown00; // Inferred role: teams; original member name unknown.
-  unknown121 unknown80[8];                       // Inferred role: presets; original member name unknown.
+  unknown121 m_preset[8];                        // Inferred role: presets; named after the game accessor gf::GfDataMercenaries::getPreset.
   // Inferred role: reserver slots, zero when free. Evidence: GfDataBlade::getEnableCountForCreateBlade (0x71002a15d8) counts the zero u16 of the
   // 0xe0 to 0x260 range, bounded by getReserverMax (at most 5 * 24 + 24 + 48 = 192 entries, the size of this range); original member name unknown.
   u16 unknowne0[192];
 };
 
-static_assert(offsetof(unknown122, unknown80) == 0x080, "");
+static_assert(offsetof(unknown122, m_preset) == 0x080, "");
 static_assert(offsetof(unknown122, unknowne0) == 0x0e0, "");
 static_assert(sizeof(unknown122) == 0x260, "");
 

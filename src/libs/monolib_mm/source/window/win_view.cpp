@@ -166,7 +166,7 @@ void WinView::addFramePos(const mm::Pnt<int> &pos) {
 
 void WinView::addScroll(const mm::Pnt<int> &scroll) { unknown1b8.m_back->addScroll(scroll); }
 
-bool WinView::isSplitHolizon() const { return unknown1b8.m_back->unknown28.unknown08; }
+bool WinView::isSplitHolizon() const { return unknown1b8.m_back->unknown28.m_splitHolizon; }
 
 s32 WinView::getSplitLine(bool isBack) const {
   const RENDER_INFO *info = isBack ? unknown1b8.m_back : unknown1b8.m_front;

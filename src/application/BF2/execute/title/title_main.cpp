@@ -47,7 +47,7 @@ namespace tl {
 
 TitleMain::TitleMain()
     : unknown08(fw::FrameworkMemory::getAllocator(5)), unknown80(nullptr), unknown94(false), unknown95(false), unknown98(0), unknowna0(false), unknowna4(gf::SAVESLOT_UNKNOWN_FFFFFFFF),
-      unknown130(nullptr), unknown138(nullptr), unknown168(0), unknown170(gf::unknown019), unknown178(false) {}
+      m_saveBuffer(nullptr), m_optionBuffer(nullptr), m_playTitleEvent(0), unknown170(gf::unknown019), unknown178(false) {}
 
 TitleMain::~TitleMain() {}
 
@@ -87,7 +87,7 @@ void TitleMain::initialize() {
 void TitleMain::finalize() {
   destroyMaskVolume();
   unknown94 = true;
-  while (unknown08.getState()->unknown08 != 8) {
+  while (unknown08.getState()->m_state != 8) {
     ml::MicroThread::get()->sleep(1, true);
   }
   stopTitleBGM(0.0f);
@@ -107,22 +107,22 @@ void TitleMain::destroy() {
 }
 
 void TitleMain::createSaveBuffer() {
-  if (unknown130 == nullptr) {
-    unknown130 = new (ml::WorkRootMem::getMemTMP(), nullptr, 0, 4, false) gf::SDataSave;
+  if (m_saveBuffer == nullptr) {
+    m_saveBuffer = new (ml::WorkRootMem::getMemTMP(), nullptr, 0, 4, false) gf::SDataSave;
   } else {
-    new (unknown130) gf::SDataSave;
+    new (m_saveBuffer) gf::SDataSave;
   }
-  if (unknown138 == nullptr) {
-    unknown138 = new (ml::WorkRootMem::getMemTMP(), nullptr, 0, 4, false) gf::SDataOption;
+  if (m_optionBuffer == nullptr) {
+    m_optionBuffer = new (ml::WorkRootMem::getMemTMP(), nullptr, 0, 4, false) gf::SDataOption;
   } else {
-    new (unknown138) gf::SDataOption;
+    new (m_optionBuffer) gf::SDataOption;
   }
-  gf::GfMenuManager::initOptionData(*unknown138);
+  gf::GfMenuManager::initOptionData(*m_optionBuffer);
 }
 
 void TitleMain::fnUpdate(TitleMain *main) {
   main->unknown08.update(&main->unknown88);
-  while (main->unknown08.getState()->unknown08 != 8) {
+  while (main->unknown08.getState()->m_state != 8) {
     ml::MicroThread::get()->sleep(1, true);
     main->unknown08.update(&main->unknown88);
   }
@@ -145,13 +145,13 @@ void TitleMain::stopTitleBGM(f32 fadeTime) {
 }
 
 void TitleMain::destroySaveBuffer() {
-  if (unknown130 != nullptr) {
-    delete unknown130;
-    unknown130 = nullptr;
+  if (m_saveBuffer != nullptr) {
+    delete m_saveBuffer;
+    m_saveBuffer = nullptr;
   }
-  if (unknown138 != nullptr) {
-    delete unknown138;
-    unknown138 = nullptr;
+  if (m_optionBuffer != nullptr) {
+    delete m_optionBuffer;
+    m_optionBuffer = nullptr;
   }
 }
 
@@ -181,7 +181,7 @@ void TitleMain::returnTitle(gf::SAVESLOT slot) {
   TitleMain *main = get();
   if (main != nullptr) {
     main->unknowna4 = slot;
-    u32 state = main->unknown08.getState()->unknown08;
+    u32 state = main->unknown08.getState()->m_state;
     if (state == 1 || state == 5 || state == 6) {
       main->unknown95 = true;
     }
@@ -191,21 +191,21 @@ void TitleMain::returnTitle(gf::SAVESLOT slot) {
 
 bool TitleMain::isStateGame() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->unknown08 == 5;
+    return get()->unknown08.getState()->m_state == 5;
   }
   return false;
 }
 
 bool TitleMain::isStateEvent() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->unknown08 == 6;
+    return get()->unknown08.getState()->m_state == 6;
   }
   return false;
 }
 
 bool TitleMain::isStateSelect() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->unknown08 == 1;
+    return get()->unknown08.getState()->m_state == 1;
   }
   return false;
 }
@@ -225,7 +225,7 @@ void TitleMain::setMaskVolume(f32 volume, f32 fadeTime) {
 
 bool TitleMain::isReturnTitle() {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->unknown08 == 7;
+    return get()->unknown08.getState()->m_state == 7;
   }
   return false;
 }
@@ -239,48 +239,48 @@ void TitleMain::playTitleBGM() {
 
 bool TitleMain::isStateReturnTitle() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->unknown08 == 7;
+    return get()->unknown08.getState()->m_state == 7;
   }
   return false;
 }
 
-gf::SDataSave *TitleMain::getSaveBuffer() { return unknown130; }
+gf::SDataSave *TitleMain::getSaveBuffer() { return m_saveBuffer; }
 
-gf::SDataOption *TitleMain::getOptionBuffer() { return unknown138; }
+gf::SDataOption *TitleMain::getOptionBuffer() { return m_optionBuffer; }
 
 void TitleMain::clearSaveBuffer() {
-  if (unknown130 != nullptr) {
-    new (unknown130) gf::SDataSave;
+  if (m_saveBuffer != nullptr) {
+    new (m_saveBuffer) gf::SDataSave;
   }
 }
 
 void TitleMain::setupTitleOptionToGameOption() {
-  if (unknown138 != nullptr) {
-    gf::GfManager::setupOptionData(*unknown138);
+  if (m_optionBuffer != nullptr) {
+    gf::GfManager::setupOptionData(*m_optionBuffer);
   }
 }
 
 void TitleMain::playTitleEvent(u32 event) {
-  unknown168 = event;
+  m_playTitleEvent = event;
   if (event != 0) {
     gf::GfPlayFactory::createOneEvent(event);
   }
 }
 
-u32 TitleMain::getPlayTitleEvent() { return unknown168; }
+u32 TitleMain::getPlayTitleEvent() { return m_playTitleEvent; }
 
 void TitleMain::getGameClearFlagFromSaveData() {
-  if (unknown130->unknown00 == gf::SAVE_UNKNOWN_237915 && gf::GfGameFlag::getLocal(unknown130->unknown10.unknownfbbc4, 1, 0xd77e) != 0) {
+  if (m_saveBuffer->unknown00 == gf::SAVE_UNKNOWN_237915 && gf::GfGameFlag::getLocal(m_saveBuffer->unknown10.unknownfbbc4, 1, 0xd77e) != 0) {
     unknown178 = true;
   }
 }
 
 u32 TitleMain::getChapterIdFromSaveData() {
-  if (unknown130->unknown00 != gf::SAVE_UNKNOWN_237915) {
+  if (m_saveBuffer->unknown00 != gf::SAVE_UNKNOWN_237915) {
     return 0;
   }
   // The game reads the u16 at SDataSave + 0x104bd6 (ldrh at 0x7100143e6c), which is unknown9000[1], a short flag, of the game flags.
-  u32 flag = unknown130->unknown10.unknownfbbc4.unknown9000[1];
+  u32 flag = m_saveBuffer->unknown10.unknownfbbc4.unknown9000[1];
   if (flag == 0) {
     return 0;
   }

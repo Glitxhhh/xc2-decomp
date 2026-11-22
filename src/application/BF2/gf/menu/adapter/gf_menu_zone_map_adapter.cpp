@@ -107,6 +107,6 @@ void GfMenuZoneMapAdapter::update(const fw::UpdateInfo &info) {
   }
 }
 
-bool GfMenuZoneMapAdapter::ListConverter::isGroupMode() { return list->unknown79; }
+bool GfMenuZoneMapAdapter::ListConverter::isGroupMode() { return list->m_groupMode; }
 
 } // namespace gf

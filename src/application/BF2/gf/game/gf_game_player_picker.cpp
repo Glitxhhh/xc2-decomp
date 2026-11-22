@@ -135,7 +135,7 @@ void GfGamePlayerPicker::onDeactive() {
   }
 }
 
-GF_OBJ_HANDLE *GfGamePlayerPicker::getPlayerHandle() const { return GfGamePlayerFormation::get()->unknown1a0[0].unknown08; }
+GF_OBJ_HANDLE *GfGamePlayerPicker::getPlayerHandle() const { return GfGamePlayerFormation::get()->unknown1a0[0].m_playerHandle; }
 
 void GfGamePlayerPicker::movePlayer(GfComTransform *transform) {
   const fw::PadData *padData = fw::PadManager::getControlPadData(0);

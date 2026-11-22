@@ -496,8 +496,8 @@ GF_OBJ_HANDLE *GfGameManager::getPartyLeaderDriver() {
 
 GF_OBJ_HANDLE *GfGameManager::getControlMover() {
   GfGamePlayerFormation *formation = GfGamePlayerFormation::get();
-  if (formation != nullptr && formation->unknown1a0[0].unknown08 != unknown020) {
-    return formation->unknown1a0[0].unknown08;
+  if (formation != nullptr && formation->unknown1a0[0].m_playerHandle != unknown020) {
+    return formation->unknown1a0[0].m_playerHandle;
   }
 
   return getPartyLeader();
@@ -1121,7 +1121,7 @@ bool GfGameManager::isWaitGimmickPopForMapjump() {
 bool GfGameManager::isClearGame() {
   if (GfManager::isExecModeAdvertize() || GfManager::isExecModeThater()) {
     tl::TitleMain *title = tl::TitleMain::get();
-    if (title != nullptr && title->unknown130 != nullptr) {
+    if (title != nullptr && title->m_saveBuffer != nullptr) {
       return GfGameFlag::getLocal(title->getSaveBuffer()->unknown10.unknownfbbc4, 1, FLAG_UNKNOWN_48589) != 0;
     }
   }

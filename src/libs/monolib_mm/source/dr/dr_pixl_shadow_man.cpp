@@ -99,7 +99,7 @@ bool DrPixlShadowMan::renderDirShadowObj() {
 }
 
 bool DrPixlShadowMan::setAddObjPos(const mm::Vec3 &position, f32 value) {
-  if (unknown8908->unknown120[unknown8908->unknown1c98]->unknown103e && m_addShadowObj != nullptr) {
+  if (unknown8908->unknown120[unknown8908->unknown1c98]->m_charDirShadow && m_addShadowObj != nullptr) {
     return m_addShadowObj->setAddObjPos(position, value);
   }
   return false;

@@ -27,7 +27,7 @@ void DrShdMdoDecRes::releaseObj() {
   }
 }
 
-DrResFetch *DrShdMdoDecRes::getFetch() { return &m_fetch->unknown20; }
+DrResFetch *DrShdMdoDecRes::getFetch() { return &m_fetch->m_fetch; }
 
 } // namespace ml
 

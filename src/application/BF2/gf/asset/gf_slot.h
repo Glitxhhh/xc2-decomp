@@ -41,8 +41,8 @@ public:
   GfSlotAllocator unknown18; // Inferred role: allocator; original member name unknown.
   GfSlotBase *m_parentSlot;
   u32 m_multiSlot;
-  u32 unknown314;  // Inferred role: index; original member name unknown.
-  bool unknown318; // Inferred role: use debug memory; original member name unknown.
+  u32 unknown314;     // Inferred role: index; original member name unknown.
+  bool m_memoryDebug; // Inferred role: use debug memory; named after the game accessor gf::GfSlotAll::isMemoryDebug.
 };
 
 static_assert(offsetof(GfSlotBase, m_slotHandle) == 0x08, "");
@@ -51,7 +51,7 @@ static_assert(offsetof(GfSlotBase, unknown18) == 0x18, "");
 static_assert(offsetof(GfSlotBase, m_parentSlot) == 0x308, "");
 static_assert(offsetof(GfSlotBase, m_multiSlot) == 0x310, "");
 static_assert(offsetof(GfSlotBase, unknown314) == 0x314, "");
-static_assert(offsetof(GfSlotBase, unknown318) == 0x318, "");
+static_assert(offsetof(GfSlotBase, m_memoryDebug) == 0x318, "");
 static_assert(sizeof(GfSlotBase) == 0x320, "");
 
 class GfSlotAll {

@@ -21,7 +21,7 @@ GmkAcc::GmkAcc(const GmkAcc &other) : unknown18(), unknown28(), unknown38(nullpt
 }
 
 void GmkAcc::CreateInfo::validate(const AGmkBase &gmk) {
-  IGmkList *list = gmk.unknown08.unknown00;
+  IGmkList *list = gmk.unknown08.m_ownerGmkEnemyList;
   unknown00 = list->getCreateInfo().unknown08->unknown10.unknown04;
   unknown04 = gmk.getGmkType();
   u32 num = list->getInstNum();
@@ -117,14 +117,14 @@ void GmkAccManager::invalidateAccs(const IGmkList &list) {
     return;
   }
   for (mm::mtl::IntrusiveList<GmkAcc>::iterator it = get()->unknown08.begin(); it != get()->unknown08.end(); ++it) {
-    if (it.get()->unknown38 != nullptr && it.get()->unknown38->unknown08.unknown00 == &list) {
+    if (it.get()->unknown38 != nullptr && it.get()->unknown38->unknown08.m_ownerGmkEnemyList == &list) {
       it.get()->unknown38 = nullptr;
     }
   }
   list.getGmkType();
   for (mm::mtl::IntrusiveList<GmkAcc>::iterator it = get()->unknown20.begin(); it != get()->unknown20.end(); ++it) {
     GmkAcc *acc = it.get();
-    if (acc->unknown38->unknown08.unknown00 == &list) {
+    if (acc->unknown38->unknown08.m_ownerGmkEnemyList == &list) {
       acc->unknown38 = nullptr;
       it = get()->unknown20.erase(it);
       --it;

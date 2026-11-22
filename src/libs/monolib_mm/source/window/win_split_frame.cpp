@@ -11,10 +11,10 @@ namespace ml {
 
 WinSplitFrame::~WinSplitFrame() {}
 
-s16 WinSplitFrame::getSplitLine() const { return unknown08 ? unknown10 : unknown0c; }
+s16 WinSplitFrame::getSplitLine() const { return m_splitHolizon ? unknown10 : unknown0c; }
 
 void WinSplitFrame::setSplitLine(s16 line) {
-  if (unknown08) {
+  if (m_splitHolizon) {
     unknown10 = line;
   } else {
     unknown0c = line;
@@ -50,7 +50,7 @@ mm::Rect<int> WinSplitFrame::getWorkRect1(bool isBack) const {
   mm::Pnt<int> pos = mm::Pnt<int>::zero;
   mm::Pnt<int> size = info->m_workSize;
   mm::Rect<int> rect(pos.x, pos.y, size.x, size.y);
-  if (unknown08) {
+  if (m_splitHolizon) {
     rect.height = unknown10;
   } else {
     rect.width = unknown0c;
@@ -61,7 +61,7 @@ mm::Rect<int> WinSplitFrame::getWorkRect1(bool isBack) const {
 mm::Rect<int> WinSplitFrame::getWorkRect2(bool isBack) const {
   const WinView::RENDER_INFO *info = isBack ? unknown00->unknown1b8.m_back : unknown00->unknown1b8.m_front;
   mm::Rect<int> rect(mm::Pnt<int>::zero, info->m_workSize);
-  if (unknown08) {
+  if (m_splitHolizon) {
     // The game loads the front frame again in each branch after the stores to the rect (ldr x9, [x9] at 1.0.0: 0x71007632cc
     // and 0x71007632f0). The border is a 16 bit value added to the split line and truncated to s16 (ldrh, add, sxth).
     rect.y = static_cast<s16>(unknown10 + unknown00->unknown1b8.m_front->unknown48.unknown60);

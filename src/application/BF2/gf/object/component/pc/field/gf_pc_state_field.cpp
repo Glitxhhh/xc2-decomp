@@ -116,7 +116,7 @@ bool StateField::recieveMessage(void *owner, fw::MessageObject *sender, fw::Mess
 }
 
 void StateField::procMsgPcBattleStart(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcBattleStart &message) {
-  behavior->unknown08->getComponent<GfComPropertyPc>()->unknown470.SetStartCondition(message);
+  behavior->unknown08->getComponent<GfComPropertyPc>()->m_battleProperty.SetStartCondition(message);
   reqState(STATE_ID_UNKNOWN_63);
 }
 
@@ -138,7 +138,7 @@ void StateField::procMsgObjectNotifyDead(GfComBehaviorPc *behavior, fw::MessageO
     property->unknown90 = 0.0f;
     property->unknown94 = 0.0f;
     MsgPcBattleStart start(2);
-    property->unknown470.SetStartCondition(start);
+    property->m_battleProperty.SetStartCondition(start);
     reqState(STATE_ID_UNKNOWN_63);
   } else {
     onDead(behavior, message);

@@ -104,7 +104,7 @@ void DrMdoCtlSeamInstMap::updateInstMapRenderList(MdoArgSeamUpdate &arg) {
         unknownc58 += inst->unknown148;
         updateMatFstCallBack();
         updateMatCallBack(inst->unknowna0);
-        updateAnim(unknowndc * m_drMan->unknown1c8c, inst->unknowna0, nullptr);
+        updateAnim(m_frameSpd * m_drMan->unknown1c8c, inst->unknowna0, nullptr);
         updateTimerCalc(inst->unknowna0);
         updateUniformBlock(inst->unknowna0);
       }
@@ -195,7 +195,7 @@ void DrMdoCtlSeamInstMap::createInstZPrePassDisplayList() {
             int headerCount = top->unknown04;
             arg.unknown00 = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
             for (int i = 0; i < headerCount; i++, arg.unknown00++) {
-              if ((unknown30->unknownc0 + arg.unknown00->unknown0e)->unknown08.a > 0.0f && !(arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15)) {
+              if ((unknown30->m_materialRes + arg.unknown00->unknown0e)->unknown08.a > 0.0f && !(arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15)) {
                 if (!(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_14)) {
                   if ((arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_4) && info->unknown04 != 0 && (arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_0) &&
                       !(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
@@ -246,7 +246,7 @@ void DrMdoCtlSeamInstMap::createInstThicknessPassDisplayList(bool isFirst) {
             arg.unknown14 = 0;
             arg.unknown18 = 0;
             for (int i = 0; i < headerCount; i++, arg.unknown00++) {
-              if ((unknown30->unknownc0 + arg.unknown00->unknown0e)->unknown08.a > 0.0f && (arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15) &&
+              if ((unknown30->m_materialRes + arg.unknown00->unknown0e)->unknown08.a > 0.0f && (arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15) &&
                   (arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_14) && !(arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
                 partsInstanceThicknessRender(arg);
               }

@@ -63,7 +63,7 @@ void GmkElevator::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gm
 
 GmkType GmkElevatorLocator::getGmkType() const { return GMK_TYPE; }
 
-bool GmkElevatorLocator::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkElevatorLocator::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 GmkElevator::GmkElevator() : unknown4b0(gf::unknown020), unknown4b8(nullptr), unknown4c8(false), unknown4c9(false), unknown4ca(false), unknown4cb(false), unknown4cc(0.0f) {
   for (u32 i = 0; i < 4; i++) {
@@ -114,7 +114,7 @@ void GmkElevator::seqWaitToValidate_GfFieldLod(f32 deltaTime) {
 }
 
 void GmkElevator::seqInit(f32 deltaTime) {
-  if (!unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR]->isValid()) {
+  if (!unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR]->isValid()) {
     return;
   }
   if (canCreateGameEntity()) {
@@ -186,7 +186,7 @@ bool GmkElevator::isGmkFinished() const {
 }
 
 const GmkElevatorLocator *GmkElevator::getBindedGmkElevatorLocator(u32 index) const {
-  const IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
+  const IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
   if (!list->isValid()) {
     return nullptr;
   }
@@ -248,14 +248,14 @@ bool GmkElevator::getUpShutterPos(mm::Vec3 &position) const {
 }
 
 const Xform *GmkElevator::getDownLiftSwitchPos() const {
-  const IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
+  const IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
   list->isValid();
   const Data *data = getData();
   return list->getInst(data->unknown00)->unknown08.unknown08;
 }
 
 const Xform *GmkElevator::getUpLiftSwitchPos() const {
-  const IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
+  const IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
   list->isValid();
   const Data *data = getData();
   return list->getInst(data->unknown00 + 2)->unknown08.unknown08;

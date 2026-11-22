@@ -94,7 +94,7 @@ public:
   u32 unknown2058[2];                            // Inferred role: number of used entries of unknown58 per buffer; original member name unknown.
   u8 _2060[0x2064 - 0x2060];
   u32 unknown2064;                  // Inferred role: cleared by the constructor; original member name unknown.
-  u32 unknown2068;                  // Inferred role: flags; original member name unknown.
+  u32 m_cacherClearMode;            // Inferred role: flags; named after the game accessor ml::DrMan::setCacherClearMode.
   u32 unknown206c;                  // Inferred role: object count; original member name unknown.
   DrCalcTexStmObj *unknown2070;     // Inferred role: object array; original member name unknown.
   void *unknown2078;                // Inferred role: memory; original member name unknown.
@@ -117,7 +117,7 @@ static_assert(offsetof(DrCalcTexStreamMan, unknown38) == 0x38, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown58) == 0x58, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2058) == 0x2058, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2064) == 0x2064, "");
-static_assert(offsetof(DrCalcTexStreamMan, unknown2068) == 0x2068, "");
+static_assert(offsetof(DrCalcTexStreamMan, m_cacherClearMode) == 0x2068, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown206c) == 0x206c, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2070) == 0x2070, "");
 static_assert(offsetof(DrCalcTexStreamMan, unknown2078) == 0x2078, "");

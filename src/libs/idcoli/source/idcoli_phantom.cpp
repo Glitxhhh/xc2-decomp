@@ -44,7 +44,7 @@ bool IDColiPhantom::testLine(const mm::Vec3 &start, const mm::Vec3 &end) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testCheckLine(unknown10, input);
       }
     }
@@ -53,7 +53,7 @@ bool IDColiPhantom::testLine(const mm::Vec3 &start, const mm::Vec3 &end) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testResultLine(unknown10, input);
       }
     }
@@ -95,7 +95,7 @@ bool IDColiPhantom::testRay(const mm::Vec3 &start, const mm::Vec3 &direction, f3
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testCheckRay(unknown10, input);
       }
     }
@@ -104,7 +104,7 @@ bool IDColiPhantom::testRay(const mm::Vec3 &start, const mm::Vec3 &direction, f3
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testResultRay(unknown10, input);
       }
     }
@@ -151,7 +151,7 @@ bool IDColiPhantom::testSphere(const mm::Vec3 &center, f32 radius) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testCheckSphere(unknown10, input);
       }
     }
@@ -160,7 +160,7 @@ bool IDColiPhantom::testSphere(const mm::Vec3 &center, f32 radius) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testResultSphere(unknown10, input);
       }
     }
@@ -202,7 +202,7 @@ bool IDColiPhantom::testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testCheckCapsule(unknown10, input);
       }
     }
@@ -211,7 +211,7 @@ bool IDColiPhantom::testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
         unknown10.unknownf8 = object;
-        unknown10.unknownf0 = object->unknown48;
+        unknown10.unknownf0 = object->m_userData;
         isHit |= object->testResultCapsule(unknown10, input);
       }
     }
@@ -250,7 +250,7 @@ bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
         for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
           IDColiObjCharCheck *character = static_cast<IDColiObjCharCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
           unknown10.unknownf8 = character;
-          unknown10.unknownf0 = character->unknown48;
+          unknown10.unknownf0 = character->m_userData;
           isHit |= character->testCheckSphere(unknown10, input);
         }
       }
@@ -281,7 +281,7 @@ bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
         for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
           IDColiObjCharCheck *character = static_cast<IDColiObjCharCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
           unknown10.unknownf8 = character;
-          unknown10.unknownf0 = character->unknown48;
+          unknown10.unknownf0 = character->m_userData;
           isHit |= character->testCheckBox(unknown10, input);
         }
       }
@@ -314,7 +314,7 @@ bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
         for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
           IDColiObjCharCheck *character = static_cast<IDColiObjCharCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
           unknown10.unknownf8 = character;
-          unknown10.unknownf0 = character->unknown48;
+          unknown10.unknownf0 = character->m_userData;
           isHit |= character->testCheckCapsule(unknown10, input);
         }
       }

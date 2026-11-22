@@ -35,7 +35,7 @@
 
 namespace gf {
 
-GfFieldManager::GfFieldManager(const GfSetupParam &param) : unknown18(false), unknown1c(0.0f) {
+GfFieldManager::GfFieldManager(const GfSetupParam &param) : unknown18(false), m_enemyBaloonRadius(0.0f) {
   initialize(param);
   GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
 }
@@ -145,7 +145,7 @@ void GfFieldManager::gevReloadBdat(RELOAD_BDAT reload, u32 value) {
 void GfFieldManager::getFieldParam(u32 mapJump) {
   u32 map = GfDataMap::getMapID(mapJump);
   if (map != 0) {
-    unknown1c = GfBdatMaplist::get()->getMapliste_balloondisp_r(map);
+    m_enemyBaloonRadius = GfBdatMaplist::get()->getMapliste_balloondisp_r(map);
   }
 }
 
@@ -159,7 +159,7 @@ bool GfFieldManager::isDestroyMapScriptBusy() { return GfFieldZoneScript::isDest
 
 void GfFieldManager::updateGlobalWind() { fw::RenderParam::setGlobalWindPower(fw::WindManager::getGlobalWindPower(), fw::CAMERA_TYPE_UNKNOWN_0); }
 
-f32 GfFieldManager::getEnemyBaloonRadius() { return get()->unknown1c; }
+f32 GfFieldManager::getEnemyBaloonRadius() { return get()->m_enemyBaloonRadius; }
 
 const char *GfFieldManager::getMapName() { return GfMapManager::getMapName(); }
 

@@ -22,14 +22,14 @@ LayerObjFont::LayerObjFont() {
   m_colorMap = nullptr;
   unknown298 = 0;
   unknown29c = 0;
-  unknown2a0 = 0;
-  unknown2a2 = 0;
-  unknown2a4 = 0;
-  unknown2a6 = 0;
-  unknown2a8 = 0;
-  unknown2ac = 0;
-  unknown2b0 = 0;
-  unknown2b4 = 0;
+  m_fontPixelX = 0;
+  m_fontPixelY = 0;
+  m_fontPixelWidth = 0;
+  m_fontPixelHeight = 0;
+  m_horizontal = 0;
+  m_vertical = 0;
+  m_displayArea = 0;
+  m_dispSetting = 0;
   m_slopeRot = 0.0f;
   unknown2bc = 0;
   m_borderWeight = 0.0f;
@@ -69,9 +69,9 @@ void LayerObjFont::setMsg(const u8 *text, const LayerFontResObj *res, const Laye
   unknown280 = style;
   unknown298 = flags;
   unknown288 = icon;
-  LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(unknown2b4), this);
-  buffer.unknown4a0 = unknown2a8;
-  buffer.unknown4a4 = unknown2ac;
+  LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(m_dispSetting), this);
+  buffer.unknown4a0 = m_horizontal;
+  buffer.unknown4a4 = m_vertical;
   unknown258[LayerManager::s_nStkIdx] = buffer.createChar(text);
 }
 
@@ -83,9 +83,9 @@ void LayerObjFont::setMsg(const wchar_t *text, const LayerFontResObj *res, const
   unknown280 = style;
   unknown298 = flags;
   unknown288 = icon;
-  LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(unknown2b4), this);
-  buffer.unknown4a0 = unknown2a8;
-  buffer.unknown4a4 = unknown2ac;
+  LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(m_dispSetting), this);
+  buffer.unknown4a0 = m_horizontal;
+  buffer.unknown4a4 = m_vertical;
   unknown258[LayerManager::s_nStkIdx] = buffer.createChar(text);
 }
 

@@ -224,7 +224,7 @@ void GfComBehaviorPc::procMsgPcApplyFieldDamage(fw::MessageObject *sender, MsgPc
 
 void GfComBehaviorPc::procMsgPcGetState(fw::MessageObject *sender, MsgPcGetState &message) {
   if (unknowna0.m_pState != nullptr) {
-    message.unknown08 = unknowna0.m_pState->unknown08;
+    message.unknown08 = unknowna0.m_pState->m_state;
   }
 }
 

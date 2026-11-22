@@ -15,7 +15,7 @@ namespace ml {
 class DrPixlOccQuery;
 
 DrLightObjGlobalIBL::DrLightObjGlobalIBL()
-    : unknown00(nullptr), unknown08(0), unknown10(0), unknown18(0), unknown48(0.0f), unknown50(mm::Vec3::zero), unknown60(mm::Vec3::zero), unknown70(0), unknown390(mm::Vec3::zero), unknown3b8(0),
+    : unknown00(nullptr), m_version(0), unknown10(0), unknown18(0), unknown48(0.0f), unknown50(mm::Vec3::zero), unknown60(mm::Vec3::zero), unknown70(0), unknown390(mm::Vec3::zero), unknown3b8(0),
       unknown3c0(0), unknown3c4(false) {
   unknown20.clear();
   for (int i = 0; i < SH_TERM_UNKNOWN_4; i++) {

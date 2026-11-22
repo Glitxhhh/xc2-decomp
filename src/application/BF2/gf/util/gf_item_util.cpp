@@ -196,7 +196,7 @@ void GfItemUtil::getInfo(mm::mtl::FixedVector<GfItem, 1024> &items, ItemType::Ty
     item_iterator it = GfItemBox::get()->begin(type);
     item_iterator last = GfItemBox::get()->end(type);
     while (it != last) {
-      if (it->unknown00_0 != 0) {
+      if (it->m_itemID != 0) {
         if (withoutEquip && it->unknown03_6) {
           continue;
         }
@@ -214,7 +214,7 @@ void GfItemUtil::getInfo(mm::mtl::FixedVector<GfItem, 1024> &items, ItemType::Ty
   default: {
     for (item_iterator it = GfItemBox::get()->begin(type), last = GfItemBox::get()->end(type); it != last; ++it) {
       GfItemInfo &info = *it;
-      if (info.unknown00_0 != 0) {
+      if (info.m_itemID != 0) {
         GfItem item;
         item.unknown00 = info.getItemID();
         item.unknown02 = info.unknown02_3;

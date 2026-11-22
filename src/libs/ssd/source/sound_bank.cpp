@@ -27,7 +27,7 @@ SoundBank::~SoundBank() {
 
 int SoundBank::GetNumber() const { return m_number; }
 
-const TextRef &SoundBank::GetName() const { return unknown38; }
+const TextRef &SoundBank::GetName() const { return m_name; }
 
 Result SoundBank::Init(int number, const TextRef &name) {
   SystemCore *core = static_cast<SystemCore *>(SoundCore::instance_);
@@ -35,7 +35,7 @@ Result SoundBank::Init(int number, const TextRef &name) {
     return static_cast<Result>(-1);
   }
   m_number = number;
-  unknown38.Set(name);
+  m_name.Set(name);
   core->AddBank(this);
   return set_result(static_cast<Result>(0));
 }

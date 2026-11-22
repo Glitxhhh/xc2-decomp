@@ -608,7 +608,7 @@ bool GfGameEvent::isPlayBgm() {
 f32 GfGameEvent::getPlayBgmVolume() {
   GfEvtBgm *bgm = GfEvtBgm::get();
   if (bgm != nullptr && bgm->isPlayBgm()) {
-    return bgm->unknown0c.unknown44;
+    return bgm->unknown0c.m_playBgmVolume;
   }
   return 0.0f;
 }

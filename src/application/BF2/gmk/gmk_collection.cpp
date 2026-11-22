@@ -259,7 +259,7 @@ void GmkCollection::setTargetable(bool isTargetable) {
     unknown58 = &GmkCollection::seqUpdatePopDepop;
   } else {
     if (unknown68 == 0.0f) {
-      unknown68 = static_cast<GmkCollectionList *>(unknown08.unknown00)->unknown228.unknown04 * 60.0f;
+      unknown68 = static_cast<GmkCollectionList *>(unknown08.m_ownerGmkEnemyList)->unknown228.unknown04 * 60.0f;
     }
     unknown58 = &GmkCollection::seqUpdateRepopCounter;
   }

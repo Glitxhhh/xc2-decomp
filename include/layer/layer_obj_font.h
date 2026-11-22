@@ -89,16 +89,16 @@ public:
   const LayerFontStyleObj *unknown280; // Inferred role: style; original member name unknown.
   const LayerFontIconObj *unknown288;  // Inferred role: icon; original member name unknown.
   const LayerFontIconObj *m_colorMap;
-  u32 unknown298; // Inferred role: msg flags; original member name unknown.
-  u32 unknown29c; // Inferred role: color map index; original member name unknown.
-  u16 unknown2a0; // Inferred role: font pixel x; original member name unknown.
-  u16 unknown2a2; // Inferred role: font pixel y; original member name unknown.
-  u16 unknown2a4; // Inferred role: font pixel width; original member name unknown.
-  u16 unknown2a6; // Inferred role: font pixel height; original member name unknown.
-  u32 unknown2a8; // Inferred role: horizontal; original member name unknown.
-  u32 unknown2ac; // Inferred role: vertical; original member name unknown.
-  u32 unknown2b0; // Inferred role: display area; original member name unknown.
-  u32 unknown2b4; // Inferred role: disp setting; original member name unknown.
+  u32 unknown298;        // Inferred role: msg flags; original member name unknown.
+  u32 unknown29c;        // Inferred role: color map index; original member name unknown.
+  u16 m_fontPixelX;      // Inferred role: font pixel x; named after the game accessor layer::LayerAccFontObj::getFontPixelX.
+  u16 m_fontPixelY;      // Inferred role: font pixel y; named after the game accessor layer::LayerAccFontObj::getFontPixelY.
+  u16 m_fontPixelWidth;  // Inferred role: font pixel width; named after the game accessor layer::LayerAccFontObj::getFontPixelWidth.
+  u16 m_fontPixelHeight; // Inferred role: font pixel height; named after the game accessor layer::LayerAccFontObj::getFontPixelHeight.
+  u32 m_horizontal;      // Inferred role: horizontal; named after the game accessor layer::LayerAccFontObj::getHorizontal.
+  u32 m_vertical;        // Inferred role: vertical; named after the game accessor layer::LayerAccFontObj::getVertical.
+  u32 m_displayArea;     // Inferred role: display area; named after the game accessor layer::LayerAccFontObj::getDisplayArea.
+  u32 m_dispSetting;     // Inferred role: disp setting; named after the game accessor layer::LayerAccFontObj::getDispSetting.
   f32 m_slopeRot;
   u16 unknown2bc; // Inferred role: mask of the border weights set per index; original member name unknown.
   f32 m_borderWeight;
@@ -113,8 +113,8 @@ static_assert(offsetof(LayerObjFont, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjFont, m_colorMap) == 0x290, "");
 static_assert(offsetof(LayerObjFont, unknown298) == 0x298, "");
 static_assert(offsetof(LayerObjFont, unknown29c) == 0x29c, "");
-static_assert(offsetof(LayerObjFont, unknown2a0) == 0x2a0, "");
-static_assert(offsetof(LayerObjFont, unknown2b4) == 0x2b4, "");
+static_assert(offsetof(LayerObjFont, m_fontPixelX) == 0x2a0, "");
+static_assert(offsetof(LayerObjFont, m_dispSetting) == 0x2b4, "");
 static_assert(offsetof(LayerObjFont, m_slopeRot) == 0x2b8, "");
 static_assert(offsetof(LayerObjFont, unknown2bc) == 0x2bc, "");
 static_assert(offsetof(LayerObjFont, m_borderWeight) == 0x2c0, "");

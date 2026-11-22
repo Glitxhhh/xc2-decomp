@@ -269,7 +269,7 @@ void GfComBehaviorNpc::disposeFsm() {
 
 u32 GfComBehaviorNpc::getStateId() const {
   if (unknown108.m_pState != nullptr) {
-    return unknown108.m_pState->unknown08;
+    return unknown108.m_pState->m_state;
   }
 
   return ai::INVALID_STATE_ID;
@@ -457,7 +457,7 @@ void GfComBehaviorNpc::update(const fw::UpdateInfo &info) {
     delta.y = 0.0f;
     unknowne0 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
   }
-  if (npc::StateBattle<GfComBehaviorNpc>::isCondMatch(*this) && (unknown108.m_pState == nullptr || unknown108.m_pState->unknown08 != npc::STATE_ID_UNKNOWN_5)) {
+  if (npc::StateBattle<GfComBehaviorNpc>::isCondMatch(*this) && (unknown108.m_pState == nullptr || unknown108.m_pState->m_state != npc::STATE_ID_UNKNOWN_5)) {
     unknown108.setState(npc::STATE_ID_UNKNOWN_5);
     GfFieldLocalSteer::CreateInfo steerInfo;
     steerInfo.unknown08 = 2.0f;

@@ -270,8 +270,8 @@ public:
   };
 
   struct Data {
-    f32 unknown00;  // Inferred role: random walk radius; original member name unknown. The size of this structure is unknown.
-    bool unknown04; // Inferred role: snap the pop position to the ground; original member name unknown.
+    f32 unknown00; // Inferred role: random walk radius; original member name unknown. The size of this structure is unknown.
+    bool m_ySnap;  // Inferred role: snap the pop position to the ground; named after the game accessor gmk::GmkEnemy::PopXformFinder::isYSnap.
   };
 
   // Layout evidence: the vtable at 0x11a3688 holds the four virtual functions of GmkEnemyInsts::IPopXformFinder in this order

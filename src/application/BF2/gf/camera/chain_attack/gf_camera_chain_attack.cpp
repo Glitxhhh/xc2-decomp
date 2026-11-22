@@ -77,7 +77,7 @@ void ChainAttackCameraEntity::update(const fw::UpdateInfo &info) {
     // The game dispatches on unknown118 through a jump table of four entries (1.0.0: `cmp w8, #3` at 0x71001d225c, table at 0x7100f68fa8) whose entries 0 and "above 3" reach the same block
     // (0x71001d227c). Only two separate cases with the same body give that table: `case 0:` stacked on `default:` (in either order), a switch without case 0 and an if chain all compile to a compare
     // chain (194 or 192 instructions against the game's 197). The game calls calcSpeedTypeSlowInSlowOut (0x71001d22ec, 0x1fc bytes) and inlines the other three.
-    switch (unknown118) {
+    switch (m_moveType) {
     case 0:
       calcSpeedTypeLinearSpacing();
       break;
@@ -131,7 +131,7 @@ void ChainAttackCameraEntity::setPlayTimeDuration(f32 duration) {
   unknown11c = 0.0f;
 }
 
-void ChainAttackCameraEntity::setMoveType(int moveType) { unknown118 = moveType; }
+void ChainAttackCameraEntity::setMoveType(int moveType) { m_moveType = moveType; }
 
 const mm::mtl::RTTI *ChainAttackCameraEntity::getRTTI() const { return &m_rtti; }
 

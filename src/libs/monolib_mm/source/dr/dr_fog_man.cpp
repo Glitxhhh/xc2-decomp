@@ -92,7 +92,7 @@ void DrFogMan::calcTbl() {
               view.rows[0][1] * 0.0f + view.rows[1][1] + view.rows[2][1] * 0.0f,
               view.rows[0][2] * 0.0f + view.rows[1][2] + view.rows[2][2] * 0.0f);
   up.unknown001();
-  if (unknown00->unknown1d71) {
+  if (unknown00->m_fogSkip) {
     unknown18.r = 0.0f;
     unknown18.g = 0.0f;
     unknown18.b = 0.0f;

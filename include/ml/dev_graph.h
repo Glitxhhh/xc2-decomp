@@ -258,7 +258,7 @@ public:
   bool removeQue(GraphQue *que);
   void swap();
 
-  u32 unknown00; // Inferred role: view; original member name unknown.
+  u32 m_even; // Inferred role: view; named after the game accessor ml::DevGraphQue::getEven.
   u8 _04[0x08 - 0x04];
   reslist<GraphQue *> unknown08;                     // Inferred role: que list; original member name unknown.
   bool unknown48;                                    // Inferred role: cleared by the constructor; original member name unknown.
@@ -290,7 +290,7 @@ static_assert(offsetof(DevGraphQue, unknown478) == 0x478, "");
 inline void DevGraphQue::pushWholeRect(const mm::Rect<int> &rect, bool isFlush) { pushRect(rect, rect, mm::Rect<int>(0, 0, rect.width, rect.height), isFlush); }
 
 inline void GraphQue::unknown001() {
-  unknown28 = unknown10[unknown08->unknown00];
+  unknown28 = unknown10[unknown08->m_even];
   unknown30 = unknown28 + unknown20;
   unknown38 = 0;
   unknown40 = 0;

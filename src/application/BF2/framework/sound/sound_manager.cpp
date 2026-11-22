@@ -118,7 +118,7 @@ void SoundManager::update(const UpdateInfo &info) {
   unknown18->update(info);
 }
 
-f32 SoundManager::getMasterVolume() const { return m_masterVolumeOrg.unknown00 * unknown80.unknown00; }
+f32 SoundManager::getMasterVolume() const { return m_masterVolumeOrg.m_masterVolumeOrg * unknown80.m_masterVolumeOrg; }
 
 void SoundManager::tail(const UpdateInfo &info) {
   if (isFinalized()) {
@@ -599,7 +599,7 @@ void SoundManager::setMasterVolume(f32 volume, f32 time) {
   unknown18->setMasterVolume(getMasterVolume());
 }
 
-f32 SoundManager::getMasterVolumeOrg() const { return m_masterVolumeOrg.unknown00; }
+f32 SoundManager::getMasterVolumeOrg() const { return m_masterVolumeOrg.m_masterVolumeOrg; }
 
 void SoundManager::setMasterMute(bool isMute, f32 time) {
   if (isMute) {

@@ -49,7 +49,7 @@ Manager::~Manager() {
 }
 
 void Manager::play(const char *name, gf::GF_OBJ_HANDLE *handle, u32 param0, u32 param1, u32 param2, u32 param3, bool isEndFadeOut) {
-  unknown298 = LANGUAGE_MODE_UNKNOWN_0;
+  m_languageMode = LANGUAGE_MODE_UNKNOWN_0;
   unknown280 = handle;
   unknown288[0] = param0;
   unknown288[1] = param1;
@@ -214,7 +214,7 @@ void Manager::clear() {
   unknown288[1] = 0;
   unknown288[2] = 0;
   unknown288[3] = 0;
-  unknown298 = LANGUAGE_MODE_UNKNOWN_0;
+  m_languageMode = LANGUAGE_MODE_UNKNOWN_0;
   unknown18.unknown004(FLAG_UNKNOWN_2);
   unknown1c.clear();
 }
@@ -277,10 +277,10 @@ bool Manager::setupScene(const char *name) {
   return true;
 }
 
-void Manager::setLanguageMode(bool isEnable, LANGUAGE_MODE mode) { unknown298 = isEnable ? mode : LANGUAGE_MODE_UNKNOWN_0; }
+void Manager::setLanguageMode(bool isEnable, LANGUAGE_MODE mode) { m_languageMode = isEnable ? mode : LANGUAGE_MODE_UNKNOWN_0; }
 
 bool Manager::checkLanguageMode() const {
-  switch (unknown298) {
+  switch (m_languageMode) {
   case LANGUAGE_MODE_UNKNOWN_1:
     return fw::LangUtil::getVoiceType() == 0;
   case LANGUAGE_MODE_UNKNOWN_2:

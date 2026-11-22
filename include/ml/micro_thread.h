@@ -22,7 +22,7 @@ public:
     u32 unknown00;                 // Inferred role: priority, set to 50; original member name unknown.
     void *unknown08;               // Inferred role: cleared at creation, never read here; original member name unknown.
     void *unknown10;               // Inferred role: platform fiber (MicroThreadNx::FiberParam); original member name unknown.
-    void *unknown18;               // Inferred role: user data; original member name unknown.
+    void *m_currentUserData;       // Inferred role: user data; named after the game accessor ml::MicroThread::getCurrentUserData.
     long unknown20;                // Inferred role: clock at the start of the sleep; original member name unknown.
     u32 unknown28;                 // Inferred role: sleep length in frames or milliseconds; original member name unknown.
     bool unknown2c;                // Inferred role: exit request; original member name unknown.
@@ -103,7 +103,7 @@ static_assert(offsetof(MicroThread, unknown298) == 0x298, "");
 static_assert(offsetof(MicroThread, unknown2c0) == 0x2c0, "");
 static_assert(offsetof(MicroThreadNx, unknown2c8) == 0x2c8, "");
 static_assert(sizeof(MicroThread::MTHREAD) == 0x40, "");
-static_assert(offsetof(MicroThread::MTHREAD, unknown18) == 0x18, "");
+static_assert(offsetof(MicroThread::MTHREAD, m_currentUserData) == 0x18, "");
 static_assert(offsetof(MicroThread::MTHREAD, unknown20) == 0x20, "");
 static_assert(offsetof(MicroThread::MTHREAD, unknown28) == 0x28, "");
 static_assert(offsetof(MicroThread::MTHREAD, unknown2c) == 0x2c, "");

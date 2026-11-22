@@ -18,14 +18,14 @@ namespace gf {
 static const u32 unknown002[8] = {0, 9, 2, 4, 7, 11, 3, 26}; // Inferred role: screen to ui layer id table; original name unknown.
 
 GfMenuFullScreen::GfMenuFullScreen(const GfSetupParam &param)
-    : unknown08(false), unknown0c(0), unknown10(0), unknownf8(true), unknownf9(false), unknownfc(0), unknown100(0), unknown104(0), unknown108(true), unknown109(true), unknown10a(true), unknown130(0),
-      unknown134(0), unknown158(), unknown160(8) {
+    : m_initialized(false), unknown0c(0), unknown10(0), unknownf8(true), unknownf9(false), unknownfc(0), unknown100(0), unknown104(0), unknown108(true), unknown109(true), unknown10a(true),
+      unknown130(0), unknown134(0), unknown158(), unknown160(8) {
   initialize(param);
 }
 
 GfMenuFullScreen::~GfMenuFullScreen() {}
 
-void GfMenuFullScreen::initialize(const GfSetupParam &param) { unknown08 = true; }
+void GfMenuFullScreen::initialize(const GfSetupParam &param) { m_initialized = true; }
 
 void GfMenuFullScreen::build(const GfSetupParam &param) {
 // __LINE__ must be 89 as in the original file: it is the line argument of operator new.
@@ -36,7 +36,7 @@ void GfMenuFullScreen::build(const GfSetupParam &param) {
   }
 }
 
-void GfMenuFullScreen::finalize() { unknown08 = false; }
+void GfMenuFullScreen::finalize() { m_initialized = false; }
 
 void GfMenuFullScreen::createLayer(u16 index, u16 layer) {
   if (index < 5 && layer != 0) {
@@ -59,7 +59,7 @@ void GfMenuFullScreen::resetLayer(u16 index) {
   unknown18[index].unknown34 = false;
 }
 
-bool GfMenuFullScreen::isInitialized() { return get()->unknown08; }
+bool GfMenuFullScreen::isInitialized() { return get()->m_initialized; }
 
 void GfMenuFullScreen::destroy() {
   GfMenuFullScreen *fullScreen = get();
@@ -69,7 +69,7 @@ void GfMenuFullScreen::destroy() {
 
 void GfMenuFullScreen::postUpdate(const fw::UpdateInfo &) {
   GfMenuFullScreen *fullScreen = get();
-  if (fullScreen != nullptr && fullScreen->unknown08) {
+  if (fullScreen != nullptr && fullScreen->m_initialized) {
     if (fullScreen->unknown110.isValid()) {
       fullScreen->unknown110();
     }
@@ -97,7 +97,7 @@ bool GfMenuFullScreen::isSwitching() {
   if (fullScreen == nullptr) {
     return false;
   }
-  if (fullScreen->unknown08) {
+  if (fullScreen->m_initialized) {
     return fullScreen->unknownf9;
   }
   return false;
@@ -115,7 +115,7 @@ void GfMenuFullScreen::overrideInputBorder(u32 border) { get()->unknown104 = bor
 
 u32 GfMenuFullScreen::getScreenID() {
   u32 screen = 0;
-  if (get()->unknown08) {
+  if (get()->m_initialized) {
     screen = get()->unknown0c;
   }
   return screen;

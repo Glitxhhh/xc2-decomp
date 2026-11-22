@@ -255,7 +255,7 @@ public:
   long m_syncClock;
   u32 unknown2088; // Inferred role: group handle counter, incremented by createGroupHandle (0x7100773b88); original member name unknown.
   u8 _208c[0x2090 - 0x208c];
-  unsigned long unknown2090;                         // Inferred role: frame count; original member name unknown.
+  unsigned long m_frameCount;                        // Inferred role: frame count; named after the game accessor ml::WorkCpu::getFrameCount.
   std::chrono::system_clock::time_point unknown2098; // Inferred role: start time; original member name unknown. Evidence: the constructor (0x710076f938) and wkStandbyLogout (0x710077480c) store the
                                                      // return value of std::chrono::system_clock::now(), and wkStandbyLogout (0x71007748cc) takes the difference of a later now() with it.
   mm::mtl::FixedList<IErrorCB *, 32> unknown20a0;    // Inferred role: error callbacks; original member name unknown.
@@ -282,7 +282,7 @@ static_assert(offsetof(WorkCpu, unknown2020) == 0x2020, "");
 static_assert(offsetof(WorkCpu, unknown2034) == 0x2034, "");
 static_assert(offsetof(WorkCpu, unknown2048) == 0x2048, "");
 static_assert(offsetof(WorkCpu, m_syncClock) == 0x2080, "");
-static_assert(offsetof(WorkCpu, unknown2090) == 0x2090, "");
+static_assert(offsetof(WorkCpu, m_frameCount) == 0x2090, "");
 static_assert(offsetof(WorkCpu, unknown20a0) == 0x20a0, "");
 static_assert(offsetof(WorkCpu, unknown22e0) == 0x22e0, "");
 

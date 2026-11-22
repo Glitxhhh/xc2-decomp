@@ -172,7 +172,7 @@ void DrMdlObj::setTextureRes(int index, grlib::CGLibTextureBuffer *texture) {
 
 int DrMdlObj::getMaterialResIdx(const char *name) const {
   for (int i = 0; i < unknown30->unknown30; i++) {
-    if (strcmp(unknown30->unknownc0[i].m_name, name) == 0) {
+    if (strcmp(unknown30->m_materialRes[i].m_name, name) == 0) {
       return i;
     }
   }
@@ -183,19 +183,19 @@ const char *DrMdlObj::getMaterialIdxName(int index) const {
   if (index > unknown30->unknown30) {
     return nullptr;
   }
-  return unknown30->unknownc0[index].m_name;
+  return unknown30->m_materialRes[index].m_name;
 }
 
 DrResMdoMat *DrMdlObj::getMaterialRes(const char *name) {
   for (int i = 0; i < unknown30->unknown30; i++) {
-    if (strcmp(unknown30->unknownc0[i].m_name, name) == 0) {
-      return &unknown30->unknownc0[i];
+    if (strcmp(unknown30->m_materialRes[i].m_name, name) == 0) {
+      return &unknown30->m_materialRes[i];
     }
   }
   return nullptr;
 }
 
-DrResMdoMat *DrMdlObj::getMaterialRes(int index) { return &unknown30->unknownc0[index]; }
+DrResMdoMat *DrMdlObj::getMaterialRes(int index) { return &unknown30->m_materialRes[index]; }
 
 bool DrMdlObj::getVertexInfo(int index, const MdsMdlVertexFmt **format, int *count) { return unknown30->unknownc8->getVertexInfo(index, format, count); }
 
@@ -239,7 +239,7 @@ bool DrMdlObj::isMemTexStm() const { return (unknownfc & (0x2000 | 0x2)) != 0x2;
 
 bool DrMdlObj::isMemMiddleTexStm() const { return (unknownfc & (0x20 | 0x2)) != 0x2; }
 
-void DrMdlObj::setCreateDisplayList() { unknown20 &= ~0x60; }
+void DrMdlObj::setCreateDisplayList() { m_disp &= ~0x60; }
 
 void DrMdlObj::setExpressDrawMode(bool isEnable) { unknownfc = !isEnable ? unknownfc & ~unknown027_20 : unknownfc | unknown027_20; }
 

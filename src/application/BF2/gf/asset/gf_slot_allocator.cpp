@@ -19,7 +19,7 @@ void GfSlotAllocator::destroy() {
   unknown08 = nullptr;
 }
 
-size_t GfSlotAllocator::getBlockSize() const { return unknown18.unknown28; }
+size_t GfSlotAllocator::getBlockSize() const { return unknown18.m_blockSize; }
 
 void GfSlotAllocator::setupSizeAlloc(const char *name, mm::mtl::IAllocator *allocator, size_t size, size_t alignment, bool useDebugMemory) {
   this->m_name = name;
@@ -52,13 +52,13 @@ void GfSlotAllocator::deallocate(void *pointer) {
   }
 }
 
-bool GfSlotAllocator::empty() const { return unknown18.unknown08 == nullptr; }
+bool GfSlotAllocator::empty() const { return unknown18.m_buffer == nullptr; }
 
-u32 GfSlotAllocator::getAllocs() const { return unknown18.unknown20; }
+u32 GfSlotAllocator::getAllocs() const { return unknown18.m_allocs; }
 
-void *GfSlotAllocator::getBuffer() { return unknown18.unknown08; }
+void *GfSlotAllocator::getBuffer() { return unknown18.m_buffer; }
 
-size_t GfSlotAllocator::getBufferSize() const { return unknown18.unknown10; }
+size_t GfSlotAllocator::getBufferSize() const { return unknown18.m_bufferSize; }
 
 const char *GfSlotAllocator::getName() const { return m_name.c_str(); }
 

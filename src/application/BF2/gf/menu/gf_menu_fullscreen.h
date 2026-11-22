@@ -94,9 +94,9 @@ public:
   void subLayerWaitOpen();
   void switchLayerWaitFadeOut();
 
-  bool unknown08; // Inferred role: initialized; original member name unknown.
-  u32 unknown0c;  // Inferred role: current screen; original member name unknown.
-  u32 unknown10;  // Inferred role: requested screen; original member name unknown.
+  bool m_initialized; // Inferred role: initialized; named after the game accessor gf::GfMenuFullScreen::isInitialized.
+  u32 unknown0c;      // Inferred role: current screen; original member name unknown.
+  u32 unknown10;      // Inferred role: requested screen; original member name unknown.
   u8 _14[0x18 - 0x14];
   unknown001 unknown18[LAYER_UNKNOWN_4];          // Inferred role: layers; original member name unknown.
   bool unknownf8;                                 // Inferred role: unknown flag; original member name unknown.
@@ -121,7 +121,7 @@ static_assert(offsetof(GfMenuFullScreen::unknown001, unknown30) == 0x30, "");
 static_assert(offsetof(GfMenuFullScreen::unknown001, unknown34) == 0x34, "");
 static_assert(sizeof(GfMenuFullScreen::unknown001) == 0x38, "");
 static_assert(sizeof(GfMenuFullScreen::unknown003) == 0x28, "");
-static_assert(offsetof(GfMenuFullScreen, unknown08) == 0x08, "");
+static_assert(offsetof(GfMenuFullScreen, m_initialized) == 0x08, "");
 static_assert(offsetof(GfMenuFullScreen, unknown18) == 0x18, "");
 static_assert(offsetof(GfMenuFullScreen, unknownf8) == 0xf8, "");
 static_assert(offsetof(GfMenuFullScreen, unknown110) == 0x110, "");

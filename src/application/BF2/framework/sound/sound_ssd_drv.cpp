@@ -125,7 +125,7 @@ void SoundSsdDriver::setCategoryMute(SoundCategory category, bool isMute, f32 ti
           }
         }
       }
-      found->setVolume(found->unknown3c * found->unknown10 * found->unknown14.unknown00 * found->unknown28.unknown00);
+      found->setVolume(found->unknown3c * found->unknown10 * found->unknown14.m_masterVolumeOrg * found->unknown28.m_masterVolumeOrg);
       unknown10->SetCategory(found->unknown00);
     }
   }
@@ -138,7 +138,7 @@ f32 SoundSsdDriver::getCategoryVolume(SoundCategory category) const {
   if (unknown10 != nullptr) {
     const unknown126 *found = findCategory(category);
     if (found != &unknowne8[CATEGORY_UNKNOWN_18]) {
-      volume = found->unknown14.unknown00;
+      volume = found->unknown14.m_masterVolumeOrg;
     }
   }
 

@@ -139,7 +139,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
 
   GfAssetFiles &files = pack->m_assetType;
 
-  if (const char *file = getMdlFile(files.unknown00)) {
+  if (const char *file = getMdlFile(files.m_assetType)) {
     if (!setupReference(pack, file, getMdlSlot())) {
       GfAssetManager::setModelInfo(handle, file);
       mm::mtl::FixStr<128> path;
@@ -148,7 +148,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getArcFile(files.unknown00)) {
+  if (const char *file = getArcFile(files.m_assetType)) {
     if (!setupReference(pack, file, getArcSlot())) {
       mm::mtl::FixStr<128> path;
       path.format("%s%s%s", getPath(), file, ".arc");
@@ -156,7 +156,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getMotFile(files.unknown00)) {
+  if (const char *file = getMotFile(files.m_assetType)) {
     if (!setupReference(pack, file, getMotSlot())) {
       GfAssetManager::setMotionInfo(handle, file);
       mm::mtl::FixStr<128> path;
@@ -165,7 +165,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getEvtMotFile(files.unknown00)) {
+  if (const char *file = getEvtMotFile(files.m_assetType)) {
     if (!setupReference(pack, file, getEvtMotSlot())) {
       mm::mtl::FixStr<128> path;
       path.format("%s%s%s", getEvtPath(), file, ".mot");
@@ -173,7 +173,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getEfpFile(files.unknown00)) {
+  if (const char *file = getEfpFile(files.m_assetType)) {
     if (!setupReference(pack, file, getEfpSlot())) {
       mm::mtl::FixStr<128> path;
       path.format("%s%s%s", getPath(), file, ".wiefp");
@@ -183,7 +183,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getEabFile(files.unknown00)) {
+  if (const char *file = getEabFile(files.m_assetType)) {
     if (!setupReference(pack, file, getEabSlot())) {
       mm::mtl::FixStr<128> path;
       path.format("%s%s%s", getEffPath(), file, ".wieab");
@@ -191,7 +191,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getEfbFile(files.unknown00)) {
+  if (const char *file = getEfbFile(files.m_assetType)) {
     if (!setupReference(pack, file, getEfbSlot())) {
       mm::mtl::FixStr<128> path;
       path.format("%s%s%s", getEffPath(), file, ".wiefb");
@@ -199,7 +199,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getStpFile(files.unknown00)) {
+  if (const char *file = getStpFile(files.m_assetType)) {
     mm::mtl::FixStr<128> name;
     GfAssetFilesInfo info;
     info.unknown00 = handle;
@@ -214,7 +214,7 @@ void GfAssetSetup::requestCoreResource(GfAssetPack *pack, GF_ASSET_HANDLE *handl
     }
   }
 
-  if (const char *file = getEvtStpFile(files.unknown00)) {
+  if (const char *file = getEvtStpFile(files.m_assetType)) {
     mm::mtl::FixStr<128> name;
     GfAssetFilesInfo info;
     info.unknown00 = handle;

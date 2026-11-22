@@ -29,7 +29,7 @@ void GmkMobInsts::createSquad(u16 squadId) {
   disposeSquad();
   if (squadId != 0) {
     GmkSquad::CreateInfo info;
-    info.unknown00 = unknown00.unknown00->unknown08.unknown00->getCreateInfo().unknown08->unknown10.unknown04;
+    info.unknown00 = unknown00.unknown00->unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown10.unknown04;
     info.unknown04 = squadId - 1;
     // __LINE__ must be 716 as in the original file: it is the line argument of operator new.
 #line 716

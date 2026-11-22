@@ -234,10 +234,10 @@ public:
   int unknown204;                    // Inferred role: set to 1 by the constructor, cleared by update; original member name unknown.
   int unknown208;                    // Inferred role: weather value seen by update; original member name unknown.
   u8 _20c[0x210 - 0x20c];
-  mm::Vec3 unknown210; // Inferred role: camera position in the object space; original member name unknown.
-  mm::Vec3 unknown220; // Inferred role: previous camera position; original member name unknown.
-  mm::Col3 unknown230; // Inferred role: ambient color copied into DrLightMan::unknown12c by updatePosLgt; original member name unknown.
-  u8 unknown23c;       // Inferred role: capture tool state; original member name unknown.
+  mm::Vec3 unknown210;  // Inferred role: camera position in the object space; original member name unknown.
+  mm::Vec3 unknown220;  // Inferred role: previous camera position; original member name unknown.
+  mm::Col3 unknown230;  // Inferred role: ambient color copied into DrLightMan::unknown12c by updatePosLgt; original member name unknown.
+  u8 m_fromCaptureTool; // Inferred role: capture tool state; named after the game accessor ml::ScnObjLightDrSys::setFromCaptureTool.
 };
 
 static_assert(sizeof(DrEnvironmentObjLgt::unknown001) == 0x08, "");
@@ -259,7 +259,7 @@ static_assert(offsetof(DrEnvironmentObjLgt, unknown1fc) == 0x1fc, "");
 static_assert(offsetof(DrEnvironmentObjLgt, unknown208) == 0x208, "");
 static_assert(offsetof(DrEnvironmentObjLgt, unknown210) == 0x210, "");
 static_assert(offsetof(DrEnvironmentObjLgt, unknown230) == 0x230, "");
-static_assert(offsetof(DrEnvironmentObjLgt, unknown23c) == 0x23c, "");
+static_assert(offsetof(DrEnvironmentObjLgt, m_fromCaptureTool) == 0x23c, "");
 static_assert(sizeof(DrEnvironmentObjLgt) == 0x240, "");
 
 } // namespace ml

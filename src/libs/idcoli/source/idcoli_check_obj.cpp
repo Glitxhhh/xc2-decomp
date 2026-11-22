@@ -25,7 +25,7 @@ bool IDColiCheckObj::testLine(const IDColiObj *object, const mm::Vec3 &start, co
   input.unknowna0 = unknown04;
   IDColiObj *target = const_cast<IDColiObj *>(object);
   unknown10.unknownf8 = target;
-  unknown10.unknownf0 = object->unknown48;
+  unknown10.unknownf0 = object->m_userData;
   bool isHit = false;
   switch (object->unknown24) {
   case unknown098_1:
@@ -61,7 +61,7 @@ bool IDColiCheckObj::testRay(const IDColiObj *object, const mm::Vec3 &start, con
   input.unknowna0 = unknown04;
   IDColiObj *target = const_cast<IDColiObj *>(object);
   unknown10.unknownf8 = target;
-  unknown10.unknownf0 = object->unknown48;
+  unknown10.unknownf0 = object->m_userData;
   bool isHit = false;
   switch (object->unknown24) {
   case unknown098_1:
@@ -103,7 +103,7 @@ bool IDColiCheckObj::testSphere(const IDColiObj *object, const mm::Vec3 &center,
   input.unknowna0 = unknown04;
   IDColiObj *target = const_cast<IDColiObj *>(object);
   unknown10.unknownf8 = target;
-  unknown10.unknownf0 = object->unknown48;
+  unknown10.unknownf0 = object->m_userData;
   bool isHit = false;
   switch (object->unknown24) {
   case unknown098_1:
@@ -139,7 +139,7 @@ bool IDColiCheckObj::testCapsule(const IDColiObj *object, const mm::Vec3 &start,
   input.unknowna0 = unknown04;
   IDColiObj *target = const_cast<IDColiObj *>(object);
   unknown10.unknownf8 = target;
-  unknown10.unknownf0 = object->unknown48;
+  unknown10.unknownf0 = object->m_userData;
   bool isHit = false;
   switch (object->unknown24) {
   case unknown098_1:

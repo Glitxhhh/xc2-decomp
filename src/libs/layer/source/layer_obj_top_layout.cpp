@@ -32,7 +32,7 @@ LayerObjTopLayout::LayerObjTopLayout(const void *data) : unknown400(this) {
 }
 
 void LayerObjTopLayout::workLayoutCreate(const void *data) {
-  unknownb8 = data;
+  m_resData = data;
   const u8 *base = static_cast<const u8 *>(data);
   const LayerAccLayoutBinary::unknown002 *header = static_cast<const LayerAccLayoutBinary::unknown002 *>(data);
   unknown2a0.unknown00 = base + header->unknown14;
@@ -44,10 +44,10 @@ void LayerObjTopLayout::workLayoutCreate(const void *data) {
   for (s32 i = 0; i < posNum; i++, pos++) {
     if (pos->unknown00 & 0x2) {
       u32 resOffset = resTable[pos->unknown0c].unknown04;
-      LayerObj *object = static_cast<LayerObj *>(LayerObjManager::createStaticObj(static_cast<const u8 *>(unknownb8) + resOffset));
+      LayerObj *object = static_cast<LayerObj *>(LayerObjManager::createStaticObj(static_cast<const u8 *>(m_resData) + resOffset));
       f32 info[4];
       LayerObjUtil::getLayoutInfo(
-          info, pos, static_cast<LayerCenterType>(object->unknown180.unknown18), static_cast<u16>(object->unknown180.unknown14), static_cast<u16>(object->unknown180.unknown16));
+          info, pos, static_cast<LayerCenterType>(object->unknown180.m_centerType), static_cast<u16>(object->unknown180.m_pixelWidth), static_cast<u16>(object->unknown180.m_pixelHeight));
       object->setInitPosScl(info[0], info[1], info[2], info[3]);
       unknown258.unknown002(object);
     }
@@ -56,10 +56,10 @@ void LayerObjTopLayout::workLayoutCreate(const void *data) {
   unknown180.unknown04 = 1.0f;
   unknown180.unknown08 = 1.0f;
   unknown180.unknown0c = 1.0f;
-  unknown180.unknown10 = 0;
-  unknown180.unknown12 = 0;
-  unknown180.unknown14 = 0;
-  unknown180.unknown16 = 0;
+  unknown180.m_pixelX = 0;
+  unknown180.m_pixelY = 0;
+  unknown180.m_pixelWidth = 0;
+  unknown180.m_pixelHeight = 0;
 }
 
 LayerObjTopLayout::LayerObjTopLayout() : unknown400(this) {
@@ -79,14 +79,14 @@ void LayerObjTopLayout::apply(LayerSortMan *sortMan, const LayerRenderView *view
   if (!(unknowna8 & 0x10000)) {
     info.unknown50 = true;
     info.unknown00 = unknown20[unknownc2];
-    info.unknown54 = static_cast<LAYER_SPACE_TYPE>(unknownc3);
-    info.unknown58 = unknownc4;
+    info.unknown54 = static_cast<LAYER_SPACE_TYPE>(m_space);
+    info.unknown58 = m_blendType;
     info.unknown5c.unknown001();
-    info.unknown70 = static_cast<const LayerObjTopMaskObj *>(unknown240);
+    info.unknown70 = static_cast<const LayerObjTopMaskObj *>(m_maskObj);
     updateSpace(info);
     updateBeginLayout(info, view);
     LayerResMatrix matrix;
-    if (unknownc3 == LAYER_SPACE_TYPE_UNKNOWN_2) {
+    if (m_space == LAYER_SPACE_TYPE_UNKNOWN_2) {
       LayerObjUtil::calcLayer3DSpaceTransRotScaleMatrix(matrix, unknownc8[2].unknown00);
     } else {
       LayerObjUtil::calcLayerTransRotScaleLaoutMatrix(matrix, unknownc8[2].unknown00, unknown180);
@@ -99,8 +99,8 @@ void LayerObjTopLayout::apply(LayerSortMan *sortMan, const LayerRenderView *view
     setDrawList(sortMan, true);
   } else {
     info.unknown50 = false;
-    info.unknown54 = static_cast<LAYER_SPACE_TYPE>(unknownc3);
-    info.unknown58 = unknownc4;
+    info.unknown54 = static_cast<LAYER_SPACE_TYPE>(m_space);
+    info.unknown58 = m_blendType;
     info.unknown70 = nullptr;
     updateDispOffLayout(info, view);
   }
@@ -137,25 +137,25 @@ void LayerObjTopLayout::updateBeginLayout(LayerResUpdateInfo &info, const LayerR
   unknown001(info, view);
   f32 aspect = 1.0f;
   if (info.unknown5c.unknown00 == -100000.0f) {
-    unknown180.unknown10 = 0;
-    unknown180.unknown12 = 0;
-    unknown180.unknown14 = 0;
-    unknown180.unknown16 = 0;
+    unknown180.m_pixelX = 0;
+    unknown180.m_pixelY = 0;
+    unknown180.m_pixelWidth = 0;
+    unknown180.m_pixelHeight = 0;
   } else {
     const LayerShdManager *shader = LayerManager::get()->unknown58;
-    unknown180.unknown10 = info.unknown5c.unknown08.x * shader->unknown530;
-    unknown180.unknown12 = info.unknown5c.unknown08.y * shader->unknown534;
-    unknown180.unknown14 = info.unknown5c.unknown00 * shader->unknown530;
-    unknown180.unknown16 = info.unknown5c.unknown04 * shader->unknown534;
-    unknown180.unknown14 -= unknown180.unknown10;
-    unknown180.unknown16 -= unknown180.unknown12;
-    if (unknown180.unknown14 != 0) {
-      aspect = static_cast<f32>(unknown180.unknown16) / static_cast<f32>(unknown180.unknown14);
+    unknown180.m_pixelX = info.unknown5c.unknown08.x * shader->m_screenWidth;
+    unknown180.m_pixelY = info.unknown5c.unknown08.y * shader->m_screenHeight;
+    unknown180.m_pixelWidth = info.unknown5c.unknown00 * shader->m_screenWidth;
+    unknown180.m_pixelHeight = info.unknown5c.unknown04 * shader->m_screenHeight;
+    unknown180.m_pixelWidth -= unknown180.m_pixelX;
+    unknown180.m_pixelHeight -= unknown180.m_pixelY;
+    if (unknown180.m_pixelWidth != 0) {
+      aspect = static_cast<f32>(unknown180.m_pixelHeight) / static_cast<f32>(unknown180.m_pixelWidth);
     }
   }
   unknown180.unknown0c = aspect;
   LayerBasePos &pos = unknownc8[2].unknown00;
-  switch (unknown2a0.unknown20) {
+  switch (unknown2a0.m_autoAnchorMode) {
   case LAYER_ANCHOR_UNKNOWN_1:
     if (fabsf(info.unknown5c.unknown00) >= 0.001f) {
       pos.unknown14 = info.unknown5c.unknown08.x / info.unknown5c.unknown00;
@@ -231,26 +231,26 @@ void LayerObjTopLayout::applyBegin(LayerResUpdateInfo &info, const LayerRenderVi
   }
   LAYER_SPACE_TYPE space = info.unknown54;
   if (space == LAYER_SPACE_TYPE_UNKNOWN_0) {
-    space = static_cast<LAYER_SPACE_TYPE>(unknownc3);
+    space = static_cast<LAYER_SPACE_TYPE>(m_space);
   }
   child.unknown5c.unknown001();
   child.unknown50 = true;
-  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(unknown240);
+  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(m_maskObj);
   if (mask == nullptr) {
     mask = info.unknown70;
   }
   child.unknown70 = mask;
   if (info.unknown54 == LAYER_SPACE_TYPE_UNKNOWN_0) {
-    child.unknown54 = static_cast<LAYER_SPACE_TYPE>(unknownc3);
+    child.unknown54 = static_cast<LAYER_SPACE_TYPE>(m_space);
     child.unknown00 = unknown20[unknownc2];
   } else {
     child.unknown54 = info.unknown54;
     child.unknown00.unknown009(unknown20[unknownc2], info.unknown00);
   }
-  if (unknownc4 == 5) {
+  if (m_blendType == 5) {
     child.unknown58 = info.unknown58;
   } else {
-    child.unknown58 = unknownc4;
+    child.unknown58 = m_blendType;
   }
   updateSpace(child);
   updateBeginLayout(child, view);
@@ -274,8 +274,8 @@ void LayerObjTopLayout::applyEnd(LayerResUpdateInfo &info, const LayerRenderView
   child.unknown40 = &matrix;
   child.unknown48 = &color;
   child.unknown50 = true;
-  child.unknown58 = unknownc4;
-  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(unknown240);
+  child.unknown58 = m_blendType;
+  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(m_maskObj);
   if (mask == nullptr) {
     mask = info.unknown70;
   }
@@ -307,13 +307,13 @@ void LayerObjTopLayout::setDrawList(LayerSortMan *sortMan, bool is3D) {
     if (is3D && (unknowna8 & 0x400)) {
       LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown400, unknown200);
     } else {
-      sortMan->set2DSpace(&unknown400, unknownc0);
+      sortMan->set2DSpace(&unknown400, m_priority);
     }
   } else if (unknown2a0.unknown118.unknown00 & 0x4) {
     if (is3D && (unknowna8 & 0x400)) {
       LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown400, unknown200);
     } else {
-      sortMan->set2DSpace(&unknown400, unknownc0);
+      sortMan->set2DSpace(&unknown400, m_priority);
     }
   }
 }

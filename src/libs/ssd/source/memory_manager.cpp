@@ -44,29 +44,29 @@ void MemoryManager::Quit() {
     }
     memoryManager_.unknown88 = nullptr;
     memoryManager_.unknown90 = 0;
-    if (memoryManager_.unknown94 != 0 || memoryManager_.unknown98 != 0 || memoryManager_.unknown9c != 0) {
-      SSD_ASSERT(memoryManager_.unknown94 == 0,
+    if (memoryManager_.m_instanceAllocCount != 0 || memoryManager_.m_bufferAllocCount != 0 || memoryManager_.m_streamAllocCount != 0) {
+      SSD_ASSERT(memoryManager_.m_instanceAllocCount == 0,
                  u"Assert : \"%s\", %s:%d, %s",
                  u"memoryManager_.numInstance_ == 0",
                  u"D:/ssd/ssd51/ssd/sources/memory/memory_manager.cpp",
                  0x7d,
                  u"インスタンスが残っている可能性があります。");
-      SSD_ASSERT(memoryManager_.unknown98 == 0,
+      SSD_ASSERT(memoryManager_.m_bufferAllocCount == 0,
                  u"Assert : \"%s\", %s:%d, %s",
                  u"memoryManager_.numBuffer_ == 0",
                  u"D:/ssd/ssd51/ssd/sources/memory/memory_manager.cpp",
                  0x7e,
                  u"汎用バッファが残っている可能性があります。");
-      SSD_ASSERT(memoryManager_.unknown9c == 0,
+      SSD_ASSERT(memoryManager_.m_streamAllocCount == 0,
                  u"Assert : \"%s\", %s:%d, %s",
                  u"memoryManager_.numStream_ == 0",
                  u"D:/ssd/ssd51/ssd/sources/memory/memory_manager.cpp",
                  0x7f,
                  u"ストリームバッファが残っている可能性があります。");
     }
-    memoryManager_.unknown94 = 0;
-    memoryManager_.unknown98 = 0;
-    memoryManager_.unknown9c = 0;
+    memoryManager_.m_instanceAllocCount = 0;
+    memoryManager_.m_bufferAllocCount = 0;
+    memoryManager_.m_streamAllocCount = 0;
     memoryManager_.unknown08.unknown002();
   }
 }
@@ -107,7 +107,7 @@ Allocator::Block *MemoryManager::AllocInstance(Allocator *allocator, size_t size
       return nullptr;
     }
     block->unknown08 = reinterpret_cast<void *>((alignment + reinterpret_cast<size_t>(block->unknown10) - 1) & -alignment);
-    unknown94++;
+    m_instanceAllocCount++;
   }
   return block;
 }
@@ -122,7 +122,7 @@ Allocator::Block *MemoryManager::AllocBuffer(Allocator *allocator, size_t size, 
       return nullptr;
     }
     block->unknown08 = reinterpret_cast<void *>((alignment + reinterpret_cast<size_t>(block->unknown10) - 1) & -alignment);
-    unknown98++;
+    m_bufferAllocCount++;
   }
   return block;
 }
@@ -137,7 +137,7 @@ Allocator::Block *MemoryManager::AllocStream(Allocator *allocator, size_t size, 
       return nullptr;
     }
     block->unknown08 = reinterpret_cast<void *>((alignment + reinterpret_cast<size_t>(block->unknown10) - 1) & -alignment);
-    unknown9c++;
+    m_streamAllocCount++;
   }
   return block;
 }
@@ -161,19 +161,19 @@ Allocator::Block *MemoryManager::GetAllocatorBlock(void *address) {
 void MemoryManager::FreeInstance(Allocator *allocator, Allocator::Block *block) {
   allocator->FreeInstance(block->unknown10);
   FreeBlock(block);
-  unknown94--;
+  m_instanceAllocCount--;
 }
 
 void MemoryManager::FreeBuffer(Allocator *allocator, Allocator::Block *block) {
   allocator->FreeBuffer(block->unknown10);
   FreeBlock(block);
-  unknown98--;
+  m_bufferAllocCount--;
 }
 
 void MemoryManager::FreeStream(Allocator *allocator, Allocator::Block *block) {
   allocator->FreeStream(block->unknown10);
   FreeBlock(block);
-  unknown9c--;
+  m_streamAllocCount--;
 }
 
 Allocator::Block *Allocator::NewInstanceImpl(size_t size, size_t count, size_t alignment) { return MemoryManager::memoryManager_.AllocInstance(this, size, count, alignment); }

@@ -112,7 +112,7 @@ void DrResEtcPamObj::mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *cal
 void DrResEtcPamObj::mdonode_etcpam_volfadeanm(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg) {
   if ((unknown1c & 1) != 0) {
     f32 value = param->getParams();
-    u32 index = arg.unknown00->getParts(callback->unknown04)->unknown3a * 3 + 2;
+    u32 index = arg.unknown00->getParts(callback->unknown04)->m_extVolumeFadeEffect * 3 + 2;
     if (value <= 0.01f) {
       arg.unknown08[index].unknowna4 = arg.unknown08[index].unknownd0;
     } else if (value > 1.0f) {

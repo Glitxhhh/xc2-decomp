@@ -103,7 +103,7 @@ void DrPixlMan::lastTexRender() {
   DrPixlPostParm *postParm = unknown08->unknown120[unknown08->unknown1c98];
   DrAPCache *apCache = unknown08->unknown5c0;
   f32 scale[4];
-  if (!postParm->unknownfb2) {
+  if (!postParm->m_reduction) {
     scale[0] = 1.0f;
     scale[1] = 1.0f;
     scale[2] = 0.0f;
@@ -152,7 +152,7 @@ void DrPixlMan::toneMapRender(bool isDepth) {
   tone[3] = 0.0f;
   uniform.setF32SetVec4(0, tone);
   f32 scale[4];
-  if (!postParm->unknownfb2 || !isDepth) {
+  if (!postParm->m_reduction || !isDepth) {
     scale[0] = 1.0f;
     scale[1] = 1.0f;
     scale[2] = 0.0f;
@@ -217,7 +217,7 @@ void DrPixlMan::gammaRender(bool isDepth) {
   tone[3] = 0.0f;
   uniform.setF32SetVec4(0, tone);
   f32 scale[4];
-  if (!postParm->unknownfb2 || !isDepth) {
+  if (!postParm->m_reduction || !isDepth) {
     scale[0] = 1.0f;
     scale[1] = 1.0f;
     scale[2] = 0.0f;
@@ -295,11 +295,11 @@ void DrPixlMan::delViewInfo(int index) {
       }
     }
   }
-  grlib::CGLibRenderTarget *target = unknown7f0->unknown148;
+  grlib::CGLibRenderTarget *target = unknown7f0->m_backFaceDepthTexture;
   if (target != nullptr) {
     target->releaseWork();
     delete target;
-    unknown7f0->unknown148 = nullptr;
+    unknown7f0->m_backFaceDepthTexture = nullptr;
   }
   target = unknown7f0->unknown150;
   if (target != nullptr) {
@@ -408,7 +408,7 @@ void DrPixlMan::lastRender() {
     unknown7f0->unknown170->debugRender();
     postParm = unknown08->unknown120[unknown08->unknown1c98];
   }
-  if (postParm->unknown10fe) {
+  if (postParm->m_dispReduction) {
     debugReductionRender();
   }
 }
@@ -612,8 +612,8 @@ void DrPixlMan::calcColorBuffer(wkPixlManRes *res, f32 width, f32 height, f32 un
       }
     }
   }
-  if (res->unknown148 != nullptr) {
-    res->unknown148->setTextureInfo(width, height, DrPixlFormat::s_BackFaceDepth, true, (memMan->unknown010 + DrMan::getIns()->unknown1c98)->unknown0bc);
+  if (res->m_backFaceDepthTexture != nullptr) {
+    res->m_backFaceDepthTexture->setTextureInfo(width, height, DrPixlFormat::s_BackFaceDepth, true, (memMan->unknown010 + DrMan::getIns()->unknown1c98)->unknown0bc);
   }
   // The reduced sizes are integers: the game truncates each size (fcvtzs at 0x710083d090 and 0x710083d098), scales it, truncates the
   // product again (0x710083d0ac and 0x710083d0cc) and converts it back to float (scvtf at 0x710083d0b8 and 0x710083d0e0) as the argument.
@@ -670,7 +670,7 @@ void DrPixlMan::releaseColorBuff() {
   if (postParm->unknownfe4 == 2) {
     return;
   }
-  res->unknown148->releaseTexture();
+  res->m_backFaceDepthTexture->releaseTexture();
   res->unknown150->releaseTexture();
   res->unknown158->releaseTexture();
   res->unknown160->releaseTexture();
@@ -883,14 +883,14 @@ bool DrPixlMan::isRefractionMap() { return unknown7f0->unknown180->unknownd0 != 
 void DrPixlMan::thicknessFirstBegin() {
   unknown858 = 13;
   grlib::CGLibState::beginRegisterRenderTarget();
-  grlib::CGLibState::setRegisterRenderTarget(*unknown7f0->unknown148, grlib::GRL_MRT_TYPE_0);
+  grlib::CGLibState::setRegisterRenderTarget(*unknown7f0->m_backFaceDepthTexture, grlib::GRL_MRT_TYPE_0);
   grlib::CGLibState::setRegisterDepthTarget(*getDepthObj()->unknown120);
   grlib::CGLibState::endRegisterRenderTarget();
 }
 
-DrPixlRenderTarget *DrPixlMan::getBackFaceDepthTexture() { return unknown7f0->unknown148; }
+DrPixlRenderTarget *DrPixlMan::getBackFaceDepthTexture() { return unknown7f0->m_backFaceDepthTexture; }
 
-void DrPixlMan::thicknessFirstEnd() { unknown7f0->unknown148->setColorInvalidate(); }
+void DrPixlMan::thicknessFirstEnd() { unknown7f0->m_backFaceDepthTexture->setColorInvalidate(); }
 
 void DrPixlMan::lastDeferredRender() { unknown7f0->unknown170->lastDeferredRender(); }
 
@@ -1022,7 +1022,7 @@ DrPixlRenderTarget *DrPixlMan::getDiffIBLObj() {
   return unknown08->unknown78->getPixlObj(type);
 }
 
-DrPixlRenderTarget *DrPixlMan::getBackFaceDepthTexture() const { return unknown7f0->unknown148; }
+DrPixlRenderTarget *DrPixlMan::getBackFaceDepthTexture() const { return unknown7f0->m_backFaceDepthTexture; }
 
 // Ruling 8: the two shader blocks (stencil bit 0x40 and 0x80) are written out twice like the game (0x7100849174: the first block is
 // 0x71008491a0-0x71008492fc, the second one starts at 0x7100849318 and repeats it with its own 8-float `col` array and its own uniform utility). A
@@ -1086,7 +1086,7 @@ void DrPixlMan::clearAccumBuffer() {
 }
 
 void DrPixlMan::fastDeferredRender() {
-  if (unknown08->unknown120[unknown08->unknown1c98]->unknown488) {
+  if (unknown08->unknown120[unknown08->unknown1c98]->m_gBuffDebug) {
     debugGBuffRender();
   }
   unknown7f0->unknown180->renderDeferredFast();

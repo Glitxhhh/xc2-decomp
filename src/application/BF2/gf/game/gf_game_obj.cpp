@@ -86,7 +86,7 @@ void GfGameObj::bdatReload() {
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown9050.begin(); it != gameObj->unknown9050.end(); ++it) {
     refreshBdat(*it);
   }
-  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = gameObj->unknownd870.begin(); it != gameObj->unknownd870.end(); ++it) {
+  for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = gameObj->m_listEnemyBlade.begin(); it != gameObj->m_listEnemyBlade.end(); ++it) {
     refreshBdat(*it);
   }
 }
@@ -234,7 +234,7 @@ bool GfGameObj::isInitialized() {
 
 bool GfGameObj::isExistEnemy() { return get()->unknown9050.size() != 0; }
 
-const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListEnemyBlade() { return &get()->unknownd870; }
+const mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListEnemyBlade() { return &get()->m_listEnemyBlade; }
 
 bool GfGameObj::isGameObjWaiting(GF_OBJ_HANDLE *handle) { return GfObjUtil::testFlag(handle, OBJ_FLAG_UNKNOWN_16); }
 
@@ -596,7 +596,7 @@ mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *GfGameObj::getListType(u
     return &unknown4830;
   case 5:
     if (GfObjUtil::isEnemyBlade(handle)) {
-      return &unknownd870;
+      return &m_listEnemyBlade;
     }
     return &unknown9050;
   case 6:
@@ -636,7 +636,7 @@ void GfGameObj::getListEnemyBlade(mm::mtl::FixedVector<GF_OBJ_HANDLE *, GAME_UNK
   if (get() == nullptr) {
     return;
   }
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemyBlades = get()->unknownd870;
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemyBlades = get()->m_listEnemyBlade;
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = enemyBlades.begin(); it != enemyBlades.end(); ++it) {
     list.push_back(*it);
   }
@@ -650,7 +650,7 @@ bool GfGameObj::isEmpty() {
   if (gameObj->unknown9050.size() != 0) {
     return false;
   }
-  if (gameObj->unknownd870.size() != 0) {
+  if (gameObj->m_listEnemyBlade.size() != 0) {
     return false;
   }
   if (gameObj->unknown12090.size() != 0) {
@@ -701,7 +701,7 @@ void GfGameObj::updateObjectProperty() {
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = unknown4830.begin(); it != unknown4830.end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemies = GfObjUtil::isEnemyBlade(reinterpret_cast<GF_OBJ_HANDLE *>(-1)) ? unknownd870 : unknown9050;
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemies = GfObjUtil::isEnemyBlade(reinterpret_cast<GF_OBJ_HANDLE *>(-1)) ? m_listEnemyBlade : unknown9050;
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
     GfGameUtil::flushProperty(*it);
   }
@@ -878,7 +878,7 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
     return count;
   }
   GfGameObj *gameObj = get();
-  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemies = GfObjUtil::isEnemyBlade(unknown020) ? gameObj->unknownd870 : gameObj->unknown9050;
+  mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> &enemies = GfObjUtil::isEnemyBlade(unknown020) ? gameObj->m_listEnemyBlade : gameObj->unknown9050;
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
     DataParamAcc paramAcc(*it);
     u32 bdatId = 0;

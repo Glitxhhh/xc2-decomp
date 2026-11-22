@@ -75,9 +75,9 @@ void DrResMdoVertex::setupVertex(const u8 *resource) {
   } else {
     unknown70 = nullptr;
   }
-  unknown58 = reinterpret_cast<grlib::CGLibVtxIndex *>(m_buffer + offset);
+  m_resIndexObj = reinterpret_cast<grlib::CGLibVtxIndex *>(m_buffer + offset);
   for (int i = 0; i < unknown4a; i++) {
-    new (&unknown58[i]) grlib::CGLibVtxIndex;
+    new (&m_resIndexObj[i]) grlib::CGLibVtxIndex;
   }
   offset += unknown4a * sizeof(grlib::CGLibVtxIndex);
   unknown68 = reinterpret_cast<grlib::CGLibVtlMemPool *>(m_buffer + offset);
@@ -94,7 +94,7 @@ void DrResMdoVertex::setupVertex(const u8 *resource) {
   }
   const unknown047 *indexInfos = reinterpret_cast<const unknown047 *>(resource + indexOffset);
   for (int i = 0; i < unknown4a; i++) {
-    unknown58[i].createMemIndexBuff(unknown68, indexInfos[i].unknown00, indexInfos[i].unknown04, unknown001[indexInfos[i].unknown08], unknown066[indexInfos[i].unknown0a]);
+    m_resIndexObj[i].createMemIndexBuff(unknown68, indexInfos[i].unknown00, indexInfos[i].unknown04, unknown001[indexInfos[i].unknown08], unknown066[indexInfos[i].unknown0a]);
   }
   if (header->unknown38 != 0) {
     unknown40 = reinterpret_cast<const unknown053 *>(reinterpret_cast<const u8 *>(unknown28) + header->unknown38);
@@ -122,7 +122,7 @@ void DrResMdoVertex::vertexRelease() {
     unknown60[i].~CGLibVtxVertex();
   }
   for (int i = 0; i < unknown4a; i++) {
-    unknown58[i].~CGLibVtxIndex();
+    m_resIndexObj[i].~CGLibVtxIndex();
   }
   if (unknown70 != nullptr) {
     unknown70->unknown00->~CGLibVtxVertex();
@@ -202,7 +202,7 @@ void DrResMdoVertex::setMofBlendVertexBind(grlib::CGLibOneUniformArray *uniforms
 
 grlib::CGLibVtxVertex *DrResMdoVertex::getResVertexObj(int index) { return &unknown50[index]; }
 
-grlib::CGLibVtxIndex *DrResMdoVertex::getResIndexObj(int index) { return &unknown58[index]; }
+grlib::CGLibVtxIndex *DrResMdoVertex::getResIndexObj(int index) { return &m_resIndexObj[index]; }
 
 grlib::CGLibVtxVertex *DrResMdoVertex::getResEtcVertexObj(int index) {
   if (unknown30 == nullptr) {
@@ -225,8 +225,8 @@ bool DrResMdoVertex::getVertexInfo(int index, const MdsMdlVertexFmt **format, in
   return false;
 }
 
-void DrResMdoVertex::render(int index) { unknown58[index].drawIndex(); }
+void DrResMdoVertex::render(int index) { m_resIndexObj[index].drawIndex(); }
 
-void DrResMdoVertex::renderIns(int index, int instanceCount) { unknown58[index].drawInsIndex(instanceCount); }
+void DrResMdoVertex::renderIns(int index, int instanceCount) { m_resIndexObj[index].drawInsIndex(instanceCount); }
 
 } // namespace ml

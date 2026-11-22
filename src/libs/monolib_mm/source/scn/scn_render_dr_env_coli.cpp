@@ -13,17 +13,17 @@ ScnRenderDrEnvColi::~ScnRenderDrEnvColi() {}
 
 bool ScnRenderDrEnvColi::testEnvColi(const mm::Vec3 &position, f32 radius) { return m_envColiMan->testEnvColi(nullptr, position, radius); }
 
-s32 ScnRenderDrEnvColi::getBgmId() const { return m_envColiMan->unknown40.unknown08; }
+s32 ScnRenderDrEnvColi::getBgmId() const { return m_envColiMan->unknown40.m_bgmId; }
 
-s32 ScnRenderDrEnvColi::getLayerId() const { return m_envColiMan->unknown40.unknown0c; }
+s32 ScnRenderDrEnvColi::getLayerId() const { return m_envColiMan->unknown40.m_layerId; }
 
-s32 ScnRenderDrEnvColi::getReverbId() const { return m_envColiMan->unknown40.unknown10; }
+s32 ScnRenderDrEnvColi::getReverbId() const { return m_envColiMan->unknown40.m_reverbId; }
 
-s32 ScnRenderDrEnvColi::getCaveId() const { return m_envColiMan->unknown40.unknown14; }
+s32 ScnRenderDrEnvColi::getCaveId() const { return m_envColiMan->unknown40.m_caveId; }
 
-s32 ScnRenderDrEnvColi::getAreaId() const { return m_envColiMan->unknown40.unknown18; }
+s32 ScnRenderDrEnvColi::getAreaId() const { return m_envColiMan->unknown40.m_areaId; }
 
-s32 ScnRenderDrEnvColi::getWindId() const { return m_envColiMan->unknown40.unknown20; }
+s32 ScnRenderDrEnvColi::getWindId() const { return m_envColiMan->unknown40.m_windId; }
 
 bool ScnRenderDrEnvColi::isRoom() const { return (m_envColiMan->unknown40.unknown24 >> 2 & 1) != 0; }
 

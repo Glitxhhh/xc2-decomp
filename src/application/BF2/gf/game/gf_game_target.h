@@ -104,7 +104,7 @@ public:
   // Inferred role: tests that the state machine left StateDriverNotActive; original name unknown.
   static bool unknown002(const ai::Fsm &fsm) {
     const ai::State *state = fsm.getState();
-    return state != nullptr && state->unknown08 != STATE_UNKNOWN_0;
+    return state != nullptr && state->m_state != STATE_UNKNOWN_0;
   }
 
   // Inferred role: first param of the list, without the checks of getParam; original name unknown.

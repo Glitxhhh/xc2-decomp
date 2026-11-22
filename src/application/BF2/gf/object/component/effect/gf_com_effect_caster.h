@@ -297,7 +297,7 @@ public:
   fw::EffectPack *unknown38;                      // Inferred role: effect pack; original member name unknown.
   mm::mtl::FixedVector<unknown001, 52> unknown40; // Inferred role: weapon effect packs; original member name unknown.
   EffectCaster *unknown388;                       // Inferred role: effect caster; original member name unknown.
-  fw::EffectPoint *unknown390;                    // Inferred role: effect point; original member name unknown.
+  fw::EffectPoint *m_effectPoint;                 // Inferred role: effect point; named after the game accessor gf::GfComEffectCaster::getEffectPoint.
   u8 _398[0x3a0 - 0x398];
   mm::mtl::FixedVector<Param, 256> unknown3a0;             // Inferred role: caster params; original member name unknown.
   mm::mtl::FixedVector<EventEfHandleTbl, 256> unknownc3b0; // Inferred role: mount effects; original member name unknown.
@@ -323,7 +323,7 @@ static_assert(offsetof(GfComEffectCaster, unknown24) == 0x24, "");
 static_assert(offsetof(GfComEffectCaster, unknown28) == 0x28, "");
 static_assert(offsetof(GfComEffectCaster, unknown40) == 0x40, "");
 static_assert(offsetof(GfComEffectCaster, unknown388) == 0x388, "");
-static_assert(offsetof(GfComEffectCaster, unknown390) == 0x390, "");
+static_assert(offsetof(GfComEffectCaster, m_effectPoint) == 0x390, "");
 static_assert(offsetof(GfComEffectCaster, unknown3a0) == 0x3a0, "");
 static_assert(offsetof(GfComEffectCaster, unknownc3b0) == 0xc3b0, "");
 static_assert(offsetof(GfComEffectCaster, unknown113d0) == 0x113d0, "");

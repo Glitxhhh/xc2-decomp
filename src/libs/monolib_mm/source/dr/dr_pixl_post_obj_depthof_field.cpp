@@ -35,7 +35,7 @@ DrPixlPostObjDepthofField::~DrPixlPostObjDepthofField() {
 }
 
 void DrPixlPostObjDepthofField::update() {
-  s32 pixlLv = unknown00->unknown120[unknown00->unknown1c98]->unknown238;
+  s32 pixlLv = unknown00->unknown120[unknown00->unknown1c98]->m_dofPixlLv;
   if (unknown50 != pixlLv) {
     unknown50 = pixlLv;
     if (pixlLv == 0) {
@@ -61,7 +61,7 @@ void DrPixlPostObjDepthofField::update() {
 }
 
 void DrPixlPostObjDepthofField::render() {
-  if (unknown00->unknown120[unknown00->unknown1c98]->unknown21c) {
+  if (unknown00->unknown120[unknown00->unknown1c98]->m_dOFAutoFocus) {
     renderDepthSample();
     renderDepthAllSample();
   }
@@ -94,7 +94,7 @@ void DrPixlPostObjDepthofField::renderDepthAllSample() {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   DrShdDataList *shdList = unknown00->unknown80->unknown00;
   DrShdDataObj *shader;
-  if (postParm->unknown23c != 0) {
+  if (postParm->m_dOFFocusNum != 0) {
     shader = shdList->getPostShdObj(0x20);
   } else {
     shader = shdList->getPostShdObj(0x1f);
@@ -106,7 +106,7 @@ void DrPixlPostObjDepthofField::renderDepthAllSample() {
     uniform.setUseUniformBlock("U_POST");
     int depthLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("dep");
     int oldLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("old");
-    if (postParm->unknown23c == 0) {
+    if (postParm->m_dOFFocusNum == 0) {
       u32 offset = uniform.unknown001("pisu[0]");
       f32 height = static_cast<f32>(unknown38->unknownc0);
       f32 width = static_cast<f32>(unknown38->unknownbc);
@@ -122,7 +122,7 @@ void DrPixlPostObjDepthofField::renderDepthAllSample() {
       uniform.setF32SetF32Array(offset, pisu, 8);
     } else {
       u32 offset = uniform.unknown001("pisu");
-      s32 index = postParm->unknown23c - 1;
+      s32 index = postParm->m_dOFFocusNum - 1;
       f32 pisu[4];
       s32 block = index / 4;
       s32 sub = index % 4;
@@ -154,8 +154,8 @@ void DrPixlPostObjDepthofField::renderDepthAllSample() {
     f32 ratio[4];
     ratio[0] = viewWork->unknown430.x;
     ratio[1] = viewWork->unknown430.y;
-    ratio[2] = postParm->unknown244;
-    ratio[3] = postParm->unknown240;
+    ratio[2] = postParm->m_dOFFocusMin;
+    ratio[3] = postParm->m_dOFFocusRatio;
     uniform.setF32SetVec4(ratioOffset, ratio);
     int calcLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("calc");
     apCache->beginTexSampling(2, 0);
@@ -203,16 +203,16 @@ void DrPixlPostObjDepthofField::renderDofScaleDown() {
   }
   uniform.setF32SetVec4(scaleOffset, work);
   DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
-  f32 focus = postParm->unknown224 / viewWork->unknown430.x + viewWork->unknown430.y;
-  f32 range = postParm->unknown228 / viewWork->unknown430.x;
+  f32 focus = postParm->m_doFDistance / viewWork->unknown430.x + viewWork->unknown430.y;
+  f32 range = postParm->m_doFRange / viewWork->unknown430.x;
   work[0] = -focus;
   work[1] = -1.0f / range;
-  work[2] = postParm->unknown234;
-  work[3] = postParm->unknown22c;
+  work[2] = postParm->m_doFBlend;
+  work[3] = postParm->m_doFStrength;
   uniform.setF32SetVec4(ratioOffset, work);
   work[0] = -focus;
   work[1] = -1.0f / range;
-  work[2] = postParm->unknown21c ? 1.0f : 0.0f;
+  work[2] = postParm->m_dOFAutoFocus ? 1.0f : 0.0f;
   work[3] = 0.0f;
   uniform.setF32SetVec4(dofParamOffset, work);
   int ratioLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("ratTex");
@@ -249,7 +249,7 @@ void DrPixlPostObjDepthofField::renderDofPass() {
   DrAPCache *apCache = unknown00->unknown5c0;
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   DrShdDataList *shdList = unknown00->unknown80->unknown00;
-  f32 pixlScale = postParm->unknown21a ? unknown54 * 0.5f : unknown54;
+  f32 pixlScale = postParm->m_dofHLvMode ? unknown54 * 0.5f : unknown54;
   f32 width = static_cast<f32>(unknown18->unknownbc);
   f32 height = static_cast<f32>(unknown18->unknownc0);
   f32 scale[4];
@@ -263,11 +263,11 @@ void DrPixlPostObjDepthofField::renderDofPass() {
     width /= reductionX;
     height /= reductionY;
   }
-  f32 ratio = postParm->unknown220;
+  f32 ratio = postParm->m_doFPixlRatio;
   f32 ofsU = 1.0f / width * ratio * 0.125f;
   f32 stepU = pixlScale * ofsU;
   f32 stepV = pixlScale * (1.0f / height * ratio * 0.125f);
-  s32 count = postParm->unknown21a ? 12 : 6;
+  s32 count = postParm->m_dofHLvMode ? 12 : 6;
   f32 ofs[48];
   f32 dofParam[4];
   for (s32 i = 0; i < count; i++) {
@@ -280,13 +280,13 @@ void DrPixlPostObjDepthofField::renderDofPass() {
     ofs[count * 2 + i * 2] = (stepU * 0.5f + stepU * i) * s;
     ofs[count * 2 + i * 2 + 1] = (stepV * 0.5f + stepV * i) * c;
   }
-  dofParam[0] = postParm->unknown230;
+  dofParam[0] = postParm->m_doFLens;
   dofParam[1] = 0.0f;
   dofParam[2] = 0.0f;
   dofParam[3] = 0.0f;
   unknown20->setRenderTarget(*unknown28);
   DrShdDataObj *shader;
-  if (postParm->unknown21a) {
+  if (postParm->m_dofHLvMode) {
     shader = shdList->getPostShdObj(0x16);
   } else {
     shader = shdList->getPostShdObj(0xf);
@@ -312,7 +312,7 @@ void DrPixlPostObjDepthofField::renderDofPass() {
     unknown28->setColorInvalidate();
   }
   unknown30->setRenderTarget();
-  if (postParm->unknown21a) {
+  if (postParm->m_dofHLvMode) {
     shader = shdList->getPostShdObj(0x17);
   } else {
     shader = shdList->getPostShdObj(0x10);
@@ -351,7 +351,7 @@ void DrPixlPostObjDepthofField::renderCalc() {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   DrShdDataList *shdList = shdMan->unknown00;
   DrShdDataObj *shader = shdList->getPostShdObj(0x15);
-  u32 autoFocus = postParm->unknown21c ? 1 : 2;
+  u32 autoFocus = postParm->m_dOFAutoFocus ? 1 : 2;
   shader->setDeclarationIdx(shader->getDeclarationOfs("AUTO_FOCUS"), autoFocus);
   shdList->bindTriangleTex();
   shader->setupShader(0u);
@@ -370,12 +370,12 @@ void DrPixlPostObjDepthofField::renderCalc() {
   work[3] = 1.0f / (height + height);
   uniform.setF32SetVec4(sclOffset, work);
   DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
-  f32 focus = postParm->unknown224 / viewWork->unknown430.x + viewWork->unknown430.y;
-  f32 range = postParm->unknown228 / viewWork->unknown430.x;
+  f32 focus = postParm->m_doFDistance / viewWork->unknown430.x + viewWork->unknown430.y;
+  f32 range = postParm->m_doFRange / viewWork->unknown430.x;
   work[0] = -focus;
   work[1] = -1.0f / range;
-  work[2] = postParm->unknown234;
-  work[3] = postParm->unknown22c;
+  work[2] = postParm->m_doFBlend;
+  work[3] = postParm->m_doFStrength;
   uniform.setF32SetVec4(ratioOffset, work);
   wkPixlManRes *res = unknown08->unknown7f0;
   DrPixlRenderTarget *colorBuff = postParm->m_TMAAOn ? res->unknown00[13][DrMan::s_nDblIdx] : res->unknown00[4][0];
@@ -383,7 +383,7 @@ void DrPixlPostObjDepthofField::renderCalc() {
   apCache->setTexture(*colorBuff->unknown70, colorLocation);
   apCache->beginTexSampling(2, 1);
   apCache->setTexture(*unknown30->unknown70, blurLocation);
-  if (postParm->unknown21c) {
+  if (postParm->m_dOFAutoFocus) {
     int ratioLocation = (shader->unknown38 + shader->unknown58)->getTextureLocation("ratTex");
     apCache->beginTexSampling(2, 0);
     apCache->setTexture(*unknown48->unknown70, ratioLocation);

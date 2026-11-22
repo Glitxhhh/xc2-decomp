@@ -50,27 +50,27 @@ LayerObjTopMaskObj::~LayerObjTopMaskObj() {
 }
 
 void LayerObjTopMaskObj::createWorkBuffer(const void *data) {
-  unknownb8 = data;
+  m_resData = data;
   const unknown010 *header = static_cast<const unknown010 *>(data);
   if (header->unknown24 != 0) {
     unknown2c8 = LayerManager::get()->unknown58->unknown40->createTextureObj(static_cast<const u8 *>(data) + header->unknown24);
   }
   if (header->unknown08 & 0x2) {
-    unknown2d2 = reinterpret_cast<const unknown012 *>(static_cast<const u8 *>(unknownb8) + header->unknown2c)->unknown00;
+    unknown2d2 = reinterpret_cast<const unknown012 *>(static_cast<const u8 *>(m_resData) + header->unknown2c)->unknown00;
   } else {
     unknown2d2 = 0;
   }
   unknown2d0 = 0;
   unknown290.setup(0x50);
-  const unknown011 *info = reinterpret_cast<const unknown011 *>(static_cast<const u8 *>(unknownb8) + header->unknown0c);
+  const unknown011 *info = reinterpret_cast<const unknown011 *>(static_cast<const u8 *>(m_resData) + header->unknown0c);
   unknown180.unknown00 = info->unknown10;
   unknown180.unknown04 = info->unknown14;
   unknown180.unknown08 = 1.0f;
   unknown180.unknown0c = static_cast<f32>(info->unknown0c) / static_cast<f32>(info->unknown04);
-  unknown180.unknown10 = 0;
-  unknown180.unknown12 = 0;
-  unknown180.unknown14 = info->unknown04;
-  unknown180.unknown16 = info->unknown0c;
+  unknown180.m_pixelX = 0;
+  unknown180.m_pixelY = 0;
+  unknown180.m_pixelWidth = info->unknown04;
+  unknown180.m_pixelHeight = info->unknown0c;
 }
 
 void LayerObjTopMaskObj::releaseWorkBuffer() {

@@ -89,18 +89,18 @@ public:
 
   static GfManager *s_pThis;
 
-  GfSetupParam unknown18; // Inferred role: setup param; original member name unknown.
-  bool unknown40;         // Inferred role: initialized; original member name unknown.
-  bool unknown41;         // Inferred role: destroy now; original member name unknown.
-  EXEC_STATE unknown44;   // Inferred role: exec; original member name unknown.
-  u16 unknown48;          // Inferred role: exec flags; original member name unknown.
-  GAME_START unknown4c;   // Inferred role: game start; original member name unknown.
-  u32 unknown50;          // Inferred role: frame count; original member name unknown.
-  f32 unknown54;          // Inferred role: load game time; original member name unknown.
-  bool unknown58;         // Inferred role: exist save data; original member name unknown.
+  GfSetupParam m_setupParam; // Inferred role: setup param; named after the game accessor gf::GfManager::getSetupParam.
+  bool unknown40;            // Inferred role: initialized; original member name unknown.
+  bool unknown41;            // Inferred role: destroy now; original member name unknown.
+  EXEC_STATE unknown44;      // Inferred role: exec; original member name unknown.
+  u16 unknown48;             // Inferred role: exec flags; original member name unknown.
+  GAME_START unknown4c;      // Inferred role: game start; original member name unknown.
+  u32 unknown50;             // Inferred role: frame count; original member name unknown.
+  f32 unknown54;             // Inferred role: load game time; original member name unknown.
+  bool unknown58;            // Inferred role: exist save data; original member name unknown.
 };
 
-static_assert(offsetof(GfManager, unknown18) == 0x18, "");
+static_assert(offsetof(GfManager, m_setupParam) == 0x18, "");
 static_assert(offsetof(GfManager, unknown40) == 0x40, "");
 static_assert(offsetof(GfManager, unknown44) == 0x44, "");
 static_assert(offsetof(GfManager, unknown48) == 0x48, "");

@@ -98,7 +98,7 @@ void GmkMapGimmick::disposeGobInst() {
 }
 
 bool GmkMapGimmick::validateEffectWithoutLodControl(int lodId, bool isDisp) const {
-  const GmkSet *set = unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return false;
   }

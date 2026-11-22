@@ -112,9 +112,9 @@ inline mm::Vec3 unknown095(mm::Vec3 vector, mm::Vec3 rotation) {
 class AGmkBase {
 public:
   struct CreateBaseInfo {
-    IGmkList *unknown00;         // Inferred role: list; original member name unknown.
-    const Xform *unknown08;      // Inferred role: xform; original member name unknown.
-    const unknown072 *unknown10; // Inferred role: gob info; original member name unknown.
+    IGmkList *m_ownerGmkEnemyList; // Inferred role: list; named after the game accessor gmk::GmkEnemy::getOwnerGmkEnemyList.
+    const Xform *unknown08;        // Inferred role: xform; original member name unknown.
+    const unknown072 *unknown10;   // Inferred role: gob info; original member name unknown.
   };
 
   struct CreateInfo {
@@ -129,7 +129,7 @@ public:
   AGmkBase();
   virtual ~AGmkBase() { unknown08 = CreateBaseInfo(); }
   virtual GmkType getGmkType() const = 0;
-  virtual bool isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr && unknown20.unknown10 != nullptr; }
+  virtual bool isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr && unknown20.unknown10 != nullptr; }
 
   virtual void create(const CreateInfo &info) {
     dispose();

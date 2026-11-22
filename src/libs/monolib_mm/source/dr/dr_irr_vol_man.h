@@ -51,16 +51,16 @@ public:
   f32 unknown0b0;                            // Inferred role: update position along z; original member name unknown.
   u32 unknown0b4;                            // Inferred role: double buffer flag; original member name unknown.
   u8 _0b8[0x190 - 0x0b8];
-  mm::Vec3 unknown190; // Inferred role: request center pos; original member name unknown.
-  mm::Vec3 unknown1a0; // Inferred role: center pos; original member name unknown.
-  f32 unknown1b0;      // Inferred role: request scale; original member name unknown.
-  f32 unknown1b4;      // Inferred role: scale; original member name unknown.
-  f32 unknown1b8;      // Inferred role: request offset; original member name unknown.
-  f32 unknown1bc;      // Inferred role: offset; original member name unknown.
-  u32 unknown1c0;      // Inferred role: request cascade num; original member name unknown.
-  u32 unknown1c4;      // Inferred role: cascade num; original member name unknown.
-  bool unknown1c8;     // Inferred role: flag; original member name unknown.
-  bool unknown1c9;     // Inferred role: debug draw flag; original member name unknown.
+  mm::Vec3 unknown190;        // Inferred role: request center pos; original member name unknown.
+  mm::Vec3 m_irrVolCenterPos; // Inferred role: center pos; named after the game accessor ml::ScnRenderDrSysParmAcc::getIrrVolCenterPos.
+  f32 unknown1b0;             // Inferred role: request scale; original member name unknown.
+  f32 unknown1b4;             // Inferred role: scale; original member name unknown.
+  f32 unknown1b8;             // Inferred role: request offset; original member name unknown.
+  f32 unknown1bc;             // Inferred role: offset; original member name unknown.
+  u32 unknown1c0;             // Inferred role: request cascade num; original member name unknown.
+  u32 unknown1c4;             // Inferred role: cascade num; original member name unknown.
+  bool unknown1c8;            // Inferred role: flag; original member name unknown.
+  bool unknown1c9;            // Inferred role: debug draw flag; original member name unknown.
 };
 
 static_assert(offsetof(DrIrrVolMan, unknown00) == 0x000, "");
@@ -70,7 +70,7 @@ static_assert(offsetof(DrIrrVolMan, unknown0a0) == 0x0a0, "");
 static_assert(offsetof(DrIrrVolMan, unknown0b0) == 0x0b0, "");
 static_assert(offsetof(DrIrrVolMan, unknown0b4) == 0x0b4, "");
 static_assert(offsetof(DrIrrVolMan, unknown190) == 0x190, "");
-static_assert(offsetof(DrIrrVolMan, unknown1a0) == 0x1a0, "");
+static_assert(offsetof(DrIrrVolMan, m_irrVolCenterPos) == 0x1a0, "");
 static_assert(offsetof(DrIrrVolMan, unknown1b0) == 0x1b0, "");
 static_assert(offsetof(DrIrrVolMan, unknown1c0) == 0x1c0, "");
 static_assert(offsetof(DrIrrVolMan, unknown1c4) == 0x1c4, "");

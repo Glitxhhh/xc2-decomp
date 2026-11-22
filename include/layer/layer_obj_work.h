@@ -88,7 +88,7 @@ public:
   };
 
   struct unknown003 {
-    f32 unknown00; // Inferred role: second; original member name unknown.
+    f32 m_second;  // Inferred role: second; named after the game accessor layer::LayerObjWork::setSecond.
     s32 unknown04; // Inferred role: whole frame, cleared by calcFrmParm; original member name unknown.
   };
 
@@ -158,7 +158,7 @@ public:
   LayerTextureObj *unknown278;            // Inferred role: texture object; original member name unknown.
   grlib::CGLibTextureBuffer **unknown280; // Inferred role: default texture list; original member name unknown.
 
-  u32 unknown288; // Inferred role: texture max; original member name unknown.
+  u32 m_textureMax; // Inferred role: texture max; named after the game accessor layer::LayerAccDefTexture::getTextureMax.
   u8 _28c[0x290 - 0x28c];
   void *unknown290;       // Inferred role: allocated memory; original member name unknown.
   unknown002 *unknown298; // Inferred role: animation work; original member name unknown.
@@ -179,7 +179,7 @@ static_assert(offsetof(LayerObjWork, unknown258) == 0x258, "");
 static_assert(offsetof(LayerObjWork, unknown270) == 0x270, "");
 static_assert(offsetof(LayerObjWork, unknown278) == 0x278, "");
 static_assert(offsetof(LayerObjWork, unknown280) == 0x280, "");
-static_assert(offsetof(LayerObjWork, unknown288) == 0x288, "");
+static_assert(offsetof(LayerObjWork, m_textureMax) == 0x288, "");
 static_assert(offsetof(LayerObjWork, unknown290) == 0x290, "");
 static_assert(offsetof(LayerObjWork, unknown2a0) == 0x2a0, "");
 static_assert(offsetof(LayerObjWork, unknown2a8) == 0x2a8, "");

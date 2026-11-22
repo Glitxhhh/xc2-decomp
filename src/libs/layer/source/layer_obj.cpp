@@ -51,19 +51,19 @@ static_assert(sizeof(unknown020) == 0x04, "");
 } // namespace
 
 LayerObj::LayerObj() {
-  unknownc3 = 0;
-  unknownc4 = 5;
+  m_space = 0;
+  m_blendType = 5;
   unknownc5 = 5;
-  unknownc6 = 3;
+  m_texFilterType = 3;
   unknowna8 = 0x80;
   for (s32 i = 0; i < 2; i++) {
     unknowna0[i] = 0;
   }
-  unknownc0 = 0;
+  m_priority = 0;
   for (s32 i = 0; i < 2; i++) {
     unknown1d8[i] = 0;
   }
-  unknownb8 = nullptr;
+  m_resData = nullptr;
   unknown220[0] = unknown220[1] = unknown220[2] = nullptr;
   for (s32 i = 0; i < 3; i++) {
     LayerResParmInfo &parm = unknownc8[i];
@@ -71,19 +71,19 @@ LayerObj::LayerObj() {
     parm.unknown00.unknown0c = parm.unknown00.unknown10 = 1.0f;
     parm.unknown00.unknown08 = 0.0f;
     parm.unknown00.unknown14 = parm.unknown00.unknown18 = 0.0f;
-    parm.unknown1c.unknown00 = mm::Col4(1.0f, 1.0f, 1.0f, 1.0f);
-    parm.unknown1c.unknown10 = mm::Col3(0.0f, 0.0f, 0.0f);
+    parm.unknown1c.m_mulCol = mm::Col4(1.0f, 1.0f, 1.0f, 1.0f);
+    parm.unknown1c.m_addCol = mm::Col3(0.0f, 0.0f, 0.0f);
   }
   unknownb0 = 0;
   unknown208[0] = unknown208[1] = unknown208[2] = nullptr;
-  unknown1f4 = unknown1f8 = 1.0f;
+  m_ctrlSpd = unknown1f8 = 1.0f;
   unknown1fc = 0.0f;
   unknown200 = 0.0f;
   unknown180.unknown00 = unknown180.unknown04 = unknown180.unknown08 = unknown180.unknown0c = 1.0f;
-  unknown180.unknown10 = 0;
-  unknown180.unknown12 = 0;
-  unknown180.unknown14 = unknown180.unknown16 = 1;
-  unknown180.unknown18 = 0;
+  unknown180.m_pixelX = 0;
+  unknown180.m_pixelY = 0;
+  unknown180.m_pixelWidth = unknown180.m_pixelHeight = 1;
+  unknown180.m_centerType = 0;
   unknown170.unknown00 = 1.0f;
   unknown170.unknown04 = 1.0f;
   unknown170.unknown08 = mm::Pnt<f32>(0.0f, 0.0f);
@@ -92,7 +92,7 @@ LayerObj::LayerObj() {
   unknownc2 = 0;
   unknown19c.unknown00[2].unknown00 = mm::Pnt<f32>(0.0f, 0.0f);
   unknown248 = nullptr;
-  unknown240 = nullptr;
+  m_maskObj = nullptr;
   unknown238 = nullptr;
   unknown19c.unknown00[2].unknown08 = unknown19c.unknown00[2].unknown0c = 1.0f;
   unknown19c.unknown00[2].unknown10 = 0.0f;
@@ -153,9 +153,9 @@ void LayerObj::setInitScl(f32 x, f32 y) {
   unknownc8[2].unknown00.unknown10 = y;
 }
 
-void LayerObj::setInitMulCol(const mm::Col4 &color) { unknownc8[2].unknown1c.unknown00 = unknownc8[0].unknown1c.unknown00 = unknownc8[1].unknown1c.unknown00 = color; }
+void LayerObj::setInitMulCol(const mm::Col4 &color) { unknownc8[2].unknown1c.m_mulCol = unknownc8[0].unknown1c.m_mulCol = unknownc8[1].unknown1c.m_mulCol = color; }
 
-void LayerObj::setInitAddCol(const mm::Col3 &color) { unknownc8[2].unknown1c.unknown10 = unknownc8[0].unknown1c.unknown10 = unknownc8[1].unknown1c.unknown10 = color; }
+void LayerObj::setInitAddCol(const mm::Col3 &color) { unknownc8[2].unknown1c.m_addCol = unknownc8[0].unknown1c.m_addCol = unknownc8[1].unknown1c.m_addCol = color; }
 
 void LayerObj::setInitPosScl(f32 x, f32 y, f32 sclX, f32 sclY) {
   if (unknown18 == LAYER_OBJ_TYPE_FONT) {
@@ -164,16 +164,16 @@ void LayerObj::setInitPosScl(f32 x, f32 y, f32 sclX, f32 sclY) {
   }
   if (!(unknowna8 & 0x2)) {
     setInitPos(x, y);
-    if (LayerManager::get()->unknown9c != LAYER_COORDINATE_PIXEL) {
+    if (LayerManager::get()->m_coordinate != LAYER_COORDINATE_PIXEL) {
       setInitScl(sclX / unknown180.unknown08, sclY / unknown180.unknown0c);
     } else {
       setInitScl(sclX, sclY);
     }
   } else {
-    if (LayerManager::get()->unknown9c != LAYER_COORDINATE_PIXEL) {
+    if (LayerManager::get()->m_coordinate != LAYER_COORDINATE_PIXEL) {
       setInitPos(x + sclX, y);
     } else {
-      setInitPos(static_cast<u16>(unknown180.unknown14) * sclX + x, y);
+      setInitPos(static_cast<u16>(unknown180.m_pixelWidth) * sclX + x, y);
     }
     setInitScl(sclY, sclY);
   }
@@ -195,7 +195,7 @@ void LayerObj::updateCtrlSpd(f32 speed) {
     }
   }
 
-  unknown1f8 = unknown1f4 * speed;
+  unknown1f8 = m_ctrlSpd * speed;
 }
 
 void LayerObj::updateAnimObj() {
@@ -211,7 +211,7 @@ void LayerObj::updateAnimObj() {
     }
   }
 
-  if (unknownc8[2].unknown1c.unknown00.a <= 0.0f && unknown18 != LAYER_OBJ_TYPE_MASK) {
+  if (unknownc8[2].unknown1c.m_mulCol.a <= 0.0f && unknown18 != LAYER_OBJ_TYPE_MASK) {
     unknowna8 |= 0x80000;
   }
 }
@@ -227,7 +227,7 @@ void LayerObj::updateDefSpace(grlib::CGLibDblUniformBlock *&uniform, LAYER_SPACE
     LayerObjUtil::calcMatrixToZBuffPos(unknown200, unknown1fc, matrix);
     unknowna8 |= 0xc00;
     unknowna8 &= ~0x1000;
-    LayerObjUtil::createWorldMatrixUniform(uniform, matrix, unknownc0 * 0.0625f);
+    LayerObjUtil::createWorldMatrixUniform(uniform, matrix, m_priority * 0.0625f);
     return;
   }
   if (space == LAYER_SPACE_TYPE_UNKNOWN_1) {
@@ -253,8 +253,8 @@ void LayerObj::apply(LayerSortMan *sortMan, const LayerRenderView *view) {
     unknowna8 |= 0x10000;
     return;
   }
-  unknownc5 = unknownc4;
-  updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(unknownc3), unknown20[unknownc2]);
+  unknownc5 = m_blendType;
+  updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(m_space), unknown20[unknownc2]);
   LayerResMatrix matrix;
   if (unknowna8 & 0x800) {
     LayerObjUtil::calcLayer3DSpaceTransRotScaleFontMatrix(matrix, unknownc8[2].unknown00, unknown180);
@@ -275,14 +275,14 @@ void LayerObj::applyBegin(LayerResUpdateInfo &info, const LayerRenderView *view)
     return;
   }
   if (info.unknown54 == LAYER_SPACE_TYPE_UNKNOWN_0) {
-    updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(unknownc3), unknown20[unknownc2]);
+    updateDefSpace(unknown238, static_cast<LAYER_SPACE_TYPE>(m_space), unknown20[unknownc2]);
   } else {
     mm::Mat44 matrix;
     matrix.unknown009(unknown20[unknownc2], info.unknown00);
     updateDefSpace(unknown238, info.unknown54, matrix);
   }
-  if (unknownc4 != 5) {
-    unknownc5 = unknownc4;
+  if (m_blendType != 5) {
+    unknownc5 = m_blendType;
   } else {
     unknownc5 = info.unknown58;
   }
@@ -303,7 +303,7 @@ void LayerObj::applyEnd(LayerResUpdateInfo &info, const LayerRenderView *view) {
   LayerResColor color;
   LayerObjUtil::calcLayerColor(color, unknownc8[2].unknown1c, *info.unknown48);
   applyParams(view, matrix, color);
-  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(unknown240);
+  const LayerObjTopMaskObj *mask = static_cast<const LayerObjTopMaskObj *>(m_maskObj);
   if (mask == nullptr) {
     mask = info.unknown70;
   }
@@ -337,12 +337,12 @@ void LayerObj::setAnchor(f32 x, f32 y) {
 }
 
 void LayerObj::setMulCol(const mm::Col4 &color) {
-  unknownc8[LayerManager::s_nStkIdx].unknown1c.unknown00 = color;
+  unknownc8[LayerManager::s_nStkIdx].unknown1c.m_mulCol = color;
   onStateFlags(0x20);
 }
 
 void LayerObj::setAddCol(const mm::Col3 &color) {
-  unknownc8[LayerManager::s_nStkIdx].unknown1c.unknown10 = color;
+  unknownc8[LayerManager::s_nStkIdx].unknown1c.m_addCol = color;
   onStateFlags(0x40);
 }
 
@@ -400,9 +400,9 @@ const mm::Mat44 *LayerObj::getMatrix() const {
   return &unknown20[0];
 }
 
-const mm::Col4 *LayerObj::getMulCol() const { return &getColorParm(this, 0x20)->unknown00; }
+const mm::Col4 *LayerObj::getMulCol() const { return &getColorParm(this, 0x20)->m_mulCol; }
 
-const mm::Col3 *LayerObj::getAddCol() const { return &getColorParm(this, 0x40)->unknown10; }
+const mm::Col3 *LayerObj::getAddCol() const { return &getColorParm(this, 0x40)->m_addCol; }
 
 void LayerObj::setDisp(bool disp) {
   if (disp) {
@@ -690,7 +690,7 @@ bool LayerActBase::actcmd_numrot(const u8 *&cmd) {
 }
 
 bool LayerActBase::actcmd_priority(const u8 *&cmd) {
-  unknownc0 = *reinterpret_cast<const u16 *>(cmd + 2);
+  m_priority = *reinterpret_cast<const u16 *>(cmd + 2);
   cmd += 4;
   return false;
 }
@@ -702,7 +702,7 @@ bool LayerActBase::actcmd_wait(const u8 *&cmd) {
 }
 
 bool LayerActBase::actcmd_ctrlspd(const u8 *&cmd) {
-  unknown1f4 = *reinterpret_cast<const f32 *>(cmd + 4);
+  m_ctrlSpd = *reinterpret_cast<const f32 *>(cmd + 4);
   cmd += 8;
   return false;
 }

@@ -53,7 +53,7 @@ DrResMdoMeshParts &DrResMdoMeshParts::operator=(const DrResMdoMeshParts &other) 
   unknown2c[1] = other.unknown2c[1];
   unknown34 = other.unknown34;
   unknown28 = other.unknown28;
-  unknown3a = other.unknown3a;
+  m_extVolumeFadeEffect = other.m_extVolumeFadeEffect;
   return *this;
 }
 
@@ -64,7 +64,7 @@ void DrResMdoMeshParts::setBoneName(const char *name) { m_boneName = name; }
 void DrResMdoMeshParts::setMatAdd(mm::Mat44 *matrix, const mm::Mat44 *baseMat, const mm::Mat44 *ofsMat, int index) {
   unknown10 = matrix;
   unknown18 = baseMat;
-  unknown20 = const_cast<mm::Mat44 *>(ofsMat);
+  m_extOfsMat = const_cast<mm::Mat44 *>(ofsMat);
   memcpy(matrix, baseMat, sizeof(mm::Mat44));
   unknown38 = index;
 }

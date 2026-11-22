@@ -48,8 +48,8 @@ public:
   ml::ScnObjCam *unknown20; // Inferred role: scn camera, copied from CameraLayer::unknown38 by CameraLayer::push; original member name unknown.
   CAMERA_PRIO unknown28;    // Inferred role: prio; original member name unknown.
   f32 m_fov;
-  f32 unknown30;       // Inferred role: near clip; original member name unknown.
-  f32 unknown34;       // Inferred role: far clip; original member name unknown.
+  f32 m_nearClip;      // Inferred role: near clip; named after the game accessor gf::GimmickCamera::setNearClip.
+  f32 m_farClip;       // Inferred role: far clip; named after the game accessor gf::GimmickCamera::setFarClip.
   mm::Vec3 unknown40;  // Inferred role: position; original member name unknown.
   mm::Vec3 unknown50;  // Inferred role: target; original member name unknown.
   mm::Mat44 unknown60; // Inferred role: view matrix; original member name unknown.

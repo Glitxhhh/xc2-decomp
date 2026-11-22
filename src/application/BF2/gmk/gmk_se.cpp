@@ -87,7 +87,7 @@ fw::SoundPack *GmkSe::BdatInfo::getSoundPack() const {
 
 GmkType GmkSeLinePoint::getGmkType() const { return GMK_TYPE; }
 
-bool GmkSeLinePoint::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkSeLinePoint::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 GmkType GmkSe::getGmkType() const { return GMK_TYPE; }
 
@@ -204,7 +204,7 @@ bool GmkSe::canPopInst() const {
 }
 
 void GmkSe::createInst() {
-  const GmkSet *set = AGmkBase::unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = AGmkBase::unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set != nullptr && set->unknown10.unknown24) {
     return;
   }
@@ -266,7 +266,7 @@ void GmkSeLine::debugDraw() const {
 }
 
 const AGmkBase *GmkSeLine::getPoint(u32 index) const {
-  const GmkSet *set = AGmkBase::unknown08.unknown00->getCreateInfo().unknown08;
+  const GmkSet *set = AGmkBase::unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08;
   if (set == nullptr) {
     return nullptr;
   }

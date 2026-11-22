@@ -228,7 +228,7 @@ void GmkRoutedMapObj::validateDisp() const {
   setEventDisp(unknown50, unknown58 && debugIsDispGmkType(getGmkType()));
 }
 
-const IGmkList *GmkRoutedMapObj::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_UNKNOWN_8]; }
+const IGmkList *GmkRoutedMapObj::getBindedRoutePointList() const { return unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_UNKNOWN_8]; }
 
 void GmkRoutedMapObj::onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) {
   AGmkBase::onGobEvent(event, handle);

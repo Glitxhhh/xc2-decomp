@@ -42,7 +42,7 @@ void LayerObjDraw::draw_call_onm_tex(grlib::CGLibDblUniformBlock *uniform, const
   if (count != 0) {
     const u16 *textures = reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2);
     for (u32 i = 0; i != count; i++) {
-      shader->setupTexture(*unknown280[*textures], static_cast<LayerSamplerType>(unknownc6), i);
+      shader->setupTexture(*unknown280[*textures], static_cast<LayerSamplerType>(m_texFilterType), i);
       textures += 3;
     }
   }
@@ -62,7 +62,7 @@ void LayerObjDraw::draw_call_res_tex(grlib::CGLibDblUniformBlock *uniform, const
   shader->setupVertex(unknown270, draw->unknown04);
   shader->unknown4f0 = 1;
   shader->setupShader(uniform);
-  shader->setupTexture(*unknown280[*reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2)], static_cast<LayerSamplerType>(unknownc6), 0);
+  shader->setupTexture(*unknown280[*reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2)], static_cast<LayerSamplerType>(m_texFilterType), 0);
   unknown270->render(draw->unknown06);
 }
 
@@ -75,7 +75,7 @@ void LayerObjDraw::draw_call_win_def(grlib::CGLibDblUniformBlock *uniform, const
   if (draw->unknown0f != 0) {
     sampler = static_cast<LayerSamplerType>(unknown025[draw->unknown0f - 1]);
   } else {
-    sampler = static_cast<LayerSamplerType>(unknownc6);
+    sampler = static_cast<LayerSamplerType>(m_texFilterType);
   }
   u8 count = draw->unknown0c;
   if (count != 0) {
@@ -97,7 +97,7 @@ void LayerObjDraw::draw_call_win_tex(grlib::CGLibDblUniformBlock *uniform, const
   if (draw->unknown0f != 0) {
     sampler = static_cast<LayerSamplerType>(unknown025[draw->unknown0f - 1]);
   } else {
-    sampler = static_cast<LayerSamplerType>(unknownc6);
+    sampler = static_cast<LayerSamplerType>(m_texFilterType);
   }
   u8 count = draw->unknown0c;
   if (count != 0) {
@@ -119,7 +119,7 @@ void LayerObjDraw::draw_call_icon(grlib::CGLibDblUniformBlock *uniform, const Ly
   if (count != 0) {
     const u16 *textures = reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2);
     for (u32 i = 0; i != count; i++) {
-      shader->setupTexture(*unknown280[*textures], static_cast<LayerSamplerType>(unknownc6), i);
+      shader->setupTexture(*unknown280[*textures], static_cast<LayerSamplerType>(m_texFilterType), i);
       textures += 3;
     }
   }
@@ -136,7 +136,7 @@ void LayerObjDraw::draw_call_number(grlib::CGLibDblUniformBlock *uniform, const 
   if (count != 0) {
     const u16 *textures = reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2);
     for (u32 i = 0; i != count; i++) {
-      shader->setupTexture(*unknown280[*textures], static_cast<LayerSamplerType>(unknownc6), i);
+      shader->setupTexture(*unknown280[*textures], static_cast<LayerSamplerType>(m_texFilterType), i);
       textures += 3;
     }
   }
@@ -148,8 +148,8 @@ void LayerObjDraw::draw_call_hdr(grlib::CGLibDblUniformBlock *uniform, const Lyr
   shader->setupVertex(static_cast<LayerDefVertType>(1));
   shader->unknown4f0 = 10;
   shader->setupShader(uniform);
-  shader->setupTexture(*unknown280[*reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2)], static_cast<LayerSamplerType>(unknownc6), 0);
-  shader->setupTexture(shader->unknown368, static_cast<LayerSamplerType>(unknownc6), 1);
+  shader->setupTexture(*unknown280[*reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2)], static_cast<LayerSamplerType>(m_texFilterType), 0);
+  shader->setupTexture(shader->unknown368, static_cast<LayerSamplerType>(m_texFilterType), 1);
   shader->renderQuadsIndex();
 }
 

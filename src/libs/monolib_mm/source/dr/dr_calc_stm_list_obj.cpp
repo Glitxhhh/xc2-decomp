@@ -83,7 +83,7 @@ bool DrCalcStmListObj::texstm_size_alloc() {
   unknown48 = DrCalcTexStreamMan::get()->createSizeModeFreeObj(unknown9c);
   if (unknown48 == nullptr) {
     DrCalcTexStreamMan *man = DrCalcTexStreamMan::get();
-    man->unknown2068 |= 0x20;
+    man->m_cacherClearMode |= 0x20;
     man->unknown248c = 0xa0;
     man->unknown248e = 0xa;
     man->unknown2488 += unknown9c;
@@ -243,7 +243,7 @@ bool DrCalcStmListObj::texstm_stmchk_topheader() {
     if (man->unknown2490 >= 0) {
       man->unknown2490 = 0;
     }
-    if (!(man->unknown2068 & 0x20)) {
+    if (!(man->m_cacherClearMode & 0x20)) {
       unknown50 = man->createReadFreeObj(0x1000);
       if (unknown50 == nullptr) {
         DrCalcTexStreamMan::get()->unknown2488 += 0x1000;
@@ -375,7 +375,7 @@ bool DrCalcStmListObj::texstm_checkTexStm() {
     DrCalcTexStreamMan *man = DrCalcTexStreamMan::get();
     if (man->unknown2490 > 0) {
       man->unknown2490 = 1;
-      if (man->unknown2494 > 0 && !(man->unknown2068 & 0x20)) {
+      if (man->unknown2494 > 0 && !(man->m_cacherClearMode & 0x20)) {
         unknown8c = 0;
         unknown8e = 0;
         // P2 (decision 2026-11-14): the local of the size passed to createReadFreeObj only changes the instruction order, which the asm shows: on
@@ -414,7 +414,7 @@ bool DrCalcStmListObj::texstm_deTexCheck() {
     DrCalcTexStreamMan *man = DrCalcTexStreamMan::get();
     if (man->unknown2490 > 0) {
       man->unknown2490 = 1;
-      if (man->unknown2494 > 0 && !(man->unknown2068 & 0x20)) {
+      if (man->unknown2494 > 0 && !(man->m_cacherClearMode & 0x20)) {
         // P2: same local as in texstm_checkTexStm; without it the early exit is laid out differently (`tbz` instead of the game's `tbnz w8, #3`
         // at 0x71008b637c, 98 against 100 instructions).
         u32 size = unknown68[unknown72].unknown04;
@@ -528,16 +528,16 @@ void DrCalcStmListObj::apiUpdate() {
         if (!(res.unknown10 & 2)) {
           if (res.unknown10 & 4) {
             if (!(res.unknown10 & 8)) {
-              grlib::CGLibTexture::changeMixTextureImagePtrs(unknownb0.unknown00[i], res.unknown00, res.unknown0c, res.unknown08 - res.unknown0c);
+              grlib::CGLibTexture::changeMixTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00, res.unknown0c, res.unknown08 - res.unknown0c);
             } else {
-              unknownb0.unknown00[i].delayRelease();
-              grlib::CGLibTexture::createMixTextureImagePtrs(unknownb0.unknown00[i], res.unknown00, res.unknown0c, res.unknown08 - res.unknown0c, false, nullptr, false);
+              unknownb0.m_texObj[i].delayRelease();
+              grlib::CGLibTexture::createMixTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00, res.unknown0c, res.unknown08 - res.unknown0c, false, nullptr, false);
             }
             continue;
           }
-          grlib::CGLibTexture::changeTextureImagePtrs(unknownb0.unknown00[i], res.unknown00, res.unknown08);
+          grlib::CGLibTexture::changeTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00, res.unknown08);
         } else {
-          grlib::CGLibTexture::changeTextureImagePtrs(unknownb0.unknown00[i], res.unknown00 + res.unknown0c, res.unknown08 - res.unknown0c);
+          grlib::CGLibTexture::changeTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00 + res.unknown0c, res.unknown08 - res.unknown0c);
         }
       }
     }
@@ -547,12 +547,12 @@ void DrCalcStmListObj::apiUpdate() {
     const unknown035 &res = unknown30[DrMan::s_nDblStockIdx][index];
     if (!(res.unknown10 & 2)) {
       if (res.unknown10 & 4) {
-        grlib::CGLibTexture::createMixTextureImagePtrs(unknownb0.unknown00[i], res.unknown00, res.unknown0c, res.unknown08 - res.unknown0c, false, nullptr, false);
+        grlib::CGLibTexture::createMixTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00, res.unknown0c, res.unknown08 - res.unknown0c, false, nullptr, false);
         continue;
       }
-      grlib::CGLibTexture::createTextureImagePtrs(unknownb0.unknown00[i], res.unknown00, res.unknown08, false, nullptr, false);
+      grlib::CGLibTexture::createTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00, res.unknown08, false, nullptr, false);
     } else {
-      grlib::CGLibTexture::createTextureImagePtrs(unknownb0.unknown00[i], res.unknown00 + res.unknown0c, res.unknown08 - res.unknown0c, false, nullptr, false);
+      grlib::CGLibTexture::createTextureImagePtrs(unknownb0.m_texObj[i], res.unknown00 + res.unknown0c, res.unknown08 - res.unknown0c, false, nullptr, false);
     }
   }
   unknown80 |= 0x40;

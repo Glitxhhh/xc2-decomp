@@ -317,8 +317,8 @@ bool IDColiMove::moveColi(IDColiObj *object, const mm::Vec3 &move) {
   unknown10.unknownd8 = bits;
   unknown10.unknown108 = object;
   setupParms(move);
-  unknown10.unknowne8 = static_cast<IDColiObjChar *>(object)->unknownc8;
-  m_down = static_cast<IDColiObjChar *>(object)->unknown220;
+  unknown10.unknowne8 = static_cast<IDColiObjChar *>(object)->m_offMaterialBit;
+  m_down = static_cast<IDColiObjChar *>(object)->m_adsorption;
   calcCheckParams(unknown140);
   unknown1f5 = false;
   if ((object->unknown18 & 8) && !(object->unknown20 & IDColiObj::FLAG_UNKNOWN_0)) {

@@ -61,7 +61,7 @@ void LayerAccLayoutBinary::setLayoutPosData(f32 &x, f32 &y, u32 index) {
   const LyrLayoutPosData *table = unknown10;
   if (index < unknown08) {
     const LyrLayoutPosData &data = table[index];
-    if (LayerManager::get()->unknown9c == LAYER_COORDINATE_PIXEL) {
+    if (LayerManager::get()->m_coordinate == LAYER_COORDINATE_PIXEL) {
       x = data.unknown2c;
       x = data.unknown2e;
     } else {
@@ -83,7 +83,7 @@ void LayerAccLayoutBinary::setLayoutPosData(f32 &x, f32 &y, f32 &width, f32 &hei
   const LyrLayoutPosData *table = unknown10;
   if (index < unknown08) {
     const LyrLayoutPosData &data = table[index];
-    if (LayerManager::get()->unknown9c == LAYER_COORDINATE_PIXEL) {
+    if (LayerManager::get()->m_coordinate == LAYER_COORDINATE_PIXEL) {
       x = data.unknown2c;
       y = data.unknown2e;
       width = data.unknown30 - data.unknown2c;
@@ -109,7 +109,7 @@ void LayerAccLayoutBinary::setLayoutObj(LayerObj *object, u32 index, bool initSc
   if (index < unknown08) {
     f32 info[4];
     LayerObjUtil::getLayoutInfo(
-        info, &unknown10[index], static_cast<LayerCenterType>(object->unknown180.unknown18), static_cast<u16>(object->unknown180.unknown14), static_cast<u16>(object->unknown180.unknown16));
+        info, &unknown10[index], static_cast<LayerCenterType>(object->unknown180.m_centerType), static_cast<u16>(object->unknown180.m_pixelWidth), static_cast<u16>(object->unknown180.m_pixelHeight));
     if (initScale) {
       object->setInitPosScl(info[0], info[1], info[2], info[3]);
     } else {

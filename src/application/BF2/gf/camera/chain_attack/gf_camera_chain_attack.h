@@ -50,7 +50,7 @@ public:
   mm::Vec3 unknown100;            // Inferred role: current target; original member name unknown.
   f32 unknown110;                 // Inferred role: play time rate; original member name unknown.
   f32 unknown114;                 // Inferred role: play time duration; original member name unknown.
-  s32 unknown118;                 // Inferred role: move type; original member name unknown.
+  s32 m_moveType;                 // Inferred role: move type; named after the game accessor gf::ChainAttackCameraEntity::setMoveType.
   f32 unknown11c;                 // Inferred role: elapsed play time; original member name unknown.
   fw::ColiCheckConfig unknown120; // Inferred role: collision check; original member name unknown.
   u8 _138[0x140 - 0x138];
@@ -64,7 +64,7 @@ static_assert(offsetof(ChainAttackCameraEntity, unknownf0) == 0xf0, "");
 static_assert(offsetof(ChainAttackCameraEntity, unknown100) == 0x100, "");
 static_assert(offsetof(ChainAttackCameraEntity, unknown110) == 0x110, "");
 static_assert(offsetof(ChainAttackCameraEntity, unknown114) == 0x114, "");
-static_assert(offsetof(ChainAttackCameraEntity, unknown118) == 0x118, "");
+static_assert(offsetof(ChainAttackCameraEntity, m_moveType) == 0x118, "");
 static_assert(offsetof(ChainAttackCameraEntity, unknown11c) == 0x11c, "");
 static_assert(offsetof(ChainAttackCameraEntity, unknown120) == 0x120, "");
 static_assert(sizeof(ChainAttackCameraEntity) == 0x140, "");

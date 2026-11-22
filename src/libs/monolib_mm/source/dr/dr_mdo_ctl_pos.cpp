@@ -143,7 +143,7 @@ void DrMdoCtlPos::beginRenderListPos() {
     arg.unknown10 = true;
     arg.unknown14 = unknown1a;
     arg.unknown08 = nullptr;
-    arg.unknown18 = unknowndc;
+    arg.unknown18 = m_frameSpd;
     unknown258->update(arg);
   }
 }
@@ -195,7 +195,7 @@ bool DrMdoCtlPos::clipRenderMdl(const MdsPosRangeTreeData *tree, MdoArgInst &arg
       DrResMdoPos *pos = &unknown1e0[*index];
       f32 objAlpha = 1.0f;
       if (unknown1e8.unknown00 != nullptr) {
-        objAlpha = unknown1e8.getObj(pos->unknown18)->unknown28;
+        objAlpha = unknown1e8.getObj(pos->unknown18)->m_alpha;
       }
       if (objAlpha > 0.0f) {
         s32 alpha = arg.unknown00;
@@ -239,7 +239,7 @@ void DrMdoCtlPos::dispOffUpdate() {
     arg.unknown10 = false;
     arg.unknown14 = unknown1a;
     arg.unknown08 = nullptr;
-    arg.unknown18 = unknowndc;
+    arg.unknown18 = m_frameSpd;
     unknown258->update(arg);
   }
 }
@@ -292,7 +292,7 @@ void DrMdoCtlPos::callPosRender(u32 renderType) {
       arg.unknown10 = list.unknown00;
       for (s32 j = 0; j < infoCount; j++, arg.unknown00++) {
         // Same order for the material (0x7100817350, 0x7100817460): table pointer first, then the index; the subscript form changes the register of the table.
-        if ((arg.unknown00->unknown04 & renderType) != 0 && (unknown30->unknownc0 + arg.unknown00->unknown0e)->unknown08.a > 0.0f) {
+        if ((arg.unknown00->unknown04 & renderType) != 0 && (unknown30->m_materialRes + arg.unknown00->unknown0e)->unknown08.a > 0.0f) {
           if ((arg.unknown00->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17) == 0 && (arg.unknown00->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15) == 0) {
             arg.unknown14 = list.unknown02;
             arg.unknown18 = list.unknown04;
@@ -318,7 +318,7 @@ void DrMdoCtlPos::callPosRender(u32 renderType) {
         arg.unknown28 = 0;
         arg.unknown1c = 0;
         for (s32 j = 0; j < infoCount; j++, arg.unknown00++) {
-          if ((arg.unknown00->unknown04 & renderType) != 0 && (unknown30->unknownc0 + arg.unknown00->unknown0e)->unknown08.a > 0.0f) {
+          if ((arg.unknown00->unknown04 & renderType) != 0 && (unknown30->m_materialRes + arg.unknown00->unknown0e)->unknown08.a > 0.0f) {
             partsInstanceDefRender(arg);
           }
         }
@@ -531,7 +531,7 @@ void DrMdoCtlPos::updateInstPosDispCall(const u32 *flags) {
 }
 
 void DrMdoCtlPos::createInstUniformBlock(const u32 *flags) {
-  updateAnim(unknowndc * m_drMan->unknown1c8c, flags, nullptr);
+  updateAnim(m_frameSpd * m_drMan->unknown1c8c, flags, nullptr);
   updateMatFstCallBack();
   updateMatCallBack(flags);
   updateTimerCalc(flags);

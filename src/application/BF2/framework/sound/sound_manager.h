@@ -29,14 +29,14 @@ enum SoundOutputType : int;
 
 // Inferred role: sound volume fade; original type name unknown.
 struct unknown129 {
-  unknown129() : unknown00(1.0f), unknown04(1.0f), unknown08(1.0f), unknown0c(0.0f), unknown10(0.0f) {}
+  unknown129() : m_masterVolumeOrg(1.0f), unknown04(1.0f), unknown08(1.0f), unknown0c(0.0f), unknown10(0.0f) {}
 
   void start(f32 target, f32 fadeTime) {
     if (fadeTime > 0.0f) {
-      unknown08 = unknown00;
+      unknown08 = m_masterVolumeOrg;
     } else {
       fadeTime = 0.0f;
-      unknown00 = target;
+      m_masterVolumeOrg = target;
       unknown08 = target;
     }
 
@@ -49,17 +49,17 @@ struct unknown129 {
     unknown10 += deltaTime;
     if (unknown10 >= unknown0c) {
       unknown10 = unknown0c;
-      unknown00 = unknown04;
+      m_masterVolumeOrg = unknown04;
     } else {
-      unknown00 = unknown08 + (unknown04 - unknown08) * (unknown10 / unknown0c);
+      m_masterVolumeOrg = unknown08 + (unknown04 - unknown08) * (unknown10 / unknown0c);
     }
   }
 
-  f32 unknown00; // Inferred role: volume; original member name unknown.
-  f32 unknown04; // Inferred role: target volume; original member name unknown.
-  f32 unknown08; // Inferred role: start volume; original member name unknown.
-  f32 unknown0c; // Inferred role: duration; original member name unknown.
-  f32 unknown10; // Inferred role: time; original member name unknown.
+  f32 m_masterVolumeOrg; // Inferred role: volume; named after the game accessor fw::SoundManager::getMasterVolumeOrg.
+  f32 unknown04;         // Inferred role: target volume; original member name unknown.
+  f32 unknown08;         // Inferred role: start volume; original member name unknown.
+  f32 unknown0c;         // Inferred role: duration; original member name unknown.
+  f32 unknown10;         // Inferred role: time; original member name unknown.
 };
 
 class SoundManager : public ManagerObject, public mm::mtl::PtrSingleton<SoundManager> {

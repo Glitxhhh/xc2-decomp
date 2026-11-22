@@ -575,7 +575,7 @@ void DrMdoCtlSeamRead::waitLightStream(_wkSeamReadCall *call, bool isRead) {
     light->setupWork(data);
     DrEnvironmentObj *environment = light->unknown20;
     environment->unknown8c |= 4;
-    environment->unknown90 = unknownc88;
+    environment->m_group = unknownc88;
     unknowncd0.unknown48 &= ~(1 << call->unknown1c);
   } else {
     unknown006(0);

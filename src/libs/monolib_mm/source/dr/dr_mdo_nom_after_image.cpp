@@ -104,7 +104,7 @@ void DrMdoNomAfterImage::updateParam(wrkObjList *obj, const DrMdoCtlNom *model, 
   } else {
     obj->unknown10->setAlpha(model->unknowne0);
   }
-  obj->unknown10->setDisp((model->unknown20 & DrMdlBase::unknown038_0) != 0);
+  obj->unknown10->setDisp((model->m_disp & DrMdlBase::unknown038_0) != 0);
   if (obj->unknown10->getRimBloomWrk(2) != nullptr) {
     f32 rate = obj->unknown18 / unknown18;
     f32 inverse = 1.0f - rate;

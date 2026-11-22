@@ -166,7 +166,7 @@ void DrIniSys::loadToonRimTexture() {
     unknown08[6] = nullptr;
   }
   unknown08[6] = readTextureMapFile(TOON_RIM_FILE);
-  setDefTexture(6, unknown08[6]->unknownc8, unknown08[6]->unknownd0);
+  setDefTexture(6, unknown08[6]->m_glassBreakage, unknown08[6]->unknownd0);
 }
 
 void DrIniSys::loadVolumeTexture() { unknown001(this); }
@@ -183,7 +183,7 @@ void DrIniSys::loadIBLEnvTexture() {
       unknown08[12] = nullptr;
     }
     unknown08[12] = res;
-    setCubeTexture(12, res->unknownc8, res->unknownd0);
+    setCubeTexture(12, res->m_glassBreakage, res->unknownd0);
   }
 }
 
@@ -203,7 +203,7 @@ void DrIniSys::loadFilterLutTexture() {
     unknown8a0 = nullptr;
   }
   unknown8a0 = res;
-  unknown00->unknown98->setFilterData(res->unknownc8);
+  unknown00->unknown98->setFilterData(res->m_glassBreakage);
 }
 
 void DrIniSys::loadGlassBreakage() {
@@ -222,7 +222,7 @@ void DrIniSys::loadTextureImpl(u32 index, const char *name) {
     unknown08[index] = nullptr;
   }
   unknown08[index] = readTextureMapFile(name);
-  setDefTexture(index, unknown08[index]->unknownc8, unknown08[index]->unknownd0);
+  setDefTexture(index, unknown08[index]->m_glassBreakage, unknown08[index]->unknownd0);
 }
 
 void DrIniSys::loadFlagWaveTexture() {
@@ -240,7 +240,7 @@ void DrIniSys::reloadToonRimTexture() {
     unknown08[6] = nullptr;
   }
   unknown08[6] = readTextureMapFile(TOON_RIM_FILE);
-  setDefTexture(6, unknown08[6]->unknownc8, unknown08[6]->unknownd0);
+  setDefTexture(6, unknown08[6]->m_glassBreakage, unknown08[6]->unknownd0);
 }
 
 void DrIniSys::reloadVolumeTexture() { unknown001(this); }
@@ -277,7 +277,7 @@ void DrIniSys::loadMirrorBallModel() {
     unknown878 = nullptr;
   }
   unknown878 = res;
-  unknown880 = Scn::get()->createMdl(res->unknownc8, unknown015, 0);
+  unknown880 = Scn::get()->createMdl(res->m_glassBreakage, unknown015, 0);
 }
 
 bool DrIniSys::getUpdateMirrorBallPos() const { return m_updateMirrorBallPos; }
@@ -337,6 +337,6 @@ void DrIniSys::getWetnessSetting(u16 index, WetSetting &setting) const {
   }
 }
 
-DrIniSys::unknown004 *DrIniSys::getGlassBreakage() const { return static_cast<unknown004 *>(unknown898->unknownc8); }
+DrIniSys::unknown004 *DrIniSys::getGlassBreakage() const { return static_cast<unknown004 *>(unknown898->m_glassBreakage); }
 
 } // namespace ml

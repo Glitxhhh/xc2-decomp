@@ -341,10 +341,10 @@ void DrPixlPostMan::beginUpdate() {
   }
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   setBloom(postParm->m_bloomOn);
-  setSSAO(postParm->unknown194);
+  setSSAO(postParm->m_sSAO);
   setBlur(postParm->isMotBlur() || postParm->m_motBlur2);
   setDepthField(postParm->unknown218 || postParm->unknown219);
-  setGlassBreak(postParm->unknown4d0);
+  setGlassBreak(postParm->m_glassBr);
   setCaputureMode(unknown00->unknown1c83 && unknown00->unknown1c98 == 0);
 }
 
@@ -850,11 +850,11 @@ DrPixlRenderTarget *DrPixlPostMan::getOldDownDepth() { return unknownc0[DrMan::s
 
 bool DrPixlPostMan::debugDeferredRenderImpl(bool isRender) {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
-  int flags[26] = {postParm->unknown304, postParm->unknown305, postParm->unknown306, postParm->unknown307, postParm->unknown308,
-                   postParm->unknown309, postParm->unknown30a, postParm->unknown30b, postParm->unknown30c, postParm->unknown30d,
-                   postParm->unknown30e, postParm->unknown30f, postParm->unknown310, postParm->unknown314, postParm->unknown315 && unknownd0 != nullptr,
-                   postParm->unknown316, postParm->unknown313, postParm->unknown317, postParm->unknown318, postParm->unknown311,
-                   postParm->unknown319, postParm->unknown312, postParm->unknown31a, postParm->unknown31b, postParm->unknown31c,
+  int flags[26] = {postParm->m_defferedColor, postParm->unknown305, postParm->unknown306, postParm->unknown307, postParm->unknown308,
+                   postParm->unknown309,      postParm->unknown30a, postParm->unknown30b, postParm->unknown30c, postParm->unknown30d,
+                   postParm->unknown30e,      postParm->unknown30f, postParm->unknown310, postParm->unknown314, postParm->unknown315 && unknownd0 != nullptr,
+                   postParm->unknown316,      postParm->unknown313, postParm->unknown317, postParm->unknown318, postParm->unknown311,
+                   postParm->unknown319,      postParm->unknown312, postParm->unknown31a, postParm->unknown31b, postParm->unknown31c,
                    postParm->unknown31d};
   int count = 0;
   for (int i = 0; i < 26; i++) {

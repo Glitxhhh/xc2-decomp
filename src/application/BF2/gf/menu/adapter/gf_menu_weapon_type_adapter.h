@@ -35,15 +35,15 @@ public:
 
   class ReferenceDriverConverter : public IConverter {
   public:
-    ReferenceDriverConverter(u32 driver, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> wpnType, u32 artsIndex) : unknown08(driver), unknown10(wpnType), unknown18(artsIndex) {}
+    ReferenceDriverConverter(u32 driver, mm::mtl::IntrusivePtr<GfMenuReferenceNumber> wpnType, u32 artsIndex) : unknown08(driver), unknown10(wpnType), m_artsIndex(artsIndex) {}
     ~ReferenceDriverConverter() override { unknown10 = nullptr; }
     u32 getDriverId() override;
     u32 getWpnType() override;
-    u32 getArtsIndex() override { return unknown18; }
+    u32 getArtsIndex() override { return m_artsIndex; }
 
     u32 unknown08;                                          // Inferred role: reference driver index; original member name unknown.
     mm::mtl::IntrusivePtr<GfMenuReferenceNumber> unknown10; // Inferred role: reference weapon type; original member name unknown.
-    u32 unknown18;                                          // Inferred role: arts index; original member name unknown.
+    u32 m_artsIndex;                                        // Inferred role: arts index; named after the game accessor gf::GfMenuWeaponTypeAdapter::ReferenceDriverConverter::getArtsIndex.
   };
 
   class ReferenceDriverWeaponTypeConverter : public IConverter {

@@ -511,7 +511,7 @@ GfObj *GfObjUtil::getObj(GF_OBJ_HANDLE *handle) {
 
 u32 GfObjUtil::getObjLayer(GF_OBJ_HANDLE *handle) {
   GfObj *obj = getObj(handle);
-  return obj != nullptr ? obj->unknown2c : 4;
+  return obj != nullptr ? obj->m_layer : 4;
 }
 
 f32 GfObjUtil::getSetupScale(GF_OBJ_HANDLE *handle) {
@@ -617,7 +617,7 @@ u32 GfObjUtil::getLayerSection(u32 layer) {
 }
 
 void GfObjUtil::changeLayer(GfObj *obj, u32 layer) {
-  u32 oldLayer = obj->unknown2c;
+  u32 oldLayer = obj->m_layer;
   for (u32 i = 0; i < fw::UpdatableObject::COMPONENT_UNKNOWN_12; i++) {
     fw::ComponentObject *component = obj->unknown38[i];
     if (component != nullptr) {
@@ -628,7 +628,7 @@ void GfObjUtil::changeLayer(GfObj *obj, u32 layer) {
     }
   }
 
-  obj->unknown2c = layer;
+  obj->m_layer = layer;
 }
 
 void GfObjUtil::changeLayer(GF_OBJ_HANDLE *handle, u32 layer) {
@@ -1559,7 +1559,7 @@ bool GfObjUtil::isFollowObjNotReady(GF_OBJ_HANDLE *handle) {
   if (followId == PLAYER_ID_UNKNOWN_4294967295) {
     return false;
   }
-  GfObjAcc acc(formation->unknown1a0[followId].unknown08);
+  GfObjAcc acc(formation->unknown1a0[followId].m_playerHandle);
   return !acc.isValid() || acc.isRebuild() || acc.isReload();
 }
 

@@ -118,7 +118,7 @@ bool AgentUtilField::calcParentPlayerPush(GfComPropertyPc &property, const mm::V
       if (i == property.unknown38) {
         return isPush;
       }
-      GfObjProperty *other = GfObjUtil::getProperty(formation->unknown1a0[i].unknown08);
+      GfObjProperty *other = GfObjUtil::getProperty(formation->unknown1a0[i].m_playerHandle);
       if (other != nullptr && other->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3) {
         mm::Vec3 offset = other->unknown18->unknown10 - position;
         const mm::Vec3 &normal = wallInfo->unknown00.normal;
@@ -156,7 +156,7 @@ bool AgentUtilField::existNearChimbPlayer(GfComPropertyPc &property, const mm::V
   bool isExist = false;
   for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
     if (formation->unknown1a0[i].unknown10) {
-      GfObjProperty *other = GfObjUtil::getProperty(formation->unknown1a0[i].unknown08);
+      GfObjProperty *other = GfObjUtil::getProperty(formation->unknown1a0[i].m_playerHandle);
       if (other != nullptr && other->unknown18->unknown00 == PROPERTY_MOVE_UNKNOWN_3) {
         mm::Vec3 offset = other->unknown18->unknown10 - position;
         isExist |= sqrtf(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z) - param->nearRange < 0.0f;
@@ -171,7 +171,7 @@ bool AgentUtilField::isWallJumpAnyPlayer() {
   bool isWallJump = false;
   for (u32 i = 0; i < GfGamePlayerFormation::PLAYER_UNKNOWN_6; i++) {
     if (formation->unknown1a0[i].unknown10) {
-      GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[i].unknown08);
+      GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[i].m_playerHandle);
       if (obj != nullptr) {
         GfComPropertyPc *property = mm::mtl::dynamicCast<GfComPropertyPc>(obj->unknown38[GfComProperty::COMPONENT_INDEX]);
         if (property->unknown310.unknown10_4) {

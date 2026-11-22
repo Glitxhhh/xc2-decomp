@@ -103,7 +103,7 @@ void LayerObjTopFilter::applyParams(const LayerRenderView *view, const LayerResM
   }
   updateDefUniformBlock(unknown290, matrix, color, target);
   unknown270->update(matrix, color, view, unknown1f8);
-  unknown2c8 = color.unknown00.a < 1.0f;
+  unknown2c8 = color.m_mulCol.a < 1.0f;
 }
 
 void LayerObjTopFilter::setDrawList(LayerSortMan *sortMan, bool is3D) {
@@ -114,10 +114,10 @@ void LayerObjTopFilter::setDrawList(LayerSortMan *sortMan, bool is3D) {
     if (unknowna8 & 0x400) {
       LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown258, unknown200);
     } else if (!isClip()) {
-      sortMan->set2DSpace(&unknown258, unknownc0);
+      sortMan->set2DSpace(&unknown258, m_priority);
     }
   } else if (!isClip()) {
-    sortMan->set2DSpace(&unknown258, unknownc0);
+    sortMan->set2DSpace(&unknown258, m_priority);
   }
 }
 
@@ -140,10 +140,10 @@ void LayerObjTopFilter::createGaussianBlur(u32 width, u32 height) {
   }
   unknown180.unknown00 = sclX;
   unknown180.unknown04 = sclY;
-  unknown180.unknown10 = 0;
-  unknown180.unknown12 = 0;
-  unknown180.unknown14 = width;
-  unknown180.unknown16 = height;
+  unknown180.m_pixelX = 0;
+  unknown180.m_pixelY = 0;
+  unknown180.m_pixelWidth = width;
+  unknown180.m_pixelHeight = height;
   LayerFilterGsBlurObj *filter = new (LayerManager::get()->unknown28) LayerFilterGsBlurObj(width, height);
   if (unknown270 == nullptr && unknown278[0] == nullptr && unknown278[1] == nullptr) {
     unknown270 = filter;
@@ -170,10 +170,10 @@ void LayerObjTopFilter::createFlowMap(u32 width, u32 height, const void *data) {
   }
   unknown180.unknown00 = sclX;
   unknown180.unknown04 = sclY;
-  unknown180.unknown10 = 0;
-  unknown180.unknown12 = 0;
-  unknown180.unknown14 = width;
-  unknown180.unknown16 = height;
+  unknown180.m_pixelX = 0;
+  unknown180.m_pixelY = 0;
+  unknown180.m_pixelWidth = width;
+  unknown180.m_pixelHeight = height;
   LayerFilterFlowMapObj *filter = new (LayerManager::get()->unknown28) LayerFilterFlowMapObj(width, height, data);
   if (unknown270 == nullptr && unknown278[0] == nullptr && unknown278[1] == nullptr) {
     unknown270 = filter;

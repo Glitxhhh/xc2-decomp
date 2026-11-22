@@ -154,29 +154,29 @@ f32 LayerObjPlace::updateGblFrm() {
   f32 add = unknown298->unknown00->unknown1c * LayerManager::get()->unknown80 * unknown1f8;
   if (unknowna8 & 0x200) {
     add = 0.0f;
-    unknown2b8 = unknown2b0->unknown00;
+    unknown2b8 = unknown2b0->m_second;
   }
   if (!(unknowna8 & 0x40)) {
-    unknown2b0->unknown00 += add;
+    unknown2b0->m_second += add;
   }
-  f32 frame = unknown2b0->unknown00 - unknown2b8;
+  f32 frame = unknown2b0->m_second - unknown2b8;
   if (unknown1f8 >= 0.0f) {
-    if (unknown298->unknown80 < unknown2b0->unknown00) {
+    if (unknown298->unknown80 < unknown2b0->m_second) {
       if (unknowna8 & 0x80) {
-        unknown2b0->unknown00 = unknown298->unknown84 + fmodf(unknown2b0->unknown00, unknown298->unknown80);
+        unknown2b0->m_second = unknown298->unknown84 + fmodf(unknown2b0->m_second, unknown298->unknown80);
       } else {
-        unknown2b0->unknown00 = unknown298->unknown80;
+        unknown2b0->m_second = unknown298->unknown80;
       }
     }
-  } else if (unknown2b0->unknown00 < 0.0f) {
+  } else if (unknown2b0->m_second < 0.0f) {
     if (unknowna8 & 0x80) {
-      unknown2b0->unknown00 = unknown298->unknown80 - unknown2b0->unknown00;
+      unknown2b0->m_second = unknown298->unknown80 - unknown2b0->m_second;
     } else {
-      unknown2b0->unknown00 = unknown298->unknown84;
+      unknown2b0->m_second = unknown298->unknown84;
     }
   }
-  unknown2b8 = unknown2b0->unknown00;
-  unknown2b0->unknown04 = unknown2b0->unknown00;
+  unknown2b8 = unknown2b0->m_second;
+  unknown2b0->unknown04 = unknown2b0->m_second;
   return frame;
 }
 
@@ -195,7 +195,7 @@ void LayerObjPlace::calcNodePos(f32 frame) {
         node->unknown36 |= 1;
         if (entry->unknown00 & 1) {
           unknown003 *param = unknown2b0 + entry->unknown02;
-          param->unknown00 = 0.0f;
+          param->m_second = 0.0f;
           node->unknown34 = 0;
         }
         continue;
@@ -206,8 +206,8 @@ void LayerObjPlace::calcNodePos(f32 frame) {
     } else {
       unknown003 *param = unknown2b0 + entry->unknown02;
       if (entry->unknown00 & 1) {
-        param->unknown00 += frame;
-        param->unknown04 = param->unknown00;
+        param->m_second += frame;
+        param->unknown04 = param->m_second;
       }
       if (place->unknown38 < param->unknown04) {
         node->unknown34 = place->unknown00 - 1;
@@ -221,13 +221,13 @@ void LayerObjPlace::calcNodePos(f32 frame) {
       }
       if (entry->unknown00 & 1) {
         if (unknown1f8 >= 0.0f) {
-          if (place->unknown3c < param->unknown00) {
-            param->unknown00 = fmodf(param->unknown00, place->unknown3c);
-            param->unknown04 = param->unknown00;
+          if (place->unknown3c < param->m_second) {
+            param->m_second = fmodf(param->m_second, place->unknown3c);
+            param->unknown04 = param->m_second;
           }
-        } else if (param->unknown00 < 0.0f) {
-          param->unknown00 = place->unknown3c - param->unknown00;
-          param->unknown04 = param->unknown00;
+        } else if (param->m_second < 0.0f) {
+          param->m_second = place->unknown3c - param->m_second;
+          param->unknown04 = param->m_second;
         }
       }
       if (place->unknown32 & 1) {

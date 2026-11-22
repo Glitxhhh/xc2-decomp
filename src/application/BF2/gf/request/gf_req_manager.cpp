@@ -71,7 +71,7 @@ nn::os::FiberType *GfReqManager::fnReqUpdate(void *) {
 }
 
 void GfReqManager::update(const fw::UpdateInfo &info) {
-  unknown08 = info;
+  m_updateInfo = info;
   ml::MicroThread::get()->update(unknown18);
   unknown1838->update(info);
 }
@@ -144,7 +144,7 @@ bool GfReqManager::isExistCommand(void (*command)(const GfReqParam *param)) {
   return GfReqSmallCom::isExistCommand();
 }
 
-fw::UpdateInfo *GfReqManager::getUpdateInfo() { return &get()->unknown08; }
+fw::UpdateInfo *GfReqManager::getUpdateInfo() { return &get()->m_updateInfo; }
 
 bool GfReqManager::isValid(u32 request) {
   if (request == 0xffffffff) {

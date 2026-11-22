@@ -86,13 +86,13 @@ void DrMdoCtlMpf::update() {
 void DrMdoCtlMpf::updateMpf() {
   m_AABBMax = mm::Vec3(1.0f, 1.0f, 1.0f);
   m_AABBMin = mm::Vec3(-1.0f, -1.0f, -1.0f);
-  unknown160 = 100000.0f;
+  m_length = 100000.0f;
   unknownf8 = 0;
   unknown168 = 0;
-  unknown130 = mm::Vec3(0.0f, 0.0f, 0.0f);
+  m_center = mm::Vec3(0.0f, 0.0f, 0.0f);
   DrMdoMpfMan *mpfMan = m_drMan->unknown88->unknown020;
   if (mpfMan != nullptr) {
-    mpfMan->unknown3d24 = unknowndc;
+    mpfMan->unknown3d24 = m_frameSpd;
   }
   calcMpfRenderList();
   updateMpfMatUniformBlock();
@@ -124,7 +124,7 @@ void DrMdoCtlMpf::defMpfZPreRender() {
   grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
   m_drMan->unknown5c0->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
   for (int i = 0; i < unknown1a4; i++) {
-    if (unknown1c8->unknown20[i].unknown20 == 0) {
+    if (unknown1c8->unknown20[i].m_objChk == 0) {
       continue;
     }
     // The game takes the row of the object as the flat table plus a 32-bit i * 8 (lsl w8, w21, #3; add x8, x9, w8, sxtw #3, 0x71007faa5c) and loads unknownf4 after
@@ -155,7 +155,7 @@ void DrMdoCtlMpf::defMpfrender() {
   cache->setupDepthStencil(0x18, 1, 0, 3);
   cache->setupAlphaBlend(0);
   for (int i = 0; i < unknown1a4; i++) {
-    if (unknown1c8->unknown20[i].unknown20 == 0) {
+    if (unknown1c8->unknown20[i].m_objChk == 0) {
       continue;
     }
     // Same row address and load order as defMpfZPreRender.

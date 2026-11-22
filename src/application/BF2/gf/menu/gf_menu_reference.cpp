@@ -977,7 +977,7 @@ mm::mtl::FixedList<MENUREF_OBJ *, 512> *GfMenuReference::getList(GF_SEARCH_OBJ *
   if (reference == nullptr) {
     return nullptr;
   }
-  ml::CS cs(reference->unknown4ca18);
+  ml::CS cs(reference->m_criticalSection);
   for (mm::mtl::FixedList<REFLIST *, 32>::iterator it = reference->unknown4c598.begin(); it != reference->unknown4c598.end(); ++it) {
     if ((*it)->unknown00 == searchObj) {
       return &(*it)->unknown08;
@@ -986,7 +986,7 @@ mm::mtl::FixedList<MENUREF_OBJ *, 512> *GfMenuReference::getList(GF_SEARCH_OBJ *
   return nullptr;
 }
 
-ml::CriticalSection &GfMenuReference::getCriticalSection() { return get()->unknown4ca18; }
+ml::CriticalSection &GfMenuReference::getCriticalSection() { return get()->m_criticalSection; }
 
 ui::UIStr &GfMenuReference::getReferenceString(u16 index) {
   GfMenuReference *reference = get();

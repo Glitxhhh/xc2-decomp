@@ -742,13 +742,13 @@ void LayerShdManager::initGamma(u32 index) {}
 
 LayerHandleAllocator::LayerHandleAllocator() {}
 
-LayerHandleAllocator::LayerHandleAllocator(mtl::ALLOC_HANDLE handle) : unknown08(handle) {}
+LayerHandleAllocator::LayerHandleAllocator(mtl::ALLOC_HANDLE handle) : m_memHandle(handle) {}
 
-void LayerHandleAllocator::setMemHandle(mtl::ALLOC_HANDLE handle) { unknown08 = handle; }
+void LayerHandleAllocator::setMemHandle(mtl::ALLOC_HANDLE handle) { m_memHandle = handle; }
 
-mtl::ALLOC_HANDLE LayerHandleAllocator::getMemHandle() const { return unknown08; }
+mtl::ALLOC_HANDLE LayerHandleAllocator::getMemHandle() const { return m_memHandle; }
 
-void *LayerHandleAllocator::allocate(size_t size, size_t alignment) { return mtl::MemManager::allocate(unknown08, size, alignment, false, "no name", 0); }
+void *LayerHandleAllocator::allocate(size_t size, size_t alignment) { return mtl::MemManager::allocate(m_memHandle, size, alignment, false, "no name", 0); }
 
 void LayerHandleAllocator::deallocate(void *pointer) {
   if (pointer != nullptr) {

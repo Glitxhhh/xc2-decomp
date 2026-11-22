@@ -25,7 +25,7 @@ void GfComPropertyEnemy::writeBack() {
 }
 
 void GfComPropertyEnemy::flush() {
-  unknown40.Update(*this);
+  m_battleProperty.Update(*this);
   const fw::Transform &transform = unknown08->getComponent<GfComTransform>()->unknown001()->unknown40;
   unknown80 = transform.unknown00;
   unknown90 = transform.unknown10;
@@ -40,18 +40,18 @@ static GfComEnvSensor *getEnvSensorComponent(fw::UpdatableObject *object) { retu
 
 bool GfComPropertyEnemy::getWaterHeight(f32 &height) const {
   GfComEnvSensor *envSensor = getEnvSensorComponent(unknown08);
-  if (!envSensor->unknown10.unknown24_1) {
+  if (!envSensor->m_envSensor.unknown24_1) {
     return false;
   }
   GfObjAcc acc(static_cast<GfObj *>(unknown08)->unknownf8);
   if (acc.getObj() == nullptr) {
     return false;
   }
-  height = envSensor->unknown10.unknown30.unknown70.unknown00 - acc.getWorldTransformNoSync().unknown00.y;
+  height = envSensor->m_envSensor.unknown30.unknown70.unknown00 - acc.getWorldTransformNoSync().unknown00.y;
   return true;
 }
 
-void GfComPropertyEnemy::cleanup() { unknown40.Finalize(*this); }
+void GfComPropertyEnemy::cleanup() { m_battleProperty.Finalize(*this); }
 
 f32 GfComPropertyEnemy::getChestHeight() const {
   DataParamAcc acc(static_cast<GfObj *>(unknown08)->unknownf8);

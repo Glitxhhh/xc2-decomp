@@ -471,7 +471,7 @@ void GmkEnemyInsts::update(const UpdateInfo &info) {
   }
 }
 
-bool GmkEnemy::PopXformFinder::isYSnap() const { return unknown08->getData()->unknown04; }
+bool GmkEnemy::PopXformFinder::isYSnap() const { return unknown08->getData()->m_ySnap; }
 
 bool GmkEnemy::PopXformFinder::onPopGob(gf::GF_OBJ_HANDLE *handle) const { return true; }
 
@@ -497,7 +497,7 @@ void GmkEnemy::create(const CreateInfo &info) {
     GmkEnemyInsts::CreateInfo createInfo;
     // The game loads the info and the list (0x71005f0648, 0x71005f064c) before the call of getBindedBdatFp.
     const unknown071 *bdatInfo = info.unknown10;
-    const GmkEnemyList *list = static_cast<const GmkEnemyList *>(unknown08.unknown00);
+    const GmkEnemyList *list = static_cast<const GmkEnemyList *>(unknown08.m_ownerGmkEnemyList);
     createInfo.unknown00 = this;
     createInfo.unknown08.unknown00 = list->getBindedBdatFp();
     createInfo.unknown10 = unknown20.unknown18;
@@ -515,7 +515,7 @@ void GmkEnemy::dispose() {
 
 GmkType GmkEnemy::getGmkType() const { return GMK_TYPE; }
 
-IGmkList *GmkEnemy::getOwnerGmkEnemyList() const { return unknown08.unknown00; }
+IGmkList *GmkEnemy::getOwnerGmkEnemyList() const { return unknown08.m_ownerGmkEnemyList; }
 
 bool GmkEnemy::isPointInsideRandomWalk(const mm::Vec3 &position) const {
   const mm::Vec3 &center = unknown08.unknown08->unknown00;
@@ -545,7 +545,7 @@ mm::Vec3 &GmkEnemy::getPositionInRandomWalk(mm::Vec3 &result, f32 angleMin, f32 
 }
 
 bool GmkEnemy::isValid() const {
-  if (unknown08.unknown00 == nullptr || unknown20.unknown08 == nullptr || unknown20.unknown10 == nullptr) {
+  if (unknown08.m_ownerGmkEnemyList == nullptr || unknown20.unknown08 == nullptr || unknown20.unknown10 == nullptr) {
     return false;
   }
   if (unknown48.unknown00.unknown00 == nullptr || unknown48.unknown00.unknown08.unknown00 == nullptr) {

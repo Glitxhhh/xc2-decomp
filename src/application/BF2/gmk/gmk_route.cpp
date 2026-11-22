@@ -49,7 +49,7 @@ GmkRouteNavi::CreateInfo::CreateInfo(const GmkRoute *route)
 }
 
 void GmkRouteNavi::CreateInfo::validate(const GmkRoute &route) {
-  IGmkList *list = route.unknown08.unknown00;
+  IGmkList *list = route.unknown08.m_ownerGmkEnemyList;
   unknown00 = list->getCreateInfo().unknown08->unknown10.unknown04;
   unknown04 = route.getGmkType();
   u32 num = list->getInstNum();
@@ -495,7 +495,7 @@ void GmkRoute::debugDraw(bool isSelected) const {
 
 void GmkRoute::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {}
 
-const IGmkList *GmkRoute::getBindedRoutePointList() const { return unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTE_POINT]; }
+const IGmkList *GmkRoute::getBindedRoutePointList() const { return unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ROUTE_POINT]; }
 
 void GmkRoute::debugDraw() const {
   AGmkBase::debugDraw();

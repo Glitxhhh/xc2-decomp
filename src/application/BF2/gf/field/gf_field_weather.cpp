@@ -340,7 +340,7 @@ static void unknown005(u32 prevMap, u32 map) {
 }
 
 GfFieldWeather::GfFieldWeather(const GfSetupParam &param)
-    : unknown08(false), unknown09(false), unknown0a(false), unknown74(WEATHER_UNKNOWN_0), unknown78(CLOUD_SEA_HANDLE(0)), unknown7c(CLOUD_SEA_REQUEST_UNKNOWN_0), unknown80(CLOUD_SEA_HANDLE(0)),
+    : unknown08(false), m_infiniteTime(false), unknown0a(false), unknown74(WEATHER_UNKNOWN_0), unknown78(CLOUD_SEA_HANDLE(0)), unknown7c(CLOUD_SEA_REQUEST_UNKNOWN_0), unknown80(CLOUD_SEA_HANDLE(0)),
       unknown84(true) {
   initialize(param);
 }
@@ -383,7 +383,7 @@ void GfFieldWeather::gevPause(u32 resumeBits, u32 pauseBits) {
 }
 
 void GfFieldWeather::execChangeWeather(const WeatherParam &param) {
-  get()->unknown09 = false;
+  get()->m_infiniteTime = false;
   u32 map = param.unknown18;
   if (map == 0) {
     return;
@@ -754,7 +754,7 @@ void GfFieldWeather::setMapWeatherID(WEATHERID weather) {
   }
 }
 
-bool GfFieldWeather::isInfiniteTime() { return get()->unknown09; }
+bool GfFieldWeather::isInfiniteTime() { return get()->m_infiniteTime; }
 
 bool GfFieldWeather::isWeatherSE() { return _gffwt::isCurrentSE(); }
 
@@ -771,12 +771,12 @@ void GfFieldWeather::setWeather(WEATYPE type, bool isTimeLimited) {
   }
 
   if (type == WEATYPE_UNKNOWN_0) {
-    weather->unknown09 = !isTimeLimited;
+    weather->m_infiniteTime = !isTimeLimited;
     weather->createWeather(GfGameManager::getMapID(), WEATHER_F, unknown049);
   }
   for (int id = WEATHER_A; id <= WEATHER_D; id++) {
     if (GfDataMap::getWeatherType(GfGameManager::getMapID(), static_cast<WEATHERID>(id)) == type) {
-      weather->unknown09 = !isTimeLimited;
+      weather->m_infiniteTime = !isTimeLimited;
       setMapWeatherID(static_cast<WEATHERID>(id));
       return;
     }
@@ -809,7 +809,7 @@ void GfFieldWeather::setupGame() {
     }
   }
 
-  u32 map = GfDataMap::getMapID(GfDataManager::getDataGame()->unknown1097f0.unknownc0);
+  u32 map = GfDataMap::getMapID(GfDataManager::getDataGame()->m_sDataMap.m_skipTravelID);
   setCloudSeaForDebug(map, static_cast<CLOUD_SEA>(dataGame->unknown10a53c[map].unknown1c));
 }
 

@@ -118,7 +118,7 @@ void ScnObjIBLDr::setReferencePos(const mm::Vec3 &position) {}
 
 const mm::Vec3 &ScnObjIBLDr::getReferencePos() const { return mm::Vec3::zero; }
 
-void ScnObjIBLDr::setFromCaptureTool() { unknown18->unknown58 = 2; }
+void ScnObjIBLDr::setFromCaptureTool() { unknown18->m_fromCaptureTool = 2; }
 
 void ScnObjIBLDr::dispDebugWindow(bool isOpen, const char *title, WinProc *window) {}
 
@@ -203,17 +203,17 @@ f32 ScnObjLightDrSys::getFrameSpd() const {
   return 0.0f;
 }
 
-void ScnObjLightDrSys::setGroup(int group) { unknown320->unknown90 = group; }
+void ScnObjLightDrSys::setGroup(int group) { unknown320->m_group = group; }
 
-int ScnObjLightDrSys::getGroup() const { return unknown320->unknown90; }
+int ScnObjLightDrSys::getGroup() const { return unknown320->m_group; }
 
 void ScnObjLightDrSys::setOffsetPos(const mm::Vec3 &position) {
   if (unknown320 != nullptr) {
-    unknown320->unknown70 = position;
+    unknown320->m_offsetPos = position;
   }
 }
 
-const mm::Vec3 &ScnObjLightDrSys::getOffsetPos() const { return unknown320->unknown70; }
+const mm::Vec3 &ScnObjLightDrSys::getOffsetPos() const { return unknown320->m_offsetPos; }
 
 void ScnObjLightDrSys::setDeugDisp2D(bool isDisp) {
   if (isDisp) {
@@ -223,7 +223,7 @@ void ScnObjLightDrSys::setDeugDisp2D(bool isDisp) {
   }
 }
 
-void ScnObjLightDrSys::setFromCaptureTool() { static_cast<DrEnvironmentObjLgt *>(unknown320)->unknown23c = 2; }
+void ScnObjLightDrSys::setFromCaptureTool() { static_cast<DrEnvironmentObjLgt *>(unknown320)->m_fromCaptureTool = 2; }
 
 void ScnObjLightDrSys::setLocalIBLName(const char *name) {}
 

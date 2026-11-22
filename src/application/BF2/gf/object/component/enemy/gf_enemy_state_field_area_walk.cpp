@@ -166,7 +166,7 @@ void StateFieldAreaWalk::enter(GfComBehaviorEnemy *behavior, ai::State *previous
     unknown18 = 1;
   }
 
-  behavior->unknown140.applyFieldMoveSpeed(static_cast<STATE_ID>(unknown08), *behavior);
+  behavior->unknown140.applyFieldMoveSpeed(static_cast<STATE_ID>(m_state), *behavior);
   unknown58 = &StateFieldAreaWalk::seqInitGoalPos;
 }
 

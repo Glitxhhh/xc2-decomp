@@ -96,7 +96,7 @@ void TextManager::init() {
   unknown384 = "";
   unknown3c8 = "";
   unknown5d0 = nullptr;
-  unknown5d8 = nullptr;
+  m_defaultTalkerMode = nullptr;
   unknown5e0 = "";
 }
 
@@ -206,7 +206,7 @@ void TextManager::setup(bool isCaption) {
   update();
 }
 
-void TextManager::setDefaultTalkerMode(bool isDefault, CharaObj *chara) { unknown5d8 = isDefault ? chara : nullptr; }
+void TextManager::setDefaultTalkerMode(bool isDefault, CharaObj *chara) { m_defaultTalkerMode = isDefault ? chara : nullptr; }
 
 void TextManager::setAutoTalkMode(bool isAutoTalkMode) { setFlag(FLAG_UNKNOWN_1, isAutoTalkMode); }
 
@@ -273,7 +273,7 @@ void TextManager::play(const char *label, CharaObj *chara, f32 life, f32 delay, 
   unknown36c = delayBack;
   unknown370 = captionType;
   unknown374 = mm::mtl::Singleton<FrameManager>::getPtr()->getFrame() + life;
-  unknown5d0 = chara != nullptr ? chara : unknown5d8;
+  unknown5d0 = chara != nullptr ? chara : m_defaultTalkerMode;
   if ((unknown10 & FLAG_UNKNOWN_0) == 0) {
     if (life >= 1.0f) {
       mm::mtl::Singleton<FrameManager>::getPtr()->setLockFrame(true, mm::mtl::Singleton<FrameManager>::getPtr()->getFrame() + life - 1.0f);

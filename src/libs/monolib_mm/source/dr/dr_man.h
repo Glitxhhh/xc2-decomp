@@ -259,32 +259,32 @@ public:
   IDrDrawWorkInfo unknown660[4]; // Inferred role: draw work infos; original member name unknown.
   s32 unknown1c60;               // Inferred role: tmaa mode; original member name unknown.
   u8 _1c64[0x1c70 - 0x1c64];
-  mm::Vec3 unknown1c70; // Inferred role: seam map read pos; original member name unknown.
-  bool unknown1c80;     // Inferred role: seam map add pos mode; original member name unknown.
-  u8 unknown1c81[2];    // Inferred role: capture modes; original member name unknown.
-  bool unknown1c83;     // Inferred role: capture request, read by DrPixlPostMan::beginUpdate (0x710084199c); original member name unknown.
-  f32 unknown1c84;      // Inferred role: glb spd; original member name unknown.
-  f32 unknown1c88;      // Inferred role: mdl spd; original member name unknown.
-  f32 unknown1c8c;      // Inferred role: model speed scaled by the global speed; original member name unknown.
-  f32 unknown1c90;      // Inferred role: gamma; original member name unknown.
+  mm::Vec3 unknown1c70;     // Inferred role: seam map read pos; original member name unknown.
+  bool m_seamMapAddPosMode; // Inferred role: seam map add pos mode; named after the game accessor ml::ScnRenderDrSysParmAcc::setSeamMapAddPosMode.
+  u8 unknown1c81[2];        // Inferred role: capture modes; original member name unknown.
+  bool unknown1c83;         // Inferred role: capture request, read by DrPixlPostMan::beginUpdate (0x710084199c); original member name unknown.
+  f32 m_glbSpd;             // Inferred role: glb spd; named after the game accessor ml::ScnRenderDrSysParmAcc::getGlbSpd.
+  f32 m_mdlSpd;             // Inferred role: mdl spd; named after the game accessor ml::ScnRenderDrSysParmAcc::getMdlSpd.
+  f32 unknown1c8c;          // Inferred role: model speed scaled by the global speed; original member name unknown.
+  f32 m_gamma;              // Inferred role: gamma; named after the game accessor ml::ScnRenderDrSysParmAcc::getGamma.
   u8 _1c94[0x1c98 - 0x1c94];
   s32 unknown1c98; // Inferred role: view index; original member name unknown.
   u32 unknown1c9c; // Inferred role: view render skip; original member name unknown.
   u8 _1ca0[0x1ca4 - 0x1ca0];
   f32 unknown1ca4[2]; // Inferred role: time vals; original member name unknown.
-  f32 unknown1cac;    // Inferred role: timer val; original member name unknown.
+  f32 m_timerVal;     // Inferred role: timer val; named after the game accessor ml::ScnRenderDrSysParmAcc::getTimerVal.
   u8 _1cb0[0x1cc0 - 0x1cb0];
-  bool unknown1cc0; // Inferred role: home menu opened; original member name unknown.
-  bool unknown1cc1; // Inferred role: auto reset scene; original member name unknown.
+  bool unknown1cc0;      // Inferred role: home menu opened; original member name unknown.
+  bool m_autoResetScene; // Inferred role: auto reset scene; named after the game accessor ml::ScnRenderDrSysParmAcc::setAutoResetScene.
   bool unknown1cc2; // Inferred role: render list flag, set to true by the constructor (0x71007c885c) and tested by DrMdoCtlNom::createRenderList, DrMdoCtlPos::createPosRenderList and the base and
                     // instance map render list updates (0x7100808718, 0x71008137f8, 0x7100821180, 0x7100823a70); original member name unknown.
   u8 _1cc3[0x1cc4 - 0x1cc3];
-  bool unknown1cc4; // Inferred role: mdl height tex skip; original member name unknown.
-  bool unknown1cc5; // Inferred role: height tex skip; original member name unknown.
-  bool unknown1cc6; // Inferred role: seam height tex skip; original member name unknown.
-  bool unknown1cc7; // Inferred role: seam map open mode; original member name unknown.
-  bool unknown1cc8; // Inferred role: screen disp off; original member name unknown.
-  bool unknown1cc9; // Inferred role: write z buffer; original member name unknown.
+  bool m_mdlHeightTexSkip;  // Inferred role: mdl height tex skip; named after the game accessor ml::ScnRenderDrSysParmAcc::isMdlHeightTexSkip.
+  bool m_heightTexSkip;     // Inferred role: height tex skip; named after the game accessor ml::ScnRenderDrSysParmAcc::isHeightTexSkip.
+  bool m_seamHeightTexSkip; // Inferred role: seam height tex skip; named after the game accessor ml::ScnRenderDrSysParmAcc::isSeamHeightTexSkip.
+  bool m_seamMapOpenMode;   // Inferred role: seam map open mode; named after the game accessor ml::ScnRenderDrSysParmAcc::isSeamMapOpenMode.
+  bool m_screenDispOff;     // Inferred role: screen disp off; named after the game accessor ml::ScnRenderDrSysParmAcc::setScreenDispOff.
+  bool m_writeZBuffer;      // Inferred role: write z buffer; named after the game accessor ml::ScnRenderDrSysParmAcc::setWriteZBuffer.
   u8 _1cca[0x1ccc - 0x1cca];
   s32 unknown1ccc;    // Inferred role: operation mode index of the distance tables; original member name unknown.
   f32 unknown1cd0[2]; // Inferred role: pos model far render distance per operation mode; original member name unknown.
@@ -295,13 +295,13 @@ public:
   f32 unknown1d08; // Inferred role: seam base map vertex middle read distance, copied by DrMdoCtlSeamBaseMap::readBaseMapCheck; original member name unknown.
   f32 unknown1d0c; // Inferred role: seam low map read distance, added to the read check distance by DrMdoCtlSeamLowMap::readLowMapCheck; original member name unknown.
   u8 _1d10[0x1d18 - 0x1d10];
-  void *unknown1d18;          // Inferred role: memory block released by the destructor; original member name unknown.
-  u32 *m_gblIdx;              // Named after setGblIdx and offGblIdx, which write its bits; Xenoblade Chronicles DE has isGblIdx and clearGblIdx on its table.
-  RenderSpecMode unknown1d28; // Inferred role: render spec mode; original member name unknown.
+  void *unknown1d18;               // Inferred role: memory block released by the destructor; original member name unknown.
+  u32 *m_gblIdx;                   // Named after setGblIdx and offGblIdx, which write its bits; Xenoblade Chronicles DE has isGblIdx and clearGblIdx on its table.
+  RenderSpecMode m_renderSpecMode; // Inferred role: render spec mode; named after the game accessor ml::ScnRenderDrSysParmAcc::setRenderSpecMode.
   u8 _1d2c[0x1d30 - 0x1d2c];
   mm::Vec3 m_globalWind[2];
   u8 _1d50[0x1d60 - 0x1d50];
-  bool unknown1d60; // Inferred role: chara disp off; original member name unknown.
+  bool m_dispChara; // Inferred role: chara disp off; named after the game accessor ml::ScnRenderDrSysParmAcc::setDispChara.
   bool unknown1d61; // Inferred role: seam render skip; original member name unknown.
   bool unknown1d62; // Inferred role: copied to the draw work info of each view; original member name unknown.
   bool unknown1d63; // Inferred role: model render skip; original member name unknown.
@@ -318,7 +318,7 @@ public:
   bool unknown1d6e; // Inferred role: skips the light buffer render of DrPixlDeferred::fastDeferredRender; original member name unknown.
   u8 _1d6f[0x1d70 - 0x1d6f];
   bool unknown1d70; // Inferred role: shadow light skip; original member name unknown.
-  bool unknown1d71; // Inferred role: fog skip; original member name unknown.
+  bool m_fogSkip;   // Inferred role: fog skip; named after the game accessor ml::ScnRenderDrSysParmAcc::setFogSkip.
   u8 _1d72[0x1d73 - 0x1d72];
   bool unknown1d73; // Inferred role: simple shadow render skip, read by DrMdoSmlShadowMan::shadowRender; original member name unknown.
   u8 _1d74[0x1d75 - 0x1d74];
@@ -326,23 +326,23 @@ public:
   u8 _1d76[0x1d78 - 0x1d76];
   bool unknown1d78; // Inferred role: skips the clustered light render of DrPixlDeferred::fastDeferredRender; original member name unknown.
   u8 _1d79[0x1d7a - 0x1d79];
-  bool unknown1d7a; // Inferred role: shadow map override; original member name unknown.
-  bool unknown1d7b; // Inferred role: mdl dbl pause; original member name unknown.
-  bool unknown1d7c; // Inferred role: skips the mpf wind update; original member name unknown.
-  bool unknown1d7d; // Inferred role: skips the deferred render and the sky render of a view; original member name unknown.
-  bool unknown1d7e; // Inferred role: skips GBuffRender; original member name unknown.
+  bool unknown1d7a;   // Inferred role: shadow map override; original member name unknown.
+  bool m_mdlDblPause; // Inferred role: mdl dbl pause; named after the game accessor ml::ScnRenderDrSys::setMdlDblPause.
+  bool unknown1d7c;   // Inferred role: skips the mpf wind update; original member name unknown.
+  bool unknown1d7d;   // Inferred role: skips the deferred render and the sky render of a view; original member name unknown.
+  bool unknown1d7e;   // Inferred role: skips GBuffRender; original member name unknown.
   u8 _1d7f[0x1d80 - 0x1d7f];
-  bool unknown1d80; // Inferred role: clip; original member name unknown.
+  bool m_clip; // Inferred role: clip; named after the game accessor ml::ScnRenderDrSysParmAcc::setClip.
   u8 _1d81[0x1d8c - 0x1d81];
   bool unknown1d8c; // Inferred role: flag, copied to unknown1d8d at the end of the setup; original member name unknown.
   bool unknown1d8d; // Inferred role: copy of unknown1d8c; original member name unknown.
   bool unknown1d8e; // Inferred role: skips the env coli parameters; original member name unknown.
   u8 _1d8f[0x1d94 - 0x1d8f];
-  FILE_PRIO unknown1d94; // Inferred role: seam map pri mdl; original member name unknown.
-  FILE_PRIO unknown1d98; // Inferred role: seam map pri coli; original member name unknown.
+  FILE_PRIO m_seamMapPriMdl;  // Inferred role: seam map pri mdl; named after the game accessor ml::ScnRenderDrSysParmAcc::getSeamMapPriMdl.
+  FILE_PRIO m_seamMapPriColi; // Inferred role: seam map pri coli; named after the game accessor ml::ScnRenderDrSysParmAcc::getSeamMapPriColi.
   bool m_allMiddelTexStmChk[2];
   bool m_seamMapStmOk[2];
-  bool unknown1da0; // Inferred role: camera light; original member name unknown.
+  bool m_cameraLight; // Inferred role: camera light; named after the game accessor ml::ScnRenderDrSysParmAcc::setCameraLight.
   u8 _1da1[0x1da4 - 0x1da1];
   s32 unknown1da4; // Inferred role: dynamic light type; original member name unknown.
   u8 _1da8[0x1dac - 0x1da8];
@@ -355,7 +355,7 @@ public:
   bool unknown1de8; // Inferred role: histgram uses the tone map target; original member name unknown.
   u8 _1de9[0x1e00 - 0x1de9];
   cloud::CloudMan *unknown1e00; // Inferred role: cloud man; original member name unknown.
-  bool unknown1e08;             // Inferred role: toon dir light scale; original member name unknown.
+  bool m_toonDirLightScale;     // Inferred role: toon dir light scale; named after the game accessor ml::ScnRenderDrSysParmAcc::setToonDirLightScale.
   u8 _1e09[0x1e0c - 0x1e09];
   s32 unknown1e0c;  // Inferred role: toon ambient; original member name unknown.
   bool unknown1e10; // Inferred role: quarter depth; original member name unknown.
@@ -408,26 +408,26 @@ static_assert(offsetof(DrMan, unknown658) == 0x0658, "");
 static_assert(offsetof(DrMan, unknown660) == 0x0660, "");
 static_assert(offsetof(DrMan, unknown1c60) == 0x1c60, "");
 static_assert(offsetof(DrMan, unknown1c70) == 0x1c70, "");
-static_assert(offsetof(DrMan, unknown1c80) == 0x1c80, "");
+static_assert(offsetof(DrMan, m_seamMapAddPosMode) == 0x1c80, "");
 static_assert(offsetof(DrMan, unknown1c81) == 0x1c81, "");
 static_assert(offsetof(DrMan, unknown1c83) == 0x1c83, "");
-static_assert(offsetof(DrMan, unknown1c84) == 0x1c84, "");
-static_assert(offsetof(DrMan, unknown1c88) == 0x1c88, "");
+static_assert(offsetof(DrMan, m_glbSpd) == 0x1c84, "");
+static_assert(offsetof(DrMan, m_mdlSpd) == 0x1c88, "");
 static_assert(offsetof(DrMan, unknown1c8c) == 0x1c8c, "");
-static_assert(offsetof(DrMan, unknown1c90) == 0x1c90, "");
+static_assert(offsetof(DrMan, m_gamma) == 0x1c90, "");
 static_assert(offsetof(DrMan, unknown1c98) == 0x1c98, "");
 static_assert(offsetof(DrMan, unknown1c9c) == 0x1c9c, "");
 static_assert(offsetof(DrMan, unknown1ca4) == 0x1ca4, "");
-static_assert(offsetof(DrMan, unknown1cac) == 0x1cac, "");
+static_assert(offsetof(DrMan, m_timerVal) == 0x1cac, "");
 static_assert(offsetof(DrMan, unknown1cc0) == 0x1cc0, "");
-static_assert(offsetof(DrMan, unknown1cc1) == 0x1cc1, "");
+static_assert(offsetof(DrMan, m_autoResetScene) == 0x1cc1, "");
 static_assert(offsetof(DrMan, unknown1cc2) == 0x1cc2, "");
-static_assert(offsetof(DrMan, unknown1cc4) == 0x1cc4, "");
-static_assert(offsetof(DrMan, unknown1cc5) == 0x1cc5, "");
-static_assert(offsetof(DrMan, unknown1cc6) == 0x1cc6, "");
-static_assert(offsetof(DrMan, unknown1cc7) == 0x1cc7, "");
-static_assert(offsetof(DrMan, unknown1cc8) == 0x1cc8, "");
-static_assert(offsetof(DrMan, unknown1cc9) == 0x1cc9, "");
+static_assert(offsetof(DrMan, m_mdlHeightTexSkip) == 0x1cc4, "");
+static_assert(offsetof(DrMan, m_heightTexSkip) == 0x1cc5, "");
+static_assert(offsetof(DrMan, m_seamHeightTexSkip) == 0x1cc6, "");
+static_assert(offsetof(DrMan, m_seamMapOpenMode) == 0x1cc7, "");
+static_assert(offsetof(DrMan, m_screenDispOff) == 0x1cc8, "");
+static_assert(offsetof(DrMan, m_writeZBuffer) == 0x1cc9, "");
 static_assert(offsetof(DrMan, unknown1ccc) == 0x1ccc, "");
 static_assert(offsetof(DrMan, unknown1cd0) == 0x1cd0, "");
 static_assert(offsetof(DrMan, unknown1cfc) == 0x1cfc, "");
@@ -437,9 +437,9 @@ static_assert(offsetof(DrMan, unknown1d08) == 0x1d08, "");
 static_assert(offsetof(DrMan, unknown1d0c) == 0x1d0c, "");
 static_assert(offsetof(DrMan, unknown1d18) == 0x1d18, "");
 static_assert(offsetof(DrMan, m_gblIdx) == 0x1d20, "");
-static_assert(offsetof(DrMan, unknown1d28) == 0x1d28, "");
+static_assert(offsetof(DrMan, m_renderSpecMode) == 0x1d28, "");
 static_assert(offsetof(DrMan, m_globalWind) == 0x1d30, "");
-static_assert(offsetof(DrMan, unknown1d60) == 0x1d60, "");
+static_assert(offsetof(DrMan, m_dispChara) == 0x1d60, "");
 static_assert(offsetof(DrMan, unknown1d61) == 0x1d61, "");
 static_assert(offsetof(DrMan, unknown1d62) == 0x1d62, "");
 static_assert(offsetof(DrMan, unknown1d63) == 0x1d63, "");
@@ -449,23 +449,23 @@ static_assert(offsetof(DrMan, unknown1d66) == 0x1d66, "");
 static_assert(offsetof(DrMan, unknown1d67) == 0x1d67, "");
 static_assert(offsetof(DrMan, unknown1d6c) == 0x1d6c, "");
 static_assert(offsetof(DrMan, unknown1d6e) == 0x1d6e, "");
-static_assert(offsetof(DrMan, unknown1d71) == 0x1d71, "");
+static_assert(offsetof(DrMan, m_fogSkip) == 0x1d71, "");
 static_assert(offsetof(DrMan, unknown1d73) == 0x1d73, "");
 static_assert(offsetof(DrMan, unknown1d75) == 0x1d75, "");
 static_assert(offsetof(DrMan, unknown1d78) == 0x1d78, "");
 static_assert(offsetof(DrMan, unknown1d7a) == 0x1d7a, "");
-static_assert(offsetof(DrMan, unknown1d7b) == 0x1d7b, "");
+static_assert(offsetof(DrMan, m_mdlDblPause) == 0x1d7b, "");
 static_assert(offsetof(DrMan, unknown1d7d) == 0x1d7d, "");
 static_assert(offsetof(DrMan, unknown1d7e) == 0x1d7e, "");
-static_assert(offsetof(DrMan, unknown1d80) == 0x1d80, "");
+static_assert(offsetof(DrMan, m_clip) == 0x1d80, "");
 static_assert(offsetof(DrMan, unknown1d8c) == 0x1d8c, "");
 static_assert(offsetof(DrMan, unknown1d8d) == 0x1d8d, "");
 static_assert(offsetof(DrMan, unknown1d8e) == 0x1d8e, "");
-static_assert(offsetof(DrMan, unknown1d94) == 0x1d94, "");
-static_assert(offsetof(DrMan, unknown1d98) == 0x1d98, "");
+static_assert(offsetof(DrMan, m_seamMapPriMdl) == 0x1d94, "");
+static_assert(offsetof(DrMan, m_seamMapPriColi) == 0x1d98, "");
 static_assert(offsetof(DrMan, m_allMiddelTexStmChk) == 0x1d9c, "");
 static_assert(offsetof(DrMan, m_seamMapStmOk) == 0x1d9e, "");
-static_assert(offsetof(DrMan, unknown1da0) == 0x1da0, "");
+static_assert(offsetof(DrMan, m_cameraLight) == 0x1da0, "");
 static_assert(offsetof(DrMan, unknown1da4) == 0x1da4, "");
 static_assert(offsetof(DrMan, unknown1dac) == 0x1dac, "");
 static_assert(offsetof(DrMan, unknown1dbc) == 0x1dbc, "");
@@ -473,7 +473,7 @@ static_assert(offsetof(DrMan, unknown1dc0) == 0x1dc0, "");
 static_assert(offsetof(DrMan, unknown1de4) == 0x1de4, "");
 static_assert(offsetof(DrMan, unknown1de8) == 0x1de8, "");
 static_assert(offsetof(DrMan, unknown1e00) == 0x1e00, "");
-static_assert(offsetof(DrMan, unknown1e08) == 0x1e08, "");
+static_assert(offsetof(DrMan, m_toonDirLightScale) == 0x1e08, "");
 static_assert(offsetof(DrMan, unknown1e0c) == 0x1e0c, "");
 static_assert(sizeof(DrMan) == 0x1e20, "");
 

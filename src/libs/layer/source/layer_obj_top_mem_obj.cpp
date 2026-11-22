@@ -19,8 +19,8 @@ namespace layer {
 
 LayerObjTopMemObj::LayerObjTopMemObj(u32 width, u32 height, LayerMemType type) : unknown258(this) {
   unknowna8 |= 0x20000;
-  unknown740 = width;
-  unknown744 = height;
+  m_memWidth = width;
+  m_memHeight = height;
   unknown748 = 0;
   unknown74c = 0;
   unknown750 = type;
@@ -34,26 +34,26 @@ LayerObjTopMemObj::LayerObjTopMemObj(u32 width, u32 height, LayerMemType type) :
 void LayerObjTopMemObj::createWorkBuffer() {
   unknown640.setup(0x80);
   unknown180.unknown08 = 1.0f;
-  unknown180.unknown0c = static_cast<f32>(unknown744) / static_cast<f32>(unknown740);
-  if (unknown740 > unknown744) {
+  unknown180.unknown0c = static_cast<f32>(m_memHeight) / static_cast<f32>(m_memWidth);
+  if (m_memWidth > m_memHeight) {
     unknown180.unknown00 = 1.0f;
-    unknown180.unknown04 = static_cast<f32>(unknown744) / static_cast<f32>(unknown740);
+    unknown180.unknown04 = static_cast<f32>(m_memHeight) / static_cast<f32>(m_memWidth);
   } else {
-    unknown180.unknown00 = static_cast<f32>(unknown740) / static_cast<f32>(unknown744);
+    unknown180.unknown00 = static_cast<f32>(m_memWidth) / static_cast<f32>(m_memHeight);
     unknown180.unknown04 = 1.0f;
   }
-  unknown180.unknown10 = 0;
-  unknown180.unknown12 = 0;
-  unknown180.unknown14 = unknown740;
-  unknown180.unknown16 = unknown744;
+  unknown180.m_pixelX = 0;
+  unknown180.m_pixelY = 0;
+  unknown180.m_pixelWidth = m_memWidth;
+  unknown180.m_pixelHeight = m_memHeight;
   u32 size;
   if (unknown750 == LAYER_MEM_TYPE_UNKNOWN_2) {
-    size = 2 * unknown740 * unknown744;
+    size = 2 * m_memWidth * m_memHeight;
   } else {
-    size = unknown740 * unknown744;
+    size = m_memWidth * m_memHeight;
     if (unknown750 == LAYER_MEM_TYPE_UNKNOWN_3) {
       unknown748 = size + (0x100 - size % 0x100) % 0x100;
-      u32 secondSize = (unknown740 >> 1) * (unknown744 >> 1) * 2;
+      u32 secondSize = (m_memWidth >> 1) * (m_memHeight >> 1) * 2;
       unknown74c = secondSize + (0x10 - secondSize % 0x10) % 0x10;
       size = unknown748 + unknown74c;
     } else {
@@ -88,17 +88,17 @@ void LayerObjTopMemObj::releaseWorkBuffer() {
 void LayerObjTopMemObj::resourceInit() {
   if (unknown270 & 0x8) {
     unknown270 &= ~0x8;
-    unknown278.setTextureInfo(unknown740, unknown744, GRL_SURFACE_FORMAT_RGBA8, false, 0);
+    unknown278.setTextureInfo(m_memWidth, m_memHeight, GRL_SURFACE_FORMAT_RGBA8, false, 0);
     unknown278.clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
     u32 *info = static_cast<u32 *>(unknown678.m_mapping);
-    info[0] = unknown740;
-    info[1] = unknown744;
+    info[0] = m_memWidth;
+    info[1] = m_memHeight;
     if (unknown750 == LAYER_MEM_TYPE_UNKNOWN_3) {
-      info[2] = unknown740 >> 1;
-      info[3] = unknown744 >> 1;
+      info[2] = m_memWidth >> 1;
+      info[3] = m_memHeight >> 1;
     } else {
-      info[2] = unknown740;
-      info[3] = unknown744;
+      info[2] = m_memWidth;
+      info[3] = m_memHeight;
     }
     unknown678.updateData();
   }
@@ -141,10 +141,10 @@ void LayerObjTopMemObj::setDrawList(LayerSortMan *sortMan, bool is3D) {
     if (unknowna8 & 0x400) {
       LayerManager::get()->unknown60->unknown10->set3DSpace(&unknown258, unknown200);
     } else if (!isClip()) {
-      sortMan->set2DSpace(&unknown258, unknownc0);
+      sortMan->set2DSpace(&unknown258, m_priority);
     }
   } else if (!isClip()) {
-    sortMan->set2DSpace(&unknown258, unknownc0);
+    sortMan->set2DSpace(&unknown258, m_priority);
   }
 }
 
@@ -187,7 +187,7 @@ void LayerObjTopMemObj::lastRender() {
   shader->setupVertex(static_cast<LayerDefVertType>(1));
   shader->unknown4f0 = 1;
   shader->setupShader(&unknown640);
-  shader->setupTexture(*unknown278.unknown70, static_cast<LayerSamplerType>(unknownc6), 0);
+  shader->setupTexture(*unknown278.unknown70, static_cast<LayerSamplerType>(m_texFilterType), 0);
   shader->renderQuadsIndex();
 }
 

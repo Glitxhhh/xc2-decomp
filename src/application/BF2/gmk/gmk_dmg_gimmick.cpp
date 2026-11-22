@@ -142,7 +142,7 @@ void GmkDmgSe::validateMute() const {
 
 GmkType GmkDmgPhantom::getGmkType() const { return GMK_TYPE; }
 
-bool GmkDmgPhantom::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkDmgPhantom::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkDmgPhantom::createGmkPhantom(fw::ColiUserData *userData) const {
   if (!canCreateGameEntity()) {
@@ -164,7 +164,7 @@ void GmkDmgPhantom::dispose() {
 
 GmkType GmkDmgEffect::getGmkType() const { return GMK_TYPE; }
 
-bool GmkDmgEffect::isValid() const { return unknown08.unknown00 != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkDmgEffect::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
 
 void GmkDmgEffect::update(f32 deltaTime) { debugUpdateMmf(); }
 
@@ -298,7 +298,7 @@ void GmkDmgGimmick::update(f32 deltaTime) {
 }
 
 GmkDmgPhantom *GmkDmgGimmick::getGmkDmgPhantom(u32 index) const {
-  IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_DMG_PHANTOM];
+  IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_DMG_PHANTOM];
   const Data *data = getData();
   if (list != nullptr && list->getInstNum() > data->unknown00 + index) {
     u32 listIndex = data->unknown00 + index;
@@ -308,7 +308,7 @@ GmkDmgPhantom *GmkDmgGimmick::getGmkDmgPhantom(u32 index) const {
 }
 
 GmkDmgEffect *GmkDmgGimmick::getGmkDmgEffect(u32 index) const {
-  IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_DMG_EFFECT];
+  IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_DMG_EFFECT];
   const Data *data = getData();
   if (list != nullptr && list->getInstNum() > data->unknown04 + index) {
     u32 listIndex = data->unknown04 + index;
@@ -318,7 +318,7 @@ GmkDmgEffect *GmkDmgGimmick::getGmkDmgEffect(u32 index) const {
 }
 
 GmkDmgSe *GmkDmgGimmick::getGmkDmgSe(u32 index) const {
-  IGmkList *list = unknown08.unknown00->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_DMG_SE];
+  IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_DMG_SE];
   const Data *data = getData();
   if (list != nullptr && list->getInstNum() > data->unknown08 + index) {
     u32 listIndex = data->unknown08 + index;

@@ -1149,7 +1149,7 @@ AGmkBase *getBindedGmkInst(gf::GF_OBJ_HANDLE *handle) {
 }
 
 bool hasEyeBlink(const AGmkBase &gmk) {
-  u8 *bdat = gmk.unknown08.unknown00->getBindedBdatFp();
+  u8 *bdat = gmk.unknown08.m_ownerGmkEnemyList->getBindedBdatFp();
   if (bdat != nullptr) {
     u16 motion = Bdat::getValCheck(bdat, "Mot", gmk.unknown20.unknown18, BDAT_TYPE_UNKNOWN_2);
     if (motion) {
@@ -1665,7 +1665,7 @@ void GmkPhantomSimple::CreateInfo::validateByAGmkBase(const AGmkBase &gmk) {
   u32 shapeType = gmk.unknown08.unknown10->unknown0c;
   if (shapeType == SHAPE_TYPE_UNKNOWN_1) {
     // Inferred: a point shape has no phantom; the game only reads the list create info, likely for a stripped debug message.
-    gmk.unknown08.unknown00->getCreateInfo();
+    gmk.unknown08.m_ownerGmkEnemyList->getCreateInfo();
     return;
   }
   unknown00 = unknown006[shapeType];

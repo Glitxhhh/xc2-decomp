@@ -230,7 +230,7 @@ void DrMan::apply(int loop) {
 }
 
 void DrMan::applyBegin(int loop) {
-  unknown1c8c = unknown1c84 * unknown1c88;
+  unknown1c8c = m_glbSpd * m_mdlSpd;
   unknown88->beginApply();
 }
 
@@ -645,7 +645,7 @@ bool DrMdlMan::getTextureStreamInfo(u32 &size, u32 &count, const void *data, boo
 void DrMdlMan::addViewInfo(int cate) {
   unknown050[cate] = new (unknown000->unknown0c) DrMdoZSortMan(unknown000);
   for (DrMdlBase *mdl = unknown0a8[cate].unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    mdl->unknown20 &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
+    mdl->m_disp &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
   }
 }
 
@@ -655,7 +655,7 @@ void DrMdlMan::delViewInfo(int cate) {
     unknown050[cate] = nullptr;
   }
   for (DrMdlBase *mdl = unknown0a8[cate].unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    mdl->unknown20 &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
+    mdl->m_disp &= ~(DrMdlBase::unknown038_5 | DrMdlBase::unknown038_6);
   }
 }
 
@@ -901,7 +901,7 @@ void DrMdlMan::render() {
   }
   unknown218->viewRender();
   for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    if (unknown23c & (1 << mdl->unknown18)) {
+    if (unknown23c & (1 << mdl->m_groups)) {
       mdl->shadowCacheOnlyRender();
     }
   }
@@ -913,7 +913,7 @@ bool DrMdlMan::shadowRender(DrPixlShadowObj *shadow) {
     pixlMan->setShadowObj(shadow);
     shadow->unknown50 &= ~1u;
     for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-      if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+      if ((mdl->m_disp & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->m_groups))) {
         mdl->shadowRender();
       }
     }
@@ -932,7 +932,7 @@ void DrMdlMan::occRender(bool isFirst) {
   DrPixlMan *pixlMan = unknown000->unknown78;
   pixlMan->occRenderBegin(isFirst);
   for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+    if ((mdl->m_disp & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->m_groups))) {
       mdl->occRender();
     }
   }
@@ -955,7 +955,7 @@ void DrMdlMan::DepthCheckRender(bool isDblDepth) {
 
 bool DrMdlMan::shadowCacheRender(DrPixlShadowCacheObj &cache) {
   for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+    if ((mdl->m_disp & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->m_groups))) {
       if (!mdl->shadowCacheRender(cache)) {
         return false;
       }
@@ -966,7 +966,7 @@ bool DrMdlMan::shadowCacheRender(DrPixlShadowCacheObj &cache) {
 
 void DrMdlMan::shadowCacheAddRender(int index) {
   for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+    if ((mdl->m_disp & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->m_groups))) {
       mdl->shadowCacheAddRender(index);
     }
   }
@@ -1001,7 +1001,7 @@ void DrMan::releaseCallBack(IDrDrawCallback *callback) {
 }
 
 void DrMan::setCacherClearMode(bool cacherClearMode) {
-  unknown5b0->unknown2068 = !cacherClearMode ? unknown5b0->unknown2068 & ~DrCalcTexStreamMan::FLAG_UNKNOWN_4 : unknown5b0->unknown2068 | DrCalcTexStreamMan::FLAG_UNKNOWN_4;
+  unknown5b0->m_cacherClearMode = !cacherClearMode ? unknown5b0->m_cacherClearMode & ~DrCalcTexStreamMan::FLAG_UNKNOWN_4 : unknown5b0->m_cacherClearMode | DrCalcTexStreamMan::FLAG_UNKNOWN_4;
 }
 
 void DrMan::openPixelDebugWindow(WinProc *window) {}
@@ -1010,7 +1010,7 @@ void DrMan::openHistgramDebugWindow(WinProc *window) {}
 
 void DrMan::memcpyLcDMA(void *destination, const void *source, u32 size) { memcpy(destination, source, size); }
 
-u32 DrMan::getMem1AlphaFree() { return DrPixlMemMan::get()->unknown434; }
+u32 DrMan::getMem1AlphaFree() { return DrPixlMemMan::get()->m_mem1AlphaFree; }
 
 void DrMan::setGblIdx(s32 id) {
   if (!isGblIdx(id)) {
@@ -1077,7 +1077,7 @@ void DrMdlMan::apply() {
   unknown230->unknown0c = false;
   unknown218->beginViewWorld();
   for (DrMdlBase *mdl = unknown220->unknown00; mdl != nullptr; mdl = mdl->unknown10) {
-    if ((mdl->unknown20 & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->unknown18))) {
+    if ((mdl->m_disp & DrMdlBase::unknown038_0) && (unknown23c & (1 << mdl->m_groups))) {
       mdl->update();
     } else {
       mdl->dispOffUpdate();
@@ -1131,9 +1131,9 @@ void DrMdlMan::setGroupsDisp(s32 group, bool disp) {
 
 void DrMan::setReduction(bool isReduction, f32 scaleX, f32 scaleY) {
   DrPixlPostParm *postParm = unknown120[0];
-  postParm->unknownfb2 = isReduction;
-  postParm->unknownfb8 = scaleX;
-  postParm->unknownfbc = scaleY;
+  postParm->m_reduction = isReduction;
+  postParm->m_reductionScX = scaleX;
+  postParm->m_reductionScY = scaleY;
 }
 
 void DrMan::setAutoReduction(bool autoReduction) { unknown5c8->m_autoReduction = autoReduction; }
@@ -1142,7 +1142,7 @@ void DrMan::setAA(bool isAA) { unknown120[0]->m_AAOn = isAA; }
 
 void DrMan::setColorFilter(bool isColorFilter) { unknown120[0]->m_colTblOn = isColorFilter; }
 
-void DrMan::setSSAO(bool isSSAO) { unknown120[0]->unknown194 = isSSAO; }
+void DrMan::setSSAO(bool isSSAO) { unknown120[0]->m_sSAO = isSSAO; }
 
 void DrMan::setBloom(bool isBloom, bool isLensFlare) { unknown120[0]->m_bloomOn = isBloom; }
 

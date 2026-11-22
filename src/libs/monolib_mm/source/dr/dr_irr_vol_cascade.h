@@ -48,17 +48,17 @@ public:
   u8 _550[0x560 - 0x550];
   mm::Aabb unknown560[2]; // Inferred role: volume area per buffer; original member name unknown.
   u8 _5a0[0x5b0 - 0x5a0];
-  mm::Vec3 unknown5b0; // Inferred role: uv per pixel; original member name unknown.
+  mm::Vec3 m_uVPerPixl; // Inferred role: uv per pixel; named after the game accessor ml::DrIrrVolMan::getUVPerPixl.
   u8 _5c0[0x5d0 - 0x5c0];
-  mm::Vec3 unknown5d0; // Inferred role: uv scale; original member name unknown.
-  u32 unknown5e0;      // Inferred role: current buffer index; original member name unknown.
+  mm::Vec3 m_irrVolUVScale; // Inferred role: uv scale; named after the game accessor ml::DrIrrVolMan::getIrrVolUVScale.
+  u32 unknown5e0;           // Inferred role: current buffer index; original member name unknown.
   u8 _5e4[0x5e8 - 0x5e4];
   grlib::CGLibTextureBuffer unknown5e8[2][3]; // Inferred role: irradiance volume textures per buffer; original member name unknown.
   u8 _888[0x890 - 0x888];
   int *unknown890; // Inferred role: buffer of 4 byte entries that createResources allocates and fills with -1; original member name unknown.
   u8 _898[0x8e0 - 0x898];
-  mm::Vec3 unknown8e0; // Inferred role: eye offset; original member name unknown.
-  mm::Vec3 unknown8f0; // Inferred role: uv offset; original member name unknown.
+  mm::Vec3 m_irrVolEyeOffset; // Inferred role: eye offset; named after the game accessor ml::DrIrrVolMan::getIrrVolEyeOffset.
+  mm::Vec3 m_irrVolUVOffset;  // Inferred role: uv offset; named after the game accessor ml::DrIrrVolMan::getIrrVolUVOffset.
 };
 
 static_assert(offsetof(DrIrrVolCascade, unknown08) == 0x08, "");
@@ -73,13 +73,13 @@ static_assert(offsetof(DrIrrVolCascade, unknown548) == 0x548, "");
 static_assert(offsetof(DrIrrVolCascade, unknown54c) == 0x54c, "");
 
 static_assert(offsetof(DrIrrVolCascade, unknown560) == 0x560, "");
-static_assert(offsetof(DrIrrVolCascade, unknown5b0) == 0x5b0, "");
-static_assert(offsetof(DrIrrVolCascade, unknown5d0) == 0x5d0, "");
+static_assert(offsetof(DrIrrVolCascade, m_uVPerPixl) == 0x5b0, "");
+static_assert(offsetof(DrIrrVolCascade, m_irrVolUVScale) == 0x5d0, "");
 static_assert(offsetof(DrIrrVolCascade, unknown5e0) == 0x5e0, "");
 static_assert(offsetof(DrIrrVolCascade, unknown5e8) == 0x5e8, "");
 static_assert(offsetof(DrIrrVolCascade, unknown890) == 0x890, "");
-static_assert(offsetof(DrIrrVolCascade, unknown8e0) == 0x8e0, "");
-static_assert(offsetof(DrIrrVolCascade, unknown8f0) == 0x8f0, "");
+static_assert(offsetof(DrIrrVolCascade, m_irrVolEyeOffset) == 0x8e0, "");
+static_assert(offsetof(DrIrrVolCascade, m_irrVolUVOffset) == 0x8f0, "");
 
 } // namespace irrvol
 } // namespace ml

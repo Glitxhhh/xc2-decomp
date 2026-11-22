@@ -92,7 +92,7 @@ void SoundResource::update() {
 
       if (unknownb8->isExist()) {
         unknownb8->unknownf0 = false;
-        unknownc0 = AssetData::AssignFromMemory(unknown18, unknownb8->unknownc8, unknownb8->unknownd0, unknownb8->unknown0c.c_str(), 0);
+        unknownc0 = AssetData::AssignFromMemory(unknown18, unknownb8->m_glassBreakage, unknownb8->unknownd0, unknownb8->unknown0c.c_str(), 0);
         SoundPack::SetupInfo info;
         info.unknown00 = unknownc0->unknown30.c_str();
         info.unknown84 = unknownd0.unknown00;

@@ -40,13 +40,13 @@ ml::CriticalSection &IDColiManager::getCriticalSection() {
 
 IDColiMemHandleAllocator::IDColiMemHandleAllocator() {}
 
-IDColiMemHandleAllocator::IDColiMemHandleAllocator(mtl::ALLOC_HANDLE handle) : unknown08(handle) {}
+IDColiMemHandleAllocator::IDColiMemHandleAllocator(mtl::ALLOC_HANDLE handle) : m_memHandle(handle) {}
 
-void IDColiMemHandleAllocator::setMemHandle(mtl::ALLOC_HANDLE handle) { unknown08 = handle; }
+void IDColiMemHandleAllocator::setMemHandle(mtl::ALLOC_HANDLE handle) { m_memHandle = handle; }
 
-mtl::ALLOC_HANDLE IDColiMemHandleAllocator::getMemHandle() const { return unknown08; }
+mtl::ALLOC_HANDLE IDColiMemHandleAllocator::getMemHandle() const { return m_memHandle; }
 
-void *IDColiMemHandleAllocator::allocate(size_t size, size_t alignment) { return mtl::MemManager::allocate(unknown08, size, alignment, false, "no name", 0); }
+void *IDColiMemHandleAllocator::allocate(size_t size, size_t alignment) { return mtl::MemManager::allocate(m_memHandle, size, alignment, false, "no name", 0); }
 
 void IDColiMemHandleAllocator::deallocate(void *pointer) {
   if (pointer != nullptr) {
@@ -61,7 +61,7 @@ IDColiManager::IDColiManager(ml::Scn *scn, mtl::ALLOC_HANDLE handle, u32 size) {
   memset(unknown08, 0, sizeof(unknown08) + sizeof(unknown48) + sizeof(_c8));
   s_nDebIdx = 0;
   s_nStkIdx = 1;
-  unknownf0 = 0;
+  m_subNum = 0;
   unknownd8[0] = nullptr;
   unknownd8[1] = nullptr;
   unknownd8[0] = new (unknownf4) IDColiTreeTop();

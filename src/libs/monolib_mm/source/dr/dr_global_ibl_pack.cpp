@@ -21,7 +21,7 @@ bool DrGlobalIBLPack::checkFileType(const void *data) {
   return false;
 }
 
-DrGlobalIBLPack::DrGlobalIBLPack(const void *data, int index) : unknown08(nullptr), unknown10(nullptr), unknown18(index), unknown20(data), unknown50(0), unknown54(0), unknown58(1) {}
+DrGlobalIBLPack::DrGlobalIBLPack(const void *data, int index) : unknown08(nullptr), unknown10(nullptr), unknown18(index), unknown20(data), unknown50(0), unknown54(0), m_fromCaptureTool(1) {}
 
 DrGlobalIBLPack::~DrGlobalIBLPack() {
   for (u32 i = 0; i < unknown28.size(); i++) {

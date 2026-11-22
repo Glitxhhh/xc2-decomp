@@ -83,11 +83,11 @@ public:
   bool unknowna0;                          // Inferred role: play title bgm; original member name unknown.
   gf::SAVESLOT unknowna4;                  // Inferred role: slot to load for debug; original member name unknown.
   mm::mtl::FixStr<128> unknowna8;          // Inferred role: file to load for debug; original member name unknown.
-  gf::SDataSave *unknown130;               // Inferred role: save buffer; original member name unknown.
-  gf::SDataOption *unknown138;             // Inferred role: option buffer; original member name unknown.
+  gf::SDataSave *m_saveBuffer;             // Inferred role: save buffer; named after the game accessor tl::TitleMain::getSaveBuffer.
+  gf::SDataOption *m_optionBuffer;         // Inferred role: option buffer; named after the game accessor tl::TitleMain::getOptionBuffer.
   mm::mtl::FixedVector<u16, 8> unknown140; // Inferred role: events to play in the event theater; original member name unknown.
   TitleMenu unknown158;                    // Inferred role: title menu; original member name unknown.
-  u32 unknown168;                          // Inferred role: event of the title; original member name unknown.
+  u32 m_playTitleEvent;                    // Inferred role: event of the title; named after the game accessor tl::TitleMain::getPlayTitleEvent.
   gf::GF_SE_CATEGORY_HANDLE *unknown170;   // Inferred role: mask volume category; original member name unknown.
   bool unknown178;                         // Inferred role: game clear flag; original member name unknown.
 };
@@ -100,11 +100,11 @@ static_assert(offsetof(TitleMain, unknown98) == 0x98, "");
 static_assert(offsetof(TitleMain, unknowna0) == 0xa0, "");
 static_assert(offsetof(TitleMain, unknowna4) == 0xa4, "");
 static_assert(offsetof(TitleMain, unknowna8) == 0xa8, "");
-static_assert(offsetof(TitleMain, unknown130) == 0x130, "");
-static_assert(offsetof(TitleMain, unknown138) == 0x138, "");
+static_assert(offsetof(TitleMain, m_saveBuffer) == 0x130, "");
+static_assert(offsetof(TitleMain, m_optionBuffer) == 0x138, "");
 static_assert(offsetof(TitleMain, unknown140) == 0x140, "");
 static_assert(offsetof(TitleMain, unknown158) == 0x158, "");
-static_assert(offsetof(TitleMain, unknown168) == 0x168, "");
+static_assert(offsetof(TitleMain, m_playTitleEvent) == 0x168, "");
 static_assert(offsetof(TitleMain, unknown170) == 0x170, "");
 static_assert(offsetof(TitleMain, unknown178) == 0x178, "");
 static_assert(sizeof(TitleMain) == 0x180, "");

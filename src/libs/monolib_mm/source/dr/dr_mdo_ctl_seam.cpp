@@ -251,7 +251,7 @@ bool DrMdoCtlSeam::calcBegin() {
     if (!unknowncd0.isRead()) {
       unknowncd0.release();
       if (unknownc16 > 3) {
-        unknown20 |= unknown038_3 | unknown038_3 << 1;
+        m_disp |= unknown038_3 | unknown038_3 << 1;
       }
     }
     unknownc7c |= 0x80000;
@@ -274,7 +274,7 @@ bool DrMdoCtlSeam::calcBegin() {
     arg.unknown00 = &viewWork->unknown400;
     arg.unknown10 = isDisp;
     arg.unknown14 = unknown1a;
-    arg.unknown18 = unknowndc;
+    arg.unknown18 = m_frameSpd;
     arg.unknown08 = unknownd30.unknown40 == 0 ? nullptr : unknownd30.unknown10;
     unknown638->update(arg);
   }
@@ -590,7 +590,7 @@ bool DrMdoCtlSeam::calcNormSeamMapMaterial(u32 *bits) {
   u32 size = (unknown30->unknown30 / 32) * 4 + 4;
   memset(bits, 0, size);
   bool isChanged = false;
-  DrResMdoMat *mat = unknown30->unknownc0;
+  DrResMdoMat *mat = unknown30->m_materialRes;
   for (int i = 0; i < unknown30->unknown30; i++, mat++) {
     if (mat->unknown08.a <= 0.0f) {
       if ((mat->unknown1c & 1) != 0) {
@@ -612,7 +612,7 @@ void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
   unknownf4 = renderType;
   unknownf2 = unknown098[renderType];
   beginSetup();
-  const DrResMdoMat *mats = unknown30->unknownc0;
+  const DrResMdoMat *mats = unknown30->m_materialRes;
   const MdsMdlTopHeader *entry = unknown30->unknown168;
   for (int i = 0; i < unknown30->unknown170; i++, entry++) {
     const MdsMdlInfoHeader *header = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + entry->unknown00);

@@ -134,7 +134,7 @@ void AIAgentField::update(const fw::UpdateInfo &info, GfComPropertyPc &property)
   u32 leaderId = formation->unknown1a0[property.unknown38].unknown00;
   bool isLeaderMoving = false;
   if (leaderId != PLAYER_ID_UNKNOWN_4294967295) {
-    GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[leaderId].unknown08);
+    GfObj *obj = GfObjUtil::getObj(formation->unknown1a0[leaderId].m_playerHandle);
     if (obj != nullptr) {
       GfComPropertyPc *leader = obj->getComponent<GfComPropertyPc>();
       if (leader != nullptr) {

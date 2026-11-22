@@ -47,7 +47,7 @@ bool GfMenuFieldSkill::start(const StartParam &param) {
 
 bool GfMenuFieldSkill::isRunning() {
   GfMenuFieldSkill *skill = get();
-  return skill != nullptr && skill->unknown08.getState()->unknown08 != 0;
+  return skill != nullptr && skill->unknown08.getState()->m_state != 0;
 }
 
 int GfMenuFieldSkill::getTotalSkillIndex(GfMenuFieldSkill *skill, u16 id) {

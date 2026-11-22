@@ -122,7 +122,7 @@ void DrMdoCtlNom::callShadowCacheUpdate(u64 flags) { unknown230 &= ~flags; }
 
 void DrMdoCtlNom::occRender() {
   if (unknown168 & 2) {
-    m_drMan->unknown78->unknown7f8->occRenderAABB(unknown1f8, unknown130, unknown140);
+    m_drMan->unknown78->unknown7f8->occRenderAABB(unknown1f8, m_center, unknown140);
   }
   if (unknown168 & 4) {
     unknown724 *pos = unknown30->unknown160_2;
@@ -133,7 +133,7 @@ void DrMdoCtlNom::occRender() {
 bool DrMdoCtlNom::cloneMdlObj(DrMdlObj *source) {
   bool isCloned = DrMdoNomClone::cloneMdlObj(static_cast<DrMdoCtlNom *>(source), this);
   if (isCloned) {
-    unknown20 &= ~(unknown038_5 | unknown038_6);
+    m_disp &= ~(unknown038_5 | unknown038_6);
   }
   return isCloned;
 }
@@ -257,7 +257,7 @@ void DrMdoCtlNom::updateRimBloomParams() {
 
 void DrMdoCtlNom::updateShdMdl() {
   if (unknown1d0 != nullptr && unknown1d0->update(unknown30->unknown88)) {
-    unknown20 &= ~(unknown038_5 | unknown038_6);
+    m_disp &= ~(unknown038_5 | unknown038_6);
   }
 }
 
@@ -445,7 +445,7 @@ void DrMdoCtlNom::callZSortNomRender() {
   }
   if ((unknownf8 & (unknown028_11 | unknown028_12 | unknown028_13)) != 0 && unknown1a == 0 && !m_drMan->unknown1d7a) {
     DrPixlMan *pixlMan = m_drMan->unknown78;
-    if ((unknownf8 & unknown028_31) == 0 || !pixlMan->unknown7f0->unknown178->clipDirShadowChk(unknown130, unknown160, true)) {
+    if ((unknownf8 & unknown028_31) == 0 || !pixlMan->unknown7f0->unknown178->clipDirShadowChk(m_center, m_length, true)) {
       pixlMan->shadowDirBegin();
       if (unknownf8 & unknown028_11) {
         pixlMan->setShadowDirRenderTarget(0);
@@ -513,7 +513,7 @@ void DrMdoCtlNom::shadowCacheOnlyRender() {
     return;
   }
   DrPixlMan *pixlMan = m_drMan->unknown78;
-  if ((unknownf8 & unknown028_31) != 0 && !pixlMan->unknown7f0->unknown178->clipDirShadowChk(unknown130, unknown160, true)) {
+  if ((unknownf8 & unknown028_31) != 0 && !pixlMan->unknown7f0->unknown178->clipDirShadowChk(m_center, m_length, true)) {
     return;
   }
   if (unknown1a != 0 || m_drMan->unknown1d7a) {
@@ -556,7 +556,7 @@ void DrMdoCtlNom::shadowRender() {
   } else {
     isShadow = shadow->unknown198->isBaseMapShadow();
   }
-  if (!isShadow || shadow->clipTypeChk(unknown130, unknown160) == 0) {
+  if (!isShadow || shadow->clipTypeChk(m_center, m_length) == 0) {
     return;
   }
   calcMdlUniformBlock();
@@ -632,7 +632,7 @@ void DrMdoCtlNom::updateAfterImage() {
     unknown220[DrMan::s_nDblMemIdx] = nullptr;
   }
   if (unknown218 != nullptr) {
-    unknown218->update(this, unknowndc * m_drMan->unknown1c8c);
+    unknown218->update(this, m_frameSpd * m_drMan->unknown1c8c);
   }
 }
 

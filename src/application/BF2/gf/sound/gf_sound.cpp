@@ -252,19 +252,19 @@ bool GfSound::calcCategoryVolume(const fw::UpdateInfo &info) {
       categoryVolume.unknown16c = false;
       for (CategoryVolume::Volume &volume : categoryVolume.unknown00) {
         if (volume.unknown10 == 0.0f) {
-          if (volume.unknown00 != volume.unknown04) {
-            volume.unknown00 = volume.unknown04;
+          if (volume.m_categoryVolume != volume.unknown04) {
+            volume.m_categoryVolume = volume.unknown04;
             categoryVolume.unknown16c = true;
           }
         } else {
           volume.unknown10 -= info.unknown04;
           if (volume.unknown10 > 0.0f) {
             f32 rate = volume.unknown10 / volume.unknown0c;
-            volume.unknown00 = volume.unknown04 * (1.0f - rate) + rate * volume.unknown08;
+            volume.m_categoryVolume = volume.unknown04 * (1.0f - rate) + rate * volume.unknown08;
           } else {
             volume.unknown0c = 0.0f;
             volume.unknown10 = 0.0f;
-            volume.unknown00 = volume.unknown04;
+            volume.m_categoryVolume = volume.unknown04;
           }
           categoryVolume.unknown16c = true;
         }
@@ -284,7 +284,7 @@ bool GfSound::calcCategoryVolume(const fw::UpdateInfo &info) {
   for (u32 i = 0; i < CATEGORY_UNKNOWN_32; i++) {
     if (unknown20[i].unknown001()) {
       for (u32 category = 1; category < CATEGORY_UNKNOWN_18; category++) {
-        volumes[category] *= unknown20[i].unknown00[category].unknown00;
+        volumes[category] *= unknown20[i].unknown00[category].m_categoryVolume;
       }
     }
   }
@@ -324,7 +324,7 @@ void GfSound::setCategoryVolume(GF_SE_CATEGORY_HANDLE *handle, fw::SoundCategory
 
 GfSound::CategoryVolume *GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handle) { return &unknown20[getCategoryIndex(handle)]; }
 
-f32 GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handle, fw::SoundCategory category) const { return unknown20[getCategoryIndex(handle)].unknown00[static_cast<u32>(category)].unknown00; }
+f32 GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handle, fw::SoundCategory category) const { return unknown20[getCategoryIndex(handle)].unknown00[static_cast<u32>(category)].m_categoryVolume; }
 
 const GfSound::CategoryVolume *GfSound::getCategoryVolume(GF_SE_CATEGORY_HANDLE *handle) const { return &unknown20[getCategoryIndex(handle)]; }
 

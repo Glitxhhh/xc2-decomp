@@ -140,7 +140,7 @@ void DrPixlPostObjBloom::bloomLensFlare() {
 void DrPixlPostObjBloom::calculateGaussBlur() {
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
   calculateGaussBlurImplPS();
-  if (postParm->unknown3e) {
+  if (postParm->m_lensFlare) {
     calculateFlareBuff();
     calculateLensFlare();
     bloomLensFlare();
@@ -207,12 +207,12 @@ void DrPixlPostObjBloom::calculateDownScaleImpl(DownScaleType type) {
     work[3] = 0.0f;
   }
   uniform.setF32SetVec4(scaleOffset, work);
-  work[0] = postParm->unknown40;
+  work[0] = postParm->m_borderBlmSub;
   work[1] = postParm->m_borderBlmMul * (1.0f / 3.0f);
   work[2] = postParm->unknownc0[0] * 0.25f;
   work[3] = unknown08->unknown7f0->unknown188;
-  work[4] = postParm->unknown48;
-  work[5] = postParm->unknown4c * (1.0f / 3.0f);
+  work[4] = postParm->m_borderBlmSecSub;
+  work[5] = postParm->m_borderBlmSecMul * (1.0f / 3.0f);
   work[6] = unknown08->unknown7f0->unknown18c;
   work[7] = 1.0f / unknown08->unknown7f0->unknown188;
   uniform.setF32SetF32Array(ratioOffset, work, 8);
@@ -272,8 +272,8 @@ void DrPixlPostObjBloom::calculateFlareBuff() {
   work[3] = 1.0f / (height + height);
   uniform.setF32SetVec4(scaleOffset, work);
   DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
-  work[0] = postParm->unknownc8;
-  work[1] = postParm->unknowncc * (1.0f / 3.0f);
+  work[0] = postParm->m_blmLensSub;
+  work[1] = postParm->m_blmLensMul * (1.0f / 3.0f);
   uniform.setF32SetVec4(ratioOffset, work);
   apCache->beginTexSampling(2, 1);
   apCache->setTexture(*unknown38[2]->unknown70, location);
@@ -307,20 +307,20 @@ void DrPixlPostObjBloom::calculateLensFlare() {
   work[2] = 1.0f / (width + width);
   work[3] = 1.0f / (height + height);
   uniform.setF32SetVec4(scaleOffset, work);
-  work[0] = postParm->unknownd8;
-  work[1] = postParm->unknowndc;
-  work[2] = postParm->unknowne0 * 0.1f;
-  work[3] = postParm->unknowne4;
+  work[0] = postParm->m_blmLensWeight;
+  work[1] = postParm->m_blmLensDecay;
+  work[2] = postParm->m_blmLensStrength * 0.1f;
+  work[3] = postParm->m_blmLensParmMax;
   uniform.setF32SetVec4(ratioOffset, work);
   grlib::CGLibUniformEtcUtility loopUniform(shader);
   loopUniform.setUseUniformBlock("U_LOOP");
   u32 uvOffset = loopUniform.unknown001("spuv");
-  f32 angle = postParm->unknownd4 * mm::DEG_TO_RAD;
+  f32 angle = postParm->m_blmLensRot * mm::DEG_TO_RAD;
   f32 stepU = 1.0f / width * scaleU;
   f32 stepV = 1.0f / height * scaleV;
   work[0] = stepU * cosf(angle);
   work[1] = stepV * sinf(angle);
-  work[2] = postParm->unknowne8 + 0.8f;
+  work[2] = postParm->m_blmLensUVDecay + 0.8f;
   work[3] = 0.0f;
   loopUniform.setF32SetVec4(uvOffset, work);
   uniform.updateData();
@@ -328,7 +328,7 @@ void DrPixlPostObjBloom::calculateLensFlare() {
   loopUniform.updateData();
   loopUniform.setUniformBlock();
   shdList->renderQuads();
-  int count = postParm->unknownd0;
+  int count = postParm->m_blmLensMax;
   if (count != 0) {
     DrAPGxType::setupBlend(2);
     for (int i = 1; i < count; i++) {

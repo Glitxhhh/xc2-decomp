@@ -32,7 +32,7 @@ void DrMdoCtlSeamLight::initLightParts(DrResMdoSeamWrkLight *light) {
   light->setupWork(data);
   DrEnvironmentObj *environment = light->unknown20; // The game loads the object once for the two accesses (ldr at 0x7100824464).
   environment->unknown8c |= 4;
-  environment->unknown90 = unknownc88;
+  environment->m_group = unknownc88;
 }
 
 DrResMdoSeamWrkLight *DrMdoCtlSeamLight::createFreeSeamLight() { return unknown3a8.unknown001(); }
@@ -67,7 +67,7 @@ void DrMdoCtlSeamLight::readLightCheck() {
       light = next;
     } else {
       if (light->unknown20 != nullptr) {
-        light->unknown20->unknown90 = unknownc88;
+        light->unknown20->m_group = unknownc88;
       }
       light = light->unknown08;
     }

@@ -761,7 +761,7 @@ bool BgmEvent::isInvalidRequestBgmFile() const {
 void BgmEvent::updatePlaying(const fw::UpdateInfo &info) {
   GfEvtBgm *event = GfEvtBgm::get();
   if (event->unknown0c.unknown64) {
-    unknown618 = event->unknown0c.unknown44;
+    unknown618 = event->unknown0c.m_playBgmVolume;
   }
   if (isInvalidRequestBgmFile()) {
     stopBGM(unknown638.unknown62 ? unknown638.unknown4c : 0.5f);
@@ -801,7 +801,7 @@ void BgmEvent::beginPlay() {
     fileName = event->unknown0c.unknown00;
   }
   if (event->unknown0c.unknown64) {
-    unknown618 = event->unknown0c.unknown44;
+    unknown618 = event->unknown0c.m_playBgmVolume;
   }
   unknown61c = event->unknown0c.unknown50;
   if (!fileName.empty()) {
