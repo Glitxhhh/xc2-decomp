@@ -35,7 +35,29 @@ public:
     // the constructor is always inlined and the original parameter names are unknown.
     PresetKey(u16 id0, u16 id1, u16 id2, u16 id3, u16 id4, u16 id5) : ids{id0, id1, id2, id3, id4, id5} {}
 
-    bool isContain(const PresetKey &key) const;
+    // Defined in the class: the game emits it right after Impl::queryPreset (0x710028695c, between 0x7100286808 and Impl::getCharaInfo 0x7100286a40) and that caller reloads the
+    // preset buffer after the call (0x7100286834 area), which a separately defined function (inferred read only) would not need. Subsequence test: every non-zero id of this key must
+    // appear in `key`, in order (the game rolls the six outer iterations out). The id is read before the index is incremented (ldrh 0x7100286970, add 0x7100286974): with
+    // `key.ids[index++]` the add comes first in the IR, the index is not coalesced in place and the last loop gets a pointer induction variable (71 instructions against the game's 57).
+    bool isContain(const PresetKey &key) const {
+      u32 index = 0;
+      for (u32 i = 0; i < 6; i++) {
+        if (ids[i] == 0) {
+          continue;
+        }
+        for (;;) {
+          if (index >= 6) {
+            return false;
+          }
+          u16 id = key.ids[index];
+          index++;
+          if (id == ids[i]) {
+            break;
+          }
+        }
+      }
+      return true;
+    }
 
     u16 ids[6];
   };

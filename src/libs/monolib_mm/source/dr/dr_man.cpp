@@ -1206,6 +1206,39 @@ void DrMan::bkgHomeMenu(bool isOpen) {
   }
 }
 
+void DrMan::begin() {
+  beginSetup();
+  debugUpdate();
+  m_drCalcTexStreamMan->apiUpdate();
+  for (int i = 0; i < 4; i++) {
+    selectView(i);
+    m_drMdlMan->setupCate(i);
+    m_drMdlMan->addDelList(i);
+  }
+  for (int i = 0; i < 4; i++) {
+    selectView(i);
+    m_drMdlMan->setupCate(i);
+    m_drMdlMan->updateList(i);
+  }
+  m_drShdMan->beginUpdate();
+  m_drMdlMan->setupEnd();
+  m_drPixlTileParm->update();
+  for (int i = 0; i < 4; i++) {
+    if (unknown140[i] != nullptr) {
+      unknown140[i]->update();
+    }
+  }
+  if (unknown1e00 != nullptr) {
+    unknown1e00->begin(unknown1c8c);
+    // The game reloads unknown1e00 after the call (0x71007c9bdc) before it loads m_gblIdx (0x71007c9be0); written in one statement the member is loaded after it.
+    cloud::CloudMan *cloudMan = unknown1e00;
+    cloudMan->unknown28 = m_gblIdx;
+  }
+  for (int i = 0; i < unknown658; i++) {
+    unknown5d8[i]->begin();
+  }
+}
+
 void DrMan::debugUpdate() {
   int type = 0;
   while (!unknown1dac[type]) {

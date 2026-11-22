@@ -71,6 +71,7 @@ public:
   void deleteAll();
   void deleteAll(int cate);
   void addDelList(int cate);
+  void updateList(int cate);
   void DepthCheckRender(bool isDblDepth);
   void setupCate(int cate);
   void setupEnd();

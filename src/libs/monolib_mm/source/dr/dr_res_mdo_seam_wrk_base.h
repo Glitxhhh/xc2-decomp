@@ -12,6 +12,10 @@ namespace grlib {
 class CGLibTriUniformArray;
 } // namespace grlib
 
+namespace mm {
+struct Vec3;
+} // namespace mm
+
 namespace ml {
 class DrCalcClipMan;
 class DrCalcViewWork;
@@ -21,7 +25,6 @@ class DrPixlShadowObj;
 class DrResMdoAlpTbl;
 class DrResMdoSeamWrkBaseVertex;
 struct MdoWrkMatRes;
-struct MdsSeamBaMpTreeData;
 struct MdsSeamOfsTexTblData;
 class DrResMdoSeamParmRead;
 struct unknown700;
@@ -96,6 +99,36 @@ struct unknown783 {
 static_assert(offsetof(unknown783, unknown04) == 0x04, "");
 static_assert(offsetof(unknown783, unknown08) == 0x08, "");
 
+// Inferred role: node of the tree data at the offset unknown0c of unknown780 (stride 0x18): a sphere with the u16 indices of its model entries (in unknown40) and of its child nodes (in unknown48),
+// measured by seachReadBaseMapMdl (1.0.0: 0x710087d440); the game symbols name the type MdsSeamBaMpTreeData, the members are unknown.
+struct MdsSeamBaMpTreeData {
+  f32 unknown00[3]; // Inferred role: position of the sphere; original member name unknown.
+  f32 unknown0c;    // Inferred role: radius of the sphere; original member name unknown.
+  u16 unknown10;    // Inferred role: index of the first child node index in unknown48; original member name unknown.
+  u16 unknown12;    // Inferred role: child node count; original member name unknown.
+  u16 unknown14;    // Inferred role: index of the first model entry index in unknown40; original member name unknown.
+  u16 unknown16;    // Inferred role: model entry count; original member name unknown.
+};
+
+// Inferred role: model entry of the data at the offset unknown04 of unknown780 (stride 0x28), read by seachReadBaseMapMdl (1.0.0: 0x710087d440); original type name unknown.
+struct unknown787 {
+  u32 unknown00; // Inferred role: vertex id; original member name unknown.
+  u32 unknown04; // Inferred role: second vertex id, used when the work has bit 9 of unknowna0 set; original member name unknown.
+  u8 _08[0x0c - 0x08];
+  f32 unknown0c[3]; // Inferred role: position of the sphere of the entry; original member name unknown.
+  u8 _18[0x24 - 0x18];
+  f32 unknown24; // Inferred role: radius of the sphere of the entry; original member name unknown.
+};
+
+static_assert(offsetof(MdsSeamBaMpTreeData, unknown0c) == 0x0c, "");
+static_assert(offsetof(MdsSeamBaMpTreeData, unknown10) == 0x10, "");
+static_assert(offsetof(MdsSeamBaMpTreeData, unknown16) == 0x16, "");
+static_assert(sizeof(MdsSeamBaMpTreeData) == 0x18, "");
+static_assert(offsetof(unknown787, unknown04) == 0x04, "");
+static_assert(offsetof(unknown787, unknown0c) == 0x0c, "");
+static_assert(offsetof(unknown787, unknown24) == 0x24, "");
+static_assert(sizeof(unknown787) == 0x28, "");
+
 static_assert(offsetof(MdsSeamBaseMapHead, unknown0c) == 0x0c, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown10) == 0x10, "");
 static_assert(offsetof(MdsSeamBaseMapHead, unknown14) == 0x14, "");
@@ -166,6 +199,8 @@ public:
   void selectVertex(int index);
   void releaseCache(DrMdoCtlSeamBaseMap *ctl);
   void calcCacheInfo();
+  void seachReadBaseMapMdl(const mm::Vec3 &position, const MdsSeamBaMpTreeData *tree);
+  void calcCheckClipInfo(DrCalcClipMan *clip);
   void calcStaemBaseMapMdl(u16 *textureFlags, DrResMdoSeamTexture *textures, DrResMdoSeamParmRead *parmRead, const MdsSeamOfsTexTblData *table, bool isHeight);
   bool seachShadowBaseMapRender(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl);
   bool seachShadowBaseMapRenderChild(DrPixlShadowCacheObj &cache, DrMdoCtlSeamBaseMap *ctl, const MdsSeamBaMpTreeData *tree);
@@ -183,17 +218,18 @@ public:
   const unknown700 *unknown18;                            // Inferred role: base map entry; original member name unknown.
   const MdsSeamBaseMapHead *m_mdsSeamBaseMapHead;         // Inferred role: base map header; original member name unknown.
   const unknown780 *unknown28;                            // Inferred role: tree resource; original member name unknown.
-  const u8 *unknown30;                                    // Inferred role: tree resource data; original member name unknown.
+  const unknown787 *unknown30;                            // Inferred role: model entries of the tree data; original member name unknown.
   const MdsSeamBaMpTreeData *m_mdsSeamBaMpTreeData;       // Inferred role: tree data; original member name unknown.
-  const u8 *unknown40;                                    // Inferred role: tree resource data; original member name unknown.
-  const u8 *unknown48;                                    // Inferred role: tree resource data; original member name unknown.
+  const u16 *unknown40;                                   // Inferred role: model entry indices of the tree nodes; original member name unknown.
+  const u16 *unknown48;                                   // Inferred role: child node indices of the tree nodes; original member name unknown.
   const unknown782 *unknown50;                            // Inferred role: resource at MdsSeamBaseMapHead::unknown38; original member name unknown.
-  const u8 *unknown58;                                    // Inferred role: data of unknown50; original member name unknown.
+  const u16 *unknown58;                                   // Inferred role: data of unknown50, the bit index of each vertex id in unknowne0; original member name unknown.
   const unknown783 *unknown60;                            // Inferred role: list at the offset unknown24 of the model resource, null when there is none; original member name unknown.
   MdoWrkMatRes *m_mdoWrkMatRes;                           // Inferred role: material work; original member name unknown.
   void *unknown70;                                        // Inferred role: allocated buffer; original member name unknown.
   DrResMdoSeamWrkBaseVertex *m_drResMdoSeamWrkBaseVertex; // Inferred role: vertices; original member name unknown.
-  u8 _80[0x84 - 0x80];
+  f32 unknown80; // Inferred role: radius added to the radius of the tree nodes and entries in seachReadBaseMapMdl, set to 3000.0f by updateRenderList (1.0.0: 0x710087ccac); original member name
+                 // unknown.
   u32 unknown84; // Inferred role: base map index; original member name unknown.
   u8 _88[0x8c - 0x88];
   u32 unknown8c; // Inferred role: render count; original member name unknown.
@@ -206,23 +242,22 @@ public:
   s32 unknownb0;    // Inferred role: allocated buffer count; original member name unknown.
   s32 unknownb4;    // Inferred role: memory size; original member name unknown.
   u32 *unknownb8;   // Inferred role: material bit table, the bits i and i + the material count; original member name unknown.
-  u8 _c0[0xc8 - 0xc0];
-  u32 *unknownc8;  // Inferred role: texture bit table of the materials in use, the bits i and i + the texture entry count; original member name unknown.
-  u32 *unknownd0;  // Inferred role: texture bit table, bit i is set when the texture entry i must be kept; original member name unknown.
-  u32 *unknownd8;  // Inferred role: texture bit table of the loaded texture entries, the bits i and i + the texture entry count; original member name unknown.
-  u32 *unknowne0;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  u32 *unknowne8;  // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  u32 **unknownf0; // Inferred role: shadow bit tables; original member name unknown.
-  u32 unknownf8;   // Inferred role: shadow bit table size; original member name unknown.
+  u32 *unknownc0;   // Inferred role: material update bit table passed to the material callbacks, animation and uniform block updates by DrMdoCtlSeamBaseMap::updateBaseMapRenderList; original member
+                    // name unknown.
+  u32 *unknownc8;   // Inferred role: texture bit table of the materials in use, the bits i and i + the texture entry count; original member name unknown.
+  u32 *unknownd0;   // Inferred role: texture bit table, bit i is set when the texture entry i must be kept; original member name unknown.
+  u32 *unknownd8;   // Inferred role: texture bit table of the loaded texture entries, the bits i and i + the texture entry count; original member name unknown.
+  u32 *unknowne0;   // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u32 *unknowne8;   // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  u32 **unknownf0;  // Inferred role: shadow bit tables; original member name unknown.
+  u32 unknownf8;    // Inferred role: shadow bit table size; original member name unknown.
   u8 _fc[0x100 - 0xfc];
   u32 *unknown100; // Inferred role: shadow bit table of the shadow cache being searched; original member name unknown.
-  u8 _108[0x110 - 0x108];
-  unknown504 **unknown110; // Inferred role: first render entries per material; original member name unknown.
-  unknown504 **unknown118; // Inferred role: first alpha render entries per material; original member name unknown.
-  unknown504 **unknown120; // Inferred role: last render entry per material and kind; original member name unknown.
-  unknown504 **unknown128; // Inferred role: last alpha render entry per material and kind; original member name unknown.
-  s32 *unknown130;         // Inferred role: render entry num per kind; original member name unknown.
-  s32 *unknown138;         // Inferred role: alpha render entry num per kind; original member name unknown.
+  u32 *unknown108; // Inferred role: bit table of the entries of the list unknown60, bit 0 is set when the list exists and bit i + 1 when entry i is not fully clipped (calcCheckClipInfo, 1.0.0:
+                   // 0x710087d720); original member name unknown.
+  unknown504 **unknown110[2]; // Inferred role: first render entries per material and kind (index 1: alpha); original member name unknown.
+  unknown504 **unknown120[2]; // Inferred role: last render entry per material and kind (index 1: alpha); original member name unknown.
+  s32 *unknown130[2];         // Inferred role: render entry num per kind (index 1: alpha); original member name unknown.
   u8 _140[0x150 - 0x140];
   unknown504 *unknown150;                   // Inferred role: render entries; original member name unknown.
   DrResMdoSeamMemObj *m_drResMdoSeamMemObj; // Inferred role: memory object; original member name unknown.
@@ -248,18 +283,21 @@ static_assert(offsetof(DrResMdoSeamWrkBase, unknown58) == 0x58, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown60) == 0x60, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, m_mdoWrkMatRes) == 0x68, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, m_drResMdoSeamWrkBaseVertex) == 0x78, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, unknown80) == 0x80, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown84) == 0x84, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown8c) == 0x8c, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown98) == 0x98, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknowna8) == 0xa8, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknownb4) == 0xb4, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, unknownc0) == 0xc0, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown110) == 0x110, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown130) == 0x130, "");
-static_assert(offsetof(DrResMdoSeamWrkBase, unknown138) == 0x138, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, unknown120) == 0x120, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown150) == 0x150, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, m_drResMdoSeamMemObj) == 0x158, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknownf0) == 0xf0, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown100) == 0x100, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, unknown108) == 0x108, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown170) == 0x170, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown178) == 0x178, "");
 static_assert(sizeof(DrResMdoSeamWrkBase) == 0x180, "");

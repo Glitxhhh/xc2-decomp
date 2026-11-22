@@ -10,9 +10,6 @@
 #include "mtl/mem_manager.h"
 
 namespace ml {
-struct MdsMpfAutoPosData;
-struct MdsMpfAutoPosTree;
-struct MdsMpfAutoTree;
 
 f32 DrResMdoSeamWrkMpf::SEAM_MPFMAP_READ_CHECK = 60.0f;
 
@@ -192,7 +189,7 @@ void DrResMdoSeamWrkMpf::setupMpfPoliWork(int index) {
   }
   buff->unknown40 = reinterpret_cast<const u32 *>(reinterpret_cast<const u8 *>(data) + data->unknown18);
   buff->unknown48 = reinterpret_cast<const u32 *>(reinterpret_cast<const u8 *>(data) + data->unknown1c);
-  buff->unknown50 = reinterpret_cast<const f32 *>(reinterpret_cast<const u8 *>(data) + data->unknown20);
+  buff->unknown50 = reinterpret_cast<const unknown515 *>(reinterpret_cast<const u8 *>(data) + data->unknown20);
   if (data->unknown34 != 0) {
     buff->m_mdsMpfAutoPosData = reinterpret_cast<const MdsMpfAutoPosData *>(reinterpret_cast<const u8 *>(data) + data->unknown34);
     buff->m_mdsMpfAutoPosTree = reinterpret_cast<const MdsMpfAutoPosTree *>(reinterpret_cast<const u8 *>(data) + data->unknown38);

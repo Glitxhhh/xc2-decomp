@@ -14,6 +14,35 @@ void IDColiGrandMesh::calNomParm(mm::Vec3 &normal, const IDCmfNormalData *data) 
   normal.z = data->unknown04 * 6.1035156e-05f;
 }
 
+bool IDColiGrandMesh::meshAaBb(u32 index) {
+  const IDCmfPoliData *poli = &m_wrkIDCmfWork->m_iDCmfPoliData[index];
+  // The table pointer is read before the material index (0x71008e2544 before 0x71008e2548); without the local the index comes first.
+  const unknown097 *materials = m_wrkIDCmfWork->unknown40;
+  if (materials[poli->unknown0a].unknown04 & m_iDColiResult->unknowne8) {
+    return false;
+  }
+  const mm::Vec3 *vertices = m_wrkIDCmfWork->unknown18[poli->unknown05];
+  // The count is read once (ldrb w23, 0x71008e2584) and bounds the loop; with `poli->unknown04` in the condition the call reloads it.
+  u8 count = poli->unknown04;
+  const u16 *indices = reinterpret_cast<const u16 *>(m_wrkIDCmfWork->unknown00 + poli->unknown00) + count;
+  const mm::Vec3 &center = vertices[indices[0]];
+  bool isHit = false;
+  for (int i = 0; i < count; i++) {
+    if (!IDColiUtilMath::isTriangleBoxHitCheck(m_iDColiInput->unknown00, m_iDColiInput->unknown10, center, vertices[indices[1 + i]], vertices[indices[2 + i]])) {
+      continue;
+    }
+    // `unknown30 == nullptr` compares the pointer and the adjustment separately (cset, orr); the game tests `(adj & 1) | ptr` once (0x71008e2770).
+    if (!unknown30) {
+      return m_iDColiResult->unknown001();
+    }
+    stockAaBbParm(center);
+    isHit = true;
+    stockAaBbParm(vertices[indices[1 + i]]);
+    stockAaBbParm(vertices[indices[2 + i]]);
+  }
+  return isHit;
+}
+
 void IDColiGrandMesh::stockAaBbParm(const mm::Vec3 &point) {
   mm::Vec3 &max = m_iDColiResult->unknown50.unknown00;
   max.x = max.x > point.x ? max.x : point.x;

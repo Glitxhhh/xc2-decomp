@@ -200,6 +200,21 @@ public:
   // Evidence: the same bit test repeats in DrMan::beginSetup, DrMdoMat::checkCallBackParam and DrShdLgtGlobalIBL::update.
   bool unknown059(int view) const { return (unknown440[view].unknown38 & 1) != 0; }
 
+  // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+  // Selects a view (screen info, view index and the per view calc, light, fog, environment, IBL and global IBL managers). Its only user is DrMan::begin (1.0.0: 0x71007c9a08, two calls: the
+  // loops at 0x71007c9a48 and 0x71007c9af0). Forms tried without the helper: the eight assignments written in each loop give the game's 138 instructions, but the induction variable updates of the
+  // latch come out in another order (the +8 step of the manager arrays after the +16 and +13 steps of DrMdlMan::setupCate instead of before them; first difference at 0x71007c9ac8).
+  void selectView(int view) {
+    unknown5b8 = &unknown440[view];
+    unknown1c98 = view;
+    m_drCalcMan = unknowna0[view];
+    unknown588 = unknownc0[view];
+    m_drFogMan = unknowne0[view];
+    m_drEnvironmentMan = unknown100[view];
+    m_drIBLMan = unknown140[view];
+    m_drGlobalIBLMan = unknown160[view];
+  }
+
   static DrMan *s_pTop;
   static s32 s_nDblStockIdx;
   static s32 s_nDblIdx;

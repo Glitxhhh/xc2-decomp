@@ -61,8 +61,10 @@ public:
   struct unknown002 {
     u32 unknown00; // Inferred role: offset of the name table; original member name unknown.
     s32 unknown04; // Inferred role: param count; original member name unknown.
-    u8 _08[0x10 - 0x08];
+    u32 unknown08; // Inferred role: offset of the callback entries (MdsEtcParamsCallBack); original member name unknown.
+    s32 unknown0c; // Inferred role: callback entry count; original member name unknown.
     u32 unknown10; // Inferred role: offset of the initial values; original member name unknown.
+    u32 unknown14; // Inferred role: flags, bit 0 is set when each entry names the param it reads (MdsEtcParamsCallBack::unknown02); original member name unknown.
   };
 
   struct wrkCallbackArg {
@@ -79,6 +81,9 @@ public:
   void mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg);
   void mdonode_etcpam_volfadeanm(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg);
   static int calcWorkSize(const u8 *data);
+
+  // Name from the game symbol _ZN2ml14DrResEtcPamObj17s_pMdoNodeEtcParmE (0x71011b53d0): the two callbacks, indexed by MdsEtcParamsCallBack::unknown00.
+  static void (DrResEtcPamObj::*s_pMdoNodeEtcParm[2])(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg);
   static void release(DrResEtcPamObj *&obj);
 
   const unknown002 *unknown00;      // Inferred role: params table header, base of the names; original member name unknown.
@@ -91,6 +96,9 @@ public:
 static_assert(offsetof(DrResEtcPamObj::unknown001, unknown84) == 0x84, "");
 static_assert(offsetof(DrResEtcPamObj::unknown002, unknown10) == 0x10, "");
 static_assert(offsetof(DrResEtcPamObj::unknown002, unknown04) == 0x04, "");
+static_assert(offsetof(DrResEtcPamObj::unknown002, unknown08) == 0x08, "");
+static_assert(offsetof(DrResEtcPamObj::unknown002, unknown0c) == 0x0c, "");
+static_assert(offsetof(DrResEtcPamObj::unknown002, unknown14) == 0x14, "");
 static_assert(offsetof(DrResEtcPamObj, m_drResEtcParams) == 0x10, "");
 static_assert(offsetof(DrResEtcPamObj, unknown18) == 0x18, "");
 static_assert(offsetof(DrResEtcPamObj, unknown1c) == 0x1c, "");

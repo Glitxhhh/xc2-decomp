@@ -1,10 +1,13 @@
 #include "dr/dr_mdo_ctl_mpf.h"
 
 #include "dr/dr_ap_cache.h"
+#include "dr/dr_calc_man.h"
+#include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_base.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_mpf_auto.h"
+#include "dr/dr_mdo_ctl_mpf_inst.h"
 #include "dr/dr_mdo_ctl_mpf_work.h"
 #include "dr/dr_mdo_ctl_nom.h"
 #include "dr/dr_mdo_mat.h"
@@ -12,6 +15,7 @@
 #include "dr/dr_mdo_vertex_man.h"
 #include "dr/dr_pixl_man.h"
 #include "dr/dr_pixl_tile_parm.h"
+#include "dr/dr_res_mdo_seam_wrk_pos_mpf.h"
 #include "dr/dr_res_mdo_sort.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/mem_manager.h"
@@ -97,6 +101,35 @@ void DrMdoCtlMpf::updateMpf() {
   }
   calcMpfRenderList();
   updateMpfMatUniformBlock();
+}
+
+// The loop repeats DrMdoCtlMpfInst::calcInstMpf (0x71007f9fc4), which the game inlines here (0x71007f9bf8 to 0x71007f9c44). The call form
+// `m_drMdoCtlMpfInst->calcInstMpf(view, m_drMdoCtlMpfWork, m_drResMdoSeamWrkPosMpf)` has the same 67 instructions, but LSR biases the loop counter by 28 there (`orr w25, wzr, #0x1c`,
+// `ldrh w8, [x1], #-28`) where the game keeps it at zero (`mov x24, xzr`, `ldrh w8, [x1, #28]`, 0x71007f9c28): the use-list order of the counter of the loop cloned by the inliner differs from the one
+// of the loop written here (measured: the same loop IR through the backend with the order of the counter's uses changed gives either form). In calcInstMpf, `++i`, `[i++]` and `trees[i]` written twice
+// instead of the `tree` local did not change the inlined loop (`[i++]` also broke the standalone function).
+void DrMdoCtlMpf::calcMpfRenderList() {
+  unknown1a0 = 0;
+  m_drMdoCtlMpfWork->beginList();
+  DrCalcViewWork *view = m_drMan->m_drCalcMan->m_drCalcViewWork;
+  DrMdoMpfMan *mpfMan = m_drMan->m_drMdlMan->m_drMdoMpfMan;
+  DrMdoCtlMpfInst *inst = m_drMdoCtlMpfInst;
+  DrResMdoSeamWrkPosMpf *pos = m_drResMdoSeamWrkPosMpf;
+  if (pos->unknown18 != 0) {
+    inst->m_drMdoCtlMpfWork = m_drMdoCtlMpfWork;
+    inst->m_drResMdoSeamWrkPosMpf = pos;
+    for (int i = 0; i < pos->unknown18; i++) {
+      // The game loads the object data (0x71007f9c1c) before the load of the node's object index (0x71007f9c28).
+      const MdsMpfObjData *objects = inst->m_mdsMpfObjData;
+      const MdsMpfObjTreeData *tree = &inst->m_drResMdoSeamWrkPosMpf->m_mdsMpfObjTreeData[i];
+      inst->calcMpfObjTree(tree, view, objects[tree->unknown1c].unknown0c);
+    }
+  }
+  m_drMdoCtlMpfAuto->autoMpfCalc(view->unknown9ab, true, view, m_drMdoCtlMpfWork, mpfMan);
+  if (calcMpfMatSetup()) {
+    mpfMan->unknown3d30 |= 2;
+    m_drMan->m_drMdlMan->unknown230->unknown0c = true;
+  }
 }
 
 void DrMdoCtlMpf::callZPrepassRender() {

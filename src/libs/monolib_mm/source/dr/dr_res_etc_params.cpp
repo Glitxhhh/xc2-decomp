@@ -97,6 +97,31 @@ void DrResEtcPamObj::release(DrResEtcPamObj *&obj) {
   }
 }
 
+void (DrResEtcPamObj::*DrResEtcPamObj::s_pMdoNodeEtcParm[2])(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg) = {
+    &DrResEtcPamObj::mdonode_etcpam_etcmesh_disp,
+    &DrResEtcPamObj::mdonode_etcpam_volfadeanm,
+};
+
+// 0x710086fb5c. The entries are indexed (`entries[i]`, with `i` also the index of the param in the first loop): the game keeps a 64 bit counter in both loops (`cmp x21, x8` against the `ldrsw` count,
+// 0x710086fbf4 and 0x710086fc60) and loads the two u16 fields of an entry apart (`ldrh` at 0x710086fc1c and 0x710086fc38). A pointer walk (`entry++`, 72 instructions against 73) gives the second loop
+// an i32 counter and one `ldr w` split with `ubfx`, and hoists the entries address above the flag test.
+void DrResEtcPamObj::callback(DrResMdoMeshObj *meshObj, MdoWrkVanishEffect *vanish) {
+  if (unknown00->unknown0c != 0) {
+    wrkCallbackArg arg = {meshObj, vanish};
+    if ((unknown00->unknown14 & 1) == 0) {
+      const MdsEtcParamsCallBack *entries = reinterpret_cast<const MdsEtcParamsCallBack *>(reinterpret_cast<const u8 *>(unknown00) + unknown00->unknown08);
+      for (s32 i = 0; i < unknown00->unknown0c; i++) {
+        (this->*s_pMdoNodeEtcParm[entries[i].unknown00])(&entries[i], &m_drResEtcParams[i], arg);
+      }
+    } else {
+      const MdsEtcParamsCallBack *entries = reinterpret_cast<const MdsEtcParamsCallBack *>(reinterpret_cast<const u8 *>(unknown00) + unknown00->unknown08);
+      for (s32 i = 0; i < unknown00->unknown0c; i++) {
+        (this->*s_pMdoNodeEtcParm[entries[i].unknown00])(&entries[i], &m_drResEtcParams[entries[i].unknown02], arg);
+      }
+    }
+  }
+}
+
 void DrResEtcPamObj::mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg) {
   f32 value = 1.0f;
   if (param->getParams() <= 0.5f) {

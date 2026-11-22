@@ -316,6 +316,7 @@ public:
   DrResMdoInstAnmObj();
   ~DrResMdoInstAnmObj() { release(); }
   static int getWorkSize(const u8 *data);
+  int setup(u8 *work, const u8 *data);
   void release();
   void update();
   void setupLink(DrResMdoPos *pos) const;

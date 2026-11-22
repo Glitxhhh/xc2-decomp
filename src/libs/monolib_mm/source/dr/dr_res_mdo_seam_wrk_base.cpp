@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#include "dr/dr_calc_clip_man.h"
 #include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
@@ -111,7 +112,7 @@ void DrResMdoSeamWrkBase::beginBaseMapRenderList() {
   unknown170 = 0;
   unknown8c = 0;
   unknown90 = 0;
-  memset(unknown110, 0, unknown174);
+  memset(unknown110[0], 0, unknown174);
 }
 
 // Inlines DrResMdoSeamParmRead::setStockTexList (0x71008792cc), defined earlier in this unit (dr_res_mdo_lod_parts.cpp). The game loads the texture list slot once (ldrh at 0x710087d0c4)
@@ -171,12 +172,12 @@ void DrResMdoSeamWrkBase::setupHeader() {
   const u8 *data = reinterpret_cast<const u8 *>(m_mdsSeamBaseMapHead);
   const u8 *tree = data + m_mdsSeamBaseMapHead->unknown18;
   unknown28 = reinterpret_cast<const unknown780 *>(tree);
-  unknown30 = tree + unknown28->unknown04;
+  unknown30 = reinterpret_cast<const unknown787 *>(tree + unknown28->unknown04);
   m_mdsSeamBaMpTreeData = reinterpret_cast<const MdsSeamBaMpTreeData *>(tree + unknown28->unknown0c);
-  unknown40 = tree + unknown28->unknown14;
-  unknown48 = tree + unknown28->unknown1c;
+  unknown40 = reinterpret_cast<const u16 *>(tree + unknown28->unknown14);
+  unknown48 = reinterpret_cast<const u16 *>(tree + unknown28->unknown1c);
   // The game stores unknown48 twice (0x710087c8c4 and 0x710087c8d0: the offset is loaded again between the two stores).
-  unknown48 = tree + unknown28->unknown1c;
+  unknown48 = reinterpret_cast<const u16 *>(tree + unknown28->unknown1c);
   const unknown781 *model = reinterpret_cast<const unknown781 *>(data + m_mdsSeamBaseMapHead->unknown0c);
   // The game (1.0.0: 0x710087c8e0, also in changeMemCall 0x710087c970) keeps the branch: cbz, then add + str, else str xzr. Both arms are written to the
   // same member, and clang merges such a pair into one store of a select (csel) in InstCombine's SimplifyStoreAtEndOfBlock or in MergedLoadStoreMotion. They
@@ -189,7 +190,7 @@ void DrResMdoSeamWrkBase::setupHeader() {
     unknown60 = reinterpret_cast<const unknown783 *>(reinterpret_cast<const u8 *>(model) + model->unknown24);
   }
   unknown50 = reinterpret_cast<const unknown782 *>(data + m_mdsSeamBaseMapHead->unknown38);
-  unknown58 = reinterpret_cast<const u8 *>(unknown50) + unknown50->unknown08;
+  unknown58 = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown50) + unknown50->unknown08);
 }
 
 void DrResMdoSeamWrkBase::changeMemCall() {
@@ -304,21 +305,21 @@ void DrResMdoSeamWrkBase::stockRenderListBaseMap(int base, u32 kind, u32 index, 
   unknown504 *entry = &unknown150[unknown170];
   int slot = base + kind;
   if (isAlpha) {
-    if (unknown128[slot] == nullptr) {
-      unknown118[unknown138[kind] + m_mdoWrkMatRes->unknown30 * kind] = entry;
-      unknown138[kind]++;
+    if (unknown120[1][slot] == nullptr) {
+      unknown110[1][unknown130[1][kind] + m_mdoWrkMatRes->unknown30 * kind] = entry;
+      unknown130[1][kind]++;
     } else {
-      unknown128[slot]->unknown04 = unknown170 + 1;
+      unknown120[1][slot]->unknown04 = unknown170 + 1;
     }
-    unknown128[slot] = entry;
+    unknown120[1][slot] = entry;
   } else {
-    if (unknown120[slot] == nullptr) {
-      unknown110[unknown130[kind] + m_mdoWrkMatRes->unknown30 * kind] = entry;
-      unknown130[kind]++;
+    if (unknown120[0][slot] == nullptr) {
+      unknown110[0][unknown130[0][kind] + m_mdoWrkMatRes->unknown30 * kind] = entry;
+      unknown130[0][kind]++;
     } else {
-      unknown120[slot]->unknown04 = unknown170 + 1;
+      unknown120[0][slot]->unknown04 = unknown170 + 1;
     }
-    unknown120[slot] = entry;
+    unknown120[0][slot] = entry;
   }
   entry->unknown08 = unknown;
   entry->unknown00 = index;
@@ -355,6 +356,96 @@ void DrResMdoSeamWrkBase::calcCacheInfo() {
         unknowne8[i >> 5] |= 1 << (i & 0x1f);
       } else {
         unknowne8[i >> 5] &= ~(1 << (i & 0x1f));
+      }
+    }
+  }
+}
+
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// Its only user is seachReadBaseMapMdl (0x710087d440, two calls): the game indexes the table of the bit indices with the vertex id zero extended (`ldrh w17, [x18, x14, lsl #1]` at 0x710087d4e0, x14
+// is the loaded u32) and the top header table with the same vertex id sign extended (`smaddl x14, w14, w13, x15` at 0x710087d588). Forms without the helper (184 instructions each, 184 expected): a
+// `u32 vertex` used for both gives `uxtw` for the top header (first difference at 0x710087d588), an `s32 vertex` used for both gives `sxtw` for the table (first difference at 0x710087d4d8). A u32
+// parameter leaves the top header lookup on the s32.
+static u16 getVertexBitIndex(const u16 *table, u32 index) { return table[index]; }
+
+// 0x710087d440. `range` (the game keeps `fadd s3, s1, s0` and squares it at 0x710087d598) and `dx`, `dy`, `dz` (the three `fsub` are squared, 0x710087d568 to 0x710087d590) are locals: written inline
+// the function differs at 0x710087d4b0 (range) and 0x710087d55c (the differences). `infoCount` is read before `info` (the game loads `ldp w17, w15, [x14]` and then unknown18, 0x710087d59c; the
+// other order differs from 0x710087d554 on). The loops over the entries and the children are pointer walks. The distance to the sphere of the node is a Vec3 (three f32 locals match too, and repeat
+// the statements of the clip sphere tests of DrCalcClipObj, which the quality gate reports).
+void DrResMdoSeamWrkBase::seachReadBaseMapMdl(const mm::Vec3 &position, const MdsSeamBaMpTreeData *tree) {
+  mm::Vec3 delta(position.x - tree->unknown00[0], position.y - tree->unknown00[1], position.z - tree->unknown00[2]);
+  f32 radius = tree->unknown0c + unknown80;
+  if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z > radius * radius) {
+    return;
+  }
+  u16 mdlCount = tree->unknown16;
+  if (mdlCount != 0) {
+    const u16 *mdlIndex = unknown40 + tree->unknown14;
+    for (u32 i = 0; i < mdlCount; i++, mdlIndex++) {
+      const unknown787 &entry = *(unknown30 + *mdlIndex);
+      s32 vertex = entry.unknown00;
+      u16 bit = getVertexBitIndex(unknown58, vertex);
+      if (unknowna0 & 0x200) {
+        if (!(unknowne0[bit >> 5] & (1 << (bit & 0x1f)))) {
+          vertex = entry.unknown04;
+          u16 second = getVertexBitIndex(unknown58, vertex);
+          if (!(unknowne0[second >> 5] & (1 << (second & 0x1f)))) {
+            continue;
+          }
+        }
+      } else if (!(unknowne0[bit >> 5] & (1 << (bit & 0x1f)))) {
+        continue;
+      }
+      if (m_drResMdoAlpTbl->unknown004(bit) <= 0.0f) {
+        continue;
+      }
+      f32 range = entry.unknown24 + 100.0f;
+      f32 dx = entry.unknown0c[0] - position.x;
+      f32 dy = entry.unknown0c[1] - position.y;
+      f32 dz = entry.unknown0c[2] - position.z;
+      f32 distanceSq = dx * dx + dy * dy + dz * dz;
+      const MdsMdlTopHeader *mdl = m_mdoWrkMatRes->m_mdsMdlTopHeader + vertex;
+      s32 infoCount = mdl->unknown04;
+      const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(m_mdoWrkMatRes->unknown18 + mdl->unknown00);
+      if (range * range >= distanceSq) {
+        for (s32 j = 0; j < infoCount; j++, info++) {
+          unknownb8[info->unknown0e >> 5] |= 1 << (info->unknown0e & 0x1f);
+          s32 alphaBit = info->unknown0e + m_mdoWrkMatRes->unknown30;
+          unknownb8[alphaBit >> 5] |= 1 << (alphaBit & 0x1f);
+        }
+      } else if ((entry.unknown24 + unknown80) * (entry.unknown24 + unknown80) >= distanceSq) {
+        for (s32 j = 0; j < infoCount; j++, info++) {
+          unknownb8[info->unknown0e >> 5] |= 1 << (info->unknown0e & 0x1f);
+        }
+      }
+    }
+  }
+  u16 childCount = tree->unknown12;
+  if (childCount != 0) {
+    const u16 *childIndex = unknown48 + tree->unknown10;
+    for (u32 i = 0; i < childCount; i++, childIndex++) {
+      seachReadBaseMapMdl(position, &m_mdsSeamBaMpTreeData[*childIndex]);
+    }
+  }
+}
+
+// 0x710087d720. The inner loop walks a pointer (s32 j, index++): the game compares w14 with the u16 count and indexes with x14 (0x710087d7a0), while `index[j]` widens the compare to 64 bits (cmp x14,
+// x13; measured, 51 instructions with another register use). The data pointer of the index lists is formed before the loop (add x11 at 0x710087d758) and keeps the load of its offset in the entry
+// block, next to the count (ldp w8, w11 at 0x710087d744); with the offset read into a local (`u32 indexOffset = ...unknown08;`) clang sinks that load behind the test (52 instructions against 51).
+void DrResMdoSeamWrkBase::calcCheckClipInfo(DrCalcClipMan *clip) {
+  if (unknown60 != nullptr && (clip->unknown7c & 2)) {
+    unknown108[0] |= 1;
+    const u8 *base = reinterpret_cast<const u8 *>(unknown60);
+    const u16 *indices = reinterpret_cast<const u16 *>(base + unknown60->unknown08);
+    const u16 *entry = reinterpret_cast<const u16 *>(base + unknown60->unknown00);
+    for (s32 i = 0; i < unknown60->unknown04; i++, entry += 2) {
+      const u16 *index = indices + entry[0];
+      for (s32 j = 0; j < entry[1]; j++, index++) {
+        u16 clipIndex = *index;
+        if (!(clip->unknown70[clipIndex >> 5] & (1 << (clipIndex & 0x1f)))) {
+          unknown108[(i + 1) >> 5] |= 1 << ((i + 1) & 0x1f);
+          break;
+        }
       }
     }
   }

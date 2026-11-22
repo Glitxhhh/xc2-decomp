@@ -332,6 +332,52 @@ bool DrCalcTexStreamMan::callReadType(DrTxtmType type) {
   return type <= unknown2494;
 }
 
+// 0x71008b2868. calcPieceMem, memSeachOptimization and memTempCopy are inlined (the loops at 0x71008b28a0, 0x71008b29dc and 0x71008b2a68). `poolSize` and `limit` are read before the ratio: the game
+// loads 0x2060 (ldr w12 at 0x71008b2900) ahead of the `lsr` of the free size and 0x2064 (ldr w20 at 0x71008b2908) before the first `ucvtf`; without the locals clang schedules both loads behind
+// the first `ucvtf` (measured, first difference at 0x71008b2900). The read mode is decremented in the member (`sub; sxth; csel` at 0x71008b28ec): a local `s16 readMode = unknown248c - 1`
+// is lowered to `lsl; sub; lsr`. One result variable: the game's returns share one epilogue that follows the two return stubs (0x71008b29ac), and the search result is negated into it
+// (`eor w22, w11, #1` at 0x71008b2a30); separate `return` statements put the epilogue behind the loops.
+bool DrCalcTexStreamMan::calcMemOptimization() {
+  cntMemUpdate();
+  int pieceCount;
+  u32 freeSize;
+  u32 objectCount;
+  calcPieceMem(pieceCount, freeSize, objectCount);
+  unknown248c--;
+  if (unknown248c < 1) {
+    unknown248c = 0;
+  }
+  u32 poolSize = unknown2060;
+  u32 limit = unknown2064;
+  f32 ratio = 1.0f - static_cast<f32>(freeSize >> 12) / static_cast<f32>(poolSize >> 12);
+  if (ratio >= 0.85f) {
+    m_cacherClearMode |= 8;
+  } else if (unknown248c > 0 || ratio >= 0.7f) {
+    m_cacherClearMode |= 4;
+  } else {
+    m_cacherClearMode &= ~4;
+  }
+  if (unknown2488 != 0) {
+    m_cacherClearMode |= 2;
+  } else {
+    m_cacherClearMode &= ~2;
+  }
+  bool result = false;
+  if (!(m_cacherClearMode & 1)) {
+    if (pieceCount < 2 && !(m_cacherClearMode & 2)) {
+      result = true;
+    } else {
+      unknown2484 = 0;
+      bool found = memSeachOptimization(limit);
+      result = !found;
+      if (found) {
+        result = memTempCopy(limit);
+      }
+    }
+  }
+  return result;
+}
+
 void DrCalcTexStreamMan::apiUpdate() {
   u32 count = unknown2058[DrMan::s_nDblStockIdx];
   DrCalcStmListObj **list = unknown58[DrMan::s_nDblStockIdx];

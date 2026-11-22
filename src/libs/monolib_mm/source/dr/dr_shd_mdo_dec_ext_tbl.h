@@ -12,6 +12,7 @@ namespace ml {
 class DrResMdoSampler;
 class DrShdMdoDecRes;
 struct MdsMatTextureInfo;
+struct MdsMatTechnique;
 
 class DrShdMdoDecExtTbl : public grlib::CGLibDecShdExtTbl {
 public:
@@ -22,6 +23,7 @@ public:
   void bindShader();
   void setShaderParamAdd(u32 *param, u32 *globalParam);
   void setTextureList(const MdsMatTextureInfo *infos, grlib::CGLibTextureBuffer **textures, DrResMdoSampler *sampler);
+  void setupShderInfo(DrShdMdoDecRes *shader, const MdsMatTechnique *technique, const u8 *data);
 
   DrShdMdoDecRes *m_drShdMdoDecRes; // Inferred role: dec res; original member name unknown.
   u32 *unknown20;                   // Inferred role: shader param add; original member name unknown.

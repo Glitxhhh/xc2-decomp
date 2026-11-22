@@ -7,6 +7,7 @@ namespace ml {
 
 class DrShdMdoDecExtTbl;
 class DrShdMdoDecShdObj;
+struct MdsMatTechnique;
 
 class DrShdMdoExtTblObj {
 public:
@@ -27,6 +28,7 @@ public:
 
   DrShdMdoExtTblObj();
   static int getDecWorkSize(int declarationNum, const u8 *data);
+  int setDecObj(DrShdMdoDecShdObj *obj, u8 *work, const u8 *data, int declarationNum, const MdsMatTechnique *technique, const u8 *extData);
 
   DrShdMdoDecShdObj *m_drShdMdoDecShdObj; // Inferred role: shader object; original member name unknown.
   DrShdMdoDecExtTbl *m_drShdMdoDecExtTbl; // Inferred role: extension tables; original member name unknown.

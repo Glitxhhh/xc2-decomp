@@ -86,10 +86,10 @@ int DrResMdoInstMdlInfo::setup(u8 *work, const u8 *resource, const char *name) {
 // The game (1.0.0: 0x710087645c) stores the work pointer into `info` before the constructor stores and reloads `info` for the setup call;
 // `info = new (work) ...` stores it after the constructor and keeps the value in a register (10 against 8 instructions). The cast through void * is
 // a single allocation carved into its object, as in the DrMdoGrpObj constructor (decision 2026-11-14 #40).
-void DrResMdoInstMdlInfo::create(u8 *work, DrResMdoInstMdlInfo *&info, const u8 *resource, const char *name) {
+int DrResMdoInstMdlInfo::create(u8 *work, DrResMdoInstMdlInfo *&info, const u8 *resource, const char *name) {
   info = static_cast<DrResMdoInstMdlInfo *>(static_cast<void *>(work));
   new (info) DrResMdoInstMdlInfo();
-  info->setup(work + sizeof(DrResMdoInstMdlInfo), resource, name);
+  return info->setup(work + sizeof(DrResMdoInstMdlInfo), resource, name);
 }
 
 void DrResMdoInstMdlInfo::release(DrResMdoInstMdlInfo *&info) {

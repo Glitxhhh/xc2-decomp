@@ -37,7 +37,9 @@ public:
   int unistatic_lightAmb(f32 *work);
   int unistatic_diffuseIBL(f32 *work);
   int unistatic_specularIBL(f32 *work);
+  int unistatic_dither_matrix(f32 *work);
   int unistatic_dither_param(f32 *work);
+  int unistatic_inv_dither_matrix(f32 *work);
   int unistatic_inv_dither_param(f32 *work);
   void renderEnd();
   int unistatic_mpf_ViewProj(f32 *work);
@@ -129,7 +131,8 @@ public:
   u8 _af8[0xb00 - 0xaf8];
   f32 unknownb00[4]; // Inferred role: dither tmaa values; original member name unknown.
   f32 unknownb10[2]; // Inferred role: dither param; original member name unknown.
-  u8 _b18[0xc20 - 0xb18];
+  u8 _b18[0xb20 - 0xb18];
+  u32 unknownb20[8][8]; // Inferred role: 8x8 dither pattern, 0 to 63, the source of the gDither matrix uniforms (unistatic_dither_matrix, 1.0.0: 0x71008b1d60); original member name unknown.
   // Inferred role: matrix passed as the gDither uniform of DrPixlPostObjTSSAO::passSSAO (0x71008c2388); original member name unknown.
   mm::Mat44 unknownc20;
 };

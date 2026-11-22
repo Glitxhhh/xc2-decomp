@@ -197,26 +197,36 @@ static_assert(offsetof(MdsMatShaderTbl, unknown06) == 0x06, "");
 static_assert(offsetof(MdsMatShaderTbl, unknown08) == 0x08, "");
 static_assert(sizeof(MdsMatShaderTbl) == 0x0c, "");
 
+// Layout evidence: DrShdMdoDecShdObj::DrShdMdoDecShdObj 0x71008a0a7c (+0x00, +0x04), DrShdMdoExtTblObj::setDecObj 0x71008a1144 (halfwords +0x2c, +0x2e).
 struct MdsMatTechnique {
-  u8 _00[0x10 - 0x00];
+  u32 unknown00; // Inferred role: offset of the vertex infos in the vertex data; original member name unknown.
+  u32 unknown04; // Inferred role: vertex info count; original member name unknown.
+  u8 _08[0x10 - 0x08];
   u32 unknown10; // Inferred role: variable table offset; original member name unknown.
   s32 unknown14; // Inferred role: variable count; original member name unknown.
   u32 unknown18; // Inferred role: static texture table offset; original member name unknown.
   u32 unknown1c; // Inferred role: static texture count; original member name unknown.
   u32 unknown20; // Inferred role: uniform block table offset; original member name unknown.
   s32 unknown24; // Inferred role: uniform block count; original member name unknown.
-  u8 _28[0x34 - 0x28];
+  u8 _28[0x2c - 0x28];
+  u16 unknown2c; // Inferred role: offset of the shader parameters in units of 4 bytes; original member name unknown.
+  u16 unknown2e; // Inferred role: offset of the global parameters in units of 4 bytes; original member name unknown.
+  u8 _30[0x34 - 0x30];
   u32 unknown34; // Inferred role: static image table offset; original member name unknown.
   u32 unknown38; // Inferred role: static image count; original member name unknown.
   u8 _3c[0x44 - 0x3c];
 };
 
+static_assert(offsetof(MdsMatTechnique, unknown00) == 0x00, "");
+static_assert(offsetof(MdsMatTechnique, unknown04) == 0x04, "");
 static_assert(offsetof(MdsMatTechnique, unknown10) == 0x10, "");
 static_assert(offsetof(MdsMatTechnique, unknown14) == 0x14, "");
 static_assert(offsetof(MdsMatTechnique, unknown18) == 0x18, "");
 static_assert(offsetof(MdsMatTechnique, unknown1c) == 0x1c, "");
 static_assert(offsetof(MdsMatTechnique, unknown20) == 0x20, "");
 static_assert(offsetof(MdsMatTechnique, unknown24) == 0x24, "");
+static_assert(offsetof(MdsMatTechnique, unknown2c) == 0x2c, "");
+static_assert(offsetof(MdsMatTechnique, unknown2e) == 0x2e, "");
 static_assert(offsetof(MdsMatTechnique, unknown34) == 0x34, "");
 static_assert(offsetof(MdsMatTechnique, unknown38) == 0x38, "");
 static_assert(sizeof(MdsMatTechnique) == 0x44, "");

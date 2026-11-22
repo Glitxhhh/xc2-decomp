@@ -5,6 +5,7 @@
 
 #include "framework/lang_util.h"
 #include "fw/fw_bdat_manager.h"
+#include "fw/fw_debug.h"
 #include "fw/fw_transform.h"
 #include "fw/fw_update_info.h"
 #include "gf/data/gf_bdat_btl.h"
@@ -51,6 +52,7 @@
 #include "gf/game/salvage/gf_salvage_voice.h"
 #include "gf/game/sequential_play/gf_play_factory.h"
 #include "gf/gf_allocator.h"
+#include "gf/gf_info.h"
 #include "gf/map/gf_map_manager.h"
 #include "gf/menu/gf_menu_fade.h"
 #include "gf/menu/object/gf_menu_obj_popup.h"
@@ -3452,6 +3454,109 @@ void GfReqSmallCom::update(const fw::UpdateInfo &info) {
   }
   unknown9048.clear();
   unknownd870 = false;
+}
+
+// Inferred role: names of the SCOM types, indexed by SCOM_TYPE (0x71011a0c30); original name unknown.
+static const char *const unknown190[] = {
+    "DESTROY_GAME_OBJ",
+    "ADD_MONEY",
+    "ADD_COIN",
+    "ADD_ETHER",
+    "ADD_EXP",
+    "EXEC_LVUP",
+    "MAXIMUM_HEAL",
+    "ADD_WP",
+    "ADD_SP",
+    "ADD_IDEA",
+    "ADD_IDEA_POINT",
+    "ADD_DEVELOP",
+    "LEVELUP_DEVELOP",
+    "ADD_ITEM",
+    "REMOVE_ITEM",
+    "STOP_BATTLE",
+    "WARP_POS",
+    "OBJ_WARP_POS",
+    "OBJ_COLI",
+    "INTERVAL_SPEED",
+    "GAME_SPEED",
+    "DESTROY_GAME_OBJP",
+    "CREATE_PARTY_OBJ",
+    "DESTROY_PARTY_OBJ",
+    "DESTROY_FIELD_OBJ",
+    "DESTROY_MAP_OBJ",
+    "CREATE_MAP_OBJ",
+    "FADE",
+    "LOADING",
+    "SCRIPT",
+    "RELOAD_BDAT",
+    "RELOAD_TEXT",
+    "CHANGE_LAYER",
+    "COLI_CHAR_VALID",
+    "ATTACH_WEAPON",
+    "DETACH_WEAPON",
+    "EXEC_MOUNT",
+    "VALID_LOCAL_SPEED",
+    "DESTROY_GMK_SET",
+    "CREATE_GMK_SET",
+    "OBJ_ALPHA",
+    "QUEST_ORDER",
+    "QUEST_REACH",
+    "QUEST_GIMMICK",
+    "QUEST_TALK",
+    "QUEST_EVENT",
+    "ACCESS_TARGET",
+    "TARGET_UI",
+    "SET_FLAG",
+    "SET_CAMTYPE",
+    "CHAR_DEAD",
+    "CHAR_DMG",
+    "CHANGE_BLADE",
+    "PARTY_ADD",
+    "EXEC_DRIVER_ARTS_LVUP",
+    "ACHIEV_INC",
+    "FIELD_SKILL",
+    "PARTY_LEADER",
+    "REBUILD",
+    "ADD_MERCENARIES_POINT",
+    "INC_MERCENARIES_LEVEL",
+    "CHANGE_RIDE",
+    "BATTLE_BGM",
+    "FIELD_VOICE",
+    "ADD_TRUST",
+    "SET_TRUST",
+    "ZONE",
+    "OBJ_VFADE",
+    "ITEM_USE",
+    "ENBOOK_IN_BATTLE",
+    "OBJ_VFADE_OFF",
+    "ENBOOK_BOSS_TIME",
+    "ENBOOK_DEFEAT_ENEMY",
+    "ENBOOK_DEAD_PLAYER",
+    "FSKILLMAX_FOR_DEBUG",
+    "POPUP",
+    "HOMURI",
+    "DEAD_PARTICLE",
+    "CURRENT_BLADE",
+    "BC_PARTICLE",
+    "MISSION_COMPLETE",
+    "SET_BLADE",
+    "NIA_BLADE",
+};
+
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// Draws the name of one command and returns the next row; its user is GfReqSmallCom::debugCommandDisp (0x71005d3f70). With the row as an `s16 y` local of the caller (`drawFont(0x100, y, ...);
+// y += 18;`, also 47 instructions) InstCombine moves the 16 bit extension of the loop carried value to the loop header, before the node assertion (0x71005d3fd0), and the registers differ;
+// the game extends the int row at the call (sxth w22 at 0x71005d3fec, after the assertion), which an inlined function taking an `s16` row gives.
+static int drawCommandName(s16 y, const char *name) {
+  fw::debug::drawFont(0x100, y, name);
+  return y + 18;
+}
+
+void GfReqSmallCom::debugCommandDisp() {
+  int y = GfInfo::m_nScreenH / 2;
+  for (mm::mtl::FixedList<SCOM *, 1024>::iterator it = unknown08.begin(); it != unknown08.end(); ++it) {
+    y = drawCommandName(y, unknown190[(*it)->unknown18]);
+  }
 }
 
 GF_SCOM_HANDLE *SCOM_ADD_ITEM::create(u32 item, int num) {

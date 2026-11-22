@@ -165,6 +165,21 @@ int DrCalcViewWork::unistatic_specularIBL(f32 *work) {
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_59];
 }
 
+// 0x71008b1d60. The game keeps the inner loop of 8 rolled (cmp x12, #8 at 0x71008b1dec). The named `value` does that: with -g its dbg.value is one more instruction in the loop body for LoopUnroll,
+// whose full unroll bound for 8 iterations is 300 (`-Rpass=loop-unroll` reports "completely unrolled loop with 8 iterations" and the function has 79 instructions without the local; a dbg.value for an
+// i64 counter has the same effect, which is why s64 counters and casts matched before).
+int DrCalcViewWork::unistatic_dither_matrix(f32 *work) {
+  mm::Mat44 matrices[4];
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      f32 value = (static_cast<f32>(unknownb20[i][j]) + 1.0f) / 65.0f;
+      matrices[i / 4 * 2 + j / 4].rows[i % 4][j % 4] = value;
+    }
+  }
+  grlib::ShdMat44SetMat44Array(work, matrices, 4);
+  return 0x40;
+}
+
 int DrCalcViewWork::unistatic_dither_param(f32 *work) {
   mm::Vec4 value;
   value.x = 1.0f;
@@ -173,6 +188,19 @@ int DrCalcViewWork::unistatic_dither_param(f32 *work) {
   value.w = unknownb10[1];
   grlib::ShdVec4SetVec4(work, value);
   return 4;
+}
+
+// 0x71008b1e70, the same loops on the inverted pattern value (0x3f - v). The named `value` is needed as in unistatic_dither_matrix.
+int DrCalcViewWork::unistatic_inv_dither_matrix(f32 *work) {
+  mm::Mat44 matrices[4];
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      f32 value = (static_cast<f32>(0x3f - unknownb20[i][j]) + 1.0f) / 65.0f;
+      matrices[i / 4 * 2 + j / 4].rows[i % 4][j % 4] = value;
+    }
+  }
+  grlib::ShdMat44SetMat44Array(work, matrices, 4);
+  return 0x40;
 }
 
 int DrCalcViewWork::unistatic_inv_dither_param(f32 *work) {

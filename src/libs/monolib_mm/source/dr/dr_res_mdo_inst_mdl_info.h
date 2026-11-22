@@ -81,7 +81,7 @@ public:
   void update(DrResMdlInstMdlArg &arg);
   static int calcWorkSize(const u8 *resource);
   static void release(DrResMdoInstMdlInfo *&info);
-  static void create(u8 *work, DrResMdoInstMdlInfo *&info, const u8 *resource, const char *name);
+  static int create(u8 *work, DrResMdoInstMdlInfo *&info, const u8 *resource, const char *name);
 
   s32 unknown00;                            // Inferred role: model object count; original member name unknown.
   DrResMdoInstMdlObj *m_drResMdoInstMdlObj; // Inferred role: model objects; original member name unknown.

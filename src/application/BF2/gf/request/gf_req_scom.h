@@ -1132,6 +1132,7 @@ public:
   bool update(const fw::UpdateInfo &info, u16 priority);
   bool updateParallel(const fw::UpdateInfo &info);
   void update(const fw::UpdateInfo &info);
+  void debugCommandDisp();
   bool isValid(GF_SCOM_HANDLE *handle);
   static bool isExistCommand(SCOM_TYPE type);
   static bool isExistCommand();

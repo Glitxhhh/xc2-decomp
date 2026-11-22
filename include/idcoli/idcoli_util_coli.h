@@ -247,6 +247,7 @@ class IDColiUtilMath {
 public:
   static void getNearLineToLine(mm::Vec3 &near1, mm::Vec3 &near2, const mm::Vec3 &start1, const mm::Vec3 &end1, const mm::Vec3 &start2, const mm::Vec3 &end2);
   static void getNearLineToPoint(mm::Vec3 &near, const mm::Vec3 &start, const mm::Vec3 &end, const mm::Vec3 &point);
+  static bool isTriangleBoxHitCheck(const mm::Vec3 &boxMax, const mm::Vec3 &boxMin, const mm::Vec3 &a, const mm::Vec3 &b, const mm::Vec3 &c);
 };
 
 class IDColiUtilColiResult {

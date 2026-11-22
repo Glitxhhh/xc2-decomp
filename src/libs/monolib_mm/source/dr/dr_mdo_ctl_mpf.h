@@ -24,6 +24,7 @@ public:
   void callZPrepassRender();
   void updateMpf();
   void calcMpfRenderList();
+  bool calcMpfMatSetup();
   void callRenderMpf();
   void defMpfZPreRender();
   void defMpfrender();

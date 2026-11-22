@@ -743,7 +743,9 @@ struct IDCmfNormalData;
 struct IDCmfPoliData;
 
 struct unknown097 {
-  u8 _00[0x28]; // Inferred role: material record of the polygon table; fields not read by the matching code.
+  u8 _00[0x04 - 0x00];
+  u32 unknown04; // Inferred role: material bits tested against IDColiResult::unknowne8; original member name unknown.
+  u8 _08[0x28 - 0x08];
 };
 
 static_assert(sizeof(unknown097) == 0x28, "");
@@ -874,7 +876,8 @@ struct IDCmfPoliData {
   u32 unknown00; // Inferred role: vertex index list offset; original member name unknown.
   u8 unknown04;  // Inferred role: vertex count; original member name unknown.
   u8 unknown05;  // Inferred role: vertex and vector table index; original member name unknown.
-  u8 _06[0x0c - 0x06];
+  u8 _06[0x0a - 0x06];
+  u16 unknown0a; // Inferred role: material table index; original member name unknown.
 };
 
 static_assert(offsetof(IDCmfPoliData, unknown05) == 5, "");

@@ -1,7 +1,9 @@
 #include "dr/dr_mdo_ctl_pos.h"
 
+#include <new>
 #include <string.h>
 
+#include "dr/dr_calc_clip_man.h"
 #include "dr/dr_calc_clip_work_view_plane.h"
 #include "dr/dr_calc_cp_plane_obj.h"
 #include "dr/dr_calc_man.h"
@@ -30,6 +32,7 @@
 #include "dr/dr_res_wrk_clip_list.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_vec3.h"
+#include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
@@ -66,6 +69,112 @@ void DrMdoCtlPos::releasePos() {
     unknown220 = nullptr;
   }
   releaseMat();
+}
+
+// Measured forms (1.0.0: 0x71008103dc, 391 instructions). The work block is sized in a first pass (int `size`, the pads `(32 - x % 32) % 32` of the game's signed remainder) and carved in a
+// second pass (int `offset`) in the same order. Every product of a count with a size is unsigned (`unknown1d8 * 0x28u`, `unknown30->unknown170 * 8u`, as beginRenderListPos does with 0x42u):
+// the game keeps the offset a 32 bit chain (`add w8, w8, w13, lsl #3`, one sxtw per pointer, 0x710081086c ...), while with signed products clang widens it to 64 bit (397
+// instructions) and merges `n * 0x30 + n * 2` into `n * 50` (390). The sort object size 0x20 is added before the count of blocks is stored (0x71008104d4: add w8, w8, #0x20 before the
+// compare with 500); written after the `if` it is reassociated to the end of the sum. The pad of the last size is computed before the count of the flags size is loaded (0x71008105fc, 0x7100810614).
+void DrMdoCtlPos::setupPos(const u8 *data, const char *path) {
+  if (unknown220 != nullptr) {
+    mtl::MemManager::deallocate(unknown220, 0, false);
+    unknown220 = nullptr;
+  }
+  const unknown017 *header = reinterpret_cast<const unknown017 *>(data);
+  unknown1a8 = header;
+  unknown1d8 = header->unknown14;
+  m_mdsPosKeepData = reinterpret_cast<const MdsPosKeepData *>(data + header->unknown18);
+  m_mdsPosRangeTreeData = reinterpret_cast<const MdsPosRangeTreeData *>(data + header->unknown28);
+  unknown1b0 = reinterpret_cast<const unknown018 *>(data + header->unknown08);
+  unknown1b8 = reinterpret_cast<const unknown019 *>(data + header->unknown10);
+  unknown1c0 = reinterpret_cast<const u32 *>(data + header->unknown20);
+  int size = unknown1d8 * 0x28;
+  if (header->unknown40 != 0) {
+    size += (0x10 - size % 0x10) % 0x10;
+    size += DrResMdoInstAnmObj::getWorkSize(data + header->unknown40);
+  }
+  size += 0x20;
+  unknown238 = static_cast<u32>(unknown30->unknown30) / 500;
+  if (static_cast<u32>(unknown30->unknown30) % 500 != 0) {
+    unknown238++;
+  }
+  size += unknown238 * 8;
+  size += DrResMdoPntAlphaMan::getWrkSize(0xf);
+  if (header->unknown54 == 0) {
+    m_drResWrkClipList = nullptr;
+  } else {
+    size += 0x20;
+    size += (0x20 - size % 0x20) % 0x20;
+    size += DrResWrkClipList::calcWorkSize(data, header->unknown54);
+  }
+  if (header->unknown68 != 0) {
+    size += DrResMdoInstMdlInfo::calcWorkSize(data + header->unknown68);
+  }
+  size += DrResMdoPosAddList::createBuffSize();
+  size += 0x10;
+  size += (0x20 - size % 0x20) % 0x20;
+  size += unknown30->unknown170 * 0x30u;
+  size += unknown30->unknown170 * 2u;
+  size += (0x20 - size % 0x20) % 0x20;
+  size += unknown30->unknown170 * 0x28u;
+  size += (0x20 - size % 0x20) % 0x20;
+  int flagsSize = unknown30->unknown30 / 16 * 4 + 4;
+  flagsSize += (0x20 - flagsSize % 0x20) % 0x20;
+  int total = size + flagsSize;
+  unknown220 = static_cast<u8 *>(mtl::MemManager::allocate(m_drMan->unknown14, total, 0x20, false, "no name", 0));
+  unknown1e0 = reinterpret_cast<DrResMdoPos *>(unknown220);
+  int offset = unknown1d8 * 0x28u;
+  if (header->unknown40 != 0) {
+    offset += (0x10 - offset % 0x10) % 0x10;
+    offset += m_drResMdoInstAnmObj.setup(unknown220 + offset, reinterpret_cast<const u8 *>(unknown1a8) + header->unknown40);
+  }
+  m_drResMdoSortPos = reinterpret_cast<DrResMdoSortPos *>(unknown220 + offset);
+  offset += 0x20;
+  unknown228 = reinterpret_cast<void **>(unknown220 + offset);
+  offset += unknown238 * 8;
+  for (int i = 0; i < unknown238; i++) {
+    unknown228[i] = nullptr;
+  }
+  offset += DrResMdoPntAlphaMan::setWrk(m_drResMdoPntAlphaMan, 0xf, unknown220 + offset);
+  if (header->unknown54 != 0) {
+    m_drResWrkClipList = reinterpret_cast<DrResWrkClipList *>(unknown220 + offset);
+    offset += 0x20;
+    offset += (0x20 - offset % 0x20) % 0x20;
+    offset += m_drResWrkClipList->setupWork(unknown220 + offset, data, header->unknown54);
+  }
+  if (header->unknown68 != 0) {
+    offset += DrResMdoInstMdlInfo::create(unknown220 + offset, m_drResMdoInstMdlInfo, data + header->unknown68, path);
+  }
+  m_drResMdoPosAddList = reinterpret_cast<DrResMdoPosAddList *>(unknown220 + offset);
+  offset += 0x10;
+  offset += m_drResMdoPosAddList->setupBuff(unknown220 + offset);
+  offset += (0x20 - offset % 0x20) % 0x20;
+  for (int i = 0; i < 3; i++) {
+    unknown270[i] = reinterpret_cast<DrResMdoPos **>(unknown220 + offset);
+    offset += unknown30->unknown170 * 8u;
+    unknown288[i] = reinterpret_cast<DrResMdoPos **>(unknown220 + offset);
+    offset += unknown30->unknown170 * 8u;
+  }
+  unknown2a0 = reinterpret_cast<u16 *>(unknown220 + offset);
+  offset += unknown30->unknown170 * 2u;
+  offset += (0x20 - offset % 0x20) % 0x20;
+  unknown2b0 = reinterpret_cast<const unknown020 *>(unknown220 + offset);
+  offset += unknown30->unknown170 * 0x20u;
+  unknown2b8 = unknown220 + offset;
+  offset += unknown30->unknown170 * 8u;
+  offset += (0x20 - offset % 0x20) % 0x20;
+  unknown240 = reinterpret_cast<u32 *>(unknown220 + offset);
+  memset(unknown240, 0, flagsSize);
+  for (int i = 0; i < unknown1d8; i++) {
+    new (&unknown1e0[i]) DrResMdoPos(&m_mdsPosKeepData[i]);
+  }
+  m_drResMdoInstAnmObj.setupLink(unknown1e0);
+  new (m_drResMdoSortPos) DrResMdoSortPos(this);
+  m_drCalcClipMan = m_drMan->m_drCalcMan->m_drCalcClipMan;
+  if (header->unknown6c != 0) {
+    m_drCalcCpPlaneObj = m_drCalcClipMan->createCpPlaneObj(data + header->unknown6c);
+  }
 }
 
 void DrMdoCtlPos::update() {

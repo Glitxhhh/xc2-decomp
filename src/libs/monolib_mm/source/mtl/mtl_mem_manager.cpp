@@ -1163,6 +1163,23 @@ template mm::mtl::Noncopyable<mtl::MemManager>::~Noncopyable();
 
 template mm::mtl::FixedVector<mtl::MemManager::HandleRegion, 512>::~FixedVector();
 
+// Inferred helper: allocates with the size, the alignment and the line as ints; original name unknown. Users: operator new (1.0.0: 0x7100783dfc) and operator new[] (0x7100783e40), whose
+// size parameter is a size_t that the game passes as an int sign extended to 64 bits (sxtw x1, w0 at 0x7100783e14 and 0x7100783e58, the alignment likewise: sxtw x2, w4). With the size passed
+// as it is, both have 18 instructions against the game's 17 (a mov instead of the sxtw, and the order of the handle copy).
+inline void *unknown102(mtl::ALLOC_HANDLE handle, int size, int alignment, bool isBack, const char *file, int line) { return mtl::MemManager::allocate(handle, size, alignment, isBack, file, line); }
+
+void *operator new(size_t size, mtl::ALLOC_HANDLE handle, const char *file, size_t line, int alignment, bool isBack) { return unknown102(handle, size, alignment, isBack, file, line); }
+
+void *operator new[](size_t size, mtl::ALLOC_HANDLE handle, const char *file, size_t line, int alignment, bool isBack) { return unknown102(handle, size, alignment, isBack, file, line); }
+
+void *operator new(size_t size) { return malloc(size); }
+
+void *operator new[](size_t size) { return malloc(size); }
+
+void *operator new(size_t size, const char *, size_t) { return malloc(size); }
+
+void *operator new[](size_t size, const char *, size_t) { return malloc(size); }
+
 void operator delete(void *pointer) noexcept { mtl::MemManager::deallocate(pointer, 0, false); }
 
 void operator delete(void *pointer, mtl::ALLOC_HANDLE, const char *, size_t, int, bool) noexcept { mtl::MemManager::deallocate(pointer, 0, false); }

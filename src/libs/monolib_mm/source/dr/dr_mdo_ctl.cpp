@@ -6,6 +6,7 @@
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_nom.h"
 #include "dr/dr_mdo_mat.h"
+#include "dr/dr_mdo_shd_set.h"
 #include "dr/dr_mdo_vertex_man.h"
 #include "dr/dr_res_etc_uniform_obj.h"
 #include "dr/dr_res_mdo_vertex.h"
@@ -107,6 +108,84 @@ void DrMdoCtl::setMatrix(const mm::Mat44 &matrix) { m_matrix = matrix; }
 void DrMdoCtl::setOffsetPos(const mm::Vec3 &position) { m_offsetPos = position; }
 
 void DrMdoCtl::partsInstanceThicknessBillRender(const MdoInstancePrePassArg &) {}
+
+// Inferred role: selects the shadow shader index of a material from its flags and the shadow kind (shaderParam1), and clears shaderParam0 for the kinds that take no parameter; shared by
+// partsShadowRender and partsShadowDirRender, whose selection is the same (1.0.0: 0x71007f4138, 100 instructions, and 0x71007f4324, 96); original name unknown. Written out in each function both
+// match as well (100 and 96 instructions), and so do they with this helper, the form used (P4; ruling 8 needs a failed call form). The index of the plain material arm is built `index = 0; if (bit 13)
+// index += 0xc;`, which gives the game's `sbfx; and #0xc` (0x71007f4204) where `bit ? 0xc : 0` gives tst/csel. The flag of bit 3 is read once in the arm of bit 2 (`and w9, w8, #8` before the test
+// of shaderParam1, 0x71007f41ec): the two arms below it share the and, as written with a local; without it the arms test the bit separately (tbnz, ubfx).
+static int unknown071(u32 flags, int &shaderParam0, int shaderParam1) {
+  int index;
+  if (!(flags & MdsMatInfoHeader::unknown015_2)) {
+    if (shaderParam1 == 0) {
+      index = 0;
+      if (flags & MdsMatInfoHeader::unknown015_13) {
+        index += 0xc;
+      }
+    } else {
+      shaderParam0 = 0;
+      index = 6;
+    }
+  } else {
+    u32 bit3 = flags & MdsMatInfoHeader::unknown015_3;
+    if (shaderParam1 == 0) {
+      if (!bit3) {
+        index = (flags & MdsMatInfoHeader::unknown015_13) ? 0xd : 1;
+      } else {
+        index = (flags & MdsMatInfoHeader::unknown015_13) ? 0xe : 2;
+      }
+    } else {
+      shaderParam0 = 0;
+      index = (bit3 >> 3) + 7;
+    }
+  }
+  return index;
+}
+
+// 1.0.0: 0x71007f4138, 100 instructions. The shader list is read before the flags (0x71007f41b8).
+void DrMdoCtl::partsShadowRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1, int shaderParam2) {
+  const MdsMatInfoHeader *mat = unknown30->unknown28 + header->unknown0e;
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
+  if (unknown17e != header->unknown0e) {
+    DrAPCache *apCache = m_drMan->m_drAPCache;
+    unknown17e = header->unknown0e;
+    apCache->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
+  }
+  DrShdDataList *list = m_drMan->m_drShdMan->m_drShdDataList;
+  int index = unknown071(mat->unknown04, shaderParam0, shaderParam1);
+  setupShadowShader(list, index + shaderParam2, mat, shaderParam0, header->unknown0e);
+  if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_24) {
+    unknown30->m_drResMdoVertex->setMofBlendVertexBind(unknown30->unknowna8, header->unknown08, 2);
+  }
+  unknown005(header);
+}
+
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// DrMdoSetup::setupShadowShader with an unsigned index; user DrMdoCtl::partsShadowDirRender (1.0.0: 0x71007f4324), whose table lookup is zero extended (uxtw), against the sign extension
+// of setupShadowShader (0x71007f42c8, sxtw). Forms tried: setupShadowShader(list, index, ...) with an int or u32 index (96 instructions, sxtw); the body written out in the function (96, the
+// header's 0x0e load after the table load, the game's before).
+inline void setupShadowShaderUnsigned(DrMdoSetup *setup, DrShdDataList *list, u32 index, const MdsMatInfoHeader *header, int uniformIndex, int unused) {
+  DrMdoShdSetShadow shdSet;
+  shdSet.m_drMdoSetup = setup;
+  (shdSet.*DrMdoShdSetShadow::s_pShwMaterial[index])(index, header, uniformIndex, unused, list);
+}
+
+void DrMdoCtl::partsShadowDirRender(const MdsMdlInfoHeader *header, int shaderParam0, int shaderParam1) {
+  const MdsMatInfoHeader *mat = unknown30->unknown28 + header->unknown0e;
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
+  if (unknown17e != header->unknown0e) {
+    DrAPCache *apCache = m_drMan->m_drAPCache;
+    unknown17e = header->unknown0e;
+    apCache->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
+  }
+  DrShdDataList *list = m_drMan->m_drShdMan->m_drShdDataList;
+  int index = unknown071(mat->unknown04, shaderParam0, shaderParam1);
+  setupShadowShaderUnsigned(this, list, index, mat, shaderParam0, header->unknown0e);
+  if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_24) {
+    unknown30->m_drResMdoVertex->setMofBlendVertexBind(unknown30->unknowna8, header->unknown08, 2);
+  }
+  unknown005(header);
+}
 
 void DrMdoCtl::partsShadowBaseRender(const MdsMdlTopHeader *top) {
   const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);

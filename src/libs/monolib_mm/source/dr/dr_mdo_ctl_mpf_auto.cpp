@@ -114,6 +114,105 @@ void DrMdoCtlMpfAuto::gridInstColiCalc() {
   StockPoint();
 }
 
+// The game reads the float table pointer (ldr x10, [x20, #0x50] at 0x71007fd27c) and the two table indexes (ldrh at 0x71007fd274 and 0x71007fd280, zero-extended) before the first float load
+// (ldr s1, [x19, #0x88] at 0x71007fd284) and keeps them for the four range products. Reading them once into locals, the indexes as 64 bit values, gives that order and the register
+// assignment (w12 the origin index, w11 the scale index). Without the locals (`buff->unknown50[tree->unknown06]` in each product) the function has 132 instructions as well, but the scale
+// index is loaded after the float loads and the two index registers are swapped (13 differing lines); two of the three locals, or 32 bit indexes, leave 9 to 31 differing lines.
+bool DrMdoCtlMpfAuto::gridColiRangeChk(const MdsMpfAutoTree *tree) {
+  u32 word = tree->unknown08;
+  if ((word & unknown70 & 0xffff) == 0) {
+    return false;
+  }
+  const _wkMpfAutoBuff *buff = unknown58;
+  const unknown515 *table = buff->unknown50;
+  u64 originIndex = tree->unknown06;
+  u64 scaleIndex = tree->unknown04;
+  s32 width = (word >> 16) & 0xff;
+  s32 depth = word >> 24;
+  f32 minX = (unknown88 - table[originIndex].unknown00) * table[scaleIndex].unknown00;
+  s32 startX = static_cast<s32>(minX);
+  startX -= (minX - startX <= 0.01f);
+  if (startX >= width) {
+    return false;
+  }
+  if (startX < 0) {
+    startX = 0;
+  }
+  f32 minZ = (unknown8c - table[originIndex].unknown04) * table[scaleIndex].unknown04;
+  s32 startZ = static_cast<s32>(minZ);
+  startZ -= (minZ - startZ <= 0.01f);
+  if (startZ >= depth) {
+    return false;
+  }
+  if (startZ < 0) {
+    startZ = 0;
+  }
+  f32 maxX = (unknown90 - table[originIndex].unknown00) * table[scaleIndex].unknown00;
+  s32 endX = static_cast<s32>(maxX);
+  endX += (0.99f <= maxX - endX);
+  if (endX < 0) {
+    return false;
+  }
+  f32 maxZ = (unknown94 - table[originIndex].unknown04) * table[scaleIndex].unknown04;
+  if (endX >= width) {
+    endX = width - 1;
+  }
+  s32 endZ = static_cast<s32>(maxZ);
+  endZ += (0.99f <= maxZ - endZ);
+  if (endZ < 0) {
+    return false;
+  }
+  if (endZ >= depth) {
+    endZ = depth - 1;
+  }
+  if (startX > endX || startZ > endZ) {
+    return false;
+  }
+  for (s32 x = startX; x <= endX; x++) {
+    for (s32 z = startZ; z <= endZ; z++) {
+      u32 cell = buff->unknown48[tree->unknown00 + z + x * depth];
+      if (cell != 0) {
+        if (static_cast<s32>(cell) < 0 || gridColiRangeChk(&buff->m_mdsMpfAutoTree[cell])) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+// The tables are walked with `*indices++` next to the counter: a second induction variable keeps the 32 bit compare of the counter (cmp w24, w23 at 0x71007fd4f8, cmp w9, w8 at 0x71007fd580)
+// on the 64 bit index of the loads; with `indices[i]` (or a u32 index accessor) indvars widens the compare (cmp x, x, 94 instructions as well).
+bool DrMdoCtlMpfAuto::gridColiInstPosRangeChk(const MdsMpfAutoPosTree *tree) {
+  if ((tree->unknown1c & unknown70) == 0 || tree->unknown00 < unknown88 || tree->unknown08 > unknown90 || tree->unknown04 < unknown8c || tree->unknown0c > unknown94) {
+    return false;
+  }
+  int count = tree->unknown18_0;
+  if (count != 0) {
+    const u32 *indices = unknown58->unknown68 + tree->unknown10;
+    for (int i = 0; i < count; i++) {
+      if (gridColiInstPosRangeChk(&unknown58->m_mdsMpfAutoPosTree[*indices++])) {
+        return true;
+      }
+    }
+  }
+  count = tree->unknown18_16;
+  if (count != 0) {
+    const u32 *indices = unknown58->unknown68 + tree->unknown14;
+    for (int i = 0; i < count; i++) {
+      const MdsMpfAutoPosData *data = &unknown58->m_mdsMpfAutoPosData[*indices++];
+      if ((data->unknownb4 & unknown70) == 0) {
+        break;
+      }
+      if (data->unknowna0 < unknown88 || data->unknowna8 > unknown90 || data->unknowna4 < unknown8c || data->unknownac > unknown94) {
+        continue;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 bool DrMdoCtlMpfAuto::gridChkColiRange(f32 maxX, f32 minX, f32 maxZ, f32 minZ) {
   int count = unknown68;
   unknown88 = minX;
@@ -179,7 +278,7 @@ void DrMdoCtlMpfAuto::changeMemAutoMpf(const u8 *data, const u8 *autoData) {
     }
     unknown58->unknown40 = reinterpret_cast<const u32 *>(data + unknown00->unknown20);
     unknown58->unknown48 = reinterpret_cast<const u32 *>(data + unknown00->unknown24);
-    unknown58->unknown50 = reinterpret_cast<const f32 *>(data + unknown00->unknown28);
+    unknown58->unknown50 = reinterpret_cast<const unknown515 *>(data + unknown00->unknown28);
     if (unknown00->unknown40 == 0 || unknown00->unknown3c != -0xd) {
       unknown58->m_mdsMpfAutoPosData = nullptr;
       return;
