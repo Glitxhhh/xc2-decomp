@@ -78,6 +78,7 @@ public:
   virtual void update(const UpdateInfo &info);
   void updateColObjects(u32 layers);
   void updateDynamics(const UpdateInfo &info, u32 layers);
+  void drawDebug(u32 layers);
   void addColUpdater(u32 layer, DynamicsColObjUpdaterInterface &updater);
   void removeColUpdater(u32 layer, DynamicsColObjUpdaterInterface &updater);
   void addUpdater(u32 layer, DynamicsUpdaterInterface &updater);

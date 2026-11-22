@@ -3,6 +3,7 @@
 #include "anm/anm_thread_pool.h"
 #include "framework/memory/allocator.h"
 #include "framework/memory/framework_memory.h"
+#include "mm_mtl/algorithm.h"
 
 namespace mm {
 namespace mtl {
@@ -40,6 +41,15 @@ AnimationManager::~AnimationManager() {
   if (unknownf18 != nullptr) {
     delete unknownf18;
     unknownf18 = nullptr;
+  }
+}
+
+void AnimationManager::updateControls(const UpdateInfo &info, u32 layers) {
+  for (u32 layer = 0; layer < LAYER_UNKNOWN_32; layer++) {
+    if ((layers & 1 << layer) != 0) {
+      mm::mtl::IntrusiveList<AnimControlUpdaterInterface> &list = m_group[layer].unknown00;
+      mm::mtl::for_each(list.begin(), list.end(), [&info](AnimControlUpdaterInterface &updater) { updater.update(info); });
+    }
   }
 }
 
