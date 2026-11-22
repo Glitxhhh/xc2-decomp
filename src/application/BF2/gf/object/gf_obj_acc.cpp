@@ -1,5 +1,7 @@
 #include "gf/object/gf_obj_acc.h"
 
+#include <math.h>
+
 #include "anm/anm_pose.h"
 #include "anm/anm_qs_transform.h"
 #include "anm/anm_skeleton.h"
@@ -156,6 +158,24 @@ const fw::Transform &GfObjAcc::getWorldTransformNoSync() const {
   transform.unknown00 = mm::Vec3::zero;
   transform.unknown10 = mm::Quat::identity;
   return transform;
+}
+
+// 1.0.0: 0x7100581c0c, 97 instructions. The game rotates the opposite direction: the products have the temporaries negated (tx = (z * uy - y * uz) - w * ux), the z is negated before
+// atan2f and its result after. `atan2f(front.x, front.z)` of `rotate(unitZ)` has 95 instructions. The early return of the invalid case keeps the one `return true` (the nested form
+// duplicates it: 99 instructions).
+bool GfObjAcc::getObjPosRot(mm::Vec3 &position, f32 &rotation) {
+  if (!isValidTransform()) {
+    position = mm::Vec3::zero;
+    rotation = 0.0f;
+    return false;
+  }
+  position = getWorldTransform().unknown00;
+  rotation = 0.0f;
+  mm::Vec3 back = getWorldTransform().unknown10.rotate(mm::Vec3(-mm::Vec3::unitZ.x, -mm::Vec3::unitZ.y, -mm::Vec3::unitZ.z));
+  if (fabsf(back.x) > 0.000001f || fabsf(back.z) > 0.000001f) {
+    rotation = -atan2f(back.x, -back.z);
+  }
+  return true;
 }
 
 f32 GfObjAcc::getAlpha(OBJ_ALPHA type) const {
