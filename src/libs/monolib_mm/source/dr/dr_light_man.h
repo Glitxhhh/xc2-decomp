@@ -112,8 +112,8 @@ static_assert(offsetof(DrLightMan, unknown168) == 0x168, "");
 static_assert(offsetof(DrLightMan, unknown1b8) == 0x1b8, "");
 static_assert(offsetof(DrLightMan, unknown1b9) == 0x1b9, "");
 
-// Inferred role: deletes every object of a list linked through unknown10 and empties the list; shared by DrLightMan::releaseAll and
-// DrEnvironmentMan::releaseAll; original name unknown.
+// Inferred role: deletes every object of a list linked through unknown10 and empties the list, used by DrLightMan::releaseAll
+// (DrEnvironmentMan::releaseAll does the same with DrResChankList::unknown005); original name unknown.
 template <class T> void unknown2100(T *&first, T *&last) {
   T *object = first;
   while (object != nullptr) {

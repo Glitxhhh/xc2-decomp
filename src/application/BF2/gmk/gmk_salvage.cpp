@@ -2,9 +2,11 @@
 
 #include "bdat.h"
 #include "framework/debug/debug_draw.h"
+#include "gf/data/gf_bdat_chrenarrange.h"
 #include "gf/data/gf_bdat_id.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/data/gf_data_bdat.h"
+#include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_game_flag.h"
 #include "gf/game/gf_game_cond.h"
 #include "gf/game/gf_game_manager.h"
@@ -31,24 +33,46 @@ struct GF_OBJ_HANDLE;
 namespace gmk {
 
 GmkSalvage::RaffleResult::RaffleResult() {
-  unknown08 = -1;
-  unknown0c = -1;
-  unknown10 = -1;
-  unknown20 = -1;
-  unknown24 = -1;
-  unknown28 = -1;
-  unknown38 = -1;
+  unknown08[0] = -1;
+  unknown08[1] = -1;
+  unknown08[2] = -1;
+  unknown20[0] = -1;
+  unknown20[1] = -1;
+  unknown20[2] = -1;
+  unknown38[0] = -1;
   unknown00 = 0;
   unknown18 = 0;
   unknown30 = 0;
-  unknown44 = 0;
-  unknown46 = 0;
-  unknown48 = 0;
-  unknown4a = 0;
-  unknown4c = 0;
-  unknown4e = 0;
-  unknown3c = -1;
-  unknown40 = -1;
+  unknown44[0].unknown00 = 0;
+  unknown44[0].unknown02 = 0;
+  unknown44[1].unknown00 = 0;
+  unknown44[1].unknown02 = 0;
+  unknown44[2].unknown00 = 0;
+  unknown44[2].unknown02 = 0;
+  unknown38[1] = -1;
+  unknown38[2] = -1;
+}
+
+// The loop copies each entry (range-for by value) and keeps `enemyLevel` in a local: the local scope and the `continue` give the game's cleanup dispatch of the loop body
+// (`cset ls; csel hi; cbnz` at 0x710060982c, `orr #2; cmp #2; cset ne` at the end). Without the local (`level <= enemy.getLevel(arrange)`) the function is 78 instructions, with a
+// nested `if (enemy.unknown00 != 0)` instead of `continue` 60, with an index loop or a reference loop variable 63 (`cmp; b.hs`).
+bool GmkSalvage::RaffleResult::isPowerfullEnemyExist() const {
+  if (gf::GfGameManager::getControlMover() == gf::unknown020) {
+    return false;
+  }
+  gf::DataParamAcc acc(gf::GfGameManager::getControlMover());
+  u32 level = acc.getLevel(false) + 5;
+  const gf::GfBdatChrEnArrange *arrange = gf::GfBdatChrEnArrange::get();
+  for (RaffleResult::unknown001 enemy : unknown44) {
+    if (enemy.unknown00 == 0) {
+      continue;
+    }
+    u32 enemyLevel = enemy.getLevel(arrange);
+    if (level <= enemyLevel) {
+      return true;
+    }
+  }
+  return false;
 }
 
 template bool TGmkList<GmkSalvage, GmkSalvage::BdatInfo, 1447838035u, 2u, GmkSalvageGobCustom>::initGmkBdatInfo(GmkSalvage::BdatInfo &, int &, const AGmkBase &);

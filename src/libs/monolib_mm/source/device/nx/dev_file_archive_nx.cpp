@@ -227,6 +227,33 @@ bool DevFileArchiveNx::getFilesBlock(char *&files, int &num, mtl::ALLOC_HANDLE h
   return true;
 }
 
+// 1.0.0: 0x710072f290 (DevFileNxTh::rfIsBusy, 0x710072c194, has the same body). The loop body ends in `continue` or `return` only: with
+// the single `if (channel->unknown10d && channel->unknown10c) { return true; }` the body can fall off its end, clang then gives the
+// fall-through exit the destination 0, JumpThreading folds the cleanup dispatch into `(x | 4) & 7 != 4` and the function has 83
+// instructions against the game's 92. The guard of the single-handle path lives in the scope of the `return`: the `return` expression
+// is converted to bool before the destructor of the guard (the game's `cset w19, ne` before `bl ~ReadLockGuard`), where a copy read
+// inside a scope and returned after it has its conversion sunk behind the destructor (88 instructions, `cset w0, ne` after the call).
+bool DevFileArchiveNx::rfIsBusy(FileHandleTh *handle) {
+  DevFileArchiveNx *archive = get();
+  if (handle == nullptr) {
+    for (u32 i = 0; i < archive->unknown20->unknown0000.size(); i++) {
+      OpenReadParam *channel = &archive->unknown20->unknown0000[i];
+      mm::threading::ReadLockGuard guard(channel->unknown1a8);
+      if (!channel->unknown10d || !channel->unknown10c) {
+        continue;
+      }
+      return true;
+    }
+  } else {
+    OpenReadParam *channel = &archive->unknown20->unknown0000[handle->unknown1d4];
+    mm::threading::ReadLockGuard guard(channel->unknown1a8);
+    if (channel->unknown10c) {
+      return channel->unknown10d;
+    }
+  }
+  return false;
+}
+
 bool DevFileArchiveNx::rfClose(FileHandleTh *handle) {
   OpenReadParam *channel = &get()->unknown20->unknown0000[handle->unknown1d4];
   mm::threading::WriteLockGuard guard(channel->unknown1a8);

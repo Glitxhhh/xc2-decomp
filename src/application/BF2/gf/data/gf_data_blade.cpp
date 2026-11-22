@@ -1036,6 +1036,55 @@ u32 GfDataBlade::getStartCommonBlade() { return BLADE_UNKNOWN_1197; }
 
 u32 GfDataBlade::getEndCommonBlade() { return BLADE_UNKNOWN_1397; }
 
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// Its user unknown007 (0x710029f01c, 88 instructions) matches only with the search loop and the erase in a helper that returns after the erase. Written inline in
+// unknown007 the loop gives 94 instructions with break (it hoists the line constant 345 where the game hoists the file string), the search followed by a plain
+// erase(it) gives 93 (it hoists the message, the line and the file string, so the group base and the end of the outer loop are spilled) and the erase behind an
+// `it != blades.end()` test gives 92 (the test stays after the loop).
+static void eraseFirst(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades, u16 value) {
+  for (u16 *it = blades.begin(); it != blades.end(); ++it) {
+    if (*it == value) {
+      blades.erase(it);
+      return;
+    }
+  }
+}
+
+// Inferred role: removes from the list the other blades of a group when the list holds one of them; no symbol (0x710029f01c); original name unknown.
+static void unknown007(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades, const mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &group) {
+  for (u16 blade : group) {
+    if (mm::mtl::find(blades.begin(), blades.end(), blade) != blades.end()) {
+      for (u16 other : group) {
+        if (other == blade) {
+          continue;
+        }
+        eraseFirst(blades, other);
+      }
+    }
+  }
+}
+
+// Inferred helper with two users; original name unknown. It pushes a group of three blades and removes the duplicates among them from the list (removeSameBlade,
+// 0x710029ef44). The three groups written out with repeated pushes give the same 54 instructions, so the helper replaces the repeat (ruling 8); a loop over an
+// initializer_list of each group gives 30 instructions and a loop over a table of groups 163, hence the three blades as arguments.
+static void unknown008(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades, mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &group, u16 first, u16 second, u16 third) {
+  group.push_back(first);
+  group.push_back(second);
+  group.push_back(third);
+  unknown007(blades, group);
+}
+
+void GfDataBlade::removeSameBlade(mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> &blades) {
+  mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> group;
+  unknown008(blades, group, BLADE_HOMURA, BLADE_HIKARI, BLADE_HOMURI);
+  group.clear();
+  unknown008(blades, group, BLADE_UNKNOWN_1005, BLADE_UNKNOWN_1006, BLADE_UNKNOWN_1007);
+  group.clear();
+  group.push_back(BLADE_UNKNOWN_1022);
+  group.push_back(BLADE_UNKNOWN_1050);
+  unknown007(blades, group);
+}
+
 ActivateType GfDataBlade::getBladeActivateType(u32 blade) { return getBladeActivateType(getSDataBlade(blade)); }
 
 ActivateType GfDataBlade::getBladeActivateType(const SDataBlade &dataBlade) {

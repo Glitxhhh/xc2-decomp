@@ -103,6 +103,28 @@ bool DevFileNxTh::readBlock(FileHandleTh *handle, const char *path) {
   return isRead;
 }
 
+// 1.0.0: 0x710072c194. The same body as DevFileArchiveNx::rfIsBusy (0x710072f290); the comment there gives the forms the loop and the guard need.
+bool DevFileNxTh::rfIsBusy(FileHandleTh *handle) {
+  DevFileNxTh *file = get();
+  if (handle == nullptr) {
+    for (u32 i = 0; i < file->unknown20->unknown00.size(); i++) {
+      OpenReadParam *channel = &file->unknown20->unknown00[i];
+      mm::threading::ReadLockGuard guard(channel->unknown1a8);
+      if (!channel->unknown10d || !channel->unknown10c) {
+        continue;
+      }
+      return true;
+    }
+  } else {
+    OpenReadParam *channel = &file->unknown20->unknown00[handle->unknown1d4];
+    mm::threading::ReadLockGuard guard(channel->unknown1a8);
+    if (channel->unknown10c) {
+      return channel->unknown10d;
+    }
+  }
+  return false;
+}
+
 bool DevFileNxTh::rfClose(FileHandleTh *handle) {
   OpenReadParam *channel = &get()->unknown20->unknown00[handle->unknown1d4];
   mm::threading::WriteLockGuard guard(channel->unknown1a8);

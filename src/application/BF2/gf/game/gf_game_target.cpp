@@ -38,6 +38,36 @@ constexpr u32 ACCESS_TYPE_UNKNOWN_4 = 4; // Inferred role: access type water hol
 
 static bool unknown004; // Inferred role: display target mode flag; original variable name unknown.
 
+// gf::mergeObjList (0x7100344418) merges two lists sorted by unknown20. `useFirst` is a flag that reproduces the game's block shape (P2): it leads both ways
+// into one shared push of each list, so the game's `b.pl` after the compare jumps straight to the push of the first list. A nested loop with the test after it
+// (188 instructions) sends that exit through the `first.end() == firstIt` test, and writing the three cases as separate pushes (189) keeps two copies of the
+// push of the first list and makes the register allocator copy `first` before it spills it. The end() written on the left is needed (with it on the right:
+// 188 instructions, another jump threading).
+void mergeObjList(const mm::mtl::FixedList<GfSearchInfo *, 256> &first, const mm::mtl::FixedList<GfSearchInfo *, 256> &second, mm::mtl::FixedList<GfSearchInfo *, 256> *merged) {
+  mm::mtl::FixedList<GfSearchInfo *, 256>::const_iterator secondIt = second.begin();
+  mm::mtl::FixedList<GfSearchInfo *, 256>::const_iterator firstIt = first.begin();
+  while (true) {
+    bool useFirst;
+    if (secondIt == second.end()) {
+      if (firstIt == first.end()) {
+        return;
+      }
+      useFirst = true;
+    } else if (first.end() == firstIt) {
+      useFirst = false;
+    } else {
+      useFirst = !((*secondIt)->unknown20 < (*firstIt)->unknown20);
+    }
+    if (useFirst) {
+      merged->push_back(*firstIt);
+      ++firstIt;
+    } else {
+      merged->push_back(*secondIt);
+      ++secondIt;
+    }
+  }
+}
+
 bool isEnableTarget(GF_OBJ_HANDLE *handle) {
   GfObj *obj = GfObjUtil::getObj(handle);
   if (obj == nullptr || (GfGameInsideBattleLock::get()->unknown20 && !GfGameInsideBattleLock::isInside(handle))) {

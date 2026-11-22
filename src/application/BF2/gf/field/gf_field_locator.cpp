@@ -6,6 +6,7 @@
 #include "gf/data/gf_data_bdat.h"
 #include "gf/field/gf_field_gimmick.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_util.h"
 #include "gf/game/quest/gf_quest_info.h"
 #include "gf/game/quest/gf_quest_target.h"
 #include "gf/game/quest/gf_quest_task_param.h"
@@ -16,9 +17,12 @@
 #include "gmk/gmk_bdat.h"
 #include "gmk/gmk_door.h"
 #include "gmk/gmk_elevator.h"
+#include "gmk/gmk_enemy/gmk_enemy.h"
+#include "gmk/gmk_enemy/gmk_routed_enemy.h"
 #include "gmk/gmk_event.h"
 #include "gmk/gmk_jump.h"
 #include "gmk/gmk_landmark.h"
+#include "gmk/gmk_list.h"
 #include "gmk/gmk_manager.h"
 #include "gmk/gmk_map_gimmick.h"
 #include "gmk/gmk_npc/gmk_npc.h"
@@ -30,6 +34,17 @@
 #include "gmk/gmk_tbox.h"
 #include "gmk/gmk_warp.h"
 #include "mm_mtl/fixstr.h"
+
+namespace gf {
+struct GF_OBJ_HANDLE;
+} // namespace gf
+
+// Temporary device (decision 51 in docs/decisions.md): LocatorPrecious::create calls GmkManager::traverseGmkInst<LocatorPrecious> out of line (0x71002dd354, 0x14c bytes),
+// and the instance this template body gives does not match: the game calls onTraverse through the unknown134 base subobject (`add x20, x2, #24`, slot 0, hoisted
+// before the loop), where the body calls it through LocatorPrecious's own vtable (slot 7, no adjustment), 82 instructions against 83. The body matches the other instances
+// (GfGmkBladeTraverser, GfUnpopBladeIds, GmkInstDispTraverserByBdatId...), so it stays; this declaration only keeps the non-matching instance from being emitted. The
+// instance remains a target listed by `check`. Remove the declaration as soon as the instance matches.
+extern template bool gmk::GmkManager::traverseGmkInst<gf::LocatorPrecious>(gmk::GmkType, gf::LocatorPrecious &) const;
 
 namespace gf {
 
@@ -46,6 +61,14 @@ bool getPopPos(mm::Vec3 &position, const gmk::AGmkBase &gmk) {
   }
   return false;
 }
+
+// Inferred helper: the pop info of an enemy gimmick (GmkEnemy, GmkRoutedEnemy); original name unknown.
+// LocatorBat_EnemyID::update (0x71002dad74) matches only with it (390 instructions; the member chain written at each use
+// gives 391): the helper is merged into one GEP (&enemy->m_gmkEnemyInsts.m_popInfo) before it is inlined, where the chain
+// shares a GEP to &m_gmkEnemyInsts with the other uses, which InstCombine cannot merge for GmkRoutedEnemy (offset 0x50 is
+// [1][1] of AGmkBase: `add x8, #80; add x0, x8, #56` against the game's `add x0, #136`) and which CSE hoists above the
+// getGobInstNum call (the game computes the address after it, in the loop preheader, and again for isQuestDead).
+template <typename T> static const gmk::GmkEnemyInsts::PopInfo &unknown003(const T &enemy) { return enemy.m_gmkEnemyInsts.m_popInfo; }
 
 LocatorBat_EnemyID::LocatorBat_EnemyID(QuestID quest, u16 enemyId) : unknown14(0), unknown18(0) {
   if (!quest.empty() && enemyId != 0) {
@@ -72,6 +95,104 @@ void LocatorBat_EnemyID::dispose() {
   unknown428.clear();
   unknown20.clear();
   unknown14 = 0;
+}
+
+void LocatorBat_EnemyID::update() {
+  if (unknown14 != 0 && unknown18 > 0) {
+    unknown20.clear();
+    unknown428.clear();
+    const gmk::GmkSet *gmkSet = gmk::GmkManager::get()->findGmkSet(unknown18);
+    if (gmkSet != nullptr) {
+      const gmk::IGmkList *enemyList = gmkSet->getGmkList(gmk::GMK_TYPE_ENEMY);
+      if (enemyList != nullptr) {
+        u32 num = enemyList->getInstNum();
+        for (u32 index = 0; index < num; index++) {
+          const gmk::AGmkBase *gmk = enemyList->getInst(index);
+          if (gmk->isValid()) {
+            const gmk::GmkEnemy &enemy = static_cast<const gmk::GmkEnemy &>(*gmk);
+            if (unknown003(enemy).hasEneID(unknown14, true) && enemy.m_gmkEnemyInsts.m_bdatInfo.isPopCondMatched()) {
+              gmk::GmkAcc::CreateInfo info;
+              if (gmk != nullptr) {
+                info.validate(*gmk);
+              }
+              unknown20.push_back(gmk::GmkAcc(info));
+            }
+          }
+        }
+      }
+      const gmk::IGmkList *routedList = gmkSet->getGmkList(gmk::GMK_TYPE_ROUTED_ENEMY);
+      if (routedList != nullptr) {
+        u32 num = routedList->getInstNum();
+        for (u32 index = 0; index < num; index++) {
+          const gmk::AGmkBase *gmk = routedList->getInst(index);
+          if (gmk->isValid()) {
+            const gmk::GmkRoutedEnemy &enemy = static_cast<const gmk::GmkRoutedEnemy &>(*gmk);
+            if (unknown003(enemy).hasEneID(unknown14, true) && enemy.m_gmkEnemyInsts.m_bdatInfo.isPopCondMatched()) {
+              gmk::GmkAcc::CreateInfo info;
+              if (gmk != nullptr) {
+                info.validate(*gmk);
+              }
+              unknown428.push_back(gmk::GmkAcc(info));
+            }
+          }
+        }
+      }
+      m_pos.clear();
+      size_t enemyNum = unknown20.size();
+      for (size_t index = 0; index < enemyNum; index++) {
+        gmk::GmkAcc &acc = unknown20[index];
+        if (acc.isValid()) {
+          const gmk::GmkEnemy *enemy = static_cast<const gmk::GmkEnemy *>(acc.m_aGmkBase);
+          u32 gobNum = unknown003(*enemy).getGobInstNum();
+          if (gobNum != 0) {
+            bool isFound = false;
+            for (u32 gobIndex = 0; gobIndex < gobNum; gobIndex++) {
+              GF_OBJ_HANDLE *handle = enemy->m_gmkEnemyInsts.getGobInst(gobIndex);
+              GfObjAcc objAcc(handle);
+              if (objAcc.isValidTransform() && !GfGameUtil::isGameObjWait(handle)) {
+                m_pos.push_back(objAcc.getWorldTransformNoSync().unknown00);
+                isFound = true;
+              }
+            }
+            if (isFound) {
+              continue;
+            }
+          }
+          if (!(enemy->m_gmkEnemyInsts.unknown170 > 0.0f) && !enemy->m_gmkEnemyInsts.isQuestDead()) {
+            m_pos.push_back(enemy->m_createBaseInfo.m_xform->unknown00);
+          }
+        }
+      }
+      size_t routedNum = unknown428.size();
+      for (size_t index = 0; index < routedNum; index++) {
+        gmk::GmkAcc &acc = unknown428[index];
+        if (acc.isValid()) {
+          const gmk::GmkRoutedEnemy *enemy = static_cast<const gmk::GmkRoutedEnemy *>(acc.m_aGmkBase);
+          u32 gobNum = unknown003(*enemy).getGobInstNum();
+          if (gobNum != 0) {
+            bool isFound = false;
+            for (u32 gobIndex = 0; gobIndex < gobNum; gobIndex++) {
+              GF_OBJ_HANDLE *handle = enemy->m_gmkEnemyInsts.getGobInst(gobIndex);
+              GfObjAcc objAcc(handle);
+              if (objAcc.isValidTransform() && !GfGameUtil::isGameObjWait(handle)) {
+                m_pos.push_back(objAcc.getWorldTransformNoSync().unknown00);
+                isFound = true;
+              }
+            }
+            if (isFound) {
+              continue;
+            }
+          }
+          if (!(enemy->m_gmkEnemyInsts.unknown170 > 0.0f) && !enemy->m_gmkEnemyInsts.isQuestDead()) {
+            mm::Vec3 position(0.0f, 0.0f, 0.0f);
+            if (enemy->getRoutePointPos(position, 0)) {
+              m_pos.push_back(position);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 u32 LocatorBat_EnemyID::getPosNum() const { return m_pos.size(); }
@@ -376,6 +497,54 @@ LocatorPrecious::LocatorPrecious(QuestID quest, u16 itemId) : unknown20(0) {
   if (!quest.empty() && itemId != 0) {
     create(quest, itemId);
   }
+}
+
+void LocatorPrecious::create(QuestID quest, u16 itemId) {
+  dispose();
+  m_questID = quest;
+  unknown20 = itemId;
+  int gmkSetId = -1;
+  if (gmk::GmkManager::get()->traverseGmkInst(gmk::GmkPrecious::GMK_TYPE, *this) && !unknown28.empty()) {
+    const gmk::GmkPrecious *precious = static_cast<const gmk::GmkPrecious *>(unknown28[0].m_aGmkBase);
+    if (precious->m_createInfo.unknown18 > 0) {
+      gmkSetId = gmk::GmkManager::get()->findFirstBdatId_RSC_GmkSetList(gmk::GmkPrecious::GMK_TYPE, precious->m_createInfo.unknown18);
+    }
+  } else {
+    u8 *mapBdat = gmk::GmkManager::get()->unknown190;
+    int count = Bdat::getIdCount(mapBdat);
+    int top = Bdat::getIdTop(mapBdat);
+    for (int id = top; id < top + count; id++) {
+      const char *sheetName = gmk::GmkManager::get()->getSheetnameByType(id, gmk::GmkPrecious::GMK_TYPE);
+      if (sheetName != nullptr && sheetName[0] != '\0') {
+        u8 *bdat = Bdat::isExistFP(sheetName);
+        if (bdat != nullptr) {
+          int rowCount = Bdat::getIdCount(bdat);
+          int rowTop = Bdat::getIdTop(bdat);
+          // `!found` is tested before `row < end`. With `row < end && !found` SimplifyCFG folds the two tests into
+          // `or (row >= end), (==)` and the DAG re-emits the `==` compare (`cmp; b.ne`, 136 instructions as a guarded
+          // do-while, 130 as a `while`) where the game keeps `cset ne; tbnz` (0x71002dd244).
+          bool found = false;
+          int row = rowTop;
+          while (!found && row < rowTop + rowCount) {
+            found = static_cast<u16>(Bdat::getValCheck(bdat, "itmID", row, gmk::BDAT_TYPE_UNKNOWN_2)) == itemId;
+            if (found) {
+              gmkSetId = id;
+            }
+            row++;
+          }
+          if (gmkSetId > 0) {
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (gmkSetId >= 0) {
+    m_mapBdatId = GfFieldGimmick::getBdatIdFrom_RSC_GmkSetList_To_FLD_maplist(gmkSetId);
+    unknown001(GfQuestTarget::getIconTypeCollect(2, itemId, m_questID, m_mapBdatId, true));
+    return;
+  }
+  dispose();
 }
 
 void LocatorPrecious::dispose() {

@@ -63,14 +63,14 @@ DrEnvironmentObj::DrEnvironmentObj(DrMan *drMan, DrLightMan *lightMan, DrFogMan 
 void DrEnvironmentMan::releaseObj(DrEnvironmentObj *obj) { obj->release(); }
 
 void DrEnvironmentMan::releaseAll() {
-  unknown2100(unknown28[0], unknown28[1]);
-  unknown2100(unknown28[2], unknown28[3]);
-  unknown2100(unknown58, unknown60);
-  unknown2100(unknown48, unknown50);
+  unknown28[0].unknown005();
+  unknown28[1].unknown005();
+  unknown58.unknown005();
+  unknown48.unknown005();
 }
 
 DrEnvironmentMan::DrEnvironmentMan(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan, int screen)
-    : m_drMan(drMan), m_drLightMan(lightMan), m_drFogMan(fogMan), unknown20(screen), unknown28(), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr) {
+    : m_drMan(drMan), m_drLightMan(lightMan), m_drFogMan(fogMan), unknown20(screen), unknown28(), unknown48(), unknown58(), unknown68(nullptr) {
   m_drEnvColiMan = new (drMan->unknown0c) DrEnvColiMan(drMan);
 }
 
@@ -86,6 +86,45 @@ DrEnvironmentMan::~DrEnvironmentMan() {
     m_drEnvColiMan = nullptr;
   }
   releaseAll();
+}
+
+// 1.0.0: 0x71007df930. Layout evidence for the retyping of the members: the game indexes the request lists with a 16-byte stride (`add x21, x19, x22, lsl #4`, then
+// `ldr x20, [x21, #0x28]!` and `stp xzr, xzr, [x21]`), so unknown28 holds two lists, not four loose pointers, and it links and unlinks objects of the lists at 0x48 and 0x58 with
+// the first/last steps of DrResChankList (unknown004, unknown001); DrEnvironmentMan::releaseAll deletes each list with the loop of its unknown005. Measured with clang 3.9:
+// written with the dr_res_list.h templates on the loose first/last members the function has 136 instructions against the game's 137 (`add x21, x19, #72` hoisted before
+// the first loop, where the game forms the address of unknown48 only for the last loop).
+void DrEnvironmentMan::update() {
+  updateCameraLight();
+  unknown58.unknown005();
+  s32 index = DrMan::s_nDblIdx;
+  DrEnvironmentObj *obj = unknown28[index].unknown00;
+  while (obj != nullptr) {
+    if (obj->unknown8c & DrEnvironmentObj::FLAG_UNKNOWN_1) {
+      setZoneObj(obj, false);
+    }
+    obj->resourceInit();
+    DrEnvironmentObj *next = obj->unknown10;
+    unknown48.unknown004(obj);
+    obj = next;
+  }
+  unknown28[index] = DrResChankList<DrEnvironmentObj>();
+  m_drEnvColiMan->update();
+  obj = unknown48.unknown00;
+  while (obj != nullptr) {
+    DrEnvironmentObj *next;
+    if (obj->unknown8c & (DrEnvironmentObj::FLAG_UNKNOWN_30 << index)) {
+      next = obj->unknown10;
+      unknown48.unknown001(obj);
+      if (obj->unknown8c & DrEnvironmentObj::FLAG_UNKNOWN_1) {
+        setZoneObj(obj, true);
+      }
+      unknown58.unknown004(obj);
+    } else {
+      obj->update();
+      next = obj->unknown10;
+    }
+    obj = next;
+  }
 }
 
 void DrEnvironmentMan::updateCameraLight() {
@@ -105,20 +144,20 @@ void DrEnvironmentMan::updateCameraLight() {
 }
 
 void DrEnvironmentMan::renderLgt() {
-  for (DrEnvironmentObj *obj = unknown48; obj != nullptr; obj = obj->unknown10) {
+  for (DrEnvironmentObj *obj = unknown48.unknown00; obj != nullptr; obj = obj->unknown10) {
     obj->renderLgt();
   }
 }
 
 void DrEnvironmentMan::setZoneObj(DrEnvironmentObj *obj, bool isOn) {
   if (isOn) {
-    for (DrEnvironmentObj *current = unknown48; current != nullptr; current = current->unknown10) {
+    for (DrEnvironmentObj *current = unknown48.unknown00; current != nullptr; current = current->unknown10) {
       if (current->unknown8c & DrEnvironmentObj::FLAG_UNKNOWN_1) {
         current->unknown8c &= ~DrEnvironmentObj::FLAG_UNKNOWN_0;
       }
     }
   } else {
-    for (DrEnvironmentObj *current = unknown48; current != nullptr; current = current->unknown10) {
+    for (DrEnvironmentObj *current = unknown48.unknown00; current != nullptr; current = current->unknown10) {
       if (current->unknown8c & DrEnvironmentObj::FLAG_UNKNOWN_1) {
         current->unknown8c |= DrEnvironmentObj::FLAG_UNKNOWN_0;
       }

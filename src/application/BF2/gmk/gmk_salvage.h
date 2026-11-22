@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 
+#include "gf/data/gf_bdat_chrenarrange.h"
 #include "gf/data/gf_bdat_wrapper.h"
 #include "gf/field/gf_fobj_dropitem.h"
 #include "gf/object/gf_obj_manager.h"
@@ -41,31 +42,32 @@ public:
   };
 
   struct RaffleResult {
-    RaffleResult();
+    // Inferred role: enemy entry of the raffle result; original type name unknown.
+    struct unknown001 {
+      // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+      // Its user, isPowerfullEnemyExist (0x71006097bc, 66 instructions), matches only with a method called on the by-value loop copy: with the sum written in the loop
+      // (`(arrange->getChrEnArrangeLv(enemy.unknown00) & 0xff) + enemy.unknown02`) the copy is split into ldrh/ldrsb (63 instructions), and a static helper taking the
+      // entry by value gives the loop test `cmp; b.hs` (60), where the game keeps the word load and `cset ls; csel hi; cbnz`.
+      u32 getLevel(const gf::GfBdatChrEnArrange *arrange) const { return (arrange->getChrEnArrangeLv(unknown00) & 0xff) + unknown02; }
 
-    u64 unknown00; // Role and original member name unknown.
-    s32 unknown08; // Role and original member name unknown.
-    s32 unknown0c; // Role and original member name unknown.
-    s32 unknown10; // Role and original member name unknown.
+      u16 unknown00; // Role and original member name unknown.
+      s8 unknown02;  // Role and original member name unknown.
+    };
+
+    RaffleResult();
+    bool isPowerfullEnemyExist() const;
+
+    u64 unknown00;    // Role and original member name unknown.
+    s32 unknown08[3]; // Role and original member name unknown.
     u8 _14[0x18 - 0x14];
-    u64 unknown18; // Role and original member name unknown.
-    s32 unknown20; // Role and original member name unknown.
-    s32 unknown24; // Role and original member name unknown.
-    s32 unknown28; // Role and original member name unknown.
+    u64 unknown18;    // Role and original member name unknown.
+    s32 unknown20[3]; // Role and original member name unknown.
     u8 _2c[0x30 - 0x2c];
-    u64 unknown30; // Role and original member name unknown.
-    s32 unknown38; // Role and original member name unknown.
-    s32 unknown3c; // Role and original member name unknown.
-    s32 unknown40; // Role and original member name unknown.
-    u16 unknown44; // Role and original member name unknown.
-    u8 unknown46;  // Role and original member name unknown.
-    u8 _47;
-    u16 unknown48; // Role and original member name unknown.
-    u8 unknown4a;  // Role and original member name unknown.
-    u8 _4b;
-    u16 unknown4c; // Role and original member name unknown.
-    u8 unknown4e;  // Role and original member name unknown.
-    u8 _4f;
+    u64 unknown30;    // Role and original member name unknown.
+    s32 unknown38[3]; // Role and original member name unknown.
+    // Layout evidence: the constructor (0x7100609714) clears three 4-byte entries at 0x44, 0x48 and 0x4c (`strh`, `strb`), and isPowerfullEnemyExist (0x71006097bc) reads
+    // the three words, each with the same body (`ldr w22, [x19, #0x44]`, `#0x48`, `#0x4c`; halfword id in the low 16 bits, signed byte at bit 16).
+    unknown001 unknown44[3]; // Role and original member name unknown.
   };
 
   struct BdatInfo {
@@ -121,6 +123,8 @@ public:
 };
 
 static_assert(sizeof(GmkSalvage::RaffleResult) == 0x50, "");
+static_assert(offsetof(GmkSalvage::RaffleResult, unknown44) == 0x44, "");
+static_assert(sizeof(GmkSalvage::RaffleResult::unknown001) == 0x4, "");
 static_assert(sizeof(GmkSalvage::BdatInfo) == 0x2, "");
 static_assert(offsetof(GmkSalvage, unknown48) == 0x48, "");
 static_assert(offsetof(GmkSalvage, unknown58) == 0x58, "");
