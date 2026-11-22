@@ -102,7 +102,3 @@ void registerDetectCapsuleJobExecuter(anm::JobQueue *queue) { queue->registerJob
 void registerDetectPlaneJobExecuter(anm::JobQueue *queue) { queue->registerJobExecuter(2, executeDetectPlaneJob); }
 
 } // namespace skd
-
-// The game builds the spring calculation in this unit: the functions of the detect jobs and of CalcUtil interleave in one contiguous range with no other unit
-// between (ApplyDetectJob 0x710097dd60 to 0x710097e28c, CalcUtil 0x710097ef9c to 0x710098234c, DetectCapsuleJob and detect job helpers 0x71009826c0 to 0x7100982eac).
-#include "../composite/skd_calc_util.cpp"
