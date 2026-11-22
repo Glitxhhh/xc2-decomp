@@ -38,7 +38,7 @@ ICmd::RESULT CharaMount::update(const Param &param) {
       } else {
         unknown08->setMount(model, bone);
       }
-      unknown18->resetDynamics(0);
+      m_charaDysUpdater->resetDynamics(0);
       unknown10 = model;
     }
   }

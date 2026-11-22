@@ -82,8 +82,8 @@ private:
 
   u32 unknown10;                   // Inferred role: flags; original member name unknown.
   u32 unknown14;                   // Inferred role: disp flags; original member name unknown.
-  TextCaption unknown18;           // Inferred role: caption; original member name unknown.
-  TextWindow unknown128;           // Inferred role: window; original member name unknown.
+  TextCaption m_textCaption;       // Inferred role: caption; original member name unknown.
+  TextWindow m_textWindow;         // Inferred role: window; original member name unknown.
   f32 unknown358;                  // Inferred role: life; original member name unknown.
   f32 unknown35c;                  // Inferred role: delay; original member name unknown.
   f32 unknown360;                  // Inferred role: delay back; original member name unknown.

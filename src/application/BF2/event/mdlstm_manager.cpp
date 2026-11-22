@@ -58,7 +58,7 @@ void MdlstmManager::dispose(ModelObj *model) {
 f32 MdlstmManager::getNextCutFrame(f32 frame) {
   f32 next = frame;
   if (unknown3c018 != 0) {
-    next = unknown18[unknown3c018 - 1].unknown10;
+    next = m_mdlstmObj[unknown3c018 - 1].unknown10;
     for (u32 i = 0; i < unknown3c018; i++) {
       if (frame < unknown3c020[i]->unknown10) {
         if (unknown3c020[i]->unknown10 < next) {
@@ -102,7 +102,7 @@ void MdlstmManager::setReuseFlag(int reuseFlag) { m_reuseFlag = reuseFlag; }
 
 void MdlstmManager::load(f32 frame, const char *path, u32 value, bool isActive) {
   if (unknown10 & FLAG_UNKNOWN_0) {
-    MdlstmObj *obj = &unknown18[unknown3c018++];
+    MdlstmObj *obj = &m_mdlstmObj[unknown3c018++];
     obj->init(frame, path, value, isActive, m_reuseFlag);
     unknown001(obj);
   }
@@ -110,7 +110,7 @@ void MdlstmManager::load(f32 frame, const char *path, u32 value, bool isActive) 
 
 void MdlstmManager::load(f32 frame, MODEL_TYPE type, u32 id, u32 value, bool isActive) {
   if (unknown10 & FLAG_UNKNOWN_0) {
-    MdlstmObj *obj = &unknown18[unknown3c018++];
+    MdlstmObj *obj = &m_mdlstmObj[unknown3c018++];
     obj->init(frame, type, id, value, isActive, m_reuseFlag);
     unknown001(obj);
   }

@@ -71,7 +71,7 @@ private:
 
   u32 unknown10;                                                    // Inferred role: flags; original member name unknown.
   u32 unknown14;                                                    // Inferred role: reuse flags; original member name unknown.
-  MdlstmObj unknown18[OBJ_UNKNOWN_1024];                            // Inferred role: objs; original member name unknown.
+  MdlstmObj m_mdlstmObj[OBJ_UNKNOWN_1024];                          // Inferred role: objs; original member name unknown.
   u32 unknown3c018;                                                 // Inferred role: object count; original member name unknown.
   mm::mtl::FixedVector<MdlstmObj *, OBJ_UNKNOWN_1024> unknown3c020; // Inferred role: active objs; original member name unknown.
   u32 _3e028;
