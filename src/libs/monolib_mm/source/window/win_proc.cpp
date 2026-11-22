@@ -6,6 +6,7 @@
 #include "ml/win_view_root.h"
 #include "ml/work_root.h"
 #include "ml/work_util.h"
+#include "mm_mtl/algorithm.h"
 #include "mm_mtl/fixstr.h"
 #include "mtl/alloc_handle.h"
 
@@ -112,6 +113,20 @@ bool WinProc::pssDetachView() {
     }
   }
   unknown1a8.clear();
+  return true;
+}
+
+bool WinProc::pssDetachView(u32 wid) {
+  reslist<u32>::iterator it = mm::mtl::find_if<reslist<u32>::iterator>(unknown1a8.begin(), unknown1a8.end(), [wid](u32 value) { return value == wid; });
+  if (it == unknown1a8.end()) {
+    return false;
+  }
+  WinView *view = WinViewRoot::getView(*it);
+  if (!view->wkIsShutdown()) {
+    view->wkSetEvent(static_cast<EVT>(0));
+  }
+  view->detachRenderWork(this);
+  unknown1a8.erase(it);
   return true;
 }
 

@@ -27,6 +27,7 @@
 #include "gf/field/gf_field_weather.h"
 #include "gf/field/gf_mob_slot_manager.h"
 #include "gf/game/gf_game_manager.h"
+#include "gf/game/gf_game_party.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/game/quest/gf_quest_id.h"
 #include "gf/game/quest/gf_quest_info.h"
@@ -1878,6 +1879,49 @@ void GmkPhantomManager::addGmkPhantom(GmkPhantom *phantom) { unknown08.push_back
 void GmkPhantomManager::removeGmkPhantom(GmkPhantom *phantom) {
   if (phantom != nullptr) {
     unknown08.erase(phantom);
+  }
+}
+
+void GmkPhantomManager::update(f32 deltaTime) {
+  // The game computes &unknown20 once, before the clear loop, and reuses it for the first test and for the phantom loop (0x71005dc67c: x20 = this + 0x20). Written as
+  // a reference to the member, the address dominates the whole function; with unknown20 named at each use the phantom loop is rotated with a guard (119 instructions
+  // against the game's 115), where the game's is unrotated.
+  GmkPhantomCheckResults &results = unknown20;
+  for (u32 i = 0; i < 3; i++) {
+    results[i].clear();
+  }
+  {
+    gf::GfObjAcc acc(gf::GfGameManager::getControlMover());
+    if (acc.isValidTransform()) {
+      const mm::Vec3 &position = acc.getWorldTransform().unknown00;
+      fw::ColiCheckConfig config;
+      config.unknown15 = false;
+      config.unknown08 = 0.0f;
+      config.unknown0c = 0.0f;
+      config.unknown14 = true;
+      config.unknown00 = fw::ColiCheckConfig::FLAG_UNKNOWN_1;
+      config.unknown04 = 0x100000;
+      config.unknown10 = 0;
+      fw::ColiCheck::testSpherePhantom(results[0], position, 0.0f, config);
+    }
+  }
+  for (u32 i = 1; i < 3; i++) {
+    gf::GfObjAcc acc(gf::GfGameParty::getHandleDriver(i));
+    if (acc.isValidTransform()) {
+      const mm::Vec3 &position = acc.getWorldTransform().unknown00;
+      fw::ColiCheckConfig config;
+      config.unknown15 = false;
+      config.unknown08 = 0.0f;
+      config.unknown0c = 0.0f;
+      config.unknown14 = true;
+      config.unknown00 = fw::ColiCheckConfig::FLAG_UNKNOWN_1;
+      config.unknown04 = 0x100000;
+      config.unknown10 = 0;
+      fw::ColiCheck::testSpherePhantom(results[i], position, 0.0f, config);
+    }
+  }
+  for (mm::mtl::IntrusiveList<GmkPhantom>::iterator it = unknown08.begin(); it != unknown08.end(); ++it) {
+    it.get()->update(results);
   }
 }
 

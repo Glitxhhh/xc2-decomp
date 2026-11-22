@@ -34,6 +34,7 @@
 #include "mm_math/mm_quat.h"
 #include "mm_math/mm_vec3.h"
 #include "mm_mtl/algorithm.h"
+#include "mm_mtl/fixed_queue.h"
 #include "mm_mtl/fixed_vector.h"
 #include "mm_mtl/fixstr.h"
 #include "mm_mtl/rtti.h"
@@ -943,6 +944,78 @@ void GfGameObj::setupEnterGameObjMount(GF_OBJ_HANDLE *handle, GFATTACH attach, f
   }
 }
 
+void GfGameObjEnemy::leaveEnemyObj(GF_OBJ_HANDLE *handle) {
+  DataParamAcc paramAcc(handle);
+  if (paramAcc.getObjType() == OBJECT_TYPE_ENEMY && paramAcc.isLinkGenus()) {
+    if (!GfObjAcc(handle).isEnemyBlade()) {
+      mm::mtl::FixedList<GF_OBJ_HANDLE *, 256>::iterator found = mm::mtl::find(unknown670.begin(), unknown670.end(), handle);
+      if (found != unknown670.end()) {
+        unknown670.erase(found);
+      }
+      found = mm::mtl::find(unknown1890.begin(), unknown1890.end(), handle);
+      if (found != unknown1890.end()) {
+        unknown1890.erase(found);
+      }
+      u32 genus = paramAcc.getGenus();
+      mm::mtl::FixedList<GINFO, 64>::iterator genusIt = mm::mtl::find_if(unknown08.begin(), unknown08.end(), [genus](const GINFO &info) { return info.unknown00 == genus; });
+      if (unknown08.end() != genusIt) {
+        mm::mtl::FixedList<GF_OBJ_HANDLE *, 64>::iterator objectIt = mm::mtl::find(genusIt->unknown08->begin(), genusIt->unknown08->end(), handle);
+        if (genusIt->unknown08->end() != objectIt) {
+          genusIt->unknown08->erase(objectIt);
+          if (genusIt->unknown08->empty()) {
+            if (genusIt->unknown08 != nullptr) {
+              delete genusIt->unknown08;
+              genusIt->unknown08 = nullptr;
+            }
+            unknown08.erase(genusIt);
+          }
+          for (Pair &pair : unknown2ab0) {
+            if (pair.unknown00 == handle || pair.unknown08 == handle) {
+              pair.unknown00 = unknown020;
+              pair.unknown08 = unknown020;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+void GfGameObjEnemy::enterEnemyObj(GF_OBJ_HANDLE *handle) {
+  DataParamAcc paramAcc(handle);
+  if (paramAcc.getObjType() == OBJECT_TYPE_ENEMY && paramAcc.isLinkGenus()) {
+    if (!GfObjAcc(handle).isEnemyBlade()) {
+      if (mm::mtl::find(unknown670.begin(), unknown670.end(), handle) == unknown670.end()) {
+        unknown670.push_back(handle);
+        u32 genus = paramAcc.getGenus();
+        mm::mtl::FixedList<GINFO, 64>::iterator genusIt = mm::mtl::find_if(unknown08.begin(), unknown08.end(), [genus](const GINFO &info) { return info.unknown00 == genus; });
+        if (genusIt == unknown08.end()) {
+          // __LINE__ must be 1756 as in the original file: it is the line argument of the allocation.
+#line 1756
+          mm::mtl::FixedList<GF_OBJ_HANDLE *, 64> *objects = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) mm::mtl::FixedList<GF_OBJ_HANDLE *, 64>;
+          objects->push_back(handle);
+          GINFO info;
+          info.unknown00 = genus;
+          info.unknown08 = objects;
+          unknown08.push_back(info);
+        } else {
+          mm::mtl::FixedList<GF_OBJ_HANDLE *, 64> *objects = genusIt->unknown08;
+          for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 64>::iterator it = objects->begin(); it != objects->end(); ++it) {
+            GF_OBJ_HANDLE *other = *it;
+            // The game leaves the loop when the queue is full (cmp #0x400, b.eq) instead of reaching the assert of push.
+            if (unknown2ab0.full()) {
+              break;
+            }
+            Pair pair = {handle, other, false, -1, -1};
+            unknown2ab0.push(pair);
+          }
+          genusIt->unknown08->push_back(handle);
+        }
+      }
+    }
+  }
+}
+
 GfGameObjEnemy::GfGameObjEnemy() {}
 
 GfGameObjEnemy::~GfGameObjEnemy() {}
@@ -953,6 +1026,31 @@ bool GfGameObjEnemy::isGenusLink(GF_OBJ_HANDLE *handle) {
     return mm::mtl::find(enemy->unknown1890.begin(), enemy->unknown1890.end(), handle) != enemy->unknown1890.end();
   }
   return false;
+}
+
+bool GfGameObjEnemy::getGenusLink(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &list, GF_OBJ_HANDLE *handle) {
+  GfGameObjEnemy *enemy = get();
+  if (enemy == nullptr) {
+    return false;
+  }
+  list.clear();
+  DataParamAcc paramAcc(handle);
+  u32 genus = paramAcc.getGenus();
+  mm::mtl::FixedList<GINFO, 64>::iterator genusIt = mm::mtl::find_if(enemy->unknown08.begin(), enemy->unknown08.end(), [genus](const GINFO &info) { return info.unknown00 == genus; });
+  if (enemy->unknown08.end() == genusIt) {
+    return false;
+  }
+  for (Pair &pair : enemy->unknown2ab0) {
+    if ((pair.unknown00 == handle || pair.unknown08 == handle) && pair.unknown10) {
+      if (pair.unknown00 != handle) {
+        list.push_back(pair.unknown00);
+      }
+      if (pair.unknown08 != handle) {
+        list.push_back(pair.unknown08);
+      }
+    }
+  }
+  return list.size() != 0;
 }
 
 // Inferred role: whether the enemy behavior of the object has its unknown54e4 flag set; no game symbol, original name unknown. The game holds this test twice in calcGenusLink (0x7100325b4c for the

@@ -164,6 +164,18 @@ void BdatManager::Impl::unregistBdat(const char *name) {
   }
 }
 
+// The `found` local reproduces the game's second block (0x7100153d1c): the unrolled loop returns zext(strcmp == 0) there, where
+// `if (strcmp(...) == 0)` returns the constant 1 (108 instructions against 107, P2 of docs/decisions.md: block shape).
+int BdatManager::Impl::find(const char *name) const {
+  for (int i = 0; i < BDAT_UNKNOWN_16; i++) {
+    bool found = strcmp(m_bdatInfo[i].unknown108.c_str(), name) == 0;
+    if (found) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 bool BdatManager::Impl::isExistBdat(int id) const { return m_bdatInfo[id].unknown158 != nullptr || m_bdatInfo[id].unknown148 != nullptr; }
 
 bool BdatManager::Impl::isEnableBdat(int id) const {

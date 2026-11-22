@@ -286,6 +286,34 @@ void DrCalcTexStreamMan::releaseFreeObj(DrCalcTexStmObj *&object) {
 
 void DrCalcTexStreamMan::jobWait() { WorkCpu::sync(unknown2498, WKCPU_SYNC_UNKNOWN_0, CPUID_UNKNOWN_0); }
 
+// 1.0.0: 0x71008b257c (145 instructions). Loop forms that matter (measured, docs/lessons.md "for_each form"): the loops are `while` loops over a pointer declared
+// before them, a `for (T *obj = ...;;)` leaves the empty for.cond.cleanup block of the loop variable and the exit block ends up ahead of the loop, so early Tail
+// Duplication copies the latch into the update arm (the game keeps one shared latch); the entry list is emptied by value-initialisation, as DrMan does, which
+// is one memset of the entry: two member stores make GVN insert a PRE phi for the address of the last member (hoisted by the loop) and the stores stop merging.
+void DrCalcTexStreamMan::calcUpdateList() {
+  CS cs(getCriticalSection());
+  DrCalcStmListObj *obj = unknown38[DrMan::s_nDblIdx].unknown00;
+  while (obj != nullptr) {
+    DrCalcStmListObj *next = obj->unknown10;
+    unknown38[DrMan::s_nDblIdx].unknown001(obj);
+    unknown28.unknown004(obj);
+    obj = next;
+  }
+  unknown38[DrMan::s_nDblIdx] = DrResChankList<DrCalcStmListObj>();
+  obj = unknown28.unknown00;
+  while (obj != nullptr) {
+    if (obj->unknown80 & 2) {
+      DrCalcStmListObj *next = obj->unknown10;
+      unknown28.unknown001(obj);
+      delete obj;
+      obj = next;
+    } else {
+      obj->updateHeaderInfo();
+      obj = obj->unknown10;
+    }
+  }
+}
+
 void DrCalcTexStreamMan::callHlvTexOptimization() { unknown248c = 0xa0; }
 
 void DrCalcTexStreamMan::callOptimization(u32 value) { unknown2488 += value; }

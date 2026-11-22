@@ -1,5 +1,7 @@
 #include "gf/object/component/gf_com_sound.h"
 
+#include <string.h>
+
 #include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/sound/sound_manager.h"
@@ -88,6 +90,22 @@ void GfComSound::clearCahches() {
     eraseCache(unknown30.begin());
   }
 }
+
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a
+// symbol. Its user is GfComSound::stopSe (0x710057fa0c). It takes begin() and end() by value, like the algorithms of docs/lessons.md ("for_each form"): every loop written in
+// stopSe (for or while with it != end(), end() first, early return) is rotated with a guard (31 insns against the game's 30), and mm::mtl::find_if followed by a test of
+// the result is unrotated like the game but keeps that test on the found path (32 insns).
+static bool eraseFirstMatchingCache(GfComSound *self, mm::mtl::List<GfComSound::SoundInfo>::iterator first, mm::mtl::List<GfComSound::SoundInfo>::iterator last, const char *name) {
+  for (; first != last; ++first) {
+    if (strcmp((*first).unknown04.c_str(), name) == 0) {
+      self->eraseCache(first);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool GfComSound::stopSe(const char *name) { return eraseFirstMatchingCache(this, unknown30.begin(), unknown30.end(), name); }
 
 mm::mtl::List<GfComSound::SoundInfo>::iterator GfComSound::eraseCache(mm::mtl::List<SoundInfo>::iterator it) {
   fw::SoundManager *manager = fw::SoundManager::get();
