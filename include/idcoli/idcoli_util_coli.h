@@ -12,12 +12,16 @@ class IDColiObj;
 // Inferred role: material record of a hit, 0x1c bytes as zeroed by fw::TColiCheckResult::getMaterial; original type name unknown.
 struct unknown250 {
   u16 unknown00; // Inferred role: material type; original member name unknown.
-  u8 _02[0x08 - 0x02];
+  u8 _02[0x04 - 0x02];
+  u32 unknown04; // Inferred role: ground material copied by gf::GfComEnvSensor::flushGroundSingle; original member name unknown.
   u32 unknown08; // Inferred role: flags, bit 7 selects the vector table; original member name unknown.
-  u8 _0c[0x1c - 0x0c];
+  u8 _0c[0x18 - 0x0c];
+  u8 unknown18[4]; // Inferred role: color, red, green, blue, alpha; original member name unknown.
 };
 
+static_assert(offsetof(unknown250, unknown04) == 0x04, "");
 static_assert(offsetof(unknown250, unknown08) == 0x08, "");
+static_assert(offsetof(unknown250, unknown18) == 0x18, "");
 static_assert(sizeof(unknown250) == 0x1c, "");
 
 struct IDColiCallArg {

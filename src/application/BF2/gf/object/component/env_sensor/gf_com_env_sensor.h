@@ -4,6 +4,7 @@
 #include "framework/sensor/sensor_manager.h"
 #include "fw/fw_param_manager.h"
 #include "gf/object/component/gf_component.h"
+#include "gf/object/component/property/gf_env_property.h"
 #include "gf/object/gf_obj_handle.h"
 #include "mm_math/mm_col4.h"
 #include "mm_math/mm_plane.h"
@@ -27,7 +28,6 @@ struct Transform;
 namespace gf {
 
 struct GF_OBJ_HANDLE;
-struct GfEnvProperty;
 
 // Layout evidence: GfComEnvSensor::GfComEnvSensor() constructs the sensor at +0x10 and the next member at +0x2b0;
 // EnviromentSensor::EnviromentSensor() clears +0x20, constructs VerticalData at +0x30 and a GroundInfo at +0x1f0 and
@@ -43,7 +43,7 @@ public:
   struct GroundInfo {
     // Inline: the game only has the base object constructor symbol (C2) of this one, called out of line by VerticalData::VerticalData() and EnviromentSensor::EnviromentSensor().
     GroundInfo() : unknown00(mm::Vec3::zero), unknown30(0), m_GF_OBJ_HANDLE(unknown020), unknown40(mm::Vec3::zero), unknown50(mm::Col4::white), unknown60(0) {
-      unknown10.set(mm::Vec3::unitY, mm::Vec3::zero);
+      unknown10.set(mm::Vec3::zero, mm::Vec3::unitY);
     }
 
     mm::Vec3 unknown00;             // Inferred role: position; original member name unknown.
@@ -240,6 +240,16 @@ public:
   static mm::mtl::RTTI m_rtti;
   static const u32 COMPONENT_INDEX = 11;
 
+  // Layout evidence: flushFoot (0x710051b9a4) reads a scale at 0x00 and the heights of the ground search at 0x04 and 0x08 of the param entry at 0x2e8, flushRootAfterMovement (0x710051c58c) the
+  // heights at 0x0c and 0x10; the size is not known. Original type name unknown.
+  struct unknown001 {
+    f32 unknown00; // Inferred role: scale of the foot offset; original member name unknown.
+    f32 unknown04; // Inferred role: height above the foot of the ground search; original member name unknown.
+    f32 unknown08; // Inferred role: depth below the foot of the ground search; original member name unknown.
+    f32 unknown0c; // Inferred role: height above the root of the ground search; original member name unknown.
+    f32 unknown10; // Inferred role: depth below the root of the ground search; original member name unknown.
+  };
+
   class EnvListener {
   public:
     virtual void onWkStandbyLogout() { m_comEnvSensor->unknown368 = nullptr; }
@@ -257,13 +267,15 @@ public:
   void setEnableSensor(bool isEnable);
   void flushEnv(const fw::Transform &transform);
   void resolveTransform();
+  void flushRootAfterMovement();
+  bool flushGroundSingle(GfEnvProperty *property, const mm::Vec3 &position, f32 up, f32 down, GfEnvProperty::GROUND_INDEX index);
   const fw::Transform &getTransform();
   const mm::mtl::RTTI *getRTTI() const override;
 
-  EnviromentSensor m_envSensor;                    // Inferred role: sensor; named after the game accessor gf::GfComPropertyPc::getEnvSensor.
-  u16 unknown2b0[6];                               // Inferred role: bone indices; original member name unknown.
-  u16 unknown2bc;                                  // Inferred role: root bone index; original member name unknown.
-  u32 unknown2c0[6];                               // Inferred role: foot flags; original member name unknown.
+  EnviromentSensor m_envSensor; // Inferred role: sensor; named after the game accessor gf::GfComPropertyPc::getEnvSensor.
+  u16 unknown2b0[6];            // Inferred role: bone indices; original member name unknown.
+  s16 unknown2bc;               // Inferred role: root bone index, -1 when unset; original member name unknown. Signed: flushRootAfterMovement tests it with ldrsh (1.0.0: 0x710051c5a4).
+  u32 unknown2c0[6];            // Inferred role: foot flags; original member name unknown.
   mm::mtl::IntrusivePtr<fw::ParamList> unknown2d8; // Inferred role: param list; original member name unknown.
   fw::ParamAdapter m_paramAdapter;                 // Inferred role: param entry; original member name unknown.
   const fw::ParamList::unknown005 *unknown2e8;     // Inferred role: param entry; original member name unknown.

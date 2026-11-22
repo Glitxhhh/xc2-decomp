@@ -20,8 +20,9 @@ struct GfCharaWaterInfo {
 // the water sample initialised at 0x280, and the accesses of GfEffectGround (flags at 0x2d0: bit 0 water sample, bit n + 1 ground sample n).
 struct GfEnvProperty {
   // Values from gf::getFootGroundIndex: 1, 3, 5 for the "left", "left01", "left02" step names, 2, 4, 6 for the "right" ones. GfComIK::Ground reads sample 0
-  // (getPlane, getHitPos) and sample 7 (getPlaneSub, getHitPosSub).
-  enum GROUND_INDEX {
+  // (getPlane, getHitPos) and sample 7 (getPlaneSub, getHitPosSub). Signed underlying type: GfComEnvSensor::flushGroundSingle indexes the samples with `smaddl x8, w19, w8, x20`
+  // (1.0.0: 0x710051cb88); an enum without a negative enumerator is unsigned and gives `umaddl`.
+  enum GROUND_INDEX : int {
     GROUND_INDEX_UNKNOWN_0,
     GROUND_INDEX_UNKNOWN_1,
     GROUND_INDEX_UNKNOWN_2,
@@ -37,7 +38,14 @@ struct GfEnvProperty {
     mm::Plane unknown10; // Inferred role: sampled plane; original member name unknown.
   };
 
+  // Evidence: the loop of the GfEnvProperty constructor (0x71005a30cc) initialises the eight samples with these stores, and GfComEnvSensor::flushGroundSingle (0x710051c77c)
+  // constructs one on the stack (the normalisation of unitY it leaves behind is the only part the optimiser keeps).
   struct unknown002 : unknown001 {
+    unknown002() : unknown30(0), unknown34(0), unknown38(mm::Col4::white), unknown48(0) {
+      unknown00 = mm::Vec3::zero;
+      unknown10.set(mm::Vec3::zero, mm::Vec3::unitY);
+    }
+
     s32 unknown30;      // Inferred role: zero-initialised; original member name unknown.
     s32 unknown34;      // Inferred role: ground material; original member name unknown.
     mm::Col4 unknown38; // Inferred role: ground color; original member name unknown.
