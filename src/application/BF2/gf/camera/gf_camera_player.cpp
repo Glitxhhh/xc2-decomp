@@ -12,6 +12,7 @@
 #include "gf/camera/gf_camera_utilities.h"
 #include "gf/data/gf_data_manager.h"
 #include "gf/data/gf_data_option.h"
+#include "gf/data/gf_data_util.h"
 #include "gf/data/gf_object_type.h"
 #include "gf/object/gf_obj_acc.h"
 #include "gf/object/gf_obj_handle.h"
@@ -153,6 +154,55 @@ bool PlayerCamera::isResetClimb() {
   return diff > 1.4835299f && diff < 4.7996554f;
 }
 
+// Inferred helper: position of the camera on the player target in the frame of the camera, at the default distance and the look height above the camera height; original name unknown.
+// The game repeats it inline in resetClimb(), reset() and resetLoad() (1.0.0: 0x71001dc168, 0x71001dd84c, 0x71001ddbb0; no call). Evidence for the forms, measured against the game:
+// - `cameraHeight` places the load of camera_height before the load of look_height (0x71001dc1bc: ldp of distance_default and camera_height, then ldr of look_height); with the
+//   subtraction written out the order is look_height, camera_height and the ldp pairs the other two (5 differing lines).
+// - `+ 0.0f` is the fadd of distance_default with zero (0x71001dc1cc).
+// The helper returns the vector and the callers keep `pitchPosition` and `forward`: a helper that also calls getPitch ends its locals before the last call of resetClimb() and
+// reset(), which then becomes a tail call (159 instructions against the game's 153 and 212 against 206; resetLoad() matches either way).
+static mm::Vec3 unknown003(PlayerCamera *camera) {
+  const PlayerCamera::unknown002 *param = static_cast<const PlayerCamera::unknown002 *>(camera->m_paramAdapter.unknown00->param);
+  f32 cameraHeight = param->camera_height;
+  return mm::Vec3(0.0f, param->look_height - cameraHeight, param->distance_default + 0.0f);
+}
+
+// Inferred helper: sets the position of the player target and the previous one, and clears the flag of the changed target, before the tracked position; original name unknown. The game
+// repeats these stores inline in resetClimb(), reset() and resetLoad() (1.0.0: 0x71001dc168, 0x71001dd84c, 0x71001ddbb0); resetBattleWarp() (0x71001dde34) has the same without the flag.
+static void unknown004(PlayerCamera *camera, PlayerCameraTarget *target) {
+  camera->unknown110 = target->m_transform.unknown00;
+  camera->unknown100 = camera->unknown110;
+  camera->unknown5190 = false;
+  camera->unknown51a0 = camera->unknown100;
+}
+
+// The camera position of resetClimb(), reset() and resetLoad() is the product of unitZ * unknownd0 rotated by the yaw quaternion, stored in unknown5180 and then added to unknown100
+// (1.0.0: 0x71001dc364 is the first of the three final fadd of resetClimb(), with the sum in the game's operand order). Measured on resetClimb(): the sum in one expression
+// (`unknown5180 = rotation.rotate(...) + unknown100`) gives 17 differing lines, the sum through the member as written here matches. A helper for the three statements keeps the 153
+// instructions but swaps the operands of the three final fadd (3 differing lines; with the sum in one expression 17), because a helper is simplified before it is inlined. Ruling 8: the
+// block stays written out in resetClimb(), reset() and resetLoad(), the call form being the measured one above.
+void PlayerCamera::resetClimb() {
+  PlayerCameraTarget *target = PlayerCameraTarget::get();
+  if (target != nullptr) {
+    unknownb8 = m_saveYaw = getYaw(target->unknown60, mm::Vec3::unitZ);
+    mm::Vec3 pitchPosition = unknown003(this);
+    mm::Vec3 forward = mm::Vec3::unitZ;
+    unknownc8 = getPitch(pitchPosition, forward);
+    unknownd0 = m_saveDistance;
+    unknownc0 = 0.0f;
+    m_savePitch = 0.0f;
+    unknownd8 = m_saveHeight;
+    unknown004(this, target);
+    unknown121 = false;
+    unknown122 = false;
+    mm::Quat rotation = unknown169(0.0f, unknownb8, 0.0f);
+    unknown5180 = rotation.rotate(mm::Vec3::unitZ * unknownd0);
+    unknown5180 += unknown100;
+    GfDataUtil::setCameraYaw(m_saveYaw);
+    GfDataUtil::setCameraPitch(m_savePitch);
+  }
+}
+
 void PlayerCamera::setTarget(GF_OBJ_HANDLE *target) {
   if (target != unknown020) {
     GfObjAcc acc(target);
@@ -196,10 +246,72 @@ u32 PlayerCamera::getSaveSide() const { return m_saveSide; }
 
 bool PlayerCamera::isSaveFreeMode() const { return m_manual; }
 
+// Forms of reset() (1.0.0: 0x71001dd84c, 206 instructions), each measured against the game:
+// - `targetRotation`: the game copies the unit axis (0x71001dd884) before it loads the rotation of the target (0x71001dd8a0); with `mm::unknown010(target->m_transform.unknown10, direction)`
+//   the nine products and sums that use the quaternion come out with their operands swapped (9 differing lines, same size). A copy of the quaternion in a local places its loads there.
+// - the block holds `direction` and `reference`: their slots are the ones that `forward` (sp+0) and `pitchPosition` (sp+0x10) use afterwards (0x71001dd954 `mov x2, sp`, 0x71001dd950
+//   `add x1, sp, #0x10`), and the game's frame is 0x60 bytes. Without the block the frame is 0x80 (19 differing lines, same instruction count), ruling 3.
+// The rest is as resetClimb(), see there.
+void PlayerCamera::reset() {
+  PlayerCameraTarget *target = PlayerCameraTarget::get();
+  if (target != nullptr) {
+    {
+      mm::Vec3 direction;
+      mm::Vec3 reference = mm::Vec3::unitZ;
+      direction = mm::Vec3(-reference.x, -reference.y, -reference.z);
+      const mm::Quat targetRotation = target->m_transform.unknown10;
+      mm::unknown010(targetRotation, direction);
+      unknownb8 = m_saveYaw = getYaw(direction, reference);
+    }
+    mm::Vec3 pitchPosition = unknown003(this);
+    mm::Vec3 forward = mm::Vec3::unitZ;
+    unknownc8 = getPitch(pitchPosition, forward);
+    unknownd0 = m_saveDistance;
+    unknownc0 = 0.0f;
+    m_savePitch = 0.0f;
+    unknownd8 = m_saveHeight;
+    unknown004(this, target);
+    m_manual = false;
+    unknown121 = false;
+    unknown122 = false;
+    mm::Quat rotation = unknown169(0.0f, unknownb8, 0.0f);
+    unknown5180 = rotation.rotate(mm::Vec3::unitZ * unknownd0);
+    unknown5180 += unknown100;
+    GfDataUtil::setCameraYaw(m_saveYaw);
+    GfDataUtil::setCameraPitch(m_savePitch);
+  }
+}
+
 void PlayerCamera::resetClimb(ResetCameraWallTiming timing) {
   unknown124 = true;
   unknown52c4 = timing;
   unknownf0 = timing == RESET_CAMERA_WALL_TIMING_UNKNOWN_0 ? 0.6666667f : 0.23333335f;
+}
+
+// Forms of resetLoad() (1.0.0: 0x71001ddbb0, 161 instructions): the game reads the parameter record (0x71001ddbe0-0x71001ddbec, kept in x22) before the call of getCameraYaw
+// (0x71001ddbf4), which is what the single-use `side` local places (ruling 2). With `m_paramAdapter.get<unknown002>()->side_distance[m_saveSide]` in the use the function has 158
+// instructions and a frame of 0x60 bytes against 0x70 (38 differing lines). The rest is as resetClimb().
+void PlayerCamera::resetLoad() {
+  PlayerCameraTarget *target = PlayerCameraTarget::get();
+  if (target != nullptr) {
+    const unknown002 *side = m_paramAdapter.get<unknown002>();
+    unknownb8 = m_saveYaw = GfDataUtil::getCameraYaw();
+    mm::Vec3 pitchPosition = unknown003(this);
+    mm::Vec3 forward = mm::Vec3::unitZ;
+    unknownc8 = getPitch(pitchPosition, forward);
+    unknownc0 = m_savePitch = GfDataUtil::getCameraPitch();
+    unknownd0 = m_saveDistance = GfDataUtil::getPlayerCameraDistance();
+    unknownd8 = m_saveHeight = GfDataUtil::getCameraHeight();
+    m_saveSide = GfDataUtil::getCameraSide();
+    unknowne0 = unknowne4 = side->side_distance[m_saveSide];
+    unknown004(this, target);
+    m_manual = GfDataUtil::isCameraFreeMode();
+    unknown121 = false;
+    unknown122 = false;
+    mm::Quat rotation = unknown169(0.0f, unknownb8, 0.0f);
+    unknown5180 = rotation.rotate(mm::Vec3::unitZ * unknownd0);
+    unknown5180 += unknown100;
+  }
 }
 
 f32 PlayerCamera::getYaw(const mm::Vec3 &position, const mm::Vec3 &target) {

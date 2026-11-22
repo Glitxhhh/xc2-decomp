@@ -5,6 +5,7 @@
 #include "framework/message/message_object.h"
 #include "framework/object/updatable_object.h"
 #include "framework/sound/sound_manager.h"
+#include "fw/fw_transform.h"
 #include "gf/game/gf_game_util.h"
 #include "gf/gf_allocator.h"
 #include "gf/object/component/animation/gf_com_asm.h"      // IWYU pragma: keep
@@ -15,6 +16,7 @@
 #include "gf/object/component/property/gf_env_property.h"
 #include "gf/object/gf_obj.h"
 #include "gf/object/gf_obj_util.h"
+#include "mm_math/mm_quat.h"
 #include "mm_mtl/delegate.h" // IWYU pragma: keep
 #include "mm_mtl/unique_ptr.h"
 
@@ -188,6 +190,52 @@ void GfComSound::flushVariables() {
     m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
     break;
   }
+}
+
+u32 GfComSound::flush() {
+  flushVariables();
+  fw::SoundManager *manager = fw::SoundManager::get();
+  if (manager != nullptr) {
+    // The end of the list is read once and kept: the game compares both loops against one register (x26: 0x710057ee00, 0x710057eecc; 1.0.0 function at 0x710057edc0, 194
+    // instructions). With `unknown30.end()` in the conditions the function has 193 instructions and 59 differing lines.
+    mm::mtl::List<SoundInfo>::iterator it = unknown30.begin();
+    mm::mtl::List<SoundInfo>::iterator end = unknown30.end();
+    while (it != end) {
+      if (manager->isValid((*it).unknown00)) {
+        ++it;
+      } else {
+        it = unknown30.erase(it);
+      }
+    }
+    it = unknown30.begin();
+    end = unknown30.end();
+    for (; it != end; ++it) {
+      SoundInfo &info = *it;
+      if (info.unknown28.get() != nullptr && info.unknown70) {
+        // The rotation of the offset is written out (1.0.0: 0x710057ef64-0x710057f01c: the loads of the quaternion and the offset, the four temporaries, the three stored components), the
+        // same statements as mm::unknown010. Measured against the game: `position = q.rotate(offset)` has the 194 instructions and 51 differing lines; `position = offset;
+        // mm::unknown010(q, position)` 194 instructions and 22 differing lines (a helper is simplified before it is inlined, which changes the order of the operands of the products),
+        // and `mm::Vec3 position = offset` before the call 200 instructions. The result is declared before the four temporaries: declared after them (just before the three stores) 4
+        // lines differ in operand order; before or after the quaternion and the offset it matches.
+        mm::Vec3 position;
+        const mm::Quat &q = unknown08->getComponent<GfComTransform>()->unknown001()->getSyncedWorldTransform().unknown10;
+        const mm::Vec3 &v = info.unknown60;
+        f32 tx = q.y * v.z - q.z * v.y + q.w * v.x;
+        f32 ty = q.z * v.x - v.z * q.x + v.y * q.w;
+        f32 tz = v.y * q.x - q.y * v.x + v.z * q.w;
+        f32 tw = -v.x * q.x - q.y * v.y - v.z * q.z;
+        position.x = -(q.z * ty) + q.y * tz - q.x * tw + q.w * tx;
+        position.y = -(q.x * tz) + q.z * tx - q.y * tw + q.w * ty;
+        position.z = -(q.y * tx) + q.x * ty - q.z * tw + q.w * tz;
+        position += info.unknown28->getSyncedWorldTransform().unknown00;
+        manager->setPos(info.unknown00, position);
+        if (!manager->isLoop(info.unknown00)) {
+          info.unknown70 = false;
+        }
+      }
+    }
+  }
+  return unknown30.size();
 }
 
 namespace {

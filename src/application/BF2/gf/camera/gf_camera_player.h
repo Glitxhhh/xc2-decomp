@@ -110,6 +110,7 @@ public:
   static void setOnceOff();
   void reset();
   void resetClimb(ResetCameraWallTiming timing);
+  void resetClimb();
   bool isResetClimb();
   void resetLoad();
   void resetBattleWarp();
