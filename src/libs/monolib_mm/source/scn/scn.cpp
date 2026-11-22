@@ -22,9 +22,6 @@
 
 #include <string.h>
 
-// Scn::move inlines ScnPoolObj::update in the game: keep its definition visible in this unit.
-#include "scn_pool_obj.cpp"
-
 namespace ml {
 
 Scn::Scn(const ScnSetup *setup)
@@ -478,13 +475,18 @@ template class reslist<ScnObj *>;
 
 // The game builds these files in one unit with this one (0x710073fc4c to 0x7100755bfc), in this order. Scn::draw inlines ScnDebug::render and Scn::init the ScnDebug constructor; ScnCamUtil
 // (0x7100742c24 to 0x7100743708) comes before the ScnDebug block (0x71007437a0 to 0x7100751eb0), which follows every function of this file and ends with ScnDebugUtil (0x7100751cc4); ScnObjCam
-// (0x7100751eb0), ScnObj (0x7100753ad4) and ScnUtil (0x7100754c4c) come after it.
+// (0x7100751eb0), ScnObj (0x7100753ad4), ScnPoolObj (0x7100753ff8 to 0x71007549e0, constructor, destructors and release; its other functions are first referenced from Scn and sit among its
+// functions, and Scn::move inlines ScnPoolObj::update, which the single unit still allows from here), ScnRender (0x7100754c2c to 0x7100754c48, between ScnObj and ScnUtil, with Scn functions on both
+// sides) and ScnUtil (0x7100754c4c) come after it. The longest increasing subsequence of the function labels of our assembly output against the game's addresses (240 named functions, aliases
+// counted once; a measure of the order, not a proof) is 176 with ScnPoolObj here and 166 with its file included first, before this file's functions.
 // clang-format off
 #include "scn_cam_util.cpp"
 #include "scn_debug.cpp"
 #include "scn_debug_util.cpp"
 #include "scn_obj_cam.cpp"
 #include "scn_obj.cpp"
+#include "scn_pool_obj.cpp"
+#include "scn_render.cpp"
 #include "scn_util.cpp"
 // clang-format on
 

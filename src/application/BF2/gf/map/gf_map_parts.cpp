@@ -213,3 +213,7 @@ void MapSe::create(GF_ASSET_HANDLE *handle) { GfAssetManager::getResource(handle
 void MapSe::destroy() {}
 
 } // namespace gf
+
+// The game builds the seam map part in this unit: MapSeam sits between the other map parts in one contiguous range with no other unit between
+// (MapEff and MapMdl 0x71003929b4 to 0x7100393034, MapSeam 0x710039306c to 0x7100393208, MapLgt to MapSe 0x7100393214 to 0x710039337c).
+#include "gf_map_seam.cpp"

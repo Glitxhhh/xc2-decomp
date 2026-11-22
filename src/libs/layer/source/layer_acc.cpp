@@ -934,3 +934,7 @@ void LayerAccFilterObj::selectFilterOfFlowMap(u32 width, u32 height, const void 
 void LayerAccFilterObj::setFlowMapParameter(f32 speed, f32 strength) { static_cast<LayerObjTopFilter *>(unknown00)->setFlowMapParameter(speed, strength); }
 
 } // namespace layer
+
+// The game builds the binary layout in the layer acc unit: LayerAcc and LayerAccLayoutBinary functions alternate in one contiguous range with no other unit
+// between (LayerAcc 0x71008f7bc4 to 0x71008f94c0, LayerAccLayoutBinary 0x71008f957c to 0x71008f9c48, then LayerAccFilterObj 0x71008f9d68 to 0x71008f9d94).
+#include "layer_acc_layout_binary.cpp"

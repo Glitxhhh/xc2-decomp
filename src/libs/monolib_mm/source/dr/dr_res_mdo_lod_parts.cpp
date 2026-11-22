@@ -84,4 +84,8 @@ void DrResMdoLodParts::calcAutoPixel(const DrResMdlLodArg &arg, bool &isDisp) {
 #include "dr_res_mdo_seam_res.cpp"
 #include "dr_res_mdo_vtx_mesh_obj.cpp"
 #include "dr_res_mdo_seam_wrk_base.cpp"
+// The sorting objects (0x710088fa64 to 0x710088fdf4) and the use query objects (0x710088fe28 to 0x710088ff18) follow the seam work, and the deferred
+// tail of the unit (DrResMdoInstPartsObj::~DrResMdoInstPartsObj and the other virtual wrappers, 0x710088ff2c and after) comes after them.
+#include "dr_res_mdo_sort.cpp"
+#include "dr_res_use_query_obj.cpp"
 // clang-format on

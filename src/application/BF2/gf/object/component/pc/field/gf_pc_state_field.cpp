@@ -158,3 +158,20 @@ void StateField::procMsgPcFieldRelaySurvive(GfComBehaviorPc *behavior, fw::Messa
 
 } // namespace pc
 } // namespace gf
+
+// The game builds these field states in one unit with the base state, in address order (0x710055309c to 0x71005569cc). The virtual wrappers of the base,
+// Talk, PrepareBigJump, RideOn and Dead states (destructor, getName, onEnter, onLeave, onStep: 0x710055674c to 0x71005569cc) form one block after the strong
+// functions of all of them (Talk to ExtraControl, 0x7100553e8c to 0x7100556460), where each class's wrappers would follow its own functions if the files were
+// separate units: a unit emits the wrappers with the vtable after everything it defines.
+// clang-format off
+#include "gf_pc_state_field_start.cpp"
+#include "gf_pc_state_field_access.cpp"
+#include "gf_pc_state_field_talk.cpp"
+#include "gf_pc_state_field_prepare_big_jump.cpp"
+#include "gf_pc_state_field_big_jump.cpp"
+#include "gf_pc_state_field_lure.cpp"
+#include "gf_pc_state_field_ride_on.cpp"
+#include "gf_pc_state_field_dead.cpp"
+#include "gf_pc_state_field_alive.cpp"
+#include "gf_pc_state_field_extra_control.cpp"
+// clang-format on

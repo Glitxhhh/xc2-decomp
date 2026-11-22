@@ -91,6 +91,7 @@ public:
   void releaseColorBuff();
   // Inferred role: res flag; original type name unknown.
   enum unknown001 {
+    unknown001_2 = 0x2,   // Inferred role: res flag offscreen alpha render; original name unknown.
     unknown001_4 = 0x4,   // Inferred role: res flag main render target; original name unknown.
     unknown001_16 = 0x10, // Inferred role: res flag main render target allocated; original name unknown.
     unknown001_32 = 0x20, // Inferred role: res flag shadow display list; original name unknown.
@@ -98,6 +99,7 @@ public:
 
   void debugRender(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, bool isAlpha, bool isDepth, f32 scale, bool isFlip);
   void debugRender(int type, int x, int y, int width, int height, bool isAlpha);
+  void debugDeferredRender(int type, int x, int y, int width, int height, bool isAlpha);
   // Game symbol _ZN2ml9DrPixlMan13debugRender3DERKN5grlib18CGLibTextureBufferEiiiifb (0x848c8c, not decompiled yet); the parameter roles are inferred.
   void debugRender3D(const grlib::CGLibTextureBuffer &texture, int x, int y, int width, int height, f32 depth, bool isFlip);
   void debugRenderCube(const grlib::CGLibTextureBuffer &texture, u32 face, u32 level, bool isAlpha, int x, int y, int width, int height, bool isGamma, f32 scale);

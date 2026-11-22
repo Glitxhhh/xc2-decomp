@@ -195,7 +195,9 @@ public:
   f32 unknown12c[6]; // Inferred role: tmaa sharpness; original member name unknown.
   u8 _0144[0x0158 - 0x0144];
   bool unknown158; // Inferred role: tmaa reset request; original member name unknown.
-  u8 _0159[0x0174 - 0x0159];
+  u8 _0159[0x016d - 0x0159];
+  bool unknown16d; // Inferred role: tmaa sharpness pass flag, tested by DrPixlPostMan::render (0x7100845a54) with the AA and TMAA flags; original member name unknown.
+  u8 _016e[0x0174 - 0x016e];
   bool unknown174; // Inferred role: tssao; original member name unknown.
   // Inferred role: tssao debug render; original member name unknown. Evidence: byte cleared by DrPixlPostParm::reset (strb at 0x710085bf98).
   bool unknown175;
@@ -281,7 +283,34 @@ public:
   f32 unknown2d0; // Inferred role: outline range start; original member name unknown.
   u8 _02d4[0x0304 - 0x02d4];
   bool unknown304; // Inferred role: deffered color; original member name unknown.
-  u8 _0305[0x0320 - 0x0305];
+  // Inferred role: deferred debug render flags 0x305 to 0x31d, read with unknown304 by DrPixlPostMan::debugDeferredRenderImpl (0x7100850af4), which lists them
+  // in the order of the entries it renders (the entries 16, 19 and 21 are the bytes 0x313, 0x311 and 0x312); original member names unknown.
+  bool unknown305;
+  bool unknown306;
+  bool unknown307;
+  bool unknown308;
+  bool unknown309;
+  bool unknown30a;
+  bool unknown30b;
+  bool unknown30c;
+  bool unknown30d;
+  bool unknown30e;
+  bool unknown30f;
+  bool unknown310;
+  bool unknown311;
+  bool unknown312;
+  bool unknown313;
+  bool unknown314;
+  bool unknown315; // Inferred role: enables its entry only when the refraction map target exists; original member name unknown.
+  bool unknown316;
+  bool unknown317;
+  bool unknown318;
+  bool unknown319;
+  bool unknown31a;
+  bool unknown31b;
+  bool unknown31c;
+  bool unknown31d;
+  u8 _031e[0x0320 - 0x031e];
   unknown038 unknown320[8]; // Inferred role: g buff debug ranges; original member name unknown. The scene accessor writes the first five, DrPixlMan::debugGBuffRender reads all eight.
   f32 unknown360;           // Inferred role: shadow str; original member name unknown.
   u8 _0364[0x037c - 0x0364];
@@ -300,7 +329,9 @@ public:
   f32 unknown468; // Inferred role: sky luminance weight; original member name unknown.
   f32 unknown46c; // Inferred role: sky luminance weight; original member name unknown.
   f32 unknown470; // Inferred role: specular str; original member name unknown.
-  u8 _0474[0x0484 - 0x0474];
+  u8 _0474[0x0480 - 0x0474];
+  bool unknown480; // Inferred role: illuminance debug render, tested by DrPixlPostMan::render (0x7100845bfc); original member name unknown.
+  u8 _0481[0x0484 - 0x0481];
   f32 unknown484;  // Inferred role: illuminance debug scale; original member name unknown.
   bool unknown488; // Inferred role: g buff debug; original member name unknown.
   bool unknown489; // Inferred role: SSR debug; original member name unknown.
@@ -475,6 +506,7 @@ static_assert(offsetof(DrPixlPostParm, unknown104) == 0x0104, "");
 static_assert(offsetof(DrPixlPostParm, unknown108) == 0x0108, "");
 static_assert(offsetof(DrPixlPostParm, unknown10c) == 0x010c, "");
 static_assert(offsetof(DrPixlPostParm, m_TMAAOn) == 0x0111, "");
+static_assert(offsetof(DrPixlPostParm, unknown16d) == 0x016d, "");
 static_assert(offsetof(DrPixlPostParm, unknown194) == 0x0194, "");
 static_assert(offsetof(DrPixlPostParm, unknown19c) == 0x019c, "");
 static_assert(offsetof(DrPixlPostParm, unknown1ca) == 0x01ca, "");
@@ -525,6 +557,9 @@ static_assert(offsetof(DrPixlPostParm, unknown2c4) == 0x02c4, "");
 static_assert(offsetof(DrPixlPostParm, unknown2cc) == 0x02cc, "");
 static_assert(offsetof(DrPixlPostParm, unknown2d0) == 0x02d0, "");
 static_assert(offsetof(DrPixlPostParm, unknown304) == 0x0304, "");
+static_assert(offsetof(DrPixlPostParm, unknown310) == 0x0310, "");
+static_assert(offsetof(DrPixlPostParm, unknown313) == 0x0313, "");
+static_assert(offsetof(DrPixlPostParm, unknown31d) == 0x031d, "");
 static_assert(offsetof(DrPixlPostParm, unknown320) == 0x0320, "");
 static_assert(offsetof(DrPixlPostParm, unknown360) == 0x0360, "");
 static_assert(offsetof(DrPixlPostParm, unknown37c) == 0x037c, "");
@@ -535,6 +570,7 @@ static_assert(offsetof(DrPixlPostParm, unknown424) == 0x0424, "");
 static_assert(offsetof(DrPixlPostParm, unknown430) == 0x0430, "");
 static_assert(offsetof(DrPixlPostParm, unknown43c) == 0x043c, "");
 static_assert(offsetof(DrPixlPostParm, m_shwRaytrace) == 0x0460, "");
+static_assert(offsetof(DrPixlPostParm, unknown480) == 0x0480, "");
 static_assert(offsetof(DrPixlPostParm, unknown484) == 0x0484, "");
 static_assert(offsetof(DrPixlPostParm, unknown468) == 0x0468, "");
 static_assert(offsetof(DrPixlPostParm, unknown46c) == 0x046c, "");

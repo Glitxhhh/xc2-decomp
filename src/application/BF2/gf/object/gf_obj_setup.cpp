@@ -357,3 +357,8 @@ GfObjSetupBlade::GfObjSetupBlade(const GfInitParamBlade &param) : GfObjSetup(par
 }
 
 } // namespace gf
+
+// The game builds the init parameters in this unit: the functions of GfObjSetup and of GfInitParam alternate in one contiguous range with no other unit between
+// (GfObjSetup 0x71005ab66c to 0x71005ad1d4, GfInitParamWeapon::setupForEvent* 0x71005ad9f4 to 0x71005adce8, GfObjSetupEnemy 0x71005add44 to 0x71005ae09c,
+// GfInitParamEnemy and GfInitParamBlade::setup* 0x71005ae0ec to 0x71005ae64c, GfObjSetupBlade and the RTTI getters 0x71005ae690 to 0x71005aebcc).
+#include "gf_init_param.cpp"

@@ -43,7 +43,9 @@ struct unknown404 {
   u8 _24[0x28 - 0x24];
   s32 unknown28; // Inferred role: range tree offset; original member name unknown.
   s32 unknown2c; // Inferred role: root range tree num; original member name unknown.
-  u8 _30[0x4c - 0x30];
+  u8 _30[0x3c - 0x30];
+  u32 unknown3c; // Inferred role: model count of the position data, sizes the read model bit table; original member name unknown.
+  u8 _40[0x4c - 0x40];
   u32 unknown4c; // Inferred role: read table offsets offset; original member name unknown.
   u8 _50[0x54 - 0x50];
   u32 unknown54; // Inferred role: tree work offset; original member name unknown.
@@ -55,6 +57,7 @@ static_assert(offsetof(unknown404, unknown18) == 0x18, "");
 static_assert(offsetof(unknown404, unknown20) == 0x20, "");
 static_assert(offsetof(unknown404, unknown28) == 0x28, "");
 static_assert(offsetof(unknown404, unknown2c) == 0x2c, "");
+static_assert(offsetof(unknown404, unknown3c) == 0x3c, "");
 static_assert(offsetof(unknown404, unknown4c) == 0x4c, "");
 static_assert(offsetof(unknown404, unknown54) == 0x54, "");
 

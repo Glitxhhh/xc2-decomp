@@ -28,6 +28,13 @@
 #include "mm_mtl/map.h" // IWYU pragma: keep
 #include "mm_mtl/rtti.h"
 
+// The game builds the dropitem parameters in this unit: the parameter functions (0x71002f6980 to 0x71002f736c) come directly before the emitter (0x71002f73e4) and
+// GfFobjDropitem (from 0x71002f770c) with no other unit between, and the deferred mm::mtl::Vector<GfDropitemParam>::extend of the parameter file (0x71002fa940)
+// comes after the last function of GfFobjDropitem (0x71002fa124), where a unit emits its deferred functions (a separate parameter unit would hold it right after
+// its own functions). GfFobjDropitem::initialize (0x71002f862c) also inlines GfDropitemParamInst::create, getInitVelocity and GfDropitemParams::getParamByBdatId
+// although each has an out-of-line copy: the callees are visible in the unit of the caller.
+#include "gf/field/gf_dropitem_param.cpp"
+
 namespace gf {
 
 // Inferred role: item list bdats of the dropitems; original name unknown.

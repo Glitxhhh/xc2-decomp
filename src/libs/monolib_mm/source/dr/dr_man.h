@@ -262,6 +262,7 @@ public:
   mm::Vec3 unknown1c70; // Inferred role: seam map read pos; original member name unknown.
   bool unknown1c80;     // Inferred role: seam map add pos mode; original member name unknown.
   u8 unknown1c81[2];    // Inferred role: capture modes; original member name unknown.
+  bool unknown1c83;     // Inferred role: capture request, read by DrPixlPostMan::beginUpdate (0x710084199c); original member name unknown.
   f32 unknown1c84;      // Inferred role: glb spd; original member name unknown.
   f32 unknown1c88;      // Inferred role: mdl spd; original member name unknown.
   f32 unknown1c8c;      // Inferred role: model speed scaled by the global speed; original member name unknown.
@@ -409,6 +410,7 @@ static_assert(offsetof(DrMan, unknown1c60) == 0x1c60, "");
 static_assert(offsetof(DrMan, unknown1c70) == 0x1c70, "");
 static_assert(offsetof(DrMan, unknown1c80) == 0x1c80, "");
 static_assert(offsetof(DrMan, unknown1c81) == 0x1c81, "");
+static_assert(offsetof(DrMan, unknown1c83) == 0x1c83, "");
 static_assert(offsetof(DrMan, unknown1c84) == 0x1c84, "");
 static_assert(offsetof(DrMan, unknown1c88) == 0x1c88, "");
 static_assert(offsetof(DrMan, unknown1c8c) == 0x1c8c, "");

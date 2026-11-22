@@ -213,3 +213,7 @@ bool GfGameStuckMeter::isStuck() const { return unknown00.unknown04 <= unknown54
 } // namespace gf
 
 template mm::mtl::PtrSingleton<gf::GfGameDepopMeterManager>::~PtrSingleton();
+
+// The big object (0x7100343428 to 0x7100343464, gf/field/gf_big_obj_unique.cpp) follows the stuck meter, and the deferred GfGameDepopMeterManager destructor
+// (0x7100343540) comes after it.
+#include "gf/field/gf_big_obj_unique.cpp"

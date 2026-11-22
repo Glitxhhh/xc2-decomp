@@ -1,7 +1,9 @@
 #include "dr/dr_res_mdo_seam_wrk_inst.h"
 
+#include <new>
 #include <string.h>
 
+#include "dr/dr_calc_man.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdl_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
@@ -20,6 +22,7 @@
 #include "dr/dr_res_mdo_vertex.h"
 #include "dr/dr_res_occ_uniform_obj.h"
 #include "grlib/cglib_texture_buffer.h"
+#include "grlib/cglib_uniform_array.h"
 #include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
@@ -96,6 +99,156 @@ void DrResMdoSeamWrkInst::releaseCache(DrMdoCtlSeamInstMap *ctl) {
     }
   }
   release();
+}
+
+// 0x7100880bd8. Inlines DrResMdoPntAlphaMan::setWrk (0x7100872204), the DrResMdoVertex constructor and the DrResMdoSeamWrkPosInst constructor. The size chain adds the point alpha block
+// before the alignment that follows the texture list table: the game's order of the first terms (0x7100880d04 to 0x7100880d4c) only appears with the block added first.
+void DrResMdoSeamWrkInst::setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniformArray *uniforms, mtl::ALLOC_HANDLE handle, DrMdoCtlSeamInstMap *ctl, const MdsSeamInstMapHead *head,
+                                    const u32 *hideBits, u32 max, const DrResMdoInstAnmObj *anm) {
+  unknown40 = hideBits;
+  unknown70 = 0;
+  unknown74 = 0;
+  unknown78 = 0;
+  unknown154 = 0;
+  unknown156 = 0;
+  unknown152 = 0;
+  unknown144 = 0;
+  unknown130 = nullptr;
+  unknown88 = 0;
+  unknown8a = 0;
+  unknown1b0 = nullptr;
+  matRes->unknowna0 = uniforms;
+  unknown50 = matRes;
+  unknown20 = head;
+  const unknown404 *data = reinterpret_cast<const unknown404 *>(reinterpret_cast<const u8 *>(head) + head->unknown18);
+  unknown28 = data;
+  unknown30 = reinterpret_cast<const DrMdoCtlPos::unknown018 *>(reinterpret_cast<const u8 *>(data) + data->unknown08);
+  unknown38 = reinterpret_cast<const DrMdoCtlPos::unknown019 *>(reinterpret_cast<const u8 *>(data) + data->unknown10);
+  if (head->unknown1c != 0) {
+    unknown60 = new (DrMan::getIns()->unknown10) DrResMdoVertex(reinterpret_cast<const u8 *>(head) + unknown20->unknown1c);
+  } else {
+    unknown60 = nullptr;
+  }
+  u32 size = (unknown20->unknown3c + 1) * (sizeof(DrResMdoSeamWrkPosInst) + sizeof(DrResMdoSeamWrkPosInst *));
+  unknown98 = matRes->unknown30 / max;
+  if (matRes->unknown30 % max != 0) {
+    unknown98++;
+  }
+  size += unknown98 * sizeof(void *);
+  size += unknown20->unknown4c * sizeof(DrResMdoSeamTexList *);
+  size += DrResMdoPntAlphaMan::getWrkSize(15);
+  size += -size & 0x1f;
+  size += matRes->unknown170 * 0x30;
+  size += matRes->unknown170 * 2;
+  size += -size & 0x1f;
+  size += matRes->unknown170 * (sizeof(unknown002) + sizeof(void *));
+  size += -size & 0x1f;
+  unknown7c = size;
+  size += (matRes->unknown30 / 16 + 1) * 4;
+  size += (matRes->unknown30 / 32 + 1) * 4;
+  size += (matRes->unknown170 / 16 + 1) * 4;
+  size += (matRes->unknown170 / 32 + 1) * 4;
+  size += (head->unknown24 / 16 + 1) * 4;
+  size += (data->unknown3c / 32 + 1) * 4;
+  size += ((head->unknown2c + data->unknown3c) / 32 + 1) * 4;
+  size += -size & 0x1f;
+  size += 0x80;
+  unknown7c = size - unknown7c;
+  size += (head->unknown24 / 32 + 1) * 4;
+  size += -size & 0x1f;
+  size += (head->unknown24 / 16 + 1) * 4;
+  size += -size & 0x1f;
+  size += (head->unknown3c / 16 + 1) * 4;
+  size += -size & 0x1f;
+  unknown58 = static_cast<u8 *>(mtl::MemManager::allocate(handle, size, 0x20, false, "no name", 0));
+  unknown118 = reinterpret_cast<DrResMdoSeamWrkPosInst *>(unknown58);
+  u32 offset = (unknown20->unknown3c + 1) * sizeof(DrResMdoSeamWrkPosInst);
+  unknown120 = reinterpret_cast<DrResMdoSeamWrkPosInst **>(unknown58 + offset);
+  offset += (unknown20->unknown3c + 1) * sizeof(DrResMdoSeamWrkPosInst *);
+  unknown90 = reinterpret_cast<void **>(unknown58 + offset);
+  offset += unknown98 * sizeof(void *);
+  for (int i = 0; i < unknown98; i++) {
+    unknown90[i] = nullptr;
+  }
+  if (unknown20->unknown4c != 0) {
+    unknown110 = reinterpret_cast<DrResMdoSeamTexList **>(unknown58 + offset);
+    offset += unknown20->unknown4c * sizeof(DrResMdoSeamTexList *);
+    for (int i = 0; i < unknown20->unknown4c; i++) {
+      unknown110[i] = nullptr;
+    }
+  }
+  u32 pntAlphaSize = DrResMdoPntAlphaMan::setWrk(unknown198, 15, unknown58 + offset);
+  offset += -offset & 0x1f;
+  offset += pntAlphaSize;
+  unknown160[0] = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
+  offset += matRes->unknown170 * 8;
+  unknown160[1] = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
+  offset += matRes->unknown170 * 8;
+  unknown160[2] = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
+  offset += matRes->unknown170 * 8;
+  unknown178 = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
+  offset += matRes->unknown170 * 8;
+  unknown180 = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
+  offset += matRes->unknown170 * 8;
+  unknown188 = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
+  offset += matRes->unknown170 * 8;
+  unknown190 = reinterpret_cast<u16 *>(unknown58 + offset);
+  offset += matRes->unknown170 * 2;
+  offset += -offset & 0x1f;
+  unknown1a0 = reinterpret_cast<unknown002 *>(unknown58 + offset);
+  offset += matRes->unknown170 * 0x20;
+  unknown1a8 = unknown58 + offset;
+  offset += matRes->unknown170 * 8;
+  offset += -offset & 0x1f;
+  unknowna0 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (matRes->unknown30 / 16 + 1) * 4;
+  unknowna8 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (matRes->unknown30 / 32 + 1) * 4;
+  unknownb0 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (matRes->unknown170 / 16 + 1) * 4;
+  unknownb8 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (matRes->unknown170 / 32 + 1) * 4;
+  unknownc0 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (head->unknown24 / 16 + 1) * 4;
+  unknownc8 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (data->unknown3c / 32 + 1) * 4;
+  unknownd0 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += ((head->unknown2c + data->unknown3c) / 32 + 1) * 4;
+  unknownf8 = reinterpret_cast<u32 *>(unknown58 + offset);
+  unknown100 = reinterpret_cast<u32 *>(unknown58 + (offset + 0x40));
+  offset += -offset & 0x1f;
+  offset += 0x80;
+  unknownd8 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (head->unknown24 / 32 + 1) * 4;
+  offset += -offset & 0x1f;
+  unknowne0 = reinterpret_cast<u32 *>(unknown58 + offset);
+  offset += (head->unknown24 / 16 + 1) * 4;
+  offset += -offset & 0x1f;
+  unknowne8 = reinterpret_cast<u32 *>(unknown58 + offset);
+  int posSize = (head->unknown3c / 16 + 1) * 4;
+  int clearSize = (head->unknown24 / 32 + 1) * 4;
+  clearSize += (32 - clearSize % 32) % 32;
+  clearSize += (head->unknown24 / 16 + 1) * 4;
+  clearSize += (32 - clearSize % 32) % 32;
+  clearSize += posSize;
+  clearSize += (32 - clearSize % 32) % 32;
+  memset(unknownd8, 0, clearSize);
+  int count = unknown20->unknown3c;
+  for (int i = 0; i <= count; i++) {
+    new (&unknown118[i]) DrResMdoSeamWrkPosInst();
+  }
+  unknown140 = 1;
+  unknown118->setupBaseInstPos(reinterpret_cast<const u8 *>(unknown28), handle, anm);
+  unknown120[0] = unknown118;
+  if (unknown20->unknown4c == 0) {
+    unknown8a |= 2;
+    grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
+    for (int i = 0; i < unknown20->unknown24; i++) {
+      unknown50->unknowne8[i] = dummy;
+    }
+  }
+  unknown138 = ctl->unknown630;
+  unknown1c0 = DrMan::getIns()->unknown580->unknown10;
 }
 
 void DrResMdoSeamWrkInst::changeMemCall() {
@@ -484,6 +637,53 @@ bool DrResMdoSeamWrkInst::setEtcPosCache(mtl::ALLOC_HANDLE handle, int index, Dr
     }
   }
   return false;
+}
+
+// Inferred role: tests whether the main read position or one of the read request positions lies in the box of an etc position entry; original name unknown.
+// The game's code holds the box test (x, z, y order) four times, twice for each use of this helper.
+static bool unknown302(const unknown400 *entry, const DrResMdoSeamParmRead *parmRead) {
+  const mm::Vec3 &main = parmRead->unknown50;
+  if (entry->unknown08 >= main.x && entry->unknown14 <= main.x && entry->unknown10 >= main.z && entry->unknown1c <= main.z && entry->unknown0c >= main.y && entry->unknown18 <= main.y) {
+    return true;
+  }
+  for (int i = 0; i < parmRead->unknown40; i++) {
+    const mm::Vec3 &pos = parmRead->unknown10[i];
+    if (entry->unknown08 >= pos.x && entry->unknown14 <= pos.x && entry->unknown10 >= pos.z && entry->unknown1c <= pos.z && entry->unknown0c >= pos.y && entry->unknown18 <= pos.y) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void DrResMdoSeamWrkInst::seachEtcInstPos(DrResMdoSeamParmRead *parmRead, DrMdoCtlSeamInstMap *ctl, bool isFirst) {
+  int count = unknown20->unknown3c;
+  const unknown400 *entry = reinterpret_cast<const unknown400 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown38);
+  for (int i = 0; i < count; i++, entry++) {
+    int del = i + count;
+    if (unknowne8[del >> 5] & (1 << (del & 0x1f))) {
+      unknown118[i + 1].delCall();
+      unknowne8[i >> 5] &= ~(1 << (i & 0x1f));
+      unknowne8[del >> 5] &= ~(1 << (del & 0x1f));
+      ctl->releaseFreeSeamMemObj(unknown118[i + 1].unknown50);
+      unknown118[i + 1].releaseBaseInstPos();
+      for (int j = 1; j < unknown140; j++) {
+        if (unknown120[j] == &unknown118[i + 1]) {
+          unknown140--;
+          for (int k = j; k < unknown140; k++) {
+            unknown120[k] = unknown120[k + 1];
+          }
+          break;
+        }
+      }
+    } else if (unknowne8[i >> 5] & (1 << (i & 0x1f))) {
+      if (isFirst || !unknown302(entry, parmRead)) {
+        unknowne8[del >> 5] |= 1 << (del & 0x1f);
+        unknown118[i + 1].delCall();
+      }
+    } else if (!isFirst && unknown302(entry, parmRead)) {
+      parmRead->setStockInstPos(entry->unknown00, this);
+    }
+  }
 }
 
 // 0x7100888b48. The id is loaded with ldrsh (0x7100888bb8) and the table indexed through an unsigned register (`ldr w8, [x8, w9, uxtw #2]`, 0x7100888bbc), so

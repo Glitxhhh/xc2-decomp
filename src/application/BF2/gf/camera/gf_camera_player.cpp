@@ -371,4 +371,11 @@ void PlayerCamera::updateTarget(const fw::Transform &transform, bool param2) {
 
 } // namespace gf
 
+// The game builds the target and the sub view cameras between the player camera and the camera utilities, in one contiguous range with no other unit
+// between (PlayerCamera 0x71001d7360 to 0x71001def8c, PlayerCameraTarget 0x71001dfd14 to 0x71001e0344, SubViewCamera 0x71001e03c8 to 0x71001e0518,
+// CameraUtilities 0x71001e0574 to 0x71001e0d24). CameraPadData (0x71001defd0 to 0x71001df48c) sits in the same range but cannot join: with it ~PlayerCamera
+// inlines a destructor the game calls (21 instructions against 18).
+#include "gf/camera/gf_camera_player_target.cpp"
+#include "gf/camera/gf_camera_subview.cpp"
+
 #include "gf/camera/gf_camera_utilities.cpp"

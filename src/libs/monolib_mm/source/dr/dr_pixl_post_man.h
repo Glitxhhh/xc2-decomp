@@ -62,6 +62,7 @@ public:
     FLAG_UNKNOWN_22 = 0x400000, // Inferred role: color buffers released with the render mode 3; original name unknown.
   };
 
+  void beginUpdate();
   void setDownDepth();
   void setReflection(f32 x, f32 y, f32 z, bool isHigh);
   void renderDeferred();
@@ -70,6 +71,7 @@ public:
   void resetColorBuff();
   void releaseColorBuff();
   void render();
+  bool debugDeferredRenderImpl(bool isRender);
   void renderDeferredTemporal();
   DrPixlRenderTarget *getDownDepth();
   bool isCalcVolume();

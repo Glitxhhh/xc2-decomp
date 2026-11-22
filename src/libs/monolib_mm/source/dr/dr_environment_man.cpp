@@ -715,4 +715,9 @@ void (DrEnvironmentObjLgt::*DrEnvironmentObjLgt::s_pCallFogCall[])(DrFogObjGbl *
 #include "dr_fog_man.cpp"
 #include "dr_light_man.cpp"
 #include "dr_light_obj.cpp"
+// The irradiance volumes (0x71007ea388 to 0x71007ed860) and the image based lights (0x71007edd14 to 0x71007f0778) follow the light objects. The tail of
+// deferred functions at the end of the unit (0x71007f0960 to 0x71007f0a90) mixes DrEnvironmentObj, DrFogObj and DrLightObj members with the irrvol
+// MemHandlebaseAllocator and _ReslistBase destructors, so irrvol.cpp and dr_ibl_man.cpp are built in this unit.
+#include "irrvol.cpp"
+#include "dr_ibl_man.cpp"
 // clang-format on

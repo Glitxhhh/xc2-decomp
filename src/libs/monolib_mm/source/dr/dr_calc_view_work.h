@@ -114,7 +114,13 @@ public:
   // Inferred role: eight entries of 16 bytes, the second float of each (offset 0x9c4 + 0x10 * index) times 2 pi is the fourth gParam2 value of
   // DrPixlPostObjTSSAO::passSSAO (index from the counter of that function); original member name unknown.
   mm::Vec4 unknown9c0[8];
-  u8 _a40[0xae0 - 0xa40];
+  u8 _a40[0xac0 - 0xa40];
+  // Inferred role: two pairs of floats, the differences of which (offset 0xac0 - 0xad0 and 0xac4 - 0xad4) are the gJitter uniform of
+  // DrPixlPostMan::renderDownDepth (0x710084fcc0); original member names unknown.
+  f32 unknownac0[2];
+  u8 _ac8[0xad0 - 0xac8];
+  f32 unknownad0[2];
+  u8 _ad8[0xae0 - 0xad8];
   f32 unknownae0[2]; // Inferred role: jitter; original member name unknown.
   u8 _ae8[0xaf0 - 0xae8];
   f32 unknownaf0[2]; // Inferred role: prev jitter; original member name unknown.
@@ -167,6 +173,8 @@ static_assert(offsetof(DrCalcViewWork, unknown9ad) == 0x9ad, "");
 static_assert(offsetof(DrCalcViewWork, unknown9c0) == 0x9c0, "");
 static_assert(offsetof(DrCalcViewWork, unknownae0) == 0xae0, "");
 static_assert(offsetof(DrCalcViewWork, unknownaf0) == 0xaf0, "");
+static_assert(offsetof(DrCalcViewWork, unknownac0) == 0xac0, "");
+static_assert(offsetof(DrCalcViewWork, unknownad0) == 0xad0, "");
 static_assert(offsetof(DrCalcViewWork, unknownb00) == 0xb00, "");
 static_assert(offsetof(DrCalcViewWork, unknownb10) == 0xb10, "");
 static_assert(offsetof(DrCalcViewWork, unknownc20) == 0xc20, "");

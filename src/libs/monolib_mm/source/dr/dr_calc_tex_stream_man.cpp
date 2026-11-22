@@ -383,6 +383,9 @@ DrCalcTexStmObj::DrCalcTexStmObj() : unknown18(nullptr), unknown20(0), unknown24
 // clang-format off
 #include "dr_calc_stm_work.cpp"
 #include "dr_calc_stm_list_obj.cpp"
+// The clip work base class (0x71008b7f18 to 0x71008b7f3c) comes after the last list object function, before the deferred destructor of DrCalcTexStmObj
+// (0x71008b7f44).
+#include "dr_calc_clip_work.cpp"
 // clang-format on
 
 template mm::mtl::PtrSingleton<ml::DrCalcTexStreamMan>::~PtrSingleton();

@@ -179,3 +179,8 @@ void LayerManager::alphaRender(const ml::IDrDrawWorkInfo *info) {}
 void LayerManager::lastRender(const ml::IDrDrawWorkInfo *info) {}
 
 } // namespace layer
+
+// The game builds the tag parser in the layer manager's unit: LayerManager and LayerTag functions alternate in one contiguous range with no other unit
+// between (LayerManager 0x71008f9d9c to 0x71008fa520, LayerStr/LayerTag 0x71008fa530 to 0x71008fb2c4, then the LayerManager render callbacks
+// opacityRender to lastRender 0x71008fb2f8 to 0x71008fb300).
+#include "layer_tag.cpp"

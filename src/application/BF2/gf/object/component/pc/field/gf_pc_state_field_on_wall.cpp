@@ -116,3 +116,15 @@ void StateFieldOnWall::procMsgPcFieldWallJump(GfComBehaviorPc *behavior, fw::Mes
 
 } // namespace pc
 } // namespace gf
+
+// The wall idle, move, prepare jump and jump states (0x710055b314 to 0x710055c040) sit between the on wall state functions (0x710055ac10 to 0x710055b274) and
+// the on wall and prepare jump virtual wrappers (0x710055c128 to 0x710055c188), which a unit emits after everything it defines.
+// clang-format off
+#include "gf_pc_state_field_wall_idle.cpp"
+#include "gf_pc_state_field_wall_move.cpp"
+#include "gf_pc_state_field_wall_prepare_jump.cpp"
+#include "gf_pc_state_field_wall_jump.cpp"
+#include "gf_pc_state_field_wall_jump_start.cpp"
+#include "gf_pc_state_field_wall_jump_move.cpp"
+#include "gf_pc_state_field_wall_jump_end.cpp"
+// clang-format on

@@ -2542,3 +2542,14 @@ u32 GfWeapon::getRscLeft() const {
 }
 
 } // namespace gf
+
+// The game builds the shop, hana, skip travel and save data utilities in this unit: their functions alternate with the functions of GfGameUtil in one
+// contiguous range with no other unit between (GfGameUtil to 0x7100352b34, GfGameUtilShop 0x7100352bd8 to 0x7100353240, GfGameUtilHana 0x71003532f8 to
+// 0x7100354cc4, GfGameUtilCloudSea 0x7100354d48 to 0x7100354db8, GfGameUtilSkipTravel 0x7100354dbc to 0x7100354ec4, GfGameUtilNanakoori and GfWeapon
+// 0x7100354f8c to 0x71003550e8, GfGameUtilSaveData 0x7100355178 to 0x7100355d90, GfGameUtil again 0x71003560ec to 0x7100356a28).
+// clang-format off
+#include "gf_game_util_shop.cpp"
+#include "gf_game_util_hana.cpp"
+#include "gf_game_util_skip_travel.cpp"
+#include "gf_game_util_save_data.cpp"
+// clang-format on

@@ -650,8 +650,11 @@ void DrMdoCtlSeam::calcSeamMapRender(int renderType, u32 flags) {
 #include "dr_mdo_texture_man.cpp"
 #include "dr_mdo_vertex_man.cpp"
 #include "dr_mdo_zsort.cpp"
-// The sampler manager is the last file of the unit: its constructor, destructor and begin() are at 0x7100831874 to 0x71008318cc, after dr_mdo_zsort.cpp;
-// its create and release functions (0x7100828ef4 to 0x7100829650) sit inside the dr_mdo_mat.cpp block, which references them first (the release
-// functions are inlined there).
+// The sampler manager's constructor, destructor and begin() are at 0x7100831874 to 0x71008318cc, after dr_mdo_zsort.cpp; its create and release functions
+// (0x7100828ef4 to 0x7100829650) sit inside the dr_mdo_mat.cpp block, which references them first (the release functions are inlined there). The morphing
+// (0x7100831910 to 0x7100831ec4) and the shader set (0x7100831f00 to 0x71008362e8) files follow it, and the unit's deferred tail (DrMdoCtlSeam::~DrMdoCtlSeam
+// and the other virtual wrappers, 0x71008366cc and after) comes after them: those files are built in this unit.
 #include "dr_mdo_sampler_man.cpp"
+#include "dr_mdo_morphing.cpp"
+#include "dr_mdo_shd_set.cpp"
 // clang-format on

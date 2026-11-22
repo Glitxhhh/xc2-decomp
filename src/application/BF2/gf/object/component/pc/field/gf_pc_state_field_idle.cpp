@@ -142,3 +142,7 @@ void StateFieldIdle::procMsgPcFieldSetUniqueMotion(GfComBehaviorPc *behavior, fw
 
 } // namespace pc
 } // namespace gf
+
+// The idle turn state (0x7100559114 to 0x7100559350) sits between the idle state functions (0x71005589cc to 0x710055902c) and the idle virtual wrappers
+// (0x71005594b8 to 0x71005595bc), which a unit emits after everything it defines.
+#include "gf_pc_state_field_idle_turn.cpp"
