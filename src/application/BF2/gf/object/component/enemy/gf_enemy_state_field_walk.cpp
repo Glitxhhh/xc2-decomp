@@ -80,7 +80,7 @@ bool StateFieldWalk::canLotteryMoveSpeed(GfComBehaviorEnemy &behavior) const {
   gmk::GmkRouteNavi *navi = behavior.m_behaviorEnemyField.getGmkRouteNavi();
   bool result = false;
   if (navi != nullptr) {
-    if (navi->unknown28.unknown38 == nullptr) {
+    if (navi->m_gmkAcc.m_aGmkBase == nullptr) {
       result = false;
     } else {
       result = unknown18 == 0;
@@ -199,7 +199,7 @@ void StateFieldWalk::pollToShiftLandingSeq(GfComBehaviorEnemy &behavior, const f
   GfComAsm *comAsm = behavior.unknown08->getComponent<GfComAsm>();
   if (comAsm != nullptr && behavior.isFly()) {
     gmk::GmkRouteNavi *navi = behavior.m_behaviorEnemyField.getGmkRouteNavi();
-    if (navi != nullptr && unknown90 == 6 && navi->unknown28.unknown38 != nullptr) {
+    if (navi != nullptr && unknown90 == 6 && navi->m_gmkAcc.m_aGmkBase != nullptr) {
       mm::Vec3 position;
       if (navi->getRoute()->getRoutePointPos(position, unknown84)) {
         behavior.m_behaviorEnemyField.unknownc0 = position;

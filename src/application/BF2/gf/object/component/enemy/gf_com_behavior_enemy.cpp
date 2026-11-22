@@ -70,10 +70,10 @@ namespace gf {
 struct GF_OBJ_HANDLE;
 
 // Inferred helper: the enemy instances embedded in the gimmick; original name unknown.
-static const gmk::GmkEnemyInsts &unknown002(const gmk::GmkEnemy &gmk) { return gmk.unknown48; }
+static const gmk::GmkEnemyInsts &unknown002(const gmk::GmkEnemy &gmk) { return gmk.m_gmkEnemyInsts; }
 
 // Inferred helper: the enemy instances embedded in the gimmick; original name unknown.
-static const gmk::GmkEnemyInsts &unknown002(const gmk::GmkRoutedEnemy &gmk) { return gmk.unknown50; }
+static const gmk::GmkEnemyInsts &unknown002(const gmk::GmkRoutedEnemy &gmk) { return gmk.m_gmkEnemyInsts; }
 
 namespace enemy {
 
@@ -140,7 +140,7 @@ GfComBehaviorEnemy::~GfComBehaviorEnemy() {
   if (unknown54e0) {
     unknown54e0 = false;
     if (m_behaviorEnemyField.m_fieldEnemySensor.m_gmkAcc.isValid()) {
-      static_cast<const gmk::GmkBattleLock *>(m_behaviorEnemyField.m_fieldEnemySensor.m_gmkAcc.unknown38)->unknownc4--;
+      static_cast<const gmk::GmkBattleLock *>(m_behaviorEnemyField.m_fieldEnemySensor.m_gmkAcc.m_aGmkBase)->unknownc4--;
     }
   }
 
@@ -220,13 +220,13 @@ bool GfComBehaviorEnemy::getGmkBattleLockInfo(int &param1, int &param2) const {
     return false;
   }
 
-  param1 = gmkInst->unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown10.unknown04;
+  param1 = gmkInst->m_createBaseInfo.m_ownerGmkEnemyList->getCreateInfo().m_gmkSet->m_createInfo.unknown04;
   u8 *bdat = gmkInst->getBindedBdatFp();
   if (bdat == nullptr) {
     return false;
   }
 
-  param2 = static_cast<u16>(Bdat::getValCheck(bdat, "battlelockname", gmkInst->unknown20.unknown18, 2)) - 1;
+  param2 = static_cast<u16>(Bdat::getValCheck(bdat, "battlelockname", gmkInst->m_createInfo.unknown18, 2)) - 1;
   return true;
 }
 
@@ -354,11 +354,11 @@ void GfComBehaviorEnemy::updateInvincible() {
               isInvincible = true;
               isTargetable = true;
             } else {
-              isInvincible = unknown002(*static_cast<gmk::GmkEnemy *>(gmkInst)).unknown38.isInvincibleCondMatched();
+              isInvincible = unknown002(*static_cast<gmk::GmkEnemy *>(gmkInst)).m_bdatInfo.isInvincibleCondMatched();
               isTargetable = !isInvincible;
             }
           } else if (type == gmk::GmkRoutedEnemy::GMK_TYPE) {
-            isInvincible = unknown002(*static_cast<gmk::GmkRoutedEnemy *>(gmkInst)).unknown38.isInvincibleCondMatched();
+            isInvincible = unknown002(*static_cast<gmk::GmkRoutedEnemy *>(gmkInst)).m_bdatInfo.isInvincibleCondMatched();
             isTargetable = !isInvincible;
           } else {
             isTargetable = true;
@@ -481,7 +481,7 @@ void GfComBehaviorEnemy::validateBattleLock(bool isLock) {
     return;
   }
 
-  const gmk::GmkBattleLock *lock = static_cast<const gmk::GmkBattleLock *>(m_behaviorEnemyField.m_fieldEnemySensor.m_gmkAcc.unknown38);
+  const gmk::GmkBattleLock *lock = static_cast<const gmk::GmkBattleLock *>(m_behaviorEnemyField.m_fieldEnemySensor.m_gmkAcc.m_aGmkBase);
   bool isFree = true;
   if (unknown54e0) {
     if (lock->unknownc4 != 0) {
@@ -659,7 +659,7 @@ template <typename T> void GfComBehaviorEnemy::reqChangeBattleToOtherMember() co
   if (gmkInst != nullptr && gmkInst->getGmkType() == T::GMK_TYPE) {
     const gmk::GmkEnemyInsts &insts = unknown002(*static_cast<T *>(gmkInst));
     GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
-    u32 num = insts.unknown98.getGobInstNum();
+    u32 num = insts.m_popInfo.getGobInstNum();
     for (u32 i = 0; i < num; i++) {
       GF_OBJ_HANDLE *gobHandle = insts.getGobInst(i);
       if (handle != gobHandle) {
@@ -691,7 +691,7 @@ template <typename T> bool GfComBehaviorEnemy::isOtherMemberBattle() const {
 
   const gmk::GmkEnemyInsts &insts = unknown002(*static_cast<T *>(gmkInst));
   GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
-  u32 num = insts.unknown98.getGobInstNum();
+  u32 num = insts.m_popInfo.getGobInstNum();
   for (u32 i = 0; i < num; i++) {
     GF_OBJ_HANDLE *gobHandle = insts.getGobInst(i);
     if (handle != gobHandle) {
@@ -719,7 +719,7 @@ template <typename T> bool GfComBehaviorEnemy::isOtherMemberHome() const {
     if (gmkInst != nullptr && gmkInst->getGmkType() == T::GMK_TYPE) {
       const gmk::GmkEnemyInsts &insts = unknown002(*static_cast<T *>(gmkInst));
       GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
-      u32 num = insts.unknown98.getGobInstNum();
+      u32 num = insts.m_popInfo.getGobInstNum();
       for (u32 i = 0; i < num; i++) {
         GF_OBJ_HANDLE *gobHandle = insts.getGobInst(i);
         if (handle != gobHandle) {

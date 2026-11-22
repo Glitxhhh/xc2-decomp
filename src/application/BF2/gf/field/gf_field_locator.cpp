@@ -36,7 +36,7 @@ namespace gf {
 bool getPopPos(mm::Vec3 &position, const gmk::AGmkBase &gmk) {
   gmk::GmkType type = gmk.getGmkType();
   if (type == gmk::GMK_TYPE_ENEMY) {
-    position = gmk.unknown08.unknown08->unknown00;
+    position = gmk.m_createBaseInfo.m_xform->unknown00;
     return true;
   }
   if (type == gmk::GMK_TYPE_ROUTED_ENEMY) {
@@ -193,12 +193,12 @@ void LocatorTalk_NpcID::update() {
     m_posNum = 0;
     const gmk::GmkSet *gmkSet = gmk::GmkManager::get()->findGmkSet(unknown14);
     if (gmkSet != nullptr) {
-      const gmk::GmkNpcIdInfo *info = gmkSet->unknown178.getNpcIdInfoByNpcId(unknown18);
+      const gmk::GmkNpcIdInfo *info = gmkSet->m_gmkNpcManager.getNpcIdInfoByNpcId(unknown18);
       GfObjAcc acc(info->unknown30);
       if (acc.isValidTransform()) {
         m_pos = acc.getWorldTransformNoSync().unknown00;
       } else {
-        gmk::AGmkNpc *npc = info->unknown18;
+        gmk::AGmkNpc *npc = info->m_aGmkNpc;
         if (npc == nullptr || !npc->isPopCondMatched()) {
           return;
         }
@@ -247,7 +247,7 @@ void LocatorReach::update() {
       if (gmk == nullptr || !static_cast<const gmk::GmkLandmark *>(gmk)->getBdatInfo()->isCondMatched()) {
         return;
       }
-      m_pos = gmk->unknown08.unknown08->unknown00;
+      m_pos = gmk->m_createBaseInfo.m_xform->unknown00;
       break;
     }
     case 3: {
@@ -255,7 +255,7 @@ void LocatorReach::update() {
       if (gmk == nullptr || !static_cast<const gmk::GmkEvent *>(gmk)->unknownf0) {
         return;
       }
-      m_pos = gmk->unknown08.unknown08->unknown00;
+      m_pos = gmk->m_createBaseInfo.m_xform->unknown00;
       break;
     }
     default:
@@ -294,11 +294,11 @@ void LocatorTbox::update() {
     m_posNum = 0;
     unknown002(m_gmkAcc, gmk::GmkTbox::GMK_TYPE, unknown14);
     if (m_gmkAcc.isValid()) {
-      const gmk::GmkTbox *tbox = static_cast<const gmk::GmkTbox *>(m_gmkAcc.unknown38);
+      const gmk::GmkTbox *tbox = static_cast<const gmk::GmkTbox *>(m_gmkAcc.m_aGmkBase);
       if (!tbox->getBdatInfo()->isPopCondMatchedExceptDist() || tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_1) {
         return;
       }
-      m_pos = m_gmkAcc.unknown38->unknown08.unknown08->unknown00;
+      m_pos = m_gmkAcc.m_aGmkBase->m_createBaseInfo.m_xform->unknown00;
     }
     m_posNum = 1;
   }
@@ -347,14 +347,14 @@ void LocatorTalk_DummyGroup::update() {
     const gmk::GmkSet *gmkSet = gmk::GmkManager::get()->findGmkSet(unknown14);
     if (gmkSet != nullptr) {
       int mapId = getMapBdatId();
-      const gmk::GmkNpcManager &npcManager = gmkSet->unknown178;
+      const gmk::GmkNpcManager &npcManager = gmkSet->m_gmkNpcManager;
       for (u16 npcId : unknown20) {
         int iconType = GfQuestTarget::getIconTypeTalk(npcId, m_questID, mapId, true);
         if (iconType != 0) {
           m_iconBdatId = gmk::getBdatIdOfQuestTargetIcon(iconType);
           const gmk::GmkNpcIdInfo *info = npcManager.getNpcIdInfoByNpcId(npcId);
           if (info->unknown30 == unknown020) {
-            gmk::AGmkNpc *npc = info->unknown18;
+            gmk::AGmkNpc *npc = info->m_aGmkNpc;
             mm::Vec3 position;
             mm::Vec3 rotation;
             if (npc != nullptr && npc->isPopCondMatched() && npc->findPopPosRot(position, rotation)) {
@@ -396,9 +396,9 @@ void LocatorPrecious::update() {
         create(m_questID, unknown20);
         return;
       }
-      const gmk::GmkPrecious *precious = static_cast<const gmk::GmkPrecious *>(acc->unknown38);
+      const gmk::GmkPrecious *precious = static_cast<const gmk::GmkPrecious *>(acc->m_aGmkBase);
       if (!precious->isObtained() && precious->getBdatInfo()->isPopCondMatched()) {
-        m_pos.push_back(acc->unknown38->unknown08.unknown08->unknown00);
+        m_pos.push_back(acc->m_aGmkBase->m_createBaseInfo.m_xform->unknown00);
       }
     }
   }
@@ -410,7 +410,7 @@ void LocatorPrecious::onTraverse(const gmk::AGmkBase &gmk) {
     gmk::GmkAcc::CreateInfo info;
     info.validate(gmk);
     unknown28.push_back(gmk::GmkAcc(info));
-    m_pos.push_back(gmk.unknown08.unknown08->unknown00);
+    m_pos.push_back(gmk.m_createBaseInfo.m_xform->unknown00);
   }
 }
 
@@ -478,21 +478,21 @@ void LocatorGimmick::update() {
     if (!tbox->getBdatInfo()->isPopCondMatchedExceptDist() || tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_1) {
       return;
     }
-    m_pos = gmk->unknown08.unknown08->unknown00;
+    m_pos = gmk->m_createBaseInfo.m_xform->unknown00;
     break;
   }
   case gmk::GmkSalvage::GMK_TYPE:
     if (!static_cast<const gmk::GmkSalvage *>(gmk)->getBdatInfo()->isCondMatched()) {
       return;
     }
-    m_pos = gmk->unknown08.unknown08->unknown00;
+    m_pos = gmk->m_createBaseInfo.m_xform->unknown00;
     break;
   case gmk::GmkMapGimmick::GMK_TYPE: {
     const gmk::GmkMapGimmick *mapGimmick = static_cast<const gmk::GmkMapGimmick *>(gmk);
     if (!mapGimmick->isNotSolved() || !mapGimmick->getBdatInfo()->isPopCondMatched()) {
       return;
     }
-    m_pos = gmk->unknown08.unknown08->unknown00;
+    m_pos = gmk->m_createBaseInfo.m_xform->unknown00;
     break;
   }
   case gmk::GmkJump::GMK_TYPE: {
@@ -515,7 +515,7 @@ void LocatorGimmick::update() {
     if (!static_cast<const gmk::GmkDoor *>(gmk)->getBdatInfo()->isPopCondMatched()) {
       return;
     }
-    m_pos = gmk->unknown08.unknown08->unknown00;
+    m_pos = gmk->m_createBaseInfo.m_xform->unknown00;
     break;
   case gmk::GmkElevator::GMK_TYPE:
     if (!static_cast<const gmk::GmkElevator *>(gmk)->getPosForCompass(m_pos)) {
@@ -537,7 +537,7 @@ LocatorEventPreorder::LocatorEventPreorder(const gmk::GmkEvent *gmk) : unknown14
 
 void LocatorEventPreorder::create(const gmk::GmkEvent &gmk) {
   dispose();
-  unknown14 = gmk.unknown20.unknown18;
+  unknown14 = gmk.m_createInfo.unknown18;
   int gmkSetId = gmk::GmkManager::get()->findFirstBdatId_RSC_GmkSetList(gmk::GmkEvent::GMK_TYPE, unknown14);
   if (gmkSetId <= 0) {
     dispose();
@@ -557,10 +557,10 @@ void LocatorEventPreorder::update() {
     m_posNum = 0;
     unknown002(m_gmkAcc, gmk::GmkEvent::GMK_TYPE, unknown14);
     if (m_gmkAcc.isValid()) {
-      if (!static_cast<const gmk::GmkEvent *>(m_gmkAcc.unknown38)->unknownf0) {
+      if (!static_cast<const gmk::GmkEvent *>(m_gmkAcc.m_aGmkBase)->unknownf0) {
         return;
       }
-      m_pos = m_gmkAcc.unknown38->unknown08.unknown08->unknown00;
+      m_pos = m_gmkAcc.m_aGmkBase->m_createBaseInfo.m_xform->unknown00;
     }
     m_posNum = 1;
   }
@@ -574,7 +574,7 @@ LocatorPreciousPreorder::LocatorPreciousPreorder(const gmk::GmkPrecious *gmk) : 
 
 void LocatorPreciousPreorder::create(const gmk::GmkPrecious &gmk) {
   dispose();
-  unknown14 = gmk.unknown20.unknown18;
+  unknown14 = gmk.m_createInfo.unknown18;
   int gmkSetId = gmk::GmkManager::get()->findFirstBdatId_RSC_GmkSetList(gmk::GmkPrecious::GMK_TYPE, unknown14);
   if (gmkSetId <= 0) {
     dispose();
@@ -594,11 +594,11 @@ void LocatorPreciousPreorder::update() {
     m_posNum = 0;
     unknown002(m_gmkAcc, gmk::GmkPrecious::GMK_TYPE, unknown14);
     if (m_gmkAcc.isValid()) {
-      const gmk::GmkPrecious *precious = static_cast<const gmk::GmkPrecious *>(m_gmkAcc.unknown38);
+      const gmk::GmkPrecious *precious = static_cast<const gmk::GmkPrecious *>(m_gmkAcc.m_aGmkBase);
       if (precious->isObtained() || !precious->getBdatInfo()->isPopCondMatched()) {
         return;
       }
-      m_pos = m_gmkAcc.unknown38->unknown08.unknown08->unknown00;
+      m_pos = m_gmkAcc.m_aGmkBase->m_createBaseInfo.m_xform->unknown00;
     }
     m_posNum = 1;
   }

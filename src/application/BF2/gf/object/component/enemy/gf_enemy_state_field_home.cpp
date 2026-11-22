@@ -85,11 +85,11 @@ void StateFieldHome::seqInitHomePos(GfComBehaviorEnemy &behavior, const fw::Upda
     GfObjSetupEnemy *setup = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8)->unknown30);
     position = setup->unknown20;
   } else {
-    if (!navi->unknown00.isValid()) {
+    if (!navi->m_createInfo.isValid()) {
       return;
     }
 
-    if (!navi->unknown28.isValid()) {
+    if (!navi->m_gmkAcc.isValid()) {
       return;
     }
 

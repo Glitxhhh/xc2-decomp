@@ -31,7 +31,7 @@ void GfGmkLocatorAtlas::create(const CreateInfo &info) {
   void (GfGmkLocatorAtlas::*seq)(f32) = &GfGmkLocatorAtlas::seqWaitToCreateCurMapGmkSet;
   if (GfGameManager::getMapID() != info.unknown00) {
     gmk::GmkSet::CreateInfo setInfo;
-    setInfo.unknown00 = getAllocator(ALLOCATOR_UNKNOWN_8)->getMemHandle();
+    setInfo.m_ALLOC_HANDLE = getAllocator(ALLOCATOR_UNKNOWN_8)->getMemHandle();
     setInfo.unknown04 = GfFieldGimmick::getBdatIdFrom_FLD_maplist_To_RSC_GmkSetList(info.unknown00);
     setInfo.unknown24 = true;
     unknown70.create(setInfo);

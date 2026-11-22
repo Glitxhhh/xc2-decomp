@@ -178,7 +178,7 @@ bool GfComBehaviorMob::isMove() const {
       if (gmk == nullptr) {
         return false;
       }
-      return gmk->unknown08.unknown10->unknown0c != gmk::SHAPE_TYPE_UNKNOWN_1;
+      return gmk->m_createBaseInfo.unknown10->unknown0c != gmk::SHAPE_TYPE_UNKNOWN_1;
     }
   }
 
@@ -244,7 +244,7 @@ void GfComBehaviorMob::setup() {
   gmkInst = getBindedGmkInst();
   if (gmkInst != nullptr) {
     CBdatWrapper bdat{gmkInst->getBindedBdatFp()};
-    m_bdatInfo.create(bdat, gmkInst->unknown20.unknown18);
+    m_bdatInfo.create(bdat, gmkInst->m_createInfo.unknown18);
   }
 
   createNaviMeshObj();
@@ -287,7 +287,7 @@ void GfComBehaviorMob::setup() {
 
   if (gmkInst != nullptr) {
     CBdatWrapper bdat{gmkInst->getBindedBdatFp()};
-    int id = gmkInst->unknown20.unknown18;
+    int id = gmkInst->m_createInfo.unknown18;
     m_fieldLookIk.create(static_cast<GfObj *>(unknown08)->unknownf8, bdat, id);
   }
 
@@ -466,13 +466,13 @@ void GfComBehaviorMob::createSquadNavi() {
     bool isMob = gmk->getGmkType() == gmk::GMK_TYPE_MOB;
     gmk::GmkRoutedMob *routedMob = gmk->getGmkType() == gmk::GMK_TYPE_ROUTED_MOB ? static_cast<gmk::GmkRoutedMob *>(gmk) : nullptr;
     if (isMob) {
-      info.unknown00 = static_cast<gmk::GmkMob *>(gmk)->unknown48.unknownb0;
+      info.m_gmkSquad = static_cast<gmk::GmkMob *>(gmk)->m_gmkMobInsts.m_gmkSquad;
     } else if (routedMob != nullptr) {
-      info.unknown00 = routedMob->unknown50.unknownb0;
+      info.m_gmkSquad = routedMob->m_gmkMobInsts.m_gmkSquad;
     }
     GfObjUtil::getObjSetup<GfObjSetupMob>(static_cast<GfObj *>(unknown08)->unknownf8);
     info.unknown08 = static_cast<GfObj *>(unknown08)->unknownf8;
-    if (info.unknown08 != unknown020 && info.unknown00 != nullptr) {
+    if (info.unknown08 != unknown020 && info.m_gmkSquad != nullptr) {
       m_gmkSquadNavi.create(info);
     }
   }

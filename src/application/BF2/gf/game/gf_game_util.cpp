@@ -251,7 +251,7 @@ void GfGameUtil::UiActionWindowInfo::create(GF_OBJ_HANDLE *handle) {
       break;
     }
     case gmk::GMK_TYPE_MAP_GIMMICK:
-      unknown08 = static_cast<u16>(Bdat::getValCheck(gmkInst->getBindedBdatFp(), "actionwindowID", gmkInst->unknown20.unknown18, gmk::BDAT_TYPE_UNKNOWN_2));
+      unknown08 = static_cast<u16>(Bdat::getValCheck(gmkInst->getBindedBdatFp(), "actionwindowID", gmkInst->m_createInfo.unknown18, gmk::BDAT_TYPE_UNKNOWN_2));
       break;
     default: {
       int row = unknown038[gmkInst->getGmkType()];
@@ -939,7 +939,7 @@ bool GfGameUtil::getGmkTargetPointPos(mm::Vec3 &position, GF_OBJ_HANDLE *handle)
   if (gmkInst != nullptr) {
     u32 type = gmkInst->getGmkType();
     if (type <= gmk::GMK_TYPE_ROUTED_ENEMY) {
-      return getGmkTargetPointPos(position, gmkInst->unknown20.unknown10->id);
+      return getGmkTargetPointPos(position, gmkInst->m_createInfo.unknown10->id);
     }
   }
 
@@ -976,7 +976,7 @@ bool GfGameUtil::getGmkTargetPointPos(mm::Vec3 &position, u32 gimmick) {
     if (list != nullptr && list->isValid() && gimmick <= list->getInstNum()) {
       const gmk::AGmkBase *gmkInst = list->getInst(gimmick - 1);
       if (gmkInst != nullptr && gmkInst->isValid()) {
-        position = gmkInst->unknown08.unknown08->unknown00;
+        position = gmkInst->m_createBaseInfo.m_xform->unknown00;
         return true;
       }
     }
@@ -1026,15 +1026,15 @@ public:
     switch (gmk.getGmkType()) {
     case gmk::GMK_TYPE_ENEMY: {
       const gmk::GmkEnemy &enemy = static_cast<const gmk::GmkEnemy &>(gmk);
-      if (enemy.unknown48.unknown98.hasEneID(unknown00, true)) {
-        enemy.unknown48.reqClearRepopCounter();
+      if (enemy.m_gmkEnemyInsts.m_popInfo.hasEneID(unknown00, true)) {
+        enemy.m_gmkEnemyInsts.reqClearRepopCounter();
       }
       break;
     }
     case gmk::GMK_TYPE_ROUTED_ENEMY: {
       const gmk::GmkRoutedEnemy &enemy = static_cast<const gmk::GmkRoutedEnemy &>(gmk);
-      if (enemy.unknown50.unknown98.hasEneID(unknown00, true)) {
-        enemy.unknown50.reqClearRepopCounter();
+      if (enemy.m_gmkEnemyInsts.m_popInfo.hasEneID(unknown00, true)) {
+        enemy.m_gmkEnemyInsts.reqClearRepopCounter();
       }
       break;
     }

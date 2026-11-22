@@ -221,7 +221,7 @@ QuestID GfQuestUtil::getCurrentTBoxWithEvent(GF_OBJ_HANDLE *handle) {
   }
 
   gmk->getBindedBdatFp();
-  u32 gimmick = gmk->unknown20.unknown18;
+  u32 gimmick = gmk->m_createInfo.unknown18;
   if (gimmick == 0) {
     return QuestID();
   }

@@ -63,7 +63,7 @@ void GmkElevator::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gm
 
 GmkType GmkElevatorLocator::getGmkType() const { return GMK_TYPE; }
 
-bool GmkElevatorLocator::isValid() const { return unknown08.m_ownerGmkEnemyList != nullptr && unknown20.unknown08 != nullptr; }
+bool GmkElevatorLocator::isValid() const { return m_createBaseInfo.m_ownerGmkEnemyList != nullptr && m_createInfo.unknown08 != nullptr; }
 
 GmkElevator::GmkElevator() : unknown4b0(gf::unknown020), unknown4b8(nullptr), unknown4c8(false), unknown4c9(false), unknown4ca(false), unknown4cb(false), unknown4cc(0.0f) {
   for (u32 i = 0; i < 4; i++) {
@@ -73,7 +73,7 @@ GmkElevator::GmkElevator() : unknown4b0(gf::unknown020), unknown4b8(nullptr), un
 
 GmkType GmkElevator::getGmkType() const { return GMK_TYPE; }
 
-int GmkElevator::getGameFlagId() const { return unknown20.unknown18 + 0xb248; }
+int GmkElevator::getGameFlagId() const { return m_createInfo.unknown18 + 0xb248; }
 
 void GmkElevator::create(const CreateInfo &info) {
   AGmkBase::create(info);
@@ -114,22 +114,22 @@ void GmkElevator::seqWaitToValidate_GfFieldLod(f32 deltaTime) {
 }
 
 void GmkElevator::seqInit(f32 deltaTime) {
-  if (!unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR]->isValid()) {
+  if (!m_createBaseInfo.m_ownerGmkEnemyList->getCreateInfo().m_gmkSet->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR]->isValid()) {
     return;
   }
   if (canCreateGameEntity()) {
     for (int i = 0; i < 4; i++) {
       const AGmkBase *gmk = getGmkBaseByItemType(static_cast<ItemType>(i));
-      switch (gmk->unknown08.unknown10->unknown0c) {
+      switch (gmk->m_createBaseInfo.unknown10->unknown0c) {
       case SHAPE_TYPE_UNKNOWN_2:
       case SHAPE_TYPE_UNKNOWN_3:
       case SHAPE_TYPE_UNKNOWN_4:
         unknown50[i].create(*gmk, this, false);
         break;
       default: {
-        gf::GF_OBJ_HANDLE *handle = gf::GfObjFactory::createGmkEvent(CBdatWrapper{getBindedBdatFp()}, unknown20.unknown18);
+        gf::GF_OBJ_HANDLE *handle = gf::GfObjFactory::createGmkEvent(CBdatWrapper{getBindedBdatFp()}, m_createInfo.unknown18);
         bindToGameObj(handle);
-        unknown003(gf::GfObjUtil::getObjSetup<gf::GfObjSetupGimmick>(handle), gmk->unknown08.unknown08);
+        unknown003(gf::GfObjUtil::getObjSetup<gf::GfObjSetupGimmick>(handle), gmk->m_createBaseInfo.m_xform);
         unknown002(handle, true);
         unknown290[i] = handle;
         break;
@@ -186,7 +186,7 @@ bool GmkElevator::isGmkFinished() const {
 }
 
 const GmkElevatorLocator *GmkElevator::getBindedGmkElevatorLocator(u32 index) const {
-  const IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
+  const IGmkList *list = m_createBaseInfo.m_ownerGmkEnemyList->getCreateInfo().m_gmkSet->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
   if (!list->isValid()) {
     return nullptr;
   }
@@ -248,17 +248,17 @@ bool GmkElevator::getUpShutterPos(mm::Vec3 &position) const {
 }
 
 const Xform *GmkElevator::getDownLiftSwitchPos() const {
-  const IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
+  const IGmkList *list = m_createBaseInfo.m_ownerGmkEnemyList->getCreateInfo().m_gmkSet->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
   list->isValid();
   const Data *data = getData();
-  return list->getInst(data->unknown00)->unknown08.unknown08;
+  return list->getInst(data->unknown00)->m_createBaseInfo.m_xform;
 }
 
 const Xform *GmkElevator::getUpLiftSwitchPos() const {
-  const IGmkList *list = unknown08.m_ownerGmkEnemyList->getCreateInfo().unknown08->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
+  const IGmkList *list = m_createBaseInfo.m_ownerGmkEnemyList->getCreateInfo().m_gmkSet->unknown1b8[GMK_TYPE_ELEVATOR_LOCATOR];
   list->isValid();
   const Data *data = getData();
-  return list->getInst(data->unknown00 + 2)->unknown08.unknown08;
+  return list->getInst(data->unknown00 + 2)->m_createBaseInfo.m_xform;
 }
 
 bool GmkElevator::getPosForCompass(mm::Vec3 &position) const {
@@ -269,7 +269,7 @@ bool GmkElevator::getPosForCompass(mm::Vec3 &position) const {
       if (locator == nullptr) {
         return false;
       }
-      position = locator->unknown08.unknown08->unknown00;
+      position = locator->m_createBaseInfo.m_xform->unknown00;
       return true;
     }
     if (&GmkElevator::seqUpIdle == unknown4b8) {
@@ -277,7 +277,7 @@ bool GmkElevator::getPosForCompass(mm::Vec3 &position) const {
       if (locator == nullptr) {
         return false;
       }
-      position = locator->unknown08.unknown08->unknown00;
+      position = locator->m_createBaseInfo.m_xform->unknown00;
       return true;
     }
     if (&GmkElevator::seqWaitToArriveDownFloor == unknown4b8) {
@@ -288,7 +288,7 @@ bool GmkElevator::getPosForCompass(mm::Vec3 &position) const {
   }
   if (info->unknown2e != 0) {
     if (&GmkElevator::seqUpIdle == unknown4b8) {
-      position = unknown08.unknown08->unknown00;
+      position = m_createBaseInfo.m_xform->unknown00;
       return true;
     }
     if (&GmkElevator::seqDownIdle == unknown4b8) {
@@ -296,7 +296,7 @@ bool GmkElevator::getPosForCompass(mm::Vec3 &position) const {
       if (locator == nullptr) {
         return false;
       }
-      position = locator->unknown08.unknown08->unknown00;
+      position = locator->m_createBaseInfo.m_xform->unknown00;
       return true;
     }
     if (&GmkElevator::seqWaitToArriveUpFloor == unknown4b8) {
@@ -368,7 +368,7 @@ void GmkElevator::stopLiftSe() {
 }
 
 void GmkElevator::sendGfComQuest() const {
-  u32 gimmick = unknown20.unknown18;
+  u32 gimmick = m_createInfo.unknown18;
   f32 delay = 0.0f;
   if (gf::GfQuestUtil::getGimmickTaskEndCheck(GMK_TYPE, gimmick) == 1) {
     delay = getBdatInfo()->unknown28;
@@ -603,7 +603,7 @@ bool GmkElevator::isLiftStateDown() const {
     isDown = info->unknown1c == 0;
   }
   if (gf::GfDataUtil::getScenarioFlag() == unknown001) {
-    const char *name = unknown08.unknown10->unknown00;
+    const char *name = m_createBaseInfo.unknown10->unknown00;
     if (name != nullptr) {
       isDown |= __builtin_strcmp("ma18a_elv_01", name) == 0;
     }
@@ -652,7 +652,7 @@ void GmkElevator::onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) {
   }
   const AGmkBase *gmk = getGmkBaseByItemType(type);
   if (gmk != nullptr) {
-    createSe(SE_TYPE_UNKNOWN_0, gmk->unknown08.unknown08->unknown00);
+    createSe(SE_TYPE_UNKNOWN_0, gmk->m_createBaseInfo.m_xform->unknown00);
   }
 }
 

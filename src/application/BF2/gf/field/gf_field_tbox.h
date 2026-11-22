@@ -49,7 +49,7 @@ public:
     gmk::AGmkBase *gmk = gmk::getBindedGmkInst(m_GF_OBJ_HANDLE);
     if (gmk != nullptr) {
       gmk::GmkType type = gmk->getGmkType();
-      u32 gimmick = gmk->unknown20.unknown18;
+      u32 gimmick = gmk->m_createInfo.unknown18;
       if (GfQuestUtil::getGimmickTaskEndCheck(type, gimmick) == check) {
         SCOM_QUEST_GIMMICK::createTresure(gimmick, delay);
       }

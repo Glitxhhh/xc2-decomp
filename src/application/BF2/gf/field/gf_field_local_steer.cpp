@@ -123,7 +123,7 @@ void GfFieldLocalSteer::apply(mm::Vec3 &result, const mm::Vec3 &direction) const
 }
 
 void validateGmkRouteNaviConsideringGfLocalSteer(gmk::GmkRouteNavi &navi, const GfFieldLocalSteer &steer, const mm::Vec3 &position) {
-  if (navi.unknown00.isValid() && navi.unknown28.isValid() && navi.unknown80 && steer.m_createInfo.m_GF_OBJ_HANDLE != unknown020 && steer.unknown20) {
+  if (navi.m_createInfo.isValid() && navi.m_gmkAcc.isValid() && navi.unknown80 && steer.m_createInfo.m_GF_OBJ_HANDLE != unknown020 && steer.unknown20) {
     f32 dx = navi.unknown90.x - position.x;
     f32 dy = navi.unknown90.y - position.y;
     f32 dz = navi.unknown90.z - position.z;

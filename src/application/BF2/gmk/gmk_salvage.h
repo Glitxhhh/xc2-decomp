@@ -101,8 +101,8 @@ public:
   void onGobEvent(gf::IGfObjListener::OBJEVT event, gf::GF_OBJ_HANDLE *handle) override;
   void onPlayerAccessed(gf::GF_OBJ_HANDLE *handle) override;
 
-  const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
-  const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(unknown20.unknown10); }
+  const Data *getData() const { return static_cast<const Data *>(m_createInfo.unknown08); }
+  const BdatInfo *getBdatInfo() const { return reinterpret_cast<const BdatInfo *>(m_createInfo.unknown10); }
 
   void (GmkSalvage::*unknown48)(f32);
   gf::GF_OBJ_HANDLE *unknown58;                           // Inferred role: game object; original member name unknown.
@@ -110,14 +110,14 @@ public:
   f32 unknown64;                                          // Role and original member name unknown.
   mm::mtl::FixedVector<GmkSalvageLocator *, 3> unknown68; // Role and original member name unknown.
   mm::mtl::FixedVector<GmkSalvageLocator *, 3> unknown88; // Inferred role: treasure box locators; original member name unknown.
-  GmkSalvageLocator *unknowna8;                           // Role and original member name unknown.
+  GmkSalvageLocator *m_gmkSalvageLocator;                 // Role and original member name unknown.
   mm::mtl::FixedVector<GmkSalvageLocator *, 3> unknownb0; // Inferred role: enemy locators; original member name unknown.
   u8 unknownd0;                                           // Role and original member name unknown.
   u8 unknownd1;                                           // Role and original member name unknown.
   u8 _d2[0xd8 - 0xd2];
-  RaffleResult unknownd8;  // Inferred role: raffle result; original member name unknown.
-  mutable bool unknown128; // Inferred role: display enabled; original member name unknown.
-  bool unknown129;         // Inferred role: request to sync the depop of the treasure boxes; original member name unknown.
+  RaffleResult m_raffleResult; // Inferred role: raffle result; original member name unknown.
+  mutable bool unknown128;     // Inferred role: display enabled; original member name unknown.
+  bool unknown129;             // Inferred role: request to sync the depop of the treasure boxes; original member name unknown.
 };
 
 static_assert(sizeof(GmkSalvage::RaffleResult) == 0x50, "");
@@ -128,11 +128,11 @@ static_assert(offsetof(GmkSalvage, unknown60) == 0x60, "");
 static_assert(offsetof(GmkSalvage, unknown64) == 0x64, "");
 static_assert(offsetof(GmkSalvage, unknown68) == 0x68, "");
 static_assert(offsetof(GmkSalvage, unknown88) == 0x88, "");
-static_assert(offsetof(GmkSalvage, unknowna8) == 0xa8, "");
+static_assert(offsetof(GmkSalvage, m_gmkSalvageLocator) == 0xa8, "");
 static_assert(offsetof(GmkSalvage, unknownb0) == 0xb0, "");
 static_assert(offsetof(GmkSalvage, unknownd0) == 0xd0, "");
 static_assert(offsetof(GmkSalvage, unknownd1) == 0xd1, "");
-static_assert(offsetof(GmkSalvage, unknownd8) == 0xd8, "");
+static_assert(offsetof(GmkSalvage, m_raffleResult) == 0xd8, "");
 static_assert(offsetof(GmkSalvage, unknown128) == 0x128, "");
 static_assert(offsetof(GmkSalvage, unknown129) == 0x129, "");
 static_assert(sizeof(GmkSalvage) == 0x130, "");
@@ -157,7 +157,7 @@ public:
   void debugDraw() const override;
   void update(f32 deltaTime) override;
 
-  GmkSetOfSalvageChildren unknown230; // Inferred role: set of the salvage children lists; original member name unknown.
+  GmkSetOfSalvageChildren m_gmkSetOfSalvageChildren; // Inferred role: set of the salvage children lists; original member name unknown.
 
 protected:
   void createGmk(void *data) override;
@@ -201,14 +201,14 @@ public:
   void seqWaitPop(f32 deltaTime);
   void seqPop(f32 deltaTime);
 
-  const Data *getData() const { return static_cast<const Data *>(unknown20.unknown08); }
+  const Data *getData() const { return static_cast<const Data *>(m_createInfo.unknown08); }
 
   void (GmkSalvageLocator::*unknown48)(f32); // Inferred role: sequence; original member name unknown.
   bool unknown58;                            // Inferred role: dropitem emitter created; original member name unknown.
-  gf::GfDropitemEmitter unknown60;           // Inferred role: dropitem emitter of the collect locator; original member name unknown.
+  gf::GfDropitemEmitter m_dropitemEmitter;   // Inferred role: dropitem emitter of the collect locator; original member name unknown.
   gf::GF_OBJ_HANDLE *unknownc0;              // Inferred role: game object; original member name unknown.
   u8 unknownc8;                              // Role and original member name unknown.
-  GmkSalvage *unknownd0;                     // Inferred role: owner salvage, set by GmkSalvage; original member name unknown.
+  GmkSalvage *m_gmkSalvage;                  // Inferred role: owner salvage, set by GmkSalvage; original member name unknown.
   f32 unknownd8;                             // Role and original member name unknown.
   f32 unknowndc;                             // Role and original member name unknown.
   mutable f32 unknowne0;                     // Role and original member name unknown.
@@ -222,10 +222,10 @@ public:
 
 static_assert(offsetof(GmkSalvageLocator, unknown48) == 0x48, "");
 static_assert(offsetof(GmkSalvageLocator, unknown58) == 0x58, "");
-static_assert(offsetof(GmkSalvageLocator, unknown60) == 0x60, "");
+static_assert(offsetof(GmkSalvageLocator, m_dropitemEmitter) == 0x60, "");
 static_assert(offsetof(GmkSalvageLocator, unknownc0) == 0xc0, "");
 static_assert(offsetof(GmkSalvageLocator, unknownc8) == 0xc8, "");
-static_assert(offsetof(GmkSalvageLocator, unknownd0) == 0xd0, "");
+static_assert(offsetof(GmkSalvageLocator, m_gmkSalvage) == 0xd0, "");
 static_assert(offsetof(GmkSalvageLocator, unknownd8) == 0xd8, "");
 static_assert(offsetof(GmkSalvageLocator, unknowne0) == 0xe0, "");
 static_assert(offsetof(GmkSalvageLocator, unknowne8) == 0xe8, "");

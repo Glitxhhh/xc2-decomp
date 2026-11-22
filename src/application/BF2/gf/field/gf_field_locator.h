@@ -39,7 +39,7 @@ public:
 
   // Inferred helper: binds an accessor to the first gimmick of a type and bdat id when it is not bound yet; original name unknown.
   static void unknown002(gmk::GmkAcc &acc, gmk::GmkType type, int bdatId) {
-    if (!acc.unknown18.isValid()) {
+    if (!acc.m_createInfo.isValid()) {
       gmk::GmkAcc::CreateInfo info;
       const gmk::AGmkBase *gmk = gmk::GmkManager::get()->findFirstGmkInstByBdatId(type, bdatId);
       if (gmk != nullptr) {

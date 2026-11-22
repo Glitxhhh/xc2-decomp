@@ -131,7 +131,7 @@ void GfFieldCollect::seqDo(f32) {
     }
     u8 *collectionBdat = collection->getBindedBdatFp();
     info.unknown28 = collectionBdat;
-    info.unknown30 = collection->unknown20.unknown18;
+    info.unknown30 = collection->m_createInfo.unknown18;
     info.unknown20 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTime", info.unknown30, gmk::BDAT_TYPE_UNKNOWN_8));
     info.unknown24 = gmk::toBdatF32(Bdat::getValCheck(collectionBdat, "initWaitTimeRand", info.unknown30, gmk::BDAT_TYPE_UNKNOWN_8));
   }

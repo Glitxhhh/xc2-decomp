@@ -21,10 +21,10 @@ GmkCollision::GmkCollision(const CreateInfo *info) : unknown50(nullptr), unknown
 
 void GmkCollision::create(const CreateInfo &info) {
   dispose();
-  unknown10 = info;
-  if (unknown10.unknown30 && unknown10.unknown00 != GmkPhantom::SHAPE_TYPE_UNKNOWN_2 && unknown10.unknown00 != GmkPhantom::SHAPE_TYPE_UNKNOWN_3) {
-    unknown10.unknown00 = GmkPhantom::SHAPE_TYPE_UNKNOWN_2;
-    unknown10.unknown34[1] = unknown10.unknown34[0];
+  m_createInfo = info;
+  if (m_createInfo.unknown30 && m_createInfo.unknown00 != GmkPhantom::SHAPE_TYPE_UNKNOWN_2 && m_createInfo.unknown00 != GmkPhantom::SHAPE_TYPE_UNKNOWN_3) {
+    m_createInfo.unknown00 = GmkPhantom::SHAPE_TYPE_UNKNOWN_2;
+    m_createInfo.unknown34[1] = m_createInfo.unknown34[0];
   }
   fw::ColiCharacterInfo coliInfo;
   coliInfo.unknown04 = fw::COLI_TYPE_UNKNOWN_0;
@@ -70,28 +70,28 @@ void GmkCollision::create(const CreateInfo &info) {
 
 void GmkCollision::create(const AGmkBase &gmk, bool flag) {
   CreateInfo info;
-  info.unknown00 = unknown006[gmk.unknown08.unknown10->unknown0c];
-  info.unknown10 = gmk.unknown08.unknown08->unknown00;
-  info.unknown20 = gmk.unknown08.unknown08->unknown10;
+  info.unknown00 = unknown006[gmk.m_createBaseInfo.unknown10->unknown0c];
+  info.unknown10 = gmk.m_createBaseInfo.m_xform->unknown00;
+  info.unknown20 = gmk.m_createBaseInfo.m_xform->unknown10;
   switch (info.unknown00) {
   case GmkPhantom::SHAPE_TYPE_UNKNOWN_1:
-    info.unknown34[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
+    info.unknown34[0] = gmk.m_createBaseInfo.m_xform->unknown20.x * 0.5f;
     break;
   case GmkPhantom::SHAPE_TYPE_UNKNOWN_2:
-    info.unknown34[0] = gmk.unknown08.unknown08->unknown20.y;
-    info.unknown34[1] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
+    info.unknown34[0] = gmk.m_createBaseInfo.m_xform->unknown20.y;
+    info.unknown34[1] = gmk.m_createBaseInfo.m_xform->unknown20.x * 0.5f;
     break;
   case GmkPhantom::SHAPE_TYPE_UNKNOWN_3:
-    info.unknown34[0] = gmk.unknown08.unknown08->unknown20.x * 0.5f;
-    info.unknown34[1] = gmk.unknown08.unknown08->unknown20.y * 0.5f;
-    info.unknown34[2] = gmk.unknown08.unknown08->unknown20.z * 0.5f;
+    info.unknown34[0] = gmk.m_createBaseInfo.m_xform->unknown20.x * 0.5f;
+    info.unknown34[1] = gmk.m_createBaseInfo.m_xform->unknown20.y * 0.5f;
+    info.unknown34[2] = gmk.m_createBaseInfo.m_xform->unknown20.z * 0.5f;
     break;
   default:
     break;
   }
   info.unknown30 = flag;
   create(info);
-  unknown50 = gmk.unknown08.unknown10->unknown00;
+  unknown50 = gmk.m_createBaseInfo.unknown10->unknown00;
 }
 
 void GmkCollision::dispose() {

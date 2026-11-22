@@ -63,7 +63,7 @@ void AFieldSeq::seqCheckFs(f32) {
     return;
   }
 
-  u16 fsId = Bdat::getValCheck(gmkInst->getBindedBdatFp(), "FSID", gmkInst->unknown20.unknown18, gmk::BDAT_TYPE_UNKNOWN_2);
+  u16 fsId = Bdat::getValCheck(gmkInst->getBindedBdatFp(), "FSID", gmkInst->m_createInfo.unknown18, gmk::BDAT_TYPE_UNKNOWN_2);
   u32 nameId = 0;
   GfGameUtil::getNameMsId(nameId, m_GF_OBJ_HANDLE);
   if (fsId) {
@@ -183,7 +183,7 @@ void GfFieldMapGimmick::create(GF_OBJ_HANDLE *handle) {
   gmk::AGmkBase *gmk = findBindedGmk();
   if (gmk != nullptr) {
     CBdatWrapper bdat = gmk->unknown004();
-    int id = gmk->unknown20.unknown18;
+    int id = gmk->m_createInfo.unknown18;
     m_bdatInfo.create(bdat, id);
     if (!isTargetable() || m_bdatInfo.isCondMatched()) {
       {
@@ -257,7 +257,7 @@ void GfFieldMapGimmick::update(f32 deltaTime) {
     return;
   }
   bool isEnded = isEnd();
-  if (m_gmkCamera.unknown10.unknown00.length() > 0) {
+  if (m_gmkCamera.m_createInfo.unknown00.length() > 0) {
     m_gmkCamera.update(deltaTime);
     if (unknown210) {
       (this->*unknown210)(deltaTime);
@@ -280,16 +280,16 @@ void GfFieldMapGimmick::update(f32 deltaTime) {
 
 void GfFieldMapGimmick::setSolvedMapGimmick() {
   if (unknown21) {
-    const gmk::GmkMapGimmick *gmk = static_cast<const gmk::GmkMapGimmick *>(m_gmkAcc.unknown38);
+    const gmk::GmkMapGimmick *gmk = static_cast<const gmk::GmkMapGimmick *>(m_gmkAcc.m_aGmkBase);
     if (gmk != nullptr) {
-      SCOM_QUEST_GIMMICK::createMapGimmick(gmk->unknown20.unknown18, 0.0f);
+      SCOM_QUEST_GIMMICK::createMapGimmick(gmk->m_createInfo.unknown18, 0.0f);
       gmk->setSolved();
     }
   }
 }
 
 void GfFieldMapGimmick::onFsSucceeded() {
-  if (m_gmkCamera.unknown10.unknown00.length() > 0) {
+  if (m_gmkCamera.m_createInfo.unknown00.length() > 0) {
     m_gmkCamera.play();
   }
   unknown230 = 1;
@@ -298,9 +298,9 @@ void GfFieldMapGimmick::onFsSucceeded() {
 }
 
 void GfFieldMapGimmick::seqLod_init(f32) {
-  const gmk::AGmkBase *gmk = m_gmkAcc.unknown38;
+  const gmk::AGmkBase *gmk = m_gmkAcc.m_aGmkBase;
   u8 *bdat = gmk->getBindedBdatFp();
-  int id = gmk->unknown20.unknown18;
+  int id = gmk->m_createInfo.unknown18;
   mm::mtl::FixStr<32> name;
   name.format("G%d_LODmodel", unknown230);
   unknown234 = static_cast<u16>(Bdat::getValCheck(bdat, name.c_str(), id, gmk::BDAT_TYPE_UNKNOWN_2));
@@ -371,7 +371,7 @@ void GfFieldMapGimmick::seqLod_init(f32) {
     info.unknown08 = seId;
     info.unknown10 = distance;
     info.unknown14 = distance;
-    info.unknown20 = gmk->unknown08.unknown08->unknown00;
+    info.unknown20 = gmk->m_createBaseInfo.m_xform->unknown00;
     unknown250[unknown230 - 1].create(info);
   }
 }
@@ -479,8 +479,8 @@ void GfFieldJump::onFsSucceeded() {
           MsgPcFieldNotifyWallJump message;
           message.unknown10 = jump->unknown097()->unknown00[1];
           message.unknown20 = jump->getBindedBdatFp();
-          message.unknown28 = jump->unknown20.unknown18;
-          message.unknown2c = jump->unknown20.unknown18;
+          message.unknown28 = jump->m_createInfo.unknown18;
+          message.unknown2c = jump->m_createInfo.unknown18;
           self->sendMessage(mover, message);
           return;
         }
@@ -491,8 +491,8 @@ void GfFieldJump::onFsSucceeded() {
           message.unknown24 = jump->unknown097()->unknown20;
           message.unknown28 = jump->unknown097()->unknown24;
           message.unknown30 = jump->getBindedBdatFp();
-          message.unknown38 = jump->unknown20.unknown18;
-          message.unknown3c = jump->unknown20.unknown18;
+          message.unknown38 = jump->m_createInfo.unknown18;
+          message.unknown3c = jump->m_createInfo.unknown18;
           self->sendMessage(mover, message);
           return;
         }
@@ -524,8 +524,8 @@ void GfFieldWarp::onFsSucceeded() {
         message.unknown10.z = position[2];
         message.unknown20 = m_GF_OBJ_HANDLE == warp->unknown50[0] ? points[1].unknown0c : points[0].unknown0c;
         message.unknown28 = warp->getBindedBdatFp();
-        message.unknown30 = warp->unknown20.unknown18;
-        message.unknown34 = warp->unknown20.unknown18;
+        message.unknown30 = warp->m_createInfo.unknown18;
+        message.unknown34 = warp->m_createInfo.unknown18;
         self->sendMessage(mover, message);
         return;
       }

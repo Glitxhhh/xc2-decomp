@@ -126,8 +126,8 @@ void GfAutoTalk::update(f32 deltaTime) {
       disposeMenuObj();
     }
   }
-  const gmk::GmkMob *mob = static_cast<const gmk::GmkMob *>(m_gmkAcc.unknown38);
-  u32 num = mob->unknown48.unknowna8->size();
+  const gmk::GmkMob *mob = static_cast<const gmk::GmkMob *>(m_gmkAcc.m_aGmkBase);
+  u32 num = mob->m_gmkMobInsts.unknowna8->size();
   if (num != 0) {
     bool canDisp = canDispText();
     if (unknown80 != canDisp) {
@@ -165,10 +165,10 @@ bool GfAutoTalk::canDispText() const {
       return false;
     }
   }
-  if (!m_distHvCond.isMatch(m_gmkAcc.unknown38->unknown08.unknown08->unknown00)) {
+  if (!m_distHvCond.isMatch(m_gmkAcc.m_aGmkBase->m_createBaseInfo.m_xform->unknown00)) {
     return false;
   }
-  const mm::mtl::Vector<GF_OBJ_HANDLE *> &handles = *static_cast<const gmk::GmkMob *>(m_gmkAcc.unknown38)->unknown48.unknowna8;
+  const mm::mtl::Vector<GF_OBJ_HANDLE *> &handles = *static_cast<const gmk::GmkMob *>(m_gmkAcc.m_aGmkBase)->m_gmkMobInsts.unknowna8;
   u32 num = handles.size();
   if (num == 0) {
     return false;
@@ -192,8 +192,8 @@ void GfAutoTalk::createMenuObj() {
   GfMenuObjBalloon::OpenParam param;
   param.unknown00 = m_createInfo.unknown08;
   param.unknown08 = m_bdatInfo.unknown06;
-  const gmk::GmkMob *mob = static_cast<const gmk::GmkMob *>(m_gmkAcc.unknown38);
-  param.m_GF_OBJ_HANDLE = (*mob->unknown48.unknowna8)[0];
+  const gmk::GmkMob *mob = static_cast<const gmk::GmkMob *>(m_gmkAcc.m_aGmkBase);
+  param.m_GF_OBJ_HANDLE = (*mob->m_gmkMobInsts.unknowna8)[0];
   int mobId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(param.m_GF_OBJ_HANDLE)->unknown30)->unknown10;
   if (mobId > 0) {
     GfMenuBdat::getMenuOffset(static_cast<u16>(Bdat::getValCheck(GfDataBdat::getFP(BDAT_RSC_MOB_LIST), "OffsetID", mobId, gmk::BDAT_TYPE_UNKNOWN_2)), param.m_menuOffset);
@@ -300,7 +300,7 @@ void GfAutoTalkManager::seqInit(f32) {
   const mm::mtl::Vector<gmk::GmkSet *> &sets = gmk::GmkManager::get()->unknownf358;
   size_t num = sets.size();
   for (size_t i = 0; i < num; i++) {
-    createAutoTalkList(sets[i]->unknown10.unknown04);
+    createAutoTalkList(sets[i]->m_createInfo.unknown04);
   }
   unknown28 = &GfAutoTalkManager::seqUpdate;
 }

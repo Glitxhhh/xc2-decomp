@@ -93,7 +93,7 @@ bool StateFieldAreaWalk::getGoalPosCircle(mm::Vec3 &position, const GfComBehavio
     return false;
   }
 
-  const mm::Vec3 &center = enemy->unknown08.unknown08->unknown00;
+  const mm::Vec3 &center = enemy->m_createBaseInfo.m_xform->unknown00;
   mm::Vec3 direction = behavior.m_behaviorEnemyField.unknownc0 - center;
   if (direction.unknown003()) {
     direction = mm::Vec3::unitX;

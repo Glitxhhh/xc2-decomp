@@ -385,7 +385,7 @@ int unknown007(GF_OBJ_HANDLE *handle, QuestID quest) {
 void TargetInfo::setupForFieldObj(QuestID quest, GF_OBJ_HANDLE *handle, bool isCheckCurrent) {
   gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
   unknown18 = 1;
-  unknown08 = gmkInst->unknown20.unknown10->id;
+  unknown08 = gmkInst->m_createInfo.unknown10->id;
   m_questID = quest;
   m_GF_OBJ_HANDLE = handle;
   unknown14 = isCheckCurrent;
@@ -395,7 +395,7 @@ void TargetInfo::setupForGimmick(QuestID quest, u32 mapId, GF_OBJ_HANDLE *handle
   gmk::AGmkBase *gmkInst = gmk::getBindedGmkInst(handle);
   if (gmkInst != nullptr) {
     unknown18 = 5;
-    unknown08 = gmkInst->unknown20.unknown18;
+    unknown08 = gmkInst->m_createInfo.unknown18;
     m_questID = quest;
     unknown10 = mapId;
     m_GF_OBJ_HANDLE = handle;

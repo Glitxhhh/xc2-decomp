@@ -29,7 +29,7 @@ namespace npc {
 static bool isNotTalkWithNpcTurn3(GfComBehaviorNpc &behavior, ai::State &state) {
   gmk::AGmkBase *gmk;
   return !(state.m_state == STATE_ID_UNKNOWN_6 && (gmk = behavior.getBindedGmkInst()) != nullptr &&
-           static_cast<u8>(Bdat::getValCheck(gmk->getBindedBdatFp(), "NpcTurn", gmk->unknown20.unknown18, gmk::BDAT_TYPE_UNKNOWN_1)) == 3);
+           static_cast<u8>(Bdat::getValCheck(gmk->getBindedBdatFp(), "NpcTurn", gmk->m_createInfo.unknown18, gmk::BDAT_TYPE_UNKNOWN_1)) == 3);
 }
 
 bool StateIdle::isExecEndScheduleCondMatched(GfComBehaviorNpc &behavior, ai::State *state) const {

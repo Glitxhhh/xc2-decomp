@@ -72,7 +72,7 @@ void GfBehaviorEnemyField::create(const CreateInfo &info) {
   if (gmkInst != nullptr) {
     u8 *bdat = gmkInst->getBindedBdatFp();
     if (bdat != nullptr) {
-      int index = gmkInst->unknown20.unknown18;
+      int index = gmkInst->m_createInfo.unknown18;
       unknown37 = Bdat::getValCheck(bdat, "party_flag", index, 1);
       if (Bdat::getMember(bdat, "noNaviMesh") != nullptr) {
         unknown38 = Bdat::getFlagVal(bdat, "flag", index, "noNaviMesh") != 0;
@@ -90,7 +90,7 @@ void GfBehaviorEnemyField::create(const CreateInfo &info) {
     if (property != nullptr) {
       GfObjPropertyEnemy *enemy = property->getEnemy();
       if (enemy != nullptr) {
-        enemy->unknown150 = gmkInst->unknown20.unknown18;
+        enemy->unknown150 = gmkInst->m_createInfo.unknown18;
       }
     }
   }
@@ -266,10 +266,10 @@ void GfBehaviorEnemyField::createSquadNavi() {
     gmk::GmkSquadNavi::CreateInfo info;
     switch (gmkInst->getGmkType()) {
     case gmk::GMK_TYPE_ENEMY:
-      info.unknown00 = static_cast<gmk::GmkEnemy *>(gmkInst)->unknown48.unknown150;
+      info.m_gmkSquad = static_cast<gmk::GmkEnemy *>(gmkInst)->m_gmkEnemyInsts.m_gmkSquad;
       break;
     case gmk::GMK_TYPE_ROUTED_ENEMY:
-      info.unknown00 = static_cast<gmk::GmkRoutedEnemy *>(gmkInst)->unknown50.unknown150;
+      info.m_gmkSquad = static_cast<gmk::GmkRoutedEnemy *>(gmkInst)->m_gmkEnemyInsts.m_gmkSquad;
       break;
     default:
       break;
@@ -277,7 +277,7 @@ void GfBehaviorEnemyField::createSquadNavi() {
     GF_OBJ_HANDLE *handle = m_createInfo.m_GF_OBJ_HANDLE;
     info.unknown08 = handle;
     GfObjUtil::getObjSetup<GfObjSetupEnemy>(handle);
-    if (info.unknown00 != nullptr && info.unknown08 != unknown020) {
+    if (info.m_gmkSquad != nullptr && info.unknown08 != unknown020) {
       m_gmkSquadNavi.create(info);
     }
   }

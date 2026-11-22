@@ -19,25 +19,25 @@ template bool TGmkList<GmkClimbing, GmkClimbing::BdatInfo, 1112362051u, 2u, GmkC
 constexpr int WILDCARD_UNKNOWN_37 = 37; // Inferred role: wildcard climbing icon height row; original name unknown.
 
 void GmkClimbing::BdatInfo::create(CBdatWrapper bdat, int id, const AGmkBase &gmk) {
-  unknown04 = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2));
-  unknown08 =
+  m_scenarioFlagCond = ScenarioFlagCond(bdat.getValCheck("ScenarioFlagMin", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("ScenarioFlagMax", id, BDAT_TYPE_UNKNOWN_2));
+  m_questFlagCond =
       QuestFlagCond(bdat.getValCheck("QuestFlag", id, BDAT_TYPE_UNKNOWN_2), bdat.getValCheck("QuestFlagMin", id, BDAT_TYPE_UNKNOWN_1), bdat.getValCheck("QuestFlagMax", id, BDAT_TYPE_UNKNOWN_1));
   unknown00 = bdat.getValCheck("Condition", id, BDAT_TYPE_UNKNOWN_2);
-  unknown0c = BootedGmkCond(bdat, id, "OP_");
+  m_bootedGmkCond = BootedGmkCond(bdat, id, "OP_");
   unknown02 = bdat.getValCheck("climiconRadius", id, BDAT_TYPE_UNKNOWN_2);
 }
 
 bool GmkClimbing::BdatInfo::isPopCondMatched() const {
-  if (unknown04.isEnable() && !unknown04.isMatch()) {
+  if (m_scenarioFlagCond.isEnable() && !m_scenarioFlagCond.isMatch()) {
     return false;
   }
-  if (unknown08.isEnable() && !unknown08.isMatch()) {
+  if (m_questFlagCond.isEnable() && !m_questFlagCond.isMatch()) {
     return false;
   }
   if (unknown00 != 0 && !gf::GfGameCond::isGameCond(unknown00)) {
     return false;
   }
-  if (unknown0c.isEnable() && !unknown0c.isMatch()) {
+  if (m_bootedGmkCond.isEnable() && !m_bootedGmkCond.isMatch()) {
     return false;
   }
   return true;
@@ -49,7 +49,7 @@ GmkType GmkClimbing::getGmkType() const { return GMK_TYPE; }
 // because the out-of-line copy does not match: it only differs in the operand order of the fadd (fadd s0, s1, s0 in the game, fadd s0, s0, s1
 // here; 98 permuter candidates and the source orders found nothing). The standalone copy stays a target (check lists it as TODO).
 inline void GmkClimbing::updateIconPos() {
-  unknown50 = unknown08.unknown08->unknown00;
+  unknown50 = m_createBaseInfo.m_xform->unknown00;
   unknown50.y += Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 0, WILDCARD_UNKNOWN_37, BDAT_TYPE_UNKNOWN_8).valueF32;
 }
 
@@ -134,7 +134,7 @@ bool GmkClimbing::isPopCondMatched() const {
     return false;
   }
   const mm::Vec3 &interestPos = getInterestPos();
-  const mm::Vec3 &position = unknown08.unknown08->unknown00;
+  const mm::Vec3 &position = m_createBaseInfo.m_xform->unknown00;
   f32 x = interestPos.x - position.x;
   f32 y = interestPos.y - position.y;
   f32 z = interestPos.z - position.z;

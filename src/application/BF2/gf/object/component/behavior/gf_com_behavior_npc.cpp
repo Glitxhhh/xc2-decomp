@@ -223,7 +223,7 @@ void GfComBehaviorNpc::procMsgObjectGetVelocity(fw::MessageObject *sender, MsgOb
 gmk::GmkRouteNavi *GfComBehaviorNpc::getGmkRouteNavi() const {
   gmk::AGmkBase *gmk = getBindedGmkInst();
   if (gmk != nullptr && gmk->getGmkType() == gmk::GMK_TYPE_ROUTED_NPC) {
-    return static_cast<gmk::GmkRoutedNpc *>(gmk)->unknown70;
+    return static_cast<gmk::GmkRoutedNpc *>(gmk)->m_gmkRouteNavi;
   }
 
   return nullptr;

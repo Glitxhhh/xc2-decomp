@@ -118,7 +118,7 @@ GfFieldGimmick::GfFieldGimmick(const GfSetupParam &param) : unknownf4a8(false), 
 
 void GfFieldGimmick::initialize(const GfSetupParam &) {
   gmk::GmkManager::CreateInfo info;
-  info.unknown00 = getAllocator(ALLOCATOR_UNKNOWN_9)->getMemHandle();
+  info.m_ALLOC_HANDLE = getAllocator(ALLOCATOR_UNKNOWN_9)->getMemHandle();
   info.unknown04 = "bdat/common_gmk.bdat";
   info.unknown28 = "RSC_GmkSetList";
   info.unknown4c = 1;
@@ -146,7 +146,7 @@ void GfFieldGimmick::gevMapjump(GEV event, const MapjumpCallbackInfo &info) {
       u32 num = list->getInstNum();
       for (u32 index = 0; index < num; index++) {
         gmk::GmkEffect &effect = list->gmkInsts[index];
-        gmk::AGmkBase::CreateInfo createInfo = effect.unknown20;
+        gmk::AGmkBase::CreateInfo createInfo = effect.m_createInfo;
         if (createInfo.unknown08 != nullptr) {
           effect.create(createInfo);
         }
@@ -325,9 +325,9 @@ int GfFieldGimmick::getBdatIdOfActiveGmkAntiBladeArea() {
   }
   gmk::GmkAntiBladeAreaManager *manager = mm::mtl::PtrSingleton<gmk::GmkAntiBladeAreaManager>::get();
   if (manager != nullptr) {
-    gmk::GmkAntiBladeArea *area = manager->unknown20;
+    gmk::GmkAntiBladeArea *area = manager->m_gmkAntiBladeArea;
     if (area != nullptr) {
-      return area->unknown20.unknown10->id;
+      return area->m_createInfo.unknown10->id;
     }
     return 0;
   }

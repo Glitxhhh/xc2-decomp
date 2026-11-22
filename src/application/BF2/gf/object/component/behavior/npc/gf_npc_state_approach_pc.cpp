@@ -85,7 +85,7 @@ void StateApproachPc::seqApproachPc(GfComBehaviorNpc &behavior, const fw::Update
     // squares are scheduled in another order. The negated `<` tests are the game's (fcmp operand order and b.mi/b.pl): `>=` and `<=` change them.
     GfObjAcc acc(static_cast<GfObj *>(behavior.unknown08));
     const mm::Vec3 &position = acc.getWorldTransform().unknown00;
-    mm::Vec3 goal = binded->unknown08.unknown08->unknown00;
+    mm::Vec3 goal = binded->m_createBaseInfo.m_xform->unknown00;
     mm::Vec3 delta = position - goal;
     if (!(GfComBehaviorNpc::BdatInfo::getDistYThreshold() < delta.y)) {
       delta.y = 0.0f;

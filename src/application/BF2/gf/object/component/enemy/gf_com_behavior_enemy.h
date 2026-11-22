@@ -140,7 +140,7 @@ public:
   void unknown003(f32 deltaTime) { m_behaviorEnemyField.moveToGoal(deltaTime); }
 
   // Inferred helper: squad of the squad navi of the field behavior; original name unknown.
-  gmk::GmkSquad *unknown009() const { return m_behaviorEnemyField.m_gmkSquadNavi.unknown10.unknown00; }
+  gmk::GmkSquad *unknown009() const { return m_behaviorEnemyField.m_gmkSquadNavi.m_createInfo.m_gmkSquad; }
 
   ai::Hfsm m_hfsm;                                      // Inferred role: state machine; original member name unknown.
   bool unknown128;                                      // Inferred role: state machine is not set up, true by default; original member name unknown.

@@ -254,7 +254,7 @@ bool GfGameSalvage::isCameraDive() {
 
 u8 *GfGameSalvage::getBindedBdatFp() const { return gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE)->getBindedBdatFp(); }
 
-int GfGameSalvage::getBindedBdatId() const { return gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE)->unknown20.unknown18; }
+int GfGameSalvage::getBindedBdatId() const { return gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE)->m_createInfo.unknown18; }
 
 namespace {
 
@@ -265,7 +265,7 @@ public:
 
   void onTraverse(const gmk::AGmkBase &gmk) {
     const gmk::GmkSalvage &salvage = static_cast<const gmk::GmkSalvage &>(gmk);
-    const mm::Vec3 &position = salvage.unknown08.unknown08->unknown00;
+    const mm::Vec3 &position = salvage.m_createBaseInfo.m_xform->unknown00;
     f32 x = position.x - unknown08.x;
     f32 y = position.y - unknown08.y;
     f32 z = position.z - unknown08.z;
@@ -289,7 +289,7 @@ public:
 } // namespace
 
 bool GfGameSalvage::isTboxExist() const {
-  const mm::Vec3 &position = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE))->unknown08.unknown08->unknown00;
+  const mm::Vec3 &position = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE))->m_createBaseInfo.m_xform->unknown00;
   unknown003 traverser(position);
   mm::mtl::PtrSingleton<gmk::GmkManager>::get()->traverseGmkInst(gmk::GMK_TYPE_SALVAGE, traverser);
   return traverser.unknown10;
@@ -304,7 +304,7 @@ public:
 
   void onTraverse(const gmk::AGmkBase &gmk) {
     const gmk::GmkSalvage &salvage = static_cast<const gmk::GmkSalvage &>(gmk);
-    const mm::Vec3 &position = salvage.unknown08.unknown08->unknown00;
+    const mm::Vec3 &position = salvage.m_createBaseInfo.m_xform->unknown00;
     f32 x = position.x - unknown08.x;
     f32 y = position.y - unknown08.y;
     f32 z = position.z - unknown08.z;
@@ -330,7 +330,7 @@ void GfGameSalvage::execRaffle(const RaffleInfo &info) {
   gmk::GmkSalvage *salvage = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE));
   gmk::GmkSalvage::RaffleInfo raffleInfo = {info.unknown00, info.unknown04, info.unknown08};
   salvage->createRaffle(raffleInfo);
-  unknown004 traverser(salvage->unknown08.unknown08->unknown00);
+  unknown004 traverser(salvage->m_createBaseInfo.m_xform->unknown00);
   mm::mtl::PtrSingleton<gmk::GmkManager>::get()->traverseGmkInst(gmk::GMK_TYPE_SALVAGE, traverser);
 }
 
@@ -338,8 +338,8 @@ void GfGameSalvage::execPop() { static_cast<gmk::GmkSalvage *>(gmk::getBindedGmk
 
 bool GfGameSalvage::getEventOrigin(mm::Mat44 &matrix) const {
   gmk::GmkSalvage *salvage = static_cast<gmk::GmkSalvage *>(gmk::getBindedGmkInst(get()->m_GF_OBJ_HANDLE));
-  if (salvage->unknowna8 != nullptr) {
-    salvage->unknowna8->getMatrix(matrix, true);
+  if (salvage->m_gmkSalvageLocator != nullptr) {
+    salvage->m_gmkSalvageLocator->getMatrix(matrix, true);
     return true;
   }
   return false;

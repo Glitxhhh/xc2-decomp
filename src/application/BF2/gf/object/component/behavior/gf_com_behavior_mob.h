@@ -145,7 +145,7 @@ public:
   f32 unknown017() const { return unknown53d4; }
 
   // Inferred helper: squad of the squad navi; original name unknown.
-  gmk::GmkSquad *unknown009() const { return m_gmkSquadNavi.unknown10.unknown00; }
+  gmk::GmkSquad *unknown009() const { return m_gmkSquadNavi.m_createInfo.m_gmkSquad; }
 
   // Inferred helper: navi mesh object; original name unknown.
   navi::NvmshAcObj *unknown012() const { return unknowna8; }

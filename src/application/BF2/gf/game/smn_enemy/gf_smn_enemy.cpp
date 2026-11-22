@@ -224,7 +224,7 @@ void GfSmnEnemyManager::clearSmnEnemies() {
     }
     for (GF_OBJ_HANDLE *handle : *GfGameObj::getList(OBJECT_TYPE_ENEMY)) {
       gmk::AGmkBase *gmk = gmk::getBindedGmkInst(handle);
-      if (gmk != nullptr && gmk->getGmkType() == gmk::GMK_TYPE_ENEMY && static_cast<gmk::GmkEnemy *>(gmk)->unknown48.unknown38.unknown03) {
+      if (gmk != nullptr && gmk->getGmkType() == gmk::GMK_TYPE_ENEMY && static_cast<gmk::GmkEnemy *>(gmk)->m_gmkEnemyInsts.m_bdatInfo.unknown03) {
         GfObjUtil::destroy(handle);
       }
     }
@@ -267,17 +267,17 @@ struct unknown004 {
       return;
     }
     const gmk::GmkEnemy &enemy = static_cast<const gmk::GmkEnemy &>(gmk);
-    if (!enemy.unknown48.unknown38.unknown03) {
+    if (!enemy.m_gmkEnemyInsts.m_bdatInfo.unknown03) {
       return;
     }
-    mm::Vec3 distance = unknown00 - enemy.unknown08.unknown08->unknown00;
+    mm::Vec3 distance = unknown00 - enemy.m_createBaseInfo.m_xform->unknown00;
     if (unknown08 < distance.x * distance.x + distance.y * distance.y + distance.z * distance.z) {
       return;
     }
-    if (enemy.unknown48.unknown38.isPopCondMatchedOfSmn()) {
+    if (enemy.m_gmkEnemyInsts.m_bdatInfo.isPopCondMatchedOfSmn()) {
       gmk::ForcePopEnemyInfo info;
       info.unknown00 = unknown0c;
-      enemy.unknown48.reqForcePopGobInst(info);
+      enemy.m_gmkEnemyInsts.reqForcePopGobInst(info);
     }
   }
 

@@ -108,7 +108,7 @@ void GfFieldTbox::start(GF_OBJ_HANDLE *handle) {
     gmk::GmkType type = gmk->getGmkType();
     if (type == gmk::GMK_TYPE_TBOX) {
       gmk::GmkTbox *tbox = static_cast<gmk::GmkTbox *>(gmk);
-      unknown20 = Bdat::getValCheck(tbox->getBindedBdatFp(), "RSC_ID", tbox->unknown20.unknown18, gmk::BDAT_TYPE_UNKNOWN_2) & 0xffff;
+      unknown20 = Bdat::getValCheck(tbox->getBindedBdatFp(), "RSC_ID", tbox->m_createInfo.unknown18, gmk::BDAT_TYPE_UNKNOWN_2) & 0xffff;
       unknown24 = tbox->getBdatInfo()->unknown02 && tbox->getProgress() == gmk::GmkTbox::PROGRESS_UNKNOWN_0;
     } else if (type == gmk::GMK_TYPE_SALVAGE_LOCATOR) {
       unknown20 = Bdat::getValCheck(GfDataBdat::getFP(BDAT_FLD_SALVAGE_ITEM_SET), "RSC_ID", static_cast<gmk::GmkSalvageLocator *>(gmk)->unknowne8, gmk::BDAT_TYPE_UNKNOWN_2) & 0xffff;
@@ -183,7 +183,7 @@ void GfFieldTbox::seqWaitOpenFieldTbox(f32 deltaTime) {
         info.unknown14 = 1.5707964f;
       }
       info.unknown28 = tbox->getBindedBdatFp();
-      info.unknown30 = tbox->unknown20.unknown18;
+      info.unknown30 = tbox->m_createInfo.unknown18;
       if (tbox->getBdatInfo()->unknown05) {
         tbox->unknown58 = 0.0f;
         tbox->unknown54 = 5.0f;
@@ -204,7 +204,7 @@ void GfFieldTbox::seqWaitOpenFieldTbox(f32 deltaTime) {
     gmk::AGmkBase *tbox = gmk::getBindedGmkInst(m_GF_OBJ_HANDLE);
     if (tbox != nullptr) {
       gmk::GmkType type = tbox->getGmkType();
-      u32 gimmick = tbox->unknown20.unknown18;
+      u32 gimmick = tbox->m_createInfo.unknown18;
       if (GfQuestUtil::getGimmickTaskEndCheck(type, gimmick) == 0) {
         SCOM_QUEST_GIMMICK::createTresure(gimmick, info.unknown20);
       }

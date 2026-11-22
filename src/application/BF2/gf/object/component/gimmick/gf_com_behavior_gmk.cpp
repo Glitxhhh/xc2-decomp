@@ -289,7 +289,7 @@ void GfComBehaviorGmk::createMenuObj() {
     return;
   }
   u8 *bdat = gmk->getBindedBdatFp();
-  int id = gmk->unknown20.unknown18;
+  int id = gmk->m_createInfo.unknown18;
   switch (gmk->getGmkType()) {
   case gmk::GMK_TYPE_COLLECTION:
     param.unknown3c = true;

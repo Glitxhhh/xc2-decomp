@@ -29,7 +29,7 @@ void GfGmkLocator::dispose() {
 
 const gmk::AGmkBase *GfGmkLocator::getBindedGmk() const {
   if (m_createInfo.unknown08) {
-    return m_gmkAcc.unknown38;
+    return m_gmkAcc.m_aGmkBase;
   }
   return m_createInfo.unknown00;
 }
