@@ -283,7 +283,7 @@ public:
   f32 unknown2d0; // Inferred role: outline range start; original member name unknown.
   u8 _02d4[0x0304 - 0x02d4];
   bool m_defferedColor; // Inferred role: deffered color; named after the game accessor ml::ScnRenderDrSysParmAcc::isDefferedColor.
-  // Inferred role: deferred debug render flags 0x305 to 0x31d, read with unknown304 by DrPixlPostMan::debugDeferredRenderImpl (0x7100850af4), which lists them
+  // Inferred role: deferred debug render flags 0x305 to 0x31d, read with m_defferedColor by DrPixlPostMan::debugDeferredRenderImpl (0x7100850af4), which lists them
   // in the order of the entries it renders (the entries 16, 19 and 21 are the bytes 0x313, 0x311 and 0x312); original member names unknown.
   bool unknown305;
   bool unknown306;

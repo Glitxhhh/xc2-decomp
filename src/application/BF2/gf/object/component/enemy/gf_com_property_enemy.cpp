@@ -34,7 +34,7 @@ void GfComPropertyEnemy::flush() {
 // Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
 // Gets the env sensor component of an object. Single user: GfComPropertyEnemy::getWaterHeight (1.0.0: 0x710051ad18, 44 instructions), which keeps the null test of the component (cbz x21 at
 // 0x710051ad40, joining at the flag load at 0x710051ad68). Forms tried without the helper: the component read directly after getComponent<GfComEnvSensor>() gives 43 instructions (test dropped),
-// as does `&component->unknown10`. The cause is written at UpdatableObject::getComponent. isFieldDeadCondMatched (0x710051ae64, not matched yet) reads the component the same way at 0x710051af58:
+// as does `&component->m_envSensor`. The cause is written at UpdatableObject::getComponent. isFieldDeadCondMatched (0x710051ae64, not matched yet) reads the component the same way at 0x710051af58:
 // if it matches with this helper, it has two users and becomes unknownNNN.
 static GfComEnvSensor *getEnvSensorComponent(fw::UpdatableObject *object) { return object->getComponent<GfComEnvSensor>(); }
 

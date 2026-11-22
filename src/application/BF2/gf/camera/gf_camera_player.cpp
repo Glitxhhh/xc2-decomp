@@ -302,7 +302,7 @@ void PlayerCamera::updateTarget(const fw::Transform &transform, bool param2) {
   mm::Vec3 forward = mm::Vec3::unitZ;
   m_saveYaw = getYaw(mm::Vec3(-position.x, -position.y, -position.z), forward);
   m_savePitch = getPitch(position, forward);
-  // The game reads the pitch limits through unknownb0 again here (the calls on `this` above force the reload) and computes both products before it loads unknownc8: with the
+  // The game reads the pitch limits through m_paramAdapter again here (the calls on `this` above force the reload) and computes both products before it loads unknownc8: with the
   // subtraction in the initialisers the load comes between the two products (measured, same size, different order).
   f32 lower = static_cast<const unknown002 *>(m_paramAdapter.unknown00->param)->pitch_limit_lower * -mm::DEG_TO_RAD;
   f32 upper = static_cast<const unknown002 *>(m_paramAdapter.unknown00->param)->pitch_limit_upper * mm::DEG_TO_RAD;

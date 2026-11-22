@@ -44,7 +44,7 @@ int DrPixlShadowObjSpt::clipTypeChk(const mm::Vec3 &position, f32 value) {
 void DrPixlShadowObjSpt::renderLight() {}
 
 void DrPixlShadowObjSpt::stockTile() {
-  // The local places the load of unknown198 before the load of m_hybridLight, as the game does (0x7100867ce8); in one expression the
+  // The local places the load of m_drLightObj before the load of m_hybridLight, as the game does (0x7100867ce8); in one expression the
   // call target is loaded first (9 instructions).
   DrLightObjSpt *light = static_cast<DrLightObjSpt *>(m_drLightObj);
   m_drMan->m_drShdMan->m_drShdLgtMan->m_hybridLight->stockSptList(light);

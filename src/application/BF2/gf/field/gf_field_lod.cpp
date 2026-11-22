@@ -301,7 +301,8 @@ void GfFieldLod::destroy() {
 void GfFieldLod::setFade(int bdatId, bool isFadeIn, bool isImmediate) {
   GfGameFlag::setLocal(1, bdatId + unknown003 - unknown808, isFadeIn);
   // The lod id is read here, before the model test: the game loads it once before the search (1.0.0: 0x71002e4e34) and keeps it on the stack across the loop (str w1, [sp, #0xc] at
-  // 0x71002e4e54). Read at the setFade call the load comes after the loop (93 instructions instead of 97); declared after the model test the id takes x22 and the address of unknown840 the stack slot.
+  // 0x71002e4e54). Read at the setFade call the load comes after the loop (93 instructions instead of 97); declared after the model test the id takes x22 and the address of m_fieldLodColiAnim the
+  // stack slot.
   u16 lodId = unknown08[bdatId - unknown808];
   if (m_fieldLodColiAnim.m_createInfo.unknown00 == nullptr || m_fieldLodColiAnim.m_createInfo.m_fieldLod == nullptr) {
     return;

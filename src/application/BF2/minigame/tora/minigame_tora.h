@@ -294,7 +294,7 @@ public:
   void *unknown3520;          // Inferred role: item dropped by the next defeated enemy; original member name unknown.
   _sTask *m_sTask;            // Task whose 0x2c/0x30 fields get_pc_pos and get_pc_dxdy read; original member name unknown.
   u8 _3530[0x3560 - 0x3530];
-  int unknown3560; // Divided by 256 and added to the y of unknown3528 in get_pc_pos and get_pc_dxdy; original member name unknown.
+  int unknown3560; // Divided by 256 and added to the y of m_sTask in get_pc_pos and get_pc_dxdy; original member name unknown.
   u8 _3564[0x3566 - 0x3564];
   u16 unknown3566; // Inferred role: height of the map in pixels minus the screen height; original member name unknown.
   u8 _3568[0x3de0 - 0x3568];

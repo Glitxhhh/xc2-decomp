@@ -69,7 +69,7 @@ CharaObj::~CharaObj() {
 }
 
 // 0x71000bec6c, 135 instructions: the Euler angles are written straight into the member, one angle per branch, which the out-parameter
-// mm::quatToEuler does (the by-value form `unknown2fd0 = mm::quatToEuler(...)` costs six more instructions). The game reads the four
+// mm::quatToEuler does (the by-value form `m_rot = mm::quatToEuler(...)` costs six more instructions). The game reads the four
 // components of the quaternion once from the getRotation() result (0x71000becfc); only a copy of the quaternion gives its register
 // assignment (binding the returned reference directly gives s11 where the game has s14 at 0x71000bed00).
 void CharaObj::createGfObj(gf::GF_OBJ_HANDLE *handle) {

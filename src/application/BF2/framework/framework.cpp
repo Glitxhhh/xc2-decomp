@@ -65,7 +65,7 @@ void Framework::initialize(const FrameworkConfig &config, const FrameworkEnv &en
   m_updateInfo.unknown08 = 1.0f;
   m_updateInfo.unknown00 = 1.0f / m_frameworkConfig.unknown04;
   m_updateInfo.unknown04 = m_updateInfo.unknown00 * m_updateInfo.unknown08;
-  // The game stores unknown78.unknown08 (+0x80, 0x710017ade8) before the first layer store (+0x98), so the UpdateInfo fields come before the
+  // The game stores m_updateInfo.unknown08 (+0x80, 0x710017ade8) before the first layer store (+0x98), so the UpdateInfo fields come before the
   // reset: written after it, the layer stores open the sequence (first difference at +0x64).
   // unknown98 is a FixedArray (mm::mtl, the type the managers' layer arrays use): the game writes 32 elements of 0x10 bytes from +0x98 to +0x297,
   // each (1.0f, 1.0f, 1.0f, false, false) as unknown077() builds. The game (0x710017ad84) unrolls the 32 resets fully; a plain index or pointer

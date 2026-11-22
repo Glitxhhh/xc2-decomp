@@ -27,7 +27,7 @@ bool CompareByPriority(const DrLightObjGlobalIBL *a, const DrLightObjGlobalIBL *
 class DrShdLgtGlobalIBL {
 public:
   // Inferred layout of an IBL slot; the original type name is unknown. Evidence: DrShdLgtGlobalIBL::updateView and
-  // removeObj index the state bytes with (unknown08 + 2) % 3 and pass unknown10 to DrPixlPostObjCubeMapMultiIBL::cancelIBL.
+  // removeObj index the state bytes with (unknown08 + 2) % 3 and pass m_drLightObjGlobalIBL to DrPixlPostObjCubeMapMultiIBL::cancelIBL.
   struct unknown002 {
     s32 unknown00;                              // Inferred role: sh matrix index; original member name unknown.
     u8 unknown04[3];                            // Inferred role: request states; original member name unknown.

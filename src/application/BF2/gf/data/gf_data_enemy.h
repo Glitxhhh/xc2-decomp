@@ -21,7 +21,7 @@ constexpr u32 ENEMY_FLAG_UNKNOWN_6 = 1 << 6; // Inferred role: guard left.
 constexpr u32 ENEMY_FLAG_UNKNOWN_7 = 1 << 7; // Inferred role: guard right.
 constexpr u32 ENEMY_FLAG_UNKNOWN_8 = 1 << 8; // Inferred role: guard back.
 
-// Inferred role: bit 9 of SDataEnemy::unknown04 (field damage, unknown05_1), read through the 32-bit word by GmkDmgPhantomManager::listenerGfObj; original name unknown.
+// Inferred role: bit 9 of SDataEnemy::unknown04 (field damage, m_fieldDamage), read through the 32-bit word by GmkDmgPhantomManager::listenerGfObj; original name unknown.
 constexpr u32 ENEMY_FLAG_UNKNOWN_9 = 1 << 9;
 
 // Inferred role: bit 10 of SDataEnemy::unknown04, set by setupSDataEnemy from GfBdatRsc::isRscEnGenusFlaggimmicktype; original name unknown.

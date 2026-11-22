@@ -286,7 +286,7 @@ void DrResShdStreamOut::stmShdset_WetVtx() {
   unknown08[0] = 1;
   unknown08[1] = 0;
   // The game stores {1, 0} as one 64-bit store and the 2 as a separate word (0x710088f6f0, 0x710088f6fc): a load between
-  // the stores keeps the third one out of the merge, so unknown00 is read here.
+  // the stores keeps the third one out of the merge, so m_drShdDataObj is read here.
   DrShdDataObj *dataObj = m_drShdDataObj;
   unknown08[2] = 2;
   unknown16 = dataObj->getDeclarationOfs("WET_NUM");

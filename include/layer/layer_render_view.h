@@ -7,7 +7,7 @@ namespace layer {
 
 struct LayerResViewPortInfo;
 
-// Evidence: LayerObjUtil::calcLayerRenderView copies it as three 8 byte words; LayerObjManager::apply clears unknown08
+// Evidence: LayerObjUtil::calcLayerRenderView copies it as three 8 byte words; LayerObjManager::apply clears m_layerResViewPortInfo
 // and unknown10 of the one it holds at 0x78. Original member names unknown.
 struct LayerRenderView {
   u8 _00[0x08];

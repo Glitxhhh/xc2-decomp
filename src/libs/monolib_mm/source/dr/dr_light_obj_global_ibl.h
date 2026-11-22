@@ -26,7 +26,7 @@ public:
   // Layout from the implicit copy constructor (1.0.0: 0x71007dac18): it copies the vertex and the index as raw bytes,
   // two matrices with the Mat44 alignment check, one float, three Vec3 component by component, the bytes 0x110-0x11e
   // at once, three vectors of four floats and the last 0x88 bytes at once. The default constructor is inlined in
-  // mm::mtl::Vector<MeshData>::extend (0x71007daa78): it clears unknown110 and unknown118 between the member constructors.
+  // mm::mtl::Vector<MeshData>::extend (0x71007daa78): it clears m_drResUseQueryObj and unknown118 between the member constructors.
   struct MeshData {
     MeshData() : m_drResUseQueryObj(nullptr), unknown118(false) {}
     ~MeshData() { m_cGLibPixlCounter.release(); }

@@ -51,7 +51,7 @@ public:
   };
 
   struct PageContext {
-    // Evidence: the constructor (0x71003f5c08) zeroes 0x08..0x28, unknown30 and unknown38 and leaves the other members to initialize.
+    // Evidence: the constructor (0x71003f5c08) zeroes 0x08..0x28, unknown30 and m_menuCallContext and leaves the other members to initialize.
     PageContext() : _08(), unknown30(nullptr), m_menuCallContext(nullptr) {}
 
     u32 unknown00; // Inferred role: current page; original member name unknown.

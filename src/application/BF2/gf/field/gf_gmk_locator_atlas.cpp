@@ -48,7 +48,7 @@ void GfGmkLocatorAtlas::dispose() {
   unknown60 = nullptr;
   disposeBdatInfos();
   // The game stores the default values of CreateInfo field by field (0x71002df540: no temporary on the stack);
-  // `unknown00 = CreateInfo();` builds the object in a stack copy first and compiles to 84 instructions against the game's 81.
+  // `m_createInfo = CreateInfo();` builds the object in a stack copy first and compiles to 84 instructions against the game's 81.
   m_createInfo.unknown00 = 0;
   m_createInfo.unknown04 = 0;
   m_createInfo.unknown10 = mm::Vec3(1.0e12f, 1.0e12f, 1.0e12f);

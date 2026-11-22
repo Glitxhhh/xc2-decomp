@@ -150,7 +150,7 @@ class CommandManager : public mm::mtl::PtrSingleton<CommandManager> {
 public:
   struct PortInfo {
     // The game inlines this constructor into openServer (0x71009835c0, stores at 0x7100983684-0x71009836ac): unknown00 = 0x10000 and unknown04 = 0
-    // (stp), the FixStr unknown0c (terminator at 0x0c, length 0 at 0x2c), unknown30 = ' ', the count of unknown50 (0x150), unknown38, unknown40 and
+    // (stp), the FixStr unknown0c (terminator at 0x0c, length 0 at 0x2c), unknown30 = ' ', the count of unknown50 (0x150), m_iCommandCallback, unknown40 and
     // unknown48 = 0. unknown158 and unknown15c are not set. Same defaults as PortRegistInfo's constructor for the matching members.
     PortInfo() : unknown00(0x10000), unknown04(0), unknown30(' '), m_iCommandCallback(nullptr), unknown40(nullptr), unknown48(nullptr) {}
 

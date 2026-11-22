@@ -81,7 +81,7 @@ void StateApproachPc::seqApproachPc(GfComBehaviorNpc &behavior, const fw::Update
   }
   if (!isNear) {
     // The goal copy loads the goal and then the position before the call to getDistYThreshold, as the game does (0x7100538740-0x710053874c, call at 0x7100538754);
-    // without it the position is loaded first. The distance local places the sum before the load of unknown98.unknown04 (0x710053877c); without it the
+    // without it the position is loaded first. The distance local places the sum before the load of m_bdatInfo.unknown04 (0x710053877c); without it the
     // squares are scheduled in another order. The negated `<` tests are the game's (fcmp operand order and b.mi/b.pl): `>=` and `<=` change them.
     GfObjAcc acc(static_cast<GfObj *>(behavior.unknown08));
     const mm::Vec3 &position = acc.getWorldTransform().unknown00;

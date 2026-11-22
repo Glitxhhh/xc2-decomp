@@ -999,7 +999,7 @@ public:
   mm::Vec3 m_AABBMax;
   mm::Vec3 m_AABBMin;
   mm::Vec3 m_center;   // Inferred role: center; named after the game accessor ml::ScnObjModelDrSys::getCenter.
-  mm::Vec3 unknown140; // Inferred role: half size of the box, passed with unknown130 to the occlusion query; original member name unknown.
+  mm::Vec3 unknown140; // Inferred role: half size of the box, passed with m_center to the occlusion query; original member name unknown.
   u8 _150[0x160 - 0x150];
   f32 m_length; // Inferred role: length; named after the game accessor ml::ScnObjModelDrSys::getLength.
   u8 _164[0x168 - 0x164];

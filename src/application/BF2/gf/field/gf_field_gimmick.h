@@ -38,7 +38,7 @@ struct GfSetupParam;
 class GfFieldGimmick : public mm::mtl::PtrSingleton<GfFieldGimmick>, public IGfObjListener, public IGfEvent {
 public:
   // Inferred role: state of the gimmick pop wait of event::EnvManager; original type name unknown. The GfFieldGimmick
-  // destructor clears unknown00 between the destructions of unknownf4c0 and unknownf480.
+  // destructor clears unknown00 between the destructions of m_gmkLocatorAtlas and m_gmkCtrlVolSeManager.
   struct unknown001 {
     unknown001() : unknown00(false), unknown01(false), unknown02(false), unknown04(0.0f) {}
     ~unknown001() { unknown00 = false; }

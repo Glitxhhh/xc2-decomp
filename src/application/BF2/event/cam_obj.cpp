@@ -55,7 +55,7 @@ ICmd::RESULT CamObj::SetNearfar::update(const Param &param) {
 
 // The game inlines the CamBase, CamField, CamHands, CamMotion and CmdQueue constructors here (0x71000b45b8, 429 instructions). The scene camera
 // is read through its front render info once per vector, as the game does. `active` carries the active camera out of the two branches: storing
-// unknownc70 in each branch instead gives other stores and registers.
+// m_camBase in each branch instead gives other stores and registers.
 CamObj::CamObj(u32 screenID, bool isFocal, bool isStreamMode)
     : CamBase(isFocal), unknown60(0), unknown64(0), m_camField(isFocal), m_camHands(isFocal), m_camMotion(isFocal, isStreamMode), m_camBase(&m_camHands) {
   if (screenID != 0) {

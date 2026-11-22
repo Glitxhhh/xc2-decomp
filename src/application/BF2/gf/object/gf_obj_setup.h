@@ -260,7 +260,7 @@ public:
   GfInitParamWeapon m_initParamWeapon; // Inferred role: copy of the init param; original member name unknown.
 };
 
-// Evidence: the GfObjSetupWeapon constructor calls GfAppend::GfAppend on this+0x118 (GfInitParamWeapon::unknown98 of the copy) and assigns its mounts from GfInitParamWeapon::unknown98.
+// Evidence: the GfObjSetupWeapon constructor calls GfAppend::GfAppend on this+0x118 (GfInitParamWeapon::m_append of the copy) and assigns its mounts from GfInitParamWeapon::m_append.
 static_assert(offsetof(GfObjSetupWeapon, unknown6c) == 0x6c, "");
 static_assert(offsetof(GfObjSetupWeapon, unknown70) == 0x70, "");
 static_assert(offsetof(GfObjSetupWeapon, unknown74) == 0x74, "");

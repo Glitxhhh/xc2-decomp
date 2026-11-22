@@ -461,7 +461,7 @@ static_assert(offsetof(GfInitParamExtra, m_append) == 0x90, "");
 
 class GfInitParamMapSeamless : public GfInitParam {
 public:
-  // The game stores unknown88 after this class's vtable pointer, so it is set here and not by GfInitParam (SCOM_CREATE_MAP_OBJ::exec).
+  // The game stores m_assetSetup after this class's vtable pointer, so it is set here and not by GfInitParam (SCOM_CREATE_MAP_OBJ::exec).
   GfInitParamMapSeamless() {
     m_assetSetup = nullptr;
     unknown90 = false;

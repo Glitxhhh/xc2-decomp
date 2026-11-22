@@ -99,7 +99,7 @@ void GfGamePad::update(const fw::UpdateInfo &) {
   pad->checkEmergencyEscape();
   pad->updateInterruptPadOnForDebug();
   // The game keeps the address of the pad data in a register of its own across the call of isEnableBattouWithHoodHomura
-  // (0x7100326788: ldrb [x20]); reading unknown50 through pad in the condition gives 108 instructions against the game's 105 (P2).
+  // (0x7100326788: ldrb [x20]); reading m_padData through pad in the condition gives 108 instructions against the game's 105 (P2).
   const fw::PadData &data = pad->m_padData;
   if (GfGameManager::isEnableBattouWithHoodHomura(true) && (data.unknown00 & fw::getPadKey(fw::PAD_ACT_KEY_UNKNOWN_8)) == 0 && (data.unknown04 & fw::getPadKey(fw::PAD_ACT_KEY_UNKNOWN_5)) != 0) {
     GfPlayFactory::createHoodHomuraBattou();

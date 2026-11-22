@@ -161,7 +161,7 @@ void DrMdoCtlSeamInstMap::occInstRender() {
 //   gives 125 instructions without that store. The byte load is how clang narrows the 16-bit read of unknown08.
 // - The header count is read before arg.unknown00 (`ldp w10, w26, [x8]` before `ldr x8, [x9, #0x18]`, 0x710081d9f8); reading it after gives 127 instructions. The loop counts up to it
 //   and advances arg.unknown00 (0x710081da74).
-// - `unknown168 + index` and `unknownc0 + index` (pointer plus) give the game's order of loads (table pointer before the index, as dr_mdo_ctl_pos.cpp); the subscript form changes it.
+// - `m_mdsMdlTopHeader + index` and `m_materialRes + index` (pointer plus) give the game's order of loads (table pointer before the index, as dr_mdo_ctl_pos.cpp); the subscript form changes it.
 void DrMdoCtlSeamInstMap::createInstZPrePassDisplayList() {
   if ((unknownc7c & 4) && !m_drMan->unknown1d6a) {
     MdoInstancePrePassArg arg;

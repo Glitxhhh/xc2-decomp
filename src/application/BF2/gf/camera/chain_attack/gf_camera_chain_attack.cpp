@@ -74,7 +74,7 @@ void ChainAttackCameraEntity::update(const fw::UpdateInfo &info) {
     unknownf0 = unknownf0 + (unknownd0 - unknownf0) * unknown110;
     unknown100 = unknown100 + (unknowne0 - unknown100) * unknown110;
   } else if (unknown114 > 0.0f) {
-    // The game dispatches on unknown118 through a jump table of four entries (1.0.0: `cmp w8, #3` at 0x71001d225c, table at 0x7100f68fa8) whose entries 0 and "above 3" reach the same block
+    // The game dispatches on m_moveType through a jump table of four entries (1.0.0: `cmp w8, #3` at 0x71001d225c, table at 0x7100f68fa8) whose entries 0 and "above 3" reach the same block
     // (0x71001d227c). Only two separate cases with the same body give that table: `case 0:` stacked on `default:` (in either order), a switch without case 0 and an if chain all compile to a compare
     // chain (194 or 192 instructions against the game's 197). The game calls calcSpeedTypeSlowInSlowOut (0x71001d22ec, 0x1fc bytes) and inlines the other three.
     switch (m_moveType) {

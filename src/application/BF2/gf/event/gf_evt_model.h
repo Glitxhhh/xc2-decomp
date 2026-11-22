@@ -347,7 +347,7 @@ public:
   bool isPlayEndAnimCS();
   void setAnimSpeedCS(f32 speed);
 
-  // GfAppendHandles, not GfWeapon: the constructor (0x710030c27c) stores the GfAppendHandles vtable here, the same one the GfInitParamWeapon constructor stores in its unknown130.
+  // GfAppendHandles, not GfWeapon: the constructor (0x710030c27c) stores the GfAppendHandles vtable here, the same one the GfInitParamWeapon constructor stores in its m_appendHandles.
   GfAppendHandles m_appendHandles; // Inferred role: weapon handles; original member name unknown.
   u32 unknown348;                  // Inferred role: driver; original member name unknown.
   u8 _34c[0x350 - 0x34c];

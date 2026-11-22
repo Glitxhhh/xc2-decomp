@@ -14,7 +14,7 @@ struct AchievQuest;
 struct GF_OBJ_HANDLE;
 struct QuestTaskParam;
 
-// Index of GfQuestReward::unknown00.
+// Index of GfQuestReward::m_param.
 enum QUEST_REWARD {
   QUEST_REWARD_UNKNOWN_0 = 0,   // Inferred role: gold.
   QUEST_REWARD_UNKNOWN_1 = 1,   // Role unknown.

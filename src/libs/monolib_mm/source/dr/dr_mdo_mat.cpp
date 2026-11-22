@@ -806,7 +806,7 @@ void DrMdoMat::matCall_VolumeTest(const MdsMatInfoHeader *header, int valueIndex
 // because the game keeps the pointer in a register and clears the array pointer through it once, after the tail shared by the two loops (stride 0x38 and 0x28): reading
 // `unknown30->unknown120` again after the calls reloads it and gives no shared store. The occlusion view (unknown160_2) is read before the matrices (unknown160) and read again after
 // the store that clears their array (a null array reuses the first load). The pointer of the shader extension tables is cleared twice and the texture array pointer (unknowne8) is
-// cleared in place of the texture list pointer (unknownd0) in the game.
+// cleared in place of the texture list pointer (m_drResMdoTexList) in the game.
 void DrMdoMat::releaseMat() {
   if (unknown30 == nullptr) {
     return;

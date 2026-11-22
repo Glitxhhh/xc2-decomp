@@ -186,7 +186,7 @@ static_assert(sizeof(unknown136) == 0x10, "");
 // 0x08, the state bits at 0x0c, the material masks at 0x10 and 0x14, the scale at 0x18, the user data at 0x20, the
 // event flags and listener at 0x28, the offset matrix at 0x40 and the shape at 0x80.
 struct ColiCharacterInfo {
-  // unknown14 defaults to 0x80000000 and unknown20 to null: GfComBehaviorGmk::setup (0x710052a790) stores both before the offset matrix copy and never sets them again.
+  // unknown14 defaults to 0x80000000 and m_coliUserData to null: GfComBehaviorGmk::setup (0x710052a790) stores both before the offset matrix copy and never sets them again.
   ColiCharacterInfo() : unknown00(0), unknown10(0xfffffffa), unknown14(0x80000000), unknown18(1.0f), m_coliUserData(nullptr), unknown80(nullptr) { unknown40 = mm::Mat44::identity; }
 
   u32 unknown00;                // Role and original member name unknown.

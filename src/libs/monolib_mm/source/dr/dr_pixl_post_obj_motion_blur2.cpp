@@ -176,7 +176,7 @@ void DrPixlPostObjMotionBlur2::calcBlurWork() {
     u32 sizeOfColor = uniform.unknown001("gSizeOfColor");
     u32 targetVelocity = uniform.unknown001("gTargetVelocity");
     DrAPCache *apCache = m_drMan->m_drAPCache;
-    // unknown798 is read through unknown00->unknown580->unknown10 after the calls (the game reloads the view work pointer for it); the dpch value is a
+    // unknown798 is read through m_drMan->m_drCalcMan->m_drCalcViewWork after the calls (the game reloads the view work pointer for it); the dpch value is a
     // float array (the game's slot is 8-byte aligned, a Vec4 would be 16).
     f32 blurParam[4] = {postParm->unknown200, postParm->unknown20c, postParm->unknown210 * m_drMan->m_drCalcMan->m_drCalcViewWork->unknown798, postParm->unknown204};
     uniform.setF32SetVec4(dpch, blurParam);

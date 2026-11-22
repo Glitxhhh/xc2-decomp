@@ -43,8 +43,8 @@ f32 DrResEtcParams::getValParams() const {
   return m_params;
 }
 
-// The stores are in the order that matches (decision 2026-11-13, ruling 4): the game stores unknown10 and unknown00 as two separate 64-bit zeros (0x710086fa70, 0x710086fa74) and unknown18/unknown1c
-// as one `stp wzr, w8` (0x710086fa78); in declaration order clang merges unknown10, unknown18 and unknown1c into one `stp xzr, x8`.
+// The stores are in the order that matches (decision 2026-11-13, ruling 4): the game stores m_drResEtcParams and unknown00 as two separate 64-bit zeros (0x710086fa70, 0x710086fa74) and
+// unknown18/unknown1c as one `stp wzr, w8` (0x710086fa78); in declaration order clang merges m_drResEtcParams, unknown18 and unknown1c into one `stp xzr, x8`.
 DrResEtcPamObj::DrResEtcPamObj() {
   m_drResEtcParams = nullptr;
   unknown18 = 0;

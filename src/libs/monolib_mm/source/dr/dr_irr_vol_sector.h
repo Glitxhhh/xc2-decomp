@@ -21,7 +21,7 @@ struct SSectorInfo {
 
 static_assert(offsetof(SSectorInfo, m_sLightProbe) == 0x40, "");
 
-// One 0x30 byte entry of SGlobalInfo::unknown28: the DrIrrVolCascade constructor keeps a pointer to the entry of its cascade.
+// One 0x30 byte entry of SGlobalInfo::m_sCascadeInfo: the DrIrrVolCascade constructor keeps a pointer to the entry of its cascade.
 // The bounds are an mm::Aabb like SSectorInfo::unknown00: the DrIrrVolCascade constructor (0x71007ea8fc) reads the x and z
 // extents (0x00/0x10 and 0x08/0x18) before it stores its first count, which a Vec3 difference of the two corners gives.
 struct SCascadeInfo {

@@ -36,7 +36,7 @@ public:
   static EvtBgmTaskVolume *create(const EventBgmSetup &setup);
 
   f32 unknown08;  // Inferred role: seconds left; copy of EventBgmSetup::unknown48 (ldr/str at 0x7100307df4+8); original member name unknown.
-  f32 unknown0c;  // Inferred role: target volume; copy of EventBgmSetup::unknown44; original member name unknown.
+  f32 unknown0c;  // Inferred role: target volume; copy of EventBgmSetup::m_playBgmVolume; original member name unknown.
   bool unknown10; // Inferred role: cancelled; set by cancel (strb at 0x7100307eb4), tested first by update; original member name unknown.
 };
 
@@ -70,7 +70,7 @@ public:
   void cancel(GfEvtBgm *bgm) override;
   static EvtBgmTaskDelayStop *create(const EventBgmSetup &setup);
 
-  EventBgmSetup m_eventBgmSetup; // Inferred role: setup of the bgm to play after the stop; same copy as EvtBgmTaskDelay::unknown08; original member name unknown.
+  EventBgmSetup m_eventBgmSetup; // Inferred role: setup of the bgm to play after the stop; same copy as EvtBgmTaskDelay::m_eventBgmSetup; original member name unknown.
   f32 unknown70;                 // Inferred role: seconds left; copy of EventBgmSetup::unknown58 (create, 0x71003073f4); original member name unknown.
   bool unknown74;                // Inferred role: cancelled; set by cancel (strb at 0x7100307de8), tested first by update; original member name unknown.
 };

@@ -1104,7 +1104,7 @@ static_assert(offsetof(IDColiManager, unknown48) == 0x48, "");
 static_assert(offsetof(IDColiManager, unknownd8) == 0xd8, "");
 static_assert(offsetof(IDColiManager, m_gblIdTbl) == 0xe8, "");
 
-// Inferred role: tree list node of an IDColiObjBase followed by its owner (IDColiObjBase::unknown1b0 and unknown1c0); original type name unknown.
+// Inferred role: tree list node of an IDColiObjBase followed by its owner (IDColiObjBase::m_iDColiTreeObj and unknown1c0); original type name unknown.
 struct unknown031 {
   IDColiTreeObj m_iDColiTreeObj; // Inferred role: tree list node; original member name unknown.
   IDColiObjBase *unknown10;      // Inferred role: owner; original member name unknown.

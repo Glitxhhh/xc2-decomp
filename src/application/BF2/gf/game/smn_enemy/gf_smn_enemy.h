@@ -92,7 +92,7 @@ public:
   struct AbsSmnInfo {
     GF_OBJ_HANDLE *m_GF_OBJ_HANDLE; // Inferred role: owner object; original member name unknown.
     f32 unknown08;                  // Inferred role: radius; original member name unknown.
-    u8 unknown0c;                   // Inferred role: enemy genus (SDataEnemy::unknown99), 0 for any; original member name unknown.
+    u8 unknown0c;                   // Inferred role: enemy genus (SDataEnemy::m_genus), 0 for any; original member name unknown.
   };
 
   GfSmnEnemyManager();

@@ -186,7 +186,7 @@ bool ObjectChara::OnManiStartRot(IManiCallback::StartParam &param) {
 // (a declaration only gives 238 instructions). DataManager::unknown002 takes the matrix by value: the game keeps the inverse of each branch in its own stack slot (0x80, 0x40, 0), while a const
 // reference parameter or a named local matrix lets the compiler share one slot (200 instructions). The angle branch copies the axis, then writes y and x of the local axis through a non-const
 // getTar(): the game stores the copied axis index and z before the calls and the two angles afterwards one field at a time (building a Vec3 and calling set() gives 240 instructions). Each branch ends
-// with its own setTar (the game stores unknownc0 and loads unknown70 per branch).
+// with its own setTar (the game stores m_tarAxis and loads m_charaObj per branch).
 void ObjectChara::OnManiSetTar(IManiCallback::SetParam &param) {
   TarAxis axis;
   u32 type = m_tarAxis.getAxis();

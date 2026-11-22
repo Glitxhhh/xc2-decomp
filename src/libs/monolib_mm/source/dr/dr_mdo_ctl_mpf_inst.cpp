@@ -20,7 +20,7 @@ void DrMdoCtlMpfInst::calcInstMpf(DrCalcViewWork *view, DrMdoCtlMpfWork *work, D
     m_drMdoCtlMpfWork = work;
     m_drResMdoSeamWrkPosMpf = pos;
     for (int i = 0; i < pos->unknown18; i++) {
-      // The game loads unknown00 before the load of the node's object index (0x71007fa020: ldr x9, [x21], then ldrh w8, [x1, #28]); the local places
+      // The game loads m_mdsMpfObjData before the load of the node's object index (0x71007fa020: ldr x9, [x21], then ldrh w8, [x1, #28]); the local places
       // that load.
       const MdsMpfObjData *objects = m_mdsMpfObjData;
       const MdsMpfObjTreeData *tree = &m_drResMdoSeamWrkPosMpf->m_mdsMpfObjTreeData[i];
