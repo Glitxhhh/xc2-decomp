@@ -24,6 +24,7 @@
 #include "gf/data/gf_data_idea.h"
 #include "gf/data/gf_data_item.h"
 #include "gf/data/gf_data_manager.h"
+#include "gf/data/gf_data_mercenaries.h"
 #include "gf/data/gf_data_param_acc.h"
 #include "gf/data/gf_data_party.h"
 #include "gf/data/gf_data_quest.h"
@@ -430,6 +431,18 @@ bool GfDataBlade::getCommonBladeName(const char *model) {
     return false;
   }
   return __builtin_strncmp(model, "bl/bl2", 6) == 0;
+}
+
+u32 GfDataBlade::getEnableCountForCreateBlade() {
+  SDataGame *dataGame = GfDataManager::getDataGame();
+  int max = GfDataMercenaries::getReserverMax();
+  u32 count = 0;
+  for (int i = 0; i < max; i++) {
+    if (dataGame->unknown1098c8.unknowne0[i] == 0) {
+      count++;
+    }
+  }
+  return count;
 }
 
 u32 GfDataBlade::addCommonBlade(const SDataBlade &dataBlade) {
