@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#include "dr/dr_calc_view_work.h"
 #include "dr/dr_man.h"
 #include "dr/dr_mdo_ctl_seam.h"
 #include "dr/dr_mdo_ctl_seam_base_map.h"
@@ -13,6 +14,7 @@
 #include "dr/dr_res_mdo_seam_wrk_base_vertex.h"
 #include "dr/dr_res_mdo_vertex.h"
 #include "grlib/cglib_texture_buffer.h"
+#include "mm_math/mm_vec3.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
@@ -187,6 +189,74 @@ void DrResMdoSeamWrkBase::setupHeader() {
 void DrResMdoSeamWrkBase::changeMemCall() {
   m_mdsSeamBaseMapHead = reinterpret_cast<const MdsSeamBaseMapHead *>(m_drResMdoSeamMemObj->m_buffer);
   setupHeader();
+}
+
+// 0x710087c9a0. The game has the fade-out arm at 0x710087cb7c and the reset arm (fade in) behind it at 0x710087cc60, reached by the branches of the flag tests at 0x710087cc38 to
+// 0x710087cc5c; the counter tests below the fade-out arm are shared (the reset arm stores 0 in unknown17a first and returns on its own, so they fold away on it). The order of the blocks
+// decides how the flag tests are lowered: with the reset arm written first (`if (cond) { reset; return false; }` before the fade-out code) it directly follows the tests of the
+// `flags & 0x100 == 0` arm, which then ends in `eor; cbnz` where the game has `eor; tbnz` at 0x710087cc40 (measured: moving only the reset blocks away from there in the IR gives the
+// game's `tbnz`), and the two final stores are merged by the tail merge when the reset arm is the last block before the return (the game keeps both). So the reset arm is the `else` of
+// the inverted test. The area byte at +0x28 is read with ldrb (0x710087cc2c, 0x710087cc48); `check` places the load of the radius (0x710087ca80) before the load of unknown18 (0x710087ca84);
+// `isFlag` is the game's 0/1 flag (ubfx #3, #1 at 0x710087cc30) computed before the `flags & 0x100` test and read by both of its arms (without the local the function has 192 instructions).
+bool DrResMdoSeamWrkBase::update(DrCalcViewWork *view, const DrResMdoSeamParmRead *parmRead, bool isOpen, u32 flags) {
+  unknowna0 &= ~0x8e;
+  if (m_mdoWrkMatRes == nullptr) {
+    unknown17a = 0;
+    return false;
+  }
+  if (m_drResMdoSeamMemObj->unknown24 & 2) {
+    unknowna0 |= 0x80;
+    changeMemCall();
+  }
+  if (!(unknowna0 & 0x10) && isOpen) {
+    return true;
+  }
+  f32 check = SEAM_BASEMAP_READ_CHECK;
+  bool isNear = !unknown18->unknown001(check, parmRead->unknown50);
+  if (!isNear) {
+    for (s32 i = 0; i < parmRead->unknown40; i++) {
+      if (!unknown18->unknown001(check, parmRead->unknown10[i])) {
+        isNear = true;
+        break;
+      }
+    }
+  }
+  bool isFlag = isNear && (flags & 0x10) && (unknown18->unknown28 & 8);
+  if (!(isNear && ((flags & 0x100) ? ((unknown18->unknown28 & 4) == 0 && !isFlag) : !isFlag) && !(unknowna0 & 0x20))) {
+    unknown17a++;
+    if (unknown17a >= 0x14) {
+      unknowna0 |= 0x20;
+    }
+    if (view->unknown9aa) {
+      unknown17c = 0;
+    } else {
+      u16 alpha = unknown17c - 0x14;
+      unknown17c = (alpha & 0x8000) == 0 ? alpha : 0;
+    }
+  } else {
+    unknowna0 &= ~0x10;
+    unknown17a = 0;
+    if (view->unknown9aa) {
+      unknown17c = 0xff;
+    } else {
+      unknown17c += 0x14;
+      if (unknown17c > 0xff) {
+        unknown17c = 0xff;
+      }
+    }
+  }
+  if (unknown17a >= 0x17) {
+    if (!(unknowna0 & 0x10)) {
+      return true;
+    }
+    unknowna0 &= ~0x10;
+    unknown17a = 0x17;
+    return false;
+  }
+  if (unknown17a >= 0x14) {
+    unknowna0 &= ~0x10;
+  }
+  return false;
 }
 
 void DrResMdoSeamWrkBase::selectVertex(int index) {
