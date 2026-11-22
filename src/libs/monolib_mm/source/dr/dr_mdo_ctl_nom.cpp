@@ -659,4 +659,58 @@ void DrMdoCtlNom::releaseAfterImage() {
   }
 }
 
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// Inferred role: tells whether a mdl info of the thickness pass is not hidden by its vanish effect.
+// Its user, thicknessRender (0x710080eb90), has the game's code only with this helper. Written in the loop, GVN moves the reload of unknown30 that ends the outer loop onto the exit edge of the inner
+// loop (load PRE), one instruction after the game's, which reloads in the join of both edges. GVN refuses that move when the first predecessor of the block that reads the next list entry is not a
+// call; with the helper the inliner and SimplifyCFG create the edge of the not-thickness skip after the edges of the two calls, which makes it the first one. Tried without the helper: the test as one
+// condition, nested ifs, an empty else, `!(a || b)`, the locals of the calls declared outside the if, `continue` in a for or do-while loop (adds a null check of the next entry), an `int` flag (ldr
+// and ubfx instead of ldrb and lsr), and the vanish effect alone in the helper.
+static bool isThicknessVisible(DrMdoCtlNom *mdl, bool isThickness, u32 vanishIndex) {
+  return isThickness && !(mdl->getVanishEffectMax() > vanishIndex && mdl->getVanishEffectWrk(vanishIndex, 2)->unknowna4 > 0.43f);
+}
+
+void DrMdoCtlNom::thicknessRender(bool isFirst) {
+  unknown17a = -1;
+  unknownf2 = 0;
+  int hasNode = m_nodeMax != 0;
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
+  for (int i = 0; i < unknown30->unknown170; i++, top++) {
+    DrResChkList **lists = &unknown190[i * 8];
+    DrResChkList *list = lists[7];
+    if (list != nullptr) {
+      const MdsMdlInfoHeader *infos = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
+      for (;;) {
+        const MdsMdlInfoHeader *info = &infos[list->unknown00];
+        bool isThickness = false;
+        if (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_14) {
+          isThickness = (info->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_15) != 0;
+        }
+        u32 vanishIndex = 0;
+        if (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_8) {
+          vanishIndex = m_drResMdoMeshObj->getParts(info->unknown16)->m_extVolumeFadeEffect;
+        }
+        if (isThicknessVisible(this, isThickness, vanishIndex)) {
+          DrResMdoMeshParts *parts = nullptr;
+          bool isParts = false;
+          if (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_8) {
+            parts = m_drResMdoMeshObj->getParts(info->unknown16);
+            isParts = (parts->unknown28 & DrResMdoMeshParts::FLAG_UNKNOWN_0) != 0;
+          }
+          if (!isParts) {
+            partsThicknessRender(info, 0, hasNode, m_drResMdoAlpTbl, info->unknown20, isFirst);
+          } else {
+            partsThicknessRender(info, parts->unknown38, 0, m_drResMdoAlpTbl, info->unknown20, isFirst);
+          }
+        }
+        u32 next = list->unknown02;
+        if (next == 0) {
+          break;
+        }
+        list = &unknown198[next - 1];
+      }
+    }
+  }
+}
+
 } // namespace ml

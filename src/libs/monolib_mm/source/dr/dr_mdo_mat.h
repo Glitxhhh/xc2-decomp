@@ -470,7 +470,9 @@ struct MdsMdlInfoHeader {
   u16 unknown16; // Inferred role: mesh parts index; original member name unknown.
   u8 _18[0x1c - 0x18];
   u16 unknown1c; // Inferred role: shader parameter; original member name unknown.
-  u8 _1e[0x30 - 0x1e];
+  u8 _1e[0x20 - 0x1e];
+  u16 unknown20; // Inferred role: alpha table index passed to the part render functions; original member name unknown.
+  u8 _22[0x30 - 0x22];
 };
 
 static_assert(offsetof(MdsMdlInfoHeader, unknown04) == 0x04, "");
@@ -481,6 +483,7 @@ static_assert(offsetof(MdsMdlInfoHeader, unknown0e) == 0x0e, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown12) == 0x12, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown16) == 0x16, "");
 static_assert(offsetof(MdsMdlInfoHeader, unknown1c) == 0x1c, "");
+static_assert(offsetof(MdsMdlInfoHeader, unknown20) == 0x20, "");
 
 static_assert(sizeof(MdsMdlInfoHeader) == 0x30, "");
 

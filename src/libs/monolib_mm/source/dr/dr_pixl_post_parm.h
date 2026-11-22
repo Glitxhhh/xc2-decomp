@@ -193,7 +193,13 @@ public:
   u8 _0112[0x0114 - 0x0112];
   f32 unknown114[6]; // Inferred role: tmaa sharpness; original member name unknown.
   f32 unknown12c[6]; // Inferred role: tmaa sharpness; original member name unknown.
-  u8 _0144[0x0158 - 0x0144];
+  u8 _0144[0x0148 - 0x0144];
+  // Inferred role: squared into the second gParam value of DrPixlPostMan::renderDeferredTemporal (0x7100844148); original member name unknown.
+  f32 unknown148;
+  u8 _014c[0x0150 - 0x014c];
+  // Inferred role: strength clamped to [0.2, 1] by DrPixlPostMan::renderDeferredTemporal (0x7100844174); original member name unknown.
+  f32 unknown150;
+  u8 _0154[0x0158 - 0x0154];
   bool unknown158; // Inferred role: tmaa reset request; original member name unknown.
   u8 _0159[0x016d - 0x0159];
   bool unknown16d; // Inferred role: tmaa sharpness pass flag, tested by DrPixlPostMan::render (0x7100845a54) with the AA and TMAA flags; original member name unknown.
@@ -493,6 +499,8 @@ static_assert(offsetof(DrPixlPostParm, m_AAOn) == 0x00fc, "");
 static_assert(offsetof(DrPixlPostParm, m_aAEdgeSharpness) == 0x0100, "");
 static_assert(offsetof(DrPixlPostParm, unknown114) == 0x0114, "");
 static_assert(offsetof(DrPixlPostParm, unknown12c) == 0x012c, "");
+static_assert(offsetof(DrPixlPostParm, unknown148) == 0x0148, "");
+static_assert(offsetof(DrPixlPostParm, unknown150) == 0x0150, "");
 static_assert(offsetof(DrPixlPostParm, unknown158) == 0x0158, "");
 static_assert(offsetof(DrPixlPostParm, unknown174) == 0x0174, "");
 static_assert(offsetof(DrPixlPostParm, unknown175) == 0x0175, "");

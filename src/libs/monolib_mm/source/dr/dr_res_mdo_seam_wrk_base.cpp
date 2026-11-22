@@ -83,14 +83,20 @@ void DrResMdoSeamWrkBase::release() {
   m_drResMdoSeamMemObj = nullptr;
 }
 
+// Inferred role: releases the vertex of the work and gives its memory object back to the seam control; original name unknown. Written out in releaseCache, callReleaseReadList and
+// releaseReadVertexList in the game (the same call form of a static helper inlines into the three of them and matches, P4).
+static void unknown301(DrMdoCtlSeamBaseMap *ctl, DrResMdoSeamWrkBaseVertex &vertex) {
+  DrResMdoSeamMemObj *memObj = vertex.m_drResMdoSeamMemObj;
+  vertex.release();
+  if (memObj != nullptr) {
+    ctl->releaseFreeSeamMemObj(memObj);
+  }
+}
+
 void DrResMdoSeamWrkBase::releaseCache(DrMdoCtlSeamBaseMap *ctl) {
   if (m_drResMdoSeamWrkBaseVertex != nullptr) {
     for (int i = 0; i < unknown17e; i++) {
-      DrResMdoSeamMemObj *memObj = m_drResMdoSeamWrkBaseVertex[i].m_drResMdoSeamMemObj;
-      m_drResMdoSeamWrkBaseVertex[i].release();
-      if (memObj != nullptr) {
-        ctl->releaseFreeSeamMemObj(memObj);
-      }
+      unknown301(ctl, m_drResMdoSeamWrkBaseVertex[i]);
     }
   }
   m_drResMdoSeamWrkBaseVertex = nullptr;
@@ -502,11 +508,7 @@ void DrResMdoSeamWrkBase::callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdo
   }
   for (s32 i = 0; i < unknown17e; i++) {
     if (unknowne0[(i + unknown17e * 2) >> 5] & (1 << ((i + unknown17e * 2) & 0x1f))) {
-      DrResMdoSeamMemObj *memObj = m_drResMdoSeamWrkBaseVertex[i].m_drResMdoSeamMemObj;
-      m_drResMdoSeamWrkBaseVertex[i].release();
-      if (memObj != nullptr) {
-        ctl->releaseFreeSeamMemObj(memObj);
-      }
+      unknown301(ctl, m_drResMdoSeamWrkBaseVertex[i]);
       unknowne0[(i + unknown17e * 2) >> 5] &= ~(1 << ((i + unknown17e * 2) & 0x1f));
     } else if (unknowne0[i >> 5] & (1 << (i & 0x1f))) {
       unknown94++;
@@ -514,6 +516,110 @@ void DrResMdoSeamWrkBase::callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdo
       unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
       unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
     }
+    unknowne0[(i + unknown17e) >> 5] &= ~(1 << ((i + unknown17e) & 0x1f));
+  }
+}
+
+// The partner test of the last arm branches on its own in each half and continues there, so the shared alpha code takes its index from a phi of two edges and the game's
+// `i - count` sits on the edge into it. Joined in a bool first, InstCombine folds the two tests into one test of a phi of words and the index is computed before the test.
+void DrResMdoSeamWrkBase::releaseReadVertexList(DrMdoCtlSeamBaseMap *ctl, DrCalcViewWork *view) {
+  const unknown782 *list = unknown50;
+  for (s32 i = 0; i < unknown17e; i++) {
+    if (unknowne0[(i + unknown17e * 2) >> 5] & (1 << ((i + unknown17e * 2) & 0x1f))) {
+      unknown301(ctl, m_drResMdoSeamWrkBaseVertex[i]);
+      unknowne0[(i + unknown17e * 2) >> 5] &= ~(1 << ((i + unknown17e * 2) & 0x1f));
+      if (!(unknowna0 & 0x200)) {
+        m_drResMdoAlpTbl->unknown005(i, 0.0f);
+      } else if (i < list->unknown04) {
+        s32 partner = i + list->unknown04;
+        if (!(unknowne0[partner >> 5] & (1 << (partner & 0x1f)))) {
+          m_drResMdoAlpTbl->unknown005(i, 0.0f);
+        }
+      } else {
+        s32 k = i - list->unknown04;
+        if (!(unknowne0[k >> 5] & (1 << (k & 0x1f)))) {
+          m_drResMdoAlpTbl->unknown005(k, 0.0f);
+        }
+      }
+    } else if (unknowne0[i >> 5] & (1 << (i & 0x1f))) {
+      unknown94++;
+      unknown90 += m_drResMdoSeamWrkBaseVertex[i].unknown10;
+      if (unknowne0[(i + unknown17e) >> 5] & (1 << ((i + unknown17e) & 0x1f))) {
+        if (!(unknowna0 & 0x200)) {
+          int alpha = static_cast<int>(m_drResMdoAlpTbl->unknown004(i) * 255.0f) + 20;
+          if (unknown17c < alpha) {
+            alpha = unknown17c;
+          }
+          if (alpha >= 0x100) {
+            m_drResMdoAlpTbl->unknown005(i, 1.0f);
+          } else {
+            m_drResMdoAlpTbl->unknown005(i, alpha / 255.0f);
+          }
+        } else {
+          s32 k = i;
+          bool isPartner = false;
+          if (i >= list->unknown04) {
+            k = i - list->unknown04;
+            isPartner = (unknowne0[k >> 5] & (1 << (k & 0x1f))) != 0;
+          }
+          if (!isPartner) {
+            int alpha = static_cast<int>(m_drResMdoAlpTbl->unknown004(k) * 255.0f) + 20;
+            if (unknown17c < alpha) {
+              alpha = unknown17c;
+            }
+            if (alpha >= 0x100) {
+              m_drResMdoAlpTbl->unknown005(k, 1.0f);
+            } else {
+              m_drResMdoAlpTbl->unknown005(k, alpha / 255.0f);
+            }
+          }
+        }
+      } else {
+        if (!(unknowna0 & 0x200)) {
+          int alpha = static_cast<int>(m_drResMdoAlpTbl->unknown004(i) * 255.0f) - 20;
+          if (unknown17c < alpha) {
+            alpha = unknown17c;
+          }
+          if (alpha < 0) {
+            unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+            unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
+            m_drResMdoAlpTbl->unknown005(i, 0.0f);
+          } else {
+            m_drResMdoAlpTbl->unknown005(i, alpha / 255.0f);
+          }
+        } else {
+          s32 k = i;
+          if (i < list->unknown04) {
+            s32 partner = i + list->unknown04;
+            if (unknowne0[partner >> 5] & (1 << (partner & 0x1f))) {
+              unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+              unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
+              continue;
+            }
+          } else {
+            k = i - list->unknown04;
+            if (unknowne0[k >> 5] & (1 << (k & 0x1f))) {
+              unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+              unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
+              continue;
+            }
+          }
+          int alpha = static_cast<int>(m_drResMdoAlpTbl->unknown004(k) * 255.0f) - 20;
+          if (unknown17c < alpha) {
+            alpha = unknown17c;
+          }
+          if (alpha < 0) {
+            unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
+            unknowne0[(i + unknown17e * 2) >> 5] |= 1 << ((i + unknown17e * 2) & 0x1f);
+            m_drResMdoAlpTbl->unknown005(k, 0.0f);
+          } else {
+            m_drResMdoAlpTbl->unknown005(k, alpha / 255.0f);
+          }
+        }
+      }
+    }
+  }
+  for (s32 i = 0; i < unknown17e; i++) {
     unknowne0[(i + unknown17e) >> 5] &= ~(1 << ((i + unknown17e) & 0x1f));
   }
 }

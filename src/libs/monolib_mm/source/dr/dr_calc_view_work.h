@@ -106,7 +106,9 @@ public:
   grlib::CGLibDblUniformBlock unknown970; // Inferred role: dither uniform; original member name unknown.
   u8 _9a8[0x9a9 - 0x9a8];
   bool unknown9a9; // Inferred role: camera cut; original member name unknown.
-  bool unknown9aa; // Inferred role: SSR skip; original member name unknown.
+  // Inferred role: SSR skip; original member name unknown. A u8 and not a bool: DrPixlPostMan::renderDeferredTemporal (0x7100843d50) normalises the byte
+  // (`cmp w9, #0; cset w9, ne`) before it ors it into the reset flag, where a bool load carries a range and the compiler ors the byte as it is.
+  u8 unknown9aa;
   bool unknown9ab; // Inferred role: first flag passed to DrMdoCtlMpfAuto::autoMpfCalc by DrResMdoSeamWrkMpf::updateRenderList; original member name unknown.
   bool unknown9ac; // Inferred role: set when the value at 0x79c exceeds 128; original member name unknown.
   bool unknown9ad; // Inferred role: request flag; original member name unknown.

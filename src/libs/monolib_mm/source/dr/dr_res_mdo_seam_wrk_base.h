@@ -158,6 +158,7 @@ public:
   void beginBaseMapRenderList();
   bool callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamTexList *texLists, DrMdoCtlSeamBaseMap *ctl);
   void callReleaseReadList(DrMdoCtlSeamBaseMap *ctl, DrResMdoSeamTexList *texLists, const u16 *textureListFlags);
+  void releaseReadVertexList(DrMdoCtlSeamBaseMap *ctl, DrCalcViewWork *view);
   void callShadowCacheBaseUpdate(u64 mask);
   void beginRender();
   void endRender();

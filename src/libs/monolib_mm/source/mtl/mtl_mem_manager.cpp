@@ -1107,6 +1107,48 @@ template <int N> void AssetAllocator<N>::addFreeList(const SMemChunk &chunk) {
   }
 }
 
+// Joins the freed chunk to the free chunk that ends where it starts and to the one that starts where it ends, or adds it to the list.
+// Form evidence (1.0.0: 0x7100786108): the search for the previous chunk is a loop of its own followed by a test of the iterator, so
+// that the loads of the merged chunk are first made in the merge block: the order of the operands of `start + count` follows the order
+// of their loads (it->unknown10, chunk.unknown10, then it->unknown0c). The merged flag is an int: a bool gives tbnz, an int cbnz/cbz.
+template <int N> void AssetAllocator<N>::merge(void *pointer, const SMemChunk &chunk) {
+  typedef typename mm::mtl::FixedList<SMemChunk, N>::iterator iterator;
+  int count = chunk.unknown10;
+  int start = chunk.unknown0c;
+  int end = start + count;
+  iterator next = unknown30.begin();
+  iterator prev = unknown30.end();
+  int merged = 0;
+  iterator it = next;
+  for (; it != unknown30.end(); ++it) {
+    if (chunk.unknown0c == it->unknown0c + it->unknown10) {
+      break;
+    }
+  }
+  if (it != unknown30.end()) {
+    count = it->unknown10 + chunk.unknown10;
+    merged = 1;
+    start = it->unknown0c;
+    end = start + count;
+    it->unknown10 = count;
+    prev = it;
+    next = ++it;
+  }
+  for (it = next; it != unknown30.end(); ++it) {
+    if (end == it->unknown0c) {
+      it->unknown0c = start;
+      it->unknown10 += count;
+      if (merged) {
+        unknown30.erase(prev);
+      }
+      return;
+    }
+  }
+  if (!merged) {
+    addFreeList(chunk);
+  }
+}
+
 // The line argument of the allocation is the line of the original file.
 #line 1906
 void *MemHandlebaseAllocator::allocate(size_t size, size_t alignment) { return MemManager::allocate(m_ALLOC_HANDLE, size, alignment, false, __FILE__, __LINE__); }
