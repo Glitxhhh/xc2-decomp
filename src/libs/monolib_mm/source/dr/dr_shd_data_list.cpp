@@ -1,6 +1,7 @@
 #include "dr/dr_shd_data_list.h"
 
 #include <math.h>
+#include <new>
 #include <string.h>
 
 #include "dr/dr_man.h"
@@ -12,10 +13,14 @@
 #include "grlib/cglib_one_uniform_block.h"
 #include "grlib/cglib_shd_list.h"
 #include "ml/file_res_th.h"
+#include "ml/scn.h"
+#include "ml/work_util.h"
 #include "mtl/alloc_handle.h"
 #include "mtl/mem_manager.h"
 
 namespace ml {
+
+const char *SHDLIST_SHADER_FILE = "/monolib/shader/shd_post.wishp";
 
 void DrShdDataObj::createShader(DrShdDataList *list, int type, int index) {
   if (type == 2) {
@@ -50,6 +55,67 @@ DrShdDataList::~DrShdDataList() {
   if (unknown618 != nullptr) {
     delete unknown618;
     unknown618 = nullptr;
+  }
+}
+
+// Inferred name; kept as an exception to the unknown-name rule (AGENTS.md): single-user helper whose existence only the match proves; rename if a sibling build gives a symbol.
+// Role: the record of a shader group in the header of a shader pack (number of shaders, index of the first). Its only user is DrShdDataList::createShader (1.0.0: 0x710089b13c, 282
+// instructions), which only matches with the group lookup (zero extended group index) as an inlined call: the group table is then indexed with the plain 64 bit counter and the store
+// of unknown18[i] keeps the sign extended one (lsl x16, x8, #32; add x16, x19, x16, asr #29 at 0x710089b260). Forms tried without the helper, in createShader: the lookup written out in
+// the loop with `static_cast<u32>(i)` 282 instructions (plain `add x16, x19, x8, lsl #3` store of unknown18[i]), with the signed `i` 281, the object taken through
+// CGLibShdListBase::unknown004(i) 282 (same store), `unknown18[i]` read back as the object 282, and the object address formed again from the group in the loop 286.
+inline const grlib::CGLibShdListBase<DrShdDataObj>::unknown003 *getShaderGroup(grlib::CGLibShdListBase<DrShdDataObj> *list, u32 group) {
+  typedef grlib::CGLibShdListBase<DrShdDataObj> ShaderList;
+  return reinterpret_cast<const ShaderList::unknown003 *>(static_cast<const u8 *>(list->unknown08) + static_cast<const ShaderList::unknown001 *>(list->unknown08)->unknown10) + group;
+}
+
+// ml::DrShdDataList::createShader() 0x710089b13c.
+void DrShdDataList::createShader() {
+  typedef grlib::CGLibShdListBase<DrShdDataObj> ShaderList;
+  Scn *scn = Scn::get();
+  if (scn != nullptr) {
+    m_fileResTh = scn->allocEntryRes(SHDLIST_SHADER_FILE);
+  }
+  if (m_fileResTh == nullptr) {
+    m_fileResTh = new (WorkUtil::getWorkMem()) FileResTh();
+    m_fileResTh->loadBlock(m_drMan->unknown1c, SHDLIST_SHADER_FILE, 0x1000, 0);
+  }
+  unknown618->createPacShader(m_fileResTh->m_glassBreakage, 0x3ff, true);
+  unknown10 = mtl::MemManager::allocate(
+      m_drMan->unknown0c, sizeof(DrResShdMpf) * 38 + sizeof(DrResShdPrePass) * 42 + sizeof(DrResShdShw) * 5 + sizeof(DrResShdStreamOut) * 9 + sizeof(DrResShdObjMot) * 6, 8, false, "no name", 0);
+  for (s32 i = 0; i < unknown618->unknown54; i++) {
+    const ShaderList::unknown003 *group = getShaderGroup(unknown618, i);
+    u32 index = group->unknown04;
+    s32 count = group->unknown00;
+    DrShdDataObj *object = unknown618->unknown40 + index;
+    unknown18[i] = object;
+    for (s32 j = 0; j < count; j++) {
+      const ShaderList::unknown002 *entry =
+          reinterpret_cast<const ShaderList::unknown002 *>(static_cast<const u8 *>(unknown618->unknown08) + static_cast<const ShaderList::unknown001 *>(unknown618->unknown08)->unknown08) + index;
+      (object + j)->createShader(this, entry->unknown06, entry->unknown04);
+      index++;
+    }
+  }
+  m_mpfObj = static_cast<DrResShdMpf *>(unknown10);
+  for (int i = 0; i < 38; i++) {
+    new (&m_mpfObj[i]) DrResShdMpf(&unknown18[5][i], i);
+  }
+  m_prePassObj = static_cast<DrResShdPrePass *>(static_cast<void *>(static_cast<u8 *>(unknown10) + sizeof(DrResShdMpf) * 38));
+  for (int i = 0; i < 42; i++) {
+    new (&m_prePassObj[i]) DrResShdPrePass(&unknown18[6][i], i);
+  }
+  m_shwObj = static_cast<DrResShdShw *>(static_cast<void *>(static_cast<u8 *>(unknown10) + sizeof(DrResShdMpf) * 38 + sizeof(DrResShdPrePass) * 42));
+  for (int i = 0; i < 5; i++) {
+    new (&m_shwObj[i]) DrResShdShw(&unknown18[7][i], i);
+  }
+  m_stmOutObj = static_cast<DrResShdStreamOut *>(static_cast<void *>(static_cast<u8 *>(unknown10) + sizeof(DrResShdMpf) * 38 + sizeof(DrResShdPrePass) * 42 + sizeof(DrResShdShw) * 5));
+  for (int i = 0; i < 9; i++) {
+    new (&m_stmOutObj[i]) DrResShdStreamOut(&unknown18[4][i], i);
+  }
+  m_objMotBlurObj = static_cast<DrResShdObjMot *>(
+      static_cast<void *>(static_cast<u8 *>(unknown10) + sizeof(DrResShdMpf) * 38 + sizeof(DrResShdPrePass) * 42 + sizeof(DrResShdShw) * 5 + sizeof(DrResShdStreamOut) * 9));
+  for (int i = 0; i < 6; i++) {
+    new (&m_objMotBlurObj[i]) DrResShdObjMot(&unknown18[8][i], i);
   }
 }
 
