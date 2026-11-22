@@ -625,7 +625,7 @@ bool StateUtilField::isWallAdsorption(GfComPropertyPc &property) {
   if (property.m_propertyField.unknown10_3) {
     EnviromentSensor *sensor = property.getEnvSensor();
     if (sensor->unknown24_4 && (sensor->unknown150.unknown00.unknown24 & 0x50) == 0x10) {
-      const EnviromentSensor::Parameter *sensorParam = property.unknown08->getComponent<GfComEnvSensor>()->m_paramAdapter.get<EnviromentSensor::Parameter>();
+      const EnviromentSensor::Parameter *sensorParam = property.unknown08->getComponent<GfComEnvSensor>()->unknown2e0.get<EnviromentSensor::Parameter>();
       EnviromentSensor::HorizonPacket packet;
       EnviromentSensor::unknown006 wall;
       packet.unknown00 = 0x40;

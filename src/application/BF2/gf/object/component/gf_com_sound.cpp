@@ -140,8 +140,8 @@ void GfComSound::flushVariables() {
     int threshold = 0;
     m_soundVariableTable.getVariable(SND_VAR_WATER_THRESOULD_NAME, &threshold);
     f32 depth = static_cast<f32>(threshold) * 0.01f;
-    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_3), !(env->unknown2b0 < depth));
-    int ground = env->unknown2b8;
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_3), !(env->unknown280.unknown30 < depth));
+    int ground = env->unknown280.unknown38;
     const char *name = getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0);
     if (ground == 11) {
       m_soundVariableTable.setVariable(name, 11);

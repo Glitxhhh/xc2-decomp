@@ -52,14 +52,9 @@ void DrShdLgtClustered::stockBegin() {
 }
 
 // The game computes the three components before the first store (the result may alias an operand) and stores z, y, x (0x7100892610:
-// stp for y and z first, 0x710089262c: x after the square root); the other store orders give another schedule (54 instructions in every form).
+// stp for y and z first, 0x710089262c: x after the square root), which mm::Vec3::unknown004 does.
 void DrShdLgtClustered::createPlaneEquation(mm::Vec3 &result, const mm::Vec3 &first, const mm::Vec3 &second) {
-  f32 x = first.y * second.z - first.z * second.y;
-  f32 y = first.z * second.x - second.z * first.x;
-  f32 z = second.y * first.x - first.y * second.x;
-  result.z = z;
-  result.y = y;
-  result.x = x;
+  result.unknown004(first, second);
   result.unknown001();
 }
 

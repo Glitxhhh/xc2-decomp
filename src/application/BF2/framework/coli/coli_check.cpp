@@ -56,7 +56,7 @@ void ColiCheckCallback::coli_callback(void *userData) {
     return;
   }
 
-  TColiCheckResult<256>::unknown001 hit;
+  ContactInfo hit;
   hit.position = mm::Vec3::zero;
   hit.normal = mm::Vec3::zero;
   hit.unknown20 = mm::Vec3::zero;
