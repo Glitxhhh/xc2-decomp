@@ -131,6 +131,7 @@ public:
   bool setupCoreCrystal(u32 crystal);
   void setupAddBooster(u32 booster);
   bool isEnableAddBlade() const;
+  bool createBladeNewVersion();
   bool isResultRare() const;
   bool getResultBlade(SDataBlade &blade) const;
   static void setupSDataBlade(SDataBlade &blade, const GfBladeCreateInfo &info);

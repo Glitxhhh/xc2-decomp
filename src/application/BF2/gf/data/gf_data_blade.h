@@ -60,8 +60,9 @@ struct unknown109 {
   u16 unknown00; // Inferred role: id; original member name unknown.
   u8 unknown02;  // Inferred role: achiev release level; original member name unknown.
   u8 unknown03;  // Inferred role: level; original member name unknown.
-  u8 unknown04;  // Inferred role: level max; original member name unknown.
-  u8 _05[0x06 - 0x05];
+  u8 unknown04;  // Inferred role: level max; original member name unknown. The padding byte after it is no member (the 2-byte alignment gives the size 6): the game copies a skill entry as 5 bytes,
+                 // `ldrb w10, [x8, #0x4]; strb w10, [x9, #0x3e0]; ldr w8, [x8]; str w8, [x9, #0x3dc]` at 0x7100305f84-0x7100305f94 (inside the common blade roll 0x7100304434),
+                 // the data size of a class with a constructor. A hand-written padding member (`u8 _05[1]`) makes it `ldrh` + `strh` (6 bytes).
 };
 
 static_assert(offsetof(unknown109, unknown02) == 0x02, "");
