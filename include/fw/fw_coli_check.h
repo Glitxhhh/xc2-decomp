@@ -87,7 +87,7 @@ public:
     if (index < getCount()) {
       const unknown001 &hit = hits[index];
       if (hit.object != nullptr) {
-        return hit.object->unknown58;
+        return hit.object->m_coliUserData;
       }
     }
 

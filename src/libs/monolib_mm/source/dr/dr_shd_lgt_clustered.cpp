@@ -100,8 +100,8 @@ void DrShdLgtClustered::addViewInfo(int cate) {
 }
 
 void DrShdLgtClustered::convertToViewProj(mm::Vec3 &result, const mm::Vec2 &position) {
-  DrMan *man = unknown10;
-  const mm::Mat44 &matrix = man->unknowna0[unknown08]->unknown10->unknown1c0;
+  DrMan *man = m_drMan;
+  const mm::Mat44 &matrix = man->unknowna0[unknown08]->m_drCalcViewWork->unknown1c0;
   f32 vec[4] = {position.x, position.y, 1.0f, 1.0f};
   f32 out[4];
   for (int i = 0; i < 4; i++) {

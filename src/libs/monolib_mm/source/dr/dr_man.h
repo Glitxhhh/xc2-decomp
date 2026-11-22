@@ -217,12 +217,12 @@ public:
   mtl::ALLOC_HANDLE unknown1c; // Inferred role: mem data ("DrData"); original member name unknown.
   mtl::ALLOC_HANDLE unknown20; // Inferred role: mem; original member name unknown.
   u8 _0024[0x0070 - 0x0024];
-  DrIniSys *unknown70;                                   // Inferred role: ini sys; original member name unknown.
-  DrPixlMan *unknown78;                                  // Inferred role: pixl man; original member name unknown.
-  DrShdMan *unknown80;                                   // Inferred role: shd man; original member name unknown.
-  DrMdlMan *unknown88;                                   // Inferred role: mdl man; original member name unknown.
-  DrIrrVolMan *unknown90;                                // Inferred role: irr vol man; original member name unknown.
-  DrResFilterData *unknown98;                            // Inferred role: filter data; original member name unknown.
+  DrIniSys *m_drIniSys;                                  // Inferred role: ini sys; original member name unknown.
+  DrPixlMan *m_drPixlMan;                                // Inferred role: pixl man; original member name unknown.
+  DrShdMan *m_drShdMan;                                  // Inferred role: shd man; original member name unknown.
+  DrMdlMan *m_drMdlMan;                                  // Inferred role: mdl man; original member name unknown.
+  DrIrrVolMan *m_drIrrVolMan;                            // Inferred role: irr vol man; original member name unknown.
+  DrResFilterData *m_drResFilterData;                    // Inferred role: filter data; original member name unknown.
   mm::mtl::FixedArray<DrCalcMan *, 4> unknowna0;         // Inferred role: calc mans; original member name unknown.
   mm::mtl::FixedArray<DrLightMan *, 4> unknownc0;        // Inferred role: light mans; original member name unknown.
   mm::mtl::FixedArray<DrFogMan *, 4> unknowne0;          // Inferred role: fog mans; original member name unknown.
@@ -230,34 +230,34 @@ public:
   mm::mtl::FixedArray<DrPixlPostParm *, 4> unknown120;   // Inferred role: post parms; original member name unknown.
   mm::mtl::FixedArray<DrIBLMan *, 4> unknown140;         // Inferred role: ibl mans; original member name unknown.
   mm::mtl::FixedArray<DrGlobalIBLMan *, 4> unknown160;   // Inferred role: global ibl mans; original member name unknown.
-  DrPixlTileParm *unknown180;                            // Inferred role: tile parm; original member name unknown.
-  DrPixlMdlSampler *unknown188;                          // Inferred role: model sampler; original member name unknown.
+  DrPixlTileParm *m_drPixlTileParm;                      // Inferred role: tile parm; original member name unknown.
+  DrPixlMdlSampler *m_drPixlMdlSampler;                  // Inferred role: model sampler; original member name unknown.
   DR_VIEW_PARAM unknown190[2][4];                        // Inferred role: additional render system view params; original member name unknown.
   s32 unknown350[2];                                     // Inferred role: additional render system counts; original member name unknown.
   u32 unknown358[2][4];                                  // Inferred role: deleted render system ids; original member name unknown.
   s32 unknown378[2];                                     // Inferred role: deleted render system counts; original member name unknown.
-  DR_CAPTURE_PARAM unknown380[2];                        // Inferred role: capture requests; original member name unknown.
+  DR_CAPTURE_PARAM m_DR_CAPTURE_PARAM[2];                // Inferred role: capture requests; original member name unknown.
   u32 unknown3b0;                                        // Inferred role: capture request mask; original member name unknown.
   u8 _03b4[0x03b8 - 0x03b4];
-  DR_MODEL_TEXTURE unknown3b8[2][4]; // Inferred role: model textures; original member name unknown.
-  u32 unknown438[2];                 // Inferred role: model texture update masks; original member name unknown.
-  unknown057 unknown440[5];          // Inferred role: screen info per view; original member name unknown.
-  DrCalcMan *unknown580;             // Inferred role: calc man; original member name unknown.
-  DrLightMan *unknown588;            // Inferred role: light man; original member name unknown.
-  DrFogMan *unknown590;              // Inferred role: fog man; original member name unknown.
-  DrEnvironmentMan *unknown598;      // Inferred role: environment man; original member name unknown.
-  DrIBLMan *unknown5a0;              // Inferred role: ibl man; original member name unknown.
-  DrGlobalIBLMan *unknown5a8;        // Inferred role: global ibl man; original member name unknown.
-  DrCalcTexStreamMan *unknown5b0;    // Inferred role: tex stream man; original member name unknown.
-  unknown057 *unknown5b8;            // Inferred role: screen info; original member name unknown.
-  DrAPCache *unknown5c0;             // Inferred role: ap cache; original member name unknown.
-  DrCalcGpuCost *unknown5c8;         // Inferred role: gpu cost; original member name unknown.
-  DrPixlMemMan *unknown5d0;          // Inferred role: pixl mem man, created by the constructor (0x71007c8c5c); original member name unknown.
-  IDrDrawCallback *unknown5d8[16];   // Inferred role: callbacks; original member name unknown.
-  s32 unknown658;                    // Inferred role: callback num; original member name unknown.
+  DR_MODEL_TEXTURE unknown3b8[2][4];        // Inferred role: model textures; original member name unknown.
+  u32 unknown438[2];                        // Inferred role: model texture update masks; original member name unknown.
+  unknown057 unknown440[5];                 // Inferred role: screen info per view; original member name unknown.
+  DrCalcMan *m_drCalcMan;                   // Inferred role: calc man; original member name unknown.
+  DrLightMan *unknown588;                   // Inferred role: light man; original member name unknown.
+  DrFogMan *m_drFogMan;                     // Inferred role: fog man; original member name unknown.
+  DrEnvironmentMan *m_drEnvironmentMan;     // Inferred role: environment man; original member name unknown.
+  DrIBLMan *m_drIBLMan;                     // Inferred role: ibl man; original member name unknown.
+  DrGlobalIBLMan *m_drGlobalIBLMan;         // Inferred role: global ibl man; original member name unknown.
+  DrCalcTexStreamMan *m_drCalcTexStreamMan; // Inferred role: tex stream man; original member name unknown.
+  unknown057 *unknown5b8;                   // Inferred role: screen info; original member name unknown.
+  DrAPCache *m_drAPCache;                   // Inferred role: ap cache; original member name unknown.
+  DrCalcGpuCost *m_drCalcGpuCost;           // Inferred role: gpu cost; original member name unknown.
+  DrPixlMemMan *m_drPixlMemMan;             // Inferred role: pixl mem man, created by the constructor (0x71007c8c5c); original member name unknown.
+  IDrDrawCallback *unknown5d8[16];          // Inferred role: callbacks; original member name unknown.
+  s32 unknown658;                           // Inferred role: callback num; original member name unknown.
   u8 _065c[0x0660 - 0x065c];
-  IDrDrawWorkInfo unknown660[4]; // Inferred role: draw work infos; original member name unknown.
-  s32 unknown1c60;               // Inferred role: tmaa mode; original member name unknown.
+  IDrDrawWorkInfo m_iDrDrawWorkInfo[4]; // Inferred role: draw work infos; original member name unknown.
+  s32 unknown1c60;                      // Inferred role: tmaa mode; original member name unknown.
   u8 _1c64[0x1c70 - 0x1c64];
   mm::Vec3 unknown1c70;     // Inferred role: seam map read pos; original member name unknown.
   bool m_seamMapAddPosMode; // Inferred role: seam map add pos mode; named after the game accessor ml::ScnRenderDrSysParmAcc::setSeamMapAddPosMode.
@@ -369,12 +369,12 @@ static_assert(offsetof(DrMan, unknown14) == 0x0014, "");
 static_assert(offsetof(DrMan, unknown18) == 0x0018, "");
 static_assert(offsetof(DrMan, unknown1c) == 0x001c, "");
 static_assert(offsetof(DrMan, unknown20) == 0x0020, "");
-static_assert(offsetof(DrMan, unknown70) == 0x0070, "");
-static_assert(offsetof(DrMan, unknown78) == 0x0078, "");
-static_assert(offsetof(DrMan, unknown80) == 0x0080, "");
-static_assert(offsetof(DrMan, unknown88) == 0x0088, "");
-static_assert(offsetof(DrMan, unknown90) == 0x0090, "");
-static_assert(offsetof(DrMan, unknown98) == 0x0098, "");
+static_assert(offsetof(DrMan, m_drIniSys) == 0x0070, "");
+static_assert(offsetof(DrMan, m_drPixlMan) == 0x0078, "");
+static_assert(offsetof(DrMan, m_drShdMan) == 0x0080, "");
+static_assert(offsetof(DrMan, m_drMdlMan) == 0x0088, "");
+static_assert(offsetof(DrMan, m_drIrrVolMan) == 0x0090, "");
+static_assert(offsetof(DrMan, m_drResFilterData) == 0x0098, "");
 static_assert(offsetof(DrMan, unknowna0) == 0x00a0, "");
 static_assert(offsetof(DrMan, unknownc0) == 0x00c0, "");
 static_assert(offsetof(DrMan, unknowne0) == 0x00e0, "");
@@ -382,30 +382,30 @@ static_assert(offsetof(DrMan, unknown100) == 0x0100, "");
 static_assert(offsetof(DrMan, unknown120) == 0x0120, "");
 static_assert(offsetof(DrMan, unknown140) == 0x0140, "");
 static_assert(offsetof(DrMan, unknown160) == 0x0160, "");
-static_assert(offsetof(DrMan, unknown180) == 0x0180, "");
+static_assert(offsetof(DrMan, m_drPixlTileParm) == 0x0180, "");
 static_assert(offsetof(DrMan, unknown190) == 0x0190, "");
 static_assert(offsetof(DrMan, unknown350) == 0x0350, "");
 static_assert(offsetof(DrMan, unknown358) == 0x0358, "");
 static_assert(offsetof(DrMan, unknown378) == 0x0378, "");
-static_assert(offsetof(DrMan, unknown380) == 0x0380, "");
+static_assert(offsetof(DrMan, m_DR_CAPTURE_PARAM) == 0x0380, "");
 static_assert(offsetof(DrMan, unknown3b0) == 0x03b0, "");
 static_assert(offsetof(DrMan, unknown3b8) == 0x03b8, "");
 static_assert(offsetof(DrMan, unknown438) == 0x0438, "");
 static_assert(offsetof(DrMan, unknown440) == 0x0440, "");
-static_assert(offsetof(DrMan, unknown580) == 0x0580, "");
+static_assert(offsetof(DrMan, m_drCalcMan) == 0x0580, "");
 static_assert(offsetof(DrMan, unknown588) == 0x0588, "");
-static_assert(offsetof(DrMan, unknown590) == 0x0590, "");
-static_assert(offsetof(DrMan, unknown598) == 0x0598, "");
-static_assert(offsetof(DrMan, unknown5a0) == 0x05a0, "");
-static_assert(offsetof(DrMan, unknown5a8) == 0x05a8, "");
-static_assert(offsetof(DrMan, unknown5b0) == 0x05b0, "");
+static_assert(offsetof(DrMan, m_drFogMan) == 0x0590, "");
+static_assert(offsetof(DrMan, m_drEnvironmentMan) == 0x0598, "");
+static_assert(offsetof(DrMan, m_drIBLMan) == 0x05a0, "");
+static_assert(offsetof(DrMan, m_drGlobalIBLMan) == 0x05a8, "");
+static_assert(offsetof(DrMan, m_drCalcTexStreamMan) == 0x05b0, "");
 static_assert(offsetof(DrMan, unknown5b8) == 0x05b8, "");
-static_assert(offsetof(DrMan, unknown5c0) == 0x05c0, "");
-static_assert(offsetof(DrMan, unknown5c8) == 0x05c8, "");
-static_assert(offsetof(DrMan, unknown5d0) == 0x05d0, "");
+static_assert(offsetof(DrMan, m_drAPCache) == 0x05c0, "");
+static_assert(offsetof(DrMan, m_drCalcGpuCost) == 0x05c8, "");
+static_assert(offsetof(DrMan, m_drPixlMemMan) == 0x05d0, "");
 static_assert(offsetof(DrMan, unknown5d8) == 0x05d8, "");
 static_assert(offsetof(DrMan, unknown658) == 0x0658, "");
-static_assert(offsetof(DrMan, unknown660) == 0x0660, "");
+static_assert(offsetof(DrMan, m_iDrDrawWorkInfo) == 0x0660, "");
 static_assert(offsetof(DrMan, unknown1c60) == 0x1c60, "");
 static_assert(offsetof(DrMan, unknown1c70) == 0x1c70, "");
 static_assert(offsetof(DrMan, m_seamMapAddPosMode) == 0x1c80, "");

@@ -1769,7 +1769,7 @@ void GmkPhantom::create(const CreateInfo &info) {
   fw::ColiPhantomInfo coliInfo;
   coliInfo.unknown04 = fw::COLI_TYPE_UNKNOWN_0;
   coliInfo.unknown14 = 0x100000;
-  coliInfo.unknown20 = this;
+  coliInfo.m_coliUserData = this;
   switch (info.unknown00) {
   case SHAPE_TYPE_UNKNOWN_1: {
     fw::unknown131 shape(info.unknown30[0]);
@@ -1833,7 +1833,7 @@ void GmkPhantom::update(const GmkPhantomCheckResults &results) {
     const fw::TColiCheckResult<256> &result = results[i];
     u32 hitNum = result.getCount();
     for (u32 j = 0; j < hitNum; j++) {
-      fw::ColiUserData *userData = result.hits[j].object->unknown58;
+      fw::ColiUserData *userData = result.hits[j].object->m_coliUserData;
       GmkPhantom *phantom = nullptr;
       if (userData != nullptr && userData->getRTTI()->isKindOf(&m_rtti)) {
         phantom = static_cast<GmkPhantom *>(userData);

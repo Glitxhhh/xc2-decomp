@@ -20,7 +20,9 @@ static const GrlIndexFormat unknown066[] = {GRL_INDEX_FORMAT_U16, GRL_INDEX_FORM
 
 void DrResMdoVertex::beginVertexSetup() { unknown4e = -1; }
 
-DrResMdoVertex::DrResMdoVertex(const u8 *resource) : unknown00(nullptr), unknown08(nullptr), unknown10(resource), unknown18(1), m_buffer(nullptr), unknown78(nullptr) { setupVertex(resource); }
+DrResMdoVertex::DrResMdoVertex(const u8 *resource) : unknown00(nullptr), unknown08(nullptr), unknown10(resource), unknown18(1), m_buffer(nullptr), m_drCalcStmListObj(nullptr) {
+  setupVertex(resource);
+}
 
 void DrResMdoVertex::setupVertex(const u8 *resource) {
   vertexRelease();
@@ -137,8 +139,8 @@ void DrResMdoVertex::vertexRelease() {
 }
 
 void DrResMdoVertex::update() {
-  if (unknown78 != nullptr) {
-    unknown035 *res = unknown78->getResVertexObj();
+  if (m_drCalcStmListObj != nullptr) {
+    unknown035 *res = m_drCalcStmListObj->getResVertexObj();
     if (res->unknown10 & 1) {
       changeMemVertex(res->unknown00);
     }

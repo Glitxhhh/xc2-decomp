@@ -24,13 +24,13 @@
 namespace ml {
 class DrShdDataList;
 
-inline void DrMdoCtl::unknown004(int index) { unknown38 = unknown30->unknown88->unknown08 + index; }
+inline void DrMdoCtl::unknown004(int index) { m_drShdMdoDecExtTbl = unknown30->m_drShdMdoExtTblObj->m_drShdMdoDecExtTbl + index; }
 
 inline void DrMdoCtl::unknown005(const MdsMdlInfoHeader *info) {
   if (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_13) {
-    unknown30->unknownc8->render(info->unknown0c);
+    unknown30->m_drResMdoVertex->render(info->unknown0c);
   } else {
-    unknown30->unknownc8->render(info->unknown0a);
+    unknown30->m_drResMdoVertex->render(info->unknown0a);
   }
 }
 
@@ -42,7 +42,7 @@ void DrMdoCtl::bindShader(int index) {
   unknown17c = index;
   unknown178 |= 1;
   unknown004(index);
-  unknown38->bindShader();
+  m_drShdMdoDecExtTbl->bindShader();
 }
 
 u32 DrMdoCtl::getShdIdx(u32 &uniformIndex, const MdsMatShaderTbl *table, int count) {
@@ -71,14 +71,14 @@ void DrMdoCtl::updateMdl() {
 
 void DrMdoCtl::beginSetup() {
   unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  unknown30->m_drResMdoVertex->beginVertexSetup();
 }
 
 void DrMdoCtl::beginSeamSetup() { beginMatInfo(); }
 
 void DrMdoCtl::changeSeamBaseMapMdlInfo() {
   changeSeamMatInfo();
-  unknown30->unknownc8->beginVertexSetup();
+  unknown30->m_drResMdoVertex->beginVertexSetup();
 }
 
 DrResChkList *DrMdoCtl::stockRenderList(DrResChkList *&head, DrResChkList *prev, u32 mdlIndex) {
@@ -96,8 +96,8 @@ DrResChkList *DrMdoCtl::stockRenderList(DrResChkList *&head, DrResChkList *prev,
 }
 
 void DrMdoCtl::partsBaseMdlRender(const MdsMdlInfoHeader *header) {
-  unknown30->unknownc8->setVertexBind(header->unknown08);
-  unknown30->unknownc8->render(header->unknown0a);
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
+  unknown30->m_drResMdoVertex->render(header->unknown0a);
 }
 
 const mm::Mat44 &DrMdoCtl::getMatrix() const { return m_matrix; }
@@ -110,13 +110,13 @@ void DrMdoCtl::partsInstanceThicknessBillRender(const MdoInstancePrePassArg &) {
 
 void DrMdoCtl::partsShadowBaseRender(const MdsMdlTopHeader *top) {
   const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
-  DrShdDataList *shaderList = m_drMan->unknown80->unknown00;
+  DrShdDataList *shaderList = m_drMan->m_drShdMan->m_drShdDataList;
   int count = top->unknown04;
   for (int i = 0; i < count; i++, info++) {
     if ((info->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_14) && !(info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
       const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
       if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_2)) {
-        unknown30->unknownc8->setVertexBind(info->unknown08);
+        unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
         setupShadowShader(shaderList, 3, mat, 0, info->unknown0e);
         unknown005(info);
       }
@@ -126,13 +126,13 @@ void DrMdoCtl::partsShadowBaseRender(const MdsMdlTopHeader *top) {
 
 void DrMdoCtl::partsShadowNukiBaseRender(const MdsMdlTopHeader *top) {
   const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
-  DrShdDataList *shaderList = m_drMan->unknown80->unknown00;
+  DrShdDataList *shaderList = m_drMan->m_drShdMan->m_drShdDataList;
   int count = top->unknown04;
   for (int i = 0; i < count; i++, info++) {
     if ((info->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_14) && !(info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
       const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
       if (mat->unknown04 & MdsMatInfoHeader::unknown015_2) {
-        unknown30->unknownc8->setVertexBind(info->unknown08);
+        unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
         if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_3)) {
           setupShadowShader(shaderList, 4, mat, 0, info->unknown0e);
         } else {
@@ -146,14 +146,14 @@ void DrMdoCtl::partsShadowNukiBaseRender(const MdsMdlTopHeader *top) {
 
 void DrMdoCtl::partsPosShadowRender(const MdsMdlTopHeader *top) {
   const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
-  DrShdDataList *shaderList = m_drMan->unknown80->unknown00;
-  DrAPCache *apCache = m_drMan->unknown5c0;
+  DrShdDataList *shaderList = m_drMan->m_drShdMan->m_drShdDataList;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
   int count = top->unknown04;
   for (int i = 0; i < count; i++, info++) {
     if (info->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_14) {
       const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
       if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_2) && !(info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17)) {
-        unknown30->unknownc8->setVertexBind(info->unknown08);
+        unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
         if (unknown168 & 0x80) {
           apCache->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
         } else {
@@ -168,14 +168,14 @@ void DrMdoCtl::partsPosShadowRender(const MdsMdlTopHeader *top) {
 
 void DrMdoCtl::partsPosNukiShadowRender(const MdsMdlTopHeader *top) {
   const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
-  DrShdDataList *shaderList = m_drMan->unknown80->unknown00;
-  DrAPCache *apCache = m_drMan->unknown5c0;
+  DrShdDataList *shaderList = m_drMan->m_drShdMan->m_drShdDataList;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
   int count = top->unknown04;
   for (int i = 0; i < count; i++, info++) {
     if (info->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_14) {
       const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
       if ((mat->unknown04 & MdsMatInfoHeader::unknown015_2) && !(info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17) && unknown30->unknowne8 != nullptr && mat->unknown24 != 0) {
-        unknown30->unknownc8->setVertexBind(info->unknown08);
+        unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
         if (unknown168 & 0x80) {
           apCache->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
         } else {
@@ -190,13 +190,13 @@ void DrMdoCtl::partsPosNukiShadowRender(const MdsMdlTopHeader *top) {
 
 void DrMdoCtl::partsPosNoamShadowRender(const MdsMdlTopHeader *top, grlib::CGLibVtxInstans *instans, u32 offset, u32 stride, u32 instanceCount) {
   const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
-  DrShdDataList *shaderList = m_drMan->unknown80->unknown00;
-  DrAPCache *apCache = m_drMan->unknown5c0;
+  DrShdDataList *shaderList = m_drMan->m_drShdMan->m_drShdDataList;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
   int count = top->unknown04;
   for (int i = 0; i < count; i++, info++) {
     if ((info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_17) && (info->unknown04 & MdsMdlInfoHeader::PASS_FLAG_UNKNOWN_14)) {
       const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
-      unknown30->unknownc8->setVertexBind(info->unknown08);
+      unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
       apCache->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
       if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_2)) {
         setupShadowShader(shaderList, 9, mat, 0, info->unknown0e);
@@ -207,9 +207,9 @@ void DrMdoCtl::partsPosNoamShadowRender(const MdsMdlTopHeader *top, grlib::CGLib
       }
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, stride, offset, 1, 1);
       if (info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_13) {
-        unknown30->unknownc8->renderIns(info->unknown0c, instanceCount);
+        unknown30->m_drResMdoVertex->renderIns(info->unknown0c, instanceCount);
       } else {
-        unknown30->unknownc8->renderIns(info->unknown0a, instanceCount);
+        unknown30->m_drResMdoVertex->renderIns(info->unknown0a, instanceCount);
       }
     }
   }
@@ -226,13 +226,13 @@ void DrMdoCtl::createMaterialOneDisplayList(MdoWrkMatRes *, int) {}
 void DrMdoCtl::createInstBillPrepass(const MdsMatInfoHeader *header, int index) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c) + 1;
   unknown004(shader->unknown00);
-  (*unknown30->unknown120_1->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+  (*unknown30->unknown120_1->unknown08)[index].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown30]);
 }
 
 void DrMdoCtl::createBaseBillPrepass(const MdsMatInfoHeader *header, int index) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c) + 1;
   unknown004(shader->unknown00);
-  (*unknown30->unknown120->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+  (*unknown30->unknown120->unknown08)[index].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown30]);
 }
 
 // The four material uniform functions below select the table with the same helper as the prepass functions above: the game reads the shader chain before the index, which
@@ -240,25 +240,25 @@ void DrMdoCtl::createBaseBillPrepass(const MdsMatInfoHeader *header, int index) 
 void DrMdoCtl::createInstBillMate(const MdsMatInfoHeader *header, int index) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
   unknown004(shader->unknown00);
-  (*unknown30->unknown120_1->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+  (*unknown30->unknown120_1->unknown08)[index].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown30]);
 }
 
 void DrMdoCtl::createBaseBillMate(const MdsMatInfoHeader *header, int index) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
   unknown004(shader->unknown00);
-  (*unknown30->unknown120->unknown08)[index].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+  (*unknown30->unknown120->unknown08)[index].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown30]);
 }
 
 void DrMdoCtl::createOccMate(const MdsMatInfoHeader *header, int index) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
   unknown004(shader->unknown00);
-  m_drMan->unknown88->unknown040->setUniformBlock(index, unknown38->m_valGlobalParam[unknown38->unknown31]);
+  m_drMan->m_drMdlMan->m_drResEtcUniformObj->setUniformBlock(index, m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown31]);
 }
 
 void DrMdoCtl::createNodeAnm(const MdsMatInfoHeader *header, int index) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
   unknown004(shader->unknown00);
-  m_drMan->unknown88->unknown040->setUniformBlock(index, unknown38->m_valGlobalParam[unknown38->unknown32]);
+  m_drMan->m_drMdlMan->m_drResEtcUniformObj->setUniformBlock(index, m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown32]);
 }
 
 void DrMdoCtl::partsMaterialSetup(const MdsMdlInfoHeader *header) {
@@ -267,8 +267,8 @@ void DrMdoCtl::partsMaterialSetup(const MdsMdlInfoHeader *header) {
   u32 uniformIndex;
   int shaderIndex = getShdIdx(uniformIndex, table, mat->unknown50);
   // The game computes the technique before setVertexBind (smaddl at 0x71007f15d0), after the shader index and before the call.
-  const MdsMatTechnique *technique = &unknown30->unknown70[shaderIndex];
-  unknown30->unknownc8->setVertexBind(header->unknown08);
+  const MdsMatTechnique *technique = &unknown30->m_mdsMatTechnique[shaderIndex];
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
   bindShader(shaderIndex);
   if (unknown17e == header->unknown0e) {
     unknown178 &= ~0x10;
@@ -291,8 +291,8 @@ void DrMdoCtl::partsDefRender(const MdsMdlInfoHeader *header, int shaderParam0, 
   const MdsMatShaderTbl *table = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + mat->unknown4c);
   u32 uniformIndex;
   int shaderIndex = getShdIdx(uniformIndex, table, mat->unknown50);
-  const MdsMatTechnique *technique = &unknown30->unknown70[shaderIndex];
-  unknown30->unknownc8->setVertexBind(header->unknown08);
+  const MdsMatTechnique *technique = &unknown30->m_mdsMatTechnique[shaderIndex];
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
   bindShader(shaderIndex);
   if (unknown17e == header->unknown0e) {
     unknown178 &= ~0x10;
@@ -302,47 +302,47 @@ void DrMdoCtl::partsDefRender(const MdsMdlInfoHeader *header, int shaderParam0, 
   }
   setShader(nullptr, mat, technique, uniformIndex, shaderParam0, shaderParam1);
   if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_4) {
-    (*unknown30->unknown120->unknown08)[0].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown30]);
+    (*unknown30->unknown120->unknown08)[0].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown30]);
   }
   if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_2) {
-    (*unknown30->unknown160->unknown00)[header->unknown12].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown31]);
+    (*unknown30->unknown160->unknown00)[header->unknown12].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown31]);
   }
   if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_23) {
-    unknown30->unknownc8->setEtcVertexBind(header->unknown08, 1);
+    unknown30->m_drResMdoVertex->setEtcVertexBind(header->unknown08, 1);
   }
   if (header->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_24) {
-    unknown30->unknownc8->setMofBlendVertexBind(unknown30->unknowna8, header->unknown08, 2);
+    unknown30->m_drResMdoVertex->setMofBlendVertexBind(unknown30->unknowna8, header->unknown08, 2);
   }
   if (mat->unknown04 & MdsMatInfoHeader::unknown015_13) {
     unknown009 *flagWaves = unknown30->unknown140;
     u16 waveIndex = flagWaves->unknown00[header->unknown0e];
-    (*flagWaves->unknown18)[waveIndex].setUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown33]);
-    (*unknown30->unknown140->unknown18)[waveIndex].setOldUniformBlock(unknown38->m_valGlobalParam[unknown38->unknown34]);
+    (*flagWaves->unknown18)[waveIndex].setUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown33]);
+    (*unknown30->unknown140->unknown18)[waveIndex].setOldUniformBlock(m_drShdMdoDecExtTbl->m_valGlobalParam[m_drShdMdoDecExtTbl->unknown34]);
   }
   if (isDepthStencil) {
     setupPartsMaterial(mat, 5);
   }
   if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_27)) {
-    unknown30->unknownc8->render(header->unknown0a);
+    unknown30->m_drResMdoVertex->render(header->unknown0a);
     if (unknownf2 == 4) {
       if ((mat->unknown04 & MdsMatInfoHeader::unknown015_26) || unknowne0 < 1.0f) {
-        DrAPCache *apCache = m_drMan->unknown5c0;
+        DrAPCache *apCache = m_drMan->m_drAPCache;
         apCache->setupDepthStencil(0, 0, 0, 2);
         apCache->setupAlphaBlend(1);
-        unknown30->unknownc8->render(header->unknown0a);
+        unknown30->m_drResMdoVertex->render(header->unknown0a);
         setupPartsMaterial(mat, 8);
       }
     } else if ((mat->unknown04 & MdsMatInfoHeader::unknown015_31) && unknownf2 == 1) {
-      m_drMan->unknown5c0->setupDepthStencil(0, 0, 1, 2);
+      m_drMan->m_drAPCache->setupDepthStencil(0, 0, 1, 2);
       DrAPGxType::beginColorOff();
-      unknown30->unknownc8->render(header->unknown0a);
+      unknown30->m_drResMdoVertex->render(header->unknown0a);
       setupPartsMaterial(mat, 8);
       DrAPGxType::endColorOff();
     }
   } else if (!(unknown168 & 0x100)) {
     const unknown006 &entry = unknown30->unknown138->unknown10[unknown30->unknown138->unknown00[header->unknown0e]];
     if (entry.unknown04 != 0) {
-      unknown30->unknownc8->renderIns(header->unknown0a, entry.unknown04);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, entry.unknown04);
     }
   }
   if (isDepthStencil) {
@@ -358,11 +358,11 @@ void DrMdoCtl::partsDefRender(const MdsMdlInfoHeader *header, int shaderParam0, 
 // stay written out (ruling 8, by measure): the three ranges moved into a file-local helper that takes the shader indexes and the render index are not inlined (called three times, scratch
 // compile: 66 instructions against 449).
 void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
-  const MdsMdlInfoHeader *header = arg.unknown00;
+  const MdsMdlInfoHeader *header = arg.m_mdsMdlInfoHeader;
   const MdsMatInfoHeader *mat = unknown30->unknown28 + header->unknown0e;
-  m_drMan->unknown5c0->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
-  unknown30->unknownc8->setVertexBind(header->unknown08);
-  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
+  m_drMan->m_drAPCache->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
+  grlib::CGLibVtxInstans *instans = m_drMan->m_drMdlMan->m_drMdoVertexMan->unknown10;
   int rest = arg.unknown14 - arg.unknown18;
   u16 matIndex = header->unknown0e;
   if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_2)) {
@@ -373,12 +373,12 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
     if (arg.unknown10 != 0) {
       setupPrePassShader(10, mat, 0, matIndex);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
-      unknown30->unknownc8->renderIns(renderIndex, arg.unknown10);
+      unknown30->m_drResMdoVertex->renderIns(renderIndex, arg.unknown10);
     }
     if (rest != 0) {
       setupPrePassShader(0x17, mat, 0, matIndex);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(renderIndex, rest);
+      unknown30->m_drResMdoVertex->renderIns(renderIndex, rest);
     }
     if (arg.unknown18 != 0) {
       setupPartsMaterial(mat, 3);
@@ -386,7 +386,7 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
       setupPrePassShader(0x17, mat, 0, matIndex);
       unknownf8 &= ~0x20000000;
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + rest) * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, arg.unknown18);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, arg.unknown18);
     }
   } else if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_3)) {
     if (arg.unknown20) {
@@ -395,12 +395,12 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
     if (arg.unknown10 != 0) {
       setupPrePassShader(11, mat, 0, matIndex);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, arg.unknown10);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, arg.unknown10);
     }
     if (rest != 0) {
       setupPrePassShader(0x18, mat, 0, matIndex);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, rest);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, rest);
     }
     if (arg.unknown18 != 0) {
       setupPartsMaterial(mat, 3);
@@ -408,7 +408,7 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
       setupPrePassShader(0x18, mat, 0, matIndex);
       unknownf8 &= ~0x20000000;
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + rest) * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, arg.unknown18);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, arg.unknown18);
     }
   } else {
     if (arg.unknown20) {
@@ -417,12 +417,12 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
     if (arg.unknown10 != 0) {
       setupPrePassShader(12, mat, 0, matIndex);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, arg.unknown10);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, arg.unknown10);
     }
     if (rest != 0) {
       setupPrePassShader(0x19, mat, 0, matIndex);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, rest);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, rest);
     }
     if (arg.unknown18 != 0) {
       setupPartsMaterial(mat, 3);
@@ -430,7 +430,7 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
       setupPrePassShader(0x19, mat, 0, matIndex);
       unknownf8 &= ~0x20000000;
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + rest) * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(header->unknown0a, arg.unknown18);
+      unknown30->m_drResMdoVertex->renderIns(header->unknown0a, arg.unknown18);
     }
   }
   if (arg.unknown20 || arg.unknown18 != 0) {
@@ -439,11 +439,11 @@ void DrMdoCtl::partsInstanceZPrepassRender(const MdoInstancePrePassArg &arg) {
 }
 
 void DrMdoCtl::partsInstanceZPrepassBillRender(const MdoInstancePrePassArg &arg) {
-  const MdsMdlInfoHeader *info = arg.unknown00;
+  const MdsMdlInfoHeader *info = arg.m_mdsMdlInfoHeader;
   const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
-  m_drMan->unknown5c0->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
-  unknown30->unknownc8->setVertexBind(info->unknown08);
-  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
+  m_drMan->m_drAPCache->setupCulling(static_cast<DrApCullType>(mat->unknown2a));
+  unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
+  grlib::CGLibVtxInstans *instans = m_drMan->m_drMdlMan->m_drMdoVertexMan->unknown10;
   // The two locals are loaded after setVertexBind (ldrh w26 and w24 at 0x71007f37ac/0x71007f37b0, the material index a second time after the first at 0x71007f3768) and the second render reloads
   // the render index from the mdl info (0x71007f39e4): without either local the function has 182 instructions, without both 181, and the second render through `renderIndex` keeps 184 but
   // allocates x26 for x25 (all measured 2026-11-21).
@@ -467,7 +467,7 @@ void DrMdoCtl::partsInstanceZPrepassBillRender(const MdoInstancePrePassArg &arg)
     setupPartsMaterial(mat, 2);
     setupPrePassShader(shaderIndex, mat, info->unknown14, materialIndex);
     grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-    unknown30->unknownc8->renderIns(renderIndex, firstCount);
+    unknown30->m_drResMdoVertex->renderIns(renderIndex, firstCount);
   }
   if (arg.unknown18 != 0) {
     setupPartsMaterial(mat, 3);
@@ -475,7 +475,7 @@ void DrMdoCtl::partsInstanceZPrepassBillRender(const MdoInstancePrePassArg &arg)
     setupPrePassShader(shaderIndex, mat, info->unknown14, materialIndex);
     unknownf8 &= ~0x20000000;
     grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
-    unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+    unknown30->m_drResMdoVertex->renderIns(info->unknown0a, arg.unknown18);
     DrAPGxType::setupStencilPrePassReset();
   }
 }
@@ -485,10 +485,10 @@ void DrMdoCtl::partsInstanceZPrepassBillRender(const MdoInstancePrePassArg &arg)
 // member helper taking the two shader indices and the render index are not inlined (one call per arm, 60 instructions against 430 for the function). `materialIndex` (ldrh w24 at 0x71007f3a78)
 // and `renderIndex` are needed: without the first the info pointer moves from x25 to x26, with the render index expression written in the two `renderIns` calls the function has 414 instructions.
 void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
-  const MdsMdlInfoHeader *info = arg.unknown00;
+  const MdsMdlInfoHeader *info = arg.m_mdsMdlInfoHeader;
   const MdsMatInfoHeader *mat = unknown30->unknown28 + info->unknown0e;
-  unknown30->unknownc8->setVertexBind(info->unknown08);
-  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
+  unknown30->m_drResMdoVertex->setVertexBind(info->unknown08);
+  grlib::CGLibVtxInstans *instans = m_drMan->m_drMdlMan->m_drMdoVertexMan->unknown10;
   int firstCount = arg.unknown14 - arg.unknown18;
   u16 materialIndex = info->unknown0e;
   if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_2)) {
@@ -499,12 +499,12 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
     if (arg.unknown10 != 0) {
       setupThicknessShader(10, mat, 0, materialIndex, arg.unknown21);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
-      unknown30->unknownc8->renderIns(renderIndex, arg.unknown10);
+      unknown30->m_drResMdoVertex->renderIns(renderIndex, arg.unknown10);
     }
     if (firstCount != 0) {
       setupThicknessShader(0x17, mat, 0, materialIndex, arg.unknown21);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(renderIndex, firstCount);
+      unknown30->m_drResMdoVertex->renderIns(renderIndex, firstCount);
     }
     if (arg.unknown18 != 0) {
       setupPartsMaterial(mat, arg.unknown21 ? 10 : 0xc);
@@ -512,7 +512,7 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
       setupThicknessShader(0x17, mat, 0, materialIndex, arg.unknown21);
       unknownf8 &= ~0x20000000;
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, arg.unknown18);
     }
   } else if (!(mat->unknown04 & MdsMatInfoHeader::unknown015_3)) {
     if (arg.unknown20) {
@@ -521,12 +521,12 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
     if (arg.unknown10 != 0) {
       setupThicknessShader(0xb, mat, 0, materialIndex, arg.unknown21);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown10);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, arg.unknown10);
     }
     if (firstCount != 0) {
       setupThicknessShader(0x18, mat, 0, materialIndex, arg.unknown21);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, firstCount);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, firstCount);
     }
     if (arg.unknown18 != 0) {
       setupPartsMaterial(mat, arg.unknown21 ? 10 : 0xc);
@@ -534,7 +534,7 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
       setupThicknessShader(0x18, mat, 0, materialIndex, arg.unknown21);
       unknownf8 &= ~0x20000000;
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, arg.unknown18);
     }
   } else {
     if (arg.unknown20) {
@@ -543,12 +543,12 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
     if (arg.unknown10 != 0) {
       setupThicknessShader(0xc, mat, 0, materialIndex, arg.unknown21);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown10);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, arg.unknown10);
     }
     if (firstCount != 0) {
       setupThicknessShader(0x19, mat, 0, materialIndex, arg.unknown21);
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + arg.unknown10 * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, firstCount);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, firstCount);
     }
     if (arg.unknown18 != 0) {
       setupPartsMaterial(mat, arg.unknown21 ? 10 : 0xc);
@@ -556,7 +556,7 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
       setupThicknessShader(0x19, mat, 0, materialIndex, arg.unknown21);
       unknownf8 &= ~0x20000000;
       grlib::CGLibCtlVertex::setInstanceVertex(*instans, arg.unknown0c, arg.unknown08 + (arg.unknown10 + firstCount) * arg.unknown0c, 1, 1);
-      unknown30->unknownc8->renderIns(info->unknown0a, arg.unknown18);
+      unknown30->m_drResMdoVertex->renderIns(info->unknown0a, arg.unknown18);
     }
   }
   if (arg.unknown20 || arg.unknown18 != 0) {
@@ -565,31 +565,31 @@ void DrMdoCtl::partsInstanceThicknessRender(const MdoInstancePrePassArg &arg) {
 }
 
 void DrMdoCtl::createInstanceDefRender(const MdsMdlInfoHeader *header, grlib::CGLibVtxInstans *instans, u32 offset, u32 stride, u32 instanceCount) {
-  unknown30->unknownc8->setVertexBind(header->unknown08);
+  unknown30->m_drResMdoVertex->setVertexBind(header->unknown08);
   grlib::CGLibCtlVertex::setInstanceVertex(*instans, stride, offset, 1, 1);
-  unknown30->unknownc8->renderIns(header->unknown0a, instanceCount);
+  unknown30->m_drResMdoVertex->renderIns(header->unknown0a, instanceCount);
 }
 
 void DrMdoCtl::createMaterialDisplaList(const MdsMatInfoHeader *header, DrResMdoMat *mat) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c);
   unknownf2 = shader->unknown04;
-  m_drMan->unknown5c0->begin();
+  m_drMan->m_drAPCache->begin();
   unknown004(shader->unknown00);
-  unknown38->bindShader();
+  m_drShdMdoDecExtTbl->bindShader();
   // The game never sets x1 for the setShader tail call (0x71007f4bcc): setShader, defined in this unit, never reads its first parameter, so the compiler erased the
   // argument (ruling 2026-11-13 #6); the original expression cannot be checked, mat, the parameter of this function, is the plausible one. The technique is a pointer
   // sum: the game loads the technique table before the (zero-extended) index, a subscript loads the index first.
-  setShader(mat, header, unknown30->unknown70 + shader->unknown00, shader->unknown06, 0, 0);
+  setShader(mat, header, unknown30->m_mdsMatTechnique + shader->unknown00, shader->unknown06, 0, 0);
 }
 
 void DrMdoCtl::createMaterialLgtPrePassDisplaList(const MdsMatInfoHeader *header, DrResMdoMat *mat) {
   const MdsMatShaderTbl *shader = reinterpret_cast<const MdsMatShaderTbl *>(unknown30->unknown10 + header->unknown4c) + 1;
   unknownf2 = shader->unknown04;
-  m_drMan->unknown5c0->begin();
+  m_drMan->m_drAPCache->begin();
   unknown004(shader->unknown00);
-  unknown38->bindShader();
+  m_drShdMdoDecExtTbl->bindShader();
   // The game never sets x1 for the setShader tail call (0x71007f4c8c): same as createMaterialDisplaList.
-  setShader(mat, header, unknown30->unknown70 + shader->unknown00, shader->unknown06, 0, 0);
+  setShader(mat, header, unknown30->m_mdsMatTechnique + shader->unknown00, shader->unknown06, 0, 0);
 }
 
 void DrMdoCtl::waitWeightVtx() { grlib::CGLibCtlShader::setMemoryBarrierBit(0x21); }

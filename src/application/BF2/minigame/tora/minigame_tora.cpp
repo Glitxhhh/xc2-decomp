@@ -16,13 +16,13 @@ namespace minigame {
 namespace tora {
 
 void minigame::get_pc_pos(int &x, int &y) {
-  x = unknown3528->unknown2c;
-  y = unknown3528->unknown30 + unknown3560 / 256;
+  x = m_sTask->unknown2c;
+  y = m_sTask->unknown30 + unknown3560 / 256;
 }
 
 void minigame::get_pc_dxdy(int x, int y, int &dx, int &dy) {
-  dx = x - unknown3528->unknown2c;
-  dy = y - unknown3528->unknown30 - unknown3560 / 256;
+  dx = x - m_sTask->unknown2c;
+  dy = y - m_sTask->unknown30 - unknown3560 / 256;
 }
 
 void minigame::get_coli_xy(int &x, int &y, _sTask *task) {
@@ -91,7 +91,7 @@ unknown003 *minigame::sprite_get() {
 }
 
 u8 *minigame::get_res_pal(int index) {
-  unknown002 *res = static_cast<unknown002 *>(unknown20.get_res(index));
+  unknown002 *res = static_cast<unknown002 *>(m_archive.get_res(index));
   if (res->unknown02 == 0) {
     return nullptr;
   }

@@ -9,7 +9,7 @@
 namespace ml {
 
 DrResFilterData::DrResFilterData(DrMan *man) {
-  unknown00 = man;
+  m_drMan = man;
   unknown100 = 0;
   unknownf0 = nullptr;
   unknownf8 = 0;

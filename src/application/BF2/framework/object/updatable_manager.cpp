@@ -8,8 +8,8 @@ namespace fw {
 
 HandlePtr<void> UpdatableObjectManager::Impl::registPointer(u32 group, const void *ptr) {
   HandlePtr<void> handle;
-  handle.id = unknown108.regist(ptr);
-  handle.map = &unknown108;
+  handle.id = m_pointerMap.regist(ptr);
+  handle.map = &m_pointerMap;
   return handle;
 }
 

@@ -20,28 +20,28 @@ struct unknown510;
 
 // Name from the game symbols; layout inferred, the original member names are unknown.
 struct _wkMpfAutoBuff {
-  f32 unknown00;                      // Inferred role: maximum x; original member name unknown.
-  f32 unknown04;                      // Inferred role: maximum z; original member name unknown.
-  f32 unknown08;                      // Inferred role: minimum x; original member name unknown.
-  f32 unknown0c;                      // Inferred role: minimum z; original member name unknown.
-  const u8 *unknown10;                // Inferred role: poli data; original member name unknown.
-  const u8 *unknown18;                // Inferred role: hlv poli data; original member name unknown.
-  const u8 *unknown20;                // Inferred role: unknown data; original member name unknown.
-  const u8 *unknown28;                // Inferred role: unknown data; original member name unknown.
-  const u8 *unknown30;                // Inferred role: unknown data; original member name unknown.
-  const MdsMpfAutoTree *unknown38;    // Inferred role: trees; original member name unknown.
-  const u32 *unknown40;               // Inferred role: poli index table; original member name unknown.
-  const u32 *unknown48;               // Inferred role: grid table; original member name unknown.
-  const f32 *unknown50;               // Inferred role: float table; original member name unknown.
-  const MdsMpfAutoPosData *unknown58; // Inferred role: position data; original member name unknown.
-  const MdsMpfAutoPosTree *unknown60; // Inferred role: position trees; original member name unknown.
-  const u32 *unknown68;               // Inferred role: position index table; original member name unknown.
+  f32 unknown00;                                // Inferred role: maximum x; original member name unknown.
+  f32 unknown04;                                // Inferred role: maximum z; original member name unknown.
+  f32 unknown08;                                // Inferred role: minimum x; original member name unknown.
+  f32 unknown0c;                                // Inferred role: minimum z; original member name unknown.
+  const u8 *unknown10;                          // Inferred role: poli data; original member name unknown.
+  const u8 *unknown18;                          // Inferred role: hlv poli data; original member name unknown.
+  const u8 *unknown20;                          // Inferred role: unknown data; original member name unknown.
+  const u8 *unknown28;                          // Inferred role: unknown data; original member name unknown.
+  const u8 *unknown30;                          // Inferred role: unknown data; original member name unknown.
+  const MdsMpfAutoTree *m_mdsMpfAutoTree;       // Inferred role: trees; original member name unknown.
+  const u32 *unknown40;                         // Inferred role: poli index table; original member name unknown.
+  const u32 *unknown48;                         // Inferred role: grid table; original member name unknown.
+  const f32 *unknown50;                         // Inferred role: float table; original member name unknown.
+  const MdsMpfAutoPosData *m_mdsMpfAutoPosData; // Inferred role: position data; original member name unknown.
+  const MdsMpfAutoPosTree *m_mdsMpfAutoPosTree; // Inferred role: position trees; original member name unknown.
+  const u32 *unknown68;                         // Inferred role: position index table; original member name unknown.
 };
 
 static_assert(offsetof(_wkMpfAutoBuff, unknown0c) == 0x0c, "");
 static_assert(offsetof(_wkMpfAutoBuff, unknown10) == 0x10, "");
-static_assert(offsetof(_wkMpfAutoBuff, unknown38) == 0x38, "");
-static_assert(offsetof(_wkMpfAutoBuff, unknown60) == 0x60, "");
+static_assert(offsetof(_wkMpfAutoBuff, m_mdsMpfAutoTree) == 0x38, "");
+static_assert(offsetof(_wkMpfAutoBuff, m_mdsMpfAutoPosTree) == 0x60, "");
 static_assert(offsetof(_wkMpfAutoBuff, unknown68) == 0x68, "");
 static_assert(sizeof(_wkMpfAutoBuff) == 0x70, "");
 
@@ -117,14 +117,14 @@ public:
   bool setHeMemWork(int index);
   bool StockWorkPoint();
 
-  const unknown001 *unknown00;            // Inferred role: resource header; original member name unknown.
-  const unknown510 *unknown08;            // Inferred role: object data; original member name unknown.
-  const u8 *unknown10;                    // Inferred role: hlv poli data; original member name unknown.
-  const u8 *unknown18;                    // Inferred role: unknown data; original member name unknown.
-  const u8 *unknown20;                    // Inferred role: unknown data; original member name unknown.
-  const MdsMpfAutoHlvPoliTree *unknown28; // Inferred role: hlv poli trees; original member name unknown.
-  const u32 *unknown30;                   // Inferred role: tree index table; original member name unknown.
-  const u8 *unknown38;                    // Inferred role: unknown data; original member name unknown.
+  const unknown001 *unknown00;                          // Inferred role: resource header; original member name unknown.
+  const unknown510 *unknown08;                          // Inferred role: object data; original member name unknown.
+  const u8 *unknown10;                                  // Inferred role: hlv poli data; original member name unknown.
+  const u8 *unknown18;                                  // Inferred role: unknown data; original member name unknown.
+  const u8 *unknown20;                                  // Inferred role: unknown data; original member name unknown.
+  const MdsMpfAutoHlvPoliTree *m_mdsMpfAutoHlvPoliTree; // Inferred role: hlv poli trees; original member name unknown.
+  const u32 *unknown30;                                 // Inferred role: tree index table; original member name unknown.
+  const u8 *unknown38;                                  // Inferred role: unknown data; original member name unknown.
   u8 _40[0x50 - 0x40];
   _wkMpfAutoBuff *unknown50;  // Inferred role: first buffer; original member name unknown.
   _wkMpfAutoBuff *unknown58;  // Inferred role: current buffer; original member name unknown.
@@ -153,7 +153,7 @@ public:
   s32 unknown144[5];            // Inferred role: point count of the work lists; original member name unknown.
   _MPFWorkAutoInf **unknown158; // Inferred role: work lists; original member name unknown.
   _MPFWorkAutoInf **unknown160; // Inferred role: work list tails; original member name unknown.
-  DrMdoMpfMan *unknown168;      // Inferred role: mpf manager; original member name unknown.
+  DrMdoMpfMan *m_drMdoMpfMan;   // Inferred role: mpf manager; original member name unknown.
 };
 
 static_assert(offsetof(DrMdoCtlMpfAuto::unknown001, unknown04) == 0x04, "");
@@ -161,7 +161,7 @@ static_assert(offsetof(DrMdoCtlMpfAuto::unknown001, unknown3c) == 0x3c, "");
 static_assert(offsetof(DrMdoCtlMpfAuto::unknown001, unknown48) == 0x48, "");
 static_assert(offsetof(DrMdoCtlMpfAuto::unknown001, unknown5c) == 0x5c, "");
 static_assert(sizeof(DrMdoCtlMpfAuto::unknown001) == 0x60, "");
-static_assert(offsetof(DrMdoCtlMpfAuto, unknown28) == 0x28, "");
+static_assert(offsetof(DrMdoCtlMpfAuto, m_mdsMpfAutoHlvPoliTree) == 0x28, "");
 static_assert(offsetof(DrMdoCtlMpfAuto, unknown58) == 0x58, "");
 static_assert(offsetof(DrMdoCtlMpfAuto, unknown60) == 0x60, "");
 static_assert(offsetof(DrMdoCtlMpfAuto, unknown68) == 0x68, "");
@@ -178,7 +178,7 @@ static_assert(offsetof(DrMdoCtlMpfAuto, unknown108) == 0x108, "");
 static_assert(offsetof(DrMdoCtlMpfAuto, unknown130) == 0x130, "");
 static_assert(offsetof(DrMdoCtlMpfAuto, unknown144) == 0x144, "");
 static_assert(offsetof(DrMdoCtlMpfAuto, unknown158) == 0x158, "");
-static_assert(offsetof(DrMdoCtlMpfAuto, unknown168) == 0x168, "");
+static_assert(offsetof(DrMdoCtlMpfAuto, m_drMdoMpfMan) == 0x168, "");
 static_assert(sizeof(DrMdoCtlMpfAuto) == 0x170, "");
 
 } // namespace ml

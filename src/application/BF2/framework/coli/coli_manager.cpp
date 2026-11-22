@@ -11,8 +11,8 @@
 namespace fw {
 
 ColiManager::Impl::Impl(mm::mtl::IAllocator *allocator, u32 capacity) : m_groundObject(nullptr), m_interface(nullptr), unknown28(1), unknown30(allocator) {
-  unknown38.reserve(allocator, capacity);
-  unknown38.setRange(1, HANDLE_ID_UNKNOWN_2147483647, HANDLE_ID_UNKNOWN_2147483647);
+  m_pointerMap.reserve(allocator, capacity);
+  m_pointerMap.setRange(1, HANDLE_ID_UNKNOWN_2147483647, HANDLE_ID_UNKNOWN_2147483647);
   initializeContact();
 }
 
@@ -73,7 +73,7 @@ void ColiManager::Impl::updateContact() {
       continue;
     }
 
-    mm::mtl::List<ContactParam> *contacts = getContactList(object->unknownf0.unknown08);
+    mm::mtl::List<ContactParam> *contacts = getContactList(object->m_coliObjUserData.unknown08);
     if (object->getRefCount() == 1) {
       if (contacts != nullptr) {
         for (mm::mtl::List<ContactParam>::iterator contact = contacts->begin(); contact != contacts->end(); ++contact) {
@@ -109,10 +109,10 @@ void ColiManager::Impl::updateContact() {
 void ColiManager::Impl::sendContactEvent() {
   for (ContactTable::iterator it = unknown70.begin(); it != unknown70.end(); ++it) {
     mm::mtl::List<ContactParam> *contacts = it->unknown08;
-    ColiObject *object = static_cast<ColiObject *>(unknown38.getPtr(it->unknown00));
+    ColiObject *object = static_cast<ColiObject *>(m_pointerMap.getPtr(it->unknown00));
     for (mm::mtl::List<ContactParam>::iterator contact = contacts->begin(); contact != contacts->end();) {
       ContactParam &param = *contact;
-      ColiObject *other = static_cast<ColiObject *>(unknown38.getPtr(param.unknown34));
+      ColiObject *other = static_cast<ColiObject *>(m_pointerMap.getPtr(param.unknown34));
       if (other == nullptr) {
         contact = contacts->erase(contact);
         continue;
@@ -209,11 +209,11 @@ mm::mtl::List<ColiManager::Impl::ContactParam> *ColiManager::Impl::getContactLis
 }
 
 ColiObject *ColiManager::Impl::getObject(u32 handle, bool isCheck) const {
-  if (isCheck && !unknown38.isValid(handle)) {
+  if (isCheck && !m_pointerMap.isValid(handle)) {
     return nullptr;
   }
 
-  return static_cast<ColiObject *>(unknown38.getPtr(handle));
+  return static_cast<ColiObject *>(m_pointerMap.getPtr(handle));
 }
 
 bool ColiManager::Impl::isContactList(mm::mtl::List<ContactParam> &contacts, u32 handle) {
@@ -227,7 +227,7 @@ bool ColiManager::Impl::isContactList(mm::mtl::List<ContactParam> &contacts, u32
 }
 
 void ColiManager::Impl::sendRemoveEvent(u32 handle) {
-  ColiObject *object = static_cast<ColiObject *>(unknown38.getPtr(handle));
+  ColiObject *object = static_cast<ColiObject *>(m_pointerMap.getPtr(handle));
   if (object == nullptr) {
     return;
   }
@@ -236,7 +236,7 @@ void ColiManager::Impl::sendRemoveEvent(u32 handle) {
     mm::mtl::List<ContactParam> *contacts = it->unknown08;
     if (it->unknown00 == handle) {
       for (mm::mtl::List<ContactParam>::iterator contact = contacts->begin(); contact != contacts->end(); ++contact) {
-        ColiObject *other = static_cast<ColiObject *>(unknown38.getPtr((*contact).unknown34));
+        ColiObject *other = static_cast<ColiObject *>(m_pointerMap.getPtr((*contact).unknown34));
         IColiEventListener::LeaveInfo leaveInfo = {object, other};
         IColiEventListener::LeaveInfo otherLeaveInfo = {other, object};
         if (((*contact).unknown38 & CONTACT_FLAG_UNKNOWN_0) != 0) {
@@ -247,7 +247,7 @@ void ColiManager::Impl::sendRemoveEvent(u32 handle) {
       return;
     }
 
-    ColiObject *owner = static_cast<ColiObject *>(unknown38.getPtr(it->unknown00));
+    ColiObject *owner = static_cast<ColiObject *>(m_pointerMap.getPtr(it->unknown00));
     for (mm::mtl::List<ContactParam>::iterator contact = contacts->begin(); contact != contacts->end();) {
       if ((*contact).unknown34 == handle) {
         IColiEventListener::LeaveInfo leaveInfo = {owner, object};
@@ -262,10 +262,10 @@ void ColiManager::Impl::sendRemoveEvent(u32 handle) {
   }
 }
 
-bool ColiManager::Impl::isValidObject(u32 handle) { return unknown38.isValid(handle); }
+bool ColiManager::Impl::isValidObject(u32 handle) { return m_pointerMap.isValid(handle); }
 
 void ColiManager::Impl::registObject(ColiObject *object) {
-  object->setHandle(unknown38.regist(object) | HANDLE_FLAG_UNKNOWN_31);
+  object->setHandle(m_pointerMap.regist(object) | HANDLE_FLAG_UNKNOWN_31);
   object->addRef();
   unknown00.push_back(object);
   if (object->isGrand()) {
@@ -277,13 +277,13 @@ void ColiManager::Impl::registObject(ColiObject *object) {
 #line 771
     mm::mtl::List<ContactParam> *contacts = new (unknown30, 16, __FILE__, __LINE__) mm::mtl::List<ContactParam>(unknown30);
     contacts->reserve(CONTACT_LIST_RESERVE_UNKNOWN_8);
-    unknown70.push_back(ListParam(object->unknownf0.unknown08, contacts));
+    unknown70.push_back(ListParam(object->m_coliObjUserData.unknown08, contacts));
   }
 }
 
 void ColiManager::Impl::removeObject(ColiObject *object) {
   for (ContactTable::iterator it = unknown70.begin(); it != unknown70.end(); ++it) {
-    if (it->unknown00 == object->unknownf0.unknown08) {
+    if (it->unknown00 == object->m_coliObjUserData.unknown08) {
       mm::mtl::List<ContactParam> *contacts = it->unknown08;
       unknown70.erase(it);
       contacts->clear();
@@ -292,8 +292,8 @@ void ColiManager::Impl::removeObject(ColiObject *object) {
     }
   }
 
-  if (object->unknownf0.unknown08 != 0) {
-    unknown38.remove(object->unknownf0.unknown08);
+  if (object->m_coliObjUserData.unknown08 != 0) {
+    m_pointerMap.remove(object->m_coliObjUserData.unknown08);
   }
 
   unknown00.erase(object);
@@ -302,7 +302,7 @@ void ColiManager::Impl::removeObject(ColiObject *object) {
   }
 }
 
-void ColiManager::Impl::cleanupObject(ColiObject *object) { sendRemoveEvent(object->unknownf0.unknown08); }
+void ColiManager::Impl::cleanupObject(ColiObject *object) { sendRemoveEvent(object->m_coliObjUserData.unknown08); }
 
 void ColiManager::Impl::openDebugWindow() {
   if (m_interface != nullptr) {
@@ -383,7 +383,7 @@ void ColiManager::openDebugWindow() { unknown18->openDebugWindow(); }
 ColiObject *ColiManager::getGroundObject() { return unknown18->m_groundObject; }
 
 ColiObject *ColiManager::getObject(u32 handle) const {
-  const PointerMap &objectMap = unknown18->unknown38;
+  const PointerMap &objectMap = unknown18->m_pointerMap;
   if (objectMap.isValid(handle)) {
     return static_cast<ColiObject *>(objectMap.getPtr(handle));
   }

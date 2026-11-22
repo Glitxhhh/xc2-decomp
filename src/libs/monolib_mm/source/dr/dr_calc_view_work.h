@@ -87,9 +87,9 @@ public:
   f32 unknown4cc; // Inferred role: velocity parameter of the sky base render (DrPixlSkyDome::baseRender, gVelocityParam x component); original member name unknown.
   f32 unknown4d0; // Inferred role: pixl scale; original member name unknown.
   u8 _4d4[0x4e0 - 0x4d4];
-  DrCalcClipWorkViewPlane unknown4e0; // Inferred role: view clip plane; original member name unknown.
-  DrCalcClipWorkViewPoli unknown590;  // Inferred role: view clip poli; original member name unknown.
-  DrMan *unknown700;                  // Inferred role: dr man; original member name unknown.
+  DrCalcClipWorkViewPlane m_drCalcClipWorkViewPlane; // Inferred role: view clip plane; original member name unknown.
+  DrCalcClipWorkViewPoli m_drCalcClipWorkViewPoli;   // Inferred role: view clip poli; original member name unknown.
+  DrMan *m_drMan;                                    // Inferred role: dr man; original member name unknown.
   u8 _708[0x770 - 0x708];
   mm::Vec3 unknown770; // Inferred role: prev view pos; original member name unknown.
   u8 _780[0x798 - 0x780];
@@ -151,9 +151,9 @@ static_assert(offsetof(DrCalcViewWork, unknown4c0) == 0x4c0, "");
 static_assert(offsetof(DrCalcViewWork, unknown4c4) == 0x4c4, "");
 static_assert(offsetof(DrCalcViewWork, unknown4c8) == 0x4c8, "");
 static_assert(offsetof(DrCalcViewWork, unknown4d0) == 0x4d0, "");
-static_assert(offsetof(DrCalcViewWork, unknown4e0) == 0x4e0, "");
-static_assert(offsetof(DrCalcViewWork, unknown590) == 0x590, "");
-static_assert(offsetof(DrCalcViewWork, unknown700) == 0x700, "");
+static_assert(offsetof(DrCalcViewWork, m_drCalcClipWorkViewPlane) == 0x4e0, "");
+static_assert(offsetof(DrCalcViewWork, m_drCalcClipWorkViewPoli) == 0x590, "");
+static_assert(offsetof(DrCalcViewWork, m_drMan) == 0x700, "");
 static_assert(offsetof(DrCalcViewWork, unknown770) == 0x770, "");
 static_assert(offsetof(DrCalcViewWork, unknown798) == 0x798, "");
 static_assert(offsetof(DrCalcViewWork, unknown7b0) == 0x7b0, "");

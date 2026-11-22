@@ -66,8 +66,8 @@ public:
   };
 
   struct wrkCallbackArg {
-    DrResMdoMeshObj *unknown00;    // Inferred role: mesh parts; original member name unknown.
-    MdoWrkVanishEffect *unknown08; // Inferred role: vanish effects; original member name unknown.
+    DrResMdoMeshObj *m_drResMdoMeshObj;       // Inferred role: mesh parts; original member name unknown.
+    MdoWrkVanishEffect *m_mdoWrkVanishEffect; // Inferred role: vanish effects; original member name unknown.
   };
 
   DrResEtcPamObj();
@@ -81,17 +81,17 @@ public:
   static int calcWorkSize(const u8 *data);
   static void release(DrResEtcPamObj *&obj);
 
-  const unknown002 *unknown00; // Inferred role: params table header, base of the names; original member name unknown.
-  const unknown040 *unknown08; // Inferred role: name table; original member name unknown.
-  DrResEtcParams *unknown10;   // Inferred role: params; original member name unknown.
-  u32 unknown18;               // Inferred role: params max; original member name unknown.
-  u32 unknown1c;               // Inferred role: flags; original member name unknown.
+  const unknown002 *unknown00;      // Inferred role: params table header, base of the names; original member name unknown.
+  const unknown040 *unknown08;      // Inferred role: name table; original member name unknown.
+  DrResEtcParams *m_drResEtcParams; // Inferred role: params; original member name unknown.
+  u32 unknown18;                    // Inferred role: params max; original member name unknown.
+  u32 unknown1c;                    // Inferred role: flags; original member name unknown.
 };
 
 static_assert(offsetof(DrResEtcPamObj::unknown001, unknown84) == 0x84, "");
 static_assert(offsetof(DrResEtcPamObj::unknown002, unknown10) == 0x10, "");
 static_assert(offsetof(DrResEtcPamObj::unknown002, unknown04) == 0x04, "");
-static_assert(offsetof(DrResEtcPamObj, unknown10) == 0x10, "");
+static_assert(offsetof(DrResEtcPamObj, m_drResEtcParams) == 0x10, "");
 static_assert(offsetof(DrResEtcPamObj, unknown18) == 0x18, "");
 static_assert(offsetof(DrResEtcPamObj, unknown1c) == 0x1c, "");
 

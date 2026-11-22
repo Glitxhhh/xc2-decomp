@@ -46,7 +46,7 @@ template <typename T> nn::os::FiberType *MicroUpdater<T>::fnMicroUpdate(void *) 
 namespace tl {
 
 TitleMain::TitleMain()
-    : unknown08(fw::FrameworkMemory::getAllocator(5)), unknown80(nullptr), unknown94(false), unknown95(false), unknown98(0), unknowna0(false), unknowna4(gf::SAVESLOT_UNKNOWN_FFFFFFFF),
+    : m_fsm(fw::FrameworkMemory::getAllocator(5)), unknown80(nullptr), unknown94(false), unknown95(false), m_soundHandle(0), unknowna0(false), unknowna4(gf::SAVESLOT_UNKNOWN_FFFFFFFF),
       m_saveBuffer(nullptr), m_optionBuffer(nullptr), m_playTitleEvent(0), unknown170(gf::unknown019), unknown178(false) {}
 
 TitleMain::~TitleMain() {}
@@ -60,18 +60,18 @@ TitleMain *TitleMain::create() {
 
 void TitleMain::initialize() {
   createSaveBuffer();
-  unknown08.beginSetup(this, 9);
-  unknown08.registerState<TitleStateLoad>(0);
-  unknown08.registerState<TitleStateMainScreen>(1);
-  unknown08.registerState<TitleStatePlayGame>(5);
-  unknown08.registerState<TitleStatePlayEvent>(6);
-  unknown08.registerState<TitleStateToTitle>(7);
-  unknown08.registerState<TitleStateDebugSaveContinue>(2);
-  unknown08.registerState<TitleStateSelectEvent>(3);
-  unknown08.registerState<TitleStateSelectOption>(4);
-  unknown08.registerState<TitleStateDebugSaveContinue>(8);
-  unknown08.endSetup();
-  unknown08.setState(0);
+  m_fsm.beginSetup(this, 9);
+  m_fsm.registerState<TitleStateLoad>(0);
+  m_fsm.registerState<TitleStateMainScreen>(1);
+  m_fsm.registerState<TitleStatePlayGame>(5);
+  m_fsm.registerState<TitleStatePlayEvent>(6);
+  m_fsm.registerState<TitleStateToTitle>(7);
+  m_fsm.registerState<TitleStateDebugSaveContinue>(2);
+  m_fsm.registerState<TitleStateSelectEvent>(3);
+  m_fsm.registerState<TitleStateSelectOption>(4);
+  m_fsm.registerState<TitleStateDebugSaveContinue>(8);
+  m_fsm.endSetup();
+  m_fsm.setState(0);
 #line 127
   MicroUpdater<TitleMain> *updater = new (fw::FrameworkMemory::getAllocator(5), 16, __FILE__, __LINE__) MicroUpdater<TitleMain>();
   unknown80 = updater;
@@ -87,16 +87,16 @@ void TitleMain::initialize() {
 void TitleMain::finalize() {
   destroyMaskVolume();
   unknown94 = true;
-  while (unknown08.getState()->m_state != 8) {
+  while (m_fsm.getState()->m_state != 8) {
     ml::MicroThread::get()->sleep(1, true);
   }
   stopTitleBGM(0.0f);
-  unknown158.destroyMenuCallContext();
+  m_titleMenu.destroyMenuCallContext();
   if (unknown80 != nullptr) {
     delete unknown80;
     unknown80 = nullptr;
   }
-  unknown08.cleanup();
+  m_fsm.cleanup();
   destroySaveBuffer();
 }
 
@@ -121,10 +121,10 @@ void TitleMain::createSaveBuffer() {
 }
 
 void TitleMain::fnUpdate(TitleMain *main) {
-  main->unknown08.update(&main->unknown88);
-  while (main->unknown08.getState()->m_state != 8) {
+  main->m_fsm.update(&main->m_updateInfo);
+  while (main->m_fsm.getState()->m_state != 8) {
     ml::MicroThread::get()->sleep(1, true);
-    main->unknown08.update(&main->unknown88);
+    main->m_fsm.update(&main->m_updateInfo);
   }
 }
 
@@ -135,11 +135,11 @@ void TitleMain::destroyMaskVolume() {
 }
 
 void TitleMain::stopTitleBGM(f32 fadeTime) {
-  if (unknown98.isValid()) {
+  if (m_soundHandle.isValid()) {
     if (gf::GfSound::get() != nullptr) {
-      gf::GfSound::get()->stopBgm(unknown98, fadeTime);
+      gf::GfSound::get()->stopBgm(m_soundHandle, fadeTime);
     }
-    unknown98.clear();
+    m_soundHandle.clear();
     unknowna0 = false;
   }
 }
@@ -160,8 +160,8 @@ void TitleMain::update(const fw::UpdateInfo &info) {
   if (main != nullptr) {
     if (main->unknowna0) {
       gf::GfSound *sound = gf::GfSound::get();
-      if (sound != nullptr && !sound->isPlaying(main->unknown98)) {
-        main->unknown98 = sound->playBgm("stream/bgm/m02.wav", 1.0f, false, -1, gf::CATEGORY_EVT_BGM);
+      if (sound != nullptr && !sound->isPlaying(main->m_soundHandle)) {
+        main->m_soundHandle = sound->playBgm("stream/bgm/m02.wav", 1.0f, false, -1, gf::CATEGORY_EVT_BGM);
       }
     }
     MicroUpdater<TitleMain> *updater = main->unknown80;
@@ -181,7 +181,7 @@ void TitleMain::returnTitle(gf::SAVESLOT slot) {
   TitleMain *main = get();
   if (main != nullptr) {
     main->unknowna4 = slot;
-    u32 state = main->unknown08.getState()->m_state;
+    u32 state = main->m_fsm.getState()->m_state;
     if (state == 1 || state == 5 || state == 6) {
       main->unknown95 = true;
     }
@@ -191,21 +191,21 @@ void TitleMain::returnTitle(gf::SAVESLOT slot) {
 
 bool TitleMain::isStateGame() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->m_state == 5;
+    return get()->m_fsm.getState()->m_state == 5;
   }
   return false;
 }
 
 bool TitleMain::isStateEvent() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->m_state == 6;
+    return get()->m_fsm.getState()->m_state == 6;
   }
   return false;
 }
 
 bool TitleMain::isStateSelect() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->m_state == 1;
+    return get()->m_fsm.getState()->m_state == 1;
   }
   return false;
 }
@@ -225,13 +225,13 @@ void TitleMain::setMaskVolume(f32 volume, f32 fadeTime) {
 
 bool TitleMain::isReturnTitle() {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->m_state == 7;
+    return get()->m_fsm.getState()->m_state == 7;
   }
   return false;
 }
 
 void TitleMain::playTitleBGM() {
-  if (!unknown98.isValid()) {
+  if (!m_soundHandle.isValid()) {
     stopTitleBGM(0.0f);
     unknowna0 = true;
   }
@@ -239,7 +239,7 @@ void TitleMain::playTitleBGM() {
 
 bool TitleMain::isStateReturnTitle() const {
   if (get() != nullptr) {
-    return get()->unknown08.getState()->m_state == 7;
+    return get()->m_fsm.getState()->m_state == 7;
   }
   return false;
 }

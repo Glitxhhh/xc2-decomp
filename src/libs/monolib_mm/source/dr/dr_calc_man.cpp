@@ -27,31 +27,31 @@
 
 namespace ml {
 
-DrCalcMan::DrCalcMan(DrMan *man, int loopCount) : unknown00(man), unknown08(loopCount) {
-  unknown10 = new (man->unknown0c) DrCalcViewWork(man);
-  unknown18 = new (unknown00->unknown0c) DrCalcClipMan(man, unknown10);
+DrCalcMan::DrCalcMan(DrMan *man, int loopCount) : m_drMan(man), unknown08(loopCount) {
+  m_drCalcViewWork = new (man->unknown0c) DrCalcViewWork(man);
+  m_drCalcClipMan = new (m_drMan->unknown0c) DrCalcClipMan(man, m_drCalcViewWork);
 }
 
 DrCalcMan::~DrCalcMan() {
-  if (unknown10 != nullptr) {
-    delete unknown10;
-    unknown10 = nullptr;
+  if (m_drCalcViewWork != nullptr) {
+    delete m_drCalcViewWork;
+    m_drCalcViewWork = nullptr;
   }
-  if (unknown18 != nullptr) {
-    delete unknown18;
-    unknown18 = nullptr;
+  if (m_drCalcClipMan != nullptr) {
+    delete m_drCalcClipMan;
+    m_drCalcClipMan = nullptr;
   }
 }
 
 void DrCalcMan::begin() {
-  unknown10->begin(unknown08);
-  unknown18->update();
+  m_drCalcViewWork->begin(unknown08);
+  m_drCalcClipMan->update();
 }
 
-void DrCalcMan::end() { unknown10->end(); }
+void DrCalcMan::end() { m_drCalcViewWork->end(); }
 
 void DrCalcMan::renderEnd() {
-  DrCalcViewWork *work = unknown10;
+  DrCalcViewWork *work = m_drCalcViewWork;
   if (work->unknown9ad) {
     work->unknown9ad = false;
   }
@@ -59,7 +59,7 @@ void DrCalcMan::renderEnd() {
   work->unknown100 = work->unknownc0;
 }
 
-void DrCalcMan::shadowEnd() { unknown10->unknownc0 = unknown10->unknown140; }
+void DrCalcMan::shadowEnd() { m_drCalcViewWork->unknownc0 = m_drCalcViewWork->unknown140; }
 
 } // namespace ml
 

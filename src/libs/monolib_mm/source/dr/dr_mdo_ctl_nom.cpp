@@ -40,7 +40,7 @@ static const u8 unknown135[] = {0, 3, 2, 4, 1, 1};
 
 DrMdoCtlNom::~DrMdoCtlNom() {
   if ((unknownfc & unknown027_8) && unknown1a == 0) {
-    m_drMan->unknown78->unknown800->delShadowCacheUpdate();
+    m_drMan->m_drPixlMan->m_drPixlShadowCacheMan->delShadowCacheUpdate();
   }
   releaseNom();
 }
@@ -58,42 +58,42 @@ void DrMdoCtlNom::releaseNom() {
     delete unknown220[1];
     unknown220[1] = nullptr;
   }
-  if (unknown58 != nullptr) {
-    unknown58->unknown28 |= DrMdoSmlShadowObj::FLAG_UNKNOWN_14 << DrMan::s_nDblStockIdx;
-    unknown58 = nullptr;
+  if (m_drMdoSmlShadowObj != nullptr) {
+    m_drMdoSmlShadowObj->unknown28 |= DrMdoSmlShadowObj::FLAG_UNKNOWN_14 << DrMan::s_nDblStockIdx;
+    m_drMdoSmlShadowObj = nullptr;
   }
   if (unknown210 != nullptr) {
     unknown210->release();
     unknown210 = nullptr;
   }
-  DrResMdoLight::release(unknown1e0);
-  DrResMdoVtxMeshObj::release(unknown1d8);
-  DrResMdoAlpTbl::release(unknown1c0);
-  DrResMdoMorpObj::release(unknown1c8);
-  DrResMdoMeshObj::release(unknown1e8);
-  DrResMdoLodObj::release(unknown1f0);
-  DrResEtcPamObj::release(unknown200);
-  if (unknown1f8 != nullptr) {
-    unknown1f8->~DrResClip();
-    unknown1f8 = nullptr;
+  DrResMdoLight::release(m_drResMdoLight);
+  DrResMdoVtxMeshObj::release(m_drResMdoVtxMeshObj);
+  DrResMdoAlpTbl::release(m_drResMdoAlpTbl);
+  DrResMdoMorpObj::release(m_drResMdoMorpObj);
+  DrResMdoMeshObj::release(m_drResMdoMeshObj);
+  DrResMdoLodObj::release(m_drResMdoLodObj);
+  DrResEtcPamObj::release(m_drResEtcPamObj);
+  if (m_drResClip != nullptr) {
+    m_drResClip->~DrResClip();
+    m_drResClip = nullptr;
   }
-  unknown1b0->~DrResMdoSortNom();
+  m_drResMdoSortNom->~DrResMdoSortNom();
   if (unknown1b8 != nullptr) {
-    if (unknown1b8->unknown08 != nullptr) {
-      unknown1b8->unknown08->~DrResMdoSortNomLastApha();
+    if (unknown1b8->m_drResMdoSortNomLastApha != nullptr) {
+      unknown1b8->m_drResMdoSortNomLastApha->~DrResMdoSortNomLastApha();
     }
-    if (unknown1b8->unknown00 != nullptr) {
-      unknown1b8->unknown00->~DrResMdoSortNomFastApha();
+    if (unknown1b8->m_drResMdoSortNomFastApha != nullptr) {
+      unknown1b8->m_drResMdoSortNomFastApha->~DrResMdoSortNomFastApha();
     }
-    if (unknown1b8->unknown10 != nullptr) {
-      unknown1b8->unknown10->~DrResMdoSortNomCldBackApha();
+    if (unknown1b8->m_drResMdoSortNomCldBackApha != nullptr) {
+      unknown1b8->m_drResMdoSortNomCldBackApha->~DrResMdoSortNomCldBackApha();
     }
     unknown1b8 = nullptr;
   }
   releaseMat();
-  if (unknown208 != nullptr) {
-    unknown208->release();
-    unknown208 = nullptr;
+  if (m_drCalcStmListObj != nullptr) {
+    m_drCalcStmListObj->release();
+    m_drCalcStmListObj = nullptr;
   }
   if (unknown1a8 != nullptr) {
     mtl::MemManager::deallocate(unknown1a8, 0, false);
@@ -106,15 +106,15 @@ void DrMdoCtlNom::setDeleteCall(int deleteCall) {
   if (unknown210 != nullptr) {
     unknown210->setCallDisp(false);
   }
-  if (unknown1e0 != nullptr) {
-    unknown1e0->setDisp(false);
+  if (m_drResMdoLight != nullptr) {
+    m_drResMdoLight->setDisp(false);
   }
 }
 
 void DrMdoCtlNom::setDisp(bool isDisp) {
   DrMdlBase::setDisp(isDisp);
-  if (unknown1e0 != nullptr) {
-    unknown1e0->setDisp(isDisp);
+  if (m_drResMdoLight != nullptr) {
+    m_drResMdoLight->setDisp(isDisp);
   }
 }
 
@@ -122,11 +122,11 @@ void DrMdoCtlNom::callShadowCacheUpdate(u64 flags) { unknown230 &= ~flags; }
 
 void DrMdoCtlNom::occRender() {
   if (unknown168 & 2) {
-    m_drMan->unknown78->unknown7f8->occRenderAABB(unknown1f8, m_center, unknown140);
+    m_drMan->m_drPixlMan->m_drPixlOccQuery->occRenderAABB(m_drResClip, m_center, unknown140);
   }
   if (unknown168 & 4) {
     unknown724 *pos = unknown30->unknown160_2;
-    m_drMan->unknown78->unknown7f8->occRenderPosAABB(pos->unknown38, pos->unknown20, pos->unknown30, pos->unknown18);
+    m_drMan->m_drPixlMan->m_drPixlOccQuery->occRenderPosAABB(pos->m_drResQueryAcc, pos->unknown20, pos->unknown30, pos->unknown18);
   }
 }
 
@@ -145,7 +145,7 @@ void DrMdoCtlNom::update() {
   stmResSetup();
   updateAlphaCall();
   updateNom();
-  DrMdlMan *mdlMan = m_drMan->unknown88;
+  DrMdlMan *mdlMan = m_drMan->m_drMdlMan;
   if (unknownf8 & unknown028_15) {
     mdlMan->unknown230->unknown00 = true;
   }
@@ -256,7 +256,7 @@ void DrMdoCtlNom::updateRimBloomParams() {
 }
 
 void DrMdoCtlNom::updateShdMdl() {
-  if (unknown1d0 != nullptr && unknown1d0->update(unknown30->unknown88)) {
+  if (m_drResMdoShdObj != nullptr && m_drResMdoShdObj->update(unknown30->m_drShdMdoExtTblObj)) {
     m_disp &= ~(unknown038_5 | unknown038_6);
   }
 }
@@ -272,8 +272,8 @@ void DrMdoCtlNom::callZSortNomAlphaRender() {
   if ((unknownf8 & unknown028_4) != 0) {
     nomCallRender(4);
   }
-  if (unknown1d8 != nullptr) {
-    unknown1d8->alpRender();
+  if (m_drResMdoVtxMeshObj != nullptr) {
+    m_drResMdoVtxMeshObj->alpRender();
   }
 }
 
@@ -323,19 +323,19 @@ void DrMdoCtlNom::nomCallRender(int pass) {
   if (m_nodeMax != 0) {
     grlib::CGLibCtlShader::setMemoryBarrierBit(1);
     if (pass == 0) {
-      u32 lodFlags = unknown1f0->unknown1c;
-      if (unknown1d8 != nullptr) {
-        lodFlags |= unknown1d8->isRender();
+      u32 lodFlags = m_drResMdoLodObj->unknown1c;
+      if (m_drResMdoVtxMeshObj != nullptr) {
+        lodFlags |= m_drResMdoVtxMeshObj->isRender();
       }
       createWeightVtx(0, unknown100, lodFlags, false);
       createWeightVtx(0, unknown100, lodFlags, true);
     } else {
-      createWeightVtx(unknown135[pass], unknown100, unknown1f0->unknown1c, false);
+      createWeightVtx(unknown135[pass], unknown100, m_drResMdoLodObj->unknown1c, false);
     }
     grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
   }
   if (pass == 0 && (unknownf8 & unknown028_21) == 0) {
-    DrAPCache *cache = m_drMan->unknown5c0;
+    DrAPCache *cache = m_drMan->m_drAPCache;
     beginSetup();
     cache->beginMdlZRender();
     zPrePassRender();
@@ -344,7 +344,7 @@ void DrMdoCtlNom::nomCallRender(int pass) {
   unknownf4 = pass;
   unknownf2 = unknown098[pass];
   beginSetup();
-  const MdsMdlTopHeader *top = unknown30->unknown168;
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
   for (int i = 0; i < unknown30->unknown170; i++, top++) {
     DrResChkList **lists = &unknown190[i * 8];
     DrResChkList *list = lists[unknownf4];
@@ -356,7 +356,7 @@ void DrMdoCtlNom::nomCallRender(int pass) {
 
 void DrMdoCtlNom::lastAlphaCallRender() {
   unknown002();
-  const MdsMdlTopHeader *top = unknown30->unknown168;
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
   for (int i = 0; i < unknown30->unknown170; i++, top++) {
     DrResChkList *list = unknown1b8->unknown20[i];
     if (list != nullptr) {
@@ -367,7 +367,7 @@ void DrMdoCtlNom::lastAlphaCallRender() {
 
 void DrMdoCtlNom::fastAlphaCallRender() {
   unknown002();
-  const MdsMdlTopHeader *top = unknown30->unknown168;
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
   for (int i = 0; i < unknown30->unknown170; i++, top++) {
     DrResChkList *list = unknown1b8->unknown18[i];
     if (list != nullptr) {
@@ -378,7 +378,7 @@ void DrMdoCtlNom::fastAlphaCallRender() {
 
 void DrMdoCtlNom::cldBackAlphaCallRender() {
   unknown002();
-  const MdsMdlTopHeader *top = unknown30->unknown168;
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
   for (int i = 0; i < unknown30->unknown170; i++, top++) {
     DrResChkList *list = unknown1b8->unknown28[i];
     if (list != nullptr) {
@@ -388,8 +388,8 @@ void DrMdoCtlNom::cldBackAlphaCallRender() {
 }
 
 void DrMdoCtlNom::callNomSetupRender() {
-  if ((unknownfc & unknown027_0) && unknown1c8 != nullptr && (unknown1f0->unknown18 & 2)) {
-    unknown1c8->update(unknown30, unknown200);
+  if ((unknownfc & unknown027_0) && m_drResMdoMorpObj != nullptr && (m_drResMdoLodObj->unknown18 & 2)) {
+    m_drResMdoMorpObj->update(unknown30, m_drResEtcPamObj);
   }
 }
 
@@ -398,10 +398,10 @@ void DrMdoCtlNom::callZSortNomZpreePassRender() {
     return;
   }
   unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  unknown30->m_drResMdoVertex->beginVertexSetup();
   if (m_nodeMax != 0) {
     grlib::CGLibCtlShader::setMemoryBarrierBit(1);
-    createWeightVtx(6, unknown100, unknown1f0->unknown1c, false);
+    createWeightVtx(6, unknown100, m_drResMdoLodObj->unknown1c, false);
     grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
   }
   zPrePassRender();
@@ -412,10 +412,10 @@ void DrMdoCtlNom::callZSortThicknessRenderFirst() {
     return;
   }
   unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  unknown30->m_drResMdoVertex->beginVertexSetup();
   if (m_nodeMax != 0) {
     grlib::CGLibCtlShader::setMemoryBarrierBit(1);
-    createWeightVtx(5, unknown100, unknown1f0->unknown1c, false);
+    createWeightVtx(5, unknown100, m_drResMdoLodObj->unknown1c, false);
     grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
   }
   thicknessRender(true);
@@ -426,10 +426,10 @@ void DrMdoCtlNom::callZSortThicknessRenderSecond() {
     return;
   }
   unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  unknown30->m_drResMdoVertex->beginVertexSetup();
   if (m_nodeMax != 0) {
     grlib::CGLibCtlShader::setMemoryBarrierBit(1);
-    createWeightVtx(5, unknown100, unknown1f0->unknown1c, false);
+    createWeightVtx(5, unknown100, m_drResMdoLodObj->unknown1c, false);
     grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
   }
   thicknessRender(false);
@@ -440,12 +440,12 @@ void DrMdoCtlNom::callZSortNomRender() {
     return;
   }
   nomCallRender(0);
-  if (unknown1d8 != nullptr) {
-    unknown1d8->stmRender(m_nodeMax != 0);
+  if (m_drResMdoVtxMeshObj != nullptr) {
+    m_drResMdoVtxMeshObj->stmRender(m_nodeMax != 0);
   }
   if ((unknownf8 & (unknown028_11 | unknown028_12 | unknown028_13)) != 0 && unknown1a == 0 && !m_drMan->unknown1d7a) {
-    DrPixlMan *pixlMan = m_drMan->unknown78;
-    if ((unknownf8 & unknown028_31) == 0 || !pixlMan->unknown7f0->unknown178->clipDirShadowChk(m_center, m_length, true)) {
+    DrPixlMan *pixlMan = m_drMan->m_drPixlMan;
+    if ((unknownf8 & unknown028_31) == 0 || !pixlMan->unknown7f0->m_drPixlShadowMan->clipDirShadowChk(m_center, m_length, true)) {
       pixlMan->shadowDirBegin();
       if (unknownf8 & unknown028_11) {
         pixlMan->setShadowDirRenderTarget(0);
@@ -475,10 +475,10 @@ void DrMdoCtlNom::calcMdlUniformBlock() {
 }
 
 void DrMdoCtlNom::shadowMapDirRender(int index) {
-  m_drMan->unknown78->setupShadowUnifrom(index);
+  m_drMan->m_drPixlMan->setupShadowUnifrom(index);
   unknown001();
-  unknown30->unknownc8->beginVertexSetup();
-  const MdsMdlTopHeader *top = unknown30->unknown168;
+  unknown30->m_drResMdoVertex->beginVertexSetup();
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
   for (int i = 0; i < unknown30->unknown170; i++, top++) {
     DrResChkList **lists = &unknown190[i * 8];
     DrResChkList *list = lists[6];
@@ -490,7 +490,7 @@ void DrMdoCtlNom::shadowMapDirRender(int index) {
         DrResMdoMeshParts *parts;
         bool isParts = false;
         if ((info->unknown00 & MdsMdlInfoHeader::FLAG_UNKNOWN_8) != 0) {
-          parts = unknown1e8->getParts(info->unknown16);
+          parts = m_drResMdoMeshObj->getParts(info->unknown16);
           isParts = (parts->unknown28 & DrResMdoMeshParts::FLAG_UNKNOWN_0) != 0;
         }
         if (!isParts) {
@@ -512,8 +512,8 @@ void DrMdoCtlNom::shadowCacheOnlyRender() {
   if ((unknownf8 & unknown028_28) == 0 || (unknownf8 & (unknown028_11 | unknown028_12 | unknown028_13)) == 0) {
     return;
   }
-  DrPixlMan *pixlMan = m_drMan->unknown78;
-  if ((unknownf8 & unknown028_31) != 0 && !pixlMan->unknown7f0->unknown178->clipDirShadowChk(m_center, m_length, true)) {
+  DrPixlMan *pixlMan = m_drMan->m_drPixlMan;
+  if ((unknownf8 & unknown028_31) != 0 && !pixlMan->unknown7f0->m_drPixlShadowMan->clipDirShadowChk(m_center, m_length, true)) {
     return;
   }
   if (unknown1a != 0 || m_drMan->unknown1d7a) {
@@ -523,7 +523,7 @@ void DrMdoCtlNom::shadowCacheOnlyRender() {
   updateFlagWaveTbl();
   if (m_nodeMax != 0) {
     grlib::CGLibCtlShader::setMemoryBarrierBit(1);
-    createWeightVtx(0, unknown100, unknown1f0->unknown1c, false);
+    createWeightVtx(0, unknown100, m_drResMdoLodObj->unknown1c, false);
     grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
   }
   pixlMan->shadowDirBegin();
@@ -546,15 +546,15 @@ void DrMdoCtlNom::shadowRender() {
   if ((unknown168 & 0x20) == 0 || (unknownfc & unknown027_0) == 0) {
     return;
   }
-  DrPixlShadowObj *shadow = m_drMan->unknown78->unknown848;
+  DrPixlShadowObj *shadow = m_drMan->m_drPixlMan->m_drPixlShadowObj;
   if ((unknown168 & 0x40) == 0 && shadow->unknown4c == 1) {
     return;
   }
   bool isShadow;
   if ((unknownfc & unknown027_8) == 0) {
-    isShadow = shadow->unknown198->isCharShadow();
+    isShadow = shadow->m_drLightObj->isCharShadow();
   } else {
-    isShadow = shadow->unknown198->isBaseMapShadow();
+    isShadow = shadow->m_drLightObj->isBaseMapShadow();
   }
   if (!isShadow || shadow->clipTypeChk(m_center, m_length) == 0) {
     return;
@@ -563,18 +563,18 @@ void DrMdoCtlNom::shadowRender() {
   updateFlagWaveTbl();
   if (m_nodeMax != 0) {
     grlib::CGLibCtlShader::setMemoryBarrierBit(1);
-    createWeightVtx(0, unknown100, unknown1f0->unknown1c, false);
+    createWeightVtx(0, unknown100, m_drResMdoLodObj->unknown1c, false);
     grlib::CGLibCtlShader::setMemoryBarrierBit(0x21);
   }
   shadow->renderSetup();
   unknownf4 = 6;
   unknownf2 = 0;
   unknown001();
-  unknown30->unknownc8->beginVertexSetup();
+  unknown30->m_drResMdoVertex->beginVertexSetup();
   if (shadow->unknown4c == 1) {
     unknown178 |= 4;
   }
-  const MdsMdlTopHeader *top = unknown30->unknown168;
+  const MdsMdlTopHeader *top = unknown30->m_mdsMdlTopHeader;
   for (int i = 0; i < unknown30->unknown170; i++, top++) {
     DrResChkList **lists = &unknown190[i * 8];
     DrResChkList *list = lists[unknownf4];
@@ -593,27 +593,27 @@ void DrMdoCtlNom::dispOffUpdate() {
   unknowne4 = 0.0f;
   stmResSetup();
   oneTextureStream();
-  if (unknown200 != nullptr) {
-    unknown200->update();
+  if (m_drResEtcPamObj != nullptr) {
+    m_drResEtcPamObj->update();
   }
-  if (unknown1e0 != nullptr) {
-    unknown1e0->update(unknown60[DrMan::s_nDblMemIdx], m_matrix, unknown200, 0.0f);
+  if (m_drResMdoLight != nullptr) {
+    m_drResMdoLight->update(unknown60[DrMan::s_nDblMemIdx], m_matrix, m_drResEtcPamObj, 0.0f);
   }
   updateVanishEffectParams();
   updateRimBloomParams();
-  if (unknown200 != nullptr) {
-    unknown200->callback(unknown1e8, unknown30->unknown150);
+  if (m_drResEtcPamObj != nullptr) {
+    m_drResEtcPamObj->callback(m_drResMdoMeshObj, unknown30->m_mdoWrkVanishEffect);
   }
-  if (unknown1e8 != nullptr) {
-    unknown1e8->updateDisplayCheck(false);
+  if (m_drResMdoMeshObj != nullptr) {
+    m_drResMdoMeshObj->updateDisplayCheck(false);
   }
-  if (unknown58 != nullptr) {
-    unknown58->unknown28 &= 0xfffe;
+  if (m_drMdoSmlShadowObj != nullptr) {
+    m_drMdoSmlShadowObj->unknown28 &= 0xfffe;
   }
   if (unknown210 != nullptr) {
     unknown210->setCallDisp(false);
   }
-  unknown1f8->unknown08 = (unknown1f8->unknown08 & 0xffffff81) | 0xe;
+  m_drResClip->unknown08 = (m_drResClip->unknown08 & 0xffffff81) | 0xe;
   unknownfc &= ~(unknown027_22 | unknown027_23 | unknown027_26);
   updateAfterImage();
 }

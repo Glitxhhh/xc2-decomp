@@ -4,9 +4,9 @@ namespace ml {
 
 f32 DrResMdoLodParts::PIXEL_RATIO[4] = {0.04f, 0.007f, 0.003f, 0.001f};
 
-DrResMdoLodParts::DrResMdoLodParts() : unknown00(0), unknown08(0), unknown10(1.0f), unknown14(0), unknown18(nullptr) {}
+DrResMdoLodParts::DrResMdoLodParts() : unknown00(0), unknown08(0), unknown10(1.0f), unknown14(0), m_mdsMdlLodData(nullptr) {}
 
-void DrResMdoLodParts::setup(const MdsMdlLodData *lodData) { unknown18 = lodData; }
+void DrResMdoLodParts::setup(const MdsMdlLodData *lodData) { m_mdsMdlLodData = lodData; }
 
 void DrResMdoLodParts::calcPixel(const DrResMdlLodArg &arg, bool &isDisp) {
   u32 flags = unknown14;
@@ -28,7 +28,7 @@ void DrResMdoLodParts::calcPixel(const DrResMdlLodArg &arg, bool &isDisp) {
     }
     unknown14 &= ~0xe;
   }
-  if (!isDisp && arg.unknown18 >= unknown18->unknown10) {
+  if (!isDisp && arg.unknown18 >= m_mdsMdlLodData->unknown10) {
     isDisp = true;
     unknown14 |= 0x20;
   }
@@ -54,7 +54,7 @@ void DrResMdoLodParts::calcAutoPixel(const DrResMdlLodArg &arg, bool &isDisp) {
     }
     unknown14 &= ~0xe;
   }
-  if (!isDisp && arg.unknown18 >= PIXEL_RATIO[unknown18->unknown15]) {
+  if (!isDisp && arg.unknown18 >= PIXEL_RATIO[m_mdsMdlLodData->unknown15]) {
     isDisp = true;
     unknown14 |= 0x20;
   }

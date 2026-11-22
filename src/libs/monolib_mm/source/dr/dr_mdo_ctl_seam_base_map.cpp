@@ -26,7 +26,7 @@ f32 DrMdoCtlSeamBaseMap::SEAM_BASEMAP_READ_IN_CHECK = 5.0f;
 DrMdoCtlSeamBaseMap::DrMdoCtlSeamBaseMap(int viewNum) : DrMdoCtlSeam(viewNum) {}
 
 void DrMdoCtlSeamBaseMap::initBaseMapParts(DrResMdoSeamWrkBase *base) {
-  const u8 *data = base->unknown158->m_buffer;
+  const u8 *data = base->m_drResMdoSeamMemObj->m_buffer;
   const MdsSeamBaseMapHead *head = reinterpret_cast<const MdsSeamBaseMapHead *>(data);
   MdoWrkMatRes *matRes = nullptr;
   // Two calls, one per branch: the game's branches set their registers before one shared call (clang merges the identical calls); a conditional
@@ -47,15 +47,15 @@ void DrMdoCtlSeamBaseMap::initBaseMapParts(DrResMdoSeamWrkBase *base) {
   unknownb50[base->unknown84 >> 5] |= 1 << (base->unknown84 & 0x1f);
   unknownc00++;
   if (unknown1a == 0) {
-    m_drMan->unknown78->unknown800->callSelectShadowCacheUpdate(0xffffffffffffffff);
+    m_drMan->m_drPixlMan->m_drPixlShadowCacheMan->callSelectShadowCacheUpdate(0xffffffffffffffff);
   }
   unknownc90 = 0;
 }
 
 void DrMdoCtlSeamBaseMap::changeMemBaseMapParts(DrResMdoSeamWrkBase *base) {
-  const u8 *data = base->unknown158->m_buffer;
+  const u8 *data = base->m_drResMdoSeamMemObj->m_buffer;
   const MdsSeamBaseMapHead *head = reinterpret_cast<const MdsSeamBaseMapHead *>(data);
-  MdoWrkMatRes *matRes = base->unknown68;
+  MdoWrkMatRes *matRes = base->m_mdoWrkMatRes;
   if (head->unknown24 == 0) {
     resetBaseMapMaterial(matRes, data + head->unknown10, data + head->unknown0c, nullptr, data + head->unknown2c, nullptr, head->unknown20);
   } else {
@@ -78,7 +78,7 @@ void DrMdoCtlSeamBaseMap::releaseBaseMap() {
 
 DrResMdoSeamWrkBase *DrMdoCtlSeamBaseMap::seachBaseIdx(int index) {
   DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00;
-  while (base != nullptr && (base->unknown68 == nullptr || base->unknown84 != index)) {
+  while (base != nullptr && (base->m_mdoWrkMatRes == nullptr || base->unknown84 != index)) {
     base = base->unknown08;
   }
   return base;
@@ -88,19 +88,19 @@ DrResMdoSeamWrkBase *DrMdoCtlSeamBaseMap::createFreeSeamBase() { return unknown2
 
 void DrMdoCtlSeamBaseMap::releaseFreeSeamBase(DrResMdoSeamWrkBase *base) {
   DrResMdoSeamMemObj *mem = nullptr;
-  if (base->unknown68 != nullptr) {
-    mem = base->unknown158;
+  if (base->m_mdoWrkMatRes != nullptr) {
+    mem = base->m_drResMdoSeamMemObj;
     unknownb50[base->unknown84 >> 5] &= ~(1 << (base->unknown84 & 0x1f));
-    unknownb60.unknown00[base->unknown84 >> 5] &= ~(1 << (base->unknown84 & 0x1f));
+    m_drResBitTbl.unknown00[base->unknown84 >> 5] &= ~(1 << (base->unknown84 & 0x1f));
     unknownc40 -= base->unknownb4;
-    releaseBaseMapSeamMat(base->unknown68);
+    releaseBaseMapSeamMat(base->m_mdoWrkMatRes);
     base->releaseCache(this);
     unknownc00--;
   }
   unknown290.unknown002(base);
   if (mem != nullptr) {
-    base->unknown158 = nullptr;
-    unknown6e0.releaseFreeObj(mem);
+    base->m_drResMdoSeamMemObj = nullptr;
+    m_drResMdoSeamMemMan.releaseFreeObj(mem);
   }
 }
 
@@ -109,7 +109,7 @@ void DrMdoCtlSeamBaseMap::createBaseZPrePassDisplayList() {
     return;
   }
   for (DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00; base != nullptr; base = base->unknown08) {
-    unknown30 = base->unknown68;
+    unknown30 = base->m_mdoWrkMatRes;
     if (unknown30 == nullptr || !(base->unknowna0 & 8)) {
       continue;
     }
@@ -117,7 +117,7 @@ void DrMdoCtlSeamBaseMap::createBaseZPrePassDisplayList() {
     if (count == 0) {
       continue;
     }
-    DrResMdoAlpTbl *alpTbl = base->unknown168;
+    DrResMdoAlpTbl *alpTbl = base->m_drResMdoAlpTbl;
     base->beginRender();
     changeSeamMatInfo();
     for (s32 i = 0; i < count; i++) {
@@ -153,7 +153,7 @@ void DrMdoCtlSeamBaseMap::createBaseThicknesPassDisplayList(bool isFirst) {
     return;
   }
   for (DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00; base != nullptr; base = base->unknown08) {
-    unknown30 = base->unknown68;
+    unknown30 = base->m_mdoWrkMatRes;
     if (unknown30 == nullptr || !(base->unknowna0 & 8)) {
       continue;
     }
@@ -161,7 +161,7 @@ void DrMdoCtlSeamBaseMap::createBaseThicknesPassDisplayList(bool isFirst) {
     if (count == 0) {
       continue;
     }
-    DrResMdoAlpTbl *alpTbl = base->unknown168;
+    DrResMdoAlpTbl *alpTbl = base->m_drResMdoAlpTbl;
     base->beginRender();
     changeSeamMatInfo();
     // The game reads the material count once before the loop (0x710081e344: ldrsw x8,[x8,#0x30]), so the kind offset is a 64-bit product.
@@ -192,7 +192,7 @@ void DrMdoCtlSeamBaseMap::updateBaseMap() {
 }
 
 void DrMdoCtlSeamBaseMap::readBaseMapCheck() {
-  if (unknownd30.unknown40 == 0 && (unknownc7c & 0x40) == 0) {
+  if (m_drResMdoSeamParmRead.unknown40 == 0 && (unknownc7c & 0x40) == 0) {
     if ((unknownc7c & 0x80) == 0) {
       DrResMdoSeamWrkBase::SEAM_BASEMAP_READ_CHECK = m_drMan->unknown1d00 + 100.0f;
     } else {
@@ -205,11 +205,11 @@ void DrMdoCtlSeamBaseMap::readBaseMapCheck() {
   }
   DrResMdoSeamWrkBase::SEAM_BASEMAP_VERTEX_CHECK = m_drMan->unknown1d04;
   DrResMdoSeamWrkBase::SEAM_BASEMAP_VERTEX_MIDDLE = m_drMan->unknown1d08;
-  DrCalcViewWork *view = m_drMan->unknown580->unknown10;
+  DrCalcViewWork *view = m_drMan->m_drCalcMan->m_drCalcViewWork;
   bool isOpen = ((unknownc7c >> 12) & 1) != 0 || unknowncc8;
   DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00;
   while (base != nullptr) {
-    bool isRelease = base->update(view, &unknownd30, isOpen, unknownc7c);
+    bool isRelease = base->update(view, &m_drResMdoSeamParmRead, isOpen, unknownc7c);
     if (base->unknowna0 & 0x80) {
       changeMemBaseMapParts(base);
     }
@@ -243,7 +243,7 @@ bool DrMdoCtlSeamBaseMap::readBaseModelCheck(bool &isRead, const mm::Vec3 &posit
     if (isFirst && (((unknownc7c & 0x10) != 0 && (entry->unknown28 & 8) != 0) || ((unknownc7c & 0x100) != 0 && (entry->unknown28 & 4) != 0))) {
       continue;
     }
-    unknownd30.setStockBaseMap(i);
+    m_drResMdoSeamParmRead.setStockBaseMap(i);
     isEmpty = false;
     isRead = true;
   }
@@ -253,7 +253,7 @@ bool DrMdoCtlSeamBaseMap::readBaseModelCheck(bool &isRead, const mm::Vec3 &posit
 void DrMdoCtlSeamBaseMap::callShadowCacheBaseUpdate(u64 flags) {
   unknownc90 &= ~flags;
   for (DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00; base != nullptr; base = base->unknown08) {
-    if (base->unknown68 != nullptr) {
+    if (base->m_mdoWrkMatRes != nullptr) {
       base->callShadowCacheBaseUpdate(flags);
     }
   }
@@ -263,13 +263,13 @@ void DrMdoCtlSeamBaseMap::callShadowMapRenderSeamBaseMap(DrPixlShadowObj *shadow
   if (m_drMan->unknown1d69) {
     return;
   }
-  DrCalcViewWork *view = m_drMan->unknown580->unknown10;
+  DrCalcViewWork *view = m_drMan->m_drCalcMan->m_drCalcViewWork;
   grlib::CGLibEtcUniformBlock uniform;
   grlib::ShdMat44TransposeMat44(reinterpret_cast<f32 *>(uniform.getBuff()), view->unknown40);
   uniform.updateData(sizeof(mm::Mat44));
   unknown170 = &uniform;
   for (DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00; base != nullptr; base = base->unknown08) {
-    unknown30 = base->unknown68;
+    unknown30 = base->m_mdoWrkMatRes;
     if (unknown30 != nullptr && (base->unknowna0 & 8) != 0) {
       changeSeamMatInfo();
       base->seachDefShadowBaseMapRender(shadow, this);
@@ -283,7 +283,7 @@ void DrMdoCtlSeamBaseMap::callBaseShadowCacheRender(DrPixlShadowCacheObj &cache)
   }
   bool isRetry = false;
   for (DrResMdoSeamWrkBase *base = unknown290.unknown10.unknown00; base != nullptr; base = base->unknown08) {
-    unknown30 = base->unknown68;
+    unknown30 = base->m_mdoWrkMatRes;
     if (unknown30 != nullptr) {
       if (base->unknowna0 & 8) {
         changeSeamMatInfo();
@@ -305,12 +305,14 @@ void DrMdoCtlSeamBaseMap::checkBaseMapMode() {
   const unknown700 *entry = reinterpret_cast<const unknown700 *>(reinterpret_cast<const u8 *>(unknown1a8) + unknown1a8->unknown1c);
   for (s32 i = 0; i < unknown1a8->m_seamBaseMdlMax; i++, entry++) {
     if (entry->unknown28 & 1) {
-      if (entry->unknown00[0] >= unknownd30.unknown50.x && entry->unknown0c[0] <= unknownd30.unknown50.x && entry->unknown00[2] >= unknownd30.unknown50.z &&
-          entry->unknown0c[2] <= unknownd30.unknown50.z && entry->unknown00[1] + 500.0f >= unknownd30.unknown50.y && entry->unknown0c[1] - 400.0f <= unknownd30.unknown50.y) {
+      if (entry->unknown00[0] >= m_drResMdoSeamParmRead.unknown50.x && entry->unknown0c[0] <= m_drResMdoSeamParmRead.unknown50.x && entry->unknown00[2] >= m_drResMdoSeamParmRead.unknown50.z &&
+          entry->unknown0c[2] <= m_drResMdoSeamParmRead.unknown50.z && entry->unknown00[1] + 500.0f >= m_drResMdoSeamParmRead.unknown50.y &&
+          entry->unknown0c[1] - 400.0f <= m_drResMdoSeamParmRead.unknown50.y) {
         unknownc7c |= 0x80;
         unknownc22 = 0;
-        if (entry->unknown00[0] - unknownd30.unknown50.x >= 160.0f && entry->unknown00[2] - unknownd30.unknown50.z >= 160.0f && unknownd30.unknown50.x - entry->unknown0c[0] >= 160.0f &&
-            unknownd30.unknown50.z - entry->unknown0c[2] >= 160.0f && entry->unknown00[1] + 350.0f >= unknownd30.unknown50.y) {
+        if (entry->unknown00[0] - m_drResMdoSeamParmRead.unknown50.x >= 160.0f && entry->unknown00[2] - m_drResMdoSeamParmRead.unknown50.z >= 160.0f &&
+            m_drResMdoSeamParmRead.unknown50.x - entry->unknown0c[0] >= 160.0f && m_drResMdoSeamParmRead.unknown50.z - entry->unknown0c[2] >= 160.0f &&
+            entry->unknown00[1] + 350.0f >= m_drResMdoSeamParmRead.unknown50.y) {
           unknownc7c |= 0x100;
           unknownc24 = 0;
         }
@@ -322,9 +324,9 @@ void DrMdoCtlSeamBaseMap::checkBaseMapMode() {
 
 void DrMdoCtlSeamBaseMap::basemapReadCheck() {
   bool isRead = false;
-  if (unknownc00 < 5 && (unknownc7c & 0x1000) == 0 && readBaseModelCheck(isRead, unknownd30.unknown50, true) && unknownd30.unknown40 > 0) {
-    for (s32 i = 0; i < unknownd30.unknown40; i++) {
-      if (!readBaseModelCheck(isRead, unknownd30.unknown10[i], false)) {
+  if (unknownc00 < 5 && (unknownc7c & 0x1000) == 0 && readBaseModelCheck(isRead, m_drResMdoSeamParmRead.unknown50, true) && m_drResMdoSeamParmRead.unknown40 > 0) {
+    for (s32 i = 0; i < m_drResMdoSeamParmRead.unknown40; i++) {
+      if (!readBaseModelCheck(isRead, m_drResMdoSeamParmRead.unknown10[i], false)) {
         return;
       }
     }

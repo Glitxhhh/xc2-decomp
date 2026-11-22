@@ -110,7 +110,7 @@ void GfComEnvSensor::flushEnv(const fw::Transform &transform) {
 
 void GfComEnvSensor::resolveTransform() {
   GfComTransform *transform = mm::mtl::dynamicCast<GfComTransform>(unknown08->unknown38[GfComTransform::COMPONENT_INDEX]);
-  if (transform->unknown10->unknowna8 != nullptr) {
+  if (transform->unknown10->m_referenceFrame != nullptr) {
     transform->unknown10->invalidateWorld();
   }
   transform->unknown10->syncWorldTransform();

@@ -22,7 +22,7 @@ DrShdMdoDecRes::~DrShdMdoDecRes() { releaseObj(); }
 void DrShdMdoDecRes::releaseObj() {
   CGLibDecShader::release();
   if (m_fetch != nullptr) {
-    DrMan::getIns()->unknown80->unknown10->releaseFetchObj(m_fetch);
+    DrMan::getIns()->m_drShdMan->m_drShdFetchMan->releaseFetchObj(m_fetch);
     m_fetch = nullptr;
   }
 }

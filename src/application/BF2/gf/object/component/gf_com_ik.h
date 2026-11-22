@@ -158,7 +158,7 @@ public:
   void *unknown68;                      // Inferred role: viewer; original member name unknown.
 };
 
-static_assert(offsetof(GfComIK::FootGround, unknown08) == 0x08, "");
+static_assert(offsetof(GfComIK::FootGround, m_planeRayCaster) == 0x08, "");
 static_assert(offsetof(GfComIK::FootGround, m_envProperty) == 0x18, "");
 static_assert(offsetof(GfComIK::FootGround, unknown20) == 0x20, "");
 static_assert(sizeof(GfComIK::FootGround) == 0x28, "");

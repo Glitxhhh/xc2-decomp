@@ -194,7 +194,7 @@ void ScnObjAccEtcParams::setDrMdl(ScnObjModel *model) {
   if (drMdl->unknown1c != unknown037_0) {
     m_etcPamObj = nullptr;
   } else {
-    m_etcPamObj = static_cast<DrMdoCtlNom *>(drMdl)->unknown200;
+    m_etcPamObj = static_cast<DrMdoCtlNom *>(drMdl)->m_drResEtcPamObj;
   }
 }
 
@@ -230,28 +230,28 @@ f32 ScnObjAccEtcParams::getParams(u32 index) const {
   if (m_etcPamObj == nullptr || index >= m_etcPamObj->unknown18) {
     return 0.0f;
   }
-  return m_etcPamObj->unknown10[index].getValParams();
+  return m_etcPamObj->m_drResEtcParams[index].getValParams();
 }
 
 void ScnObjAccEtcParams::setParams(u32 index, f32 value) {
   if (m_etcPamObj == nullptr || index >= m_etcPamObj->unknown18) {
     return;
   }
-  m_etcPamObj->unknown10[index].setParams(value);
+  m_etcPamObj->m_drResEtcParams[index].setParams(value);
 }
 
 void ScnObjAccEtcParams::setPreParams(u32 index, f32 value) {
   if (m_etcPamObj == nullptr || index >= m_etcPamObj->unknown18) {
     return;
   }
-  m_etcPamObj->unknown10[index].setPreParams(value);
+  m_etcPamObj->m_drResEtcParams[index].setPreParams(value);
 }
 
 void ScnObjAccEtcParams::setInitParams(u32 index, f32 value) {
   if (m_etcPamObj == nullptr || index >= m_etcPamObj->unknown18) {
     return;
   }
-  m_etcPamObj->unknown10[index].setInitParams(value);
+  m_etcPamObj->m_drResEtcParams[index].setInitParams(value);
 }
 
 void ScnObjAccEtcParams::setRimBloom(bool isEnable) {
@@ -288,7 +288,7 @@ void ScnObjAccResSubMesh::setDrMdl(ScnObjModel *model) {
   }
   MdoWrkMatRes *matRes = drMdl->unknown30;
   if (matRes != nullptr) {
-    m_meshObj = static_cast<DrMdoCtlNom *>(drMdl)->unknown1e8;
+    m_meshObj = static_cast<DrMdoCtlNom *>(drMdl)->m_drResMdoMeshObj;
     const unknown022 *header = matRes->unknown20;
     m_partsInfos = reinterpret_cast<const unknown020 *>(reinterpret_cast<const u8 *>(header) + header->unknown64);
   }
@@ -338,7 +338,7 @@ ScnObjAccResDecShader::ScnObjAccResDecShader(ScnObjModel *model) : m_shdObj(null
 void ScnObjAccResDecShader::setDrMdl(ScnObjModel *model) {
   DrMdlObj *drMdl = static_cast<ScnObjModelDrSys *>(model)->unknown3d8;
   if (drMdl->unknown1c == unknown037_0) {
-    m_shdObj = static_cast<DrMdoCtlNom *>(drMdl)->unknown1d0;
+    m_shdObj = static_cast<DrMdoCtlNom *>(drMdl)->m_drResMdoShdObj;
   }
 }
 
@@ -458,7 +458,7 @@ void ScnObjAccResAvatar::setAvatarTexture(ScnObjModelDrTexutre *texture, u32 ind
 
 void ScnObjAccResAvatar::resetAvatarTexture(u32 index) {
   unknown023 *avatar = m_avatar;
-  avatar->unknown08[index] = DrMan::getIns()->unknown78->getDammyTexObj();
+  avatar->unknown08[index] = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
   avatar->unknown00 &= ~(0x10000 << index);
   avatar->unknown18[index] = nullptr;
   m_drMdl->setCreateDisplayList();
@@ -472,7 +472,7 @@ void ScnObjAccResAvatar::setAvatarEyeTexture(ScnObjModelDrTexutre *texture) {
 
 void ScnObjAccResAvatar::resetAvatarEyeTexture() {
   unknown023 *avatar = m_avatar;
-  avatar->unknown28 = DrMan::getIns()->unknown78->getDammyTexObj();
+  avatar->unknown28 = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
   avatar->unknown00 &= ~0x40000;
   avatar->unknown30 = nullptr;
   m_drMdl->setCreateDisplayList();
@@ -482,10 +482,10 @@ void ScnObjAccResAvatar::resetAvatarTexture() {
   unknown023 *avatar = m_avatar;
   for (u32 i = 0; i < 2; i++) {
     avatar->unknown00 &= ~(0x10000 << i);
-    avatar->unknown08[i] = DrMan::getIns()->unknown78->getDammyTexObj();
+    avatar->unknown08[i] = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
     avatar->unknown18[i] = nullptr;
   }
-  avatar->unknown28 = DrMan::getIns()->unknown78->getDammyTexObj();
+  avatar->unknown28 = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
   avatar->unknown00 &= ~0x40000;
   avatar->unknown30 = nullptr;
   m_drMdl->setCreateDisplayList();
@@ -719,7 +719,7 @@ ScnObjAccMdlParticle::ScnObjAccMdlParticle(ScnObjModel *model) {
   if (drMdl->unknown1c != unknown037_0) {
     m_vtxMeshObj = nullptr;
   } else {
-    m_vtxMeshObj = static_cast<DrMdoCtlNom *>(drMdl)->unknown1d8;
+    m_vtxMeshObj = static_cast<DrMdoCtlNom *>(drMdl)->m_drResMdoVtxMeshObj;
   }
 }
 
@@ -834,9 +834,9 @@ ScnObjAccSeamPos::ScnObjAccSeamPos(ScnObjModel *model) : m_instAnmObj(nullptr) {
 void ScnObjAccSeamPos::setDrMdl(ScnObjModel *model) {
   DrMdlObj *drMdl = static_cast<ScnObjModelDrSys *>(model)->unknown3d8;
   if (drMdl->unknown1c == unknown037_3) {
-    m_instAnmObj = &static_cast<DrMdoCtlSeam *>(drMdl)->unknown698;
+    m_instAnmObj = &static_cast<DrMdoCtlSeam *>(drMdl)->m_drResMdoInstAnmObj;
   } else if (drMdl->unknown1c == unknown037_1) {
-    m_instAnmObj = &static_cast<DrMdoCtlPos *>(drMdl)->unknown1e8;
+    m_instAnmObj = &static_cast<DrMdoCtlPos *>(drMdl)->m_drResMdoInstAnmObj;
   } else {
     m_instAnmObj = nullptr;
   }
@@ -876,19 +876,19 @@ void ScnObjAccPartsPos::setMatrix(const mm::Mat44 &matrix) { m_partsObj->setMatr
 
 void ScnObjAccPartsPos::getMatrix(mm::Mat44 &matrix) { m_partsObj->getMatrix(matrix); }
 
-const char *ScnObjAccPartsPos::getName() const { return m_partsObj->unknown10 + m_partsObj->unknown18->unknown00; }
+const char *ScnObjAccPartsPos::getName() const { return m_partsObj->unknown10 + m_partsObj->m_mdsInstObjPosData->unknown00; }
 
-u32 ScnObjAccPartsPos::getID() const { return m_partsObj->unknown18->m_iD; }
+u32 ScnObjAccPartsPos::getID() const { return m_partsObj->m_mdsInstObjPosData->m_iD; }
 
-bool ScnObjAccPartsPos::isPosAnm() const { return m_partsObj->unknown18->isPosAnm; }
+bool ScnObjAccPartsPos::isPosAnm() const { return m_partsObj->m_mdsInstObjPosData->isPosAnm; }
 
-bool ScnObjAccPartsPos::isNodeAnm() const { return m_partsObj->unknown18->isNodeAnm; }
+bool ScnObjAccPartsPos::isNodeAnm() const { return m_partsObj->m_mdsInstObjPosData->isNodeAnm; }
 
-bool ScnObjAccPartsPos::isPosMatrix() const { return m_partsObj->unknown18->isPosAnm || m_partsObj->unknown18->isPosMatrix; }
+bool ScnObjAccPartsPos::isPosMatrix() const { return m_partsObj->m_mdsInstObjPosData->isPosAnm || m_partsObj->m_mdsInstObjPosData->isPosMatrix; }
 
-bool ScnObjAccPartsPos::isRandomStart() const { return m_partsObj->unknown18->isRandomStart; }
+bool ScnObjAccPartsPos::isRandomStart() const { return m_partsObj->m_mdsInstObjPosData->isRandomStart; }
 
-u32 ScnObjAccPartsPos::isSwitch() const { return m_partsObj->unknown18->isSwitch; }
+u32 ScnObjAccPartsPos::isSwitch() const { return m_partsObj->m_mdsInstObjPosData->isSwitch; }
 
 bool ScnObjAccPartsPos::isColiOff() const { return m_partsObj->unknown08.isColiOff; }
 

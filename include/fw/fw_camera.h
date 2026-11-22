@@ -110,11 +110,11 @@ public:
   public:
     virtual void onWkStandbyLogout();
 
-    CameraManager *unknown08; // Inferred role: owner; original member name unknown.
+    CameraManager *m_cameraManager; // Inferred role: owner; original member name unknown.
   };
 
   CameraManager(ml::Scn *scn) : unknown368(nullptr) {
-    unknown370.unknown08 = this;
+    m_listener.m_cameraManager = this;
     for (u32 i = 0; i < LAYER_UNKNOWN_4; i++) {
       unknown20[i].setup(scn, i);
     }
@@ -138,13 +138,13 @@ public:
   CameraLayer unknown20[LAYER_UNKNOWN_4];         // Inferred role: layers; original member name unknown.
   mm::mtl::IntrusivePtr<CameraTarget> unknown360; // Inferred role: target; original member name unknown.
   void *unknown368;                               // Inferred role: reset target; original member name unknown.
-  Listener unknown370;                            // Inferred role: standby listener; original member name unknown.
+  Listener m_listener;                            // Inferred role: standby listener; original member name unknown.
 };
 
 static_assert(offsetof(CameraManager, unknown20) == 0x20, "");
 static_assert(offsetof(CameraManager, unknown360) == 0x360, "");
 static_assert(offsetof(CameraManager, unknown368) == 0x368, "");
-static_assert(offsetof(CameraManager, unknown370) == 0x370, "");
+static_assert(offsetof(CameraManager, m_listener) == 0x370, "");
 static_assert(sizeof(CameraManager) == 0x380, "");
 
 } // namespace fw

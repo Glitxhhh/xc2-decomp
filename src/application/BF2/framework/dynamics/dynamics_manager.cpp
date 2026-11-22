@@ -58,7 +58,7 @@ void DyanmicsManager::updateDynamics(const UpdateInfo &info, u32 layers) {
       mm::mtl::IntrusiveList<DynamicsUpdaterInterface>::iterator it = list.begin();
       for (int count = unknown18[layer].unknown18.size(); count != 0; count--) {
         DynamicsUpdateJob job(1);
-        job.unknown20 = &info;
+        job.m_updateInfo = &info;
         job.unknown10[0] = &*it;
         ++it;
         unknown618->unknown001(job);

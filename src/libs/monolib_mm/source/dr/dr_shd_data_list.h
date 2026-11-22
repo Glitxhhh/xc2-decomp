@@ -91,8 +91,8 @@ public:
 
   static u8 s_etcNextVertex[];
 
-  FileResTh *unknown00;                              // Inferred role: shader file resource; original member name unknown.
-  DrMan *unknown08;                                  // Inferred role: dr man; original member name unknown.
+  FileResTh *m_fileResTh;                            // Inferred role: shader file resource; original member name unknown.
+  DrMan *m_drMan;                                    // Inferred role: dr man; original member name unknown.
   void *unknown10;                                   // Inferred role: shader object work memory; original member name unknown.
   DrShdDataObj *unknown18[10];                       // Inferred role: shd objs; original member name unknown.
   DrResFetch m_fetchShader[91];                      // Inferred role: fetches; named after the game accessor ml::DrShdDataList::getFetchShader.
@@ -112,7 +112,7 @@ public:
   DrResShdObjMot *m_objMotBlurObj;                                  // Inferred role: object mot blur objs; named after the game accessor ml::DrShdDataList::getObjMotBlurObj.
 };
 
-static_assert(offsetof(DrShdDataList, unknown08) == 0x008, "");
+static_assert(offsetof(DrShdDataList, m_drMan) == 0x008, "");
 static_assert(offsetof(DrShdDataList, unknown18) == 0x018, "");
 static_assert(offsetof(DrShdDataList, m_fetchShader) == 0x068, "");
 static_assert(offsetof(DrShdDataList, m_mpfObj) == 0x620, "");

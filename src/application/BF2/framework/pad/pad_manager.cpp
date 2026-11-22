@@ -282,7 +282,7 @@ bool PadManager::isDebugDraw() {
 void PadManager::setConfigData(int padNo, const PadConfigData &data) {
   PadManager *manager = get();
   if (manager != nullptr) {
-    manager->unknown3200[padNo] = data;
+    manager->m_padConfigData[padNo] = data;
   }
 }
 
@@ -296,7 +296,7 @@ const PadConfigData &PadManager::getConfigData(int padNo) {
     return identity;
   }
 
-  return manager->unknown3200[padNo];
+  return manager->m_padConfigData[padNo];
 }
 
 namespace detail {

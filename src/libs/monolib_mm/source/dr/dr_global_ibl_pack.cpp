@@ -31,13 +31,13 @@ DrGlobalIBLPack::~DrGlobalIBLPack() {
     }
   }
   unknown28.destroy();
-  unknown60.release();
+  m_cGLibVtlMemPool.release();
 }
 
 void DrGlobalIBLPack::release() {
   DrMan *man = DrMan::getIns();
   for (u32 i = 0; i < unknown28.size(); i++) {
-    man->unknown588->unknowne8->unknown58->removeObj(unknown28[i], unknown18);
+    man->unknown588->m_drShdLgtMan->m_drShdLgtGlobalIBL->removeObj(unknown28[i], unknown18);
   }
 }
 
@@ -46,11 +46,11 @@ void DrGlobalIBLPack::update() {
   if ((unknown50 ^ unknown54) & FLAG_UNKNOWN_0) {
     if (unknown50 & FLAG_UNKNOWN_0) {
       for (u32 i = 0; i < unknown28.size(); i++) {
-        man->unknown588->unknowne8->unknown58->removeObj(unknown28[i], unknown18);
+        man->unknown588->m_drShdLgtMan->m_drShdLgtGlobalIBL->removeObj(unknown28[i], unknown18);
       }
     } else {
       for (u32 i = 0; i < unknown28.size(); i++) {
-        man->unknown588->unknowne8->unknown58->addObj(unknown28[i], unknown18);
+        man->unknown588->m_drShdLgtMan->m_drShdLgtGlobalIBL->addObj(unknown28[i], unknown18);
       }
     }
   }

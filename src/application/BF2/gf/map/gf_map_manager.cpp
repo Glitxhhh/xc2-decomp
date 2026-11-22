@@ -260,7 +260,7 @@ void GfMapManager::createWind() {
 
   fw::WindManager *windManager = fw::WindManager::get();
   if (windManager != nullptr) {
-    windManager->buildWorld(&unknown38->unknown10);
+    windManager->buildWorld(&unknown38->m_resWind);
     windManager->setGlobalWind(0);
   }
 }

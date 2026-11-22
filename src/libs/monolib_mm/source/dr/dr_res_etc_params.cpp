@@ -46,7 +46,7 @@ f32 DrResEtcParams::getValParams() const {
 // The stores are in the order that matches (decision 2026-11-13, ruling 4): the game stores unknown10 and unknown00 as two separate 64-bit zeros (0x710086fa70, 0x710086fa74) and unknown18/unknown1c
 // as one `stp wzr, w8` (0x710086fa78); in declaration order clang merges unknown10, unknown18 and unknown1c into one `stp xzr, x8`.
 DrResEtcPamObj::DrResEtcPamObj() {
-  unknown10 = nullptr;
+  m_drResEtcParams = nullptr;
   unknown18 = 0;
   unknown00 = nullptr;
   unknown1c = 1;
@@ -63,15 +63,15 @@ int DrResEtcPamObj::setup(const u8 *data, u8 *work) {
   const unknown002 *header = reinterpret_cast<const unknown002 *>(data + reinterpret_cast<const unknown001 *>(data)->unknown84);
   unknown00 = header;
   unknown08 = reinterpret_cast<const unknown040 *>(reinterpret_cast<const u8 *>(header) + header->unknown00);
-  unknown10 = reinterpret_cast<DrResEtcParams *>(work);
+  m_drResEtcParams = reinterpret_cast<DrResEtcParams *>(work);
   unknown18 = header->unknown04;
   for (u32 i = 0; i < unknown18; i++) {
-    new (&unknown10[i]) DrResEtcParams();
+    new (&m_drResEtcParams[i]) DrResEtcParams();
   }
   if (unknown00->unknown10 != 0) {
     const f32 *values = reinterpret_cast<const f32 *>(reinterpret_cast<const u8 *>(header) + unknown00->unknown10);
     for (u32 i = 0; i < unknown18; i++) {
-      unknown10[i].setInitParams(values[i]);
+      m_drResEtcParams[i].setInitParams(values[i]);
     }
   }
   return unknown00->unknown04 * sizeof(DrResEtcParams) + sizeof(DrResEtcPamObj);
@@ -79,7 +79,7 @@ int DrResEtcPamObj::setup(const u8 *data, u8 *work) {
 
 void DrResEtcPamObj::update() {
   for (u32 i = 0; i < unknown18; i++) {
-    unknown10[i].update();
+    m_drResEtcParams[i].update();
   }
 }
 
@@ -102,7 +102,7 @@ void DrResEtcPamObj::mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *cal
   if (param->getParams() <= 0.5f) {
     value = 0.0f;
   }
-  DrResMdoMeshParts *parts = arg.unknown00->getParts(callback->unknown04);
+  DrResMdoMeshParts *parts = arg.m_drResMdoMeshObj->getParts(callback->unknown04);
   parts->unknown34 = value;
   parts->unknown2c[1] = value;
   parts->unknown2c[0] = value;
@@ -112,18 +112,18 @@ void DrResEtcPamObj::mdonode_etcpam_etcmesh_disp(const MdsEtcParamsCallBack *cal
 void DrResEtcPamObj::mdonode_etcpam_volfadeanm(const MdsEtcParamsCallBack *callback, DrResEtcParams *param, wrkCallbackArg &arg) {
   if ((unknown1c & 1) != 0) {
     f32 value = param->getParams();
-    u32 index = arg.unknown00->getParts(callback->unknown04)->m_extVolumeFadeEffect * 3 + 2;
+    u32 index = arg.m_drResMdoMeshObj->getParts(callback->unknown04)->m_extVolumeFadeEffect * 3 + 2;
     if (value <= 0.01f) {
-      arg.unknown08[index].unknowna4 = arg.unknown08[index].unknownd0;
+      arg.m_mdoWrkVanishEffect[index].unknowna4 = arg.m_mdoWrkVanishEffect[index].unknownd0;
     } else if (value > 1.0f) {
-      arg.unknown08[index].unknowna4 = arg.unknown08[index].unknownd0 + 1.0f;
+      arg.m_mdoWrkVanishEffect[index].unknowna4 = arg.m_mdoWrkVanishEffect[index].unknownd0 + 1.0f;
     } else {
-      arg.unknown08[index].unknowna4 = value + arg.unknown08[index].unknownd0;
+      arg.m_mdoWrkVanishEffect[index].unknowna4 = value + arg.m_mdoWrkVanishEffect[index].unknownd0;
     }
-    if (arg.unknown08[index].unknowna4 > 1.0f) {
-      arg.unknown08[index].unknowna4 = 1.0f;
-    } else if (arg.unknown08[index].unknowna4 < 0.0f) {
-      arg.unknown08[index].unknowna4 = 0.0f;
+    if (arg.m_mdoWrkVanishEffect[index].unknowna4 > 1.0f) {
+      arg.m_mdoWrkVanishEffect[index].unknowna4 = 1.0f;
+    } else if (arg.m_mdoWrkVanishEffect[index].unknowna4 < 0.0f) {
+      arg.m_mdoWrkVanishEffect[index].unknowna4 = 0.0f;
     }
   }
 }

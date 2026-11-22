@@ -268,11 +268,11 @@ void GfComModel::cleanup() {
     }
     unknown1140.destroy();
   }
-  if (m_animPoseModifier.unknown18 != nullptr && m_animPoseModifier.unknown20 != nullptr) {
+  if (m_animPoseModifier.unknown18 != nullptr && m_animPoseModifier.m_modelObject != nullptr) {
     m_animPoseModifier.unbind();
     fw::AnimationManager::get()->removePoseModifier(getLayer(), m_animPoseModifier);
   }
-  if (m_animVolumeFadeModifier.unknown18 != nullptr) {
+  if (m_animVolumeFadeModifier.m_modelObject != nullptr) {
     m_animVolumeFadeModifier.unknown50.clear();
     m_animVolumeFadeModifier.unbind();
     fw::AnimationManager::get()->removeAfterModifier(getLayer(), m_animVolumeFadeModifier);

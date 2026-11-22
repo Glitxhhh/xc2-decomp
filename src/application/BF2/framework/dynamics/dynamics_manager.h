@@ -53,12 +53,12 @@ public:
 
   DynamicsUpdaterInterface *unknown10[1]; // Inferred role: updaters; original member name unknown.
   u32 unknown18;                          // Inferred role: updater count; original member name unknown.
-  const UpdateInfo *unknown20;            // Inferred role: update info; original member name unknown.
+  const UpdateInfo *m_updateInfo;         // Inferred role: update info; original member name unknown.
 };
 
 static_assert(offsetof(DynamicsUpdateJob, unknown10) == 0x10, "");
 static_assert(offsetof(DynamicsUpdateJob, unknown18) == 0x18, "");
-static_assert(offsetof(DynamicsUpdateJob, unknown20) == 0x20, "");
+static_assert(offsetof(DynamicsUpdateJob, m_updateInfo) == 0x20, "");
 static_assert(sizeof(DynamicsUpdateJob) == 0x28, "");
 
 struct DynamicsGroup {

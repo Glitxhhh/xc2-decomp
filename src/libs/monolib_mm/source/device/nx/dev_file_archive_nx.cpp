@@ -21,7 +21,7 @@
 namespace ml {
 
 void DevFileArchiveNx::Param::finalize() {
-  CS cs(unknown1800);
+  CS cs(m_criticalSection);
   while (!unknown29b8.empty()) {
     unknown002 *file = unknown29b8.pop_back();
     nn::fs::CloseFile(file->unknown001);
@@ -30,7 +30,7 @@ void DevFileArchiveNx::Param::finalize() {
 }
 
 DevFileArchiveNx::Param::unknown002 *DevFileArchiveNx::Param::findThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path) {
-  CS cs(unknown1800);
+  CS cs(m_criticalSection);
   for (unknown002 *file : unknown29b8) {
     if (file->unknown00 == threadId && strcmp(file->unknown002.c_str(), path.c_str()) == 0) {
       return file;
@@ -40,7 +40,7 @@ DevFileArchiveNx::Param::unknown002 *DevFileArchiveNx::Param::findThreadFilehand
 }
 
 nn::fs::FileHandle *DevFileArchiveNx::Param::addThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path) {
-  CS cs(unknown1800);
+  CS cs(m_criticalSection);
   for (unknown002 *opened : unknown29b8) {
     if (opened->unknown00 == threadId && strcmp(opened->unknown002.c_str(), path.c_str()) == 0) {
       return &opened->unknown001;
@@ -58,7 +58,7 @@ nn::fs::FileHandle *DevFileArchiveNx::Param::addThreadFilehandle(u64 threadId, c
 }
 
 void DevFileArchiveNx::Param::removeThreadFilehandle(u64 threadId, const mm::mtl::FixStr<256> &path) {
-  CS cs(unknown1800);
+  CS cs(m_criticalSection);
   for (unknown003::iterator it = unknown29b8.begin(); it != unknown29b8.end(); ++it) {
     if ((*it)->unknown00 == threadId && strcmp((*it)->unknown002.c_str(), path.c_str()) == 0) {
       unknown29b8.erase(it);
@@ -67,7 +67,7 @@ void DevFileArchiveNx::Param::removeThreadFilehandle(u64 threadId, const mm::mtl
   }
 }
 
-DevFileArchiveNx::DevFileArchiveNx(mtl::ALLOC_HANDLE handle) : unknown14(handle), unknown18(0), unknown20(new (handle) Param()) {
+DevFileArchiveNx::DevFileArchiveNx(mtl::ALLOC_HANDLE handle) : m_ALLOC_HANDLE(handle), unknown18(0), unknown20(new (handle) Param()) {
   unknown20->unknown17fc = 0;
   unknown20->unknown17f8 = false;
 }
@@ -79,8 +79,8 @@ bool DevFileArchiveNx::initialize() {
     for (size_t i = 1; i < unknown20->unknown0000.size(); i++) {
       Thread *thread = Thread::create("rfLoadThread", false, thFileLoader, &unknown20->unknown0000[i], 0x10000, WorkCpu::getSubWorkCPUID(), -2);
       if (thread != nullptr) {
-        unknown20->unknown0000[i].unknown1a0 = this;
-        unknown20->unknown0000[i].unknown198 = thread;
+        unknown20->unknown0000[i].m_devFileAccessor = this;
+        unknown20->unknown0000[i].m_thread = thread;
         thread->resume();
       }
     }
@@ -93,8 +93,8 @@ bool DevFileArchiveNx::finalize() {
   if (unknown18 == 1) {
     unknown20->unknown17f8 = true;
     for (size_t i = 1; i < unknown20->unknown0000.size(); i++) {
-      if (unknown20->unknown0000[i].unknown198 != nullptr) {
-        unknown20->unknown0000[i].unknown198->setSignalEvent(true);
+      if (unknown20->unknown0000[i].m_thread != nullptr) {
+        unknown20->unknown0000[i].m_thread->setSignalEvent(true);
       }
     }
     unknown18 = 2;
@@ -104,8 +104,8 @@ bool DevFileArchiveNx::finalize() {
     }
   } else if (unknown18 == 3) {
     for (size_t i = 1; i < unknown20->unknown0000.size(); i++) {
-      if (unknown20->unknown0000[i].unknown198 != nullptr) {
-        unknown20->unknown0000[i].unknown198->release();
+      if (unknown20->unknown0000[i].m_thread != nullptr) {
+        unknown20->unknown0000[i].m_thread->release();
       }
     }
     unknown18 = 4;
@@ -118,7 +118,7 @@ bool DevFileArchiveNx::finalize() {
 // adds unknown190 to the read offset.
 u32 DevFileArchiveNx::thFileLoader(void *argument) {
   OpenReadParam *channel = static_cast<OpenReadParam *>(argument);
-  DevFileArchiveNx *accessor = static_cast<DevFileArchiveNx *>(channel->unknown1a0);
+  DevFileArchiveNx *accessor = static_cast<DevFileArchiveNx *>(channel->m_devFileAccessor);
   accessor->unknown20->unknown17fc++;
   while (!DevFileTh::isInitialized()) {
     nn::os::SleepThread(nn::TimeSpan::FromNanoSeconds(100000000));
@@ -130,9 +130,9 @@ u32 DevFileArchiveNx::thFileLoader(void *argument) {
 
 void DevFileArchiveNx::thUpdate(void *argument) {
   OpenReadParam *channel = static_cast<OpenReadParam *>(argument);
-  DevFileArchiveNx *accessor = static_cast<DevFileArchiveNx *>(channel->unknown1a0);
+  DevFileArchiveNx *accessor = static_cast<DevFileArchiveNx *>(channel->m_devFileAccessor);
   while (!accessor->unknown20->unknown17f8) {
-    channel->unknown198->waitSignalEvent();
+    channel->m_thread->waitSignalEvent();
     if (accessor->unknown20->unknown17f8) {
       break;
     }
@@ -143,20 +143,20 @@ void DevFileArchiveNx::thUpdate(void *argument) {
     bool reading = false;
     {
       mm::threading::ReadLockGuard guard(channel->unknown1a8);
-      buffer = channel->unknown120.unknown40;
-      offset = channel->unknown120.unknown4c;
-      size = channel->unknown120.unknown50;
+      buffer = channel->m_devFileParamTh.unknown40;
+      offset = channel->m_devFileParamTh.unknown4c;
+      size = channel->m_devFileParamTh.unknown50;
       base = channel->unknown190;
       if (channel->unknown10d) {
-        reading = (channel->unknown118->unknown94 & 0x10000) == 0;
+        reading = (channel->m_fileHandleTh->unknown94 & 0x10000) == 0;
       }
     }
     if (reading) {
       FileReadResult result;
       channel->unknown10f = true;
-      if (DevFileUtilNx::readFile(channel->unknown118, channel->unknown00, size, base + offset, buffer, size, result)) {
+      if (DevFileUtilNx::readFile(channel->m_fileHandleTh, channel->unknown00, size, base + offset, buffer, size, result)) {
         mm::threading::WriteLockGuard guard(channel->unknown1a8);
-        FileHandleTh *handle = channel->unknown118;
+        FileHandleTh *handle = channel->m_fileHandleTh;
         if (handle != nullptr) {
           int read = result.unknown00;
           if (result.unknown08) {
@@ -206,12 +206,12 @@ bool DevFileArchiveNx::rfRead(FileHandleTh *handle, const DevFileParamTh &param)
   handle->setReadAdr(param.unknown50, param.unknown40, param.unknown50);
   handle->unknown001(param.unknown4c, param.unknown50);
   handle->unknown94 &= 0xfff0ffff;
-  channel->unknown120 = param;
+  channel->m_devFileParamTh = param;
   channel->unknown10d = true;
-  channel->unknown118 = handle;
+  channel->m_fileHandleTh = handle;
   channel->unknown10e = false;
   channel->unknown110 = false;
-  channel->unknown198->setSignalEvent(true);
+  channel->m_thread->setSignalEvent(true);
   return true;
 }
 
@@ -232,7 +232,7 @@ bool DevFileArchiveNx::rfClose(FileHandleTh *handle) {
   mm::threading::WriteLockGuard guard(channel->unknown1a8);
   if (channel->unknown10f) {
     handle->unknown94 |= 0x10000;
-    handle->unknown60 = nullptr;
+    handle->m_iWorkEvent = nullptr;
     channel->unknown110 = true;
   } else {
     if (channel->unknown10d) {
@@ -248,13 +248,13 @@ bool DevFileArchiveNx::rfIsUsedChannel(u32 channel) { return unknown20->unknown0
 
 void DevFileArchiveNx::tail() {
   for (OpenReadParam *it = unknown20->unknown0000.begin(); it != unknown20->unknown0000.end(); ++it) {
-    if (it->unknown10d && it->unknown118 != nullptr) {
+    if (it->unknown10d && it->m_fileHandleTh != nullptr) {
       mm::threading::WriteLockGuard guard(it->unknown1a8);
-      if ((it->unknown118->unknown94 & 0x10000) == 0) {
-        if (it->unknown118->m_currentPtr != 0 && it->unknown118->m_currentPtr == it->unknown118->unknown18) {
+      if ((it->m_fileHandleTh->unknown94 & 0x10000) == 0) {
+        if (it->m_fileHandleTh->m_currentPtr != 0 && it->m_fileHandleTh->m_currentPtr == it->m_fileHandleTh->unknown18) {
           it->unknown10d = false;
-          it->unknown118->call(CBM_UNKNOWN_2);
-          it->unknown118 = nullptr;
+          it->m_fileHandleTh->call(CBM_UNKNOWN_2);
+          it->m_fileHandleTh = nullptr;
         }
       } else if (!it->unknown10f) {
         if (it->unknown110) {
@@ -262,8 +262,8 @@ void DevFileArchiveNx::tail() {
           it->unknown110 = false;
         }
         it->unknown10d = false;
-        it->unknown118->call(CBM_UNKNOWN_4);
-        it->unknown118 = nullptr;
+        it->m_fileHandleTh->call(CBM_UNKNOWN_4);
+        it->m_fileHandleTh = nullptr;
       }
     }
   }

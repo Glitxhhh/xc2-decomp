@@ -4,7 +4,7 @@
 
 namespace ml {
 
-DrShdMdoExtTblObj::DrShdMdoExtTblObj() : unknown00(nullptr), unknown08(nullptr) {}
+DrShdMdoExtTblObj::DrShdMdoExtTblObj() : m_drShdMdoDecShdObj(nullptr), m_drShdMdoDecExtTbl(nullptr) {}
 
 int DrShdMdoExtTblObj::getDecWorkSize(int declarationNum, const u8 *data) {
   const unknown001 *header = reinterpret_cast<const unknown001 *>(data);

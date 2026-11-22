@@ -95,7 +95,7 @@ public:
     idcoli::IDColiManager *m_interface;           // Inferred role: manager; named after the game accessor fw::ColiManager::getInterface.
     u32 unknown28;                                // Inferred role: frame count; original member name unknown.
     mm::mtl::IAllocator *unknown30;               // Inferred role: allocator; original member name unknown.
-    PointerMap unknown38;                         // Inferred role: object map; original member name unknown.
+    PointerMap m_pointerMap;                      // Inferred role: object map; original member name unknown.
     ContactTable unknown70;                       // Inferred role: contact table; original member name unknown.
   };
 
@@ -130,7 +130,7 @@ static_assert(offsetof(ColiManager::Impl, m_groundObject) == 0x18, "");
 static_assert(offsetof(ColiManager::Impl, m_interface) == 0x20, "");
 static_assert(offsetof(ColiManager::Impl, unknown28) == 0x28, "");
 static_assert(offsetof(ColiManager::Impl, unknown30) == 0x30, "");
-static_assert(offsetof(ColiManager::Impl, unknown38) == 0x38, "");
+static_assert(offsetof(ColiManager::Impl, m_pointerMap) == 0x38, "");
 static_assert(offsetof(ColiManager::Impl, unknown70) == 0x70, "");
 static_assert(sizeof(ColiManager::Impl) == 0x3498, "");
 static_assert(offsetof(ColiManager, unknown18) == 0x18, "");

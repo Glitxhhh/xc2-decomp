@@ -26,9 +26,9 @@ void DrShdDataObj::createShader(DrShdDataList *list, int type, int index) {
   unknown68[1] = next == 0xff ? nullptr : &list->m_fetchShader[next];
 }
 
-DrShdDataList::DrShdDataList(DrMan *drMan) : unknown00(nullptr), unknown08(drMan), unknown10(nullptr), m_mpfObj(nullptr) {
+DrShdDataList::DrShdDataList(DrMan *drMan) : m_fileResTh(nullptr), m_drMan(drMan), unknown10(nullptr), m_mpfObj(nullptr) {
   memset(unknown18, 0, sizeof(unknown18));
-  unknown618 = new (unknown08->unknown0c) grlib::CGLibShdListBase<DrShdDataObj>();
+  unknown618 = new (m_drMan->unknown0c) grlib::CGLibShdListBase<DrShdDataObj>();
   createWork();
   createShader();
 }
@@ -61,9 +61,9 @@ void DrShdDataList::releaseShader() {
       unknown10 = nullptr;
     }
   }
-  if (unknown00 != nullptr) {
-    unknown00->Release();
-    unknown00 = nullptr;
+  if (m_fileResTh != nullptr) {
+    m_fileResTh->Release();
+    m_fileResTh = nullptr;
   }
 }
 

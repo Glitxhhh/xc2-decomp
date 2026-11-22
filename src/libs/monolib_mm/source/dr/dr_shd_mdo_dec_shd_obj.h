@@ -19,14 +19,14 @@ public:
   DrShdMdoDecShdObj *unknown08;                      // Inferred role: next shader object; original member name unknown.
   const u8 *unknown10;                               // Inferred role: shader pack data; original member name unknown.
   s32 unknown18;                                     // Inferred role: reference count; original member name unknown.
-  DrCalcStmListObj *unknown20;                       // Inferred role: stream list object; original member name unknown.
+  DrCalcStmListObj *m_drCalcStmListObj;              // Inferred role: stream list object; original member name unknown.
   grlib::CGLibShdListBase<DrShdMdoDecRes> unknown28; // Inferred role: shader list; original member name unknown.
 };
 
 static_assert(offsetof(DrShdMdoDecShdObj, unknown08) == 0x08, "");
 static_assert(offsetof(DrShdMdoDecShdObj, unknown10) == 0x10, "");
 static_assert(offsetof(DrShdMdoDecShdObj, unknown18) == 0x18, "");
-static_assert(offsetof(DrShdMdoDecShdObj, unknown20) == 0x20, "");
+static_assert(offsetof(DrShdMdoDecShdObj, m_drCalcStmListObj) == 0x20, "");
 static_assert(offsetof(DrShdMdoDecShdObj, unknown28) == 0x28, "");
 static_assert(sizeof(DrShdMdoDecShdObj) == 0x80, "");
 

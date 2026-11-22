@@ -21,285 +21,285 @@ struct Aabb;
 namespace ml {
 struct DR_CAPCUBE_PARAM;
 
-ScnRenderDrSysParmAcc::ScnRenderDrSysParmAcc() : unknown00(nullptr), unknown08(nullptr), unknown10(0) {
-  unknown00 = DrMan::get();
-  unknown08 = unknown00->unknown120[unknown10];
+ScnRenderDrSysParmAcc::ScnRenderDrSysParmAcc() : m_drMan(nullptr), m_drPixlPostParm(nullptr), unknown10(0) {
+  m_drMan = DrMan::get();
+  m_drPixlPostParm = m_drMan->unknown120[unknown10];
 }
 
-ScnRenderDrSysParmAcc::ScnRenderDrSysParmAcc(ScnRenderDrSys *drSys, s32 index) : unknown00(nullptr), unknown08(nullptr) { setDrSys(drSys, index); }
+ScnRenderDrSysParmAcc::ScnRenderDrSysParmAcc(ScnRenderDrSys *drSys, s32 index) : m_drMan(nullptr), m_drPixlPostParm(nullptr) { setDrSys(drSys, index); }
 
 void ScnRenderDrSysParmAcc::setDrSys(ScnRenderDrSys *drSys, s32 index) {
-  unknown00 = drSys->unknown10;
-  unknown08 = unknown00->unknown120[index];
+  m_drMan = drSys->m_drMan;
+  m_drPixlPostParm = m_drMan->unknown120[index];
   unknown10 = index;
 }
 
-void ScnRenderDrSysParmAcc::setDOFOverride(bool dofOverride) { unknown08->setOverrideDOF(dofOverride); }
+void ScnRenderDrSysParmAcc::setDOFOverride(bool dofOverride) { m_drPixlPostParm->setOverrideDOF(dofOverride); }
 
-void ScnRenderDrSysParmAcc::setGlbSpd(f32 glbSpd) { unknown00->m_glbSpd = glbSpd; }
+void ScnRenderDrSysParmAcc::setGlbSpd(f32 glbSpd) { m_drMan->m_glbSpd = glbSpd; }
 
-f32 ScnRenderDrSysParmAcc::getGlbSpd() const { return unknown00->m_glbSpd; }
+f32 ScnRenderDrSysParmAcc::getGlbSpd() const { return m_drMan->m_glbSpd; }
 
-void ScnRenderDrSysParmAcc::setMdlSpd(f32 mdlSpd) { unknown00->m_mdlSpd = mdlSpd; }
+void ScnRenderDrSysParmAcc::setMdlSpd(f32 mdlSpd) { m_drMan->m_mdlSpd = mdlSpd; }
 
-f32 ScnRenderDrSysParmAcc::getMdlSpd() const { return unknown00->m_mdlSpd; }
+f32 ScnRenderDrSysParmAcc::getMdlSpd() const { return m_drMan->m_mdlSpd; }
 
-void ScnRenderDrSysParmAcc::setToneMap(bool toneMap) { unknown08->m_toneMapOn = toneMap; }
+void ScnRenderDrSysParmAcc::setToneMap(bool toneMap) { m_drPixlPostParm->m_toneMapOn = toneMap; }
 
-bool ScnRenderDrSysParmAcc::isToneMap() const { return unknown08->getToneMapOn(); }
+bool ScnRenderDrSysParmAcc::isToneMap() const { return m_drPixlPostParm->getToneMapOn(); }
 
-void ScnRenderDrSysParmAcc::setToneMax(f32 toneMax) { unknown08->m_toneMax = toneMax; }
+void ScnRenderDrSysParmAcc::setToneMax(f32 toneMax) { m_drPixlPostParm->m_toneMax = toneMax; }
 
-void ScnRenderDrSysParmAcc::setToneMin(f32 toneMin) { unknown08->m_toneMin = toneMin; }
+void ScnRenderDrSysParmAcc::setToneMin(f32 toneMin) { m_drPixlPostParm->m_toneMin = toneMin; }
 
-void ScnRenderDrSysParmAcc::setToneRatio(f32 toneRatio) { unknown08->m_toneRatio = toneRatio; }
+void ScnRenderDrSysParmAcc::setToneRatio(f32 toneRatio) { m_drPixlPostParm->m_toneRatio = toneRatio; }
 
-void ScnRenderDrSysParmAcc::setToneRatioLast(f32 toneRatioLast) { unknown08->m_toneRatioLast = toneRatioLast; }
+void ScnRenderDrSysParmAcc::setToneRatioLast(f32 toneRatioLast) { m_drPixlPostParm->m_toneRatioLast = toneRatioLast; }
 
-void ScnRenderDrSysParmAcc::setOverrideToneMap(f32 overrideToneMap) { unknown08->setOverrideToneMap(overrideToneMap); }
+void ScnRenderDrSysParmAcc::setOverrideToneMap(f32 overrideToneMap) { m_drPixlPostParm->setOverrideToneMap(overrideToneMap); }
 
-void ScnRenderDrSysParmAcc::setToneBlmMax(f32 toneBlmMax) { unknown08->m_toneBlmMax = toneBlmMax; }
+void ScnRenderDrSysParmAcc::setToneBlmMax(f32 toneBlmMax) { m_drPixlPostParm->m_toneBlmMax = toneBlmMax; }
 
-void ScnRenderDrSysParmAcc::setToneBlmMin(f32 toneBlmMin) { unknown08->m_toneBlmMin = toneBlmMin; }
+void ScnRenderDrSysParmAcc::setToneBlmMin(f32 toneBlmMin) { m_drPixlPostParm->m_toneBlmMin = toneBlmMin; }
 
-void ScnRenderDrSysParmAcc::setToneBlmRatio(f32 toneBlmRatio) { unknown08->m_toneBlmRatio = toneBlmRatio; }
+void ScnRenderDrSysParmAcc::setToneBlmRatio(f32 toneBlmRatio) { m_drPixlPostParm->m_toneBlmRatio = toneBlmRatio; }
 
-void ScnRenderDrSysParmAcc::setToneBlmRatioLast(f32 toneBlmRatioLast) { unknown08->m_toneBlmRatioLast = toneBlmRatioLast; }
+void ScnRenderDrSysParmAcc::setToneBlmRatioLast(f32 toneBlmRatioLast) { m_drPixlPostParm->m_toneBlmRatioLast = toneBlmRatioLast; }
 
-void ScnRenderDrSysParmAcc::setBloom(bool bloom) { unknown08->m_bloomOn = bloom; }
+void ScnRenderDrSysParmAcc::setBloom(bool bloom) { m_drPixlPostParm->m_bloomOn = bloom; }
 
-bool ScnRenderDrSysParmAcc::isBloomOn() const { return unknown08->getBloomOn(); }
+bool ScnRenderDrSysParmAcc::isBloomOn() const { return m_drPixlPostParm->getBloomOn(); }
 
-void ScnRenderDrSysParmAcc::setBorderBlmSub(f32 borderBlmSub) { unknown08->m_borderBlmSub = borderBlmSub; }
+void ScnRenderDrSysParmAcc::setBorderBlmSub(f32 borderBlmSub) { m_drPixlPostParm->m_borderBlmSub = borderBlmSub; }
 
-void ScnRenderDrSysParmAcc::setBorderBlmMul(f32 borderBlmMul) { unknown08->m_borderBlmMul = borderBlmMul; }
+void ScnRenderDrSysParmAcc::setBorderBlmMul(f32 borderBlmMul) { m_drPixlPostParm->m_borderBlmMul = borderBlmMul; }
 
-void ScnRenderDrSysParmAcc::setBorderBlmSecSub(f32 borderBlmSecSub) { unknown08->m_borderBlmSecSub = borderBlmSecSub; }
+void ScnRenderDrSysParmAcc::setBorderBlmSecSub(f32 borderBlmSecSub) { m_drPixlPostParm->m_borderBlmSecSub = borderBlmSecSub; }
 
-void ScnRenderDrSysParmAcc::setBorderBlmSecMul(f32 borderBlmSecMul) { unknown08->m_borderBlmSecMul = borderBlmSecMul; }
+void ScnRenderDrSysParmAcc::setBorderBlmSecMul(f32 borderBlmSecMul) { m_drPixlPostParm->m_borderBlmSecMul = borderBlmSecMul; }
 
-void ScnRenderDrSysParmAcc::setBorderBlmMax(f32 borderBlmMax) { unknown08->m_borderBlmMax = borderBlmMax; }
+void ScnRenderDrSysParmAcc::setBorderBlmMax(f32 borderBlmMax) { m_drPixlPostParm->m_borderBlmMax = borderBlmMax; }
 
 void ScnRenderDrSysParmAcc::setBlmWeight(f32 x, f32 y, f32 z) {
-  f32 *blmWeight = unknown08->m_blmWeight;
+  f32 *blmWeight = m_drPixlPostParm->m_blmWeight;
   blmWeight[0] = x;
   blmWeight[1] = y;
   blmWeight[2] = z;
 }
 
 void ScnRenderDrSysParmAcc::setBlmStr(f32 x, f32 y, f32 z) {
-  f32 *blmStr = unknown08->m_blmStr;
+  f32 *blmStr = m_drPixlPostParm->m_blmStr;
   blmStr[0] = x;
   blmStr[1] = y;
   blmStr[2] = z;
 }
 
 void ScnRenderDrSysParmAcc::setBlmGauss(f32 x, f32 y, f32 z) {
-  f32 *blmGauss = unknown08->m_blmGauss;
+  f32 *blmGauss = m_drPixlPostParm->m_blmGauss;
   blmGauss[0] = x;
   blmGauss[1] = y;
   blmGauss[2] = z;
 }
 
-f32 ScnRenderDrSysParmAcc::getBorderBlmSub() const { return unknown08->m_borderBlmSub; }
+f32 ScnRenderDrSysParmAcc::getBorderBlmSub() const { return m_drPixlPostParm->m_borderBlmSub; }
 
-f32 ScnRenderDrSysParmAcc::getBorderBlmMul() const { return unknown08->getBorderBlmMul(); }
+f32 ScnRenderDrSysParmAcc::getBorderBlmMul() const { return m_drPixlPostParm->getBorderBlmMul(); }
 
-f32 ScnRenderDrSysParmAcc::getBorderBlmSecSub() const { return unknown08->m_borderBlmSecSub; }
+f32 ScnRenderDrSysParmAcc::getBorderBlmSecSub() const { return m_drPixlPostParm->m_borderBlmSecSub; }
 
-f32 ScnRenderDrSysParmAcc::getBorderBlmSecMul() const { return unknown08->m_borderBlmSecMul; }
+f32 ScnRenderDrSysParmAcc::getBorderBlmSecMul() const { return m_drPixlPostParm->m_borderBlmSecMul; }
 
-f32 ScnRenderDrSysParmAcc::getBorderBlmMax() const { return unknown08->m_borderBlmMax; }
+f32 ScnRenderDrSysParmAcc::getBorderBlmMax() const { return m_drPixlPostParm->m_borderBlmMax; }
 
-const f32 *ScnRenderDrSysParmAcc::getBlmWeight() const { return unknown08->m_blmWeight; }
+const f32 *ScnRenderDrSysParmAcc::getBlmWeight() const { return m_drPixlPostParm->m_blmWeight; }
 
-const f32 *ScnRenderDrSysParmAcc::getBlmStr() const { return unknown08->m_blmStr; }
+const f32 *ScnRenderDrSysParmAcc::getBlmStr() const { return m_drPixlPostParm->m_blmStr; }
 
-const f32 *ScnRenderDrSysParmAcc::getBlmGauss() const { return unknown08->m_blmGauss; }
+const f32 *ScnRenderDrSysParmAcc::getBlmGauss() const { return m_drPixlPostParm->m_blmGauss; }
 
-void ScnRenderDrSysParmAcc::setLensFlare(bool lensFlare) { unknown08->m_lensFlare = lensFlare; }
+void ScnRenderDrSysParmAcc::setLensFlare(bool lensFlare) { m_drPixlPostParm->m_lensFlare = lensFlare; }
 
-bool ScnRenderDrSysParmAcc::isLensFlare() const { return unknown08->m_lensFlare; }
+bool ScnRenderDrSysParmAcc::isLensFlare() const { return m_drPixlPostParm->m_lensFlare; }
 
-void ScnRenderDrSysParmAcc::setBlmLensSub(f32 blmLensSub) { unknown08->m_blmLensSub = blmLensSub; }
+void ScnRenderDrSysParmAcc::setBlmLensSub(f32 blmLensSub) { m_drPixlPostParm->m_blmLensSub = blmLensSub; }
 
-void ScnRenderDrSysParmAcc::setBlmLensMul(f32 blmLensMul) { unknown08->m_blmLensMul = blmLensMul; }
+void ScnRenderDrSysParmAcc::setBlmLensMul(f32 blmLensMul) { m_drPixlPostParm->m_blmLensMul = blmLensMul; }
 
-void ScnRenderDrSysParmAcc::setBlmLensMax(s32 blmLensMax) { unknown08->m_blmLensMax = blmLensMax; }
+void ScnRenderDrSysParmAcc::setBlmLensMax(s32 blmLensMax) { m_drPixlPostParm->m_blmLensMax = blmLensMax; }
 
-void ScnRenderDrSysParmAcc::setBlmLensRot(f32 blmLensRot) { unknown08->m_blmLensRot = blmLensRot; }
+void ScnRenderDrSysParmAcc::setBlmLensRot(f32 blmLensRot) { m_drPixlPostParm->m_blmLensRot = blmLensRot; }
 
-void ScnRenderDrSysParmAcc::setBlmLensWeight(f32 blmLensWeight) { unknown08->m_blmLensWeight = blmLensWeight; }
+void ScnRenderDrSysParmAcc::setBlmLensWeight(f32 blmLensWeight) { m_drPixlPostParm->m_blmLensWeight = blmLensWeight; }
 
-void ScnRenderDrSysParmAcc::setBlmLensDecay(f32 blmLensDecay) { unknown08->m_blmLensDecay = blmLensDecay; }
+void ScnRenderDrSysParmAcc::setBlmLensDecay(f32 blmLensDecay) { m_drPixlPostParm->m_blmLensDecay = blmLensDecay; }
 
-void ScnRenderDrSysParmAcc::setBlmLensStrength(f32 blmLensStrength) { unknown08->m_blmLensStrength = blmLensStrength; }
+void ScnRenderDrSysParmAcc::setBlmLensStrength(f32 blmLensStrength) { m_drPixlPostParm->m_blmLensStrength = blmLensStrength; }
 
-void ScnRenderDrSysParmAcc::setBlmLensParmMax(f32 blmLensParmMax) { unknown08->m_blmLensParmMax = blmLensParmMax; }
+void ScnRenderDrSysParmAcc::setBlmLensParmMax(f32 blmLensParmMax) { m_drPixlPostParm->m_blmLensParmMax = blmLensParmMax; }
 
-void ScnRenderDrSysParmAcc::setBlmLensUVDecay(f32 blmLensUVDecay) { unknown08->m_blmLensUVDecay = blmLensUVDecay; }
+void ScnRenderDrSysParmAcc::setBlmLensUVDecay(f32 blmLensUVDecay) { m_drPixlPostParm->m_blmLensUVDecay = blmLensUVDecay; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensSub() const { return unknown08->m_blmLensSub; }
+f32 ScnRenderDrSysParmAcc::getBlmLensSub() const { return m_drPixlPostParm->m_blmLensSub; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensMul() const { return unknown08->m_blmLensMul; }
+f32 ScnRenderDrSysParmAcc::getBlmLensMul() const { return m_drPixlPostParm->m_blmLensMul; }
 
-s32 ScnRenderDrSysParmAcc::getBlmLensMax() const { return unknown08->m_blmLensMax; }
+s32 ScnRenderDrSysParmAcc::getBlmLensMax() const { return m_drPixlPostParm->m_blmLensMax; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensRot() const { return unknown08->m_blmLensRot; }
+f32 ScnRenderDrSysParmAcc::getBlmLensRot() const { return m_drPixlPostParm->m_blmLensRot; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensWeight() const { return unknown08->m_blmLensWeight; }
+f32 ScnRenderDrSysParmAcc::getBlmLensWeight() const { return m_drPixlPostParm->m_blmLensWeight; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensDecay() const { return unknown08->m_blmLensDecay; }
+f32 ScnRenderDrSysParmAcc::getBlmLensDecay() const { return m_drPixlPostParm->m_blmLensDecay; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensStrength() const { return unknown08->m_blmLensStrength; }
+f32 ScnRenderDrSysParmAcc::getBlmLensStrength() const { return m_drPixlPostParm->m_blmLensStrength; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensParmMax() const { return unknown08->m_blmLensParmMax; }
+f32 ScnRenderDrSysParmAcc::getBlmLensParmMax() const { return m_drPixlPostParm->m_blmLensParmMax; }
 
-f32 ScnRenderDrSysParmAcc::getBlmLensUVDecay() const { return unknown08->m_blmLensUVDecay; }
+f32 ScnRenderDrSysParmAcc::getBlmLensUVDecay() const { return m_drPixlPostParm->m_blmLensUVDecay; }
 
-void ScnRenderDrSysParmAcc::setGodRay(bool godRay) { unknown08->m_godRay = godRay; }
+void ScnRenderDrSysParmAcc::setGodRay(bool godRay) { m_drPixlPostParm->m_godRay = godRay; }
 
-bool ScnRenderDrSysParmAcc::isGodRay() const { return unknown08->m_godRay; }
+bool ScnRenderDrSysParmAcc::isGodRay() const { return m_drPixlPostParm->m_godRay; }
 
-void ScnRenderDrSysParmAcc::setGodRayWeight(f32 godRayWeight) { unknown08->m_godRayWeight = godRayWeight; }
+void ScnRenderDrSysParmAcc::setGodRayWeight(f32 godRayWeight) { m_drPixlPostParm->m_godRayWeight = godRayWeight; }
 
-void ScnRenderDrSysParmAcc::setGodRayDecay(f32 godRayDecay) { unknown08->m_godRayDecay = godRayDecay; }
+void ScnRenderDrSysParmAcc::setGodRayDecay(f32 godRayDecay) { m_drPixlPostParm->m_godRayDecay = godRayDecay; }
 
-void ScnRenderDrSysParmAcc::setGodRayStrength(f32 godRayStrength) { unknown08->m_godRayStrength = godRayStrength; }
+void ScnRenderDrSysParmAcc::setGodRayStrength(f32 godRayStrength) { m_drPixlPostParm->m_godRayStrength = godRayStrength; }
 
-f32 ScnRenderDrSysParmAcc::getGodRayWeight() const { return unknown08->m_godRayWeight; }
+f32 ScnRenderDrSysParmAcc::getGodRayWeight() const { return m_drPixlPostParm->m_godRayWeight; }
 
-f32 ScnRenderDrSysParmAcc::getGodRayDecay() const { return unknown08->m_godRayDecay; }
+f32 ScnRenderDrSysParmAcc::getGodRayDecay() const { return m_drPixlPostParm->m_godRayDecay; }
 
-f32 ScnRenderDrSysParmAcc::getGodRayStrength() const { return unknown08->m_godRayStrength; }
+f32 ScnRenderDrSysParmAcc::getGodRayStrength() const { return m_drPixlPostParm->m_godRayStrength; }
 
-void ScnRenderDrSysParmAcc::setAA(bool aa) { unknown08->m_AAOn = aa; }
+void ScnRenderDrSysParmAcc::setAA(bool aa) { m_drPixlPostParm->m_AAOn = aa; }
 
-bool ScnRenderDrSysParmAcc::isAA() const { return unknown08->getAAOn(); }
+bool ScnRenderDrSysParmAcc::isAA() const { return m_drPixlPostParm->getAAOn(); }
 
-void ScnRenderDrSysParmAcc::setAAEdgeSharpness(f32 aaEdgeSharpness) { unknown08->m_aAEdgeSharpness = aaEdgeSharpness; }
+void ScnRenderDrSysParmAcc::setAAEdgeSharpness(f32 aaEdgeSharpness) { m_drPixlPostParm->m_aAEdgeSharpness = aaEdgeSharpness; }
 
-void ScnRenderDrSysParmAcc::setAAEdgeThreshold(f32 aaEdgeThreshold) { unknown08->m_aAEdgeThreshold = aaEdgeThreshold; }
+void ScnRenderDrSysParmAcc::setAAEdgeThreshold(f32 aaEdgeThreshold) { m_drPixlPostParm->m_aAEdgeThreshold = aaEdgeThreshold; }
 
-void ScnRenderDrSysParmAcc::setAAEdgeThresholdMin(f32 aaEdgeThresholdMin) { unknown08->m_aAEdgeThresholdMin = aaEdgeThresholdMin; }
+void ScnRenderDrSysParmAcc::setAAEdgeThresholdMin(f32 aaEdgeThresholdMin) { m_drPixlPostParm->m_aAEdgeThresholdMin = aaEdgeThresholdMin; }
 
-void ScnRenderDrSysParmAcc::setAAEdgeRanges(f32 aaEdgeRanges) { unknown08->m_aAEdgeRanges = aaEdgeRanges; }
+void ScnRenderDrSysParmAcc::setAAEdgeRanges(f32 aaEdgeRanges) { m_drPixlPostParm->m_aAEdgeRanges = aaEdgeRanges; }
 
-f32 ScnRenderDrSysParmAcc::getAAEdgeSharpness() const { return unknown08->m_aAEdgeSharpness; }
+f32 ScnRenderDrSysParmAcc::getAAEdgeSharpness() const { return m_drPixlPostParm->m_aAEdgeSharpness; }
 
-f32 ScnRenderDrSysParmAcc::getAAEdgeThreshold() const { return unknown08->m_aAEdgeThreshold; }
+f32 ScnRenderDrSysParmAcc::getAAEdgeThreshold() const { return m_drPixlPostParm->m_aAEdgeThreshold; }
 
-f32 ScnRenderDrSysParmAcc::getAAEdgeThresholdMin() const { return unknown08->m_aAEdgeThresholdMin; }
+f32 ScnRenderDrSysParmAcc::getAAEdgeThresholdMin() const { return m_drPixlPostParm->m_aAEdgeThresholdMin; }
 
-f32 ScnRenderDrSysParmAcc::getAAEdgeRanges() const { return unknown08->m_aAEdgeRanges; }
+f32 ScnRenderDrSysParmAcc::getAAEdgeRanges() const { return m_drPixlPostParm->m_aAEdgeRanges; }
 
-void ScnRenderDrSysParmAcc::setSSAO(bool ssao) { unknown08->m_sSAO = ssao; }
+void ScnRenderDrSysParmAcc::setSSAO(bool ssao) { m_drPixlPostParm->m_sSAO = ssao; }
 
-bool ScnRenderDrSysParmAcc::isSSAO() const { return unknown08->m_sSAO; }
+bool ScnRenderDrSysParmAcc::isSSAO() const { return m_drPixlPostParm->m_sSAO; }
 
-void ScnRenderDrSysParmAcc::setSSAOBlurStr(f32 ssaoBlurStr) { unknown08->m_sSAOBlurStr = ssaoBlurStr; }
+void ScnRenderDrSysParmAcc::setSSAOBlurStr(f32 ssaoBlurStr) { m_drPixlPostParm->m_sSAOBlurStr = ssaoBlurStr; }
 
-f32 ScnRenderDrSysParmAcc::getSSAOBlurStr() const { return unknown08->m_sSAOBlurStr; }
+f32 ScnRenderDrSysParmAcc::getSSAOBlurStr() const { return m_drPixlPostParm->m_sSAOBlurStr; }
 
-void ScnRenderDrSysParmAcc::setSpecularStr(f32 specularStr) { unknown08->m_specularStr = specularStr; }
+void ScnRenderDrSysParmAcc::setSpecularStr(f32 specularStr) { m_drPixlPostParm->m_specularStr = specularStr; }
 
-f32 ScnRenderDrSysParmAcc::getSpecularStr() const { return unknown08->m_specularStr; }
+f32 ScnRenderDrSysParmAcc::getSpecularStr() const { return m_drPixlPostParm->m_specularStr; }
 
-void ScnRenderDrSysParmAcc::setMotBlurOverride(bool motBlurOverride) { unknown08->setOverrideMotBlur(motBlurOverride); }
+void ScnRenderDrSysParmAcc::setMotBlurOverride(bool motBlurOverride) { m_drPixlPostParm->setOverrideMotBlur(motBlurOverride); }
 
-void ScnRenderDrSysParmAcc::setMotBlur(bool motBlur) { unknown08->unknown1ca = motBlur; }
+void ScnRenderDrSysParmAcc::setMotBlur(bool motBlur) { m_drPixlPostParm->unknown1ca = motBlur; }
 
-void ScnRenderDrSysParmAcc::setMotBlurDefault(bool motBlurDefault) { unknown00->unknown70->unknown970.m_motBlur2 = motBlurDefault; }
+void ScnRenderDrSysParmAcc::setMotBlurDefault(bool motBlurDefault) { m_drMan->m_drIniSys->m_drPixlPostParm.m_motBlur2 = motBlurDefault; }
 
-void ScnRenderDrSysParmAcc::setAppBlur(bool appBlur) { unknown08->m_appBlur = appBlur; }
+void ScnRenderDrSysParmAcc::setAppBlur(bool appBlur) { m_drPixlPostParm->m_appBlur = appBlur; }
 
-void ScnRenderDrSysParmAcc::setSpBlur(bool spBlur) { unknown08->m_spBlur = spBlur; }
+void ScnRenderDrSysParmAcc::setSpBlur(bool spBlur) { m_drPixlPostParm->m_spBlur = spBlur; }
 
 void ScnRenderDrSysParmAcc::setSpBlurTarget(const mm::Vec3 &spBlurTarget) {
-  mm::Vec3 &destination = unknown08->unknownff0;
+  mm::Vec3 &destination = m_drPixlPostParm->unknownff0;
   destination.x = spBlurTarget.x;
   destination.y = spBlurTarget.y;
   destination.z = spBlurTarget.z;
 }
 
-void ScnRenderDrSysParmAcc::setBlurSpParm(f32 blurSpParm) { unknown08->m_blurSpParm = blurSpParm; }
+void ScnRenderDrSysParmAcc::setBlurSpParm(f32 blurSpParm) { m_drPixlPostParm->m_blurSpParm = blurSpParm; }
 
-bool ScnRenderDrSysParmAcc::isMotBlur() const { return unknown08->isMotBlur(); }
+bool ScnRenderDrSysParmAcc::isMotBlur() const { return m_drPixlPostParm->isMotBlur(); }
 
-void ScnRenderDrSysParmAcc::setMotBlurStrength(f32 motBlurStrength) { unknown08->unknown1d4 = motBlurStrength; }
+void ScnRenderDrSysParmAcc::setMotBlurStrength(f32 motBlurStrength) { m_drPixlPostParm->unknown1d4 = motBlurStrength; }
 
-void ScnRenderDrSysParmAcc::setMotBlurSub(f32 motBlurSub) { unknown08->unknown1d8 = motBlurSub; }
+void ScnRenderDrSysParmAcc::setMotBlurSub(f32 motBlurSub) { m_drPixlPostParm->unknown1d8 = motBlurSub; }
 
-f32 ScnRenderDrSysParmAcc::getBlurStrength() const { return unknown08->unknown1d4; }
+f32 ScnRenderDrSysParmAcc::getBlurStrength() const { return m_drPixlPostParm->unknown1d4; }
 
-f32 ScnRenderDrSysParmAcc::getBlurSub() const { return unknown08->unknown1d8; }
+f32 ScnRenderDrSysParmAcc::getBlurSub() const { return m_drPixlPostParm->unknown1d8; }
 
-void ScnRenderDrSysParmAcc::setDOF(bool dof) { unknown08->setDOF(dof); }
+void ScnRenderDrSysParmAcc::setDOF(bool dof) { m_drPixlPostParm->setDOF(dof); }
 
-bool ScnRenderDrSysParmAcc::isDOF() const { return unknown08->unknown218 || unknown08->unknown219; }
+bool ScnRenderDrSysParmAcc::isDOF() const { return m_drPixlPostParm->unknown218 || m_drPixlPostParm->unknown219; }
 
-void ScnRenderDrSysParmAcc::setDoFPixlRatio(f32 dofPixlRatio) { unknown08->setDoFPixlRatio(dofPixlRatio); }
+void ScnRenderDrSysParmAcc::setDoFPixlRatio(f32 dofPixlRatio) { m_drPixlPostParm->setDoFPixlRatio(dofPixlRatio); }
 
-void ScnRenderDrSysParmAcc::setDoFDistance(f32 dofDistance) { unknown08->setDoFDistance(dofDistance); }
+void ScnRenderDrSysParmAcc::setDoFDistance(f32 dofDistance) { m_drPixlPostParm->setDoFDistance(dofDistance); }
 
-void ScnRenderDrSysParmAcc::setDoFRange(f32 dofRange) { unknown08->setDoFRange(dofRange); }
+void ScnRenderDrSysParmAcc::setDoFRange(f32 dofRange) { m_drPixlPostParm->setDoFRange(dofRange); }
 
-void ScnRenderDrSysParmAcc::setDoFStrength(f32 dofStrength) { unknown08->setDoFStrength(dofStrength); }
+void ScnRenderDrSysParmAcc::setDoFStrength(f32 dofStrength) { m_drPixlPostParm->setDoFStrength(dofStrength); }
 
-void ScnRenderDrSysParmAcc::setDoFLens(f32 dofLens) { unknown08->setDoFLens(dofLens); }
+void ScnRenderDrSysParmAcc::setDoFLens(f32 dofLens) { m_drPixlPostParm->setDoFLens(dofLens); }
 
-void ScnRenderDrSysParmAcc::setDoFBlend(f32 dofBlend) { unknown08->setDoFBlend(dofBlend); }
+void ScnRenderDrSysParmAcc::setDoFBlend(f32 dofBlend) { m_drPixlPostParm->setDoFBlend(dofBlend); }
 
-void ScnRenderDrSysParmAcc::setDofHLvMode(bool dofHLvMode) { unknown08->setDOFHlv(dofHLvMode); }
+void ScnRenderDrSysParmAcc::setDofHLvMode(bool dofHLvMode) { m_drPixlPostParm->setDOFHlv(dofHLvMode); }
 
 void ScnRenderDrSysParmAcc::setDofPixlLv(s32 dofPixlLv) {
   if (dofPixlLv < 0 || dofPixlLv > 2) {
-    unknown08->setDoFPixlLv(0);
+    m_drPixlPostParm->setDoFPixlLv(0);
   } else {
-    unknown08->setDoFPixlLv(dofPixlLv);
+    m_drPixlPostParm->setDoFPixlLv(dofPixlLv);
   }
 }
 
-void ScnRenderDrSysParmAcc::setDOFAutoFocus(bool dofAutoFocus) { unknown08->setDOFAutoFocus(dofAutoFocus); }
+void ScnRenderDrSysParmAcc::setDOFAutoFocus(bool dofAutoFocus) { m_drPixlPostParm->setDOFAutoFocus(dofAutoFocus); }
 
 void ScnRenderDrSysParmAcc::setDOFFocusNum(s32 dofFocusNum) {
   if (dofFocusNum < 0 || dofFocusNum > 11) {
     dofFocusNum = 0;
   }
-  unknown08->setDoFocusNum(dofFocusNum);
+  m_drPixlPostParm->setDoFocusNum(dofFocusNum);
 }
 
-void ScnRenderDrSysParmAcc::setDOFFocusMin(f32 dofFocusMin) { unknown08->setDofFocusMin(dofFocusMin); }
+void ScnRenderDrSysParmAcc::setDOFFocusMin(f32 dofFocusMin) { m_drPixlPostParm->setDofFocusMin(dofFocusMin); }
 
-void ScnRenderDrSysParmAcc::setDOFFocusRatio(f32 dofFocusRatio) { unknown08->setDoFDofFocusRat(dofFocusRatio); }
+void ScnRenderDrSysParmAcc::setDOFFocusRatio(f32 dofFocusRatio) { m_drPixlPostParm->setDoFDofFocusRat(dofFocusRatio); }
 
-void ScnRenderDrSysParmAcc::setDOFFocusDebug(bool dofFocusDebug) { unknown08->setDOFAutoFocusDebug(dofFocusDebug); }
+void ScnRenderDrSysParmAcc::setDOFFocusDebug(bool dofFocusDebug) { m_drPixlPostParm->setDOFAutoFocusDebug(dofFocusDebug); }
 
-f32 ScnRenderDrSysParmAcc::getDoFPixlRatio() const { return unknown08->m_doFPixlRatio; }
+f32 ScnRenderDrSysParmAcc::getDoFPixlRatio() const { return m_drPixlPostParm->m_doFPixlRatio; }
 
-f32 ScnRenderDrSysParmAcc::getDoFDistance() const { return unknown08->m_doFDistance; }
+f32 ScnRenderDrSysParmAcc::getDoFDistance() const { return m_drPixlPostParm->m_doFDistance; }
 
-f32 ScnRenderDrSysParmAcc::getDoFRange() const { return unknown08->m_doFRange; }
+f32 ScnRenderDrSysParmAcc::getDoFRange() const { return m_drPixlPostParm->m_doFRange; }
 
-f32 ScnRenderDrSysParmAcc::getDoFStrength() const { return unknown08->m_doFStrength; }
+f32 ScnRenderDrSysParmAcc::getDoFStrength() const { return m_drPixlPostParm->m_doFStrength; }
 
-f32 ScnRenderDrSysParmAcc::getDoFLens() const { return unknown08->m_doFLens; }
+f32 ScnRenderDrSysParmAcc::getDoFLens() const { return m_drPixlPostParm->m_doFLens; }
 
-f32 ScnRenderDrSysParmAcc::getDoFBlend() const { return unknown08->m_doFBlend; }
+f32 ScnRenderDrSysParmAcc::getDoFBlend() const { return m_drPixlPostParm->m_doFBlend; }
 
-bool ScnRenderDrSysParmAcc::isDofHLvMode() const { return unknown08->m_dofHLvMode; }
+bool ScnRenderDrSysParmAcc::isDofHLvMode() const { return m_drPixlPostParm->m_dofHLvMode; }
 
-s32 ScnRenderDrSysParmAcc::getDofPixlLv() const { return unknown08->m_dofPixlLv; }
+s32 ScnRenderDrSysParmAcc::getDofPixlLv() const { return m_drPixlPostParm->m_dofPixlLv; }
 
-bool ScnRenderDrSysParmAcc::isDOFAutoFocus() const { return unknown08->m_dOFAutoFocus; }
+bool ScnRenderDrSysParmAcc::isDOFAutoFocus() const { return m_drPixlPostParm->m_dOFAutoFocus; }
 
-s32 ScnRenderDrSysParmAcc::getDOFFocusNum() const { return unknown08->m_dOFFocusNum; }
+s32 ScnRenderDrSysParmAcc::getDOFFocusNum() const { return m_drPixlPostParm->m_dOFFocusNum; }
 
-f32 ScnRenderDrSysParmAcc::getDOFFocusMin() const { return unknown08->m_dOFFocusMin; }
+f32 ScnRenderDrSysParmAcc::getDOFFocusMin() const { return m_drPixlPostParm->m_dOFFocusMin; }
 
-f32 ScnRenderDrSysParmAcc::getDOFFocusRatio() const { return unknown08->m_dOFFocusRatio; }
+f32 ScnRenderDrSysParmAcc::getDOFFocusRatio() const { return m_drPixlPostParm->m_dOFFocusRatio; }
 
-bool ScnRenderDrSysParmAcc::isDOFFocusDebug() const { return unknown08->m_DOFAutoFocusDebug; }
+bool ScnRenderDrSysParmAcc::isDOFFocusDebug() const { return m_drPixlPostParm->m_DOFAutoFocusDebug; }
 
 void ScnRenderDrSysParmAcc::setPlaneCloudNum(u32 planeCloudNum) {
   cloud::CloudMan *cloudMan = DrMan::getIns()->unknown1e00;
@@ -316,80 +316,80 @@ u32 ScnRenderDrSysParmAcc::getPlaneCloudNum() {
   return 0;
 }
 
-void ScnRenderDrSysParmAcc::setGlobalWind(const mm::Vec3 &globalWind) { unknown00->setGlobalWind(globalWind); }
+void ScnRenderDrSysParmAcc::setGlobalWind(const mm::Vec3 &globalWind) { m_drMan->setGlobalWind(globalWind); }
 
-void ScnRenderDrSysParmAcc::setReduction(bool reduction) { unknown08->m_reduction = reduction; }
+void ScnRenderDrSysParmAcc::setReduction(bool reduction) { m_drPixlPostParm->m_reduction = reduction; }
 
-bool ScnRenderDrSysParmAcc::isReduction() const { return unknown08->m_reduction; }
+bool ScnRenderDrSysParmAcc::isReduction() const { return m_drPixlPostParm->m_reduction; }
 
-void ScnRenderDrSysParmAcc::setAutoReduction(bool autoReduction) { unknown00->setAutoReduction(autoReduction); }
+void ScnRenderDrSysParmAcc::setAutoReduction(bool autoReduction) { m_drMan->setAutoReduction(autoReduction); }
 
-void ScnRenderDrSysParmAcc::setReductionScX(f32 reductionScX) { unknown08->m_reductionScX = reductionScX; }
+void ScnRenderDrSysParmAcc::setReductionScX(f32 reductionScX) { m_drPixlPostParm->m_reductionScX = reductionScX; }
 
-void ScnRenderDrSysParmAcc::setReductionScY(f32 reductionScY) { unknown08->m_reductionScY = reductionScY; }
+void ScnRenderDrSysParmAcc::setReductionScY(f32 reductionScY) { m_drPixlPostParm->m_reductionScY = reductionScY; }
 
-f32 ScnRenderDrSysParmAcc::getReductionScX() const { return unknown08->m_reductionScX; }
+f32 ScnRenderDrSysParmAcc::getReductionScX() const { return m_drPixlPostParm->m_reductionScX; }
 
-f32 ScnRenderDrSysParmAcc::getReductionScY() const { return unknown08->m_reductionScY; }
+f32 ScnRenderDrSysParmAcc::getReductionScY() const { return m_drPixlPostParm->m_reductionScY; }
 
-bool ScnRenderDrSysParmAcc::isDispReduction() const { return unknown08->m_dispReduction; }
+bool ScnRenderDrSysParmAcc::isDispReduction() const { return m_drPixlPostParm->m_dispReduction; }
 
-void ScnRenderDrSysParmAcc::setDispReduction(bool dispReduction) { unknown08->m_dispReduction = dispReduction; }
+void ScnRenderDrSysParmAcc::setDispReduction(bool dispReduction) { m_drPixlPostParm->m_dispReduction = dispReduction; }
 
-void ScnRenderDrSysParmAcc::setGroupsDisp(s32 group, bool disp) { unknown00->setGroupsDisp(group, disp); }
+void ScnRenderDrSysParmAcc::setGroupsDisp(s32 group, bool disp) { m_drMan->setGroupsDisp(group, disp); }
 
-void ScnRenderDrSysParmAcc::setColorFilterOverride(bool colorFilterOverride) { unknown08->setOverrideColorFilter(colorFilterOverride); }
+void ScnRenderDrSysParmAcc::setColorFilterOverride(bool colorFilterOverride) { m_drPixlPostParm->setOverrideColorFilter(colorFilterOverride); }
 
-void ScnRenderDrSysParmAcc::setColorFilterNum(s32 colorFilterNum) { unknown08->setColorFilterNum(colorFilterNum); }
+void ScnRenderDrSysParmAcc::setColorFilterNum(s32 colorFilterNum) { m_drPixlPostParm->setColorFilterNum(colorFilterNum); }
 
-void ScnRenderDrSysParmAcc::setColorFilterFarNum(s32 colorFilterFarNum) { unknown08->setColorFilterFarNum(colorFilterFarNum); }
+void ScnRenderDrSysParmAcc::setColorFilterFarNum(s32 colorFilterFarNum) { m_drPixlPostParm->setColorFilterFarNum(colorFilterFarNum); }
 
-void ScnRenderDrSysParmAcc::setColorFilterFrm(f32 colorFilterFrm) { unknown08->setColorFilterFrm(colorFilterFrm); }
+void ScnRenderDrSysParmAcc::setColorFilterFrm(f32 colorFilterFrm) { m_drPixlPostParm->setColorFilterFrm(colorFilterFrm); }
 
-f32 ScnRenderDrSysParmAcc::getColorFilterFrm() const { return unknown08->m_colorFilterFrm; }
+f32 ScnRenderDrSysParmAcc::getColorFilterFrm() const { return m_drPixlPostParm->m_colorFilterFrm; }
 
-void ScnRenderDrSysParmAcc::setRainDrop(bool rainDrop) { unknown08->m_rainDropOn = rainDrop; }
+void ScnRenderDrSysParmAcc::setRainDrop(bool rainDrop) { m_drPixlPostParm->m_rainDropOn = rainDrop; }
 
-bool ScnRenderDrSysParmAcc::getRainDrop() const { return unknown08->getRainDropOn(); }
+bool ScnRenderDrSysParmAcc::getRainDrop() const { return m_drPixlPostParm->getRainDropOn(); }
 
-void ScnRenderDrSysParmAcc::setLightNum(s32 lightNum) { unknown08->m_lightNum = lightNum; }
+void ScnRenderDrSysParmAcc::setLightNum(s32 lightNum) { m_drPixlPostParm->m_lightNum = lightNum; }
 
-s32 ScnRenderDrSysParmAcc::getLightNum() const { return unknown08->m_lightNum; }
+s32 ScnRenderDrSysParmAcc::getLightNum() const { return m_drPixlPostParm->m_lightNum; }
 
-void ScnRenderDrSysParmAcc::setInOut(bool inOut) { unknown08->m_inOut = inOut; }
+void ScnRenderDrSysParmAcc::setInOut(bool inOut) { m_drPixlPostParm->m_inOut = inOut; }
 
-bool ScnRenderDrSysParmAcc::isInOut() const { return unknown08->m_inOut; }
+bool ScnRenderDrSysParmAcc::isInOut() const { return m_drPixlPostParm->m_inOut; }
 
-void ScnRenderDrSysParmAcc::setTimeVal(f32 timeVal) { unknown00->setTimeVal(timeVal); }
+void ScnRenderDrSysParmAcc::setTimeVal(f32 timeVal) { m_drMan->setTimeVal(timeVal); }
 
-f32 ScnRenderDrSysParmAcc::getTimerVal() const { return unknown00->m_timerVal; }
+f32 ScnRenderDrSysParmAcc::getTimerVal() const { return m_drMan->m_timerVal; }
 
-void ScnRenderDrSysParmAcc::setWeather(s32 weather) { unknown08->m_weather = weather; }
+void ScnRenderDrSysParmAcc::setWeather(s32 weather) { m_drPixlPostParm->m_weather = weather; }
 
-s32 ScnRenderDrSysParmAcc::getWeather() const { return unknown08->m_weather; }
+s32 ScnRenderDrSysParmAcc::getWeather() const { return m_drPixlPostParm->m_weather; }
 
-void ScnRenderDrSysParmAcc::setWeatherFrame(f32 weatherFrame) { unknown08->setWeatherFrame(weatherFrame); }
+void ScnRenderDrSysParmAcc::setWeatherFrame(f32 weatherFrame) { m_drPixlPostParm->setWeatherFrame(weatherFrame); }
 
-f32 ScnRenderDrSysParmAcc::getWeatherFrame() const { return unknown08->getWeatherFrame(); }
+f32 ScnRenderDrSysParmAcc::getWeatherFrame() const { return m_drPixlPostParm->getWeatherFrame(); }
 
-void ScnRenderDrSysParmAcc::setSeamMapAddPosMode(bool seamMapAddPosMode) { unknown00->m_seamMapAddPosMode = seamMapAddPosMode; }
+void ScnRenderDrSysParmAcc::setSeamMapAddPosMode(bool seamMapAddPosMode) { m_drMan->m_seamMapAddPosMode = seamMapAddPosMode; }
 
 void ScnRenderDrSysParmAcc::setSeamMapReadPos(const mm::Vec3 &seamMapReadPos) {
-  mm::Vec3 &destination = unknown00->unknown1c70;
+  mm::Vec3 &destination = m_drMan->unknown1c70;
   destination.x = seamMapReadPos.x;
   destination.y = seamMapReadPos.y;
   destination.z = seamMapReadPos.z;
 }
 
-void ScnRenderDrSysParmAcc::releaseFastLight() { unknown00->releaseFastLight(unknown10); }
+void ScnRenderDrSysParmAcc::releaseFastLight() { m_drMan->releaseFastLight(unknown10); }
 
-u32 ScnRenderDrSysParmAcc::isGblId(s32 id) { return unknown00->isGblIdx(id); }
+u32 ScnRenderDrSysParmAcc::isGblId(s32 id) { return m_drMan->isGblIdx(id); }
 
 void ScnRenderDrSysParmAcc::setSelectIdDisp(s32 id, bool disp) {
   if (disp) {
-    unknown00->offGblIdx(id);
+    m_drMan->offGblIdx(id);
   } else {
-    unknown00->setGblIdx(id);
+    m_drMan->setGblIdx(id);
   }
 }
 
@@ -399,129 +399,129 @@ bool ScnRenderDrSysParmAcc::isSelectIdDisp(s32 id) { return isGblId(id) == 0; }
 
 bool ScnRenderDrSysParmAcc::isPlayAnime(s32 id) { return false; }
 
-void ScnRenderDrSysParmAcc::setClip(bool clip) { unknown00->m_clip = clip; }
+void ScnRenderDrSysParmAcc::setClip(bool clip) { m_drMan->m_clip = clip; }
 
-void ScnRenderDrSysParmAcc::setFogSkip(bool fogSkip) { unknown00->m_fogSkip = fogSkip; }
+void ScnRenderDrSysParmAcc::setFogSkip(bool fogSkip) { m_drMan->m_fogSkip = fogSkip; }
 
-u32 *ScnRenderDrSysParmAcc::getGblTbl() { return unknown00->m_gblIdx; }
+u32 *ScnRenderDrSysParmAcc::getGblTbl() { return m_drMan->m_gblIdx; }
 
-void ScnRenderDrSysParmAcc::setSpCapMode(s32 spCapMode) { unknown00->setAvatarCapMode(spCapMode); }
+void ScnRenderDrSysParmAcc::setSpCapMode(s32 spCapMode) { m_drMan->setAvatarCapMode(spCapMode); }
 
 s32 ScnRenderDrSysParmAcc::getSpCapMode() const { return 0; }
 
-void ScnRenderDrSysParmAcc::setMdlHeightTexSkip(bool mdlHeightTexSkip) { unknown00->m_mdlHeightTexSkip = mdlHeightTexSkip; }
+void ScnRenderDrSysParmAcc::setMdlHeightTexSkip(bool mdlHeightTexSkip) { m_drMan->m_mdlHeightTexSkip = mdlHeightTexSkip; }
 
-bool ScnRenderDrSysParmAcc::isMdlHeightTexSkip() const { return unknown00->m_mdlHeightTexSkip; }
+bool ScnRenderDrSysParmAcc::isMdlHeightTexSkip() const { return m_drMan->m_mdlHeightTexSkip; }
 
-void ScnRenderDrSysParmAcc::setSeamMapOpenMode(bool seamMapOpenMode) { unknown00->m_seamMapOpenMode = seamMapOpenMode; }
+void ScnRenderDrSysParmAcc::setSeamMapOpenMode(bool seamMapOpenMode) { m_drMan->m_seamMapOpenMode = seamMapOpenMode; }
 
-bool ScnRenderDrSysParmAcc::isSeamMapOpenMode() const { return unknown00->m_seamMapOpenMode; }
+bool ScnRenderDrSysParmAcc::isSeamMapOpenMode() const { return m_drMan->m_seamMapOpenMode; }
 
-void ScnRenderDrSysParmAcc::setScreenDispOff(bool screenDispOff) { unknown00->m_screenDispOff = screenDispOff; }
+void ScnRenderDrSysParmAcc::setScreenDispOff(bool screenDispOff) { m_drMan->m_screenDispOff = screenDispOff; }
 
-FILE_PRIO ScnRenderDrSysParmAcc::getSeamMapPriMdl() const { return unknown00->m_seamMapPriMdl; }
+FILE_PRIO ScnRenderDrSysParmAcc::getSeamMapPriMdl() const { return m_drMan->m_seamMapPriMdl; }
 
-FILE_PRIO ScnRenderDrSysParmAcc::getSeamMapPriColi() const { return unknown00->m_seamMapPriColi; }
+FILE_PRIO ScnRenderDrSysParmAcc::getSeamMapPriColi() const { return m_drMan->m_seamMapPriColi; }
 
-void ScnRenderDrSysParmAcc::setSeamMapPriMdl(FILE_PRIO seamMapPriMdl) { unknown00->m_seamMapPriMdl = seamMapPriMdl; }
+void ScnRenderDrSysParmAcc::setSeamMapPriMdl(FILE_PRIO seamMapPriMdl) { m_drMan->m_seamMapPriMdl = seamMapPriMdl; }
 
-void ScnRenderDrSysParmAcc::setSeamMapPriColi(FILE_PRIO seamMapPriColi) { unknown00->m_seamMapPriColi = seamMapPriColi; }
+void ScnRenderDrSysParmAcc::setSeamMapPriColi(FILE_PRIO seamMapPriColi) { m_drMan->m_seamMapPriColi = seamMapPriColi; }
 
 void *ScnRenderDrSysParmAcc::getBlurVelocityMap() {
-  wkPixlManRes *resources = unknown00->unknown78->unknown10;
-  DrPixlPostObjMotionBlur *motionBlur = resources[unknown10].unknown180->unknown50;
+  wkPixlManRes *resources = m_drMan->m_drPixlMan->unknown10;
+  DrPixlPostObjMotionBlur *motionBlur = resources[unknown10].m_drPixlPostMan->m_drPixlPostObjMotionBlur;
   if (motionBlur != nullptr) {
     return motionBlur->unknown28;
   }
   return nullptr;
 }
 
-void ScnRenderDrSysParmAcc::setCharDirShadow(bool charDirShadow) { unknown08->m_charDirShadow = charDirShadow; }
+void ScnRenderDrSysParmAcc::setCharDirShadow(bool charDirShadow) { m_drPixlPostParm->m_charDirShadow = charDirShadow; }
 
-bool ScnRenderDrSysParmAcc::isCharDirShadow() const { return unknown08->m_charDirShadow; }
+bool ScnRenderDrSysParmAcc::isCharDirShadow() const { return m_drPixlPostParm->m_charDirShadow; }
 
-void ScnRenderDrSysParmAcc::setMdlDblPause(bool mdlDblPause) { unknown00->m_mdlDblPause = mdlDblPause; }
+void ScnRenderDrSysParmAcc::setMdlDblPause(bool mdlDblPause) { m_drMan->m_mdlDblPause = mdlDblPause; }
 
-bool ScnRenderDrSysParmAcc::isMdlDblPause() const { return unknown00->m_mdlDblPause; }
+bool ScnRenderDrSysParmAcc::isMdlDblPause() const { return m_drMan->m_mdlDblPause; }
 
-bool ScnRenderDrSysParmAcc::isMdlAllMiddleTexStm() const { return unknown00->isAllMiddelTexStmChk(); }
+bool ScnRenderDrSysParmAcc::isMdlAllMiddleTexStm() const { return m_drMan->isAllMiddelTexStmChk(); }
 
-bool ScnRenderDrSysParmAcc::isSeamMapRead() const { return unknown00->isSeamMapStmOk(); }
+bool ScnRenderDrSysParmAcc::isSeamMapRead() const { return m_drMan->isSeamMapStmOk(); }
 
 void ScnRenderDrSysParmAcc::setSeamReadLv(s32 seamReadLv) {
   if (seamReadLv < 0) {
-    unknown00->unknown1cfc = 0;
+    m_drMan->unknown1cfc = 0;
   } else if (seamReadLv > 5) {
-    unknown00->unknown1cfc = 5;
+    m_drMan->unknown1cfc = 5;
   } else {
-    unknown00->unknown1cfc = seamReadLv;
+    m_drMan->unknown1cfc = seamReadLv;
   }
 }
 
-void ScnRenderDrSysParmAcc::setHeightTexSkip(bool heightTexSkip) { unknown00->m_heightTexSkip = heightTexSkip; }
+void ScnRenderDrSysParmAcc::setHeightTexSkip(bool heightTexSkip) { m_drMan->m_heightTexSkip = heightTexSkip; }
 
-bool ScnRenderDrSysParmAcc::isHeightTexSkip() const { return unknown00->m_heightTexSkip; }
+bool ScnRenderDrSysParmAcc::isHeightTexSkip() const { return m_drMan->m_heightTexSkip; }
 
-void ScnRenderDrSysParmAcc::setSeamHeightTexSkip(bool seamHeightTexSkip) { unknown00->m_seamHeightTexSkip = seamHeightTexSkip; }
+void ScnRenderDrSysParmAcc::setSeamHeightTexSkip(bool seamHeightTexSkip) { m_drMan->m_seamHeightTexSkip = seamHeightTexSkip; }
 
-bool ScnRenderDrSysParmAcc::isSeamHeightTexSkip() const { return unknown00->m_seamHeightTexSkip; }
+bool ScnRenderDrSysParmAcc::isSeamHeightTexSkip() const { return m_drMan->m_seamHeightTexSkip; }
 
-void ScnRenderDrSysParmAcc::setShadowStr(f32 shadowStr) { unknown08->m_shadowStr = shadowStr; }
+void ScnRenderDrSysParmAcc::setShadowStr(f32 shadowStr) { m_drPixlPostParm->m_shadowStr = shadowStr; }
 
-f32 ScnRenderDrSysParmAcc::getShadowStr() const { return unknown08->m_shadowStr; }
+f32 ScnRenderDrSysParmAcc::getShadowStr() const { return m_drPixlPostParm->m_shadowStr; }
 
-void ScnRenderDrSysParmAcc::setShadowChacheAngle(f32 shadowChacheAngle) { unknown08->m_shadowChacheAngle = shadowChacheAngle; }
+void ScnRenderDrSysParmAcc::setShadowChacheAngle(f32 shadowChacheAngle) { m_drPixlPostParm->m_shadowChacheAngle = shadowChacheAngle; }
 
-f32 ScnRenderDrSysParmAcc::getShadowChacheAngle() const { return unknown08->m_shadowChacheAngle; }
+f32 ScnRenderDrSysParmAcc::getShadowChacheAngle() const { return m_drPixlPostParm->m_shadowChacheAngle; }
 
-void ScnRenderDrSysParmAcc::callCubeMapRender(const DR_CAPCUBE_PARAM &param) { unknown00->callCubeMapRender(param); }
+void ScnRenderDrSysParmAcc::callCubeMapRender(const DR_CAPCUBE_PARAM &param) { m_drMan->callCubeMapRender(param); }
 
-bool ScnRenderDrSysParmAcc::getIrrVolIsValid() const { return unknown00->unknown90->isValid(); }
+bool ScnRenderDrSysParmAcc::getIrrVolIsValid() const { return m_drMan->m_drIrrVolMan->isValid(); }
 
-const mm::Vec3 &ScnRenderDrSysParmAcc::getIrrVolCenterPos() const { return unknown00->unknown90->m_irrVolCenterPos; }
+const mm::Vec3 &ScnRenderDrSysParmAcc::getIrrVolCenterPos() const { return m_drMan->m_drIrrVolMan->m_irrVolCenterPos; }
 
 void ScnRenderDrSysParmAcc::setIrrVolCenterPos(const mm::Vec3 &irrVolCenterPos) {
-  DrIrrVolMan *irrVolMan = unknown00->unknown90;
+  DrIrrVolMan *irrVolMan = m_drMan->m_drIrrVolMan;
   irrVolMan->unknown190.x = irrVolCenterPos.x;
   irrVolMan->unknown190.y = irrVolCenterPos.y;
   irrVolMan->unknown190.z = irrVolCenterPos.z;
 }
 
 u32 ScnRenderDrSysParmAcc::getIrrVolCascadeMax() const {
-  DrIrrVolMan *irrVolMan = unknown00->unknown90;
+  DrIrrVolMan *irrVolMan = m_drMan->m_drIrrVolMan;
   u32 cascadeNum = irrVolMan->unknown1c4;
   u32 cascadeMax = irrVolMan->unknown08->unknown20;
   return cascadeNum < cascadeMax ? cascadeNum : cascadeMax;
 }
 
-void ScnRenderDrSysParmAcc::getIrrVolVolumeArea(u32 cascade, mm::Aabb &area) const { unknown00->unknown90->getVolumeArea(cascade, area); }
+void ScnRenderDrSysParmAcc::getIrrVolVolumeArea(u32 cascade, mm::Aabb &area) const { m_drMan->m_drIrrVolMan->getVolumeArea(cascade, area); }
 
-void ScnRenderDrSysParmAcc::setToonDirLightScale(bool toonDirLightScale) { unknown00->m_toonDirLightScale = toonDirLightScale; }
+void ScnRenderDrSysParmAcc::setToonDirLightScale(bool toonDirLightScale) { m_drMan->m_toonDirLightScale = toonDirLightScale; }
 
 void ScnRenderDrSysParmAcc::setToonAmbient(bool toonAmbient) {
   if (toonAmbient) {
-    unknown00->unknown1e0c = 3;
+    m_drMan->unknown1e0c = 3;
   } else {
-    unknown00->unknown1e0c = 0;
+    m_drMan->unknown1e0c = 0;
   }
 }
 
-void ScnRenderDrSysParmAcc::setDispChara(bool dispChara) { unknown00->m_dispChara = !dispChara; }
+void ScnRenderDrSysParmAcc::setDispChara(bool dispChara) { m_drMan->m_dispChara = !dispChara; }
 
-bool ScnRenderDrSysParmAcc::isDispChara() const { return !unknown00->m_dispChara; }
+bool ScnRenderDrSysParmAcc::isDispChara() const { return !m_drMan->m_dispChara; }
 
-bool ScnRenderDrSysParmAcc::isDispGlobalIBLTex() const { return unknown00->unknown120[0]->m_dispGlobalIBLTex; }
+bool ScnRenderDrSysParmAcc::isDispGlobalIBLTex() const { return m_drMan->unknown120[0]->m_dispGlobalIBLTex; }
 
-void ScnRenderDrSysParmAcc::setDispGlobalIBLTex(bool dispGlobalIBLTex) { unknown00->unknown120[0]->m_dispGlobalIBLTex = dispGlobalIBLTex; }
+void ScnRenderDrSysParmAcc::setDispGlobalIBLTex(bool dispGlobalIBLTex) { m_drMan->unknown120[0]->m_dispGlobalIBLTex = dispGlobalIBLTex; }
 
 void ScnRenderDrSysParmAcc::setPlayerPos(const mm::Vec3 &playerPos) {}
 
-void ScnRenderDrSysParmAcc::setCameraLight(bool cameraLight) { unknown00->m_cameraLight = cameraLight; }
+void ScnRenderDrSysParmAcc::setCameraLight(bool cameraLight) { m_drMan->m_cameraLight = cameraLight; }
 
-void ScnRenderDrSysParmAcc::setGBuffDebug(bool gBuffDebug) { unknown00->unknown120[0]->m_gBuffDebug = gBuffDebug; }
+void ScnRenderDrSysParmAcc::setGBuffDebug(bool gBuffDebug) { m_drMan->unknown120[0]->m_gBuffDebug = gBuffDebug; }
 
 void ScnRenderDrSysParmAcc::setGBuffDebugParam(GBuffDebugType type, f32 min, f32 max) {
-  DrPixlPostParm *firstPostParm = unknown00->unknown120[0];
+  DrPixlPostParm *firstPostParm = m_drMan->unknown120[0];
   switch (static_cast<s32>(type)) {
   case 0:
     firstPostParm->unknown320[0].unknown00[0] = min;
@@ -559,31 +559,31 @@ void ScnRenderDrSysParmAcc::createAddRenderView(ScnRenderDrViewCtrl *viewCtrl) {
   param.unknown10 = &viewCtrl->unknown0c;
   param.unknown20 = &viewCtrl->unknown2c;
   param.unknown28 = &viewCtrl->unknown30;
-  unknown00->createAddRenderSystem(&param);
+  m_drMan->createAddRenderSystem(&param);
 }
 
-void ScnRenderDrSysParmAcc::deleteAddRenderView(ScnRenderDrViewCtrl *viewCtrl) { unknown00->deleteAddRenderSystem(viewCtrl->unknown08 + 1); }
+void ScnRenderDrSysParmAcc::deleteAddRenderView(ScnRenderDrViewCtrl *viewCtrl) { m_drMan->deleteAddRenderSystem(viewCtrl->unknown08 + 1); }
 
 void ScnRenderDrSysParmAcc::setModelTexture(const ScnRenderDrMdlTexture &texture) {
   DR_MODEL_TEXTURE param;
   param.unknown00 = texture.unknown00;
   param.unknown08 = texture.unknown0c;
-  unknown00->setModelTexture(&param, texture.unknown08);
+  m_drMan->setModelTexture(&param, texture.unknown08);
 }
 
-void ScnRenderDrSysParmAcc::resetModelTexture(u32 index) { unknown00->resetModelTexture(index); }
+void ScnRenderDrSysParmAcc::resetModelTexture(u32 index) { m_drMan->resetModelTexture(index); }
 
-void ScnRenderDrSysParmAcc::setDefferedColor(bool defferedColor) { unknown00->unknown120[0]->m_defferedColor = defferedColor; }
+void ScnRenderDrSysParmAcc::setDefferedColor(bool defferedColor) { m_drMan->unknown120[0]->m_defferedColor = defferedColor; }
 
-bool ScnRenderDrSysParmAcc::isDefferedColor() const { return unknown00->unknown120[0]->m_defferedColor; }
+bool ScnRenderDrSysParmAcc::isDefferedColor() const { return m_drMan->unknown120[0]->m_defferedColor; }
 
-void ScnRenderDrSysParmAcc::setRenderSpecMode(RenderSpecMode renderSpecMode) { unknown00->m_renderSpecMode = renderSpecMode; }
+void ScnRenderDrSysParmAcc::setRenderSpecMode(RenderSpecMode renderSpecMode) { m_drMan->m_renderSpecMode = renderSpecMode; }
 
-void ScnRenderDrSysParmAcc::setGlassBr(bool glassBr, u32 type) { unknown08->setGlassBrk(glassBr, type); }
+void ScnRenderDrSysParmAcc::setGlassBr(bool glassBr, u32 type) { m_drPixlPostParm->setGlassBrk(glassBr, type); }
 
-bool ScnRenderDrSysParmAcc::isGlassBr() { return unknown08->m_glassBr; }
+bool ScnRenderDrSysParmAcc::isGlassBr() { return m_drPixlPostParm->m_glassBr; }
 
-void ScnRenderDrSysParmAcc::setCacherClearMode(bool cacherClearMode) { unknown00->setCacherClearMode(cacherClearMode); }
+void ScnRenderDrSysParmAcc::setCacherClearMode(bool cacherClearMode) { m_drMan->setCacherClearMode(cacherClearMode); }
 
 bool ScnRenderDrSysParmAcc::isViewRenderSkip(u32 view) const { return (DrMan::get()->unknown1c9c & (1 << view)) != 0; }
 
@@ -598,7 +598,7 @@ void ScnRenderDrSysParmAcc::setViewRenderSkip(u32 view, bool skip) {
 
 void ScnRenderDrSysParmAcc::setWriteZBuffer(bool writeZBuffer) { DrMan::get()->m_writeZBuffer = writeZBuffer; }
 
-void ScnRenderDrSysParmAcc::resetScene() { unknown08->resetScene(); }
+void ScnRenderDrSysParmAcc::resetScene() { m_drPixlPostParm->resetScene(); }
 
 void ScnRenderDrSysParmAcc::setAutoResetScene(bool autoResetScene) { DrMan::get()->m_autoResetScene = autoResetScene; }
 

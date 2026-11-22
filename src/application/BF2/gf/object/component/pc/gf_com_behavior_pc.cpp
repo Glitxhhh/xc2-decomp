@@ -500,7 +500,7 @@ void GfComBehaviorPc::detectHead(GfComPropertyPc &property, fw::ColiObject *coli
     mm::Mat44 matrix;
     transform->unknown001(matrix);
     coli->setInstantlyMatrix(matrix);
-    proxy.unknown00 = coli;
+    proxy.m_coliObject = coli;
     if (!(fabsf(horizontal.x) <= 0.000001f) || !(fabsf(horizontal.z) <= 0.000001f)) {
       mm::Vec3 down = move;
       if (fabsf(down.x) <= 0.000001f && fabsf(down.y) <= 0.000001f && fabsf(down.z) <= 0.000001f) {

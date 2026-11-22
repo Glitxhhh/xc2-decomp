@@ -18,7 +18,7 @@ GfComCollider::~GfComCollider() {}
 void GfComCollider::setup(const SetupInfo &) { unknown18.resize(2, nullptr); }
 
 void GfComCollider::cleanup() {
-  if (m_animColPoseModifier.unknown18 != nullptr && m_animColPoseModifier.unknown20 != nullptr) {
+  if (m_animColPoseModifier.m_modelObject != nullptr && m_animColPoseModifier.m_coliObject != nullptr) {
     fw::AnimationManager *manager = fw::AnimationManager::get();
     if (manager != nullptr) {
       manager->removeAfterModifier(getLayer(), m_animColPoseModifier);
@@ -49,7 +49,7 @@ template <typename Info, typename Creator> void GfComCollider::createColi(const 
   unknown18[index] = creator(info, coliFrame);
   fw::unknown136 events;
   events.unknown00 = info.unknown28.unknown00;
-  events.unknown08 = this;
+  events.m_iColiEventListener = this;
   unknown18[index]->unknown48 = events;
   unknown18[index]->setColiUserData(&m_userData);
   if (info.unknown80 != nullptr && info.unknown80->unknown00 == fw::unknown031::TYPE_UNKNOWN_5) {
@@ -77,7 +77,7 @@ void GfComCollider::createColiPhantom(u32 index, const fw::ColiPhantomInfo &info
 }
 
 void GfComCollider::enter(const EnterInfo &info) {
-  fw::ColiUserData *userData = info.other->unknown58;
+  fw::ColiUserData *userData = info.other->m_coliUserData;
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&UserData::m_rtti)) {
     return;
   }
@@ -90,7 +90,7 @@ void GfComCollider::enter(const EnterInfo &info) {
 }
 
 void GfComCollider::leave(const LeaveInfo &info) {
-  fw::ColiUserData *userData = info.other->unknown58;
+  fw::ColiUserData *userData = info.other->m_coliUserData;
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&UserData::m_rtti)) {
     return;
   }
@@ -103,7 +103,7 @@ void GfComCollider::leave(const LeaveInfo &info) {
 }
 
 void GfComCollider::contact(const EnterInfo &info) {
-  fw::ColiUserData *userData = info.other->unknown58;
+  fw::ColiUserData *userData = info.other->m_coliUserData;
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&UserData::m_rtti)) {
     return;
   }

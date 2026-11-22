@@ -55,8 +55,8 @@ namespace ml {
 void DrEnvironmentObj::release() { unknown8c |= FLAG_UNKNOWN_30 << DrMan::s_nDblStockIdx; }
 
 DrEnvironmentObj::DrEnvironmentObj(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan)
-    : unknown08(nullptr), unknown10(nullptr), unknown18(drMan), unknown20(lightMan), unknown28(fogMan), m_offsetPos(0.0f, 0.0f, 0.0f), m_frame(0.0f), m_frameSpd(1.0f), m_maxFrame(0.0f), unknown8c(0),
-      m_group(0) {
+    : unknown08(nullptr), unknown10(nullptr), m_drMan(drMan), m_drLightMan(lightMan), m_drFogMan(fogMan), m_offsetPos(0.0f, 0.0f, 0.0f), m_frame(0.0f), m_frameSpd(1.0f), m_maxFrame(0.0f),
+      unknown8c(0), m_group(0) {
   m_matrix = mm::Mat44::identity;
 }
 
@@ -70,20 +70,20 @@ void DrEnvironmentMan::releaseAll() {
 }
 
 DrEnvironmentMan::DrEnvironmentMan(DrMan *drMan, DrLightMan *lightMan, DrFogMan *fogMan, int screen)
-    : unknown00(drMan), unknown08(lightMan), unknown10(fogMan), unknown20(screen), unknown28(), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr) {
-  unknown18 = new (drMan->unknown0c) DrEnvColiMan(drMan);
+    : m_drMan(drMan), m_drLightMan(lightMan), m_drFogMan(fogMan), unknown20(screen), unknown28(), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown68(nullptr) {
+  m_drEnvColiMan = new (drMan->unknown0c) DrEnvColiMan(drMan);
 }
 
 DrEnvironmentMan::~DrEnvironmentMan() {
   if (unknown68 != nullptr) {
-    FileResTh *res = unknown00->unknown70->unknown890;
+    FileResTh *res = m_drMan->m_drIniSys->unknown890;
     if (res != nullptr) {
       res->Release();
     }
   }
-  if (unknown18 != nullptr) {
-    delete unknown18;
-    unknown18 = nullptr;
+  if (m_drEnvColiMan != nullptr) {
+    delete m_drEnvColiMan;
+    m_drEnvColiMan = nullptr;
   }
   releaseAll();
 }
@@ -92,9 +92,9 @@ void DrEnvironmentMan::updateCameraLight() {
   if (unknown20 != 0) {
     return;
   }
-  if (unknown00->m_cameraLight) {
+  if (m_drMan->m_cameraLight) {
     if (unknown68 == nullptr) {
-      FileResTh *res = unknown00->unknown70->unknown890;
+      FileResTh *res = m_drMan->m_drIniSys->unknown890;
       res->AddRef();
       unknown68 = createObj(res->m_glassBreakage);
     }
@@ -138,40 +138,40 @@ DrEnvironmentObjLgt::~DrEnvironmentObjLgt() { releaseLgt(); }
 
 void DrEnvironmentObjLgt::releaseLgt() {
   if (unknown1fc != 0) {
-    if (unknown1e8 != 0 && unknown1b0 != nullptr) {
+    if (unknown1e8 != 0 && m_drLightObjAmb != nullptr) {
       for (int i = 0; i < unknown1e8; i++) {
-        unknown1b0[i].~DrLightObjAmb();
+        m_drLightObjAmb[i].~DrLightObjAmb();
       }
     }
-    if (unknown1ec != 0 && unknown1b8 != nullptr) {
+    if (unknown1ec != 0 && m_drLightObjDir != nullptr) {
       for (int i = 0; i < unknown1ec; i++) {
-        unknown1b8[i].~DrLightObjDir();
+        m_drLightObjDir[i].~DrLightObjDir();
       }
     }
-    if (unknown1f0 != 0 && unknown1c0 != nullptr) {
+    if (unknown1f0 != 0 && m_drLightObjPnt != nullptr) {
       for (int i = 0; i < unknown1f0; i++) {
-        unknown1c0[i].~DrLightObjPnt();
+        m_drLightObjPnt[i].~DrLightObjPnt();
       }
     }
-    if (unknown1f4 != 0 && unknown1c8 != nullptr) {
+    if (unknown1f4 != 0 && m_drLightObjSpt != nullptr) {
       for (int i = 0; i < unknown1f4; i++) {
-        unknown1c8[i].~DrLightObjSpt();
+        m_drLightObjSpt[i].~DrLightObjSpt();
       }
     }
-    if (unknown1f8 != 0 && unknown1d0 != nullptr) {
+    if (unknown1f8 != 0 && m_drLightObjLocalIBL != nullptr) {
       for (int i = 0; i < unknown1f8; i++) {
-        unknown1d0[i].~DrLightObjLocalIBL();
+        m_drLightObjLocalIBL[i].~DrLightObjLocalIBL();
       }
     }
     unknown1fc = 0;
   }
   if (unknown200 != 0) {
     for (int i = 0; i < unknown200; i++) {
-      unknown1d8[i].~DrFogObjGbl();
+      m_drFogObjGbl[i].~DrFogObjGbl();
     }
     unknown200 = 0;
   }
-  unknown98.releaseTexture();
+  m_drEnvironmentTex.releaseTexture();
   if (unknown180 != nullptr) {
     mtl::MemManager::deallocate(unknown180, 0, false);
     unknown180 = nullptr;
@@ -202,14 +202,14 @@ void DrEnvironmentObjLgt::setupAmbient(DrEnvironmentLgtList *list, DrLightObjAmb
   light->unknown30 = mm::Col3(color.r * intensity, color.g * intensity, color.b * intensity);
   list->m_lightObj = light;
   if (data->unknown00 != 0) {
-    const unknown003 *amb = reinterpret_cast<const unknown003 *>(reinterpret_cast<const u8 *>(unknown158) + data->unknown00);
-    DrPixlPostParm *postParm = unknown18->unknown120[screen];
+    const unknown003 *amb = reinterpret_cast<const unknown003 *>(reinterpret_cast<const u8 *>(m_lgtFileHeader) + data->unknown00);
+    DrPixlPostParm *postParm = m_drMan->unknown120[screen];
     postParm->unknown1064 = amb->unknown00;
   }
 }
 
 void DrEnvironmentObjLgt::setupDirectinal(DrEnvironmentLgtList *list, DrLightObjDir *light, const LgtObjData *data, const LgtPosData *pos) {
-  const unknown002 *dir = reinterpret_cast<const unknown002 *>(reinterpret_cast<const u8 *>(unknown158) + data->unknown00);
+  const unknown002 *dir = reinterpret_cast<const unknown002 *>(reinterpret_cast<const u8 *>(m_lgtFileHeader) + data->unknown00);
   if (data->unknown08 & 0x80000) {
     light->unknown80.a = dir->unknown01 * 0.01f;
   }
@@ -226,7 +226,7 @@ void DrEnvironmentObjLgt::setupDirectinal(DrEnvironmentLgtList *list, DrLightObj
 }
 
 void DrEnvironmentObjLgt::setupPoint(DrEnvironmentLgtList *list, DrLightObjPnt *light, const LgtObjData *data, const LgtPosData *pos) {
-  const unknown004 *pnt = reinterpret_cast<const unknown004 *>(reinterpret_cast<const u8 *>(unknown158) + data->unknown00);
+  const unknown004 *pnt = reinterpret_cast<const unknown004 *>(reinterpret_cast<const u8 *>(m_lgtFileHeader) + data->unknown00);
   mm::Col3 color(data->unknown0c[0], data->unknown0c[1], data->unknown0c[2]);
   f32 intensity = data->unknown18;
   light->unknown90 = mm::Col3(color.r * intensity, color.g * intensity, color.b * intensity);
@@ -248,7 +248,7 @@ void DrEnvironmentObjLgt::setupPoint(DrEnvironmentLgtList *list, DrLightObjPnt *
 }
 
 void DrEnvironmentObjLgt::setupSpot(DrEnvironmentLgtList *list, DrLightObjSpt *light, const LgtObjData *data, const LgtPosData *pos) {
-  const unknown005 *spt = reinterpret_cast<const unknown005 *>(reinterpret_cast<const u8 *>(unknown158) + data->unknown00);
+  const unknown005 *spt = reinterpret_cast<const unknown005 *>(reinterpret_cast<const u8 *>(m_lgtFileHeader) + data->unknown00);
   mm::Col3 color(data->unknown0c[0], data->unknown0c[1], data->unknown0c[2]);
   f32 intensity = data->unknown18;
   light->unknownb0 = mm::Col3(color.r * intensity, color.g * intensity, color.b * intensity);
@@ -290,21 +290,21 @@ void DrEnvironmentObjLgt::setupSpot(DrEnvironmentLgtList *list, DrLightObjSpt *l
 }
 
 void DrEnvironmentObjLgt::changeMemCall(const void *data) {
-  unknown158 = static_cast<const LgtFileHeader *>(data);
+  m_lgtFileHeader = static_cast<const LgtFileHeader *>(data);
   const LgtFileHeader *header = static_cast<const LgtFileHeader *>(data);
   const u8 *base = static_cast<const u8 *>(data);
   if (header->unknown08 != 0) {
     const unknown010 *objTable = reinterpret_cast<const unknown010 *>(base + header->unknown08);
     const LgtObjData *obj = reinterpret_cast<const LgtObjData *>(base + objTable->unknown04);
-    unknown160 = obj;
+    m_lgtObjData = obj;
     if (header->unknown20 != 0) {
-      unknowne0.changeMemAnim(base, header->unknown20);
+      m_drEnvironmentAnim.changeMemAnim(base, header->unknown20);
     } else if (objTable->unknown28 != 0) {
-      unknowne0.changeMemAnim(base, objTable->unknown28);
+      m_drEnvironmentAnim.changeMemAnim(base, objTable->unknown28);
     }
     const unknown011 *posTable = reinterpret_cast<const unknown011 *>(base + header->unknown0c);
     const LgtPosData *pos = reinterpret_cast<const LgtPosData *>(base + posTable->unknown04);
-    unknown170 = reinterpret_cast<const LgtPosTreeRange *>(base + posTable->unknown0c);
+    m_lgtPosTreeRange = reinterpret_cast<const LgtPosTreeRange *>(base + posTable->unknown0c);
     int lightNum = posTable->unknown00;
     for (int i = 0; i < lightNum; i++, obj++, pos++) {
       unknown198[i].m_lgtObjData = obj;
@@ -312,15 +312,15 @@ void DrEnvironmentObjLgt::changeMemCall(const void *data) {
     }
   }
   if (header->unknown14 != 0) {
-    const u8 *file = reinterpret_cast<const u8 *>(unknown158);
-    unknown168 = reinterpret_cast<const LgtGlbFogObj *>(file + reinterpret_cast<const unknown001 *>(file + header->unknown14)->unknown00);
+    const u8 *file = reinterpret_cast<const u8 *>(m_lgtFileHeader);
+    m_lgtGlbFogObj = reinterpret_cast<const LgtGlbFogObj *>(file + reinterpret_cast<const unknown001 *>(file + header->unknown14)->unknown00);
   }
   if (header->unknown28 & 0x10000) {
-    unknown190->changeMemCall(reinterpret_cast<const u8 *>(unknown158), header->unknown2c);
+    m_drResWrkClipList->changeMemCall(reinterpret_cast<const u8 *>(m_lgtFileHeader), header->unknown2c);
   }
-  unknowna8.changeMemEnvTimeData(header, reinterpret_cast<const u8 *>(unknown158));
+  m_drEnvironmentTime.changeMemEnvTimeData(header, reinterpret_cast<const u8 *>(m_lgtFileHeader));
   if (header->unknown24 != 0) {
-    const u8 *file = reinterpret_cast<const u8 *>(unknown158);
+    const u8 *file = reinterpret_cast<const u8 *>(m_lgtFileHeader);
     unknown178 = reinterpret_cast<const unknown008 *>(file + reinterpret_cast<const unknown012 *>(file + header->unknown24)->unknown04);
   }
 }
@@ -331,7 +331,7 @@ void DrEnvironmentObjLgt::setupCapsule(DrEnvironmentLgtList *list, DrLightObjSpt
 
 void DrEnvironmentObjLgt::setFrame(f32 frame) {
   m_frame = frame;
-  unknowne0.setFrame(frame);
+  m_drEnvironmentAnim.setFrame(frame);
 }
 
 void DrEnvironmentObjLgt::update() {
@@ -343,12 +343,12 @@ void DrEnvironmentObjLgt::update() {
       (this->*s_pCallEnvRelase[list->m_lgtObjData->unknown04])(list->m_lightObj);
     }
   } else {
-    DrMan *drMan = unknown18;
+    DrMan *drMan = m_drMan;
     DrPixlPostParm *postParm = drMan->unknown120[drMan->unknown1c98];
-    unknowna8.unknown14 = drMan->m_timerVal;
+    m_drEnvironmentTime.unknown14 = drMan->m_timerVal;
     int weather = unknown208;
     unknown208 = postParm->m_lightNum;
-    unknowna8.setWeatherNum(drMan, weather != unknown208, unknown150);
+    m_drEnvironmentTime.setWeatherNum(drMan, weather != unknown208, unknown150);
     unknown204 = 0;
     if (unknown1fc != 0) {
       updatePosLgt();
@@ -363,10 +363,10 @@ void DrEnvironmentObjLgt::updatePosLgt() {
   u32 size = (unknown1fc / 32 + 1) * sizeof(u32);
   memset(unknown188, 0, size + (32 - size % 32) % 32);
   unknown007();
-  if (unknown190 != nullptr) {
-    unknown190->update(unknown18->unknown580->unknown18);
+  if (m_drResWrkClipList != nullptr) {
+    m_drResWrkClipList->update(m_drMan->m_drCalcMan->m_drCalcClipMan);
   }
-  DrCalcViewWork *viewWork = unknown18->unknown580->unknown10;
+  DrCalcViewWork *viewWork = m_drMan->m_drCalcMan->m_drCalcViewWork;
   m_frame += m_frameSpd;
   if (m_maxFrame < m_frame) {
     m_frame = 0.0f;
@@ -384,7 +384,7 @@ void DrEnvironmentObjLgt::updatePosLgt() {
       unknown220.z = m_offsetPos.z;
       setupOfsPos();
     }
-    calcTreePos(unknown170, viewWork);
+    calcTreePos(m_lgtPosTreeRange, viewWork);
   }
   DrEnvironmentLgtList **lists = unknown1a8;
   for (int i = 0; i < unknown1e4; i++, lists++) {
@@ -394,21 +394,21 @@ void DrEnvironmentObjLgt::updatePosLgt() {
     }
   }
   if (unknown204 & 2) {
-    unknown20->unknown12c = unknown230;
+    m_drLightMan->unknown12c = unknown230;
   }
 }
 
 void DrEnvironmentObjLgt::updateFog() {
   if (unknown200 > 0) {
-    const u8 *data = reinterpret_cast<const u8 *>(unknown158);
-    DrCalcViewWork *viewWork = unknown18->unknown580->unknown10;
-    const unknown001 *table = reinterpret_cast<const unknown001 *>(data + unknown158->unknown14);
+    const u8 *data = reinterpret_cast<const u8 *>(m_lgtFileHeader);
+    DrCalcViewWork *viewWork = m_drMan->m_drCalcMan->m_drCalcViewWork;
+    const unknown001 *table = reinterpret_cast<const unknown001 *>(data + m_lgtFileHeader->unknown14);
     const LgtGlbFogObj *fog = reinterpret_cast<const LgtGlbFogObj *>(data + table->unknown00);
     for (int i = 0; i < unknown200; i++, fog++) {
-      (this->*s_pCallFogCall[fog->unknown4a])(&unknown1d8[i], viewWork, fog);
+      (this->*s_pCallFogCall[fog->unknown4a])(&m_drFogObjGbl[i], viewWork, fog);
     }
   }
-  unknown28->m_fogOn = true;
+  m_drFogMan->m_fogOn = true;
 }
 
 void DrEnvironmentObjLgt::calcLgtPos(DrCalcViewWork *viewWork) {
@@ -419,14 +419,14 @@ void DrEnvironmentObjLgt::calcLgtPos(DrCalcViewWork *viewWork) {
 
 void DrEnvironmentObjLgt::calcTreePos(const LgtPosTreeRange *range, DrCalcViewWork *viewWork) {
   int lightNum = range->unknown22;
-  const int *lights = reinterpret_cast<const int *>(reinterpret_cast<const u8 *>(unknown158) + range->unknown1c);
+  const int *lights = reinterpret_cast<const int *>(reinterpret_cast<const u8 *>(m_lgtFileHeader) + range->unknown1c);
   for (int i = 0; i < lightNum; i++, lights++) {
     calcLgtObj(*lights, viewWork);
   }
   int childNum = range->unknown20;
-  const u16 *children = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown158) + range->unknown18);
+  const u16 *children = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(m_lgtFileHeader) + range->unknown18);
   for (int i = 0; i < childNum; i++, children++) {
-    const LgtPosTreeRange *child = unknown170 + *children;
+    const LgtPosTreeRange *child = m_lgtPosTreeRange + *children;
     if (child->unknown00[0] < unknown210.x || child->unknown0c[0] > unknown210.x || child->unknown00[1] < unknown210.y || child->unknown0c[1] > unknown210.y || child->unknown00[2] < unknown210.z ||
         child->unknown0c[2] > unknown210.z) {
       continue;
@@ -440,8 +440,8 @@ void DrEnvironmentObjLgt::calcLgtObj(int index, DrCalcViewWork *viewWork) {
   const LgtObjData *data = list->m_lgtObjData;
   if (data->unknown08 & 0x10000) {
     u16 anim = data->unknown28;
-    const DrEnvironmentAnim::unknown001 *animRange = &unknowne0.unknown00[anim];
-    f32 &frame = unknowne0.unknown30[anim];
+    const DrEnvironmentAnim::unknown001 *animRange = &m_drEnvironmentAnim.unknown00[anim];
+    f32 &frame = m_drEnvironmentAnim.unknown30[anim];
     frame += m_frameSpd;
     if (frame > animRange->unknown0c) {
       frame = animRange->unknown0c - frame + animRange->unknown08;
@@ -454,7 +454,7 @@ void DrEnvironmentObjLgt::calcLgtObj(int index, DrCalcViewWork *viewWork) {
   }
   if ((this->*s_pCallCalcEnv[data->unknown04])(list, viewWork)) {
     unknown188[index >> 5] |= 1 << (index & 31);
-    list->m_lightObj->update(unknown20);
+    list->m_lightObj->update(m_drLightMan);
     unknown1a0[unknown1e0] = list;
     unknown1e0++;
   }
@@ -465,7 +465,7 @@ void DrEnvironmentObjLgt::renderLgt() {
     return;
   }
   if (unknown1fc != 0 && unknown1e0 != 0) {
-    DrShdLgtMan *shdLgtMan = unknown18->unknown80->unknown18;
+    DrShdLgtMan *shdLgtMan = m_drMan->m_drShdMan->m_drShdLgtMan;
     DrEnvironmentLgtList **lists = unknown1a0;
     for (int i = 0; i < unknown1e0; i++, lists++) {
       DrEnvironmentLgtList *list = *lists;
@@ -483,7 +483,7 @@ void DrEnvironmentObjLgt::debugRenderLgt() {
 
 void DrEnvironmentObjLgt::debugRenderLgt2D() {
   if (!(unknown8c & FLAG_UNKNOWN_0) && unknown1fc != 0) {
-    DrShdLgtMan *shdLgtMan = unknown18->unknown80->unknown18;
+    DrShdLgtMan *shdLgtMan = m_drMan->m_drShdMan->m_drShdLgtMan;
     if (unknown8c & FLAG_UNKNOWN_20) {
       for (int i = 0; i < unknown1fc; i++) {
         DrEnvironmentLgtList *list = &unknown198[i];
@@ -515,7 +515,7 @@ bool DrEnvironmentObjLgt::callback_Chk_Point(DrEnvironmentLgtList *list, DrCalcV
   const LgtPosData *pos = list->m_lgtPosData;
   if (pos->unknown60 != 0) {
     int clipIdx = pos->unknown60 - 1;
-    if (unknown190->unknown18[clipIdx >> 5] & (1 << (clipIdx & 31))) {
+    if (m_drResWrkClipList->unknown18[clipIdx >> 5] & (1 << (clipIdx & 31))) {
       return false;
     }
   }
@@ -545,17 +545,17 @@ bool DrEnvironmentObjLgt::callback_Chk_Point(DrEnvironmentLgtList *list, DrCalcV
   }
   DrLightObjPnt *light = static_cast<DrLightObjPnt *>(list->m_lightObj);
   if (data->unknown08 & 0x40000) {
-    unknowne0.calcAnimTransPnt(light, data, m_offsetPos);
+    m_drEnvironmentAnim.calcAnimTransPnt(light, data, m_offsetPos);
   }
   const mm::Vec3 &position = light->m_pos;
-  return viewWork->unknown4e0.clipTest(position, pos->unknown4c);
+  return viewWork->m_drCalcClipWorkViewPlane.clipTest(position, pos->unknown4c);
 }
 
 bool DrEnvironmentObjLgt::callback_Chk_Spot(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data) {
   const LgtPosData *pos = list->m_lgtPosData;
   if (pos->unknown60 != 0) {
     int clipIdx = pos->unknown60 - 1;
-    if (unknown190->unknown18[clipIdx >> 5] & (1 << (clipIdx & 31))) {
+    if (m_drResWrkClipList->unknown18[clipIdx >> 5] & (1 << (clipIdx & 31))) {
       return false;
     }
   }
@@ -585,10 +585,10 @@ bool DrEnvironmentObjLgt::callback_Chk_Spot(DrEnvironmentLgtList *list, DrCalcVi
   }
   DrLightObjSpt *light = static_cast<DrLightObjSpt *>(list->m_lightObj);
   if (data->unknown08 & 0x40000) {
-    unknowne0.calcAnimTransSpt(light, data, m_offsetPos);
+    m_drEnvironmentAnim.calcAnimTransSpt(light, data, m_offsetPos);
   }
   const mm::Vec3 &position = light->m_pos;
-  return viewWork->unknown4e0.clipTest(position, pos->unknown4c);
+  return viewWork->m_drCalcClipWorkViewPlane.clipTest(position, pos->unknown4c);
 }
 
 bool DrEnvironmentObjLgt::callback_Chk_non(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork, const LgtObjData *data) { return false; }
@@ -601,7 +601,7 @@ bool DrEnvironmentObjLgt::callback_Chk_LocalIBL(DrEnvironmentLgtList *list, DrCa
     return false;
   }
   const mm::Vec3 &position = light->unknown110;
-  return viewWork->unknown4e0.clipTest(position, light->unknown120);
+  return viewWork->m_drCalcClipWorkViewPlane.clipTest(position, light->unknown120);
 }
 
 bool DrEnvironmentObjLgt::callback_Calc_Non(DrEnvironmentLgtList *list, DrCalcViewWork *viewWork) { return true; }
@@ -627,13 +627,13 @@ void DrEnvironmentObjLgt::callback_Ren_Spot(DrLightObj *light, DrShdLgtMan *shdL
 void DrEnvironmentObjLgt::callback_Ren2D_Non(DrLightObj *light, DrShdLgtMan *shdLgtMan) {}
 
 void DrEnvironmentObjLgt::callback_Ren2D_LocalIBL(DrLightObj *light, DrShdLgtMan *shdLgtMan) {
-  DrMan *drMan = unknown18;
+  DrMan *drMan = m_drMan;
   int height = drMan->unknown5b8->unknown1c;
-  f32 scale = drMan->unknown120[drMan->unknown1c98]->getToneMapOn() ? unknown18->unknown78->unknown7f0->unknown188 : 1.0f;
+  f32 scale = drMan->unknown120[drMan->unknown1c98]->getToneMapOn() ? m_drMan->m_drPixlMan->unknown7f0->unknown188 : 1.0f;
   const grlib::CGLibTextureBuffer *texture = static_cast<DrLightObjLocalIBL *>(light)->unknown40;
   if (texture != nullptr) {
     for (u32 face = 0; face < 6; face++) {
-      unknown18->unknown78->debugRenderCube(*texture, face, 0, false, 5 + face * 129, height - 133, 128, 128, false, scale);
+      m_drMan->m_drPixlMan->debugRenderCube(*texture, face, 0, false, 5 + face * 129, height - 133, 128, 128, false, scale);
     }
   }
 }

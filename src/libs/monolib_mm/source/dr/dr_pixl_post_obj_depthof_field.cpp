@@ -35,7 +35,7 @@ DrPixlPostObjDepthofField::~DrPixlPostObjDepthofField() {
 }
 
 void DrPixlPostObjDepthofField::update() {
-  s32 pixlLv = unknown00->unknown120[unknown00->unknown1c98]->m_dofPixlLv;
+  s32 pixlLv = m_drMan->unknown120[m_drMan->unknown1c98]->m_dofPixlLv;
   if (unknown50 != pixlLv) {
     unknown50 = pixlLv;
     if (pixlLv == 0) {
@@ -48,9 +48,9 @@ void DrPixlPostObjDepthofField::update() {
     resetColorBuff();
   }
   unknown59 = false;
-  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
+  DrPixlPostParm *postParm = m_drMan->unknown120[m_drMan->unknown1c98];
   if (postParm->m_colTblOn) {
-    DrResFilterData *filterData = unknown00->unknown98;
+    DrResFilterData *filterData = m_drMan->m_drResFilterData;
     f32 ratio = filterData->unknown10[filterData->unknown100].unknown34;
     unknown59 = postParm->m_colorFilterTransZ;
     if (ratio == 1.0f && postParm->unknown278 == postParm->unknown26c && filterData->unknown10[filterData->unknown100].unknown26 == postParm->unknown278 &&
@@ -61,7 +61,7 @@ void DrPixlPostObjDepthofField::update() {
 }
 
 void DrPixlPostObjDepthofField::render() {
-  if (unknown00->unknown120[unknown00->unknown1c98]->m_dOFAutoFocus) {
+  if (m_drMan->unknown120[m_drMan->unknown1c98]->m_dOFAutoFocus) {
     renderDepthSample();
     renderDepthAllSample();
   }
@@ -80,7 +80,7 @@ void DrPixlPostObjDepthofField::releaseColorBuff() {
 }
 
 void DrPixlPostObjDepthofField::renderDepthAllSample() {
-  DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
+  DrCalcViewWork *viewWork = m_drMan->m_drCalcMan->m_drCalcViewWork;
   f32 blend;
   if (unknown58) {
     unknown40->clearTexture(mm::Col4(0.0f, 0.0f, 0.0f, 0.0f), static_cast<GrlClaerMask>(0xf));
@@ -90,9 +90,9 @@ void DrPixlPostObjDepthofField::renderDepthAllSample() {
     blend = viewWork->unknown9a9 ? 0.0f : 0.95f;
   }
   unknown40->setRenderTarget();
-  DrAPCache *apCache = unknown00->unknown5c0;
-  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
-  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
+  DrPixlPostParm *postParm = m_drMan->unknown120[m_drMan->unknown1c98];
+  DrShdDataList *shdList = m_drMan->m_drShdMan->m_drShdDataList;
   DrShdDataObj *shader;
   if (postParm->m_dOFFocusNum != 0) {
     shader = shdList->getPostShdObj(0x20);
@@ -170,9 +170,9 @@ void DrPixlPostObjDepthofField::renderDepthAllSample() {
 void DrPixlPostObjDepthofField::renderDofScaleDown() {
   DrAPGxType::setupScreenQuads(false);
   unknown18->setRenderTarget();
-  DrAPCache *apCache = unknown00->unknown5c0;
-  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
-  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
+  DrPixlPostParm *postParm = m_drMan->unknown120[m_drMan->unknown1c98];
+  DrShdDataList *shdList = m_drMan->m_drShdMan->m_drShdDataList;
   DrShdDataObj *shader = shdList->getPostShdObj(0x22);
   u32 downSec = postParm->unknown21b ? 1 : 2;
   shader->setDeclarationIdx(shader->getDeclarationOfs("DOWN_SEC"), downSec);
@@ -185,8 +185,8 @@ void DrPixlPostObjDepthofField::renderDofScaleDown() {
   u32 scaleOffset = uniform.unknown001("gScal");
   u32 ratioOffset = uniform.unknown001("ratio");
   u32 dofParamOffset = uniform.unknown001("dofpam");
-  f32 width = static_cast<f32>(unknown00->unknown5b8->unknown18);
-  f32 height = static_cast<f32>(unknown00->unknown5b8->unknown1c);
+  f32 width = static_cast<f32>(m_drMan->unknown5b8->unknown18);
+  f32 height = static_cast<f32>(m_drMan->unknown5b8->unknown1c);
   f32 scaleU = (width - 1.0f) / width;
   f32 scaleV = (height - 1.0f) / height;
   f32 work[8];
@@ -202,7 +202,7 @@ void DrPixlPostObjDepthofField::renderDofScaleDown() {
     work[3] = (1.0f / static_cast<f32>(unknown18->unknownc0)) * -0.5f;
   }
   uniform.setF32SetVec4(scaleOffset, work);
-  DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
+  DrCalcViewWork *viewWork = m_drMan->m_drCalcMan->m_drCalcViewWork;
   f32 focus = postParm->m_doFDistance / viewWork->unknown430.x + viewWork->unknown430.y;
   f32 range = postParm->m_doFRange / viewWork->unknown430.x;
   work[0] = -focus;
@@ -235,8 +235,8 @@ void DrPixlPostObjDepthofField::renderDofScaleDown() {
   } else {
     apCache->beginTexSampling(2, 0);
   }
-  apCache->setTexture(*unknown08->unknown7f0->unknown138->unknown70, frameLocation);
-  wkPixlManRes *res = unknown08->unknown7f0;
+  apCache->setTexture(*m_drPixlMan->unknown7f0->unknown138->unknown70, frameLocation);
+  wkPixlManRes *res = m_drPixlMan->unknown7f0;
   DrPixlRenderTarget *colorBuff = postParm->m_TMAAOn ? res->unknown00[13][DrMan::s_nDblIdx] : res->unknown00[4][0];
   apCache->setTexture(*colorBuff->unknown70, colorLocation);
   uniform.updateData();
@@ -246,9 +246,9 @@ void DrPixlPostObjDepthofField::renderDofScaleDown() {
 }
 
 void DrPixlPostObjDepthofField::renderDofPass() {
-  DrAPCache *apCache = unknown00->unknown5c0;
-  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
-  DrShdDataList *shdList = unknown00->unknown80->unknown00;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
+  DrPixlPostParm *postParm = m_drMan->unknown120[m_drMan->unknown1c98];
+  DrShdDataList *shdList = m_drMan->m_drShdMan->m_drShdDataList;
   f32 pixlScale = postParm->m_dofHLvMode ? unknown54 * 0.5f : unknown54;
   f32 width = static_cast<f32>(unknown18->unknownbc);
   f32 height = static_cast<f32>(unknown18->unknownc0);
@@ -345,11 +345,11 @@ void DrPixlPostObjDepthofField::renderDofPass() {
 
 void DrPixlPostObjDepthofField::renderCalc() {
   DrAPGxType::setupBlend(1);
-  unknown08->unknown7f0->unknown138->setRenderTarget();
-  DrShdMan *shdMan = unknown00->unknown80;
-  DrAPCache *apCache = unknown00->unknown5c0;
-  DrPixlPostParm *postParm = unknown00->unknown120[unknown00->unknown1c98];
-  DrShdDataList *shdList = shdMan->unknown00;
+  m_drPixlMan->unknown7f0->unknown138->setRenderTarget();
+  DrShdMan *shdMan = m_drMan->m_drShdMan;
+  DrAPCache *apCache = m_drMan->m_drAPCache;
+  DrPixlPostParm *postParm = m_drMan->unknown120[m_drMan->unknown1c98];
+  DrShdDataList *shdList = shdMan->m_drShdDataList;
   DrShdDataObj *shader = shdList->getPostShdObj(0x15);
   u32 autoFocus = postParm->m_dOFAutoFocus ? 1 : 2;
   shader->setDeclarationIdx(shader->getDeclarationOfs("AUTO_FOCUS"), autoFocus);
@@ -369,7 +369,7 @@ void DrPixlPostObjDepthofField::renderCalc() {
   work[2] = 1.0f / (width + width);
   work[3] = 1.0f / (height + height);
   uniform.setF32SetVec4(sclOffset, work);
-  DrCalcViewWork *viewWork = unknown00->unknown580->unknown10;
+  DrCalcViewWork *viewWork = m_drMan->m_drCalcMan->m_drCalcViewWork;
   f32 focus = postParm->m_doFDistance / viewWork->unknown430.x + viewWork->unknown430.y;
   f32 range = postParm->m_doFRange / viewWork->unknown430.x;
   work[0] = -focus;
@@ -377,7 +377,7 @@ void DrPixlPostObjDepthofField::renderCalc() {
   work[2] = postParm->m_doFBlend;
   work[3] = postParm->m_doFStrength;
   uniform.setF32SetVec4(ratioOffset, work);
-  wkPixlManRes *res = unknown08->unknown7f0;
+  wkPixlManRes *res = m_drPixlMan->unknown7f0;
   DrPixlRenderTarget *colorBuff = postParm->m_TMAAOn ? res->unknown00[13][DrMan::s_nDblIdx] : res->unknown00[4][0];
   apCache->beginTexSampling(2, 0);
   apCache->setTexture(*colorBuff->unknown70, colorLocation);

@@ -49,7 +49,7 @@ public:
     return mm::Rect<int>(0, 0, 0, 0);
   }
 
-  WinView *unknown00;  // Inferred role: frame view; original member name unknown.
+  WinView *m_winView;  // Inferred role: frame view; original member name unknown.
   bool m_splitHolizon; // Inferred role: split horizontal; named after the game accessor ml::WinView::isSplitHolizon.
   s32 unknown0c;       // Inferred role: split line when vertical; original member name unknown.
   s32 unknown10;       // Inferred role: split line when horizontal; original member name unknown.

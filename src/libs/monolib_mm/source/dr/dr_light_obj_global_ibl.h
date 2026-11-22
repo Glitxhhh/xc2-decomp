@@ -28,30 +28,30 @@ public:
   // at once, three vectors of four floats and the last 0x88 bytes at once. The default constructor is inlined in
   // mm::mtl::Vector<MeshData>::extend (0x71007daa78): it clears unknown110 and unknown118 between the member constructors.
   struct MeshData {
-    MeshData() : unknown110(nullptr), unknown118(false) {}
-    ~MeshData() { unknown1c0.release(); }
+    MeshData() : m_drResUseQueryObj(nullptr), unknown118(false) {}
+    ~MeshData() { m_cGLibPixlCounter.release(); }
 
-    grlib::CGLibVtxVertex unknown00;        // Inferred role: vertex; original member name unknown.
-    grlib::CGLibVtxIndex unknown28;         // Inferred role: index; original member name unknown.
-    mm::Mat44 unknown50;                    // Inferred role: proxy to world matrix; original member name unknown.
-    mm::Mat44 unknown90;                    // Inferred role: world to proxy matrix (isInRange); original member name unknown.
-    f32 unknownd0;                          // Inferred role: bounding radius (update); original member name unknown.
-    mm::Vec3 unknowne0;                     // Inferred role: bounding box minimum (isInRange); original member name unknown.
-    mm::Vec3 unknownf0;                     // Inferred role: bounding box maximum (isInRange); original member name unknown.
-    mm::Vec3 unknown100;                    // Inferred role: bounding box center (update); original member name unknown.
-    DrResUseQueryObj *unknown110;           // Inferred role: occlusion query; original member name unknown.
-    bool unknown118;                        // Inferred role: flag cleared with the occlusion query; original member name unknown.
-    bool unknown119;                        // Inferred role: camera inside the mesh range, set by update; original member name unknown.
-    u8 unknown11a;                          // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
-    u8 unknown11b;                          // Inferred role: proxy shape type, 0 to 3 (isInRange); original member name unknown.
-    u8 unknown11c;                          // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
-    bool unknown11d;                        // Inferred role: unknown, bit 0 of a mesh value (initializeFromBuffer); original member name unknown.
-    mm::Vec4 unknown120;                    // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
-    mm::Vec4 unknown130;                    // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
-    mm::Vec4 unknown140;                    // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
-    grlib::CGLibDblUniformBlock unknown150; // Inferred role: uniform block; original member name unknown.
-    grlib::CGLibDblUniformBlock unknown188; // Inferred role: uniform block; original member name unknown.
-    grlib::CGLibPixlCounter unknown1c0;     // Inferred role: pixel counter; original member name unknown.
+    grlib::CGLibVtxVertex m_cGLibVtxVertex;     // Inferred role: vertex; original member name unknown.
+    grlib::CGLibVtxIndex m_cGLibVtxIndex;       // Inferred role: index; original member name unknown.
+    mm::Mat44 unknown50;                        // Inferred role: proxy to world matrix; original member name unknown.
+    mm::Mat44 unknown90;                        // Inferred role: world to proxy matrix (isInRange); original member name unknown.
+    f32 unknownd0;                              // Inferred role: bounding radius (update); original member name unknown.
+    mm::Vec3 unknowne0;                         // Inferred role: bounding box minimum (isInRange); original member name unknown.
+    mm::Vec3 unknownf0;                         // Inferred role: bounding box maximum (isInRange); original member name unknown.
+    mm::Vec3 unknown100;                        // Inferred role: bounding box center (update); original member name unknown.
+    DrResUseQueryObj *m_drResUseQueryObj;       // Inferred role: occlusion query; original member name unknown.
+    bool unknown118;                            // Inferred role: flag cleared with the occlusion query; original member name unknown.
+    bool unknown119;                            // Inferred role: camera inside the mesh range, set by update; original member name unknown.
+    u8 unknown11a;                              // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
+    u8 unknown11b;                              // Inferred role: proxy shape type, 0 to 3 (isInRange); original member name unknown.
+    u8 unknown11c;                              // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
+    bool unknown11d;                            // Inferred role: unknown, bit 0 of a mesh value (initializeFromBuffer); original member name unknown.
+    mm::Vec4 unknown120;                        // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
+    mm::Vec4 unknown130;                        // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
+    mm::Vec4 unknown140;                        // Inferred role: unknown, set by initializeFromBuffer; original member name unknown.
+    grlib::CGLibDblUniformBlock unknown150;     // Inferred role: uniform block; original member name unknown.
+    grlib::CGLibDblUniformBlock unknown188;     // Inferred role: uniform block; original member name unknown.
+    grlib::CGLibPixlCounter m_cGLibPixlCounter; // Inferred role: pixel counter; original member name unknown.
   };
 
   DrLightObjGlobalIBL();
@@ -64,8 +64,8 @@ public:
   void endOccQuery();
   f32 calcSimilarity(const DrLightObjGlobalIBL &other) const;
 
-  DrGlobalIBLPack *unknown00; // Inferred role: owner pack, set by initializeFromBuffer; original member name unknown.
-  int m_version;              // Inferred role: version; named after the game accessor ml::DrRequetIBL::getVersion.
+  DrGlobalIBLPack *m_drGlobalIBLPack; // Inferred role: owner pack, set by initializeFromBuffer; original member name unknown.
+  int m_version;                      // Inferred role: version; named after the game accessor ml::DrRequetIBL::getVersion.
   int m_priority;
   u32 unknown10;                       // Inferred role: index in the pack, set by initializeFromBuffer; original member name unknown.
   int m_textureNum;                    // Inferred role: texture num; named after the game accessor ml::DrRequetIBL::getTextureNum.
@@ -103,8 +103,8 @@ static_assert(offsetof(DrLightObjGlobalIBL, unknown3b8) == 0x3b8, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown3c0) == 0x3c0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown3c4) == 0x3c4, "");
 static_assert(sizeof(DrLightObjGlobalIBL::MeshData) == 0x1e0, "");
-static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown28) == 0x28, "");
-static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown110) == 0x110, "");
+static_assert(offsetof(DrLightObjGlobalIBL::MeshData, m_cGLibVtxIndex) == 0x28, "");
+static_assert(offsetof(DrLightObjGlobalIBL::MeshData, m_drResUseQueryObj) == 0x110, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown50) == 0x50, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown90) == 0x90, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknownd0) == 0xd0, "");
@@ -113,7 +113,7 @@ static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown100) == 0x100, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown11d) == 0x11d, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown120) == 0x120, "");
 static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown150) == 0x150, "");
-static_assert(offsetof(DrLightObjGlobalIBL::MeshData, unknown1c0) == 0x1c0, "");
+static_assert(offsetof(DrLightObjGlobalIBL::MeshData, m_cGLibPixlCounter) == 0x1c0, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown20) == 0x20, "");
 static_assert(offsetof(DrLightObjGlobalIBL, unknown70) == 0x70, "");
 static_assert(offsetof(DrLightObjGlobalIBL, m_texture) == 0x78, "");

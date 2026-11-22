@@ -61,7 +61,7 @@ DrIBLColiAcc::COLITEST DrIBLColiAcc::s_pColiTest[5] = {
 DrIBLColiAcc::DrIBLColiAcc(const void *data, mtl::ALLOC_HANDLE handle) {
   const unknown005 *header = static_cast<const unknown005 *>(data);
   unknown00 = static_cast<const u8 *>(data);
-  unknown08 = reinterpret_cast<const _IBLPrimHeader *>(unknown00 + header->unknown14);
+  m_iBLPrimHeader = reinterpret_cast<const _IBLPrimHeader *>(unknown00 + header->unknown14);
   if (header->unknown18 != 0) {
     unknown10 = reinterpret_cast<const _EnvColiListTreeData *>(unknown00 + header->unknown1c);
   }
@@ -105,7 +105,7 @@ void DrIBLColiAcc::testTreeInvalidColi(const _EnvColiListTreeData *tree, const m
     if (primCount != 0) {
       const u16 *primitives = reinterpret_cast<const u16 *>(unknown00 + tree->unknown1c);
       for (u32 i = 0; i < primCount; i++) {
-        const _IBLPrimHeader *base = unknown08;
+        const _IBLPrimHeader *base = m_iBLPrimHeader;
         const _IBLPrimHeader *primitive = base + primitives[i];
         if ((this->*s_pColiTest[primitive->unknown04])(unknown00 + primitive->unknown00, position, margin)) {
           unknown28.setLocal(primitive->unknown06, true);
@@ -136,7 +136,7 @@ bool DrIBLColiAcc::testTreeColi(const _EnvColiListTreeData *tree, const mm::Vec3
     if (primCount != 0) {
       const u16 *primitives = reinterpret_cast<const u16 *>(unknown00 + tree->unknown1c);
       for (u32 i = 0; i < primCount; i++) {
-        const _IBLPrimHeader *base = unknown08;
+        const _IBLPrimHeader *base = m_iBLPrimHeader;
         const _IBLPrimHeader *primitive = base + primitives[i];
         if (!unknown28.getLocal(primitive->unknown06) && unknown20 < primitive->unknown08) {
           if ((this->*s_pColiTest[primitive->unknown04])(unknown00 + primitive->unknown00, position, margin)) {

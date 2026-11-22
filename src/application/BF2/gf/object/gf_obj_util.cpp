@@ -151,7 +151,7 @@ bool GfObjUtil::unmountFromBone(GF_OBJ_HANDLE *handle) {
   GfComModel *model = parentObj->getComponent<GfComModel>();
   if (model != nullptr) {
     GfComTransform *transform = obj->getComponent<GfComTransform>();
-    if (transform->unknown10->unknowna8 != nullptr) {
+    if (transform->unknown10->m_referenceFrame != nullptr) {
       model->removeBoneReferenceFrame(mountInfo->unknown3e0.c_str(), transform->unknown10);
     }
   }
@@ -182,7 +182,7 @@ bool GfObjUtil::attachGfObj(GF_OBJ_HANDLE *parent, GF_OBJ_HANDLE *child) {
   }
   GfComTransform *childTransform = mm::mtl::dynamicCast<GfComTransform>(childObj->unknown38[GfComTransform::COMPONENT_INDEX]);
   mm::mtl::IntrusivePtr<fw::ReferenceFrame> &childFrame = childTransform->unknown10;
-  if (childFrame->unknowna8 != nullptr) {
+  if (childFrame->m_referenceFrame != nullptr) {
     return false;
   }
 
@@ -207,7 +207,7 @@ bool GfObjUtil::dettachGfObject(GF_OBJ_HANDLE *parent, GF_OBJ_HANDLE *child) {
   mm::mtl::IntrusivePtr<fw::ReferenceFrame> &parentFrame = parentTransform->unknown18.get() == nullptr ? parentTransform->unknown10 : parentTransform->unknown18;
   GfComTransform *childTransform = mm::mtl::dynamicCast<GfComTransform>(childObj->unknown38[GfComTransform::COMPONENT_INDEX]);
   mm::mtl::IntrusivePtr<fw::ReferenceFrame> &childFrame = childTransform->unknown10;
-  if (childFrame->unknowna8 != parentFrame.get()) {
+  if (childFrame->m_referenceFrame != parentFrame.get()) {
     return false;
   }
 

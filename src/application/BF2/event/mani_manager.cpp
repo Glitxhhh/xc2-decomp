@@ -116,7 +116,7 @@ void ManiManager::update() {
 void ManiManager::clearManipulate() {
   unknown20.clear();
   unknown22030 = MANI_TYPE_UNKNOWN_1;
-  Manager::get()->getScn()->unknown30->clrManipulator();
+  Manager::get()->getScn()->m_scnDebug->clrManipulator();
   unknown18.set(FLAG_UNKNOWN_2, false);
 }
 

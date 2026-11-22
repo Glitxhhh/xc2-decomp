@@ -194,10 +194,10 @@ bool DrPixlPostParm::getRainDropOn() const { return m_rainDropOn; }
 bool DrPixlPostParm::getSSRWithTrans() const { return !DrMan::getIns()->m_autoResetScene; }
 
 bool DrPixlPostParm::getSSROn() const {
-  if (DrMan::getIns()->unknown78->unknown7f0->unknown180->unknown108 < 0.01f) {
+  if (DrMan::getIns()->m_drPixlMan->unknown7f0->m_drPixlPostMan->unknown108 < 0.01f) {
     return false;
   }
-  if (DrMan::getIns()->unknown580->unknown10->unknown9aa && unknown1104) {
+  if (DrMan::getIns()->m_drCalcMan->m_drCalcViewWork->unknown9aa && unknown1104) {
     return false;
   }
   return unknown48a != 0;

@@ -160,35 +160,35 @@ public:
   bool isUpdating() const { return unknown84 >= STATE_UNKNOWN_2 && unknown84 <= STATE_UNKNOWN_4; }
 
   Applet *m_applet;
-  FrameworkConfig unknown10;   // Inferred role: config; original member name unknown.
-  ml::WinProc *unknown50;      // Inferred role: win proc; original member name unknown.
-  ml::Scn *unknown58;          // Inferred role: scn; original member name unknown.
-  void *unknown60;             // Inferred role: unknown pointer, 8 bytes at 0x60 cleared by the constructor; original member name and type unknown.
-  mtl::ALLOC_HANDLE unknown68; // Inferred role: mem handle; original member name unknown.
-  unknown076 *unknown70;       // Inferred role: launcher; original member name unknown.
-  UpdateInfo unknown78;        // Inferred role: update info; original member name unknown.
-  u32 unknown84;               // Inferred role: state; original member name unknown.
-  bool unknown88;              // Inferred role: unknown flag, cleared by the constructor; original member name unknown.
-  bool unknown89;              // Inferred role: unknown flag, cleared by the constructor; original member name unknown.
-  bool unknown8a;              // Inferred role: updated this frame; original member name unknown.
+  FrameworkConfig m_frameworkConfig; // Inferred role: config; original member name unknown.
+  ml::WinProc *unknown50;            // Inferred role: win proc; original member name unknown.
+  ml::Scn *unknown58;                // Inferred role: scn; original member name unknown.
+  void *unknown60;                   // Inferred role: unknown pointer, 8 bytes at 0x60 cleared by the constructor; original member name and type unknown.
+  mtl::ALLOC_HANDLE m_ALLOC_HANDLE;  // Inferred role: mem handle; original member name unknown.
+  unknown076 *unknown70;             // Inferred role: launcher; original member name unknown.
+  UpdateInfo m_updateInfo;           // Inferred role: update info; original member name unknown.
+  u32 unknown84;                     // Inferred role: state; original member name unknown.
+  bool unknown88;                    // Inferred role: unknown flag, cleared by the constructor; original member name unknown.
+  bool unknown89;                    // Inferred role: unknown flag, cleared by the constructor; original member name unknown.
+  bool unknown8a;                    // Inferred role: updated this frame; original member name unknown.
   u8 _8b[0x8c - 0x8b];
   f32 unknown8c; // Inferred role: update speed; original member name unknown.
   u8 _90[0x98 - 0x90];
   mm::mtl::FixedArray<unknown077, LAYER_UNKNOWN_32> unknown98;                // Inferred role: layers; original member name unknown.
   mm::mtl::FixedVector<IPauseTrigger *, PAUSE_TRIGGER_UNKNOWN_32> unknown298; // Inferred role: pause triggers; original member name unknown.
-  MemHandlebaseAllocator unknown3a0;                                          // Inferred role: allocator; original member name unknown.
+  MemHandlebaseAllocator m_memHandlebaseAllocator;                            // Inferred role: allocator; original member name unknown.
 };
 
-static_assert(offsetof(Framework, unknown10) == 0x10, "");
+static_assert(offsetof(Framework, m_frameworkConfig) == 0x10, "");
 static_assert(offsetof(Framework, unknown58) == 0x58, "");
-static_assert(offsetof(Framework, unknown68) == 0x68, "");
+static_assert(offsetof(Framework, m_ALLOC_HANDLE) == 0x68, "");
 static_assert(offsetof(Framework, unknown70) == 0x70, "");
-static_assert(offsetof(Framework, unknown78) == 0x78, "");
+static_assert(offsetof(Framework, m_updateInfo) == 0x78, "");
 static_assert(offsetof(Framework, unknown84) == 0x84, "");
 static_assert(offsetof(Framework, unknown8c) == 0x8c, "");
 static_assert(offsetof(Framework, unknown98) == 0x98, "");
 static_assert(offsetof(Framework, unknown298) == 0x298, "");
-static_assert(offsetof(Framework, unknown3a0) == 0x3a0, "");
+static_assert(offsetof(Framework, m_memHandlebaseAllocator) == 0x3a0, "");
 static_assert(sizeof(Framework) == 0x3f0, "");
 
 class IPauseTrigger {

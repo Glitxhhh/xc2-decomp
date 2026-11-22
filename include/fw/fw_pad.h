@@ -220,17 +220,17 @@ public:
   void updateControlPadNo(int padNo);
 
   IPadFilter *m_filter[PAD_UNKNOWN_12];
-  PadData unknown80[PAD_UNKNOWN_12];         // Inferred role: pads; original member name unknown.
-  PadData unknown3e0[PAD_UNKNOWN_12];        // Inferred role: pads updated by the second updatePadData loop; original member name unknown.
-  PadWorkArray unknown740;                   // Inferred role: button works of unknown80; original member name unknown.
-  PadWorkArray unknown1940;                  // Inferred role: button works of unknown3e0; original member name unknown.
-  PadData unknown2b40[PAD_UNKNOWN_12];       // Inferred role: control pad data; original member name unknown.
-  PadData unknown2ea0[PAD_UNKNOWN_12];       // Inferred role: debug pad data; original member name unknown.
-  PadConfigData unknown3200[PAD_UNKNOWN_12]; // Inferred role: configs; original member name unknown.
-  int unknown35f0[PAD_UNKNOWN_12];           // Inferred role: control pad nos; original member name unknown.
-  int unknown3620[PAD_UNKNOWN_12];           // Inferred role: debug pad nos; original member name unknown.
-  mm::mtl::unknown027<32> unknown3650;       // Inferred role: enable flags; original member name unknown.
-  bool unknown3654;                          // Inferred role: debug draw enable; original member name unknown.
+  PadData unknown80[PAD_UNKNOWN_12];             // Inferred role: pads; original member name unknown.
+  PadData unknown3e0[PAD_UNKNOWN_12];            // Inferred role: pads updated by the second updatePadData loop; original member name unknown.
+  PadWorkArray unknown740;                       // Inferred role: button works of unknown80; original member name unknown.
+  PadWorkArray unknown1940;                      // Inferred role: button works of unknown3e0; original member name unknown.
+  PadData unknown2b40[PAD_UNKNOWN_12];           // Inferred role: control pad data; original member name unknown.
+  PadData unknown2ea0[PAD_UNKNOWN_12];           // Inferred role: debug pad data; original member name unknown.
+  PadConfigData m_padConfigData[PAD_UNKNOWN_12]; // Inferred role: configs; original member name unknown.
+  int unknown35f0[PAD_UNKNOWN_12];               // Inferred role: control pad nos; original member name unknown.
+  int unknown3620[PAD_UNKNOWN_12];               // Inferred role: debug pad nos; original member name unknown.
+  mm::mtl::unknown027<32> unknown3650;           // Inferred role: enable flags; original member name unknown.
+  bool unknown3654;                              // Inferred role: debug draw enable; original member name unknown.
   u8 _3655[0x3658 - 0x3655];
   long unknown3658; // Inferred role: clock of the last frame begin; original member name unknown.
   f32 unknown3660;  // Inferred role: repeat time; original member name unknown.
@@ -240,7 +240,7 @@ public:
   int unknown3670; // Inferred role: user select pad no; original member name unknown.
   u8 _3674[0x3678 - 0x3674];
   mm::mtl::FixedQueue<IPadListener *, LISTENER_UNKNOWN_16> unknown3678; // Inferred role: listeners; original member name unknown.
-  PadResEventManager unknown3708;                                       // Inferred role: pad res event manager; original member name unknown.
+  PadResEventManager m_padResEventManager;                              // Inferred role: pad res event manager; original member name unknown.
 };
 
 static_assert(offsetof(PadManager, m_filter) == 0x20, "");
@@ -252,11 +252,11 @@ static_assert(offsetof(PadManager, unknown2b40) == 0x2b40, "");
 static_assert(offsetof(PadManager, unknown2ea0) == 0x2ea0, "");
 static_assert(offsetof(PadManager, unknown35f0) == 0x35f0, "");
 static_assert(offsetof(PadManager, unknown3650) == 0x3650, "");
-static_assert(offsetof(PadManager, unknown3200) == 0x3200, "");
+static_assert(offsetof(PadManager, m_padConfigData) == 0x3200, "");
 static_assert(offsetof(PadManager, unknown3660) == 0x3660, "");
 static_assert(offsetof(PadManager, unknown3658) == 0x3658, "");
 static_assert(offsetof(PadManager, unknown3678) == 0x3678, "");
-static_assert(offsetof(PadManager, unknown3708) == 0x3708, "");
+static_assert(offsetof(PadManager, m_padResEventManager) == 0x3708, "");
 
 class IPadListener {
 public:

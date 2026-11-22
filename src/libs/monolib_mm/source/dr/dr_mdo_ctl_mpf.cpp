@@ -36,9 +36,10 @@ struct unknown784 {
 };
 
 DrMdoCtlMpf::DrMdoCtlMpf(const void *data, const char *path, DrMan *drMan, int viewNum)
-    : DrMdlObj(viewNum), unknown1b0(nullptr), unknown1b8(nullptr), unknown1c0(0), unknown1c8(nullptr), unknown1d0(nullptr), unknown1d8(nullptr), unknown1e0(nullptr), unknown1e8(nullptr) {
+    : DrMdlObj(viewNum), unknown1b0(nullptr), unknown1b8(nullptr), unknown1c0(0), m_drMdoCtlMpfWork(nullptr), m_drMdoCtlMpfAuto(nullptr), m_drMdoCtlMpfInst(nullptr), m_drResMdoSeamWrkPosMpf(nullptr),
+      m_drResMdoSortMpf(nullptr) {
   unknown1c = unknown037_2;
-  drMan->unknown88->addMpfObj();
+  drMan->m_drMdlMan->addMpfObj();
   m_drMan = drMan;
   const unknown784 *header = static_cast<const unknown784 *>(data);
   const u8 *bytes = static_cast<const u8 *>(data);
@@ -55,9 +56,9 @@ DrMdoCtlMpf::DrMdoCtlMpf(const void *data, const char *path, DrMan *drMan, int v
 DrMdoCtlMpf::~DrMdoCtlMpf() { releaseMpf(); }
 
 void DrMdoCtlMpf::releaseMpf() {
-  unknown1d0->autoMpfRelease();
-  unknown1d0->~DrMdoCtlMpfAuto();
-  unknown1e8->~DrResMdoSortMpf();
+  m_drMdoCtlMpfAuto->autoMpfRelease();
+  m_drMdoCtlMpfAuto->~DrMdoCtlMpfAuto();
+  m_drResMdoSortMpf->~DrResMdoSortMpf();
   if (unknown1b0 != nullptr) {
     mtl::MemManager::deallocate(unknown1b0, 0, false);
     unknown1b0 = nullptr;
@@ -67,7 +68,7 @@ void DrMdoCtlMpf::releaseMpf() {
     unknown1b8 = nullptr;
   }
   releaseMat();
-  m_drMan->unknown88->delMpfObj();
+  m_drMan->m_drMdlMan->delMpfObj();
 }
 
 void DrMdoCtlMpf::resourceInit() { setupMpfResource(); }
@@ -76,10 +77,10 @@ void DrMdoCtlMpf::update() {
   updateAlphaCall();
   updateMpf();
   if (unknownf8 & unknown028_15) {
-    m_drMan->unknown88->unknown230->unknown00 = true;
+    m_drMan->m_drMdlMan->unknown230->unknown00 = true;
   }
   if (unknownf8 & unknown028_16) {
-    m_drMan->unknown88->unknown230->unknown01 = true;
+    m_drMan->m_drMdlMan->unknown230->unknown01 = true;
   }
 }
 
@@ -90,7 +91,7 @@ void DrMdoCtlMpf::updateMpf() {
   unknownf8 = 0;
   unknown168 = 0;
   m_center = mm::Vec3(0.0f, 0.0f, 0.0f);
-  DrMdoMpfMan *mpfMan = m_drMan->unknown88->unknown020;
+  DrMdoMpfMan *mpfMan = m_drMan->m_drMdlMan->m_drMdoMpfMan;
   if (mpfMan != nullptr) {
     mpfMan->unknown3d24 = m_frameSpd;
   }
@@ -109,11 +110,11 @@ void DrMdoCtlMpf::callRenderMpf() {
   if ((unknownf8 & unknown028_0) == 0) {
     return;
   }
-  DrMan::get()->unknown180->begin(DrPixlTileParm::TILE_TYPE_UNKNOWN_3);
+  DrMan::get()->m_drPixlTileParm->begin(DrPixlTileParm::TILE_TYPE_UNKNOWN_3);
   unknownf4 = 0;
   unknownf2 = 0;
   defMpfrender();
-  DrMan::get()->unknown180->end(DrPixlTileParm::TILE_TYPE_UNKNOWN_3);
+  DrMan::get()->m_drPixlTileParm->end(DrPixlTileParm::TILE_TYPE_UNKNOWN_3);
 }
 
 void DrMdoCtlMpf::defMpfZPreRender() {
@@ -121,10 +122,10 @@ void DrMdoCtlMpf::defMpfZPreRender() {
   unknownf4 = 0;
   unknownf2 = 0;
   beginSetup();
-  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
-  m_drMan->unknown5c0->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
+  grlib::CGLibVtxInstans *instans = m_drMan->m_drMdlMan->m_drMdoVertexMan->unknown10;
+  m_drMan->m_drAPCache->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
   for (int i = 0; i < unknown1a4; i++) {
-    if (unknown1c8->unknown20[i].m_objChk == 0) {
+    if (m_drMdoCtlMpfWork->m_wkMpfObjSelect[i].m_objChk == 0) {
       continue;
     }
     // The game takes the row of the object as the flat table plus a 32-bit i * 8 (lsl w8, w21, #3; add x8, x9, w8, sxtw #3, 0x71007faa5c) and loads unknownf4 after
@@ -134,10 +135,10 @@ void DrMdoCtlMpf::defMpfZPreRender() {
     if (list == nullptr) {
       continue;
     }
-    const MdsMdlTopHeader *top = &unknown30->unknown168[i];
+    const MdsMdlTopHeader *top = &unknown30->m_mdsMdlTopHeader[i];
     const MdsMdlInfoHeader *infos = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
     while (true) {
-      mpfZPrePassRender(i, infos + list->unknown00, unknown1c8, instans);
+      mpfZPrePassRender(i, infos + list->unknown00, m_drMdoCtlMpfWork, instans);
       if (list->unknown02 == 0) {
         break;
       }
@@ -148,14 +149,14 @@ void DrMdoCtlMpf::defMpfZPreRender() {
 
 void DrMdoCtlMpf::defMpfrender() {
   beginSetup();
-  grlib::CGLibVtxInstans *instans = m_drMan->unknown88->unknown008->unknown10;
-  DrAPCache *cache = m_drMan->unknown5c0;
+  grlib::CGLibVtxInstans *instans = m_drMan->m_drMdlMan->m_drMdoVertexMan->unknown10;
+  DrAPCache *cache = m_drMan->m_drAPCache;
   cache->setupCulling(DR_AP_CULL_TYPE_UNKNOWN_2);
-  m_drMan->unknown78->selectGBuffRenderTarget(0x1f);
+  m_drMan->m_drPixlMan->selectGBuffRenderTarget(0x1f);
   cache->setupDepthStencil(0x18, 1, 0, 3);
   cache->setupAlphaBlend(0);
   for (int i = 0; i < unknown1a4; i++) {
-    if (unknown1c8->unknown20[i].m_objChk == 0) {
+    if (m_drMdoCtlMpfWork->m_wkMpfObjSelect[i].m_objChk == 0) {
       continue;
     }
     // Same row address and load order as defMpfZPreRender.
@@ -164,10 +165,10 @@ void DrMdoCtlMpf::defMpfrender() {
     if (list == nullptr) {
       continue;
     }
-    const MdsMdlTopHeader *top = &unknown30->unknown168[i];
+    const MdsMdlTopHeader *top = &unknown30->m_mdsMdlTopHeader[i];
     const MdsMdlInfoHeader *infos = reinterpret_cast<const MdsMdlInfoHeader *>(unknown30->unknown18 + top->unknown00);
     while (true) {
-      mpfDrawRender(i, infos + list->unknown00, unknown1c8, instans);
+      mpfDrawRender(i, infos + list->unknown00, m_drMdoCtlMpfWork, instans);
       if (list->unknown02 == 0) {
         break;
       }

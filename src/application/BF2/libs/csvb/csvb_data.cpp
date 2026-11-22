@@ -66,7 +66,7 @@ bool CCsvbData::Load(mtl::ALLOC_HANDLE handle, const void *data, u32 size) {
   }
   m_rowCount = info.unknown00.unknown04;
   if (m_rowCount != 0) {
-    unknown08 = static_cast<unknown001 *>(CCsvbUtility::CreateCsvbRows(handle, info.unknown10, m_rowCount, false));
+    unknown08 = static_cast<unknown001 *>(CCsvbUtility::CreateCsvbRows(handle, info.m_stCsvbRowInfo, m_rowCount, false));
   }
   unknown10 = info.unknown00.unknown06;
   if (unknown10 != 0) {
@@ -75,7 +75,7 @@ bool CCsvbData::Load(mtl::ALLOC_HANDLE handle, const void *data, u32 size) {
       unknown28 = static_cast<char *>(mtl::MemManager::allocate(handle, unknown20, 4, false, "no name", 0));
       memcpy(unknown28, info.unknown28, unknown20);
     }
-    unknown18 = static_cast<unknown002 *>(CCsvbUtility::CreateCsvbData(handle, info.unknown18, unknown10, info.unknown20, unknown28, false));
+    unknown18 = static_cast<unknown002 *>(CCsvbUtility::CreateCsvbData(handle, info.m_stCsvbDataInfo, unknown10, info.unknown20, unknown28, false));
   }
   return true;
 }
@@ -103,7 +103,7 @@ bool CCsvbData::Load(mm::mtl::IAllocator *allocator, const void *data, u32 size)
   unknown30 = allocator;
   m_rowCount = info.unknown00.unknown04;
   if (m_rowCount != 0) {
-    unknown08 = static_cast<unknown001 *>(CCsvbUtility::CreateCsvbRows(allocator, info.unknown10, m_rowCount, false));
+    unknown08 = static_cast<unknown001 *>(CCsvbUtility::CreateCsvbRows(allocator, info.m_stCsvbRowInfo, m_rowCount, false));
   }
   unknown10 = info.unknown00.unknown06;
   if (unknown10 != 0) {
@@ -112,7 +112,7 @@ bool CCsvbData::Load(mm::mtl::IAllocator *allocator, const void *data, u32 size)
       unknown28 = static_cast<char *>(allocator->allocate(unknown20, 8));
       memcpy(unknown28, info.unknown28, unknown20);
     }
-    unknown18 = static_cast<unknown002 *>(CCsvbUtility::CreateCsvbData(allocator, info.unknown18, unknown10, info.unknown20, unknown28, false));
+    unknown18 = static_cast<unknown002 *>(CCsvbUtility::CreateCsvbData(allocator, info.m_stCsvbDataInfo, unknown10, info.unknown20, unknown28, false));
   }
   return true;
 }

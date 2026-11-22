@@ -92,7 +92,7 @@ void GfComPropertyPc::cleanup() {
 void GfComPropertyPc::writeBack() {
   GfComTransform *transform = unknown08->getComponent<GfComTransform>();
   transform->unknown10->unknown003() = unknown160;
-  if (transform->unknown10->unknowna8 != nullptr) {
+  if (transform->unknown10->m_referenceFrame != nullptr) {
     transform->unknown10->syncLocalTransform();
   }
   if (transform->unknown18.get() != nullptr) {

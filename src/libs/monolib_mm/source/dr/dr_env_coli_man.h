@@ -57,18 +57,18 @@ public:
   void updateCloudFade(bool isReset, bool isForce);
   void updateRainDropFade(bool isReset);
 
-  DrEnvColiObj *unknown00;       // Inferred role: first object of the list; original member name unknown.
-  DrEnvColiObj *unknown08;       // Inferred role: last object of the list; original member name unknown.
-  DrEnvColiObj *unknown10[2][2]; // Inferred role: stock object list (first and last) per buffer; original member name unknown.
-  DrMan *unknown30;              // Inferred role: dr manager; original member name unknown.
-  DrEnvColiObj *unknown38;       // Inferred role: current object; original member name unknown.
-  DrEnvColiResult unknown40;     // Inferred role: result; original member name unknown.
-  f32 unknown68;                 // Inferred role: time; original member name unknown.
-  f32 unknown6c;                 // Inferred role: weather fade ratio; original member name unknown.
-  f32 unknown70;                 // Inferred role: weather fade frame; original member name unknown.
-  s32 unknown74;                 // Inferred role: weather id; original member name unknown.
-  f32 unknown78;                 // Inferred role: rain drop fade ratio; original member name unknown.
-  f32 unknown7c;                 // Inferred role: rain drop fade frame; original member name unknown.
+  DrEnvColiObj *unknown00;           // Inferred role: first object of the list; original member name unknown.
+  DrEnvColiObj *unknown08;           // Inferred role: last object of the list; original member name unknown.
+  DrEnvColiObj *unknown10[2][2];     // Inferred role: stock object list (first and last) per buffer; original member name unknown.
+  DrMan *m_drMan;                    // Inferred role: dr manager; original member name unknown.
+  DrEnvColiObj *unknown38;           // Inferred role: current object; original member name unknown.
+  DrEnvColiResult m_drEnvColiResult; // Inferred role: result; original member name unknown.
+  f32 unknown68;                     // Inferred role: time; original member name unknown.
+  f32 unknown6c;                     // Inferred role: weather fade ratio; original member name unknown.
+  f32 unknown70;                     // Inferred role: weather fade frame; original member name unknown.
+  s32 unknown74;                     // Inferred role: weather id; original member name unknown.
+  f32 unknown78;                     // Inferred role: rain drop fade ratio; original member name unknown.
+  f32 unknown7c;                     // Inferred role: rain drop fade frame; original member name unknown.
   u8 _80[0x84 - 0x80];
   f32 unknown84; // Inferred role: cloud fade frame; original member name unknown.
   f32 unknown88; // Inferred role: cloud fade ratio; original member name unknown.
@@ -77,9 +77,9 @@ public:
 
 static_assert(offsetof(DrEnvColiMan, unknown08) == 0x08, "");
 static_assert(offsetof(DrEnvColiMan, unknown10) == 0x10, "");
-static_assert(offsetof(DrEnvColiMan, unknown30) == 0x30, "");
+static_assert(offsetof(DrEnvColiMan, m_drMan) == 0x30, "");
 static_assert(offsetof(DrEnvColiMan, unknown38) == 0x38, "");
-static_assert(offsetof(DrEnvColiMan, unknown40) == 0x40, "");
+static_assert(offsetof(DrEnvColiMan, m_drEnvColiResult) == 0x40, "");
 static_assert(offsetof(DrEnvColiMan, unknown68) == 0x68, "");
 static_assert(offsetof(DrEnvColiMan, unknown74) == 0x74, "");
 static_assert(offsetof(DrEnvColiMan, unknown78) == 0x78, "");

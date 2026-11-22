@@ -30,9 +30,9 @@ struct wkPixlManRes {
   DrPixlRenderTarget *unknown158;             // Inferred role: render target; original member name unknown.
   DrPixlRenderTarget *unknown160;             // Inferred role: render target; original member name unknown.
   DrPixlRenderTarget *unknown168;             // Inferred role: render target; original member name unknown.
-  DrPixlDeferred *unknown170;                 // Inferred role: deferred; original member name unknown.
-  DrPixlShadowMan *unknown178;                // Inferred role: shadow man; original member name unknown.
-  DrPixlPostMan *unknown180;                  // Inferred role: post man; original member name unknown.
+  DrPixlDeferred *m_drPixlDeferred;           // Inferred role: deferred; original member name unknown.
+  DrPixlShadowMan *m_drPixlShadowMan;         // Inferred role: shadow man; original member name unknown.
+  DrPixlPostMan *m_drPixlPostMan;             // Inferred role: post man; original member name unknown.
   f32 unknown188;                             // Inferred role: tone strength, first value of setToneStr; original member name unknown.
   f32 unknown18c; // Inferred role: second tone value, sent with the tone strength by DrPixlPostObjBloom::calculateDownScaleImpl; original member name unknown. `str s1, [x8, #0x18c]` in
                   // DrPixlMan::setToneStr 0x710083df60; also read as the high half of the 64-bit load at 0x7100854524.
@@ -60,9 +60,9 @@ static_assert(offsetof(wkPixlManRes, unknown150) == 0x150, "");
 static_assert(offsetof(wkPixlManRes, unknown158) == 0x158, "");
 static_assert(offsetof(wkPixlManRes, unknown160) == 0x160, "");
 static_assert(offsetof(wkPixlManRes, unknown168) == 0x168, "");
-static_assert(offsetof(wkPixlManRes, unknown170) == 0x170, "");
-static_assert(offsetof(wkPixlManRes, unknown178) == 0x178, "");
-static_assert(offsetof(wkPixlManRes, unknown180) == 0x180, "");
+static_assert(offsetof(wkPixlManRes, m_drPixlDeferred) == 0x170, "");
+static_assert(offsetof(wkPixlManRes, m_drPixlShadowMan) == 0x178, "");
+static_assert(offsetof(wkPixlManRes, m_drPixlPostMan) == 0x180, "");
 static_assert(offsetof(wkPixlManRes, unknown188) == 0x188, "");
 static_assert(offsetof(wkPixlManRes, unknown18c) == 0x18c, "");
 static_assert(offsetof(wkPixlManRes, unknown194) == 0x194, "");
@@ -212,18 +212,18 @@ public:
 
   f32 unknown00; // Inferred role: depth value; original member name unknown.
   u8 _004[0x008 - 0x004];
-  DrMan *unknown08;                         // Inferred role: dr man; original member name unknown.
-  wkPixlManRes unknown10[4];                // Inferred role: resources; original member name unknown.
-  wkPixlManRes *unknown7f0;                 // Inferred role: res; original member name unknown.
-  DrPixlOccQuery *unknown7f8;               // Inferred role: occ query; original member name unknown.
-  DrPixlShadowCacheMan *unknown800;         // Inferred role: shadow cache man; original member name unknown.
-  grlib::CGLibTextureBuffer *unknown808[4]; // Inferred role: movie textures; original member name unknown.
-  u8 unknown828[4];                         // Inferred role: movie mip filters; original member name unknown.
+  DrMan *m_drMan;                               // Inferred role: dr man; original member name unknown.
+  wkPixlManRes unknown10[4];                    // Inferred role: resources; original member name unknown.
+  wkPixlManRes *unknown7f0;                     // Inferred role: res; original member name unknown.
+  DrPixlOccQuery *m_drPixlOccQuery;             // Inferred role: occ query; original member name unknown.
+  DrPixlShadowCacheMan *m_drPixlShadowCacheMan; // Inferred role: shadow cache man; original member name unknown.
+  grlib::CGLibTextureBuffer *unknown808[4];     // Inferred role: movie textures; original member name unknown.
+  u8 unknown828[4];                             // Inferred role: movie mip filters; original member name unknown.
   u8 _82c[0x830 - 0x82c];
   DrPixlRenderTarget *unknown830; // Inferred role: dammy tex; original member name unknown.
   DrPixlRenderTarget *unknown838; // Inferred role: dammy white tex; original member name unknown.
   u8 _840[0x848 - 0x840];
-  DrPixlShadowObj *unknown848;             // Inferred role: shadow obj; original member name unknown.
+  DrPixlShadowObj *m_drPixlShadowObj;      // Inferred role: shadow obj; original member name unknown.
   grlib::CGLibDblUniformBlock *unknown850; // Inferred role: shadow uniform; original member name unknown.
   u32 unknown858;                          // Inferred role: render target; original member name unknown.
   u32 unknown85c;                          // Inferred role: gbuff mask; original member name unknown.
@@ -233,15 +233,15 @@ public:
 };
 
 static_assert(offsetof(DrPixlMan, unknown00) == 0x000, "");
-static_assert(offsetof(DrPixlMan, unknown08) == 0x008, "");
+static_assert(offsetof(DrPixlMan, m_drMan) == 0x008, "");
 static_assert(offsetof(DrPixlMan, unknown10) == 0x010, "");
 static_assert(offsetof(DrPixlMan, unknown7f0) == 0x7f0, "");
-static_assert(offsetof(DrPixlMan, unknown7f8) == 0x7f8, "");
-static_assert(offsetof(DrPixlMan, unknown800) == 0x800, "");
+static_assert(offsetof(DrPixlMan, m_drPixlOccQuery) == 0x7f8, "");
+static_assert(offsetof(DrPixlMan, m_drPixlShadowCacheMan) == 0x800, "");
 static_assert(offsetof(DrPixlMan, unknown808) == 0x808, "");
 static_assert(offsetof(DrPixlMan, unknown828) == 0x828, "");
 static_assert(offsetof(DrPixlMan, unknown830) == 0x830, "");
-static_assert(offsetof(DrPixlMan, unknown848) == 0x848, "");
+static_assert(offsetof(DrPixlMan, m_drPixlShadowObj) == 0x848, "");
 static_assert(offsetof(DrPixlMan, unknown850) == 0x850, "");
 static_assert(offsetof(DrPixlMan, unknown858) == 0x858, "");
 static_assert(offsetof(DrPixlMan, unknown860) == 0x860, "");

@@ -45,25 +45,25 @@ DrResMdoSeamTexture *DrResMdoSeamWrkPosInst::s_pSeamTexture;
 DrResMdoSeamParmRead *DrResMdoSeamWrkPosInst::s_pParmRead;
 
 DrResMdoSeamWrkInst::DrResMdoSeamWrkInst()
-    : unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown70(0), unknown74(0), unknown84(0), unknown88(0), unknown8a(0), unknown98(0), unknown108(nullptr), unknown118(nullptr),
-      unknown128(nullptr), unknown130(nullptr), unknown140(0), unknown144(0), unknown156(0), unknown158(0), unknown1b0(nullptr), unknown1b8(nullptr) {}
+    : m_mdoWrkMatRes(nullptr), unknown58(nullptr), m_drResMdoVertex(nullptr), unknown70(0), unknown74(0), unknown84(0), unknown88(0), unknown8a(0), unknown98(0), m_drResMdoSeamMemObj(nullptr),
+      unknown118(nullptr), unknown128(nullptr), m_drResMdoSeamWrkInst(nullptr), unknown140(0), unknown144(0), unknown156(0), unknown158(0), unknown1b0(nullptr), unknown1b8(nullptr) {}
 
 DrResMdoSeamWrkInst::~DrResMdoSeamWrkInst() { release(); }
 
 void DrResMdoSeamWrkInst::release() {
   if (unknown118 != nullptr) {
     // The game reads the count once, before the loop (0x71008808dc).
-    int num = unknown20->unknown3c + 1;
+    int num = m_mdsSeamInstMapHead->unknown3c + 1;
     for (int i = 0; i < num; i++) {
       unknown118[i].releaseBaseInstPos();
     }
     unknown118 = nullptr;
     unknown140 = 0;
   }
-  if (unknown130 != nullptr) {
-    unknown130->unknown130 = nullptr;
+  if (m_drResMdoSeamWrkInst != nullptr) {
+    m_drResMdoSeamWrkInst->m_drResMdoSeamWrkInst = nullptr;
   }
-  unknown130 = nullptr;
+  m_drResMdoSeamWrkInst = nullptr;
   for (int i = 0; i < unknown98; i++) {
     if (unknown90[i] != nullptr) {
       mtl::MemManager::deallocate(unknown90[i], 0, false);
@@ -71,29 +71,29 @@ void DrResMdoSeamWrkInst::release() {
     }
   }
   unknown98 = 0;
-  if (unknown50 != nullptr) {
-    mtl::MemManager::deallocate(unknown50, 0, false);
-    unknown50 = nullptr;
+  if (m_mdoWrkMatRes != nullptr) {
+    mtl::MemManager::deallocate(m_mdoWrkMatRes, 0, false);
+    m_mdoWrkMatRes = nullptr;
   }
   if (unknown58 != nullptr) {
     mtl::MemManager::deallocate(unknown58, 0, false);
     unknown58 = nullptr;
   }
-  if (unknown60 != nullptr) {
-    delete unknown60;
-    unknown60 = nullptr;
+  if (m_drResMdoVertex != nullptr) {
+    delete m_drResMdoVertex;
+    m_drResMdoVertex = nullptr;
   }
-  unknown108 = nullptr;
+  m_drResMdoSeamMemObj = nullptr;
   unknown158 = 0;
 }
 
 void DrResMdoSeamWrkInst::releaseCache(DrMdoCtlSeamInstMap *ctl) {
   // The game reads the count once, before the loop (0x7100880a7c).
-  int num = unknown20->unknown3c;
+  int num = m_mdsSeamInstMapHead->unknown3c;
   for (int i = 0; i < num; i++) {
     if ((unknowne8[i >> 5] & (1 << (i & 0x1f))) != 0) {
-      if (unknown118[i + 1].unknown50 != nullptr) {
-        ctl->releaseFreeSeamMemObj(unknown118[i + 1].unknown50);
+      if (unknown118[i + 1].m_drResMdoSeamMemObj != nullptr) {
+        ctl->releaseFreeSeamMemObj(unknown118[i + 1].m_drResMdoSeamMemObj);
       }
       unknown118[i + 1].releaseBaseInstPos();
     }
@@ -113,29 +113,29 @@ void DrResMdoSeamWrkInst::setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniform
   unknown156 = 0;
   unknown152 = 0;
   unknown144 = 0;
-  unknown130 = nullptr;
+  m_drResMdoSeamWrkInst = nullptr;
   unknown88 = 0;
   unknown8a = 0;
   unknown1b0 = nullptr;
   matRes->unknowna0 = uniforms;
-  unknown50 = matRes;
-  unknown20 = head;
+  m_mdoWrkMatRes = matRes;
+  m_mdsSeamInstMapHead = head;
   const unknown404 *data = reinterpret_cast<const unknown404 *>(reinterpret_cast<const u8 *>(head) + head->unknown18);
   unknown28 = data;
   unknown30 = reinterpret_cast<const DrMdoCtlPos::unknown018 *>(reinterpret_cast<const u8 *>(data) + data->unknown08);
   unknown38 = reinterpret_cast<const DrMdoCtlPos::unknown019 *>(reinterpret_cast<const u8 *>(data) + data->unknown10);
   if (head->unknown1c != 0) {
-    unknown60 = new (DrMan::getIns()->unknown10) DrResMdoVertex(reinterpret_cast<const u8 *>(head) + unknown20->unknown1c);
+    m_drResMdoVertex = new (DrMan::getIns()->unknown10) DrResMdoVertex(reinterpret_cast<const u8 *>(head) + m_mdsSeamInstMapHead->unknown1c);
   } else {
-    unknown60 = nullptr;
+    m_drResMdoVertex = nullptr;
   }
-  u32 size = (unknown20->unknown3c + 1) * (sizeof(DrResMdoSeamWrkPosInst) + sizeof(DrResMdoSeamWrkPosInst *));
+  u32 size = (m_mdsSeamInstMapHead->unknown3c + 1) * (sizeof(DrResMdoSeamWrkPosInst) + sizeof(DrResMdoSeamWrkPosInst *));
   unknown98 = matRes->unknown30 / max;
   if (matRes->unknown30 % max != 0) {
     unknown98++;
   }
   size += unknown98 * sizeof(void *);
-  size += unknown20->unknown4c * sizeof(DrResMdoSeamTexList *);
+  size += m_mdsSeamInstMapHead->unknown4c * sizeof(DrResMdoSeamTexList *);
   size += DrResMdoPntAlphaMan::getWrkSize(15);
   size += -size & 0x1f;
   size += matRes->unknown170 * 0x30;
@@ -162,22 +162,22 @@ void DrResMdoSeamWrkInst::setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniform
   size += -size & 0x1f;
   unknown58 = static_cast<u8 *>(mtl::MemManager::allocate(handle, size, 0x20, false, "no name", 0));
   unknown118 = reinterpret_cast<DrResMdoSeamWrkPosInst *>(unknown58);
-  u32 offset = (unknown20->unknown3c + 1) * sizeof(DrResMdoSeamWrkPosInst);
+  u32 offset = (m_mdsSeamInstMapHead->unknown3c + 1) * sizeof(DrResMdoSeamWrkPosInst);
   unknown120 = reinterpret_cast<DrResMdoSeamWrkPosInst **>(unknown58 + offset);
-  offset += (unknown20->unknown3c + 1) * sizeof(DrResMdoSeamWrkPosInst *);
+  offset += (m_mdsSeamInstMapHead->unknown3c + 1) * sizeof(DrResMdoSeamWrkPosInst *);
   unknown90 = reinterpret_cast<void **>(unknown58 + offset);
   offset += unknown98 * sizeof(void *);
   for (int i = 0; i < unknown98; i++) {
     unknown90[i] = nullptr;
   }
-  if (unknown20->unknown4c != 0) {
+  if (m_mdsSeamInstMapHead->unknown4c != 0) {
     unknown110 = reinterpret_cast<DrResMdoSeamTexList **>(unknown58 + offset);
-    offset += unknown20->unknown4c * sizeof(DrResMdoSeamTexList *);
-    for (int i = 0; i < unknown20->unknown4c; i++) {
+    offset += m_mdsSeamInstMapHead->unknown4c * sizeof(DrResMdoSeamTexList *);
+    for (int i = 0; i < m_mdsSeamInstMapHead->unknown4c; i++) {
       unknown110[i] = nullptr;
     }
   }
-  u32 pntAlphaSize = DrResMdoPntAlphaMan::setWrk(unknown198, 15, unknown58 + offset);
+  u32 pntAlphaSize = DrResMdoPntAlphaMan::setWrk(m_drResMdoPntAlphaMan, 15, unknown58 + offset);
   offset += -offset & 0x1f;
   offset += pntAlphaSize;
   unknown160[0] = reinterpret_cast<DrResMdoPos **>(unknown58 + offset);
@@ -233,32 +233,32 @@ void DrResMdoSeamWrkInst::setupWork(MdoWrkMatRes *matRes, grlib::CGLibTriUniform
   clearSize += posSize;
   clearSize += (32 - clearSize % 32) % 32;
   memset(unknownd8, 0, clearSize);
-  int count = unknown20->unknown3c;
+  int count = m_mdsSeamInstMapHead->unknown3c;
   for (int i = 0; i <= count; i++) {
     new (&unknown118[i]) DrResMdoSeamWrkPosInst();
   }
   unknown140 = 1;
   unknown118->setupBaseInstPos(reinterpret_cast<const u8 *>(unknown28), handle, anm);
   unknown120[0] = unknown118;
-  if (unknown20->unknown4c == 0) {
+  if (m_mdsSeamInstMapHead->unknown4c == 0) {
     unknown8a |= 2;
-    grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
-    for (int i = 0; i < unknown20->unknown24; i++) {
-      unknown50->unknowne8[i] = dummy;
+    grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
+    for (int i = 0; i < m_mdsSeamInstMapHead->unknown24; i++) {
+      m_mdoWrkMatRes->unknowne8[i] = dummy;
     }
   }
-  unknown138 = ctl->unknown630;
-  unknown1c0 = DrMan::getIns()->unknown580->unknown10;
+  unknown138 = ctl->m_drResMdoPosAddList;
+  unknown1c0 = DrMan::getIns()->m_drCalcMan->m_drCalcViewWork;
 }
 
 void DrResMdoSeamWrkInst::changeMemCall() {
-  const MdsSeamInstMapHead *head = reinterpret_cast<const MdsSeamInstMapHead *>(unknown108->m_buffer);
-  unknown20 = head;
+  const MdsSeamInstMapHead *head = reinterpret_cast<const MdsSeamInstMapHead *>(m_drResMdoSeamMemObj->m_buffer);
+  m_mdsSeamInstMapHead = head;
   unknown28 = reinterpret_cast<const unknown404 *>(reinterpret_cast<const u8 *>(head) + head->unknown18);
   unknown30 = reinterpret_cast<const DrMdoCtlPos::unknown018 *>(reinterpret_cast<const u8 *>(unknown28) + unknown28->unknown08);
   unknown38 = reinterpret_cast<const DrMdoCtlPos::unknown019 *>(reinterpret_cast<const u8 *>(unknown28) + unknown28->unknown10);
-  if (head->unknown1c != 0 && unknown60 != nullptr) {
-    unknown60->changeMemVertex(reinterpret_cast<const u8 *>(head) + head->unknown1c);
+  if (head->unknown1c != 0 && m_drResMdoVertex != nullptr) {
+    m_drResMdoVertex->changeMemVertex(reinterpret_cast<const u8 *>(head) + head->unknown1c);
   }
   unknown118->changeMemBaseInstPos(reinterpret_cast<const u8 *>(unknown28));
 }
@@ -276,29 +276,29 @@ void DrResMdoSeamWrkInst::calcEtcInstPos(DrMdoCtlSeamInstMap *) {
 
 // Same body as DrResMdoSeamWrkBase::callTexReadUpdate (0x710087d080) on the instance map header, plus the release mode (0x710088255c); setStockTexList is inlined (0x71008792cc).
 bool DrResMdoSeamWrkInst::callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamTexList *texLists, DrMdoCtlSeamInstMap *ctl, bool isRelease) {
-  if (unknown20->unknown4c != 0) {
+  if (m_mdsSeamInstMapHead->unknown4c != 0) {
     if (isRelease) {
       if ((unknown8a & 2) == 0) {
         return true;
       }
       unknown8a &= ~2;
-      for (s32 i = 0; i < unknown20->unknown4c; i++) {
+      for (s32 i = 0; i < m_mdsSeamInstMapHead->unknown4c; i++) {
         unknown110[i] = nullptr;
       }
-      s32 count = unknown20->unknown24;
+      s32 count = m_mdsSeamInstMapHead->unknown24;
       for (s32 i = 0; i < count; i++) {
         unknowne0[i >> 5] &= ~(1 << (i & 0x1f));
         unknowne0[(count + i) >> 5] &= ~(1 << ((count + i) & 0x1f));
       }
       return true;
     }
-    if (unknown20->unknown4c > 0) {
-      const u16 *index = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown48);
+    if (m_mdsSeamInstMapHead->unknown4c > 0) {
+      const u16 *index = reinterpret_cast<const u16 *>(reinterpret_cast<const u8 *>(m_mdsSeamInstMapHead) + m_mdsSeamInstMapHead->unknown48);
       bool isRead = false;
-      for (s32 i = 0; i < unknown20->unknown4c; i++, index++) {
+      for (s32 i = 0; i < m_mdsSeamInstMapHead->unknown4c; i++, index++) {
         u16 list = textureListFlags[*index];
         if (list == 0) {
-          ctl->unknownd30.setStockTexList(*index);
+          ctl->m_drResMdoSeamParmRead.setStockTexList(*index);
           isRead = true;
         } else {
           texLists[list - 1].unknown3a = 0;
@@ -311,13 +311,13 @@ bool DrResMdoSeamWrkInst::callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamT
     }
     if ((unknown8a & 2) == 0) {
       unknown8a |= 2;
-      grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
-      const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown20);
-      for (s32 i = 0; i < unknown20->unknown24; i++, entry++) {
+      grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
+      const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(m_mdsSeamInstMapHead) + m_mdsSeamInstMapHead->unknown20);
+      for (s32 i = 0; i < m_mdsSeamInstMapHead->unknown24; i++, entry++) {
         if ((entry->unknown06 & 1) == 0) {
-          unknown50->unknowne8[i] = dummy;
+          m_mdoWrkMatRes->unknowne8[i] = dummy;
         } else {
-          unknown50->unknowne8[i] = unknown110[entry->unknown02]->unknown20 + entry->unknown00;
+          m_mdoWrkMatRes->unknowne8[i] = unknown110[entry->unknown02]->unknown20 + entry->unknown00;
         }
       }
     }
@@ -328,7 +328,7 @@ bool DrResMdoSeamWrkInst::callTexReadUpdate(u16 *textureListFlags, DrResMdoSeamT
 void DrResMdoSeamWrkInst::calcCacheInfo() {
   for (int i = 1; i < unknown140; i++) {
     DrResMdoSeamWrkPosInst *pos = unknown120[i];
-    if ((pos->unknown50->unknown24 & 2) != 0) {
+    if ((pos->m_drResMdoSeamMemObj->unknown24 & 2) != 0) {
       pos->changeMemEtcInstPos();
     }
   }
@@ -340,15 +340,15 @@ void DrResMdoSeamWrkInst::calcEtcInstPosUpdate(DrMdoCtlSeamInstMap *ctl) {
   for (int i = 0; i < unknown140; i++) {
     unknown120[i]->update();
   }
-  unknown198->update(speed);
+  m_drResMdoPntAlphaMan->update(speed);
 }
 
 void DrResMdoSeamWrkInst::seachCheckStreamList(u16 *textureFlags, DrResMdoSeamTexture *textures) {
-  s32 count = unknown20->unknown24;
+  s32 count = m_mdsSeamInstMapHead->unknown24;
   int size = (count / 32 + 1) * 4;
   size += (32 - size % 32) % 32;
   memset(unknownd8, 0, size);
-  const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown20);
+  const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(m_mdsSeamInstMapHead) + m_mdsSeamInstMapHead->unknown20);
   for (int i = 0; i < count; i++, entry++) {
     if ((entry->unknown06 & 2) != 0 && textureFlags[entry->unknown04] != 0) {
       if (textures[textureFlags[entry->unknown04] - 1].unknowna1) {
@@ -384,18 +384,18 @@ static void unknown301(DrResMdoSeamWrkInst *wrk, s32 bit, s32 i, bool on) {
 // declared before the bit.
 void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex *seamVertex, u16 *textureTbl, DrResMdoSeamTexture *seamTexture, DrResMdoSeamParmRead *parmRead,
                                              const MdsSeamOfsTexTblData *table, bool isHeight) {
-  s32 mdlCount = unknown50->unknown170;
-  const MdsMdlTopHeader *mdls = unknown50->unknown168;
+  s32 mdlCount = m_mdoWrkMatRes->unknown170;
+  const MdsMdlTopHeader *mdls = m_mdoWrkMatRes->m_mdsMdlTopHeader;
   for (s32 i = 0; i < mdlCount; i++) {
     if (unknownb0[i >> 5] & (1 << (i & 0x1f))) {
       const MdsMdlTopHeader *mdl = &mdls[i];
       s32 num = mdl->unknown04;
-      const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(unknown50->unknown18 + mdl->unknown00);
-      s32 bit = unknown50->unknown170 + i;
+      const MdsMdlInfoHeader *info = reinterpret_cast<const MdsMdlInfoHeader *>(m_mdoWrkMatRes->unknown18 + mdl->unknown00);
+      s32 bit = m_mdoWrkMatRes->unknown170 + i;
       if ((unknownb0[bit >> 5] & (1 << (bit & 0x1f))) && isHeight) {
         for (s32 j = 0; j < num; j++, info++) {
           unknowna0[info->unknown0e >> 5] |= 1 << (info->unknown0e & 0x1f);
-          s32 heightBit = unknown50->unknown30 + info->unknown0e;
+          s32 heightBit = m_mdoWrkMatRes->unknown30 + info->unknown0e;
           unknowna0[heightBit >> 5] |= 1 << (heightBit & 0x1f);
         }
       } else {
@@ -405,11 +405,11 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
       }
     }
   }
-  s32 count = unknown20->unknown24;
-  s32 matCount = unknown50->unknown30;
+  s32 count = m_mdsSeamInstMapHead->unknown24;
+  s32 matCount = m_mdoWrkMatRes->unknown30;
   for (s32 i = 0; i < matCount; i++) {
     if (unknowna0[i >> 5] & (1 << (i & 0x1f))) {
-      MdoWrkMatRes *matRes = unknown50;
+      MdoWrkMatRes *matRes = m_mdoWrkMatRes;
       const MdsMatInfoHeader *mat = &matRes->unknown28[i];
       s32 num = mat->unknown24;
       s32 bit = matRes->unknown30 + i;
@@ -424,8 +424,8 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
   s32 size = (count / 32 + 1) * 4;
   size += (32 - size % 32) % 32;
   memset(unknownd8, 0, size);
-  grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->unknown78->getDammyTexObj();
-  const MdsSeamInstMapHead *head = unknown20;
+  grlib::CGLibTextureBuffer *dummy = DrMan::getIns()->m_drPixlMan->getDammyTexObj();
+  const MdsSeamInstMapHead *head = m_mdsSeamInstMapHead;
   const unknown401 *entry = reinterpret_cast<const unknown401 *>(reinterpret_cast<const u8 *>(head) + head->unknown20);
   for (s32 i = 0; i < count; i++, entry++) {
     if ((entry->unknown06 & 2) == 0) {
@@ -439,9 +439,9 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
         unknowne0[heightBit >> 5] &= ~(1 << (heightBit & 0x1f));
         unknownd8[i >> 5] |= 1 << (i & 0x1f);
         if ((entry->unknown06 & 1) == 0) {
-          unknown50->unknowne8[i] = dummy;
+          m_mdoWrkMatRes->unknowne8[i] = dummy;
         } else {
-          unknown50->unknowne8[i] = unknown110[entry->unknown02]->unknown20 + entry->unknown00;
+          m_mdoWrkMatRes->unknowne8[i] = unknown110[entry->unknown02]->unknown20 + entry->unknown00;
         }
       } else if ((entry->unknown06 & 1) && unknown110[entry->unknown02]->unknown3b) {
         unknownd8[i >> 5] |= 1 << (i & 0x1f);
@@ -454,7 +454,7 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
       if ((unknowne0[i >> 5] & (1 << (i & 0x1f))) == 0) {
         unknowne0[i >> 5] |= 1 << (i & 0x1f);
         unknownd8[i >> 5] |= 1 << (i & 0x1f);
-        unknown50->unknowne8[i] = &texture->unknown18;
+        m_mdoWrkMatRes->unknowne8[i] = &texture->m_cGLibTextureBuffer;
       }
       if (table[entry->unknown04].unknown0c != 0) {
         s32 bit = i + count;
@@ -470,10 +470,10 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
       }
     }
   }
-  const u8 *entries = reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown20;
+  const u8 *entries = reinterpret_cast<const u8 *>(m_mdsSeamInstMapHead) + m_mdsSeamInstMapHead->unknown20;
   for (s32 i = 0; i < matCount; i++) {
-    const MdsMatInfoHeader *mat = &unknown50->unknown28[i];
-    const MdsMatTextureInfo *infos = reinterpret_cast<const MdsMatTextureInfo *>(unknown50->unknown10 + mat->unknown20);
+    const MdsMatInfoHeader *mat = &m_mdoWrkMatRes->unknown28[i];
+    const MdsMatTextureInfo *infos = reinterpret_cast<const MdsMatTextureInfo *>(m_mdoWrkMatRes->unknown10 + mat->unknown20);
     s32 num = mat->unknown24;
     for (s32 j = 0; j < num; j++) {
       const unknown401 *texEntry = reinterpret_cast<const unknown401 *>(entries + infos[j].unknown00 * 8);
@@ -485,7 +485,7 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
   }
   for (s32 i = 0; i < mdlCount; i++) {
     const MdsMdlTopHeader *mdl = &mdls[i];
-    const MdsMdlInfoHeader *infos = reinterpret_cast<const MdsMdlInfoHeader *>(unknown50->unknown18 + mdl->unknown00);
+    const MdsMdlInfoHeader *infos = reinterpret_cast<const MdsMdlInfoHeader *>(m_mdoWrkMatRes->unknown18 + mdl->unknown00);
     s32 num = mdl->unknown04;
     for (s32 j = 0; j < num; j++) {
       if (unknowna8[infos[j].unknown0e >> 5] & (1 << (infos[j].unknown0e & 0x1f))) {
@@ -497,13 +497,13 @@ void DrResMdoSeamWrkInst::seachNewStreamList(u16 *vertexTbl, DrResMdoSeamVertex 
 }
 
 u32 DrResMdoSeamWrkInst::isSubMdl(u32 index) {
-  u32 bit = unknown20->unknown2c + index;
+  u32 bit = m_mdsSeamInstMapHead->unknown2c + index;
   return unknownd0[bit >> 5] & (1 << (bit & 0x1f));
 }
 
 void DrResMdoSeamWrkInst::linkRenderMdlList(u32 index, MdoArgSeamInst &arg) {
   unknown128 = unknown120[0];
-  chankRenderMdl(unknown128->unknown18 + unknown128->unknown10[index], arg);
+  chankRenderMdl(unknown128->m_mdsPosRangeTreeData + unknown128->unknown10[index], arg);
 }
 
 void DrResMdoSeamWrkInst::linkReadMdl() { unknown88 = 0; }
@@ -541,20 +541,20 @@ bool DrResMdoSeamWrkInst::clipRenderMdl(const MdsPosRangeTreeData *tree, MdoArgS
   u32 count = tree->unknown1e;
   const u32 *index = reinterpret_cast<const u32 *>(unknown128->unknown00 + tree->unknown18);
   for (u32 i = 0; i < count; i++, index++) {
-    const MdsPosKeepData *keep = unknown128->unknown08 + *index;
+    const MdsPosKeepData *keep = unknown128->m_mdsPosKeepData + *index;
     if (keep->unknown66 != 0 && unknown128->clipCheck(keep->unknown66 - 1)) {
       continue;
     }
     u32 gbl = keep->unknown62;
     if (gbl == 0) {
-      isRender |= objPartsRenderMdl(keep, &unknown128->unknown48[*index], arg);
+      isRender |= objPartsRenderMdl(keep, &unknown128->m_drResMdoPos[*index], arg);
       continue;
     }
     if ((unknown40[gbl >> 5] & (1 << (gbl & 0x1f))) == 0) {
-      DrResMdoPos *pos = &unknown128->unknown48[*index];
+      DrResMdoPos *pos = &unknown128->m_drResMdoPos[*index];
       f32 objAlpha = 1.0f;
-      if (arg.unknown10->unknown00 != nullptr) {
-        objAlpha = arg.unknown10->getObj(pos->unknown18)->m_alpha;
+      if (arg.m_drResMdoInstAnmObj->unknown00 != nullptr) {
+        objAlpha = arg.m_drResMdoInstAnmObj->getObj(pos->unknown18)->m_alpha;
       }
       if (objAlpha > 0.0f) {
         s32 alpha = arg.unknown00;
@@ -577,7 +577,7 @@ void DrResMdoSeamWrkInst::seachShadowCheck(DrResMdoInstAnmObj *anm) {
       DrMan::get();
       DrResMdoSeamWrkPosInst *pos = unknown120[i];
       for (int j = 0; j < pos->unknown68; j++) {
-        DrResMdoPosInstAnm *posAnm = anm->unknown10[pos->unknown64 + j].unknown30;
+        DrResMdoPosInstAnm *posAnm = anm->m_drResMdoInstPartsAnm[pos->unknown64 + j].m_drResMdoPosInstAnm;
         if (posAnm != nullptr && (posAnm->unknown150 & 0x38) != 0) {
           unknown8a |= 0x80;
           return;
@@ -589,13 +589,13 @@ void DrResMdoSeamWrkInst::seachShadowCheck(DrResMdoInstAnmObj *anm) {
 
 void DrResMdoSeamWrkInst::seachReadMdlList(u16 *vertexTbl, u16 *textureTbl, DrResMdoSeamVertex *seamVertex, DrResMdoSeamTexture *seamTexture, DrMdoCtlSeamInstMap *ctl) {
   unknown128 = unknown120[0];
-  DrResMdoSeamWrkPosInst::seachCalcTbl(vertexTbl, textureTbl, seamVertex, seamTexture, &ctl->unknownd30);
+  DrResMdoSeamWrkPosInst::seachCalcTbl(vertexTbl, textureTbl, seamVertex, seamTexture, &ctl->m_drResMdoSeamParmRead);
   unknown128->seachReadTreeMdl(unknown156);
   if ((unknown128->unknown74 & 1) != 0) {
-    if (unknown130 == nullptr) {
+    if (m_drResMdoSeamWrkInst == nullptr) {
       unknown70 = unknown18->unknown3c + 1;
     } else {
-      unknown130->unknown88 = 0;
+      m_drResMdoSeamWrkInst->unknown88 = 0;
     }
   }
   for (int i = 1; i < unknown140; i++) {
@@ -608,22 +608,22 @@ bool DrResMdoSeamWrkInst::linkShadowRenderMdl(u32 index, DrPixlShadowCacheObj &c
   unknown128 = unknown120[0];
   unknown48 = unknown128->getShwBitTbl(cache.unknown8f2);
   unknown80 = range;
-  ctl->beginResAll(unknown50);
-  bool isRender = seachShadowInstMapRenderChild(cache, ctl, unknown128->unknown18 + unknown128->unknown10[index]);
+  ctl->beginResAll(m_mdoWrkMatRes);
+  bool isRender = seachShadowInstMapRenderChild(cache, ctl, unknown128->m_mdsPosRangeTreeData + unknown128->unknown10[index]);
   ctl->endResAll();
   return isRender;
 }
 
 void DrResMdoSeamWrkInst::linkDefShadowRenderMdl(u32 index, DrPixlShadowObj *shadow, DrMdoCtlSeamInstMap *ctl) {
   unknown128 = unknown120[0];
-  ctl->beginResAll(unknown50);
-  seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->unknown18 + unknown128->unknown10[index]);
+  ctl->beginResAll(m_mdoWrkMatRes);
+  seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->m_mdsPosRangeTreeData + unknown128->unknown10[index]);
   ctl->endResAll();
 }
 
 bool DrResMdoSeamWrkInst::setEtcPosCache(mtl::ALLOC_HANDLE handle, int index, DrResMdoSeamMemObj *memObj, const DrResMdoInstAnmObj *anm) {
   if ((unknown8a & 5) == 0) {
-    const MdsSeamInstMapHead *head = unknown20;
+    const MdsSeamInstMapHead *head = m_mdsSeamInstMapHead;
     const unknown400 *entry = reinterpret_cast<const unknown400 *>(reinterpret_cast<const u8 *>(head) + head->unknown38);
     for (int i = 0; i < head->unknown3c; i++, entry++) {
       if (entry->unknown00 == index) {
@@ -656,15 +656,15 @@ static bool unknown302(const unknown400 *entry, const DrResMdoSeamParmRead *parm
 }
 
 void DrResMdoSeamWrkInst::seachEtcInstPos(DrResMdoSeamParmRead *parmRead, DrMdoCtlSeamInstMap *ctl, bool isFirst) {
-  int count = unknown20->unknown3c;
-  const unknown400 *entry = reinterpret_cast<const unknown400 *>(reinterpret_cast<const u8 *>(unknown20) + unknown20->unknown38);
+  int count = m_mdsSeamInstMapHead->unknown3c;
+  const unknown400 *entry = reinterpret_cast<const unknown400 *>(reinterpret_cast<const u8 *>(m_mdsSeamInstMapHead) + m_mdsSeamInstMapHead->unknown38);
   for (int i = 0; i < count; i++, entry++) {
     int del = i + count;
     if (unknowne8[del >> 5] & (1 << (del & 0x1f))) {
       unknown118[i + 1].delCall();
       unknowne8[i >> 5] &= ~(1 << (i & 0x1f));
       unknowne8[del >> 5] &= ~(1 << (del & 0x1f));
-      ctl->releaseFreeSeamMemObj(unknown118[i + 1].unknown50);
+      ctl->releaseFreeSeamMemObj(unknown118[i + 1].m_drResMdoSeamMemObj);
       unknown118[i + 1].releaseBaseInstPos();
       for (int j = 1; j < unknown140; j++) {
         if (unknown120[j] == &unknown118[i + 1]) {
@@ -695,7 +695,7 @@ bool DrResMdoSeamWrkInst::seachShadowInstMapRender(DrPixlShadowCacheObj &cache, 
   if ((unknown158 & cache.unknown8e8) != 0) {
     return false;
   }
-  if ((unknown20->unknown00 & 4) == 0) {
+  if ((m_mdsSeamInstMapHead->unknown00 & 4) == 0) {
     u32 id = cache.unknown8f0;
     unknown80 = DrPixlShadowCacheMan::SHADOW_CHECK_RANGE_TBL[id];
     bool isRender = false;
@@ -707,14 +707,14 @@ bool DrResMdoSeamWrkInst::seachShadowInstMapRender(DrPixlShadowCacheObj &cache, 
     unknown48 = unknown128->getShwBitTbl(cache.unknown8f2);
     const unknown404 *data = unknown28;
     for (int i = 0; i < data->unknown2c; i++) {
-      isRender |= seachShadowInstMapRenderChild(cache, ctl, unknown128->unknown18 + i);
+      isRender |= seachShadowInstMapRenderChild(cache, ctl, unknown128->m_mdsPosRangeTreeData + i);
     }
     for (int i = 1; i < unknown140; i++) {
       unknown128 = unknown120[i];
       unknown48 = unknown128->getShwBitTbl(cache.unknown8f2);
       const unknown405 *etcData = reinterpret_cast<const unknown405 *>(unknown128->unknown00);
       for (int j = 0; j < etcData->unknown18; j++) {
-        isRender |= seachShadowInstMapRenderChild(cache, ctl, unknown128->unknown18 + j);
+        isRender |= seachShadowInstMapRenderChild(cache, ctl, unknown128->m_mdsPosRangeTreeData + j);
       }
     }
     if (isRender) {
@@ -726,17 +726,17 @@ bool DrResMdoSeamWrkInst::seachShadowInstMapRender(DrPixlShadowCacheObj &cache, 
 }
 
 void DrResMdoSeamWrkInst::seachDefShadowInstMapRender(DrPixlShadowObj *shadow, DrMdoCtlSeamInstMap *ctl) {
-  if ((unknown18->unknown3e & 1) == 0 && (unknown20->unknown00 & 4) == 0) {
+  if ((unknown18->unknown3e & 1) == 0 && (m_mdsSeamInstMapHead->unknown00 & 4) == 0) {
     unknown128 = unknown120[0];
     const unknown404 *data = unknown28;
     for (int i = 0; i < data->unknown2c; i++) {
-      seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->unknown18 + i);
+      seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->m_mdsPosRangeTreeData + i);
     }
     for (int i = 1; i < unknown140; i++) {
       unknown128 = unknown120[i];
       const unknown405 *etcData = reinterpret_cast<const unknown405 *>(unknown128->unknown00);
       for (int j = 0; j < etcData->unknown18; j++) {
-        seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->unknown18 + j);
+        seachDefShadowInstMapRenderChild(shadow, ctl, unknown128->m_mdsPosRangeTreeData + j);
       }
     }
   }
@@ -746,13 +746,13 @@ void DrResMdoSeamWrkInst::seachDefShadowInstMapRender(DrPixlShadowObj *shadow, D
 // is unrolled by Clang 3.9.1 and matches. DrMdoCtlPos::occRender (0x710081828c) has the same body.
 void DrResMdoSeamWrkInst::occRender() {
   if (unknown1b0 != nullptr) {
-    DrPixlOccQuery *query = DrMan::getIns()->unknown78->unknown7f8;
-    DrResOccUniformObj *uniform = DrMan::getIns()->unknown88->unknown038;
+    DrPixlOccQuery *query = DrMan::getIns()->m_drPixlMan->m_drPixlOccQuery;
+    DrResOccUniformObj *uniform = DrMan::getIns()->m_drMdlMan->m_drResOccUniformObj;
     for (unknown002 *info = unknown1b0; info != nullptr; info = info->unknown18) {
       u32 index = info->unknown0c;
-      const s16 *posNum = &unknown50->unknown168[index].unknown28;
+      const s16 *posNum = &m_mdoWrkMatRes->m_mdsMdlTopHeader[index].unknown28;
       for (int type = 1; type < 3; type++) {
-        for (DrResMdoPos *pos = unknown160[type][index]; pos != nullptr; pos = pos->unknown10) {
+        for (DrResMdoPos *pos = unknown160[type][index]; pos != nullptr; pos = pos->m_drResMdoPos) {
           u16 flags = pos->unknown1e;
           if ((flags & 0xf) != 0) {
             u32 bits = 0;
@@ -774,11 +774,11 @@ void DrResMdoSeamWrkInst::occRender() {
 void DrResMdoSeamWrkPosInst::releaseBaseInstPos() {
   if (unknown6c != 0) {
     for (int i = 0; i < unknown6c; i++) {
-      unknown48[i].release();
+      m_drResMdoPos[i].release();
     }
     unknown6c = 0;
   }
-  unknown50 = nullptr;
+  m_drResMdoSeamMemObj = nullptr;
   if (unknown78 != nullptr) {
     mtl::MemManager::deallocate(unknown78, 0, false);
     unknown78 = nullptr;
@@ -788,17 +788,17 @@ void DrResMdoSeamWrkPosInst::releaseBaseInstPos() {
 void DrResMdoSeamWrkPosInst::changeMemBaseInstPos(const u8 *data) {
   const unknown404 *header = reinterpret_cast<const unknown404 *>(data);
   unknown00 = data;
-  unknown08 = reinterpret_cast<const MdsPosKeepData *>(data + header->unknown18);
-  unknown18 = reinterpret_cast<const MdsPosRangeTreeData *>(data + header->unknown28);
+  m_mdsPosKeepData = reinterpret_cast<const MdsPosKeepData *>(data + header->unknown18);
+  m_mdsPosRangeTreeData = reinterpret_cast<const MdsPosRangeTreeData *>(data + header->unknown28);
   unknown10 = reinterpret_cast<const u32 *>(data + header->unknown20);
   if (header->unknown4c != 0) {
     unknown20 = reinterpret_cast<const unknown003 *>(data + header->unknown4c);
-    unknown28 = reinterpret_cast<const MdsPosReadTreeData *>(data + unknown20->unknown10);
+    m_mdsPosReadTreeData = reinterpret_cast<const MdsPosReadTreeData *>(data + unknown20->unknown10);
     unknown30 = reinterpret_cast<const u16 *>(data + unknown20->unknown00);
     unknown38 = reinterpret_cast<const u16 *>(data + unknown20->unknown08);
   }
   for (int i = 0; i < unknown6c; i++) {
-    unknown48[i].unknown08 = unknown08 + i;
+    m_drResMdoPos[i].m_mdsPosKeepData = m_mdsPosKeepData + i;
   }
   u32 treeOffset = header->unknown54;
   if (treeOffset != 0) {
@@ -813,14 +813,14 @@ void DrResMdoSeamWrkPosInst::seachReadTreeMdl(u32 flags) {
   unknown74 &= 0xfffffffe;
   if (unknown20 != nullptr) {
     for (int i = 0; i < unknown20->unknown18; i++) {
-      if ((unknown28[i].unknown2a & flags) == 0) {
-        chankReadTreeMdl(&unknown28[i], s_pParmRead->unknown50);
+      if ((m_mdsPosReadTreeData[i].unknown2a & flags) == 0) {
+        chankReadTreeMdl(&m_mdsPosReadTreeData[i], s_pParmRead->unknown50);
       }
     }
     for (int j = 0; j < s_pParmRead->unknown40; j++) {
       for (int i = 0; i < unknown20->unknown18; i++) {
-        if ((unknown28[i].unknown2a & flags) == 0) {
-          chankReadTreeMdl(&unknown28[i], s_pParmRead->unknown10[j]);
+        if ((m_mdsPosReadTreeData[i].unknown2a & flags) == 0) {
+          chankReadTreeMdl(&m_mdsPosReadTreeData[i], s_pParmRead->unknown10[j]);
         }
       }
     }
@@ -838,20 +838,20 @@ void DrResMdoSeamWrkPosInst::seachCalcTbl(u16 *vertexTbl, u16 *textureTbl, DrRes
 void DrResMdoSeamWrkPosInst::delCall() { unknown74 |= 2; }
 
 void DrResMdoSeamWrkPosInst::changeMemEtcInstPos() {
-  const u8 *data = unknown50->m_buffer;
+  const u8 *data = m_drResMdoSeamMemObj->m_buffer;
   const unknown405 *header = reinterpret_cast<const unknown405 *>(data);
   unknown00 = data;
-  unknown08 = reinterpret_cast<const MdsPosKeepData *>(data + header->unknown04);
-  unknown18 = reinterpret_cast<const MdsPosRangeTreeData *>(data + header->unknown14);
+  m_mdsPosKeepData = reinterpret_cast<const MdsPosKeepData *>(data + header->unknown04);
+  m_mdsPosRangeTreeData = reinterpret_cast<const MdsPosRangeTreeData *>(data + header->unknown14);
   unknown10 = reinterpret_cast<const u32 *>(data + header->unknown0c);
   if (header->unknown2c != 0) {
     unknown20 = reinterpret_cast<const unknown003 *>(data + header->unknown2c);
-    unknown28 = reinterpret_cast<const MdsPosReadTreeData *>(data + unknown20->unknown10);
+    m_mdsPosReadTreeData = reinterpret_cast<const MdsPosReadTreeData *>(data + unknown20->unknown10);
     unknown30 = reinterpret_cast<const u16 *>(data + unknown20->unknown00);
     unknown38 = reinterpret_cast<const u16 *>(data + unknown20->unknown08);
   }
   for (int i = 0; i < unknown6c; i++) {
-    unknown48[i].unknown08 = unknown08 + i;
+    m_drResMdoPos[i].m_mdsPosKeepData = m_mdsPosKeepData + i;
   }
   u32 treeOffset = header->unknown34;
   if (treeOffset != 0) {
@@ -863,8 +863,8 @@ void DrResMdoSeamWrkPosInst::changeMemEtcInstPos() {
 }
 
 u32 DrResMdoSeamWrkPosInst::getDataSize() const {
-  if (unknown50 != nullptr) {
-    return unknown50->m_size;
+  if (m_drResMdoSeamMemObj != nullptr) {
+    return m_drResMdoSeamMemObj->m_size;
   }
   return 0;
 }
@@ -893,7 +893,7 @@ void DrResMdoSeamWrkPosInst::clearAllShwBitTbl() {
   }
 }
 
-DrResMdoSeamWrkPosInst::DrResMdoSeamWrkPosInst() : unknown20(nullptr), unknown40(nullptr), unknown50(nullptr), unknown60(0), unknown6c(0), unknown74(0), unknown78(nullptr) {}
+DrResMdoSeamWrkPosInst::DrResMdoSeamWrkPosInst() : unknown20(nullptr), unknown40(nullptr), m_drResMdoSeamMemObj(nullptr), unknown60(0), unknown6c(0), unknown74(0), unknown78(nullptr) {}
 
 DrResMdoSeamWrkPosInst::~DrResMdoSeamWrkPosInst() { releaseBaseInstPos(); }
 

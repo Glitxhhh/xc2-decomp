@@ -9,16 +9,16 @@
 
 namespace ml {
 
-DrCalcStmWork::DrCalcStmWork() : m_texObj(nullptr), unknown08(0), unknown10(nullptr) {}
+DrCalcStmWork::DrCalcStmWork() : m_texObj(nullptr), unknown08(0), m_drResMdoVertex(nullptr) {}
 
 DrCalcStmWork::~DrCalcStmWork() { workRelease(); }
 
 void DrCalcStmWork::workRelease() {
   texRelease();
   unknown08 = 0;
-  if (unknown10 != nullptr) {
-    DrMan::get()->unknown88->unknown008->releaseVertexObj(unknown10);
-    unknown10 = nullptr;
+  if (m_drResMdoVertex != nullptr) {
+    DrMan::get()->m_drMdlMan->m_drMdoVertexMan->releaseVertexObj(m_drResMdoVertex);
+    m_drResMdoVertex = nullptr;
   }
 }
 

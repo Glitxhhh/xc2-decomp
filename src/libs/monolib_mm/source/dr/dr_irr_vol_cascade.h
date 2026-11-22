@@ -32,13 +32,13 @@ public:
   DrIrrVolResObj *getSectorResource(int x, int z) const;
   DrIrrVolSector *getSectorInstance(int x, int z) const;
 
-  const SGlobalInfo *unknown00;  // Inferred role: global info; original member name unknown.
-  const SCascadeInfo *unknown08; // Inferred role: info of this cascade; original member name unknown.
-  u32 unknown10;                 // Inferred role: cascade index; original member name unknown.
+  const SGlobalInfo *m_sGlobalInfo;   // Inferred role: global info; original member name unknown.
+  const SCascadeInfo *m_sCascadeInfo; // Inferred role: info of this cascade; original member name unknown.
+  u32 unknown10;                      // Inferred role: cascade index; original member name unknown.
   u8 _014[0x018 - 0x014];
-  DrIrrVolResMan *unknown18;      // Inferred role: sector resource manager; original member name unknown.
-  DrIrrVolSector *unknown20[81];  // Inferred role: sector instances of the 9 x 9 grid; original member name unknown.
-  DrIrrVolResObj *unknown2a8[81]; // Inferred role: sector resources of the 9 x 9 grid; original member name unknown.
+  DrIrrVolResMan *m_drIrrVolResMan; // Inferred role: sector resource manager; original member name unknown.
+  DrIrrVolSector *unknown20[81];    // Inferred role: sector instances of the 9 x 9 grid; original member name unknown.
+  DrIrrVolResObj *unknown2a8[81];   // Inferred role: sector resources of the 9 x 9 grid; original member name unknown.
   // Layout evidence: getSectorResourceIndex (1.0.0: 0x71007eaf30) tests the sector coordinates against 4 around the two ints.
   int unknown530; // Inferred role: center sector along x; original member name unknown.
   int unknown534; // Inferred role: center sector along z; original member name unknown.
@@ -61,10 +61,10 @@ public:
   mm::Vec3 m_irrVolUVOffset;  // Inferred role: uv offset; named after the game accessor ml::DrIrrVolMan::getIrrVolUVOffset.
 };
 
-static_assert(offsetof(DrIrrVolCascade, unknown08) == 0x08, "");
+static_assert(offsetof(DrIrrVolCascade, m_sCascadeInfo) == 0x08, "");
 static_assert(offsetof(DrIrrVolCascade, unknown10) == 0x10, "");
 
-static_assert(offsetof(DrIrrVolCascade, unknown18) == 0x18, "");
+static_assert(offsetof(DrIrrVolCascade, m_drIrrVolResMan) == 0x18, "");
 static_assert(offsetof(DrIrrVolCascade, unknown20) == 0x20, "");
 static_assert(offsetof(DrIrrVolCascade, unknown2a8) == 0x2a8, "");
 static_assert(offsetof(DrIrrVolCascade, unknown530) == 0x530, "");

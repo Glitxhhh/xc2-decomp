@@ -179,19 +179,19 @@ public:
   static f32 SEAM_BASEMAP_VERTEX_CHECK;
   static f32 SEAM_BASEMAP_VERTEX_MIDDLE;
 
-  const unknown700 *unknown18;          // Inferred role: base map entry; original member name unknown.
-  const MdsSeamBaseMapHead *unknown20;  // Inferred role: base map header; original member name unknown.
-  const unknown780 *unknown28;          // Inferred role: tree resource; original member name unknown.
-  const u8 *unknown30;                  // Inferred role: tree resource data; original member name unknown.
-  const MdsSeamBaMpTreeData *unknown38; // Inferred role: tree data; original member name unknown.
-  const u8 *unknown40;                  // Inferred role: tree resource data; original member name unknown.
-  const u8 *unknown48;                  // Inferred role: tree resource data; original member name unknown.
-  const unknown782 *unknown50;          // Inferred role: resource at MdsSeamBaseMapHead::unknown38; original member name unknown.
-  const u8 *unknown58;                  // Inferred role: data of unknown50; original member name unknown.
-  const unknown783 *unknown60;          // Inferred role: list at the offset unknown24 of the model resource, null when there is none; original member name unknown.
-  MdoWrkMatRes *unknown68;              // Inferred role: material work; original member name unknown.
-  void *unknown70;                      // Inferred role: allocated buffer; original member name unknown.
-  DrResMdoSeamWrkBaseVertex *unknown78; // Inferred role: vertices; original member name unknown.
+  const unknown700 *unknown18;                            // Inferred role: base map entry; original member name unknown.
+  const MdsSeamBaseMapHead *m_mdsSeamBaseMapHead;         // Inferred role: base map header; original member name unknown.
+  const unknown780 *unknown28;                            // Inferred role: tree resource; original member name unknown.
+  const u8 *unknown30;                                    // Inferred role: tree resource data; original member name unknown.
+  const MdsSeamBaMpTreeData *m_mdsSeamBaMpTreeData;       // Inferred role: tree data; original member name unknown.
+  const u8 *unknown40;                                    // Inferred role: tree resource data; original member name unknown.
+  const u8 *unknown48;                                    // Inferred role: tree resource data; original member name unknown.
+  const unknown782 *unknown50;                            // Inferred role: resource at MdsSeamBaseMapHead::unknown38; original member name unknown.
+  const u8 *unknown58;                                    // Inferred role: data of unknown50; original member name unknown.
+  const unknown783 *unknown60;                            // Inferred role: list at the offset unknown24 of the model resource, null when there is none; original member name unknown.
+  MdoWrkMatRes *m_mdoWrkMatRes;                           // Inferred role: material work; original member name unknown.
+  void *unknown70;                                        // Inferred role: allocated buffer; original member name unknown.
+  DrResMdoSeamWrkBaseVertex *m_drResMdoSeamWrkBaseVertex; // Inferred role: vertices; original member name unknown.
   u8 _80[0x84 - 0x80];
   u32 unknown84; // Inferred role: base map index; original member name unknown.
   u8 _88[0x8c - 0x88];
@@ -223,30 +223,30 @@ public:
   s32 *unknown130;         // Inferred role: render entry num per kind; original member name unknown.
   s32 *unknown138;         // Inferred role: alpha render entry num per kind; original member name unknown.
   u8 _140[0x150 - 0x140];
-  unknown504 *unknown150;           // Inferred role: render entries; original member name unknown.
-  DrResMdoSeamMemObj *unknown158;   // Inferred role: memory object; original member name unknown.
-  DrResMdoSeamTexList **unknown160; // Inferred role: texture lists of the header texture entries; original member name unknown.
-  DrResMdoAlpTbl *unknown168;       // Inferred role: alpha table; original member name unknown.
-  s32 unknown170;                   // Inferred role: render list num; original member name unknown.
-  s32 unknown174;                   // Inferred role: render list size; original member name unknown.
-  s16 unknown178;                   // Inferred role: selected vertex; original member name unknown.
-  s16 unknown17a;                   // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  s16 unknown17c;                   // Inferred role: unknown, cleared by the constructor; original member name unknown.
-  s16 unknown17e;                   // Inferred role: vertex count; original member name unknown.
+  unknown504 *unknown150;                   // Inferred role: render entries; original member name unknown.
+  DrResMdoSeamMemObj *m_drResMdoSeamMemObj; // Inferred role: memory object; original member name unknown.
+  DrResMdoSeamTexList **unknown160;         // Inferred role: texture lists of the header texture entries; original member name unknown.
+  DrResMdoAlpTbl *m_drResMdoAlpTbl;         // Inferred role: alpha table; original member name unknown.
+  s32 unknown170;                           // Inferred role: render list num; original member name unknown.
+  s32 unknown174;                           // Inferred role: render list size; original member name unknown.
+  s16 unknown178;                           // Inferred role: selected vertex; original member name unknown.
+  s16 unknown17a;                           // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s16 unknown17c;                           // Inferred role: unknown, cleared by the constructor; original member name unknown.
+  s16 unknown17e;                           // Inferred role: vertex count; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown18) == 0x18, "");
-static_assert(offsetof(DrResMdoSeamWrkBase, unknown20) == 0x20, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, m_mdsSeamBaseMapHead) == 0x20, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown28) == 0x28, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown30) == 0x30, "");
-static_assert(offsetof(DrResMdoSeamWrkBase, unknown38) == 0x38, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, m_mdsSeamBaMpTreeData) == 0x38, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown40) == 0x40, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown48) == 0x48, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown50) == 0x50, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown58) == 0x58, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown60) == 0x60, "");
-static_assert(offsetof(DrResMdoSeamWrkBase, unknown68) == 0x68, "");
-static_assert(offsetof(DrResMdoSeamWrkBase, unknown78) == 0x78, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, m_mdoWrkMatRes) == 0x68, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, m_drResMdoSeamWrkBaseVertex) == 0x78, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown84) == 0x84, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown8c) == 0x8c, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown98) == 0x98, "");
@@ -256,7 +256,7 @@ static_assert(offsetof(DrResMdoSeamWrkBase, unknown110) == 0x110, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown130) == 0x130, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown138) == 0x138, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown150) == 0x150, "");
-static_assert(offsetof(DrResMdoSeamWrkBase, unknown158) == 0x158, "");
+static_assert(offsetof(DrResMdoSeamWrkBase, m_drResMdoSeamMemObj) == 0x158, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknownf0) == 0xf0, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown100) == 0x100, "");
 static_assert(offsetof(DrResMdoSeamWrkBase, unknown170) == 0x170, "");

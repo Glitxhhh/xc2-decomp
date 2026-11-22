@@ -18,7 +18,7 @@ DrMdoCtlMpfAuto::DrMdoCtlMpfAuto() : unknown68(0), unknown6c(0), unknown70(0), u
   unknownd0.unknown00 = 0.0f;
   unknownd0.unknown04 = 0.0f;
   unknown00 = nullptr;
-  unknown28 = nullptr;
+  m_mdsMpfAutoHlvPoliTree = nullptr;
 }
 
 DrMdoCtlMpfAuto::~DrMdoCtlMpfAuto() { autoMpfRelease(); }
@@ -30,7 +30,7 @@ void DrMdoCtlMpfAuto::autoMpfRelease() {
       _MPFWorkAutoInf *work = unknown158[i];
       while (work != nullptr) {
         _MPFWorkAutoInf *next = work->unknown28;
-        unknown168->freeMemWork(work);
+        m_drMdoMpfMan->freeMemWork(work);
         work = next;
       }
       unknown158[i] = nullptr;
@@ -63,7 +63,7 @@ void DrMdoCtlMpfAuto::SeqListCount() {
 }
 
 void DrMdoCtlMpfAuto::memChgMinWork(_MPFWorkAutoInf *&work) {
-  _MPFWorkAutoInf *minWork = unknown168->unknownf0;
+  _MPFWorkAutoInf *minWork = m_drMdoMpfMan->unknownf0;
   if (minWork != nullptr) {
     minWork->unknown00 = 0;
     minWork->unknown1a = 0;
@@ -92,7 +92,7 @@ void DrMdoCtlMpfAuto::gridColiCalc() {
     if (unknown58->unknown08 > unknownd0.unknown00 || unknown58->unknown00 < unknownd0.unknown00 || unknown58->unknown0c > unknownd0.unknown08 || unknown58->unknown04 < unknownd0.unknown08) {
       continue;
     }
-    gridTreeColiCalc(unknown58->unknown38);
+    gridTreeColiCalc(unknown58->m_mdsMpfAutoTree);
   }
   StockPoint();
 }
@@ -104,11 +104,11 @@ void DrMdoCtlMpfAuto::gridInstColiCalc() {
     if (unknown58->unknown08 > unknownd0.unknown00 || unknown58->unknown00 < unknownd0.unknown00 || unknown58->unknown0c > unknownd0.unknown08 || unknown58->unknown04 < unknownd0.unknown08) {
       continue;
     }
-    if (unknown58->unknown38 != nullptr) {
-      gridTreeColiCalc(unknown58->unknown38);
+    if (unknown58->m_mdsMpfAutoTree != nullptr) {
+      gridTreeColiCalc(unknown58->m_mdsMpfAutoTree);
     }
-    if (unknown58->unknown58 != nullptr) {
-      seachInstTree(unknown58->unknown60);
+    if (unknown58->m_mdsMpfAutoPosData != nullptr) {
+      seachInstTree(unknown58->m_mdsMpfAutoPosTree);
     }
   }
   StockPoint();
@@ -125,16 +125,16 @@ bool DrMdoCtlMpfAuto::gridChkColiRange(f32 maxX, f32 minX, f32 maxZ, f32 minZ) {
     _wkMpfAutoBuff *buff = table[i];
     unknown58 = buff;
     if (!(buff->unknown08 > maxX || minX > buff->unknown00 || buff->unknown0c > maxZ || minZ > buff->unknown04)) {
-      if (buff->unknown38 != nullptr) {
-        if (gridColiRangeChk(buff->unknown38)) {
+      if (buff->m_mdsMpfAutoTree != nullptr) {
+        if (gridColiRangeChk(buff->m_mdsMpfAutoTree)) {
           return true;
         }
-        if (buff->unknown58 != nullptr) {
-          if (gridColiInstPosRangeChk(buff->unknown60)) {
+        if (buff->m_mdsMpfAutoPosData != nullptr) {
+          if (gridColiInstPosRangeChk(buff->m_mdsMpfAutoPosTree)) {
             return true;
           }
         }
-      } else if (gridColiInstPosRangeChk(buff->unknown60)) {
+      } else if (gridColiInstPosRangeChk(buff->m_mdsMpfAutoPosTree)) {
         return true;
       }
     }
@@ -173,25 +173,25 @@ void DrMdoCtlMpfAuto::changeMemAutoMpf(const u8 *data, const u8 *autoData) {
     unknown58->unknown30 = data + unknown00->unknown18;
     unknown38 = unknown58->unknown30;
     if (unknown00->unknown1c == 0) {
-      unknown58->unknown38 = nullptr;
+      unknown58->m_mdsMpfAutoTree = nullptr;
     } else {
-      unknown58->unknown38 = reinterpret_cast<const MdsMpfAutoTree *>(data + unknown00->unknown1c);
+      unknown58->m_mdsMpfAutoTree = reinterpret_cast<const MdsMpfAutoTree *>(data + unknown00->unknown1c);
     }
     unknown58->unknown40 = reinterpret_cast<const u32 *>(data + unknown00->unknown20);
     unknown58->unknown48 = reinterpret_cast<const u32 *>(data + unknown00->unknown24);
     unknown58->unknown50 = reinterpret_cast<const f32 *>(data + unknown00->unknown28);
     if (unknown00->unknown40 == 0 || unknown00->unknown3c != -0xd) {
-      unknown58->unknown58 = nullptr;
+      unknown58->m_mdsMpfAutoPosData = nullptr;
       return;
     }
-    unknown58->unknown58 = reinterpret_cast<const MdsMpfAutoPosData *>(data + unknown00->unknown40);
-    unknown58->unknown60 = reinterpret_cast<const MdsMpfAutoPosTree *>(data + unknown00->unknown44);
+    unknown58->m_mdsMpfAutoPosData = reinterpret_cast<const MdsMpfAutoPosData *>(data + unknown00->unknown40);
+    unknown58->m_mdsMpfAutoPosTree = reinterpret_cast<const MdsMpfAutoPosTree *>(data + unknown00->unknown44);
     unknown58->unknown68 = reinterpret_cast<const u32 *>(data + unknown00->unknown48);
     unknown30 = unknown58->unknown68;
     unknown10 = data + unknown00->unknown50;
     unknown18 = data + unknown00->unknown54;
     unknown20 = data + unknown00->unknown58;
-    unknown28 = reinterpret_cast<const MdsMpfAutoHlvPoliTree *>(data + unknown00->unknown4c);
+    m_mdsMpfAutoHlvPoliTree = reinterpret_cast<const MdsMpfAutoHlvPoliTree *>(data + unknown00->unknown4c);
   } else {
     if (unknown00->unknown4c == 0) {
       return;
@@ -204,7 +204,7 @@ void DrMdoCtlMpfAuto::changeMemAutoMpf(const u8 *data, const u8 *autoData) {
     unknown10 = data + unknown00->unknown50;
     unknown18 = data + unknown00->unknown54;
     unknown20 = data + unknown00->unknown58;
-    unknown28 = reinterpret_cast<const MdsMpfAutoHlvPoliTree *>(data + unknown00->unknown4c);
+    m_mdsMpfAutoHlvPoliTree = reinterpret_cast<const MdsMpfAutoHlvPoliTree *>(data + unknown00->unknown4c);
   }
 }
 

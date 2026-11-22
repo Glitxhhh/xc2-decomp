@@ -45,8 +45,8 @@ WinView *WinProc::pssCreateView(const char *name, WorkObj *parent, s16 childNum)
   view->wkReplaceHasChild(childNum);
   pssAttachView(view);
   unknown1e8 = parent->unknown50;
-  if (unknown58 != nullptr && unknown58 != WinProcRoot::get()) {
-    view->setRect(static_cast<WinProc *>(unknown58)->pssMakeClientRect());
+  if (m_workObj != nullptr && m_workObj != WinProcRoot::get()) {
+    view->setRect(static_cast<WinProc *>(m_workObj)->pssMakeClientRect());
   }
   return view;
 }
@@ -78,7 +78,7 @@ WinProc *WinProc::pssGetRoot(WinProc *proc) {
   if (proc != nullptr) {
     WorkObj *parent;
     do {
-      parent = proc->unknown58;
+      parent = proc->m_workObj;
       if (parent == WinProcRoot::get()) {
         return nullptr;
       }

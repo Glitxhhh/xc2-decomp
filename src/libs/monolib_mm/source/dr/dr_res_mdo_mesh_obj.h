@@ -72,10 +72,10 @@ public:
   static void release(DrResMdoMeshObj *&meshObj);
   DrResMdoMeshObj &operator=(const DrResMdoMeshObj &other);
 
-  DrResMdoMeshParts *getParts(u32 index) const { return &unknown00[index]; }
+  DrResMdoMeshParts *getParts(u32 index) const { return &m_drResMdoMeshParts[index]; }
 
-  DrResMdoMeshParts *unknown00; // Inferred role: parts; original member name unknown.
-  u32 unknown08;                // Inferred role: parts max; original member name unknown.
+  DrResMdoMeshParts *m_drResMdoMeshParts; // Inferred role: parts; original member name unknown.
+  u32 unknown08;                          // Inferred role: parts max; original member name unknown.
 };
 
 static_assert(offsetof(DrResMdoMeshObj, unknown08) == 0x08, "");

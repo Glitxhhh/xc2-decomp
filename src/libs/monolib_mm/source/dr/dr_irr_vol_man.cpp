@@ -11,7 +11,7 @@
 namespace ml {
 
 DrIrrVolMan::DrIrrVolMan(DrMan *drMan)
-    : unknown00(drMan), unknown08(nullptr), unknown98(nullptr), unknown0a0(MlMem::getProductMem()), unknown0b0(0.0f), unknown0b4(0), unknown1c8(true), unknown1c9(false) {
+    : m_drMan(drMan), unknown08(nullptr), unknown98(nullptr), m_memHandlebaseAllocator(MlMem::getProductMem()), unknown0b0(0.0f), unknown0b4(0), unknown1c8(true), unknown1c9(false) {
   mm::Vec3 pos = mm::Vec3::zero;
   unknown190 = pos;
   unknown1b0 = 1.0f;
@@ -60,7 +60,7 @@ void DrIrrVolMan::getVolumeArea(u32 cascade, mm::Aabb &area) const {
 }
 
 int DrIrrVolMan::getSectorMax(u32 index) const {
-  const irrvol::SCascadeInfo &area = unknown08->unknown28[index];
+  const irrvol::SCascadeInfo &area = unknown08->m_sCascadeInfo[index];
   mm::Vec3 size = area.unknown00.max - area.unknown00.min;
   return static_cast<u32>(size.x / area.unknown24 + 0.5f) * static_cast<u32>(size.z / area.unknown24 + 0.5f);
 }

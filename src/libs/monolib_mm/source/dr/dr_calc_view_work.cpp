@@ -132,12 +132,12 @@ int DrCalcViewWork::unistatic_depth_change(f32 *work, bool isJitter) {
   work[0] = unknown430.x;
   work[1] = unknown430.y;
   work[2] = unknown430.z;
-  work[3] = unknown700->unknown78->unknown00;
+  work[3] = m_drMan->m_drPixlMan->unknown00;
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_25];
 }
 
 int DrCalcViewWork::unistatic_lightAmb(f32 *work) {
-  DrLightMan *lightMan = unknown700->unknown588;
+  DrLightMan *lightMan = m_drMan->unknown588;
   work[0] = lightMan->unknown12c.r;
   work[1] = lightMan->unknown12c.g;
   work[2] = lightMan->unknown12c.b;
@@ -153,9 +153,9 @@ int DrCalcViewWork::unistatic_diffuseIBL(f32 *work) {
 }
 
 int DrCalcViewWork::unistatic_specularIBL(f32 *work) {
-  DrPixlPostObjCubeMapMultiIBL *ibl = unknown700->unknown78->unknown7f0->unknown180->unknown40;
+  DrPixlPostObjCubeMapMultiIBL *ibl = m_drMan->m_drPixlMan->unknown7f0->m_drPixlPostMan->m_drPixlPostObjCubeMapMultiIBL;
   if (ibl != nullptr) {
-    bool isSkip = unknown700->isIBLSkip();
+    bool isSkip = m_drMan->isIBLSkip();
     mm::Vec4 value = mm::Vec4::zero;
     if (!isSkip) {
       value.x = ibl->getPremMipCount();
@@ -251,11 +251,11 @@ int DrCalcViewWork::unistatic_mpf_OldViewPos(f32 *work) {
 }
 
 int DrCalcViewWork::unistatic_digher_val(f32 *work, bool isJitter) {
-  grlib::CGLibTextureBuffer &texture = unknown700->unknown70->unknown98[1];
+  grlib::CGLibTextureBuffer &texture = m_drMan->m_drIniSys->unknown98[1];
   f32 width = texture.getWidth();
   f32 height = texture.getHeight();
-  work[0] = unknown700->unknown5b8->unknown18 * 0.25f;
-  work[1] = (1.0f / height) * unknown700->unknown5b8->unknown1c;
+  work[0] = m_drMan->unknown5b8->unknown18 * 0.25f;
+  work[1] = (1.0f / height) * m_drMan->unknown5b8->unknown1c;
   work[2] = 4.0f / width;
   work[3] = width * 0.25f;
   return DrResMdoUniformBlock::s_nVarSizeTbl[DrResMdoUniformBlock::VAR_TYPE_UNKNOWN_26];
@@ -263,7 +263,7 @@ int DrCalcViewWork::unistatic_digher_val(f32 *work, bool isJitter) {
 
 int DrCalcViewWork::unistatic_screenSize(f32 *work, bool isJitter) {
   mm::Vec4 value = mm::Vec4::unit;
-  DrPixlRenderTarget *target = unknown700->unknown78->getPixlObj(5);
+  DrPixlRenderTarget *target = m_drMan->m_drPixlMan->getPixlObj(5);
   if (target != nullptr) {
     value.x = target->unknownbc;
     value.y = target->unknownc0;
@@ -277,7 +277,7 @@ int DrCalcViewWork::unistatic_screenSize(f32 *work, bool isJitter) {
 }
 
 int DrCalcViewWork::unistatic_lightCol(f32 *work) {
-  DrLightMan *lightMan = unknown700->unknown588;
+  DrLightMan *lightMan = m_drMan->unknown588;
   s32 count = lightMan->unknown168;
   s32 used = count < 3 ? count : 2;
   const mm::Col3 *color = lightMan->unknown16c;

@@ -46,10 +46,10 @@ void DrShdMdoMan::releaseShaderObj(DrShdMdoDecShdObj *obj) {
 DrShdMdoDecShdObj::~DrShdMdoDecShdObj() { unknown28.release(); }
 
 void DrShdMdoDecShdObj::update() {
-  if (unknown20 == nullptr) {
+  if (m_drCalcStmListObj == nullptr) {
     return;
   }
-  unknown035 *res = unknown20->getResShaderObj();
+  unknown035 *res = m_drCalcStmListObj->getResShaderObj();
   if (res->unknown10 & 1) {
     changeMemShader(res->unknown00, nullptr, nullptr);
   }

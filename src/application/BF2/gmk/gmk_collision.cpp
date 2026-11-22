@@ -31,8 +31,8 @@ void GmkCollision::create(const CreateInfo &info) {
   coliInfo.unknown08 = 799;
   coliInfo.unknown14 = 0x200000;
   coliInfo.unknown0c = 2;
-  coliInfo.unknown28.unknown08 = this;
-  coliInfo.unknown20 = this;
+  coliInfo.unknown28.m_iColiEventListener = this;
+  coliInfo.m_coliUserData = this;
   coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_UNKNOWN_0;
   coliInfo.unknown28.unknown00 |= 1 << fw::ColiObject::EVENT_UNKNOWN_2;
   switch (info.unknown00) {
@@ -111,7 +111,7 @@ void GmkCollision::update(f32 deltaTime) {
 }
 
 void GmkCollision::enter(const EnterInfo &info) {
-  fw::ColiUserData *userData = info.other->unknown58;
+  fw::ColiUserData *userData = info.other->m_coliUserData;
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&gf::GfComCollider::UserData::m_rtti)) {
     return;
   }
@@ -122,7 +122,7 @@ void GmkCollision::enter(const EnterInfo &info) {
 }
 
 void GmkCollision::leave(const LeaveInfo &info) {
-  fw::ColiUserData *userData = info.other->unknown58;
+  fw::ColiUserData *userData = info.other->m_coliUserData;
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&gf::GfComCollider::UserData::m_rtti)) {
     return;
   }

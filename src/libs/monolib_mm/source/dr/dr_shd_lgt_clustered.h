@@ -95,7 +95,7 @@ public:
   u32 unknown690;          // Inferred role: light list node count; original member name unknown.
   u32 unknown694;          // Inferred role: light list node maximum; original member name unknown.
   void *unknown698;        // Inferred role: light list nodes; original member name unknown.
-  DrResFetch unknown6a0;   // Inferred role: light vertex fetch; original member name unknown.
+  DrResFetch m_drResFetch; // Inferred role: light vertex fetch; original member name unknown.
 };
 
 static_assert(sizeof(DrShdLgtClustered::unknown001) == 0x14, "");
@@ -111,7 +111,7 @@ static_assert(offsetof(DrShdLgtClustered, unknown18) == 0x18, "");
 static_assert(offsetof(DrShdLgtClustered, unknown20) == 0x20, "");
 static_assert(offsetof(DrShdLgtClustered, unknown660) == 0x660, "");
 static_assert(offsetof(DrShdLgtClustered, unknown698) == 0x698, "");
-static_assert(offsetof(DrShdLgtClustered, unknown6a0) == 0x6a0, "");
+static_assert(offsetof(DrShdLgtClustered, m_drResFetch) == 0x6a0, "");
 static_assert(sizeof(DrShdLgtClustered) == 0x6b0, "");
 
 } // namespace ml
