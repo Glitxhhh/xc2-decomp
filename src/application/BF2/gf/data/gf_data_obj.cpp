@@ -71,7 +71,7 @@ enum {
   ENHANCE_EFFECT_UNKNOWN_146 = 146, // Inferred role: enhance effect armor add; original name unknown.
 };
 
-DataObjDriver::DataObjDriver(u32 id) : unknown10(nullptr), unknown18(unknown020), unknown20(nullptr), unknown28(), m_menuParam(false) { setup(id); }
+DataObjDriver::DataObjDriver(u32 id) : unknown10(nullptr), m_GF_OBJ_HANDLE(unknown020), unknown20(nullptr), unknown28(), m_menuParam(false) { setup(id); }
 
 void DataObjDriver::setup(u32 id) {
   this->m_bdatId = id;
@@ -80,7 +80,7 @@ void DataObjDriver::setup(u32 id) {
   }
 }
 
-DataObjDriver::DataObjDriver(GF_OBJ_HANDLE *handle) : m_bdatId(0), unknown10(nullptr), unknown18(handle), unknown20(nullptr), unknown28(), m_menuParam(false) {
+DataObjDriver::DataObjDriver(GF_OBJ_HANDLE *handle) : m_bdatId(0), unknown10(nullptr), m_GF_OBJ_HANDLE(handle), unknown20(nullptr), unknown28(), m_menuParam(false) {
   GfObjAcc objAcc(handle);
   setup(objAcc.getDriverId());
 }
@@ -186,7 +186,7 @@ SDataIdea *DataObjDriver::getIdea() const { return &GfDataDriver::getSDataDriver
 
 u32 DataObjDriver::getDataType() const { return unknown10->m_dataType; }
 
-u32 DataObjDriver::getHp() const { return GfObjUtil::getHp(unknown18); }
+u32 DataObjDriver::getHp() const { return GfObjUtil::getHp(m_GF_OBJ_HANDLE); }
 
 static void unknown001(u32 &value, const SDataDriver &dataDriver, u32 percentEffect,
                        u32 addEffect) { // Inferred role: applyDriverEnhance; original function name unknown.
@@ -823,11 +823,11 @@ void DataObjDriver::setBladeSet(int slot) {
   }
 
   GfDataDriver::setEquipBlade(unknown10->unknown22, true, slot);
-  GfEvent::callBladeChange(unknown18, oldSlot, slot);
+  GfEvent::callBladeChange(m_GF_OBJ_HANDLE, oldSlot, slot);
 }
 
 u32 DataObjDriver::getBlade(bool isVirtual, int slot) const {
-  GfObjSetup *setup = GfObjUtil::getObjSetup(unknown18);
+  GfObjSetup *setup = GfObjUtil::getObjSetup(m_GF_OBJ_HANDLE);
   if (setup != nullptr && setup->unknown54 && setup->unknown58 != 0) {
     return setup->unknown58;
   }
@@ -873,7 +873,7 @@ u32 DataObjBlade::getEquipWeapon(bool isVirtual, int) const { return get(isVirtu
 
 u32 DataObjDriver::getWeaponType(bool isVirtual, int slot) const {
   u32 blade = getBlade(isVirtual, slot);
-  GfObjSetup *setup = GfObjUtil::getObjSetup(unknown18);
+  GfObjSetup *setup = GfObjUtil::getObjSetup(m_GF_OBJ_HANDLE);
   if (setup != nullptr) {
     u32 fixedBlade = setup->unknown54 ? setup->unknown58 : 0;
     if (fixedBlade != 0) {
@@ -915,7 +915,7 @@ u32 DataObjDriver::getAttribute(bool isVirtual, int slot) const {
   }
 
   u32 blade = slot >= 0 ? unknown10->unknown26[slot] : 0;
-  GfObjSetup *setup = GfObjUtil::getObjSetup(unknown18);
+  GfObjSetup *setup = GfObjUtil::getObjSetup(m_GF_OBJ_HANDLE);
   if (setup != nullptr) {
     u32 fixedBlade = setup->unknown54 ? setup->unknown58 : 0;
     if (fixedBlade != 0) {
@@ -960,7 +960,7 @@ u32 DataObjDriver::getFavoriteCategory(FAVORITE favorite) const { return GfDataD
 
 u32 DataObjDriver::getFavoriteItem(FAVORITE favorite) const { return GfDataDriver::getFavorite(getBdatId(), favorite); }
 
-DataObjBlade::DataObjBlade(u32 id) : unknown08(nullptr), unknown10(unknown020), unknown18(nullptr), m_menuParam(false) { setup(id); }
+DataObjBlade::DataObjBlade(u32 id) : unknown08(nullptr), m_GF_OBJ_HANDLE(unknown020), unknown18(nullptr), m_menuParam(false) { setup(id); }
 
 void DataObjBlade::setup(u32 id) {
   this->m_bdatId = id;
@@ -969,7 +969,7 @@ void DataObjBlade::setup(u32 id) {
   }
 }
 
-DataObjBlade::DataObjBlade(GF_OBJ_HANDLE *handle) : unknown08(nullptr), unknown10(handle), unknown18(nullptr), m_bdatId(0), m_menuParam(false) {
+DataObjBlade::DataObjBlade(GF_OBJ_HANDLE *handle) : unknown08(nullptr), m_GF_OBJ_HANDLE(handle), unknown18(nullptr), m_bdatId(0), m_menuParam(false) {
   GfObjAcc objAcc(handle);
   setup(objAcc.getBladeId());
 }
@@ -1107,7 +1107,7 @@ u32 DataObjBlade::getSkillAchievement(u32 index) const { return get(false)->unkn
 
 u32 DataObjBlade::getFieldSkillAchievement(u32 index) const { return get(false)->unknown424[index].unknown00; }
 
-u32 DataObjBlade::getKeyAchievement() const { return get(false)->unknown5d4.unknown00; }
+u32 DataObjBlade::getKeyAchievement() const { return get(false)->m_achievInfo.unknown00; }
 
 u32 DataObjBlade::getLinkNum() const {
   u32 kizunaLink = GfGameUtil::getKizunaLink(getBlade(false, -1));
@@ -1158,9 +1158,9 @@ const char *DataObjBlade::getCamBone() const { return get(false)->m_camBone; }
 
 u32 DataObjBlade::getEyeRotControl() const { return get(false)->m_eyeRotControl; }
 
-DataObjPcWpn::DataObjPcWpn(u32 id) : unknown08(unknown020), m_bdatId(id) {}
+DataObjPcWpn::DataObjPcWpn(u32 id) : m_GF_OBJ_HANDLE(unknown020), m_bdatId(id) {}
 
-DataObjPcWpn::DataObjPcWpn(GF_OBJ_HANDLE *handle) : unknown08(handle) {
+DataObjPcWpn::DataObjPcWpn(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle) {
   GfObjAcc objAcc(handle);
   m_bdatId = objAcc.getPcWeaponId();
 }
@@ -1176,11 +1176,11 @@ bool DataObjPcWpn::getName(u8 *&bdat, u32 &textId) const { return GfDataItem::ge
 u32 DataObjPcWpn::getBdatId() const { return m_bdatId; }
 
 u32 DataObjPcWpn::getAttribute(bool, int slot) const {
-  if (unknown08 == unknown020) {
+  if (m_GF_OBJ_HANDLE == unknown020) {
     return 0;
   }
 
-  int member = GfObjUtil::getObjSetup(unknown08)->unknown14;
+  int member = GfObjUtil::getObjSetup(m_GF_OBJ_HANDLE)->unknown14;
   if (member == -1) {
     return 0;
   }
@@ -1194,11 +1194,11 @@ u32 DataObjPcWpn::getEquipWeapon(bool, int) const { return m_bdatId; }
 u32 DataObjPcWpn::getWeaponType(bool, int) const { return GfBdatItem::get()->getPcWpnWpnType(getBdatId()); }
 
 int DataObjPcWpn::getBladeSet(bool isVirtual) const {
-  if (unknown08 == unknown020) {
+  if (m_GF_OBJ_HANDLE == unknown020) {
     return -1;
   }
 
-  int member = GfObjUtil::getObjSetup(unknown08)->unknown14;
+  int member = GfObjUtil::getObjSetup(m_GF_OBJ_HANDLE)->unknown14;
   if (member == -1) {
     return -1;
   }
@@ -1228,11 +1228,11 @@ u32 DataObjPcWpn::getWeaponDamage(bool) const { return GfBdatItem::get()->getPcW
 
 u32 DataObjPcWpn::getWeaponStability(bool) const { return GfBdatItem::get()->getPcWpnStability(getBdatId()); }
 
-DataObjEnemy::DataObjEnemy(GF_OBJ_HANDLE *handle) : unknown08(handle), m_SDataEnemy(nullptr) {
-  m_SDataEnemy = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(handle)->unknown30)->unknowna0;
+DataObjEnemy::DataObjEnemy(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle), m_SDataEnemy(nullptr) {
+  m_SDataEnemy = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(handle)->unknown30)->m_enemy;
 }
 
-DataObjEnemy::DataObjEnemy(u32 id) : unknown08(unknown020), m_SDataEnemy(nullptr), unknown18(id, 1) { m_SDataEnemy = &unknown18; }
+DataObjEnemy::DataObjEnemy(u32 id) : m_GF_OBJ_HANDLE(unknown020), m_SDataEnemy(nullptr), unknown18(id, 1) { m_SDataEnemy = &unknown18; }
 
 DataObjEnemy::~DataObjEnemy() {}
 
@@ -1315,8 +1315,8 @@ u32 DataObjEnemy::getHpMax(bool) const {
 }
 
 u32 DataObjEnemy::getHp() const {
-  if (unknown08 != unknown020) {
-    return GfObjUtil::getHp(unknown08);
+  if (m_GF_OBJ_HANDLE != unknown020) {
+    return GfObjUtil::getHp(m_GF_OBJ_HANDLE);
   }
 
   return getHpMax(false);
@@ -1624,30 +1624,30 @@ u32 DataObjEnemy::getEyeRotControl() const { return GfBdatRsc::get()->getRscEnEy
 const char *DataObjEnemy::getRotateBone() const { return GfBdatRsc::get()->getRscEnRotateBone(getBdatIdEnRsc()); }
 
 DataObjEnemyBlade::DataObjEnemyBlade(GF_OBJ_HANDLE *handle) : DataObjEnemy(handle) {
-  unknownd8 = GfObjUtil::getObjSetup<GfObjSetupEnemy>(handle);
-  unknowne0 = unknownd8->unknownc0;
+  m_objSetupEnemy = GfObjUtil::getObjSetup<GfObjSetupEnemy>(handle);
+  m_blade = m_objSetupEnemy->m_blade;
 }
 
 DataObjEnemyBlade::DataObjEnemyBlade(u32 id) : DataObjEnemy(id) {}
 
 DataObjEnemyBlade::~DataObjEnemyBlade() {}
 
-SDataBlade *DataObjEnemyBlade::get(bool) const { return unknowne0; }
+SDataBlade *DataObjEnemyBlade::get(bool) const { return m_blade; }
 
-const char *DataObjEnemyBlade::getName() const { return GfDataBlade::getName(unknownd8->unknownb8, 0); }
+const char *DataObjEnemyBlade::getName() const { return GfDataBlade::getName(m_objSetupEnemy->unknownb8, 0); }
 
-bool DataObjEnemyBlade::getName(u8 *&bdat, u32 &textId) const { return GfDataBlade::getName(bdat, textId, unknownd8->unknownb8); }
+bool DataObjEnemyBlade::getName(u8 *&bdat, u32 &textId) const { return GfDataBlade::getName(bdat, textId, m_objSetupEnemy->unknownb8); }
 
-const char *DataObjEnemyBlade::getModelResourceName() const { return unknowne0->unknown70c.c_str(); }
+const char *DataObjEnemyBlade::getModelResourceName() const { return m_blade->unknown70c.c_str(); }
 
-const char *DataObjEnemyBlade::getMotionResourceName() const { return unknowne0->unknown734.c_str(); }
+const char *DataObjEnemyBlade::getMotionResourceName() const { return m_blade->unknown734.c_str(); }
 
-const char *DataObjEnemyBlade::getEffectResourceName() const { return unknowne0->m_effectResourceName; }
+const char *DataObjEnemyBlade::getEffectResourceName() const { return m_blade->m_effectResourceName; }
 
-u32 DataObjEnemyBlade::getWeaponType(bool, int) const { return unknowne0->m_weaponType; }
+u32 DataObjEnemyBlade::getWeaponType(bool, int) const { return m_blade->m_weaponType; }
 
 u32 DataObjEnemyBlade::getPArmor(bool isVirtual) const {
-  u32 pArmor = unknowne0->unknown83e;
+  u32 pArmor = m_blade->unknown83e;
   GfBdatItem *bdatItem = GfBdatItem::get();
   u32 weapon = getEquipWeapon(isVirtual, -1);
   if (weapon != 0) {
@@ -1658,7 +1658,7 @@ u32 DataObjEnemyBlade::getPArmor(bool isVirtual) const {
 }
 
 u32 DataObjEnemyBlade::getEArmor(bool isVirtual) const {
-  u32 eArmor = unknowne0->unknown83f;
+  u32 eArmor = m_blade->unknown83f;
   GfBdatItem *bdatItem = GfBdatItem::get();
   u32 weapon = getEquipWeapon(isVirtual, -1);
   if (weapon != 0) {
@@ -1708,62 +1708,62 @@ u32 DataObjEnemyBlade::getWeaponStability(bool isVirtual) const {
   return bdatItem->getPcWpnStability(weapon);
 }
 
-u32 DataObjEnemyBlade::getEquipWeapon(bool, int) const { return unknowne0->m_equipWeapon; }
+u32 DataObjEnemyBlade::getEquipWeapon(bool, int) const { return m_blade->m_equipWeapon; }
 
-u32 DataObjEnemyBlade::getChestHeight() const { return unknowne0->m_chestHeight; }
+u32 DataObjEnemyBlade::getChestHeight() const { return m_blade->m_chestHeight; }
 
-u32 DataObjEnemyBlade::getLandingHeight() const { return unknowne0->m_landingHeight; }
+u32 DataObjEnemyBlade::getLandingHeight() const { return m_blade->m_landingHeight; }
 
-u32 DataObjEnemyBlade::getIconData() const { return unknowne0->m_iconData; }
+u32 DataObjEnemyBlade::getIconData() const { return m_blade->m_iconData; }
 
-u32 DataObjEnemyBlade::getRace() const { return unknowne0->m_race; }
+u32 DataObjEnemyBlade::getRace() const { return m_blade->m_race; }
 
-u32 DataObjEnemyBlade::getQuestRace() const { return GfDataBlade::getQuestRace(unknowne0->unknown06); }
+u32 DataObjEnemyBlade::getQuestRace() const { return GfDataBlade::getQuestRace(m_blade->unknown06); }
 
-u32 DataObjEnemyBlade::getGender() const { return unknowne0->m_gender; }
+u32 DataObjEnemyBlade::getGender() const { return m_blade->m_gender; }
 
 u32 DataObjEnemyBlade::getAttribute(bool, int) const {
-  if (unknownd8->getEnArrangeID() != 0) {
+  if (m_objSetupEnemy->getEnArrangeID() != 0) {
     GfBdatChrEnArrange *bdatChrEnArrange = GfBdatChrEnArrange::get();
-    if (bdatChrEnArrange->getChrEnArrangeBladeAtr(unknownd8->getEnArrangeID()) != 0) {
-      return bdatChrEnArrange->getChrEnArrangeBladeAtr(unknownd8->getEnArrangeID());
+    if (bdatChrEnArrange->getChrEnArrangeBladeAtr(m_objSetupEnemy->getEnArrangeID()) != 0) {
+      return bdatChrEnArrange->getChrEnArrangeBladeAtr(m_objSetupEnemy->getEnArrangeID());
     }
   }
 
-  return unknowne0->unknown823;
+  return m_blade->unknown823;
 }
 
 bool DataObjEnemyBlade::isDispInitExtraParts(u32 part) const {
-  if (unknownd8 != nullptr && unknownd8->unknowna0->unknown42 != 0) {
-    return (unknownd8->unknowna0->unknown42 & 1 << part) != 0;
+  if (m_objSetupEnemy != nullptr && m_objSetupEnemy->m_enemy->unknown42 != 0) {
+    return (m_objSetupEnemy->m_enemy->unknown42 & 1 << part) != 0;
   }
 
-  return unknowne0->unknownc0[part] != 0;
+  return m_blade->unknownc0[part] != 0;
 }
 
-u32 DataObjEnemyBlade::getEyeRotControl() const { return unknowne0->m_eyeRotControl; }
+u32 DataObjEnemyBlade::getEyeRotControl() const { return m_blade->m_eyeRotControl; }
 
-u32 DataObjEnemyBlade::getBladeArts(bool, u32 index) const { return unknowne0->unknown3c[index].unknown00; }
+u32 DataObjEnemyBlade::getBladeArts(bool, u32 index) const { return m_blade->unknown3c[index].unknown00; }
 
-u32 DataObjEnemyBlade::getBladeArtsLevel(bool, u32 index) const { return unknowne0->unknown3c[index].m_bladeArtsLevel; }
+u32 DataObjEnemyBlade::getBladeArtsLevel(bool, u32 index) const { return m_blade->unknown3c[index].m_bladeArtsLevel; }
 
-u32 DataObjEnemyBlade::getBladeArtsH(bool, u32 index) const { return unknowne0->unknown3c[index].unknown02; }
+u32 DataObjEnemyBlade::getBladeArtsH(bool, u32 index) const { return m_blade->unknown3c[index].unknown02; }
 
-u32 DataObjEnemyBlade::getBladeArtsN(bool, u32 index) const { return unknowne0->unknown60[index].unknown00; }
+u32 DataObjEnemyBlade::getBladeArtsN(bool, u32 index) const { return m_blade->unknown60[index].unknown00; }
 
-u32 DataObjEnemyBlade::getBladeArtsNH(bool, u32 index) const { return unknowne0->unknown60[index].unknown02; }
+u32 DataObjEnemyBlade::getBladeArtsNH(bool, u32 index) const { return m_blade->unknown60[index].unknown02; }
 
-u32 DataObjEnemyBlade::getBladeArtsEx(bool) const { return unknowne0->unknown84.unknown00; }
+u32 DataObjEnemyBlade::getBladeArtsEx(bool) const { return m_blade->unknown84.unknown00; }
 
-u32 DataObjEnemyBlade::getBladeArtsExH(bool) const { return unknowne0->unknown84.unknown02; }
+u32 DataObjEnemyBlade::getBladeArtsExH(bool) const { return m_blade->unknown84.unknown02; }
 
-u32 DataObjEnemyBlade::getBladeArtsEx2(bool) const { return unknowne0->unknown90.unknown00; }
+u32 DataObjEnemyBlade::getBladeArtsEx2(bool) const { return m_blade->unknown90.unknown00; }
 
-u32 DataObjEnemyBlade::getBladeArtsEx2H(bool) const { return unknowne0->unknown90.unknown02; }
+u32 DataObjEnemyBlade::getBladeArtsEx2H(bool) const { return m_blade->unknown90.unknown02; }
 
-u32 DataObjEnemyBlade::getPersonality() const { return unknowne0->m_personality; }
+u32 DataObjEnemyBlade::getPersonality() const { return m_blade->m_personality; }
 
-u32 DataObjEnemyBlade::getCoolTime() const { return unknowne0->m_coolTime; }
+u32 DataObjEnemyBlade::getCoolTime() const { return m_blade->m_coolTime; }
 
 SDataEnemy::SDataEnemy(u32 arrange, u32 level) : unknown04(0) {
   clear();
@@ -1863,9 +1863,9 @@ void SDataEnemy::clear() {
 
 SDataEnemy::SDataEnemy() : unknown04(0) { clear(); }
 
-DataObjNpc::DataObjNpc(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupNpc>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
+DataObjNpc::DataObjNpc(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupNpc>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjNpc::DataObjNpc(u32 id) : unknown08(unknown020), m_bdatId(id) {}
+DataObjNpc::DataObjNpc(u32 id) : m_GF_OBJ_HANDLE(unknown020), m_bdatId(id) {}
 
 bool DataObjNpc::isValid() const { return m_bdatId != 0; }
 
@@ -1889,9 +1889,9 @@ u32 DataObjNpc::getFootStepEffect() const { return GfDataNpc::getFootStepEffect(
 
 u32 DataObjNpc::getEyeRotControl() const { return GfDataNpc::getEyeRotControl(getBdatId()); }
 
-DataObjMap::DataObjMap(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMap>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
+DataObjMap::DataObjMap(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMap>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjMap::DataObjMap(u32 id) : unknown08(unknown020), m_bdatId(id) {}
+DataObjMap::DataObjMap(u32 id) : m_GF_OBJ_HANDLE(unknown020), m_bdatId(id) {}
 
 bool DataObjMap::isValid() const { return m_bdatId != 0; }
 
@@ -1899,9 +1899,9 @@ const char *DataObjMap::getName() const { return GfBdatMaplist::get()->getMaplis
 
 u32 DataObjMap::getBdatId() const { return m_bdatId; }
 
-DataObjMob::DataObjMob(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
+DataObjMob::DataObjMob(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjMob::DataObjMob(u32 id) : unknown08(unknown020), m_bdatId(id) {}
+DataObjMob::DataObjMob(u32 id) : m_GF_OBJ_HANDLE(unknown020), m_bdatId(id) {}
 
 bool DataObjMob::isValid() const { return m_bdatId != 0; }
 
@@ -1923,9 +1923,9 @@ u32 DataObjMob::getFootStep() const { return GfDataMob::getFootStep(getBdatId())
 
 u32 DataObjMob::getFootStepEffect() const { return GfDataMob::getFootStepEffect(getBdatId()); }
 
-DataObjUiObj::DataObjUiObj(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
+DataObjUiObj::DataObjUiObj(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle), m_bdatId(0) { m_bdatId = mm::mtl::dynamicCast<GfObjSetupMob>(GfObjManager::getObjInfo(handle)->unknown30)->unknown10; }
 
-DataObjUiObj::DataObjUiObj(u32 id) : unknown08(unknown020), m_bdatId(id) {}
+DataObjUiObj::DataObjUiObj(u32 id) : m_GF_OBJ_HANDLE(unknown020), m_bdatId(id) {}
 
 bool DataObjUiObj::isValid() const { return m_bdatId != 0; }
 
@@ -1941,13 +1941,13 @@ u32 DataObjUiObj::getBdatId() const { return m_bdatId; }
 
 bool DataObjUiObj::isDispInitExtraParts(u32) const { return false; }
 
-DataObjGmk::DataObjGmk(GF_OBJ_HANDLE *handle) : unknown08(handle), m_bdatId(0) {
+DataObjGmk::DataObjGmk(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle), m_bdatId(0) {
   GfObjSetupGimmick *setup = mm::mtl::dynamicCast<GfObjSetupGimmick>(GfObjManager::getObjInfo(handle)->unknown30);
   m_bdatId = setup->unknown10;
   m_gimmickType = setup->unknown5c;
 }
 
-DataObjGmk::DataObjGmk(u32 id, GimmickType gimmickType) : unknown08(unknown020), m_bdatId(id), m_gimmickType(gimmickType) {}
+DataObjGmk::DataObjGmk(u32 id, GimmickType gimmickType) : m_GF_OBJ_HANDLE(unknown020), m_bdatId(id), m_gimmickType(gimmickType) {}
 
 bool DataObjGmk::isValid() const { return m_bdatId != 0; }
 
@@ -1981,9 +1981,9 @@ bool DataObjGmk::isDispInitExtraParts(u32) const {
   return GfBdatRsc::get()->getRSC_MapObjListExtraParts1(getBdatId()) != 0;
 }
 
-DataObjBelonging::DataObjBelonging(GF_OBJ_HANDLE *handle) : unknown08(handle) { GfObjUtil::getObjSetup<GfObjSetupBelonging>(handle); }
+DataObjBelonging::DataObjBelonging(GF_OBJ_HANDLE *handle) : m_GF_OBJ_HANDLE(handle) { GfObjUtil::getObjSetup<GfObjSetupBelonging>(handle); }
 
-bool DataObjBelonging::isValid() const { return unknown08 != unknown020; }
+bool DataObjBelonging::isValid() const { return m_GF_OBJ_HANDLE != unknown020; }
 
 const char *DataObjBelonging::getName() const { return ""; }
 

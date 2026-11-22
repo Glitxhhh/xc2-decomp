@@ -168,7 +168,7 @@ GF_ASSET_HANDLE *GfAssetManager::createAssetHandle(const GfInitParam &) {
     serial = manager->unknowndb918++;
   }
   GF_ASSET_HANDLE *handle = reinterpret_cast<GF_ASSET_HANDLE *>(static_cast<u64>((index & ASSET_HANDLE_UNKNOWN_1023) | serial << 10));
-  info->unknown08 = handle;
+  info->m_GF_ASSET_HANDLE = handle;
   manager->m_loadingAsset.push_back(handle);
   return handle;
 }
@@ -179,7 +179,7 @@ GfAssetPack *GfAssetManager::createAssetFiles(const GfAssetFilesInfo &info) {
   GfAssetPack *pack = nullptr;
   for (GfAssetPack *other : manager->unknowndb920) {
     if (other->unknown10 == value && !other->unknown238) {
-      if (info.unknown00 == unknown018) {
+      if (info.m_GF_ASSET_HANDLE == unknown018) {
         return nullptr;
       }
       pack = other;
@@ -191,13 +191,13 @@ GfAssetPack *GfAssetManager::createAssetFiles(const GfAssetFilesInfo &info) {
     manager->unknowndb920.push_back(pack);
     pack->addRef();
   }
-  AssetPackInfo *packInfo = getAssetPackInfo(info.unknown00);
+  AssetPackInfo *packInfo = getAssetPackInfo(info.m_GF_ASSET_HANDLE);
   if (packInfo != nullptr) {
     packInfo->setAssetPack(info.unknown08, pack);
     packInfo->unknown300 = info.unknown38;
   }
   if (info.unknown08 != ASSET_TYPE_UNKNOWN_0 && pack->isNeedLoad()) {
-    manager->m_slotMapping->requestSlotLoad(info.unknown00, pack);
+    manager->m_slotMapping->requestSlotLoad(info.m_GF_ASSET_HANDLE, pack);
   }
   callEventAssetPack(pack);
   return pack;
@@ -215,7 +215,7 @@ void GfAssetManager::releaseSlotHandle(GF_SLOT_HANDLE *handle) { get()->m_slotMa
 
 GfAssetPack *GfAssetManager::getAssetPack(GF_SLOT_HANDLE *handle) {
   for (GfAssetPack *pack : get()->unknowndb920) {
-    if (pack->unknown230 == handle) {
+    if (pack->m_GF_SLOT_HANDLE == handle) {
       return pack;
     }
   }
@@ -408,7 +408,7 @@ GF_OBJ_HANDLE *GfAssetManager::getObj(GF_ASSET_HANDLE *handle) {
   if (info == nullptr) {
     return unknown020;
   }
-  return info->unknown2d8;
+  return info->m_GF_OBJ_HANDLE;
 }
 
 bool GfAssetManager::isExist(GF_ASSET_HANDLE *handle, GfFileIdx index) {

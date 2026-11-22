@@ -67,9 +67,9 @@ struct AssetPackInfo {
   bool getReloadObjectByUsingAssetPack(mm::mtl::FixedList<GF_OBJ_HANDLE *, 1024> &objects, const AssetPackInfo *other) const;
   void updateReloadCount();
 
-  GF_ASSET_HANDLE *unknown08;                        // Inferred role: handle; original member name unknown.
+  GF_ASSET_HANDLE *m_GF_ASSET_HANDLE;                // Inferred role: handle; original member name unknown.
   mm::mtl::FixedVector<GfAssetPack *, 88> unknown10; // Inferred role: asset packs; original member name unknown.
-  GF_OBJ_HANDLE *unknown2d8;                         // Inferred role: object handle, read by GfAssetUtil::getObjHandle; original member name unknown.
+  GF_OBJ_HANDLE *m_GF_OBJ_HANDLE;                    // Inferred role: object handle, read by GfAssetUtil::getObjHandle; original member name unknown.
   GfExtendResource *m_extendResource[4];             // Inferred role: extend resources; named after the game accessor gf::AssetPackInfo::setExtendResource.
   u32 unknown300;                                    // Inferred role: priority; original member name unknown.
   bool unknown304;                                   // Inferred role: destroy requested; original member name unknown.
@@ -82,9 +82,9 @@ struct AssetPackInfo {
   u32 unknown334;                                    // Inferred role: load check count; original member name unknown.
 };
 
-static_assert(offsetof(AssetPackInfo, unknown08) == 0x08, "");
+static_assert(offsetof(AssetPackInfo, m_GF_ASSET_HANDLE) == 0x08, "");
 static_assert(offsetof(AssetPackInfo, unknown10) == 0x10, "");
-static_assert(offsetof(AssetPackInfo, unknown2d8) == 0x2d8, "");
+static_assert(offsetof(AssetPackInfo, m_GF_OBJ_HANDLE) == 0x2d8, "");
 static_assert(offsetof(AssetPackInfo, m_extendResource) == 0x2e0, "");
 static_assert(offsetof(AssetPackInfo, unknown300) == 0x300, "");
 static_assert(offsetof(AssetPackInfo, unknown304) == 0x304, "");

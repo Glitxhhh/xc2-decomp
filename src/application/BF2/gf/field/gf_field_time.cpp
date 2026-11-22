@@ -62,7 +62,7 @@ void GfFieldTime::clear() {
   getRealTime(unknown20);
   unknown18 = unknown20;
   setTime(START_UNKNOWN_7, 0);
-  GfDataManager::getDataGame()->unknown1098c0 = m_gameTime;
+  GfDataManager::getDataGame()->m_gameTime = m_gameTime;
 }
 
 u32 GfFieldTime::getTimeRange(u32 hour, u32 minute) const {
@@ -105,8 +105,8 @@ void GfFieldTime::setTime(u32 hour, u32 minute) {
 const GameTime &GfFieldTime::getGameTime() const { return m_gameTime; }
 
 void GfFieldTime::setupGame() {
-  setElapseTime(GfDataManager::getDataGame()->unknown1098c4);
-  setGameTime(GfDataManager::getDataGame()->unknown1098c0);
+  setElapseTime(GfDataManager::getDataGame()->m_elapseTime);
+  setGameTime(GfDataManager::getDataGame()->m_gameTime);
   setTimeStop(GfDataManager::getDataGame()->unknown24 != 0);
 }
 

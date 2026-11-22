@@ -27,7 +27,7 @@ void CharaEvaPlayerEff::stop() {
 }
 
 void CharaEvaPlayerEff::update(f32 delta) {
-  if (unknown08 == nullptr || gf::GfObjUtil::getObj(unknown08->unknown20) == nullptr || unknown18 == nullptr || unknown10 == nullptr) {
+  if (unknown08 == nullptr || gf::GfObjUtil::getObj(unknown08->m_GF_OBJ_HANDLE) == nullptr || unknown18 == nullptr || unknown10 == nullptr) {
     return;
   }
   f32 speed = mm::mtl::Singleton<SkipManager>::getPtr()->isSkip() ? 1.0f : delta;

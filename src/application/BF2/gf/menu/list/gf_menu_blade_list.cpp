@@ -255,7 +255,7 @@ void GfMenuBladeList::getBladeFromDriver(u32 driver, mm::mtl::FixedVector<u16, 4
 }
 
 void GfMenuBladeList::setupFromBladeList(const BladeListSetup &setup) {
-  SetupParam param = setup.unknown00;
+  SetupParam param = setup.m_setupParam;
   const mm::mtl::FixedVector<u16, 422> *blades = setup.unknown18;
   UIListInfo<MenuBladeInfo>::setup(getAllocator(ALLOCATOR_UNKNOWN_0), param);
   if (isValid()) {
@@ -269,7 +269,7 @@ void GfMenuBladeList::setupFromBladeList(const BladeListSetup &setup) {
 }
 
 void GfMenuBladeList::setupFromBook(const BladeBookSetup &setup) {
-  SetupParam param = setup.unknown00;
+  SetupParam param = setup.m_setupParam;
   mm::mtl::FixedVector<u16, 422> blades;
   for (u32 blade = BLADE_HOMURA; blade < BLADE_UNKNOWN_1012; blade++) {
     if (blade != BLADE_HOMURI) {

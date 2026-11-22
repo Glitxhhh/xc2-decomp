@@ -9,12 +9,12 @@ namespace pc {
 
 constexpr u32 PC_UNKNOWN_4 = 4; // Inferred role: pc param look axis; original name unknown.
 
-LookAxisPlugin::LookAxisPlugin() : unknown10(nullptr), unknown18(0.0f), unknown1c(0.0f), unknown20(0.0f), unknown24(0.0f), unknown28(false), unknown30(nullptr) {}
+LookAxisPlugin::LookAxisPlugin() : m_comBehaviorPc(nullptr), unknown18(0.0f), unknown1c(0.0f), unknown20(0.0f), unknown24(0.0f), unknown28(false), unknown30(nullptr) {}
 
 bool LookAxisPlugin::setup(GfComBehaviorPc &behavior) {
   mm::mtl::IntrusivePtr<fw::ParamList> paramList = fw::ParamManager::get()->unknown408[5];
   unknown30 = paramList->unknown0c > PC_UNKNOWN_4 ? &paramList->unknown10[PC_UNKNOWN_4] : nullptr;
-  this->unknown10 = &behavior;
+  this->m_comBehaviorPc = &behavior;
   return true;
 }
 

@@ -147,7 +147,7 @@ void GmkPrecious::createGobInst() {
   CBdatWrapper bdat(manager != nullptr ? manager->unknown9068 : nullptr);
   gf::GfInitParamFobj param;
   param.m_bladeID = FOBJ_UNKNOWN_23;
-  param.unknown18 = &bdat;
+  param.m_cBdatWrapper = &bdat;
   param.unknown95 = false;
   unknown58 = gf::GfObjFactory::createFieldObj(param);
   bindToGameObj(unknown58);
@@ -234,7 +234,7 @@ void GmkPrecious::createMenuIcon() {
   param.unknown00 = icon;
   param.unknown10 = AGmkBase::unknown08.unknown08->unknown00;
   const int unknown001 = 42; // Inferred role: wildcard data column of the precious icon offset; original name unknown.
-  gf::GfMenuBdat::getMenuOffset(Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 1, unknown001, BDAT_TYPE_UNKNOWN_2).valueU16, param.unknown20);
+  gf::GfMenuBdat::getMenuOffset(Bdat::getValCheck(gf::GfDataBdat::getFP(gf::BDAT_FLD_WILDCARD_DATA), 1, unknown001, BDAT_TYPE_UNKNOWN_2).valueU16, param.m_menuOffset);
   gf::GfMenuObjFieldIcon::open(unknown68, param);
 }
 

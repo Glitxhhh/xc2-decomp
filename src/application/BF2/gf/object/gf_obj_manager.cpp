@@ -117,7 +117,7 @@ void GfObjManager::addListener(IGfObjListener *listener, IGfObjListener::OBJEVT 
 
 void GfObjManager::removeListener(IGfObjListener *listener) {
   for (mm::mtl::FixedList<ObjListener, 256>::iterator it = m_aListenerObj.begin(); it != m_aListenerObj.end(); ++it) {
-    if (it->unknown00 == listener) {
+    if (it->m_iGfObjListener == listener) {
       m_aListenerObj.erase(it);
       return;
     }
@@ -128,7 +128,7 @@ void GfObjManager::callGfObjListener(IGfObjListener::OBJEVT event, GF_OBJ_HANDLE
   u32 objectType = GfObjUtil::getObjType(handle);
   for (mm::mtl::FixedList<ObjListener, 256>::iterator it = m_aListenerObj.begin(); it != m_aListenerObj.end(); ++it) {
     if (it->unknown08 == IGfObjListener::OBJEVT_UNKNOWN_0 || it->unknown08 == event) {
-      it->unknown00->listenerGfObj(event, handle, objectType);
+      it->m_iGfObjListener->listenerGfObj(event, handle, objectType);
     }
   }
 }
@@ -397,8 +397,8 @@ void GfObjManager::destroyMultiBind(GF_OBJ_HANDLE *handle, u32 uniqId) {
 
 void GfObjManager::createGfObjProperty(GF_OBJ_HANDLE *handle) {
   GFOBJ_INFO *info = getObjInfo(handle);
-  if (info != nullptr && info->unknown98 == nullptr) {
-    info->unknown98 = GfObjProperty::create(handle);
+  if (info != nullptr && info->m_objProperty == nullptr) {
+    info->m_objProperty = GfObjProperty::create(handle);
   }
 }
 
@@ -489,12 +489,12 @@ void GfObjManager::addFollowObj(GF_OBJ_HANDLE *handle) {
 
 void GfObjManager::destroyObjAsset(GF_ASSET_HANDLE *asset) {
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 4096>::iterator it = m_loadingObj.begin(); it != m_loadingObj.end(); ++it) {
-    if (GfAssetManager::isSameAsset(unknown001(*it)->unknown10, asset)) {
+    if (GfAssetManager::isSameAsset(unknown001(*it)->m_GF_ASSET_HANDLE, asset)) {
       GfObjUtil::destroy(*it);
     }
   }
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 2048>::iterator it = unknown432260.begin(); it != unknown432260.end(); ++it) {
-    if (GfAssetManager::isSameAsset(unknown001(*it)->unknown10, asset)) {
+    if (GfAssetManager::isSameAsset(unknown001(*it)->m_GF_ASSET_HANDLE, asset)) {
       GfObjUtil::destroy(*it);
     }
   }

@@ -54,7 +54,7 @@ public:
   struct PresetInfo {
     u16 unknown00;           // Inferred role: frequency ("Frequency"); original member name unknown.
     unknown001 unknown04[6]; // Inferred role: character motions; original member name unknown.
-    PresetKey unknown34;     // Inferred role: sorted characters; original member name unknown.
+    PresetKey m_presetKey;   // Inferred role: sorted characters; original member name unknown.
   };
 
   GfBdatUniqueMotion();
@@ -82,7 +82,7 @@ static_assert(offsetof(GfBdatUniqueMotion::CharaInfo, unknown0c) == 0x0c, "");
 static_assert(offsetof(GfBdatUniqueMotion::CharaInfo, unknown10) == 0x10, "");
 static_assert(sizeof(GfBdatUniqueMotion::CharaInfo) == 0x14, "");
 static_assert(offsetof(GfBdatUniqueMotion::PresetInfo, unknown04) == 0x04, "");
-static_assert(offsetof(GfBdatUniqueMotion::PresetInfo, unknown34) == 0x34, "");
+static_assert(offsetof(GfBdatUniqueMotion::PresetInfo, m_presetKey) == 0x34, "");
 static_assert(sizeof(GfBdatUniqueMotion::PresetInfo) == 0x40, "");
 static_assert(offsetof(GfBdatUniqueMotion, unknown28) == 0x28, "");
 static_assert(sizeof(GfBdatUniqueMotion) == 0x30, "");

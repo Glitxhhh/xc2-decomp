@@ -51,13 +51,13 @@ struct GFOBJ_MOUNT {
   GFOBJ_MOUNT();
   ~GFOBJ_MOUNT();
 
-  GF_MOUNT_HANDLE *unknown00; // Inferred role: handle; original member name unknown.
-  u32 unknown08;              // Inferred role: append index; original member name unknown.
-  GfAppendInfo unknown10;     // Inferred role: append info; original member name unknown.
+  GF_MOUNT_HANDLE *m_GF_MOUNT_HANDLE; // Inferred role: handle; original member name unknown.
+  u32 unknown08;                      // Inferred role: append index; original member name unknown.
+  GfAppendInfo m_appendInfo;          // Inferred role: append info; original member name unknown.
 };
 
 static_assert(offsetof(GFOBJ_MOUNT, unknown08) == 0x08, "");
-static_assert(offsetof(GFOBJ_MOUNT, unknown10) == 0x10, "");
+static_assert(offsetof(GFOBJ_MOUNT, m_appendInfo) == 0x10, "");
 static_assert(sizeof(GFOBJ_MOUNT) == 0xc8, "");
 
 struct GFOBJ_INFO {
@@ -70,7 +70,7 @@ struct GFOBJ_INFO {
   u16 unknown04;                                // Inferred role: object type; original member name unknown.
   u16 unknown06;                                // Inferred role: state; original member name unknown.
   GF_OBJ_HANDLE *unknown08;                     // Inferred role: handle; original member name unknown.
-  GF_ASSET_HANDLE *unknown10;                   // Inferred role: asset handle; original member name unknown.
+  GF_ASSET_HANDLE *m_GF_ASSET_HANDLE;           // Inferred role: asset handle; original member name unknown.
   GfObj *unknown18;                             // Inferred role: object; original member name unknown.
   fw::HandlePtr<fw::UpdatableObject> unknown20; // Inferred role: object handle; original member name unknown.
   GfObjSetup *unknown30;                        // Inferred role: setup; original member name unknown.
@@ -83,11 +83,11 @@ struct GFOBJ_INFO {
   u64 unknown70[3];                              // Inferred role: user data; original member name unknown.
   GF_OBJ_HANDLE *unknown88;                      // Inferred role: master; original member name unknown.
   GF_OBJ_HANDLE *unknown90;                      // Inferred role: owner; original member name unknown.
-  GfObjProperty *unknown98;                      // Inferred role: property; original member name unknown.
+  GfObjProperty *m_objProperty;                  // Inferred role: property; original member name unknown.
   mm::Vec3 unknowna0;                            // Inferred role: model scale; original member name unknown.
   int unknownb0;                                 // Inferred role: coli priority; original member name unknown.
   mm::mtl::FixedArray<GFOBJ_MOUNT, 4> unknownb8; // Inferred role: mounts; original member name unknown.
-  GfVolumeFade *unknown3d8;                      // Inferred role: volume fade; original member name unknown.
+  GfVolumeFade *m_volumeFade;                    // Inferred role: volume fade; original member name unknown.
   mm::mtl::FixStr<32> unknown3e0;                // Inferred role: mount bone name; original member name unknown.
   mm::mtl::FixStr<16> unknown404;                // Inferred role: model base name; original member name unknown.
 };
@@ -96,7 +96,7 @@ static_assert(offsetof(GFOBJ_INFO, unknown02) == 0x02, "");
 static_assert(offsetof(GFOBJ_INFO, unknown04) == 0x04, "");
 static_assert(offsetof(GFOBJ_INFO, unknown06) == 0x06, "");
 static_assert(offsetof(GFOBJ_INFO, unknown08) == 0x08, "");
-static_assert(offsetof(GFOBJ_INFO, unknown10) == 0x10, "");
+static_assert(offsetof(GFOBJ_INFO, m_GF_ASSET_HANDLE) == 0x10, "");
 static_assert(offsetof(GFOBJ_INFO, unknown18) == 0x18, "");
 static_assert(offsetof(GFOBJ_INFO, unknown20) == 0x20, "");
 static_assert(offsetof(GFOBJ_INFO, unknownb0) == 0xb0, "");
@@ -109,10 +109,10 @@ static_assert(offsetof(GFOBJ_INFO, unknown48) == 0x48, "");
 static_assert(offsetof(GFOBJ_INFO, unknown70) == 0x70, "");
 static_assert(offsetof(GFOBJ_INFO, unknown88) == 0x88, "");
 static_assert(offsetof(GFOBJ_INFO, unknown90) == 0x90, "");
-static_assert(offsetof(GFOBJ_INFO, unknown98) == 0x98, "");
+static_assert(offsetof(GFOBJ_INFO, m_objProperty) == 0x98, "");
 static_assert(offsetof(GFOBJ_INFO, unknowna0) == 0xa0, "");
 static_assert(offsetof(GFOBJ_INFO, unknownb8) == 0xb8, "");
-static_assert(offsetof(GFOBJ_INFO, unknown3d8) == 0x3d8, "");
+static_assert(offsetof(GFOBJ_INFO, m_volumeFade) == 0x3d8, "");
 static_assert(offsetof(GFOBJ_INFO, unknown3e0) == 0x3e0, "");
 static_assert(offsetof(GFOBJ_INFO, unknown404) == 0x404, "");
 static_assert(sizeof(GFOBJ_INFO) == 0x420, "");
@@ -133,7 +133,7 @@ public:
 class GfObjManager : public mm::mtl::PtrSingleton<GfObjManager>, public IGfEvent {
 public:
   struct ObjListener {
-    IGfObjListener *unknown00;        // Inferred role: listener; original member name unknown.
+    IGfObjListener *m_iGfObjListener; // Inferred role: listener; original member name unknown.
     IGfObjListener::OBJEVT unknown08; // Inferred role: event; original member name unknown.
   };
 

@@ -103,7 +103,7 @@ void CharaEvaPlayer::update(f32 delta) {
   if (unknown18 == nullptr) {
     return;
   }
-  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->unknown20);
+  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->m_GF_OBJ_HANDLE);
   if (obj == nullptr) {
     return;
   }
@@ -211,7 +211,7 @@ void CharaEvaPlayer::update(f32 delta) {
     }
   }
 
-  gf::GfObjAcc acc(unknown18->unknown20);
+  gf::GfObjAcc acc(unknown18->m_GF_OBJ_HANDLE);
   int extMeshMax = acc.getExtMeshMax();
   for (int i = 0; i < extMeshMax; i++) {
     const char *name = acc.getExtMeshName(i);
@@ -275,7 +275,7 @@ void CharaEvaPlayer::playAction(int type) {
   if (unknown18 == nullptr) {
     return;
   }
-  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->unknown20);
+  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->m_GF_OBJ_HANDLE);
   if (obj == nullptr || (unknown08 & FLAG_UNKNOWN_0) == 0) {
     return;
   }
@@ -324,7 +324,7 @@ void CharaEvaPlayer::playFoot(bool isRight) {
   if (unknown18 == nullptr) {
     return;
   }
-  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->unknown20);
+  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->m_GF_OBJ_HANDLE);
   if (obj == nullptr) {
     return;
   }
@@ -365,7 +365,7 @@ void CharaEvaPlayer::stopAction() {
   if (unknown18 == nullptr) {
     return;
   }
-  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->unknown20);
+  gf::GfObj *obj = gf::GfObjUtil::getObj(unknown18->m_GF_OBJ_HANDLE);
   if (obj == nullptr || unknown70 <= 0) {
     return;
   }

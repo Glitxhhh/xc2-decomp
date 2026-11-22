@@ -130,7 +130,7 @@ void Scheduler::func_turn(gf::GfObj *obj) {
     gf::GfObj *leader = gf::GfGameParty::getLeaderTransformObj();
     gf::GfGameUtil::ExecTurnCmdInfo info;
     f32 rotY = getRotY(obj, leader);
-    info.unknown00 = unknown10;
+    info.m_GF_OBJ_HANDLE = unknown10;
     info.unknown08 = rotY;
     info.unknown0c = 1.0f;
     info.unknown10 = 0.7853982f;

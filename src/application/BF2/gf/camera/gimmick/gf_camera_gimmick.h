@@ -118,10 +118,10 @@ public:
   f32 unknown10120;      // Inferred role: base rotation; original member name unknown.
   u8 _10124[0x10128 - 0x10124];
   GF_OBJ_HANDLE *m_handle;
-  const void *unknown10130;         // Inferred role: loaded params data; original member name unknown.
-  f32 m_controlSpeed;               // Inferred role: control speed; named after the game accessor gf::GimmickCamera::getControlSpeed.
-  fw::ColiCheckConfig unknown1013c; // Inferred role: camera collision config; original member name unknown.
-  bool m_lookUnlock;                // Inferred role: look lock; named after the game accessor gf::GimmickCamera::setLookUnlock.
+  const void *unknown10130;              // Inferred role: loaded params data; original member name unknown.
+  f32 m_controlSpeed;                    // Inferred role: control speed; named after the game accessor gf::GimmickCamera::getControlSpeed.
+  fw::ColiCheckConfig m_coliCheckConfig; // Inferred role: camera collision config; original member name unknown.
+  bool m_lookUnlock;                     // Inferred role: look lock; named after the game accessor gf::GimmickCamera::setLookUnlock.
   u8 _10155[0x10160 - 0x10155];
   mm::Vec3 unknown10160; // Inferred role: look lock position; original member name unknown.
 };
@@ -144,7 +144,7 @@ static_assert(offsetof(GimmickCamera, unknown10120) == 0x10120, "");
 static_assert(offsetof(GimmickCamera, m_handle) == 0x10128, "");
 static_assert(offsetof(GimmickCamera, unknown10130) == 0x10130, "");
 static_assert(offsetof(GimmickCamera, m_controlSpeed) == 0x10138, "");
-static_assert(offsetof(GimmickCamera, unknown1013c) == 0x1013c, "");
+static_assert(offsetof(GimmickCamera, m_coliCheckConfig) == 0x1013c, "");
 static_assert(offsetof(GimmickCamera, m_lookUnlock) == 0x10154, "");
 static_assert(offsetof(GimmickCamera, unknown10160) == 0x10160, "");
 static_assert(sizeof(GimmickCamera) == 0x10170, "");

@@ -464,7 +464,7 @@ void GfGameManager::qevCompleteQuest(const QuestCompleteParam &param) {
 void GfGameManager::qevOrderQuest(const QuestOrderParam &param) { GfGameMercenaries::qevOrderQuest(param); }
 
 void GfGameManager::qevCompleteChildQuest(const QuestCompleteChildParam &param) {
-  if (param.unknown04.unknown00 == CHILD_UNKNOWN_210 && GfDataUtil::getScenarioFlag() == SCENARIO_FLAG_UNKNOWN_8024) {
+  if (param.m_questID.unknown00 == CHILD_UNKNOWN_210 && GfDataUtil::getScenarioFlag() == SCENARIO_FLAG_UNKNOWN_8024) {
     GfGameScene *scene = GfGameScene::get();
     if (scene != nullptr && !scene->isForceBossBattleBgm()) {
       scene->setForceBossBattleBgm(true);
@@ -726,7 +726,7 @@ bool GfGameManager::isEnableFieldAccess() {
         return false;
       }
 
-      if (GfDataDriver::getBlade(driverAcc.getValidDriverId(), -1) == BLADE_BYAKKO && GfObjUtil::getParentHandle(driverAcc.unknown10) != GfGameParty::getHandleBlade(PARTY_ID_UNKNOWN_0, -1)) {
+      if (GfDataDriver::getBlade(driverAcc.getValidDriverId(), -1) == BLADE_BYAKKO && GfObjUtil::getParentHandle(driverAcc.m_GF_OBJ_HANDLE) != GfGameParty::getHandleBlade(PARTY_ID_UNKNOWN_0, -1)) {
         return false;
       }
     }
@@ -1122,7 +1122,7 @@ bool GfGameManager::isClearGame() {
   if (GfManager::isExecModeAdvertize() || GfManager::isExecModeThater()) {
     tl::TitleMain *title = tl::TitleMain::get();
     if (title != nullptr && title->m_saveBuffer != nullptr) {
-      return GfGameFlag::getLocal(title->getSaveBuffer()->unknown10.unknownfbbc4, 1, FLAG_UNKNOWN_48589) != 0;
+      return GfGameFlag::getLocal(title->getSaveBuffer()->m_game.m_gameFlag, 1, FLAG_UNKNOWN_48589) != 0;
     }
   }
   return GfDataUtil::isClearGame();

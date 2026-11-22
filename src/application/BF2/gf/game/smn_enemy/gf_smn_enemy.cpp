@@ -33,7 +33,7 @@ constexpr size_t CAPACITY_UNKNOWN_40 = 40; // Inferred role: smn enemy capacity;
 
 namespace gf {
 
-GfRelSmnEnemy::GfRelSmnEnemy(const CreateInfo *info) : unknown40(1.0f), unknown44(5.0f), unknown48() {
+GfRelSmnEnemy::GfRelSmnEnemy(const CreateInfo *info) : unknown40(1.0f), unknown44(5.0f), m_distHvCond() {
   GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
   if (info != nullptr) {
     create(*info);
@@ -51,11 +51,11 @@ void GfRelSmnEnemy::dispose() {
     unknown50.clear();
     unknown50.destroy();
   }
-  unknown10 = CreateInfo();
+  m_createInfo = CreateInfo();
 }
 
 void GfRelSmnEnemy::update(f32 deltaTime) {
-  if (unknown10.unknown00 == unknown020 || unknown10.unknown08 < 1) {
+  if (m_createInfo.m_GF_OBJ_HANDLE == unknown020 || m_createInfo.unknown08 < 1) {
     return;
   }
   if (isOwnerValid()) {
@@ -68,22 +68,22 @@ void GfRelSmnEnemy::update(f32 deltaTime) {
 }
 
 bool GfRelSmnEnemy::isOwnerValid() const {
-  GfObjAcc acc(unknown10.unknown00);
+  GfObjAcc acc(m_createInfo.m_GF_OBJ_HANDLE);
   return !acc.isDestroy() && !acc.testFlag(OBJ_FLAG_UNKNOWN_17) && acc.getObj() != nullptr;
 }
 
 u32 GfRelSmnEnemy::getEnemyNum() const {
-  if (unknown10.unknown00 == unknown020) {
+  if (m_createInfo.m_GF_OBJ_HANDLE == unknown020) {
     return 0;
   }
-  if (unknown10.unknown08 > 0) {
+  if (m_createInfo.unknown08 > 0) {
     return unknowna0.size();
   }
   return 0;
 }
 
 GF_OBJ_HANDLE *GfRelSmnEnemy::getEnemy(u32 index) const {
-  if (unknown10.unknown00 == unknown020 || unknown10.unknown08 < 1) {
+  if (m_createInfo.m_GF_OBJ_HANDLE == unknown020 || m_createInfo.unknown08 < 1) {
     return unknown020;
   }
   return unknowna0[index];
@@ -117,8 +117,8 @@ void GfRelSmnEnemy::disposeEnemies(bool isFade) {
 }
 
 void GfRelSmnEnemy::debugDraw() const {
-  if (unknown10.unknown00 != unknown020 && unknown10.unknown08 > 0) {
-    GfObjAcc acc(unknown10.unknown00);
+  if (m_createInfo.m_GF_OBJ_HANDLE != unknown020 && m_createInfo.unknown08 > 0) {
+    GfObjAcc acc(m_createInfo.m_GF_OBJ_HANDLE);
     if (acc.getObj() != nullptr) {
       mm::Mat44 matrix;
       acc.getWorldTransform().unknown001(matrix);
@@ -133,7 +133,7 @@ void GfRelSmnEnemy::updateDepopEnemy() {
   if (!unknowna0.empty()) {
     for (GF_OBJ_HANDLE **enemy = unknowna0.begin(), **end = unknowna0.end(); enemy != end; ++enemy) {
       GfObjSetupEnemy *setup = GfObjUtil::getObjSetup<GfObjSetupEnemy>(*enemy);
-      if (0.0f < unknown48.unknown00 && 0.0f < unknown48.unknown04 && !unknown48.isMatch(setup->unknown20)) {
+      if (0.0f < m_distHvCond.unknown00 && 0.0f < m_distHvCond.unknown04 && !m_distHvCond.isMatch(setup->unknown20)) {
         unknowna0.erase(enemy);
         SCOM_DESTROY_GAME_OBJ::create(*enemy, 0.5f, 0);
         return;
@@ -249,7 +249,7 @@ void GfSmnEnemyManager::update(f32 deltaTime) {
     for (GfRelSmnEnemy **enemy = get()->unknown08.begin(); enemy != get()->unknown08.end(); ++enemy) {
       GfRelSmnEnemy *smnEnemy = *enemy;
       smnEnemy->update(deltaTime);
-      if (smnEnemy->unknown10.unknown00 != unknown020 && smnEnemy->unknown10.unknown08 > 0) {
+      if (smnEnemy->m_createInfo.m_GF_OBJ_HANDLE != unknown020 && smnEnemy->m_createInfo.unknown08 > 0) {
         continue;
       }
       delete smnEnemy;
@@ -289,7 +289,7 @@ struct unknown004 {
 } // namespace
 
 bool GfSmnEnemyManager::execAbsSummon(const AbsSmnInfo &info) {
-  GfObj *owner = GfObjUtil::getObj(info.unknown00);
+  GfObj *owner = GfObjUtil::getObj(info.m_GF_OBJ_HANDLE);
   if (owner == nullptr) {
     return false;
   }
@@ -334,7 +334,7 @@ bool GfSmnEnemyManager::execAbsSummon(const AbsSmnInfo &info) {
 bool GfSmnEnemyManager::execRelSummon(const RelSmnInfo &info) {
   if (get()->unknown08.capacity() > get()->unknown08.size()) {
     GfRelSmnEnemy::CreateInfo createInfo;
-    createInfo.unknown00 = info.unknown00;
+    createInfo.m_GF_OBJ_HANDLE = info.m_GF_OBJ_HANDLE;
     createInfo.unknown08 = info.unknown08;
     GfRelSmnEnemy *enemy = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfRelSmnEnemy(&createInfo);
     get()->unknown08.push_back(enemy);

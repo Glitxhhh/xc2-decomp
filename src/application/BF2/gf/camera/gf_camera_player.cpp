@@ -160,15 +160,15 @@ void PlayerCamera::setTarget(GF_OBJ_HANDLE *target) {
       return;
     }
   }
-  if (unknowna8 != target) {
-    if (unknowna8 == unknown020) {
+  if (m_GF_OBJ_HANDLE != target) {
+    if (m_GF_OBJ_HANDLE == unknown020) {
       if (PlayerCameraTarget::get() == nullptr) {
         return;
       }
     } else {
       unknown5190 = true;
     }
-    unknowna8 = target;
+    m_GF_OBJ_HANDLE = target;
   }
 }
 
@@ -261,7 +261,7 @@ bool PlayerCamera::getHitPosition(const fw::ColiCheckConfig &config, const mm::V
 void PlayerCamera::resetBattleWarp() {
   PlayerCameraTarget *target = PlayerCameraTarget::get();
   if (target != nullptr) {
-    unknown110 = target->unknown20.unknown00;
+    unknown110 = target->m_transform.unknown00;
     unknown100 = unknown110;
     unknown51a0 = unknown100;
   }
@@ -272,13 +272,13 @@ void PlayerCamera::updateTarget(const fw::Transform &transform, bool param2) {
   if (!param2 && m_manual) {
     return;
   }
-  if (unknowna8 == unknown020) {
+  if (m_GF_OBJ_HANDLE == unknown020) {
     return;
   }
   if (!PlayerCameraTarget::get()->unknown45) {
     return;
   }
-  GfObj *obj = GfObjUtil::getObj(unknowna8);
+  GfObj *obj = GfObjUtil::getObj(m_GF_OBJ_HANDLE);
   if (obj == nullptr) {
     return;
   }
@@ -286,14 +286,14 @@ void PlayerCamera::updateTarget(const fw::Transform &transform, bool param2) {
   if (acc.getType() != OBJECT_TYPE_ENEMY) {
     return;
   }
-  const unknown002 *param = unknownb0.get<unknown002>();
-  const unknown002 *base = static_cast<const unknown002 *>(unknownb0.unknown00->param);
+  const unknown002 *param = m_paramAdapter.get<unknown002>();
+  const unknown002 *base = static_cast<const unknown002 *>(m_paramAdapter.unknown00->param);
   f32 height = ((unknownd0 - base->distance_minimum) / (base->distance_maximum - base->distance_minimum)) * base->height_max;
   mm::Vec3 look = acc.getWorldTransform().unknown00;
   if (param->look_bone == 0) {
     look.y = look.y + fminf(height + param->look_height + unknownd8, 2.0f);
   } else {
-    CameraUtilities::getCameraLookBonePosition(unknowna8, look);
+    CameraUtilities::getCameraLookBonePosition(m_GF_OBJ_HANDLE, look);
   }
   // The game adds look_height and unknownd8 to the height before it loads the position of the target (the two fadd at 0x71001dafa8, before the loads at 0x71001dafb4): the local
   // places that sum first; written inline in the y component (as one sum or as a chain of subtractions) the order of the fadd and the loads differs (measured).
@@ -304,8 +304,8 @@ void PlayerCamera::updateTarget(const fw::Transform &transform, bool param2) {
   m_savePitch = getPitch(position, forward);
   // The game reads the pitch limits through unknownb0 again here (the calls on `this` above force the reload) and computes both products before it loads unknownc8: with the
   // subtraction in the initialisers the load comes between the two products (measured, same size, different order).
-  f32 lower = static_cast<const unknown002 *>(unknownb0.unknown00->param)->pitch_limit_lower * -mm::DEG_TO_RAD;
-  f32 upper = static_cast<const unknown002 *>(unknownb0.unknown00->param)->pitch_limit_upper * mm::DEG_TO_RAD;
+  f32 lower = static_cast<const unknown002 *>(m_paramAdapter.unknown00->param)->pitch_limit_lower * -mm::DEG_TO_RAD;
+  f32 upper = static_cast<const unknown002 *>(m_paramAdapter.unknown00->param)->pitch_limit_upper * mm::DEG_TO_RAD;
   lower -= unknownc8;
   upper -= unknownc8;
   mm::clampRef(m_savePitch, lower, upper);

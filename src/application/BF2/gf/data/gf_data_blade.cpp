@@ -560,7 +560,7 @@ SDataBladeAchievement *GfDataBlade::getAchievInfo(u32 blade, u32 line) {
   if (unknown003(dataBlade, type, index, blade, line)) {
     switch (type) {
     case ACHIEVEMENT_TYPE_UNKNOWN_3:
-      return &dataBlade->unknown5d4;
+      return &dataBlade->m_achievInfo;
     case ACHIEVEMENT_TYPE_UNKNOWN_2:
       return &dataBlade->unknown424[index];
     case ACHIEVEMENT_TYPE_UNKNOWN_1:
@@ -578,7 +578,7 @@ u32 GfDataBlade::getKizunaringMax(u32 blade) {
     SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
     if (achievInfo->unknown00 != 0) {
       for (u32 level = 0; level < ACHIEVEMENT_UNKNOWN_5; level++) {
-        if (achievInfo->unknown04[level].unknown18 != 0) {
+        if (achievInfo->m_achievQuest[level].unknown18 != 0) {
           count++;
         }
       }
@@ -593,7 +593,7 @@ u32 GfDataBlade::getKizunaringCompleteNum(u32 blade) {
     SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
     if (achievInfo->unknown00 != 0) {
       for (u32 level = 0; level < ACHIEVEMENT_UNKNOWN_5; level++) {
-        AchievQuest &achievQuest = achievInfo->unknown04[level];
+        AchievQuest &achievQuest = achievInfo->m_achievQuest[level];
         if (achievQuest.unknown18 != 0) {
           count += achievQuest.unknown0c & 1;
         }
@@ -631,11 +631,11 @@ bool GfDataBlade::getTaskSkillMessage(u8 *&bdat, u32 &textId, u32 blade, u32 lin
 // The `achievInfo` local places the call before the `level - 1` index: clang evaluates the index of a subscript first, the game computes it after the inlined getAchievInfo.
 bool GfDataBlade::getTaskTitleMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line, u32 level) {
   SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
-  AchievQuest &achievQuest = achievInfo->unknown04[level - 1];
-  if (achievQuest.unknown00.empty()) {
+  AchievQuest &achievQuest = achievInfo->m_achievQuest[level - 1];
+  if (achievQuest.m_questID.empty()) {
     return false;
   }
-  QuestID quest = GfDataQuest::getListNextQuestA(achievQuest.unknown00);
+  QuestID quest = GfDataQuest::getListNextQuestA(achievQuest.m_questID);
   if (quest.empty() || GfDataQuest::getListPurposeID(quest) == 0) {
     return false;
   }
@@ -647,12 +647,12 @@ bool GfDataBlade::getTaskTitleMessage(u8 *&bdat, u32 &textId, u32 blade, u32 lin
 // Same `achievInfo` local as getTaskTitleMessage (0x71002a2f98: the call comes before the `level - 1` index).
 bool GfDataBlade::getTaskResultMessage(u8 *&bdat, u32 &textId, u32 blade, u32 line, u32 level) {
   SDataBladeAchievement *achievInfo = getAchievInfo(blade, line);
-  AchievQuest &achievQuest = achievInfo->unknown04[level - 1];
-  if (achievQuest.unknown00.empty()) {
+  AchievQuest &achievQuest = achievInfo->m_achievQuest[level - 1];
+  if (achievQuest.m_questID.empty()) {
     return false;
   }
-  textId = QuestListAcc::get()->getListResultA(achievQuest.unknown00);
-  bdat = GfBdatMsg::getFpQuest(achievQuest.unknown00);
+  textId = QuestListAcc::get()->getListResultA(achievQuest.m_questID);
+  bdat = GfBdatMsg::getFpQuest(achievQuest.m_questID);
   return textId != 0;
 }
 
@@ -921,7 +921,7 @@ u32 GfDataBlade::getAchievementID(u32 blade, u32 line, u32 level) {
   const u16 *achievementSet;
   switch (type) {
   default:
-    achievementSet = &dataBlade->unknown5d4.unknown00;
+    achievementSet = &dataBlade->m_achievInfo.unknown00;
     break;
   case ACHIEVEMENT_TYPE_UNKNOWN_2:
     achievementSet = &dataBlade->unknownae[index].m_fieldSkill;
@@ -945,7 +945,7 @@ void GfDataBlade::setupAchievQuest(AchievQuest &achievQuest) {
   achievQuest.unknown08 = 0;
   achievQuest.unknown0e = 0;
   QuestListAcc *questListAcc = QuestListAcc::get();
-  u32 purpose = GfDataQuest::getListPurposeID(GfDataQuest::getListNextQuestA(achievQuest.unknown00));
+  u32 purpose = GfDataQuest::getListPurposeID(GfDataQuest::getListNextQuestA(achievQuest.m_questID));
   if (purpose == 0) {
     return;
   }

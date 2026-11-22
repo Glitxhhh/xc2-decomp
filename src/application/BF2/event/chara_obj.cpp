@@ -801,7 +801,7 @@ void CharaObj::setDispJiji(bool isDisp) {
 void CharaObj::updateDispJiji() {
   if (unknownd48 != nullptr && unknownd48->unknown18 == gf::GF_EVT_MODEL_UNKNOWN_0) {
     bool isDisp = (unknownca0 & FLAG_UNKNOWN_7) != 0;
-    if (gf::GfObjAcc(unknownd48->unknown20).getBdatId() == 1 && unknownd48 != nullptr) {
+    if (gf::GfObjAcc(unknownd48->m_GF_OBJ_HANDLE).getBdatId() == 1 && unknownd48 != nullptr) {
       static_cast<gf::GfEvtModelDriver *>(unknownd48)->setDispJiji(isDisp);
     }
   }

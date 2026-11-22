@@ -90,7 +90,7 @@ void StateApproachPc::seqApproachPc(GfComBehaviorNpc &behavior, const fw::Update
     if (!(GfComBehaviorNpc::BdatInfo::getDistYThreshold() < delta.y)) {
       delta.y = 0.0f;
       f32 distanceSq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-      if (!(behavior.unknown98.unknown04 < distanceSq)) {
+      if (!(behavior.m_bdatInfo.unknown04 < distanceSq)) {
         behavior.moveToGoal(info.unknown04);
         return;
       }
@@ -105,9 +105,9 @@ void StateApproachPc::seqApproachPc(GfComBehaviorNpc &behavior, const fw::Update
 // game's 30), nested ifs with `return true` give 28. The negated `<` tests are the game's (b.pl): `>=` gives b.ge.
 bool StateApproachPc::isCondMatch(const GfComBehaviorNpc &behavior) {
   bool match = false;
-  if (gmk::isPlayerExist() && 0.0f < behavior.unknown98.unknown04) {
+  if (gmk::isPlayerExist() && 0.0f < behavior.m_bdatInfo.unknown04) {
     if (!(GfComBehaviorNpc::BdatInfo::getDistYThreshold() * GfComBehaviorNpc::BdatInfo::getDistYThreshold() < behavior.unknowne4)) {
-      if (!(behavior.unknown98.unknown04 < behavior.unknowne0)) {
+      if (!(behavior.m_bdatInfo.unknown04 < behavior.unknowne0)) {
         match = true;
       }
     }

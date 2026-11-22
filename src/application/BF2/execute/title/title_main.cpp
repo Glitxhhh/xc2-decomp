@@ -270,7 +270,7 @@ void TitleMain::playTitleEvent(u32 event) {
 u32 TitleMain::getPlayTitleEvent() { return m_playTitleEvent; }
 
 void TitleMain::getGameClearFlagFromSaveData() {
-  if (m_saveBuffer->unknown00 == gf::SAVE_UNKNOWN_237915 && gf::GfGameFlag::getLocal(m_saveBuffer->unknown10.unknownfbbc4, 1, 0xd77e) != 0) {
+  if (m_saveBuffer->unknown00 == gf::SAVE_UNKNOWN_237915 && gf::GfGameFlag::getLocal(m_saveBuffer->m_game.m_gameFlag, 1, 0xd77e) != 0) {
     unknown178 = true;
   }
 }
@@ -280,7 +280,7 @@ u32 TitleMain::getChapterIdFromSaveData() {
     return 0;
   }
   // The game reads the u16 at SDataSave + 0x104bd6 (ldrh at 0x7100143e6c), which is unknown9000[1], a short flag, of the game flags.
-  u32 flag = m_saveBuffer->unknown10.unknownfbbc4.unknown9000[1];
+  u32 flag = m_saveBuffer->m_game.m_gameFlag.unknown9000[1];
   if (flag == 0) {
     return 0;
   }

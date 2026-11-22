@@ -32,28 +32,28 @@ const char *SND_VAR_WATER_THRESOULD_NAME = "water_th";
 
 GfComSound::~GfComSound() {}
 
-GfComSound::GfComSound() : unknown30(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown128(nullptr), unknown150(false), unknown168(nullptr) { unknown158.unknown08 = this; }
+GfComSound::GfComSound() : unknown30(getAllocator(ALLOCATOR_UNKNOWN_0)), unknown128(nullptr), unknown150(false), unknown168(nullptr) { m_viewerListener.m_comSound = this; }
 
 void GfComSound::setup() {
   GfComAsm *comAsm = unknown08->getComponent<GfComAsm>();
   if (comAsm == nullptr) {
     GfComEvtAnim *evtAnim = unknown08->getComponent<GfComEvtAnim>();
     if (evtAnim != nullptr) {
-      evtAnim->unknown10.unknown70[4].unknown00 = SOUND_CALLBACK_EVENT_NAME;
-      evtAnim->unknown10.unknown70[4].unknown08.bind<GfComSound>(this, &GfComSound::callbackAnimForEvent);
+      evtAnim->m_asm.unknown70[4].unknown00 = SOUND_CALLBACK_EVENT_NAME;
+      evtAnim->m_asm.unknown70[4].unknown08.bind<GfComSound>(this, &GfComSound::callbackAnimForEvent);
     }
   } else {
     comAsm->unknown70[4].unknown00 = SOUND_CALLBACK_EVENT_NAME;
     comAsm->unknown70[4].unknown08.bind<GfComSound>(this, &GfComSound::callbackAnim);
   }
-  unknownf0.unknown10.bind<GfComSound>(this, &GfComSound::flush);
-  unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
+  m_soundUpdater.unknown10.bind<GfComSound>(this, &GfComSound::flush);
+  m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
   int attribute = GfGameUtil::getObjAttribute(static_cast<GfObj *>(unknown08)->unknownf8);
-  unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_1), attribute);
-  unknown10.setVariable(SND_VAR_WATER_THRESOULD_NAME, 10);
-  unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_4), 0);
-  unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_2), 0);
-  unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_3), 0);
+  m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_1), attribute);
+  m_soundVariableTable.setVariable(SND_VAR_WATER_THRESOULD_NAME, 10);
+  m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_4), 0);
+  m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_2), 0);
+  m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_3), 0);
   unknown150 = true;
 }
 
@@ -66,20 +66,20 @@ void GfComSound::cleanup() {
     eraseCache(unknown30.begin());
   }
   fw::SoundLayerManager *manager = fw::SoundLayerManager::get();
-  if (manager != nullptr && unknownf0.unknown31) {
-    manager->unknown08[getLayer()].erase(&unknownf0);
-    unknownf0.unknown31 = false;
+  if (manager != nullptr && m_soundUpdater.unknown31) {
+    manager->unknown08[getLayer()].erase(&m_soundUpdater);
+    m_soundUpdater.unknown31 = false;
   }
   unknown150 = false;
 }
 
 void GfComSound::changeLayer(u32 oldLayer, u32 newLayer) {
   fw::SoundLayerManager *manager = fw::SoundLayerManager::get();
-  if (manager != nullptr && unknownf0.unknown31) {
-    manager->unknown08[oldLayer].erase(&unknownf0);
-    unknownf0.unknown31 = false;
-    manager->unknown08[newLayer].push_back(&unknownf0);
-    unknownf0.unknown31 = true;
+  if (manager != nullptr && m_soundUpdater.unknown31) {
+    manager->unknown08[oldLayer].erase(&m_soundUpdater);
+    m_soundUpdater.unknown31 = false;
+    manager->unknown08[newLayer].push_back(&m_soundUpdater);
+    m_soundUpdater.unknown31 = true;
   }
 }
 
@@ -100,11 +100,11 @@ mm::mtl::List<GfComSound::SoundInfo>::iterator GfComSound::eraseCache(mm::mtl::L
   return unknown30.erase(it);
 }
 
-void GfComSound::setAttributeVariable(int attribute) { unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_1), attribute); }
+void GfComSound::setAttributeVariable(int attribute) { m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_1), attribute); }
 
 int GfComSound::getAttributeVariable() const {
   int attribute;
-  return unknown10.getVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_1), &attribute) ? attribute : 0;
+  return m_soundVariableTable.getVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_1), &attribute) ? attribute : 0;
 }
 
 void GfComSound::flushVariables() {
@@ -118,56 +118,56 @@ void GfComSound::flushVariables() {
   }
   if ((env->unknown2d0 & 1) != 0) {
     int threshold = 0;
-    unknown10.getVariable(SND_VAR_WATER_THRESOULD_NAME, &threshold);
+    m_soundVariableTable.getVariable(SND_VAR_WATER_THRESOULD_NAME, &threshold);
     f32 depth = static_cast<f32>(threshold) * 0.01f;
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_3), !(env->unknown2b0 < depth));
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_3), !(env->unknown2b0 < depth));
     int ground = env->unknown2b8;
     const char *name = getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0);
     if (ground == 11) {
-      unknown10.setVariable(name, 11);
+      m_soundVariableTable.setVariable(name, 11);
     } else {
-      unknown10.setVariable(name, 10);
+      m_soundVariableTable.setVariable(name, 10);
     }
     return;
   }
   const GfEnvProperty::unknown002 *ground = env->unknown004(GfEnvProperty::GROUND_INDEX_UNKNOWN_0);
   if (ground == nullptr) {
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
     return;
   }
   switch (ground->unknown34) {
   case 2:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 6);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 6);
     break;
   case 3:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 3);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 3);
     break;
   case 4:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 2);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 2);
     break;
   case 5:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 1);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 1);
     break;
   case 6:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 4);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 4);
     break;
   case 7:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 7);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 7);
     break;
   case 8:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 5);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 5);
     break;
   case 9:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 9);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 9);
     break;
   case 10:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 8);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 8);
     break;
   case 12:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 12);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 12);
     break;
   default:
-    unknown10.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
+    m_soundVariableTable.setVariable(getSoundVariableName(SOUND_VARIABLE_UNKNOWN_0), 0);
     break;
   }
 }
@@ -178,7 +178,7 @@ bool GfComSound::playSe(const char *name, f32 volume, const mm::Vec3 &offset, bo
   }
   GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
   fw::SoundCategory category = isWithoutSlow ? GfObjUtil::getSoundCategoryWithoutSlow(handle) : GfObjUtil::getSoundCategoryNormal(handle);
-  u32 id = fw::SoundResSourceManager::playSe(name, volume, unknown10, category, unknown130);
+  u32 id = fw::SoundResSourceManager::playSe(name, volume, m_soundVariableTable, category, unknown130);
   if (id == 0) {
     return false;
   }
@@ -199,7 +199,7 @@ bool GfComSound::playSeBone(const char *name, const char *bone, f32 volume, cons
   }
   GF_OBJ_HANDLE *handle = static_cast<GfObj *>(unknown08)->unknownf8;
   fw::SoundCategory category = isWithoutSlow ? GfObjUtil::getSoundCategoryWithoutSlow(handle) : GfObjUtil::getSoundCategoryNormal(handle);
-  u32 id = fw::SoundResSourceManager::playSe(name, volume, unknown10, category, unknown130);
+  u32 id = fw::SoundResSourceManager::playSe(name, volume, m_soundVariableTable, category, unknown130);
   if (id == 0) {
     return false;
   }

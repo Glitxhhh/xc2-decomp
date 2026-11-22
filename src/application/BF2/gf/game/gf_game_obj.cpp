@@ -47,7 +47,7 @@ void GfGameObj::build(const GfSetupParam &param) {
   new (getAllocator(ALLOCATOR_UNKNOWN_1), __FILE__, __LINE__, 8) GfGameObj(param);
 }
 
-GfGameObj::GfGameObj(const GfSetupParam &param) : unknown55c68(nullptr), unknown55c70(false) {
+GfGameObj::GfGameObj(const GfSetupParam &param) : m_gameObjEnemy(nullptr), unknown55c70(false) {
   initialize(param);
   GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
 }
@@ -57,9 +57,9 @@ GfGameObj::~GfGameObj() { GfObjManager::removeListener(this); }
 void GfGameObj::finalize() {
   unknown54240.clear();
   GfGameSearchObj::destroy();
-  if (unknown55c68 != nullptr) {
-    delete unknown55c68;
-    unknown55c68 = nullptr;
+  if (m_gameObjEnemy != nullptr) {
+    delete m_gameObjEnemy;
+    m_gameObjEnemy = nullptr;
   }
   unknown55c70 = false;
 }
@@ -72,15 +72,15 @@ void GfGameObj::bdatReload() {
   // The first two loops repeat the statements of refreshBdatInOut (0x710032474c, 39 instructions), which the game inlines here although it keeps a standalone copy:
   // the call form compiles to 156 instructions (refreshBdatInOut stays a call), the game has 218 (no call to it). The last two loops call refreshBdat (0x71003247e8), which clang inlines.
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
-    GfObjAcc acc((*it).unknown00);
+    GfObjAcc acc((*it).m_GF_OBJ_HANDLE);
     if (acc.getType() == OBJECT_TYPE_ENEMY) {
-      refreshBdat((*it).unknown00);
+      refreshBdat((*it).m_GF_OBJ_HANDLE);
     }
   }
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown47a00.begin(); it != gameObj->unknown47a00.end(); ++it) {
-    GfObjAcc acc((*it).unknown00);
+    GfObjAcc acc((*it).m_GF_OBJ_HANDLE);
     if (acc.getType() == OBJECT_TYPE_ENEMY) {
-      refreshBdat((*it).unknown00);
+      refreshBdat((*it).m_GF_OBJ_HANDLE);
     }
   }
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown9050.begin(); it != gameObj->unknown9050.end(); ++it) {
@@ -142,13 +142,13 @@ void GfGameObj::removeGameObjCommon(GfObjAcc &acc) {
   if (acc.isReload() && !acc.hasParent() && GfObjUtil::getParentHandle(acc.getHandle()) == unknown020) {
     GfObj *obj = acc.getObj();
     if (obj != nullptr && obj->getComponent<GfComTransform>() != nullptr) {
-      GFOBJ_INFO *info = acc.unknown00;
+      GFOBJ_INFO *info = acc.m_GFOBJ_INFO;
       const fw::Transform &transform = acc.getWorldTransform();
       info->unknown50 = transform.unknown00;
       info->unknown60 = transform.unknown10;
     }
   }
-  unknown55c68->leaveEnemyObj(acc.getHandle());
+  m_gameObjEnemy->leaveEnemyObj(acc.getHandle());
   GfObjManager *manager = GfObjManager::get();
   if (manager != nullptr) {
     mm::mtl::FixedList<GF_OBJ_HANDLE *, 768> followObjs;
@@ -213,10 +213,10 @@ bool GfGameObj::fadeoutGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo
     acc.setFlag(OBJ_FLAG_UNKNOWN_17, false);
     if (!acc.testFlag(OBJ_FLAG_UNKNOWN_8) || acc.isRebuild()) {
       if (!acc.isDestroy()) {
-        GfObjUtil::destroy(inout.unknown00);
+        GfObjUtil::destroy(inout.m_GF_OBJ_HANDLE);
       }
     } else {
-      GfObjUtil::rebuild(inout.unknown00);
+      GfObjUtil::rebuild(inout.m_GF_OBJ_HANDLE);
     }
     return true;
   }
@@ -251,13 +251,13 @@ bool GfGameObj::isValidGameObj(GF_OBJ_HANDLE *handle, bool isCheckState, mm::mtl
   GfObjAcc acc(handle);
   if (isCheckState) {
     for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
-      if (it->unknown00 == handle) {
+      if (it->m_GF_OBJ_HANDLE == handle) {
         return true;
       }
     }
   } else {
     for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
-      if ((*it).unknown00 == handle) {
+      if ((*it).m_GF_OBJ_HANDLE == handle) {
         if (reason != nullptr) {
           reason->format("GfGameObj::Fadein[%s]", acc.getDebugName());
         }
@@ -290,7 +290,7 @@ bool GfGameObj::isEnterGameObj(GF_OBJ_HANDLE *handle) {
   }
   GfGameObj *gameObj = get();
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
-    if (it->unknown00 == handle) {
+    if (it->m_GF_OBJ_HANDLE == handle) {
       return true;
     }
   }
@@ -304,7 +304,7 @@ void GfGameObj::setupEnterGameObj(GF_OBJ_HANDLE *handle, f32 fadeTime) {
   GfObjAcc acc(handle);
   GfGameObj *gameObj = get();
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
-    if (it->unknown00 == handle) {
+    if (it->m_GF_OBJ_HANDLE == handle) {
       if (acc.getType() == OBJECT_TYPE_BLADE && GfDataBlade::isDummyBlade(acc.getBladeId())) {
         return;
       }
@@ -327,7 +327,7 @@ GfObj *GfGameObj::getObj(GF_OBJ_HANDLE *handle) {
   GfGameObj *gameObj = get();
   GfObjAcc acc(handle);
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = gameObj->unknown3f1d0.begin(); it != gameObj->unknown3f1d0.end(); ++it) {
-    if (it->unknown00 == handle) {
+    if (it->m_GF_OBJ_HANDLE == handle) {
       return GfObjUtil::getObj(handle);
     }
   }
@@ -353,7 +353,7 @@ bool GfGameObj::fadeinGameObj(INOUT &inout, GfObjAcc &acc, const fw::UpdateInfo 
   } else {
     inout.unknown10 = 1.0f;
   }
-  addGameObj(inout.unknown00);
+  addGameObj(inout.m_GF_OBJ_HANDLE);
   acc.setAlphaLife(1.0f);
   return true;
 }
@@ -363,7 +363,7 @@ void GfGameObj::setupEffectFadeout(INOUT &inout, GfObjAcc &acc, const fw::Update
     // The game calls getHandle at each use, the search's call after the setup of the iterators (0x7100322b88); a local used at every call gives 94 instructions, the lambda taking acc by
     // reference 95 (the game has 96).
     mm::mtl::FixedList<ObjMsg, 256>::iterator it =
-        mm::mtl::find_if(unknown54240.begin(), unknown54240.end(), [handle = acc.getHandle()](const ObjMsg &message) { return message.unknown00 == handle; });
+        mm::mtl::find_if(unknown54240.begin(), unknown54240.end(), [handle = acc.getHandle()](const ObjMsg &message) { return message.m_GF_OBJ_HANDLE == handle; });
     if (it != unknown54240.end()) {
       if (0.0f < inout.unknown08) {
         inout.unknown10 = 1.0f;
@@ -435,19 +435,19 @@ void GfGameObj::removeGameObj(GF_OBJ_HANDLE *handle) {
   }
   GfObjAcc acc(handle);
   removeGameObjCommon(acc);
-  mm::mtl::FixedList<ObjMsg, 256>::iterator message = mm::mtl::find_if(unknown54240.begin(), unknown54240.end(), [handle](const ObjMsg &entry) { return entry.unknown00 == handle; });
+  mm::mtl::FixedList<ObjMsg, 256>::iterator message = mm::mtl::find_if(unknown54240.begin(), unknown54240.end(), [handle](const ObjMsg &entry) { return entry.m_GF_OBJ_HANDLE == handle; });
   if (message != unknown54240.end()) {
     unknown54240.erase(message);
   }
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
-    if (it->unknown00 == handle) {
+    if (it->m_GF_OBJ_HANDLE == handle) {
       unknown47a00.erase(it);
       acc.setFlag(OBJ_FLAG_UNKNOWN_15, false);
       return;
     }
   }
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown3f1d0.begin(); it != unknown3f1d0.end(); ++it) {
-    if (it->unknown00 == handle) {
+    if (it->m_GF_OBJ_HANDLE == handle) {
       unknown3f1d0.erase(it);
       return;
     }
@@ -476,7 +476,7 @@ bool GfGameObj::addOutObj(GF_OBJ_HANDLE *handle, f32 fadeTime, bool isEffect) {
   mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator found = mm::mtl::find(list->begin(), list->end(), handle);
   if (list->end() == found) {
     for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
-      if ((*it).unknown00 == handle) {
+      if ((*it).m_GF_OBJ_HANDLE == handle) {
         return true;
       }
     }
@@ -487,7 +487,7 @@ bool GfGameObj::addOutObj(GF_OBJ_HANDLE *handle, f32 fadeTime, bool isEffect) {
     fadeTime = 0.0f;
   }
   INOUT inout;
-  inout.unknown00 = handle;
+  inout.m_GF_OBJ_HANDLE = handle;
   inout.unknown08 = fadeTime < 0.000001f ? 0.0f : fadeTime;
   inout.unknown0c = 0.0f;
   inout.unknown10 = fadeTime == 0.0f ? 0.0f : 1.0f;
@@ -552,10 +552,10 @@ void GfGameObj::addCharDeadMessage(GF_OBJ_HANDLE *handle, const MsgObjectNotifyD
   }
   GfGameObj *gameObj = get();
   mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator entering =
-      mm::mtl::find_if(gameObj->unknown3f1d0.begin(), gameObj->unknown3f1d0.end(), [handle](const INOUT &entry) { return entry.unknown00 == handle; });
+      mm::mtl::find_if(gameObj->unknown3f1d0.begin(), gameObj->unknown3f1d0.end(), [handle](const INOUT &entry) { return entry.m_GF_OBJ_HANDLE == handle; });
   if (entering == gameObj->unknown3f1d0.end()) {
     mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator leaving =
-        mm::mtl::find_if(gameObj->unknown47a00.begin(), gameObj->unknown47a00.end(), [handle](const INOUT &entry) { return entry.unknown00 == handle; });
+        mm::mtl::find_if(gameObj->unknown47a00.begin(), gameObj->unknown47a00.end(), [handle](const INOUT &entry) { return entry.m_GF_OBJ_HANDLE == handle; });
     if (leaving == gameObj->unknown47a00.end()) {
       mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024> *list = gameObj->getListType(GfObjUtil::getObjType(handle), handle);
       mm::mtl::FixedList<GF_OBJ_HANDLE *, GAME_UNKNOWN_1024>::iterator found = mm::mtl::find(list->begin(), list->end(), handle);
@@ -566,15 +566,15 @@ void GfGameObj::addCharDeadMessage(GF_OBJ_HANDLE *handle, const MsgObjectNotifyD
   }
   u32 attribute = message.unknown20;
   ObjMsg objMessage;
-  objMessage.unknown00 = handle;
+  objMessage.m_GF_OBJ_HANDLE = handle;
   objMessage.unknown08 = attribute;
   gameObj->unknown54240.push_back(objMessage);
   for (mm::mtl::FixedList<GF_OBJ_HANDLE *, 768>::iterator it = followObjs.begin(); it != followObjs.end(); ++it) {
     mm::mtl::FixedList<ObjMsg, 256>::iterator existing =
-        mm::mtl::find_if(gameObj->unknown54240.begin(), gameObj->unknown54240.end(), [followObj = *it](const ObjMsg &entry) { return entry.unknown00 == followObj; });
+        mm::mtl::find_if(gameObj->unknown54240.begin(), gameObj->unknown54240.end(), [followObj = *it](const ObjMsg &entry) { return entry.m_GF_OBJ_HANDLE == followObj; });
     if (gameObj->unknown54240.end() == existing) {
       ObjMsg followMessage;
-      followMessage.unknown00 = *it;
+      followMessage.m_GF_OBJ_HANDLE = *it;
       followMessage.unknown08 = attribute;
       gameObj->unknown54240.push_back(followMessage);
     }
@@ -777,7 +777,7 @@ void GfGameObj::addInObj(GF_OBJ_HANDLE *handle, f32 fadeTime) {
   GfGameEvent::applySetDispObject(handle);
   GfObjAcc acc(handle);
   INOUT inout;
-  inout.unknown00 = handle;
+  inout.m_GF_OBJ_HANDLE = handle;
   inout.unknown15 = true;
   inout.unknown08 = fadeTime;
   inout.unknown10 = acc.getAlphaLife();
@@ -836,14 +836,14 @@ void GfGameObj::changeStopLayerIgnoreEventObj(u32 layer, bool isIgnore) {
 void GfGameObj::refreshBdat(GF_OBJ_HANDLE *handle) {
   GfObjSetupEnemy *setup = GfObjUtil::getObjSetup<GfObjSetupEnemy>(handle);
   if (setup != nullptr) {
-    GfDataEnemy::setupSDataEnemy(*setup->unknowna0, setup->unknowna0->unknown00, setup->unknowna0->unknowna8);
+    GfDataEnemy::setupSDataEnemy(*setup->m_enemy, setup->m_enemy->unknown00, setup->m_enemy->unknowna8);
   }
 }
 
 void GfGameObj::refreshBdatInOut(INOUT &inout) {
-  GfObjAcc acc(inout.unknown00);
+  GfObjAcc acc(inout.m_GF_OBJ_HANDLE);
   if (acc.getType() == OBJECT_TYPE_ENEMY) {
-    refreshBdat(inout.unknown00);
+    refreshBdat(inout.m_GF_OBJ_HANDLE);
   }
 }
 
@@ -890,7 +890,7 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
     }
   }
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown3f1d0.begin(); it != unknown3f1d0.end(); ++it) {
-    DataParamAcc paramAcc((*it).unknown00);
+    DataParamAcc paramAcc((*it).m_GF_OBJ_HANDLE);
     if (paramAcc.getObjType() == OBJECT_TYPE_ENEMY) {
       u32 bdatId = 0;
       if (paramAcc.isValid()) {
@@ -902,7 +902,7 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
     }
   }
   for (mm::mtl::FixedList<INOUT, GAME_UNKNOWN_1024>::iterator it = unknown47a00.begin(); it != unknown47a00.end(); ++it) {
-    DataParamAcc paramAcc((*it).unknown00);
+    DataParamAcc paramAcc((*it).m_GF_OBJ_HANDLE);
     if (paramAcc.getObjType() == OBJECT_TYPE_ENEMY) {
       u32 bdatId = 0;
       if (paramAcc.isValid()) {
@@ -918,14 +918,14 @@ u32 GfGameObj::getObjNumberByEnArrangeId(u32 arrange) {
 
 void GfGameObj::flushEvent() {
   for (GF_OBJ_HANDLE **it = unknown50230.begin(); it != unknown50230.end(); ++it) {
-    if (unknown55c68 != nullptr) {
-      unknown55c68->enterEnemyObj(*it);
+    if (m_gameObjEnemy != nullptr) {
+      m_gameObjEnemy->enterEnemyObj(*it);
     }
     GfEvent::callGameObjEnter(*it);
   }
   for (GF_OBJ_HANDLE **it = unknown52238.begin(); it != unknown52238.end(); ++it) {
-    if (unknown55c68 != nullptr) {
-      unknown55c68->leaveEnemyObj(*it);
+    if (m_gameObjEnemy != nullptr) {
+      m_gameObjEnemy->leaveEnemyObj(*it);
     }
     GfEvent::callGameObjLeave(*it);
   }

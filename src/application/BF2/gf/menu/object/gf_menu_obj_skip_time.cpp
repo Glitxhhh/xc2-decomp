@@ -114,7 +114,7 @@ void GfMenuObjSkipTime::MainListener::reciveEvent(const ui::EventData &event, u3
       GfMenuObjOperationInfo::remove(acc.searchChild("LAY_skiptime_main"), 0, 0, 0);
       acc.setDisp(false);
       acc.setTerm();
-      GfMenuObject::returnFSSubLayer(unknown20);
+      GfMenuObject::returnFSSubLayer(m_menuObjSkipTime);
     }
     break;
   case GfMenuTypes::unknown003_33:
@@ -130,24 +130,24 @@ void GfMenuObjSkipTime::MainListener::reciveEvent(const ui::EventData &event, u3
 }
 
 void GfMenuObjSkipTime::TimeChangeListener::reciveEvent(const ui::EventData &event, u32 handle) {
-  ui::UIObjectAcc menu(unknown20->unknown18);
+  ui::UIObjectAcc menu(m_menuObjSkipTime->unknown18);
   ui::UIObjectAcc acc(handle);
   switch (event.unknown00) {
   case 1:
     if (GfFieldTime::get() != nullptr) {
-      unknown20->unknown30 = GfFieldTime::get()->getGameTime();
+      m_menuObjSkipTime->unknown30 = GfFieldTime::get()->getGameTime();
     }
-    unknown20->unknown34 = unknown20->unknown30;
-    unknown20->unknown34.m_min = 0;
-    unknown20->unknown34.m_sec = 0;
-    unknown20->unknown28 = setupTimeChange(acc, unknown20->unknown30, unknown20->unknown34);
-    GfMenuObject::setupInputSelection(handle, unknown20->unknown34.m_hour, 0x18);
+    m_menuObjSkipTime->unknown34 = m_menuObjSkipTime->unknown30;
+    m_menuObjSkipTime->unknown34.m_min = 0;
+    m_menuObjSkipTime->unknown34.m_sec = 0;
+    m_menuObjSkipTime->unknown28 = setupTimeChange(acc, m_menuObjSkipTime->unknown30, m_menuObjSkipTime->unknown34);
+    GfMenuObject::setupInputSelection(handle, m_menuObjSkipTime->unknown34.m_hour, 0x18);
     GfMenuObject::enableInput(handle);
     break;
   case 8:
     if (event.unknown0c == 1) {
       if (GfFieldTime::get() != nullptr) {
-        GfFieldTime::get()->setGameTime(unknown20->unknown34);
+        GfFieldTime::get()->setGameTime(m_menuObjSkipTime->unknown34);
       }
       unknown164(menu.searchChild("LAY_main"), GfMenuTypes::unknown003_34);
       GfMenuObject::disableInput(handle);
@@ -162,15 +162,15 @@ void GfMenuObjSkipTime::TimeChangeListener::reciveEvent(const ui::EventData &eve
     break;
   case 6: {
     u64 param = event.unknown08_u64;
-    unknown20->unknown34.m_hour = param;
+    m_menuObjSkipTime->unknown34.m_hour = param;
     ui::UIObjectAcc needle(acc.searchChild("IMG_watchneedle@02"));
-    rotHand(needle, unknown20->unknown34.m_hour);
-    setTime(unknown20->unknown28, unknown20->unknown34);
+    rotHand(needle, m_menuObjSkipTime->unknown34.m_hour);
+    setTime(m_menuObjSkipTime->unknown28, m_menuObjSkipTime->unknown34);
     if (param >> 32 != 0xffffffff) {
       GfMenuObjUtil::playSE(0x16);
     }
     if (GfFieldTime::get() != nullptr) {
-      u32 timeRange = GfFieldTime::get()->getTimeRange(unknown20->unknown34.m_hour, unknown20->unknown34.m_min);
+      u32 timeRange = GfFieldTime::get()->getTimeRange(m_menuObjSkipTime->unknown34.m_hour, m_menuObjSkipTime->unknown34.m_min);
       ui::UIObjectAcc zoneIcon(acc.searchChild("IMG_tmzoneicon"));
       zoneIcon.setImageIndex(timeRange);
     }

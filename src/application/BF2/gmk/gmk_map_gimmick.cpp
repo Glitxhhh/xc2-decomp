@@ -118,9 +118,9 @@ bool GmkMapGimmick::validateEffectWithoutLodControl(int lodId, bool isDisp) cons
     }
   }
   gf::GfFieldLod *lod = gf::GfFieldLod::get();
-  if (lod->unknown840.unknown00.unknown00 != nullptr && lod->unknown840.unknown00.unknown10 != nullptr) {
+  if (lod->m_fieldLodColiAnim.m_createInfo.unknown00 != nullptr && lod->m_fieldLodColiAnim.m_createInfo.m_fieldLod != nullptr) {
     u16 partsId = lod->unknown08[lodId - lod->unknown808];
-    ml::ScnObjAccSeamPos seamPos(lod->unknown840.unknown00.unknown00);
+    ml::ScnObjAccSeamPos seamPos(lod->m_fieldLodColiAnim.m_createInfo.unknown00);
     int max = seamPos.getMax();
     for (int i = 0; i < max; i++) {
       ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);

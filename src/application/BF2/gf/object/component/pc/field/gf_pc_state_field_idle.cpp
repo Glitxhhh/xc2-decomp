@@ -81,7 +81,7 @@ bool StateFieldIdle::isEnableUnique(GfComBehaviorPc *behavior) {
 
 bool StateFieldIdle::checkSpace(GfComBehaviorPc *behavior) const {
   GfComPropertyPc *property = behavior->unknown08->getComponent<GfComPropertyPc>();
-  f32 space = property->unknown310.unknown54;
+  f32 space = property->m_propertyField.unknown54;
   if (space > FLT_EPSILON) {
     fw::ColiCheckConfig config;
     config.unknown08 = 0.0f;

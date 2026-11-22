@@ -358,17 +358,17 @@ AchievQuest *GfDataQuest::getAchievQuest(QuestID quest) {
   case 0:
   case 1:
   case 2:
-    return &dataBlade.unknownc4[line].unknown04[level];
+    return &dataBlade.unknownc4[line].m_achievQuest[level];
   case 3:
   case 4:
   case 5:
-    return &dataBlade.unknown274[line - 3].unknown04[level];
+    return &dataBlade.unknown274[line - 3].m_achievQuest[level];
   case 6:
   case 7:
   case 8:
-    return &dataBlade.unknown424[line - 6].unknown04[level];
+    return &dataBlade.unknown424[line - 6].m_achievQuest[level];
   case 9:
-    return &dataBlade.unknown5d4.unknown04[level];
+    return &dataBlade.m_achievInfo.m_achievQuest[level];
   default:
     return nullptr;
   }
@@ -378,7 +378,7 @@ bool GfDataQuest::getHanyouFlg(u32 &flag, u32 &flagMin, u32 &flagMax, const Ques
   QuestListAcc *questListAcc = QuestListAcc::get();
   u32 purpose = param.unknown08;
   if (purpose == 0) {
-    getListPurposeID(param.unknown04);
+    getListPurposeID(param.m_questID);
     return false;
   }
 

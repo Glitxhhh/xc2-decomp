@@ -47,7 +47,7 @@ bool GfComPropertyEnemy::getWaterHeight(f32 &height) const {
   if (acc.getObj() == nullptr) {
     return false;
   }
-  height = envSensor->m_envSensor.unknown30.unknown70.unknown00 - acc.getWorldTransformNoSync().unknown00.y;
+  height = envSensor->m_envSensor.m_verticalData.unknown70.unknown00 - acc.getWorldTransformNoSync().unknown00.y;
   return true;
 }
 

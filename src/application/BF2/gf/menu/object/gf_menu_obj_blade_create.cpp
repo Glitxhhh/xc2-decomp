@@ -286,13 +286,13 @@ void GfMenuBladeCreateCamera::update(const fw::UpdateInfo &info) {
 }
 
 GfMenuObjBladeCreate::GfMenuObjBladeCreate(u32 handle)
-    : GfMenuObject(handle), unknown28(), unknownaf8(this), unknown1118(nullptr), unknown1120(false), unknown1128(), unknown1140(4), unknown1144(0), unknown1170(0), unknown1174(), unknown1188(),
-      unknown1190(nullptr), unknown1198(-1), unknown11a0(0), unknown11a8(nullptr), unknown11b0(0), unknown11b4(false), unknown11b8(0), unknown11c0(0), unknown11c4() {
+    : GfMenuObject(handle), m_pageContext(), unknownaf8(this), m_sequentialPlaySignal(nullptr), unknown1120(false), unknown1128(), unknown1140(4), unknown1144(0), unknown1170(0), unknown1174(),
+      unknown1188(), m_menuBladeCreateCamera(nullptr), unknown1198(-1), unknown11a0(0), unknown11a8(nullptr), unknown11b0(0), unknown11b4(false), unknown11b8(0), unknown11c0(0), unknown11c4() {
   unknown1188 = unknown160();
   // Evidence: the game zeroes the sound handles in the member initialisers and stores them again after the camera (0x71003f5db4).
 // __LINE__ must be 169 as in the original file: it is the line argument of operator new.
 #line 169
-  unknown1190 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuBladeCreateCamera();
+  m_menuBladeCreateCamera = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuBladeCreateCamera();
   unknown11c4[0] = 0;
   unknown11c4[1] = 0;
   unknown11c4[2] = 0;
@@ -300,7 +300,7 @@ GfMenuObjBladeCreate::GfMenuObjBladeCreate(u32 handle)
 
 // Evidence: the game clears 0x1190 (the camera) without deleting it and releases the lists and cursors of the pages by hand (0x71003f5dcc).
 GfMenuObjBladeCreate::~GfMenuObjBladeCreate() {
-  unknown1190 = nullptr;
+  m_menuBladeCreateCamera = nullptr;
   unknown1188 = nullptr;
   mm::mtl::safeRelease(unknown1160);
   mm::mtl::safeRelease(unknown1168);
@@ -333,71 +333,71 @@ void GfMenuObjBladeCreate::initialize() {
         removeFSLayerParam(unknown20);
       }
     }
-    unknown28.unknown00 = 0xff;
-    unknown28.unknown04 = 0xff;
+    m_pageContext.unknown00 = 0xff;
+    m_pageContext.unknown04 = 0xff;
 // __LINE__ must be 629 as in the original file: it is the line argument of operator new.
 #line 629
-    unknown028(acc, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this, &unknown28));
+    unknown028(acc, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) MainListener(this, &m_pageContext));
 // __LINE__ must be 630 as in the original file: it is the line argument of operator new.
 #line 630
-    unknown018(this, 0, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DriverSelectListener(this, &unknown28));
+    unknown018(this, 0, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) DriverSelectListener(this, &m_pageContext));
 // __LINE__ must be 631 as in the original file: it is the line argument of operator new.
 #line 631
-    unknown018(this, 1, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) CrystalSelectListener(this, &unknown28));
+    unknown018(this, 1, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) CrystalSelectListener(this, &m_pageContext));
 // __LINE__ must be 632 as in the original file: it is the line argument of operator new.
 #line 632
-    unknown018(this, 2, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BoosterSelectListener(this, &unknown28));
+    unknown018(this, 2, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) BoosterSelectListener(this, &m_pageContext));
 // __LINE__ must be 633 as in the original file: it is the line argument of operator new.
 #line 633
-    unknown018(this, 3, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ConfirmListener(this, &unknown28));
+    unknown018(this, 3, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ConfirmListener(this, &m_pageContext));
 // __LINE__ must be 634 as in the original file: it is the line argument of operator new.
 #line 634
-    unknown018(this, 4, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) CreationListener(this, &unknown28));
+    unknown018(this, 4, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) CreationListener(this, &m_pageContext));
 // __LINE__ must be 635 as in the original file: it is the line argument of operator new.
 #line 635
-    unknown018(this, 5, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ResultListener(this, &unknown28));
+    unknown018(this, 5, new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) ResultListener(this, &m_pageContext));
     setFSInputObject(0, getPageObject(unknown18, 0, false));
     setFSInputObject(1, getPageObject(unknown18, 1, false));
     setFSInputObject(2, getPageObject(unknown18, 2, false));
     setFSInputObject(5, getPageObject(unknown18, 5, false));
 // __LINE__ must be 643 as in the original file: it is the line argument of operator new.
 #line 643
-    unknown28.unknownac8 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuModelView(acc.searchChild("SCR_mdl_view"), 1);
+    m_pageContext.m_menuModelView = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfMenuModelView(acc.searchChild("SCR_mdl_view"), 1);
     {
       GfMenuDriverList::PartySetup partySetup;
       partySetup.unknown14 = GfPartySelect::LIST_TYPE_UNKNOWN_2;
       partySetup.unknown18 = true;
-      partySetup.unknown00.unknown08 = 4;
-      unknown28.unknown40 = GfMenuDriverList::create();
-      if (unknown28.unknown40 != nullptr) {
+      partySetup.m_setupParam.unknown08 = 4;
+      m_pageContext.unknown40 = GfMenuDriverList::create();
+      if (m_pageContext.unknown40 != nullptr) {
         if (unknown11b4) {
           MenuDriverInfo info;
           info.unknown00 = 1;
-          unknown28.unknown40->setup(getAllocator(ALLOCATOR_UNKNOWN_0), partySetup.unknown00);
-          unknown28.unknown40->addContents(info);
+          m_pageContext.unknown40->setup(getAllocator(ALLOCATOR_UNKNOWN_0), partySetup.m_setupParam);
+          m_pageContext.unknown40->addContents(info);
           GfMenuObjOperationInfo::open(0, 0, 0, 0);
         } else {
-          unknown28.unknown40->setupFromParty(partySetup);
-          for (u32 i = 0; i < unknown28.unknown40->getSize();) {
-            if (unknown28.unknown40->getContents(i).unknown00 == 1 || unknown28.unknown40->getContents(i).unknown00 == 2 || unknown28.unknown40->getContents(i).unknown00 == 3 ||
-                unknown28.unknown40->getContents(i).unknown00 == 6) {
+          m_pageContext.unknown40->setupFromParty(partySetup);
+          for (u32 i = 0; i < m_pageContext.unknown40->getSize();) {
+            if (m_pageContext.unknown40->getContents(i).unknown00 == 1 || m_pageContext.unknown40->getContents(i).unknown00 == 2 || m_pageContext.unknown40->getContents(i).unknown00 == 3 ||
+                m_pageContext.unknown40->getContents(i).unknown00 == 6) {
               i++;
             } else {
-              GfMenuDriverList *list = unknown28.unknown40;
+              GfMenuDriverList *list = m_pageContext.unknown40;
               list->contents.erase(list->contents.begin() + i);
               list->subSize(1);
               list->contentsChanged = true;
             }
           }
-          if (unknown28.unknown40->getSize() != 0) {
-            unknown28.unknown40->setIndex(0);
-            unknown11a0 = getDriverCameraIndex(unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00) * 5;
+          if (m_pageContext.unknown40->getSize() != 0) {
+            m_pageContext.unknown40->setIndex(0);
+            unknown11a0 = getDriverCameraIndex(m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00) * 5;
           }
         }
       }
     }
-    unknown28.unknown48 = GfMenuItemList::create();
-    unknown28.unknown50 = GfMenuItemList::create();
+    m_pageContext.unknown48 = GfMenuItemList::create();
+    m_pageContext.unknown50 = GfMenuItemList::create();
     {
       ui::UIObjectAcc driverSelect(getPageObject(unknown18, 0, false));
       GfMenuCharDataAdapter::createFromReferenceDriver(driverSelect.searchChild("TXT_dr_select_name"), 2, 0, false);
@@ -413,16 +413,16 @@ void GfMenuObjBladeCreate::initialize() {
       unknown1158 = ui::UICtrlCursorSelect::create(crystalSelect.searchChild("IMG_core_select_cursor"), setting, unknown1150);
       GfMenuAdapterManager::beginAddAfter();
       for (u32 i = 0; i < unknown1150->getSize(); i++) {
-        unknown027(crystalSelect, name, "TXT_core_sel_item_name@%02d", "LAY_core_sel_item@%02d", unknown28.unknown48, i);
+        unknown027(crystalSelect, name, "TXT_core_sel_item_name@%02d", "LAY_core_sel_item@%02d", m_pageContext.unknown48, i);
         name.format("TXT_core_sel_item_num@%02d", i + 1);
-        GfMenuItemAdapter::createFromList(crystalSelect.searchChild(name.c_str()), 3, unknown28.unknown48, i, true);
+        GfMenuItemAdapter::createFromList(crystalSelect.searchChild(name.c_str()), 3, m_pageContext.unknown48, i, true);
         name.format("TXT_core_sel_item_max@%02d", i + 1);
-        GfMenuItemAdapter::createFromList(crystalSelect.searchChild(name.c_str()), 4, unknown28.unknown48, i, true);
+        GfMenuItemAdapter::createFromList(crystalSelect.searchChild(name.c_str()), 4, m_pageContext.unknown48, i, true);
         name.format("IMG_core_sel_item_icon@%02d", i + 1);
-        GfMenuItemAdapter::createFromList(crystalSelect.searchChild(name.c_str()), 2, unknown28.unknown48, i, true);
+        GfMenuItemAdapter::createFromList(crystalSelect.searchChild(name.c_str()), 2, m_pageContext.unknown48, i, true);
       }
       GfMenuAdapterManager::endAddAfter();
-      GfMenuObjUtil::createVScrollBarPlugin(acc.searchChild("IMG_core_sel_scroll_bar"), unknown28.unknown48, "IMG_core_sel_scroll_base", true);
+      GfMenuObjUtil::createVScrollBarPlugin(acc.searchChild("IMG_core_sel_scroll_bar"), m_pageContext.unknown48, "IMG_core_sel_scroll_base", true);
     }
     {
       ui::UIObjectAcc boosterSelect(getPageObject(unknown18, 2, false));
@@ -436,15 +436,15 @@ void GfMenuObjBladeCreate::initialize() {
         unknown1168 = ui::UICtrlCursorSelect::create(boosterSelect.searchChild("IMG_bst_select_cursor"), setting, unknown1160);
       }
       for (u32 i = 0; i < unknown1160->getSize(); i++) {
-        unknown027(boosterSelect, name, "TXT_bst_sel_item_name@%02d", "LAY_bst_sel_item@%02d", unknown28.unknown50, i);
+        unknown027(boosterSelect, name, "TXT_bst_sel_item_name@%02d", "LAY_bst_sel_item@%02d", m_pageContext.unknown50, i);
         name.format("TXT_bst_sel_item_num@%02d", i + 1);
-        GfMenuItemAdapter::createFromList(boosterSelect.searchChild(name.c_str()), 3, unknown28.unknown50, i, true);
+        GfMenuItemAdapter::createFromList(boosterSelect.searchChild(name.c_str()), 3, m_pageContext.unknown50, i, true);
         name.format("TXT_bst_sel_item_max@%02d", i + 1);
-        GfMenuItemAdapter::createFromList(boosterSelect.searchChild(name.c_str()), 4, unknown28.unknown50, i, false);
+        GfMenuItemAdapter::createFromList(boosterSelect.searchChild(name.c_str()), 4, m_pageContext.unknown50, i, false);
         name.format("IMG_bst_sel_item_icon@%02d", i + 1);
-        GfMenuItemAdapter::createFromList(boosterSelect.searchChild(name.c_str()), 2, unknown28.unknown50, i, false);
+        GfMenuItemAdapter::createFromList(boosterSelect.searchChild(name.c_str()), 2, m_pageContext.unknown50, i, false);
       }
-      GfMenuObjUtil::createVScrollBarPlugin(acc.searchChild("IMG_bst_sel_scroll_bar"), unknown28.unknown50, "IMG_bst_sel_scroll_base", true);
+      GfMenuObjUtil::createVScrollBarPlugin(acc.searchChild("IMG_bst_sel_scroll_bar"), m_pageContext.unknown50, "IMG_bst_sel_scroll_base", true);
       ui::UIObjectAcc dialog(boosterSelect.unknown10, "LAY_bst_select_dialog");
       GfMenuReferenceAdapter::create(dialog.searchChild("TXT_bst_select_dialog_num"), unknown1188, true);
       setFSInputObject(6, dialog.unknown10);
@@ -492,8 +492,8 @@ void GfMenuObjBladeCreate::initialize() {
     unknownaf8.unknown002(&GfMenuObjBladeCreate::seqWaitLoading);
     unknownaf8.unknown002(&GfMenuObjBladeCreate::seqSetupDriverObj);
     unknownaf8.unknown002(&GfMenuObjBladeCreate::seqEnd);
-    unknown28.unknown38 = GfMenuCallContext::create();
-    unknown28.unknown2c = false;
+    m_pageContext.m_menuCallContext = GfMenuCallContext::create();
+    m_pageContext.unknown2c = false;
     GfMenuObject::initialize();
     if (!unknown11b4) {
       GfMenuObjMainMenu2::setCloseKeyEnable(false);
@@ -537,12 +537,12 @@ void GfMenuObjBladeCreate::changePage(u32 handle, PageContext *context, u32 page
     context->unknown00 = page;
     disableFSInput();
     if (isReturn) {
-      context->unknownac8->popCamera(0.5f);
+      context->m_menuModelView->popCamera(0.5f);
     }
     if (page == 0) {
-      context->unknownac8->resetCamera(unknown1198, 0.0f);
+      context->m_menuModelView->resetCamera(unknown1198, 0.0f);
     } else {
-      context->unknownac8->pushCamera(unknown008[page] + unknown11a0, 0.5f);
+      context->m_menuModelView->pushCamera(unknown008[page] + unknown11a0, 0.5f);
     }
   }
 }
@@ -611,37 +611,37 @@ void GfMenuObjBladeCreate::returnPage(u32 handle, PageContext *context, bool isS
 }
 
 void GfMenuObjBladeCreate::finalize() {
-  if (unknown28.unknownac8 != nullptr) {
-    delete unknown28.unknownac8;
-    unknown28.unknownac8 = nullptr;
+  if (m_pageContext.m_menuModelView != nullptr) {
+    delete m_pageContext.m_menuModelView;
+    m_pageContext.m_menuModelView = nullptr;
   }
-  mm::mtl::safeRelease(unknown28.unknown40);
-  mm::mtl::safeRelease(unknown28.unknown50);
-  mm::mtl::safeRelease(unknown28.unknown48);
-  mm::mtl::safeRelease(unknown28.unknown30);
-  mm::mtl::safeRelease(unknown28.unknown38);
+  mm::mtl::safeRelease(m_pageContext.unknown40);
+  mm::mtl::safeRelease(m_pageContext.unknown50);
+  mm::mtl::safeRelease(m_pageContext.unknown48);
+  mm::mtl::safeRelease(m_pageContext.unknown30);
+  mm::mtl::safeRelease(m_pageContext.m_menuCallContext);
   GfMenuObject::finalize();
 }
 
 void GfMenuObjBladeCreate::update() {
   unknownaf8.unknown003();
-  if (unknown28.unknownac8 != nullptr) {
-    unknown28.unknownac8->update();
+  if (m_pageContext.m_menuModelView != nullptr) {
+    m_pageContext.m_menuModelView->update();
   }
   GfMenuObject::update();
 }
 
 bool GfMenuObjBladeCreate::seqSetupCrystal() {
-  u32 driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-  unknown010(unknown28.unknownac8, driver, 1);
-  unknown010(unknown28.unknownac8, driver, 2);
+  u32 driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+  unknown010(m_pageContext.m_menuModelView, driver, 1);
+  unknown010(m_pageContext.m_menuModelView, driver, 2);
   mm::Vec3 scale;
   scale.z = 0.7f;
   scale.y = 0.7f;
   scale.x = 0.7f;
-  GfMenuModelView::setObjectScale(unknown011(unknown28.unknownac8, 1), scale);
-  GfMenuModelView::setObjectScale(unknown011(unknown28.unknownac8, 2), scale);
-  GfMenuModelView::setObjectDisp(unknown011(unknown28.unknownac8, 2), false);
+  GfMenuModelView::setObjectScale(unknown011(m_pageContext.m_menuModelView, 1), scale);
+  GfMenuModelView::setObjectScale(unknown011(m_pageContext.m_menuModelView, 2), scale);
+  GfMenuModelView::setObjectDisp(unknown011(m_pageContext.m_menuModelView, 2), false);
   unknown11c4[1] = GfMenuObjUtil::playSE("se_fld_allmap_706");
   refreshCrystalList();
   return true;
@@ -649,7 +649,7 @@ bool GfMenuObjBladeCreate::seqSetupCrystal() {
 
 void GfMenuObjBladeCreate::refreshCrystalList() {
   if (unknown1150 != nullptr) {
-    GfMenuItemList *crystals = unknown28.unknown48;
+    GfMenuItemList *crystals = m_pageContext.unknown48;
     if (crystals != nullptr) {
       for (u32 i = 0; i < unknown1150->getSize(); i++) {
         u32 item = crystals->getContents(crystals->getPageIndex(i)).unknown04;
@@ -678,28 +678,28 @@ void GfMenuObjBladeCreate::refreshCrystalList() {
           }
         }
       }
-      if (unknown013(unknown28.unknownac8, 1) && unknown013(unknown28.unknownac8, 2)) {
+      if (unknown013(m_pageContext.m_menuModelView, 1) && unknown013(m_pageContext.m_menuModelView, 2)) {
         if (!isValidCrystal(crystals->getContents(crystals->getIndex(false)).unknown04)) {
           {
-            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 1), 0.1f, false);
+            GfMenuModelView::CtrlParam param(unknown011(m_pageContext.m_menuModelView, 1), 0.1f, false);
             param.setMoveAlpha(0.0f);
-            unknown28.unknownac8->startObjectCtrl(param);
+            m_pageContext.m_menuModelView->startObjectCtrl(param);
           }
           {
-            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 2), 0.1f, false);
+            GfMenuModelView::CtrlParam param(unknown011(m_pageContext.m_menuModelView, 2), 0.1f, false);
             param.setMoveAlpha(1.0f);
-            unknown28.unknownac8->startObjectCtrl(param);
+            m_pageContext.m_menuModelView->startObjectCtrl(param);
           }
         } else {
           {
-            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 1), 0.1f, false);
+            GfMenuModelView::CtrlParam param(unknown011(m_pageContext.m_menuModelView, 1), 0.1f, false);
             param.setMoveAlpha(1.0f);
-            unknown28.unknownac8->startObjectCtrl(param);
+            m_pageContext.m_menuModelView->startObjectCtrl(param);
           }
           {
-            GfMenuModelView::CtrlParam param(unknown011(unknown28.unknownac8, 2), 0.1f, false);
+            GfMenuModelView::CtrlParam param(unknown011(m_pageContext.m_menuModelView, 2), 0.1f, false);
             param.setMoveAlpha(0.0f);
-            unknown28.unknownac8->startObjectCtrl(param);
+            m_pageContext.m_menuModelView->startObjectCtrl(param);
           }
         }
       }
@@ -725,10 +725,10 @@ bool GfMenuObjBladeCreate::seqStart() {
   return false;
 }
 
-bool GfMenuObjBladeCreate::seqWaitLoading() { return !unknown28.unknownac8->isLoading(); }
+bool GfMenuObjBladeCreate::seqWaitLoading() { return !m_pageContext.m_menuModelView->isLoading(); }
 
 bool GfMenuObjBladeCreate::seqEnd() {
-  enableFSInput(unknown28.unknown00);
+  enableFSInput(m_pageContext.unknown00);
   return true;
 }
 
@@ -776,8 +776,8 @@ bool GfMenuObjBladeCreate::seqSetupDriverObj() {
     param.unknown00 = 0.25f;
     GfMenuObjUtil::startCtrl(main.unknown10, param, nullptr);
   }
-  changePage(unknown18, &unknown28, 0, false, false);
-  unknown28.unknownac8->playEffect(8, "bc_30_000", mm::Vec3(0.0f, 0.0f, 0.0f), reinterpret_cast<GF_OBJ_HANDLE *>(-1));
+  changePage(unknown18, &m_pageContext, 0, false, false);
+  m_pageContext.m_menuModelView->playEffect(8, "bc_30_000", mm::Vec3(0.0f, 0.0f, 0.0f), reinterpret_cast<GF_OBJ_HANDLE *>(-1));
   unknown11c4[0] = GfMenuObjUtil::playSE("se_fld_allmap_701");
   return true;
 }
@@ -789,9 +789,9 @@ bool GfMenuObjBladeCreate::seqResultBladeFull() {
   }
   if (!GfMenuManager::isOpenCommonWindow()) {
     unknownaf8.unknown002(&GfMenuObjBladeCreate::seqResultEnd);
-    if (unknown28.unknown38 != nullptr) {
-      unknown28.unknown38->release();
-      unknown28.unknown38 = nullptr;
+    if (m_pageContext.m_menuCallContext != nullptr) {
+      m_pageContext.m_menuCallContext->release();
+      m_pageContext.m_menuCallContext = nullptr;
     }
     return true;
   }
@@ -800,8 +800,8 @@ bool GfMenuObjBladeCreate::seqResultBladeFull() {
 bool GfMenuObjBladeCreate::seqResultConfirm() {
   if (!unknown1120) {
     if (unknown11b4 && unknown11bc) {
-      u32 driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-      SCOM_PARTY_ADD::addBlade(unknown28.unknown28, driver, 1);
+      u32 driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+      SCOM_PARTY_ADD::addBlade(m_pageContext.unknown28, driver, 1);
       if (!unknown11b4) {
         GfMenuObjMainMenu2::setCloseKeyEnable(true);
       }
@@ -843,27 +843,27 @@ bool GfMenuObjBladeCreate::seqCreateCtrlBlade() {
   u32 blade = unknown1128.front();
   switch (unknown1144) {
   case 0: {
-    unknown28.unknownac8->setObjectVanishRatio(unknown28.unknownac8->findGfObj(4, blade), 1.0f);
-    unknown28.unknownac8->setObjectVanishParam(unknown28.unknownac8->findGfObj(4, blade), 9);
-    GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.3f, false);
+    m_pageContext.m_menuModelView->setObjectVanishRatio(m_pageContext.m_menuModelView->findGfObj(4, blade), 1.0f);
+    m_pageContext.m_menuModelView->setObjectVanishParam(m_pageContext.m_menuModelView->findGfObj(4, blade), 9);
+    GfMenuModelView::CtrlParam param(m_pageContext.m_menuModelView->findGfObj(4, blade), 0.3f, false);
     param.setAddPosY(0.2f);
     if (unknown1128.size() == 1) {
       param.setMoveVanish(0.5f);
     } else {
       param.setMoveVanish(0.7f);
     }
-    unknown28.unknownac8->startObjectCtrl(param);
-    GF_OBJ_HANDLE *driver = unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00);
+    m_pageContext.m_menuModelView->startObjectCtrl(param);
+    GF_OBJ_HANDLE *driver = m_pageContext.m_menuModelView->findGfObj(unknown003, m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00);
     if (unknown1148 == 0) {
-      unknown28.unknownac8->playEffectFromCAS(1, "bc_20_010", driver);
+      m_pageContext.m_menuModelView->playEffectFromCAS(1, "bc_20_010", driver);
       unknown1148++;
     } else if (unknown1128.size() > 1) {
-      unknown28.unknownac8->playEffectFromCAS(unknown1148 + 1, "bc_20_010", driver);
+      m_pageContext.m_menuModelView->playEffectFromCAS(unknown1148 + 1, "bc_20_010", driver);
       unknown1148++;
     } else {
-      GF_OBJ_HANDLE *bladeObj = unknown28.unknownac8->findGfObj(4, blade);
-      unknown28.unknownac8->playEffectFromCAS(5, "bc_20_020", driver);
-      unknown28.unknownac8->playEffectFromCAS(7, "bc_20_040", bladeObj);
+      GF_OBJ_HANDLE *bladeObj = m_pageContext.m_menuModelView->findGfObj(4, blade);
+      m_pageContext.m_menuModelView->playEffectFromCAS(5, "bc_20_020", driver);
+      m_pageContext.m_menuModelView->playEffectFromCAS(7, "bc_20_040", bladeObj);
     }
     GfMenuObjUtil::playVibration(fw::VIBRATION_ID_UNKNOWN_16, 1.0f);
     GfMenuObjUtil::playSE("se_fld_allmap_712");
@@ -871,13 +871,13 @@ bool GfMenuObjBladeCreate::seqCreateCtrlBlade() {
     break;
   }
   case 1: {
-    GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.4f, false);
+    GfMenuModelView::CtrlParam param(m_pageContext.m_menuModelView->findGfObj(4, blade), 0.4f, false);
     param.setAddPosY(0.2f);
-    unknown28.unknownac8->startObjectCtrl(param);
+    m_pageContext.m_menuModelView->startObjectCtrl(param);
     break;
   }
   case 2: {
-    GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.3f, false);
+    GfMenuModelView::CtrlParam param(m_pageContext.m_menuModelView->findGfObj(4, blade), 0.3f, false);
     if (unknown1128.size() == 1) {
       param.setAddPosY(-0.5f);
       param.setMoveSclX(0.001f);
@@ -887,7 +887,7 @@ bool GfMenuObjBladeCreate::seqCreateCtrlBlade() {
       param.setMoveVanish(1.0f);
       GfMenuObjUtil::playSE("se_fld_allmap_713");
     }
-    unknown28.unknownac8->startObjectCtrl(param);
+    m_pageContext.m_menuModelView->startObjectCtrl(param);
     break;
   }
   }
@@ -897,7 +897,7 @@ bool GfMenuObjBladeCreate::seqCreateCtrlBlade() {
 
 bool GfMenuObjBladeCreate::seqCreateWaitBlade() {
   u32 blade = unknown1128.front();
-  GfMenuModelView *view = unknown28.unknownac8;
+  GfMenuModelView *view = m_pageContext.m_menuModelView;
   if (view->isObjectCtrlBusy(view->findGfObj(4, blade))) {
     return false;
   }
@@ -905,7 +905,7 @@ bool GfMenuObjBladeCreate::seqCreateWaitBlade() {
     unknown1144++;
     unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateCtrlBlade);
   } else {
-    unknown28.unknownac8->delGfObj(4, blade);
+    m_pageContext.m_menuModelView->delGfObj(4, blade);
     unknown1128.erase(unknown1128.begin());
     if (!unknown1128.empty()) {
       unknown1144 = 0;
@@ -925,18 +925,18 @@ bool GfMenuObjBladeCreate::seqCreateWaitBlade() {
 }
 
 bool GfMenuObjBladeCreate::seqCreateStart() {
-  GF_OBJ_HANDLE *driverObj = unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00);
-  GfMenuModelView *view = unknown28.unknownac8;
+  GF_OBJ_HANDLE *driverObj = m_pageContext.m_menuModelView->findGfObj(unknown003, m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00);
+  GfMenuModelView *view = m_pageContext.m_menuModelView;
   {
     mm::Vec3 position(0.0f, 0.0f, 0.0f);
     view->playEffect(6, "bc_20_030", position, unknown011(view, 1));
   }
-  unknown28.unknownac8->playEffectFromCAS(0, "bc_20_000", driverObj);
+  m_pageContext.m_menuModelView->playEffectFromCAS(0, "bc_20_000", driverObj);
   unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateSetup);
-  int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-  for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
-    if (driver != unknown28.unknown40->getContents(i).unknown00) {
-      GfObjAcc acc(unknown28.unknownac8->findGfObj(unknown003, unknown28.unknown40->getContents(i).unknown00));
+  int driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+  for (u32 i = 0; i < m_pageContext.unknown40->getSize(); i++) {
+    if (driver != m_pageContext.unknown40->getContents(i).unknown00) {
+      GfObjAcc acc(m_pageContext.m_menuModelView->findGfObj(unknown003, m_pageContext.unknown40->getContents(i).unknown00));
       acc.setDisp(OBJDISP_UNKNOWN_0, false);
     }
   }
@@ -945,29 +945,29 @@ bool GfMenuObjBladeCreate::seqCreateStart() {
     motion = unknown012[driver - 1];
   }
   if (motion != nullptr) {
-    fw::Transform &transform = GfMenuModelView::getObjectTransform(unknown28.unknownac8->findGfObj(unknown003, driver));
+    fw::Transform &transform = GfMenuModelView::getObjectTransform(m_pageContext.m_menuModelView->findGfObj(unknown003, driver));
     mm::Vec3 rotation = mm::quatToEuler(transform.unknown10);
-    unknown28.unknownac8->playCameraMotion(motion, transform.unknown00, rotation.y);
+    m_pageContext.m_menuModelView->playCameraMotion(motion, transform.unknown00, rotation.y);
   }
   return true;
 }
 
 bool GfMenuObjBladeCreate::seqCreateStartEvent() {
-  for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
-    u32 id = unknown28.unknown40->getContents(i).unknown00;
-    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_0, false);
+  for (u32 i = 0; i < m_pageContext.unknown40->getSize(); i++) {
+    u32 id = m_pageContext.unknown40->getContents(i).unknown00;
+    GfObjAcc(m_pageContext.m_menuModelView->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_0, false);
   }
-  u32 event = GfDataBlade::getCreateEvent(unknown28.unknown28);
+  u32 event = GfDataBlade::getCreateEvent(m_pageContext.unknown28);
 #line 2938
-  unknown1118 = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfSequentialPlaySignal();
-  GfPlayFactory::createBlEvent(event, 1, unknown28.unknown28, unknown1118);
+  m_sequentialPlaySignal = new (getAllocator(ALLOCATOR_UNKNOWN_0), __FILE__, __LINE__, 8) GfSequentialPlaySignal();
+  GfPlayFactory::createBlEvent(event, 1, m_pageContext.unknown28, m_sequentialPlaySignal);
   unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateWaitEvent);
-  unknown28.unknownac8->delGfObj(unknown009, unknown28.unknownac8->getMapObjID(1));
-  unknown28.unknownac8->delGfObj(unknown009, unknown28.unknownac8->getMapObjID(2));
-  unknown28.unknownac8->stopEffect(6);
-  unknown28.unknownac8->stopEffect(7);
-  unknown28.unknownac8->stopEffect(0);
-  unknown28.unknownac8->stopEffect(unknown1148 + 1);
+  m_pageContext.m_menuModelView->delGfObj(unknown009, m_pageContext.m_menuModelView->getMapObjID(1));
+  m_pageContext.m_menuModelView->delGfObj(unknown009, m_pageContext.m_menuModelView->getMapObjID(2));
+  m_pageContext.m_menuModelView->stopEffect(6);
+  m_pageContext.m_menuModelView->stopEffect(7);
+  m_pageContext.m_menuModelView->stopEffect(0);
+  m_pageContext.m_menuModelView->stopEffect(unknown1148 + 1);
   if (unknown11c4[2] != 0) {
     GfMenuObjUtil::stopSE(unknown11c4[2], 0.0f);
     unknown11c4[2] = 0;
@@ -976,15 +976,15 @@ bool GfMenuObjBladeCreate::seqCreateStartEvent() {
 }
 
 bool GfMenuObjBladeCreate::seqCreateWaitEvent() {
-  if (unknown1118->isActive) {
+  if (m_sequentialPlaySignal->isActive) {
     return false;
   }
-  if (unknown1118 != nullptr) {
-    delete unknown1118;
-    unknown1118 = nullptr;
+  if (m_sequentialPlaySignal != nullptr) {
+    delete m_sequentialPlaySignal;
+    m_sequentialPlaySignal = nullptr;
   }
   GfMenuObjBladeName::close();
-  nextPage(unknown18, &unknown28, false);
+  nextPage(unknown18, &m_pageContext, false);
   return true;
 }
 
@@ -1007,12 +1007,12 @@ void GfMenuObjBladeCreate::setGuideText(u32 id) {
 bool GfMenuObjBladeCreate::seqCreatePlayBgmAfter() { return true; }
 
 bool GfMenuObjBladeCreate::isValidCrystal(u32 item) {
-  int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
+  int driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
   return GfItemUtil::isValidCrystal(item) && (item != ITEM_UNKNOWN_45005 || driver == 6);
 }
 
 u32 GfMenuObjBladeCreate::getInvalidCrystalMsgID(u32 item) {
-  int driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
+  int driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
   u32 message;
   if (item == ITEM_UNKNOWN_45005 && driver != 6) {
     message = 0xd4;
@@ -1042,16 +1042,16 @@ bool GfMenuObjBladeCreate::seqCreateSetup() {
 }
 
 bool GfMenuObjBladeCreate::seqCreateStartDriver() {
-  GfMenuModelView *view = unknown28.unknownac8;
-  GF_OBJ_HANDLE *driver = view->findGfObj(unknown003, unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00);
+  GfMenuModelView *view = m_pageContext.m_menuModelView;
+  GF_OBJ_HANDLE *driver = view->findGfObj(unknown003, m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00);
   view->sendObjectCommand(driver, "C_hold_00");
   GfMenuObjUtil::playSE("se_fld_allmap_711");
   return true;
 }
 
 bool GfMenuObjBladeCreate::seqCreateWaitDriver() {
-  u32 id = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-  GfMenuModelView *view = unknown28.unknownac8;
+  u32 id = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+  GfMenuModelView *view = m_pageContext.m_menuModelView;
   GF_OBJ_HANDLE *driver = view->findGfObj(unknown003, id);
   if (strcmp(view->getObjectAnimationState(driver), "S_hold_01") == 0) {
     GfMenuFade::setFade(2, 30, mm::Col4(0.0f, 0.0f, 0.0f, 0.0f));
@@ -1075,13 +1075,13 @@ bool GfMenuObjBladeCreate::seqCreateWaitFade() { return !GfMenuManager::isFading
 //   right after that call (0x71003fc894), inline at addBladeObject it gives 297 instructions; `driver2` is read before the model view is loaded (0x71003fc948 then 0x71003fc94c), inline
 //   it gives 301 instructions.
 bool GfMenuObjBladeCreate::seqCreateBuildBlade() {
-  u32 driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-  fw::Transform &driverTransform = GfMenuModelView::getObjectTransform(unknown28.unknownac8->findGfObj(unknown003, driver));
+  u32 driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+  fw::Transform &driverTransform = GfMenuModelView::getObjectTransform(m_pageContext.m_menuModelView->findGfObj(unknown003, driver));
   u32 blade = unknown1128.front();
   fw::Transform transform;
   transform.unknown10 = mm::Quat::identity;
   transform.unknown10 = driverTransform.unknown10;
-  if (unknown28.unknown40->getSize() == 1) {
+  if (m_pageContext.unknown40->getSize() == 1) {
     transform.unknown00.x = 0.0f;
     transform.unknown00.y = 0.0f;
     transform.unknown00.z = 0.0f;
@@ -1091,8 +1091,8 @@ bool GfMenuObjBladeCreate::seqCreateBuildBlade() {
     transform.unknown00.z = 1.0f;
   }
   mm::Vec3 point;
-  u32 driver2 = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-  if (GfMenuModelView::getObjectEffectPoint(unknown28.unknownac8->findGfObj(unknown003, driver2), "EFP_SYS_050", point)) {
+  u32 driver2 = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+  if (GfMenuModelView::getObjectEffectPoint(m_pageContext.m_menuModelView->findGfObj(unknown003, driver2), "EFP_SYS_050", point)) {
     transform.unknown00 += point;
   }
   mm::Mat44 matrix = mm::Mat44::identity;
@@ -1100,7 +1100,7 @@ bool GfMenuObjBladeCreate::seqCreateBuildBlade() {
   mm::unknown001(rotation, transform.unknown10);
   matrix = matrix * rotation;
   unknown029(transform.unknown00, matrix);
-  unknown28.unknownac8->addBladeObject(blade, transform);
+  m_pageContext.m_menuModelView->addBladeObject(blade, transform);
   unknown1144 = 0;
   unknownaf8.unknown002(&GfMenuObjBladeCreate::seqWaitLoading);
   unknownaf8.unknown002(&GfMenuObjBladeCreate::seqCreateCtrlBlade);
@@ -1110,13 +1110,13 @@ bool GfMenuObjBladeCreate::seqCreateBuildBlade() {
 void GfMenuObjBladeCreate::updateIdea(bool isSave) {
   int levels[4] = {};
   GfMenuReference::resetDriverAddIdeaLv();
-  if (unknown28.unknown00 > 1 && unknown1188->unknown0c > 0) {
-    int idea = unknown28.unknown50->getContents(unknown28.unknown50->getIndex(false)).unknown04;
+  if (m_pageContext.unknown00 > 1 && unknown1188->unknown0c > 0) {
+    int idea = m_pageContext.unknown50->getContents(m_pageContext.unknown50->getIndex(false)).unknown04;
     int index = idea - Bdat::getIdTop(GfDataBdat::getFP(BDAT_ITM_BOOSTER_LIST));
     int level = unknown1188->unknown0c;
     levels[index] = level;
     if (isSave) {
-      int slot = unknown28.unknown50->getIndex(false);
+      int slot = m_pageContext.unknown50->getIndex(false);
       unknown1174[slot] = level;
     }
   }
@@ -1126,25 +1126,25 @@ void GfMenuObjBladeCreate::updateIdea(bool isSave) {
 }
 
 bool GfMenuObjBladeCreate::seqResultAppearBlade() {
-  u32 driver = unknown28.unknown40->getContents(unknown28.unknown40->getIndex(false)).unknown00;
-  u32 blade = unknown28.unknown28;
-  GfMenuModelView::getObjectTransform(unknown28.unknownac8->findGfObj(4, blade)).unknown00.z = -1.0f;
-  GfMenuModelView::CtrlParam param(unknown28.unknownac8->findGfObj(4, blade), 0.5f, false);
+  u32 driver = m_pageContext.unknown40->getContents(m_pageContext.unknown40->getIndex(false)).unknown00;
+  u32 blade = m_pageContext.unknown28;
+  GfMenuModelView::getObjectTransform(m_pageContext.m_menuModelView->findGfObj(4, blade)).unknown00.z = -1.0f;
+  GfMenuModelView::CtrlParam param(m_pageContext.m_menuModelView->findGfObj(4, blade), 0.5f, false);
   param.setMovePosX(-1.0f, 1.0f);
-  unknown28.unknownac8->startObjectCtrl(param);
-  unknown006(unknown28.unknownac8, driver, GfDataBlade::getBladeWpnType(blade));
-  unknown007(unknown28.unknownac8, driver);
+  m_pageContext.m_menuModelView->startObjectCtrl(param);
+  unknown006(m_pageContext.m_menuModelView, driver, GfDataBlade::getBladeWpnType(blade));
+  unknown007(m_pageContext.m_menuModelView, driver);
   return true;
 }
 
 bool GfMenuObjBladeCreate::seqResultEnd() {
-  u32 blade = unknown28.unknown28;
-  unknown28.unknownac8->delGfObj(4, blade);
-  unknown28.unknownac8->stopCameraMotion();
-  nextPage(unknown18, &unknown28, false);
-  for (u32 i = 0; i < unknown28.unknown40->getSize(); i++) {
-    u32 id = unknown28.unknown40->getContents(i).unknown00;
-    GfObjAcc(unknown28.unknownac8->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_0, true);
+  u32 blade = m_pageContext.unknown28;
+  m_pageContext.m_menuModelView->delGfObj(4, blade);
+  m_pageContext.m_menuModelView->stopCameraMotion();
+  nextPage(unknown18, &m_pageContext, false);
+  for (u32 i = 0; i < m_pageContext.unknown40->getSize(); i++) {
+    u32 id = m_pageContext.unknown40->getContents(i).unknown00;
+    GfObjAcc(m_pageContext.m_menuModelView->findGfObj(unknown003, id)).setDisp(OBJDISP_UNKNOWN_0, true);
   }
   return true;
 }
@@ -1160,16 +1160,16 @@ void GfMenuObjBladeCreate::DriverSelectListener::reciveEvent(const ui::EventData
     int index = event.unknown08;
     u32 prev = event.unknown0c;
     u8 direction = event.unknown10;
-    unknown28->unknown40->setIndex(index);
-    GfMenuReference::setReferenceDriverID(0, unknown28->unknown40->getContents(unknown28->unknown40->getIndex(false)).unknown00);
+    m_pageContext->unknown40->setIndex(index);
+    GfMenuReference::setReferenceDriverID(0, m_pageContext->unknown40->getContents(m_pageContext->unknown40->getIndex(false)).unknown00);
     if (index == -1 || prev == -1) {
       break;
     }
-    unknown20->unknown11a0 = getDriverCameraIndex(unknown28->unknown40->getContents(unknown28->unknown40->getIndex(false)).unknown00) * 5;
+    m_menuObjBladeCreate->unknown11a0 = getDriverCameraIndex(m_pageContext->unknown40->getContents(m_pageContext->unknown40->getIndex(false)).unknown00) * 5;
     if (index == prev) {
       break;
     }
-    unknown20->unknown1190->setRotY(unknown20->unknown119c * index, direction, 0.25f);
+    m_menuObjBladeCreate->m_menuBladeCreateCamera->setRotY(m_menuObjBladeCreate->unknown119c * index, direction, 0.25f);
     GfMenuObjUtil::playSECommonTab();
     break;
   }
@@ -1183,18 +1183,19 @@ void GfMenuObjBladeCreate::DriverSelectListener::reciveEvent(const ui::EventData
     if (event.unknown08 == 1) {
       GfMenuObject::enableFSInput(0);
       GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
-      if (unknown20->unknown11b4) {
+      if (m_menuObjBladeCreate->unknown11b4) {
         GfMenuObject::setInputActionEnable(acc.unknown10, 2, false);
       }
-      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown28->unknown40);
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *m_pageContext->unknown40);
     }
     break;
   case 8:
     if (event.unknown0c == 1) {
-      unknown20->nextPage(acc.unknown10, unknown28, true);
+      m_menuObjBladeCreate->nextPage(acc.unknown10, m_pageContext, true);
       GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
-      unknown28->unknownac8->sendObjectCommand(unknown28->unknownac8->findGfObj(unknown003, unknown28->unknown40->getContents(unknown28->unknown40->getIndex(false)).unknown00), "C_reachout_00");
-      switch (unknown28->unknown40->getContents(unknown28->unknown40->getIndex(false)).unknown00) {
+      m_pageContext->m_menuModelView->sendObjectCommand(
+          m_pageContext->m_menuModelView->findGfObj(unknown003, m_pageContext->unknown40->getContents(m_pageContext->unknown40->getIndex(false)).unknown00), "C_reachout_00");
+      switch (m_pageContext->unknown40->getContents(m_pageContext->unknown40->getIndex(false)).unknown00) {
       case 1:
         GfMenuObjUtil::playSE("se_fld_allmap_702");
         break;
@@ -1210,40 +1211,41 @@ void GfMenuObjBladeCreate::DriverSelectListener::reciveEvent(const ui::EventData
       }
       GfMenuItemList::ItemBoxSetup setup;
       setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_11;
-      setup.unknown00.unknown08 = unknown20->unknown1150->getSize();
-      setup.unknown00.unknown10 = true;
-      if (unknown20->unknown11b8 == 0) {
-        unknown28->unknown48->setupFromBox(setup);
-        unknown28->unknown48->setIndex(0);
+      setup.m_setupParam.unknown08 = m_menuObjBladeCreate->unknown1150->getSize();
+      setup.m_setupParam.unknown10 = true;
+      if (m_menuObjBladeCreate->unknown11b8 == 0) {
+        m_pageContext->unknown48->setupFromBox(setup);
+        m_pageContext->unknown48->setIndex(0);
       } else {
         MenuItemInfo info;
         info.unknown00 = ItemType::ITEM_TYPE_UNKNOWN_11;
-        info.unknown04 = unknown20->unknown11b8;
+        info.unknown04 = m_menuObjBladeCreate->unknown11b8;
         info.unknown08 = 1;
-        unknown28->unknown48->setup(getAllocator(ALLOCATOR_UNKNOWN_0), setup.unknown00);
-        unknown28->unknown48->addItem(info, false);
+        m_pageContext->unknown48->setup(getAllocator(ALLOCATOR_UNKNOWN_0), setup.m_setupParam);
+        m_pageContext->unknown48->addItem(info, false);
       }
     } else if (event.unknown0c == 2) {
       GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
-      GfMenuObject::returnFSSubLayer(unknown20);
+      GfMenuObject::returnFSSubLayer(m_menuObjBladeCreate);
     }
     GfMenuObjUtil::playSECommonFromInput(event.unknown0c);
     break;
   case 0x21:
-    GfMenuReference::setReferenceDriverID(0, unknown28->unknown40->getContents(unknown28->unknown40->getIndex(false)).unknown00);
+    GfMenuReference::setReferenceDriverID(0, m_pageContext->unknown40->getContents(m_pageContext->unknown40->getIndex(false)).unknown00);
     GfMenuReference::setReferenceBladeID(0, 0);
-    unknown20->setGuideText(0x27);
+    m_menuObjBladeCreate->setGuideText(0x27);
     {
-      ui::UIObjectAcc guide(unknown20->unknown18, "LAY_guide");
+      ui::UIObjectAcc guide(m_menuObjBladeCreate->unknown18, "LAY_guide");
       guide.setDisp(true);
     }
     unknown014(acc.unknown10);
-    if (!unknown20->unknown11b4) {
+    if (!m_menuObjBladeCreate->unknown11b4) {
       GfMenuObjMainMenu2::setCloseKeyEnable(true);
     }
-    unknown28->unknownac8->sendObjectCommand(unknown28->unknownac8->findGfObj(unknown003, unknown28->unknown40->getContents(unknown28->unknown40->getIndex(false)).unknown00), "C_idle");
-    if (unknown20->unknown11c0 == 0) {
-      unknown20->unknown11c0 = GfMenuObjUtil::playBGM(0x14, false, CATEGORY_MENU_BGM);
+    m_pageContext->m_menuModelView->sendObjectCommand(m_pageContext->m_menuModelView->findGfObj(unknown003, m_pageContext->unknown40->getContents(m_pageContext->unknown40->getIndex(false)).unknown00),
+                                                      "C_idle");
+    if (m_menuObjBladeCreate->unknown11c0 == 0) {
+      m_menuObjBladeCreate->unknown11c0 = GfMenuObjUtil::playBGM(0x14, false, CATEGORY_MENU_BGM);
     }
     break;
   }
@@ -1268,9 +1270,9 @@ void GfMenuObjBladeCreate::CrystalSelectListener::reciveEvent(const ui::EventDat
     // Locals placing the loads of the event fields (ruling of 2026-11-13, member reads): the game reads both before setIndex; at their use the loads move (measured).
     u32 index = event.unknown08;
     u32 prev = event.unknown0c;
-    unknown28->unknown48->setIndex(index);
-    unknown20->unknown1150->setIndex(unknown28->unknown48->getIndex(true));
-    unknown20->refreshCrystalList();
+    m_pageContext->unknown48->setIndex(index);
+    m_menuObjBladeCreate->unknown1150->setIndex(m_pageContext->unknown48->getIndex(true));
+    m_menuObjBladeCreate->refreshCrystalList();
     if (prev != 0xffffffff && index != prev) {
       GfMenuObjUtil::playSECommonCursor();
     }
@@ -1282,16 +1284,16 @@ void GfMenuObjBladeCreate::CrystalSelectListener::reciveEvent(const ui::EventDat
         GfMenuObjUtil::playSECommon(2);
         break;
       }
-      u32 item = unknown28->unknown48->getContents(unknown28->unknown48->getIndex(false)).unknown04;
-      if (!unknown20->isValidCrystal(item)) {
-        u32 message = unknown20->getInvalidCrystalMsgID(item);
+      u32 item = m_pageContext->unknown48->getContents(m_pageContext->unknown48->getIndex(false)).unknown04;
+      if (!m_menuObjBladeCreate->isValidCrystal(item)) {
+        u32 message = m_menuObjBladeCreate->getInvalidCrystalMsgID(item);
         if (message != 0) {
           GfMenuManager::openCommonWindow(message);
         } else {
           GfMenuObjUtil::playSECommon(2);
         }
       } else {
-        unknown28->unknown2c = false;
+        m_pageContext->unknown2c = false;
         if (!GfBladeManager::isBindRareBladeCrystal(item)) {
           if (GfDataBlade::getEnableCountForCreateBlade() == 0) {
             GfMenuObjUtil::playSECommon(2);
@@ -1299,53 +1301,53 @@ void GfMenuObjBladeCreate::CrystalSelectListener::reciveEvent(const ui::EventDat
             break;
           }
         } else {
-          unknown28->unknown2c = true;
+          m_pageContext->unknown2c = true;
         }
         GfMenuItemList::ItemBoxSetup setup;
         setup.unknown14 = ItemType::ITEM_TYPE_UNKNOWN_12;
-        setup.unknown00.unknown08 = unknown20->unknown1160->getSize();
-        unknown28->unknown50->setupFromBox(setup);
-        unknown28->unknown50->setIndex(0);
-        unknown28->unknown50->sort(3, true);
-        if (unknown28->unknown50->getSize() == 0) {
-          unknown28->unknown2c = true;
+        setup.m_setupParam.unknown08 = m_menuObjBladeCreate->unknown1160->getSize();
+        m_pageContext->unknown50->setupFromBox(setup);
+        m_pageContext->unknown50->setIndex(0);
+        m_pageContext->unknown50->sort(3, true);
+        if (m_pageContext->unknown50->getSize() == 0) {
+          m_pageContext->unknown2c = true;
         }
-        unknown20->nextPage(acc.unknown10, unknown28, true);
+        m_menuObjBladeCreate->nextPage(acc.unknown10, m_pageContext, true);
         GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
       }
     } else if (event.unknown0c == 2) {
-      unknown28->unknownac8->delGfObj(unknown009, unknown28->unknownac8->getMapObjID(1));
-      unknown28->unknownac8->delGfObj(unknown009, unknown28->unknownac8->getMapObjID(2));
-      if (unknown20->unknown11c4[1] != 0) {
-        GfMenuObjUtil::stopSE(unknown20->unknown11c4[1], 0.0f);
-        unknown20->unknown11c4[1] = 0;
+      m_pageContext->m_menuModelView->delGfObj(unknown009, m_pageContext->m_menuModelView->getMapObjID(1));
+      m_pageContext->m_menuModelView->delGfObj(unknown009, m_pageContext->m_menuModelView->getMapObjID(2));
+      if (m_menuObjBladeCreate->unknown11c4[1] != 0) {
+        GfMenuObjUtil::stopSE(m_menuObjBladeCreate->unknown11c4[1], 0.0f);
+        m_menuObjBladeCreate->unknown11c4[1] = 0;
       }
       GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
-      unknown20->returnPage(acc.unknown10, unknown28, true);
+      m_menuObjBladeCreate->returnPage(acc.unknown10, m_pageContext, true);
     }
     GfMenuObjUtil::playSECommonFromInput(event.unknown0c);
     break;
   case 0x21:
-    if (unknown28->unknown48->getSize() == 0) {
+    if (m_pageContext->unknown48->getSize() == 0) {
       GfMenuObject::setupInputSelection(acc.unknown10, -1, 0);
       acc.setDispChild(false, "IMG_core_select_cursor");
     } else {
       acc.setDispChild(true, "IMG_core_select_cursor");
-      if (unknown28->unknown04 == 0) {
+      if (m_pageContext->unknown04 == 0) {
         GfMenuObject::resetInputSelection(acc.unknown10);
       }
-      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *unknown28->unknown48);
-      unknown20->refreshCrystalList();
-      if (!unknown013(unknown28->unknownac8, 1)) {
-        unknown28->unknownac8->addMapObjObject(1);
-        unknown28->unknownac8->addMapObjObject(2);
-        unknown20->unknownaf8.unknown005();
-        unknown20->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqWaitLoading);
-        unknown20->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqSetupCrystal);
+      GfMenuObject::setupInputSelectionFromList(acc.unknown10, *m_pageContext->unknown48);
+      m_menuObjBladeCreate->refreshCrystalList();
+      if (!unknown013(m_pageContext->m_menuModelView, 1)) {
+        m_pageContext->m_menuModelView->addMapObjObject(1);
+        m_pageContext->m_menuModelView->addMapObjObject(2);
+        m_menuObjBladeCreate->unknownaf8.unknown005();
+        m_menuObjBladeCreate->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqWaitLoading);
+        m_menuObjBladeCreate->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqSetupCrystal);
       }
     }
     unknown014(acc.unknown10);
-    unknown20->setGuideText(0x28);
+    m_menuObjBladeCreate->setGuideText(0x28);
     break;
   case 0x22:
     unknown015(acc.unknown10);
@@ -1372,17 +1374,17 @@ void GfMenuObjBladeCreate::BoosterSelectListener::reciveEvent(const ui::EventDat
     u32 index = event.unknown08;
     if (index != 0xffffffff) {
       u32 prev = event.unknown0c;
-      unknown20->unknown1160->setIndex(index);
-      if (static_cast<int>(index) < static_cast<int>(unknown28->unknown50->getSize())) {
-        unknown28->unknown50->setIndex(index);
+      m_menuObjBladeCreate->unknown1160->setIndex(index);
+      if (static_cast<int>(index) < static_cast<int>(m_pageContext->unknown50->getSize())) {
+        m_pageContext->unknown50->setIndex(index);
         // The game calls getRowOffset and discards the result (0x71003fa540).
-        unknown28->unknown50->getRowOffset();
-        int booster = unknown28->unknown50->getContents(unknown28->unknown50->getIndex(false)).unknown04 - Bdat::getIdTop(GfDataBdat::getFP(BDAT_ITM_BOOSTER_LIST));
+        m_pageContext->unknown50->getRowOffset();
+        int booster = m_pageContext->unknown50->getContents(m_pageContext->unknown50->getIndex(false)).unknown04 - Bdat::getIdTop(GfDataBdat::getFP(BDAT_ITM_BOOSTER_LIST));
         if (booster >= 0 && booster < 4) {
           if (prev != 0xffffffff) {
-            unknown28->unknownac8->removeEffect(prev + 9);
+            m_pageContext->m_menuModelView->removeEffect(prev + 9);
           }
-          GfMenuModelView *view = unknown28->unknownac8;
+          GfMenuModelView *view = m_pageContext->m_menuModelView;
           // Single-use locals (ruling of 2026-11-13): the game (0x71003faa4c) loads the effect name and computes index + 9 before it clears the position; inline, the order differs (measured).
           const char *name = unknown016[booster][0];
           u32 effect = index + 9;
@@ -1390,7 +1392,7 @@ void GfMenuObjBladeCreate::BoosterSelectListener::reciveEvent(const ui::EventDat
           view->playEffect(effect, name, position, view->findGfObj(unknown009, view->getMapObjID(1)));
         }
       } else {
-        unknown28->unknownac8->removeEffect(prev + 9);
+        m_pageContext->m_menuModelView->removeEffect(prev + 9);
       }
       if (prev != 0xffffffff && index != prev) {
         GfMenuObjUtil::playSECommonCursor();
@@ -1402,7 +1404,7 @@ void GfMenuObjBladeCreate::BoosterSelectListener::reciveEvent(const ui::EventDat
     int index = event.unknown08;
     if (event.unknown0c == 1) {
       if (index != -1) {
-        if (index < static_cast<int>(unknown28->unknown50->getSize())) {
+        if (index < static_cast<int>(m_pageContext->unknown50->getSize())) {
           GfMenuObject::sendOpenEvent(acc.searchChild("LAY_bst_select_dialog"), 0, 0.0f);
         } else {
           ui::EventData next;
@@ -1413,49 +1415,49 @@ void GfMenuObjBladeCreate::BoosterSelectListener::reciveEvent(const ui::EventDat
         GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
       }
     } else if (event.unknown0c == 2) {
-      if (index < static_cast<int>(unknown28->unknown50->getSize())) {
-        unknown28->unknownac8->stopEffect(index + 9);
+      if (index < static_cast<int>(m_pageContext->unknown50->getSize())) {
+        m_pageContext->m_menuModelView->stopEffect(index + 9);
       }
       GfMenuObject::sendCloseEvent(acc.searchSibiling("LAY_dr_idea"), 0, 0.0f);
-      unknown20->returnPage(acc.unknown10, unknown28, true);
+      m_menuObjBladeCreate->returnPage(acc.unknown10, m_pageContext, true);
       GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
     }
     GfMenuObjUtil::playSECommonFromInput(event.unknown0c);
     break;
   }
   case 0x21:
-    if (unknown28->unknown50->getSize() == 0) {
+    if (m_pageContext->unknown50->getSize() == 0) {
       GfMenuObject::setupInputSelection(acc.unknown10, -1, 0);
-    } else if (unknown28->unknown04 == 1) {
+    } else if (m_pageContext->unknown04 == 1) {
       GfMenuObject::resetInputSelection(acc.unknown10);
-      GfMenuObject::setupInputSelection(acc.unknown10, 0, unknown28->unknown50->getSize() + 1);
+      GfMenuObject::setupInputSelection(acc.unknown10, 0, m_pageContext->unknown50->getSize() + 1);
       ui::UIObjectAcc skip(acc.unknown10, "LAY_bst_sel_item_skip");
       mm::mtl::FixStr<32> name;
-      name.format("item_%d", unknown28->unknown50->getSize() + 1);
+      name.format("item_%d", m_pageContext->unknown50->getSize() + 1);
       acc.setLayout(skip.unknown10, name.c_str());
     }
-    unknown20->unknown1174[0] = 0;
-    unknown20->unknown1174[1] = 0;
-    unknown20->unknown1174[2] = 0;
-    unknown20->unknown1174[3] = 0;
-    unknown20->unknown1170 = 0;
+    m_menuObjBladeCreate->unknown1174[0] = 0;
+    m_menuObjBladeCreate->unknown1174[1] = 0;
+    m_menuObjBladeCreate->unknown1174[2] = 0;
+    m_menuObjBladeCreate->unknown1174[3] = 0;
+    m_menuObjBladeCreate->unknown1170 = 0;
     unknown014(acc.unknown10);
-    unknown20->setGuideText(0x29);
+    m_menuObjBladeCreate->setGuideText(0x29);
     GfMenuObject::sendOpenEvent(acc.searchSibiling("LAY_dr_idea"), 0, 0.0f);
-    unknown20->unknown1188->unknown0c = 0;
-    unknown20->updateIdea(false);
+    m_menuObjBladeCreate->unknown1188->unknown0c = 0;
+    m_menuObjBladeCreate->updateIdea(false);
     break;
   case 0x22:
     unknown015(acc.unknown10);
     break;
   case GfMenuTypes::unknown003_257:
     GfMenuObject::sendCloseEvent(acc.searchSibiling("LAY_dr_idea"), 0, 0.0f);
-    unknown20->nextPage(acc.unknown10, unknown28, true);
+    m_menuObjBladeCreate->nextPage(acc.unknown10, m_pageContext, true);
     break;
   case GfMenuTypes::unknown003_258: {
     // Single-use local (ruling of 2026-11-13): the game calls getIndex (0x71003fa75c) before it loads the model view (0x71003fa764); inline in the argument the load comes first (measured).
-    int index = unknown20->unknown1160->getIndex(false);
-    unknown28->unknownac8->stopEffect(index + 9);
+    int index = m_menuObjBladeCreate->unknown1160->getIndex(false);
+    m_pageContext->m_menuModelView->stopEffect(index + 9);
     GfMenuObjUtil::playVibration(fw::VIBRATION_ID_UNKNOWN_11, 1.0f);
     ui::EventData next;
     next.unknown00 = GfMenuTypes::unknown003_257;
@@ -1465,10 +1467,10 @@ void GfMenuObjBladeCreate::BoosterSelectListener::reciveEvent(const ui::EventDat
   case GfMenuTypes::unknown003_259:
     if (event.unknown08 == 1) {
       // The game calls getIndex on the booster select list and discards the result (0x71003fa450).
-      unknown20->unknown1160->getIndex(false);
-      int booster = unknown28->unknown50->getContents(unknown28->unknown50->getIndex(false)).unknown04 - Bdat::getIdTop(GfDataBdat::getFP(BDAT_ITM_BOOSTER_LIST));
+      m_menuObjBladeCreate->unknown1160->getIndex(false);
+      int booster = m_pageContext->unknown50->getContents(m_pageContext->unknown50->getIndex(false)).unknown04 - Bdat::getIdTop(GfDataBdat::getFP(BDAT_ITM_BOOSTER_LIST));
       // `view` is read once, before the calls of its arguments: written out at each use the order differs (measured).
-      GfMenuModelView *view = unknown28->unknownac8;
+      GfMenuModelView *view = m_pageContext->m_menuModelView;
       {
         mm::Vec3 position(0.0f, 0.0f, 0.0f);
         view->playEffect(13, unknown016[booster][1], position, view->findGfObj(unknown009, view->getMapObjID(1)));
@@ -1480,7 +1482,7 @@ void GfMenuObjBladeCreate::BoosterSelectListener::reciveEvent(const ui::EventDat
     } else {
       GfMenuObject::enableFSInput(2);
       GfMenuObjOperationInfo::add(acc.unknown10, 0, 0, 0);
-      unknown20->setGuideText(0x29);
+      m_menuObjBladeCreate->setGuideText(0x29);
     }
     break;
   }
@@ -1503,9 +1505,9 @@ void GfMenuObjBladeCreate::MainListener::reciveEvent(const ui::EventData &event,
     GfMenuObjMainMenu2::dispCloseButton();
     if (GfSound::get() != nullptr) {
       GfMenuSoundManager::fadeFieldBgm(1.0f, 0.5f);
-      GfMenuObjUtil::stopBGM(unknown20->unknown11c0, 1.0f);
-      unknown20->unknown11c0 = 0;
-      unknown20->stopAllSound();
+      GfMenuObjUtil::stopBGM(m_menuObjBladeCreate->unknown11c0, 1.0f);
+      m_menuObjBladeCreate->unknown11c0 = 0;
+      m_menuObjBladeCreate->stopAllSound();
     }
     break;
   }
@@ -1529,12 +1531,12 @@ void GfMenuObjBladeCreate::ResultListener::reciveEvent(const ui::EventData &even
       GfMenuObject::enableFSInput(5);
       GfMenuObjOperationInfo::open(acc.unknown10, 0, 0, 0);
       GfMenuObjOperationInfo::setGuideDisp(false);
-      unknown20->unknown11c0 = GfMenuObjUtil::playBGM(0x14, false, CATEGORY_MENU_BGM);
+      m_menuObjBladeCreate->unknown11c0 = GfMenuObjUtil::playBGM(0x14, false, CATEGORY_MENU_BGM);
     }
     break;
   case 8:
     if (event.unknown0c == 1) {
-      unknown20->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqResultStart);
+      m_menuObjBladeCreate->unknownaf8.unknown002(&GfMenuObjBladeCreate::seqResultStart);
       GfMenuObjOperationInfo::remove(acc.unknown10, 0, 0, 0);
       GfMenuObject::disableFSInput();
     }
@@ -1597,8 +1599,8 @@ void GfMenuObjBladeCreate::BoosterNumListener::reciveEvent(const ui::EventData &
     int index = event.unknown08;
     int prev = event.unknown0c;
     if (index != -1) {
-      unknown20->unknown1188->unknown162(index + 1);
-      unknown20->updateIdea(false);
+      m_menuObjBladeCreate->unknown1188->unknown162(index + 1);
+      m_menuObjBladeCreate->updateIdea(false);
     }
     if (prev != -1 && index != prev) {
       GfMenuObjUtil::playSE(0x19);
@@ -1607,13 +1609,13 @@ void GfMenuObjBladeCreate::BoosterNumListener::reciveEvent(const ui::EventData &
   }
   case 8:
     if (event.unknown0c == 1) {
-      unknown20->updateIdea(true);
+      m_menuObjBladeCreate->updateIdea(true);
       unknown10 = 1;
       GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
     } else if (event.unknown0c == 2) {
       GfMenuObject::sendCloseEvent(acc.unknown10, 0, 0.0f);
-      unknown20->unknown1188->unknown162(0);
-      unknown20->updateIdea(false);
+      m_menuObjBladeCreate->unknown1188->unknown162(0);
+      m_menuObjBladeCreate->updateIdea(false);
     }
     GfMenuObjUtil::playSECommonFromInput(event.unknown0c);
     break;
@@ -1622,18 +1624,18 @@ void GfMenuObjBladeCreate::BoosterNumListener::reciveEvent(const ui::EventData &
       unknown014(acc.unknown10);
       unknown0c = 1;
       unknown10 = 0;
-      const MenuItemInfo &idea = unknown20->unknown28.unknown50->getContents(unknown20->unknown28.unknown50->getIndex(false));
+      const MenuItemInfo &idea = m_menuObjBladeCreate->m_pageContext.unknown50->getContents(m_menuObjBladeCreate->m_pageContext.unknown50->getIndex(false));
       u32 level = idea.unknown08;
       if (level > 5) {
         level = 5;
       }
-      unknown20->unknown1188->unknown10 = 1;
-      unknown20->unknown1188->unknown14 = level;
-      unknown20->unknown1188->unknown162(1);
+      m_menuObjBladeCreate->unknown1188->unknown10 = 1;
+      m_menuObjBladeCreate->unknown1188->unknown14 = level;
+      m_menuObjBladeCreate->unknown1188->unknown162(1);
       GfMenuObject::resetInputSelection(acc.unknown10);
       GfMenuObject::setupInputSelection(acc.unknown10, 0, level);
     }
-    unknown20->setGuideText(0x39);
+    m_menuObjBladeCreate->setGuideText(0x39);
     break;
   case GfMenuTypes::unknown003_34:
     if (unknown0c == 1) {
@@ -1677,17 +1679,17 @@ void GfMenuObjBladeCreate::ConfirmListener::reciveEvent(const ui::EventData &eve
   case 1:
     break;
   case GfMenuTypes::unknown003_33:
-    unknown28->unknown38->reset();
+    m_pageContext->m_menuCallContext->reset();
     // The game (0x71003fabd0) keeps the branch on the flag and calls open in each arm; a ternary argument gives a csel.
-    if (!unknown20->unknown11b4) {
-      GfMenuObjCommonText::open(unknown28->unknown38, 0x46, 0);
+    if (!m_menuObjBladeCreate->unknown11b4) {
+      GfMenuObjCommonText::open(m_pageContext->m_menuCallContext, 0x46, 0);
     } else {
-      GfMenuObjCommonText::open(unknown28->unknown38, 0xc4, 0);
+      GfMenuObjCommonText::open(m_pageContext->m_menuCallContext, 0xc4, 0);
     }
-    GfMenuObject::setCallContextEventHandler(unknown28->unknown38, acc.unknown10);
+    GfMenuObject::setCallContextEventHandler(m_pageContext->m_menuCallContext, acc.unknown10);
     GfMenuObjOperationInfo::setDisp(false);
-    unknown20->dispGuideText(false);
-    if (!unknown20->unknown11b4) {
+    m_menuObjBladeCreate->dispGuideText(false);
+    if (!m_menuObjBladeCreate->unknown11b4) {
       GfMenuObjMainMenu2::setCloseKeyEnable(false);
     }
     break;
@@ -1696,19 +1698,19 @@ void GfMenuObjBladeCreate::ConfirmListener::reciveEvent(const ui::EventData &eve
   case 0x41: {
     // Ruling 2: the game (0x71003fabf4) loads the id of the event before the id of the context.
     u32 callId = event.unknown08;
-    if (unknown28->unknown38->unknown0c != callId) {
+    if (m_pageContext->m_menuCallContext->unknown0c != callId) {
       break;
     }
     if (event.unknown10 == 0) {
       ui::EventData closeEvent;
       closeEvent.unknown00 = GfMenuTypes::unknown003_34;
       GfMenuObject::sendEvent(acc.searchSibiling("LAY_dr_idea"), closeEvent, 0.0f);
-      unknown20->nextPage(acc.unknown10, unknown28, true);
+      m_menuObjBladeCreate->nextPage(acc.unknown10, m_pageContext, true);
     } else {
       GfMenuObjOperationInfo::setDisp(true);
-      unknown20->dispGuideText(true);
-      unknown20->returnPage(acc.unknown10, unknown28, true);
-      if (!unknown20->unknown11b4) {
+      m_menuObjBladeCreate->dispGuideText(true);
+      m_menuObjBladeCreate->returnPage(acc.unknown10, m_pageContext, true);
+      if (!m_menuObjBladeCreate->unknown11b4) {
         GfMenuObjMainMenu2::setCloseKeyEnable(true);
       }
     }

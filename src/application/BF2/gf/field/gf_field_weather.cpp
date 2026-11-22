@@ -251,7 +251,7 @@ static unknown119 &unknown001(u32 map) {
     const char *resource = GfBdatMaplist::get()->getMaplistresource(map);
     if (resource != nullptr) {
       for (unknown119 &info : GfDataManager::getDataGame()->unknown10a53c) {
-        if (__builtin_strcmp(info.unknown00.unknown00, resource) == 0) {
+        if (__builtin_strcmp(info.m_weatherParam.unknown00, resource) == 0) {
           return info;
         }
       }
@@ -295,7 +295,7 @@ static void unknown004(u32 map) {
     }
   }
 
-  WeatherParam &param = unknown001(map).unknown00;
+  WeatherParam &param = unknown001(map).m_weatherParam;
   param.unknown0c = info->unknown0c;
   param.unknown08 = info->unknown08;
   param.unknown10 = info->unknown10;
@@ -317,7 +317,7 @@ static void unknown005(u32 prevMap, u32 map) {
   }
 
   if (!GfGameEvent::isMapWeatherEnable()) {
-    WeatherParam &param = unknown001(prevMap).unknown00;
+    WeatherParam &param = unknown001(prevMap).m_weatherParam;
     param.unknown0c = current->unknown0c;
     param.unknown08 = current->unknown08;
     param.unknown10 = current->unknown10;
@@ -329,7 +329,7 @@ static void unknown005(u32 prevMap, u32 map) {
   }
   for (int weather = WEATHER_A; weather <= WEATHER_F; weather++) {
     if (type == GfDataMap::getWeatherType(map, static_cast<WEATHERID>(weather))) {
-      WeatherParam &param = unknown001(map).unknown00;
+      WeatherParam &param = unknown001(map).m_weatherParam;
       param.unknown0c = static_cast<WEATHERID>(weather);
       param.unknown10 = current->unknown10;
       param.unknown14 = current->unknown14;
@@ -368,7 +368,7 @@ void GfFieldWeather::applyNowMapWeatherForMapModel(u32 map) {
 void GfFieldWeather::gevMapjump(GEV gev, const MapjumpCallbackInfo &info) {
   GfFieldWeather *weather = get();
   weather->unknown10.push(gev);
-  weather->unknown60 = info;
+  weather->m_mapjumpCallbackInfo = info;
 }
 
 void GfFieldWeather::gevGameMapModel(GF_OBJ_HANDLE *, bool) {}
@@ -626,23 +626,23 @@ void GfFieldWeather::updateEvent(const fw::UpdateInfo &info) {
   while (!unknown10.empty()) {
     switch (unknown10.front()) {
     case GEV_UNKNOWN_1:
-      unknown005(unknown60.unknown08, unknown60.unknown04);
+      unknown005(m_mapjumpCallbackInfo.unknown08, m_mapjumpCallbackInfo.unknown04);
       unknown0a = false;
       break;
     case GEV_UNKNOWN_2:
-      if (unknown60.unknown08 != unknown60.unknown04) {
+      if (m_mapjumpCallbackInfo.unknown08 != m_mapjumpCallbackInfo.unknown04) {
         setCurrentRemainSecZero();
         updateWeather(info);
       }
-      applyNowMapWeather(unknown60.unknown08, unknown60.unknown04);
+      applyNowMapWeather(m_mapjumpCallbackInfo.unknown08, m_mapjumpCallbackInfo.unknown04);
       unknown0a = true;
       break;
     case GEV_UNKNOWN_5:
       if (GfGameManager::isStartGame()) {
-        createWeather(unknown001(GfGameManager::getMapID()).unknown00, unknown049);
+        createWeather(unknown001(GfGameManager::getMapID()).m_weatherParam, unknown049);
       }
-      applyNowMapWeatherForMapModel(unknown60.unknown04);
-      setCloudSea(unknown60.unknown04, GfDataMap::getCloudType(unknown60.unknown04));
+      applyNowMapWeatherForMapModel(m_mapjumpCallbackInfo.unknown04);
+      setCloudSea(m_mapjumpCallbackInfo.unknown04, GfDataMap::getCloudType(m_mapjumpCallbackInfo.unknown04));
       break;
     default:
       break;
@@ -657,7 +657,7 @@ void GfFieldWeather::updateEvent(const fw::UpdateInfo &info) {
       return;
     }
     unknown74 = WEATHER_UNKNOWN_0;
-    applyNowMapWeather(unknown60.unknown08, unknown60.unknown04);
+    applyNowMapWeather(m_mapjumpCallbackInfo.unknown08, m_mapjumpCallbackInfo.unknown04);
     return;
   }
 
@@ -708,18 +708,18 @@ void GfFieldWeather::updateWeather(const fw::UpdateInfo &info) {
   current->update(updateInfo, false);
   bool isChanged = false;
   if (current->isTimeup() && !isInfiniteTime()) {
-    execChangeWeather(unknown001(current->unknown18).unknown00);
+    execChangeWeather(unknown001(current->unknown18).m_weatherParam);
     isChanged = true;
   }
 
   if (!current->isTimeRangeOK() && !isInfiniteTime()) {
-    execChangeWeather(unknown001(current->unknown18).unknown00);
+    execChangeWeather(unknown001(current->unknown18).m_weatherParam);
   } else if (current->unknown0c < WEATHER_F && GfGameCond::isGameCond(GfDataMap::getWeatherForceConditionOff(current->unknown18, current->unknown0c)) && !GfGameEvent::isMapWeatherEnable()) {
-    execChangeWeather(unknown001(current->unknown18).unknown00);
+    execChangeWeather(unknown001(current->unknown18).m_weatherParam);
   } else if (!isChanged) {
     for (int weather = WEATHER_A; weather <= WEATHER_D; weather++) {
       if (current->unknown0c != weather && GfGameCond::isGameCond(GfDataMap::getWeatherForceConditionOn(current->unknown18, static_cast<WEATHERID>(weather))) && !GfGameEvent::isMapWeatherEnable()) {
-        execChangeWeather(unknown001(current->unknown18).unknown00);
+        execChangeWeather(unknown001(current->unknown18).m_weatherParam);
         break;
       }
     }
@@ -736,7 +736,7 @@ void GfFieldWeather::applyNowMapWeather(u32 prevMap, u32 map) {
   }
 
   setupGame();
-  execChangeWeather(unknown001(map).unknown00);
+  execChangeWeather(unknown001(map).m_weatherParam);
   setCloudSeaForDebug(map, GfDataMap::getCloudType(map));
   if (map != prevMap) {
     setCurrentRemainSecZero();
@@ -789,7 +789,7 @@ const char *GfFieldWeather::getWeatherName() { return GfDataMap::getWeatherName(
 
 void GfFieldWeather::setupGame() {
   SDataGame *dataGame = GfDataManager::getDataGame();
-  if (dataGame->unknown10a53c[0].unknown00.unknown00[0] != '\0') {
+  if (dataGame->unknown10a53c[0].m_weatherParam.unknown00[0] != '\0') {
     return;
   }
 
@@ -797,7 +797,7 @@ void GfFieldWeather::setupGame() {
   for (u32 map = bdatMaplist->getMaplistStart(); map < bdatMaplist->getMaplistEnd(); map++) {
     const char *resource = bdatMaplist->getMaplistresource(map);
     for (unknown119 &info : dataGame->unknown10a53c) {
-      WeatherParam &param = info.unknown00;
+      WeatherParam &param = info.m_weatherParam;
       if (__builtin_strcmp(param.unknown00, resource) == 0) {
         break;
       }

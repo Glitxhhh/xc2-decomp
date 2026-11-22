@@ -81,7 +81,7 @@ static bool isUpdateDriver(const GfMemberInfo &member) {
 GfSelectBlade *GfSelectBlade::s_pThis;
 static bool s_isHomuraSelected = true;
 
-GfGameParty::GfGameParty(const GfSetupParam &param) : unknownf4(0), unknownf8(false), unknown100(unknown020) {
+GfGameParty::GfGameParty(const GfSetupParam &param) : unknownf4(0), unknownf8(false), m_GF_OBJ_HANDLE(unknown020) {
   initialize(param);
   GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
 }
@@ -138,8 +138,8 @@ void GfGameParty::updatePartyObjReady(const fw::UpdateInfo &) {
   }
 
   GF_OBJ_HANDLE *leader = GfGameManager::getPartyLeader();
-  if (leader != unknown020 && unknown100 != leader) {
-    unknown100 = leader;
+  if (leader != unknown020 && m_GF_OBJ_HANDLE != leader) {
+    m_GF_OBJ_HANDLE = leader;
     GfEvent::callChangeLeader(leader);
   }
 }
@@ -606,8 +606,8 @@ void GfGameParty::destroyedObject(GF_OBJ_HANDLE *handle) {
     break;
   }
 
-  if (unknown100 == handle) {
-    unknown100 = unknown020;
+  if (m_GF_OBJ_HANDLE == handle) {
+    m_GF_OBJ_HANDLE = unknown020;
   }
 
   setPartyStateForDestroyObj(handle);

@@ -37,7 +37,7 @@ static inline void unknown001(const mm::Quat &q, mm::Vec3 &v) {
 // four identical blocks of ChainAttackCamera::change (0x71001d4210); the four blocks written out also match (212 instructions), the helper is the shorter form.
 static inline void unknown002(const ChainAttackCamera &camera, mm::Vec3 &point, const mm::Vec3 &position) {
   if (!(fabsf(position.x - point.x) <= 0.000001f) || !(fabsf(position.y - point.y) <= 0.000001f) || !(fabsf(position.z - point.z) <= 0.000001f)) {
-    CameraUtilities::updateCollision(camera.unknown80, point, position, 45.0f, 0.4f);
+    CameraUtilities::updateCollision(camera.m_coliCheckConfig, point, position, 45.0f, 0.4f);
   }
 }
 
@@ -137,14 +137,14 @@ const mm::mtl::RTTI *ChainAttackCameraEntity::getRTTI() const { return &m_rtti; 
 
 const char *ChainAttackCameraEntity::getName() const { return "ChainAttackCameraEntity"; }
 
-ChainAttackCamera::ChainAttackCamera() : unknown70(0xf), unknown78(unknown020) {
-  unknown80.unknown08 = 0.0f;
-  unknown80.unknown0c = 0.0f;
-  unknown80.unknown14 = false;
-  unknown80.unknown15 = false;
-  unknown80.unknown10 = 1;
-  unknown80.unknown00 = 9;
-  unknown80.unknown04 = -9;
+ChainAttackCamera::ChainAttackCamera() : unknown70(0xf), m_GF_OBJ_HANDLE(unknown020) {
+  m_coliCheckConfig.unknown08 = 0.0f;
+  m_coliCheckConfig.unknown0c = 0.0f;
+  m_coliCheckConfig.unknown14 = false;
+  m_coliCheckConfig.unknown15 = false;
+  m_coliCheckConfig.unknown10 = 1;
+  m_coliCheckConfig.unknown00 = 9;
+  m_coliCheckConfig.unknown04 = -9;
 }
 
 ChainAttackCamera::~ChainAttackCamera() {}
@@ -247,7 +247,7 @@ void ChainAttackCamera::change(GF_OBJ_HANDLE *handle) {
     mm::Vec3 position;
     CameraUtilities::getCameraLookBonePosition(handle, position);
     mm::Vec3 look;
-    CameraUtilities::getCameraLookBonePosition(unknown78, look);
+    CameraUtilities::getCameraLookBonePosition(m_GF_OBJ_HANDLE, look);
     const fw::Transform &transform = acc.getWorldTransform();
     updateParam(start, transform, position, look);
     updateParam(end, transform, position, look);

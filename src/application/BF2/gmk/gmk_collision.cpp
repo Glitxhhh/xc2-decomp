@@ -115,7 +115,7 @@ void GmkCollision::enter(const EnterInfo &info) {
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&gf::GfComCollider::UserData::m_rtti)) {
     return;
   }
-  if (static_cast<gf::GfObj *>(static_cast<gf::GfComCollider::UserData *>(userData)->unknown08->unknown08)->unknownf8 == gf::GfGameManager::getPartyLeader()) {
+  if (static_cast<gf::GfObj *>(static_cast<gf::GfComCollider::UserData *>(userData)->m_comCollider->unknown08)->unknownf8 == gf::GfGameManager::getPartyLeader()) {
     unknown60 = true;
     unknown62 = true;
   }
@@ -126,7 +126,7 @@ void GmkCollision::leave(const LeaveInfo &info) {
   if (userData == nullptr || !userData->getRTTI()->isKindOf(&gf::GfComCollider::UserData::m_rtti)) {
     return;
   }
-  if (static_cast<gf::GfObj *>(static_cast<gf::GfComCollider::UserData *>(userData)->unknown08->unknown08)->unknownf8 == gf::GfGameManager::getPartyLeader()) {
+  if (static_cast<gf::GfObj *>(static_cast<gf::GfComCollider::UserData *>(userData)->m_comCollider->unknown08)->unknownf8 == gf::GfGameManager::getPartyLeader()) {
     unknown61 = true;
     unknown62 = false;
   }

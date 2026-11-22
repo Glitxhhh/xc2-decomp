@@ -121,7 +121,7 @@ void StateField::procMsgPcBattleStart(GfComBehaviorPc *behavior, fw::MessageObje
 }
 
 void StateField::procMsgObjectNotifyDamage(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgObjectNotifyDamage &message) {
-  const MsgObjectDamage *damage = message.unknown08;
+  const MsgObjectDamage *damage = message.m_msgObjectDamage;
   if (damage != nullptr && damage->unknown10 == 0 && damage->unknown2a) {
     MsgPcBattleStart start(3);
     start.unknown0c = damage->unknown2a;

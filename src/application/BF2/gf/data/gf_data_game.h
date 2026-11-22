@@ -60,18 +60,18 @@ struct SDataGame {
   mm::mtl::FixedArray<SDataBlade, 422> unknown5a2c; // Inferred role: blades; original member name unknown.
   unknown124 m_sDataParty;                          // Inferred role: party; named after the game accessor gf::GfDataParty::getSDataParty.
   ItemBox m_itemBox;                                // Inferred role: item box; named after the game accessor gf::GfDataItem::getItemBox.
-  GameFlag unknownfbbc4;                            // Inferred role: game flag; original member name unknown.
+  GameFlag m_gameFlag;                              // Inferred role: game flag; original member name unknown.
   QuestID m_scenario;                               // Inferred role: scenario; named after the game accessor gf::GfDataQuest::getScenario.
   QuestID m_select;                                 // Inferred role: select; named after the game accessor gf::GfDataQuest::getSelect.
   u8 _1097ec[0x1097f0 - 0x1097ec];
   unknown118 m_sDataMap;                               // Inferred role: map; named after the game accessor gf::GfDataMap::getSDataMap.
-  GameTime unknown1098c0;                              // Inferred role: game time; original member name unknown.
-  ElapseTime unknown1098c4;                            // Inferred role: elapse time; original member name unknown.
+  GameTime m_gameTime;                                 // Inferred role: game time; original member name unknown.
+  ElapseTime m_elapseTime;                             // Inferred role: elapse time; original member name unknown.
   unknown122 m_sDataMercenaries;                       // Inferred role: mercenaries; named after the game accessor gf::GfDataMercenaries::getSDataMercenaries.
   f32 m_playerCameraDistance;                          // Inferred role: player camera distance; named after the game accessor gf::GfDataUtil::getPlayerCameraDistance.
   u32 m_gameClearCount;                                // Inferred role: game clear count; named after the game accessor gf::GfDataUtil::getGameClearCount.
   mm::mtl::FixedVector<unknown106, 128> m_taskAchieve; // Inferred role: task achieves; named after the game accessor gf::GfDataQuest::getTaskAchieve.
-  QuestData unknown10a138[256];                        // Inferred role: order parent quests; original member name unknown.
+  QuestData m_questData[256];                          // Inferred role: order parent quests; original member name unknown.
   u32 unknown10a538;                                   // Inferred role: order parent quest count; original member name unknown.
   mm::mtl::FixedArray<unknown119, 64> unknown10a53c;   // Inferred role: map infos; original member name unknown.
   u32 m_ether;                                         // Inferred role: ether; named after the game accessor gf::GfDataHana::getEther.
@@ -107,7 +107,7 @@ struct SDataGame {
 
   // Inferred helper: copies one game flag of a size from another save game; original name unknown. Inlined in GfGameUtil::setupNewGameParam (0x7100351354) and in
   // GfGameUtilSaveData::setupGameSaveData (0x7100355178).
-  void unknown001(const SDataGame &src, u32 size, int flag) { GfGameFlag::setLocal(unknownfbbc4, size, flag, GfGameFlag::getLocal(src.unknownfbbc4, size, flag)); }
+  void unknown001(const SDataGame &src, u32 size, int flag) { GfGameFlag::setLocal(m_gameFlag, size, flag, GfGameFlag::getLocal(src.m_gameFlag, size, flag)); }
 
   // Inferred helper: copies the game flags of a size from first up to last (excluded), the loops that start at the first flag (0x71003517e4); original name unknown.
   void unknown002(const SDataGame &src, u32 size, int first, int last) {
@@ -135,17 +135,17 @@ static_assert(offsetof(SDataGame, unknown2c) == 0x00002c, "");
 static_assert(offsetof(SDataGame, unknown5a2c) == 0x005a2c, "");
 static_assert(offsetof(SDataGame, m_sDataParty) == 0x0e9884, "");
 static_assert(offsetof(SDataGame, m_itemBox) == 0x0e98d8, "");
-static_assert(offsetof(SDataGame, unknownfbbc4) == 0x0fbbc4, "");
+static_assert(offsetof(SDataGame, m_gameFlag) == 0x0fbbc4, "");
 static_assert(offsetof(SDataGame, m_scenario) == 0x1097e4, "");
 static_assert(offsetof(SDataGame, m_select) == 0x1097e8, "");
 static_assert(offsetof(SDataGame, m_sDataMap) == 0x1097f0, "");
-static_assert(offsetof(SDataGame, unknown1098c0) == 0x1098c0, "");
-static_assert(offsetof(SDataGame, unknown1098c4) == 0x1098c4, "");
+static_assert(offsetof(SDataGame, m_gameTime) == 0x1098c0, "");
+static_assert(offsetof(SDataGame, m_elapseTime) == 0x1098c4, "");
 static_assert(offsetof(SDataGame, m_sDataMercenaries) == 0x1098c8, "");
 static_assert(offsetof(SDataGame, m_playerCameraDistance) == 0x109b28, "");
 static_assert(offsetof(SDataGame, m_gameClearCount) == 0x109b2c, "");
 static_assert(offsetof(SDataGame, m_taskAchieve) == 0x109b30, "");
-static_assert(offsetof(SDataGame, unknown10a138) == 0x10a138, "");
+static_assert(offsetof(SDataGame, m_questData) == 0x10a138, "");
 static_assert(offsetof(SDataGame, unknown10a538) == 0x10a538, "");
 static_assert(offsetof(SDataGame, unknown10a53c) == 0x10a53c, "");
 static_assert(offsetof(SDataGame, m_ether) == 0x10ad3c, "");
@@ -175,11 +175,11 @@ static_assert(sizeof(SDataGame) == 0x117690, "");
 struct SDataSave : SDataSystem {
   SDataSave() {}
 
-  SDataGame unknown10; // Inferred role: game data; original member name unknown.
+  SDataGame m_game; // Inferred role: game data; original member name unknown.
 };
 
-static_assert(offsetof(SDataSave, unknown08) == 0x08, "");
-static_assert(offsetof(SDataSave, unknown10) == 0x10, "");
+static_assert(offsetof(SDataSave, m_realTime) == 0x08, "");
+static_assert(offsetof(SDataSave, m_game) == 0x10, "");
 static_assert(sizeof(SDataSave) == 0x1176a0, "");
 
 } // namespace gf

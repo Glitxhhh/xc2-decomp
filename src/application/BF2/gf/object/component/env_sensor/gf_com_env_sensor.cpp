@@ -18,14 +18,14 @@ struct Transform;
 
 namespace gf {
 
-GfComEnvSensor::GfComEnvSensor() : unknown2bc(0xffff), unknown2d8(nullptr), unknown2e0(), unknown2e8(nullptr), unknown360(nullptr), unknown368(nullptr) {
+GfComEnvSensor::GfComEnvSensor() : unknown2bc(0xffff), unknown2d8(nullptr), m_paramAdapter(), unknown2e8(nullptr), unknown360(nullptr), unknown368(nullptr) {
   for (u32 i = 0; i < 6; i++) {
     unknown2b0[i] = 0xffff;
   }
   for (u32 i = 0; i < 6; i++) {
     unknown2c0[i] = 0;
   }
-  unknown370.unknown08 = this;
+  m_envListener.m_comEnvSensor = this;
 }
 
 bool GfComEnvSensor::recieveMessage(fw::MessageObject *sender, fw::Message &message) {
@@ -87,7 +87,7 @@ void GfComEnvSensor::setEnableSensor(bool isEnable) {
 }
 
 void GfComEnvSensor::flushEnv(const fw::Transform &transform) {
-  m_envSensor.check(transform, unknown2e0);
+  m_envSensor.check(transform, m_paramAdapter);
   GfComProperty *property = unknown08->getComponent<GfComProperty>();
   if (property != nullptr) {
     GfEnvProperty *env = property->unknown28.get();

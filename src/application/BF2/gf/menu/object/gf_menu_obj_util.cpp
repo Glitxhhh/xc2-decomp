@@ -1733,8 +1733,8 @@ ui::UICtrlCursorSelect *GfMenuObjUtil::createCursor(CursorParam &param) {
     }
   }
   list->getSize();
-  param.unknown20.setType(param.unknown1a);
-  ui::UICtrlCursorSelect *cursor = ui::UICtrlCursorSelect::create(param.unknown04, param.unknown20, list);
+  param.m_cursorSetting.setType(param.unknown1a);
+  ui::UICtrlCursorSelect *cursor = ui::UICtrlCursorSelect::create(param.unknown04, param.m_cursorSetting, list);
   list->release();
   return cursor;
 }

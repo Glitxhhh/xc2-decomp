@@ -55,7 +55,7 @@ ICmd::RESULT CharaTurnRot::update(const Param &param) {
   if ((unknown08 & 1) == 0 && chara->isTurnable()) {
     gf::GfGameUtil::ExecTurnCmdInfo info;
     info.unknown14 = 0.25f;
-    info.unknown00 = unknown10;
+    info.m_GF_OBJ_HANDLE = unknown10;
     info.unknown10 = 0.0f;
     info.unknown08 = rot.y;
     info.unknown0c = turn;

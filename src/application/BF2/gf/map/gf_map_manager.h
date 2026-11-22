@@ -204,26 +204,26 @@ public:
   GF_OBJ_HANDLE *m_gfObjHandle;                             // Inferred role: map handle; named after the game accessor gf::GfMapManager::getGfObjHandle.
   u32 m_mapJumpID;                                          // Inferred role: map jump id; named after the game accessor gf::GfMapManager::getMapJumpID.
   u32 m_mapID;                                              // Inferred role: map id; named after the game accessor gf::GfMapManager::getMapID.
-  GF_ASSET_HANDLE *unknown30;                               // Inferred role: asset handle; original member name unknown.
+  GF_ASSET_HANDLE *m_GF_ASSET_HANDLE;                       // Inferred role: asset handle; original member name unknown.
   mm::mtl::IntrusivePtr<fw::DynamicWindResource> unknown38; // Inferred role: wind resource; original member name unknown.
-  MapEff unknown40;                                         // Inferred role: effect; original member name unknown.
-  MapNavi unknown50;                                        // Inferred role: navi; original member name unknown.
-  MapColi unknown58;                                        // Inferred role: coli; original member name unknown.
-  MapGIBL unknown60;                                        // Inferred role: global ibl; original member name unknown.
-  MapLIBL unknown68;                                        // Inferred role: local ibl; original member name unknown.
+  MapEff m_mapEff;                                          // Inferred role: effect; original member name unknown.
+  MapNavi m_mapNavi;                                        // Inferred role: navi; original member name unknown.
+  MapColi m_mapColi;                                        // Inferred role: coli; original member name unknown.
+  MapGIBL m_mapGIBL;                                        // Inferred role: global ibl; original member name unknown.
+  MapLIBL m_mapLIBL;                                        // Inferred role: local ibl; original member name unknown.
 };
 
 static_assert(offsetof(GfMapManager, unknown18) == 0x18, "");
 static_assert(offsetof(GfMapManager, m_gfObjHandle) == 0x20, "");
 static_assert(offsetof(GfMapManager, m_mapJumpID) == 0x28, "");
 static_assert(offsetof(GfMapManager, m_mapID) == 0x2c, "");
-static_assert(offsetof(GfMapManager, unknown30) == 0x30, "");
+static_assert(offsetof(GfMapManager, m_GF_ASSET_HANDLE) == 0x30, "");
 static_assert(offsetof(GfMapManager, unknown38) == 0x38, "");
-static_assert(offsetof(GfMapManager, unknown40) == 0x40, "");
-static_assert(offsetof(GfMapManager, unknown50) == 0x50, "");
-static_assert(offsetof(GfMapManager, unknown58) == 0x58, "");
-static_assert(offsetof(GfMapManager, unknown60) == 0x60, "");
-static_assert(offsetof(GfMapManager, unknown68) == 0x68, "");
+static_assert(offsetof(GfMapManager, m_mapEff) == 0x40, "");
+static_assert(offsetof(GfMapManager, m_mapNavi) == 0x50, "");
+static_assert(offsetof(GfMapManager, m_mapColi) == 0x58, "");
+static_assert(offsetof(GfMapManager, m_mapGIBL) == 0x60, "");
+static_assert(offsetof(GfMapManager, m_mapLIBL) == 0x68, "");
 static_assert(sizeof(GfMapManager) == 0x70, "");
 
 } // namespace gf

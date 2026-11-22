@@ -19,40 +19,40 @@
 namespace gf {
 namespace pc {
 
-StateBattleBase::StateBattleBase() : unknown18(nullptr), unknown21(false) {}
+StateBattleBase::StateBattleBase() : m_comBehaviorPc(nullptr), unknown21(false) {}
 
 void StateBattleBase::enter(GfComBehaviorPc *behavior, ai::State *previous) {
-  unknown18 = behavior;
+  m_comBehaviorPc = behavior;
   unknown20 = Enter(behavior, previous);
-  unknown18 = nullptr;
+  m_comBehaviorPc = nullptr;
 }
 
 void StateBattleBase::leave(GfComBehaviorPc *behavior, ai::State *next) {
-  unknown18 = behavior;
+  m_comBehaviorPc = behavior;
   Leave(behavior, next);
-  unknown18 = nullptr;
+  m_comBehaviorPc = nullptr;
 }
 
 void StateBattleBase::update(GfComBehaviorPc *behavior, const fw::UpdateInfo &info) {
   unknown21 = false;
   if (unknown20) {
-    unknown18 = behavior;
+    m_comBehaviorPc = behavior;
     btl::BattleCharacter *character = GetBattleCharacter();
     BeforeUpdate(character, behavior, info);
     Update(character, behavior, info);
     AfterUpdate(character, behavior, info);
-    unknown18 = nullptr;
+    m_comBehaviorPc = nullptr;
   }
 }
 
 btl::BattleCharacter *StateBattleBase::GetBattleCharacter() {
-  int id = unknown18->getProperty()->m_battleProperty.unknown08;
+  int id = m_comBehaviorPc->getProperty()->m_battleProperty.unknown08;
   return btl::CharacterManager::get()->GetCharacterConst(id);
 }
 
 void StateBattleBase::ChangeState(STATE_ID state, int param) {
   if (m_state != state) {
-    unknown18->getProperty()->m_battleProperty.unknown0c = param;
+    m_comBehaviorPc->getProperty()->m_battleProperty.unknown0c = param;
     reqState(state);
     unknown21 = true;
   }
@@ -60,9 +60,9 @@ void StateBattleBase::ChangeState(STATE_ID state, int param) {
 
 GfPropertyBattle *StateBattleBase::GetBattleProperty() { return &GetProperty()->m_battleProperty; }
 
-GfComPropertyPc *StateBattleBase::GetProperty() { return unknown18->unknown08->getComponent<GfComPropertyPc>(); }
+GfComPropertyPc *StateBattleBase::GetProperty() { return m_comBehaviorPc->unknown08->getComponent<GfComPropertyPc>(); }
 
-const GfComPropertyPc *StateBattleBase::GetPropertyConst() const { return unknown18->unknown08->getComponent<GfComPropertyPc>(); }
+const GfComPropertyPc *StateBattleBase::GetPropertyConst() const { return m_comBehaviorPc->unknown08->getComponent<GfComPropertyPc>(); }
 
 const GfPropertyBattle *StateBattleBase::GetBattlePropertyConst() const { return &GetPropertyConst()->m_battleProperty; }
 
@@ -97,23 +97,23 @@ bool StateBattleBase::recieveMessage(void *owner, fw::MessageObject *sender, fw:
 
 void StateBattleBase::procMsgObjectNotifyDamage(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgObjectNotifyDamage &message) {
   bool isOwnerSet = false;
-  if (unknown18 == nullptr) {
-    unknown18 = behavior;
+  if (m_comBehaviorPc == nullptr) {
+    m_comBehaviorPc = behavior;
     isOwnerSet = true;
   }
   btl::BattleCharacter *character = GetBattleCharacter();
   if (character != nullptr) {
     character->NotifySufferDamage(message);
     if (isOwnerSet) {
-      unknown18 = nullptr;
+      m_comBehaviorPc = nullptr;
     }
   }
 }
 
 void StateBattleBase::procMsgObjectNotifyDead(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgObjectNotifyDead &message) {
   bool isOwnerSet = false;
-  if (unknown18 == nullptr) {
-    unknown18 = behavior;
+  if (m_comBehaviorPc == nullptr) {
+    m_comBehaviorPc = behavior;
     isOwnerSet = true;
   }
   btl::BattleCharacter *character = GetBattleCharacter();
@@ -128,7 +128,7 @@ void StateBattleBase::procMsgObjectNotifyDead(GfComBehaviorPc *behavior, fw::Mes
     character->NotifyDead(message);
   }
   if (isOwnerSet) {
-    unknown18 = nullptr;
+    m_comBehaviorPc = nullptr;
   }
 }
 
@@ -178,15 +178,15 @@ bool StateBattleActionBase::recieveMessage(void *owner, fw::MessageObject *sende
 }
 
 void StateBattleActionBase::ProcMessageAsmCallback(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgObjectNotifyAsmCallback &message) {
-  unknown18 = behavior;
+  m_comBehaviorPc = behavior;
   GetBattleCharacter()->AsmCallback(message);
-  unknown18 = nullptr;
+  m_comBehaviorPc = nullptr;
 }
 
 void StateBattleActionBase::ProcMessageBattleEnd(GfComBehaviorPc *behavior, fw::MessageObject *sender, MsgPcBattleEnd &message) {
-  unknown18 = behavior;
+  m_comBehaviorPc = behavior;
   GetBattleCharacter()->SetExitBattle(true, false);
-  unknown18 = nullptr;
+  m_comBehaviorPc = nullptr;
 }
 
 } // namespace pc

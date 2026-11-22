@@ -203,7 +203,7 @@ void GfItemUtil::getInfo(mm::mtl::FixedVector<GfItem, 1024> &items, ItemType::Ty
         GfItem item;
         item.unknown02 = it->unknown02_3;
         item.unknown00 = it->getItemID();
-        item.unknown08 = it->getHandle();
+        item.m_itemHandle = it->getHandle();
         item.unknown04 = it->unknown03_6 ? getEquipChar(it->getHandle()) : 0;
         items.push_back(item);
       }
@@ -218,7 +218,7 @@ void GfItemUtil::getInfo(mm::mtl::FixedVector<GfItem, 1024> &items, ItemType::Ty
         GfItem item;
         item.unknown00 = info.getItemID();
         item.unknown02 = info.unknown02_3;
-        item.unknown08 = info.getHandle();
+        item.m_itemHandle = info.getHandle();
         items.push_back(item);
       }
     }
@@ -393,7 +393,7 @@ bool GfItemUtil::getProperty(ItemProperty &property, u32 item, u32 shop) {
   property.unknown14 = getItemTime(item);
   GfDataItem::getName(property.unknown20, property.unknown28, item);
   GfDataItem::getCaption(property.unknown20, property.unknown2c, item);
-  getPrice(property.unknown30, item, shop);
+  getPrice(property.m_itemPrice, item, shop);
   property.unknown44 = GfDataItem::getRarity(item);
   property.unknown00.set(ItemProperty::FLAG_UNKNOWN_2, !GfDataItem::isEnableSell(item));
 

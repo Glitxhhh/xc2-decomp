@@ -92,12 +92,12 @@ struct AchievInfo {
   // Evidence: GfBladeCreateInfo::GfBladeCreateInfo (0x71003011a4) zeroes the achievement of each of its ten entries (0x400, 0x490...) and not the padding after it.
   AchievInfo() : unknown00(0) {}
 
-  u16 unknown00;            // Inferred role: achievement; original member name unknown. The two padding bytes after it are no member: the game copies and zeroes the entry without them
-                            // (GfBladeCreate::setupSDataBlade, 0x7100301fd4).
-  AchievQuest unknown04[5]; // Inferred role: quests; original member name unknown.
+  u16 unknown00;                // Inferred role: achievement; original member name unknown. The two padding bytes after it are no member: the game copies and zeroes the entry without them
+                                // (GfBladeCreate::setupSDataBlade, 0x7100301fd4).
+  AchievQuest m_achievQuest[5]; // Inferred role: quests; original member name unknown.
 };
 
-static_assert(offsetof(AchievInfo, unknown04) == 0x004, "");
+static_assert(offsetof(AchievInfo, m_achievQuest) == 0x004, "");
 
 static_assert(sizeof(AchievInfo) == 0x090, "");
 
@@ -159,7 +159,7 @@ struct SDataBlade {
   mm::mtl::FixedArray<SDataBladeAchievement, 3> unknownc4;  // Inferred role: arts achievements; original member name unknown.
   mm::mtl::FixedArray<SDataBladeAchievement, 3> unknown274; // Inferred role: skill achievements; original member name unknown.
   mm::mtl::FixedArray<SDataBladeAchievement, 3> unknown424; // Inferred role: field skill achievements; original member name unknown.
-  SDataBladeAchievement unknown5d4;                         // Inferred role: key achievement; original member name unknown.
+  SDataBladeAchievement m_achievInfo;                       // Inferred role: key achievement; original member name unknown.
   u16 unknown664;                                           // Inferred role: key release level; original member name unknown.
   mm::mtl::FixedArray<unknown112, 2> unknown666;            // Inferred role: favorites; original member name unknown.
   u8 _676[0x678 - 0x676];
@@ -250,7 +250,7 @@ static_assert(offsetof(SDataBlade, unknownc0) == 0x0c0, "");
 static_assert(offsetof(SDataBlade, unknownc4) == 0x0c4, "");
 static_assert(offsetof(SDataBlade, unknown274) == 0x274, "");
 static_assert(offsetof(SDataBlade, unknown424) == 0x424, "");
-static_assert(offsetof(SDataBlade, unknown5d4) == 0x5d4, "");
+static_assert(offsetof(SDataBlade, m_achievInfo) == 0x5d4, "");
 static_assert(offsetof(SDataBlade, unknown664) == 0x664, "");
 static_assert(offsetof(SDataBlade, unknown666) == 0x666, "");
 static_assert(offsetof(SDataBlade, unknown678) == 0x678, "");

@@ -19,7 +19,7 @@ static const u32 unknown002[8] = {0, 9, 2, 4, 7, 11, 3, 26}; // Inferred role: s
 
 GfMenuFullScreen::GfMenuFullScreen(const GfSetupParam &param)
     : m_initialized(false), unknown0c(0), unknown10(0), unknownf8(true), unknownf9(false), unknownfc(0), unknown100(0), unknown104(0), unknown108(true), unknown109(true), unknown10a(true),
-      unknown130(0), unknown134(0), unknown158(), unknown160(8) {
+      unknown130(0), unknown134(0), unknown158(), m_uIInputSwitcher(8) {
   initialize(param);
 }
 
@@ -145,33 +145,33 @@ void GfMenuFullScreen::preloadScreenResource(u32 screen) {
 
 bool GfMenuFullScreen::setInputObject(u32 layer, u32 object) {
   if (get() != nullptr) {
-    return get()->unknown160.setInputObject(layer, object);
+    return get()->m_uIInputSwitcher.setInputObject(layer, object);
   }
   return false;
 }
 
 u32 GfMenuFullScreen::getInputObject(u32 layer) {
   if (get() != nullptr) {
-    return get()->unknown160.getInputObject(layer);
+    return get()->m_uIInputSwitcher.getInputObject(layer);
   }
   return 0;
 }
 
 void GfMenuFullScreen::enableInput(u32 layer) {
   if (get() != nullptr) {
-    get()->unknown160.enable(layer);
+    get()->m_uIInputSwitcher.enable(layer);
   }
 }
 
 void GfMenuFullScreen::disableInput() {
   if (get() != nullptr) {
-    get()->unknown160.disable();
+    get()->m_uIInputSwitcher.disable();
   }
 }
 
 bool GfMenuFullScreen::isActiveInput(u32 layer) {
   if (get() != nullptr) {
-    return get()->unknown160.isActive(layer);
+    return get()->m_uIInputSwitcher.isActive(layer);
   }
   return false;
 }
@@ -181,14 +181,14 @@ void GfMenuFullScreen::registLayerParam(u32 layer, const GfMenuTypes::Param &par
   if (fullScreen != nullptr) {
     for (unknown003 *entry = fullScreen->unknown188.begin(); entry != fullScreen->unknown188.end(); entry++) {
       if (entry->unknown00 == layer) {
-        entry->unknown08 = param;
+        entry->m_param = param;
         return;
       }
     }
     if (fullScreen->unknown188.size() != fullScreen->unknown188.capacity()) {
       unknown003 entry;
       entry.unknown00 = layer;
-      entry.unknown08 = param;
+      entry.m_param = param;
       fullScreen->unknown188.push_back(entry);
     }
   }
@@ -201,7 +201,7 @@ bool GfMenuFullScreen::getLayerParam(u32 layer, GfMenuTypes::Param &param) {
   }
   for (unknown003 *entry = fullScreen->unknown188.begin(); entry != fullScreen->unknown188.end(); entry++) {
     if (entry->unknown00 == layer) {
-      param = entry->unknown08;
+      param = entry->m_param;
       return true;
     }
   }
@@ -312,7 +312,7 @@ void GfMenuFullScreen::switchLayerWaitFadeOut() {
     releaseLayer(i);
   }
   unknown110.bind(this, &GfMenuFullScreen::switchLayerWaitRelease);
-  unknown160.clearInputObject();
+  m_uIInputSwitcher.clearInputObject();
 }
 
 void GfMenuFullScreen::switchLayerWaitRelease() {

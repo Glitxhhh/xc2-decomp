@@ -30,7 +30,7 @@ namespace gf {
 
 static bool isSeamlessMap(GF_OBJ_HANDLE *handle) { return mm::mtl::dynamicCast<GfObjSetupMap>(GfObjManager::getObjInfo(handle)->unknown30)->unknown75; }
 
-GfMapManager::GfMapManager(const GfSetupParam &param) : unknown18(false), m_gfObjHandle(unknown020), m_mapJumpID(0), m_mapID(0), unknown30(unknown018) {
+GfMapManager::GfMapManager(const GfSetupParam &param) : unknown18(false), m_gfObjHandle(unknown020), m_mapJumpID(0), m_mapID(0), m_GF_ASSET_HANDLE(unknown018) {
   initialize(param);
   GfObjManager::addListener(this, OBJEVT_UNKNOWN_0);
 }
@@ -103,7 +103,7 @@ void GfMapManager::buildMapData(GF_OBJ_HANDLE *handle) {
     return;
   }
 
-  mapManager->unknown30 = GfObjUtil::getAssetHandle(mapManager->m_gfObjHandle);
+  mapManager->m_GF_ASSET_HANDLE = GfObjUtil::getAssetHandle(mapManager->m_gfObjHandle);
   mapManager->createIdColi();
   mapManager->createNavi();
   mapManager->createEffect();
@@ -120,7 +120,7 @@ void GfMapManager::destroyMapData(GF_OBJ_HANDLE *handle) {
   GfEvent::callGameMapModel(handle, false);
   m_mapJumpID = 0;
   m_mapID = 0;
-  unknown30 = unknown018;
+  m_GF_ASSET_HANDLE = unknown018;
   destoryWind();
   destroyLocalIBL();
   destroyGlobalIBL();
@@ -135,15 +135,15 @@ void GfMapManager::resetMapHandle(GF_OBJ_HANDLE *handle) {
   }
 }
 
-void GfMapManager::createIdColi() { unknown58.create(unknown30); }
+void GfMapManager::createIdColi() { m_mapColi.create(m_GF_ASSET_HANDLE); }
 
-void GfMapManager::destroyIdColi() { unknown58.destroy(); }
+void GfMapManager::destroyIdColi() { m_mapColi.destroy(); }
 
-void GfMapManager::createNavi() { unknown50.create(unknown30); }
+void GfMapManager::createNavi() { m_mapNavi.create(m_GF_ASSET_HANDLE); }
 
-void GfMapManager::destroyNavi() { unknown50.destroy(); }
+void GfMapManager::destroyNavi() { m_mapNavi.destroy(); }
 
-void GfMapManager::createEffect() { unknown40.create(unknown30, getModelObject()); }
+void GfMapManager::createEffect() { m_mapEff.create(m_GF_ASSET_HANDLE, getModelObject()); }
 
 fw::ModelObject *GfMapManager::getModelObject() {
   GfObj *obj = GfObjUtil::getObj(get()->m_gfObjHandle);
@@ -156,15 +156,15 @@ fw::ModelObject *GfMapManager::getModelObject() {
   return nullptr;
 }
 
-void GfMapManager::destroyEffect() { unknown40.destroy(); }
+void GfMapManager::destroyEffect() { m_mapEff.destroy(); }
 
-void GfMapManager::createGlobalIBL() { unknown60.create(unknown30); }
+void GfMapManager::createGlobalIBL() { m_mapGIBL.create(m_GF_ASSET_HANDLE); }
 
-void GfMapManager::destroyGlobalIBL() { unknown60.destroy(); }
+void GfMapManager::destroyGlobalIBL() { m_mapGIBL.destroy(); }
 
-void GfMapManager::createLocalIBL() { unknown68.create(unknown30); }
+void GfMapManager::createLocalIBL() { m_mapLIBL.create(m_GF_ASSET_HANDLE); }
 
-void GfMapManager::destroyLocalIBL() { unknown68.destroy(); }
+void GfMapManager::destroyLocalIBL() { m_mapLIBL.destroy(); }
 
 GF_OBJ_HANDLE *GfMapManager::getGfObjHandle() { return get()->m_gfObjHandle; }
 
@@ -184,10 +184,10 @@ bool GfMapManager::isMapReady() {
     return mapManager->m_mapJumpID == 0 || mapManager->m_mapJumpID == static_cast<u32>(-1);
   }
 
-  if (mapManager->unknown58.unknown00 == nullptr) {
+  if (mapManager->m_mapColi.unknown00 == nullptr) {
     return false;
   }
-  return mapManager->unknown40.unknown00;
+  return mapManager->m_mapEff.unknown00;
 }
 
 bool GfMapManager::isExistObj() {
@@ -199,7 +199,7 @@ u32 GfMapManager::getMapJumpID() { return get()->m_mapJumpID; }
 
 u32 GfMapManager::getMapID() { return get()->m_mapID; }
 
-fw::EffectPack *GfMapManager::getEffectPack() { return get()->unknown40.m_effectPack; }
+fw::EffectPack *GfMapManager::getEffectPack() { return get()->m_mapEff.m_effectPack; }
 
 void GfMapManager::setEnvTime(u32 hour, u32 minute) { fw::RenderParam::setTime(hour, minute, fw::CAMERA_TYPE_UNKNOWN_0); }
 
@@ -207,7 +207,7 @@ void GfMapManager::setEnvWeather(u32 weatherType) { fw::RenderParam::setWeather(
 
 void GfMapManager::setGlobalIBLReferencePos(const mm::Vec3 &position) {
   if (get() != nullptr) {
-    get()->unknown60.setReferencePos(position);
+    get()->m_mapGIBL.setReferencePos(position);
   }
 }
 
@@ -219,7 +219,7 @@ void GfMapManager::gevMapjump(GEV event, const MapjumpCallbackInfo &info) {
     break;
   case GEV_UNKNOWN_2:
     if (m_mapID != info.unknown04) {
-      unknown40.destroyEffefct();
+      m_mapEff.destroyEffefct();
     }
     break;
   default:
@@ -239,8 +239,8 @@ const char *GfMapManager::getMapName() {
 
 const char *GfMapManager::getAssetName() {
   const char *name = "";
-  if (get()->unknown30 != unknown018) {
-    GfAssetPack *pack = GfAssetManager::getAssetPack(get()->unknown30, FILE_IDX_UNKNOWN_0);
+  if (get()->m_GF_ASSET_HANDLE != unknown018) {
+    GfAssetPack *pack = GfAssetManager::getAssetPack(get()->m_GF_ASSET_HANDLE, FILE_IDX_UNKNOWN_0);
     if (pack != nullptr) {
       name = pack->m_assetType.getFileName(FILE_IDX_UNKNOWN_0).c_str();
     }
@@ -281,21 +281,21 @@ GfAssetResource *GfMapManager::getModelResource() { return GfAssetManager::getRe
 
 fw::ColiObject *GfMapManager::getColiObject() {
   GfMapManager *mapManager = get();
-  return mapManager != nullptr ? mapManager->unknown58.unknown00 : nullptr;
+  return mapManager != nullptr ? mapManager->m_mapColi.unknown00 : nullptr;
 }
 
 GfAssetResource *GfMapManager::getColiResource() { return GfAssetManager::getResource(GfObjUtil::getAssetHandle(get()->m_gfObjHandle), MAP_FILE_IDX_UNKNOWN_1, ASSET_TYPE_UNKNOWN_0); }
 
 bool GfMapManager::isColisionExist() {
   GfMapManager *mapManager = get();
-  return mapManager != nullptr ? mapManager->unknown58.unknown00 != nullptr : false;
+  return mapManager != nullptr ? mapManager->m_mapColi.unknown00 != nullptr : false;
 }
 
 void GfMapManager::postUpdate(const fw::UpdateInfo &info) {
   fw::UpdateInfo mapInfo = info;
   mapInfo.unknown04 = mapInfo.unknown00 * GfGameManager::getFieldSpeed(info);
   mapInfo.unknown08 = GfGameManager::getFieldSpeed(info);
-  unknown40.update(mapInfo);
+  m_mapEff.update(mapInfo);
 }
 
 void GfMapManager::update(const fw::UpdateInfo &info) {

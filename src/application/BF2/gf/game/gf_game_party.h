@@ -201,10 +201,10 @@ public:
 private:
   mm::mtl::FixedArray<GfMemberInfo, 3> unknown10; // Inferred role: members; original member name unknown.
   bool unknownd0;                                 // Inferred role: initialized; original member name unknown.
-  GfSelectBlade unknownd4;                        // Inferred role: select blade; original member name unknown.
+  GfSelectBlade m_selectBlade;                    // Inferred role: select blade; original member name unknown.
   u32 unknownf4;                                  // Inferred role: ready frame; original member name unknown.
   bool unknownf8;                                 // Inferred role: ready lost; original member name unknown.
-  GF_OBJ_HANDLE *unknown100;                      // Inferred role: leader; original member name unknown.
+  GF_OBJ_HANDLE *m_GF_OBJ_HANDLE;                 // Inferred role: leader; original member name unknown.
   PARTYOBJ_STATE unknown108[3];                   // Inferred role: party object states; original member name unknown.
 };
 

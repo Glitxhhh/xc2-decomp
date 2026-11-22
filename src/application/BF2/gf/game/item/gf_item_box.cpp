@@ -65,11 +65,11 @@ template <u32 N> static void setItems(GfItemBoxBase *itemBoxBase, ItemBox *itemB
 }
 
 item_iterator item_iterator::operator++() {
-  GfItemInfo *last = unknown00->getItemTypeInfo(unknown18)->unknown08;
-  if (unknown08 != last) {
+  GfItemInfo *last = m_itemBoxBase->getItemTypeInfo(unknown18)->unknown08;
+  if (m_itemInfo != last) {
     do {
-      unknown08 = reinterpret_cast<GfItemInfo *>(reinterpret_cast<u8 *>(unknown08) + unknown10);
-    } while (unknown08 != last && unknown08->m_itemID != 0 && unknown08->getType() != unknown18);
+      m_itemInfo = reinterpret_cast<GfItemInfo *>(reinterpret_cast<u8 *>(m_itemInfo) + unknown10);
+    } while (m_itemInfo != last && m_itemInfo->m_itemID != 0 && m_itemInfo->getType() != unknown18);
   }
   return *this;
 }
@@ -248,14 +248,14 @@ bool GfItemBoxBase::canAddItem(u32 item) {
   item_iterator it = begin(type);
   GfItemInfo *last = getItemTypeInfo(type)->unknown08;
   if (isMulti(type)) {
-    for (; it.unknown08 != last; ++it) {
+    for (; it.m_itemInfo != last; ++it) {
       if (it->m_itemID != 0 && it->m_itemID == index && it->getType() == type) {
         return it->unknown02_3 < stock;
       }
     }
   }
 
-  for (it = begin(type); it.unknown08 != last; ++it) {
+  for (it = begin(type); it.m_itemInfo != last; ++it) {
     if (it->m_itemID == 0) {
       return true;
     }

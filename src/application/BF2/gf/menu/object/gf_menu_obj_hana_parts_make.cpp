@@ -43,16 +43,17 @@ namespace gf {
 constexpr u32 CALL_UNKNOWN_115 = 115;
 
 GfMenuObjHanaPartsMake::GfMenuObjHanaPartsMake(u32 handle)
-    : GfMenuObject(handle), unknown28(nullptr), unknown30(nullptr), unknown38(nullptr), unknown40(nullptr), unknown48(nullptr), unknown50(nullptr), unknown58(nullptr), unknown70(0), unknown74(0) {}
+    : GfMenuObject(handle), m_menuIDList(nullptr), unknown30(nullptr), unknown38(nullptr), m_menuItemList(nullptr), unknown48(nullptr), unknown50(nullptr), m_menuCallContext(nullptr), unknown70(0),
+      unknown74(0) {}
 
 GfMenuObjHanaPartsMake::~GfMenuObjHanaPartsMake() {
-  mm::mtl::safeRelease(unknown28);
+  mm::mtl::safeRelease(m_menuIDList);
   mm::mtl::safeRelease(unknown30);
   mm::mtl::safeRelease(unknown38);
-  mm::mtl::safeRelease(unknown40);
+  mm::mtl::safeRelease(m_menuItemList);
   mm::mtl::safeRelease(unknown48);
   mm::mtl::safeRelease(unknown50);
-  mm::mtl::safeRelease(unknown58);
+  mm::mtl::safeRelease(m_menuCallContext);
   unknown60 = nullptr;
   unknown68 = nullptr;
 }
@@ -96,18 +97,18 @@ void GfMenuObjHanaPartsMake::initialize() {
   if (numSelectListener != nullptr) {
     numSelectListener->release();
   }
-  unknown40 = GfMenuItemList::create();
+  m_menuItemList = GfMenuItemList::create();
   ui::UISelectObjList::CreateParam createParam;
   createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown48 = ui::UISelectObjList::create(createParam);
-  unknown28 = GfMenuIDList::create();
+  m_menuIDList = GfMenuIDList::create();
   ui::UIListInfoBase::SetupParam setup;
   setup.unknown08 = 5;
   setup.unknown10 = true;
-  unknown28->setup(getAllocator(ALLOCATOR_UNKNOWN_0), setup);
+  m_menuIDList->setup(getAllocator(ALLOCATOR_UNKNOWN_0), setup);
   createParam.allocator = getAllocator(ALLOCATOR_UNKNOWN_0);
   unknown30 = ui::UISelectObjList::create(createParam);
-  unknown58 = GfMenuCallContext::create();
+  m_menuCallContext = GfMenuCallContext::create();
   unknown60 = unknown160();
   unknown60->unknown162(0);
   unknown60->unknown166(99);
@@ -310,14 +311,14 @@ void GfMenuObjHanaPartsMake::updateItemList(GfMenuItemList *list, ItemType::Type
   list->clear();
   if (isEquip == 0) {
     GfMenuItemList::HanaPartsSetup setup;
-    setup.unknown00.unknown08 = 9;
-    setup.unknown00.unknown10 = true;
+    setup.m_setupParam.unknown08 = 9;
+    setup.m_setupParam.unknown10 = true;
     setup.unknown14 = type;
     list->setupFromHanaParts(setup);
   } else {
     GfMenuItemList::ItemBoxSetup setup;
-    setup.unknown00.unknown08 = 9;
-    setup.unknown00.unknown10 = true;
+    setup.m_setupParam.unknown08 = 9;
+    setup.m_setupParam.unknown10 = true;
     setup.unknown14 = type;
     setup.unknown28 = false;
     setup.unknown29 = false;
@@ -330,7 +331,7 @@ void GfMenuObjHanaPartsMake::updateItemList(GfMenuItemList *list, ItemType::Type
         MenuItemInfo &info = list->getContents(i);
         if (info.unknown00 >= ItemType::ITEM_TYPE_UNKNOWN_16 && info.unknown00 <= ItemType::ITEM_TYPE_UNKNOWN_20) {
           // The game loads the handle (0x7100474ddc) and the item before the parts type table entry.
-          GfItemHandle handle = info.unknown0c;
+          GfItemHandle handle = info.m_itemHandle;
           u32 item = info.unknown04;
           if (!GfMenuItemUtil::searchEquipHanaParts(unknown003[info.unknown00 - ItemType::ITEM_TYPE_UNKNOWN_16], item, handle)) {
             i++;
@@ -389,7 +390,7 @@ void GfMenuObjHanaPartsMake::MainListener::reciveEvent(const ui::EventData &even
       acc.setDisp(false);
       acc.setTerm();
       GfMenuObjCharSelect::returnSubMenu();
-      GfMenuObject::returnFSSubLayer(unknown20);
+      GfMenuObject::returnFSSubLayer(m_menuObjHanaPartsMake);
     }
     break;
   case GfMenuTypes::unknown003_33:
@@ -405,23 +406,23 @@ void GfMenuObjHanaPartsMake::MainListener::reciveEvent(const ui::EventData &even
 }
 
 void GfMenuObjHanaPartsMake::NumSelectListener::reciveEvent(const ui::EventData &event, u32 handle) {
-  ui::UIObjectAcc owner(unknown20->unknown18);
+  ui::UIObjectAcc owner(m_menuObjHanaPartsMake->unknown18);
   ui::UIObjectAcc acc(handle);
   // The game calls getReferenceBladeID(0) here and drops the result (bl at 0x710047418c).
   GfMenuReference::getReferenceBladeID(0);
   switch (event.unknown00) {
   case 1:
-    setupNumSelect(acc, unknown20->unknown60, unknown20->unknown68);
+    setupNumSelect(acc, m_menuObjHanaPartsMake->unknown60, m_menuObjHanaPartsMake->unknown68);
     acc.setDisp(false);
     break;
   case 6: {
     int count = event.unknown08;
     int previous = event.unknown0c;
-    unknown20->unknown60->unknown162(count);
-    u32 parts = unknown20->unknown40->getContents(unknown20->unknown40->getIndex(false)).unknown04;
+    m_menuObjHanaPartsMake->unknown60->unknown162(count);
+    u32 parts = m_menuObjHanaPartsMake->m_menuItemList->getContents(m_menuObjHanaPartsMake->m_menuItemList->getIndex(false)).unknown04;
     ItemProperty property;
     GfItemUtil::getProperty(property, parts, 0);
-    unknown20->unknown68->unknown0c = (unknown20->unknown70 == 0 ? property.unknown68 : property.unknown6c) * count;
+    m_menuObjHanaPartsMake->unknown68->unknown0c = (m_menuObjHanaPartsMake->unknown70 == 0 ? property.unknown68 : property.unknown6c) * count;
     if (previous != -1 && count != previous) {
       GfMenuObjUtil::playSECommonCursor();
     }
@@ -430,29 +431,29 @@ void GfMenuObjHanaPartsMake::NumSelectListener::reciveEvent(const ui::EventData 
   case 8:
     switch (event.unknown0c) {
     case 1: {
-      u32 type = unknown20->unknown28->getContents(unknown20->unknown28->getIndex(false)).unknown00;
-      u32 parts = unknown20->unknown40->getContents(unknown20->unknown40->getIndex(false)).unknown04;
-      u32 count = unknown20->unknown60->unknown0c;
+      u32 type = m_menuObjHanaPartsMake->m_menuIDList->getContents(m_menuObjHanaPartsMake->m_menuIDList->getIndex(false)).unknown00;
+      u32 parts = m_menuObjHanaPartsMake->m_menuItemList->getContents(m_menuObjHanaPartsMake->m_menuItemList->getIndex(false)).unknown04;
+      u32 count = m_menuObjHanaPartsMake->unknown60->unknown0c;
       if (count != 0) {
         for (u32 i = 0; i < count; i++) {
-          if (unknown20->unknown70 == 0) {
+          if (m_menuObjHanaPartsMake->unknown70 == 0) {
             makeParts(type, parts);
           } else {
             crystalParts(type, parts);
           }
         }
-        if (unknown20->unknown70 == 0) {
+        if (m_menuObjHanaPartsMake->unknown70 == 0) {
           GfMenuObjUtil::playSE(0x14);
         } else {
           GfMenuObjUtil::playSE(0x15);
         }
-        if (unknown20->unknown70 == 0) {
-          unknown20->unknown40->getContents(unknown20->unknown40->getIndex(false)).unknown08 += count;
+        if (m_menuObjHanaPartsMake->unknown70 == 0) {
+          m_menuObjHanaPartsMake->m_menuItemList->getContents(m_menuObjHanaPartsMake->m_menuItemList->getIndex(false)).unknown08 += count;
         } else {
-          makeCategoryItemList(unknown20->unknown28, unknown20->unknown40, unknown20->unknown70, unknown20->unknown74);
-          u32 selected = unknown20->unknown28->getContents(unknown20->unknown28->getIndex(false)).unknown00;
-          refreshItemList(acc, unknown20->unknown40, unknown20->unknown48, selected, unknown20->unknown70);
-          if (unknown20->unknown40->getSize() == 0) {
+          makeCategoryItemList(m_menuObjHanaPartsMake->m_menuIDList, m_menuObjHanaPartsMake->m_menuItemList, m_menuObjHanaPartsMake->unknown70, m_menuObjHanaPartsMake->unknown74);
+          u32 selected = m_menuObjHanaPartsMake->m_menuIDList->getContents(m_menuObjHanaPartsMake->m_menuIDList->getIndex(false)).unknown00;
+          refreshItemList(acc, m_menuObjHanaPartsMake->m_menuItemList, m_menuObjHanaPartsMake->unknown48, selected, m_menuObjHanaPartsMake->unknown70);
+          if (m_menuObjHanaPartsMake->m_menuItemList->getSize() == 0) {
             unknown164(handle, GfMenuTypes::unknown003_258);
             unknown163(owner.searchChild("LAY_partsmake_window"), GfMenuTypes::unknown003_257, 0);
             break;
@@ -473,19 +474,19 @@ void GfMenuObjHanaPartsMake::NumSelectListener::reciveEvent(const ui::EventData 
   case GfMenuTypes::unknown003_257: {
     GfMenuObjOperationInfo::add(handle, 0, 0, 0);
     setFadeIn(handle, 0);
-    u32 parts = unknown20->unknown40->getContents(unknown20->unknown40->getIndex(false)).unknown04;
-    bool isMake = unknown20->unknown70 == 0;
+    u32 parts = m_menuObjHanaPartsMake->m_menuItemList->getContents(m_menuObjHanaPartsMake->m_menuItemList->getIndex(false)).unknown04;
+    bool isMake = m_menuObjHanaPartsMake->unknown70 == 0;
     ui::UIObjectAcc(acc.searchChild("LAY_select_make")).setDisp(isMake);
     ui::UIObjectAcc(acc.searchChild("LAY_select_crystal")).setDisp(!isMake);
     u32 max;
-    if (unknown20->unknown70 == 0) {
+    if (m_menuObjHanaPartsMake->unknown70 == 0) {
       max = getMakeItemCount(parts);
     } else {
       max = getCrystalItemCount(parts);
     }
     GfMenuObject::setupInputSelection(handle, 0, max + 1);
     GfMenuObject::enableInput(handle);
-    unknown20->unknown60->unknown166(max);
+    m_menuObjHanaPartsMake->unknown60->unknown166(max);
     break;
   }
   case GfMenuTypes::unknown003_258:

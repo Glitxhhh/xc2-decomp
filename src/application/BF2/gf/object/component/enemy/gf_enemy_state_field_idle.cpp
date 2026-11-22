@@ -39,7 +39,7 @@ static const unknown001 unknown003[5] = {
     {STATE_ID_UNKNOWN_1, "IDL_Time"}, {STATE_ID_UNKNOWN_2, nullptr}, {STATE_ID_UNKNOWN_3, nullptr}, {STATE_ID_UNKNOWN_4, "ExIDL1_Time"}, {STATE_ID_UNKNOWN_5, "ExIDL2_Time"}};
 
 void StateFieldIdle::enter(GfComBehaviorEnemy *behavior, ai::State *previous) {
-  behavior->unknown140.applyFieldMoveSpeed(GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_1, *behavior);
+  behavior->m_behaviorEnemyField.applyFieldMoveSpeed(GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_1, *behavior);
   GfComAsm *comAsm = behavior->unknown08->getComponent<GfComAsm>();
   if (comAsm != nullptr) {
     comAsm->execCmd("C_walkend", ANIM_LAYER_UNKNOWN_0);
@@ -91,7 +91,7 @@ void StateFieldIdle::enter(GfComBehaviorEnemy *behavior, ai::State *previous) {
     unknown20.create(TFieldExecCmd<GfComAsm>::CreateInfo(static_cast<GfObj *>(behavior->unknown08)->unknownf8, command.c_str()));
   }
 
-  behavior->unknown140.applyFieldMoveSpeed(GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_0, *behavior);
+  behavior->m_behaviorEnemyField.applyFieldMoveSpeed(GfBehaviorEnemyField::MOVE_SPEED_UNKNOWN_0, *behavior);
   unknown58 = 0.0f;
   bool isFlyInsect = behavior->isFlyInsect();
   unknown18 = isFlyInsect ? 2 : 1;
@@ -148,21 +148,21 @@ void StateFieldIdle::seqFlyInsectIdle(GfComBehaviorEnemy &behavior, const fw::Up
     mm::Vec3 position = behavior.getTransform().unknown00;
     GfObjSetupEnemy *setup = mm::mtl::dynamicCast<GfObjSetupEnemy>(GfObjManager::getObjInfo(static_cast<GfObj *>(behavior.unknown08)->unknownf8)->unknown30);
     position.y = setup->unknown20.y + ml::mtRandf1(-1.0f, 1.0f) * 3.0f;
-    behavior.unknown140.unknownc0 = position;
+    behavior.m_behaviorEnemyField.unknownc0 = position;
   }
 
   if (unknown20.unknown34) {
     behavior.unknown003(info.unknown04);
   }
 
-  if (behavior.unknown140.isArrivedToGoal()) {
+  if (behavior.m_behaviorEnemyField.isArrivedToGoal()) {
     unknown58 = unknown5c;
   }
 }
 
 void StateFieldIdle::seqOthersIdle(GfComBehaviorEnemy &behavior, const fw::UpdateInfo &info) {
   if (unknown20.unknown35) {
-    behavior.unknown140.unknownc0 = behavior.getTransform().unknown00;
+    behavior.m_behaviorEnemyField.unknownc0 = behavior.getTransform().unknown00;
   }
 }
 

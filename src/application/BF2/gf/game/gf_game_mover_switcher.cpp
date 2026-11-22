@@ -69,8 +69,8 @@ void GfGameMoverSwitcher::switchMover() {
         MsgPcFieldChangeControlMode mode(i);
         sendMessage(obj, mode);
         MsgPcFieldWarp warp;
-        warp.unknown10.unknown10 = formation->unknowne0[0].unknown10;
-        warp.unknown10.unknown00 = formation->unknown20[i];
+        warp.m_transform.unknown10 = formation->unknowne0[0].unknown10;
+        warp.m_transform.unknown00 = formation->unknown20[i];
         warp.unknown30 = true;
         sendMessage(obj, warp);
       }

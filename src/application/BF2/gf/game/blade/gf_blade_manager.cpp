@@ -143,7 +143,7 @@ void GfBladeCreateInfo::clear() {
   unknown400.assign(AchievInfo());
   unknown5b0.assign(AchievInfo());
   unknown760.assign(AchievInfo());
-  unknown910 = AchievInfo();
+  m_achievInfo = AchievInfo();
   unknown9a0.assign(unknown112());
   unknown9b0.clear();
   unknowna38 = 0;
@@ -231,7 +231,7 @@ void GfBladeCreate::setupSDataBlade(SDataBlade &blade, const GfBladeCreateInfo &
     blade.unknownc4 = info.unknown400;
     blade.unknown274 = info.unknown5b0;
     blade.unknown424 = info.unknown760;
-    blade.unknown5d4 = info.unknown910;
+    blade.m_achievInfo = info.m_achievInfo;
     blade.m_normalTalk = GfDataBlade::makeNormalTalkByPersonality(info.unknown358);
   } else {
     u32 target = info.unknown32c;
@@ -312,7 +312,7 @@ static void unknown001(GfBladeCreateInfo &create) {
   create.unknown400 = dataBlade.unknownc4;
   create.unknown5b0 = dataBlade.unknown274;
   create.unknown760 = dataBlade.unknown424;
-  create.unknown910 = dataBlade.unknown5d4;
+  create.m_achievInfo = dataBlade.m_achievInfo;
   GfDataBladeCreate::resetAssurePoint();
 }
 
@@ -1326,9 +1326,9 @@ static void rollAchievements(GfBladeCreateInfo *info) {
     unknown004(sets, category, 5);
     if (sets.size() != 0 || (unknown004(sets, 10, 5), sets.size() != 0)) {
       u32 pick = ml::mtRand(sets.size());
-      info->unknown910.unknown00 = sets[pick];
+      info->m_achievInfo.unknown00 = sets[pick];
       for (u32 k = 0; k < 5; k++) {
-        questListAcc->getFLD_AchievementSetAchievementID(info->unknown910.unknown00, k);
+        questListAcc->getFLD_AchievementSetAchievementID(info->m_achievInfo.unknown00, k);
       }
     }
   }

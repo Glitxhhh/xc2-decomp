@@ -23,7 +23,7 @@ constexpr u32 MERCENARIES_LEVEL_UNKNOWN_5 = 5; // Inferred role: mercenaries lev
 // Inferred role: save data mercenaries team; original type name unknown.
 struct unknown120 {
   u16 unknown00[6];     // Inferred role: members; original member name unknown.
-  QuestID unknown0c;    // Inferred role: mission quest; original member name unknown.
+  QuestID m_questID;    // Inferred role: mission quest; original member name unknown.
   u32 unknown10;        // Inferred role: team id; original member name unknown.
   u32 unknown14;        // Inferred role: mission; original member name unknown.
   f32 unknown18;        // Inferred role: mission elapsed time; original member name unknown.
@@ -32,7 +32,7 @@ struct unknown120 {
   bool _24;
 };
 
-static_assert(offsetof(unknown120, unknown0c) == 0x0c, "");
+static_assert(offsetof(unknown120, m_questID) == 0x0c, "");
 static_assert(offsetof(unknown120, unknown10) == 0x10, "");
 static_assert(offsetof(unknown120, unknown14) == 0x14, "");
 static_assert(offsetof(unknown120, unknown1c) == 0x1c, "");

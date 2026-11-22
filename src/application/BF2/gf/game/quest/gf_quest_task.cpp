@@ -52,13 +52,13 @@ static inline bool isTaskFlagComplete(const QuestTaskParam &param) {
     return false;
   }
 
-  if (param.unknown04.unknown02 != 0) {
-    AchievQuest *achievQuest = GfDataQuest::getAchievQuest(param.unknown04);
+  if (param.m_questID.unknown02 != 0) {
+    AchievQuest *achievQuest = GfDataQuest::getAchievQuest(param.m_questID);
     if (achievQuest == nullptr) {
       return false;
     }
 
-    u16 flag = GfDataQuest::getListPRTQuestID(param.unknown04).empty() ? ACHIEV_FLAG_TASK_UNKNOWN_2 : ACHIEV_FLAG_TASK_UNKNOWN_3;
+    u16 flag = GfDataQuest::getListPRTQuestID(param.m_questID).empty() ? ACHIEV_FLAG_TASK_UNKNOWN_2 : ACHIEV_FLAG_TASK_UNKNOWN_3;
     return (flag & achievQuest->unknown0c) != 0;
   }
 
@@ -68,20 +68,20 @@ static inline bool isTaskFlagComplete(const QuestTaskParam &param) {
 
 bool GfQuestTask::setCompleteFlag(const QuestTaskParam &param, bool isComplete) {
   bool wasComplete = isTaskFlagComplete(param);
-  if (param.unknown04.unknown02 == 0) {
+  if (param.m_questID.unknown02 == 0) {
     u32 purpose = param.unknown08;
     u32 taskIndex = param.unknown0c;
     GfGameFlag::setLocal(1, QuestListAcc::get()->getTaskFlag(purpose, taskIndex), isComplete);
     if (!wasComplete && isComplete) {
-      SCOM_POPUP::createQuest(param.unknown04);
+      SCOM_POPUP::createQuest(param.m_questID);
     }
   } else {
-    AchievQuest *achievQuest = GfDataQuest::getAchievQuest(param.unknown04);
+    AchievQuest *achievQuest = GfDataQuest::getAchievQuest(param.m_questID);
     if (achievQuest == nullptr || !GfKizunaringBlade::isCompleteLevel(*achievQuest)) {
       return false;
     }
 
-    achievQuest->setTaskComplete(GfQuestInfo::isParent(param.unknown04), isComplete);
+    achievQuest->setTaskComplete(GfQuestInfo::isParent(param.m_questID), isComplete);
     achievQuest->setCountComplete();
   }
 
@@ -115,7 +115,7 @@ void AchievQuest::setCountComplete() {
   }
 
   if (GfAchievManager::get() != nullptr) {
-    GfAchievManager::get()->incleaseAchievCount(unknown00, oldCount, newCount - oldCount);
+    GfAchievManager::get()->incleaseAchievCount(m_questID, oldCount, newCount - oldCount);
   }
 }
 
@@ -198,7 +198,7 @@ bool GfQuestTask::isEnableTaskCondition(const QuestTaskParam &param) {
     return true;
   }
 
-  if (param.unknown04.unknown00 == QUEST_MAP_UNKNOWN_2020) {
+  if (param.m_questID.unknown00 == QUEST_MAP_UNKNOWN_2020) {
     return GfGameCond::isGameCondWithMap(condition, QUEST_MAP_UNKNOWN_6);
   }
 
@@ -206,7 +206,7 @@ bool GfQuestTask::isEnableTaskCondition(const QuestTaskParam &param) {
 }
 
 void GfQuestTask::completeTask(const QuestTaskParam &param) {
-  if (GfQuestInfo::isQuestOrder(param.unknown04) && param.unknown08 != 0 && !GfQuestInfo::isCompleteTask(param)) {
+  if (GfQuestInfo::isQuestOrder(param.m_questID) && param.unknown08 != 0 && !GfQuestInfo::isCompleteTask(param)) {
     setCompleteFlag(param, true);
   }
 }
@@ -443,12 +443,12 @@ static void unknown001(QuestID quest, u32 map, u32 place) {
 void GfQuestTask::completeReachTask(u32 map, u32 place) {
   mm::mtl::FixedQueue<QuestData, 8000> *orderQuest = GfQuestManager::getOrderQuest();
   for (mm::mtl::FixedQueue<QuestData, 8000>::iterator it = orderQuest->begin(), last = orderQuest->end(); it != last; ++it) {
-    unknown001((*it).unknown00, map, place);
+    unknown001((*it).m_questID, map, place);
   }
 
   mm::mtl::FixedQueue<QuestData, 15000> *orderAchievementQuest = GfQuestManager::getOrderAchievementQuest();
   for (mm::mtl::FixedQueue<QuestData, 15000>::iterator it = orderAchievementQuest->begin(), last = orderAchievementQuest->end(); it != last; ++it) {
-    unknown001((*it).unknown00, map, place);
+    unknown001((*it).m_questID, map, place);
   }
 }
 
@@ -504,13 +504,13 @@ void GfQuestTask::completeItemUseTask(u32 item, u32 driver) {
   mm::mtl::FixedVector<u16, BLADE_UNKNOWN_422> blades;
   mm::mtl::FixedQueue<QuestData, 8000> *orderQuest = GfQuestManager::getOrderQuest();
   for (mm::mtl::FixedQueue<QuestData, 8000>::iterator it = orderQuest->begin(), last = orderQuest->end(); it != last; ++it) {
-    unknown002((*it).unknown00, item, category, blades);
+    unknown002((*it).m_questID, item, category, blades);
   }
 
   GfDataDriver::getListBlade(blades, driver);
   mm::mtl::FixedQueue<QuestData, 15000> *orderAchievementQuest = GfQuestManager::getOrderAchievementQuest();
   for (mm::mtl::FixedQueue<QuestData, 15000>::iterator it = orderAchievementQuest->begin(), last = orderAchievementQuest->end(); it != last; ++it) {
-    unknown002((*it).unknown00, item, category, blades);
+    unknown002((*it).m_questID, item, category, blades);
   }
 }
 
@@ -676,7 +676,7 @@ u16 GfQuestTask::getTaskMap(const QuestTaskParam &param) {
 }
 
 QuestTaskParam::QuestTaskParam(QuestID quest, u32 taskIndex, TASK_STATE state)
-    : QuestParam(QUEST_PARAM_UNKNOWN_0), unknown04(quest), unknown0c(taskIndex), unknown10(0), unknown14(0), unknown18(state), unknown1c(false) {
+    : QuestParam(QUEST_PARAM_UNKNOWN_0), m_questID(quest), unknown0c(taskIndex), unknown10(0), unknown14(0), unknown18(state), unknown1c(false) {
   QuestListAcc *questListAcc = QuestListAcc::get();
   unknown08 = GfDataQuest::getListPurposeID(quest);
   if (unknown08 == 0) {
@@ -692,7 +692,7 @@ QuestTaskParam::QuestTaskParam(QuestID quest, u32 taskIndex, TASK_STATE state)
 }
 
 QuestTaskParam::QuestTaskParam(QuestID quest, u32 taskIndex, u32 purpose, TASK_STATE state)
-    : QuestParam(QUEST_PARAM_UNKNOWN_0), unknown04(quest), unknown08(purpose), unknown0c(taskIndex), unknown10(0), unknown14(0), unknown18(state), unknown1c(false) {
+    : QuestParam(QUEST_PARAM_UNKNOWN_0), m_questID(quest), unknown08(purpose), unknown0c(taskIndex), unknown10(0), unknown14(0), unknown18(state), unknown1c(false) {
   QuestListAcc *questListAcc = QuestListAcc::get();
   if (!quest.empty() && this->unknown08 == 0) {
     this->unknown08 = GfDataQuest::getListPurposeID(quest);
@@ -721,7 +721,7 @@ bool AchievQuest::setCount(u32 newCount) {
   }
 
   if (add != 0 && GfAchievManager::get() != nullptr) {
-    GfAchievManager::get()->incleaseAchievCount(unknown00, oldCount, add);
+    GfAchievManager::get()->incleaseAchievCount(m_questID, oldCount, add);
   }
 
   return add != 0;
@@ -744,7 +744,7 @@ bool AchievQuest::incleseCount(u32 add) {
   }
 
   if (GfAchievManager::get() != nullptr) {
-    GfAchievManager::get()->incleaseAchievCount(unknown00, oldCount, add);
+    GfAchievManager::get()->incleaseAchievCount(m_questID, oldCount, add);
   }
 
   return true;

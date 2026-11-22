@@ -83,11 +83,11 @@ void GmkDoor::setLodSwitch(LodSwitch lodSwitch) {
     break;
   }
   gf::GfFieldLod *lod = gf::GfFieldLod::get();
-  if (lod->unknown840.unknown00.unknown00 == nullptr || lod->unknown840.unknown00.unknown10 == nullptr) {
+  if (lod->m_fieldLodColiAnim.m_createInfo.unknown00 == nullptr || lod->m_fieldLodColiAnim.m_createInfo.m_fieldLod == nullptr) {
     return;
   }
   u16 lodId = lod->unknown08[getBdatInfo()->unknown06 - lod->unknown808];
-  ml::ScnObjAccSeamPos seamPos(lod->unknown840.unknown00.unknown00);
+  ml::ScnObjAccSeamPos seamPos(lod->m_fieldLodColiAnim.m_createInfo.unknown00);
   int num = seamPos.getMax();
   for (int i = 0; i < num; i++) {
     ml::ScnObjAccPartsPos partsPos = seamPos.getObj(i);

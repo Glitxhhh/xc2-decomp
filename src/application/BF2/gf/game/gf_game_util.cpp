@@ -213,7 +213,7 @@ void GfGameUtil::UiEnemyStatusIconInfo::create(GF_OBJ_HANDLE *handle) {
   unknown00 = detects != 0;
   GfComBehaviorEnemy *behavior = obj->getComponent<GfComBehaviorEnemy>();
   if (behavior != nullptr) {
-    unknown01 = behavior->unknown140.unknown37 != 0;
+    unknown01 = behavior->m_behaviorEnemyField.unknown37 != 0;
   }
 }
 
@@ -1656,7 +1656,7 @@ void GfGameUtil::levelupForEnemy(GF_OBJ_HANDLE *handle, u32 addLevel) {
 
   u32 levelMax = GfBdatChrEnParam::get()->getChrEnParamTableEnd() - 1;
   u32 level = dataParamAcc.getLevel(false) + addLevel;
-  GfDataEnemy::setupGameParamForLevel(*setup->unknowna0, level > levelMax ? levelMax : level);
+  GfDataEnemy::setupGameParamForLevel(*setup->m_enemy, level > levelMax ? levelMax : level);
   GfObj *obj = GfObjUtil::getObj(handle);
   MsgObjectMaxHp changeHpMax(dataParamAcc.getHpMax(false));
   obj->sendMessage(obj, changeHpMax);
@@ -1852,7 +1852,7 @@ bool GfGameUtil::hasBelonging(GF_OBJ_HANDLE *handle, u32 belonging) {
 }
 
 bool GfGameUtil::execTurnCmd(const ExecTurnCmdInfo &info) {
-  GfObjAcc objAcc(info.unknown00);
+  GfObjAcc objAcc(info.m_GF_OBJ_HANDLE);
   GfObj *obj = objAcc.getObj();
   if (obj == nullptr) {
     return false;
@@ -1997,7 +1997,7 @@ GF_OBJ_HANDLE *GfGameUtil::getWeaponOwner(GF_OBJ_HANDLE *handle) {
   GfAppendInfo *info = GfObjUtil::getAppendInfo(handle, GFATTACH_UNKNOWN_0);
   if (info != nullptr) {
     GfObjSetupWeapon *setup = GfObjUtil::getObjSetup<GfObjSetupWeapon>(handle);
-    if (setup != nullptr && info->unknown00[1].size() != 0 && !setup->unknown80.unknown98.unknown80) {
+    if (setup != nullptr && info->unknown00[1].size() != 0 && !setup->m_initParamWeapon.m_append.unknown80) {
       return GfMountManager::getHandle(owner, GFATTACH_UNKNOWN_0, OPTMNT_UNKNOWN_3);
     }
   }
@@ -2217,7 +2217,7 @@ void GfGameUtil::setupNewGameParam(const SDataGame &dataGame) {
   currentGame->m_cameraHeight = dataGame.m_cameraHeight;
   currentGame->m_gameClearCount = dataGame.m_gameClearCount;
   currentGame->m_ether = dataGame.m_ether;
-  currentGame->unknown1098c0 = dataGame.unknown1098c0;
+  currentGame->m_gameTime = dataGame.m_gameTime;
   currentGame->m_itemBox = dataGame.m_itemBox;
   currentGame->unknown10ad74 = dataGame.unknown10ad74;
   currentGame->unknown10ad40 = dataGame.unknown10ad40;
@@ -2225,7 +2225,7 @@ void GfGameUtil::setupNewGameParam(const SDataGame &dataGame) {
   currentGame->m_coin = dataGame.m_coin;
   currentGame->m_collectFlagNewVersion = dataGame.m_collectFlagNewVersion;
   currentGame->m_money = dataGame.m_money;
-  currentGame->unknown1098c4 = dataGame.unknown1098c4;
+  currentGame->m_elapseTime = dataGame.m_elapseTime;
   currentGame->m_rareBladeAppearType = dataGame.m_rareBladeAppearType;
   currentGame->m_saveRealTime = dataGame.m_saveRealTime;
   currentGame->m_taskAchieve = dataGame.m_taskAchieve;

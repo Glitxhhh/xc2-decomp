@@ -42,17 +42,17 @@ public:
 
   struct GroundInfo {
     // Inline: the game only has the base object constructor symbol (C2) of this one, called out of line by VerticalData::VerticalData() and EnviromentSensor::EnviromentSensor().
-    GroundInfo() : unknown00(mm::Vec3::zero), unknown30(0), unknown38(unknown020), unknown40(mm::Vec3::zero), unknown50(mm::Col4::white), unknown60(0) {
+    GroundInfo() : unknown00(mm::Vec3::zero), unknown30(0), m_GF_OBJ_HANDLE(unknown020), unknown40(mm::Vec3::zero), unknown50(mm::Col4::white), unknown60(0) {
       unknown10.set(mm::Vec3::unitY, mm::Vec3::zero);
     }
 
-    mm::Vec3 unknown00;       // Inferred role: position; original member name unknown.
-    mm::Plane unknown10;      // Inferred role: plane; original member name unknown.
-    u64 unknown30;            // Inferred role: flags, bit 5 is the slide flag; original member name unknown.
-    GF_OBJ_HANDLE *unknown38; // Inferred role: object handle; original member name unknown.
-    mm::Vec3 unknown40;       // Inferred role: unknown vector; original member name unknown.
-    mm::Col4 unknown50;       // Inferred role: color; original member name unknown.
-    u32 unknown60;            // Inferred role: unknown; original member name unknown.
+    mm::Vec3 unknown00;             // Inferred role: position; original member name unknown.
+    mm::Plane unknown10;            // Inferred role: plane; original member name unknown.
+    u64 unknown30;                  // Inferred role: flags, bit 5 is the slide flag; original member name unknown.
+    GF_OBJ_HANDLE *m_GF_OBJ_HANDLE; // Inferred role: object handle; original member name unknown.
+    mm::Vec3 unknown40;             // Inferred role: unknown vector; original member name unknown.
+    mm::Col4 unknown50;             // Inferred role: color; original member name unknown.
+    u32 unknown60;                  // Inferred role: unknown; original member name unknown.
   };
 
   // Inferred role: water info; original type name unknown.
@@ -99,10 +99,10 @@ public:
   // searchHorizon writes the planes at +0x00 (bit 4), +0x30 (bit 5) and +0x60 (bit 6, climb wall) and the handle at +0x90;
   // original type name unknown.
   struct unknown006 {
-    unknown003 unknown00;     // Inferred role: horizontal wall info (search bit 4); original member name unknown.
-    unknown003 unknown30;     // Inferred role: horizontal info of the search bit 5; original member name unknown.
-    unknown003 unknown60;     // Inferred role: climb wall info (search bit 6); original member name unknown.
-    GF_OBJ_HANDLE *unknown90; // Inferred role: climb wall object handle, unknown020 when none; original member name unknown.
+    unknown003 unknown00;           // Inferred role: horizontal wall info (search bit 4); original member name unknown.
+    unknown003 unknown30;           // Inferred role: horizontal info of the search bit 5; original member name unknown.
+    unknown003 unknown60;           // Inferred role: climb wall info (search bit 6); original member name unknown.
+    GF_OBJ_HANDLE *m_GF_OBJ_HANDLE; // Inferred role: climb wall object handle, unknown020 when none; original member name unknown.
   };
 
   // Field names and offsets from the reflection built by gf::EnviromentSensor::Parameter::createReflection; the names are
@@ -192,22 +192,22 @@ public:
       u32 : 23;
     };
   };
-  VerticalData unknown30; // Inferred role: vertical ground data; original member name unknown.
-  unknown006 unknown150;  // Inferred role: horizontal wall info; original member name unknown.
-  GroundInfo unknown1f0;  // Inferred role: climb end ground; original member name unknown.
-  unknown003 unknown260;  // Inferred role: descend wall info; original member name unknown.
-  f32 unknown290;         // Inferred role: unknown scale; original member name unknown.
+  VerticalData m_verticalData; // Inferred role: vertical ground data; original member name unknown.
+  unknown006 unknown150;       // Inferred role: horizontal wall info; original member name unknown.
+  GroundInfo m_groundInfo;     // Inferred role: climb end ground; original member name unknown.
+  unknown003 unknown260;       // Inferred role: descend wall info; original member name unknown.
+  f32 unknown290;              // Inferred role: unknown scale; original member name unknown.
   u8 _294[0x2a0 - 0x294];
 };
 
 static_assert(sizeof(EnviromentSensor::GroundInfo) == 0x70, "");
-static_assert(offsetof(EnviromentSensor::GroundInfo, unknown38) == 0x38, "");
+static_assert(offsetof(EnviromentSensor::GroundInfo, m_GF_OBJ_HANDLE) == 0x38, "");
 static_assert(sizeof(EnviromentSensor::unknown001) == 0x40, "");
 static_assert(sizeof(EnviromentSensor::unknown002) == 0x30, "");
 static_assert(sizeof(EnviromentSensor::unknown003) == 0x30, "");
 static_assert(sizeof(EnviromentSensor::unknown005) == 0x40, "");
 static_assert(sizeof(EnviromentSensor::unknown006) == 0xa0, "");
-static_assert(offsetof(EnviromentSensor::unknown006, unknown90) == 0x90, "");
+static_assert(offsetof(EnviromentSensor::unknown006, m_GF_OBJ_HANDLE) == 0x90, "");
 static_assert(sizeof(EnviromentSensor::Parameter) == 0x2c, "");
 static_assert(offsetof(EnviromentSensor::Parameter, obstacleSearchLength) == 0x10, "");
 static_assert(offsetof(EnviromentSensor::Parameter, descendWallSearchDist) == 0x28, "");
@@ -221,9 +221,9 @@ static_assert(offsetof(EnviromentSensor::WallPacket, unknown70) == 0x70, "");
 static_assert(offsetof(EnviromentSensor::WallPacket, unknown90) == 0x90, "");
 static_assert(sizeof(EnviromentSensor::VerticalData) == 0x120, "");
 static_assert(offsetof(EnviromentSensor, m_envSensorCheckFlags) == 0x20, "");
-static_assert(offsetof(EnviromentSensor, unknown30) == 0x30, "");
+static_assert(offsetof(EnviromentSensor, m_verticalData) == 0x30, "");
 static_assert(offsetof(EnviromentSensor, unknown150) == 0x150, "");
-static_assert(offsetof(EnviromentSensor, unknown1f0) == 0x1f0, "");
+static_assert(offsetof(EnviromentSensor, m_groundInfo) == 0x1f0, "");
 static_assert(offsetof(EnviromentSensor, unknown260) == 0x260, "");
 static_assert(offsetof(EnviromentSensor, unknown290) == 0x290, "");
 static_assert(sizeof(EnviromentSensor) == 0x2a0, "");
@@ -242,9 +242,9 @@ public:
 
   class EnvListener {
   public:
-    virtual void onWkStandbyLogout() { unknown08->unknown368 = nullptr; }
+    virtual void onWkStandbyLogout() { m_comEnvSensor->unknown368 = nullptr; }
 
-    GfComEnvSensor *unknown08; // Inferred role: owner; original member name unknown.
+    GfComEnvSensor *m_comEnvSensor; // Inferred role: owner; original member name unknown.
   };
 
   GfComEnvSensor();
@@ -265,13 +265,13 @@ public:
   u16 unknown2bc;                                  // Inferred role: root bone index; original member name unknown.
   u32 unknown2c0[6];                               // Inferred role: foot flags; original member name unknown.
   mm::mtl::IntrusivePtr<fw::ParamList> unknown2d8; // Inferred role: param list; original member name unknown.
-  fw::ParamAdapter unknown2e0;                     // Inferred role: param entry; original member name unknown.
+  fw::ParamAdapter m_paramAdapter;                 // Inferred role: param entry; original member name unknown.
   const fw::ParamList::unknown005 *unknown2e8;     // Inferred role: param entry; original member name unknown.
   fw::SensorUpdater unknown2f0;                    // Inferred role: updater before the game; original member name unknown.
   fw::SensorUpdater unknown328;                    // Inferred role: updater after the animation; original member name unknown.
   mm::mtl::UniquePtr<GfEnemySensor> unknown360;    // Inferred role: enemy sensor; original member name unknown.
   void *unknown368;                                // Inferred role: viewer; original member name unknown.
-  EnvListener unknown370;                          // Inferred role: viewer listener; original member name unknown.
+  EnvListener m_envListener;                       // Inferred role: viewer listener; original member name unknown.
 };
 
 static_assert(offsetof(GfComEnvSensor, m_envSensor) == 0x10, "");
@@ -282,7 +282,7 @@ static_assert(offsetof(GfComEnvSensor, unknown2f0) == 0x2f0, "");
 static_assert(offsetof(GfComEnvSensor, unknown328) == 0x328, "");
 static_assert(offsetof(GfComEnvSensor, unknown360) == 0x360, "");
 static_assert(offsetof(GfComEnvSensor, unknown368) == 0x368, "");
-static_assert(offsetof(GfComEnvSensor, unknown370) == 0x370, "");
+static_assert(offsetof(GfComEnvSensor, m_envListener) == 0x370, "");
 static_assert(sizeof(GfComEnvSensor) == 0x380, "");
 
 } // namespace gf

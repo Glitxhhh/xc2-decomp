@@ -216,7 +216,7 @@ public:
   static void setState(GF_STATE state, bool isForce);
 
 private:
-  ai::Fsm unknown08;       // Inferred role: fsm; original member name unknown.
+  ai::Fsm m_fsm;           // Inferred role: fsm; original member name unknown.
   u32 m_stateFlg;          // Inferred role: state flag; named after the game accessor gf::GfGameState::setStateFlg.
   GF_STATE m_stateReserve; // Inferred role: state reserve; named after the game accessor gf::GfGameState::getStateReserve.
   u32 m_countStateReserve; // Inferred role: count state reserve; named after the game accessor gf::GfGameState::getCountStateReserve.

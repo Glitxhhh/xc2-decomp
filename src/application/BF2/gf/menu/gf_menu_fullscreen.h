@@ -32,8 +32,8 @@ public:
 
   // Inferred role: layer parameter; original type name unknown.
   struct unknown003 {
-    u32 unknown00;                // Inferred role: ui layer id; original member name unknown.
-    GfMenuTypes::Param unknown08; // Inferred role: parameter; original member name unknown.
+    u32 unknown00;              // Inferred role: ui layer id; original member name unknown.
+    GfMenuTypes::Param m_param; // Inferred role: parameter; original member name unknown.
   };
 
   // Inferred role: sub layer request; original type name unknown.
@@ -112,7 +112,7 @@ public:
   u16 unknown134;                                 // Inferred role: unknown; original member name unknown.
   mm::mtl::Delegate<void()> unknown138;           // Inferred role: sub layer step; original member name unknown.
   unknown004 unknown158;                          // Inferred role: sub layer request; original member name unknown.
-  ui::UIInputSwitcher unknown160;                 // Inferred role: input switcher; original member name unknown.
+  ui::UIInputSwitcher m_uIInputSwitcher;          // Inferred role: input switcher; original member name unknown.
   mm::mtl::FixedVector<unknown003, 8> unknown188; // Inferred role: layer parameters; original member name unknown.
 };
 
@@ -129,7 +129,7 @@ static_assert(offsetof(GfMenuFullScreen, unknown130) == 0x130, "");
 static_assert(offsetof(GfMenuFullScreen, unknown138) == 0x138, "");
 static_assert(offsetof(GfMenuFullScreen, unknown158) == 0x158, "");
 static_assert(sizeof(GfMenuFullScreen::unknown004) == 0x08, "");
-static_assert(offsetof(GfMenuFullScreen, unknown160) == 0x160, "");
+static_assert(offsetof(GfMenuFullScreen, m_uIInputSwitcher) == 0x160, "");
 static_assert(offsetof(GfMenuFullScreen, unknown188) == 0x188, "");
 static_assert(sizeof(GfMenuFullScreen) == 0x2d0, "");
 

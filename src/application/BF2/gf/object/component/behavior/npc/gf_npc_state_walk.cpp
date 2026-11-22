@@ -31,7 +31,7 @@ void StateWalk::updateGoalPos(GfComBehaviorNpc &behavior) {
     }
   } else {
     const mm::Vec3 &position = behavior.getPos();
-    validateGmkRouteNaviConsideringGfLocalSteer(*navi, behavior.unknown350, position);
+    validateGmkRouteNaviConsideringGfLocalSteer(*navi, behavior.m_fieldLocalSteer, position);
     gmk::GmkRouteNavi::UpdateInfo info;
     info.position = position;
     navi->update(info);

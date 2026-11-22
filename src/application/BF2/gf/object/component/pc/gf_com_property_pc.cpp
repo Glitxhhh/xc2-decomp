@@ -67,23 +67,23 @@ void GfComPropertyPc::setPadControl(bool padControl) {
   }
 
   resetParams();
-  unknown310.resetStatus(*this);
+  m_propertyField.resetStatus(*this);
 }
 
 void GfComPropertyPc::resetParams() {
   fw::ParamManager *manager = fw::ParamManager::get();
   unknown300 = manager->unknown408[13];
   if (unknown111_2) {
-    unknown310.unknown08 = manager->unknown408[14];
+    m_propertyField.unknown08 = manager->unknown408[14];
   } else {
-    unknown310.unknown08 = manager->unknown408[15];
+    m_propertyField.unknown08 = manager->unknown408[15];
   }
 }
 
 void GfComPropertyPc::cleanup() {
   m_battleProperty.cleanup(*this);
-  unknown310.cleanup(*this);
-  unknown310.unknown08 = nullptr;
+  m_propertyField.cleanup(*this);
+  m_propertyField.unknown08 = nullptr;
   unknown300 = nullptr;
   unknown38 = 0xffffffff;
   unknown3c = 0;
@@ -198,7 +198,7 @@ bool GfComPropertyPc::recieveMessage(fw::MessageObject *sender, fw::Message &mes
     procMsgPcFieldNotifyChangePlayerID(sender, static_cast<MsgPcFieldNotifyChangePlayerID &>(message));
     return true;
   }
-  if (unknown110_0 && unknown310.recieveMessage(*this, sender, message)) {
+  if (unknown110_0 && m_propertyField.recieveMessage(*this, sender, message)) {
     return true;
   }
   if (unknown110_1 && m_battleProperty.recieveMessage(*this, sender, message)) {

@@ -73,8 +73,8 @@ static_assert(sizeof(WeatherParam) == 0x1c, "");
 struct unknown119 {
   unknown119() : unknown1c(0) {}
 
-  WeatherParam unknown00; // Inferred role: weather param; original member name unknown.
-  u32 unknown1c;          // Inferred role: cloud type; original member name unknown.
+  WeatherParam m_weatherParam; // Inferred role: weather param; original member name unknown.
+  u32 unknown1c;               // Inferred role: cloud type; original member name unknown.
 };
 
 static_assert(offsetof(unknown119, unknown1c) == 0x1c, "");

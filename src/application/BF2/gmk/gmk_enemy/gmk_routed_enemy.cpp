@@ -69,8 +69,8 @@ bool GmkRoutedEnemy::PopXformFinder::getSquadMemberIndex(int &index, gf::GF_OBJ_
   gf::GfObj *obj = acc.getObj();
   if (obj != nullptr) {
     gf::GfComBehaviorEnemy *behavior = obj->getComponent<gf::GfComBehaviorEnemy>();
-    if (behavior != nullptr && behavior->unknown140.unknown50.unknown001()) {
-      index = behavior->unknown140.unknown50.unknown28;
+    if (behavior != nullptr && behavior->m_behaviorEnemyField.m_gmkSquadNavi.unknown001()) {
+      index = behavior->m_behaviorEnemyField.m_gmkSquadNavi.unknown28;
       return index != 0;
     }
   }

@@ -26,18 +26,18 @@ class GfItemBoxBase;
 class item_iterator {
 public:
   item_iterator(GfItemBoxBase *box, GfItemInfo *current, u32 itemSize, bool isMulti, ItemType::Type type)
-      : unknown00(box), unknown08(current), unknown10(itemSize), unknown14(isMulti), unknown18(type) {}
+      : m_itemBoxBase(box), m_itemInfo(current), unknown10(itemSize), unknown14(isMulti), unknown18(type) {}
 
   item_iterator operator++();
-  GfItemInfo &operator*() const { return *unknown08; }
-  GfItemInfo *operator->() const { return unknown08; }
-  bool operator!=(const item_iterator &other) const { return unknown08 != other.unknown08; }
+  GfItemInfo &operator*() const { return *m_itemInfo; }
+  GfItemInfo *operator->() const { return m_itemInfo; }
+  bool operator!=(const item_iterator &other) const { return m_itemInfo != other.m_itemInfo; }
 
-  GfItemBoxBase *unknown00; // Inferred role: box; original member name unknown.
-  GfItemInfo *unknown08;    // Inferred role: current; original member name unknown.
-  u32 unknown10;            // Inferred role: item size; original member name unknown.
-  bool unknown14;           // Inferred role: multi; original member name unknown.
-  ItemType::Type unknown18; // Inferred role: type; original member name unknown.
+  GfItemBoxBase *m_itemBoxBase; // Inferred role: box; original member name unknown.
+  GfItemInfo *m_itemInfo;       // Inferred role: current; original member name unknown.
+  u32 unknown10;                // Inferred role: item size; original member name unknown.
+  bool unknown14;               // Inferred role: multi; original member name unknown.
+  ItemType::Type unknown18;     // Inferred role: type; original member name unknown.
 };
 
 static_assert(offsetof(item_iterator, unknown10) == 0x10, "");

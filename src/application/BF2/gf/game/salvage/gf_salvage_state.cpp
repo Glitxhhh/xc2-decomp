@@ -490,7 +490,7 @@ void StateSalvageResultUi::leave(GfGameSalvage *salvage, ai::State *) {
     context = nullptr;
   }
   salvage->setPartyDisp(true);
-  SCOM_QUEST_GIMMICK::createSalvage(gmk::getBindedGmkInst(GfGameSalvage::get()->unknowna8)->unknown20.unknown18, 0.0f);
+  SCOM_QUEST_GIMMICK::createSalvage(gmk::getBindedGmkInst(GfGameSalvage::get()->m_GF_OBJ_HANDLE)->unknown20.unknown18, 0.0f);
 }
 
 void StateSalvageResultUi::update(GfGameSalvage *, const fw::UpdateInfo &) {

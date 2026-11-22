@@ -1383,7 +1383,7 @@ f32 getMobPopDistSq() {
   if (gimmick == nullptr) {
     return 1e12f;
   }
-  return gimmick->unknownf910.unknown528;
+  return gimmick->m_mobSlotManager.unknown528;
 }
 
 void resetMobPopDistSq() {
@@ -1391,8 +1391,8 @@ void resetMobPopDistSq() {
   if (gimmick == nullptr) {
     return;
   }
-  gimmick->unknownf910.unknown420.clear();
-  gimmick->unknownf910.unknown528 = 1e12f;
+  gimmick->m_mobSlotManager.unknown420.clear();
+  gimmick->m_mobSlotManager.unknown528 = 1e12f;
 }
 
 bool addFailedPopDistSq(f32 distSq) {
@@ -1400,7 +1400,7 @@ bool addFailedPopDistSq(f32 distSq) {
   if (gimmick == nullptr) {
     return false;
   }
-  return gimmick->unknownf910.addFailedPopDistSq(distSq);
+  return gimmick->m_mobSlotManager.addFailedPopDistSq(distSq);
 }
 
 u32 getBindedFsId(const AGmkBase &gmk) {

@@ -25,28 +25,28 @@ struct GfQuestReward;
 struct GfSetupParam;
 
 struct QuestOrderParam : QuestParam {
-  QuestOrderParam(QuestID quest) : QuestParam(QUEST_PARAM_UNKNOWN_3), unknown04(quest) {}
+  QuestOrderParam(QuestID quest) : QuestParam(QUEST_PARAM_UNKNOWN_3), m_questID(quest) {}
 
-  QuestID unknown04; // Inferred role: quest; original member name unknown.
+  QuestID m_questID; // Inferred role: quest; original member name unknown.
 };
 
 struct QuestCompleteParam : QuestParam {
-  QuestCompleteParam(QuestID quest, QSTATE state) : QuestParam(QUEST_PARAM_UNKNOWN_1), unknown04(quest), unknown08(state) {}
+  QuestCompleteParam(QuestID quest, QSTATE state) : QuestParam(QUEST_PARAM_UNKNOWN_1), m_questID(quest), unknown08(state) {}
 
-  QuestID unknown04; // Inferred role: quest; original member name unknown.
+  QuestID m_questID; // Inferred role: quest; original member name unknown.
   QSTATE unknown08;  // Inferred role: state; original member name unknown.
 };
 
 struct QuestPreCompleteParam : QuestParam {
-  QuestPreCompleteParam(QuestID quest) : QuestParam(QUEST_PARAM_UNKNOWN_5), unknown04(quest) {}
+  QuestPreCompleteParam(QuestID quest) : QuestParam(QUEST_PARAM_UNKNOWN_5), m_questID(quest) {}
 
-  QuestID unknown04; // Inferred role: quest; original member name unknown.
+  QuestID m_questID; // Inferred role: quest; original member name unknown.
 };
 
 struct QuestStateParam : QuestParam {
-  QuestStateParam(QuestID quest, QSTATE oldState, QSTATE state) : QuestParam(QUEST_PARAM_UNKNOWN_6), unknown04(quest), unknown08(oldState), unknown0c(state) {}
+  QuestStateParam(QuestID quest, QSTATE oldState, QSTATE state) : QuestParam(QUEST_PARAM_UNKNOWN_6), m_questID(quest), unknown08(oldState), unknown0c(state) {}
 
-  QuestID unknown04; // Inferred role: quest; original member name unknown.
+  QuestID m_questID; // Inferred role: quest; original member name unknown.
   QSTATE unknown08;  // Inferred role: old state; original member name unknown.
   QSTATE unknown0c;  // Inferred role: state; original member name unknown.
 };
@@ -59,9 +59,9 @@ struct QuestChangeParam : QuestParam {
 };
 
 struct QuestCompleteChildParam : QuestParam {
-  QuestCompleteChildParam(QuestID quest) : QuestParam(QUEST_PARAM_UNKNOWN_4), unknown04(quest) {}
+  QuestCompleteChildParam(QuestID quest) : QuestParam(QUEST_PARAM_UNKNOWN_4), m_questID(quest) {}
 
-  QuestID unknown04; // Inferred role: quest; original member name unknown.
+  QuestID m_questID; // Inferred role: quest; original member name unknown.
 };
 
 static_assert(sizeof(QuestOrderParam) == 0x08, "");
@@ -70,7 +70,7 @@ static_assert(sizeof(QuestPreCompleteParam) == 0x08, "");
 static_assert(sizeof(QuestStateParam) == 0x10, "");
 static_assert(sizeof(QuestChangeParam) == 0x0c, "");
 
-static_assert(offsetof(QuestCompleteChildParam, unknown04) == 0x04, "");
+static_assert(offsetof(QuestCompleteChildParam, m_questID) == 0x04, "");
 
 class IQuestEvent {
 public:
@@ -91,15 +91,15 @@ class GfQuestManager : public mm::mtl::PtrSingleton<GfQuestManager> {
 public:
   struct CompQuest {
     CompQuest &operator=(const CompQuest &other) {
-      unknown00.unknown00 = other.unknown00.unknown00;
-      unknown00.unknown02 = other.unknown00.unknown02;
+      m_questID.unknown00 = other.m_questID.unknown00;
+      m_questID.unknown02 = other.m_questID.unknown02;
       unknown04 = other.unknown04;
       return *this;
     }
 
-    bool operator==(const CompQuest &other) const { return unknown00 == other.unknown00 && unknown04 == other.unknown04; }
+    bool operator==(const CompQuest &other) const { return m_questID == other.m_questID && unknown04 == other.unknown04; }
 
-    QuestID unknown00; // Inferred role: quest; original member name unknown.
+    QuestID m_questID; // Inferred role: quest; original member name unknown.
     QSTATE unknown04;  // Inferred role: state; original member name unknown.
   };
 
