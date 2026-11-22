@@ -29,7 +29,10 @@
 #include "fw/fw_camera.h"
 #include "fw/fw_pad.h"
 #include "fw/fw_param_manager.h"
+#include "ml/dev_clock.h"
+#include "ml/dev_file_th.h"
 #include "ml/ml_mem.h"
+#include "ml/rand.h"
 #include "ml/scn.h"
 #include "ml/work_cpu.h"
 #include "ml/work_root.h"
@@ -44,12 +47,45 @@ class IAllocator;
 } // namespace mm
 
 namespace fw {
+enum LangType : u32;
 
 Framework::Framework()
     : m_applet(nullptr), unknown50(nullptr), unknown58(nullptr), unknown60(nullptr), unknown70(nullptr), unknown84(STATE_UNKNOWN_0), unknown88(false), unknown89(false), unknown8a(false),
       unknown8c(1.0f) {}
 
 Framework::~Framework() { destroyManager(); }
+
+void Framework::initialize(const FrameworkConfig &config, const FrameworkEnv &env) {
+  unknown10 = config;
+  unknown60 = env.unknown10;
+  unknown58 = env.unknown08;
+  unknown50 = env.unknown00;
+  unknown68 = env.unknown18;
+  unknown70 = env.unknown20;
+  unknown78.unknown08 = 1.0f;
+  unknown78.unknown00 = 1.0f / unknown10.unknown04;
+  unknown78.unknown04 = unknown78.unknown00 * unknown78.unknown08;
+  // The game stores unknown78.unknown08 (+0x80, 0x710017ade8) before the first layer store (+0x98), so the UpdateInfo fields come before the
+  // reset: written after it, the layer stores open the sequence (first difference at +0x64).
+  // unknown98 is a FixedArray (mm::mtl, the type the managers' layer arrays use): the game writes 32 elements of 0x10 bytes from +0x98 to +0x297,
+  // each (1.0f, 1.0f, 1.0f, false, false) as unknown077() builds. The game (0x710017ad84) unrolls the 32 resets fully; a plain index or pointer
+  // loop over the 5 member stores stays rolled (clang's unroll threshold), FixedArray::assign (a copy of the value per element) is unrolled.
+  unknown98.assign(unknown077());
+  long clock;
+  if (ml::DevClock::getClockNow(clock)) {
+    ml::mtInit(clock);
+  }
+  unknown3a0.setMemHandle(unknown68);
+  createMemorySection();
+  createManager();
+  if (ml::DevFileTh::checkValidFileBlock("bdat/jp.bin")) {
+    LangUtil::setLangType(static_cast<LangType>(config.unknown38));
+    LangUtil::setVoiceType(static_cast<LangType>(0));
+  }
+  BdatManager::loadBdat(0, FrameworkMemory::getMem(5), "common.bdat");
+  BdatManager::loadBdat(1, FrameworkMemory::getMem(5), "common_ms.bdat");
+  unknown84 = STATE_UNKNOWN_1;
+}
 
 void Framework::createMemorySection() {
   MemorySectionInfo info;
