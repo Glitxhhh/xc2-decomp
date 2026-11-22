@@ -26,7 +26,7 @@ void LayerObjDraw::renderMesh(grlib::CGLibDblUniformBlock *uniform, const LyrMes
 }
 
 void LayerObjDraw::draw_call_onm_def(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
   shader->setupVertex(static_cast<LayerDefVertType>(0));
   shader->unknown4f0 = 0;
   shader->setupShader(uniform);
@@ -34,7 +34,7 @@ void LayerObjDraw::draw_call_onm_def(grlib::CGLibDblUniformBlock *uniform, const
 }
 
 void LayerObjDraw::draw_call_onm_tex(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
   shader->setupVertex(static_cast<LayerDefVertType>(1));
   shader->unknown4f0 = 1;
   shader->setupShader(uniform);
@@ -50,25 +50,25 @@ void LayerObjDraw::draw_call_onm_tex(grlib::CGLibDblUniformBlock *uniform, const
 }
 
 void LayerObjDraw::draw_call_res_def(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
-  shader->setupVertex(unknown270, draw->unknown04);
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
+  shader->setupVertex(m_layerVertexObj, draw->unknown04);
   shader->unknown4f0 = 0;
   shader->setupShader(uniform);
-  unknown270->render(draw->unknown06);
+  m_layerVertexObj->render(draw->unknown06);
 }
 
 void LayerObjDraw::draw_call_res_tex(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
-  shader->setupVertex(unknown270, draw->unknown04);
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
+  shader->setupVertex(m_layerVertexObj, draw->unknown04);
   shader->unknown4f0 = 1;
   shader->setupShader(uniform);
   shader->setupTexture(*unknown280[*reinterpret_cast<const u16 *>(unknown298->unknown08 + static_cast<size_t>(draw->unknown08) * 6 + 2)], static_cast<LayerSamplerType>(m_texFilterType), 0);
-  unknown270->render(draw->unknown06);
+  m_layerVertexObj->render(draw->unknown06);
 }
 
 void LayerObjDraw::draw_call_win_def(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
-  shader->setupVertex(unknown270, draw->unknown04);
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
+  shader->setupVertex(m_layerVertexObj, draw->unknown04);
   shader->unknown4f0 = 3;
   shader->setupShader(uniform);
   LayerSamplerType sampler;
@@ -85,12 +85,12 @@ void LayerObjDraw::draw_call_win_def(grlib::CGLibDblUniformBlock *uniform, const
       textures += 3;
     }
   }
-  unknown270->render(draw->unknown06);
+  m_layerVertexObj->render(draw->unknown06);
 }
 
 void LayerObjDraw::draw_call_win_tex(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
-  shader->setupVertex(unknown270, draw->unknown04);
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
+  shader->setupVertex(m_layerVertexObj, draw->unknown04);
   shader->unknown4f0 = 3;
   shader->setupShader(uniform);
   LayerSamplerType sampler;
@@ -107,11 +107,11 @@ void LayerObjDraw::draw_call_win_tex(grlib::CGLibDblUniformBlock *uniform, const
       textures += 3;
     }
   }
-  unknown270->render(draw->unknown06);
+  m_layerVertexObj->render(draw->unknown06);
 }
 
 void LayerObjDraw::draw_call_icon(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
   shader->setupVertex(static_cast<LayerDefVertType>(2));
   shader->unknown4f0 = 4;
   shader->setupShader(uniform);
@@ -127,7 +127,7 @@ void LayerObjDraw::draw_call_icon(grlib::CGLibDblUniformBlock *uniform, const Ly
 }
 
 void LayerObjDraw::draw_call_number(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
   shader->setupVertex(static_cast<LayerDefVertType>(2));
   shader->unknown4f0 = 5;
   shader->setupShader(uniform);
@@ -144,7 +144,7 @@ void LayerObjDraw::draw_call_number(grlib::CGLibDblUniformBlock *uniform, const 
 }
 
 void LayerObjDraw::draw_call_hdr(grlib::CGLibDblUniformBlock *uniform, const LyrDrawData *draw) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
   shader->setupVertex(static_cast<LayerDefVertType>(1));
   shader->unknown4f0 = 10;
   shader->setupShader(uniform);

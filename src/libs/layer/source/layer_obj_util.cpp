@@ -59,31 +59,31 @@ void LayerObjUtil::calcLayoutDispInfo(LayerResDispInfo &disp, const LayerResMatr
 
 void LayerObjUtil::calcLayerRenderView(LayerRenderView &result, LayerResViewPortInfo &viewPort, grlib::CGLibDblUniformBlock *&uniform, const LayerViewPort &port, const LayerRenderView *view,
                                        const LayerResMatrix *matrix) {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
   result = *view;
   f32 posX = matrix->unknown00 * shader->m_screenWidth;
   f32 posY = matrix->unknown04 * shader->m_screenHeight * (1.0f / shader->m_screenRatioHeight);
-  viewPort.unknown00.unknown00 = posX + port.unknown00;
-  viewPort.unknown00.unknown04 = posY + port.unknown04;
-  viewPort.unknown00.unknown0c = port.unknown0c;
-  viewPort.unknown00.unknown08 = port.unknown08;
+  viewPort.m_layerViewPort.unknown00 = posX + port.unknown00;
+  viewPort.m_layerViewPort.unknown04 = posY + port.unknown04;
+  viewPort.m_layerViewPort.unknown0c = port.unknown0c;
+  viewPort.m_layerViewPort.unknown08 = port.unknown08;
   if (uniform == nullptr) {
     uniform = new (LayerManager::get()->unknown2c) grlib::CGLibDblUniformBlock();
     uniform->setup(0x40);
   }
 
   f32 *buff = static_cast<f32 *>(uniform->getBuff());
-  f32 x = viewPort.unknown00.unknown00 * shader->unknown558 / shader->m_screenWidth;
-  f32 y = shader->unknown558 * viewPort.unknown00.unknown04 / shader->m_screenHeight;
-  f32 sclX = 1.0f / (shader->unknown558 * viewPort.unknown00.unknown08 / shader->m_screenWidth);
-  f32 sclY = 1.0f / (shader->unknown558 * viewPort.unknown00.unknown0c / shader->m_screenHeight);
+  f32 x = viewPort.m_layerViewPort.unknown00 * shader->unknown558 / shader->m_screenWidth;
+  f32 y = shader->unknown558 * viewPort.m_layerViewPort.unknown04 / shader->m_screenHeight;
+  f32 sclX = 1.0f / (shader->unknown558 * viewPort.m_layerViewPort.unknown08 / shader->m_screenWidth);
+  f32 sclY = 1.0f / (shader->unknown558 * viewPort.m_layerViewPort.unknown0c / shader->m_screenHeight);
   buff[0] = sclX;
   buff[1] = sclY;
   buff[2] = sclX - 1.0f - x * 2.0f * sclX;
   buff[3] = -(sclY - 1.0f - y * 2.0f * sclY);
   uniform->updateData();
   viewPort.unknown18 = uniform;
-  result.unknown08 = &viewPort;
+  result.m_layerResViewPortInfo = &viewPort;
 }
 
 void LayerObjUtil::calcLayerColor(LayerResColor &result, const LayerResColor &base, const LayerResColor &parent) {

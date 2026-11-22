@@ -168,11 +168,11 @@ SoundSsdSource *SoundSsdSource::createWave(const SetupWaveInfo &info) {
 #line 503
     ssd::SoundEntry *entry = new (FrameworkMemory::getAllocator(5), 8, __FILE__, __LINE__) ssd::SoundEntry;
     source->unknown18 = entry;
-    entry->unknownc8 = source->unknown10;
-    entry->unknown30 = info.unknown00;
+    entry->m_waveSource = source->unknown10;
+    entry->m_soundParam = info.unknown00;
     source->unknown20->addEntry(source->unknown18);
     source->unknown20->addSource(source);
-    if (info.unknown00.unknown68.unknown01) {
+    if (info.unknown00.m_state.unknown01) {
       source->unknown240 |= FLAG_UNKNOWN_1;
     }
   }
@@ -225,46 +225,46 @@ mm::mtl::IntrusivePtr<SoundSsdSource> SoundSsdBank::addWave(const WaveInfo &info
   setup.unknownb8 = info.unknown18;
   ssd::SoundParam &param = setup.unknown00;
   param.Init();
-  param.unknown4c.unknown01 = unknown130.unknown18;
-  param.unknown4c.unknown02 = info.unknown1c;
-  param.unknown4c.unknown18 = static_cast<f32>(info.unknown20);
+  param.m_base.unknown01 = unknown130.unknown18;
+  param.m_base.unknown02 = info.unknown1c;
+  param.m_base.unknown18 = static_cast<f32>(info.unknown20);
   param.unknown48 = SoundManager::getUniqueID(info.unknown1c);
-  param.unknown00 = ssd::TextRef(info.unknown08);
+  param.m_name = ssd::TextRef(info.unknown08);
   if (info.unknown44 != 0) {
-    param.unknown4c.unknown0c = 0.0f;
+    param.m_base.unknown0c = 0.0f;
   }
 
   if (info.unknown38 != 0) {
-    param.unknown4c.unknown04 = static_cast<f32>(info.unknown38) * 0.01f;
+    param.m_base.unknown04 = static_cast<f32>(info.unknown38) * 0.01f;
   }
 
   if (info.unknown3c != 0) {
-    param.unknown4c.unknown08 = static_cast<f32>(info.unknown3c) * 0.01f;
+    param.m_base.unknown08 = static_cast<f32>(info.unknown3c) * 0.01f;
   }
 
   if (info.unknown40 > 0.000001f) {
-    param.unknown4c.unknown10 = info.unknown40;
+    param.m_base.unknown10 = info.unknown40;
   }
 
   if (info.unknown24) {
-    param.unknown68.unknown01 = true;
-    param.unknown68.unknown02 = true;
-    param.unknown68.unknown03 = false;
-    param.unknown68.unknown06 = false;
+    param.m_state.unknown01 = true;
+    param.m_state.unknown02 = true;
+    param.m_state.unknown03 = false;
+    param.m_state.unknown06 = false;
   } else {
-    param.unknown68.unknown01 = false;
-    param.unknown68.unknown02 = false;
-    param.unknown4c.unknown0c = info.unknown2c;
-    if (param.unknown4c.unknown0c == 0.0f) {
-      param.unknown4c.unknown0c = 1.0f;
+    param.m_state.unknown01 = false;
+    param.m_state.unknown02 = false;
+    param.m_base.unknown0c = info.unknown2c;
+    if (param.m_base.unknown0c == 0.0f) {
+      param.m_base.unknown0c = 1.0f;
     }
   }
 
-  param.unknown68.unknown07 = info.unknown44 != 0;
-  param.unknown70.unknown00 = info.unknown28;
-  param.unknown70.unknown04 = info.unknown2c;
-  param.unknown70.unknown08 = info.unknown30;
-  param.unknown70.unknown0c = info.unknown34;
+  param.m_state.unknown07 = info.unknown44 != 0;
+  param.m_surround.unknown00 = info.unknown28;
+  param.m_surround.unknown04 = info.unknown2c;
+  param.m_surround.unknown08 = info.unknown30;
+  param.m_surround.unknown0c = info.unknown34;
   return SoundSsdSource::createWave(setup);
 }
 
@@ -280,12 +280,12 @@ mm::mtl::IntrusivePtr<SoundSsdSource> SoundSsdBank::addStream(const char *name, 
   setup.unknowna0 = name;
   ssd::SoundParam &param = setup.unknown00;
   param.Init();
-  param.unknown4c.unknown00 = true;
-  param.unknown4c.unknown02 = category;
-  param.unknown4c.unknown18 = static_cast<f32>(priority);
+  param.m_base.unknown00 = true;
+  param.m_base.unknown02 = category;
+  param.m_base.unknown18 = static_cast<f32>(priority);
   param.unknown48 = SoundManager::getUniqueID(category);
-  param.unknown4c.unknown01 = unknown130.unknown18;
-  param.unknown4c.unknown0c = SoundSsdDriver::get()->getBgmVolume(name);
+  param.m_base.unknown01 = unknown130.unknown18;
+  param.m_base.unknown0c = SoundSsdDriver::get()->getBgmVolume(name);
   return SoundSsdSource::createStream(setup);
 }
 

@@ -28,31 +28,31 @@ void LayerFontStyleObj::setStyleData(const void *data) {
   const unknown005 *header = static_cast<const unknown005 *>(data);
   unknown20 = data;
   m_styleDataMax = header->unknown0c;
-  unknown30 = reinterpret_cast<const LyrFontStyleData *>(static_cast<const u8 *>(data) + header->unknown08);
+  m_lyrFontStyleData = reinterpret_cast<const LyrFontStyleData *>(static_cast<const u8 *>(data) + header->unknown08);
 }
 
 const LyrFontStyleData *LayerFontStyleObj::getStyleData(u32 index) const {
   if (index < m_styleDataMax) {
-    return unknown30 + index;
+    return m_lyrFontStyleData + index;
   }
-  return unknown30;
+  return m_lyrFontStyleData;
 }
 
 s32 LayerFontStyleObj::getStyleIndex(const char *name) const {
   for (u32 i = 0; i < m_styleDataMax; i++) {
-    if (strcmp(static_cast<const char *>(unknown20) + unknown30[i].unknown04, name) == 0) {
+    if (strcmp(static_cast<const char *>(unknown20) + m_lyrFontStyleData[i].unknown04, name) == 0) {
       return i;
     }
   }
   return -1;
 }
 
-const char *LayerFontStyleObj::getStyleName(u32 index) const { return static_cast<const char *>(unknown20) + unknown30[index].unknown04; }
+const char *LayerFontStyleObj::getStyleName(u32 index) const { return static_cast<const char *>(unknown20) + m_lyrFontStyleData[index].unknown04; }
 
-const char *LayerFontStyleObj::getFontName(u32 index) const { return static_cast<const char *>(unknown20) + unknown30[index].unknown08; }
+const char *LayerFontStyleObj::getFontName(u32 index) const { return static_cast<const char *>(unknown20) + m_lyrFontStyleData[index].unknown08; }
 
 LayerFontStyleObj::LayerFontStyleObj(LayerFontManager *manager) {
-  unknown38 = manager;
+  m_layerFontManager = manager;
   unknown18 = LAYER_OBJ_TYPE_FONT_STYLE;
   m_rubyScale = RUBY_SCALE;
   m_colorInfo = nullptr;
@@ -82,7 +82,7 @@ void LayerFontStyleObj::release() {
   unknown1c = 0x22;
   releaseColorInfo();
   releaseIconInfo();
-  unknown38->releaseStyleObj(this);
+  m_layerFontManager->releaseStyleObj(this);
 }
 
 } // namespace layer

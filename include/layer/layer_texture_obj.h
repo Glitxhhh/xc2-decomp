@@ -57,10 +57,10 @@ public:
   LayerTextureObj *createTextureObj(const u8 *data);
   void releaseTextureObj(LayerTextureObj *textureObj);
 
-  LayerManager *unknown18; // Inferred role: layer manager; original member name unknown.
+  LayerManager *m_layerManager; // Inferred role: layer manager; original member name unknown.
 };
 
-static_assert(offsetof(LayerTextureMan, unknown18) == 0x18, "");
+static_assert(offsetof(LayerTextureMan, m_layerManager) == 0x18, "");
 static_assert(sizeof(LayerTextureMan) == 0x20, "");
 
 } // namespace layer

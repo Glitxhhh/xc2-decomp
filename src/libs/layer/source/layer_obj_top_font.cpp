@@ -38,12 +38,12 @@ void LayerObjTopFont::setDrawList(LayerSortMan *sortMan, bool is3D) {
   }
   if (is3D) {
     if (unknowna8 & 0x400) {
-      LayerManager::get()->unknown60->unknown10->set3DSpace(unknown250->unknown38, unknown200);
+      LayerManager::get()->m_layerObjManager->m_layerSortMan->set3DSpace(unknown250->m_layerSortObj, unknown200);
     } else if (!isClip()) {
-      sortMan->set2DSpace(unknown250->unknown38, m_priority);
+      sortMan->set2DSpace(unknown250->m_layerSortObj, m_priority);
     }
   } else if (!isClip()) {
-    sortMan->set2DSpace(unknown250->unknown38, m_priority);
+    sortMan->set2DSpace(unknown250->m_layerSortObj, m_priority);
   }
 }
 
@@ -57,12 +57,12 @@ inline void LayerObjTopFont::unknown001(LayerShdManager *shader, s16 type) {
   shader->unknown4f0 = 2;
   shader->setupShader(unknown250->unknown68);
   shader->setupInstaceVertex(*unknown250->unknown60, LayerFontTag::FONT_INSTANCE_SIZE, 0);
-  shader->setupTexture(*unknown250->unknown08->unknown60, static_cast<LayerSamplerType>(m_texFilterType), 0);
+  shader->setupTexture(*unknown250->m_layerFontResObj->unknown60, static_cast<LayerSamplerType>(m_texFilterType), 0);
 }
 
 void LayerObjTopFont::finalRender() {
-  LayerShdManager *shader = LayerManager::get()->unknown58;
-  if (!shader->unknown002(unknown248, unknown270)) {
+  LayerShdManager *shader = LayerManager::get()->m_layerShdManager;
+  if (!shader->unknown002(m_layerObjTopMaskObj, m_layerResViewPortInfo)) {
     return;
   }
   shader->unknown003(LayerShdManager::s_resDefBlend[unknownc5]);
@@ -74,14 +74,14 @@ void LayerObjTopFont::finalRender() {
       shader->renderInstaceQuadsIndex(unknown250->unknown40);
       unknown001(shader, m_colorMap != nullptr ? 4 : 3);
       if (m_colorMap != nullptr) {
-        const LayerTextureObj *colorMap = m_colorMap->unknown40;
+        const LayerTextureObj *colorMap = m_colorMap->m_layerTextureObj;
         shader->setupTexture(*colorMap->getTexture(0), static_cast<LayerSamplerType>(m_texFilterType), 1);
       }
       shader->renderInstaceQuadsIndex(unknown250->unknown40);
     } else {
       unknown001(shader, m_colorMap != nullptr ? 2 : 1);
       if (m_colorMap != nullptr) {
-        const LayerTextureObj *colorMap = m_colorMap->unknown40;
+        const LayerTextureObj *colorMap = m_colorMap->m_layerTextureObj;
         shader->setupTexture(*colorMap->getTexture(0), static_cast<LayerSamplerType>(m_texFilterType), 1);
       }
       shader->renderInstaceQuadsIndex(unknown250->unknown40);
@@ -94,7 +94,7 @@ void LayerObjTopFont::finalRender() {
   shader->unknown4f0 = 2;
   shader->setupShader(unknown250->unknown68);
   shader->setupInstaceVertex(*unknown250->unknown60, LayerFontTag::FONT_INSTANCE_SIZE, unknown250->unknown2c);
-  const LayerTextureObj *icon = unknown288->unknown40;
+  const LayerTextureObj *icon = unknown288->m_layerTextureObj;
   shader->setupTexture(*icon->getTexture(0), static_cast<LayerSamplerType>(m_texFilterType), 0);
   shader->renderInstaceQuadsIndex(unknown250->unknown30);
 }

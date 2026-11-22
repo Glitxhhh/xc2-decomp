@@ -15,9 +15,9 @@ LayerObjFont::LayerObjFont() {
   unknown258[0] = nullptr;
   unknown258[1] = nullptr;
   unknown268 = nullptr;
-  unknown270 = nullptr;
-  unknown278 = nullptr;
-  unknown280 = nullptr;
+  m_layerResViewPortInfo = nullptr;
+  m_layerFontResObj = nullptr;
+  m_layerFontStyleObj = nullptr;
   unknown288 = nullptr;
   m_colorMap = nullptr;
   unknown298 = 0;
@@ -65,8 +65,8 @@ void LayerObjFont::setMsg(const u8 *text, const LayerFontResObj *res, const Laye
   if (unknown258[LayerManager::s_nStkIdx] != nullptr) {
     workPartsRelease(unknown258[LayerManager::s_nStkIdx]);
   }
-  unknown278 = res;
-  unknown280 = style;
+  m_layerFontResObj = res;
+  m_layerFontStyleObj = style;
   unknown298 = flags;
   unknown288 = icon;
   LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(m_dispSetting), this);
@@ -79,8 +79,8 @@ void LayerObjFont::setMsg(const wchar_t *text, const LayerFontResObj *res, const
   if (unknown258[LayerManager::s_nStkIdx] != nullptr) {
     workPartsRelease(unknown258[LayerManager::s_nStkIdx]);
   }
-  unknown278 = res;
-  unknown280 = style;
+  m_layerFontResObj = res;
+  m_layerFontStyleObj = style;
   unknown298 = flags;
   unknown288 = icon;
   LayerFontDrawBuffer buffer(res, style, style->getStyleData(flags), unknown288, static_cast<LayerFontSetting>(m_dispSetting), this);

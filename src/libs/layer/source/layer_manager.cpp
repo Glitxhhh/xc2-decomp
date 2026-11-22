@@ -50,11 +50,11 @@ LayerManager::LayerManager(ml::Scn *scn, mtl::ALLOC_HANDLE handle, unsigned int 
   unknown2c = mtl::MemManager::create(unknown20, gxSize, "LayerGx", true);
   unknown30.setMemHandle(unknown28);
   unknown40.setMemHandle(unknown2c);
-  unknowna0.setMemHandle(unknown28);
-  unknown58 = new (unknown28) LayerShdManager(this);
-  unknown60 = new (unknown28) LayerObjManager(this);
-  unknown68 = new (unknown28) LayerFontManager(this);
-  unknown70 = new (unknown28) LayerRceManager(this);
+  m_layerMemHandleAllocator.setMemHandle(unknown28);
+  m_layerShdManager = new (unknown28) LayerShdManager(this);
+  m_layerObjManager = new (unknown28) LayerObjManager(this);
+  m_layerFontManager = new (unknown28) LayerFontManager(this);
+  m_layerRceManager = new (unknown28) LayerRceManager(this);
   unknown78 = 1;
   if (unknown50->unknown38 != nullptr) {
     unknown50->unknown38->setCallBack(this);
@@ -70,21 +70,21 @@ LayerManager::~LayerManager() {
   if (unknown50->unknown38 != nullptr) {
     unknown50->unknown38->releaseCallBack(this);
   }
-  if (unknown60 != nullptr) {
-    delete unknown60;
-    unknown60 = nullptr;
+  if (m_layerObjManager != nullptr) {
+    delete m_layerObjManager;
+    m_layerObjManager = nullptr;
   }
-  if (unknown68 != nullptr) {
-    delete unknown68;
-    unknown68 = nullptr;
+  if (m_layerFontManager != nullptr) {
+    delete m_layerFontManager;
+    m_layerFontManager = nullptr;
   }
-  if (unknown70 != nullptr) {
-    delete unknown70;
-    unknown70 = nullptr;
+  if (m_layerRceManager != nullptr) {
+    delete m_layerRceManager;
+    m_layerRceManager = nullptr;
   }
-  if (unknown58 != nullptr) {
-    delete unknown58;
-    unknown58 = nullptr;
+  if (m_layerShdManager != nullptr) {
+    delete m_layerShdManager;
+    m_layerShdManager = nullptr;
   }
   if (unknown2c.isValid()) {
     mtl::MemManager::erase(unknown2c);
@@ -106,7 +106,7 @@ LayerManager::~LayerManager() {
 
 void LayerManager::beginFastSetup() {
   unknown78 |= 1;
-  unknown58->readShader();
+  m_layerShdManager->readShader();
   unknown10 = &LayerManager::loadWait;
 }
 
@@ -116,58 +116,58 @@ void LayerManager::tail() {
   s_nTriIdx = s_nTriIdx > 1 ? 0 : s_nTriIdx + 1;
 }
 
-f32 LayerManager::getScreenDivWidth() const { return unknown58->m_screenDivWidth; }
+f32 LayerManager::getScreenDivWidth() const { return m_layerShdManager->m_screenDivWidth; }
 
-f32 LayerManager::getScreenDivHeight() const { return unknown58->m_screenDivHeight; }
+f32 LayerManager::getScreenDivHeight() const { return m_layerShdManager->m_screenDivHeight; }
 
-f32 LayerManager::getScreenCalcSclWidth() const { return unknown58->m_screenCalcSclWidth; }
+f32 LayerManager::getScreenCalcSclWidth() const { return m_layerShdManager->m_screenCalcSclWidth; }
 
-f32 LayerManager::getScreenCalcSclHeight() const { return unknown58->m_screenCalcSclHeight; }
+f32 LayerManager::getScreenCalcSclHeight() const { return m_layerShdManager->m_screenCalcSclHeight; }
 
-f32 LayerManager::getScreenCalcPosWidth() const { return unknown58->m_screenCalcPosWidth; }
+f32 LayerManager::getScreenCalcPosWidth() const { return m_layerShdManager->m_screenCalcPosWidth; }
 
-f32 LayerManager::getScreenCalcPosHeight() const { return unknown58->m_screenCalcPosHeight; }
+f32 LayerManager::getScreenCalcPosHeight() const { return m_layerShdManager->m_screenCalcPosHeight; }
 
-f32 LayerManager::getScreenRatioHeight() const { return unknown58->m_screenRatioHeight; }
+f32 LayerManager::getScreenRatioHeight() const { return m_layerShdManager->m_screenRatioHeight; }
 
 void LayerManager::begin() { (this->*unknown10)(); }
 
 void LayerManager::end() {
   if (!(unknown78 & 1)) {
-    unknown60->end();
+    m_layerObjManager->end();
   }
 }
 
 void LayerManager::apply(const ml::IDrDrawWorkInfo *info) {
   if (!(unknown78 & 1) && info->unknown560 == 0) {
-    unknown60->apply(info);
+    m_layerObjManager->apply(info);
   }
 }
 
 void LayerManager::finalRender(const ml::IDrDrawWorkInfo *info) {
   if (!(unknown78 & 1) && info->unknown560 == 0) {
-    unknown58->beginShader(info);
-    unknown60->finalRender(info);
-    unknown58->endShader(info);
+    m_layerShdManager->beginShader(info);
+    m_layerObjManager->finalRender(info);
+    m_layerShdManager->endShader(info);
   }
 }
 
 void LayerManager::loadWait() {
   unknown78 |= 1;
-  if (unknown58->setupUpdate()) {
+  if (m_layerShdManager->setupUpdate()) {
     unknown78 &= ~1;
-    unknown68->update();
-    unknown70->update();
-    unknown60->begin();
+    m_layerFontManager->update();
+    m_layerRceManager->update();
+    m_layerObjManager->begin();
     unknown10 = &LayerManager::defSetup;
   }
 }
 
 void LayerManager::defSetup() {
   unknown78 &= ~1;
-  unknown68->update();
-  unknown70->update();
-  unknown60->begin();
+  m_layerFontManager->update();
+  m_layerRceManager->update();
+  m_layerObjManager->begin();
 }
 
 void LayerManager::reLoadShd() { unknown78 |= 1; }

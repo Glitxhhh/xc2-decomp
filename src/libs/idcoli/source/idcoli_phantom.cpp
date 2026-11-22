@@ -13,20 +13,20 @@ IDColiPhantom::IDColiPhantom() {
   unknown04 = 0.0f;
   unknown01 = true;
   unknown02 = true;
-  unknown08 = nullptr;
+  m_iDColiCallBack = nullptr;
 }
 
 bool IDColiPhantom::testLine(const mm::Vec3 &start, const mm::Vec3 &end) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiInput input;
   IDColiInputUtil::getLine(input, start, end, true);
   input.unknowna0 = unknown04;
   IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[1]);
   tree.startTreeAaBbMode(input.line.unknown40, input.line.unknown50);
   ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-  if (unknown08 == nullptr) {
+  if (m_iDColiCallBack == nullptr) {
     for (; list != nullptr; list = tree.unknown033()) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
@@ -61,8 +61,8 @@ bool IDColiPhantom::testLine(const mm::Vec3 &start, const mm::Vec3 &end) {
   if (!isHit) {
     return false;
   }
-  if (unknown10.unknown00 == 1 && unknown08 != nullptr) {
-    unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+  if (unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
+    m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
   }
   return true;
 }
@@ -70,14 +70,14 @@ bool IDColiPhantom::testLine(const mm::Vec3 &start, const mm::Vec3 &end) {
 bool IDColiPhantom::testRay(const mm::Vec3 &start, const mm::Vec3 &direction, f32 length, f32 backLength) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiInput input;
   IDColiInputUtil::getRay(input, start, direction, length, -backLength, true);
   input.unknowna0 = unknown04;
   IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[1]);
   tree.startTreeAaBbMode(input.unknown00, input.unknown10);
   ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-  if (unknown08 == nullptr) {
+  if (m_iDColiCallBack == nullptr) {
     for (; list != nullptr; list = tree.unknown033()) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
@@ -112,12 +112,12 @@ bool IDColiPhantom::testRay(const mm::Vec3 &start, const mm::Vec3 &direction, f3
   if (!isHit) {
     return false;
   }
-  if (unknown10.unknown00 == 1 && unknown08 != nullptr) {
+  if (unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
     if (unknown10.unknownb0) {
-      unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+      m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
     }
     if (unknown10.unknownb1) {
-      unknown08->coli_param_callback(unknown10.unknowna8, unknown10.unknown50);
+      m_iDColiCallBack->coli_param_callback(unknown10.unknowna8, unknown10.unknown50);
     }
   }
   return true;
@@ -129,11 +129,11 @@ bool IDColiPhantom::testSphere(const mm::Vec3 &center, f32 radius) {
   input.unknowna0 = unknown04;
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[1]);
   tree.startTreeAaBbMode(input.unknown00, input.unknown10);
   ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-  if (unknown08 == nullptr) {
+  if (m_iDColiCallBack == nullptr) {
     for (; list != nullptr; list = tree.unknown033()) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
@@ -168,8 +168,8 @@ bool IDColiPhantom::testSphere(const mm::Vec3 &center, f32 radius) {
   if (!isHit) {
     return false;
   }
-  if (unknown10.unknown00 == 1 && unknown08 != nullptr) {
-    unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+  if (unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
+    m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
   }
   return true;
 }
@@ -180,11 +180,11 @@ bool IDColiPhantom::testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 
   input.unknowna0 = unknown04;
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[1]);
   tree.startTreeAaBbMode(input.unknown00, input.unknown10);
   ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-  if (unknown08 == nullptr) {
+  if (m_iDColiCallBack == nullptr) {
     for (; list != nullptr; list = tree.unknown033()) {
       for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
         IDColiObjPhantomCheck *object = static_cast<IDColiObjPhantomCheck *>(reinterpret_cast<unknown031 *>(node)->unknown10);
@@ -219,8 +219,8 @@ bool IDColiPhantom::testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 
   if (!isHit) {
     return false;
   }
-  if (unknown10.unknown00 == 1 && unknown08 != nullptr) {
-    unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+  if (unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
+    m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
   }
   return true;
 }
@@ -229,7 +229,7 @@ bool IDColiPhantom::testCapsule(const mm::Vec3 &start, const mm::Vec3 &end, f32 
 bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiObjBase *phantom = static_cast<IDColiObjBase *>(object);
   IDColiInput input;
   switch (phantom->unknownc4) {
@@ -240,11 +240,11 @@ bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
     input.unknowna0 = unknown04;
     unknown10.unknown030();
     unknown10.unknownf8 = nullptr;
-    unknown10.unknown100 = unknown08;
+    unknown10.m_iDColiCallBack = m_iDColiCallBack;
     IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[0]);
     tree.startTreeAaBbMode(input.unknown00, input.unknown10);
     ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-    if (unknown08 != nullptr) {
+    if (m_iDColiCallBack != nullptr) {
       bool isHit = false;
       for (; list != nullptr; list = tree.unknown033()) {
         for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
@@ -271,11 +271,11 @@ bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
     input.unknowna0 = unknown04;
     unknown10.unknown030();
     unknown10.unknownf8 = nullptr;
-    unknown10.unknown100 = unknown08;
+    unknown10.m_iDColiCallBack = m_iDColiCallBack;
     IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[0]);
     tree.startTreeAaBbMode(input.unknown00, input.unknown10);
     ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-    if (unknown08 != nullptr) {
+    if (m_iDColiCallBack != nullptr) {
       bool isHit = false;
       for (; list != nullptr; list = tree.unknown033()) {
         for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {
@@ -304,11 +304,11 @@ bool IDColiPhantom::testPhantomColiObj(IDColiObj *object, f32 range) {
     input.unknowna0 = unknown04;
     unknown10.unknown030();
     unknown10.unknownf8 = nullptr;
-    unknown10.unknown100 = unknown08;
+    unknown10.m_iDColiCallBack = m_iDColiCallBack;
     IDColiUtilTreeAcc tree(IDColiManager::get()->unknownd8[0]);
     tree.startTreeAaBbMode(input.unknown00, input.unknown10);
     ColiLinkList<IDColiTreeObj> *list = tree.unknown033();
-    if (unknown08 != nullptr) {
+    if (m_iDColiCallBack != nullptr) {
       bool isHit = false;
       for (; list != nullptr; list = tree.unknown033()) {
         for (IDColiTreeObj *node = list->m_head; node != nullptr; node = node->unknown08) {

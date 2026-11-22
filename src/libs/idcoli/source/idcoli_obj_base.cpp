@@ -7,10 +7,10 @@
 namespace idcoli {
 
 IDColiObjBase::IDColiObjBase(IDColiTreeTop *tree) {
-  unknown1a8 = tree;
-  unknown1b0.unknown00 = nullptr;
+  m_iDColiTreeTop = tree;
+  m_iDColiTreeObj.unknown00 = nullptr;
   m_size.x = 0.5f;
-  unknown1b0.unknown08 = nullptr;
+  m_iDColiTreeObj.unknown08 = nullptr;
   unknown1c0 = this;
   m_size.y = 2.0f;
   m_size.z = 0.5f;
@@ -132,17 +132,17 @@ void IDColiObjBase::sweepTreeMax(IdSweepAxisType sweepAxis, IdVectorAxisType vec
 
 void IDColiObjBase::releaseDefTree() {
   if (unknown1c8 != -1) {
-    unknown1a8->releaseTreeList(&unknown1b0, unknown1c8);
+    m_iDColiTreeTop->releaseTreeList(&m_iDColiTreeObj, unknown1c8);
     unknown1c8 = -1;
   }
 }
 
-void IDColiObjBase::defTreeUpdate() { unknown1c8 = unknown1a8->setupTreeList(&unknown1b0, m_max, m_min); }
+void IDColiObjBase::defTreeUpdate() { unknown1c8 = m_iDColiTreeTop->setupTreeList(&m_iDColiTreeObj, m_max, m_min); }
 
 void IDColiObjBase::updateBaseTree() {
   unknown1c8 = -1;
   if (!(unknown1c & 0x80)) {
-    unknown1c8 = unknown1a8->setupTreeList(&unknown1b0, m_max, m_min);
+    unknown1c8 = m_iDColiTreeTop->setupTreeList(&m_iDColiTreeObj, m_max, m_min);
   }
 }
 
@@ -246,7 +246,7 @@ IDColiObjData::IDColiObjData(IDColiTreeTop *tree) : IDColiObjBase(tree) {
   unknown1e8 = nullptr;
   m_boneMax = 0;
   unknown1fc = 0;
-  unknown200 = nullptr;
+  m_iDColiObjGrdChar = nullptr;
 }
 
 void IDColiObjData::workNodeClear() {

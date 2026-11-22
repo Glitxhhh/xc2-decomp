@@ -13,13 +13,13 @@ IDColiCheckObj::IDColiCheckObj() {
   unknown04 = 0.0f;
   unknown01 = true;
   unknown02 = true;
-  unknown08 = nullptr;
+  m_iDColiCallBack = nullptr;
 }
 
 bool IDColiCheckObj::testLine(const IDColiObj *object, const mm::Vec3 &start, const mm::Vec3 &end) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiInput input;
   IDColiInputUtil::getLine(input, start, end, true);
   input.unknowna0 = unknown04;
@@ -46,8 +46,8 @@ bool IDColiCheckObj::testLine(const IDColiObj *object, const mm::Vec3 &start, co
     isHit = static_cast<IDColiObjGrand *>(target)->unknown051(unknown10, input);
     break;
   }
-  if (isHit && unknown10.unknown00 == 1 && unknown08 != nullptr) {
-    unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+  if (isHit && unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
+    m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
   }
   return isHit;
 }
@@ -55,7 +55,7 @@ bool IDColiCheckObj::testLine(const IDColiObj *object, const mm::Vec3 &start, co
 bool IDColiCheckObj::testRay(const IDColiObj *object, const mm::Vec3 &start, const mm::Vec3 &direction, f32 length, f32 backLength) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiInput input;
   IDColiInputUtil::getRay(input, start, direction, length, -backLength, true);
   input.unknowna0 = unknown04;
@@ -82,12 +82,12 @@ bool IDColiCheckObj::testRay(const IDColiObj *object, const mm::Vec3 &start, con
     isHit = static_cast<IDColiObjGrand *>(target)->unknown052(unknown10, input);
     break;
   }
-  if (isHit && unknown10.unknown00 == 1 && unknown08 != nullptr) {
+  if (isHit && unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
     if (unknown10.unknownb0) {
-      unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+      m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
     }
     if (unknown10.unknownb1) {
-      unknown08->coli_param_callback(unknown10.unknowna8, unknown10.unknown50);
+      m_iDColiCallBack->coli_param_callback(unknown10.unknowna8, unknown10.unknown50);
     }
   }
   // Returns false even after a hit (original bug, reproduced).
@@ -97,7 +97,7 @@ bool IDColiCheckObj::testRay(const IDColiObj *object, const mm::Vec3 &start, con
 bool IDColiCheckObj::testSphere(const IDColiObj *object, const mm::Vec3 &center, f32 radius) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiInput input;
   IDColiInputUtil::getSphere(input, center, radius, true);
   input.unknowna0 = unknown04;
@@ -124,8 +124,8 @@ bool IDColiCheckObj::testSphere(const IDColiObj *object, const mm::Vec3 &center,
     isHit = static_cast<IDColiObjGrand *>(target)->unknown053(unknown10, input, false);
     break;
   }
-  if (isHit && unknown10.unknown00 == 1 && unknown08 != nullptr) {
-    unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+  if (isHit && unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
+    m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
   }
   return isHit;
 }
@@ -133,7 +133,7 @@ bool IDColiCheckObj::testSphere(const IDColiObj *object, const mm::Vec3 &center,
 bool IDColiCheckObj::testCapsule(const IDColiObj *object, const mm::Vec3 &start, const mm::Vec3 &end, f32 radius) {
   unknown10.unknown030();
   unknown10.unknownf8 = nullptr;
-  unknown10.unknown100 = unknown08;
+  unknown10.m_iDColiCallBack = m_iDColiCallBack;
   IDColiInput input;
   IDColiInputUtil::getCapsule(input, start, end, radius, true);
   input.unknowna0 = unknown04;
@@ -160,8 +160,8 @@ bool IDColiCheckObj::testCapsule(const IDColiObj *object, const mm::Vec3 &start,
     isHit = static_cast<IDColiObjGrand *>(target)->unknown054(unknown10, input, false);
     break;
   }
-  if (isHit && unknown10.unknown00 == 1 && unknown08 != nullptr) {
-    unknown08->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
+  if (isHit && unknown10.unknown00 == 1 && m_iDColiCallBack != nullptr) {
+    m_iDColiCallBack->coli_param_callback(unknown10.unknown98, unknown10.unknown10);
   }
   return isHit;
 }

@@ -36,7 +36,7 @@ bool IDColiObjData::createBinary(const void *binary) {
   }
 
   if (size != 0) {
-    unknown1e0 = mtl::MemManager::allocate(IDColiManager::get()->unknownf4, size, 0x10, false, "no name", 0);
+    unknown1e0 = mtl::MemManager::allocate(IDColiManager::get()->m_ALLOC_HANDLE, size, 0x10, false, "no name", 0);
   }
   u32 offset = 0;
   if (info->unknown0c != 0) {
@@ -64,14 +64,14 @@ bool IDColiObjData::createBinary(const void *binary) {
   }
 
   if (header->unknown08 & 2) {
-    unknown200 = static_cast<IDColiObjGrdChar *>(IDColiManager::get()->createColiGrdChar());
-    unknown200->createWorkBuffer(reinterpret_cast<const u8 *>(unknown1d0), this);
+    m_iDColiObjGrdChar = static_cast<IDColiObjGrdChar *>(IDColiManager::get()->createColiGrdChar());
+    m_iDColiObjGrdChar->createWorkBuffer(reinterpret_cast<const u8 *>(unknown1d0), this);
     if (info->unknown04 > 0) {
       const CHCLBaseInfo *primInfo = reinterpret_cast<const CHCLBaseInfo *>(reinterpret_cast<const u8 *>(unknown1d0) + info->unknown00 + info->unknown04 * sizeof(CHCLBaseData));
       u32 index = 0;
       for (int i = 0; i < info->unknown04; i++) {
         if (primInfo[i].unknown00 == 5) {
-          unknown1e8[i].unknown00 = &unknown200->unknown80[index];
+          unknown1e8[i].unknown00 = &m_iDColiObjGrdChar->unknown80[index];
           index++;
         }
       }

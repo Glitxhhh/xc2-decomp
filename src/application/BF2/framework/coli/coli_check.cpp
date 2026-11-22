@@ -35,7 +35,7 @@ template <typename Coli> void unknown001(Coli &coli, ColiCheckCallback &callback
   coli.unknown04 = config.unknown08 * config.unknown08;
   coli.unknown10.unknowne8 = ~config.unknown04;
   coli.unknown10.unknownb3 = config.unknown15;
-  coli.unknown08 = &callback;
+  coli.m_iDColiCallBack = &callback;
 }
 
 } // namespace

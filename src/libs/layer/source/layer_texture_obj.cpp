@@ -19,7 +19,7 @@ struct unknown001 {
 
 template void LayerLinkList<LayerTextureObj>::deleteList(LayerTextureObj *node);
 
-LayerTextureMan::LayerTextureMan(LayerManager *manager) : unknown18(manager) {}
+LayerTextureMan::LayerTextureMan(LayerManager *manager) : m_layerManager(manager) {}
 
 LayerTextureObj::LayerTextureObj(const u8 *data, LayerManager *manager, LayerTextureMan *textureMan)
     : unknown00(nullptr), unknown08(nullptr), unknown10(data), unknown18(1), unknown2c(0), unknown38(nullptr), unknown40(textureMan) {
@@ -100,7 +100,7 @@ LayerTextureObj *LayerTextureMan::createTextureObj(const u8 *data) {
     }
   }
 
-  LayerTextureObj *textureObj = new (unknown18->unknown28) LayerTextureObj(data, unknown18, this);
+  LayerTextureObj *textureObj = new (m_layerManager->unknown28) LayerTextureObj(data, m_layerManager, this);
   if (textureObj != nullptr) {
     unknown002(textureObj);
   }

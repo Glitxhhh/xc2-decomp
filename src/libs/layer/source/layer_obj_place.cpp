@@ -183,14 +183,14 @@ f32 LayerObjPlace::updateGblFrm() {
 void LayerObjPlace::calcNodePos(f32 frame) {
   s32 count = unknown298->unknown40;
   const unknown087 *entry = reinterpret_cast<const unknown087 *>(unknown298->unknown38);
-  LayerResNode *node = unknown298->unknown70;
+  LayerResNode *node = unknown298->m_layerResNode;
   for (s32 i = 0; i < count; i++, entry++, node++) {
     node->unknown36 &= ~1;
     const LyrPlaceData *place = reinterpret_cast<const LyrPlaceData *>(unknown298->unknown28) + entry->unknown06;
     const unknown086 *keys = reinterpret_cast<const unknown086 *>(unknown298->unknown20 + place->unknown04);
     const LayerResNode *parent = nullptr;
     if (entry->unknown04 != -1) {
-      parent = &unknown298->unknown70[entry->unknown04];
+      parent = &unknown298->m_layerResNode[entry->unknown04];
       if (parent->unknown36 & 1) {
         node->unknown36 |= 1;
         if (entry->unknown00 & 1) {

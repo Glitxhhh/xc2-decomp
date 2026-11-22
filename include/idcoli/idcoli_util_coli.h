@@ -59,7 +59,7 @@ public:
     unknowne4 = 0;
     unknowne8 = 0;
     unknownf8 = nullptr;
-    unknown100 = nullptr;
+    m_iDColiCallBack = nullptr;
     unknown108 = nullptr;
   }
 
@@ -76,8 +76,8 @@ public:
 
   // Inferred helper: notifies the callback of a hit and returns true; original name unknown.
   bool unknown001() {
-    if (unknown100 != nullptr) {
-      unknown100->coli_callback(unknownf0);
+    if (m_iDColiCallBack != nullptr) {
+      m_iDColiCallBack->coli_callback(unknownf0);
     }
     return true;
   }
@@ -106,10 +106,10 @@ public:
   u32 unknowne4;                // Inferred role: stock max; original member name unknown.
   u32 unknowne8;                // Inferred role: material bits to skip; original member name unknown.
   u8 _ec[0xf0 - 0xec];
-  void *unknownf0;            // Inferred role: callback argument; original member name unknown.
-  IDColiObj *unknownf8;       // Inferred role: tested object; original member name unknown.
-  IDColiCallBack *unknown100; // Inferred role: callback; original member name unknown.
-  IDColiObj *unknown108;      // Inferred role: object to skip; original member name unknown.
+  void *unknownf0;                  // Inferred role: callback argument; original member name unknown.
+  IDColiObj *unknownf8;             // Inferred role: tested object; original member name unknown.
+  IDColiCallBack *m_iDColiCallBack; // Inferred role: callback; original member name unknown.
+  IDColiObj *unknown108;            // Inferred role: object to skip; original member name unknown.
 };
 
 static_assert(offsetof(IDColiResult, unknown10) == 0x10, "");
@@ -126,7 +126,7 @@ static_assert(offsetof(IDColiResult, unknowne0) == 0xe0, "");
 static_assert(offsetof(IDColiResult, unknowne8) == 0xe8, "");
 static_assert(offsetof(IDColiResult, unknownf0) == 0xf0, "");
 static_assert(offsetof(IDColiResult, unknownf8) == 0xf8, "");
-static_assert(offsetof(IDColiResult, unknown100) == 0x100, "");
+static_assert(offsetof(IDColiResult, m_iDColiCallBack) == 0x100, "");
 static_assert(offsetof(IDColiResult, unknown108) == 0x108, "");
 static_assert(sizeof(IDColiResult) == 0x110, "");
 
@@ -186,7 +186,7 @@ struct CLLineWork {
 static_assert(offsetof(CLLineWork, unknown60) == 0x60, "");
 
 struct CLRayWork {
-  CLLineWork unknown00[2]; // Inferred role: lines; original member name unknown.
+  CLLineWork m_cLLineWork[2]; // Inferred role: lines; original member name unknown.
 };
 
 struct IDColiInput {
